@@ -73,16 +73,32 @@ void  PluginManager::loadPlugins()
 	}
 
 #endif
-	pluginsDir.cd("plugins");
+  pluginsDir.cd("..");
+  pluginsDir.cd("plugins");
 
 	// Parsing plugin dependencies
-  foreach(const QString& fileName, pluginsDir.entryList(QDir::Files))
+  QStringList subDirs =  pluginsDir.entryList(QDir::Dirs);
+  foreach(const QString &subDir, subDirs)
   {
-    if ((fileName.split('.').back() == "so") || (fileName.split('.').back() == "dll"))
-    {
-      parseDependency(fileName, pluginsDir);
-    }
-	}
+      QDir  dir(pluginsDir);
+      dir.cd(subDir);
+      qDebug()<<dir;
+      foreach(const QString &fName, dir.entryList(QDir::Files))
+      {
+          if ((fName.split('.').back() == "so") || (fName.split('.').back() == "dll"))
+          {
+            parseDependency(fName, dir);
+          }
+      }
+  }
+//  foreach(const QString& fileName, pluginsDir.entryList(QDir::Files))
+//  {
+//    if ((fileName.split('.').back() == "so") || (fileName.split('.').back() == "dll"))
+//    {
+//      parseDependency(fileName, pluginsDir);
+//    }
+
+//  }
 
 	// Load plugins based on denpendency tree
 	while (!_readyToLoad.isEmpty())
@@ -154,10 +170,10 @@ void  PluginManager::parseDependency(const QString& fileName, const QDir &plugin
     QJsonObject    metaData   = pluginLoader.metaData()["MetaData"].toObject();
     QString        pluginName = metaData["Name"].toString();
 
-		if (debug)
-    {
-      pluginName += 'd';
-    }
+//		if (debug)
+//    {
+//      pluginName += 'd';
+//    }
 
 		// Get or create a record
     PluginEntry *pluginEntry = getOrCreatePluginEntry(pluginName);
@@ -173,10 +189,10 @@ void  PluginManager::parseDependency(const QString& fileName, const QDir &plugin
 				// Register info for parent
         QString  dependName = plugin.toObject()["Name"].toString();
 
-				if (debug)
-        {
-          dependName += 'd';
-        }
+//				if (debug)
+//        {
+//          dependName += 'd';
+//        }
 
 				pluginEntry->dependsToResolve++;
         PluginEntry *parent = getOrCreatePluginEntry(dependName);

@@ -26,14 +26,14 @@ SUBDIRS += \
     MeshMode \
     ModelFlatten \
     MultiView \
-    OpenSky-Network/OpenSkyNetwork.pro \
-#    OrthoMap \
+    OpenSkyNetwork\
+    OrthoMap \
     ScreenShot \
     SetRefPlane \
     ShowWeather \
     SlopAnalysis \
     Template \
     TileSelect \
-#    VRMode \
+    VRMode \
     VisibilityTest \
     VisibilityTestArea

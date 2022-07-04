@@ -196,7 +196,7 @@ void  MousePicker::registerData(QWidget *mainWindow, DataManager *dataManager, V
 		}
 		else
 		{
-			_mapNode[i] = NULL;
+            _mapNode[i] = nullptr;
 		}
 	}
 }

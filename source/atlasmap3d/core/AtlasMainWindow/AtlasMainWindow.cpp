@@ -44,12 +44,12 @@ void  AtlasMainWindow::loadingDone()
 	_ui->statusBar->removeWidget(_pProgressBar);
   // _mousePicker->updateDrawOffset();
 	delete _pProgressBar;
-	_pProgressBar = NULL;
+    _pProgressBar = nullptr;
 }
 
 void  AtlasMainWindow::loadingProgress(int percent)
 {
-	if (_pProgressBar == NULL)
+    if (_pProgressBar == nullptr)
 	{
 		_pProgressBar = new QProgressBar;
 		_pProgressBar->setMaximumWidth(400);
@@ -165,7 +165,7 @@ void AtlasMainWindow::initUiStyles()
   for (QToolBar *toolBar : toolBars)
 	{
 		// Set init style
-		if (toolBar->orientation() == Qt::Vertical)
+        if (toolBar->orientation() == Qt::Vertical)
     {
       toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     }

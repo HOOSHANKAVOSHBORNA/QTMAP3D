@@ -43,12 +43,12 @@ unix {
 
 INCLUDEPATH  += ../../atlasmap3d/
 
-unix:!macx: LIBS += -L$$PWD/../../osgQt/build-topic-Qt4/lib/ -losgQt5
+#unix:!macx: LIBS += -L$$PWD/../../osgQt/build-topic-Qt4/lib/ -losgQt5
 
-INCLUDEPATH += $$PWD/../../osgQt/osgQt-topic-Qt4/include
-DEPENDPATH += $$PWD/../../osgQt/osgQt-topic-Qt4/include
+INCLUDEPATH += $$PWD/../../../osgQt/osgQt-topic-Qt4/include/
+#DEPENDPATH += $$PWD/../../osgQt/osgQt-topic-Qt4/include
 
-unix:!macx: LIBS += -L$$PWD/../../../openvr/openvr/lib/linux64/ -lopenvr_api
+#unix:!macx: LIBS += -L$$PWD/../../../openvr/openvr/lib/linux64/ -lopenvr_api
 
 INCLUDEPATH += $$PWD/../../../openvr/openvr/headers
-DEPENDPATH += $$PWD/../../../openvr/openvr/headers
+#DEPENDPATH += $$PWD/../../../openvr/openvr/headers

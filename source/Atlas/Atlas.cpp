@@ -181,7 +181,7 @@ void  Atlas::initDataStructure()
 			baseMapPath = QStringLiteral("resources/earth_files/projected.earth");
 		}
 
-		osg::ref_ptr<osgDB::Options>  myReadOptions = osgEarth::Registry::cloneOrCreateOptions(0);
+        osg::ref_ptr<osgDB::Options>  myReadOptions = osgEarth::Registry::cloneOrCreateOptions(nullptr);
 		osgEarth::Config              c;
 		c.add("elevation_smoothing", false);
 		osgEarth::TerrainOptions  to(c);
@@ -325,7 +325,7 @@ public:
 	}
 
 protected:
-	std::ofstream *_log = NULL;
+    std::ofstream *_log = nullptr;
 };
 
 void  Atlas::initLog()
@@ -349,7 +349,7 @@ void  Atlas::initLog()
 	}
 
 	std::string  logPath = logDir + "/AtlasLog.txt";
-	_log = NULL;
+    _log = nullptr;
 	_log = new std::ofstream(logPath.c_str());
 
 	if (!_log)
@@ -388,17 +388,26 @@ void  Atlas::collectInitInfo()
 	int   initSteps = 7;
 	QDir  pluginsDir(qApp->applicationDirPath());
 
+    qDebug()<<pluginsDir;
+    pluginsDir.cd("..");
 	pluginsDir.cd("plugins");
-
+    qDebug()<<pluginsDir;
 	// Parsing plugin dependencies
-	foreach(const QString &fileName, pluginsDir.entryList(QDir::Files))
+    //foreach(const QString &fileName, pluginsDir.entryList(QDir::Files))
+    QStringList subDirs =  pluginsDir.entryList(QDir::Dirs);
+    foreach(const QString &subDir, subDirs)
 	{
-		if (fileName.split('.').back() != "dll")
-		{
-			continue;
-		}
-
-		initSteps++;
+        QDir  dir(pluginsDir);
+        dir.cd(subDir);
+        qDebug()<<dir;
+        foreach(const QString &fName, dir.entryList(QDir::Files))
+        {
+            if (fName.split('.').back() != "so")
+            {
+                continue;
+            }
+            initSteps++;
+        }
 	}
 	emit  sendTotalInitSteps(initSteps);
 }
