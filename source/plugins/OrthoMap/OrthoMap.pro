@@ -41,12 +41,12 @@ unix {
 FORMS += \
     SaveOrthoProjDialog.ui
 
-LIBS  += -L/usr/local/lib64/ -losg -losgViewer -losgGA -losgDB -losgManipulator -losgSim -losgParticle -losgText -losgUtil
-LIBS  += -L/usr/local/lib64/ -lgdal -losgEarth -losgEarthFeatures -losgEarthUtil -losgEarthSymbology -losgEarthAnnotation
+#LIBS  += -L/usr/local/lib64/ -losg -losgViewer -losgGA -losgDB -losgManipulator -losgSim -losgParticle -losgText -losgUtil
+#LIBS  += -L/usr/local/lib64/ -lgdal -losgEarth -losgEarthFeatures -losgEarthUtil -losgEarthSymbology -losgEarthAnnotation
 
 INCLUDEPATH  += ../../atlasmap3d/
 
-unix:!macx: LIBS += -L$$OUT_PWD/../../atlasmap3d/ -latlasmap3d
+#unix:!macx: LIBS += -L$$OUT_PWD/../../atlasmap3d/ -latlasmap3d
 
-INCLUDEPATH += $$PWD/../
-DEPENDPATH += $$PWD/../
+#INCLUDEPATH += $$PWD/../
+#DEPENDPATH += $$PWD/../

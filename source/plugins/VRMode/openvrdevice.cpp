@@ -550,8 +550,8 @@ osg::Camera * OpenVRDevice::createRTTCamera(OpenVRDevice::Eye eye, osg::Transfor
 
 bool  OpenVRDevice::submitFrame()
 {
-	vr::Texture_t           leftEyeTexture  = { (void *)m_textureBuffer[0]->getTexture(), vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
-	vr::Texture_t           rightEyeTexture = { (void *)m_textureBuffer[1]->getTexture(), vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+        vr::Texture_t           leftEyeTexture  = { (void *)m_textureBuffer[0]->getTexture(), vr::API_OpenGL/*vr::TextureType_OpenGL*/, vr::ColorSpace_Gamma };
+        vr::Texture_t           rightEyeTexture = { (void *)m_textureBuffer[1]->getTexture(), vr::API_OpenGL/*vr::TextureType_OpenGL*/, vr::ColorSpace_Gamma };
 	vr::EVRCompositorError  lError          = vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture);
 	vr::EVRCompositorError  rError          = vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture);
 
@@ -646,7 +646,7 @@ void  OpenVRDevice::ProcessVREvent(const vr::VREvent_t &event)
 
 	prevState = state;
 
-	m_vrSystem->GetControllerState(event.trackedDeviceIndex, &state, sizeof(state));
+        m_vrSystem->GetControllerState(event.trackedDeviceIndex, &state/*, sizeof(state)*/);
 
 	switch (event.eventType)
 	{
@@ -672,7 +672,7 @@ void  OpenVRDevice::ProcessVREvent(const vr::VREvent_t &event)
 		// 直接返回touchpad的坐标
 		if (event.data.controller.button == vr::k_EButton_SteamVR_Touchpad)
 		{
-			m_vrSystem->GetControllerState(event.trackedDeviceIndex, &state, sizeof(state));
+                        m_vrSystem->GetControllerState(event.trackedDeviceIndex, &state/*, sizeof(state)*/);
 
 			if ((m_touchpadPreTouchPosition.x() != state.rAxis->x) || (m_touchpadPreTouchPosition.y() != state.rAxis->y))
 			{
@@ -763,10 +763,10 @@ void  OpenVRDevice::calculateProjectionMatrices()
 {
 	vr::HmdMatrix44_t  mat;
 
-	mat                       = m_vrSystem->GetProjectionMatrix(vr::Eye_Left, m_nearClip, m_farClip);
+        mat                       = m_vrSystem->GetProjectionMatrix(vr::Eye_Left, m_nearClip, m_farClip, vr::API_OpenGL);//mos
 	m_leftEyeProjectionMatrix = convertMatrix44(mat);
 
-	mat                        = m_vrSystem->GetProjectionMatrix(vr::Eye_Right, m_nearClip, m_farClip);
+        mat                        = m_vrSystem->GetProjectionMatrix(vr::Eye_Right, m_nearClip, m_farClip, vr::API_OpenGL);//mos
 	m_rightEyeProjectionMatrix = convertMatrix44(mat);
 }
 

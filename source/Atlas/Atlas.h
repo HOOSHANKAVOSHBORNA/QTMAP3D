@@ -41,7 +41,7 @@ class Atlas: public AtlasMainWindow
 	Q_OBJECT
 
 public:
-	Atlas(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
+    Atlas(QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr);
 
 	~Atlas();
 
@@ -79,7 +79,7 @@ private:
   SettingsManager *_settingsManager;
   PluginManager   *_pluginManager;
   osg::ref_ptr<ViewerWidget>    _mainViewerWidget;
-  osg::ref_ptr<MousePicker>     _mousePicker;
+  osg::ref_ptr<MousePicker> _mousePicker;
 
 	// Root for all
   osg::ref_ptr<osg::Group>                      _root;

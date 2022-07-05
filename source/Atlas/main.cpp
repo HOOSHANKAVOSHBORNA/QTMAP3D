@@ -26,7 +26,6 @@ int  main(int argc, char *argv[])
 
 	// Show splash screen
     QPixmap            a("resources/images/atlas_big.png");
-//  QPixmap            a("/home/client110/Documents/project/hooshan/MAP/Atlas/atlasmap3dqt/Atlas/resources/images/atlas_big.png");
     AtlasSplashScreen *splash = new AtlasSplashScreen(a);
     Atlas              w;
 	QObject::connect(&w, SIGNAL(sendTotalInitSteps(int)), splash, SLOT(setTotalInitSteps(int)));

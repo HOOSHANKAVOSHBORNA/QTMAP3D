@@ -2,6 +2,10 @@
 #include "SaveOrthoDSMDialog.h"
 
 #include <osg/ComputeBoundsVisitor>
+#include <osg/MatrixTransform>
+#include <gdal_priv.h>
+//#include <gdal.h>
+#include <gdal_alg.h>
 #include <QFileDialog>
 #include <QThread>
 #include <iostream>
@@ -207,7 +211,7 @@ void  SaveOrthoDSMDialog::startCapturing()
 		_printer->setCamera(captureCamera);
 		_printer->setOutputTiles(false);
 		_printer->setOutputTileExtension("tiff");
-		_printer->setSRS(_srsWKT);
+//		_printer->setSRS(_srsWKT);
 		_printer->setPixel(_pixelPerMeter);
 
     // 初始化图像
