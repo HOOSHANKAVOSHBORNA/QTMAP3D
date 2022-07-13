@@ -1,0 +1,68 @@
+
+
+
+<map name="OpenStreetMap" type="geocentric" version="2">
+	<image name="word"  driver='xyz'>
+        <url> <![CDATA[http://192.168.10.115:8080/geoserver/gwc/service/wmts?layer=word%3Aworld&style=&tilematrixset=EPSG%3A900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A900913%3A{z}&TileCol={x}&TileRow={y}]]></url>
+		<profile>spherical-mercator</profile>
+	</image>
+    <image name="osm_mapnik" driver="xyz">
+						<url><![CDATA[http://192.168.10.115:8080/geoserver/gwc/service/wmts?layer=Iran%3Atest_mbr&style=&tilematrixset=EPSG%3A900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A900913%3A{z}&TileCol={x}&TileRow={y}]]></url>
+						<!--<url><![CDATA[http://192.168.10.115:8080/geoserver/gwc/service/wmts?layer=Iran%3AOstan&style=&tilematrixset=EPSG%3A900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A900913%3A{z}&TileCol={x}&TileRow={y}]]></url>-->
+		<profile>spherical-mercator</profile>
+        <cache_policy usage="none"/>
+        
+    </image>
+	 <model name="buildings" driver="feature_geom">
+             
+        <features name="buildings" driver="ogr">
+            <url>./iran_building/iran_buildings.shp</url>
+            <build_spatial_index>true</build_spatial_index>
+        </features>
+        
+        <layout>
+            <tile_size_factor>45</tile_size_factor>
+            <level name="default" max_range="900000">
+                <selector class="buildings"/>
+            </level>
+        </layout>
+       <styles>            
+            <library name="us_resources">
+                <url>./data/resources/textures_us/catalog.xml</url>
+            </library>
+            
+            <style type="text/css">
+                buildings {
+                    extrusion-height:      800;
+                    extrusion-flatten:     true;
+                    extrusion-wall-style:  building-wall;
+                    extrusion-roof-style:  building-rooftop;
+                    altitude-clamping:     none;
+                }            
+                building-wall {
+                    skin-library:     us_resources;
+                    skin-tags:        building;
+                    skin-random-seed: 1;
+                    fill:             #ffffff;
+                }
+                building-rooftop {
+                    skin-library:     us_resources;
+                    skin-tags:        rooftop;
+                    skin-tiled:       true;
+                    skin-random-seed: 1;
+                    fill:             #ffffff;
+                }
+            </style>			
+			
+        </styles>
+
+        <lighting>true</lighting>        
+    </model>
+	<viewpoints>
+        <viewpoint name="area 1" heading="128.5" lat="35.712" long="51.438" height="0" pitch="-5"  range="80000"/>
+        <viewpoint name="area 2" heading="128.5" lat="32.6289" long="51.6808" height="0" pitch="-5"  range="80000"/>
+        <viewpoint name="area 3" heading="128.5" lat="36.3072" long="59.5591" height="0" pitch="-5"  range="80000"/>
+        <viewpoint name="area 4" heading="128.5" lat="38.0681" long="48.2814" height="0" pitch="-5"  range="80000"/>
+                  
+    </viewpoints>
+</map>
