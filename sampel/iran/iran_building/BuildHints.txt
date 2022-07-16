@@ -1,0 +1,58 @@
+= Building GDAL/OGR = 
+
+ * DownloadSource - getting source from packages or source control.
+ * SupportedCompilers - table of compilers and versions tested to successfully build GDAL
+ * [wiki:Vagrant] - to create a reproducable developement environment
+
+== Unix Issues ==
+
+ * BuildingOnUnix - the basics of building on Unix.
+ * [wiki:BuildingOnUnixGDAL25dev] - special instructions to build GDAL master (released as GDAL 3.0) starting with Feb 2019
+ * BuildingOnUnixWithMinimizedDrivers - instructions for building GDAL on Unix with minimal set of drivers
+ * LargeFileSupport - supporting files larger than 4GB.
+ * SolarisNotes - notes about building GDAL on Solaris
+ * [wiki:IRIXBuild] - notes about building GDAL on IRIX with MIPSpro compiler
+ * OpenEmbedded - notes about building GDAL for OpenEmbedded
+ * [wiki:BuildingOnUnixWithNetBeansIDE] - instructions for building GDAL on Unix using [http://www.netbeans.org/ NetBeans IDE]
+ * BuildingForAndroid - instructions for cross-compiling GDAL for use on Android devices.
+ * BuildingOnMac - instructions for building GDAL on Mac OS.
+
+== Windows Issues ==
+
+ * [wiki:BuildingOnWindows] - the basics of building on Windows using [http://msdn2.microsoft.com/en-us/visualc/default.aspx Microsoft Visual C++]
+ * [wiki:BuildingOnWindowsWithMinimizedDrivers] - instructions for building GDAL on Windows with minimal set of drivers
+ * [wiki:BuildingWithMinGW] - guide about how to build on Windows using [http://www.mingw.org/ MinGW]
+ * [wiki:GeneratingVisualStudioProject] - using the provided script to generate VS project convenient for development on Windows
+ * [http://www.gdal.org/wince.html WinCE] - issue related to GDAL on the WinCE platform.
+
+== External Library Issues ==
+
+ * [wiki:ECW] - using ECW SDK for .ecw and JPEG2000
+ * [wiki:Epsilon] - issues when using Epsilon library
+ * [wiki:FileGDB] - Building with ESRI FileGDB API driver
+ * [wiki:FITS] - Building with FITS driver via CFITSIO library.
+ * [wiki:GRASS] - building GDAL with GRASS support.
+ * [wiki:HDF] - building in HDF support.
+ * [wiki:JasPer] - another library for JPEG2000 support.
+ * [wiki:JP2KAK] - Kakadu library is one JPEG2000 option. 
+ * [wiki:JpegIPP] - building with IPP version of libjpeg.
+ * [wiki:TIFF12BitJPEG] - building with support for 8 and 12 bit jpeg compressed TIFF.
+ * [wiki:LibCurl] - building WMS/WCS/HTTP drivers using libcurl.
+ * [wiki:mdbtools] - using the OGR PGeo driver with mdbtools under Linux.
+ * [wiki:MrSID] - using MRSID SDK for .sid and JPEG2000. 
+ * [wiki:MSG] - using EUMETSAT Wavelet Transform Software to enable MSG driver
+ * [wiki:NetCDF] - use netcdf library.
+ * [wiki:TIFF] - building and using GDAL with TIFF/GeoTIFF support.
+ * [wiki:Oracle] - building and using OGR with Oracle support.
+ * [wiki:SQLite] - building and using OGR with SQLite support.
+ * [wiki:Ingres] - building and using OGR with Ingres support.
+ * [wiki:DxfDwg] - building DXFDWG driver (spike branch)
+ * [wiki:LibKML] - building LIBKML driver.
+ * [wiki:SOSI] - building with the Norwegian SOSI driver.
+ * [wiki:ArcSDE] - building with ArcSDE client libraries.
+ * [wiki:SfcomOledb] - Notes on deprecated SFCOM/OLEDB Provider
+
+== Foreign function interface ==
+
+ * [wiki:SWIG] - the technology for the new generation wrappers
+
