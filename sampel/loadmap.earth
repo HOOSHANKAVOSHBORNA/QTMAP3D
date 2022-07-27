@@ -51,8 +51,8 @@
                 text-size:      20;
                 text-declutter: true;
                 text-halo:      #777;
-                text-offset-x:  28;
-                text-offset-y:  -100;
+                text-offset-x:  5;
+                text-offset-y:  10;
                 text-bbox-fill: #00FF0033;
                 text-bbox-margin: 3;
                 text-bbox-border: #FFFFFFFF;
@@ -126,7 +126,7 @@
 	<viewpoints>
         <viewpoint name="tehran"
                    lat="35.71529835.715298" long="51.404343" range="500000"
-                   heading="180" pitch="-10" />
+                   heading="90" pitch="-10" />
 				   <viewpoint name="tabriz"
                    lat="38.066666" long="46.299999" range="500000"
                    heading="35.27" pitch="-25" />
