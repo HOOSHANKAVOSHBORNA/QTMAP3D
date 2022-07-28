@@ -19,7 +19,6 @@
             <url>./iran/shape_area1/buildings.shp</url>
             <build_spatial_index>true</build_spatial_index>
         </features>
-        
         <layout>
             <tile_size_factor>45</tile_size_factor>
             <level name="default" max_range="900000">
@@ -58,6 +57,7 @@
 
         <lighting>true</lighting>        
     </model>
+	
 	<feature_model name="Parks" enabled="true">
         <features name="parks" driver="ogr">
             <url>./iran/shape_area1/natural.shp</url>
@@ -125,7 +125,7 @@
             <style type="text/css">
                 default {
                    model:                  "./data/loopix/grass6.osgb";
-				   model-scale:            0.07;
+				   model-scale:            0.05;
                    model-placement:        random;
                    model-density:          200000;
 				   model-heading:          Math.random() * 360.0;
@@ -151,7 +151,7 @@
             <style type="text/css">
                 default {
                    model:                  "./data/loopix/grass6.osgb";
-				   model-scale:            0.07;
+				   model-scale:            0.05;
                    model-placement:        random;
                    model-density:          300000;
 				   model-heading:          Math.random() * 360.0;
@@ -207,9 +207,11 @@
             <resample min_length="25" max_length="25"/>
         </filters>
     </feature_source>
+	
 	<viewpoints>
         
-        <viewpoint name="area1" heading="128.5" lat="35.78574" long="51.41170" height="0" pitch="-30"  range="80000"/>
-       
+        <viewpoint name="tagrish" heading="128.5" lat="35.78574" long="51.41170" height="10" pitch="-10"  range="5000"/>
+		<viewpoint name="tagrish street" heading="128.5" lat="35.78574" long="51.41170" height="0" pitch="-9"  range="140"/>
+        
     </viewpoints>
 </map>
