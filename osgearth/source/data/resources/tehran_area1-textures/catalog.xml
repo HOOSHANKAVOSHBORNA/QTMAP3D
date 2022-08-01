@@ -341,7 +341,7 @@
    </skin>
 
    <skin name="6stBrickBrownApt" tags="building residential us apt brick brown">
-        <url>residential/6storybrickbrown1.jpg</url>
+        <url>residential/4.jpg</url>
         <image_width>21</image_width>
         <min_object_height>21</min_object_height>
         <max_object_height>26</max_object_height>
@@ -349,7 +349,7 @@
     </skin>
 
    <skin name="5stResidentialCondoWhite2" tags="building residential apt us white">
-        <url>residential/5storyCondo_concrglasswhite.jpg</url>
+        <url>residential/2.jpg</url>
         <image_width>14</image_width>
         <min_object_height>14</min_object_height>
         <max_object_height>21</max_object_height>
@@ -357,7 +357,7 @@
    </skin>
 
    <skin name="4stResidentialBrownBrick" tags="building residential apt us brick brown">
-        <url>residential/US-CityCondo_brick_4st.jpg</url>
+        <url>residential/6.jpg</url>
         <image_width>16</image_width>
         <min_object_height>9</min_object_height>
         <max_object_height>14</max_object_height>
@@ -365,7 +365,7 @@
    </skin>
 
    <skin name="2stResidentialDarkApt" tags="building residential apt us brown">
-        <url>residential/US-CityCondo2st.jpg</url>
+        <url>residential/5.jpg</url>
         <image_width>11</image_width>
         <min_object_height>4</min_object_height>
         <max_object_height>7</max_object_height>
@@ -375,7 +375,7 @@
 <!-- rooftops : tiled -->
 
    <skin name="roof_tiled1" tags="rooftop">
-       <url>rooftop/tiled/roof_tiled1.jpg</url>
+       <url>rooftop/tiled/tile-1.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
        <tiled>true</tiled>
@@ -383,7 +383,7 @@
    </skin>
 
    <skin name="roof_tiled2" tags="rooftop">
-       <url>rooftop/tiled/roof_tiled2.jpg</url>
+       <url>rooftop/tiled/tile-2.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
        <tiled>true</tiled>
@@ -391,7 +391,7 @@
    </skin>
 
    <skin name="roof_tiled3" tags="rooftop">
-       <url>rooftop/tiled/roof_tiled3.jpg</url>
+       <url>rooftop/tiled/tile-3.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
        <tiled>true</tiled>
@@ -399,30 +399,44 @@
    </skin>
    
 <!-- rooftops : non-tiled -->
+
+      <skin name="roof_misc1" tags="rooftop">
+       <url>rooftop/3.png</url>
+       <image_width>25</image_width>
+       <image_height>25</image_height>
+       <tiled>false</tiled>
+   </skin>
    
    <skin name="roof_misc2" tags="rooftop">
-       <url>rooftop/roof_misc2.jpg</url>
+       <url>rooftop/2.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
        <tiled>false</tiled>
    </skin>
    
    <skin name="roof_misc3" tags="rooftop">
-       <url>rooftop/roof_misc3.jpg</url>
+       <url>rooftop/4.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
        <tiled>false</tiled>
    </skin>
    
    <skin name="roof_misc4" tags="rooftop">
-       <url>rooftop/roof_misc4.jpg</url>
+       <url>rooftop/1.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
        <tiled>false</tiled>
    </skin>
    
    <skin name="roof_misc5" tags="rooftop">
-       <url>rooftop/roof_misc5.jpg</url>
+       <url>rooftop/5.png</url>
+       <image_width>25</image_width>
+       <image_height>25</image_height>
+       <tiled>false</tiled>
+   </skin>
+
+   <skin name="roof_misc6" tags="rooftop">
+       <url>rooftop/6.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
        <tiled>false</tiled>
