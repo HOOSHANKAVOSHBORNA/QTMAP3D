@@ -183,7 +183,7 @@
     </skin>
 
     <skin name="10stOfficeWhite" tags="building commercial us concrete glass white">
-        <url>commercial/10storymodernconcrete.jpg</url>
+        <url>commercial/1.jpg</url>
         <image_width>27</image_width>
         <min_object_height>29</min_object_height>
         <max_object_height>37</max_object_height>
@@ -357,7 +357,7 @@
    </skin>
 
    <skin name="4stResidentialBrownBrick" tags="building residential apt us brick brown">
-        <url>residential/6.jpg</url>
+        <url>residential/5.jpg</url>
         <image_width>16</image_width>
         <min_object_height>9</min_object_height>
         <max_object_height>14</max_object_height>
@@ -365,7 +365,7 @@
    </skin>
 
    <skin name="2stResidentialDarkApt" tags="building residential apt us brown">
-        <url>residential/5.jpg</url>
+        <url>residential/13.jpg</url>
         <image_width>11</image_width>
         <min_object_height>4</min_object_height>
         <max_object_height>7</max_object_height>
