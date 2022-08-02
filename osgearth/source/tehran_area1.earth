@@ -1,57 +1,57 @@
 <map name="OpenStreetMap" type="geocentric" version="2">
-	<!--<image name="word"  driver='xyz'>
-        <url> <![CDATA[http://192.168.10.115:8080/geoserver/gwc/service/wmts?layer=word%3Aworld&style=&tilematrixset=EPSG%3A900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A900913%3A{z}&TileCol={x}&TileRow={y}]]></url>
+		<!--<image name="word"  driver='xyz'>
+			<url> <![CDATA[http://192.168.10.115:8080/geoserver/gwc/service/wmts?layer=word%3Aworld&style=&tilematrixset=EPSG%3A900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A900913%3A{z}&TileCol={x}&TileRow={y}]]></url>
+			<profile>spherical-mercator</profile>
+		</image>-->
+		<!--<image name="osm_mapnik" driver="xyz">
+		<url><![CDATA[https://api.gitanegaran.ir/geoserver/gwc/service/wmts?layer=osm:foolad&style=&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image/png8&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}]]></url>
 		<profile>spherical-mercator</profile>
-	</image>-->
-    <!--<image name="osm_mapnik" driver="xyz">
-	<url><![CDATA[https://api.gitanegaran.ir/geoserver/gwc/service/wmts?layer=osm:foolad&style=&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image/png8&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}]]></url>
-	<profile>spherical-mercator</profile>
-        <cache_policy usage="none"/>
-    </image>-->
-	<image name="osm_mapnik" driver="xyz">
-		<url>https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg</url>
-		<profile>spherical-mercator</profile>
-		<cache_policy usage="none"/>
-	</image>
+			<cache_policy usage="none"/>
+		</image>-->
+		<image name="osm_mapnik" driver="xyz">
+			<url>https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg</url>
+			<profile>spherical-mercator</profile>
+			<cache_policy usage="none"/>
+		</image>
 
-	<model name="buildings" driver="feature_geom">
+		<model name="buildings" driver="feature_geom">
      
-		<features name="buildings" driver="ogr">
-			<url>./data/shape/iran/tehran/area1/buildings.shp</url>
-			<build_spatial_index>true</build_spatial_index>
-		</features>
-		<layout>
-			<tile_size_factor>45</tile_size_factor>
-			<level name="default" max_range="900000">
-				<selector class="buildings"/>
-			</level>
-		</layout>
-		<styles>            
-			<library name="us_resources">
-				<url>./data/resources/textures_us/catalog.xml</url>
-			</library>
-			<style type="text/css">
-				buildings {
-				    extrusion-height:       3.4* max([buildingle], 1);
-				    extrusion-flatten:     true;
-				    extrusion-wall-style:  building-wall;
-				    extrusion-roof-style:  building-rooftop;
-				    altitude-clamping:     none;
-				}            
-				building-wall {
-				    skin-library:     us_resources;
-				    skin-tags:        building;
-				    skin-random-seed: 1;
-				    fill:             #ffffff;
-				}
-				building-rooftop {
-				    skin-library:     us_resources;
-				    skin-tags:        rooftop;
-				    skin-tiled:       true;
-				    skin-random-seed: 1;
-				    fill:             #ffffff;
-				}
-			</style>			
+			<features name="buildings" driver="ogr">
+				<url>./data/shape/iran/tehran/area1/buildings.shp</url>
+				<build_spatial_index>true</build_spatial_index>
+			</features>
+			<layout>
+				<tile_size_factor>45</tile_size_factor>
+				<level name="default" max_range="900000">
+					<selector class="buildings"/>
+				</level>
+			</layout>
+			<styles>            
+				<library name="us_resources">
+					<url>./data/resources/tehran_area1-textures/catalog.xml</url>
+				</library>
+				<style type="text/css">
+						buildings {
+							extrusion-height:       3.4* max([buildingle], 1);
+							extrusion-flatten:     true;
+							extrusion-wall-style:  building-wall;
+							extrusion-roof-style:  building-rooftop;
+							altitude-clamping:     none;
+						}            
+						building-wall {
+							skin-library:     us_resources;
+							skin-tags:        building;
+							skin-random-seed: 1;
+							fill:             #ffffff;
+						}
+						building-rooftop {
+							skin-library:     us_resources;
+							skin-tags:        rooftop;
+							skin-tiled:       true;
+							skin-random-seed: 1;
+							fill:             #ffffff;
+						}
+				</style>			
 				
 		</styles>
 
@@ -72,7 +72,7 @@
 		<styles>
     			<style type="text/css">
 				default {
-				   model:                  "./data/loopix/tree4.osgb";
+				   model:                  "./data/model/tree4.osgb";
 				   model-scale:            0.15 + 0.1*Math.random();
 				   model-placement:        random+0.5;
 				   model-density:          5000;
@@ -97,7 +97,7 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "./data/loopix/tree5.osgb";
+				   model:                  "./data/model/tree5.osgb";
 				   model-scale:            0.15 + 0.1*Math.random();
 				   model-placement:        random;
 				   model-density:          5000;
@@ -121,7 +121,7 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "./data/loopix/grass6.osgb";
+				   model:                  "./data/model/grass6.osgb";
 				   model-scale:            0.05;
 				   model-placement:        random;
 				   model-density:          200000;
@@ -145,7 +145,7 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "./data/loopix/grass6.osgb";
+				   model:                  "./data/model/grass6.osgb";
 				   model-scale:            0.05;
 				   model-placement:        random;
 				   model-density:          300000;
@@ -183,7 +183,7 @@
 		<styles>
 			<style type="text/css">
 				default {
-				    model: "./data/streetlight.osgb";
+				    model: "./data/model/streetlight.osgb";
 				    model-script: positionAlongSegments();
 				    model-heading: feature.properties.heading;
 				    altitude-clamping: terrain;

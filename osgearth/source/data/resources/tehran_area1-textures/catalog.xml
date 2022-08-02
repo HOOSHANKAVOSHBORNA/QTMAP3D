@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<resources name="texlib-us">
+<resources name="texlib-ir">
 
   <!-- tiled repeatables -->
     <skin name="asphalt" tags="asphalt road rock">
@@ -374,7 +374,7 @@
    
 <!-- rooftops : tiled -->
 
-   <skin name="roof_tiled1" tags="rooftop">
+   <!--<skin name="roof_tiled1" tags="rooftop">
        <url>rooftop/tiled/tile-1.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
@@ -396,50 +396,55 @@
        <image_height>25</image_height>
        <tiled>true</tiled>
        <atlas>false</atlas>
-   </skin>
+   </skin>-->
    
 <!-- rooftops : non-tiled -->
 
       <skin name="roof_misc1" tags="rooftop">
-       <url>rooftop/3.png</url>
+       <url>rooftop/image3.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
-       <tiled>false</tiled>
+       <tiled>true</tiled>
+	   <atlas>false</atlas>
    </skin>
    
    <skin name="roof_misc2" tags="rooftop">
-       <url>rooftop/2.png</url>
+       <url>rooftop/image2.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
-       <tiled>false</tiled>
+       <tiled>true</tiled>
+	   <atlas>false</atlas>
    </skin>
    
    <skin name="roof_misc3" tags="rooftop">
-       <url>rooftop/4.png</url>
+       <url>rooftop/image4.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
-       <tiled>false</tiled>
+       <tiled>true</tiled>
+	   <atlas>false</atlas>
    </skin>
    
    <skin name="roof_misc4" tags="rooftop">
-       <url>rooftop/1.png</url>
+       <url>rooftop/image1.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
-       <tiled>false</tiled>
+       <tiled>true</tiled>
    </skin>
    
    <skin name="roof_misc5" tags="rooftop">
-       <url>rooftop/5.png</url>
+       <url>rooftop/image5.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
-       <tiled>false</tiled>
+       <tiled>true</tiled>
+	   <atlas>false</atlas>
    </skin>
 
    <skin name="roof_misc6" tags="rooftop">
-       <url>rooftop/6.png</url>
+       <url>rooftop/image6.png</url>
        <image_width>25</image_width>
        <image_height>25</image_height>
-       <tiled>false</tiled>
+       <tiled>true</tiled>
+	   <atlas>false</atlas>
    </skin>
    
  <!-- test patterns -->
