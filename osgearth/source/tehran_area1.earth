@@ -75,7 +75,7 @@
 				   model:                  "./data/model/tree4.osgb";
 				   model-scale:            0.15 + 0.1*Math.random();
 				   model-placement:        random+0.5;
-				   model-density:          5000;
+				   model-density:          20000;
 				   model-heading:          Math.random() * 360.0;
 				   altitude-clamping:      terrain;
 				   render-transparent:     true;
@@ -100,7 +100,7 @@
 				   model:                  "./data/model/tree5.osgb";
 				   model-scale:            0.15 + 0.1*Math.random();
 				   model-placement:        random;
-				   model-density:          5000;
+				   model-density:          20000;
 				   model-heading:          Math.random() * 360.0;
 				   altitude-clamping:      terrain;
 				   render-transparent:     true;
@@ -121,7 +121,7 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "./data/model/grass6.osgb";
+				   model:                  "./data/model/grass2.osgb";
 				   model-scale:            0.05;
 				   model-placement:        random;
 				   model-density:          200000;
@@ -167,7 +167,7 @@
 				default {
 				    stroke: #ffffff;
 				    stroke-width: 5m;
-				    stroke-image: "./asphalt.png";
+				    stroke-image: "./data/image/asphalt.png";
 				    altitude-clamping: terrain;
 				    render-depth-offset-min-bias: 3.6;
 				    render-transparent: true;

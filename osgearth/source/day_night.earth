@@ -1,0 +1,11 @@
+<map name="start map" type="geocentric" version="2" >
+    <options>
+		<terrain first_lod="1" normalize_edges="true"/>
+        <profile>plate-carre</profile>
+    </options>
+
+    <image name="word"  driver='gdal'>
+        <url> ./data/image/world.tif</url>
+    </image>
+	<sky driver="simple" hours="14.0" ambient="1.0"/>
+</map>
