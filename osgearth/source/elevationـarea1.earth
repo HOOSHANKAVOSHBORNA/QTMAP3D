@@ -1,0 +1,17 @@
+<map name="OpenStreetMap" type="geocentric" version="2">
+	<image name="readymap_imagery" driver="xyz">
+        <url>https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg</url>
+		<profile>spherical-mercator</profile>
+			<cache_policy usage="none"/>
+    </image>
+
+    <!-- Add some base elevation -->
+    <elevation name="readymap_elevation" driver="gdal" enabled="true">
+        <url>./data/Tehranelevation/tehran1.tif</url>
+    </elevation>
+
+	<viewpoints>
+		<viewpoint name="tagrish" heading="-21.7843" lat="35.78574" long="51.41170" height="-0.00250659976154565" pitch="-27.566"  range="38701.6m"/>
+	</viewpoints>
+
+</map>

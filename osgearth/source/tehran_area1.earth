@@ -9,11 +9,36 @@
 			<cache_policy usage="none"/>
 		</image>-->
 		<image name="osm_mapnik" driver="xyz">
-			<url>https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg</url>
+			<url>http://[abc].tile.openstreetmap.org/{z}/{x}/{y}.png</url>
 			<profile>spherical-mercator</profile>
 			<cache_policy usage="none"/>
 		</image>
+		<feature_model name="tower" enabled="true">
+		<features name="tower" driver="ogr">
+			<url>./data/shape/iran/tehran/shape_miladtower/points.shp</url>
+		</features>        
 
+		<layout tile_size="1000">
+			<level max_range="80000"/>
+		</layout>
+
+		<feature_indexing enabled="false"/>
+
+		<styles>
+				<style type="text/css">
+				default {
+				   model:                  "./data/model/milad.osgb";
+				   model-scale:            17;
+				   model-placement:        0;
+				   model-density:          1;
+				   model-heading:          Math.random() * 360.0;
+				   altitude-clamping:      terrain;
+				   render-transparent:     true;
+				   render-min-alpha:       0.15;
+				}
+			</style>
+		</styles>      
+	</feature_model>
 		<model name="buildings" driver="feature_geom">
      
 			<features name="buildings" driver="ogr">
@@ -158,7 +183,7 @@
 		</styles>        
 	</feature_model>
 
-	<feature_model name="Streets" feature_source="streets-data">        
+	<!--<feature_model name="Streets" feature_source="streets-data">        
 		<layout crop_features="true" tile_size="1000">
 			<level max_range="80000"/>
 		</layout>        
@@ -174,7 +199,7 @@
 				}
 			</style>
 		</styles>        
-	</feature_model>
+	</feature_model>-->
 	
 	<feature_model name="streetlamps" feature_source="streets-data">
 		<layout tile_size="1000" crop_features="true">
@@ -205,5 +230,8 @@
 	<viewpoints>
 		<viewpoint name="tagrish" heading="128.5" lat="35.78574" long="51.41170" height="10" pitch="-10"  range="5000"/>
 		<viewpoint name="tagrish street" heading="128.5" lat="35.78574" long="51.41170" height="0" pitch="-9"  range="140"/>
+				<viewpoint name="tagrish2" heading="-21.7843" lat="35.78574" long="51.41170" height="-0.00250659976154565" pitch="-27.566"  range="38701.6m"/>
+				<viewpoint name="Milad tower" heading="-21.7843" lat="35.744843" long="51.376320" height="-0.00250659976154565" pitch="-27.566"  range="1000"/>
+
 	</viewpoints>
 </map>
