@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/earth_files/geocentric.earth</file>
+        <file>res/earth_files/projected.earth</file>
+        <file>res/earth_files/world.tif</file>
+        <file>res/atlas.ico</file>
+    </qresource>
+</RCC>

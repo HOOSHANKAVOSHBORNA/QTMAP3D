@@ -40,3 +40,4 @@ unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
 
 INCLUDEPATH += $$PWD/../../osgQt/include
 DEPENDPATH += $$PWD/../../osgQt/include
+
