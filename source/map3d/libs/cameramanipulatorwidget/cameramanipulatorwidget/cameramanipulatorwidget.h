@@ -7,7 +7,6 @@
 //  library for display qml  in widget
 #include <QQmlContext>
 #include <QQmlEngine>
-#include "getdata.h"
 
 class CAMERAMANIPULATORWIDGET_EXPORT CameraManipulatorWidget :public QWidget
 {
@@ -46,7 +45,6 @@ signals:
      void  headChanged (int newTilt);
      void homeClicked ();
 private:
-    GetData *mData;
     QQuickView *mView;
     int    mZoomStep=12;
     int    mUpDownstep;

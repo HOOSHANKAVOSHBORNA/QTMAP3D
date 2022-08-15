@@ -18,7 +18,8 @@ class MAP3DLIB_EXPORT Map3dlib: public QMainWindow
 public:
     Map3dlib(QWidget *parent = nullptr);
 public slots:
-    void on_osgQOpenGLWidgetInit();
+    void osgQOpenGLWidgetInitialized();
+    void zoomChanged(int val);
 private:
     osgQOpenGLWidget *mMapOpenGLWidget;
     osgEarth::Util::EarthManipulator *mEarthManipulator;

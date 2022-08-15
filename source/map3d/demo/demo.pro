@@ -41,3 +41,8 @@ unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
 INCLUDEPATH += $$PWD/../../osgQt/include
 DEPENDPATH += $$PWD/../../osgQt/include
 
+
+unix:!macx: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget/ -lcameramanipulatorwidget
+
+INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget
+DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget
