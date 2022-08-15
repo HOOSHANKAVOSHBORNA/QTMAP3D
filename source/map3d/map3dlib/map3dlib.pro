@@ -35,10 +35,7 @@ FORMS +=
 LIBS  +=  -losg -losgViewer -losgGA -losgDB -losgManipulator -losgSim -losgParticle -losgText -losgUtil
 LIBS  +=  -lgdal -losgEarth -losgEarthFeatures -losgEarthUtil -losgEarthSymbology -losgEarthAnnotation
 
-unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
 
-INCLUDEPATH += $$PWD/../../osgQt/include
-DEPENDPATH += $$PWD/../../osgQt/include
 
 RESOURCES += \
     map3dlib.qrc
@@ -62,3 +59,8 @@ defineTest(copyToDestDir) {
     export(QMAKE_POST_LINK)
 }
 copyToDestDir($$PWD/res, $$OUT_PWD/res)
+
+unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
+
+INCLUDEPATH += $$PWD/../../osgQt/include
+DEPENDPATH += $$PWD/../../osgQt/include
