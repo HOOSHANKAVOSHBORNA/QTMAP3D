@@ -2,7 +2,11 @@
 CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
     QWidget(parent)
 {
-
+    mZoomStep=0.5;
+    mUpDownstep=0.5;
+    mLeftRightStep=0.5;
+    mPitchStep=0.5;
+    mHeadStep=0.5;
     mView= new QQuickView(QUrl(QLatin1String("qrc:/main.qml")));
 
        /// set data class datamanager to main qml
@@ -16,28 +20,28 @@ CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
     setStyleSheet("background-color: yellow;");
 }
 
-void CameraManipulatorWidget::setZoomStep(int zoomstep)
+void CameraManipulatorWidget::setZoomStep(double zoomstep)
 {
     mZoomStep=zoomstep;
 }
 
-void CameraManipulatorWidget::setUpDownStep(int updownstep)
+void CameraManipulatorWidget::setUpDownStep(double updownstep)
 {
     mUpDownstep=updownstep;
 }
 
-void CameraManipulatorWidget::setLeftRightStep(int leftrightstep)
+void CameraManipulatorWidget::setLeftRightStep(double leftrightstep)
 {
     mLeftRightStep=leftrightstep;
 }
 
-void CameraManipulatorWidget::setPitchStep(int pitch)
+void CameraManipulatorWidget::setPitchStep(double pitch)
 {
     mPitchStep=pitch;
 
 }
 
-void CameraManipulatorWidget::setHeadStep(int head)
+void CameraManipulatorWidget::setHeadStep(double head)
 {
     mHeadStep =head;
 }

@@ -14,11 +14,11 @@ class CAMERAMANIPULATORWIDGET_EXPORT CameraManipulatorWidget :public QWidget
 public:
     CameraManipulatorWidget(QWidget *parent = nullptr);
 
-    void setZoomStep(int zoomstep);
-    void setUpDownStep (int updownstep);
-    void setLeftRightStep(int leftrightstep);
-    void setPitchStep(int pitch);
-    void setHeadStep(int head);
+    void setZoomStep(double zoomstep);
+    void setUpDownStep (double updownstep);
+    void setLeftRightStep(double leftrightstep);
+    void setPitchStep(double pitch);
+    void setHeadStep(double head);
 
 
 public slots:
@@ -38,19 +38,19 @@ public slots:
 
 
 signals:
-     void zoomChanged(float newZoom);
-     void upDownChanged(int newUpDown);
-     void  leftRightChanged(int nemLeftRight);
-     void pitchChanged(int newBearing);
-     void  headChanged (int newTilt);
+     void zoomChanged(double newZoom);
+     void upDownChanged(double newUpDown);
+     void  leftRightChanged(double nemLeftRight);
+     void pitchChanged(double newBearing);
+     void  headChanged (double newTilt);
      void homeClicked ();
 private:
     QQuickView *mView;
-    int    mZoomStep=12;
-    int    mUpDownstep;
-    int    mLeftRightStep;
-    int    mHeadStep;
-    int    mPitchStep;
+    double    mZoomStep;
+    double    mUpDownstep;
+    double    mLeftRightStep;
+    double    mHeadStep;
+    double    mPitchStep;
 
 };
 
