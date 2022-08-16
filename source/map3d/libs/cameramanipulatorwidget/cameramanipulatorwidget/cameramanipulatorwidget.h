@@ -4,6 +4,7 @@
 #include "cameramanipulatorwidget_global.h"
 #include <QWidget>
 #include <QQuickView>
+#include <QQuickWidget>
 //  library for display qml  in widget
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -45,7 +46,7 @@ signals:
      void  headChanged (double newTilt);
      void homeClicked ();
 private:
-    QQuickView *mView;
+    QQuickWidget *mQQuickWidget;
     double    mZoomStep;
     double    mUpDownstep;
     double    mLeftRightStep;

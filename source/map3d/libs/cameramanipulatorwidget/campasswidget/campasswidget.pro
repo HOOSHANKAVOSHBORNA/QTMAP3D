@@ -1,6 +1,9 @@
-QT       += core gui quick quickcontrols2 quickwidgets
+QT       += core gui core gui quick quickcontrols2 quickwidgets webengine
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TEMPLATE = lib
+DEFINES += CAMPASSWIDGET_LIBRARY
 
 CONFIG += c++11
 
@@ -16,27 +19,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp
+    campasswidget.cpp
 
 HEADERS += \
-    mainwindow.h
-
-FORMS += \
-    mainwindow.ui
+    campasswidget_global.h \
+    campasswidget.h
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+unix {
+    target.path = /usr/lib
+}
 !isEmpty(target.path): INSTALLS += target
 
-unix:!macx: LIBS += -L$$OUT_PWD/../cameramanipulatorwidget/ -lcameramanipulatorwidget
-
-INCLUDEPATH += $$PWD/../cameramanipulatorwidget
-DEPENDPATH += $$PWD/../cameramanipulatorwidget
+RESOURCES += \
+    rcs.qrc
 
 
-unix:!macx: LIBS += -L$$OUT_PWD/../campasswidget/ -lcampasswidget
 
-INCLUDEPATH += $$PWD/../campasswidget
-DEPENDPATH += $$PWD/../campasswidget

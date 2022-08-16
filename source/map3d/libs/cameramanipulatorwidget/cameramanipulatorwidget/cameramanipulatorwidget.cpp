@@ -7,17 +7,18 @@ CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
     mLeftRightStep=0.5;
     mPitchStep=0.5;
     mHeadStep=0.5;
-    mView= new QQuickView(QUrl(QLatin1String("qrc:/main.qml")));
+    mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/main.qml")),this);
+            mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+            mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
+            mQQuickWidget->setClearColor(Qt::transparent);
+            mQQuickWidget->resize(60, 190);
+            mQQuickWidget->raise();
 
        /// set data class datamanager to main qml
-    mView->engine()->rootContext()->setContextProperty("GetData",this);
-    mView->setColor(Qt::blue);
-      QWidget *widghet  =createWindowContainer(mView,this);
-    widghet->setMinimumSize(60,180);
-    widghet->setMaximumSize(60,180);
-    widghet->setStyleSheet("background-color: blue;");
+    mQQuickWidget->engine()-> rootContext()->setContextProperty("GetData",this);
+    mQQuickWidget->setMinimumSize(60,190);
+    mQQuickWidget->setMaximumSize(60,190);
 
-    setStyleSheet("background-color: yellow;");
 }
 
 void CameraManipulatorWidget::setZoomStep(double zoomstep)

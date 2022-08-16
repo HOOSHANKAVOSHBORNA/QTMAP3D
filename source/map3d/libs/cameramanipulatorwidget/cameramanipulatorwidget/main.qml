@@ -1,10 +1,10 @@
 import QtQuick 2.13
 import QtQuick.Window 2.13
 
-Rectangle {
-   color: "transparent"
+Item {
+    id: parent
+
   visible: true
-    anchors.fill: parent
 
   Menu{
       anchors.centerIn: parent
