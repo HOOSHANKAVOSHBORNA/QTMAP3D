@@ -14,15 +14,16 @@ namespace  Util{
 class MAP3DLIB_EXPORT Map3dlib: public QMainWindow
 {
     Q_OBJECT
-
 public:
     Map3dlib(QWidget *parent = nullptr);
 public slots:
     void osgQOpenGLWidgetInitialized();
-    void zoomChanged(int val);
+protected:
+    void resizeEvent(QResizeEvent* event);
 private:
     osgQOpenGLWidget *mMapOpenGLWidget;
     osgEarth::Util::EarthManipulator *mEarthManipulator;
+    QDockWidget *dockWidget;
 };
 
 #endif // MAP3DLIB_H

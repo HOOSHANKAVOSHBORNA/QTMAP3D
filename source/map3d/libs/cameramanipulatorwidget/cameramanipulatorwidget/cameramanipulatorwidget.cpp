@@ -1,4 +1,6 @@
 #include "cameramanipulatorwidget.h"
+
+#include <QQuickWidget>
 CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
     QWidget(parent)
 {
@@ -7,17 +9,32 @@ CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
     mLeftRightStep=0.5;
     mPitchStep=0.5;
     mHeadStep=0.5;
-    mView= new QQuickView(QUrl(QLatin1String("qrc:/main.qml")));
 
+//    auto mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/main.qml")), this);
+//    mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+//    mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
+//    mQQuickWidget->setClearColor(Qt::transparent);
+//    mQQuickWidget->resize(700, 700);
+//    mQQuickWidget->raise();
+
+//    mQQuickWidget->engine()->rootContext()->setContextProperty("GetData",this);
+
+    mView= new QQuickView(QUrl(QLatin1String("qrc:/main.qml")));
+   // QColor color(Material.BlueGrey);
        /// set data class datamanager to main qml
     mView->engine()->rootContext()->setContextProperty("GetData",this);
-    mView->setColor(Qt::blue);
-      QWidget *widghet  =createWindowContainer(mView,this);
+    mView->setColor("#607D8B");
+
+    QWidget *widghet  =createWindowContainer(mView,this);
     widghet->setMinimumSize(60,180);
     widghet->setMaximumSize(60,180);
-    widghet->setStyleSheet("background-color: blue;");
+    //widghet->setStyleSheet("background-color: rgba(255,255,255,100);");
+    //resize(200, 200);
+    setMinimumSize(60,180);
+    setMaximumSize(60,180);
 
-    setStyleSheet("background-color: yellow;");
+
+    //setStyleSheet("background-color: yellow;");
 }
 
 void CameraManipulatorWidget::setZoomStep(double zoomstep)
