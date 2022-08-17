@@ -10,24 +10,16 @@ CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
     mPitchStep=0.5;
     mHeadStep=0.5;
     mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/main.qml")),this);
-            mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-            mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
-            mQQuickWidget->setClearColor(Qt::transparent);
-            mQQuickWidget->resize(60, 190);
-            mQQuickWidget->raise();
-
-
-
-
-
-       /// set data class datamanager to main qml
+    mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
+    mQQuickWidget->setClearColor(Qt::transparent);
+    mQQuickWidget->resize(60, 190);
+    mQQuickWidget->raise();
+    /// set data class datamanager to main qml
     mQQuickWidget->engine()-> rootContext()->setContextProperty("GetData",this);
     mQQuickWidget->setMinimumSize(60,190);
     mQQuickWidget->setMaximumSize(60,190);
-
-
-
-
+    setFixedSize(mQQuickWidget->size());
 }
 
 void CameraManipulatorWidget::setZoomStep(double zoomstep)
@@ -83,7 +75,7 @@ void CameraManipulatorWidget::onLeftClicked()
 
 void CameraManipulatorWidget::onPitchUpClicked()
 {
-     emit pitchChanged(mPitchStep);
+    emit pitchChanged(mPitchStep);
 }
 
 void CameraManipulatorWidget::onPitchDownClicked()

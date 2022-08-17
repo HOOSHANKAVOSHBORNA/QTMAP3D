@@ -18,6 +18,7 @@
 #include <QSlider>
 
 #include "cameramanipulatorwidget.h"
+#include "campasswidget.h"
 
 const double ZOOM_STEP{0.2};
 const double UP_DOWN_STEP{0.1};
@@ -46,30 +47,37 @@ Map3dlib::Map3dlib(QWidget *parent)
     setStyleSheet("background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #09203f, stop:1 #537895);");
 
     //---------------
-    dockWidget = new QDockWidget(this);
-    dockWidget->setFloating(false);
-    dockWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
-    dockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    //dockWidget->setStyleSheet("background-color:#607D8B;");
-    CameraManipulatorWidget *cmWidget = new CameraManipulatorWidget(this);
-    //cmWidget->resize(200,200);
-    dockWidget->setWidget(cmWidget);
-    dockWidget->setMinimumSize(cmWidget->minimumSize()+ QSize(0,25));
-    dockWidget->setMaximumSize(cmWidget->minimumSize()+ QSize(0,25));
-    addDockWidget(Qt::RightDockWidgetArea, dockWidget);
+    //dockWidget = new QDockWidget(this);
+    //dockWidget->setFloating(false);
+    //dockWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
+    //dockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    //dockWidget->setStyleSheet("background-color:transparent;");
+    mCmWidget = new CameraManipulatorWidget(this);
+    //dockWidget->setWidget(cmWidget);
+    //dockWidget->setFixedSize(cmWidget->size()+ QSize(0,25));
+    //addDockWidget(Qt::RightDockWidgetArea, dockWidget);
     // setting CameraManipulatorWidget
-    cmWidget->setZoomStep(ZOOM_STEP);
-    cmWidget->setUpDownStep(UP_DOWN_STEP);
-    cmWidget->setLeftRightStep(LEFT_RIGHT_STEP);
-    cmWidget->setHeadStep(HEAD_STEP);
-    cmWidget->setPitchStep(PITCH_STEP);
+    mCmWidget->setZoomStep(ZOOM_STEP);
+    mCmWidget->setUpDownStep(UP_DOWN_STEP);
+    mCmWidget->setLeftRightStep(LEFT_RIGHT_STEP);
+    mCmWidget->setHeadStep(HEAD_STEP);
+    mCmWidget->setPitchStep(PITCH_STEP);
+    connect(mCmWidget, &CameraManipulatorWidget::homeClicked, [=]{
+        mEarthManipulator->home(0);
+        mCompassWidget->setRotate(0);
+    } );
+    connect(mCmWidget, &CameraManipulatorWidget::zoomChanged, [=](double val){mEarthManipulator->zoom(0, -val, mMapOpenGLWidget->getOsgViewer());} );
+    connect(mCmWidget, &CameraManipulatorWidget::upDownChanged, [=](double val){mEarthManipulator->pan(0,val);} );
+    connect(mCmWidget, &CameraManipulatorWidget::leftRightChanged, [=](double val){mEarthManipulator->pan(val,0);} );
+    connect(mCmWidget, &CameraManipulatorWidget::headChanged, [=](double val){mEarthManipulator->rotate(val,0);} );
+    connect(mCmWidget, &CameraManipulatorWidget::pitchChanged, [=](double val){mEarthManipulator->rotate(0,val);} );
+    //-------------------------------------
+    mCompassWidget = new CampassWidget(this);
+    connect(mCmWidget, &CameraManipulatorWidget::headChanged, [=](double val){
+        double degri = val * 180/osg::PI;
+        mCompassWidget->setRotate(-degri);
+    } );
 
-    connect(cmWidget, &CameraManipulatorWidget::homeClicked, [=]{mEarthManipulator->home(0);} );
-    connect(cmWidget, &CameraManipulatorWidget::zoomChanged, [=](double val){mEarthManipulator->zoom(0, -val, mMapOpenGLWidget->getOsgViewer());} );
-    connect(cmWidget, &CameraManipulatorWidget::upDownChanged, [=](double val){mEarthManipulator->pan(0,val);} );
-    connect(cmWidget, &CameraManipulatorWidget::leftRightChanged, [=](double val){mEarthManipulator->pan(val,0);} );
-    connect(cmWidget, &CameraManipulatorWidget::headChanged, [=](double val){mEarthManipulator->rotate(val,0);} );
-    connect(cmWidget, &CameraManipulatorWidget::pitchChanged, [=](double val){mEarthManipulator->rotate(0,val);} );
 }
 
 void Map3dlib::osgQOpenGLWidgetInitialized()
@@ -104,6 +112,10 @@ void Map3dlib::resizeEvent(QResizeEvent* event)
    QMainWindow::resizeEvent(event);
    // Your code here.
    //dockWidget->setFloating(false);
-   qDebug()<<"main:"<<geometry();
-   qDebug()<<"addDockWidget:"<<dockWidget->geometry();
+   //qDebug()<<"main:"<<geometry();
+   //qDebug()<<"addDockWidget:"<<dockWidget->geometry();
+   //dockWidget->setParent(this);
+   //dockWidget->move(0,0);
+//   mCmWidget->move()
+   mCmWidget->move(this->width()- mCmWidget->width(), 0);
 }

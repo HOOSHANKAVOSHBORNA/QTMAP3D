@@ -17,8 +17,8 @@ CampassWidget::CampassWidget(QWidget *parent):
     mQQuickWidget->setMaximumSize(60,60);
 
        //QWidget *widget =createWindowContainer(mQQuickWidget, this);
-    //widget->setMinimumSize(60,60);
-    //widget->setMaximumSize(60,60);
+    setMinimumSize(60,60);
+    setMaximumSize(60,60);
 
 }
 

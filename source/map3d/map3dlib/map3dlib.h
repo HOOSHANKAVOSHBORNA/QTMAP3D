@@ -10,6 +10,8 @@ namespace  Util{
     class EarthManipulator;
 }
 }
+class CameraManipulatorWidget;
+class CampassWidget;
 
 class MAP3DLIB_EXPORT Map3dlib: public QMainWindow
 {
@@ -19,11 +21,13 @@ public:
 public slots:
     void osgQOpenGLWidgetInitialized();
 protected:
-    void resizeEvent(QResizeEvent* event);
+    void resizeEvent(QResizeEvent* event) override;
 private:
     osgQOpenGLWidget *mMapOpenGLWidget;
     osgEarth::Util::EarthManipulator *mEarthManipulator;
     QDockWidget *dockWidget;
+    CameraManipulatorWidget *mCmWidget;
+    CampassWidget *mCompassWidget;
 };
 
 #endif // MAP3DLIB_H
