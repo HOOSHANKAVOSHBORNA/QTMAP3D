@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cameramanipulatorwidget.h"
-#include "campasswidget.h"
+#include "compasswidget.h"
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -21,10 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug()<<val;
     });
 
-    CampassWidget *campass = new CampassWidget();
-    //campass->setRotate(55.9);
+    CompassWidget *campass = new CompassWidget();
+    campass->setPoint(55.9);
     ui->horizontalLayout->addWidget(campass);
-    connect(view,&CameraManipulatorWidget::pitchChanged,campass,&CampassWidget::setRotate);
+    connect(view,&CameraManipulatorWidget::pitchChanged,campass,&CompassWidget::setRotate);
+    //connect(view,&CameraManipulatorWidget::homeClicked,campass,&CompassWidget::setPoint);
     //connect(view,SIGNAL(pitchChanged(double *)),campass,SLOT(setRotate(double *)));
 }
 

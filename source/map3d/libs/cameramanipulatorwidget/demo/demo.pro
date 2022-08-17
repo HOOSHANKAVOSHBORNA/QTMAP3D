@@ -36,7 +36,9 @@ INCLUDEPATH += $$PWD/../cameramanipulatorwidget
 DEPENDPATH += $$PWD/../cameramanipulatorwidget
 
 
-unix:!macx: LIBS += -L$$OUT_PWD/../campasswidget/ -lcampasswidget
 
-INCLUDEPATH += $$PWD/../campasswidget
-DEPENDPATH += $$PWD/../campasswidget
+
+unix:!macx: LIBS += -L$$OUT_PWD/../compasswidget/ -lcompasswidget
+
+INCLUDEPATH += $$PWD/../compasswidget
+DEPENDPATH += $$PWD/../compasswidget

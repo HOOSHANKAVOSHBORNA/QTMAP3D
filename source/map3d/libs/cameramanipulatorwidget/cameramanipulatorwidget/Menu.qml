@@ -360,18 +360,22 @@ Rectangle {
         width: 20
         radius: 10
         state: "G"
+        color: "#88000000"
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
         anchors.top: parent.top
         anchors.topMargin: 10
         anchors.right: parent.right
         anchors.rightMargin: 16
-        Text {
-            id: txtbutton
-            text: qsTr("G")
-            anchors.centerIn: parent
-            color: "black"
+        Image{
+             id: imgbutton
+             width: 15
+             height: 15
+             anchors.centerIn: parent
+             source: "qrc:/image/icons8-globe-96.png"
         }
+
+
         MouseArea {
                 id: button1area
                 anchors.fill: parent
@@ -384,13 +388,11 @@ Rectangle {
             states: [
                 State {
                     name: "P"
-                    PropertyChanges { target: rectangle4; color: button1area.pressed ? "#000000" : "#000000" }
-                    PropertyChanges { target: txtbutton; text: button1area.pressed ? "P" : "P" }
-                    PropertyChanges { target: txtbutton; color: button1area.pressed ? "#FFFFFF" : "#FFFFFF" }
+                    PropertyChanges { target: imgbutton; source: button1area.pressed ? "qrc:/image/icons8-globe-96.png" : "qrc:/image/icons8-world-map-96.png" }
                 },
                 State {
                     name: "G"
-                    PropertyChanges { target: rectangle4; color: button1area.pressed ? "#88FFFFFF" : "#88FFFFFF" }
+                    //PropertyChanges { target: rectangle4; color: button1area.pressed ? "#88FFFFFF" : "#88FFFFFF" }
                 }
             ]
     }

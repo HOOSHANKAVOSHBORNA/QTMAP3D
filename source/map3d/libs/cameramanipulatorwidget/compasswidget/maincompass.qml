@@ -6,7 +6,7 @@ Item {
     visible: true
 
        // Set the flag directly from QML
-    Campass{
+    Compass{
        anchors.centerIn: parent
     }
 

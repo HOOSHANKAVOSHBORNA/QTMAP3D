@@ -22,5 +22,7 @@
         <file>image/icons8-rotate-right-96_w.png</file>
         <file>image/icons8-undo-96.png</file>
         <file>image/icons8-undo-96_w.png</file>
+        <file>image/icons8-globe-96.png</file>
+        <file>image/icons8-world-map-96.png</file>
     </qresource>
 </RCC>

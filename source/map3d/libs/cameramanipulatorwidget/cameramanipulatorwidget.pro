@@ -2,5 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     cameramanipulatorwidget \
-    campasswidget \
+    compasswidget \
     demo

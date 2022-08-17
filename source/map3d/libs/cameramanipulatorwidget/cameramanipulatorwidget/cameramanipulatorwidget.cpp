@@ -10,7 +10,6 @@ CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
     mPitchStep=0.5;
     mHeadStep=0.5;
     mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/main.qml")),this);
-<<<<<<< HEAD
             mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
             mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
             mQQuickWidget->setClearColor(Qt::transparent);
@@ -25,22 +24,7 @@ CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
     mQQuickWidget->engine()-> rootContext()->setContextProperty("GetData",this);
     mQQuickWidget->setMinimumSize(190,60);
     mQQuickWidget->setMaximumSize(160,60);
-
-
-
-
-=======
-    mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
-    mQQuickWidget->setClearColor(Qt::transparent);
-    mQQuickWidget->resize(60, 190);
-    mQQuickWidget->raise();
-    /// set data class datamanager to main qml
-    mQQuickWidget->engine()-> rootContext()->setContextProperty("GetData",this);
-    mQQuickWidget->setMinimumSize(60,190);
-    mQQuickWidget->setMaximumSize(60,190);
     setFixedSize(mQQuickWidget->size());
->>>>>>> 9bbe703aba6396095505e5fc14f43e5563518e07
 }
 
 void CameraManipulatorWidget::setZoomStep(double zoomstep)

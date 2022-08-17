@@ -1,10 +1,10 @@
-#include "campasswidget.h"
+#include "compasswidget.h"
 
-CampassWidget::CampassWidget(QWidget *parent):
+CompassWidget::CompassWidget(QWidget *parent):
     QWidget(parent)
 {
     mRotate=0.0;
-    mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/maincampass.qml")),this);
+    mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/maincompass.qml")),this);
             mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
             mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
             mQQuickWidget->setClearColor(Qt::transparent);
@@ -22,7 +22,7 @@ CampassWidget::CampassWidget(QWidget *parent):
 
 }
 
-void CampassWidget::setRotate( double rot)
+void CompassWidget::setRotate( double rot)
 {
 
      mRotate =rot;
@@ -30,7 +30,13 @@ void CampassWidget::setRotate( double rot)
 
 }
 
-double CampassWidget::getRotate()
+void CompassWidget::setPoint(double point)
+{
+    mRotate =point;
+    emit pointChange(point);
+}
+
+double CompassWidget::getRotate()
 {
     return mRotate;
 }
