@@ -26,36 +26,24 @@ const double LEFT_RIGHT_STEP{0.1};
 const double HEAD_STEP{5*osg::PI/180};
 const double PITCH_STEP{5*osg::PI/180};
 
-const double MIN_DISTANCE{10000.0};
+const double MIN_DISTANCE{10.0};
 const double MAX_DISTANCE{1000000000.0};
 const double MAX_OFSET{5000.0};
 
 Map3dlib::Map3dlib(QWidget *parent)
     : QMainWindow(parent)
-    , mMapOpenGLWidget(new osgQOpenGLWidget(this))
+    , mIsGeocentric(true)
 {
-    QObject::connect(mMapOpenGLWidget, &osgQOpenGLWidget::initialized, this, &Map3dlib::osgQOpenGLWidgetInitialized);
-
-    setCentralWidget(mMapOpenGLWidget);
     //    QDirIterator it(":", QDirIterator::Subdirectories);
     //    while (it.hasNext()) {
     //        qDebug() << it.next();
     //    }
     QIcon ic(":/res/atlas.ico");
     setWindowIcon(ic);
-    //setStyleSheet("background-color:#607D8B;");
-    setStyleSheet("background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #09203f, stop:1 #537895);");
 
-    //---------------
-    //dockWidget = new QDockWidget(this);
-    //dockWidget->setFloating(false);
-    //dockWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
-    //dockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    //dockWidget->setStyleSheet("background-color:transparent;");
+    initMapOpenGLWidget();
+
     mCmWidget = new CameraManipulatorWidget(this);
-    //dockWidget->setWidget(cmWidget);
-    //dockWidget->setFixedSize(cmWidget->size()+ QSize(0,25));
-    //addDockWidget(Qt::RightDockWidgetArea, dockWidget);
     // setting CameraManipulatorWidget
     mCmWidget->setZoomStep(ZOOM_STEP);
     mCmWidget->setUpDownStep(UP_DOWN_STEP);
@@ -66,26 +54,42 @@ Map3dlib::Map3dlib(QWidget *parent)
         mEarthManipulator->home(0);
         mCompassWidget->setPoint(0);
     } );
-    connect(mCmWidget, &CameraManipulatorWidget::zoomChanged, [=](double val){mEarthManipulator->zoom(0, -val, mMapOpenGLWidget->getOsgViewer());} );
+    connect(mCmWidget, &CameraManipulatorWidget::zoomChanged, this,&Map3dlib::zoomChanged);
     connect(mCmWidget, &CameraManipulatorWidget::upDownChanged, [=](double val){mEarthManipulator->pan(0,val);} );
     connect(mCmWidget, &CameraManipulatorWidget::leftRightChanged, [=](double val){mEarthManipulator->pan(val,0);} );
     connect(mCmWidget, &CameraManipulatorWidget::headChanged, [=](double val){mEarthManipulator->rotate(val,0);} );
     connect(mCmWidget, &CameraManipulatorWidget::pitchChanged, [=](double val){mEarthManipulator->rotate(0,val);} );
+    connect(mCmWidget, &CameraManipulatorWidget::mapChange, [=](bool val){
+        mIsGeocentric = !val;
+        initMapOpenGLWidget();
+        mMapOpenGLWidget->stackUnder(mCmWidget);
+        mMapOpenGLWidget->stackUnder(mCmWidget);
+    });
     //-------------------------------------
     mCompassWidget = new CompassWidget(this);
     connect(mCmWidget, &CameraManipulatorWidget::headChanged, [=](double val){
         double degri = val * 180/osg::PI;
         mCompassWidget->setRotate(-degri);
     } );
-
+    //-------------------------------
+}
+void Map3dlib::initMapOpenGLWidget()
+{
+    if(mMapOpenGLWidget != nullptr)
+    {
+        delete mMapOpenGLWidget;
+        mMapOpenGLWidget = nullptr;
+    }
+    mMapOpenGLWidget = new osgQOpenGLWidget(this);
+    QObject::connect(mMapOpenGLWidget, &osgQOpenGLWidget::initialized, this, &Map3dlib::osgQOpenGLWidgetInitialized);
+    setCentralWidget(mMapOpenGLWidget);
 }
 
 void Map3dlib::osgQOpenGLWidgetInitialized()
 {
     // set up the camera manipulators.
-    mEarthManipulator = new osgEarth::Util::EarthManipulator;
-    mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
-    auto  settings = mEarthManipulator->getSettings();
+    auto earthManipulator = new osgEarth::Util::EarthManipulator;
+    auto  settings = earthManipulator->getSettings();
     settings->setSingleAxisRotation(true);
     //qDebug()<<settings->getMaxDistance();
     settings->setMinMaxDistance(MIN_DISTANCE, MAX_DISTANCE);
@@ -93,6 +97,7 @@ void Map3dlib::osgQOpenGLWidgetInitialized()
     //settings->setMinMaxPitch(-90, 90);
     settings->setTerrainAvoidanceEnabled(true);
     settings->setThrowingEnabled(false);
+    mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(earthManipulator);
     //read map node ------------------------------
     osg::ref_ptr<osgDB::Options>  myReadOptions = osgEarth::Registry::cloneOrCreateOptions(nullptr);
     osgEarth::Config c;
@@ -101,22 +106,29 @@ void Map3dlib::osgQOpenGLWidgetInitialized()
     osgEarth::MapNodeOptions defMNO;
     defMNO.setTerrainOptions(to);
     myReadOptions->setPluginStringData("osgEarth.defaultOptions", defMNO.getConfig().toJSON());
-    QString  baseMapPath = QStringLiteral("../map3dlib/res/earth_files/geocentric.earth");
-//    QString  baseMapPath = QStringLiteral(":/res/geocentric.earth");
+    QString  baseMapPath;
+    if(mIsGeocentric)
+        baseMapPath = QStringLiteral("../map3dlib/res/earth_files/geocentric.earth");
+    else
+        baseMapPath = QStringLiteral("../map3dlib/res/earth_files/projected.earth");
+    //    QString  baseMapPath = QStringLiteral(":/res/geocentric.earth");
     osg::Node *baseMap = osgDB::readNodeFile(baseMapPath.toStdString(), myReadOptions);
     //-----------------------------------------------
     mMapOpenGLWidget->getOsgViewer()->setSceneData(baseMap);
+    //auto mapNode = osgEarth::MapNode::get(baseMap);
+    //mapNode->getMap();
+    mEarthManipulator = earthManipulator;
+}
+
+void Map3dlib::zoomChanged(double val)
+{
+    mEarthManipulator->zoom(0, -val, mMapOpenGLWidget->getOsgViewer());
 }
 void Map3dlib::resizeEvent(QResizeEvent* event)
 {
-   QMainWindow::resizeEvent(event);
-   // Your code here.
-   //dockWidget->setFloating(false);
-   //qDebug()<<"main:"<<geometry();
-   //qDebug()<<"addDockWidget:"<<dockWidget->geometry();
-   //dockWidget->setParent(this);
-   //dockWidget->move(0,0);
-//   mCmWidget->move()
-   mCmWidget->move(0, this->height()- mCmWidget->height());
-   mCompassWidget->move(this->width()- mCompassWidget->width() - 5, this->height()- mCompassWidget->height() - 5);
+    QMainWindow::resizeEvent(event);
+
+    mCmWidget->move(0, this->height()- mCmWidget->height());
+    mCompassWidget->move(this->width()- mCompassWidget->width() - 5, this->height()- mCompassWidget->height() - 5);
 }
+
