@@ -33,7 +33,8 @@ public slots:
      Q_INVOKABLE void onPitchDownClicked();
      Q_INVOKABLE void onHeadUpClicked();
     Q_INVOKABLE void onHeadDownClicked();
-     Q_INVOKABLE void onHomeClicked();
+    Q_INVOKABLE void onHomeClicked();
+    Q_INVOKABLE void ontToggelMap(bool map);
 
 
 
@@ -45,6 +46,7 @@ signals:
      void pitchChanged(double newBearing);
      void  headChanged (double newTilt);
      void homeClicked ();
+     void mapChange(bool map);
 private:
     QQuickWidget *mQQuickWidget;
     double    mZoomStep;

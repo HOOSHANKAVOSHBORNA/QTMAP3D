@@ -17,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(view,&CameraManipulatorWidget::headChanged,[](double val){
         qDebug()<<val;
     });
+    connect(view,&CameraManipulatorWidget::mapChange,[](bool val){
+        qDebug()<<val;
+    });
 
     CampassWidget *campass = new CampassWidget();
     //campass->setRotate(55.9);

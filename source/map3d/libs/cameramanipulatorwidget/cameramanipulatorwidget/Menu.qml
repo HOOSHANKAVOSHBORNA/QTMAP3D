@@ -5,34 +5,39 @@ import QtQuick.Controls.Styles 1.4
 
 Rectangle {
 
-    property bool home: false
+    property bool changeMap
 
 
     id: rectangle
-    height: 180
-    width: 60
+    height: 60
+    width: 180
     color: "transparent"
+
 
     MouseArea{
         id: mouseArea
         width: 80
         height: 200
+        anchors.rightMargin: 0
         anchors.fill: parent
         hoverEnabled: true
+
+
 
     }
 
     Rectangle {
         id: rectangle3
         width: 20
-        height: 20
         radius: 100
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 5
         z:1
         color: "#88000000"
-        anchors.top: parent.top
-        anchors.topMargin: 5
-        anchors.horizontalCenterOffset: 1
-        anchors.horizontalCenter: parent.horizontalCenter
         Image {
             id:homemap
             anchors.horizontalCenter: parent.horizontalCenter
@@ -59,13 +64,16 @@ Rectangle {
     Rectangle {
         id: rectangle1
 
-        width: 40
-        height: 40
         color: "#88000000"
         radius: 58.5
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: rectanglezoomout.bottom
-        anchors.topMargin: 5
+        anchors.right: rectangle4.left
+        anchors.rightMargin: 5
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        anchors.left: rectanglezoom.right
+        anchors.leftMargin: 5
         Rectangle {
             id: rectangle2
             anchors.centerIn: parent
@@ -136,7 +144,7 @@ Rectangle {
                 hoverEnabled: true
                 anchors.fill: parent
                 onClicked: {
-                     GetData.onRightClicked()
+                    GetData.onRightClicked()
                 }
 
                 onPressed: imagef.source= "qrc:/image/icons8-forward-96.png"
@@ -177,15 +185,16 @@ Rectangle {
 
     Rectangle {
         id: rectangle1d
-        anchors.top: rectangle3.bottom
-        anchors.topMargin: 5
-        anchors.horizontalCenter: parent.horizontalCenter
 
         width: 40
-        height: 40
         color: "#88000000"
         radius: 58.5
-        anchors.horizontalCenterOffset: 0
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        anchors.left: rectangle3.right
+        anchors.leftMargin: 5
         Rectangle {
             id: rectangle2d
             anchors.centerIn: parent
@@ -288,13 +297,14 @@ Rectangle {
 
     Rectangle {
         id: rectanglezoom
-        width: 23
-        height: 23
+        width: 18
+        height: 18
         color: "#88000000"
         radius: 10
-        anchors.top: rectangle1d.bottom
-        anchors.topMargin: 5
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.left: rectangle1d.right
+        anchors.leftMargin: 5
+        anchors.top: parent.top
+        anchors.topMargin: 10
         Image {
             id:imagezoomin
             width: 16
@@ -316,14 +326,16 @@ Rectangle {
 
     Rectangle {
         id: rectanglezoomout
-        x: 27
-        width: 23
-        height: 23
+        width: 18
+        height: 18
         color: "#88000000"
         radius: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        anchors.left: rectangle1d.right
+        anchors.leftMargin: 5
         anchors.top: rectanglezoom.bottom
         anchors.topMargin: 5
-        anchors.horizontalCenter: parent.horizontalCenter
         Image {
             id:imagezoomout
             width: 16
@@ -342,12 +354,57 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        id: rectangle4
+
+        width: 20
+        radius: 10
+        state: "G"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.right: parent.right
+        anchors.rightMargin: 16
+        Text {
+            id: txtbutton
+            text: qsTr("G")
+            anchors.centerIn: parent
+            color: "black"
+        }
+        MouseArea {
+                id: button1area
+                anchors.fill: parent
+                onReleased:{
+                    parent.state == "G" ? parent.state = "P" : parent.state = "G"
+                    parent.state == "G" ? changeMap=false : changeMap=true
+                    GetData.ontToggelMap(changeMap)
+                }
+            }
+            states: [
+                State {
+                    name: "P"
+                    PropertyChanges { target: rectangle4; color: button1area.pressed ? "#000000" : "#000000" }
+                    PropertyChanges { target: txtbutton; text: button1area.pressed ? "P" : "P" }
+                    PropertyChanges { target: txtbutton; color: button1area.pressed ? "#FFFFFF" : "#FFFFFF" }
+                },
+                State {
+                    name: "G"
+                    PropertyChanges { target: rectangle4; color: button1area.pressed ? "#88FFFFFF" : "#88FFFFFF" }
+                }
+            ]
+    }
+
 }
 
 /*##^##
 Designer {
-    D{i:4;anchors_y:86}D{i:6;anchors_height:49}D{i:13;anchors_height:100}D{i:5;anchors_height:49}
-D{i:16;anchors_height:100}D{i:17;anchors_height:50}D{i:20;anchors_height:50}D{i:19;anchors_height:50}
-D{i:15;anchors_height:100;anchors_y:31}D{i:25;anchors_y:80}D{i:28;anchors_y:109}
+    D{i:3;anchors_height:20}D{i:2;anchors_height:42;anchors_y:10}D{i:6;anchors_height:40;anchors_width:40}
+D{i:7;anchors_height:49}D{i:14;anchors_height:100}D{i:5;anchors_height:40;anchors_width:40;anchors_y:86}
+D{i:16;anchors_height:40;anchors_y:31}D{i:18;anchors_height:50}D{i:17;anchors_height:100}
+D{i:20;anchors_height:50}D{i:19;anchors_height:50}D{i:21;anchors_height:50}D{i:24;anchors_height:100}
+D{i:23;anchors_height:40;anchors_y:31}D{i:15;anchors_height:40;anchors_y:31}D{i:26;anchors_y:80}
+D{i:25;anchors_height:50;anchors_y:80}D{i:29;anchors_height:20;anchors_x:27;anchors_y:109}
+D{i:28;anchors_height:20;anchors_x:27;anchors_y:109}D{i:31;anchors_height:40}
 }
 ##^##*/

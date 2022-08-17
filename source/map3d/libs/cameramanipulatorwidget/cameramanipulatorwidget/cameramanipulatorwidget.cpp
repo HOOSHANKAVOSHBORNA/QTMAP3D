@@ -13,7 +13,7 @@ CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
             mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
             mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
             mQQuickWidget->setClearColor(Qt::transparent);
-            mQQuickWidget->resize(60, 190);
+            mQQuickWidget->resize(190, 60);
             mQQuickWidget->raise();
 
 
@@ -22,8 +22,8 @@ CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
 
        /// set data class datamanager to main qml
     mQQuickWidget->engine()-> rootContext()->setContextProperty("GetData",this);
-    mQQuickWidget->setMinimumSize(60,190);
-    mQQuickWidget->setMaximumSize(60,190);
+    mQQuickWidget->setMinimumSize(190,60);
+    mQQuickWidget->setMaximumSize(160,60);
 
 
 
@@ -113,6 +113,11 @@ void CameraManipulatorWidget::onHomeClicked()
 {
     emit homeClicked();
 
+}
+
+void CameraManipulatorWidget::ontToggelMap(bool map)
+{
+    emit mapChange(map);
 }
 
 
