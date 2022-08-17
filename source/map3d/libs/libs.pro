@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    cameramanipulatorwidget/cameramanipulatorwidget
+    cameramanipulatorwidget/cameramanipulatorwidget \
+    cameramanipulatorwidget/campasswidget
