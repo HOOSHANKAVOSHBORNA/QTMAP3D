@@ -6,24 +6,17 @@ import QtQuick.Controls.Styles 1.4
 Rectangle {
 
     property bool changeMap
-
+    readonly property int _sizeimage: 15
 
     id: rectangle
     height: 60
     width: 180
     color: "transparent"
-
-
     MouseArea{
         id: mouseArea
-        width: 80
-        height: 200
         anchors.rightMargin: 0
         anchors.fill: parent
         hoverEnabled: true
-
-
-
     }
 
     Rectangle {
@@ -36,14 +29,13 @@ Rectangle {
         anchors.bottomMargin: 10
         anchors.left: parent.left
         anchors.leftMargin: 5
-        z:1
         color: "#88000000"
         Image {
             id:homemap
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
-            width: 15
-            height: 15
+            width: _sizeimage
+            height: _sizeimage
 
             source: "qrc:/image/icons8-home-96_w.png"
         }
@@ -87,8 +79,8 @@ Rectangle {
             anchors.top: parent.top
             anchors.topMargin: 2
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 12
-            height: 12
+            width: _sizeimage
+            height: _sizeimage
             source: "qrc:/image/icons8-collapse-arrow-96_w.png"
             fillMode: Image.PreserveAspectFit
             MouseArea{
@@ -112,8 +104,8 @@ Rectangle {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 2
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 12
-            height: 12
+            width: _sizeimage
+            height: _sizeimage
             source: "qrc:/image/icons8-expand-arrow-96_w.png"
             fillMode: Image.PreserveAspectFit
             MouseArea{
@@ -136,8 +128,8 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin:  2
             anchors.verticalCenter: parent.verticalCenter
-            width: 12
-            height: 12
+            width: _sizeimage
+            height: _sizeimage
             source: "qrc:/image/icons8-forward-96_w.png"
             fillMode: Image.PreserveAspectFit
             MouseArea{
@@ -160,8 +152,8 @@ Rectangle {
             anchors.left: parent.left
             anchors.leftMargin: 2
             anchors.verticalCenter: parent.verticalCenter
-            width: 12
-            height: 12
+            width: _sizeimage
+            height: _sizeimage
             source: "qrc:/image/icons8-back-96_w.png"
             fillMode: Image.PreserveAspectFit
             MouseArea{
@@ -198,8 +190,8 @@ Rectangle {
         Rectangle {
             id: rectangle2d
             anchors.centerIn: parent
-            width: 12
-            height: 12
+            width: _sizeimage
+            height: _sizeimage
             color: "#243949"
             radius: 17
         }
@@ -208,8 +200,8 @@ Rectangle {
             anchors.top: parent.top
             anchors.topMargin: 2
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 12
-            height: 12
+            width: _sizeimage - 3
+            height: _sizeimage - 3
             source: "qrc:/image/icons8-undo-96_w.png"
             fillMode: Image.PreserveAspectFit
             MouseArea{
@@ -232,8 +224,8 @@ Rectangle {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 2
             anchors.horizontalCenter: parent.horizontalCenter
-            width: 12
-            height: 12
+            width: _sizeimage - 3
+            height: _sizeimage - 3
             source: "qrc:/image/icons8-undo-96_w.png"
             rotation: 180
             fillMode: Image.PreserveAspectFit
@@ -255,8 +247,8 @@ Rectangle {
             anchors.right: parent.right
             anchors.rightMargin:  2
             anchors.verticalCenter: parent.verticalCenter
-            width: 10
-            height: 10
+            width: _sizeimage -5
+            height: _sizeimage -5
             source: "qrc:/image/icons8-rotate-right-96_w.png"
             fillMode: Image.PreserveAspectFit
             MouseArea{
@@ -277,8 +269,8 @@ Rectangle {
             anchors.left: parent.left
             anchors.leftMargin: 2
             anchors.verticalCenter: parent.verticalCenter
-            width: 10
-            height: 10
+            width: _sizeimage - 5
+            height: _sizeimage -5
             source: "qrc:/image/icons8-rotate-left-96_w.png"
             fillMode: Image.PreserveAspectFit
             MouseArea{
@@ -307,8 +299,8 @@ Rectangle {
         anchors.topMargin: 10
         Image {
             id:imagezoomin
-            width: 16
-            height: 16
+            width: _sizeimage
+            height: _sizeimage
             anchors.centerIn : parent
             source: "qrc:/image/icons8-plus-math-96w.png"
             MouseArea{
@@ -338,8 +330,8 @@ Rectangle {
         anchors.topMargin: 5
         Image {
             id:imagezoomout
-            width: 16
-            height: 16
+            width: _sizeimage
+            height: _sizeimage
             anchors.centerIn: parent
             source: "qrc:/image/icons8-minus-96w.png"
             MouseArea{
@@ -369,9 +361,12 @@ Rectangle {
         anchors.rightMargin: 16
         Image{
              id: imgbutton
-             width: 15
-             height: 15
-             anchors.centerIn: parent
+
+             width: _sizeimage
+             height: _sizeimage
+             anchors.horizontalCenterOffset: 0.5
+             anchors.verticalCenter: parent.verticalCenter
+             anchors.horizontalCenter: parent.horizontalCenter
              source: "qrc:/image/icons8-globe-96.png"
         }
 

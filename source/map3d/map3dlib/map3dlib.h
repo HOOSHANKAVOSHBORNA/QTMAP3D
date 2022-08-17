@@ -20,14 +20,17 @@ public:
     Map3dlib(QWidget *parent = nullptr);
 public slots:
     void osgQOpenGLWidgetInitialized();
+    void zoomChanged(double val);
 protected:
     void resizeEvent(QResizeEvent* event) override;
 private:
+    void initMapOpenGLWidget();
+private:
     osgQOpenGLWidget *mMapOpenGLWidget;
     osgEarth::Util::EarthManipulator *mEarthManipulator;
-    QDockWidget *dockWidget;
     CameraManipulatorWidget *mCmWidget;
     CompassWidget *mCompassWidget;
+    bool mIsGeocentric;
 };
 
 #endif // MAP3DLIB_H
