@@ -9,7 +9,70 @@
     <elevation name="readymap_elevation" driver="gdal" enabled="true">
         <url>./data/Tehranelevation/tehran1.tif</url>
     </elevation>
-
+<feature_model name="Countries" feature_source="world-data">
+        <styles>        
+            <style type="text/css">
+                base {
+                   render-depth-test:  false;
+                   altitude-clamping:  terrain-drape;
+                }                
+                p1 : base {
+                   fill: #ffff807f;
+                }       
+                p2 : base {
+                   fill: #80ffff7f;
+                }   
+                p3 : base {
+                   fill: #ff80ff7f;
+                }       
+                p4 : base {
+                   fill: #ff80807f;
+                }     
+                p5 : base {
+                   fill: #80ff807f;
+                }                                      
+            </style>
+        
+            <selector class="p1">
+                <query>
+                    <expr><![CDATA[ POP_CNTRY <= 14045470 ]]></expr>
+                </query>
+            </selector>
+        
+            <selector class="p2">
+                <query>
+                    <expr><![CDATA[ POP_CNTRY > 14045470 and POP_CNTRY <= 43410900 ]]></expr>
+                </query>
+            </selector>
+            
+            <selector class="p3">
+                <query>
+                    <expr><![CDATA[ POP_CNTRY > 43410900 and POP_CNTRY <= 97228750 ]]></expr>
+                </query>
+            </selector>
+            
+            <selector class="p4">
+                <query>
+                    <expr><![CDATA[ POP_CNTRY > 97228750 and POP_CNTRY <= 258833000 ]]></expr>
+                </query>
+            </selector>
+            
+            <selector class="p5">
+                <query>
+                    <expr><![CDATA[ POP_CNTRY > 258833000 ]]></expr>
+                </query>
+            </selector>
+            
+        </styles>
+        
+    </feature_model>
+	<feature_source name="world-data" driver="ogr">
+        <url>./data/Tehranelevation/tehran.shp</url>
+        <filters>
+            <resample max_length="5.0"/>
+            <buffer distance="-0.05"/>
+        </filters>
+    </feature_source>
 	<viewpoints>
 		<viewpoint name="tagrish" heading="-21.7843" lat="35.78574" long="51.41170" height="-0.00250659976154565" pitch="-27.566"  range="38701.6m"/>
 	</viewpoints>
