@@ -70,7 +70,7 @@ unix:!macx: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/cameramanipulato
 INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget
 DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget
 
-unix:!macx: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/campasswidget/ -lcampasswidget
+unix:!macx: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/compasswidget/ -lcompasswidget
 
-INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/campasswidget
-DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/campasswidget
+INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/compasswidget
+DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/compasswidget

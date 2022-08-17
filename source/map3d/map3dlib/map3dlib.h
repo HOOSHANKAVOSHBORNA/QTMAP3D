@@ -11,7 +11,7 @@ namespace  Util{
 }
 }
 class CameraManipulatorWidget;
-class CampassWidget;
+class CompassWidget;
 
 class MAP3DLIB_EXPORT Map3dlib: public QMainWindow
 {
@@ -27,7 +27,7 @@ private:
     osgEarth::Util::EarthManipulator *mEarthManipulator;
     QDockWidget *dockWidget;
     CameraManipulatorWidget *mCmWidget;
-    CampassWidget *mCompassWidget;
+    CompassWidget *mCompassWidget;
 };
 
 #endif // MAP3DLIB_H

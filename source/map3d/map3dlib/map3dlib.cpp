@@ -18,7 +18,7 @@
 #include <QSlider>
 
 #include "cameramanipulatorwidget.h"
-#include "campasswidget.h"
+#include "compasswidget.h"
 
 const double ZOOM_STEP{0.2};
 const double UP_DOWN_STEP{0.1};
@@ -26,7 +26,7 @@ const double LEFT_RIGHT_STEP{0.1};
 const double HEAD_STEP{5*osg::PI/180};
 const double PITCH_STEP{5*osg::PI/180};
 
-const double MIN_DISTANCE{10.0};
+const double MIN_DISTANCE{10000.0};
 const double MAX_DISTANCE{1000000000.0};
 const double MAX_OFSET{5000.0};
 
@@ -64,7 +64,7 @@ Map3dlib::Map3dlib(QWidget *parent)
     mCmWidget->setPitchStep(PITCH_STEP);
     connect(mCmWidget, &CameraManipulatorWidget::homeClicked, [=]{
         mEarthManipulator->home(0);
-        mCompassWidget->setRotate(0);
+        mCompassWidget->setPoint(0);
     } );
     connect(mCmWidget, &CameraManipulatorWidget::zoomChanged, [=](double val){mEarthManipulator->zoom(0, -val, mMapOpenGLWidget->getOsgViewer());} );
     connect(mCmWidget, &CameraManipulatorWidget::upDownChanged, [=](double val){mEarthManipulator->pan(0,val);} );
@@ -72,7 +72,7 @@ Map3dlib::Map3dlib(QWidget *parent)
     connect(mCmWidget, &CameraManipulatorWidget::headChanged, [=](double val){mEarthManipulator->rotate(val,0);} );
     connect(mCmWidget, &CameraManipulatorWidget::pitchChanged, [=](double val){mEarthManipulator->rotate(0,val);} );
     //-------------------------------------
-    mCompassWidget = new CampassWidget(this);
+    mCompassWidget = new CompassWidget(this);
     connect(mCmWidget, &CameraManipulatorWidget::headChanged, [=](double val){
         double degri = val * 180/osg::PI;
         mCompassWidget->setRotate(-degri);
@@ -117,5 +117,6 @@ void Map3dlib::resizeEvent(QResizeEvent* event)
    //dockWidget->setParent(this);
    //dockWidget->move(0,0);
 //   mCmWidget->move()
-   mCmWidget->move(this->width()- mCmWidget->width(), 0);
+   mCmWidget->move(0, this->height()- mCmWidget->height());
+   mCompassWidget->move(this->width()- mCompassWidget->width() - 5, this->height()- mCompassWidget->height() - 5);
 }

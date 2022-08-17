@@ -49,7 +49,7 @@ DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/campasswidget/release/ -lcampasswidget
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/campasswidget/debug/ -lcampasswidget
-else:unix: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/campasswidget/ -lcampasswidget
+else:unix: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/compasswidget/ -lcompasswidget
 
-INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/campasswidget
-DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/campasswidget
+INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/compasswidget
+DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/compasswidget
