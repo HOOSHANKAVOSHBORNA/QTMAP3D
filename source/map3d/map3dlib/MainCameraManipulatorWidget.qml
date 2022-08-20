@@ -6,7 +6,7 @@ Item {
 
   visible: true
 
-  Menu{
+  CameraManipulatorWidget{
       anchors.centerIn: parent
   }
 }

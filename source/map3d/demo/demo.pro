@@ -41,15 +41,3 @@ unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
 INCLUDEPATH += $$PWD/../../osgQt/include
 DEPENDPATH += $$PWD/../../osgQt/include
 
-
-unix:!macx: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget/ -lcameramanipulatorwidget
-
-INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget
-DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/campasswidget/release/ -lcampasswidget
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/campasswidget/debug/ -lcampasswidget
-else:unix: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/compasswidget/ -lcompasswidget
-
-INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/compasswidget
-DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/compasswidget

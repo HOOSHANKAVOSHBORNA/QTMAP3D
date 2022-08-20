@@ -1,7 +1,6 @@
 #ifndef CAMERAMANIPULATORWIDGET_H
 #define CAMERAMANIPULATORWIDGET_H
 
-#include "cameramanipulatorwidget_global.h"
 #include <QWidget>
 #include <QQuickView>
 #include <QQuickWidget>
@@ -9,7 +8,7 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 
-class CAMERAMANIPULATORWIDGET_EXPORT CameraManipulatorWidget :public QWidget
+class CameraManipulatorWidget :public QWidget
 {
     Q_OBJECT
 public:

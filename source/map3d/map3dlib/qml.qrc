@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Compass.qml</file>
+        <file>CameraManipulatorWidget.qml</file>
+        <file>MainCameraManipulatorWidget.qml</file>
+        <file>MainCompass.qml</file>
+    </qresource>
+</RCC>

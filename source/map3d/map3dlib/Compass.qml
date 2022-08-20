@@ -1,9 +1,13 @@
 import QtQuick 2.12
 
 Rectangle {
+    readonly property int  _widthparent : 40
+    readonly property int  _heightparent:  40
+    readonly property int  _widthimage : 90
+    readonly property int  _heightimage:  90
     id: compass
-    width: 40
-    height: 40
+    width: _widthparent
+    height: _widthparent
     color: "transparent"
     smooth: true
     radius: 100
@@ -22,16 +26,22 @@ Rectangle {
 
     Image {
         id: shadow
-        width: 90
-        height: 90
+        width: _widthimage
+        height: _widthimage
         anchors.centerIn: compass
-        source: "qrc:/image/compress.png"
+        source: "qrc:/res/icon/compass.png"
         opacity: 1
     }
     Connections{
         target: GetData
         onRotateChange:{
-            shadow.rotation+=newRotate
+            shadow.rotation += newRotate
+        }
+    }
+    Connections{
+        target: GetData
+        onPointChange:{
+            shadow.rotation = newRotate
         }
     }
 }

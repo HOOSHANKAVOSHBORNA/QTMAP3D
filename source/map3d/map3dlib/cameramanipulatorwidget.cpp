@@ -9,7 +9,7 @@ CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
     mLeftRightStep=0.5;
     mPitchStep=0.5;
     mHeadStep=0.5;
-    mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/main.qml")),this);
+    mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/MainCameraManipulatorWidget.qml")),this);
             mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
             mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
             mQQuickWidget->setClearColor(Qt::transparent);

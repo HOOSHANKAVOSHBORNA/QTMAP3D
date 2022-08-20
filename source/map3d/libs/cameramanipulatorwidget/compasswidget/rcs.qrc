@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>image/compress.png</file>
-        <file>maincompass.qml</file>
-        <file>Compass.qml</file>
-    </qresource>
-</RCC>

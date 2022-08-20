@@ -18,9 +18,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    cameramanipulatorwidget.cpp \
+    compasswidget.cpp \
     map3dlib.cpp
 
 HEADERS += \
+    cameramanipulatorwidget.h \
+    compasswidget.h \
     map3dlib_global.h \
     map3dlib.h
 
@@ -38,7 +42,8 @@ LIBS  +=  -lgdal -losgEarth -losgEarthFeatures -losgEarthUtil -losgEarthSymbolog
 
 
 RESOURCES += \
-    map3dlib.qrc
+    map3dlib.qrc \
+    qml.qrc
 
 
 
@@ -65,12 +70,5 @@ unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
 INCLUDEPATH += $$PWD/../../osgQt/include
 DEPENDPATH += $$PWD/../../osgQt/include
 
-unix:!macx: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget/ -lcameramanipulatorwidget
-
-INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget
-DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/cameramanipulatorwidget
-
-unix:!macx: LIBS += -L$$OUT_PWD/../libs/cameramanipulatorwidget/compasswidget/ -lcompasswidget
-
-INCLUDEPATH += $$PWD/../libs/cameramanipulatorwidget/compasswidget
-DEPENDPATH += $$PWD/../libs/cameramanipulatorwidget/compasswidget
+DISTFILES += \
+    *.qml \

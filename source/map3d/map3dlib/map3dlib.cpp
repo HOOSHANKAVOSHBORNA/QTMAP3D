@@ -38,7 +38,7 @@ Map3dlib::Map3dlib(QWidget *parent)
     //    while (it.hasNext()) {
     //        qDebug() << it.next();
     //    }
-    QIcon ic(":/res/atlas.ico");
+    QIcon ic(":/res/map3d.ico");
     setWindowIcon(ic);
 
     initMapOpenGLWidget();
@@ -61,6 +61,7 @@ Map3dlib::Map3dlib(QWidget *parent)
     connect(mCmWidget, &CameraManipulatorWidget::pitchChanged, [=](double val){mEarthManipulator->rotate(0,val);} );
     connect(mCmWidget, &CameraManipulatorWidget::mapChange, [=](bool val){
         mIsGeocentric = !val;
+        mCompassWidget->setPoint(0);
         initMapOpenGLWidget();
         mMapOpenGLWidget->stackUnder(mCmWidget);
         mMapOpenGLWidget->stackUnder(mCmWidget);
