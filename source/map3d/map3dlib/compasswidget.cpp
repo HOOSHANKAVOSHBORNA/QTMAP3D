@@ -4,7 +4,7 @@ CompassWidget::CompassWidget(QWidget *parent):
     QWidget(parent)
 {
     mRotate=0.0;
-    mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/MainCompass.qml")),this);
+    mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/Compass.qml")),this);
     mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
     mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
     mQQuickWidget->setClearColor(Qt::transparent);
