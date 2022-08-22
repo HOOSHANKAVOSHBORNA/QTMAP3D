@@ -20,13 +20,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     cameramanipulatorwidget.cpp \
     compasswidget.cpp \
-    map3dlib.cpp
+    map3dlib.cpp \
+    map3dwidget.cpp
 
 HEADERS += \
     cameramanipulatorwidget.h \
     compasswidget.h \
     map3dlib_global.h \
-    map3dlib.h
+    map3dlib.h \
+    map3dwidget.h
 
 # Default rules for deployment.
 unix {

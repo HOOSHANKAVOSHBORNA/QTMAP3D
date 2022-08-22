@@ -43,7 +43,7 @@ Rectangle {
             hoverEnabled: true
             id: homemouse
             anchors.fill: parent
-            onPressed: homemap.source="qrc:/res/icon/head-p.png"
+            onPressed: homemap.source="qrc:/res/icon/home-p.png"
             onReleased: homemap.source="qrc:/res/icon/home-r.png"
             onClicked: {
                 GetData.onHomeClicked()
