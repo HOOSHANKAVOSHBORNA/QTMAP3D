@@ -13,51 +13,29 @@
 		<profile>spherical-mercator</profile>
 			<cache_policy usage="none"/>
     </image>
-	<elevation name="readymap_elevation" driver="gdal" enabled="true">
-        <url>./data/Tehranelevation/tehran1.tif</url>
-    </elevation>
 	<annotations name="place importent">
 		<feature name="Draped Polygon">
             <srs>wgs84</srs>
             <geometry>
-                POLYGON((51.376320 35.744843,51.376320 36.744843,52.376320 35.744843,51.567871 36.323977))
+                POLYGON((51.376320 35.744843,51.376320 35.944843,51.876320 35.944843,51.867871 35.823977))
             </geometry>
-            <style type="text/css">
-                altitude-clamping: terrain;
-				extrusion-flatten: false;
-				extrusion-height:  15;
-				fill:#55ff7f2f;
-				
-				
-            </style>
+           <style type="text/css">
+            default {
+                fill:               #ff7f009f;
+                stroke:             #ffffff;
+                stroke-width:       2.0;
+                altitude-clamping:  terrain;
+                altitude-technique: drape;
+                render-lighting:    false;
+            }
+        </style>
         </feature>
 		</annotations>
-		<feature_model name="tower" enabled="true">
-		<features name="tower" driver="ogr">
-			<url>./data/shape/iran/tehran/shape_miladtower/points.shp</url>
-		</features>        
-
-		<layout tile_size="1000">
-			<level max_range="80000"/>
-		</layout>
-
-		<feature_indexing enabled="false"/>
-
-		<styles>
-				<style type="text/css">
-				default {
-				   model:                  "./data/model/milad.osgb";
-				   model-scale:            17;
-				   model-placement:        0;
-				   model-density:          1;
-				   model-heading:          Math.random() * 360.0;
-				   altitude-clamping:      terrain;
-				   render-transparent:     true;
-				   render-min-alpha:       0.15;
-				}
-			</style>
-		</styles>      
-	</feature_model>
+	<elevation name="readymap_elevation" driver="gdal" enabled="true">
+        <url>../../../QTMAP3D-DATA/data/Tehranelevation/tehran1.tif</url>
+    </elevation>
+	
+		
 		<viewpoints>
 							<viewpoint name="Milad tower" heading="-21.7843" lat="35.744843" long="51.376320" height="-0.00250659976154565" pitch="-27.566"  range="1000"/>
 		</viewpoints>
