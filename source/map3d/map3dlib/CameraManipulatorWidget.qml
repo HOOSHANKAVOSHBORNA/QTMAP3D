@@ -24,7 +24,7 @@ Item {
 
         Rectangle {
             id: rectangle3
-            width: 20
+            width: 25
             radius: 100
             anchors.top: parent.top
             anchors.topMargin: 10
@@ -35,10 +35,11 @@ Item {
             color: "#88000000"
             Image {
                 id:homemap
+                width: 20
+                height: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                width: _sizeimage
-                height: _sizeimage
+                anchors.horizontalCenterOffset: -1
 
                 source: "qrc:/res/icon/home-r.png"
             }
@@ -58,6 +59,7 @@ Item {
 
         Rectangle {
             id: rectangle1
+            width: 39
 
             color: "#88000000"
             radius: 58.5
@@ -386,23 +388,24 @@ Item {
 
         Rectangle {
             id: rectangle4
+            x: 147
 
-            width: 20
-            radius: 10
+            width: 25
+            radius: 100
             state: "G"
             color: "#88000000"
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 10
+            anchors.bottomMargin: 8
             anchors.top: parent.top
-            anchors.topMargin: 10
+            anchors.topMargin: 12
             anchors.right: parent.right
-            anchors.rightMargin: 16
+            anchors.rightMargin: 8
             Image{
                 id: imgbutton
+                width: 20
 
-                width: _sizeimage
-                height: _sizeimage
-                anchors.horizontalCenterOffset: 0.5
+                height: 20
+                anchors.horizontalCenterOffset: -0.65
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/res/icon/geocentric.png"
@@ -411,6 +414,11 @@ Item {
 
             MouseArea {
                 id: button1area
+                width: 20
+                anchors.rightMargin: 0
+                anchors.bottomMargin: 0
+                anchors.leftMargin: 0
+                anchors.topMargin: 0
                 anchors.fill: parent
                 onReleased:{
                     parent.state == "G" ? parent.state = "P" : parent.state = "G"
@@ -435,12 +443,12 @@ Item {
 
 /*##^##
 Designer {
-    D{i:3;anchors_height:20}D{i:2;anchors_height:42;anchors_y:10}D{i:6;anchors_height:40;anchors_width:40}
-D{i:7;anchors_height:49}D{i:14;anchors_height:100}D{i:5;anchors_height:40;anchors_width:40;anchors_y:86}
-D{i:16;anchors_height:40;anchors_y:31}D{i:18;anchors_height:50}D{i:17;anchors_height:100}
-D{i:20;anchors_height:50}D{i:19;anchors_height:50}D{i:21;anchors_height:50}D{i:24;anchors_height:100}
-D{i:23;anchors_height:40;anchors_y:31}D{i:15;anchors_height:40;anchors_y:31}D{i:26;anchors_y:80}
-D{i:25;anchors_height:50;anchors_y:80}D{i:29;anchors_height:20;anchors_x:27;anchors_y:109}
-D{i:28;anchors_height:20;anchors_x:27;anchors_y:109}D{i:31;anchors_height:40}
+    D{i:0;autoSize:true;height:480;width:640}D{i:2;anchors_height:42;anchors_y:10}D{i:5;anchors_height:40;anchors_width:40;anchors_y:86}
+D{i:3;anchors_height:20}D{i:7;anchors_height:49}D{i:16;anchors_height:40;anchors_y:31}
+D{i:15;anchors_height:40;anchors_y:31}D{i:14;anchors_height:100}D{i:19;anchors_height:50}
+D{i:18;anchors_height:50}D{i:17;anchors_height:100}D{i:6;anchors_height:40;anchors_width:40}
+D{i:21;anchors_height:50}D{i:24;anchors_height:100}D{i:23;anchors_height:40;anchors_y:31}
+D{i:26;anchors_y:80}D{i:25;anchors_height:50;anchors_y:80}D{i:29;anchors_height:20;anchors_x:27;anchors_y:109}
+D{i:28;anchors_height:20;anchors_x:27;anchors_y:109}D{i:31;anchors_height:40}D{i:20;anchors_height:50}
 }
 ##^##*/
