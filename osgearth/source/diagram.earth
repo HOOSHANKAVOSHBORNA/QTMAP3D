@@ -9,12 +9,12 @@
     </options>
 
     <image name="word"  driver='gdal'>
-        <url> ../../../QTMAP3D-DATA/data/image/world.tif</url>
+        <url> ../../../QTMAP3D-DATA/dataosgearth/image/world.tif</url>
     </image>
 	<annotations name="place importent">
 	<place text="tehran">
             <position lat="35.715298" long="51.404343" alt="50000"/>
-            <icon>../../../QTMAP3D-DATA/data/image/placemark32.png</icon>
+            <icon>../../../QTMAP3D-DATA/dataosgearth/image/placemark32.png</icon>
             <style type="text/css">
                 text-declutter: true;
                 text-halo:      #777;
@@ -22,7 +22,7 @@
         </place>
 		<place text="tabriz">
             <position lat="38.066666" long="46.299999" alt="5000"/>
-            <icon>../../../QTMAP3D-DATA/data/image/placemark32.png</icon>
+            <icon>../../../QTMAP3D-DATA/dataosgearth/image/placemark32.png</icon>
             <style type="text/css">
                 text-declutter: true;
                 text-halo:      #777;
@@ -30,7 +30,7 @@
         </place>
 		<place text="isfahan">
             <position lat="32.661343" long="51.680374" alt="5000"/>
-            <icon>../../../QTMAP3D-DATA/data/image/placemark32.png</icon>
+            <icon>../../../QTMAP3D-DATA/dataosgearth/image/placemark32.png</icon>
             <style type="text/css">
                 text-declutter: true;
                 text-halo:      #777;
@@ -38,7 +38,7 @@
         </place>
 		<place text="semnan">
             <position lat="35.225558" long="54.434214" alt="5000"/>
-            <icon>../../../QTMAP3D-DATA/data/image/placemark32.png</icon>
+            <icon>../../../QTMAP3D-DATA/dataosgearth/image/placemark32.png</icon>
             <style type="text/css">
                 text-declutter: true;
                 text-halo:      #777;
@@ -111,12 +111,12 @@
 		<model name="Auto-Scaled Model">
             <position lat="31.812229" long="54.360352"/>
             <style>
-                model:       "../../../QTMAP3D-DATA/data/model/red_flag.osg.40.scale";
+                model:       "../../../QTMAP3D-DATA/dataosgearth/model/red_flag.osg.40.scale";
                 model-scale: auto;
             </style>
         </model>
 		<imageoverlay>
-            <url>../../../QTMAP3D-DATA/data/image/fractal.png</url>
+            <url>../../../QTMAP3D-DATA/dataosgearth/image/fractal.png</url>
             <alpha>300</alpha>
             <geometry>POLYGON((57.652473 36.223504, 57.674103 36.236797,58.370361 34.646766,59.567871 36.323977))</geometry>
 			

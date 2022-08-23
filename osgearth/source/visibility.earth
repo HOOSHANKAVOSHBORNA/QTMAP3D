@@ -32,7 +32,7 @@
         </feature>
 		</annotations>
 	<elevation name="readymap_elevation" driver="gdal" enabled="true">
-        <url>../../../QTMAP3D-DATA/data/Tehranelevation/tehran1.tif</url>
+        <url>../../../QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif</url>
     </elevation>
 	
 		

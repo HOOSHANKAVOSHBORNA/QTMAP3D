@@ -5,7 +5,7 @@
     </options>
 
     <image name="word"  driver='gdal'>
-        <url> ../../../QTMAP3D-DATA/data/image/world.tif</url>
+        <url> ../../../QTMAP3D-DATA/dataosgearth/image/world.tif</url>
     </image>
 	<sky driver="simple" hours="14.0" ambient="1.0"/>
 </map>

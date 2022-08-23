@@ -5,6 +5,19 @@
              overlay_texture_size     = "4096"
              overlay_blending         = "false"
              overlay_resolution_ratio = "3.0">
+		<terrain driver                = "rex"
+                 lighting              = "true"
+                 min_tile_range_factor = "6"
+                 first_lod             = "0"
+                 blending              = "false"
+                 color                 = "#ffffffff"
+                 tile_size             = "17"
+                 normalize_edges       = "true"
+                 compress_normal_maps  = "true"
+                 normal_maps           = "false"
+                 min_expiry_frames     = "0"
+                 min_expiry_time       = "0" ></terrain>	 
+			  
         <profile>plate-carre</profile>
     </options>
 		<!--<image name="word"  driver='xyz'>
@@ -16,14 +29,14 @@
 		<profile>spherical-mercator</profile>
 			<cache_policy usage="none"/>
 		</image>-->
-		<image name="osm_mapnik" driver="xyz">
+		<image name="osm_mapnik" driver="xyz" texture_compression = "auto">
 			<url>http://[abc].tile.openstreetmap.org/{z}/{x}/{y}.png</url>
 			<profile>spherical-mercator</profile>
 			<cache_policy usage="none"/>
 		</image>
 		<feature_model name="tower" enabled="true">
 		<features name="tower" driver="ogr">
-			<url>../../../QTMAP3D-DATA/data/shape/iran/tehran/shape_miladtower/points.shp</url>
+			<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/shape_miladtower/points.shp</url>
 		</features>        
 
 		<layout tile_size="1000">
@@ -35,7 +48,7 @@
 		<styles>
 				<style type="text/css">
 				default {
-				   model:                  "../../../QTMAP3D-DATA/data/model/milad.osgb";
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/milad.osgb";
 				   model-scale:            17;
 				   model-placement:        0;
 				   model-density:          1;
@@ -50,7 +63,7 @@
 		<model name="buildings" driver="feature_geom">
      
 			<features name="buildings" driver="ogr">
-				<url>../../../QTMAP3D-DATA/data/shape/iran/tehran/area1/buildings.shp</url>
+				<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/area1/buildings.shp</url>
 				<build_spatial_index>true</build_spatial_index>
 			</features>
 			<layout>
@@ -61,7 +74,7 @@
 			</layout>
 			<styles>            
 				<library name="us_resources">
-					<url>../../../QTMAP3D-DATA/data/resources/tehran_area1-textures/catalog.xml</url>
+					<url>../../../QTMAP3D-DATA/dataosgearth/resources/tehran_area1-textures/catalog.xml</url>
 				</library>
 				<style type="text/css">
 						buildings {
@@ -93,7 +106,7 @@
 
 	<feature_model name="Parks" enabled="true">
 		<features name="parks" driver="ogr">
-			<url>../../../QTMAP3D-DATA/data/shape/iran/tehran/area1/natural.shp</url>
+			<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/area1/natural.shp</url>
 		</features>        
 
 		<layout tile_size="1000">
@@ -105,7 +118,7 @@
 		<styles>
     			<style type="text/css">
 				default {
-				   model:                  "../../../QTMAP3D-DATA/data/model/tree4.osgb";
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/tree4.osgb";
 				   model-scale:            0.15 + 0.1*Math.random();
 				   model-placement:        random+0.5;
 				   model-density:          20000;
@@ -120,7 +133,7 @@
 
 	<feature_model name="Parks1" enabled="true">
 		<features name="parks1" driver="ogr">
-			<url>../../../QTMAP3D-DATA/data/shape/iran/tehran/area1/natural.shp</url>
+			<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/area1/natural.shp</url>
 		</features>   
 		<layout tile_size="1000">
 			<level max_range="80000"/>
@@ -130,7 +143,7 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "../../../QTMAP3D-DATA/data/model/tree5.osgb";
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/tree5.osgb";
 				   model-scale:            0.15 + 0.1*Math.random();
 				   model-placement:        random;
 				   model-density:          20000;
@@ -145,7 +158,7 @@
 
 	<feature_model name="grasspark" enabled="true">
 		<features name="grasspark" driver="ogr">
-			<url>../../../QTMAP3D-DATA/data/shape/iran/tehran/area1/natural.shp</url>
+			<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/area1/natural.shp</url>
 		</features>        
 		<layout tile_size="1000">
 			<level max_range="80000"/>
@@ -154,7 +167,7 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "../../../QTMAP3D-DATA/data/model/grass2.osgb";
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/grass2.osgb";
 				   model-scale:            0.05;
 				   model-placement:        random;
 				   model-density:          200000;
@@ -169,7 +182,7 @@
 
 	<feature_model name="grass" enabled="true">
 		<features name="grass" driver="ogr">
-			<url>../../../QTMAP3D-DATA/data/shape/iran/tehran/area1/landuse.shp</url>
+			<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/area1/landuse.shp</url>
 		</features>        
 		<layout tile_size="1000">
 			<level max_range="80000"/>
@@ -178,7 +191,7 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "../../../QTMAP3D-DATA/data/model/grass6.osgb";
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/grass6.osgb";
 				   model-scale:            0.05;
 				   model-placement:        random;
 				   model-density:          300000;
@@ -216,20 +229,20 @@
 		<styles>
 			<style type="text/css">
 				default {
-				    model: "../../../QTMAP3D-DATA/data/model/streetlight.osgb";
+				    model: "../../../QTMAP3D-DATA/dataosgearth/model/streetlight.osgb";
 				    model-script: positionAlongSegments();
 				    model-heading: feature.properties.heading;
 				    altitude-clamping: terrain;
 				}
 			</style>
 			<script language="javascript" profile="full">
-				<url>../../../QTMAP3D-DATA/data/scripts/createLineOffsetPoints.js</url>
+				<url>../../../QTMAP3D-DATA/dataosgearth/scripts/createLineOffsetPoints.js</url>
 			</script>
 		</styles>   
 	</feature_model>
 
 	<feature_source name="streets-data" driver="ogr">
-		<url>../../../QTMAP3D-DATA/data/shape/iran/tehran/area1/roads.shp</url>
+		<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/area1/roads.shp</url>
 		<filters>
 			<resample min_length="25" max_length="25"/>
 		</filters>
