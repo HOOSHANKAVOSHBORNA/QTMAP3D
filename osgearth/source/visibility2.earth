@@ -55,6 +55,64 @@
 
 		<lighting>true</lighting>        
 	</model>
+		<model name="visibility" driver="feature_geom">
+     
+			<features name="buildings" driver="ogr">
+				<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/area1/buildings.shp</url>
+				<build_spatial_index>true</build_spatial_index>
+			</features>
+			<layout>
+				<tile_size_factor>45</tile_size_factor>
+				<level name="default" max_range="900000">
+					<selector class="buildings"/>
+				</level>
+			</layout>
+			<styles>            
+				<library name="us_resources">
+					<url>../../../QTMAP3D-DATA/dataosgearth/resources/tehran_area1-textures/catalog.xml</url>
+				</library>
+				<style type="text/css">
+						buildings {
+							extrusion-height:       3.4* max([buildingle], 1) +3;
+							extrusion-flatten:     true;
+							fill :  #88365ff3;
+							altitude-clamping:     terrain;
+							render-lighting: false;
+							altitude-technique: terrain;
+						}            
+						
+				</style>			
+				
+		</styles>
+
+		<lighting>true</lighting>        
+	</model>
+	 	<feature_model name="tower" enabled="true">
+		<features name="tower" driver="ogr">
+			<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/shape_miladtower/points.shp</url>
+		</features>        
+
+		<layout tile_size="1000">
+			<level max_range="80000"/>
+		</layout>
+
+		<feature_indexing enabled="false"/>
+
+		<styles>
+				<style type="text/css">
+				default {
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/milad.osgb";
+				   model-scale:            17;
+				   model-placement:        0;
+				   model-density:          1;
+				   model-heading:          Math.random() * 360.0;
+				   altitude-clamping:      terrain;
+				   render-transparent:     true;
+				   render-min-alpha:       0.15;
+				}
+			</style>
+		</styles>      
+	</feature_model>
 	
 	<annotations name="place importent">
 		<feature name="Draped Polygon">
@@ -74,24 +132,26 @@
             }
         </style>
         </feature>
-		<local_geometry name="3D geometry">
+		<!-- <local_geometry name="3D geometry">
             <geometry>
-                POLYGON((100 1000 0,200  1150 3, 300 850 10, 400 1300 10))
+                POLYGON((0 0 0,-200  0 30, 0 -200 36, -200 -200 40))
             </geometry>
-            <position lat="35.78574" long="51.41170"/>
+            <position lat="35.744843" long="51.376320 "/>
             <style type="text/css">
-                fill:            #ff00ff00;
+			default{
+                fill:            #ff7f009f;
                 stroke:          #ffff00;
+				altitude-clamping:  terrain;
                 stroke-width:    2px;
-                render-lighting: false;
+                render-lighting: true;}
             </style>
-            <horizon_culling>true</horizon_culling>
-        </local_geometry>
+            
+        </local_geometry> -->
 		</annotations>
 	<viewpoints>
-		<viewpoint name="tagrish" heading="128.5" lat="35.78574" long="51.41170" height="10" pitch="-10"  range="5000"/>
-		<viewpoint name="tagrish street" heading="128.5" lat="35.78574" long="51.41170" height="0" pitch="-9"  range="140"/>
-		<viewpoint name="tagrish2" heading="-21.7843" lat="35.78574" long="51.41170" height="-0.00250659976154565" pitch="-27.566"  range="38701.6m"/>
+		<viewpoint name="tagrish" heading="128.5" lat="35.78574" long="51.41170" height="10" pitch="-5"  range="5000"/>
+		<viewpoint name="Milad tower" heading="-21.7843" lat="35.744843" long="51.376320" height="-0.00250659976154565" pitch="-27.566"  range="1000"/>
+
 
 	</viewpoints>
 	</map>
