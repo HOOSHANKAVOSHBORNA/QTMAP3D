@@ -27,5 +27,6 @@
         <file>res/icon/zoomin-r.png</file>
         <file>res/icon/zoomout-p.png</file>
         <file>res/icon/zoomout-r.png</file>
+        <file>res/world.tif</file>
     </qresource>
 </RCC>
