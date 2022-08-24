@@ -7,11 +7,7 @@
 				 overlay_resolution_ratio = "3.0">
 			<profile>plate-carre</profile>
 		</options>
-		<image name="osm_mapnik" driver="xyz">
-				<url>http://[abc].tile.openstreetmap.org/{z}/{x}/{y}.png</url>
-				<profile>spherical-mercator</profile>
-				<cache_policy usage="none"/>
-			</image>
+		
 			<model name="buildings" driver="feature_geom">
      
 			<features name="buildings" driver="ogr">
@@ -55,7 +51,7 @@
 
 		<lighting>true</lighting>        
 	</model>
-		<model name="visibility" driver="feature_geom">
+		<!-- <model name="visibility" driver="feature_geom">
      
 			<features name="buildings" driver="ogr">
 				<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/area1/buildings.shp</url>
@@ -73,7 +69,7 @@
 				</library>
 				<style type="text/css">
 						buildings {
-							extrusion-height:       3.4* max([buildingle], 1) +3;
+							extrusion-height:       3.4* max([buildingle], 1) ;
 							extrusion-flatten:     true;
 							fill :  #88365ff3;
 							altitude-clamping:     terrain;
@@ -86,7 +82,7 @@
 		</styles>
 
 		<lighting>true</lighting>        
-	</model>
+	</model> -->
 	 	<feature_model name="tower" enabled="true">
 		<features name="tower" driver="ogr">
 			<url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/shape_miladtower/points.shp</url>
@@ -114,13 +110,13 @@
 		</styles>      
 	</feature_model>
 	
-	<annotations name="place importent">
+	<!-- <annotations name="place importent">
 		<feature name="Draped Polygon">
             <srs>wgs84</srs>
             <geometry>
                 POLYGON((51.376320 35.744843,51.376320 35.744855,51.376520 35.944843,51.867871 35.823977))
             </geometry>
-			
+			<profile>global-geodetic</profile>
            <style type="text/css">
             default {
                 fill:               #ff7f009f;
@@ -132,22 +128,35 @@
             }
         </style>
         </feature>
-		<!-- <local_geometry name="3D geometry">
-            <geometry>
-                POLYGON((0 0 0,-200  0 30, 0 -200 36, -200 -200 40))
-            </geometry>
-            <position lat="35.744843" long="51.376320 "/>
+		
+		</annotations> -->
+		
+	<feature_model  name="visib" enabled="true">
+			 <features name="visibility-data" driver="ogr">
+        <url>../../../QTMAP3D-DATA/dataosgearth/shape/iran/tehran/area1/buildings.shp</url>
+        <build_spatial_index>true</build_spatial_index>
+    </features>
+			<layout>
+				<crop_features>true</crop_features>
+				<level max_range="900000" style="buiding-polygons"/>
+        </layout>
+		<styles>
             <style type="text/css">
-			default{
-                fill:            #ff7f009f;
-                stroke:          #ffff00;
-				altitude-clamping:  terrain;
+                buiding-polygons{
+                fill:            #ff7f779f;
+                stroke:          #ffff00;		
+				extrusion-height :[buildingle]*3.4+10;
+				extrusion-flatten : true;
                 stroke-width:    2px;
-                render-lighting: true;}
-            </style>
-            
-        </local_geometry> -->
-		</annotations>
+                render-lighting: false;}
+				</style>
+		</styles>
+	</feature_model>
+	<image name="osm_mapnik" driver="xyz">
+				<url>http://[abc].tile.openstreetmap.org/{z}/{x}/{y}.png</url>
+				<profile>spherical-mercator</profile>
+				<cache_policy usage="none"/>
+			</image>
 	<viewpoints>
 		<viewpoint name="tagrish" heading="128.5" lat="35.78574" long="51.41170" height="10" pitch="-5"  range="5000"/>
 		<viewpoint name="Milad tower" heading="-21.7843" lat="35.744843" long="51.376320" height="-0.00250659976154565" pitch="-27.566"  range="1000"/>
