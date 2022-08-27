@@ -65,7 +65,7 @@ defineTest(copyToDestDir) {
 
     export(QMAKE_POST_LINK)
 }
-copyToDestDir($$PWD/res, $$OUT_PWD/res)
+copyToDestDir($$PWD/data, $$OUT_PWD/data)
 
 unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
 
@@ -73,4 +73,10 @@ INCLUDEPATH += $$PWD/../../osgQt/include
 DEPENDPATH += $$PWD/../../osgQt/include
 
 DISTFILES += \
-    *.qml \
+    *.qml \ \
+    data/earth_files/geocentric.earth \
+    data/earth_files/projected.earth \
+    data/earth_files/world.tif
+
+QMAKE_RESOURCE_FLAGS += -compress 1
+#QMAKE_RESOURCE_FLAGS += -no-compress

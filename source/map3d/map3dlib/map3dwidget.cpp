@@ -106,7 +106,7 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
         //create map node---------------------------------------------
         GDALOptions gdal;
-        gdal.url() = "../map3dlib/res/world.tif";
+        gdal.url() = "../map3dlib/data/earth_files/world.tif";
 
         MapOptions mapOptGeo;
         mapOptGeo.coordSysType() = MapOptions::CSTYPE_GEOCENTRIC;
