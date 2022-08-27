@@ -1,4 +1,4 @@
-#include "map3dwidget.h"
+﻿#include "map3dwidget.h"
 
 #include <osgQOpenGL/osgQOpenGLWidget>
 #include <osgDB/FileUtils>
@@ -26,8 +26,8 @@ using namespace osgEarth::Drivers;
 const double ZOOM_STEP{0.2};
 const double UP_DOWN_STEP{0.1};
 const double LEFT_RIGHT_STEP{0.1};
-const double HEAD_STEP{5*osg::PI/180};
-const double PITCH_STEP{5*osg::PI/180};
+const double HEAD_STEP{osg::DegreesToRadians(5.0)};
+const double PITCH_STEP{osg::DegreesToRadians(5.0)};
 
 const double MIN_DISTANCE{10.0};
 const double MAX_DISTANCE{1000000000.0};
@@ -86,6 +86,7 @@ Map3dWidget::Map3dWidget(QString baseMapPath, QWidget *parent)
         mMapRoot->addChild(mMapNodeGeo);
         mMapRoot->addChild(mMapNodeProj);
         mMapOpenGLWidget->getOsgViewer()->setSceneData(mMapRoot);
+        mHomeViewpoint = mEarthManipulator->getViewpoint();
     });
     //------------------------------------------------------------
     mLayout->addWidget(mMapOpenGLWidget);
@@ -105,7 +106,7 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
         //create map node---------------------------------------------
         GDALOptions gdal;
-        gdal.url() = "/home/client110/Documents/projects/hooshan/QTMAP3D/source/map3d/map3dlib/res/world.tif";
+        gdal.url() = "../map3dlib/res/world.tif";
 
         MapOptions mapOptGeo;
         mapOptGeo.coordSysType() = MapOptions::CSTYPE_GEOCENTRIC;
@@ -122,15 +123,13 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         mMapRoot = new osg::Group();
         mMapRoot->addChild(mMapNodeGeo);
         mMapRoot->addChild(mMapNodeProj);
-        if(isGeocentric)
-        {
-            mMapNodeProj->setNodeMask(false);
-        }
-        else
-        {
-            mMapNodeGeo->setNodeMask(false);
-        }
+
+        mMapNodeGeo->setNodeMask(isGeocentric);
+        mMapNodeProj->setNodeMask(!isGeocentric);
+
         mMapOpenGLWidget->getOsgViewer()->setSceneData(mMapRoot);
+        mHomeViewpoint = mEarthManipulator->getViewpoint();
+
     });
     //------------------------------------------------------------
     mLayout->addWidget(mMapOpenGLWidget);
@@ -148,6 +147,7 @@ void Map3dWidget::createManipulator()
     //settings->setMinMaxPitch(-90, 90);
     settings->setTerrainAvoidanceEnabled(true);
     settings->setThrowingEnabled(false);
+
 }
 
 void Map3dWidget::createWidgets()
@@ -161,6 +161,7 @@ void Map3dWidget::createWidgets()
     mCmWidget->setPitchStep(PITCH_STEP);
     connect(mCmWidget, &CameraManipulatorWidget::homeClicked, [=]{
         mEarthManipulator->home(0);
+//        mEarthManipulator->setViewpoint(mHomeViewpoint);
         mCompassWidget->setPoint(0);
     } );
     connect(mCmWidget, &CameraManipulatorWidget::zoomChanged, this,&Map3dWidget::setZoom);
@@ -172,7 +173,7 @@ void Map3dWidget::createWidgets()
     //-------------------------------------
     mCompassWidget = new CompassWidget(this);
     connect(mCmWidget, &CameraManipulatorWidget::headChanged, [=](double val){
-        double degri = val * 180/osg::PI;
+        double degri = osg::RadiansToDegrees(val);
         mCompassWidget->setRotate(-degri);
     } );
     //-------------------------------
@@ -185,12 +186,27 @@ void Map3dWidget::setZoom(double val)
 
 void Map3dWidget::typeChanged(bool isGeocentric)
 {
-
+    //qDebug()<<"isGeneric:"<<isGeocentric;
     mMapNodeGeo->setNodeMask(isGeocentric);
     mMapNodeProj->setNodeMask(!isGeocentric);
 //    mEarthManipulator->updateProjection()
 //    osg::Camera *c = new osg::Camera() ;
 //    mEarthManipulator->updateCamera(*c);
+//    mEarthManipulator->setInitialVFOV(0);
+//    auto cam = new osgEarth::Util::EarthManipulator;
+//    auto  settings = cam->getSettings();
+//    qDebug()<<settings->getOrthoTracksPerspective();
+//    settings->setOrthoTracksPerspective(isGeocentric);
+//    qDebug()<<settings->getOrthoTracksPerspective();
+    //settings->setMinMaxPitch(90, 180);
+    //cam->applySettings(settings);
+    Viewpoint vp = mEarthManipulator->getViewpoint();
+//    qDebug()<<"vp.heading():"<<QString::fromUtf8(vp.heading()->asString().c_str());
+//    qDebug()<<"vp.pitch():"<<QString::fromUtf8(vp.pitch()->asString().c_str());
+//    qDebug()<<"vp.range():"<<QString::fromUtf8(vp.range()->asString().c_str());
+    createManipulator();
+    mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
+    mEarthManipulator->setViewpoint(vp);
 }
 void Map3dWidget::resizeEvent(QResizeEvent* event)
 {

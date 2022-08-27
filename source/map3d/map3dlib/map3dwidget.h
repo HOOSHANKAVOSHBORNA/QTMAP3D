@@ -6,6 +6,7 @@
 
 
 #include <osg/ref_ptr>
+#include <osgEarth/Viewpoint>
 
 #include "cameramanipulatorwidget.h"
 #include "compasswidget.h"
@@ -43,6 +44,7 @@ private:
     osgEarth::MapNode* mMapNodeGeo;
     osgEarth::MapNode* mMapNodeProj;
     osg::Group* mMapRoot;
+    osgEarth::Viewpoint mHomeViewpoint;
 private:
     CameraManipulatorWidget *mCmWidget{nullptr};
     CompassWidget *mCompassWidget{nullptr};

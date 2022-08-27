@@ -11,8 +11,8 @@ Map3dlib::Map3dlib(QWidget *parent)
     QIcon ic(":/res/map3d.ico");
     setWindowIcon(ic);
 
-    //auto map3dWidget = new Map3dWidget(true, this);
-    auto map3dWidget = new Map3dWidget(QString("../map3dlib/res/earth_files/geocentric.earth"), this);
+    auto map3dWidget = new Map3dWidget(true, this);
+//    auto map3dWidget = new Map3dWidget(QString("../map3dlib/res/earth_files/projected.earth"), this);
     setCentralWidget(map3dWidget);
 }
 
