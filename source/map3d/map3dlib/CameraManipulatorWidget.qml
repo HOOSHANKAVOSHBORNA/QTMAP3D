@@ -5,7 +5,7 @@ import QtQuick.Controls.Styles 1.4
 Item {
     id: name
     visible: true
-    property bool changeMap
+    property bool changeMap ;
     readonly property int _sizeimage: 15
     Rectangle {
 
@@ -421,10 +421,18 @@ Item {
                 anchors.topMargin: 0
                 anchors.fill: parent
                 onReleased:{
+
                     parent.state == "G" ? parent.state = "P" : parent.state = "G"
                     parent.state == "G" ? changeMap=false : changeMap=true
                     GetData.ontToggelMap(changeMap)
                 }
+                Connections{
+                    target: GetData
+                    onStateMapChange:{
+                       changeMap =GetData.getStateMap()
+                    }
+                }
+
             }
             states: [
                 State {

@@ -12,13 +12,14 @@ class CameraManipulatorWidget :public QWidget
 {
     Q_OBJECT
 public:
-    CameraManipulatorWidget(QWidget *parent = nullptr);
+    CameraManipulatorWidget(QWidget *parent = nullptr , bool stateMap=false);
 
     void setZoomStep(double zoomstep);
     void setUpDownStep (double updownstep);
     void setLeftRightStep(double leftrightstep);
     void setPitchStep(double pitch);
     void setHeadStep(double head);
+    void setStateMap(bool state);
 
 
 public slots:
@@ -34,6 +35,7 @@ public slots:
     Q_INVOKABLE void onHeadDownClicked();
     Q_INVOKABLE void onHomeClicked();
     Q_INVOKABLE void ontToggelMap(bool map);
+    Q_INVOKABLE bool  getStateMap();
 
 
 
@@ -46,6 +48,7 @@ signals:
      void  headChanged (double newTilt);
      void homeClicked ();
      void mapChange(bool map);
+     void stateMapChange();
 private:
     QQuickWidget *mQQuickWidget;
     double    mZoomStep;
@@ -53,6 +56,7 @@ private:
     double    mLeftRightStep;
     double    mHeadStep;
     double    mPitchStep;
+    bool      mStateMap;
 
 };
 

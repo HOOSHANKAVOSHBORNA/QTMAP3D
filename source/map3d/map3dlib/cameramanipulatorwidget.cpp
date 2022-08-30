@@ -1,9 +1,10 @@
 #include "cameramanipulatorwidget.h"
 
 #include <QQuickWidget>
-CameraManipulatorWidget::CameraManipulatorWidget(QWidget *parent):
+CameraManipulatorWidget::CameraManipulatorWidget( QWidget *parent,bool stateMap):
     QWidget(parent)
 {
+    mStateMap=stateMap;
     mZoomStep=0.5;
     mUpDownstep=0.5;
     mLeftRightStep=0.5;
@@ -51,6 +52,12 @@ void CameraManipulatorWidget::setPitchStep(double pitch)
 void CameraManipulatorWidget::setHeadStep(double head)
 {
     mHeadStep =head;
+}
+
+void CameraManipulatorWidget::setStateMap(bool state)
+{
+    mStateMap =state;
+    emit stateMapChange();
 }
 
 void CameraManipulatorWidget::onZoomOutClicked()
@@ -115,6 +122,11 @@ void CameraManipulatorWidget::onHomeClicked()
 void CameraManipulatorWidget::ontToggelMap(bool map)
 {
     emit mapChange(map);
+}
+
+bool CameraManipulatorWidget::getStateMap()
+{
+    return  mStateMap;
 }
 
 
