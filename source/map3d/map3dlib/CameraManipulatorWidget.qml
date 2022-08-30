@@ -430,6 +430,12 @@ Item {
                     target: GetData
                     onStateMapChange:{
                        changeMap =GetData.getStateMap()
+                        if(changeMap){
+                            parent.state = 'G'
+                        }
+                        else{
+                            parent.state = 'P'
+                        }
                     }
                 }
 
