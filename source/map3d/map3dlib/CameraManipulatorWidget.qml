@@ -421,35 +421,40 @@ Item {
                 anchors.topMargin: 0
                 anchors.fill: parent
                 onReleased:{
-
                     parent.state == "G" ? parent.state = "P" : parent.state = "G"
                     parent.state == "G" ? changeMap=true : changeMap=false
                     GetData.ontToggelMap(changeMap)
                 }
-                Connections{
-                    target: GetData
-                    onStateMapChange:{
-                       changeMap =GetData.getStateMap()
-                        if(changeMap){
-                            parent.state = 'G'
-                        }
-                        else{
-                            parent.state = 'P'
-                        }
-                    }
-                }
+
 
             }
             states: [
                 State {
                     name: "P"
+
                     PropertyChanges { target: imgbutton; source: button1area.pressed ? "qrc:/res/icon/geocentric.png" : "qrc:/res/icon/projection.png" }
+
                 },
                 State {
                     name: "G"
-                    //PropertyChanges { target: rectangle4; color: button1area.pressed ? "#88FFFFFF" : "#88FFFFFF" }
+                    PropertyChanges { target: rectangle4; color: button1area.pressed ? "#88FFFFFF" : "#88FFFFFF" }
                 }
             ]
+            Connections{
+                target: GetData
+                onStateMapChange:{
+
+                   changeMap =GetData.getStateMap()
+                    if(changeMap){
+
+                        rectangle4.state = "G"
+                    }
+                    else{
+                        rectangle4.state = "P"
+
+                    }
+                }
+            }
         }
 
     }

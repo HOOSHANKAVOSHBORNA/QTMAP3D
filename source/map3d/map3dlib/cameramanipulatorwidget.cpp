@@ -1,5 +1,5 @@
 #include "cameramanipulatorwidget.h"
-
+#include <QDebug>
 #include <QQuickWidget>
 CameraManipulatorWidget::CameraManipulatorWidget( QWidget *parent,bool stateMap):
     QWidget(parent)
