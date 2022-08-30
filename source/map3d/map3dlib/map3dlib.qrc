@@ -1,8 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>res/earth_files/geocentric.earth</file>
-        <file>res/earth_files/projected.earth</file>
-        <file>res/earth_files/world.tif</file>
         <file>res/map3d.ico</file>
         <file>res/icon/compass.png</file>
         <file>res/icon/down-p.png</file>
@@ -27,5 +24,6 @@
         <file>res/icon/zoomin-r.png</file>
         <file>res/icon/zoomout-p.png</file>
         <file>res/icon/zoomout-r.png</file>
+        <file>res/world.tif</file>
     </qresource>
 </RCC>

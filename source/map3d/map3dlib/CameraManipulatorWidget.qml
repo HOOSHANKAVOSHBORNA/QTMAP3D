@@ -423,7 +423,7 @@ Item {
                 onReleased:{
 
                     parent.state == "G" ? parent.state = "P" : parent.state = "G"
-                    parent.state == "G" ? changeMap=false : changeMap=true
+                    parent.state == "G" ? changeMap=true : changeMap=false
                     GetData.ontToggelMap(changeMap)
                 }
                 Connections{
