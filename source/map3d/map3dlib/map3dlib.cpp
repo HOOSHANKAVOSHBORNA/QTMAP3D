@@ -31,5 +31,6 @@ Map3dlib::Map3dlib(QWidget *parent)
     docWidget->setWidget(pb);
     addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, docWidget);
     setCentralWidget(map3dWidget);
+    setWindowTitle("Map3D Demo");
 }
 

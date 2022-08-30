@@ -1,12 +1,12 @@
 ﻿#include "map3dwidget.h"
 
-#include <osgQOpenGL/osgQOpenGLWidget>
+//#include <osgQOpenGL/osgQOpenGLWidget>
 #include <osgDB/FileUtils>
 #include <osgViewer/Viewer>
-#include <osgEarth/Map>
-#include <osgEarth/MapNode>
+//#include <osgEarth/Map>
+//#include <osgEarth/MapNode>
 #include <osgEarth/Registry>
-#include <osgEarthUtil/EarthManipulator>
+//#include <osgEarthUtil/EarthManipulator>
 #include <osgEarthUtil/AutoClipPlaneHandler>
 #include <osgEarthUtil/LogarithmicDepthBuffer>
 #include <osgEarthUtil/ExampleResources>
@@ -27,7 +27,7 @@ const double ZOOM_STEP{0.2};
 const double UP_DOWN_STEP{0.1};
 const double LEFT_RIGHT_STEP{0.1};
 const double HEAD_STEP{osg::DegreesToRadians(5.0)};
-const double PITCH_STEP{osg::DegreesToRadians(5.0)};
+const double PITCH_STEP{osg::DegreesToRadians(2.0)};
 
 const double MIN_DISTANCE{10.0};
 const double MAX_DISTANCE{1000000000.0};
@@ -39,6 +39,10 @@ Map3dWidget::Map3dWidget(QString baseMapPath, QWidget *parent)
     mLayout = new QHBoxLayout(this);
     mLayout->setMargin(0);
     mMapOpenGLWidget = new osgQOpenGLWidget(this);
+    mLayout->addWidget(mMapOpenGLWidget);
+    createWidgets();
+//    const int min = std::min(mMapOpenGLWidget->width(), mMapOpenGLWidget->height());
+//    mMapOpenGLWidget->resize(min, min);
     // init signal handle-------------------------------------------------------
     QObject::connect(mMapOpenGLWidget, &osgQOpenGLWidget::initialized, [=]{
         //create camera ----------------------------------------------
@@ -52,8 +56,10 @@ Map3dWidget::Map3dWidget(QString baseMapPath, QWidget *parent)
         osgEarth::MapNodeOptions defMNO;
         defMNO.setTerrainOptions(to);
         myReadOptions->setPluginStringData("osgEarth.defaultOptions", defMNO.getConfig().toJSON());
-        osg::Node *baseMap = osgDB::readNodeFile(baseMapPath.toStdString(), myReadOptions);
-        osgEarth::MapNode* mapNode1 = osgEarth::MapNode::get(baseMap);
+        osg::ref_ptr<osg::Node> baseMap = osgDB::readNodeFile(baseMapPath.toStdString(), myReadOptions);
+        osg::ref_ptr<osgEarth::MapNode> mapNode1 = osgEarth::MapNode::get(baseMap);
+
+        mCmWidget->setStateMap(mapNode1->isGeocentric());
 
         MapOptions mapOpt;
         if(mapNode1->isGeocentric())
@@ -66,20 +72,22 @@ Map3dWidget::Map3dWidget(QString baseMapPath, QWidget *parent)
             mapOpt.coordSysType() = MapOptions::CSTYPE_GEOCENTRIC;
             mapOpt.profile() = ProfileOptions("global-mercator");
         }
-
-        osgEarth::MapNode* mapNode2 = new MapNode(new Map(mapOpt));
+        // create map from other map
+        //qDebug()<<mapNode1->getMap()->getNumLayers();
+        osg::ref_ptr<osgEarth::MapNode> mapNode2 = new MapNode(new Map(mapOpt));
         mapNode2->getMap()->setLayersFromMap(mapNode1->getMap());
+        //qDebug()<<mapNode1->getMap()->getNumLayers();
 
         if(mapNode1->isGeocentric())
         {
-            mMapNodeGeo = mapNode1;
-            mMapNodeProj = mapNode2;
+            mMapNodeGeo = mapNode1.get();
+            mMapNodeProj = mapNode2.get();
             mMapNodeProj->setNodeMask(false);
         }
         else
         {
-            mMapNodeGeo = mapNode2;
-            mMapNodeProj = mapNode1;
+            mMapNodeGeo = mapNode2.get();
+            mMapNodeProj = mapNode1.get();
             mMapNodeGeo->setNodeMask(false);
         }
         mMapRoot = new osg::Group();
@@ -87,10 +95,8 @@ Map3dWidget::Map3dWidget(QString baseMapPath, QWidget *parent)
         mMapRoot->addChild(mMapNodeProj);
         mMapOpenGLWidget->getOsgViewer()->setSceneData(mMapRoot);
         mHomeViewpoint = mEarthManipulator->getViewpoint();
+
     });
-    //------------------------------------------------------------
-    mLayout->addWidget(mMapOpenGLWidget);
-    createWidgets();
 }
 
 Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
@@ -99,6 +105,9 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
     mLayout = new QHBoxLayout(this);
     mLayout->setMargin(0);
     mMapOpenGLWidget = new osgQOpenGLWidget(this);
+
+    mLayout->addWidget(mMapOpenGLWidget);
+    createWidgets();
     // init signal handle-------------------------------------------------------
     QObject::connect(mMapOpenGLWidget, &osgQOpenGLWidget::initialized, [=]{
         //create camera ----------------------------------------------
@@ -130,10 +139,9 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         mMapOpenGLWidget->getOsgViewer()->setSceneData(mMapRoot);
         mHomeViewpoint = mEarthManipulator->getViewpoint();
 
+        mCmWidget->setStateMap(isGeocentric);
+
     });
-    //------------------------------------------------------------
-    mLayout->addWidget(mMapOpenGLWidget);
-    createWidgets();
 }
 
 void Map3dWidget::createManipulator()
