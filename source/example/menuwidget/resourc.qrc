@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/">
+        <file>MenuSlide.qml</file>
+        <file>main.qml</file>
+        <file>ButtonMenu.qml</file>
+        <file>res/left-r.png</file>
+        <file>res/map3d.ico</file>
+        <file>PanelItem.qml</file>
+        <file>res/down-r.png</file>
+        <file>Tools.qml</file>
+        <file>Panel1.qml</file>
+        <file>res/icons8-pencil-96.png</file>
+        <file>res/icons8-location-96.png</file>
+        <file>res/icons8-polygon-96.png</file>
+        <file>res/icons8-line-chart-96.png</file>
+        <file>res/icons8-puzzle-96.png</file>
+        <file>res/icons8-sewing-tape-measure-96.png</file>
+        <file>res/icons8-ruler-96.png</file>
+        <file>res/icons8-orthogonal-view-96.png</file>
+        <file>res/icons8-height-96.png</file>
+        <file>Tools1.qml</file>
+        <file>res/icons8-chevron-right-96.png</file>
+    </qresource>
+</RCC>
