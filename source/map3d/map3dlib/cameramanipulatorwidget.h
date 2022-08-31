@@ -48,7 +48,7 @@ signals:
      void  headChanged (double newTilt);
      void homeClicked ();
      void mapChange(bool map);
-     void stateMapChange();
+     Q_INVOKABLE void stateMapChange();
 private:
     QQuickWidget *mQQuickWidget;
     double    mZoomStep;

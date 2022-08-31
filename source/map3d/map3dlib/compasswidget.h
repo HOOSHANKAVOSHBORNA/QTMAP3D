@@ -15,7 +15,7 @@ public:
     void setRotate(double rotate);
     void setPoint(double point);
 signals:
-    void rotateChange(double newRotate);
+    void rotateChange( double newRotate);
     void pointChange(double newRotate);
 public slots:
     Q_INVOKABLE double getRotate();

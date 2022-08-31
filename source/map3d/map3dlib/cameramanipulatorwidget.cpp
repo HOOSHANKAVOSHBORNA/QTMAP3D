@@ -1,6 +1,7 @@
 #include "cameramanipulatorwidget.h"
 #include <QDebug>
 #include <QQuickWidget>
+#include  <QQmlEngine>
 CameraManipulatorWidget::CameraManipulatorWidget( QWidget *parent,bool stateMap):
     QWidget(parent)
 {
@@ -16,6 +17,7 @@ CameraManipulatorWidget::CameraManipulatorWidget( QWidget *parent,bool stateMap)
     mQQuickWidget->setClearColor(Qt::transparent);
     mQQuickWidget->resize(190, 60);
     mQQuickWidget->raise();
+
 
     /// set data class datamanager to main qml
     mQQuickWidget->engine()-> rootContext()->setContextProperty("GetData",this);
