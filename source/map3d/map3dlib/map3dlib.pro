@@ -21,14 +21,18 @@ SOURCES += \
     cameramanipulatorwidget.cpp \
     compasswidget.cpp \
     map3dlib.cpp \
-    map3dwidget.cpp
+    map3dwidget.cpp \
+    plugininterface.cpp \
+    pluginmanager.cpp
 
 HEADERS += \
     cameramanipulatorwidget.h \
     compasswidget.h \
     map3dlib_global.h \
     map3dlib.h \
-    map3dwidget.h
+    map3dwidget.h \
+    plugininterface.h \
+    pluginmanager.h
 
 # Default rules for deployment.
 unix {

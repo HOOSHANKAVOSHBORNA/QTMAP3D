@@ -3,4 +3,5 @@ TEMPLATE = subdirs
 SUBDIRS += \
     demo \
     libs \
-    map3dlib
+    map3dlib \
+    plugins
