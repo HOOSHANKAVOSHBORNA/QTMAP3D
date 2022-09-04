@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QQuickWidget>
 #include  <QQmlEngine>
+#include <QQmlContext>
+
 CameraManipulatorWidget::CameraManipulatorWidget( QWidget *parent,bool stateMap):
     QWidget(parent)
 {

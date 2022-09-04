@@ -1,6 +1,6 @@
 ﻿#include "map3dwidget.h"
 
-//#include <osgQOpenGL/osgQOpenGLWidget>
+#include <osgQOpenGL/osgQOpenGLWidget>
 #include <osgDB/FileUtils>
 #include <osgViewer/Viewer>
 //#include <osgEarth/Map>
@@ -19,6 +19,7 @@
 #include <QDockWidget>
 #include <QSlider>
 #include <QHBoxLayout>
+#include <exception>
 
 using namespace osgEarth;
 using namespace osgEarth::Drivers;
@@ -116,18 +117,18 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         //create map node---------------------------------------------
         GDALOptions gdal;
         gdal.url() = "../map3dlib/data/earth_files/world.tif";
-
+        osg::ref_ptr<ImageLayer> imlayer = new ImageLayer("base-world", gdal);
         MapOptions mapOptGeo;
         mapOptGeo.coordSysType() = MapOptions::CSTYPE_GEOCENTRIC;
         mapOptGeo.profile() = ProfileOptions("global-mercator");
         mMapNodeGeo = new MapNode(new Map(mapOptGeo));
-        mMapNodeGeo->getMap()->addLayer(new ImageLayer("base-world", gdal));
+        mMapNodeGeo->getMap()->addLayer(imlayer);
 
         MapOptions mapOptProj;
         mapOptProj.coordSysType() = MapOptions::CSTYPE_PROJECTED;
         mapOptProj.profile() = ProfileOptions("plate-carre");
         mMapNodeProj = new MapNode(new Map(mapOptProj));
-        mMapNodeProj->getMap()->addLayer(new ImageLayer("base-world", gdal));
+        mMapNodeProj->getMap()->addLayer(imlayer);
 
         mMapRoot = new osg::Group();
         mMapRoot->addChild(mMapNodeGeo);
@@ -142,6 +143,36 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         mCmWidget->setStateMap(isGeocentric);
 
     });
+}
+
+void Map3dWidget::setMap(Map *map)
+{
+    mMapNodeGeo->getMap()->clear();
+    mMapNodeProj->getMap()->clear();
+
+//    LayerVector layers;
+//    map->getLayers(layers);
+//    foreach (auto layer, layers) {
+//        qDebug()<<layer->getName().c_str();
+//        qDebug()<<layer->getTypeName();
+//        //mMapNodeGeo->getMap()->addLayer(layer.get());
+//        //mMapNodeProj->getMap()->addLayer(layer.get());
+//    }
+
+    mMapNodeGeo->getMap()->setLayersFromMap(map);
+    mMapNodeProj->getMap()->setLayersFromMap(map);
+//    LayerVector layers1;
+//    mMapNodeGeo->getMap()->getLayers(layers1);
+//    foreach (auto layer, layers1) {
+//        qDebug()<<layer->getName().c_str();
+//        qDebug()<<layer->getTypeName();
+//        //mMapNodeGeo->getMap()->addLayer(layer.get());
+//        //mMapNodeProj->getMap()->addLayer(layer.get());
+//    }
+
+    mCmWidget->setStateMap(map->isGeocentric());
+    typeChanged(map->isGeocentric());
+    home();
 }
 
 void Map3dWidget::createManipulator()
@@ -167,11 +198,7 @@ void Map3dWidget::createWidgets()
     mCmWidget->setLeftRightStep(LEFT_RIGHT_STEP);
     mCmWidget->setHeadStep(HEAD_STEP);
     mCmWidget->setPitchStep(PITCH_STEP);
-    connect(mCmWidget, &CameraManipulatorWidget::homeClicked, [=]{
-        mEarthManipulator->home(0);
-//        mEarthManipulator->setViewpoint(mHomeViewpoint);
-        mCompassWidget->setPoint(0);
-    } );
+    connect(mCmWidget, &CameraManipulatorWidget::homeClicked, this,  &Map3dWidget::home);
     connect(mCmWidget, &CameraManipulatorWidget::zoomChanged, this,&Map3dWidget::setZoom);
     connect(mCmWidget, &CameraManipulatorWidget::upDownChanged, [=](double val){mEarthManipulator->pan(0,val);} );
     connect(mCmWidget, &CameraManipulatorWidget::leftRightChanged, [=](double val){mEarthManipulator->pan(val,0);} );
@@ -190,6 +217,13 @@ void Map3dWidget::createWidgets()
 void Map3dWidget::setZoom(double val)
 {
     mEarthManipulator->zoom(0, -val, mMapOpenGLWidget->getOsgViewer());
+}
+
+void Map3dWidget::home()
+{
+    mEarthManipulator->home(0);
+//        mEarthManipulator->setViewpoint(mHomeViewpoint);
+    mCompassWidget->setPoint(0);
 }
 
 void Map3dWidget::typeChanged(bool isGeocentric)

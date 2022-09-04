@@ -1,5 +1,9 @@
 #include "compasswidget.h"
 
+#include "QQuickWidget"
+#include <QQmlEngine>
+#include <QQmlContext>
+
 CompassWidget::CompassWidget(QWidget *parent):
     QWidget(parent)
 {

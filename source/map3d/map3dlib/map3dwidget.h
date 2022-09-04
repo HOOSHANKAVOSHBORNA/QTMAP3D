@@ -9,13 +9,13 @@
 #include <osg/Referenced>
 #include <osgEarth/Viewpoint>
 #include <osgEarth/MapNode>
-#include <osgQOpenGL/osgQOpenGLWidget>
+//#include <osgQOpenGL/osgQOpenGLWidget>
 #include <osgEarthUtil/EarthManipulator>
 
 #include "cameramanipulatorwidget.h"
 #include "compasswidget.h"
 
-//class osgQOpenGLWidget;
+class osgQOpenGLWidget;
 //namespace osgEarth{
 //class Map;
 //class MapNode;
@@ -34,8 +34,10 @@ class Map3dWidget: public QWidget
 public:
     explicit Map3dWidget(QString baseMapPath, QWidget *parent = nullptr);
     explicit Map3dWidget(bool isGeocentric, QWidget *parent = nullptr);
+    void setMap(osgEarth::Map *map);
 public slots:
     void setZoom(double);
+    void home();
     void typeChanged(bool);
 protected:
     void resizeEvent(QResizeEvent* event) override;

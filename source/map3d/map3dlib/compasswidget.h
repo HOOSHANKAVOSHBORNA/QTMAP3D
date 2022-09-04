@@ -2,11 +2,14 @@
 #define CAMPASSWIDGET_H
 
 #include <QWidget>
-#include <QQuickView>
-#include "QQuickWidget"
+//#include <QQuickView>
+//#include "QQuickWidget"
 //  library for display qml  in widget
-#include <QQmlContext>
-#include <QQmlEngine>
+//#include <QQmlContext>
+//#include <QQmlEngine>
+
+class QQuickWidget;
+
 class CompassWidget : public QWidget
 {
     Q_OBJECT

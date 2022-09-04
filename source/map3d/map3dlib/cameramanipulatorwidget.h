@@ -2,11 +2,13 @@
 #define CAMERAMANIPULATORWIDGET_H
 
 #include <QWidget>
-#include <QQuickView>
-#include <QQuickWidget>
+//#include <QQuickView>
+//#include <QQuickWidget>
 //  library for display qml  in widget
-#include <QQmlContext>
-#include <QQmlEngine>
+//#include <QQmlContext>
+//#include <QQmlEngine>
+
+class QQuickWidget;
 
 class CameraManipulatorWidget :public QWidget
 {
