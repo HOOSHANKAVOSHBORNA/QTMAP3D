@@ -438,7 +438,7 @@ Item {
                 },
                 State {
                     name: "G"
-                    PropertyChanges { target: rectangle4; color: button1area.pressed ? "#88FFFFFF" : "#88FFFFFF" }
+                    PropertyChanges { target: rectangle4; color: button1area.pressed ? "#88000000" : "#88000000" }
                 }
             ]
 
