@@ -32,9 +32,9 @@ class Map3dWidget: public QWidget
 {
     Q_OBJECT
 public:
-    explicit Map3dWidget(QString baseMapPath, QWidget *parent = nullptr);
     explicit Map3dWidget(bool isGeocentric, QWidget *parent = nullptr);
     void setMap(osgEarth::Map *map);
+    osgEarth::MapNode* getMapNode();
 public slots:
     void setZoom(double);
     void home();
@@ -55,6 +55,7 @@ private:
     CameraManipulatorWidget *mCmWidget{nullptr};
     CompassWidget *mCompassWidget{nullptr};
     QHBoxLayout *mLayout{nullptr};
+    bool mIsGeocentric;
 };
 
 #endif // MAP3DWIDGET_H

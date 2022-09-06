@@ -4,18 +4,18 @@
 #include <QString>
 
 class Map3dWidget;
-class QDockWidget;
+class QToolBar;
 
 class PluginManager
 {
 public:
-    PluginManager(Map3dWidget* map3dWidget, QDockWidget* docWidget);
+    PluginManager(Map3dWidget* map3dWidget, QToolBar *toolBar);
     void  loadPlugins();
 private:
     void loadPlugin(QString path);
 private:
-    Map3dWidget* map3dWidget;
-    QDockWidget* docWidget;
+    Map3dWidget* mMap3dWidget;
+    QToolBar* mToolBar;
 };
 
 #endif // PLUGINMANAGER_H

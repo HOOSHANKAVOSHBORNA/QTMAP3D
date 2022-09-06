@@ -1,7 +1,7 @@
 #include "map3dwidget.h"
 #include "plugininterface.h"
 
-#include <QDockWidget>
+#include <QVBoxLayout>
 
 PluginInterface::PluginInterface(QWidget *parent)
     : QWidget(parent)
@@ -11,10 +11,10 @@ PluginInterface::PluginInterface(QWidget *parent)
 
 void PluginInterface::setMap3dWidget(Map3dWidget *value)
 {
-    map3dWidget = value;
+    mMap3dWidget = value;
 }
 
-void PluginInterface::setDocWidget(QDockWidget *value)
+void PluginInterface::setToolBar(QToolBar *toolBar)
 {
-    docWidget = value;
+    mToolBar = toolBar;
 }

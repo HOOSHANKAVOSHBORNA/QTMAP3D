@@ -34,75 +34,11 @@ const double MIN_DISTANCE{10.0};
 const double MAX_DISTANCE{1000000000.0};
 const double MAX_OFSET{5000.0};
 
-Map3dWidget::Map3dWidget(QString baseMapPath, QWidget *parent)
-    : QWidget(parent)
-{
-    mLayout = new QHBoxLayout(this);
-    mLayout->setMargin(0);
-    mMapOpenGLWidget = new osgQOpenGLWidget(this);
-    mLayout->addWidget(mMapOpenGLWidget);
-    createWidgets();
-//    const int min = std::min(mMapOpenGLWidget->width(), mMapOpenGLWidget->height());
-//    mMapOpenGLWidget->resize(min, min);
-    // init signal handle-------------------------------------------------------
-    QObject::connect(mMapOpenGLWidget, &osgQOpenGLWidget::initialized, [=]{
-        //create camera ----------------------------------------------
-        createManipulator();
-        mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
-        //create map node---------------------------------------------
-        osg::ref_ptr<osgDB::Options>  myReadOptions = osgEarth::Registry::cloneOrCreateOptions(nullptr);
-        osgEarth::Config c;
-        c.add("elevation_smoothing", false);
-        osgEarth::TerrainOptions to(c);
-        osgEarth::MapNodeOptions defMNO;
-        defMNO.setTerrainOptions(to);
-        myReadOptions->setPluginStringData("osgEarth.defaultOptions", defMNO.getConfig().toJSON());
-        osg::ref_ptr<osg::Node> baseMap = osgDB::readNodeFile(baseMapPath.toStdString(), myReadOptions);
-        osg::ref_ptr<osgEarth::MapNode> mapNode1 = osgEarth::MapNode::get(baseMap);
-
-        mCmWidget->setStateMap(mapNode1->isGeocentric());
-
-        MapOptions mapOpt;
-        if(mapNode1->isGeocentric())
-        {
-            mapOpt.coordSysType() = MapOptions::CSTYPE_PROJECTED;
-            mapOpt.profile() = ProfileOptions("plate-carre");
-        }
-        else
-        {
-            mapOpt.coordSysType() = MapOptions::CSTYPE_GEOCENTRIC;
-            mapOpt.profile() = ProfileOptions("global-mercator");
-        }
-        // create map from other map
-        //qDebug()<<mapNode1->getMap()->getNumLayers();
-        osg::ref_ptr<osgEarth::MapNode> mapNode2 = new MapNode(new Map(mapOpt));
-        mapNode2->getMap()->setLayersFromMap(mapNode1->getMap());
-        //qDebug()<<mapNode1->getMap()->getNumLayers();
-
-        if(mapNode1->isGeocentric())
-        {
-            mMapNodeGeo = mapNode1.get();
-            mMapNodeProj = mapNode2.get();
-            mMapNodeProj->setNodeMask(false);
-        }
-        else
-        {
-            mMapNodeGeo = mapNode2.get();
-            mMapNodeProj = mapNode1.get();
-            mMapNodeGeo->setNodeMask(false);
-        }
-        mMapRoot = new osg::Group();
-        mMapRoot->addChild(mMapNodeGeo);
-        mMapRoot->addChild(mMapNodeProj);
-        mMapOpenGLWidget->getOsgViewer()->setSceneData(mMapRoot);
-        mHomeViewpoint = mEarthManipulator->getViewpoint();
-
-    });
-}
 
 Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
     : QWidget(parent)
 {
+    mIsGeocentric = isGeocentric;
     mLayout = new QHBoxLayout(this);
     mLayout->setMargin(0);
     mMapOpenGLWidget = new osgQOpenGLWidget(this);
@@ -155,12 +91,15 @@ void Map3dWidget::setMap(Map *map)
 //    foreach (auto layer, layers) {
 //        qDebug()<<layer->getName().c_str();
 //        qDebug()<<layer->getTypeName();
-//        //mMapNodeGeo->getMap()->addLayer(layer.get());
-//        //mMapNodeProj->getMap()->addLayer(layer.get());
+//        ImageLayer* imLayere = static_cast<ImageLayer*>(layer.get());
+//        auto lay2 = static_cast<ImageLayer*>(imLayere->clone(osg::CopyOp::SHALLOW_COPY));
+//        mMapNodeGeo->getMap()->addLayer(imLayere);
+//        mMapNodeProj->getMap()->addLayer(lay2);
 //    }
 
     mMapNodeGeo->getMap()->setLayersFromMap(map);
     mMapNodeProj->getMap()->setLayersFromMap(map);
+
 //    LayerVector layers1;
 //    mMapNodeGeo->getMap()->getLayers(layers1);
 //    foreach (auto layer, layers1) {
@@ -173,6 +112,14 @@ void Map3dWidget::setMap(Map *map)
     mCmWidget->setStateMap(map->isGeocentric());
     typeChanged(map->isGeocentric());
     home();
+}
+
+MapNode *Map3dWidget::getMapNode()
+{
+    if(mIsGeocentric)
+        return mMapNodeGeo;
+    else
+        mMapNodeProj;
 }
 
 void Map3dWidget::createManipulator()
@@ -228,6 +175,7 @@ void Map3dWidget::home()
 
 void Map3dWidget::typeChanged(bool isGeocentric)
 {
+    mIsGeocentric = isGeocentric;
     //qDebug()<<"isGeneric:"<<isGeocentric;
     mMapNodeGeo->setNodeMask(isGeocentric);
     mMapNodeProj->setNodeMask(!isGeocentric);

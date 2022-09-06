@@ -32,3 +32,6 @@ unix {
 !isEmpty(target.path): INSTALLS += target
 
 INCLUDEPATH  += ../../map3dlib/
+
+RESOURCES += \
+    res.qrc
