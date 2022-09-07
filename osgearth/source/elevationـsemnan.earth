@@ -15,22 +15,22 @@
         <url>https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg</url>
 		<profile>spherical-mercator</profile>
     </image>
-	<feature_model name="Parks1" enabled="true">
+<feature_model name="Parks1" enabled="true">
 		<features name="parks1" driver="ogr">
-			<url>../../../QTMAP3D-DATA/dataosgearth//shape/plain/shape/landuse.shp</url>
+			<url>../../../QTMAP3D-DATA/dataosgearth/shape/plain/shape/landuse.shp</url>
 		</features>   
 		<layout tile_size="1000">
-			<level max_range="5000"/>
+			<level max_range="80000"/>
 		</layout>
 		<feature_indexing enabled="false"/>
 
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/tree5.osgb";
-				   model-scale:            200;
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/desert_tree.osgb";
+				   model-scale:            30;
 				   model-placement:        random;
-				   model-density:          20000;
+				   model-density:          1;
 				   model-heading:          Math.random() * 360.0;
 				   altitude-clamping:      terrain;
 				   render-transparent:     true;
@@ -39,6 +39,7 @@
 			</style>
 		</styles>        
 	</feature_model>
+
     <!-- Add some base elevation -->
    <elevation name="readymap_elevation" driver="gdal" enabled="true">
         <url>../../../QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif</url>
@@ -47,8 +48,7 @@
    
 
 	<viewpoints>
-		<viewpoint name="Semnana" heading="50" lat="35.241" long="52.859" height="10" pitch="-5"  range="5000"/>
-
+		<viewpoint name="Semnana" heading="50" lat="35.21914" long="52.32968" height="10" pitch="-5"  range="500"/>
     </viewpoints>
 
 </map>
