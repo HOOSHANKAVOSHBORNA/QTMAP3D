@@ -114,12 +114,17 @@ void Map3dWidget::setMap(Map *map)
     home();
 }
 
+void Map3dWidget::setViewpoint(const Viewpoint &vp, double duration_s)
+{
+    mEarthManipulator->setViewpoint(vp,duration_s);
+}
+
 MapNode *Map3dWidget::getMapNode()
 {
     if(mIsGeocentric)
         return mMapNodeGeo;
     else
-        mMapNodeProj;
+        return mMapNodeProj;
 }
 
 void Map3dWidget::createManipulator()

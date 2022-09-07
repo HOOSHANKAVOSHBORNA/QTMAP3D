@@ -16,13 +16,15 @@
 #include "compasswidget.h"
 
 class osgQOpenGLWidget;
-//namespace osgEarth{
+
+namespace osgEarth{
+class Viewpoint;
 //class Map;
 //class MapNode;
 //namespace  Util{
 //    class EarthManipulator;
 //}
-//}
+}
 //namespace osg{
 //class Group;
 
@@ -33,7 +35,10 @@ class Map3dWidget: public QWidget
     Q_OBJECT
 public:
     explicit Map3dWidget(bool isGeocentric, QWidget *parent = nullptr);
+
     void setMap(osgEarth::Map *map);
+    void setViewpoint( const osgEarth::Viewpoint& vp, double duration_s =0.0 );
+
     osgEarth::MapNode* getMapNode();
 public slots:
     void setZoom(double);
