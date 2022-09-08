@@ -15,8 +15,8 @@
         <url>https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg</url>
 		<profile>spherical-mercator</profile>
     </image>
-<feature_model name="Parks1" enabled="true">
-		<features name="parks1" driver="ogr">
+<feature_model name="Tree" enabled="true">
+		<features name="Tree" driver="ogr">
 			<url>../../../QTMAP3D-DATA/dataosgearth/shape/plain/shape/landuse.shp</url>
 		</features>   
 		<layout tile_size="1000">
@@ -27,7 +27,7 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/desert_tree.osgb";
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/drytree1.osgb";
 				   model-scale:            30;
 				   model-placement:        random;
 				   model-density:          1;
@@ -39,7 +39,30 @@
 			</style>
 		</styles>        
 	</feature_model>
+	<feature_model name="Bush" enabled="true">
+		<features name="Bush" driver="ogr">
+			<url>../../../QTMAP3D-DATA/dataosgearth/shape/plain/shape/landuse.shp</url>
+		</features>   
+		<layout tile_size="1000">
+			<level max_range="80000"/>
+		</layout>
+		<feature_indexing enabled="false"/>
 
+		<styles>
+			<style type="text/css">
+				default {
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/bush.osgb";
+				   model-scale:            10;
+				   model-placement:        random;
+				   model-density:          5;
+				   model-heading:          Math.random() * 360.0;
+				   altitude-clamping:      terrain;
+				   render-transparent:     true;
+				   render-min-alpha:       0.15;
+				}
+			</style>
+		</styles>        
+	</feature_model>
     <!-- Add some base elevation -->
    <elevation name="readymap_elevation" driver="gdal" enabled="true">
         <url>../../../QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif</url>
