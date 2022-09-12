@@ -38,8 +38,11 @@ public:
 
     void setMap(osgEarth::Map *map);
     void setViewpoint( const osgEarth::Viewpoint& vp, double duration_s =0.0 );
+    osgEarth::Viewpoint getViewpoint() const;
 
     osgEarth::MapNode* getMapNode();
+    osg::ref_ptr<osg::Group> mMapRoot;
+    osg::ref_ptr<osgEarth::Util::EarthManipulator> mEarthManipulator;
 public slots:
     void setZoom(double);
     void home();
@@ -50,10 +53,10 @@ private:
     void createManipulator();
     void createWidgets();
 private:
-    osg::ref_ptr<osgEarth::Util::EarthManipulator> mEarthManipulator;
+
     osg::ref_ptr<osgEarth::MapNode> mMapNodeGeo;
     osg::ref_ptr<osgEarth::MapNode> mMapNodeProj;
-    osg::ref_ptr<osg::Group> mMapRoot;
+
     osgEarth::Viewpoint mHomeViewpoint;
 private:
     osgQOpenGLWidget* mMapOpenGLWidget;

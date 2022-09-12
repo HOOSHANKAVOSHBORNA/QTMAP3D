@@ -119,6 +119,11 @@ void Map3dWidget::setViewpoint(const Viewpoint &vp, double duration_s)
     mEarthManipulator->setViewpoint(vp,duration_s);
 }
 
+Viewpoint Map3dWidget::getViewpoint() const
+{
+    return mEarthManipulator->getViewpoint();
+}
+
 MapNode *Map3dWidget::getMapNode()
 {
     if(mIsGeocentric)
@@ -135,7 +140,7 @@ void Map3dWidget::createManipulator()
     //qDebug()<<settings->getMaxDistance();
     settings->setMinMaxDistance(MIN_DISTANCE, MAX_DISTANCE);
     settings->setMaxOffset(MAX_OFSET, MAX_OFSET);
-    //settings->setMinMaxPitch(-90, 90);
+    settings->setMinMaxPitch(-90, 90);
     settings->setTerrainAvoidanceEnabled(true);
     settings->setThrowingEnabled(false);
 
