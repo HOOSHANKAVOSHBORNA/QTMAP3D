@@ -14,6 +14,7 @@
 #include <osg/AnimationPath>
 #include <osg/LineWidth>
 #include <osg/Array>
+#include <osgAnimation/EaseMotion>
 
 ObjectTracker::ObjectTracker(QWidget *parent)
     : PluginInterface(parent)
@@ -62,11 +63,13 @@ void ObjectTracker::setPosition(const osg::Vec3d &pos, float speed)
     rotate.makeRotate(-osg::Y_AXIS, def);
 
     osg::AnimationPath* path = new osg::AnimationPath();
-    osg::AnimationPathCallback* animationPathCallback = new osg::AnimationPathCallback(path);
+//    osg::AnimationPathCallback* animationPathCallback = new osg::AnimationPathCallback(path);
+    MyAnimationPathCallback* animationPathCallback = new MyAnimationPathCallback(this);
     //animationPathCallback->setPivotPoint(osg::Vec3d(0,100,0));
+    animationPathCallback->setAnimationPath(path);
 
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
-    path->insert(0, osg::AnimationPath::ControlPoint(currentPos));
+    //path->insert(0, osg::AnimationPath::ControlPoint(currentPos));
     path->insert(0, osg::AnimationPath::ControlPoint(currentPos,modelNode->getAttitude(),modelNode->getScale()));
     path->insert(t,osg::AnimationPath::ControlPoint(pos,rotate,modelNode->getScale()));
 
@@ -219,4 +222,71 @@ void ObjectTracker::drawCordination(const osg::Vec3d &pos)
 
     mMap3dWidget->mMapRoot->addChild(gnode);
 
+}
+
+//MyAnimationPath::MyAnimationPath(ObjectTracker *objectTarcker):
+//    osg::AnimationPath()
+//{
+//    mObjectTracker = objectTarcker;
+//}
+//bool MyAnimationPath::getInterpolatedControlPoint(double time, osg::AnimationPath::ControlPoint &controlPoint) const
+//{
+//    if(static_cast<int>(time) % 1 == 0)
+//    {
+//        auto curentViewPoint = mObjectTracker->mMap3dWidget->getViewpoint();
+//        auto pos = mObjectTracker->modelNode->getPosition();
+//        osgEarth::GeoPoint point;
+//        point.fromWorld(osgEarth::SpatialReference::get("wgs84"),pos);
+//        curentViewPoint.focalPoint() = point;
+//        curentViewPoint.range()= curentViewPoint.range();
+//        mObjectTracker->mMap3dWidget->setViewpoint(curentViewPoint, 0);
+//    }
+
+//    //qDebug()<<time<<"  "<<controlPoint.getPosition().x()<<" " <<controlPoint.getPosition().y()<<" "<<controlPoint.getPosition().z();
+//    return osg::AnimationPath::getInterpolatedControlPoint(time, controlPoint);
+//}
+
+MyAnimationPathCallback::MyAnimationPathCallback(ObjectTracker* objectTarcker):
+    AnimationPathCallback()
+{
+//    _motion = new osgAnimation::InCircMotion();
+    mObjectTracker = objectTarcker;
+    mPreviousTime = 0;
+//    mPreviousPos = new osg::Vec3d();
+}
+
+void MyAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
+{
+//    qDebug()<<"mv ";
+    //if(!_motion.valid()) return;
+
+//    osg::MatrixTransform* mt = dynamic_cast<osg::MatrixTransform*>(node);
+    osg::PositionAttitudeTransform* mt = dynamic_cast<osg::PositionAttitudeTransform*>(node);
+
+    if(!mt) return;
+    double time = nv->getFrameStamp()->getSimulationTime();
+
+//    qDebug()<<time<<"  "<<mt->getPosition().x()<<" " <<mt->getPosition().y()<<" "<<mt->getPosition().z();
+
+
+    auto curentViewPoint = mObjectTracker->mMap3dWidget->getViewpoint();
+    auto pos = mt->getPosition();
+    if((pos.x() != mPreviousPos.x() || pos.y() != mPreviousPos.y() || pos.z() != mPreviousPos.z())
+            && (time - mPreviousTime) > 0.003)
+    {
+        osgEarth::GeoPoint point;
+        point.fromWorld(osgEarth::SpatialReference::get("wgs84"),pos);
+        curentViewPoint.focalPoint() = point;
+        curentViewPoint.range()= curentViewPoint.range();
+        mObjectTracker->mMap3dWidget->setViewpoint(curentViewPoint, 0);
+
+//        qDebug()<<time;
+//        qDebug()<<"mPreviousPos:"<<"  "<<mPreviousPos.x()<<" " <<mPreviousPos.y()<<" "<<mPreviousPos.z();
+//        qDebug()<<"pos:"<<"  "<<mt->getPosition().x()<<" " <<mt->getPosition().y()<<" "<<mt->getPosition().z();
+//        mPreviousPos = pos;
+        mPreviousTime = time;
+    }
+    mPreviousPos = pos;
+//    mPreviousTime = time;
+    AnimationPathCallback::operator()(node, nv);
 }
