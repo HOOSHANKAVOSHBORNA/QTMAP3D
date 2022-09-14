@@ -19,7 +19,7 @@
             <geometry>
                 POLYGON((51.376320 35.744843,51.376320 35.944843,51.876320 35.944843,51.867871 35.823977))
             </geometry>
-           <style type="text/css">
+           <!--<style type="text/css">
             default {
                 fill:               #ff7f009f;
                 stroke:             #ffffff;
@@ -28,7 +28,7 @@
                 altitude-technique: drape;
                 render-lighting:    false;
             }
-        </style>
+        </style>-->
         </feature>
 		</annotations>
 	<elevation name="readymap_elevation" driver="gdal" enabled="true">

@@ -27,11 +27,11 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/drytree1.osgb";
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/bush3.osgb";
 				   model-scale:            5;
 				   model-placement:        random;
-				   model-density:          1;
-				   model-heading:          Math.random() * 360.0;
+				   model-density:          60;
+				   model-heading:          0;
 				   altitude-clamping:      terrain;
 				   render-transparent:     true;
 				   render-min-alpha:       0.15;
@@ -39,8 +39,8 @@
 			</style>
 		</styles>        
 	</feature_model>
-	<feature_model name="Bush" enabled="true">
-		<features name="Bush" driver="ogr">
+	<!--<feature_model name="Tree" enabled="true">
+		<features name="Tree" driver="ogr">
 			<url>../../../QTMAP3D-DATA/dataosgearth/shape/plain/shape/landuse.shp</url>
 		</features>   
 		<layout tile_size="1000">
@@ -51,18 +51,28 @@
 		<styles>
 			<style type="text/css">
 				default {
-				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/bush.osgb";
-				   model-scale:            1;
+				   model:                  "../../../QTMAP3D-DATA/dataosgearth/model/land.osgb";
+				   model-scale:            5;
 				   model-placement:        random;
 				   model-density:          5;
-				   model-heading:          Math.random() * 360.0;
+				   model-heading:          0;
 				   altitude-clamping:      terrain;
 				   render-transparent:     true;
 				   render-min-alpha:       0.15;
 				}
 			</style>
 		</styles>        
-	</feature_model>
+	</feature_model>-->
+	<!--<annotations name="Annotations Group B">
+	<imageoverlay>
+            <url>../../../QTMAP3D-DATA/dataosgearth/image/land.png</url>
+            <alpha>1.0</alpha>
+			<geometry>
+				POLYGON((52.759  35.150,52.759 35.340,53.100 35.340,53.100 35.150))  
+		    </geometry>
+			</imageoverlay>
+			
+		</annotations>-->
     <!-- Add some base elevation -->
    <elevation name="readymap_elevation" driver="gdal" enabled="true">
         <url>../../../QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif</url>
