@@ -27,6 +27,7 @@ class ObjectTracker : public PluginInterface
 public:
     explicit ObjectTracker(QWidget *parent = nullptr);
     void setUpUI() override;
+    osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime);
     void setPosition(const osg::Vec3d& pos, float speed);
     void addModel();
     osg::Node* createLine(osg::Vec3Array* vertex , float lineWidth);
@@ -39,27 +40,6 @@ private:
     int de{0};
 
     friend class MyAnimationPathCallback;
-};
-
-//class MyAnimationPath: public osg::AnimationPath
-//{
-//public:
-//    MyAnimationPath(ObjectTracker* objectTarcker);
-//    bool getInterpolatedControlPoint(double time,ControlPoint& controlPoint) const;
-//private:
-//    ObjectTracker* mObjectTracker;
-//};
-
-class MyAnimationPathCallback: public osg::AnimationPathCallback
-{
-public:
-    MyAnimationPathCallback(ObjectTracker* objectTarcker);
-//    osg::ref_ptr<osgAnimation::Motion> _motion;
-    void operator()(osg::Node* node, osg::NodeVisitor* nv);
-private:
-    osg::Vec3d mPreviousPos;
-    double mPreviousTime;
-     ObjectTracker* mObjectTracker;
 };
 
 #endif // OBJECTTRACKER_H

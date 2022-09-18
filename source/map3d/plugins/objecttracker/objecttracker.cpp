@@ -51,7 +51,38 @@ void ObjectTracker::setUpUI()
 void ObjectTracker::trackObject()
 {
     addModel();
+    //mMap3dWidget->mEarthManipulator->setNode(modelNode);
+    auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
+    camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
+//    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
+    mMap3dWidget->mEarthManipulator->applySettings(camSet);
+    qDebug()<<mMap3dWidget->mEarthManipulator->isTethering();
+}
+osg::AnimationPath* ObjectTracker::createAnimationPath(const osg::Vec3& center,float radius,double looptime)
+{
+    // set up the animation path
+    osg::AnimationPath* animationPath = new osg::AnimationPath;
+    animationPath->setLoopMode(osg::AnimationPath::LOOP);
 
+    int numSamples = 40;
+    float yaw = 0.0f;
+    float yaw_delta = 2.0f*osg::PI/((float)numSamples-1.0f);
+    float roll = osg::inDegrees(30.0f);
+
+    double time=0.0f;
+    double time_delta = looptime/(double)numSamples;
+    for(int i=0;i<numSamples;++i)
+    {
+        osg::Vec3 position(center+osg::Vec3(sinf(yaw)*radius,cosf(yaw)*radius,0.0f));
+        osg::Quat rotation(osg::Quat(roll,osg::Vec3(0.0,1.0,0.0))*osg::Quat(-(yaw+osg::inDegrees(90.0f)),osg::Vec3(0.0,0.0,1.0)));
+
+        animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
+
+        yaw += yaw_delta;
+        time += time_delta;
+
+    }
+    return animationPath;
 }
 
 void ObjectTracker::setPosition(const osg::Vec3d &pos, float speed)
@@ -63,8 +94,8 @@ void ObjectTracker::setPosition(const osg::Vec3d &pos, float speed)
     rotate.makeRotate(-osg::Y_AXIS, def);
 
     osg::AnimationPath* path = new osg::AnimationPath();
-//    osg::AnimationPathCallback* animationPathCallback = new osg::AnimationPathCallback(path);
-    MyAnimationPathCallback* animationPathCallback = new MyAnimationPathCallback(this);
+    osg::AnimationPathCallback* animationPathCallback = new osg::AnimationPathCallback(path);
+//    MyAnimationPathCallback* animationPathCallback = new MyAnimationPathCallback(this);
     //animationPathCallback->setPivotPoint(osg::Vec3d(0,100,0));
     animationPathCallback->setAnimationPath(path);
 
@@ -130,6 +161,7 @@ void ObjectTracker::addModel()
     vp.range()= 500;
     vp.heading()->set(50, osgEarth::Units::DEGREES);
     //vp.pitch()->set(-25, osgEarth::Units::DEGREES);
+    vp.setNode(modelNode);//to track
     mMap3dWidget->setViewpoint(vp, 5);
 }
 osg::Node* ObjectTracker::createLine(osg::Vec3Array* vertex, float lineWidth)
@@ -222,71 +254,4 @@ void ObjectTracker::drawCordination(const osg::Vec3d &pos)
 
     mMap3dWidget->mMapRoot->addChild(gnode);
 
-}
-
-//MyAnimationPath::MyAnimationPath(ObjectTracker *objectTarcker):
-//    osg::AnimationPath()
-//{
-//    mObjectTracker = objectTarcker;
-//}
-//bool MyAnimationPath::getInterpolatedControlPoint(double time, osg::AnimationPath::ControlPoint &controlPoint) const
-//{
-//    if(static_cast<int>(time) % 1 == 0)
-//    {
-//        auto curentViewPoint = mObjectTracker->mMap3dWidget->getViewpoint();
-//        auto pos = mObjectTracker->modelNode->getPosition();
-//        osgEarth::GeoPoint point;
-//        point.fromWorld(osgEarth::SpatialReference::get("wgs84"),pos);
-//        curentViewPoint.focalPoint() = point;
-//        curentViewPoint.range()= curentViewPoint.range();
-//        mObjectTracker->mMap3dWidget->setViewpoint(curentViewPoint, 0);
-//    }
-
-//    //qDebug()<<time<<"  "<<controlPoint.getPosition().x()<<" " <<controlPoint.getPosition().y()<<" "<<controlPoint.getPosition().z();
-//    return osg::AnimationPath::getInterpolatedControlPoint(time, controlPoint);
-//}
-
-MyAnimationPathCallback::MyAnimationPathCallback(ObjectTracker* objectTarcker):
-    AnimationPathCallback()
-{
-//    _motion = new osgAnimation::InCircMotion();
-    mObjectTracker = objectTarcker;
-    mPreviousTime = 0;
-//    mPreviousPos = new osg::Vec3d();
-}
-
-void MyAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
-{
-//    qDebug()<<"mv ";
-    //if(!_motion.valid()) return;
-
-//    osg::MatrixTransform* mt = dynamic_cast<osg::MatrixTransform*>(node);
-    osg::PositionAttitudeTransform* mt = dynamic_cast<osg::PositionAttitudeTransform*>(node);
-
-    if(!mt) return;
-    double time = nv->getFrameStamp()->getSimulationTime();
-
-//    qDebug()<<time<<"  "<<mt->getPosition().x()<<" " <<mt->getPosition().y()<<" "<<mt->getPosition().z();
-
-
-    auto curentViewPoint = mObjectTracker->mMap3dWidget->getViewpoint();
-    auto pos = mt->getPosition();
-    if((pos.x() != mPreviousPos.x() || pos.y() != mPreviousPos.y() || pos.z() != mPreviousPos.z())
-            && (time - mPreviousTime) > 0.003)
-    {
-        osgEarth::GeoPoint point;
-        point.fromWorld(osgEarth::SpatialReference::get("wgs84"),pos);
-        curentViewPoint.focalPoint() = point;
-        curentViewPoint.range()= curentViewPoint.range();
-        mObjectTracker->mMap3dWidget->setViewpoint(curentViewPoint, 0);
-
-//        qDebug()<<time;
-//        qDebug()<<"mPreviousPos:"<<"  "<<mPreviousPos.x()<<" " <<mPreviousPos.y()<<" "<<mPreviousPos.z();
-//        qDebug()<<"pos:"<<"  "<<mt->getPosition().x()<<" " <<mt->getPosition().y()<<" "<<mt->getPosition().z();
-//        mPreviousPos = pos;
-        mPreviousTime = time;
-    }
-    mPreviousPos = pos;
-//    mPreviousTime = time;
-    AnimationPathCallback::operator()(node, nv);
 }
