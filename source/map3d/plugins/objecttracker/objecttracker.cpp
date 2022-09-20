@@ -4,6 +4,7 @@
 #include <QAction>
 #include <QToolBar>
 #include <QDebug>
+#include <QTimer>
 
 #include <osgDB/ReadFile>
 #include <osgEarthSymbology/GeometryFactory>
@@ -15,6 +16,7 @@
 #include <osg/LineWidth>
 #include <osg/Array>
 #include <osgAnimation/EaseMotion>
+#include <osgEarth/ElevationLayer>
 
 ObjectTracker::ObjectTracker(QWidget *parent)
     : PluginInterface(parent)
@@ -24,105 +26,136 @@ ObjectTracker::ObjectTracker(QWidget *parent)
 void ObjectTracker::setUpUI()
 {
     //    const QIcon readIcon (":/res/read.png");
-    auto trackAction = new QAction("Traking");
-    trackAction->setToolTip("Tracking a motion object.");
+    auto trackAction = new QAction("Add Model");
+    trackAction->setToolTip("Adding a 3D model.");
     mToolBar->addAction(trackAction);
     QObject::connect(trackAction, &QAction::triggered, this, &ObjectTracker::trackObject);
 
-    auto tAction = new QAction("tre");
+    auto tAction = new QAction("Track");
+    tAction->setToolTip("Tracking a 3D model.");
     mToolBar->addAction(tAction);
     QObject::connect(tAction, &QAction::triggered, [=]{
-        de = de + 1;
-        osg::AnimationPath* path = new osg::AnimationPath();
-        path->setLoopMode(osg::AnimationPath::NO_LOOPING);
-        /** point 1 - start point **/
-        double ch = de/1000.0;
-        osgEarth::GeoPoint  point;
-        if(de % 2 == 0)
-            point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 + ch, 35.241, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-        else
-            point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241+ ch, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-        osg::Vec3d out_world;
-        point.toWorld(out_world);
-        setPosition(out_world, 20);
+        auto vp = mMap3dWidget->getViewpoint();
+        vp.setNode(modelNode);//to track
+        mMap3dWidget->setViewpoint(vp);
+        auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
+        camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
+        //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
+        mMap3dWidget->mEarthManipulator->applySettings(camSet);
+        demo();
+        QTimer *timer = new QTimer(this);
+        connect(timer, &QTimer::timeout,this, &ObjectTracker::demo);
+        timer->start(10000);
     });
 }
 
 void ObjectTracker::trackObject()
 {
     addModel();
-    //mMap3dWidget->mEarthManipulator->setNode(modelNode);
-    auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
-    camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
-//    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
-    mMap3dWidget->mEarthManipulator->applySettings(camSet);
-    qDebug()<<mMap3dWidget->mEarthManipulator->isTethering();
-}
-osg::AnimationPath* ObjectTracker::createAnimationPath(const osg::Vec3& center,float radius,double looptime)
-{
-    // set up the animation path
-    osg::AnimationPath* animationPath = new osg::AnimationPath;
-    animationPath->setLoopMode(osg::AnimationPath::LOOP);
-
-    int numSamples = 40;
-    float yaw = 0.0f;
-    float yaw_delta = 2.0f*osg::PI/((float)numSamples-1.0f);
-    float roll = osg::inDegrees(30.0f);
-
-    double time=0.0f;
-    double time_delta = looptime/(double)numSamples;
-    for(int i=0;i<numSamples;++i)
-    {
-        osg::Vec3 position(center+osg::Vec3(sinf(yaw)*radius,cosf(yaw)*radius,0.0f));
-        osg::Quat rotation(osg::Quat(roll,osg::Vec3(0.0,1.0,0.0))*osg::Quat(-(yaw+osg::inDegrees(90.0f)),osg::Vec3(0.0,0.0,1.0)));
-
-        animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
-
-        yaw += yaw_delta;
-        time += time_delta;
-
-    }
-    return animationPath;
 }
 
-void ObjectTracker::setPosition(const osg::Vec3d &pos, float speed)
+void ObjectTracker::demo()
 {
-    osg::Vec3f currentPos = modelNode->getPosition();
+
+//    qDebug()<<random;
+//    osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241, 1000,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+//    if(de % 2 == 0)
+//        point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 + ch, 35.241, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+//    else
+//        point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241+ ch, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+//    osg::Vec3d out_world;
+//    point.toWorld(out_world);
+
+    //-- 500 km/h ~ 139 m/s ------------------
+    int randomX = 10*(138 + (qrand() % 139));
+    int randomY = 10*(138 + (qrand() % 139));
+
+    int val = qrand() % 4;
+    if(val == 1)
+        mCurrentWorldPoint += osg::Vec3d(randomX, randomY, 0);
+    else if(val == 2)
+        mCurrentWorldPoint += osg::Vec3d(randomX, -randomY, 0);
+    else if(val == 3)
+        mCurrentWorldPoint += osg::Vec3d(-randomX, randomY, 0);
+    else
+        mCurrentWorldPoint += osg::Vec3d(-randomX, -randomY, 0);
+
+    setPosition(mCurrentWorldPoint, 138);
+}
+//osg::AnimationPath* ObjectTracker::createAnimationPath(const osg::Vec3d &pos1, const osg::Vec3d &pos2, float speed)
+//{
+//    osg::Vec3Array* keyPoint = new osg::Vec3Array;
+//    osg::Vec3f def = pos2 - pos1;
+//    float looptime = (def.length() / speed);
+//    float radius = def.length()/2;
+//    osg::Vec3d center = (pos1 + pos2) / 2;
+//    // set up the animation path
+//    osg::AnimationPath* animationPath = new osg::AnimationPath;
+//    animationPath->setLoopMode(osg::AnimationPath::NO_LOOPING);
+
+//    int numSamples = 40;
+//    float yaw = 0.0f;
+//    float yaw_delta = static_cast<float>(2.0 * osg::PI )/ (numSamples -1.0f);
+//    float roll = osg::inDegrees(0.0f);
+
+//    double time = 0.0;
+//    float time_delta = looptime / numSamples;
+//    for(int i=0;i<numSamples;++i)
+//    {
+//        osg::Vec3 position(center + osg::Vec3(sinf(yaw)*radius, cosf(yaw)*radius, 0.0f));
+//        drawCordination(position);
+//        keyPoint->push_back(position);
+//        osg::Quat rotation(osg::Quat(roll,osg::Vec3(0.0,1.0,0.0))*osg::Quat((yaw+osg::inDegrees(90.0f)),osg::Vec3(0.0,0.0,1.0)));
+
+//        animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
+
+//        yaw += yaw_delta;
+//        time += static_cast<double>(time_delta);
+
+//    }
+
+//    mMap3dWidget->mMapRoot->addChild(createLine(keyPoint, 1.0));
+
+//    return animationPath;
+//}
+
+void ObjectTracker::setPosition(const osg::Vec3d &pos, double speed)
+{
+    osg::Vec3d currentPos = modelNode->getPosition();
     osg::Quat rotate;
     osg::Vec3f def = pos - currentPos;
-    double t = static_cast<double>(def.length() / speed);
     rotate.makeRotate(-osg::Y_AXIS, def);
+    osg::Vec3d estimatePos = pos + (def * def.normalize()) * 30;
+    double t = static_cast<double>((estimatePos - pos).length() / speed);
 
     osg::AnimationPath* path = new osg::AnimationPath();
-    osg::AnimationPathCallback* animationPathCallback = new osg::AnimationPathCallback(path);
-//    MyAnimationPathCallback* animationPathCallback = new MyAnimationPathCallback(this);
-    //animationPathCallback->setPivotPoint(osg::Vec3d(0,100,0));
-    animationPathCallback->setAnimationPath(path);
-
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
-    //path->insert(0, osg::AnimationPath::ControlPoint(currentPos));
     path->insert(0, osg::AnimationPath::ControlPoint(currentPos,modelNode->getAttitude(),modelNode->getScale()));
-    path->insert(t,osg::AnimationPath::ControlPoint(pos,rotate,modelNode->getScale()));
+    path->insert(2,osg::AnimationPath::ControlPoint(pos,rotate,modelNode->getScale()));
+    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate,modelNode->getScale()));
 
+    //auto path = createAnimationPath(currentPos, pos, speed);
+
+    osg::AnimationPathCallback* animationPathCallback = new osg::AnimationPathCallback(path);
+    animationPathCallback->setAnimationPath(path);
+    //animationPathCallback->setPivotPoint(osg::Vec3d(0,100,0));
     modelNode->setUpdateCallback(animationPathCallback);
-
-//    animationPathCallback->getAnimationPath()->clear();
-//    animationPathCallback->setAnimationPath(path);
-//    animationPathCallback->reset();
 
     //draw line------------------------------------------------
     osg::Vec3Array* keyPoint = new osg::Vec3Array;
     keyPoint->push_back(currentPos);
+    keyPoint->push_back(estimatePos);
     keyPoint->push_back(pos);
     mMap3dWidget->mMapRoot->addChild(createLine(keyPoint, 1.0));
     drawCordination(pos);
+    drawCordination(estimatePos);
 
-//    auto curentViewPoint = mMap3dWidget->getViewpoint();
-//    osgEarth::GeoPoint point;
-//    point.fromWorld(osgEarth::SpatialReference::get("wgs84"),pos);
-//    curentViewPoint.focalPoint() = point;
-//    curentViewPoint.range()= mMap3dWidget->getViewpoint().range();
-//    mMap3dWidget->setViewpoint(curentViewPoint, 0);
+    //    auto curentViewPoint = mMap3dWidget->getViewpoint();
+    //    osgEarth::GeoPoint point;
+    //    point.fromWorld(osgEarth::SpatialReference::get("wgs84"),pos);
+    //    curentViewPoint.focalPoint() = point;
+    //    curentViewPoint.range()= mMap3dWidget->getViewpoint().range();
+    //    mMap3dWidget->setViewpoint(curentViewPoint, 0);
 }
 
 void ObjectTracker::addModel()
@@ -147,21 +180,19 @@ void ObjectTracker::addModel()
     //Add to map -------------------------------------------------------------------
     modelNode = new osg::PositionAttitudeTransform;
     modelNode->addChild(node);
-    osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 1100);
+    osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.859, 35.241, 3300,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
     mMap3dWidget->mMapRoot->addChild(modelNode);
     //    mMap3dWidget->getMapNode()->addChild(modelNode);
-    osg::Vec3d worldPoint;
-    point.toWorld(worldPoint);
-    modelNode->setPosition(worldPoint);
+    point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
+    modelNode->setPosition(mCurrentWorldPoint);
     modelNode->setScale(osg::Vec3(0.5,0.5,0.5));
-    drawCordination(worldPoint);
+    drawCordination(mCurrentWorldPoint);
     //Set view point------------------------------------------------------------------
     osgEarth::Viewpoint vp;
     vp.focalPoint() = point;
     vp.range()= 500;
     vp.heading()->set(50, osgEarth::Units::DEGREES);
     //vp.pitch()->set(-25, osgEarth::Units::DEGREES);
-    vp.setNode(modelNode);//to track
     mMap3dWidget->setViewpoint(vp, 5);
 }
 osg::Node* ObjectTracker::createLine(osg::Vec3Array* vertex, float lineWidth)
@@ -194,63 +225,107 @@ osg::Node* ObjectTracker::createLine(osg::Vec3Array* vertex, float lineWidth)
 void ObjectTracker::drawCordination(const osg::Vec3d &pos)
 {
     osg::Geode* gnode = new osg::Geode;
-    osg::Geometry* geomX = new osg::Geometry;
-    osg::Geometry* geomY = new osg::Geometry;
-    osg::Geometry* geomZ = new osg::Geometry;
-    gnode->addDrawable(geomX);
-    gnode->addDrawable(geomY);
-    gnode->addDrawable(geomZ);
 
-    // Set vertex
-    osg::Vec3Array* keyPoint = new osg::Vec3Array;
-    keyPoint->push_back(pos + osg::Vec3d(10,0,0));
-    keyPoint->push_back(pos);
-    geomX->setVertexArray(keyPoint);
-    // Set the color
-    osg::Vec4Array* color = new osg::Vec4Array();
-    color->push_back(osg::Vec4(1.0, 0.0, 0.0, 1.0));
-    geomX->setColorArray(color, osg::Array::BIND_OVERALL);
-    // Set the line width
-    osg::LineWidth* lw = new osg::LineWidth(2);
-    geomX->getOrCreateStateSet()->setAttribute(lw, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
-    // Turn off the light to make it brighter
-    geomX->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
-    // Set add as line
-    geomX->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, 2));
+    //X axis with red color----------------------------------------------------------------
+    {
+        osg::Geometry* geom = new osg::Geometry;
+        // Set vertex
+        osg::Vec3Array* keyPoint = new osg::Vec3Array;
+        keyPoint->push_back(pos + osg::Vec3d(10,0,0));
+        keyPoint->push_back(pos);
+        geom->setVertexArray(keyPoint);
+        // Set the color red x
+        osg::Vec4Array* color = new osg::Vec4Array();
+        color->push_back(osg::Vec4(1.0, 0.0, 0.0, 1.0));
+        geom->setColorArray(color, osg::Array::BIND_OVERALL);
+        // Set the line width
+        osg::LineWidth* lw = new osg::LineWidth(2);
+        geom->getOrCreateStateSet()->setAttribute(lw, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
+        // Turn off the light to make it brighter
+        geom->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
+        // Set add as line
+        geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, 2));
+        gnode->addDrawable(geom);
 
-    // Set vertex
-    osg::Vec3Array* keyPoint1 = new osg::Vec3Array;
-    keyPoint1->push_back(pos+osg::Vec3d(0,10,0));
-    keyPoint1->push_back(pos);
-    geomY->setVertexArray(keyPoint1);
-    // Set the color
-    osg::Vec4Array* color1 = new osg::Vec4Array();
-    color1->push_back(osg::Vec4(0.0, 1.0, 0.0, 1.0));
-    geomY->setColorArray(color1, osg::Array::BIND_OVERALL);
-    // Set the line width
-    osg::LineWidth* lw1 = new osg::LineWidth(2);
-    geomY->getOrCreateStateSet()->setAttribute(lw1, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
-    // Turn off the light to make it brighter
-    geomY->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
-    // Set add as line
-    geomY->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, 2));
+        osgText::Text* text = new osgText::Text;
+        text->setFont();
+        text->setColor(color->at(0));
+        text->setCharacterSize(2);
+        text->setPosition(pos + osg::Vec3d(10,0,0));
 
-    // Set vertex
-    osg::Vec3Array* keyPoint2 = new osg::Vec3Array;
-    keyPoint2->push_back(pos+osg::Vec3d(0,0,10));
-    keyPoint2->push_back(pos);
-    geomZ->setVertexArray(keyPoint2);
-    // Set the color
-    osg::Vec4Array* color2 = new osg::Vec4Array();
-    color2->push_back(osg::Vec4(0.0, 0.0, 1.0, 1.0));
-    geomZ->setColorArray(color2, osg::Array::BIND_OVERALL);
-    // Set the line width
-    osg::LineWidth* lw2 = new osg::LineWidth(2);
-    geomZ->getOrCreateStateSet()->setAttribute(lw2, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
-    // Turn off the light to make it brighter
-    geomZ->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
-    // Set add as line
-    geomZ->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, 2));
+        // the default layout is left to right, typically used in languages
+        // originating from europe such as English, French, German, Spanish etc..
+        text->setLayout(osgText::Text::LEFT_TO_RIGHT);
+        text->setText("X");
+        gnode->addDrawable(text);
+    }
+
+    //Y axis with green color-----------------------------------------------------------------
+    {
+        osg::Geometry* geom = new osg::Geometry;
+        // Set vertex
+        osg::Vec3Array* keyPoint = new osg::Vec3Array;
+        keyPoint->push_back(pos + osg::Vec3d(0,10,0));
+        keyPoint->push_back(pos);
+        geom->setVertexArray(keyPoint);
+        // Set the color red x
+        osg::Vec4Array* color = new osg::Vec4Array();
+        color->push_back(osg::Vec4(0.0, 1.0, 0.0, 1.0));
+        geom->setColorArray(color, osg::Array::BIND_OVERALL);
+        // Set the line width
+        osg::LineWidth* lw = new osg::LineWidth(2);
+        geom->getOrCreateStateSet()->setAttribute(lw, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
+        // Turn off the light to make it brighter
+        geom->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
+        // Set add as line
+        geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, 2));
+        gnode->addDrawable(geom);
+
+        osgText::Text* text = new osgText::Text;
+        text->setFont();
+        text->setColor(color->at(0));
+        text->setCharacterSize(2);
+        text->setPosition(pos + osg::Vec3d(0,10,0));
+
+        // the default layout is left to right, typically used in languages
+        // originating from europe such as English, French, German, Spanish etc..
+        text->setLayout(osgText::Text::LEFT_TO_RIGHT);
+        text->setText("Y");
+        gnode->addDrawable(text);
+    }
+    //Z axis with blue color-----------------------------------------------------------------
+    {
+        osg::Geometry* geom = new osg::Geometry;
+        // Set vertex
+        osg::Vec3Array* keyPoint = new osg::Vec3Array;
+        keyPoint->push_back(pos + osg::Vec3d(0,0,10));
+        keyPoint->push_back(pos);
+        geom->setVertexArray(keyPoint);
+        // Set the color red x
+        osg::Vec4Array* color = new osg::Vec4Array();
+        color->push_back(osg::Vec4(0.0, 0.0, 1.0, 1.0));
+        geom->setColorArray(color, osg::Array::BIND_OVERALL);
+        // Set the line width
+        osg::LineWidth* lw = new osg::LineWidth(2);
+        geom->getOrCreateStateSet()->setAttribute(lw, osg::StateAttribute::ON | osg::StateAttribute::PROTECTED);
+        // Turn off the light to make it brighter
+        geom->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
+        // Set add as line
+        geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, 2));
+        gnode->addDrawable(geom);
+
+        osgText::Text* text = new osgText::Text;
+        text->setFont();
+        text->setColor(color->at(0));
+        text->setCharacterSize(2);
+        text->setPosition(pos + osg::Vec3d(0,0,10));
+
+        // the default layout is left to right, typically used in languages
+        // originating from europe such as English, French, German, Spanish etc..
+        text->setLayout(osgText::Text::LEFT_TO_RIGHT);
+        text->setText("Z");
+        gnode->addDrawable(text);
+    }
 
     mMap3dWidget->mMapRoot->addChild(gnode);
 

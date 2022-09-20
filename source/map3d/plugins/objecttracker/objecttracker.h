@@ -1,4 +1,4 @@
-﻿#ifndef OBJECTTRACKER_H
+#ifndef OBJECTTRACKER_H
 #define OBJECTTRACKER_H
 
 #include "plugininterface.h"
@@ -27,17 +27,18 @@ class ObjectTracker : public PluginInterface
 public:
     explicit ObjectTracker(QWidget *parent = nullptr);
     void setUpUI() override;
-    osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime);
-    void setPosition(const osg::Vec3d& pos, float speed);
+//    osg::AnimationPath* createAnimationPath(const osg::Vec3d &pos1, const osg::Vec3d &pos2, float speed);
+    void setPosition(const osg::Vec3d& pos, double speed);
     void addModel();
     osg::Node* createLine(osg::Vec3Array* vertex , float lineWidth);
     void drawCordination(const osg::Vec3d& pos);
 
 private:
     void trackObject();
+    void demo();
     osgEarth::Annotation::ModelNode*  model;
     osg::PositionAttitudeTransform* modelNode;
-    int de{0};
+    osg::Vec3d mCurrentWorldPoint;
 
     friend class MyAnimationPathCallback;
 };
