@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     earthfile \
-    objecttracker
+    objecttracker \
+    visibility

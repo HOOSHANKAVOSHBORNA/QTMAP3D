@@ -40,7 +40,7 @@ private:
     osg::PositionAttitudeTransform* modelNode;
     osg::Vec3d mCurrentWorldPoint;
 
-    friend class MyAnimationPathCallback;
+//    friend class MyAnimationPathCallback;
 };
 
 #endif // OBJECTTRACKER_H
