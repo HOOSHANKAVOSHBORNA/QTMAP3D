@@ -1,8 +1,7 @@
 #include "objecttracker.h"
 #include "map3dwidget.h"
+#include "toolbarwidget.h"
 
-#include <QAction>
-#include <QToolBar>
 #include <QDebug>
 #include <QTimer>
 
@@ -25,28 +24,34 @@ ObjectTracker::ObjectTracker(QWidget *parent)
 
 void ObjectTracker::setUpUI()
 {
-    //    const QIcon readIcon (":/res/read.png");
-    auto trackAction = new QAction("Add Model");
-    trackAction->setToolTip("Adding a 3D model.");
-    mToolBar->addAction(trackAction);
-    QObject::connect(trackAction, &QAction::triggered, this, &ObjectTracker::trackObject);
+    ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
+    QString nameAddModel = "Add 3D Model";
+    mToolBar->addItem(cat, nameAddModel, "");
 
-    auto tAction = new QAction("Track");
-    tAction->setToolTip("Tracking a 3D model.");
-    mToolBar->addAction(tAction);
-    QObject::connect(tAction, &QAction::triggered, [=]{
-        auto vp = mMap3dWidget->getViewpoint();
-        vp.setNode(modelNode);//to track
-        mMap3dWidget->setViewpoint(vp);
-        auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
-        camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
-        //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
-        mMap3dWidget->mEarthManipulator->applySettings(camSet);
-        demo();
-        QTimer *timer = new QTimer(this);
-        connect(timer, &QTimer::timeout,this, &ObjectTracker::demo);
-        timer->start(10000);
+    QString nameTrack = "Tracking 3D Models";
+    mToolBar->addItem(cat, nameTrack, "");
+
+    QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name){
+        if(cat == category && name == nameAddModel)
+        {
+            addModel();
+        }
+        else if(cat == category && name == nameTrack)
+        {
+            auto vp = mMap3dWidget->getViewpoint();
+            vp.setNode(modelNode);//to track
+            mMap3dWidget->setViewpoint(vp);
+            auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
+            camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
+            //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
+            mMap3dWidget->mEarthManipulator->applySettings(camSet);
+            demo();
+            QTimer *timer = new QTimer(this);
+            connect(timer, &QTimer::timeout,this, &ObjectTracker::demo);
+            timer->start(10000);
+        }
     });
+
 }
 
 void ObjectTracker::trackObject()
@@ -166,17 +171,24 @@ void ObjectTracker::addModel()
     {
         return;
     }
-    //    osgEarth::Symbology::Style  style;
-    //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
-    ////    osg::ref_ptr<osgEarth::Annotation::ModelNode>  model;
-    //    model = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
-    //    //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
-    //    //osgEarth::GeoPoint pos(srs,52.859, 35.241);
-    //    //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
-    //    osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 1100);
-    //    model->setPosition(point);
-    //    model->setScale(osg::Vec3(1,1,1));
-    //    mMap3dWidget->getMapNode()->addChild(model);
+//        osgEarth::Symbology::Style  style;
+////        style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::Green;
+////        style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 5.0f;
+////        style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() =osgEarth::Color(osg::Vec4(0.0f,1.0f,0.0f,0.5f));
+//        //geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize()->set(75000, Units::METERS);
+////        style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
+////        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+////        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
+//        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+
+//        model = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
+//        //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
+//        //osgEarth::GeoPoint pos(srs,52.859, 35.241);
+//        //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
+//        osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.859, 35.241, 10, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+//        model->setPosition(point);
+//        model->setScale(osg::Vec3(1,1,1));
+//        mMap3dWidget->getMapNode()->addChild(model);
     //Add to map -------------------------------------------------------------------
     modelNode = new osg::PositionAttitudeTransform;
     modelNode->addChild(node);

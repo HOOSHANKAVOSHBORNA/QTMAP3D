@@ -1,5 +1,6 @@
 #include "plugininterface.h"
 #include "pluginmanager.h"
+#include "toolbarwidget.h"
 
 #include <QPluginLoader>
 #include <QApplication>
@@ -8,7 +9,7 @@
 #include <QDir>
 
 
-PluginManager::PluginManager(Map3dWidget* map3dWidget, QToolBar *toolBar)
+PluginManager::PluginManager(Map3dWidget* map3dWidget, ToolBarWidget *toolBar)
 {
     mMap3dWidget = map3dWidget;
     mToolBar = toolBar;

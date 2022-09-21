@@ -25,5 +25,9 @@
         <file>res/icon/zoomout-p.png</file>
         <file>res/icon/zoomout-r.png</file>
         <file>res/world.tif</file>
+        <file>res/icon/unpin.png</file>
+        <file>res/icon/toolbarmenu.png</file>
+        <file>res/icon/pin.png</file>
+        <file>res/icon/puzzle.png</file>
     </qresource>
 </RCC>

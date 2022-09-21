@@ -23,7 +23,8 @@ SOURCES += \
     map3dlib.cpp \
     map3dwidget.cpp \
     plugininterface.cpp \
-    pluginmanager.cpp
+    pluginmanager.cpp \
+    toolbarwidget.cpp
 
 HEADERS += \
     cameramanipulatorwidget.h \
@@ -32,7 +33,8 @@ HEADERS += \
     map3dlib.h \
     map3dwidget.h \
     plugininterface.h \
-    pluginmanager.h
+    pluginmanager.h \
+    toolbarwidget.h
 
 # Default rules for deployment.
 unix {

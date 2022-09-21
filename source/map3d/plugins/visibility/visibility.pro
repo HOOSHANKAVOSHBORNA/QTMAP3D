@@ -23,7 +23,7 @@ SOURCES += \
     visibility.cpp
 
 HEADERS += \
-    Visibility.h
+    visibility.h
 
 DISTFILES += visibility.json
 

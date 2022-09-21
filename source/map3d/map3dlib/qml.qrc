@@ -2,5 +2,17 @@
     <qresource prefix="/">
         <file>Compass.qml</file>
         <file>CameraManipulatorWidget.qml</file>
+        <file>toolbarwidget/ItemRec.qml</file>
+        <file>toolbarwidget/MenuSlide.qml</file>
+        <file>toolbarwidget/Panelanalyze.qml</file>
+        <file>toolbarwidget/Paneldraw.qml</file>
+        <file>toolbarwidget/Paneleffect.qml</file>
+        <file>toolbarwidget/Panelfeature.qml</file>
+        <file>toolbarwidget/Panelfile.qml</file>
+        <file>toolbarwidget/Panelimage.qml</file>
+        <file>toolbarwidget/PanelItem.qml</file>
+        <file>toolbarwidget/Panelmeasure.qml</file>
+        <file>toolbarwidget/Panelmodel.qml</file>
+        <file>toolbarwidget/Panelterrain.qml</file>
     </qresource>
 </RCC>

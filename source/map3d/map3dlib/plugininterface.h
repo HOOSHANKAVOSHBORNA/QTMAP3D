@@ -4,7 +4,7 @@
 #include <QWidget>
 
 class Map3dWidget;
-class QToolBar;
+class ToolBarWidget;
 
 class PluginInterface: public QWidget
 {
@@ -14,11 +14,11 @@ public:
     virtual void setUpUI() = 0;
     void setMap3dWidget(Map3dWidget *value);
 
-    void setToolBar(QToolBar *toolBar);
+    void setToolBar(ToolBarWidget *toolBar);
 
 protected:
     Map3dWidget *mMap3dWidget;
-    QToolBar* mToolBar;
+    ToolBarWidget* mToolBar;
 };
 
 QT_BEGIN_NAMESPACE

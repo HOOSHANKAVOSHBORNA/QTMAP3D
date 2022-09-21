@@ -6,12 +6,18 @@
 #include "map3dlib_global.h"
 #include "map3dwidget.h"
 
+class ToolBarWidget;
 
 class MAP3DLIB_EXPORT Map3dlib: public QMainWindow
 {
     Q_OBJECT
 public:
     Map3dlib(QWidget *parent = nullptr);
+private:
+    void onToolBarWidgetPin(bool isPin);
+private:
+    QDockWidget *mToolBarDocWidget;
+    ToolBarWidget* mToolBarWidget;
 };
 
 #endif // MAP3DLIB_H
