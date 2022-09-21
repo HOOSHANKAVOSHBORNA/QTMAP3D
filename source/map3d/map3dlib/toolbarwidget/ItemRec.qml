@@ -7,13 +7,13 @@ Rectangle {
     property var name:"item"
     property string icon :"qrc:/res/icon/puzzle.png"
    width: 220
-   height: 30
+   height: 22
    color:"transparent"
    Layout.alignment: Qt.AlignHCenter
    Image {
 
-       width: 24
-       height: 24
+       width: 20
+       height: 20
        anchors.verticalCenter: parent.verticalCenter
        id:image
        anchors.left: parent.left
@@ -39,7 +39,7 @@ Rectangle {
        anchors.verticalCenter: parent.verticalCenter
        width: parent.width - image.width
        //horizontalAlignment: Text.AlignHCenter
-
+       font.pointSize: 10
        color: "white"
    }
    MouseArea{

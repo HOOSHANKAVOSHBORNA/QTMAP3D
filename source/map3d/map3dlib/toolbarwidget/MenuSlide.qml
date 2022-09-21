@@ -22,7 +22,7 @@ Rectangle{
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.leftMargin: 3
-        anchors.rightMargin: 1
+        anchors.rightMargin: 3
         state: "close"
         Image {
             id: iconname
@@ -107,7 +107,7 @@ Rectangle{
     Rectangle{
         id:toolbar
         anchors.right: parent.right
-        anchors.rightMargin: 1
+        anchors.rightMargin: 3
         anchors.left: parent.left
         anchors.leftMargin: 3
         anchors.top: back.bottom

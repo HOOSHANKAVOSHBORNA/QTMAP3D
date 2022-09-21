@@ -15,9 +15,10 @@ Item {
             left: parent.left
             right: parent.right
         }
-
-        height: 30
-        color:  "#282A31"
+        border.color:"#282A31"
+        border.width: 0.5
+        height: 25
+        color:  "#404142"
         Text {
             anchors.fill: parent
             anchors.margins: 10
@@ -25,10 +26,12 @@ Item {
             verticalAlignment: Text.AlignVCenter
             text: root.title
             color: "white"
+            font.bold: false
+            font.pointSize: 10
 
         }
         Image {
-            source: "qrc:/res/icons8-sort-down-96.png"
+            source: "qrc:/res/icon/sort-down.png"
             width: 16
             height: 16
             anchors.right: parent.right
@@ -45,7 +48,7 @@ Item {
     }
     Rectangle {
         id: container
-        color: "#006eff"
+        color: "#282A31"
         anchors.top: bar.bottom
         anchors.left: parent.left
         anchors.right: parent.right

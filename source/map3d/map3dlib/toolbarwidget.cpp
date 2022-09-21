@@ -26,6 +26,8 @@ ToolBarWidget::ToolBarWidget(QWidget *parent)
 
 void ToolBarWidget::addItem(Category category, QString name, QString icon)
 {
+    if(icon == "")
+        icon = "qrc:/res/icon/puzzle.png";
     mItemName = name;
     mItemIcon = icon;
     mItemCategory = categoryString(category);

@@ -29,5 +29,6 @@
         <file>res/icon/toolbarmenu.png</file>
         <file>res/icon/pin.png</file>
         <file>res/icon/puzzle.png</file>
+        <file>res/icon/sort-down.png</file>
     </qresource>
 </RCC>

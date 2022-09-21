@@ -24,7 +24,7 @@ void EarthFile::setUpUI()
     mToolBar->addItem(cat, nameImport, "qrc:/res/read.png");
 
     QString nameExport = "Export .earth";
-    mToolBar->addItem(cat, nameExport, ":/res/write.png");
+    mToolBar->addItem(cat, nameExport, "qrc:/res/write.png");
 
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name){
         if(cat == category && name == nameImport)
