@@ -24,20 +24,28 @@ Rectangle{
         anchors.leftMargin: 3
         anchors.rightMargin: 3
         state: "close"
+        Rectangle{
+            id:backmenu
+            anchors.left: parent.left
+            anchors.leftMargin: 5
+            width: 25
+            height: 25
+            anchors.verticalCenter: parent.verticalCenter
+            radius: 50
+            color: "#88000000"
         Image {
             id: iconname
             source: "qrc:/res/icon/toolbarmenu.png"
-            anchors.left: parent.left
-            anchors.leftMargin: 5
-            width: 20
-            height: 20
-            anchors.verticalCenter: parent.verticalCenter
+            width: 18
+            height: 18
+            anchors.centerIn: parent
             MouseArea{
                 anchors.fill: parent
 
                 onClicked: {
                     if (back.state==="open"){
                         close.start()
+                        backmenu.color = "#88000000"
                         back.rotation=0
                         back.state="close"
                         pin.visible =false
@@ -49,11 +57,13 @@ Rectangle{
                         back.state="open"
                         pin.visible =true
                         back.color = "#282A31"
+                        backmenu.color = "transparent"
 
                     }
                 }
             }
         }
+    }
         Image {
             id: pin
             visible: false
