@@ -27,43 +27,44 @@ Rectangle{
         Rectangle{
             id:backmenu
             anchors.left: parent.left
-            anchors.leftMargin: 5
-            width: 25
-            height: 25
-            anchors.verticalCenter: parent.verticalCenter
-            radius: 50
+            anchors.leftMargin: 1
+            width: 40
+            height: 40
+            anchors.top: parent.top
+            anchors.topMargin: 8
+            radius: 10
             color: "#88000000"
-        Image {
-            id: iconname
-            source: "qrc:/res/icon/toolbarmenu.png"
-            width: 18
-            height: 18
-            anchors.centerIn: parent
             MouseArea{
                 anchors.fill: parent
 
                 onClicked: {
                     if (back.state==="open"){
                         close.start()
-                        backmenu.color = "#88000000"
-                        back.rotation=0
                         back.state="close"
-                        pin.visible =false
-                        back.color = "transparent"
-
                     }else
                     {
                         open.start()
                         back.state="open"
+
                         pin.visible =true
                         back.color = "#282A31"
                         backmenu.color = "transparent"
+                        backmenu.anchors.topMargin =-8
+                        backmenu.anchors.leftMargin= -5
+
 
                     }
                 }
             }
+            Image {
+                id: iconname
+                source: "qrc:/res/icon/toolbarmenu.png"
+                width: 20
+                height: 20
+                anchors.centerIn: parent
+
+            }
         }
-    }
         Image {
             id: pin
             visible: false
@@ -81,13 +82,13 @@ Rectangle{
                         pin.source = "qrc:/res/icon/pin.png"
                         pin.state = "setunpin"
                         valuePin = true
-                        iconname.enabled =false
+                        backmenu.enabled =false
                         NamePlugin.onPin(valuePin)
                     }else{
                         pin.source = "qrc:/res/icon/unpin.png"
                         pin.state = "setpin"
                         valuePin = false
-                        iconname.enabled =true
+                        backmenu.enabled =true
                         NamePlugin.onPin(valuePin)
                     }
 
@@ -112,6 +113,15 @@ Rectangle{
         from:400
         to:0
         duration: 200
+        onStopped: {
+            backmenu.color = "#88000000"
+            backmenu.anchors.topMargin = 8
+            backmenu.anchors.leftMargin = 1
+            back.rotation=0
+
+            pin.visible =false
+            back.color = "transparent"
+        }
 
     }
     Rectangle{
