@@ -20,10 +20,10 @@ EarthFile::EarthFile(QWidget *parent):
 void EarthFile::setUpUI()
 {
     ToolBarWidget::Category cat = ToolBarWidget::Category::File;
-    QString nameImport = "Import .earth";
+    QString nameImport = "Import(.earth)";
     mToolBar->addItem(cat, nameImport, "qrc:/res/read.png");
 
-    QString nameExport = "Export .earth";
+    QString nameExport = "Export(.earth)";
     mToolBar->addItem(cat, nameExport, "qrc:/res/write.png");
 
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name){

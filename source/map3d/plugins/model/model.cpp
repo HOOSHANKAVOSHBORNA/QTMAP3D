@@ -1,4 +1,4 @@
-#include "objecttracker.h"
+#include "model.h"
 #include "map3dwidget.h"
 #include "toolbarwidget.h"
 
@@ -17,12 +17,12 @@
 #include <osgAnimation/EaseMotion>
 #include <osgEarth/ElevationLayer>
 
-ObjectTracker::ObjectTracker(QWidget *parent)
+Model::Model(QWidget *parent)
     : PluginInterface(parent)
 {
 }
 
-void ObjectTracker::setUpUI()
+void Model::setUpUI()
 {
     ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
     QString nameAddModel = "Add 3D Model";
@@ -47,19 +47,19 @@ void ObjectTracker::setUpUI()
             mMap3dWidget->mEarthManipulator->applySettings(camSet);
             demo();
             QTimer *timer = new QTimer(this);
-            connect(timer, &QTimer::timeout,this, &ObjectTracker::demo);
+            connect(timer, &QTimer::timeout,this, &Model::demo);
             timer->start(10000);
         }
     });
 
 }
 
-void ObjectTracker::trackObject()
+void Model::trackObject()
 {
     addModel();
 }
 
-void ObjectTracker::demo()
+void Model::demo()
 {
 
 //    qDebug()<<random;
@@ -124,7 +124,7 @@ void ObjectTracker::demo()
 //    return animationPath;
 //}
 
-void ObjectTracker::setPosition(const osg::Vec3d &pos, double speed)
+void Model::setPosition(const osg::Vec3d &pos, double speed)
 {
     osg::Vec3d currentPos = modelNode->getPosition();
     osg::Quat rotate;
@@ -163,7 +163,7 @@ void ObjectTracker::setPosition(const osg::Vec3d &pos, double speed)
     //    mMap3dWidget->setViewpoint(curentViewPoint, 0);
 }
 
-void ObjectTracker::addModel()
+void Model::addModel()
 {
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../map3dlib/data/models/air.osgb");
 
@@ -207,7 +207,7 @@ void ObjectTracker::addModel()
     //vp.pitch()->set(-25, osgEarth::Units::DEGREES);
     mMap3dWidget->setViewpoint(vp, 5);
 }
-osg::Node* ObjectTracker::createLine(osg::Vec3Array* vertex, float lineWidth)
+osg::Node* Model::createLine(osg::Vec3Array* vertex, float lineWidth)
 {
 
     osg::Geode* gnode = new osg::Geode;
@@ -234,7 +234,7 @@ osg::Node* ObjectTracker::createLine(osg::Vec3Array* vertex, float lineWidth)
     return gnode;
 }
 
-void ObjectTracker::drawCordination(const osg::Vec3d &pos)
+void Model::drawCordination(const osg::Vec3d &pos)
 {
     osg::Geode* gnode = new osg::Geode;
 

@@ -1,5 +1,5 @@
-#ifndef OBJECTTRACKER_H
-#define OBJECTTRACKER_H
+#ifndef MODEL_H
+#define MODEL_H
 
 #include "plugininterface.h"
 #include<osg/Array>
@@ -18,14 +18,14 @@ namespace osg{
     class Node;
 }
 
-class ObjectTracker : public PluginInterface
+class Model : public PluginInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID PluginInterface_iid FILE "objecttracker.json")
+    Q_PLUGIN_METADATA(IID PluginInterface_iid FILE "model.json")
     Q_INTERFACES(PluginInterface)
 
 public:
-    explicit ObjectTracker(QWidget *parent = nullptr);
+    explicit Model(QWidget *parent = nullptr);
     void setUpUI() override;
 //    osg::AnimationPath* createAnimationPath(const osg::Vec3d &pos1, const osg::Vec3d &pos2, float speed);
     void setPosition(const osg::Vec3d& pos, double speed);
@@ -43,4 +43,4 @@ private:
 //    friend class MyAnimationPathCallback;
 };
 
-#endif // OBJECTTRACKER_H
+#endif // MODEL_H
