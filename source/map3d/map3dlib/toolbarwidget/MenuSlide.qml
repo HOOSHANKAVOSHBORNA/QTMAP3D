@@ -8,8 +8,8 @@ Rectangle{
     property alias getstart: open
     property alias getstart1: close
     property int space: 3
-
-
+    height: 420
+    width: 200
     id:menu
     x:0
     color: "transparent"
@@ -28,11 +28,11 @@ Rectangle{
             id:backmenu
             anchors.left: parent.left
             anchors.leftMargin: 1
-            width: 40
-            height: 40
+            width: 30
+            height: 30
             anchors.top: parent.top
-            anchors.topMargin: 8
-            radius: 10
+            anchors.topMargin: 3
+            radius: 100
             color: "#88000000"
             MouseArea{
                 anchors.fill: parent
@@ -41,6 +41,7 @@ Rectangle{
                     if (back.state==="open"){
                         close.start()
                         back.state="close"
+                        NamePlugin.setSizeWidget(false)
                     }else
                     {
                         open.start()
@@ -49,9 +50,9 @@ Rectangle{
                         pin.visible =true
                         back.color = "#282A31"
                         backmenu.color = "transparent"
-                        backmenu.anchors.topMargin =-8
+                        backmenu.anchors.topMargin =-4
                         backmenu.anchors.leftMargin= -5
-
+                        NamePlugin.setSizeWidget(true)
 
                     }
                 }
@@ -84,12 +85,14 @@ Rectangle{
                         valuePin = true
                         backmenu.enabled =false
                         NamePlugin.onPin(valuePin)
+
                     }else{
                         pin.source = "qrc:/res/icon/unpin.png"
                         pin.state = "setpin"
                         valuePin = false
                         backmenu.enabled =true
                         NamePlugin.onPin(valuePin)
+                        NamePlugin.setSizeWidget(true)
                     }
 
                 }
@@ -115,7 +118,7 @@ Rectangle{
         duration: 200
         onStopped: {
             backmenu.color = "#88000000"
-            backmenu.anchors.topMargin = 8
+            backmenu.anchors.topMargin = 3
             backmenu.anchors.leftMargin = 1
             back.rotation=0
 
@@ -202,4 +205,5 @@ Rectangle{
 
     }
 }
+
 

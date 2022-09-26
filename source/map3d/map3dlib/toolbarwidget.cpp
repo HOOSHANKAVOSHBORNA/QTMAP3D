@@ -12,12 +12,17 @@ ToolBarWidget::ToolBarWidget(QWidget *parent)
     mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
     mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
     mQQuickWidget->setClearColor(Qt::transparent);
-    mQQuickWidget->resize(200, 450);
-    mQQuickWidget->raise();
+
 
     mQQuickWidget->engine()->rootContext()->setContextProperty("NamePlugin",this);
-    setMinimumSize(200,450);
-    setMaximumSize(200,450);
+    setMinimumSize(40,40);
+    connect(this ,&ToolBarWidget::changeSize,[=](bool t){
+           if(t){
+               resize(mQQuickWidget->size());
+               raise();
+           }
+    });
+
 
 }
 
@@ -55,6 +60,11 @@ QVariant ToolBarWidget::getItemCategory()
 void ToolBarWidget::onGetItemClicked(QString category, QString name)
 {
     emit onItemClicked(categoryEnum(category),name);
+}
+
+void ToolBarWidget::setSizeWidget(bool t)
+{
+    emit changeSize(t);
 }
 
 QString ToolBarWidget::categoryString(ToolBarWidget::Category category)

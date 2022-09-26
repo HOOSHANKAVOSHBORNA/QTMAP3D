@@ -31,15 +31,20 @@ public:
     Q_INVOKABLE  QVariant getItemCategory() ;
 public slots:
     void onGetItemClicked(QString category ,QString name);
+    void setSizeWidget(bool t);
 
 signals:
     void onItemClicked(Category category ,QString name);
     Q_INVOKABLE void onPin(bool t);
     Q_INVOKABLE void itemAdded ();
+
 private:
     QString categoryString(Category category);
     Category categoryEnum(QString category);
+private slots:
 
+signals:
+   void changeSize(bool t);
 private:
     QQuickWidget *mQQuickWidget;
     QVariant    mItemName;
