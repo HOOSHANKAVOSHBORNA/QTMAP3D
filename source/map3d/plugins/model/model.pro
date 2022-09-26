@@ -23,6 +23,7 @@ SOURCES += \
     model.cpp
 
 HEADERS += \
+    draw.h \
     model.h
 
 DISTFILES += \

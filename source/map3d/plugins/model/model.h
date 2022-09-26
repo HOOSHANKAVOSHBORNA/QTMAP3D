@@ -30,11 +30,8 @@ public:
 //    osg::AnimationPath* createAnimationPath(const osg::Vec3d &pos1, const osg::Vec3d &pos2, float speed);
     void setPosition(const osg::Vec3d& pos, double speed);
     void addModel();
-    osg::Node* createLine(osg::Vec3Array* vertex , float lineWidth);
-    void drawCordination(const osg::Vec3d& pos);
 
 private:
-    void trackObject();
     void demo();
     osgEarth::Annotation::ModelNode*  model;
     osg::PositionAttitudeTransform* modelNode;

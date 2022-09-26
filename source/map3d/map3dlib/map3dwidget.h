@@ -29,6 +29,31 @@ class Viewpoint;
 //class Group;
 
 //}
+namespace osgViewer
+{
+class View;
+}
+
+class  MousePicker:public QObject, public osgGA::GUIEventHandler
+{
+    Q_OBJECT
+
+public:
+    MousePicker(QObject *parent = nullptr);
+    virtual ~MousePicker()override{}
+signals:
+    void  currentWorldPos(osg::Vec3d pos);
+protected:
+    // Public main entrance for GUIEventHandler
+    bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+private:
+    // Intersect with the scene and update info about the intersected point
+    void  getPos(osgViewer::View *view, const osgGA::GUIEventAdapter &ea);
+
+private:
+    osg::Vec3d mCurrentLocalPos;
+    osg::Vec3d mCurrentWorldPos;
+};
 
 class Map3dWidget: public QWidget
 {
@@ -47,6 +72,8 @@ public slots:
     void setZoom(double);
     void home();
     void typeChanged(bool);
+private slots:
+    void mouseWorldPos(osg::Vec3d pos);
 protected:
     void resizeEvent(QResizeEvent* event) override;
 private:

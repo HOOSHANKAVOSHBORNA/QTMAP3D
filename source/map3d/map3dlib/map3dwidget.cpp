@@ -13,6 +13,7 @@
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osg/Camera>
+#include <osgGA/GUIEventHandler>
 
 #include <QDirIterator>
 #include<QDebug>
@@ -20,6 +21,7 @@
 #include <QSlider>
 #include <QHBoxLayout>
 #include <exception>
+#include <QObject>
 
 using namespace osgEarth;
 using namespace osgEarth::Drivers;
@@ -35,6 +37,66 @@ const double MAX_DISTANCE{1000000000.0};
 const double MAX_OFSET{5000.0};
 
 
+MousePicker::MousePicker(QObject *parent)
+{
+
+}
+
+bool MousePicker::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+
+    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
+
+    switch (ea.getEventType())
+    {
+    case (osgGA::GUIEventAdapter::PUSH):
+        if (view) { getPos(view, ea); }
+        return false;
+    case (osgGA::GUIEventAdapter::MOVE):
+        if (view) { getPos(view, ea); }
+        return false;
+    case (osgGA::GUIEventAdapter::DOUBLECLICK):
+    case (osgGA::GUIEventAdapter::KEYDOWN):
+        if (view) { getPos(view, ea); }
+        return false;
+    default:
+
+        return false;
+    }
+}
+
+void MousePicker::getPos(osgViewer::View *view, const osgGA::GUIEventAdapter &ea)
+{
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    // Only interact with data nodes and map nodes
+    if (view->computeIntersections(ea, intersections))
+    {
+        for (const auto &intersection : intersections)
+        {
+            bool  visible = true;
+            //                for (const auto node : intersection.nodePath)
+            //                {
+            //                    // Only count the intersection in main view
+            //                    if ((node->getNodeMask() & 0x10000000) == 0)
+            //                    {
+            //                        visible = false;
+            //                        break;
+            //                    }
+            //                }
+
+            if (visible)
+            {
+                mCurrentLocalPos    = intersection.getLocalIntersectPoint();
+                mCurrentWorldPos    = intersection.getWorldIntersectPoint();
+                emit currentWorldPos(mCurrentWorldPos);
+                //qDebug() << mCurrentWorldPos.x()<<" "<<mCurrentWorldPos.y()<<" "<<mCurrentWorldPos.z();
+                return;
+            }
+        }
+    }
+}
+
+
 Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
     : QWidget(parent)
 {
@@ -42,6 +104,7 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
     mLayout = new QHBoxLayout(this);
     mLayout->setMargin(0);
     mMapOpenGLWidget = new osgQOpenGLWidget(this);
+    mMapOpenGLWidget->setMouseTracking(true);
 
     mLayout->addWidget(mMapOpenGLWidget);
     createWidgets();
@@ -50,6 +113,10 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         //create camera ----------------------------------------------
         createManipulator();
         mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
+        //add mouse event handler
+        auto mousePicker = new MousePicker();
+        QObject::connect(mousePicker, &MousePicker::currentWorldPos, this,  &Map3dWidget::mouseWorldPos);
+        mMapOpenGLWidget->getOsgViewer()->addEventHandler(mousePicker);
         //create map node---------------------------------------------
         GDALOptions gdal;
         gdal.url() = "../map3dlib/data/earth_files/world.tif";
@@ -79,6 +146,8 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         mCmWidget->setStateMap(isGeocentric);
 
     });
+
+    //setMouseTracking(true);
 }
 
 void Map3dWidget::setMap(Map *map)
@@ -86,28 +155,28 @@ void Map3dWidget::setMap(Map *map)
     mMapNodeGeo->getMap()->clear();
     mMapNodeProj->getMap()->clear();
 
-//    LayerVector layers;
-//    map->getLayers(layers);
-//    foreach (auto layer, layers) {
-//        qDebug()<<layer->getName().c_str();
-//        qDebug()<<layer->getTypeName();
-//        ImageLayer* imLayere = static_cast<ImageLayer*>(layer.get());
-//        auto lay2 = static_cast<ImageLayer*>(imLayere->clone(osg::CopyOp::SHALLOW_COPY));
-//        mMapNodeGeo->getMap()->addLayer(imLayere);
-//        mMapNodeProj->getMap()->addLayer(lay2);
-//    }
+    //    LayerVector layers;
+    //    map->getLayers(layers);
+    //    foreach (auto layer, layers) {
+    //        qDebug()<<layer->getName().c_str();
+    //        qDebug()<<layer->getTypeName();
+    //        ImageLayer* imLayere = static_cast<ImageLayer*>(layer.get());
+    //        auto lay2 = static_cast<ImageLayer*>(imLayere->clone(osg::CopyOp::SHALLOW_COPY));
+    //        mMapNodeGeo->getMap()->addLayer(imLayere);
+    //        mMapNodeProj->getMap()->addLayer(lay2);
+    //    }
 
     mMapNodeGeo->getMap()->setLayersFromMap(map);
     mMapNodeProj->getMap()->setLayersFromMap(map);
 
-//    LayerVector layers1;
-//    mMapNodeGeo->getMap()->getLayers(layers1);
-//    foreach (auto layer, layers1) {
-//        qDebug()<<layer->getName().c_str();
-//        qDebug()<<layer->getTypeName();
-//        //mMapNodeGeo->getMap()->addLayer(layer.get());
-//        //mMapNodeProj->getMap()->addLayer(layer.get());
-//    }
+    //    LayerVector layers1;
+    //    mMapNodeGeo->getMap()->getLayers(layers1);
+    //    foreach (auto layer, layers1) {
+    //        qDebug()<<layer->getName().c_str();
+    //        qDebug()<<layer->getTypeName();
+    //        //mMapNodeGeo->getMap()->addLayer(layer.get());
+    //        //mMapNodeProj->getMap()->addLayer(layer.get());
+    //    }
 
     mCmWidget->setStateMap(map->isGeocentric());
     typeChanged(map->isGeocentric());
@@ -179,7 +248,7 @@ void Map3dWidget::setZoom(double val)
 void Map3dWidget::home()
 {
     mEarthManipulator->home(0);
-//        mEarthManipulator->setViewpoint(mHomeViewpoint);
+    //        mEarthManipulator->setViewpoint(mHomeViewpoint);
     mCompassWidget->setPoint(0);
 }
 
@@ -189,24 +258,31 @@ void Map3dWidget::typeChanged(bool isGeocentric)
     //qDebug()<<"isGeneric:"<<isGeocentric;
     mMapNodeGeo->setNodeMask(isGeocentric);
     mMapNodeProj->setNodeMask(!isGeocentric);
-//    mEarthManipulator->updateProjection()
-//    osg::Camera *c = new osg::Camera() ;
-//    mEarthManipulator->updateCamera(*c);
-//    mEarthManipulator->setInitialVFOV(0);
-//    auto cam = new osgEarth::Util::EarthManipulator;
-//    auto  settings = cam->getSettings();
-//    qDebug()<<settings->getOrthoTracksPerspective();
-//    settings->setOrthoTracksPerspective(isGeocentric);
-//    qDebug()<<settings->getOrthoTracksPerspective();
+    //    mEarthManipulator->updateProjection()
+    //    osg::Camera *c = new osg::Camera() ;
+    //    mEarthManipulator->updateCamera(*c);
+    //    mEarthManipulator->setInitialVFOV(0);
+    //    auto cam = new osgEarth::Util::EarthManipulator;
+    //    auto  settings = cam->getSettings();
+    //    qDebug()<<settings->getOrthoTracksPerspective();
+    //    settings->setOrthoTracksPerspective(isGeocentric);
+    //    qDebug()<<settings->getOrthoTracksPerspective();
     //settings->setMinMaxPitch(90, 180);
     //cam->applySettings(settings);
     Viewpoint vp = mEarthManipulator->getViewpoint();
-//    qDebug()<<"vp.heading():"<<QString::fromUtf8(vp.heading()->asString().c_str());
-//    qDebug()<<"vp.pitch():"<<QString::fromUtf8(vp.pitch()->asString().c_str());
-//    qDebug()<<"vp.range():"<<QString::fromUtf8(vp.range()->asString().c_str());
+    //    qDebug()<<"vp.heading():"<<QString::fromUtf8(vp.heading()->asString().c_str());
+    //    qDebug()<<"vp.pitch():"<<QString::fromUtf8(vp.pitch()->asString().c_str());
+    //    qDebug()<<"vp.range():"<<QString::fromUtf8(vp.range()->asString().c_str());
     createManipulator();
     mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
     mEarthManipulator->setViewpoint(vp);
+}
+
+void Map3dWidget::mouseWorldPos(osg::Vec3d pos)
+{
+    osgEarth::GeoPoint geoPos;
+    geoPos.fromWorld(mMapNodeGeo->getMapSRS(),pos);
+    qDebug() << geoPos.x()<<" "<<geoPos.y()<<" "<<geoPos.z();
 }
 void Map3dWidget::resizeEvent(QResizeEvent* event)
 {
@@ -216,4 +292,3 @@ void Map3dWidget::resizeEvent(QResizeEvent* event)
     if(mCompassWidget)
         mCompassWidget->move(this->width()- mCompassWidget->width() - 5, this->height()- mCompassWidget->height() - 5);
 }
-
