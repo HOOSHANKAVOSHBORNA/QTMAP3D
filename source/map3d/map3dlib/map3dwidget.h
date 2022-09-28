@@ -64,10 +64,11 @@ public:
     void setMap(osgEarth::Map *map);
     void setViewpoint( const osgEarth::Viewpoint& vp, double duration_s =0.0 );
     osgEarth::Viewpoint getViewpoint() const;
-
+    //void mousePressEvent (QMouseEvent *event) override;
     osgEarth::MapNode* getMapNode();
     osg::ref_ptr<osg::Group> mMapRoot;
     osg::ref_ptr<osgEarth::Util::EarthManipulator> mEarthManipulator;
+
 public slots:
     void setZoom(double);
     void home();

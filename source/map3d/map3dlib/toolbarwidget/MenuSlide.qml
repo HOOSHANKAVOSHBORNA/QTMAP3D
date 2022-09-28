@@ -14,6 +14,16 @@ Rectangle{
     x:0
     color: "transparent"
     //state: "open"
+    Connections{
+        target: NamePlugin
+        onClose:{
+            if (!valuepin && back.state === "open"){
+                close.start()
+                widgetrack.state = "close"
+            }
+
+        }
+    }
     Rectangle{
         id: back
         height: 23

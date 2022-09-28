@@ -12,7 +12,7 @@ Item {
                     object.name =String(NamePlugin.getItemName());
                     object.icon = String(NamePlugin.getItemIcon())
                     object.category = "Draw"
-
+                    object.checkable = t
 
                 }
         }

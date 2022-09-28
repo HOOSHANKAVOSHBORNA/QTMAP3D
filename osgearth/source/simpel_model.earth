@@ -1,0 +1,16 @@
+<map version="2">
+    
+	<image name="readymap_imagery" driver="xyz">
+        <url>https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg</url>
+		<profile>spherical-mercator</profile>
+    </image>
+
+    <model name="model" driver="simple">
+      <url>t.osg.1.scale</url>
+      <location>-74.018 40.717 10</location>	  
+    </model>
+    
+    <viewpoints>
+        <viewpoint name="Zoom to model" lat="40.717" long="-74.018" pitch="-60" range="6000"/>    
+    </viewpoints>
+</map>

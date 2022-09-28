@@ -27,10 +27,10 @@ void Model::setUpUI()
 {
     ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
     QString nameAddModel = "Add 3D Model";
-    mToolBar->addItem(cat, nameAddModel, "");
+    mToolBar->addItem(cat, nameAddModel, "",true);
 
     QString nameTrack = "Tracking 3D Models";
-    mToolBar->addItem(cat, nameTrack, "");
+    mToolBar->addItem(cat, nameTrack, "",true);
 
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name){
         if(cat == category && name == nameAddModel)

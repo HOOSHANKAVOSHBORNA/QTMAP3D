@@ -17,7 +17,7 @@ void Visibility::setUpUI()
 {
     ToolBarWidget::Category cat = ToolBarWidget::Category::Analyze;
     QString nameVisibility = "Visibility";
-    mToolBar->addItem(cat, nameVisibility, "");
+    mToolBar->addItem(cat, nameVisibility, "",true);
 
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name){
         if(cat == category && name == nameVisibility)

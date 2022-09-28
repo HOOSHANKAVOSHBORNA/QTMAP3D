@@ -29,14 +29,14 @@ ToolBarWidget::ToolBarWidget(QWidget *parent)
 
 
 
-void ToolBarWidget::addItem(Category category, QString name, QString icon)
+void ToolBarWidget::addItem(Category category, QString name, QString icon ,bool checkable)
 {
     if(icon == "")
         icon = "qrc:/res/icon/puzzle.png";
     mItemName = name;
     mItemIcon = icon;
     mItemCategory = categoryString(category);
-    emit itemAdded();
+    emit itemAdded(checkable);
 }
 
 QVariant ToolBarWidget::getItemName()
@@ -55,6 +55,11 @@ QVariant ToolBarWidget::getItemIcon()
 QVariant ToolBarWidget::getItemCategory()
 {
     return mItemCategory;
+}
+
+void ToolBarWidget::setClose()
+{
+    emit close();
 }
 
 void ToolBarWidget::onGetItemClicked(QString category, QString name)
