@@ -43,6 +43,7 @@ public:
     virtual ~MousePicker()override{}
 signals:
     void  currentWorldPos(osg::Vec3d pos);
+    void mousePressEvent(QMouseEvent *event);
 protected:
     // Public main entrance for GUIEventHandler
     bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
@@ -75,6 +76,7 @@ public slots:
     void typeChanged(bool);
 private slots:
     void mouseWorldPos(osg::Vec3d pos);
+    void onMapPressEvent(QMouseEvent *event);
 protected:
     void resizeEvent(QResizeEvent* event) override;
 private:

@@ -168,34 +168,34 @@ void Model::addModel()
     {
         return;
     }
-        osgEarth::Symbology::Style  style;
-//        style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
-//        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-//        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
-//        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->url()->setLiteral("../map3dlib/data/models/dumptruck.osg");
+//        osgEarth::Symbology::Style  style;
+////        style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
+////        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+////        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
+//        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+////        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->url()->setLiteral("../map3dlib/data/models/dumptruck.osg");
 
 
-        model = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
-        //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
-        //osgEarth::GeoPoint pos(srs,52.859, 35.241);
-        //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
-        osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.859, 35.241, 100, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+//        model = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
+//        //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
+//        //osgEarth::GeoPoint pos(srs,52.859, 35.241);
+//        //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
+//        osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.859, 35.241, 100, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
 
-//        mMap3dWidget->getMapNode()->addChild(model);
-        mMap3dWidget->mMapRoot->addChild(model);
-        model->setPosition(point);
-        model->setScale(osg::Vec3(0.5,0.5,0.5));
+////        mMap3dWidget->getMapNode()->addChild(model);
+//        mMap3dWidget->mMapRoot->addChild(model);
+//        model->setPosition(point);
+//        model->setScale(osg::Vec3(0.5,0.5,0.5));
     //Add to map -------------------------------------------------------------------
-//    modelNode = new osg::PositionAttitudeTransform;
-//    modelNode->addChild(node);
-//    osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.859, 35.241, 3300,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-//    mMap3dWidget->mMapRoot->addChild(modelNode);
-//    //    mMap3dWidget->getMapNode()->addChild(modelNode);
-//    point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
-//    modelNode->setPosition(mCurrentWorldPoint);
-//    modelNode->setScale(osg::Vec3(0.5,0.5,0.5));
-//    mMap3dWidget->mMapRoot->addChild(drawCordination(mCurrentWorldPoint));
+    modelNode = new osg::PositionAttitudeTransform;
+    modelNode->addChild(node);
+    osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.859, 35.241, 3300,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+    mMap3dWidget->mMapRoot->addChild(modelNode);
+    //    mMap3dWidget->getMapNode()->addChild(modelNode);
+    point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
+    modelNode->setPosition(mCurrentWorldPoint);
+    modelNode->setScale(osg::Vec3(0.5,0.5,0.5));
+    mMap3dWidget->mMapRoot->addChild(drawCordination(mCurrentWorldPoint));
     //Set view point------------------------------------------------------------------
     osgEarth::Viewpoint vp;
     vp.focalPoint() = point;

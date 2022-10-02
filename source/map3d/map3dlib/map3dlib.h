@@ -13,6 +13,7 @@ class MAP3DLIB_EXPORT Map3dlib: public QMainWindow
     Q_OBJECT
 public:
     Map3dlib(QWidget *parent = nullptr);
+protected:
     void mousePressEvent(QMouseEvent *event) override;
 private:
     void onToolBarWidgetPin(bool isPin);

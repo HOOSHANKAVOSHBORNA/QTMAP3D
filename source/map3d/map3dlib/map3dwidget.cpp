@@ -14,6 +14,7 @@
 #include <osgEarth/ImageLayer>
 #include <osg/Camera>
 #include <osgGA/GUIEventHandler>
+#include <osgGA/StateSetManipulator>
 
 #include <QDirIterator>
 #include<QDebug>
@@ -22,6 +23,9 @@
 #include <QHBoxLayout>
 #include <exception>
 #include <QObject>
+#include <QMouseEvent>
+#include <QApplication>
+//#include <qcoreevent.h>
 
 using namespace osgEarth;
 using namespace osgEarth::Drivers;
@@ -38,6 +42,7 @@ const double MAX_OFSET{5000.0};
 
 
 MousePicker::MousePicker(QObject *parent)
+    :QObject(parent)
 {
 
 }
@@ -67,6 +72,26 @@ bool MousePicker::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapt
 
 void MousePicker::getPos(osgViewer::View *view, const osgGA::GUIEventAdapter &ea)
 {
+    if(ea.getEventType() == osgGA::GUIEventAdapter::PUSH)
+    {
+        Qt::MouseButton mb;
+        switch (ea.getButtonMask())
+        {
+        case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
+            mb = Qt::MouseButton::LeftButton;
+            break;
+        case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
+            mb = Qt::MouseButton::RightButton;
+            break;
+        case osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON:
+            mb = Qt::MouseButton::MiddleButton;
+            break;
+        }
+
+        QMouseEvent* event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(ea.getX(),ea.getY()), mb, mb, Qt::KeyboardModifier::NoModifier);
+        emit mousePressEvent(event);
+    }
+
     osgUtil::LineSegmentIntersector::Intersections intersections;
     // Only interact with data nodes and map nodes
     if (view->computeIntersections(ea, intersections))
@@ -114,8 +139,9 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         createManipulator();
         mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
         //add mouse event handler
-        auto mousePicker = new MousePicker();
+        auto mousePicker = new MousePicker(mMapOpenGLWidget);
         QObject::connect(mousePicker, &MousePicker::currentWorldPos, this,  &Map3dWidget::mouseWorldPos);
+        QObject::connect(mousePicker, &MousePicker::mousePressEvent, this,  &Map3dWidget::onMapPressEvent);
         mMapOpenGLWidget->getOsgViewer()->addEventHandler(mousePicker);
         //create map node---------------------------------------------
         GDALOptions gdal;
@@ -291,4 +317,12 @@ void Map3dWidget::resizeEvent(QResizeEvent* event)
         mCmWidget->move(0, this->height()- mCmWidget->height());
     if(mCompassWidget)
         mCompassWidget->move(this->width()- mCompassWidget->width() - 5, this->height()- mCompassWidget->height() - 5);
+
+    //mMapOpenGLWidget->resize(height(), height());
+}
+
+void Map3dWidget::onMapPressEvent(QMouseEvent *event)
+{
+    QApplication::postEvent(this,event);
+    qDebug()<<event;
 }
