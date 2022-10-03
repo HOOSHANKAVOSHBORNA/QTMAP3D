@@ -8,11 +8,12 @@ Rectangle{
     property alias getstart: open
     property alias getstart1: close
     property int space: 3
-    height: 420
+    height: 250
     width: 200
     id:menu
     x:0
     color: "transparent"
+    radius: 10
     //state: "open"
     Connections{
         target: NamePlugin
@@ -114,7 +115,7 @@ Rectangle{
         target: toolbar
         property: "height"
         from:0
-        to:400
+        to:250
         duration: 200
 
     }
@@ -123,7 +124,7 @@ Rectangle{
         id:close
         target: toolbar
         property: "height"
-        from:400
+        from:250
         to:0
         duration: 200
         onStopped: {
@@ -152,8 +153,8 @@ Rectangle{
         ScrollView {
             id :laout_back
             anchors.fill: parent
-
-
+            clip: true
+            //ScrollBar.vertical.policy: ScrollBar.AlwaysOn
             Column{
                 id:rootlayer
                 anchors.fill: parent

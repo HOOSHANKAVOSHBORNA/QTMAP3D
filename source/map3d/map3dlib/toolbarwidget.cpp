@@ -18,6 +18,7 @@ ToolBarWidget::ToolBarWidget(QWidget *parent)
     setMinimumSize(40,40);
     connect(this ,&ToolBarWidget::changeSize,[=](bool t){
            if(t){
+               mQQuickWidget->resize(200,270);
                resize(mQQuickWidget->size());
                raise();
            }
