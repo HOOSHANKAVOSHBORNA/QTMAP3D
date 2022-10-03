@@ -17,9 +17,9 @@ Rectangle{
     Connections{
         target: NamePlugin
         onClose:{
-            if (!valuepin && back.state === "open"){
+            if (!valuePin && back.state === "open"){
                 close.start()
-                widgetrack.state = "close"
+                back.state = "close"
             }
 
         }
