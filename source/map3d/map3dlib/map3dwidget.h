@@ -19,6 +19,7 @@ class osgQOpenGLWidget;
 
 namespace osgEarth{
 class Viewpoint;
+class SpatialReference;
 //class Map;
 //class MapNode;
 //namespace  Util{
@@ -74,6 +75,7 @@ public slots:
     void setZoom(double);
     void home();
     void typeChanged(bool);
+    const osgEarth::SpatialReference* getMapSRS() const;
 private slots:
     void mouseWorldPos(osg::Vec3d pos);
     void onMapPressEvent(QMouseEvent *event);

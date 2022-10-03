@@ -12,6 +12,7 @@
 #include <osgEarthUtil/ExampleResources>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
+#include <osgEarthUtil/Sky>
 #include <osg/Camera>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/StateSetManipulator>
@@ -155,12 +156,15 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
 
         MapOptions mapOptProj;
         mapOptProj.coordSysType() = MapOptions::CSTYPE_PROJECTED;
-        mapOptProj.profile() = ProfileOptions("plate-carre");
+//        mapOptProj.profile() = ProfileOptions("plate-carre");
+        mapOptProj.profile() = ProfileOptions("global-mercator");
         mMapNodeProj = new MapNode(new Map(mapOptProj));
         mMapNodeProj->getMap()->addLayer(imlayer);
 
+        osgEarth::Util::SkyNode* skyNode = osgEarth::Util::SkyNode::create( mMapNodeGeo);
+        skyNode->addChild(mMapNodeGeo);
         mMapRoot = new osg::Group();
-        mMapRoot->addChild(mMapNodeGeo);
+        mMapRoot->addChild(skyNode);
         mMapRoot->addChild(mMapNodeProj);
 
         mMapNodeGeo->setNodeMask(isGeocentric);
@@ -304,10 +308,18 @@ void Map3dWidget::typeChanged(bool isGeocentric)
     mEarthManipulator->setViewpoint(vp);
 }
 
+const SpatialReference *Map3dWidget::getMapSRS() const
+{
+    if(mIsGeocentric)
+        return mMapNodeGeo->getMapSRS();
+    else
+        return mMapNodeProj->getMapSRS();
+}
+
 void Map3dWidget::mouseWorldPos(osg::Vec3d pos)
 {
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapNodeGeo->getMapSRS(),pos);
+    geoPos.fromWorld(getMapSRS(),pos);
     qDebug() << geoPos.x()<<" "<<geoPos.y()<<" "<<geoPos.z();
 }
 void Map3dWidget::resizeEvent(QResizeEvent* event)
@@ -324,5 +336,5 @@ void Map3dWidget::resizeEvent(QResizeEvent* event)
 void Map3dWidget::onMapPressEvent(QMouseEvent *event)
 {
     QApplication::postEvent(this,event);
-    qDebug()<<event;
+    //qDebug()<<event;
 }
