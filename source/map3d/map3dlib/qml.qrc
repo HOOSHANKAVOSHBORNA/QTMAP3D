@@ -14,5 +14,9 @@
         <file>toolbarwidget/Panelmeasure.qml</file>
         <file>toolbarwidget/Panelmodel.qml</file>
         <file>toolbarwidget/Panelterrain.qml</file>
+        <file>locationwidget/Addlocation.qml</file>
+        <file>locationwidget/LoactionWidget.qml</file>
+        <file>locationwidget/RecSavePosition.qml</file>
+        <file>locationwidget/SavePosition.qml</file>
     </qresource>
 </RCC>

@@ -16,6 +16,8 @@
 #include <osg/Camera>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/StateSetManipulator>
+//#include <osgEarthAnnotation/TrackNode>
+//#include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 
 #include <QDirIterator>
 #include<QDebug>
@@ -125,6 +127,7 @@ void MousePicker::getPos(osgViewer::View *view, const osgGA::GUIEventAdapter &ea
 
 Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
     : QWidget(parent)
+    , mSRSwgs84(osgEarth::SpatialReference::get("wgs84"))
 {
     mIsGeocentric = isGeocentric;
     mLayout = new QHBoxLayout(this);
@@ -157,7 +160,8 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         MapOptions mapOptProj;
         mapOptProj.coordSysType() = MapOptions::CSTYPE_PROJECTED;
 //        mapOptProj.profile() = ProfileOptions("plate-carre");
-        mapOptProj.profile() = ProfileOptions("global-mercator");
+        mapOptProj.profile() = ProfileOptions();
+//        qDebug() << "srs proj:"<<QString::fromUtf8(mapOptProj.profile()->srsString()->c_str());
         mMapNodeProj = new MapNode(new Map(mapOptProj));
         mMapNodeProj->getMap()->addLayer(imlayer);
 
@@ -268,6 +272,8 @@ void Map3dWidget::createWidgets()
         mCompassWidget->setRotate(-degri);
     } );
     //-------------------------------
+    mLocationWidget = new LocationWidget(this);
+    mLocationWidget->addViewPoint( osgEarth::Viewpoint("hasan",23,444,555,66,77,88));
 }
 
 void Map3dWidget::setZoom(double val)
@@ -320,7 +326,13 @@ void Map3dWidget::mouseWorldPos(osg::Vec3d pos)
 {
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(getMapSRS(),pos);
-    qDebug() << geoPos.x()<<" "<<geoPos.y()<<" "<<geoPos.z();
+    osgEarth::GeoPoint  latLon;
+    geoPos.transform(mSRSwgs84, latLon);
+    mLocationWidget->setMousePosition(tr("Lat Lon: [%1, %2, %3]")
+                                      .arg(latLon.x(), 0, 'f', 2)
+                                      .arg(latLon.y(), 0, 'f', 2)
+                                      .arg(latLon.z(), 0, 'f', 2));
+//    qDebug() << latLon.x()<<" "<<latLon.y()<<" "<<latLon.z();
 }
 void Map3dWidget::resizeEvent(QResizeEvent* event)
 {
@@ -329,6 +341,8 @@ void Map3dWidget::resizeEvent(QResizeEvent* event)
         mCmWidget->move(0, this->height()- mCmWidget->height());
     if(mCompassWidget)
         mCompassWidget->move(this->width()- mCompassWidget->width() - 5, this->height()- mCompassWidget->height() - 5);
+    if(mLocationWidget)
+        mLocationWidget->move(mCmWidget->geometry().x() + mCmWidget->width(), this->height() - mLocationWidget->height() - 12);
 
     //mMapOpenGLWidget->resize(height(), height());
 }

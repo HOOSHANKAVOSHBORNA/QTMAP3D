@@ -20,6 +20,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     cameramanipulatorwidget.cpp \
     compasswidget.cpp \
+    locationwidget.cpp \
     map3dlib.cpp \
     map3dwidget.cpp \
     plugininterface.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
 HEADERS += \
     cameramanipulatorwidget.h \
     compasswidget.h \
+    locationwidget.h \
     map3dlib_global.h \
     map3dlib.h \
     map3dwidget.h \

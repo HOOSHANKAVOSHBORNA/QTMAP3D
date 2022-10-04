@@ -14,6 +14,7 @@
 
 #include "cameramanipulatorwidget.h"
 #include "compasswidget.h"
+#include "locationwidget.h"
 
 class osgQOpenGLWidget;
 
@@ -88,12 +89,13 @@ private:
 
     osg::ref_ptr<osgEarth::MapNode> mMapNodeGeo;
     osg::ref_ptr<osgEarth::MapNode> mMapNodeProj;
-
+    osg::ref_ptr<const osgEarth::SpatialReference>  mSRSwgs84;
     osgEarth::Viewpoint mHomeViewpoint;
 private:
     osgQOpenGLWidget* mMapOpenGLWidget;
     CameraManipulatorWidget *mCmWidget{nullptr};
     CompassWidget *mCompassWidget{nullptr};
+    LocationWidget* mLocationWidget{nullptr};
     QHBoxLayout *mLayout{nullptr};
     bool mIsGeocentric;
 };
