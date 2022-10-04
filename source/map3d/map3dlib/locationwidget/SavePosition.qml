@@ -13,8 +13,8 @@ Rectangle{
     Connections{
         target: Location
         onCurrentLocation:{
-            lat.text = latitude
-            lon.text = longitude
+            lat.text = "Lat: " + latitude
+            lon.text ="Lon: " + longitude
         }
     }
 
@@ -56,12 +56,14 @@ Rectangle{
             anchors.rightMargin: 3
             height: 18
             radius: 5
+            color: "#55000000"
             Text {
                 id: lat
                 text: ""
                 anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: 10
+                font.pointSize: 10
                 leftPadding: 2
+                color: "lightgray"
             }
         }
         Rectangle{
@@ -71,12 +73,14 @@ Rectangle{
             anchors.rightMargin: 3
             height: 18
             radius: 5
+            color: "#55000000"
             Text {
                 id: lon
                 text: ""
                 anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: 10
+                font.pointSize: 10
                 leftPadding: 2
+                color: "lightgray"
             }
         }
         Rectangle{

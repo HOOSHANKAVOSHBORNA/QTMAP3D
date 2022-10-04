@@ -37,7 +37,7 @@ Rectangle{
             leftPadding: 5
             font.pointSize: 10
             background: Rectangle{
-                color: "white"
+                color: "lightgray"
                 radius: 5
             }
         }
@@ -58,7 +58,7 @@ Rectangle{
             topPadding: 0
             font.pointSize: 10
             background: Rectangle{
-                color: "white"
+                color: "lightgray"
                 radius: 5
             }
         }
@@ -78,7 +78,7 @@ Rectangle{
             topPadding: 0
             font.pointSize: 10
             background: Rectangle{
-                color: "white"
+                color: "lightgray"
                 radius: 5
             }
         }
@@ -92,7 +92,7 @@ Rectangle{
             Text {
                 anchors.centerIn: parent
                 text: qsTr("GO")
-                font.pixelSize: 10
+                font.pointSize: 10
                 color: "white"
 
             }

@@ -3,7 +3,7 @@ import QtQuick.Layouts 1.12
 
 Rectangle {
     id: rectangle
-    property var category
+    property string category
     property var name:"item"
     property string icon :"qrc:/res/icon/puzzle.png"
     property bool  check: false

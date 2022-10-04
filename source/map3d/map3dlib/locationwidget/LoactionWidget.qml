@@ -30,14 +30,14 @@ Item{
             if (b){
 
                 element.width = 300
-                element.height =300
+                element.height =235
             }
             else if (a){
                 element.width = 300
-                element.height =180
+                element.height =110
             }else if (c){
                 element.width = 300
-                element.height =180
+                element.height =110
             }else{
                 element.width = 300
                 element.height =30
@@ -165,10 +165,13 @@ Item{
             width: 22
             height: 30
             color: "transparent"
-            radius: 5
+            radius: 10
             MouseArea {
                 id: mouseArea1
                 anchors.fill: parent
+                hoverEnabled: true
+                onEntered: saverec.color = "#66006eff"
+                onExited: saverec.color = "transparent"
                 onClicked: {
                     if(!isshowsave){
                         opensavelocation.start()
@@ -272,6 +275,9 @@ Item{
 
             MouseArea {
                 id: mouseArea
+                hoverEnabled: true
+                onEntered: rectangle.color = "#66006eff"
+                onExited: rectangle.color = "transparent"
                 anchors.fill: parent
                 onClicked: {
                     if(!isshow){

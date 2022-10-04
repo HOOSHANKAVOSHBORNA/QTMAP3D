@@ -1,7 +1,7 @@
 #ifndef LOCATIONWIDGET_H
 #define LOCATIONWIDGET_H
 
-#include <QQuickWidget>
+#include <QtQuickWidgets/QQuickWidget>
 //#include <osgEarth/Viewpoint>
 
 class QQuickWidget;
