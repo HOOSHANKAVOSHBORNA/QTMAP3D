@@ -8,7 +8,10 @@ CompassWidget::CompassWidget(QWidget *parent):
     QWidget(parent)
 {
     mRotate=0.0;
-    mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/Compass.qml")),this);
+    mQQuickWidget = new QQuickWidget(this);
+    QQmlContext  *context = mQQuickWidget->rootContext();
+    context->setContextProperty("GetData", this);
+    mQQuickWidget->setSource(QUrl("qrc:/Compass.qml"));
     mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
     mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
     mQQuickWidget->setClearColor(Qt::transparent);
@@ -16,7 +19,6 @@ CompassWidget::CompassWidget(QWidget *parent):
     mQQuickWidget->raise();
 
     /// set data class datamanager to main qml
-    mQQuickWidget->engine()-> rootContext()->setContextProperty("GetData",this);
     mQQuickWidget->setMinimumSize(60,60);
     mQQuickWidget->setMaximumSize(60,60);
 

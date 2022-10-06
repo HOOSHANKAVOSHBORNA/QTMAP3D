@@ -8,13 +8,17 @@ ToolBarWidget::ToolBarWidget(QWidget *parent)
     : QWidget(parent)
 
 {
-    mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/toolbarwidget/MenuSlide.qml")),this);
+    //mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/toolbarwidget/MenuSlide.qml")),this);
+    mQQuickWidget = new QQuickWidget(this);
+    QQmlContext  *context = mQQuickWidget->rootContext();
+    context->setContextProperty("NamePlugin", this);
+    mQQuickWidget->setSource(QUrl("qrc:/toolbarwidget/MenuSlide.qml"));
     mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
     mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
     mQQuickWidget->setClearColor(Qt::transparent);
 
 
-    mQQuickWidget->engine()->rootContext()->setContextProperty("NamePlugin",this);
+    //mQQuickWidget->engine()->rootContext()->setContextProperty("NamePlugin",this);
     setMinimumSize(40,40);
     connect(this ,&ToolBarWidget::changeSize,[=](bool t){
            if(t){
