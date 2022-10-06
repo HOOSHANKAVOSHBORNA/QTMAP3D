@@ -82,6 +82,11 @@ void LocationWidget::addViewPoint(osgEarth::Viewpoint point)
      qDebug()<<this->size();
 }
 
+void LocationWidget::setClose()
+{
+    emit close();
+}
+
 void LocationWidget::setMousePosition(QString location)
 {
     emit changePosition(location);

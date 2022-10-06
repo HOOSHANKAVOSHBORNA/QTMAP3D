@@ -26,6 +26,22 @@ Item{
         onChangePosition:{
             currentlocation.text = location
         }
+        onClose:{
+            if(isshow){
+                close.start()
+                isshow = false
+            }
+            if(isshowcurrnt){
+                closesave.start()
+                isshowcurrnt = false
+            }
+            if(isshowsave){
+                closesavelocation.start()
+                isshowsave = false
+            }
+            Location.openWidget(false , false  , false);
+        }
+
         onOpenWidget:{
             if (b){
 
@@ -175,9 +191,11 @@ Item{
                 onClicked: {
                     if(!isshowsave){
                         opensavelocation.start()
+                        imagesave.rotation =0
                         if (isshow){
                             close.start()
                             isshow =false
+
                         }
                         if (isshowcurrnt){
                             closesave.start()
@@ -189,6 +207,7 @@ Item{
                         Location.openWidget(isshow , isshowcurrnt  , isshowsave)
                     }else{
                         closesavelocation.start()
+                        imagesave.rotation =180
                         isshowsave = false
                         Location.openWidget(isshow , isshowcurrnt , isshowsave)
                     }
@@ -282,6 +301,7 @@ Item{
                 onClicked: {
                     if(!isshow){
                         open.start()
+                        image.rotation =0
                         if (isshowcurrnt){
 
                             closesave.start()
@@ -296,6 +316,7 @@ Item{
                         Location.openWidget(isshow , isshowcurrnt , isshowsave)
                     }else{
                         close.start()
+                        image.rotation =180
                         isshow = false
                         Location.openWidget(isshow , isshowcurrnt, isshowsave)
                     }

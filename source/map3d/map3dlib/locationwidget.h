@@ -16,7 +16,7 @@ class LocationWidget : public QQuickWidget
 public:
     explicit LocationWidget(QWidget *parent = nullptr);
     void addViewPoint(osgEarth::Viewpoint point);
-
+    void setClose();
 
 public slots:
     void setMousePosition(QString location);
@@ -38,6 +38,7 @@ signals :
    void openWidget(bool a , bool b, bool c);
    void changePosition(QString location);
    void onCurrentClicked(QString name);
+   void close();
 };
 
 #endif // LOCATIONWIDGET_H

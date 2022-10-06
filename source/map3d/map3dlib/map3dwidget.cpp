@@ -146,6 +146,7 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         auto mousePicker = new MousePicker(mMapOpenGLWidget);
         QObject::connect(mousePicker, &MousePicker::currentWorldPos, this,  &Map3dWidget::mouseWorldPos);
         QObject::connect(mousePicker, &MousePicker::mousePressEvent, this,  &Map3dWidget::onMapPressEvent);
+        QObject::connect(mousePicker, &MousePicker::mousePressEvent, mLocationWidget,  &LocationWidget::setClose);
         mMapOpenGLWidget->getOsgViewer()->addEventHandler(mousePicker);
         //create map node---------------------------------------------
         GDALOptions gdal;

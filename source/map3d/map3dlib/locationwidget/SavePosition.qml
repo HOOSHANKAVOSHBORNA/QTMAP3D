@@ -93,7 +93,7 @@ Rectangle{
             Text {
                 anchors.centerIn: parent
                 text: qsTr("Save")
-                font.pixelSize: 10
+                font.pointSize: 10
                 color: "lightgray"
 
             }
