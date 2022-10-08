@@ -77,6 +77,9 @@ public slots:
     void home();
     void typeChanged(bool);
     const osgEarth::SpatialReference* getMapSRS() const;
+    void onGoPosition(float latitude ,float longitude ,float range);
+    void onSavePosition(QString name);
+    void onClickedPosition(osgEarth::Viewpoint* point);
 private slots:
     void mouseWorldPos(osg::Vec3d pos);
     void onMapPressEvent(QMouseEvent *event);

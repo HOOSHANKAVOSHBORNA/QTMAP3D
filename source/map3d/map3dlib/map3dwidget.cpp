@@ -274,7 +274,10 @@ void Map3dWidget::createWidgets()
     } );
     //-------------------------------
     mLocationWidget = new LocationWidget(this);
-    mLocationWidget->addViewPoint( osgEarth::Viewpoint("hasan",23,444,555,66,77,88));
+    connect(mLocationWidget, &LocationWidget::goPosition,this, &Map3dWidget::onGoPosition);
+    connect(mLocationWidget, &LocationWidget::sendNamePosition,this, &Map3dWidget::onSavePosition);
+    connect(mLocationWidget, &LocationWidget::onClickedPosition,this, &Map3dWidget::onClickedPosition);
+    //mLocationWidget->addViewPoint( osgEarth::Viewpoint("hasan",23,444,555,66,77,88));
 }
 
 void Map3dWidget::setZoom(double val)
@@ -323,6 +326,32 @@ const SpatialReference *Map3dWidget::getMapSRS() const
         return mMapNodeProj->getMapSRS();
 }
 
+void Map3dWidget::onGoPosition(float latitude, float longitude, float range)
+{
+    osgEarth::GeoPoint  pointLatLong(mSRSwgs84, static_cast<double>(latitude), static_cast<double>(longitude), 0);
+    osgEarth::GeoPoint  mapPoint;
+    pointLatLong.transform(getMapSRS(), mapPoint);
+
+    osgEarth::Viewpoint vp;
+    vp.focalPoint() = mapPoint;
+    vp.range()= static_cast<double>(range);
+    //vp.heading()->set(50, osgEarth::Units::DEGREES);
+    //vp.pitch()->set(-25, osgEarth::Units::DEGREES);
+    setViewpoint(vp, 5);
+}
+
+void Map3dWidget::onSavePosition(QString name)
+{
+    osgEarth::Viewpoint vp = getViewpoint();
+    vp.name() = name.toStdString();
+    mLocationWidget->addViewPoint(vp);
+}
+
+void Map3dWidget::onClickedPosition(Viewpoint *point)
+{
+    setViewpoint(*point,5);
+}
+
 void Map3dWidget::mouseWorldPos(osg::Vec3d pos)
 {
     osgEarth::GeoPoint geoPos;
@@ -343,7 +372,7 @@ void Map3dWidget::resizeEvent(QResizeEvent* event)
     if(mCompassWidget)
         mCompassWidget->move(this->width()- mCompassWidget->width() - 5, this->height()- mCompassWidget->height() - 5);
     if(mLocationWidget)
-        mLocationWidget->move(mCmWidget->geometry().x() + mCmWidget->width(), this->height() - mLocationWidget->height() - 12);
+        mLocationWidget->move(mCmWidget->geometry().x() + mCmWidget->width(), this->height() - mLocationWidget->height() - 13);
 
     //mMapOpenGLWidget->resize(height(), height());
 }

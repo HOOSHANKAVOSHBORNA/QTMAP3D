@@ -15,10 +15,6 @@ LocationWidget::LocationWidget(QWidget *parent) : QQuickWidget(parent)
     this->setResizeMode(QQuickWidget::SizeViewToRootObject);
     this->setAttribute(Qt::WA_AlwaysStackOnTop);
     this->setClearColor(Qt::transparent);
-    connect(this ,&LocationWidget::onCurrentClicked,[=]{
-        qDebug()<<this->size();
-    });
-
 }
 
 void LocationWidget::addViewPoint(osgEarth::Viewpoint point)
@@ -44,6 +40,6 @@ void LocationWidget::resizeEvent(QResizeEvent* event)
 {
     QWidget* par = dynamic_cast<QWidget*>(parent());
     if(par)
-        this->move(this->geometry().x(), par->height() - height()-12);
+        this->move(this->geometry().x(), par->height() - height()-13);
     QQuickWidget::resizeEvent(event);
 }
