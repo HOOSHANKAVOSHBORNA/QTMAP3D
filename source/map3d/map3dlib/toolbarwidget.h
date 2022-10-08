@@ -32,6 +32,7 @@ public:
     void setClose();
 public slots:
     void onGetItemClicked(QString category ,QString name);
+    void getChecked(QString category ,QString name,bool t);
     void setSizeWidget(bool t);
 
 signals:

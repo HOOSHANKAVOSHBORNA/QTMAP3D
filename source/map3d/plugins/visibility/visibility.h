@@ -6,6 +6,7 @@
 namespace osgEarth {
 namespace Annotation {
     class FeatureNode;
+    class ModelNode;
 }
 }
 
@@ -24,7 +25,10 @@ public:
     void setUpUI() override;
 private:
     osgEarth::Annotation::FeatureNode* makepolygan(QVector<osg::Vec3d> vertices);
-    osg::Geode* makeShape(osg::Vec3d eye,float radius);
+    osgEarth::Annotation::ModelNode* makeBackground(float radius);
+private:
+    osgEarth::Annotation::ModelNode*  mBackVisibilityNode{nullptr};
+    osgEarth::Annotation::FeatureNode* mVisibilityNode{nullptr};
 };
 
 #endif // VISIBILITY_H

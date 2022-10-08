@@ -72,6 +72,11 @@ void ToolBarWidget::onGetItemClicked(QString category, QString name)
     emit onItemClicked(categoryEnum(category),name);
 }
 
+void ToolBarWidget::getChecked(QString category, QString name, bool t)
+{
+    emit checked(categoryEnum(category),name, t);
+}
+
 void ToolBarWidget::setSizeWidget(bool t)
 {
     emit changeSize(t);

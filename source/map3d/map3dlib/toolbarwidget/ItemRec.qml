@@ -66,7 +66,7 @@ Rectangle {
                     txt.color = "#006eFF"
                     check = true
                     rectangle.radius =5
-                    NamePlugin.checked(category,name,check)
+                    NamePlugin.getChecked(category,name,check)
 
                 }else{
                     rectangle.border.width = 0;
@@ -74,7 +74,7 @@ Rectangle {
                     check =false
                     rectangle.radius =0
                     txt.color = "white"
-                    NamePlugin.checked(category,name,check)
+                    NamePlugin.getChecked(category,name,check)
                 }
             }
 
