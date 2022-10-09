@@ -19,6 +19,7 @@ Item{
             object[i].location = str
             object[i].lat = x
             object[i].lon = y
+            object[i].range = range
 
             object[i].width= laout_back.width - 3
             i+=1

@@ -100,7 +100,9 @@ Rectangle{
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked: {
-                    Location.goPosition(parseFloat(lat.text),parseFloat(lon.text), parseFloat(rang.text))
+                    if (lat.text !== "" && lon.text !== "" && rang.text !== ""){
+                            Location.goPosition(parseFloat(lat.text),parseFloat(lon.text), parseFloat(rang.text))
+                    }
                 }
                 onEntered : {
                     rec.color = "#88006eff"

@@ -102,12 +102,14 @@ Rectangle{
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked: {
+                    if (name.text !== ""){
                     opensave.start();
                     isshowcurrnt = true
                     closesavelocation.start()
                     isshowsave  = false
                     Location.onOpenWidget(isshow, isshowcurrnt, isshowsave)
-                    Location.sendNamePosition(name.text)
+                    Location.saveLocation(name.text)
+                    }
                 }
                 onEntered : {
                     rec.color = "#88006eff"

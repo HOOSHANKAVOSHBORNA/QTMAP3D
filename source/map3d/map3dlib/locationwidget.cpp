@@ -17,14 +17,13 @@ LocationWidget::LocationWidget(QWidget *parent) : QQuickWidget(parent)
     this->setClearColor(Qt::transparent);
 }
 
-void LocationWidget::addViewPoint(osgEarth::Viewpoint point)
+void LocationWidget::addLocation(QString name, double latitude, double longitude, double range)
 {
-     osgEarth::optional<std::string> str = point.name();
-     QString name = QString::fromStdString(str.get());
-     mListViewpoint.append(&point);
-     double x = point.focalPoint()->x();
-     double y = point.focalPoint()->y();
-     emit savePosition(name , x ,y);
+
+     emit savePosition(name ,
+                       QString::number(latitude,'f',3).toDouble(),
+                       QString::number(longitude,'f',3).toDouble(),
+                       range);
 }
 
 void LocationWidget::setClose()
@@ -35,6 +34,13 @@ void LocationWidget::setClose()
 void LocationWidget::setMousePosition(QString location)
 {
     emit changePosition(location);
+}
+
+void LocationWidget::setCurrentLocation(double latitude, double longitude)
+{
+    double lat = QString::number(latitude,'f',3).toDouble();
+    double lon = QString::number(longitude,'f',3).toDouble();
+    emit currentLocation(lat,lon);
 }
 void LocationWidget::resizeEvent(QResizeEvent* event)
 {

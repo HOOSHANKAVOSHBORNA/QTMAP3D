@@ -275,8 +275,8 @@ void Map3dWidget::createWidgets()
     //-------------------------------
     mLocationWidget = new LocationWidget(this);
     connect(mLocationWidget, &LocationWidget::goPosition,this, &Map3dWidget::onGoPosition);
-    connect(mLocationWidget, &LocationWidget::sendNamePosition,this, &Map3dWidget::onSavePosition);
-    connect(mLocationWidget, &LocationWidget::onClickedPosition,this, &Map3dWidget::onClickedPosition);
+    connect(mLocationWidget, &LocationWidget::saveLocation,this, &Map3dWidget::onSavePosition);
+    //connect(mLocationWidget, &LocationWidget::clickedPosition,this, &Map3dWidget::onClickedPosition);
     //mLocationWidget->addViewPoint( osgEarth::Viewpoint("hasan",23,444,555,66,77,88));
 }
 
@@ -343,8 +343,8 @@ void Map3dWidget::onGoPosition(float latitude, float longitude, float range)
 void Map3dWidget::onSavePosition(QString name)
 {
     osgEarth::Viewpoint vp = getViewpoint();
-    vp.name() = name.toStdString();
-    mLocationWidget->addViewPoint(vp);
+
+    mLocationWidget->addLocation(name,vp.focalPoint()->x(),vp.focalPoint()->y() ,vp.getRange());
 }
 
 void Map3dWidget::onClickedPosition(Viewpoint *point)
@@ -380,5 +380,7 @@ void Map3dWidget::resizeEvent(QResizeEvent* event)
 void Map3dWidget::onMapPressEvent(QMouseEvent *event)
 {
     QApplication::postEvent(this,event);
+    auto vp = getViewpoint();
+    mLocationWidget->setCurrentLocation(vp.focalPoint()->x(),vp.focalPoint()->y());
     //qDebug()<<event;
 }

@@ -15,17 +15,16 @@ class LocationWidget : public QQuickWidget
     Q_OBJECT
 public:
     explicit LocationWidget(QWidget *parent = nullptr);
-    void addViewPoint(osgEarth::Viewpoint point);
+    void addLocation(QString name, double latitude, double longitude, double range);
     void setClose();
 
 public slots:
     void setMousePosition(QString location);
+    void setCurrentLocation(double latitude ,double longitude );
 
 signals:
     void goPosition(float latitude ,float longitude ,float range);
-    void onClickedPosition(osgEarth::Viewpoint* point);
-    void sendNamePosition(QString name);
-    void currentLocation(double latitude ,double longitude );
+    void saveLocation(QString name);
 protected:
     void resizeEvent(QResizeEvent* event) override;
 private:
@@ -34,11 +33,13 @@ private:
 private slots:
 
 signals :
-   void savePosition(QString str , double x  , double y);
+   void savePosition(QString str , double x  , double y , double range);
    void openWidget(bool a , bool b, bool c);
    void changePosition(QString location);
    void onCurrentClicked(QString name);
    void close();
+   void currentLocation(double latitude ,double longitude);
+
 };
 
 #endif // LOCATIONWIDGET_H
