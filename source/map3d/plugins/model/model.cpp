@@ -59,14 +59,7 @@ void Model::setUpUI()
         {
             if(isCheck)
             {
-                auto vp = mMap3dWidget->getViewpoint();
-                //vp.setNode(modelNode);//to track
-                vp.setNode(model->getGeoTransform());//to track
-                mMap3dWidget->setViewpoint(vp);
-                auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
-                camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
-                //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
-                mMap3dWidget->mEarthManipulator->applySettings(camSet);
+                mMap3dWidget->setTrackNode(model->getGeoTransform());
                 demo();
                 QTimer *timer = new QTimer(this);
                 connect(timer, &QTimer::timeout,this, &Model::demo);
@@ -74,14 +67,7 @@ void Model::setUpUI()
             }
             else
             {
-                auto vp = mMap3dWidget->getViewpoint();
-                //vp.setNode(modelNode);//to track
-                vp.setNode(nullptr);//to track
-                mMap3dWidget->setViewpoint(vp);
-                auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
-                camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
-                //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
-                mMap3dWidget->mEarthManipulator->applySettings(camSet);
+                mMap3dWidget->setTrackNode(nullptr);//to untrack
             }
         }
     });

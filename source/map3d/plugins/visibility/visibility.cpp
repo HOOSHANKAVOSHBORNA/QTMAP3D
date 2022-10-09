@@ -27,7 +27,7 @@ void Visibility::setUpUI()
                 mBackVisibilityNode = makeBackground(20000.0f);
                 osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.461);
                 mBackVisibilityNode->setPosition(point);
-                mMap3dWidget->getMapNode()->addChild(mBackVisibilityNode);
+                mMap3dWidget->addNode(mBackVisibilityNode);
                 ///////////
                 QVector<osg::Vec3d> vertices;
                 vertices.push_back( osg::Vec3d(52.77,35.52, 0) );
@@ -40,15 +40,15 @@ void Visibility::setUpUI()
                 vertices.push_back( osg::Vec3d(52.74,35.49, 0) );
 
                 mVisibilityNode = makepolygan(vertices);
-                mMap3dWidget->getMapNode()->addChild(mVisibilityNode);
+                mMap3dWidget->addNode(mVisibilityNode);
 
                 //Set view point------------------------------------------------------------------
                 mMap3dWidget->goPosition(point.x(), point.y(), 100000);
             }
             else
             {
-                mMap3dWidget->getMapNode()->removeChild(mBackVisibilityNode);
-                mMap3dWidget->getMapNode()->removeChild(mVisibilityNode);
+                mMap3dWidget->removeNode(mBackVisibilityNode);
+                mMap3dWidget->removeNode(mVisibilityNode);
             }
         }
     });

@@ -65,6 +65,9 @@ public:
     explicit Map3dWidget(bool isGeocentric, QWidget *parent = nullptr);
 
     void setMap(osgEarth::Map *map);
+    void setTrackNode(osg::Node* value);
+    bool addNode( osg::Node *node);
+    bool removeNode( osg::Node *node);
     void setViewpoint( const osgEarth::Viewpoint& vp, double duration_s =0.0 );
     osgEarth::Viewpoint getViewpoint() const;
     //void mousePressEvent (QMouseEvent *event) override;

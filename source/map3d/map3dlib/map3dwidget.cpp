@@ -170,10 +170,14 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         mMapNodeProj = new MapNode(new Map(mapOptProj));
         mMapNodeProj->getMap()->addLayer(imlayer);
 
-        osgEarth::Util::SkyNode* skyNode = osgEarth::Util::SkyNode::create( mMapNodeGeo);
-        skyNode->addChild(mMapNodeGeo);
+        osg::ref_ptr<osgEarth::Util::SkyNode> skyNodeGeo = osgEarth::Util::SkyNode::create( mMapNodeGeo);
+        skyNodeGeo->addChild(mMapNodeGeo);
+
+//        osg::ref_ptr<osgEarth::Util::SkyNode> skyNodeProj = osgEarth::Util::SkyNode::create( mMapNodeProj);
+//        skyNodeProj->addChild(mMapNodeProj);
+
         mMapRoot = new osg::Group();
-        mMapRoot->addChild(skyNode);
+        mMapRoot->addChild(skyNodeGeo);
         mMapRoot->addChild(mMapNodeProj);
 
         mMapNodeGeo->setNodeMask(isGeocentric);
@@ -220,6 +224,33 @@ void Map3dWidget::setMap(Map *map)
     mCmWidget->setStateMap(map->isGeocentric());
     typeChanged(map->isGeocentric());
     home();
+}
+
+void Map3dWidget::setTrackNode(osg::Node *value)
+{
+    auto vp = mEarthManipulator->getViewpoint();
+    //vp.setNode(modelNode);//to track
+    vp.setNode(value);//to track
+    vp.setRange(30);
+    mEarthManipulator->setViewpoint(vp);
+    auto camSet = mEarthManipulator->getSettings();
+    camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
+    //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
+    mEarthManipulator->applySettings(camSet);
+}
+
+bool Map3dWidget::addNode(osg::Node *node)
+{
+    mMapNodeGeo->addChild(node);
+    mMapNodeProj->addChild(node);
+    return true;
+}
+
+bool Map3dWidget::removeNode(osg::Node *node)
+{
+    mMapNodeGeo->removeChild(node);
+    mMapNodeProj->removeChild(node);
+    return true;
 }
 
 void Map3dWidget::setViewpoint(const Viewpoint &vp, double duration_s)
