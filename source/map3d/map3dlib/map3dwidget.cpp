@@ -359,9 +359,9 @@ void Map3dWidget::mouseWorldPos(osg::Vec3d pos)
     osgEarth::GeoPoint  latLon;
     geoPos.transform(mSRSwgs84, latLon);
     mLocationWidget->setMousePosition(tr("Lat Lon: [%1, %2, %3]")
-                                      .arg(latLon.x(), 0, 'f', 2)
-                                      .arg(latLon.y(), 0, 'f', 2)
-                                      .arg(latLon.z(), 0, 'f', 2));
+                                      .arg(latLon.x(), 0, 'f', 3)
+                                      .arg(latLon.y(), 0, 'f', 3)
+                                      .arg(latLon.z(), 0, 'f', 3));
 //    qDebug() << latLon.x()<<" "<<latLon.y()<<" "<<latLon.z();
 }
 void Map3dWidget::resizeEvent(QResizeEvent* event)
