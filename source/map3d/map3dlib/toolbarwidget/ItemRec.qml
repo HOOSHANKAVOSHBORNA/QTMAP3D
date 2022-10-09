@@ -57,7 +57,7 @@ Rectangle {
         }
 
         onClicked: {
-            NamePlugin.onGetItemClicked(category,name)
+            //NamePlugin.onGetItemClicked(category,name,check)
 
             if(checkable){
                 if(!check){
@@ -66,7 +66,7 @@ Rectangle {
                     txt.color = "#006eFF"
                     check = true
                     rectangle.radius =5
-                    NamePlugin.getChecked(category,name,check)
+                    NamePlugin.onGetItemClicked(category,name,check)
 
                 }else{
                     rectangle.border.width = 0;
@@ -74,8 +74,10 @@ Rectangle {
                     check =false
                     rectangle.radius =0
                     txt.color = "white"
-                    NamePlugin.getChecked(category,name,check)
+                    NamePlugin.onGetItemClicked(category,name,check)
                 }
+            }else{
+                NamePlugin.onGetItemClicked(category,name,check)
             }
 
         }
