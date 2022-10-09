@@ -31,13 +31,11 @@ public:
     Q_INVOKABLE  QVariant getItemCategory() ;
     void setClose();
 public slots:
-    void onGetItemClicked(QString category ,QString name);
-    void getChecked(QString category ,QString name,bool t);
+    void onGetItemClicked(QString category , QString name, bool ischeck);
     void setSizeWidget(bool t);
 
 signals:
-    void onItemClicked(Category category ,QString name);
-    Q_INVOKABLE void checked(Category category ,QString name,bool t);
+    void onItemClicked(Category category ,QString name,bool ischeck);
     Q_INVOKABLE void onPin(bool t);
     Q_INVOKABLE void itemAdded (bool t);
 

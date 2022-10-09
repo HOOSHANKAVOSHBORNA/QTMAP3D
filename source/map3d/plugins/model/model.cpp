@@ -38,25 +38,26 @@ void Model::setUpUI()
         {
             addModel();
         }
-//        else if(cat == category && name == nameTrack)
-//        {
-//            auto vp = mMap3dWidget->getViewpoint();
-//            //vp.setNode(modelNode);//to track
-//            vp.setNode(model->getGeoTransform());//to track
-//            mMap3dWidget->setViewpoint(vp);
-//            auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
-//            camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
-//            //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
-//            mMap3dWidget->mEarthManipulator->applySettings(camSet);
-//            demo();
-//            QTimer *timer = new QTimer(this);
-//            connect(timer, &QTimer::timeout,this, &Model::demo);
-//            timer->start(10000);
-//        }
+        //        else if(cat == category && name == nameTrack)
+        //        {
+        //            auto vp = mMap3dWidget->getViewpoint();
+        //            //vp.setNode(modelNode);//to track
+        //            vp.setNode(model->getGeoTransform());//to track
+        //            mMap3dWidget->setViewpoint(vp);
+        //            auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
+        //            camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
+        //            //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
+        //            mMap3dWidget->mEarthManipulator->applySettings(camSet);
+        //            demo();
+        //            QTimer *timer = new QTimer(this);
+        //            connect(timer, &QTimer::timeout,this, &Model::demo);
+        //            timer->start(10000);
+        //        }
     });
-    QObject::connect(mToolBar,&ToolBarWidget::checked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
+    QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
         if(cat == category && name == nameTrack)
         {
+
             if(isCheck)
             {
                 auto vp = mMap3dWidget->getViewpoint();
@@ -92,18 +93,18 @@ void Model::setUpUI()
 void Model::demo()
 {
 
-//    qDebug()<<random;
-//    osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241, 1000,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-//    if(de % 2 == 0)
-//        point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 + ch, 35.241, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-//    else
-//        point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241+ ch, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-//    osg::Vec3d out_world;
-//    point.toWorld(out_world);
+    //    qDebug()<<random;
+    //    osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241, 1000,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+    //    if(de % 2 == 0)
+    //        point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 + ch, 35.241, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+    //    else
+    //        point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241+ ch, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+    //    osg::Vec3d out_world;
+    //    point.toWorld(out_world);
 
     //-- 500 km/h ~ 139 m/s ------------------
-//    int randomX = 10*(138 + (qrand() % 139));
-//    int randomY = 10*(138 + (qrand() % 139));
+    //    int randomX = 10*(138 + (qrand() % 139));
+    //    int randomY = 10*(138 + (qrand() % 139));
     int randomX = 1*(138 + (qrand() % 139));
     int randomY = 1*(138 + (qrand() % 139));
 
@@ -158,13 +159,13 @@ void Model::demo()
 
 void Model::setPosition(const osg::Vec3d &pos, double speed)
 {
-//    osgEarth::GeoPoint  pointLatLong(osgEarth::SpatialReference::get("wgs84"), pos);
-//    osgEarth::GeoPoint  mapPos;
-//    pointLatLong.transform(mMap3dWidget->getMapSRS(), mapPos);
-//    osg::Vec3d &WorldPos
-//    mapPos.toWorld(currentPos,mMap3dWidget->getMapNode()->getTerrain());
+    //    osgEarth::GeoPoint  pointLatLong(osgEarth::SpatialReference::get("wgs84"), pos);
+    //    osgEarth::GeoPoint  mapPos;
+    //    pointLatLong.transform(mMap3dWidget->getMapSRS(), mapPos);
+    //    osg::Vec3d &WorldPos
+    //    mapPos.toWorld(currentPos,mMap3dWidget->getMapNode()->getTerrain());
 
-//    osg::Vec3d currentPos = modelNode->getPosition();
+    //    osg::Vec3d currentPos = modelNode->getPosition();
     osg::Vec3d currentPos;
     auto point = model->getGeoTransform()->getPosition();
     point.toWorld(currentPos);
@@ -177,9 +178,9 @@ void Model::setPosition(const osg::Vec3d &pos, double speed)
 
     osg::AnimationPath* path = new osg::AnimationPath();
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
-//    path->insert(0, osg::AnimationPath::ControlPoint(currentPos,modelNode->getAttitude(),modelNode->getScale()));
-//    path->insert(1,osg::AnimationPath::ControlPoint(pos,rotate,modelNode->getScale()));
-//    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate,modelNode->getScale()));
+    //    path->insert(0, osg::AnimationPath::ControlPoint(currentPos,modelNode->getAttitude(),modelNode->getScale()));
+    //    path->insert(1,osg::AnimationPath::ControlPoint(pos,rotate,modelNode->getScale()));
+    //    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate,modelNode->getScale()));
     path->insert(0, osg::AnimationPath::ControlPoint(currentPos,model->getPositionAttitudeTransform()->getAttitude(), model->getScale()));
     path->insert(2,osg::AnimationPath::ControlPoint(pos,rotate, model->getScale()));
     path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate, model->getScale()));
@@ -189,7 +190,7 @@ void Model::setPosition(const osg::Vec3d &pos, double speed)
     osg::AnimationPathCallback* animationPathCallback = new osg::AnimationPathCallback(path);
     animationPathCallback->setAnimationPath(path);
     //animationPathCallback->setPivotPoint(osg::Vec3d(0,100,0));
-//    modelNode->setUpdateCallback(animationPathCallback);
+    //    modelNode->setUpdateCallback(animationPathCallback);
     model->getGeoTransform()->setUpdateCallback(animationPathCallback);
 
     //draw line------------------------------------------------
@@ -197,9 +198,9 @@ void Model::setPosition(const osg::Vec3d &pos, double speed)
     keyPoint->push_back(currentPos);
     keyPoint->push_back(estimatePos);
     keyPoint->push_back(pos);
-//    mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
-//    mMap3dWidget->mMapRoot->addChild(drawCordination(pos));
-//    mMap3dWidget->mMapRoot->addChild(drawCordination(estimatePos));
+    //    mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
+    //    mMap3dWidget->mMapRoot->addChild(drawCordination(pos));
+    //    mMap3dWidget->mMapRoot->addChild(drawCordination(estimatePos));
 
     //    auto curentViewPoint = mMap3dWidget->getViewpoint();
     //    osgEarth::GeoPoint point;
@@ -217,41 +218,41 @@ void Model::addModel()
     {
         return;
     }
-        osgEarth::Symbology::Style  style;
-//        style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
-        //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-        //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
-//        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->url()->setLiteral("../map3dlib/data/models/dumptruck.osg");
+    osgEarth::Symbology::Style  style;
+    //        style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
+    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+    //        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->url()->setLiteral("../map3dlib/data/models/dumptruck.osg");
 
 
-        model = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
-        //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
-        //osgEarth::GeoPoint pos(srs,52.859, 35.241);
-        //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
-        osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.8601, 35.277, 2100, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-        point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
-        mMap3dWidget->getMapNode()->addChild(model);
-        //mMap3dWidget->mMapRoot->addChild(model);
-        model->setPosition(point);
-        model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
+    model = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
+    //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
+    //osgEarth::GeoPoint pos(srs,52.859, 35.241);
+    //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
+    osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.8601, 35.277, 2100, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+    point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
+    mMap3dWidget->getMapNode()->addChild(model);
+    //mMap3dWidget->mMapRoot->addChild(model);
+    model->setPosition(point);
+    model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
     //Add to map -------------------------------------------------------------------
-//    modelNode = new osg::PositionAttitudeTransform;
-//    modelNode->addChild(node);
-//    osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.859, 35.241, 3300,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-//    mMap3dWidget->mMapRoot->addChild(modelNode);
-//    //    mMap3dWidget->getMapNode()->addChild(modelNode);
-//    point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
-//    modelNode->setPosition(mCurrentWorldPoint);
-//    modelNode->setScale(osg::Vec3(0.5,0.5,0.5));
-//    mMap3dWidget->mMapRoot->addChild(drawCordination(mCurrentWorldPoint));
+    //    modelNode = new osg::PositionAttitudeTransform;
+    //    modelNode->addChild(node);
+    //    osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.859, 35.241, 3300,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+    //    mMap3dWidget->mMapRoot->addChild(modelNode);
+    //    //    mMap3dWidget->getMapNode()->addChild(modelNode);
+    //    point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
+    //    modelNode->setPosition(mCurrentWorldPoint);
+    //    modelNode->setScale(osg::Vec3(0.5,0.5,0.5));
+    //    mMap3dWidget->mMapRoot->addChild(drawCordination(mCurrentWorldPoint));
     //Set view point------------------------------------------------------------------
-//    osgEarth::Viewpoint vp;
-//    vp.focalPoint() = point;
-//    vp.range()= 500;
-//    vp.heading()->set(50, osgEarth::Units::DEGREES);
-//    //vp.pitch()->set(-25, osgEarth::Units::DEGREES);
-//    mMap3dWidget->setViewpoint(vp, 5);
+    //    osgEarth::Viewpoint vp;
+    //    vp.focalPoint() = point;
+    //    vp.range()= 500;
+    //    vp.heading()->set(50, osgEarth::Units::DEGREES);
+    //    //vp.pitch()->set(-25, osgEarth::Units::DEGREES);
+    //    mMap3dWidget->setViewpoint(vp, 5);
 
     //----------------------------------------------------------------------------
     auto model_3d = new vehicle;

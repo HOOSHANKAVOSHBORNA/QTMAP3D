@@ -7,7 +7,7 @@
 #include <osg/Shader>
 #include <osg/ShapeDrawable>
 #include <osg/LineWidth>
-
+#include <QDebug>
 Visibility::Visibility(QWidget *parent)
     : PluginInterface(parent)
 {
@@ -19,7 +19,7 @@ void Visibility::setUpUI()
     QString nameVisibility = "Visibility";
     mToolBar->addItem(cat, nameVisibility, "",true);
 
-    QObject::connect(mToolBar,&ToolBarWidget::checked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
+    QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
         if(cat == category && name == nameVisibility)
         {
             if(isCheck)
