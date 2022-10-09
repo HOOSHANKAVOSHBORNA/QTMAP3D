@@ -43,6 +43,8 @@ const double MIN_DISTANCE{10.0};
 const double MAX_DISTANCE{1000000000.0};
 const double MAX_OFSET{5000.0};
 
+const double DURATION{5};
+
 
 MousePicker::MousePicker(QObject *parent)
     :QObject(parent)
@@ -91,7 +93,9 @@ void MousePicker::getPos(osgViewer::View *view, const osgGA::GUIEventAdapter &ea
             break;
         }
 
-        QMouseEvent* event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(ea.getX(),ea.getY()), mb, mb, Qt::KeyboardModifier::NoModifier);
+        QMouseEvent* event = new QMouseEvent(QEvent::Type::MouseButtonPress,
+                                             QPointF(static_cast<qreal>(ea.getX()),static_cast<qreal>(ea.getY())),
+                                             mb, mb, Qt::KeyboardModifier::NoModifier);
         emit mousePressEvent(event);
     }
 
@@ -274,8 +278,8 @@ void Map3dWidget::createWidgets()
     } );
     //-------------------------------
     mLocationWidget = new LocationWidget(this);
-    connect(mLocationWidget, &LocationWidget::goPosition,this, &Map3dWidget::onGoPosition);
-    connect(mLocationWidget, &LocationWidget::saveLocation,this, &Map3dWidget::onSavePosition);
+    connect(mLocationWidget, &LocationWidget::goPosition,this, &Map3dWidget::goPosition);
+    connect(mLocationWidget, &LocationWidget::saveLocation,this, &Map3dWidget::saveCurrentPosition);
     //connect(mLocationWidget, &LocationWidget::clickedPosition,this, &Map3dWidget::onClickedPosition);
     //mLocationWidget->addViewPoint( osgEarth::Viewpoint("hasan",23,444,555,66,77,88));
 }
@@ -326,30 +330,25 @@ const SpatialReference *Map3dWidget::getMapSRS() const
         return mMapNodeProj->getMapSRS();
 }
 
-void Map3dWidget::onGoPosition(float latitude, float longitude, float range)
+void Map3dWidget::goPosition(double latitude, double longitude, double range)
 {
-    osgEarth::GeoPoint  pointLatLong(mSRSwgs84, static_cast<double>(latitude), static_cast<double>(longitude), 0);
+    osgEarth::GeoPoint  pointLatLong(mSRSwgs84, latitude, longitude, 0);
     osgEarth::GeoPoint  mapPoint;
     pointLatLong.transform(getMapSRS(), mapPoint);
 
     osgEarth::Viewpoint vp;
     vp.focalPoint() = mapPoint;
-    vp.range()= static_cast<double>(range);
+    vp.range()= range;
     //vp.heading()->set(50, osgEarth::Units::DEGREES);
     //vp.pitch()->set(-25, osgEarth::Units::DEGREES);
-    setViewpoint(vp, 5);
+    setViewpoint(vp, DURATION);
 }
 
-void Map3dWidget::onSavePosition(QString name)
+void Map3dWidget::saveCurrentPosition(QString name)
 {
     osgEarth::Viewpoint vp = getViewpoint();
 
     mLocationWidget->addLocation(name,vp.focalPoint()->x(),vp.focalPoint()->y() ,vp.getRange());
-}
-
-void Map3dWidget::onClickedPosition(Viewpoint *point)
-{
-    setViewpoint(*point,5);
 }
 
 void Map3dWidget::mouseWorldPos(osg::Vec3d pos)

@@ -77,19 +77,17 @@ public slots:
     void home();
     void typeChanged(bool);
     const osgEarth::SpatialReference* getMapSRS() const;
-    void onGoPosition(float latitude ,float longitude ,float range);
-    void onSavePosition(QString name);
-    void onClickedPosition(osgEarth::Viewpoint* point);
-private slots:
-    void mouseWorldPos(osg::Vec3d pos);
-    void onMapPressEvent(QMouseEvent *event);
+    void goPosition(double latitude ,double longitude ,double range);
 protected:
     void resizeEvent(QResizeEvent* event) override;
+private slots:
+    void saveCurrentPosition(QString name);
+    void mouseWorldPos(osg::Vec3d pos);
+    void onMapPressEvent(QMouseEvent *event);
 private:
     void createManipulator();
     void createWidgets();
 private:
-
     osg::ref_ptr<osgEarth::MapNode> mMapNodeGeo;
     osg::ref_ptr<osgEarth::MapNode> mMapNodeProj;
     osg::ref_ptr<const osgEarth::SpatialReference>  mSRSwgs84;

@@ -40,8 +40,10 @@ void Visibility::setUpUI()
                 vertices.push_back( osg::Vec3d(52.74,35.49, 0) );
 
                 mVisibilityNode = makepolygan(vertices);
-
                 mMap3dWidget->getMapNode()->addChild(mVisibilityNode);
+
+                //Set view point------------------------------------------------------------------
+                mMap3dWidget->goPosition(point.x(), point.y(), 100000);
             }
             else
             {
