@@ -2,14 +2,17 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Styles 1.4
-
-Rectangle{
+Item {
+    id: root
     property bool valuePin: false
     property alias getstart: open
     property alias getstart1: close
     property int space: 3
     height: 250
     width: 200
+Rectangle{
+    anchors.fill: parent
+    //color: "blue"
     id:menu
     x:0
     color: "transparent"
@@ -21,9 +24,14 @@ Rectangle{
             if (!valuePin && back.state === "open"){
                 close.start()
                 back.state = "close"
+
             }
 
         }
+        onIsDock:{
+           toolbar.height = height - 40
+        }
+
     }
     Rectangle{
         id: back
@@ -46,8 +54,8 @@ Rectangle{
             radius: 100
             color: "#88000000"
             MouseArea{
-                anchors.fill: parent
-
+                anchors.fill: backmenu
+                id :click
                 onClicked: {
                     if (back.state==="open"){
                         close.start()
@@ -94,7 +102,7 @@ Rectangle{
                         pin.source = "qrc:/res/icon/pin.png"
                         pin.state = "setunpin"
                         valuePin = true
-                        backmenu.enabled =false
+                        backmenu.enabled = false
                         NamePlugin.onPin(valuePin)
 
                     }else{
@@ -115,7 +123,7 @@ Rectangle{
         target: toolbar
         property: "height"
         from:0
-        to:250
+        to:root.height
         duration: 200
 
     }
@@ -124,7 +132,7 @@ Rectangle{
         id:close
         target: toolbar
         property: "height"
-        from:250
+        from:root.height
         to:0
         duration: 200
         onStopped: {
@@ -216,5 +224,5 @@ Rectangle{
 
     }
 }
-
+}
 

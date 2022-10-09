@@ -29,7 +29,7 @@ void EarthFile::setUpUI()
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name){
         if(cat == category && name == nameImport)
         {
-            auto fileName = QFileDialog::getOpenFileName(this, tr("Open Earth File"), "../map3dlib/data", tr("Earth File (*.earth)"));
+            auto fileName = QFileDialog::getOpenFileName(nullptr, tr("Open Earth File"), "../map3dlib/data", tr("Earth File (*.earth)"),nullptr,QFileDialog::DontUseNativeDialog);
             if( !fileName.isNull() )
             {
               //qDebug() << "selected file path : " << fileName.toUtf8();
