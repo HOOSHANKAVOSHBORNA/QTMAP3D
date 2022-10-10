@@ -255,6 +255,9 @@ void Model::addTruckModel()
     modelTruck->setScale(osg::Vec3(1,1,1));
 
     mMap3dWidget->goPosition(point.x(), point.y(), point.z() + 500);
+
+    mTrackModelWidget->addModel("Truck", name);
+    mTrackModelWidget->setModelPosition("Truck", name, point.x(), point.y(), point.z());
 }
 
 void Model::addAirplaineModel()
@@ -287,4 +290,7 @@ void Model::addAirplaineModel()
     model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
 
     mMap3dWidget->goPosition(point.x(), point.y(), point.z() + 500);
+
+    mTrackModelWidget->addModel("Airplane", name);
+    mTrackModelWidget->setModelPosition("Airplane", name, point.x(), point.y(), point.z());
 }
