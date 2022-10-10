@@ -3,11 +3,11 @@
 
 #include <QJsonValue>
 #include <QWidget>
-
+#include <QQuickWidget>
 
 class QQuickWidget;
 
-class TrackModelWidget : public QWidget
+class TrackModelWidget : public QQuickWidget
 {
     Q_OBJECT
 
@@ -23,7 +23,8 @@ public slots:
 
 signals :
     void onModelClicked(QString type, QString name);
-
+protected:
+    void resizeEvent(QResizeEvent* event) override;
 
 private:
     QString stringListToString(QStringList key,QStringList value);
@@ -33,6 +34,8 @@ private slots:
 signals:
     Q_INVOKABLE void modelAdded (QString type ,QString name);
     Q_INVOKABLE void onPin (bool t);
+
+    Q_INVOKABLE void isDock (int height);
     Q_INVOKABLE void modelInfo (QString t ,QString n,QString str);
     Q_INVOKABLE void close();
     Q_INVOKABLE void minimize( bool isMax);

@@ -6,30 +6,22 @@
 #include <QJsonArray>
 #include <QDebug>
 TrackModelWidget::TrackModelWidget(QWidget *parent)
-    : QWidget(parent)
+    :QQuickWidget(parent)
 
 {
-    mQQuickWidget = new QQuickWidget(this);
-    QQmlContext  *context = mQQuickWidget->rootContext();
+    //mQQuickWidget = new QQuickWidget(this);
+    QQmlContext  *context = this->rootContext();
     context->setContextProperty("DetaliObject", this);
-    mQQuickWidget->setSource(QUrl("qrc:/trackwidget/trackwidget.qml"));
-    //mQQuickWidget->setSource(QUrl::fromLocalFile("/home/client110/Documents/projects/hooshan/QTMAP3D/source/map3d/plugins/model/trackwidget/trackwidget.qml"));
-    mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
-    mQQuickWidget->setClearColor(Qt::transparent);
-    mQQuickWidget->resize(200, 420);
-    mQQuickWidget->raise();
-    setMinimumSize(200,500);
-    connect(this,&TrackModelWidget::changeSize,[=](bool t){
+    setSource(QUrl("qrc:/trackwidget/trackwidget.qml"));
+    this->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    this->setAttribute(Qt::WA_AlwaysStackOnTop);
+    this->setClearColor(Qt::transparent);
+    connect(this ,&TrackModelWidget::onPin,[=](bool t){
         if(t){
-            resize(200,420);
-            raise();
-        }else
-            resize(200,40);
-            raise();
+            emit isDock(parent->height());
+        }
     });
 
-    //    setMaximumSize(200,450);
 }
 
 void TrackModelWidget::addModel( QString type, QString name)
@@ -64,6 +56,12 @@ void TrackModelWidget::setModelInfo(QString type , QString name,QJsonObject info
 void TrackModelWidget::setMinimaizeWidget(bool isMax)
 {
     emit minimize(isMax);
+}
+
+void TrackModelWidget::resizeEvent(QResizeEvent *event)
+{
+    QQuickWidget::resizeEvent(event);
+
 }
 
 QString TrackModelWidget::stringListToString(QStringList key, QStringList value)

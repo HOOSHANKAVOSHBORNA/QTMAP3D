@@ -2,26 +2,43 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Styles 1.4
-
-Rectangle{
+Item {
+    id: mainroot
     readonly property int iconzie: 20
     readonly property int textsize: 10
-    readonly property int iconsize2: 10
+    readonly property int iconsize2: 15
     property bool valuepin: false
     property var object:[]
     property int i: 0
-
-    id:root
     width: 200
-    color: "transparent"
+    height: 270
     Connections{
         target: DetaliObject
+        onChangeSize:{
+
+            if (t){
+
+                mainroot.height = 270
+                mainroot.width  = 200
+
+            }else{
+                mainroot.height = 40
+                mainroot.width  = 200
+
+            }
+        }
         onClose:{
             if (!valuepin && widgetrack.state === "open"){
                 close.start()
                 widgetrack.state = "close"
+            }else if(backmenu.enabled){
+                mainroot.height = 40
+                mainroot.width  = 40
             }
 
+        }
+        onIsDock:{
+            toolbar.height = height - 10
         }
         onModelAdded:{
             var component = Qt.createComponent("qrc:/trackwidget/PanelItem.qml");
@@ -46,6 +63,7 @@ Rectangle{
                 widgetrack.height= parent.height - bar.height
 
             }else{
+                close.start()
                 widgetrack.state = "close"
                 bar.color = "transparent"
                 iconpin.visible = false
@@ -57,141 +75,155 @@ Rectangle{
                 backmenu.radius =100
             }
         }
+        onOnPin:{
+            if (t){
+                mainroot.height = parent.height
+
+            }else{
+                open.start()
+                widgetrack.state = "open"
+            }
+        }
 
     }
-
     Rectangle{
-        id:bar
-        height: 23
-        width: parent.width
-        anchors.top: root.top
-        color: "#282A31"//
+        anchors.fill: parent
+        id:root
+        color: "transparent"
+
+
         Rectangle{
-            id : backmenu
-            width:30
-            height: 30
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.topMargin: -3
-           color: "transparent"
-           radius: 100
-           //anchors.verticalCenter: parent.verticalCenter
-            MouseArea{
-                anchors.fill: parent
-                onClicked: {
-                    if (widgetrack.state === "close"){
-                        open.start()
-                        widgetrack.state = "open"
-                        bar.color = "#282A31"
+            id:bar
+            height: 23
+            width: parent.width
+            anchors.top: root.top
+            color: "#282A31"//
+            Rectangle{
+                id : backmenu
+                width:30
+                height: 30
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.topMargin: -3
+                color: "transparent"
+                radius: 100
+                //anchors.verticalCenter: parent.verticalCenter
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        if (widgetrack.state === "close"){
+                            open.start()
+                            widgetrack.state = "open"
+                            bar.color = "#282A31"
 
-                        iconpin.visible = true
-                        backmenu.color = "transparent"
-                        backmenu.anchors.topMargin =-4
-                        backmenu.anchors.rightMargin =-5
-                        DetaliObject.changeSize(true)
+                            iconpin.visible = true
+                            backmenu.color = "transparent"
+                            backmenu.anchors.topMargin =-4
+                            backmenu.anchors.rightMargin =-5
+                            DetaliObject.changeSize(true)
 
-                    }else{
-                        close.start()
-                        widgetrack.state = "close"
+                        }else{
+                            close.start()
+                            widgetrack.state = "close"
 
 
+                        }
                     }
+                }
+                Image {
+                    id: iconmenu
+                    source: "qrc:/res/toolbarmenu.png"
+                    anchors.centerIn: parent
+                    width:iconzie
+                    height: iconzie
+
                 }
             }
             Image {
-                id: iconmenu
-                source: "qrc:/res/toolbarmenu.png"
-                anchors.centerIn: parent
-                width:iconzie
-                height: iconzie
+                id: iconpin
+                source: "qrc:/res/unpin.png"
+                width:iconsize2
+                height: iconsize2
+                visible: false
+                anchors.left: parent.left
+                anchors.leftMargin: 3
+                anchors.verticalCenter: parent.verticalCenter
+                state: "setpin"
+                MouseArea{
+                    anchors.fill :parent
+                    onClicked: {
+                        if (iconpin.state ==="setpin"){
+                            iconpin.source = "qrc:/res/pin.png"
+                            iconpin.state = "setunpin"
+                            valuepin = true
+                            backmenu.enabled = false
+                            DetaliObject.onPin(valuepin)
 
-            }
-        }
-        Image {
-            id: iconpin
-            source: "qrc:/res/unpin.png"
-            width:iconsize2
-            height: iconsize2
-            visible: false
-            anchors.left: parent.left
-            anchors.leftMargin: 3
-            anchors.verticalCenter: parent.verticalCenter
-            state: "setpin"
-            MouseArea{
-                anchors.fill :parent
-                onClicked: {
-                    if (iconpin.state ==="setpin"){
-                        iconpin.source = "qrc:/res/pin.png"
-                        iconpin.state = "setunpin"
-                        valuepin = true
-                        backmenu.enabled = false
-                        DetaliObject.onPin(valuepin)
+                        }else{
+                            iconpin.source = "qrc:/res/unpin.png"
+                            iconpin.state = "setpin"
+                            valuepin = false
+                            backmenu.enabled =true
+                            DetaliObject.onPin(valuepin)
 
-                    }else{
-                        iconpin.source = "qrc:/res/unpin.png"
-                        iconpin.state = "setpin"
-                        valuepin = false
-                        backmenu.enabled =true
-                        DetaliObject.onPin(valuepin)
+                        }
 
                     }
-
                 }
             }
-        }
-
-    }
-    NumberAnimation{
-        id:open
-        alwaysRunToEnd: true
-        target: widgetrack
-        property: "height"
-        from:0
-        to:800
-        duration: 200
-    }
-
-    NumberAnimation{
-        id:close
-        alwaysRunToEnd: true
-        target: widgetrack
-        property: "height"
-        from:800
-        to:0
-        duration: 200
-        onStopped: {
-            bar.color = "transparent"
-            iconpin.visible = false
-            backmenu.color = "#88000000"
-            backmenu.anchors.topMargin =3
-            backmenu.anchors.rightMargin = 3
-            DetaliObject.changeSize(false)
 
         }
+        NumberAnimation{
+            id:open
+            alwaysRunToEnd: true
+            target: widgetrack
+            property: "height"
+            from:0
+            to:270
+            duration: 200
+        }
 
-    }
-    Rectangle{
-        id :widgetrack
+        NumberAnimation{
+            id:close
+            alwaysRunToEnd: true
+            target: widgetrack
+            property: "height"
+            from:270
+            to:0
+            duration: 200
+            onStopped: {
+                bar.color = "transparent"
+                iconpin.visible = false
+                backmenu.color = "#88000000"
+                backmenu.anchors.topMargin =3
+                backmenu.anchors.rightMargin = 3
+                DetaliObject.changeSize(false)
 
-        width: parent.width
-        clip: true
+            }
 
-        anchors.top: bar.bottom
-        color: "#282A31"
-        border.color: "#282A31"
-        border.width: 1
-        ScrollView {
-            id :laout_back
-            anchors.fill: parent
+        }
+        Rectangle{
+            id :widgetrack
 
-            Column{
-                id:rootlayer
+            width: parent.width
+            clip: true
+
+            anchors.top: bar.bottom
+            color: "#282A31"
+            border.color: "#282A31"
+            border.width: 1
+            ScrollView {
+                id :laout_back
                 anchors.fill: parent
 
-                spacing: 3
+                Column{
+                    id:rootlayer
+                    anchors.fill: parent
 
+                    spacing: 3
+
+                }
             }
         }
     }
 }
-

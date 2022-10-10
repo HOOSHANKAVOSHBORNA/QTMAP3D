@@ -3,10 +3,10 @@
 
 #include <QWidget>
 #include <QVariant>
-
+#include <QtQuickWidgets/QQuickWidget>
 class QQuickWidget;
 
-class ToolBarWidget : public QWidget
+class ToolBarWidget : public QQuickWidget
 {
     Q_OBJECT
 public:
@@ -36,11 +36,10 @@ public slots:
 
 signals:
     void onItemClicked(Category category ,QString name,bool ischeck);
-    Q_INVOKABLE void onPin(bool t);
-    Q_INVOKABLE void itemAdded (bool t);
-    Q_INVOKABLE void isDock(int height);
 
 
+protected:
+    void resizeEvent(QResizeEvent* event) override;
 private:
     QString categoryString(Category category);
     Category categoryEnum(QString category);
@@ -48,9 +47,11 @@ private slots:
 
 signals:
    void changeSize(bool t);
-   Q_INVOKABLE void close();
+   Q_INVOKABLE void isclose();
+   Q_INVOKABLE void onPin(bool t);
+   Q_INVOKABLE void itemAdded (bool t);
+   Q_INVOKABLE void isDock(int height);
 private:
-    QQuickWidget *mQQuickWidget;
     QVariant    mItemName;
     QVariant    mItemIcon;
     QVariant    mItemCategory;

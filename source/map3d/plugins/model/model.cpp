@@ -18,7 +18,7 @@
 #include <osg/Array>
 #include <osgAnimation/EaseMotion>
 #include <osgEarth/ElevationLayer>
-
+#include <QDockWidget>
 Model::Model(QWidget *parent)
     : PluginInterface(parent)
 {
@@ -29,8 +29,21 @@ Model::Model(QWidget *parent)
 void Model::setUpUI()
 {
     mTrackModelWidget = new TrackModelWidget(mMap3dWidget);
+    mTrackModelWidget->setMinimaizeWidget(true);
     mMainWindow->addWidget(mTrackModelWidget);
     mTrackModelWidget->hide();
+    /////DockWidget
+    QObject::connect(mTrackModelWidget ,&TrackModelWidget::onPin,this,&Model::onToolBarWidgetPin);
+    mDockTrackModelWidget = new QDockWidget("TrackModelWidget",mMap3dWidget);
+    mDockTrackModelWidget->setAllowedAreas( Qt::RightDockWidgetArea);
+    mDockTrackModelWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+    mDockTrackModelWidget->setMaximumWidth(200);
+    mDockTrackModelWidget->setMinimumWidth(200);
+    mMainWindow->addDockWidget(Qt::RightDockWidgetArea,mDockTrackModelWidget);
+    mDockTrackModelWidget->hide();
+
+    ///
+
     ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
 
     QString nameAddAirplaineModel = "Add Airplan Model";
@@ -74,16 +87,16 @@ void Model::setUpUI()
             if(isCheck)
             {
                 mTrackModelWidget->show();
-//                mMap3dWidget->setTrackNode(mCurrentModel->getGeoTransform());
-//                demo();
-//                QTimer *timer = new QTimer(this);
-//                connect(timer, &QTimer::timeout,this, &Model::demo);
-//                timer->start(10000);
+                //                mMap3dWidget->setTrackNode(mCurrentModel->getGeoTransform());
+                //                demo();
+                //                QTimer *timer = new QTimer(this);
+                //                connect(timer, &QTimer::timeout,this, &Model::demo);
+                //                timer->start(10000);
             }
             else
             {
                 mTrackModelWidget->hide();
-//                mMap3dWidget->setTrackNode(nullptr);//to untrack
+                //                mMap3dWidget->setTrackNode(nullptr);//to untrack
             }
         }
     });
@@ -120,6 +133,20 @@ void Model::demo()
         mCurrentWorldPoint += osg::Vec3d(-randomX, -randomY, 0);
 
     setPosition(mCurrentWorldPoint, 138);
+}
+
+void Model::onToolBarWidgetPin(bool isPin)
+{
+    if(isPin){
+        mDockTrackModelWidget->show();
+        mDockTrackModelWidget->setWidget(mTrackModelWidget);
+    }else{
+        mDockTrackModelWidget->hide();
+        mTrackModelWidget->setParent(mMap3dWidget);
+        mTrackModelWidget->move(mMap3dWidget->width()+7,0);
+        mTrackModelWidget->show();
+    }
+
 }
 //osg::AnimationPath* ObjectTracker::createAnimationPath(const osg::Vec3d &pos1, const osg::Vec3d &pos2, float speed)
 //{

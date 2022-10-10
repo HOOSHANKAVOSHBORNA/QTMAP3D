@@ -3,40 +3,17 @@
 #include <QQmlEngine>
 #include <QQuickWidget>
 #include <QQmlContext>
-#include <QDebug>
-ToolBarWidget::ToolBarWidget(QWidget *parent)
-    : QWidget(parent)
-
+ToolBarWidget::ToolBarWidget(QWidget *parent) : QQuickWidget(parent)
 {
     //mQQuickWidget = new QQuickWidget(QUrl(QStringLiteral("qrc:/toolbarwidget/MenuSlide.qml")),this);
-    mQQuickWidget = new QQuickWidget(this);
-    QQmlContext  *context = mQQuickWidget->rootContext();
+    QQmlContext  *context = this->rootContext();
     context->setContextProperty("NamePlugin", this);
-    mQQuickWidget->setSource(QUrl("qrc:/toolbarwidget/MenuSlide.qml"));
-    mQQuickWidget->setResizeMode(QQuickWidget::SizeViewToRootObject);
-    mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
-    mQQuickWidget->setClearColor(Qt::transparent);
-
-
-    setMinimumSize(40,40);
-    connect(this ,&ToolBarWidget::changeSize,[=](bool t){
-           if(t){
-               mQQuickWidget->resize(200,270);
-               resize(mQQuickWidget->size());
-               raise();
-           }else{
-               mQQuickWidget->resize(40,40);
-               resize(mQQuickWidget->size());
-               raise();
-
-           }
-
-    });
+    setSource(QUrl("qrc:/toolbarwidget/MenuSlide.qml"));
+    this->setResizeMode(QQuickWidget::SizeViewToRootObject);
+    this->setAttribute(Qt::WA_AlwaysStackOnTop);
+    this->setClearColor(Qt::transparent);
     connect(this ,&ToolBarWidget::onPin,[=](bool t){
         if(t){
-            mQQuickWidget->resize(200,parent->height());
-            resize(mQQuickWidget->size());
-            raise();
             emit isDock(parent->height());
         }
     });
@@ -78,7 +55,7 @@ QVariant ToolBarWidget::getItemCategory()
 void ToolBarWidget::setClose()
 {
 
-    emit close();
+    emit isclose();
 }
 
 void ToolBarWidget::onGetItemClicked(QString category, QString name, bool ischeck)
@@ -91,6 +68,12 @@ void ToolBarWidget::onGetItemClicked(QString category, QString name, bool ischec
 void ToolBarWidget::setSizeWidget(bool t)
 {
     emit changeSize(t);
+}
+
+void ToolBarWidget::resizeEvent(QResizeEvent *event)
+{
+        QQuickWidget::resizeEvent(event);
+
 }
 
 QString ToolBarWidget::categoryString(ToolBarWidget::Category category)

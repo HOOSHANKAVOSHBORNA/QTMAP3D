@@ -38,6 +38,7 @@ public:
 
 private:
     void demo();
+    void onToolBarWidgetPin(bool isPin);
     QMap<QString, osgEarth::Annotation::ModelNode*>  mAirplaneModels;
     QMap<QString, osgEarth::Annotation::ModelNode*>  mTrucckModels;
     osgEarth::Annotation::ModelNode* mCurrentModel;
@@ -45,7 +46,7 @@ private:
     osg::Vec3d mCurrentWorldPoint;
 
     TrackModelWidget* mTrackModelWidget{nullptr};
-
+    QDockWidget* mDockTrackModelWidget;
 //    friend class MyAnimationPathCallback;
 };
 
