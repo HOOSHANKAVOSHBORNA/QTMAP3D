@@ -53,7 +53,7 @@ void Map3dlib::addWidget(QWidget *widget)
 void Map3dlib::mousePressEvent(QMouseEvent *event)
 {
     mToolBarWidget->setClose();
-
+    mToolBarWidget->setSizeWidget(false);
     QMainWindow::mousePressEvent(event);
 }
 

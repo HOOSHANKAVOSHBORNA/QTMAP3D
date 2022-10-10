@@ -38,6 +38,8 @@ signals:
     void onItemClicked(Category category ,QString name,bool ischeck);
     Q_INVOKABLE void onPin(bool t);
     Q_INVOKABLE void itemAdded (bool t);
+    Q_INVOKABLE void isDock(int height);
+
 
 private:
     QString categoryString(Category category);

@@ -3,7 +3,7 @@
 #include <QQmlEngine>
 #include <QQuickWidget>
 #include <QQmlContext>
-
+#include <QDebug>
 ToolBarWidget::ToolBarWidget(QWidget *parent)
     : QWidget(parent)
 
@@ -13,19 +13,32 @@ ToolBarWidget::ToolBarWidget(QWidget *parent)
     QQmlContext  *context = mQQuickWidget->rootContext();
     context->setContextProperty("NamePlugin", this);
     mQQuickWidget->setSource(QUrl("qrc:/toolbarwidget/MenuSlide.qml"));
-    mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    mQQuickWidget->setResizeMode(QQuickWidget::SizeViewToRootObject);
     mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
     mQQuickWidget->setClearColor(Qt::transparent);
 
 
-    //mQQuickWidget->engine()->rootContext()->setContextProperty("NamePlugin",this);
     setMinimumSize(40,40);
     connect(this ,&ToolBarWidget::changeSize,[=](bool t){
            if(t){
                mQQuickWidget->resize(200,270);
                resize(mQQuickWidget->size());
                raise();
+           }else{
+               mQQuickWidget->resize(40,40);
+               resize(mQQuickWidget->size());
+               raise();
+
            }
+
+    });
+    connect(this ,&ToolBarWidget::onPin,[=](bool t){
+        if(t){
+            mQQuickWidget->resize(200,parent->height());
+            resize(mQQuickWidget->size());
+            raise();
+            emit isDock(parent->height());
+        }
     });
 
 
@@ -64,6 +77,7 @@ QVariant ToolBarWidget::getItemCategory()
 
 void ToolBarWidget::setClose()
 {
+
     emit close();
 }
 
