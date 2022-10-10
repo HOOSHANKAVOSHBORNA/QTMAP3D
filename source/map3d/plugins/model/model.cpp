@@ -30,7 +30,7 @@ void Model::setUpUI()
 {
     mTrackModelWidget = new TrackModelWidget(mMap3dWidget);
     mMainWindow->addWidget(mTrackModelWidget);
-
+    mTrackModelWidget->hide();
     ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
 
     QString nameAddAirplaineModel = "Add Airplan Model";

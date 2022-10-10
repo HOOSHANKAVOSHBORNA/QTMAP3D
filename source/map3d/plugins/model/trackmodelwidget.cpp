@@ -17,9 +17,9 @@ TrackModelWidget::TrackModelWidget(QWidget *parent)
     mQQuickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
     mQQuickWidget->setAttribute(Qt::WA_AlwaysStackOnTop);
     mQQuickWidget->setClearColor(Qt::transparent);
-    mQQuickWidget->resize(400, 420);
+    mQQuickWidget->resize(200, 420);
     mQQuickWidget->raise();
-    setMinimumSize(500,500);
+    setMinimumSize(200,500);
     connect(this,&TrackModelWidget::changeSize,[=](bool t){
         if(t){
             resize(200,420);

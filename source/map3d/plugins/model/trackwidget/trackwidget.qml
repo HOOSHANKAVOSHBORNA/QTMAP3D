@@ -72,7 +72,10 @@ Rectangle{
             height: 30
             anchors.right: parent.right
             anchors.top: parent.top
-
+            anchors.topMargin: -3
+           color: "transparent"
+           radius: 100
+           //anchors.verticalCenter: parent.verticalCenter
             MouseArea{
                 anchors.fill: parent
                 onClicked: {
