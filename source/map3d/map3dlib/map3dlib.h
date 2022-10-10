@@ -13,13 +13,16 @@ class MAP3DLIB_EXPORT Map3dlib: public QMainWindow
     Q_OBJECT
 public:
     Map3dlib(QWidget *parent = nullptr);
+    void addWidget(QWidget* widget);
 protected:
     void mousePressEvent(QMouseEvent *event) override;
+    void resizeEvent(QResizeEvent* event) override;
 private:
     void onToolBarWidgetPin(bool isPin);
 private:
     QDockWidget *mToolBarDocWidget;
     ToolBarWidget* mToolBarWidget;
+    QList<QWidget*> mWidgets;
 };
 
 #endif // MAP3DLIB_H

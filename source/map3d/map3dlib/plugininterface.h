@@ -2,6 +2,7 @@
 #define PLUGININTERFACE_H
 
 #include <QWidget>
+#include "map3dlib.h"
 
 class Map3dWidget;
 class ToolBarWidget;
@@ -12,11 +13,12 @@ class PluginInterface: public QWidget
 public:
     PluginInterface(QWidget *parent = nullptr);
     virtual void setUpUI() = 0;
+    void setMainWindow(Map3dlib *mainWindow);
     void setMap3dWidget(Map3dWidget *value);
-
     void setToolBar(ToolBarWidget *toolBar);
 
 protected:
+    Map3dlib* mMainWindow;
     Map3dWidget *mMap3dWidget;
     ToolBarWidget* mToolBar;
 };

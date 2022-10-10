@@ -9,10 +9,11 @@
 #include <QDir>
 
 
-PluginManager::PluginManager(Map3dWidget* map3dWidget, ToolBarWidget *toolBar)
+PluginManager::PluginManager(Map3dlib* mainWindow, Map3dWidget* map3dWidget, ToolBarWidget *toolBar)
 {
     mMap3dWidget = map3dWidget;
     mToolBar = toolBar;
+    mMainWindow = mainWindow;
 }
 void  PluginManager::loadPlugins()
 {
@@ -57,6 +58,7 @@ void  PluginManager::loadPlugin(QString path)
         }
         plugin->setToolBar(mToolBar);
         plugin->setMap3dWidget(mMap3dWidget);
+        plugin->setMainWindow(mMainWindow);
         plugin->setUpUI();
     }
     else

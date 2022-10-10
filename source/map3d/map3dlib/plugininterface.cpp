@@ -10,6 +10,11 @@ PluginInterface::PluginInterface(QWidget *parent)
 
 }
 
+void PluginInterface::setMainWindow(Map3dlib *mainWindow)
+{
+    mMainWindow = mainWindow;
+}
+
 void PluginInterface::setMap3dWidget(Map3dWidget *value)
 {
     mMap3dWidget = value;

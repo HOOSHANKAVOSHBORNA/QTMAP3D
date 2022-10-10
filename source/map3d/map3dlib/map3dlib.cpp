@@ -39,9 +39,15 @@ Map3dlib::Map3dlib(QWidget *parent)
     mToolBarDocWidget->hide();
 
     //--load plugins-----------------------------------------------------------------------
-    PluginManager pluginmanager(map3dWidget, mToolBarWidget);
+    PluginManager pluginmanager(this, map3dWidget, mToolBarWidget);
     pluginmanager.loadPlugins();
 
+}
+
+void Map3dlib::addWidget(QWidget *widget)
+{
+    widget->setParent(this);
+    mWidgets.append(widget);
 }
 
 void Map3dlib::mousePressEvent(QMouseEvent *event)
@@ -49,6 +55,13 @@ void Map3dlib::mousePressEvent(QMouseEvent *event)
     mToolBarWidget->setClose();
 
     QMainWindow::mousePressEvent(event);
+}
+
+void Map3dlib::resizeEvent(QResizeEvent *event)
+{
+    if(mWidgets.at(0))
+            mWidgets.at(0)->move(this->width() - 220, +300);
+    QMainWindow::resizeEvent(event);
 }
 
 void Map3dlib::onToolBarWidgetPin(bool isPin)

@@ -22,21 +22,34 @@
 Model::Model(QWidget *parent)
     : PluginInterface(parent)
 {
+    Q_INIT_RESOURCE(modelqml);
+    Q_INIT_RESOURCE(modelicon);
 }
 
 void Model::setUpUI()
 {
-    ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
-    QString nameAddModel = "Add Airplan Model";
-    mToolBar->addItem(cat, nameAddModel, "");
+    mTrackModelWidget = new TrackModelWidget(mMap3dWidget);
+    mMainWindow->addWidget(mTrackModelWidget);
 
-    QString nameTrack = "Tracking 3D Models";
+    ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
+
+    QString nameAddAirplaineModel = "Add Airplan Model";
+    mToolBar->addItem(cat, nameAddAirplaineModel, "");
+
+    QString nameAddTruckModel = "Add Truck Model";
+    mToolBar->addItem(cat, nameAddTruckModel, "");
+
+    QString nameTrack = "Track Models";
     mToolBar->addItem(cat, nameTrack, "",true);
 
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name){
-        if(cat == category && name == nameAddModel)
+        if(cat == category && name == nameAddAirplaineModel)
         {
-            addModel();
+            addAirplaineModel();
+        }
+        else if(cat == category && name == nameAddTruckModel)
+        {
+            addTruckModel();
         }
         //        else if(cat == category && name == nameTrack)
         //        {
@@ -60,15 +73,17 @@ void Model::setUpUI()
 
             if(isCheck)
             {
-                mMap3dWidget->setTrackNode(model->getGeoTransform());
-                demo();
-                QTimer *timer = new QTimer(this);
-                connect(timer, &QTimer::timeout,this, &Model::demo);
-                timer->start(10000);
+                mTrackModelWidget->show();
+//                mMap3dWidget->setTrackNode(mCurrentModel->getGeoTransform());
+//                demo();
+//                QTimer *timer = new QTimer(this);
+//                connect(timer, &QTimer::timeout,this, &Model::demo);
+//                timer->start(10000);
             }
             else
             {
-                mMap3dWidget->setTrackNode(nullptr);//to untrack
+                mTrackModelWidget->hide();
+//                mMap3dWidget->setTrackNode(nullptr);//to untrack
             }
         }
     });
@@ -153,7 +168,7 @@ void Model::setPosition(const osg::Vec3d &pos, double speed)
 
     //    osg::Vec3d currentPos = modelNode->getPosition();
     osg::Vec3d currentPos;
-    auto point = model->getGeoTransform()->getPosition();
+    auto point = mCurrentModel->getGeoTransform()->getPosition();
     point.toWorld(currentPos);
 
     osg::Quat rotate;
@@ -167,9 +182,9 @@ void Model::setPosition(const osg::Vec3d &pos, double speed)
     //    path->insert(0, osg::AnimationPath::ControlPoint(currentPos,modelNode->getAttitude(),modelNode->getScale()));
     //    path->insert(1,osg::AnimationPath::ControlPoint(pos,rotate,modelNode->getScale()));
     //    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate,modelNode->getScale()));
-    path->insert(0, osg::AnimationPath::ControlPoint(currentPos,model->getPositionAttitudeTransform()->getAttitude(), model->getScale()));
-    path->insert(2,osg::AnimationPath::ControlPoint(pos,rotate, model->getScale()));
-    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate, model->getScale()));
+    path->insert(0, osg::AnimationPath::ControlPoint(currentPos,mCurrentModel->getPositionAttitudeTransform()->getAttitude(), mCurrentModel->getScale()));
+    path->insert(2,osg::AnimationPath::ControlPoint(pos,rotate, mCurrentModel->getScale()));
+    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate, mCurrentModel->getScale()));
 
     //auto path = createAnimationPath(currentPos, pos, speed);
 
@@ -177,7 +192,7 @@ void Model::setPosition(const osg::Vec3d &pos, double speed)
     animationPathCallback->setAnimationPath(path);
     //animationPathCallback->setPivotPoint(osg::Vec3d(0,100,0));
     //    modelNode->setUpdateCallback(animationPathCallback);
-    model->getGeoTransform()->setUpdateCallback(animationPathCallback);
+    mCurrentModel->getGeoTransform()->setUpdateCallback(animationPathCallback);
 
     //draw line------------------------------------------------
     osg::Vec3Array* keyPoint = new osg::Vec3Array;
@@ -196,32 +211,8 @@ void Model::setPosition(const osg::Vec3d &pos, double speed)
     //    mMap3dWidget->setViewpoint(curentViewPoint, 0);
 }
 
-void Model::addModel()
+void Model::addTruckModel()
 {
-    osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../map3dlib/data/models/air.osgb");
-
-    if (!node)
-    {
-        return;
-    }
-    osgEarth::Symbology::Style  style;
-    //        style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
-    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
-    //        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->url()->setLiteral("../map3dlib/data/models/dumptruck.osg");
-
-
-    model = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
-    //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
-    //osgEarth::GeoPoint pos(srs,52.859, 35.241);
-    //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
-    osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.8601, 35.277, 2100, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-    point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
-    mMap3dWidget->getMapNode()->addChild(model);
-    //mMap3dWidget->mMapRoot->addChild(model);
-    model->setPosition(point);
-    model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
     //Add to map -------------------------------------------------------------------
     //    modelNode = new osg::PositionAttitudeTransform;
     //    modelNode->addChild(node);
@@ -250,23 +241,50 @@ void Model::addModel()
     animCall->moveTruck(osg::Vec3(10, 10, 0), 10);
     animCall->spinHolder(osg::Vec3(20, 20, 5));
     animCall->setupAnimtkNode();
-    osgEarth::Symbology::Style  style1;
-    style1.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(model_3d);
+    osgEarth::Symbology::Style  style;
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(model_3d);
 
-    auto modelTruck = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style1);
-    mMap3dWidget->getMapNode()->addChild(modelTruck);
-    //mMap3dWidget->mMapRoot->addChild(model);
-    osgEarth::GeoPoint  point1(mMap3dWidget->getMapNode()->getMapSRS(), 52.8603, 35.277, 843.253, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+    auto modelTruck = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
+    QString name = tr("Truck%1").arg(mTrucckModels.count());
+    modelTruck->setName(name.toStdString());
+    mTrucckModels[name] = modelTruck;
+    mMap3dWidget->addNode(modelTruck);
 
-    osg::Vec3d vPoint1;
-    point1.toWorld(vPoint1, mMap3dWidget->getMapNode()->getTerrain());
-    modelTruck->setPosition(point1);
+    osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.8603, 35.277, 843.253, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+    modelTruck->setPosition(point);
     modelTruck->setScale(osg::Vec3(1,1,1));
 
-    osgEarth::Viewpoint vp;
-    vp.focalPoint() = point1;
-    vp.range()= 500;
-    vp.heading()->set(50, osgEarth::Units::DEGREES);
-    //vp.pitch()->set(-25, osgEarth::Units::DEGREES);
-    mMap3dWidget->setViewpoint(vp, 5);
+    mMap3dWidget->goPosition(point.x(), point.y(), point.z() + 500);
+}
+
+void Model::addAirplaineModel()
+{
+    osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../map3dlib/data/models/air.osgb");
+
+    if (!node)
+    {
+        return;
+    }
+    osgEarth::Symbology::Style  style;
+    //        style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
+    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+    //        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->url()->setLiteral("../map3dlib/data/models/dumptruck.osg");
+
+    osg::ref_ptr<osgEarth::Annotation::ModelNode> model = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
+    QString name = tr("Airplane%1").arg(mAirplaneModels.count());
+    model->setName(name.toStdString());
+    mAirplaneModels[name] = model;
+    //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
+    //osgEarth::GeoPoint pos(srs,52.859, 35.241);
+    //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
+    osgEarth::GeoPoint  point(mMap3dWidget->getMapSRS(), 52.8601, 35.277, 2100, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
+    point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
+    mMap3dWidget->addNode(model);
+    //mMap3dWidget->mMapRoot->addChild(model);
+    model->setPosition(point);
+    model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
+
+    mMap3dWidget->goPosition(point.x(), point.y(), point.z() + 500);
 }

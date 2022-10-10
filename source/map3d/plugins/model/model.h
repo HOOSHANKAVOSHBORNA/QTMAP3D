@@ -2,9 +2,13 @@
 #define MODEL_H
 
 #include "plugininterface.h"
+#include "trackmodelwidget.h"
+
 #include<osg/Array>
 #include <osg/AnimationPath>
 #include <osgAnimation/EaseMotion>
+
+#include <QMap>
 
 namespace osgEarth {
 namespace  Annotation{
@@ -29,13 +33,18 @@ public:
     void setUpUI() override;
 //    osg::AnimationPath* createAnimationPath(const osg::Vec3d &pos1, const osg::Vec3d &pos2, float speed);
     void setPosition(const osg::Vec3d& pos, double speed);
-    void addModel();
+    void addTruckModel();
+    void addAirplaineModel();
 
 private:
     void demo();
-    osgEarth::Annotation::ModelNode*  model;
+    QMap<QString, osgEarth::Annotation::ModelNode*>  mAirplaneModels;
+    QMap<QString, osgEarth::Annotation::ModelNode*>  mTrucckModels;
+    osgEarth::Annotation::ModelNode* mCurrentModel;
     osg::PositionAttitudeTransform* modelNode;
     osg::Vec3d mCurrentWorldPoint;
+
+    TrackModelWidget* mTrackModelWidget{nullptr};
 
 //    friend class MyAnimationPathCallback;
 };

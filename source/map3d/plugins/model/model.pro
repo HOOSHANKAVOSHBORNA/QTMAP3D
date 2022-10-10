@@ -1,5 +1,5 @@
 QT += gui
-QT += widgets
+QT += widgets quick quickcontrols2 quickwidgets
 
 TEMPLATE = lib
 CONFIG += plugin
@@ -21,11 +21,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     model.cpp \
+    trackmodelwidget.cpp \
     vehicle.cpp
 
 HEADERS += \
     draw.h \
     model.h \
+    trackmodelwidget.h \
     vehicle.h
 
 DISTFILES += \
@@ -38,3 +40,7 @@ unix {
 !isEmpty(target.path): INSTALLS += target
 
 INCLUDEPATH  += ../../map3dlib/
+
+RESOURCES += \
+    modelicon.qrc \
+    modelqml.qrc
