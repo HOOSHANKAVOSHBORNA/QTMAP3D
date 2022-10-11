@@ -35,12 +35,12 @@ public:
     void setPosition(const osg::Vec3d& pos, double speed);
     void addTruckModel();
     void addAirplaineModel();
-
+public slots:
+    void clickedTrackNode(QString type ,QString name ,bool isClick);
 private:
     void demo();
     void onToolBarWidgetPin(bool isPin);
-    QMap<QString, osgEarth::Annotation::ModelNode*>  mAirplaneModels;
-    QMap<QString, osgEarth::Annotation::ModelNode*>  mTrucckModels;
+    QMap<QString,QMap<QString, osgEarth::Annotation::ModelNode*>>  mModels;
     osgEarth::Annotation::ModelNode* mCurrentModel;
     osg::PositionAttitudeTransform* modelNode;
     osg::Vec3d mCurrentWorldPoint;

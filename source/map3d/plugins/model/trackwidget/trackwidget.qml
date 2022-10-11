@@ -11,14 +11,14 @@ Item {
     property var object:[]
     property int i: 0
     width: 200
-    height: 270
+    height: 300
     Connections{
         target: DetaliObject
         onChangeSize:{
 
             if (t){
 
-                mainroot.height = 270
+                mainroot.height = 300
                 mainroot.width  = 200
 
             }else{
@@ -38,7 +38,7 @@ Item {
 
         }
         onIsDock:{
-            toolbar.height = height - 10
+            widgetrack.height = height - 10
         }
         onModelAdded:{
             var component = Qt.createComponent("qrc:/trackwidget/PanelItem.qml");

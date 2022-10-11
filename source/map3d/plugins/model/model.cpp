@@ -5,7 +5,9 @@
 #include "vehicle.h"
 
 #include <QDebug>
+#include <QMainWindow>
 #include <QTimer>
+#include <qmainwindow.h>
 
 #include <osgDB/ReadFile>
 #include <osgEarthSymbology/GeometryFactory>
@@ -41,6 +43,11 @@ void Model::setUpUI()
     mDockTrackModelWidget->setMinimumWidth(200);
     mMainWindow->addDockWidget(Qt::RightDockWidgetArea,mDockTrackModelWidget);
     mDockTrackModelWidget->hide();
+
+    ///
+    QObject::connect(mTrackModelWidget,&TrackModelWidget::onModelClicked,this ,&Model::clickedTrackNode);
+    ////
+    QObject::connect(mMainWindow,&Map3dlib::onPressEvent,mTrackModelWidget,&TrackModelWidget::setClose);
 
     ///
 
@@ -142,9 +149,10 @@ void Model::onToolBarWidgetPin(bool isPin)
         mDockTrackModelWidget->setWidget(mTrackModelWidget);
     }else{
         mDockTrackModelWidget->hide();
-        mTrackModelWidget->setParent(mMap3dWidget);
-        mTrackModelWidget->move(mMap3dWidget->width()+7,0);
+        mTrackModelWidget->setParent(mMainWindow);
+        mTrackModelWidget->move(this->width() -200,0);
         mTrackModelWidget->show();
+
     }
 
 }
@@ -272,9 +280,9 @@ void Model::addTruckModel()
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(model_3d);
 
     auto modelTruck = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
-    QString name = tr("Truck%1").arg(mTrucckModels.count());
+    QString name = tr("Truck%1").arg(mModels["Truck"].count());
     modelTruck->setName(name.toStdString());
-    mTrucckModels[name] = modelTruck;
+    mModels["Truck"][name] = modelTruck;
     mMap3dWidget->addNode(modelTruck);
 
     osgEarth::GeoPoint  point(mMap3dWidget->getMapNode()->getMapSRS(), 52.8603, 35.277, 843.253, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
@@ -303,9 +311,9 @@ void Model::addAirplaineModel()
     //        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->url()->setLiteral("../map3dlib/data/models/dumptruck.osg");
 
     osg::ref_ptr<osgEarth::Annotation::ModelNode> model = new osgEarth::Annotation::ModelNode(mMap3dWidget->getMapNode(), style);
-    QString name = tr("Airplane%1").arg(mAirplaneModels.count());
+    QString name = tr("Airplane%1").arg(mModels["Airplane"].count());
     model->setName(name.toStdString());
-    mAirplaneModels[name] = model;
+    mModels["Airplane"][name] = model;
     //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
     //osgEarth::GeoPoint pos(srs,52.859, 35.241);
     //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
@@ -321,3 +329,14 @@ void Model::addAirplaineModel()
     mTrackModelWidget->addModel("Airplane", name);
     mTrackModelWidget->setModelPosition("Airplane", name, point.x(), point.y(), point.z());
 }
+
+void Model::clickedTrackNode(QString type, QString name, bool isClick)
+{
+    if (isClick){
+        osg::Node* node =mModels[type][name];
+        mMap3dWidget->setTrackNode(node);
+
+    }else
+        mMap3dWidget->setTrackNode(nullptr);
+}
+

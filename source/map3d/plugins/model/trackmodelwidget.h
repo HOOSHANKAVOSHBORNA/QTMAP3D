@@ -22,7 +22,7 @@ public:
 public slots:
 
 signals :
-    void onModelClicked(QString type, QString name);
+    void onModelClicked(QString type, QString name , bool isClick);
 protected:
     void resizeEvent(QResizeEvent* event) override;
 

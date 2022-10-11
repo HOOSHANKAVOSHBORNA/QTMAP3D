@@ -67,6 +67,7 @@ Rectangle {
 
              TextArea.flickable: TextArea {
                  id:textarea
+                 readOnly: true
                  font.family: "Times New Roman"
                  font.weight: Font.Normal
                  font.pointSize: textsize

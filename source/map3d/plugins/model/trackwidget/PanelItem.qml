@@ -64,10 +64,11 @@ Item {
                             bar.color = "#006eff"
                             selected = true
 
-                            DetaliObject.onModelClicked(type,name)
+                            DetaliObject.onModelClicked(type,name,selected)
                         }else{
                             bar.color = "#404142"
                             selected = false
+                            DetaliObject.onModelClicked(type,name , selected)
                         }
                     }else{
 

@@ -32,7 +32,10 @@ void TrackModelWidget::addModel( QString type, QString name)
 
 void TrackModelWidget::setModelPosition(QString t, QString n, double latitude, double longitude, double altitude)
 {
-    emit modelPosition(t,n,latitude,longitude,altitude);
+    double lat = QString::number(latitude,'f',4).toDouble();
+    double lon = QString::number(longitude,'f',4).toDouble();
+    double alt = QString::number(altitude,'f',4).toDouble();
+    emit modelPosition(t,n,lat,lon,alt);
 }
 
 void TrackModelWidget::setClose()
