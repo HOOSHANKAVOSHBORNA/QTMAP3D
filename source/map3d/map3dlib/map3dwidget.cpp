@@ -43,7 +43,7 @@ const double MIN_DISTANCE{10.0};
 const double MAX_DISTANCE{1000000000.0};
 const double MAX_OFSET{5000.0};
 
-const double DURATION{5};
+const double DURATION{3};
 
 
 MousePicker::MousePicker(QObject *parent)
@@ -229,14 +229,24 @@ void Map3dWidget::setMap(Map *map)
 void Map3dWidget::setTrackNode(osg::Node *value)
 {
     auto vp = mEarthManipulator->getViewpoint();
-    //vp.setNode(modelNode);//to track
+    if(vp.getNode() == value)
+        return;
     vp.setNode(value);//to track
-    vp.setRange(30);
+    vp.setRange(100);
     mEarthManipulator->setViewpoint(vp);
     auto camSet = mEarthManipulator->getSettings();
     camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
     //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
     mEarthManipulator->applySettings(camSet);
+}
+
+void Map3dWidget::unTrackNode()
+{
+    auto vp = mEarthManipulator->getViewpoint();
+    if(vp.getNode() == nullptr)
+        return;
+    vp.setNode(nullptr);//to track
+    mEarthManipulator->setViewpoint(vp);
 }
 
 bool Map3dWidget::addNode(osg::Node *node)
