@@ -40,6 +40,7 @@ public slots:
 private:
     void demo();
     void onToolBarWidgetPin(bool isPin);
+private:
     QMap<QString,QMap<QString, osgEarth::Annotation::ModelNode*>>  mModels;
     osgEarth::Annotation::ModelNode* mCurrentModel;
     osg::PositionAttitudeTransform* modelNode;
@@ -47,6 +48,8 @@ private:
 
     TrackModelWidget* mTrackModelWidget{nullptr};
     QDockWidget* mDockTrackModelWidget;
+
+    bool mIsPin{false};
 //    friend class MyAnimationPathCallback;
 };
 

@@ -94,17 +94,22 @@ void Model::setUpUI()
             if(isCheck)
             {
                 mTrackModelWidget->show();
-                //                mMap3dWidget->setTrackNode(mCurrentModel->getGeoTransform());
-                //                demo();
-                //                QTimer *timer = new QTimer(this);
-                //                connect(timer, &QTimer::timeout,this, &Model::demo);
-                //                timer->start(10000);
+                if(mIsPin)
+                    mDockTrackModelWidget->show();
+//                                mMap3dWidget->setTrackNode(mCurrentModel->getGeoTransform());
+//                                demo();
+//                                QTimer *timer = new QTimer(this);
+//                                connect(timer, &QTimer::timeout,this, &Model::demo);
+//                                timer->start(10000);
             }
             else
             {
                 mTrackModelWidget->hide();
-                //                mMap3dWidget->setTrackNode(nullptr);//to untrack
+                mDockTrackModelWidget->hide();
+                mTrackModelWidget->move(mMainWindow->width() -200,0);
+                mMap3dWidget->unTrackNode();
             }
+            //mMap3dWidget->setTrackNode(nullptr);
         }
     });
 
@@ -144,6 +149,7 @@ void Model::demo()
 
 void Model::onToolBarWidgetPin(bool isPin)
 {
+    mIsPin = isPin;
     if(isPin){
         mDockTrackModelWidget->show();
         mDockTrackModelWidget->setWidget(mTrackModelWidget);
@@ -333,10 +339,10 @@ void Model::addAirplaineModel()
 void Model::clickedTrackNode(QString type, QString name, bool isClick)
 {
     if (isClick){
-        osg::Node* node =mModels[type][name];
-        mMap3dWidget->setTrackNode(node);
+//        osg::Node* node =mModels[type][name];
+        mMap3dWidget->setTrackNode(mModels[type][name]->getGeoTransform());
 
     }else
-        mMap3dWidget->setTrackNode(nullptr);
+        mMap3dWidget->unTrackNode();
 }
 
