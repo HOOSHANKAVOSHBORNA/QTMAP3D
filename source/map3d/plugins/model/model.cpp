@@ -150,7 +150,7 @@ void Model::onToolBarWidgetPin(bool isPin)
     }else{
         mDockTrackModelWidget->hide();
         mTrackModelWidget->setParent(mMainWindow);
-        mTrackModelWidget->move(this->width() -200,0);
+        mTrackModelWidget->move(mMainWindow->width() -200,0);
         mTrackModelWidget->show();
 
     }

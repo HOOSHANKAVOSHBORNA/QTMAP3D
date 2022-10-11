@@ -31,7 +31,7 @@ Item {
             if (!valuepin && widgetrack.state === "open"){
                 close.start()
                 widgetrack.state = "close"
-            }else if(backmenu.enabled){
+            }else if(backmenu.enabled && widgetrack.state == "open"){
                 mainroot.height = 40
                 mainroot.width  = 40
             }
