@@ -107,7 +107,7 @@ void Model::setUpUI()
                 mTrackModelWidget->hide();
                 mDockTrackModelWidget->hide();
                 mTrackModelWidget->move(mMainWindow->width() -200,0);
-                mMap3dWidget->unTrackNode();
+               mMap3dWidget->unTrackNode();
             }
             //mMap3dWidget->setTrackNode(nullptr);
         }
@@ -341,6 +341,7 @@ void Model::clickedTrackNode(QString type, QString name, bool isClick)
     if (isClick){
 //        osg::Node* node =mModels[type][name];
         mMap3dWidget->setTrackNode(mModels[type][name]->getGeoTransform());
+        qDebug()<<"fgd";
 
     }else
         mMap3dWidget->unTrackNode();

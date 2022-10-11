@@ -58,12 +58,12 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             onClicked: {
+
                 for (var i in object){
                     if (object[i].name === name){
                         if (!selected){
                             bar.color = "#006eff"
                             selected = true
-
                             DetaliObject.onModelClicked(type,name,selected)
                         }else{
                             bar.color = "#404142"
