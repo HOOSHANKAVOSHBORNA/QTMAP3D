@@ -251,6 +251,7 @@ void Map3dWidget::unTrackNode()
 
 bool Map3dWidget::addNode(osg::Node *node)
 {
+    //osgEarth::Registry::shaderGenerator().run(node);// for textures or lighting
     mMapNodeGeo->addChild(node);
     mMapNodeProj->addChild(node);
     return true;

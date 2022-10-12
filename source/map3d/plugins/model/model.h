@@ -3,6 +3,7 @@
 
 #include "plugininterface.h"
 #include "trackmodelwidget.h"
+#include "flyingmodel.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
@@ -44,7 +45,7 @@ private:
     QMap<QString,QMap<QString, osgEarth::Annotation::ModelNode*>>  mModels;
     osgEarth::Annotation::ModelNode* mCurrentModel;
     osg::PositionAttitudeTransform* modelNode;
-    osg::Vec3d mCurrentWorldPoint;
+    osg::Vec3d mAirFirstPoint;
 
     TrackModelWidget* mTrackModelWidget{nullptr};
     QDockWidget* mDockTrackModelWidget;
