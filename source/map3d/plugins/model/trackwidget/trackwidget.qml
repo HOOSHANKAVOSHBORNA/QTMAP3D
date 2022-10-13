@@ -112,11 +112,12 @@ Item {
                 id : backmenu
                 width:30
                 height: 30
-                anchors.right: parent.right
+                anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.topMargin: -3
                 color: "transparent"
                 radius: 100
+                anchors.leftMargin: 0
                 //anchors.verticalCenter: parent.verticalCenter
                 MouseArea{
                     anchors.fill: parent
@@ -155,8 +156,8 @@ Item {
                 width:iconsize2
                 height: iconsize2
                 visible: false
-                anchors.left: parent.left
-                anchors.leftMargin: 3
+                anchors.right: parent.right
+                anchors.rightMargin: 3
                 anchors.verticalCenter: parent.verticalCenter
                 state: "setpin"
                 MouseArea{

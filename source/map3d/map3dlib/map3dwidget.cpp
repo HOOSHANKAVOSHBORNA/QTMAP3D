@@ -403,7 +403,8 @@ void Map3dWidget::mouseWorldPos(osg::Vec3d pos)
                                       .arg(latLon.x(), 0, 'f', 3)
                                       .arg(latLon.y(), 0, 'f', 3)
                                       .arg(latLon.z(), 0, 'f', 3));
-//    qDebug() << latLon.x()<<" "<<latLon.y()<<" "<<latLon.z();
+
+    //    qDebug() << latLon.x()<<" "<<latLon.y()<<" "<<latLon.z();
 }
 void Map3dWidget::resizeEvent(QResizeEvent* event)
 {
@@ -423,5 +424,6 @@ void Map3dWidget::onMapPressEvent(QMouseEvent *event)
     QApplication::postEvent(this,event);
     auto vp = getViewpoint();
     mLocationWidget->setCurrentLocation(vp.focalPoint()->x(),vp.focalPoint()->y());
+    emit clickedWorldPos(vp.focalPoint()->x(),vp.focalPoint()->y(),vp.focalPoint()->z());
     //qDebug()<<event;
 }

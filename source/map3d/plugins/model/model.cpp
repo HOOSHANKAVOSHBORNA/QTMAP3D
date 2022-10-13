@@ -51,6 +51,8 @@ void Model::setUpUI()
     ////
     QObject::connect(mMainWindow,&Map3dlib::onPressEvent,mTrackModelWidget,&TrackModelWidget::setClose);
 
+    /// event click model
+        QObject::connect(mMap3dWidget,&Map3dWidget::clickedWorldPos , this ,&Model::oncliCkedWorldPos);
     ///
 
     ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
@@ -327,6 +329,7 @@ void Model::addAirplaineModel()
     QString name = tr("Airplane%1").arg(mModels["Airplane"].count());
     model->setName(name.toStdString());
     mModels["Airplane"][name] = model;
+
     //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
     //osgEarth::GeoPoint pos(srs,52.859, 35.241);
     //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
@@ -356,3 +359,10 @@ void Model::clickedTrackNode(QString type, QString name, bool isClick)
         mMap3dWidget->unTrackNode();
 }
 
+void Model::oncliCkedWorldPos(double latitude, double longitude, double altitude)
+{
+
+    qDebug()<<latitude << longitude << altitude;
+
+
+}
