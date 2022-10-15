@@ -38,6 +38,7 @@ public:
     void addAirplaineModel();
 public slots:
     void clickedTrackNode(QString type ,QString name ,bool isClick);
+    void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
 private:
     void demo();
@@ -46,7 +47,6 @@ private:
     QMap<QString,QMap<QString, osgEarth::Annotation::ModelNode*>>  mModels;
     osgEarth::Annotation::ModelNode* mCurrentModel;
     osg::PositionAttitudeTransform* modelNode;
-    osg::Vec3d mAirFirstPoint;
 
     TrackModelWidget* mTrackModelWidget{nullptr};
     QDockWidget* mDockTrackModelWidget;

@@ -22,16 +22,13 @@
 #include <osgAnimation/EaseMotion>
 #include <osgEarth/ElevationLayer>
 
-const QString AIRPLANE = "Airplane";
+const QString FLYING = "Airplane";
 
 Model::Model(QWidget *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(modelqml);
     Q_INIT_RESOURCE(modelicon);
-
-    mAirFirstPoint.set(osg::Vec3d(52.8601, 35.277, 2100));
-
 }
 
 void Model::setUpUI()
@@ -64,7 +61,7 @@ void Model::setUpUI()
     QString nameTrack = "Track Models";
     mToolBar->addItem(cat, nameTrack, "",true);
 
-    QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name){
+    QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
         if(cat == category && name == nameAddAirplaineModel)
         {
             addAirplaineModel();
@@ -73,23 +70,6 @@ void Model::setUpUI()
         {
             addTruckModel();
         }
-        //        else if(cat == category && name == nameTrack)
-        //        {
-        //            auto vp = mMap3dWidget->getViewpoint();
-        //            //vp.setNode(modelNode);//to track
-        //            vp.setNode(model->getGeoTransform());//to track
-        //            mMap3dWidget->setViewpoint(vp);
-        //            auto camSet = mMap3dWidget->mEarthManipulator->getSettings();
-        //            camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
-        //            //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
-        //            mMap3dWidget->mEarthManipulator->applySettings(camSet);
-        //            demo();
-        //            QTimer *timer = new QTimer(this);
-        //            connect(timer, &QTimer::timeout,this, &Model::demo);
-        //            timer->start(10000);
-        //        }
-    });
-    QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
         if(cat == category && name == nameTrack)
         {
 
@@ -115,60 +95,52 @@ void Model::setUpUI()
             //mMap3dWidget->setTrackNode(nullptr);
         }
     });
-
 }
 
 
 void Model::demo()
 {
+    for (int var = 0; var < mModels[FLYING].count(); ++var)
+    {
+        QString name = FLYING + QString::number(var);
+        auto model = dynamic_cast<FlyingModel*>(mModels[FLYING][name]);
+        auto mapPoint = model->getPosition();
+        osgEarth::GeoPoint  latLongPoint;
+        //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
+        //mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), latLongPoint);
+        osg::Vec3d currentPos;
+        mapPoint.toWorld(currentPos);
+        //osg::Vec3d currentPos(latLongPoint.vec3d());
+        //-- 500 km/h ~ 139 m/s ------------------
+        //    int randomX = 10*(138 + (qrand() % 139));
+        //    int randomY = 10*(138 + (qrand() % 139));
+        //    int val = qrand() % 4;
+        //    if(val == 1)
+        //        currentPos += osg::Vec3d(randomX, randomY, 0.0);
+        //    else if(val == 2)
+        //        currentPos += osg::Vec3d(randomX, -randomY, 0.0);
+        //    else if(val == 3)
+        //        currentPos += osg::Vec3d(-randomX, randomY, 0.0);
+        //    else
+        //        currentPos += osg::Vec3d(-randomX, -randomY, 0.0);
 
-    //    qDebug()<<random;
-    //    osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241, 1000,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-    //    if(de % 2 == 0)
-    //        point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 + ch, 35.241, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-    //    else
-    //        point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241+ ch, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-    //    osg::Vec3d out_world;
-    //    point.toWorld(out_world);
-    QString name = AIRPLANE + QString(mModels[AIRPLANE].count()-1);
-    auto model = dynamic_cast<FlyingModel*>(mModels[AIRPLANE][name]);
-    auto mapPoint = model->getPosition();
-    qDebug()<<QString::fromUtf8(mapPoint.toString().c_str());
-    osgEarth::GeoPoint  latLongPoint;
-    //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
-    //mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), latLongPoint);
-    osg::Vec3d currentPos;
-    mapPoint.toWorld(currentPos);
-    //osg::Vec3d currentPos(latLongPoint.vec3d());
-    //-- 500 km/h ~ 139 m/s ------------------
-    //    int randomX = 10*(138 + (qrand() % 139));
-    //    int randomY = 10*(138 + (qrand() % 139));
-    //    int val = qrand() % 4;
-    //    if(val == 1)
-    //        currentPos += osg::Vec3d(randomX, randomY, 0.0);
-    //    else if(val == 2)
-    //        currentPos += osg::Vec3d(randomX, -randomY, 0.0);
-    //    else if(val == 3)
-    //        currentPos += osg::Vec3d(-randomX, randomY, 0.0);
-    //    else
-    //        currentPos += osg::Vec3d(-randomX, -randomY, 0.0);
+        int randomX = (100 + (qrand() % 19));
+        int randomY = (100 + (qrand() % 19));
+        int val = qrand() % 4;
+        if(val == 1)
+            mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, randomY/10000.0, 0.0);
+        else if(val == 2)
+            mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, -randomY/10000.0, 0.0);
+        else if(val == 3)
+            mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, randomY/10000.0, 0.0);
+        else
+            mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, -randomY/10000.0, 0.0);
 
-    int randomX = (100 + (qrand() % 19));
-    int randomY = (100 + (qrand() % 19));
-    int val = qrand() % 4;
-    if(val == 1)
-        mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, randomY/10000.0, 0.0);
-    else if(val == 2)
-        mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, -randomY/10000.0, 0.0);
-    else if(val == 3)
-        mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, randomY/10000.0, 0.0);
-    else
-        mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, -randomY/10000.0, 0.0);
-
-    //    setPosition(mCurrentWorldPoint, 138);
-    latLongPoint.fromWorld(osgEarth::SpatialReference::get("wgs84"), currentPos);
-    qDebug()<<QString::fromUtf8(latLongPoint.toString().c_str());
-    model->flyTo(mapPoint.vec3d(), 138);
+        //    setPosition(mCurrentWorldPoint, 138);
+        latLongPoint.fromWorld(osgEarth::SpatialReference::get("wgs84"), currentPos);
+        //qDebug()<<QString::fromUtf8(latLongPoint.toString().c_str());
+        model->flyTo(mapPoint.vec3d(), 138);
+    }
 }
 
 void Model::onToolBarWidgetPin(bool isPin)
@@ -326,25 +298,32 @@ void Model::addTruckModel()
 
 void Model::addAirplaineModel()
 {
-    osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/air.osgb");
-    QString name = AIRPLANE + QString(mModels[AIRPLANE].count());
-    model->setName(name.toStdString());
-    mModels[AIRPLANE][name] = model;
+    osg::Vec3d position(52.8601, 35.277, 2100);
 
-    mMap3dWidget->addNode(model);
-    //mMap3dWidget->mMapRoot->addChild(model);
-    model->setLatLongPosition(mAirFirstPoint);
+    //create and setting model--------------------------------------------
+    osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/air.osgb");
+    QString name = FLYING + QString::number(mModels[FLYING].count());
+    model->setName(name.toStdString());
+    model->setLatLongPosition(position);
     model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
 
-    mMap3dWidget->goPosition(mAirFirstPoint.x(), mAirFirstPoint.y(), mAirFirstPoint.z() + 500);
+    QObject::connect(model.get(), &FlyingModel::positionChanged, [=](osgEarth::GeoPoint position){
+        positionChanged(FLYING, name, position);
+    });
 
-    mTrackModelWidget->addModel("Airplane", name);
-    mTrackModelWidget->setModelPosition("Airplane", name, mAirFirstPoint.x(), mAirFirstPoint.y(), mAirFirstPoint.z());
+    //add to container-----------------------------------------------------
+    mModels[FLYING][name] = model;
 
-//    double rnd = QRandomGenerator::global()->generateDouble();
+    //add to map ---------------------------------------------------------
+    mMap3dWidget->addNode(model);
+    mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
+
+    //add to track widget ------------------------------------------------
+    mTrackModelWidget->addModel(FLYING, name);
+    mTrackModelWidget->setModelPosition(FLYING, name, position.x(), position.y(), position.z());
+
+    //    double rnd = QRandomGenerator::global()->generateDouble();
     double rnd = qrand() % 360;
-//    mAirFirstPoint.y() += 0.00015;
-//    mAirFirstPoint.x() += 0.00015;
     model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
 }
 
@@ -357,5 +336,10 @@ void Model::clickedTrackNode(QString type, QString name, bool isClick)
 
     }else
         mMap3dWidget->unTrackNode();
+}
+
+void Model::positionChanged(QString type, QString name, osgEarth::GeoPoint position)
+{
+    mTrackModelWidget->setModelPosition(type, name, position.x(), position.y(), position.z());
 }
 

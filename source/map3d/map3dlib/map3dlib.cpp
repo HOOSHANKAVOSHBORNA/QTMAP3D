@@ -61,7 +61,7 @@ void Map3dlib::mousePressEvent(QMouseEvent *event)
 
 void Map3dlib::resizeEvent(QResizeEvent *event)
 {
-    if(mWidgets.at(0))
+    if(mWidgets.count() != 0 && mWidgets.at(0))
             mWidgets.at(0)->move(this->width() - 200, 0);
     QMainWindow::resizeEvent(event);
 }

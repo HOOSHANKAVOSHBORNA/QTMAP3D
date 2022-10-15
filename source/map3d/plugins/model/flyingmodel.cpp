@@ -29,6 +29,7 @@ public:
                         latLongPoint.transform(flyNode->getMapNode()->getMapSRS(), geoPoint);
 
                         flyNode->setPosition(geoPoint);
+                        emit flyNode->positionChanged(latLongPoint);
 //                        flyNode->setScale(cp.getScale());
                         flyNode->getPositionAttitudeTransform()->setScale(cp.getScale());
                         flyNode->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
