@@ -27,15 +27,19 @@ Item {
 
             }
         }
-        onClose:{
+        onUnTrackAll:{
             for (var i in object){
                 if (object[i].selected ){
-                object[i].children[0].color = "#404142"
-                object[i].selected = false
-                 DetaliObject.onModelClicked(object[i].type,object[i].name , false)
+                    object[i].children[0].color = "#404142"
+                    object[i].selected = false
+                    DetaliObject.onModelClicked(object[i].type,object[i].name , false)
                 }
 
             }
+        }
+
+        onClose:{
+
 
             if (!valuepin && widgetrack.state === "open"){
                 close.start()
