@@ -232,7 +232,7 @@ void Map3dWidget::setTrackNode(osg::Node *value)
     if(vp.getNode() == value)
         return;
     vp.setNode(value);//to track
-    vp.setRange(100);
+    //vp.setRange(100);
     mEarthManipulator->setViewpoint(vp);
     auto camSet = mEarthManipulator->getSettings();
     camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);

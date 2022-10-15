@@ -301,7 +301,7 @@ void Model::addAirplaineModel()
     osg::Vec3d position(52.8601, 35.277, 2100);
 
     //create and setting model--------------------------------------------
-    osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/air.osgb");
+    osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/airplane-red.osgb");
     QString name = FLYING + QString::number(mModels[FLYING].count());
     model->setName(name.toStdString());
     model->setLatLongPosition(position);
