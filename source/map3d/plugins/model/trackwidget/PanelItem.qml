@@ -72,7 +72,7 @@ Item {
                         }
                     }else{
 
-                        object[0].children[0].color = "#404142"
+                        object[i].children[0].color = "#404142"
                         object[i].selected = false
                     }
                 }

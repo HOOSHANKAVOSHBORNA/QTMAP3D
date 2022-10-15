@@ -52,7 +52,9 @@ Item {
 
         }
         onIsDock:{
-            widgetrack.height = height - 10
+            widgetrack.height = height - 50
+            mainroot.height  = height - 50
+
         }
         onModelAdded:{
             var component = Qt.createComponent("qrc:/trackwidget/PanelItem.qml");
