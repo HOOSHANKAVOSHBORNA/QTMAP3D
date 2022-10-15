@@ -151,7 +151,7 @@ void Model::demo()
 
     //    setPosition(mCurrentWorldPoint, 138);
     latLongPoint.fromWorld(osgEarth::SpatialReference::get("wgs84"), currentPos);
-    //latLongPoint.z() = 2100;
+    latLongPoint.z() = 2100;
     model->flyTo(latLongPoint.vec3d(), 138);
 }
 
