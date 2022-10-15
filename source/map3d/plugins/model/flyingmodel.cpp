@@ -1,5 +1,8 @@
 #include "flyingmodel.h"
 #include <QDebug>
+#include <osgParticle/FireEffect>
+#include <osgParticle/SmokeTrailEffect>
+
 
 class MapAnimationPathCallback: public osg::AnimationPathCallback
 {
@@ -44,8 +47,9 @@ public:
     }
 };
 
-FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
-                :osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
+FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName, osg::Group *rootNode)
+                :osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style()),
+                  mRootNode(rootNode)
 {
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile(fileName.toStdString());
 
@@ -61,6 +65,23 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
 
     setStyle(style);
+
+    osgParticle::FireEffect *fire = new osgParticle::FireEffect(osg::Vec3d(0, 150,0),3.0,100.0);
+    getPositionAttitudeTransform()->addChild(fire);
+    fire->setUseLocalParticleSystem(false);
+    //mRootNode->addChild(fire->getParticleSystem());
+    getMapNode()->addChild(fire->getParticleSystem());
+
+    fire->setEmitterDuration(360000);
+
+    osgParticle::SmokeTrailEffect *smoke = new osgParticle::SmokeTrailEffect(osg::Vec3d(0, 150,0),1.0,100.0);
+    getPositionAttitudeTransform()->addChild(smoke);
+    smoke->setUseLocalParticleSystem(false);
+    //mRootNode->addChild(smoke->getParticleSystem());
+    getMapNode()->addChild(smoke->getParticleSystem());
+
+    smoke->setEmitterDuration(360000);
+    smoke->setParticleDuration(10);
 }
 
 void FlyingModel::setLatLongPosition(const osg::Vec3d &pos)
@@ -71,6 +92,7 @@ void FlyingModel::setLatLongPosition(const osg::Vec3d &pos)
 //    osg::Vec3d worldPoint;
 //    mapPoint.toWorld(worldPoint);
     setPosition(mapPoint);
+
 }
 
 void FlyingModel::flyTo(const osg::Vec3d &pos, double speed)
