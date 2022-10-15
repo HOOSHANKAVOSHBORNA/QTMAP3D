@@ -8,6 +8,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QDockWidget>
+#include <QRandomGenerator>
 
 #include <osgDB/ReadFile>
 #include <osgEarthSymbology/GeometryFactory>
@@ -22,12 +23,16 @@
 #include <osgEarth/ElevationLayer>
 
 
+const QString AIRPLANE = "Airplane";
 
 Model::Model(QWidget *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(modelqml);
     Q_INIT_RESOURCE(modelicon);
+
+    mAirFirstPoint.set(osg::Vec3d(52.8601, 35.277, 2100));
+
 }
 
 void Model::setUpUI()
@@ -52,7 +57,7 @@ void Model::setUpUI()
     QObject::connect(mMainWindow,&Map3dlib::onPressEvent,mTrackModelWidget,&TrackModelWidget::setClose);
 
     /// event click model
-        QObject::connect(mMap3dWidget,&Map3dWidget::clickedWorldPos , this ,&Model::oncliCkedWorldPos);
+    QObject::connect(mMap3dWidget,&Map3dWidget::clickedWorldPos , this ,&Model::oncliCkedWorldPos);
     ///
 
     ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
@@ -131,30 +136,45 @@ void Model::demo()
     //        point.set(osgEarth::SpatialReference::get("wgs84"), 52.859 , 35.241+ ch, 1100,osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
     //    osg::Vec3d out_world;
     //    point.toWorld(out_world);
-    auto model = dynamic_cast<FlyingModel*>(mModels["Airplane"]["Airplane0"]);
+    QString name = AIRPLANE + QString(mModels[AIRPLANE].count()-1);
+    auto model = dynamic_cast<FlyingModel*>(mModels[AIRPLANE][name]);
     auto mapPoint = model->getPosition();
+    qDebug()<<QString::fromUtf8(mapPoint.toString().c_str());
     osgEarth::GeoPoint  latLongPoint;
-    mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), latLongPoint);
+    //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
+    //mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), latLongPoint);
     osg::Vec3d currentPos;
-    latLongPoint.toWorld(currentPos);
+    mapPoint.toWorld(currentPos);
     //osg::Vec3d currentPos(latLongPoint.vec3d());
     //-- 500 km/h ~ 139 m/s ------------------
-    int randomX = 10*(138 + (qrand() % 139));
-    int randomY = 10*(138 + (qrand() % 139));
+    //    int randomX = 10*(138 + (qrand() % 139));
+    //    int randomY = 10*(138 + (qrand() % 139));
+    //    int val = qrand() % 4;
+    //    if(val == 1)
+    //        currentPos += osg::Vec3d(randomX, randomY, 0.0);
+    //    else if(val == 2)
+    //        currentPos += osg::Vec3d(randomX, -randomY, 0.0);
+    //    else if(val == 3)
+    //        currentPos += osg::Vec3d(-randomX, randomY, 0.0);
+    //    else
+    //        currentPos += osg::Vec3d(-randomX, -randomY, 0.0);
+
+    int randomX = (100 + (qrand() % 19));
+    int randomY = (100 + (qrand() % 19));
     int val = qrand() % 4;
     if(val == 1)
-        currentPos += osg::Vec3d(randomX, randomY, 0.0);
+        mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, randomY/10000.0, 0.0);
     else if(val == 2)
-        currentPos += osg::Vec3d(randomX, -randomY, 0.0);
+        mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, -randomY/10000.0, 0.0);
     else if(val == 3)
-        currentPos += osg::Vec3d(-randomX, randomY, 0.0);
+        mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, randomY/10000.0, 0.0);
     else
-        currentPos += osg::Vec3d(-randomX, -randomY, 0.0);
+        mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, -randomY/10000.0, 0.0);
 
     //    setPosition(mCurrentWorldPoint, 138);
     latLongPoint.fromWorld(osgEarth::SpatialReference::get("wgs84"), currentPos);
-    latLongPoint.z() = 2100;
-    model->flyTo(latLongPoint.vec3d(), 138);
+    qDebug()<<QString::fromUtf8(latLongPoint.toString().c_str());
+    model->flyTo(mapPoint.vec3d(), 138);
 }
 
 void Model::onToolBarWidgetPin(bool isPin)
@@ -312,31 +332,11 @@ void Model::addTruckModel()
 
 void Model::addAirplaineModel()
 {
-    //    osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../map3dlib/data/models/air.osgb");
-
-    //    if (!node)
-    //    {
-    //        return;
-    //    }
-    //    osgEarth::Symbology::Style  style;
-    //    //        style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
-    //    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    //    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-    //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
-    //    //        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->url()->setLiteral("../map3dlib/data/models/dumptruck.osg");
-
     osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/air.osgb");
-    QString name = tr("Airplane%1").arg(mModels["Airplane"].count());
+    QString name = AIRPLANE + QString(mModels[AIRPLANE].count());
     model->setName(name.toStdString());
-    mModels["Airplane"][name] = model;
+    mModels[AIRPLANE][name] = model;
 
-    //auto srs = mMap3dWidget->getMapNode()->getMap()->getWorldSRS();
-    //osgEarth::GeoPoint pos(srs,52.859, 35.241);
-    //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.241, 800);
-
-    //osgEarth::GeoPoint  point(mMap3dWidget->getMapSRS(), 52.8601, 35.277, 2100, osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
-    //    point.toWorld(mCurrentWorldPoint, mMap3dWidget->getMapNode()->getTerrain());
-    mAirFirstPoint.set(osg::Vec3d(52.8601, 35.277, 2100));
     mMap3dWidget->addNode(model);
     //mMap3dWidget->mMapRoot->addChild(model);
     model->setLatLongPosition(mAirFirstPoint);
@@ -346,6 +346,12 @@ void Model::addAirplaineModel()
 
     mTrackModelWidget->addModel("Airplane", name);
     mTrackModelWidget->setModelPosition("Airplane", name, mAirFirstPoint.x(), mAirFirstPoint.y(), mAirFirstPoint.z());
+
+//    double rnd = QRandomGenerator::global()->generateDouble();
+    double rnd = qrand() % 360;
+//    mAirFirstPoint.y() += 0.00015;
+//    mAirFirstPoint.x() += 0.00015;
+    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
 }
 
 void Model::clickedTrackNode(QString type, QString name, bool isClick)

@@ -4,7 +4,7 @@
 class MapAnimationPathCallback: public osg::AnimationPathCallback
 {
 public:
-    void operator()(osg::Node* node, osg::NodeVisitor* nv){
+    void operator()(osg::Node* node, osg::NodeVisitor* nv) override{
         if (_animationPath.valid() &&
                 nv->getVisitorType()== osg::NodeVisitor::UPDATE_VISITOR &&
                 nv->getFrameStamp())
@@ -30,7 +30,7 @@ public:
 
                         flyNode->setPosition(geoPoint);
 //                        flyNode->setScale(cp.getScale());
-//                        flyNode->getPositionAttitudeTransform()->setScale(cp.getScale());
+                        flyNode->getPositionAttitudeTransform()->setScale(cp.getScale());
                         flyNode->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
                     }
 
@@ -74,37 +74,44 @@ void FlyingModel::setLatLongPosition(const osg::Vec3d &pos)
 
 void FlyingModel::flyTo(const osg::Vec3d &pos, double speed)
 {
-    auto mapPoint = getPosition();
-    osgEarth::GeoPoint  latLongPoint;
-//    point.toWorld(currentPos);
-    mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), latLongPoint);
-    osg::Vec3d currentPos(latLongPoint.vec3d());
+    auto currentGeoPoint = getPosition();
+    //to lat long
+    currentGeoPoint.makeGeographic();
 
     osg::Quat rotate;
-    osg::Vec3f def = pos - currentPos;
+    osg::Vec3f def = pos - currentGeoPoint.vec3d();
     rotate.makeRotate(-osg::Y_AXIS, def);
     osg::Vec3d estimatePos = pos + (def * def.normalize()) * 30;
-    double t = static_cast<double>((estimatePos - pos).length() / speed);
+//    double t = static_cast<double>((estimatePos - pos).length() / speed);
+    osgEarth::GeoPoint geoPos(currentGeoPoint.getSRS(), pos);
+    double distance = geoPos.distanceTo(osgEarth::GeoPoint(currentGeoPoint.getSRS(),estimatePos));
+    double t =distance / speed;
 
     osg::AnimationPath* path = new osg::AnimationPath();
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
-    //    path->insert(0, osg::AnimationPath::ControlPoint(currentPos,modelNode->getAttitude(),modelNode->getScale()));
-    //    path->insert(1,osg::AnimationPath::ControlPoint(pos,rotate,modelNode->getScale()));
-    //    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate,modelNode->getScale()));
-    path->insert(0, osg::AnimationPath::ControlPoint(currentPos,getPositionAttitudeTransform()->getAttitude(),getScale()));
+
+    path->insert(0, osg::AnimationPath::ControlPoint(currentGeoPoint.vec3d(),getPositionAttitudeTransform()->getAttitude(),getScale()));
     path->insert(2,osg::AnimationPath::ControlPoint(pos,rotate, getScale()));
     path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate, getScale()));
-    //auto path = createAnimationPath(currentPos, pos, speed);
 
-    MapAnimationPathCallback* animationPathCallback = new MapAnimationPathCallback();
-    animationPathCallback->setAnimationPath(path);
+    mAnimationPathCallback = new MapAnimationPathCallback();
+    mAnimationPathCallback->setAnimationPath(path);
     //animationPathCallback->setPivotPoint(osg::Vec3d(0,100,0));
-    //    modelNode->setUpdateCallback(animationPathCallback);
-    setUpdateCallback(animationPathCallback);
+    setUpdateCallback(mAnimationPathCallback);
 
     //draw line------------------------------------------------
     osg::Vec3Array* keyPoint = new osg::Vec3Array;
-    keyPoint->push_back(currentPos);
+    keyPoint->push_back(currentGeoPoint.vec3d());
     keyPoint->push_back(estimatePos);
     keyPoint->push_back(pos);
+}
+
+void FlyingModel::setPause(bool pause)
+{
+    mAnimationPathCallback->setPause(pause);
+}
+
+bool FlyingModel::getPause() const
+{
+    return mAnimationPathCallback->getPause();
 }
