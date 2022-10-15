@@ -22,7 +22,6 @@
 #include <osgEarth/ElevationLayer>
 
 
-
 Model::Model(QWidget *parent)
     : PluginInterface(parent)
 {
@@ -48,12 +47,8 @@ void Model::setUpUI()
 
     ///
     QObject::connect(mTrackModelWidget,&TrackModelWidget::onModelClicked,this ,&Model::clickedTrackNode);
-    ////
-    QObject::connect(mMainWindow,&Map3dlib::onPressEvent,mTrackModelWidget,&TrackModelWidget::setClose);
 
-    /// event click model
-        QObject::connect(mMap3dWidget,&Map3dWidget::clickedWorldPos , this ,&Model::oncliCkedWorldPos);
-    ///
+
 
     ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
 
@@ -108,6 +103,7 @@ void Model::setUpUI()
             }
             else
             {
+                mTrackModelWidget->setUnTrackAll(true);
                 mTrackModelWidget->hide();
                 mDockTrackModelWidget->hide();
                 mTrackModelWidget->move(mMainWindow->width() -200,0);
@@ -359,10 +355,3 @@ void Model::clickedTrackNode(QString type, QString name, bool isClick)
         mMap3dWidget->unTrackNode();
 }
 
-void Model::oncliCkedWorldPos(double latitude, double longitude, double altitude)
-{
-
-    qDebug()<<latitude << longitude << altitude;
-
-
-}

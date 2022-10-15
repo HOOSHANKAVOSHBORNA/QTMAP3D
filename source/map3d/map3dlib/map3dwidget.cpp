@@ -424,6 +424,5 @@ void Map3dWidget::onMapPressEvent(QMouseEvent *event)
     QApplication::postEvent(this,event);
     auto vp = getViewpoint();
     mLocationWidget->setCurrentLocation(vp.focalPoint()->x(),vp.focalPoint()->y());
-    emit clickedWorldPos(vp.focalPoint()->x(),vp.focalPoint()->y(),vp.focalPoint()->z());
     //qDebug()<<event;
 }

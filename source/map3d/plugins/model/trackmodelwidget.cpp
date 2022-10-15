@@ -9,7 +9,6 @@ TrackModelWidget::TrackModelWidget(QWidget *parent)
     :QQuickWidget(parent)
 
 {
-    //mQQuickWidget = new QQuickWidget(this);
     QQmlContext  *context = this->rootContext();
     context->setContextProperty("DetaliObject", this);
     setSource(QUrl("qrc:/trackwidget/trackwidget.qml"));
@@ -59,6 +58,11 @@ void TrackModelWidget::setModelInfo(QString type , QString name,QJsonObject info
 void TrackModelWidget::setMinimaizeWidget(bool isMax)
 {
     emit minimize(isMax);
+}
+
+void TrackModelWidget::setUnTrackAll(bool isCheck)
+{
+    emit unTrackAll(isCheck);
 }
 
 void TrackModelWidget::resizeEvent(QResizeEvent *event)

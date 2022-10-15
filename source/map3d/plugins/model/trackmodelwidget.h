@@ -20,7 +20,7 @@ public:
     void setMinimaizeWidget(bool isMax);
 
 public slots:
-
+    void setUnTrackAll(bool isCheck);
 signals :
     void onModelClicked(QString type, QString name , bool isClick);
 protected:
@@ -34,7 +34,7 @@ private slots:
 signals:
     Q_INVOKABLE void modelAdded (QString type ,QString name);
     Q_INVOKABLE void onPin (bool t);
-
+    Q_INVOKABLE void unTrackAll (bool isCheck);
     Q_INVOKABLE void isDock (int height);
     Q_INVOKABLE void modelInfo (QString t ,QString n,QString str);
     Q_INVOKABLE void close();
