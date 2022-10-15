@@ -82,6 +82,8 @@ public slots:
     void typeChanged(bool);
     const osgEarth::SpatialReference* getMapSRS() const;
     void goPosition(double latitude ,double longitude ,double range);
+signals :
+     void clickedWorldPos(double latitude ,double longitude, double altitude);
 protected:
     void resizeEvent(QResizeEvent* event) override;
 private slots:

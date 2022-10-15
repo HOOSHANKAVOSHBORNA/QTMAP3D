@@ -38,6 +38,7 @@ public:
     void addAirplaineModel();
 public slots:
     void clickedTrackNode(QString type ,QString name ,bool isClick);
+    void oncliCkedWorldPos(double latitude ,double longitude, double altitude);
 private:
     void demo();
     void onToolBarWidgetPin(bool isPin);
