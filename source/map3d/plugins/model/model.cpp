@@ -21,6 +21,8 @@
 #include <osg/Array>
 #include <osgAnimation/EaseMotion>
 #include <osgEarth/ElevationLayer>
+#include <osgParticle/FireEffect>
+#include <osgParticle/SmokeTrailEffect>
 
 //const QString FLYING = "Flying";
 const QString AIRPLANE = "Airplane";
@@ -109,10 +111,9 @@ void Model::setUpUI()
 
 void Model::demo()
 {
-    for (int var = 0; var < mModels[AIRPLANE].count(); ++var)
+    auto airplaneNames = mModels[AIRPLANE].keys();
+    for (auto name: airplaneNames)
     {
-        QString name = AIRPLANE + QString::number(var);
-
         auto model = dynamic_cast<FlyingModel*>(mModels[AIRPLANE][name]);
         auto mapPoint = model->getPosition();
         osgEarth::GeoPoint  latLongPoint;
@@ -152,11 +153,12 @@ void Model::demo()
         model->flyTo(mapPoint.vec3d(), 138);
 
         // fallow racket
-        QString nameRocket = ROCKET + QString::number(var);
-        if(mModels[ROCKET].contains(nameRocket))
+        auto rocketNames = mModels[ROCKET].keys();
+        if(!rocketNames.isEmpty())
         {
-            auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET][nameRocket]);
+            auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET][rocketNames[0]]);
             modelRocket->flyTo(mapPoint.vec3d(), 120);
+            model->setFollowModel(modelRocket);
         }
     }
 }
@@ -302,6 +304,29 @@ void Model::addAirplaineModel()
     //    double rnd = QRandomGenerator::global()->generateDouble();
     double rnd = qrand() % 360;
     model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
+
+    //hit------------------------------------------------------------------
+    QObject::connect(model.get(), &FlyingModel::hit, [=](){
+        //         auto mod = dynamic_cast<FlyingModel*>(sender());
+        qDebug()<<QString(model->getName().c_str());
+
+        osgParticle::FireEffect *fire = new osgParticle::FireEffect(osg::Vec3d(0, 90 ,0),10,100.0);
+        model->getPositionAttitudeTransform()->addChild(fire);
+        fire->setUseLocalParticleSystem(false);
+        //mRootNode->addChild(fire->getParticleSystem());
+        mMap3dWidget->getMapNode()->getParent(0)->getParent(0)->addChild(fire->getParticleSystem());
+        fire->setEmitterDuration(360000);
+
+        mModels[ROCKET].remove(QString(model->getFollowModel()->getName().c_str()));
+        mModels[AIRPLANE].remove(QString(model->getName().c_str()));
+
+        mTrackModelWidget->removeModel(AIRPLANE, QString(model->getName().c_str()));
+        mTrackModelWidget->removeModel(ROCKET, QString(model->getFollowModel()->getName().c_str()));
+        //        mMap3dWidget->removeNode(model->getFollowModel());
+        //        mMap3dWidget->removeNode(model);
+        //model->getFollowModel()->setNodeMask(false);
+        //model->setNodeMask(false);
+    });
 }
 
 void Model::addRocketModel()

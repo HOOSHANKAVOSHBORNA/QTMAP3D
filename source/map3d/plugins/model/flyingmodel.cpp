@@ -16,45 +16,57 @@ public:
         if (_animationPath.valid() &&
                 nv->getVisitorType()== osg::NodeVisitor::UPDATE_VISITOR &&
                 nv->getFrameStamp())
+        {
+            double time = nv->getFrameStamp()->getSimulationTime();
+            _latestTime = time;
+
+            if (!_pause)
             {
-                double time = nv->getFrameStamp()->getSimulationTime();
-                _latestTime = time;
-
-                if (!_pause)
+                // Only update _firstTime the first time, when its value is still DBL_MAX
+                if (_firstTime == DBL_MAX) _firstTime = time;
+                //--------------------------------
+                //update(*node);
+                //my code
+                //                    osgEarth::GeoTransform* geoNode = dynamic_cast<osgEarth::GeoTransform*>(node);
+                FlyingModel* flyNode = dynamic_cast<FlyingModel*>(node);
+                osg::AnimationPath::ControlPoint cp;
+                if (getAnimationPath()->getInterpolatedControlPoint(getAnimationTime(),cp))
                 {
-                    // Only update _firstTime the first time, when its value is still DBL_MAX
-                    if (_firstTime == DBL_MAX) _firstTime = time;
-                    //--------------------------------
-                    //update(*node);
-                    //my code
-//                    osgEarth::GeoTransform* geoNode = dynamic_cast<osgEarth::GeoTransform*>(node);
-                    FlyingModel* flyNode = dynamic_cast<FlyingModel*>(node);
-                    osg::AnimationPath::ControlPoint cp;
-                    if (getAnimationPath()->getInterpolatedControlPoint(getAnimationTime(),cp))
+                    osgEarth::GeoPoint  latLongPoint(osgEarth::SpatialReference::get("wgs84"), cp.getPosition());
+                    osgEarth::GeoPoint geoPoint;
+                    latLongPoint.transform(flyNode->getMapNode()->getMapSRS(), geoPoint);
+
+                    flyNode->setPosition(geoPoint);
+                    //                        emit flyNode->positionChanged(latLongPoint);
+                    //                        flyNode->setScale(cp.getScale());
+                    flyNode->getPositionAttitudeTransform()->setScale(cp.getScale());
+                    flyNode->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
+                    //check collision------------------------------------------------------
+                    if(flyNode->getFollowModel() != nullptr)
                     {
-                        osgEarth::GeoPoint  latLongPoint(osgEarth::SpatialReference::get("wgs84"), cp.getPosition());
-                        osgEarth::GeoPoint geoPoint;
-                        latLongPoint.transform(flyNode->getMapNode()->getMapSRS(), geoPoint);
+                        double distance = flyNode->getPosition().distanceTo(flyNode->getFollowModel()->getPosition());
+                        if(distance < 3)
+                        {
+                            setPause(true);
+                            flyNode->getFollowModel()->setPause(true);
+                            emit flyNode->hit();
 
-                        flyNode->setPosition(geoPoint);
-//                        emit flyNode->positionChanged(latLongPoint);
-//                        flyNode->setScale(cp.getScale());
-                        flyNode->getPositionAttitudeTransform()->setScale(cp.getScale());
-                        flyNode->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
+                        }
                     }
-
-                    //qDebug()<<"p:"<<cp.getPosition().x()<<","<<cp.getPosition().y()<<","<<cp.getPosition().z();
                 }
-            }
 
-            // must call any nested node callbacks and continue subgraph traversal.
-            NodeCallback::traverse(node,nv);
+                //qDebug()<<"p:"<<cp.getPosition().x()<<","<<cp.getPosition().y()<<","<<cp.getPosition().z();
+            }
+        }
+
+        // must call any nested node callbacks and continue subgraph traversal.
+        NodeCallback::traverse(node,nv);
     }
 };
 
 
 FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
-                :osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
+    :osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
 {
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile(fileName.toStdString());
 
@@ -71,11 +83,18 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
 
     setStyle(style);
 
+<<<<<<< HEAD
 
 //    setScale(osg::Vec3(0.09f,0.09f,0.09f));
     qDebug()<<"center:"<<getBound().center().x()<<","<<getBound().center().y()<<","<<getBound().center().z();
     qDebug()<<"radius:"<<getBound().radius();
 //    qDebug()<<"radius2:"<<getBound().radius2();
+=======
+    //    setScale(osg::Vec3(0.09f,0.09f,0.09f));
+//    qDebug()<<"center:"<<getBound().center().x()<<","<<getBound().center().y()<<","<<getBound().center().z();
+//    qDebug()<<"radius:"<<getBound().radius();
+    //    qDebug()<<"radius2:"<<getBound().radius2();
+>>>>>>> refs/remotes/origin/master
     osg::Vec3d center = getBound().center();
     float radius = getBound().radius();
     float scale = 3;
@@ -103,8 +122,8 @@ void FlyingModel::setLatLongPosition(const osg::Vec3d &pos)
     osgEarth::GeoPoint  pointLatLong(osgEarth::SpatialReference::get("wgs84"), pos.x(), pos.y(), pos.z());
     osgEarth::GeoPoint  mapPoint;
     pointLatLong.transform(getMapNode()->getMapSRS(), mapPoint);
-//    osg::Vec3d worldPoint;
-//    mapPoint.toWorld(worldPoint);
+    //    osg::Vec3d worldPoint;
+    //    mapPoint.toWorld(worldPoint);
     setPosition(mapPoint);
 
 }
@@ -119,7 +138,7 @@ void FlyingModel::flyTo(const osg::Vec3d &pos, double speed)
     osg::Vec3f def = pos - currentGeoPoint.vec3d();
     rotate.makeRotate(-osg::Y_AXIS, def);
     osg::Vec3d estimatePos = pos + (def * def.normalize()) * 30;
-//    double t = static_cast<double>((estimatePos - pos).length() / speed);
+    //    double t = static_cast<double>((estimatePos - pos).length() / speed);
     osgEarth::GeoPoint geoPos(currentGeoPoint.getSRS(), pos);
     double distance = geoPos.distanceTo(osgEarth::GeoPoint(currentGeoPoint.getSRS(),estimatePos));
     double t =distance / speed;
@@ -163,4 +182,14 @@ void FlyingModel::setPause(bool pause)
 bool FlyingModel::getPause() const
 {
     return mAnimationPathCallback->getPause();
+}
+
+void FlyingModel::setFollowModel(FlyingModel *followModel)
+{
+    mFollowModel = followModel;
+}
+
+FlyingModel *FlyingModel::getFollowModel() const
+{
+    return mFollowModel;
 }
