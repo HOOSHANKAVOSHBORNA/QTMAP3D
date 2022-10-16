@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <osgParticle/FireEffect>
 #include <osgParticle/SmokeTrailEffect>
+#include <osgEarth/Registry>
 
 
 class MapAnimationPathCallback: public osg::AnimationPathCallback
@@ -32,7 +33,7 @@ public:
                         latLongPoint.transform(flyNode->getMapNode()->getMapSRS(), geoPoint);
 
                         flyNode->setPosition(geoPoint);
-                        emit flyNode->positionChanged(latLongPoint);
+//                        emit flyNode->positionChanged(latLongPoint);
 //                        flyNode->setScale(cp.getScale());
                         flyNode->getPositionAttitudeTransform()->setScale(cp.getScale());
                         flyNode->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
@@ -47,9 +48,8 @@ public:
     }
 };
 
-FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName, osg::Group *rootNode)
-                :osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style()),
-                  mRootNode(rootNode)
+FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
+                :osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
 {
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile(fileName.toStdString());
 
@@ -66,19 +66,27 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName, os
 
     setStyle(style);
 
-    osgParticle::FireEffect *fire = new osgParticle::FireEffect(osg::Vec3d(0, 150,0),3.0,100.0);
+//    setScale(osg::Vec3(0.09f,0.09f,0.09f));
+    qDebug()<<"center:"<<getBound().center().x()<<","<<getBound().center().y()<<","<<getBound().center().z();
+    qDebug()<<"radius:"<<getBound().radius();
+//    qDebug()<<"radius2:"<<getBound().radius2();
+    osg::Vec3d center = getBound().center();
+    float radius = getBound().radius();
+    float scale = 3;
+    //osgEarth::Registry::shaderGenerator().run(this);
+    osgParticle::FireEffect *fire = new osgParticle::FireEffect(center + osg::Vec3d(0, radius,0),scale,100.0);
     getPositionAttitudeTransform()->addChild(fire);
     fire->setUseLocalParticleSystem(false);
     //mRootNode->addChild(fire->getParticleSystem());
-    getMapNode()->addChild(fire->getParticleSystem());
+    getMapNode()->getParent(0)->getParent(0)->addChild(fire->getParticleSystem());
 
     fire->setEmitterDuration(360000);
 
-    osgParticle::SmokeTrailEffect *smoke = new osgParticle::SmokeTrailEffect(osg::Vec3d(0, 150,0),1.0,100.0);
+    osgParticle::SmokeTrailEffect *smoke = new osgParticle::SmokeTrailEffect(osg::Vec3d(0, 150,0),scale/3,100.0);
     getPositionAttitudeTransform()->addChild(smoke);
     smoke->setUseLocalParticleSystem(false);
     //mRootNode->addChild(smoke->getParticleSystem());
-    getMapNode()->addChild(smoke->getParticleSystem());
+    getMapNode()->getParent(0)->getParent(0)->addChild(smoke->getParticleSystem());
 
     smoke->setEmitterDuration(360000);
     smoke->setParticleDuration(10);
@@ -127,6 +135,18 @@ void FlyingModel::flyTo(const osg::Vec3d &pos, double speed)
     keyPoint->push_back(currentGeoPoint.vec3d());
     keyPoint->push_back(estimatePos);
     keyPoint->push_back(pos);
+    //    mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
+    //    mMap3dWidget->mMapRoot->addChild(drawCordination(pos));
+    //    mMap3dWidget->mMapRoot->addChild(drawCordination(estimatePos));
+
+    //    auto curentViewPoint = mMap3dWidget->getViewpoint();
+    //    osgEarth::GeoPoint point;
+    //    point.fromWorld(osgEarth::SpatialReference::get("wgs84"),pos);
+    //    curentViewPoint.focalPoint() = point;
+    //    curentViewPoint.range()= mMap3dWidget->getViewpoint().range();
+    //    mMap3dWidget->setViewpoint(curentViewPoint, 0);
+
+    emit positionChanged(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"),pos));
 }
 
 void FlyingModel::setPause(bool pause)

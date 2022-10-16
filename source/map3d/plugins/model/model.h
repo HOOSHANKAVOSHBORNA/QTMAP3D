@@ -1,4 +1,4 @@
-#ifndef MODEL_H
+﻿#ifndef MODEL_H
 #define MODEL_H
 
 #include "plugininterface.h"
@@ -13,14 +13,14 @@
 
 namespace osgEarth {
 namespace  Annotation{
-    class ModelNode;
+class ModelNode;
 }
 
 }
 namespace osg{
-    class PositionAttitudeTransform;
-    class Vec3d;
-    class Node;
+class PositionAttitudeTransform;
+class Vec3d;
+class Node;
 }
 
 class Model : public PluginInterface
@@ -32,10 +32,11 @@ class Model : public PluginInterface
 public:
     explicit Model(QWidget *parent = nullptr);
     void setUpUI() override;
-//    osg::AnimationPath* createAnimationPath(const osg::Vec3d &pos1, const osg::Vec3d &pos2, float speed);
-    void setPosition(const osg::Vec3d& pos, double speed);
+    //    osg::AnimationPath* createAnimationPath(const osg::Vec3d &pos1, const osg::Vec3d &pos2, float speed);
+    void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
     void addTruckModel();
     void addAirplaineModel();
+    void addRocketModel();
 public slots:
     void clickedTrackNode(QString type ,QString name ,bool isClick);
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
@@ -52,7 +53,7 @@ private:
     QDockWidget* mDockTrackModelWidget;
 
     bool mIsPin{false};
-//    friend class MyAnimationPathCallback;
+    //    friend class MyAnimationPathCallback;
 };
 
 #endif // MODEL_H

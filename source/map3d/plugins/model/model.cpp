@@ -22,7 +22,9 @@
 #include <osgAnimation/EaseMotion>
 #include <osgEarth/ElevationLayer>
 
-const QString FLYING = "Airplane";
+//const QString FLYING = "Flying";
+const QString AIRPLANE = "Airplane";
+const QString ROCKET = "Rocket";
 
 Model::Model(QWidget *parent)
     : PluginInterface(parent)
@@ -55,6 +57,9 @@ void Model::setUpUI()
     QString nameAddAirplaineModel = "Add Airplan Model";
     mToolBar->addItem(cat, nameAddAirplaineModel, "");
 
+    QString nameAddRocketModel = "Add Rocket Model";
+    mToolBar->addItem(cat, nameAddRocketModel, "");
+
     QString nameAddTruckModel = "Add Truck Model";
     mToolBar->addItem(cat, nameAddTruckModel, "");
 
@@ -65,6 +70,10 @@ void Model::setUpUI()
         if(cat == category && name == nameAddAirplaineModel)
         {
             addAirplaineModel();
+        }
+        if(cat == category && name == nameAddRocketModel)
+        {
+            addRocketModel();
         }
         else if(cat == category && name == nameAddTruckModel)
         {
@@ -100,10 +109,11 @@ void Model::setUpUI()
 
 void Model::demo()
 {
-    for (int var = 0; var < mModels[FLYING].count(); ++var)
+    for (int var = 0; var < mModels[AIRPLANE].count(); ++var)
     {
-        QString name = FLYING + QString::number(var);
-        auto model = dynamic_cast<FlyingModel*>(mModels[FLYING][name]);
+        QString name = AIRPLANE + QString::number(var);
+
+        auto model = dynamic_cast<FlyingModel*>(mModels[AIRPLANE][name]);
         auto mapPoint = model->getPosition();
         osgEarth::GeoPoint  latLongPoint;
         //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
@@ -140,6 +150,14 @@ void Model::demo()
         latLongPoint.fromWorld(osgEarth::SpatialReference::get("wgs84"), currentPos);
         //qDebug()<<QString::fromUtf8(latLongPoint.toString().c_str());
         model->flyTo(mapPoint.vec3d(), 138);
+
+        // fallow racket
+        QString nameRocket = ROCKET + QString::number(var);
+        if(mModels[ROCKET].contains(nameRocket))
+        {
+            auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET][nameRocket]);
+            modelRocket->flyTo(mapPoint.vec3d(), 120);
+        }
     }
 }
 
@@ -195,56 +213,14 @@ void Model::onToolBarWidgetPin(bool isPin)
 //    return animationPath;
 //}
 
-void Model::setPosition(const osg::Vec3d &pos, double speed)
+void Model::flyTo(QString type, QString name, const osg::Vec3d &pos, double speed)
 {
-    //    osgEarth::GeoPoint  pointLatLong(osgEarth::SpatialReference::get("wgs84"), pos);
-    //    osgEarth::GeoPoint  mapPos;
-    //    pointLatLong.transform(mMap3dWidget->getMapSRS(), mapPos);
-    //    osg::Vec3d &WorldPos
-    //    mapPos.toWorld(currentPos,mMap3dWidget->getMapNode()->getTerrain());
-
-    //    osg::Vec3d currentPos = modelNode->getPosition();
-    osg::Vec3d currentPos;
-    auto point = mCurrentModel->getGeoTransform()->getPosition();
-    point.toWorld(currentPos);
-
-    osg::Quat rotate;
-    osg::Vec3f def = pos - currentPos;
-    rotate.makeRotate(-osg::Y_AXIS, def);
-    osg::Vec3d estimatePos = pos + (def * def.normalize()) * 30;
-    double t = static_cast<double>((estimatePos - pos).length() / speed);
-
-    osg::AnimationPath* path = new osg::AnimationPath();
-    path->setLoopMode(osg::AnimationPath::NO_LOOPING);
-    //    path->insert(0, osg::AnimationPath::ControlPoint(currentPos,modelNode->getAttitude(),modelNode->getScale()));
-    //    path->insert(1,osg::AnimationPath::ControlPoint(pos,rotate,modelNode->getScale()));
-    //    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate,modelNode->getScale()));
-    path->insert(0, osg::AnimationPath::ControlPoint(currentPos,mCurrentModel->getPositionAttitudeTransform()->getAttitude(), mCurrentModel->getScale()));
-    path->insert(2,osg::AnimationPath::ControlPoint(pos,rotate, mCurrentModel->getScale()));
-    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate, mCurrentModel->getScale()));
-    //auto path = createAnimationPath(currentPos, pos, speed);
-
-    osg::AnimationPathCallback* animationPathCallback = new osg::AnimationPathCallback(path);
-    animationPathCallback->setAnimationPath(path);
-    //animationPathCallback->setPivotPoint(osg::Vec3d(0,100,0));
-    //    modelNode->setUpdateCallback(animationPathCallback);
-    mCurrentModel->getGeoTransform()->setUpdateCallback(animationPathCallback);
-
-    //draw line------------------------------------------------
-    osg::Vec3Array* keyPoint = new osg::Vec3Array;
-    keyPoint->push_back(currentPos);
-    keyPoint->push_back(estimatePos);
-    keyPoint->push_back(pos);
-    //    mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
-    //    mMap3dWidget->mMapRoot->addChild(drawCordination(pos));
-    //    mMap3dWidget->mMapRoot->addChild(drawCordination(estimatePos));
-
-    //    auto curentViewPoint = mMap3dWidget->getViewpoint();
-    //    osgEarth::GeoPoint point;
-    //    point.fromWorld(osgEarth::SpatialReference::get("wgs84"),pos);
-    //    curentViewPoint.focalPoint() = point;
-    //    curentViewPoint.range()= mMap3dWidget->getViewpoint().range();
-    //    mMap3dWidget->setViewpoint(curentViewPoint, 0);
+    if(mModels[type].contains(name))
+    {
+        FlyingModel* model = dynamic_cast<FlyingModel*>(mModels[type][name]);
+        if(model != nullptr)
+            model->flyTo(pos, speed);
+    }
 }
 
 void Model::addTruckModel()
@@ -301,18 +277,18 @@ void Model::addAirplaineModel()
     osg::Vec3d position(52.8601, 35.277, 2100);
 
     //create and setting model--------------------------------------------
-    osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/airplane-red.osgb", mMap3dWidget->mMapRoot);
-    QString name = FLYING + QString::number(mModels[FLYING].count());
+    osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/airplane-red.osgb");
+    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
     model->setName(name.toStdString());
     model->setLatLongPosition(position);
     model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
 
     QObject::connect(model.get(), &FlyingModel::positionChanged, [=](osgEarth::GeoPoint position){
-        positionChanged(FLYING, name, position);
+        positionChanged(AIRPLANE, name, position);
     });
 
     //add to container-----------------------------------------------------
-    mModels[FLYING][name] = model;
+    mModels[AIRPLANE][name] = model;
 
 
     //add to map ---------------------------------------------------------
@@ -320,8 +296,41 @@ void Model::addAirplaineModel()
     mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
 
     //add to track widget ------------------------------------------------
-    mTrackModelWidget->addModel(FLYING, name);
-    mTrackModelWidget->setModelPosition(FLYING, name, position.x(), position.y(), position.z());
+    mTrackModelWidget->addModel(AIRPLANE, name);
+    mTrackModelWidget->setModelPosition(AIRPLANE, name, position.x(), position.y(), position.z());
+
+    //    double rnd = QRandomGenerator::global()->generateDouble();
+    double rnd = qrand() % 360;
+    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
+}
+
+void Model::addRocketModel()
+{
+    //    osg::Vec3d position(52.8601, 35.277, 2100);
+    osg::Vec3d position(52.8603, 35.277, 844);
+
+    //create and setting model--------------------------------------------
+    osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/rocket.osgt");
+    QString name = ROCKET + QString::number(mModels[ROCKET].count());
+    model->setName(name.toStdString());
+    model->setLatLongPosition(position);
+    model->setScale(osg::Vec3(1,1,1));
+
+    QObject::connect(model.get(), &FlyingModel::positionChanged, [=](osgEarth::GeoPoint position){
+        positionChanged(ROCKET, name, position);
+    });
+
+    //add to container-----------------------------------------------------
+    mModels[ROCKET][name] = model;
+
+
+    //add to map ---------------------------------------------------------
+    mMap3dWidget->addNode(model);
+    mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
+
+    //add to track widget ------------------------------------------------
+    mTrackModelWidget->addModel(ROCKET, name);
+    mTrackModelWidget->setModelPosition(ROCKET, name, position.x(), position.y(), position.z());
 
     //    double rnd = QRandomGenerator::global()->generateDouble();
     double rnd = qrand() % 360;
