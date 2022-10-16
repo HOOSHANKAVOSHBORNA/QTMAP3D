@@ -83,18 +83,15 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
 
     setStyle(style);
 
-<<<<<<< HEAD
 
 //    setScale(osg::Vec3(0.09f,0.09f,0.09f));
     qDebug()<<"center:"<<getBound().center().x()<<","<<getBound().center().y()<<","<<getBound().center().z();
     qDebug()<<"radius:"<<getBound().radius();
 //    qDebug()<<"radius2:"<<getBound().radius2();
-=======
     //    setScale(osg::Vec3(0.09f,0.09f,0.09f));
 //    qDebug()<<"center:"<<getBound().center().x()<<","<<getBound().center().y()<<","<<getBound().center().z();
 //    qDebug()<<"radius:"<<getBound().radius();
     //    qDebug()<<"radius2:"<<getBound().radius2();
->>>>>>> refs/remotes/origin/master
     osg::Vec3d center = getBound().center();
     float radius = getBound().radius();
     float scale = 3;

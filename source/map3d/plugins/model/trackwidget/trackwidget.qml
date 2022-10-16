@@ -57,21 +57,16 @@ Item {
 
         }
         onModelRemove:{
-            for (var i in object){
-                if(object[i].name === name && object[i].type === type){
-                    object[i].destroy()
-                }
-            }
-            count -= 1
+            object[type+ " : "+ name].destroy()
+
         }
         onModelAdded:{
             var component = Qt.createComponent("qrc:/trackwidget/PanelItem.qml");
-            object[count] = component.createObject(rootlayer);
-            object[count].title= type+ " : "+ name
-            object[count].name = name
-            object[count].type = type
-            object[count].width= laout_back.width
-            count += 1
+            object[type+ " : "+ name] = component.createObject(rootlayer);
+            object[type+ " : "+ name].title= type+ " : "+ name
+            object[type+ " : "+ name].name = name
+            object[type+ " : "+ name].type = type
+            object[type+ " : "+ name].width= laout_back.width
         }
         onMinimize:{
             if (isMax){

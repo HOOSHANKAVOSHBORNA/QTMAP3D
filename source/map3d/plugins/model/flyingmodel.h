@@ -19,11 +19,8 @@ public:
     FlyingModel* getFollowModel() const;
 signals:
     void positionChanged(osgEarth::GeoPoint pos);
-<<<<<<< HEAD
 
-=======
     void hit();
->>>>>>> refs/remotes/origin/master
 private:
     MapAnimationPathCallback* mAnimationPathCallback;
     FlyingModel* mFollowModel{nullptr};
