@@ -9,7 +9,7 @@ Item {
     readonly property int iconsize2: 15
     property bool valuepin: false
     property var object:[]
-    property int i: 0
+    property int count: 0
     width: 200
     height: 300
     Connections{
@@ -62,15 +62,16 @@ Item {
                     object[i].destroy()
                 }
             }
+            count -= 1
         }
         onModelAdded:{
             var component = Qt.createComponent("qrc:/trackwidget/PanelItem.qml");
-            object[i] = component.createObject(rootlayer);
-            object[i].title= type+ " : "+ name
-            object[i].name = name
-            object[i].type = type
-            object[i].width= laout_back.width
-            i+=1
+            object[count] = component.createObject(rootlayer);
+            object[count].title= type+ " : "+ name
+            object[count].name = name
+            object[count].type = type
+            object[count].width= laout_back.width
+            count += 1
         }
         onMinimize:{
             if (isMax){

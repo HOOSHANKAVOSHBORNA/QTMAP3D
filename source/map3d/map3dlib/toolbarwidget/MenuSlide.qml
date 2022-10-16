@@ -178,6 +178,7 @@ Item {
             clip : true
             color: "transparent"
             height: 0
+            radius: 5
 
             ScrollView {
                 id :laout_back

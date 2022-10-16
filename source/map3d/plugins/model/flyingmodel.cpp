@@ -3,7 +3,11 @@
 #include <osgParticle/FireEffect>
 #include <osgParticle/SmokeTrailEffect>
 #include <osgEarth/Registry>
-
+#include <osgGA/EventVisitor>
+#include <osgGA/EventHandler>
+#include <osgViewer/View>
+#include <osgEarth/IntersectionPicker>
+#include <QMouseEvent>
 
 class MapAnimationPathCallback: public osg::AnimationPathCallback
 {
@@ -48,6 +52,7 @@ public:
     }
 };
 
+
 FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
                 :osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
 {
@@ -65,6 +70,7 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
 
     setStyle(style);
+
 
 //    setScale(osg::Vec3(0.09f,0.09f,0.09f));
     qDebug()<<"center:"<<getBound().center().x()<<","<<getBound().center().y()<<","<<getBound().center().z();

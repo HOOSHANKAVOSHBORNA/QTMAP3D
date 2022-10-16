@@ -3,9 +3,9 @@
 
 #include <osgEarthAnnotation/ModelNode>
 #include <QObject>
-
+#include <QMouseEvent>
 class MapAnimationPathCallback;
-
+class EventCallback;
 class FlyingModel: public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
@@ -17,6 +17,7 @@ public:
     bool getPause() const;
 signals:
     void positionChanged(osgEarth::GeoPoint pos);
+
 private:
     MapAnimationPathCallback* mAnimationPathCallback;
 };
