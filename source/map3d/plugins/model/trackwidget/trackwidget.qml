@@ -56,6 +56,13 @@ Item {
             mainroot.height  = height - 50
 
         }
+        onModelRemove:{
+            for (var i in object){
+                if(object[i].name === name && object[i].type === type){
+                    object[i].destroy()
+                }
+            }
+        }
         onModelAdded:{
             var component = Qt.createComponent("qrc:/trackwidget/PanelItem.qml");
             object[i] = component.createObject(rootlayer);
@@ -113,7 +120,7 @@ Item {
             height: 23
             width: parent.width
             anchors.top: root.top
-            color: "#282A31"//
+            color: "#88000000"//
             Rectangle{
                 id : backmenu
                 width:30
@@ -229,6 +236,7 @@ Item {
             color: "#282A31"
             border.color: "#282A31"
             border.width: 1
+            radius: 5
             ScrollView {
                 id :laout_back
                 anchors.fill: parent
