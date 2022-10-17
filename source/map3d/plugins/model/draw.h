@@ -7,7 +7,7 @@
 #include <osg/Geometry>
 #include <osgText/Text>
 
-osg::Node* drawLine(osg::Vec3Array* vertex, float lineWidth)
+static osg::Node* drawLine(osg::Vec3Array* vertex, float lineWidth)
 {
 
     osg::Geode* gnode = new osg::Geode;
@@ -34,7 +34,7 @@ osg::Node* drawLine(osg::Vec3Array* vertex, float lineWidth)
     return gnode;
 }
 
-osg::Node* drawCordination(const osg::Vec3d &pos)
+static osg::Node* drawCordination(const osg::Vec3d &pos)
 {
     osg::Geode* gnode = new osg::Geode;
 
