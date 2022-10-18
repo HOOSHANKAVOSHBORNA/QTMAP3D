@@ -114,7 +114,7 @@ void Model::setUpUI()
 
 void Model::demo()
 {
-    int index = 0;
+//    int index = 0;
     auto airplaneNames = mModels[AIRPLANE].keys();
     for (auto name: airplaneNames)
     {
@@ -157,14 +157,20 @@ void Model::demo()
         model->flyTo(mapPoint.vec3d(), 138);
 
         // fallow racket
-        auto rocketNames = mModels[ROCKET].keys();
-        if(index < rocketNames.count())
+        auto truckNames = mModels[TRUCK].keys();
+        for(auto truckName: truckNames)
         {
-            auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET][rocketNames[index]]);
-            modelRocket->flyTo(mapPoint.vec3d(), 120);
-            model->setFollowingModel(modelRocket);
+            auto modeltruck = dynamic_cast<Truck*>(mModels[TRUCK][truckName]);
+            if(modeltruck->shoot())
+            {
+                addRocketModel(modeltruck->getPosition().vec3d());
+                auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET].last());
+                modelRocket->flyTo(mapPoint.vec3d(), 120);
+                model->setFollowingModel(modelRocket);
+                break;
+            }
         }
-        index += 1;
+//        index += 1;
     }
 }
 
@@ -264,7 +270,7 @@ void Model::addTruckModel()
 
 void Model::addAirplaineModel()
 {
-    osg::Vec3d position(52.8601, 35.277, 843.253);
+    osg::Vec3d position(52.8601, 35.277, 2100);
     //osg::Vec3d position(52.8601, 35.277, 844);
 
     //create and setting model--------------------------------------------
@@ -329,8 +335,8 @@ void Model::addAirplaineModel()
         //        mMap3dWidget->getMapNode()->addChild(explosion);
         //        mMap3dWidget->getMapNode()->addChild(debris);
 
-        //        mModels[ROCKET].remove(QString(other->getName().c_str()));
-        //        mModels[AIRPLANE].remove(QString(model->getName().c_str()));
+        mModels[ROCKET].remove(QString(other->getName().c_str()));
+        mModels[AIRPLANE].remove(QString(model->getName().c_str()));
 
         mTrackModelWidget->removeModel(AIRPLANE, QString(model->getName().c_str()));
         mTrackModelWidget->removeModel(ROCKET, QString(other->getName().c_str()));
@@ -341,14 +347,11 @@ void Model::addAirplaineModel()
     });
 }
 
-void Model::addRocketModel()
+void Model::addRocketModel(osg::Vec3d position)
 {
-    //    osg::Vec3d position(52.8601, 35.277, 2100);
-    osg::Vec3d position(52.8601, 35.277, 846);
 
     //create and setting model--------------------------------------------
     osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/rocket.osgb");
-    //    osg::ref_ptr<FlyingModel> model = new FlyingModel(mMap3dWidget->getMapNode(), "../map3dlib/data/models/airplane-red.osgb");
     QString name = ROCKET + QString::number(mModels[ROCKET].count());
     model->setName(name.toStdString());
     model->setLatLongPosition(position);
@@ -364,7 +367,8 @@ void Model::addRocketModel()
 
     //add to map ---------------------------------------------------------
     mMap3dWidget->addNode(model);
-    mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
+    //mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
+    //mMap3dWidget->setTrackNode(model);
 
     //add to track widget ------------------------------------------------
     mTrackModelWidget->addModel(ROCKET, name);

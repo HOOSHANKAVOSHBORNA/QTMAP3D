@@ -30,10 +30,10 @@ Truck::Truck(osgEarth::MapNode *mapNode):
     _rocketTransform_2->setMatrix(osg::Matrix::translate(osg::Vec3d(6.8, 1.3, 0)));
     _rocketTransform_2->addChild(_rocket);
 
-//    _rocketsPackTransform = new osg::MatrixTransform();
-//    _rocketsPackTransform->addChild(_rocketTransform_0);
-//    _rocketsPackTransform->addChild(_rocketTransform_1);
-//    _rocketsPackTransform->addChild(_rocketTransform_2);
+    //    _rocketsPackTransform = new osg::MatrixTransform();
+    //    _rocketsPackTransform->addChild(_rocketTransform_0);
+    //    _rocketsPackTransform->addChild(_rocketTransform_1);
+    //    _rocketsPackTransform->addChild(_rocketTransform_2);
 
     _truckTransform = new osg::MatrixTransform();
     _truckTransform->addChild(_truck);
@@ -62,13 +62,13 @@ Truck::Truck(osgEarth::MapNode *mapNode):
     _wheelTransformFr = new osg::MatrixTransform();
     _wheelTransformFr->addChild(_rightWheelRotation);
     _wheelTransformFr->setMatrix(osg::Matrix::rotate(osg::Quat(osg::inDegrees(180.0),osg::X_AXIS))*
-                           osg::Matrix::scale(2,2,2)*
-                           osg::Matrix::translate(osg::Vec3(3.2f,-1.7f,0.8f)));
+                                 osg::Matrix::scale(2,2,2)*
+                                 osg::Matrix::translate(osg::Vec3(3.2f,-1.7f,0.8f)));
 
     _wheelTransformFl = new osg::MatrixTransform();
     _wheelTransformFl->addChild(_leftWheelRotation);
     _wheelTransformFl->setMatrix(osg::Matrix::scale(2,2,2)*
-                           osg::Matrix::translate(osg::Vec3(3.2f,1.7f,0.8f)));
+                                 osg::Matrix::translate(osg::Vec3(3.2f,1.7f,0.8f)));
 
 
     _rightDualWheelRotation = new osg::MatrixTransform;
@@ -80,24 +80,24 @@ Truck::Truck(osgEarth::MapNode *mapNode):
     _wheelTransformRl1 = new osg::MatrixTransform();
     _wheelTransformRl1->addChild(_leftDualWheelRotation);
     _wheelTransformRl1->setMatrix(osg::Matrix::scale(2,2,2)*
-                            osg::Matrix::translate(osg::Vec3(-3.7f,1.7f,0.8f)));
+                                  osg::Matrix::translate(osg::Vec3(-3.7f,1.7f,0.8f)));
 
     _wheelTransformRr1 = new osg::MatrixTransform();
     _wheelTransformRr1->addChild(_rightDualWheelRotation);
     _wheelTransformRr1->setMatrix(osg::Matrix::scale(2,2,2)*
-                            osg::Matrix::rotate(osg::Quat(osg::inDegrees(180.0),osg::X_AXIS))*
-                            osg::Matrix::translate(osg::Vec3(-3.7f,-1.7f,0.8f)));
+                                  osg::Matrix::rotate(osg::Quat(osg::inDegrees(180.0),osg::X_AXIS))*
+                                  osg::Matrix::translate(osg::Vec3(-3.7f,-1.7f,0.8f)));
 
     _wheelTransformRl2 = new osg::MatrixTransform();
     _wheelTransformRl2->addChild(_leftDualWheelRotation);
     _wheelTransformRl2->setMatrix(osg::Matrix::scale(2,2,2)*
-                            osg::Matrix::translate(osg::Vec3(-5.7f,1.7f,0.8f)));
+                                  osg::Matrix::translate(osg::Vec3(-5.7f,1.7f,0.8f)));
 
     _wheelTransformRr2 = new osg::MatrixTransform();
     _wheelTransformRr2->addChild(_rightDualWheelRotation);
     _wheelTransformRr2->setMatrix(osg::Matrix::scale(2,2,2)*
-                            osg::Matrix::rotate(osg::Quat(osg::inDegrees(180.0),osg::X_AXIS))*
-                            osg::Matrix::translate(osg::Vec3(-5.7f,-1.7f,0.8f)));
+                                  osg::Matrix::rotate(osg::Quat(osg::inDegrees(180.0),osg::X_AXIS))*
+                                  osg::Matrix::translate(osg::Vec3(-5.7f,-1.7f,0.8f)));
 
     _wholeTruckTransform->addChild(_truckTransform);
     _wholeTruckTransform->addChild(_spinerTransform);
@@ -264,8 +264,8 @@ void Truck::aimTarget(osg::Vec3d target)
     osg::AnimationPath::ControlPoint holder_cp1;
 
 
-//    rocket_cp0.setPosition(_rocketsPackTransform->getMatrix().getTrans());
-//    rocket_cp1.setPosition(target);
+    //    rocket_cp0.setPosition(_rocketsPackTransform->getMatrix().getTrans());
+    //    rocket_cp1.setPosition(target);
 
     //_rocketLaunch->insert(0,rocket_cp0);
     //_rocketLaunch->insert(3,rocket_cp1);
@@ -287,10 +287,10 @@ void Truck::aimTarget(osg::Vec3d target)
 
     spiner_cp0.setRotation(_spinerTransform->getMatrix().getRotate());
     spiner_cp1.setRotation(rotate);
-//    curSpinRotate = rotate;
+    //    curSpinRotate = rotate;
 
     _spinerAnimPath->insert(0.0, spiner_cp0);
-    _spinerAnimPath->insert(3, spiner_cp1);
+    _spinerAnimPath->insert(1, spiner_cp1);
 
 
     osg::Vec3d currentHoldPos/* = _holderTransform->getMatrix().getTrans()*/;
@@ -312,74 +312,66 @@ void Truck::aimTarget(osg::Vec3d target)
 
     holder_cp0.setRotation(_holderTransform->getMatrix().getRotate());
     holder_cp1.setRotation(rotateH);
-//    curHoldRotate = rotateH;
+    //    curHoldRotate = rotateH;
 
     _holderAnimPath->insert(0.0, holder_cp0);
-    _holderAnimPath->insert(3, holder_cp1);
+    _holderAnimPath->insert(1, holder_cp1);
 
     _spinerUpdateCallback->start();
     _holderUpdateCallback->start();
     //_rocketLaunchUpdateCallback->start();
-//    QObject::connect(_holderUpdateCallback,
-//                     &TruckUpdateCallback::finished,
-//                     _rocketLaunchUpdateCallback,
+    //    QObject::connect(_holderUpdateCallback,
+    //                     &TruckUpdateCallback::finished,
+    //                     _rocketLaunchUpdateCallback,
     //                     &TruckUpdateCallback::start);
 }
 
-void Truck::shoot(int index)
+bool Truck::shoot()
 {
 
-    if (index < 0  || index > 2)
-        return;
 
     osg::Vec3 offset;
     bool doFire = false;
 
-    switch(index) {
-    case 0:
-
-        if (_rocketsExis[0] == true) {
-            offset = osg::Vec3(0.0,-1.0, 0.0);
-            _holderTransform->removeChild(_rocketTransform_0);
-
-            _rocketsExis[0] = false;
-            doFire = true;
-        }
-
-        break;
-
+    switch(rocketNo) {
     case 1:
-        if (_rocketsExis[1] == true) {
+        offset = osg::Vec3(0.0,-1.0, 0.0);
+        _holderTransform->removeChild(_rocketTransform_0);
 
-            offset = osg::Vec3(0.0, 0.0, 0.0);
-            _holderTransform->removeChild(_rocketTransform_1);
-
-            _rocketsExis[1] = false;
-            doFire = true;
-        }
+        _rocketsExis[0] = false;
+        doFire = true;
         break;
 
     case 2:
-        if (_rocketsExis[2] == true) {
-            offset = osg::Vec3(0.0, 1.0, 0.0);
-            _holderTransform->removeChild(_rocketTransform_2);
-            _rocketsExis[2] = false;
-            doFire = true;
-        }
+        offset = osg::Vec3(0.0, 0.0, 0.0);
+        _holderTransform->removeChild(_rocketTransform_1);
+
+        _rocketsExis[1] = false;
+        doFire = true;
         break;
+
+    case 3:
+        offset = osg::Vec3(0.0, 1.0, 0.0);
+        _holderTransform->removeChild(_rocketTransform_2);
+        _rocketsExis[2] = false;
+        doFire = true;
+        break;
+    default:
+        return false;
     }
 
 
-    if (doFire) {
-        osgParticle::ExplosionEffect *explode = new osgParticle::ExplosionEffect(offset, 1.0f, 20.0f);
-        explode->setUseLocalParticleSystem(false);
-        explode->setTextureFileName("/home/client111/Downloads/fire.png");
-        _holderTransform->addChild(explode);
+//    if (doFire) {
+//        osgParticle::ExplosionEffect *explode = new osgParticle::ExplosionEffect(offset, 1.0f, 20.0f);
+//        explode->setUseLocalParticleSystem(false);
+//        //explode->setTextureFileName("/home/client111/Downloads/fire.png");
+//        _holderTransform->addChild(explode);
+//        getMapNode()->getParent(0)->getParent(0)->addChild(explode->getParticleSystem());
 
-//        if (_parent)
-//            _parent->addChild(explode->getParticleSystem());
+//    }
 
-    }
+    rocketNo -= 1;
+    return true;
 }
 
 
@@ -408,17 +400,17 @@ void TruckUpdateCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
                 }
             }
 
-//            osg::AnimationPath::ControlPoint cp;
-//            _path->getInterpolatedControlPoint(t, cp);
-//            osg::MatrixTransform *mt = dynamic_cast<osg::MatrixTransform*>(node);
-//            if (!mt)
-//                return;
-//            osg::Matrix m;
-//            cp.getMatrix(m);
-//            mt->setMatrix(m);
+            //            osg::AnimationPath::ControlPoint cp;
+            //            _path->getInterpolatedControlPoint(t, cp);
+            //            osg::MatrixTransform *mt = dynamic_cast<osg::MatrixTransform*>(node);
+            //            if (!mt)
+            //                return;
+            //            osg::Matrix m;
+            //            cp.getMatrix(m);
+            //            mt->setMatrix(m);
         }
     }
-//    traverse(node,nv);
+    //    traverse(node,nv);
     AnimationPathCallback::operator()(node,nv);
 }
 

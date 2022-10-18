@@ -27,7 +27,7 @@ public:
     void setLatLongPosition(const osg::Vec3d &pos);
     void moveTo(osg::Vec3d desti, double speed);
     void aimTarget(osg::Vec3d target);
-    void shoot(int index);
+    bool shoot();
 
 private:
     osg::MatrixTransform* _wholeTruckTransform;
@@ -78,6 +78,7 @@ private:
     osg::Quat curHoldRotate {osg::Quat()};
 
     std::array<bool, 3> _rocketsExis;
+    int rocketNo{3};
 };
 
 class TruckUpdateCallback : public QObject, public osg::AnimationPathCallback{
