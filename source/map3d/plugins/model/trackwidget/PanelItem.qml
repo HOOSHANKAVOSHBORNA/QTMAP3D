@@ -68,6 +68,7 @@ Item {
                         }else{
                             bar.color = "#404142"
                             selected = false
+                            DetaliObject.onModelClicked(type,name, selected)
                         }
                     }else{
 
