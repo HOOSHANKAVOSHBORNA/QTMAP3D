@@ -39,7 +39,7 @@ Item {
         Connections{
             target: GetData
             onRotateChange:{
-                shadow.rotation += newRotate
+                shadow.rotation = newRotate
             }
         }
         Connections{

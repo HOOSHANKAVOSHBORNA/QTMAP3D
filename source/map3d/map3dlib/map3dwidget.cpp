@@ -59,6 +59,9 @@ bool MousePicker::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapt
 
     switch (ea.getEventType())
     {
+    case osgGA::GUIEventAdapter::FRAME:
+        emit frame();
+        break;
     case (osgGA::GUIEventAdapter::PUSH):
         if (view) { getPos(view, ea); }
         return false;
@@ -151,6 +154,9 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         QObject::connect(mousePicker, &MousePicker::currentWorldPos, this,  &Map3dWidget::mouseWorldPos);
         QObject::connect(mousePicker, &MousePicker::mousePressEvent, this,  &Map3dWidget::onMapPressEvent);
         QObject::connect(mousePicker, &MousePicker::mousePressEvent, mLocationWidget,  &LocationWidget::setClose);
+        QObject::connect(mousePicker, &MousePicker::frame, [this](){
+            this->mCompassWidget->setRotate(-this->getViewpoint().getHeading());
+        });
         mMapOpenGLWidget->getOsgViewer()->addEventHandler(mousePicker);
         //create map node---------------------------------------------
         GDALOptions gdal;
@@ -189,6 +195,7 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         mCmWidget->setStateMap(isGeocentric);
 
     });
+
 
     //setMouseTracking(true);
 }
@@ -314,10 +321,10 @@ void Map3dWidget::createWidgets()
     connect(mCmWidget, &CameraManipulatorWidget::mapChange,this, &Map3dWidget::typeChanged);
     //-------------------------------------
     mCompassWidget = new CompassWidget(this);
-    connect(mCmWidget, &CameraManipulatorWidget::headChanged, [=](double val){
-        double degri = osg::RadiansToDegrees(val);
-        mCompassWidget->setRotate(-degri);
-    } );
+//    connect(mCmWidget, &CameraManipulatorWidget::headChanged, [=](double val){
+//        double degri = osg::RadiansToDegrees(val);
+//        mCompassWidget->setRotate(-degri);
+//    } );
     //-------------------------------
     mLocationWidget = new LocationWidget(this);
     connect(mLocationWidget, &LocationWidget::goPosition,this, &Map3dWidget::goPosition);
