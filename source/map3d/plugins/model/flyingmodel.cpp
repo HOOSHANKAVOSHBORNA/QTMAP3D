@@ -54,7 +54,6 @@ public:
                         {
                             qDebug()<<QString(flyNode->getName().c_str());
                             flyNode->collision(flyNode->getFollowingModel());
-                            return;
 
                         }
                     }
@@ -97,7 +96,7 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
     float radius = getBound().radius();
     float scale = 3;
     //osgEarth::Registry::shaderGenerator().run(this);
-    osgParticle::FireEffect *fire = new osgParticle::FireEffect(center + osg::Vec3f(0, radius,0),scale,100.0);
+    osgParticle::FireEffect *fire = new osgParticle::FireEffect(center + osg::Vec3f(0, radius,0),scale,50.0);
     getPositionAttitudeTransform()->addChild(fire);
     fire->setUseLocalParticleSystem(false);
     //mRootNode->addChild(fire->getParticleSystem());
@@ -201,6 +200,9 @@ void FlyingModel::collision(FlyingModel *other)
     {
         osg::Vec3d worldPosition;
         getPosition().toWorld(worldPosition);
+
+        osg::PositionAttitudeTransform *pSphereGroup = new osg::PositionAttitudeTransform;
+
         osgParticle::ExplosionEffect *explosion = new osgParticle::ExplosionEffect(worldPosition, 2.0f, 10.0f);
         explosion->setParticleDuration(20);
         //        explosion->setEmitterDuration(10);
@@ -210,16 +212,19 @@ void FlyingModel::collision(FlyingModel *other)
         osgParticle::SmokeTrailEffect *smoke = new osgParticle::SmokeTrailEffect(worldPosition,5,100.0);
         smoke->setParticleDuration(50);
 
-        getMapNode()->getParent(0)->getParent(0)->addChild(explosion);
-        getMapNode()->getParent(0)->getParent(0)->addChild(debris);
-        getMapNode()->getParent(0)->getParent(0)->addChild(smoke);
+        pSphereGroup->addChild(explosion);
+        pSphereGroup->addChild(debris);
+        pSphereGroup->addChild(smoke);
+        pSphereGroup->setPosition(worldPosition);
+
+        getMapNode()->getParent(0)->getParent(0)->addChild(pSphereGroup);
 
         other->collision(nullptr);
     }
 
     emit hit(other);
     setNodeMask(false);
-//    getMapNode()->removeChild(this);
+    //    getMapNode()->removeChild(this);
 }
 
 bool FlyingModel::isHit() const
