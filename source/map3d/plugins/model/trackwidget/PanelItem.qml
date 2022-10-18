@@ -58,24 +58,23 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             onClicked: {
-                if (!selected){
-                    object[type+ " : "+ name].children[0].color = "#006eff"
-                    object[type+ " : "+ name].selected = true
-                    DetaliObject.onModelClicked(type,name,selected)
-                }else{
-                    object[type+ " : "+ name].children[0].color = "#404142"
-                    object[type+ " : "+ name].selected = false
-                    DetaliObject.onModelClicked(type,name , selected)
+                for (var index in listobject){
+                    if ((listobject[index].type + " : " + listobject[index].name) === type+ " : "+ name){
+                        if (!selected){
+                             listobject[index].children[0].color = "#006eff"
+                            listobject[index].selected = true
+
+                            DetaliObject.onModelClicked(type,name, selected)
+                        }else{
+                            bar.color = "#404142"
+                            selected = false
+                        }
+                    }else{
+
+                        listobject[index].children[0].color = "#404142"
+                        listobject[index].selected = false
+                    }
                 }
-//                for (var i in object){
-//                    if (object[i].name === name){
-
-//                    }else{
-
-//                        object[i].children[0].color = "#404142"
-//                        object[i].selected = false
-//                    }
-//                }
             }
             onEntered: bar.color = "#33006eff"
             onExited:{

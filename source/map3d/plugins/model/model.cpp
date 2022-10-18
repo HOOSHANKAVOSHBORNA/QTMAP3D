@@ -311,7 +311,7 @@ void Model::addAirplaineModel()
 //    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
 
     //hit------------------------------------------------------------------
-    QObject::connect(model.get(), &FlyingModel::hit, [=](){
+    QObject::connect(model.get(), &FlyingModel::hit, [=](FlyingModel *other){
         //         auto mod = dynamic_cast<FlyingModel*>(sender());
 
 //        osg::Vec3d worldPosition;
@@ -330,11 +330,11 @@ void Model::addAirplaineModel()
 //        mMap3dWidget->getMapNode()->addChild(explosion);
 //        mMap3dWidget->getMapNode()->addChild(debris);
 
-//        mModels[ROCKET].remove(QString(model->getFollowModel()->getName().c_str()));
+//        mModels[ROCKET].remove(QString(other->getName().c_str()));
 //        mModels[AIRPLANE].remove(QString(model->getName().c_str()));
 
-//        mTrackModelWidget->removeModel(AIRPLANE, QString(model->getName().c_str()));
-//        mTrackModelWidget->removeModel(ROCKET, QString(model->getFollowModel()->getName().c_str()));
+        mTrackModelWidget->removeModel(AIRPLANE, QString(model->getName().c_str()));
+        mTrackModelWidget->removeModel(ROCKET, QString(other->getName().c_str()));
         //        mMap3dWidget->removeNode(model->getFollowModel());
         //        mMap3dWidget->removeNode(model);
         //model->getFollowModel()->setNodeMask(false);
