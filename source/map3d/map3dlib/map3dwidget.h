@@ -46,6 +46,7 @@ public:
 signals:
     void  currentWorldPos(osg::Vec3d pos);
     void mousePressEvent(QMouseEvent *event);
+    void frame();
 protected:
     // Public main entrance for GUIEventHandler
     bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
