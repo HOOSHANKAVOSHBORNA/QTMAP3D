@@ -239,14 +239,14 @@ void FlyingModel::playExplosionEffect(float scale)
     smoke->setEmitterDuration(0.6);
     smoke->setParticleDuration(1.6);
 
-    explosion1->setTextureFileName("fire_p1.png");
-    explosion2->setTextureFileName("fire_p2.png");
-    explosion3->setTextureFileName("fire_p3.png");
-    explosion4->setTextureFileName("fire_p4.png");
+    explosion1->setTextureFileName("../map3dlib/data/images/fire_p1.png");
+    explosion2->setTextureFileName("../map3dlib/data/images/fire_p2.png");
+    explosion3->setTextureFileName("../map3dlib/data/images/fire_p3.png");
+    explosion4->setTextureFileName("../map3dlib/data/images/fire_p4.png");
 
-    debris1->setTextureFileName("debris_p1.png");
+    debris1->setTextureFileName("../map3dlib/data/images/debris_p1.png");
 
-    smoke->setTextureFileName("smoke_p1.png");
+    smoke->setTextureFileName("../map3dlib/data/images/smoke_p1.png");
 
     pSphereGroup->addChild(explosion3);
     pSphereGroup->addChild(explosion4);
