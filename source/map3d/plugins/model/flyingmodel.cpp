@@ -18,6 +18,7 @@ class MapAnimationPathCallback: public osg::AnimationPathCallback
 {
 public:
     void operator()(osg::Node* node, osg::NodeVisitor* nv) override{
+
         if (_animationPath.valid() &&
                 nv->getVisitorType()== osg::NodeVisitor::UPDATE_VISITOR &&
                 nv->getFrameStamp())
@@ -42,7 +43,7 @@ public:
                     latLongPoint.transform(flyNode->getMapNode()->getMapSRS(), geoPoint);
 
                     flyNode->setPosition(geoPoint);
-                    //                        emit flyNode->positionChanged(latLongPoint);
+//                    emit flyNode->positionChanged(latLongPoint);
                     //                        flyNode->setScale(cp.getScale());
                     flyNode->getPositionAttitudeTransform()->setScale(cp.getScale());
                     flyNode->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
@@ -207,7 +208,7 @@ void FlyingModel::collision(FlyingModel *other)
 
     emit hit(other);
     setNodeMask(false);
-    //    getMapNode()->removeChild(this);
+//    getMapNode()->removeChild(this);
 }
 
 bool FlyingModel::isHit() const

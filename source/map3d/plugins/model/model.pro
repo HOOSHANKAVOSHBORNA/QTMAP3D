@@ -23,14 +23,14 @@ SOURCES += \
     flyingmodel.cpp \
     model.cpp \
     trackmodelwidget.cpp \
-    vehicle.cpp
+    truck.cpp
 
 HEADERS += \
     draw.h \
     flyingmodel.h \
     model.h \
     trackmodelwidget.h \
-    vehicle.h
+    truck.h
 
 DISTFILES += \
     model.json

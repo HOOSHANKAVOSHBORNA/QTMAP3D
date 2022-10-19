@@ -8,8 +8,9 @@ Item {
     readonly property int textsize: 10
     readonly property int iconsize2: 15
     property bool valuepin: false
-    property var object:[]
-    property int count: 0
+    property var object
+    property var listobject: []
+
     width: 200
     height: 300
     Connections{
@@ -28,11 +29,11 @@ Item {
             }
         }
         onUnTrackAll:{
-            for (var i in object){
-                if (object[i].selected ){
-                    object[i].children[0].color = "#404142"
-                    object[i].selected = false
-                    DetaliObject.onModelClicked(object[i].type,object[i].name , false)
+            for (var i in listobject){
+                if (listobject[i].selected ){
+                    listobject[i].children[0].color = "#404142"
+                    listobject[i].selected = false
+                    DetaliObject.onModelClicked(listobject[i].type,listobject[i].name , false)
                 }
 
             }
@@ -57,16 +58,23 @@ Item {
 
         }
         onModelRemove:{
-            object[type+ " : "+ name].destroy()
+            for(var i in listobject){
+                if (listobject[i].name === name && listobject[i].type === type){
+                    listobject[i].destroy()
+                      listobject=Array.from(listobject).filter(r => r !== listobject[i])
+                    break;
+                }
 
         }
+        }
         onModelAdded:{
-            var component = Qt.createComponent("qrc:/trackwidget/PanelItem.qml");
-            object[type+ " : "+ name] = component.createObject(rootlayer);
-            object[type+ " : "+ name].title= type+ " : "+ name
-            object[type+ " : "+ name].name = name
-            object[type+ " : "+ name].type = type
-            object[type+ " : "+ name].width= laout_back.width
+            var component = Qt.createComponent("PanelItem.qml");
+            object = component.createObject(rootlayer);
+            object.title= type+ " : "+ name
+            object.name = name
+            object.type = type
+            object.width= laout_back.width
+            listobject.push(object)
         }
         onMinimize:{
             if (isMax){
