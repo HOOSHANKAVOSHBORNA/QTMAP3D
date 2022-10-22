@@ -293,7 +293,7 @@ void Model::addTruckModel()
     mTrackModelWidget->setModelPosition(TRUCK, name, position.x(), position.y(), position.z());
 
     //    double rnd = QRandomGenerator::global()->generateDouble();
-    double rnd = qrand() % 360;
+    //double rnd = qrand() % 360;
     model->getPositionAttitudeTransform()->setAttitude(osg::Quat());
 }
 

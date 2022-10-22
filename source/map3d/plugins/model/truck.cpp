@@ -15,6 +15,7 @@ Truck::Truck(osgEarth::MapNode *mapNode):
     _rocket    = osgDB::readRefNodeFile("../map3dlib/data/models/truck/rocket.osgt");
 
     _wholeTruckTransform = new osg::MatrixTransform();
+    //_wholeTruckTransform->setMatrix(osg::Matrix::rotate(osg::inDegrees(-30.0), osg::Z_AXIS));
 
     _rocketTransform_0 = new osg::MatrixTransform();
     _rocketTransform_0->setMatrix(osg::Matrix::translate(osg::Vec3d(6.8, -1.3, 0)));
@@ -161,6 +162,7 @@ void Truck::setLatLongPosition(const osg::Vec3d &pos)
     osgEarth::GeoPoint  mapPoint;
     pointLatLong.transform(getMapNode()->getMapSRS(), mapPoint);
     setPosition(mapPoint);
+
 }
 void Truck::moveTo(osg::Vec3d desti, double speed)
 {
@@ -271,15 +273,27 @@ void Truck::aimTarget(osg::Vec3d target)
     //_rocketLaunch->insert(3,rocket_cp1);
 
     auto mapPosition = getPosition();
+    osg::Matrixd sample;
+    mapPosition.createLocalToWorld(sample);
+    osg::Quat rot;
+    rot = sample.getRotate();
 
     osg::Vec3d currentSpinPos /*= _spinerTransform->getMatrix().getTrans()*/;
     mapPosition.toWorld(currentSpinPos);
+
+    currentSpinPos += _wholeTruckTransform->getMatrix().getTrans();
     currentSpinPos += _spinerTransform->getMatrix().getTrans();
-    osg::Vec3d axis = target - currentSpinPos;
+    osg::Vec3d axisP = target - currentSpinPos;
+    axisP.normalize();
+    osg::Vec3d axis = osg::Matrixd::rotate(rot)*axisP;
+
+//    std::cout << axisP.x() << " , " << axisP.y() << " , " << axisP.z() << std::endl;
+//    std::cout << axis.x() << " , " << axis.y() << " , " << axis.z() << std::endl;
+
 
     osg::Quat rotate;
     axis.z() = 0;
-    rotate.makeRotate(osg::Vec3d(-osg::X_AXIS), axis);
+    rotate.makeRotate(osg::Vec3d(osg::X_AXIS), axis);
 
 
     spiner_cp0.setPosition(_spinerTransform->getMatrix().getTrans());
@@ -290,15 +304,20 @@ void Truck::aimTarget(osg::Vec3d target)
     //    curSpinRotate = rotate;
 
     _spinerAnimPath->insert(0.0, spiner_cp0);
-    _spinerAnimPath->insert(1, spiner_cp1);
+    _spinerAnimPath->insert(3, spiner_cp1);
 
 
     osg::Vec3d currentHoldPos/* = _holderTransform->getMatrix().getTrans()*/;
     mapPosition.toWorld(currentHoldPos);
-    osg::Vec3d axisH = target - currentHoldPos;
+    currentHoldPos += _wholeTruckTransform->getMatrix().getTrans();
+    currentHoldPos += _spinerTransform->getMatrix().getTrans();
+    currentHoldPos += _holderTransform->getMatrix().getTrans();
+    osg::Vec3d axisHP = target - currentHoldPos;
+    axisHP.normalize();
+    osg::Vec3d axisH = osg::Matrixd::rotate(rot)*axisHP;
 
     std::cout << "target.z() : " << target.z() << std::endl;
-
+    std::cout << axisH.x() << " , " << axisH.y() << " , " << axisH.z() << std::endl;
 
 
     osg::Quat rotateH;
