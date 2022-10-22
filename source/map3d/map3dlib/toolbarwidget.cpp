@@ -73,7 +73,6 @@ void ToolBarWidget::setSizeWidget(bool t)
 void ToolBarWidget::resizeEvent(QResizeEvent *event)
 {
         QQuickWidget::resizeEvent(event);
-
 }
 
 QString ToolBarWidget::categoryString(ToolBarWidget::Category category)

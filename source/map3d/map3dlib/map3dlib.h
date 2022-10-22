@@ -13,7 +13,8 @@ class MAP3DLIB_EXPORT Map3dlib: public QMainWindow
     Q_OBJECT
 public:
     Map3dlib(QWidget *parent = nullptr);
-    void addWidget(QWidget* widget);
+    void addMenuWidget(QWidget* widget);
+    void removeMenuWidget(QWidget* widget);
 public slots:
 
 signals:
@@ -24,6 +25,7 @@ protected:
 
 private:
     void onToolBarWidgetPin(bool isPin);
+    void reorderMenuWidgets();
 private:
     QDockWidget *mToolBarDocWidget;
     ToolBarWidget* mToolBarWidget;

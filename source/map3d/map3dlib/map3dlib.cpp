@@ -26,6 +26,7 @@ Map3dlib::Map3dlib(QWidget *parent)
 
     //--ToolBarWidget setting--------------------------------------------------------------
     mToolBarWidget = new ToolBarWidget(this);
+    addMenuWidget(mToolBarWidget);
     connect(mToolBarWidget, &ToolBarWidget::onPin, this, &Map3dlib::onToolBarWidgetPin);
 
     //--ToolBarDocWidget setting-----------------------------------------------------------
@@ -41,13 +42,24 @@ Map3dlib::Map3dlib(QWidget *parent)
     //--load plugins-----------------------------------------------------------------------
     PluginManager pluginmanager(this, map3dWidget, mToolBarWidget);
     pluginmanager.loadPlugins();
-
 }
 
-void Map3dlib::addWidget(QWidget *widget)
+void Map3dlib::addMenuWidget(QWidget *widget)
 {
     widget->setParent(this);
     mWidgets.append(widget);
+//    reorderMenuWidgets();
+    widget->show();
+    resize(size().width()+1, size().height()+1);
+}
+
+void Map3dlib::removeMenuWidget(QWidget *widget)
+{
+    widget->setParent(nullptr);
+    mWidgets.removeOne(widget);
+//    if(mWidgets.removeOne(widget))
+//        reorderMenuWidgets();
+    resize(size().width()+1, size().height()+1);
 }
 
 void Map3dlib::mousePressEvent(QMouseEvent *event)
@@ -61,8 +73,7 @@ void Map3dlib::mousePressEvent(QMouseEvent *event)
 
 void Map3dlib::resizeEvent(QResizeEvent *event)
 {
-    if(mWidgets.count() != 0 && mWidgets.at(0))
-            mWidgets.at(0)->move(this->width() - 200, 0);
+    reorderMenuWidgets();
     QMainWindow::resizeEvent(event);
 }
 
@@ -71,12 +82,31 @@ void Map3dlib::onToolBarWidgetPin(bool isPin)
     if(isPin){
         mToolBarDocWidget->show();
         mToolBarDocWidget->setWidget(mToolBarWidget);
+        removeMenuWidget(mToolBarWidget);
 
     }else{
         mToolBarDocWidget->hide();
-        mToolBarWidget->setParent(this);
-        mToolBarWidget->move(0,0);
-        mToolBarWidget->show();
+//        mToolBarWidget->move(0,0);
+        addMenuWidget(mToolBarWidget);
+//        mToolBarWidget->show();
+    }
+}
+
+void Map3dlib::reorderMenuWidgets()
+{
+//    int x;
+//    for(auto dock: this->findChildren(QDockWidget))
+//        dockWidgetArea(dock);
+
+    int w = 0;
+    for(auto widget: mWidgets)
+    {
+        if(widget->parent() == this)
+        {
+            int x = centralWidget()->geometry().x();
+            widget->move(x + w + 1, 0);
+            w += widget->width();
+        }
     }
 }
 
