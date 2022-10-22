@@ -19,6 +19,8 @@ public:
     FlyingModel* getFollowingModel() const;
     void collision(FlyingModel *other);
     bool isHit() const;
+
+    void playExplosionEffect(float scale);
 signals:
     void positionChanged(osgEarth::GeoPoint pos);
 

@@ -40,10 +40,10 @@ Model::Model(QWidget *parent)
 
 void Model::setUpUI()
 {
-    mTrackModelWidget = new TrackModelWidget(mMap3dWidget);
+    mTrackModelWidget = new TrackModelWidget();
     mTrackModelWidget->setMinimaizeWidget(true);
-    mMainWindow->addWidget(mTrackModelWidget);
-    mTrackModelWidget->hide();
+//    mMainWindow->addMenuWidget(mTrackModelWidget);
+//    mTrackModelWidget->hide();
     /////DockWidget
     QObject::connect(mTrackModelWidget ,&TrackModelWidget::onPin,this,&Model::onToolBarWidgetPin);
     mDockTrackModelWidget = new QDockWidget("Track Models",mMap3dWidget);
@@ -89,6 +89,7 @@ void Model::setUpUI()
 
             if(isCheck)
             {
+                mMainWindow->addMenuWidget(mTrackModelWidget);
                 mTrackModelWidget->show();
                 if(mIsPin)
                     mDockTrackModelWidget->show();
@@ -101,9 +102,9 @@ void Model::setUpUI()
             else
             {
                 mTrackModelWidget->setUnTrackAll(true);
-                mTrackModelWidget->hide();
+                mMainWindow->removeMenuWidget(mTrackModelWidget);
                 mDockTrackModelWidget->hide();
-                mTrackModelWidget->move(mMainWindow->width() -200,0);
+//                mTrackModelWidget->move(mMainWindow->width() -200,0);
                 mMap3dWidget->unTrackNode();
             }
             //mMap3dWidget->setTrackNode(nullptr);
@@ -178,12 +179,14 @@ void Model::onToolBarWidgetPin(bool isPin)
 {
     mIsPin = isPin;
     if(isPin){
+        mMainWindow->removeMenuWidget(mTrackModelWidget);
         mDockTrackModelWidget->show();
         mDockTrackModelWidget->setWidget(mTrackModelWidget);
     }else{
         mDockTrackModelWidget->hide();
-        mTrackModelWidget->setParent(mMainWindow);
-        mTrackModelWidget->move(mMainWindow->width() -200,0);
+        mMainWindow->addMenuWidget(mTrackModelWidget);
+        //mTrackModelWidget->setParent(mMainWindow);
+        //mTrackModelWidget->move(mMainWindow->width() -200,0);
         mTrackModelWidget->show();
 
     }
@@ -368,7 +371,7 @@ void Model::addRocketModel(osg::Vec3d position)
     //add to map ---------------------------------------------------------
     mMap3dWidget->addNode(model);
     //mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
-    //mMap3dWidget->setTrackNode(model);
+    mMap3dWidget->setTrackNode(model->getGeoTransform());
 
     //add to track widget ------------------------------------------------
     mTrackModelWidget->addModel(ROCKET, name);

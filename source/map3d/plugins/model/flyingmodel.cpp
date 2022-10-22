@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <osgParticle/FireEffect>
 #include <osgParticle/SmokeTrailEffect>
+#include <osgParticle/SmokeEffect>
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/ExplosionDebrisEffect>
 #include <osgEarth/Registry>
@@ -97,14 +98,14 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
     float radius = getBound().radius();
     float scale = 3;
     //osgEarth::Registry::shaderGenerator().run(this);
-    osgParticle::FireEffect *fire = new osgParticle::FireEffect(center + osg::Vec3f(0, radius,0),scale,50.0);
+    osgParticle::FireEffect *fire = new osgParticle::FireEffect(center + osg::Vec3f(0, radius,0),scale,100.0);
     getPositionAttitudeTransform()->addChild(fire);
     fire->setUseLocalParticleSystem(false);
     //mRootNode->addChild(fire->getParticleSystem());
     getMapNode()->getParent(0)->getParent(0)->addChild(fire->getParticleSystem());
 
     fire->setEmitterDuration(360000);
-    fire->setParticleDuration(1);
+    fire->setParticleDuration(0.2);
 
     osgParticle::SmokeTrailEffect *smoke = new osgParticle::SmokeTrailEffect(center + osg::Vec3f(0, radius,0),scale/3,100.0);
     getPositionAttitudeTransform()->addChild(smoke);
@@ -114,6 +115,8 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
 
     smoke->setEmitterDuration(360000);
     smoke->setParticleDuration(5);
+
+
 }
 
 void FlyingModel::setLatLongPosition(const osg::Vec3d &pos)
@@ -199,27 +202,7 @@ void FlyingModel::collision(FlyingModel *other)
     setPause(true);
     if(other != nullptr)
     {
-        osg::Vec3d worldPosition;
-        getPosition().toWorld(worldPosition);
-
-        osg::PositionAttitudeTransform *pSphereGroup = new osg::PositionAttitudeTransform;
-
-        osgParticle::ExplosionEffect *explosion = new osgParticle::ExplosionEffect(worldPosition, 2.0f, 10.0f);
-        explosion->setParticleDuration(20);
-        //        explosion->setEmitterDuration(10);
-        osgParticle::ExplosionDebrisEffect *debris = new osgParticle::ExplosionDebrisEffect(worldPosition, 5.0f, 10.0f);
-        //        debris->setEmitterDuration(10);
-
-        osgParticle::SmokeTrailEffect *smoke = new osgParticle::SmokeTrailEffect(worldPosition,5,100.0);
-        smoke->setParticleDuration(50);
-
-        pSphereGroup->addChild(explosion);
-        pSphereGroup->addChild(debris);
-        pSphereGroup->addChild(smoke);
-        pSphereGroup->setPosition(worldPosition);
-
-        getMapNode()->getParent(0)->getParent(0)->addChild(pSphereGroup);
-
+        playExplosionEffect(1.0f);
         other->collision(nullptr);
     }
 
@@ -231,5 +214,50 @@ void FlyingModel::collision(FlyingModel *other)
 bool FlyingModel::isHit() const
 {
     return mIsHit;
+}
+
+void FlyingModel::playExplosionEffect(float scale)
+{
+    osg::Vec3d worldPosition;
+    getPosition().toWorld(worldPosition);
+
+    osg::ref_ptr<osg::PositionAttitudeTransform> pSphereGroup = new osg::PositionAttitudeTransform;
+
+    osg::ref_ptr<osgParticle::ExplosionEffect> explosion1 = new osgParticle::ExplosionEffect(worldPosition, 8.0f * scale, 0.128f);
+    osg::ref_ptr<osgParticle::ExplosionEffect> explosion2 = new osgParticle::ExplosionEffect(worldPosition, 4.0f * scale, 0.25f);
+    osg::ref_ptr<osgParticle::ExplosionEffect> explosion3 = new osgParticle::ExplosionEffect(worldPosition, 2.0f * scale, 0.5f);
+    osg::ref_ptr<osgParticle::ExplosionEffect> explosion4 = new osgParticle::ExplosionEffect(worldPosition, 1.0f * scale, 1.0f);
+
+    explosion1->setParticleDuration(1.0);
+    explosion2->setParticleDuration(1.2);
+    explosion3->setParticleDuration(1.4);
+    explosion4->setParticleDuration(1.6);
+
+    osg::ref_ptr<osgParticle::ExplosionDebrisEffect> debris1 = new osgParticle::ExplosionDebrisEffect(worldPosition, 4.0f * scale, 0.03125f);
+
+    osg::ref_ptr<osgParticle::SmokeEffect> smoke = new osgParticle::SmokeEffect(worldPosition, 10.0f * scale,2.0);
+    smoke->setEmitterDuration(0.6);
+    smoke->setParticleDuration(1.6);
+
+    explosion1->setTextureFileName("../map3dlib/data/images/fire_p1.png");
+    explosion2->setTextureFileName("../map3dlib/data/images/fire_p2.png");
+    explosion3->setTextureFileName("../map3dlib/data/images/fire_p3.png");
+    explosion4->setTextureFileName("../map3dlib/data/images/fire_p4.png");
+
+    debris1->setTextureFileName("../map3dlib/data/images/debris_p1.png");
+
+    smoke->setTextureFileName("../map3dlib/data/images/smoke_p1.png");
+
+    pSphereGroup->addChild(explosion3);
+    pSphereGroup->addChild(explosion4);
+
+    pSphereGroup->addChild(debris1);
+
+    pSphereGroup->addChild(smoke);
+    pSphereGroup->setPosition(worldPosition);
+
+    getMapNode()->getParent(0)->getParent(0)->addChild(pSphereGroup);
+
+
 }
 

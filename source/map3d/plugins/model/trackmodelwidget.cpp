@@ -15,11 +15,11 @@ TrackModelWidget::TrackModelWidget(QWidget *parent)
     this->setResizeMode(QQuickWidget::SizeRootObjectToView);
     this->setAttribute(Qt::WA_AlwaysStackOnTop);
     this->setClearColor(Qt::transparent);
-    connect(this ,&TrackModelWidget::onPin,[=](bool t){
-        if(t){
-            emit isDock(parent->height());
-        }
-    });
+//    connect(this ,&TrackModelWidget::onPin,[=](bool t){
+//        if(t){
+//            emit isDock(parent->height());
+//        }
+//    });
 
 }
 
