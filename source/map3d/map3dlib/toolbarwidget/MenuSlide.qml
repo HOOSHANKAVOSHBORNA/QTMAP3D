@@ -67,11 +67,11 @@ Item {
                 id:backmenu
                 anchors.left: parent.left
                 anchors.leftMargin: 1
-                width: 30
-                height: 30
+                width: 35
+                height: 35
                 anchors.top: parent.top
                 anchors.topMargin: 3
-                radius: 100
+                radius: 30
                 color: "#88000000"
                 MouseArea{
                     anchors.fill: backmenu
@@ -100,8 +100,8 @@ Item {
                 Image {
                     id: iconname
                     source: "qrc:/res/icon/toolbarmenu.png"
-                    width: 20
-                    height: 20
+                    width: 25
+                    height: 25
                     anchors.centerIn: parent
 
                 }
