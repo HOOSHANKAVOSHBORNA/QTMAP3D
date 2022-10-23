@@ -140,7 +140,7 @@ Truck::Truck(osgEarth::MapNode *mapNode):
     _holderAnimPath->setLoopMode(osg::AnimationPath::LoopMode::NO_LOOPING);
     //_rocketLaunch->setLoopMode(osg::AnimationPath::LoopMode::NO_LOOPING);
 
-    _wholeTruckTransform->setUpdateCallback(_wholeTruckUpdateCallback);
+    this->setUpdateCallback(_wholeTruckUpdateCallback);
     _rightWheelRotation->setUpdateCallback(_rightWheelUpdateCallback);
     _leftWheelRotation->setUpdateCallback(_leftWheelUpdateCallback);
     _rightDualWheelRotation->setUpdateCallback(_rightWheelUpdateCallback);
@@ -166,6 +166,7 @@ void Truck::setLatLongPosition(const osg::Vec3d &pos)
 }
 void Truck::moveTo(osg::Vec3d desti, double speed)
 {
+
     _wholeTruckUpdateCallback->stop();
     _leftWheelUpdateCallback->stop();
     _rightWheelUpdateCallback->stop();
@@ -186,16 +187,23 @@ void Truck::moveTo(osg::Vec3d desti, double speed)
     osg::AnimationPath::ControlPoint l_wheel_cp2;
 
     auto mapPosition = getPosition();
+    osg::Matrixd sampleM;
+    mapPosition.createWorldToLocal(sampleM);
+    osg::Quat rot;
+    rot = sampleM.getRotate();
 
-    osg::Vec3d currentTruckPos = _wholeTruckTransform->getMatrix().getTrans();
+    osg::Vec3d currentTruckPos;
     mapPosition.toWorld(currentTruckPos);
+    std::cout<<"xm: "<< desti.x()<<"ym: "<<desti.y()<<"zm: "<<desti.z()<< std::endl;
     osg::Vec3d axisf = desti - currentTruckPos;
+    osg::Vec3d axis =axisf*osg::Matrixd::rotate(rot);
 
     osg::Quat rotate;
-    currentTruckPos.z() = 0;
-    desti.z() = 0;
-    axisf.z() = 0;
-    rotate.makeRotate(osg::Vec3d(osg::X_AXIS), axisf);
+//    currentTruckPos.z() = 0;
+//    desti.z() = 0;
+//    axisf.z() = 0;
+    rotate.makeRotate(osg::Vec3d(osg::X_AXIS), axis);
+
     const double time = axisf.length()/speed;
 
 
@@ -271,21 +279,28 @@ void Truck::aimTarget(osg::Vec3d target)
 
     //_rocketLaunch->insert(0,rocket_cp0);
     //_rocketLaunch->insert(3,rocket_cp1);
+    std::cout<<"x: "<< target.x()<<"y: "<<target.y()<<"z: "<<target.z()<< std::endl;
 
     auto mapPosition = getPosition();
     osg::Matrixd sample;
-    mapPosition.createLocalToWorld(sample);
+    mapPosition.createWorldToLocal(sample);
     osg::Quat rot;
     rot = sample.getRotate();
 
     osg::Vec3d currentSpinPos /*= _spinerTransform->getMatrix().getTrans()*/;
     mapPosition.toWorld(currentSpinPos);
 
+
+    osg::Quat truckRot = this->getPositionAttitudeTransform()->getAttitude();
+    osg::Matrixd truckRotMat = osg::Matrixd::rotate(truckRot);
+
+
     currentSpinPos += _wholeTruckTransform->getMatrix().getTrans();
     currentSpinPos += _spinerTransform->getMatrix().getTrans();
     osg::Vec3d axisP = target - currentSpinPos;
     axisP.normalize();
-    osg::Vec3d axis = osg::Matrixd::rotate(rot)*axisP;
+//    axisP = axisP * (truckRotMat);
+    osg::Vec3d axis =axisP*osg::Matrixd::rotate(rot);
 
 //    std::cout << axisP.x() << " , " << axisP.y() << " , " << axisP.z() << std::endl;
 //    std::cout << axis.x() << " , " << axis.y() << " , " << axis.z() << std::endl;
@@ -293,7 +308,7 @@ void Truck::aimTarget(osg::Vec3d target)
 
     osg::Quat rotate;
     axis.z() = 0;
-    rotate.makeRotate(osg::Vec3d(osg::X_AXIS), axis);
+    rotate.makeRotate(osg::Vec3d(osg::X_AXIS)*truckRotMat, axis);
 
 
     spiner_cp0.setPosition(_spinerTransform->getMatrix().getTrans());
@@ -314,7 +329,8 @@ void Truck::aimTarget(osg::Vec3d target)
     currentHoldPos += _holderTransform->getMatrix().getTrans();
     osg::Vec3d axisHP = target - currentHoldPos;
     axisHP.normalize();
-    osg::Vec3d axisH = osg::Matrixd::rotate(rot)*axisHP;
+//    axisHP = truckRotMat * axisHP;
+    osg::Vec3d axisH =axisHP*osg::Matrixd::rotate(rot);
 
     std::cout << "target.z() : " << target.z() << std::endl;
     std::cout << axisH.x() << " , " << axisH.y() << " , " << axisH.z() << std::endl;
@@ -415,22 +431,35 @@ void TruckUpdateCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
             if (_path->getLoopMode() == osg::AnimationPath::LoopMode::NO_LOOPING) {
                 if (t >= _path->getPeriod()) {
                     stop();
-                    //return;
+                    traverse(node,nv);
+                    return;
                 }
             }
 
-            //            osg::AnimationPath::ControlPoint cp;
-            //            _path->getInterpolatedControlPoint(t, cp);
-            //            osg::MatrixTransform *mt = dynamic_cast<osg::MatrixTransform*>(node);
-            //            if (!mt)
-            //                return;
-            //            osg::Matrix m;
-            //            cp.getMatrix(m);
-            //            mt->setMatrix(m);
+            osg::AnimationPath::ControlPoint cp;
+            _path->getInterpolatedControlPoint(t, cp);
+            osg::Matrix m;
+            cp.getMatrix(m);
+            osg::MatrixTransform *mt = dynamic_cast<osg::MatrixTransform*>(node);
+            if (mt) {
+
+                mt->setMatrix(m);
+            }
+            else
+            {
+                Truck *tp = dynamic_cast<Truck*>(node);
+                if (tp) {
+                    osgEarth::GeoPoint gp;
+                    gp.fromWorld(osgEarth::SpatialReference::get("wgs84"), m.getTrans());
+                    tp->setPosition(gp);
+                    tp->getPositionAttitudeTransform()->setAttitude(m.getRotate());
+                }
+            }
+
         }
     }
-    //    traverse(node,nv);
-    AnimationPathCallback::operator()(node,nv);
+        traverse(node,nv);
+//    AnimationPathCallback::operator()(node,nv);
 }
 
 void TruckUpdateCallback::start()

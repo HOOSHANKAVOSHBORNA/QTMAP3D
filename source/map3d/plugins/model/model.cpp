@@ -241,7 +241,7 @@ void Model::flyTo(QString type, QString name, const osg::Vec3d &pos, double spee
 
 void Model::addTruckModel()
 {
-    osg::Vec3d position(52.8603, 35.277, 843.253);
+    osg::Vec3d position(52.8603, 35.277, 843.253);    
 
     //create and setting model--------------------------------------------
     osg::ref_ptr<Truck> model = new Truck(mMap3dWidget->getMapNode());
@@ -250,6 +250,7 @@ void Model::addTruckModel()
     model->setLatLongPosition(position);
     //model->setLocalRotation(osg::Quat(osg::inDegrees(-30.0),osg::Z_AXIS));
     model->setScale(osg::Vec3(1,1,1));
+
 
     //    QObject::connect(model.get(), &FlyingModel::positionChanged, [=](osgEarth::GeoPoint position){
     //        positionChanged(ROCKET, name, position);
@@ -293,8 +294,19 @@ void Model::addTruckModel()
     mTrackModelWidget->setModelPosition(TRUCK, name, position.x(), position.y(), position.z());
 
     //    double rnd = QRandomGenerator::global()->generateDouble();
-    double rnd = qrand() % 360;
+    //double rnd = qrand() % 360;
     model->getPositionAttitudeTransform()->setAttitude(osg::Quat());
+    if(!mModels[TRUCK].isEmpty())
+    {
+        auto truck = dynamic_cast<Truck*>(mModels[TRUCK].first());
+    osgEarth::GeoPoint desti(osgEarth::SpatialReference::get("wgs84"),osg::Vec3d(52.859, 35.27, 843.253));
+    osg::Vec3d destiW;
+    desti.toWorld(destiW);
+    //destiW.y() = 0;
+    //destiW.z() = 0;
+
+    truck->moveTo(destiW,0.5);
+}
 }
 
 void Model::addAirplaineModel()
@@ -318,7 +330,7 @@ void Model::addAirplaineModel()
             osg::Vec3d wPoint;
             position.toWorld(wPoint);
             truck->aimTarget(wPoint);
-            //truck->moveTo(position.vec3d(),100);
+
             osg::Vec3d truckPosition;
             truck->getPosition().toWorld(truckPosition);
             osg::Vec3Array* keyPoint = new osg::Vec3Array;
