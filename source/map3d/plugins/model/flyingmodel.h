@@ -13,6 +13,7 @@ public:
     FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName);
     void setLatLongPosition(const osg::Vec3d &pos);
     void flyTo(const osg::Vec3d& pos, double speed);
+    void shoot(const osg::Vec3d& pos, double speed);
     void setPause(bool pause);
     bool getPause() const;
     void setFollowingModel(FlyingModel* followingModel);
@@ -26,7 +27,7 @@ signals:
 
     void hit(FlyingModel *other);
 private:
-    MapAnimationPathCallback* mAnimationPathCallback;
+    MapAnimationPathCallback* mAnimationPathCallback{nullptr};
     FlyingModel* mFollowingModel{nullptr};
     bool mIsHit{false};
 };

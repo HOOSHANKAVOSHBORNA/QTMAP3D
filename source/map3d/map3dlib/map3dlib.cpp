@@ -80,9 +80,9 @@ void Map3dlib::resizeEvent(QResizeEvent *event)
 void Map3dlib::onToolBarWidgetPin(bool isPin)
 {
     if(isPin){
+        removeMenuWidget(mToolBarWidget);
         mToolBarDocWidget->show();
         mToolBarDocWidget->setWidget(mToolBarWidget);
-        removeMenuWidget(mToolBarWidget);
 
     }else{
         mToolBarDocWidget->hide();
