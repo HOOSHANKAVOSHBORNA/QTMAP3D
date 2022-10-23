@@ -42,8 +42,8 @@ void Model::setUpUI()
 {
     mTrackModelWidget = new TrackModelWidget();
     mTrackModelWidget->setMinimaizeWidget(true);
-//    mMainWindow->addMenuWidget(mTrackModelWidget);
-//    mTrackModelWidget->hide();
+    //    mMainWindow->addMenuWidget(mTrackModelWidget);
+    //    mTrackModelWidget->hide();
     /////DockWidget
     QObject::connect(mTrackModelWidget ,&TrackModelWidget::onPin,this,&Model::onToolBarWidgetPin);
     mDockTrackModelWidget = new QDockWidget("Track Models",mMap3dWidget);
@@ -70,15 +70,39 @@ void Model::setUpUI()
 
     QString nameTrack = "Track Models";
     mToolBar->addItem(cat, nameTrack, "",true);
+    //run demo ------------------------------------------------
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout,this, &Model::demo);
+    timer->start(10000);
+    //---------------------------------------------------------
 
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
         if(cat == category && name == nameAddAirplaineModel)
         {
             addAirplaineModel();
+            //demo();
         }
         if(cat == category && name == nameAddRocketModel)
         {
-            addRocketModel();
+            // fallow racket
+            if(!mModels[AIRPLANE].isEmpty())
+            {
+                auto truckNames = mModels[TRUCK].keys();
+                for(auto truckName: truckNames)
+                {
+                    auto modeltruck = dynamic_cast<Truck*>(mModels[TRUCK][truckName]);
+                    if(modeltruck->shoot())
+                    {
+                        addRocketModel(modeltruck->getPosition().vec3d());
+                        auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET].last());
+                        auto modelAirplane = dynamic_cast<FlyingModel*>(mModels[AIRPLANE].last());
+                        modelAirplane->setPause(true);//
+                        modelRocket->setFollowingModel(modelAirplane);
+                        modelRocket->shoot(modelAirplane->getPosition().vec3d(), 1000);//1000 m/s
+                        break;
+                    }
+                }
+            }
         }
         else if(cat == category && name == nameAddTruckModel)
         {
@@ -94,17 +118,13 @@ void Model::setUpUI()
                 if(mIsPin)
                     mDockTrackModelWidget->show();
                 //mMap3dWidget->setTrackNode(mCurrentModel->getGeoTransform());
-                demo();
-                QTimer *timer = new QTimer(this);
-                connect(timer, &QTimer::timeout,this, &Model::demo);
-                timer->start(10000);
             }
             else
             {
                 mTrackModelWidget->setUnTrackAll(true);
                 mMainWindow->removeMenuWidget(mTrackModelWidget);
                 mDockTrackModelWidget->hide();
-//                mTrackModelWidget->move(mMainWindow->width() -200,0);
+                //                mTrackModelWidget->move(mMainWindow->width() -200,0);
                 mMap3dWidget->unTrackNode();
             }
             //mMap3dWidget->setTrackNode(nullptr);
@@ -115,7 +135,7 @@ void Model::setUpUI()
 
 void Model::demo()
 {
-//    int index = 0;
+    //    int index = 0;
     auto airplaneNames = mModels[AIRPLANE].keys();
     for (auto name: airplaneNames)
     {
@@ -158,20 +178,20 @@ void Model::demo()
         model->flyTo(mapPoint.vec3d(), 138);
 
         // fallow racket
-        auto truckNames = mModels[TRUCK].keys();
-        for(auto truckName: truckNames)
-        {
-            auto modeltruck = dynamic_cast<Truck*>(mModels[TRUCK][truckName]);
-            if(modeltruck->shoot())
-            {
-                addRocketModel(modeltruck->getPosition().vec3d());
-                auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET].last());
-                modelRocket->flyTo(mapPoint.vec3d(), 120);
-                model->setFollowingModel(modelRocket);
-                break;
-            }
-        }
-//        index += 1;
+        //        auto truckNames = mModels[TRUCK].keys();
+        //        for(auto truckName: truckNames)
+        //        {
+        //            auto modeltruck = dynamic_cast<Truck*>(mModels[TRUCK][truckName]);
+        //            if(modeltruck->shoot())
+        //            {
+        //                addRocketModel(modeltruck->getPosition().vec3d());
+        //                auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET].last());
+        //                modelRocket->flyTo(mapPoint.vec3d(), 120);
+        //                model->setFollowingModel(modelRocket);
+        //                break;
+        //            }
+        //        }
+        //        index += 1;
     }
 }
 
@@ -241,8 +261,7 @@ void Model::flyTo(QString type, QString name, const osg::Vec3d &pos, double spee
 
 void Model::addTruckModel()
 {
-    osg::Vec3d position(52.8603, 35.277, 843.253);    
-
+    osg::Vec3d position(52.8603, 35.277, 844.253);
     //create and setting model--------------------------------------------
     osg::ref_ptr<Truck> model = new Truck(mMap3dWidget->getMapNode());
     QString name = TRUCK + QString::number(mModels[TRUCK].count());
@@ -259,32 +278,6 @@ void Model::addTruckModel()
     //add to container-----------------------------------------------------
     mModels[TRUCK][name] = model;
 
-
-
-//    if(!mModels[TRUCK].isEmpty())
-//    {
-//        auto truck = dynamic_cast<Truck*>(mModels[TRUCK].first());
-
-//        auto pos = truck->getPosition();
-//        auto aimPos = pos;
-//        aimPos.z() += 150;
-//        aimPos.x() -= 0.001;
-//        aimPos.y() -= 0.001;
-
-//        osg::Vec3d truckWorld;
-//        pos.toWorld(truckWorld);
-
-//        osg::Vec3d aimWorld;
-//        aimPos.toWorld(aimWorld);
-
-//        truck->aimTarget(aimWorld);
-
-//        osg::Vec3Array* keyPoint = new osg::Vec3Array;
-//        keyPoint->push_back(truckWorld + osg::Vec3d(5, 0, -2.6));
-//        keyPoint->push_back(aimWorld);
-//        mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
-
-//    }
     //add to map ---------------------------------------------------------
     mMap3dWidget->addNode(model);
     mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
@@ -293,25 +286,23 @@ void Model::addTruckModel()
     mTrackModelWidget->addModel(TRUCK, name);
     mTrackModelWidget->setModelPosition(TRUCK, name, position.x(), position.y(), position.z());
 
+    //create random position ---------------------------------------------
     //    double rnd = QRandomGenerator::global()->generateDouble();
-    //double rnd = qrand() % 360;
-    model->getPositionAttitudeTransform()->setAttitude(osg::Quat());
-    if(!mModels[TRUCK].isEmpty())
-    {
-        auto truck = dynamic_cast<Truck*>(mModels[TRUCK].first());
-    osgEarth::GeoPoint desti(osgEarth::SpatialReference::get("wgs84"),osg::Vec3d(52.859, 35.27, 843.253));
-    osg::Vec3d destiW;
-    desti.toWorld(destiW);
-    //destiW.y() = 0;
-    //destiW.z() = 0;
+    double rndRotate = qrand() % 360;
+    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rndRotate), osg::Z_AXIS));
 
-    truck->moveTo(destiW,0.5);
-}
+    double rndPos = (qrand() % 200)/100000.0;
+    osg::Vec3d nPosition(0.0, rndPos, 0.0);
+    nPosition += position;
+    //model->setLatLongPosition(nPosition);
+    //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
+    //move
+    model->moveTo(nPosition,0.5);
 }
 
 void Model::addAirplaineModel()
 {
-    osg::Vec3d position(52.8601, 35.277, 2100);
+    osg::Vec3d position(52.8601, 35.277, 9100);
     //osg::Vec3d position(52.8601, 35.277, 844);
 
     //create and setting model--------------------------------------------
@@ -333,10 +324,10 @@ void Model::addAirplaineModel()
 
             osg::Vec3d truckPosition;
             truck->getPosition().toWorld(truckPosition);
-            osg::Vec3Array* keyPoint = new osg::Vec3Array;
-            keyPoint->push_back(truckPosition + osg::Vec3d(-2, 0, 5));
-            keyPoint->push_back(wPoint);
-            mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
+            //            osg::Vec3Array* keyPoint = new osg::Vec3Array;
+            //            keyPoint->push_back(truckPosition + osg::Vec3d(5, 0, -2.6));
+            //            keyPoint->push_back(wPoint);
+            //            mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
         }
     });
 
@@ -346,7 +337,7 @@ void Model::addAirplaineModel()
 
     //add to map ---------------------------------------------------------
     mMap3dWidget->addNode(model);
-    mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
+    //mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
 
     //add to track widget ------------------------------------------------
     mTrackModelWidget->addModel(AIRPLANE, name);
@@ -376,11 +367,9 @@ void Model::addAirplaineModel()
         //        mMap3dWidget->getMapNode()->addChild(explosion);
         //        mMap3dWidget->getMapNode()->addChild(debris);
 
-        mModels[ROCKET].remove(QString(other->getName().c_str()));
         mModels[AIRPLANE].remove(QString(model->getName().c_str()));
 
         mTrackModelWidget->removeModel(AIRPLANE, QString(model->getName().c_str()));
-        mTrackModelWidget->removeModel(ROCKET, QString(other->getName().c_str()));
         //        mMap3dWidget->removeNode(model->getFollowModel());
         //        mMap3dWidget->removeNode(model);
         //model->getFollowModel()->setNodeMask(false);
@@ -418,6 +407,12 @@ void Model::addRocketModel(osg::Vec3d position)
     //    double rnd = QRandomGenerator::global()->generateDouble();
     //    double rnd = qrand() % 360;
     //    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
+    //hit------------------------------------------------------------------
+    QObject::connect(model.get(), &FlyingModel::hit, [=](FlyingModel *other){
+
+        mModels[ROCKET].remove(QString(model->getName().c_str()));
+        mTrackModelWidget->removeModel(ROCKET, QString(model->getName().c_str()));
+    });
 }
 
 void Model::clickedTrackNode(QString type, QString name, bool isClick)

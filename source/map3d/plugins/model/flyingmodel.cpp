@@ -30,31 +30,27 @@ public:
             {
                 // Only update _firstTime the first time, when its value is still DBL_MAX
                 if (_firstTime == DBL_MAX) _firstTime = time;
-                //--------------------------------
-                //update(*node);
-                //my code
-                //                    osgEarth::GeoTransform* geoNode = dynamic_cast<osgEarth::GeoTransform*>(node);
+                //------------------------------------------------------------------------------------------------
                 FlyingModel* flyNode = dynamic_cast<FlyingModel*>(node);
                 osg::AnimationPath::ControlPoint cp;
                 if (!flyNode->isHit() && getAnimationPath()->getInterpolatedControlPoint(getAnimationTime(),cp))
                 {
-                    osgEarth::GeoPoint  latLongPoint(osgEarth::SpatialReference::get("wgs84"), cp.getPosition());
                     osgEarth::GeoPoint geoPoint;
-                    latLongPoint.transform(flyNode->getMapNode()->getMapSRS(), geoPoint);
-
+                    geoPoint.fromWorld(flyNode->getMapNode()->getMapSRS(), cp.getPosition());
                     flyNode->setPosition(geoPoint);
-//                    emit flyNode->positionChanged(latLongPoint);
-                    //                        flyNode->setScale(cp.getScale());
                     flyNode->getPositionAttitudeTransform()->setScale(cp.getScale());
                     flyNode->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
-                    //check collision------------------------------------------------------
+                    //emit current position----------------------------------------------------------------------
+                    geoPoint.makeGeographic();
+                    emit flyNode->positionChanged(geoPoint);
+                    //check collision----------------------------------------------------------------------------
                     if(flyNode->getFollowingModel() != nullptr)
                     {
                         //qDebug()<<"!= nullptr"<< QString(flyNode->getName().c_str());
                         double distance = (flyNode->getPosition().vec3d() - flyNode->getFollowingModel()->getPosition().vec3d()).length();
                         if(distance < 3)
                         {
-                            qDebug()<<QString(flyNode->getName().c_str());
+                            //qDebug()<<QString(flyNode->getName().c_str());
                             flyNode->collision(flyNode->getFollowingModel());
 
                         }
@@ -81,42 +77,32 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
         //todo show massage here
         return;
     }
+    //create style-------------------------------------------------------------------------------------------------
     osgEarth::Symbology::Style  style;
-    //        style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
+    //style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
     //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
     //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
-
     setStyle(style);
-
-
-    //    setScale(osg::Vec3(0.09f,0.09f,0.09f));
-    qDebug()<<"center:"<<getBound().center().x()<<","<<getBound().center().y()<<","<<getBound().center().z();
-    qDebug()<<"radius:"<<getBound().radius();
-
+    //-------------------------------------------------------------------------------------------------------------
     osg::Vec3d center = getBound().center();
     float radius = getBound().radius();
     float scale = 3;
-    //osgEarth::Registry::shaderGenerator().run(this);
+    //add fire-----------------------------------------------------------------------------------------------------
+    osgEarth::Registry::shaderGenerator().run(this);
     osgParticle::FireEffect *fire = new osgParticle::FireEffect(center + osg::Vec3f(0, radius,0),scale,100.0);
     getPositionAttitudeTransform()->addChild(fire);
     fire->setUseLocalParticleSystem(false);
-    //mRootNode->addChild(fire->getParticleSystem());
     getMapNode()->getParent(0)->getParent(0)->addChild(fire->getParticleSystem());
-
     fire->setEmitterDuration(360000);
     fire->setParticleDuration(0.2);
-
+    //add smoke----------------------------------------------------------------------------------------------------
     osgParticle::SmokeTrailEffect *smoke = new osgParticle::SmokeTrailEffect(center + osg::Vec3f(0, radius,0),scale/3,100.0);
     getPositionAttitudeTransform()->addChild(smoke);
     smoke->setUseLocalParticleSystem(false);
-    //mRootNode->addChild(smoke->getParticleSystem());
     getMapNode()->getParent(0)->getParent(0)->addChild(smoke->getParticleSystem());
-
     smoke->setEmitterDuration(360000);
     smoke->setParticleDuration(5);
-
-
 }
 
 void FlyingModel::setLatLongPosition(const osg::Vec3d &pos)
@@ -124,8 +110,6 @@ void FlyingModel::setLatLongPosition(const osg::Vec3d &pos)
     osgEarth::GeoPoint  pointLatLong(osgEarth::SpatialReference::get("wgs84"), pos.x(), pos.y(), pos.z());
     osgEarth::GeoPoint  mapPoint;
     pointLatLong.transform(getMapNode()->getMapSRS(), mapPoint);
-    //    osg::Vec3d worldPoint;
-    //    mapPoint.toWorld(worldPoint);
     setPosition(mapPoint);
 
     //draw line------------------------------------------------
@@ -137,52 +121,108 @@ void FlyingModel::setLatLongPosition(const osg::Vec3d &pos)
 
 void FlyingModel::flyTo(const osg::Vec3d &pos, double speed)
 {
-    auto currentGeoPoint = getPosition();
-    //to lat long
-    currentGeoPoint.makeGeographic();
+    if(getPause())
+        return;
 
+    osg::Vec3d currentWPoint;
+    getPosition().toWorld(currentWPoint);
+
+    osg::Vec3d wPos;
+    osgEarth::GeoPoint(getMapNode()->getMapSRS(), pos).toWorld(wPos);
+
+    osg::Vec3d wDef = wPos - currentWPoint;
+    double len = wDef.normalize();
+    //transfer def vector to local----------------------------------------
+    osg::Matrixd localTransfer;
+    getPosition().createWorldToLocal(localTransfer);
+    osg::Quat localRotation;
+    localRotation = localTransfer.getRotate();
+    osg::Matrixd rotateTransfer = osg::Matrixd::rotate(localRotation);
+    osg::Vec3f localDef = wDef * rotateTransfer;
+    //--------------------------------------------------------------------
     osg::Quat rotate;
-    osg::Vec3f def = pos - currentGeoPoint.vec3d();
-    def.z() = 0;
-    rotate.makeRotate(-osg::Y_AXIS, def);
-    osg::Vec3d estimatePos = pos + (def * def.normalize()) * 30;
-    //    double t = static_cast<double>((estimatePos - pos).length() / speed);
-    osgEarth::GeoPoint geoPos(currentGeoPoint.getSRS(), pos);
-    double distance = geoPos.distanceTo(osgEarth::GeoPoint(currentGeoPoint.getSRS(),estimatePos));
-    double t =distance / speed;
+    rotate.makeRotate(-osg::Y_AXIS, localDef);
+
+    osg::Vec3d estimatePos = wPos + wDef*100*len;
+    double t = (estimatePos - wPos).length() / speed;
 
     osg::AnimationPath* path = new osg::AnimationPath();
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 
-    path->insert(0, osg::AnimationPath::ControlPoint(currentGeoPoint.vec3d(),getPositionAttitudeTransform()->getAttitude(),getScale()));
-    path->insert(2,osg::AnimationPath::ControlPoint(pos,rotate, getScale()));
+    path->insert(0, osg::AnimationPath::ControlPoint(currentWPoint,getPositionAttitudeTransform()->getAttitude(),getScale()));
+    path->insert(2,osg::AnimationPath::ControlPoint(wPos,rotate, getScale()));
     path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate, getScale()));
 
     mAnimationPathCallback = new MapAnimationPathCallback();
     mAnimationPathCallback->setAnimationPath(path);
-    //animationPathCallback->setPivotPoint(osg::Vec3d(0,100,0));
     setUpdateCallback(mAnimationPathCallback);
 
     //draw line------------------------------------------------
     //    osg::Vec3Array* keyPoint = new osg::Vec3Array;
-    //    keyPoint->push_back(currentGeoPoint.vec3d());
+    //    keyPoint->push_back(currentWPoint);
+    //    keyPoint->push_back(wPos);
     //    keyPoint->push_back(estimatePos);
-    //    keyPoint->push_back(pos);
-    //    mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
-    //    mMap3dWidget->mMapRoot->addChild(drawCordination(pos));
-    //    mMap3dWidget->mMapRoot->addChild(drawCordination(estimatePos));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawLine(keyPoint, 1.0));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(currentWPoint));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(wPos));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(estimatePos));
+}
 
-    emit positionChanged(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"),pos));
+void FlyingModel::shoot(const osg::Vec3d &pos, double speed)
+{
+    if(getPause())
+        return;
+
+    osg::Vec3d currentWPoint;
+    getPosition().toWorld(currentWPoint);
+
+    osg::Vec3d wPos;
+    osgEarth::GeoPoint(getMapNode()->getMapSRS(), pos).toWorld(wPos);
+
+    osg::Vec3d wDef = wPos - currentWPoint;
+    double distance = wDef.normalize();
+    //transfer def vector to local----------------------------------------
+    osg::Matrixd localTransfer;
+    getPosition().createWorldToLocal(localTransfer);
+    osg::Quat localRotation;
+    localRotation = localTransfer.getRotate();
+    osg::Matrixd rotateTransfer = osg::Matrixd::rotate(localRotation);
+    osg::Vec3f localDef =  wDef * rotateTransfer;
+    //-------------------------------------------------------------------
+    osg::Quat rotate;
+    rotate.makeRotate(-osg::Y_AXIS, localDef);
+    double t = distance / speed;
+
+    osg::AnimationPath* path = new osg::AnimationPath();
+    path->setLoopMode(osg::AnimationPath::NO_LOOPING);
+
+    path->insert(0, osg::AnimationPath::ControlPoint(currentWPoint, rotate, getScale()));
+    path->insert(t,osg::AnimationPath::ControlPoint(wPos,rotate, getScale()));
+
+    mAnimationPathCallback = new MapAnimationPathCallback();
+    mAnimationPathCallback->setAnimationPath(path);
+    setUpdateCallback(mAnimationPathCallback);
+
+    //draw line for debuge------------------------------------------------
+    //    osg::Vec3Array* keyPoint = new osg::Vec3Array;
+    //    keyPoint->push_back(currentWPoint);
+    //    keyPoint->push_back(wPos);
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawLine(keyPoint, 2.0));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(currentWPoint));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(wPos));
 }
 
 void FlyingModel::setPause(bool pause)
 {
-    mAnimationPathCallback->setPause(pause);
+    if(mAnimationPathCallback != nullptr)
+        mAnimationPathCallback->setPause(pause);
 }
 
 bool FlyingModel::getPause() const
 {
-    return mAnimationPathCallback->getPause();
+    if(mAnimationPathCallback != nullptr)
+        return mAnimationPathCallback->getPause();
+    return false;
 }
 
 void FlyingModel::setFollowingModel(FlyingModel *followingModel)
@@ -202,13 +242,13 @@ void FlyingModel::collision(FlyingModel *other)
     setPause(true);
     if(other != nullptr)
     {
-        playExplosionEffect(1.0f);
+        //playExplosionEffect(1.0f);
         other->collision(nullptr);
     }
 
     emit hit(other);
     setNodeMask(false);
-//    getMapNode()->removeChild(this);
+    //    getMapNode()->removeChild(this);
 }
 
 bool FlyingModel::isHit() const
