@@ -186,6 +186,9 @@ void Truck::moveTo(osg::Vec3d desti, double speed)
     osg::AnimationPath::ControlPoint l_wheel_cp1;
     osg::AnimationPath::ControlPoint l_wheel_cp2;
 
+    osgEarth::GeoPoint destiG (osgEarth::SpatialReference::get("wgs84"),desti);
+    osg::Vec3d destination;
+    destiG.toWorld(destination);
     auto mapPosition = getPosition();
     osg::Matrixd sampleM;
     mapPosition.createWorldToLocal(sampleM);
@@ -195,7 +198,7 @@ void Truck::moveTo(osg::Vec3d desti, double speed)
     osg::Vec3d currentTruckPos;
     mapPosition.toWorld(currentTruckPos);
     std::cout<<"xm: "<< desti.x()<<"ym: "<<desti.y()<<"zm: "<<desti.z()<< std::endl;
-    osg::Vec3d axisf = desti - currentTruckPos;
+    osg::Vec3d axisf = destination - currentTruckPos;
     osg::Vec3d axis =axisf*osg::Matrixd::rotate(rot);
 
     osg::Quat rotate;
@@ -208,7 +211,7 @@ void Truck::moveTo(osg::Vec3d desti, double speed)
 
 
     truck_cp0.setPosition(currentTruckPos);
-    truck_cp1.setPosition(desti);
+    truck_cp1.setPosition(destination);
 
     truck_cp0.setScale(_wholeTruckTransform->getMatrix().getScale());
     truck_cp1.setScale(_wholeTruckTransform->getMatrix().getScale());

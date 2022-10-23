@@ -99,6 +99,16 @@ void Model::setUpUI()
                         modelAirplane->setPause(true);//
                         modelRocket->setFollowingModel(modelAirplane);
                         modelRocket->shoot(modelAirplane->getPosition().vec3d(), 1000);//1000 m/s
+
+                        //draw line
+                        osg::Vec3d truckPosition;
+                        modeltruck->getPosition().toWorld(truckPosition);
+                        osg::Vec3d wPoint;
+                        modelAirplane->getPosition().toWorld(wPoint);
+                        osg::Vec3Array* keyPoint = new osg::Vec3Array;
+                        keyPoint->push_back(truckPosition + osg::Vec3d(5, 0, -2.6));
+                        keyPoint->push_back(wPoint);
+                        mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
                         break;
                     }
                 }
@@ -297,7 +307,7 @@ void Model::addTruckModel()
     //model->setLatLongPosition(nPosition);
     //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
     //move
-    model->moveTo(nPosition,0.5);
+    model->moveTo(nPosition,10);
 }
 
 void Model::addAirplaineModel()
@@ -313,7 +323,7 @@ void Model::addAirplaineModel()
     model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
 
     QObject::connect(model.get(), &FlyingModel::positionChanged, [=](osgEarth::GeoPoint position){
-        positionChanged(AIRPLANE, name, position);
+        //positionChanged(AIRPLANE, name, position);
 
         if(!mModels[TRUCK].isEmpty())
         {
@@ -322,12 +332,12 @@ void Model::addAirplaineModel()
             position.toWorld(wPoint);
             truck->aimTarget(wPoint);
 
-            osg::Vec3d truckPosition;
-            truck->getPosition().toWorld(truckPosition);
-            //            osg::Vec3Array* keyPoint = new osg::Vec3Array;
-            //            keyPoint->push_back(truckPosition + osg::Vec3d(5, 0, -2.6));
-            //            keyPoint->push_back(wPoint);
-            //            mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
+//            osg::Vec3d truckPosition;
+//            truck->getPosition().toWorld(truckPosition);
+//            osg::Vec3Array* keyPoint = new osg::Vec3Array;
+//            keyPoint->push_back(truckPosition + osg::Vec3d(5, 0, -2.6));
+//            keyPoint->push_back(wPoint);
+//            mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
         }
     });
 
