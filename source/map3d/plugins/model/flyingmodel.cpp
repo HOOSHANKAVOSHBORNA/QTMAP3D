@@ -2,11 +2,6 @@
 #include "draw.h"
 
 #include <QDebug>
-#include <osgParticle/FireEffect>
-#include <osgParticle/SmokeTrailEffect>
-#include <osgParticle/SmokeEffect>
-#include <osgParticle/ExplosionEffect>
-#include <osgParticle/ExplosionDebrisEffect>
 #include <osgEarth/Registry>
 #include <osgGA/EventVisitor>
 #include <osgGA/EventHandler>
@@ -19,6 +14,8 @@ class MapAnimationPathCallback: public osg::AnimationPathCallback
 public:
     void operator()(osg::Node* node, osg::NodeVisitor* nv) override{
 
+        bool hit = false;
+        FlyingModel* flyNode;
         if (_animationPath.valid() &&
                 nv->getVisitorType()== osg::NodeVisitor::UPDATE_VISITOR &&
                 nv->getFrameStamp())
@@ -26,14 +23,29 @@ public:
             double time = nv->getFrameStamp()->getSimulationTime();
             _latestTime = time;
 
+            flyNode = dynamic_cast<FlyingModel*>(node);
+            if (!flyNode->isHit())
+                //check collision----------------------------------------------------------------------------
+                if(flyNode->getFollowingModel() != nullptr)
+                {
+                    //qDebug()<<"!= nullptr"<< QString(flyNode->getName().c_str());
+                    double distance = (flyNode->getPosition().vec3d() - flyNode->getFollowingModel()->getPosition().vec3d()).length();
+                    if(distance < 3)
+                    {
+                        //qDebug()<<QString(flyNode->getName().c_str());
+//                            flyNode->collision(flyNode->getFollowingModel());
+                        hit = true;
+
+                    }
+                }
+
             if (!_pause)
             {
                 // Only update _firstTime the first time, when its value is still DBL_MAX
                 if (_firstTime == DBL_MAX) _firstTime = time;
                 //------------------------------------------------------------------------------------------------
-                FlyingModel* flyNode = dynamic_cast<FlyingModel*>(node);
                 osg::AnimationPath::ControlPoint cp;
-                if (!flyNode->isHit() && getAnimationPath()->getInterpolatedControlPoint(getAnimationTime(),cp))
+                if (getAnimationPath()->getInterpolatedControlPoint(getAnimationTime(),cp))
                 {
                     osgEarth::GeoPoint geoPoint;
                     geoPoint.fromWorld(flyNode->getMapNode()->getMapSRS(), cp.getPosition());
@@ -43,18 +55,6 @@ public:
                     //emit current position----------------------------------------------------------------------
                     geoPoint.makeGeographic();
                     emit flyNode->positionChanged(geoPoint);
-                    //check collision----------------------------------------------------------------------------
-                    if(flyNode->getFollowingModel() != nullptr)
-                    {
-                        //qDebug()<<"!= nullptr"<< QString(flyNode->getName().c_str());
-                        double distance = (flyNode->getPosition().vec3d() - flyNode->getFollowingModel()->getPosition().vec3d()).length();
-                        if(distance < 3)
-                        {
-                            //qDebug()<<QString(flyNode->getName().c_str());
-                            flyNode->collision(flyNode->getFollowingModel());
-
-                        }
-                    }
                 }
 
                 //qDebug()<<"p:"<<cp.getPosition().x()<<","<<cp.getPosition().y()<<","<<cp.getPosition().z();
@@ -63,6 +63,8 @@ public:
 
         // must call any nested node callbacks and continue subgraph traversal.
         NodeCallback::traverse(node,nv);
+        if(hit)
+            flyNode->collision(flyNode->getFollowingModel());
     }
 };
 
@@ -89,20 +91,28 @@ FlyingModel::FlyingModel(osgEarth::MapNode* mapNode, const QString &fileName)
     float radius = getBound().radius();
     float scale = 3;
     //add fire-----------------------------------------------------------------------------------------------------
-    osgEarth::Registry::shaderGenerator().run(this);
-    osgParticle::FireEffect *fire = new osgParticle::FireEffect(center + osg::Vec3f(0, radius,0),scale,100.0);
-    getPositionAttitudeTransform()->addChild(fire);
-    fire->setUseLocalParticleSystem(false);
-    getMapNode()->getParent(0)->getParent(0)->addChild(fire->getParticleSystem());
-    fire->setEmitterDuration(360000);
-    fire->setParticleDuration(0.2);
+//    osgEarth::Registry::shaderGenerator().run(this);
+    mFire = new osgParticle::FireEffect(center + osg::Vec3f(0, radius,0),scale,100.0);
+    getPositionAttitudeTransform()->addChild(mFire);
+    mFire->setUseLocalParticleSystem(false);
+    mFire->setEmitterDuration(360000);
+    mFire->setParticleDuration(0.2);
+    osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());// for textures or lighting
+    getMapNode()->addChild(mFire->getParticleSystem());
     //add smoke----------------------------------------------------------------------------------------------------
-    osgParticle::SmokeTrailEffect *smoke = new osgParticle::SmokeTrailEffect(center + osg::Vec3f(0, radius,0),scale/3,100.0);
-    getPositionAttitudeTransform()->addChild(smoke);
-    smoke->setUseLocalParticleSystem(false);
-    getMapNode()->getParent(0)->getParent(0)->addChild(smoke->getParticleSystem());
-    smoke->setEmitterDuration(360000);
-    smoke->setParticleDuration(5);
+    mSmoke = new osgParticle::SmokeTrailEffect(center + osg::Vec3f(0, radius,0),scale/3,100.0);
+    getPositionAttitudeTransform()->addChild(mSmoke);
+    mSmoke->setUseLocalParticleSystem(false);
+    mSmoke->setEmitterDuration(360000);
+    mSmoke->setParticleDuration(5);
+    osgEarth::Registry::shaderGenerator().run(mSmoke->getParticleSystem());// for textures or lighting
+    getMapNode()->addChild(mSmoke->getParticleSystem());
+
+//    mGeodeParticle = new osg::Geode;
+//    mGeodeParticle->addDrawable(mFire->getParticleSystem());
+//    mGeodeParticle->addDrawable(mSmoke->getParticleSystem());
+//    osgEarth::Registry::shaderGenerator().run(mGeodeParticle);// for textures or lighting
+//    getMapNode()->addChild(mGeodeParticle);
 }
 
 void FlyingModel::setLatLongPosition(const osg::Vec3d &pos)
@@ -235,20 +245,34 @@ FlyingModel *FlyingModel::getFollowingModel() const
     return mFollowingModel;
 }
 
+void FlyingModel::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
+{
+    mTruckModel = truckModel;
+}
+osgEarth::Annotation::ModelNode *FlyingModel::getTruckModel() const
+{
+    return mTruckModel;
+}
+
 void FlyingModel::collision(FlyingModel *other)
 {
     qDebug()<<QString(getName().c_str());
     mIsHit = true;
     setPause(true);
-    if(other != nullptr)
-    {
-        //playExplosionEffect(1.0f);
-        other->collision(nullptr);
-    }
+//    if(other != nullptr)
+//    {
+//        playExplosionEffect(1.0f);
+//        other->collision(nullptr);
+//    }
+    playExplosionEffect(1.0f);
+    setNodeMask(false);
+    mSmoke->setNodeMask(false);
+    mSmoke->getParticleSystem()->setNodeMask(false);
+    mFire->setNodeMask(false);
+    mFire->getParticleSystem()->setNodeMask(false);
+    //    getMapNode()->removeChild(this);
 
     emit hit(other);
-    setNodeMask(false);
-    //    getMapNode()->removeChild(this);
 }
 
 bool FlyingModel::isHit() const
@@ -296,8 +320,10 @@ void FlyingModel::playExplosionEffect(float scale)
     pSphereGroup->addChild(smoke);
     pSphereGroup->setPosition(worldPosition);
 
-    getMapNode()->getParent(0)->getParent(0)->addChild(pSphereGroup);
+    osgEarth::Registry::shaderGenerator().run(pSphereGroup);// for textures or lighting
+    getMapNode()->addChild(pSphereGroup);
 
 
 }
+
 

@@ -28,6 +28,7 @@ public:
     void moveTo(osg::Vec3d desti, double speed);
     void aimTarget(osg::Vec3d target);
     bool shoot();
+    bool hasRocket();
 
 private:
     osg::MatrixTransform* _wholeTruckTransform;

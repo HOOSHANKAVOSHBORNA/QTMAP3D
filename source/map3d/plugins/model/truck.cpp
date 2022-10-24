@@ -282,7 +282,7 @@ void Truck::aimTarget(osg::Vec3d target)
 
     //_rocketLaunch->insert(0,rocket_cp0);
     //_rocketLaunch->insert(3,rocket_cp1);
-    std::cout<<"x: "<< target.x()<<"y: "<<target.y()<<"z: "<<target.z()<< std::endl;
+//    std::cout<<"x: "<< target.x()<<"y: "<<target.y()<<"z: "<<target.z()<< std::endl;
 
     auto mapPosition = getPosition();
     osg::Matrixd sample;
@@ -335,8 +335,8 @@ void Truck::aimTarget(osg::Vec3d target)
 //    axisHP = truckRotMat * axisHP;
     osg::Vec3d axisH =axisHP*osg::Matrixd::rotate(rot);
 
-    std::cout << "target.z() : " << target.z() << std::endl;
-    std::cout << axisH.x() << " , " << axisH.y() << " , " << axisH.z() << std::endl;
+//    std::cout << "target.z() : " << target.z() << std::endl;
+//    std::cout << axisH.x() << " , " << axisH.y() << " , " << axisH.z() << std::endl;
 
 
     osg::Quat rotateH;
@@ -409,6 +409,13 @@ bool Truck::shoot()
 //    }
 
     rocketNo -= 1;
+    return true;
+}
+
+bool Truck::hasRocket()
+{
+    if(rocketNo < 1)
+        return false;
     return true;
 }
 
