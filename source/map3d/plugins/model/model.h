@@ -3,7 +3,7 @@
 
 #include "plugininterface.h"
 #include "trackmodelwidget.h"
-#include "flyingmodel.h"
+#include "airplane.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
