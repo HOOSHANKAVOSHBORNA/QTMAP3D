@@ -17,7 +17,7 @@ void Visibility::setUpUI()
 {
     ToolBarWidget::Category cat = ToolBarWidget::Category::Analyze;
     QString nameVisibility = "Visibility";
-    mToolBar->addItem(cat, nameVisibility, "",true);
+    mToolBar->addItem(cat, nameVisibility, "qrc:/res/visibility.png",true);
 
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
         if(cat == category && name == nameVisibility)

@@ -163,6 +163,13 @@ void Truck::setLatLongPosition(const osg::Vec3d &pos)
     pointLatLong.transform(getMapNode()->getMapSRS(), mapPoint);
     setPosition(mapPoint);
 
+    auto abbas = getPosition();
+    qDebug()<<"abbas z: "<<abbas.z();
+    abbas.z() = 0;
+    qDebug()<<"abbas z: "<<abbas.z();
+    abbas.makeRelative(getMapNode()->getTerrain());
+    qDebug()<<"abbas z: "<<abbas.z();
+
 }
 void Truck::moveTo(osg::Vec3d desti, double speed)
 {
@@ -186,9 +193,15 @@ void Truck::moveTo(osg::Vec3d desti, double speed)
     osg::AnimationPath::ControlPoint l_wheel_cp1;
     osg::AnimationPath::ControlPoint l_wheel_cp2;
 
+
     osgEarth::GeoPoint destiG (osgEarth::SpatialReference::get("wgs84"),desti);
+    destiG.makeRelative(getMapNode()->getTerrain());
+
+
+
+
     osg::Vec3d destination;
-    destiG.toWorld(destination);
+    destiG.toWorld(destination,getMapNode()->getTerrain());
     auto mapPosition = getPosition();
     osg::Matrixd sampleM;
     mapPosition.createWorldToLocal(sampleM);
@@ -197,7 +210,7 @@ void Truck::moveTo(osg::Vec3d desti, double speed)
 
     osg::Vec3d currentTruckPos;
     mapPosition.toWorld(currentTruckPos);
-    std::cout<<"xm: "<< desti.x()<<"ym: "<<desti.y()<<"zm: "<<desti.z()<< std::endl;
+    //std::cout<<"xm: "<< desti.x()<<"ym: "<<desti.y()<<"zm: "<<desti.z()<< std::endl;
     osg::Vec3d axisf = destination - currentTruckPos;
     osg::Vec3d axis =axisf*osg::Matrixd::rotate(rot);
 

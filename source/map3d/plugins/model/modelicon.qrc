@@ -4,5 +4,9 @@
         <file>res/sort-down.png</file>
         <file>res/toolbarmenu.png</file>
         <file>res/unpin.png</file>
+        <file>res/airplan.png</file>
+        <file>res/missleLauncher.png</file>
+        <file>res/missleLauncher_2.png</file>
+        <file>res/tracking.png</file>
     </qresource>
 </RCC>
