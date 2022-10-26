@@ -90,7 +90,7 @@ Item {
                             pin.visible =true
                             back.color = "#282A31"
                             backmenu.color = "transparent"
-                            backmenu.anchors.topMargin =-4
+                            backmenu.anchors.topMargin =-7
                             backmenu.anchors.leftMargin= -5
                             NamePlugin.setSizeWidget(true)
 

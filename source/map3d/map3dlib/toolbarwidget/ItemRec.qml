@@ -22,17 +22,7 @@ Rectangle {
         anchors.leftMargin: 5
         source:icon
     }
-    RotationAnimation{
-        id:anim
-        targets: image
-        from :-60
-        to:30
-        duration: 200
-        running: false
-        loops: Animation.Infinite
 
-
-    }
     Text {
         id:txt
         anchors.left: image.right
@@ -49,11 +39,9 @@ Rectangle {
         hoverEnabled: true
         onEntered:{
             txt.font.bold =true
-            anim.running =true
         }
         onExited: {
             txt.font.bold =false
-            anim.running =false
         }
 
         onClicked: {
