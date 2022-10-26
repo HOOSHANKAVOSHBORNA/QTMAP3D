@@ -61,16 +61,16 @@ void Model::setUpUI()
     ToolBarWidget::Category cat = ToolBarWidget::Category::Model;
 
     QString nameAddAirplaineModel = "Add Airplan Model";
-    mToolBar->addItem(cat, nameAddAirplaineModel, "");
+    mToolBar->addItem(cat, nameAddAirplaineModel, "qrc:/res/airplan.png");
 
     QString nameAddRocketModel = "Add Rocket Model";
     mToolBar->addItem(cat, nameAddRocketModel, "");
 
     QString nameAddTruckModel = "Add Truck Model";
-    mToolBar->addItem(cat, nameAddTruckModel, "");
+    mToolBar->addItem(cat, nameAddTruckModel, "qrc:/res/missleLauncher_2.png");
 
     QString nameTrack = "Track Models";
-    mToolBar->addItem(cat, nameTrack, "",true);
+    mToolBar->addItem(cat, nameTrack, "qrc:/res/tracking.png",true);
     //run demo ------------------------------------------------
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout,this, &Model::demo);
@@ -290,6 +290,7 @@ void Model::addTruckModel()
     model->setScale(osg::Vec3(1,1,1));
 
 
+
     //    QObject::connect(model.get(), &FlyingModel::positionChanged, [=](osgEarth::GeoPoint position){
     //        positionChanged(ROCKET, name, position);
     //    });
@@ -313,6 +314,7 @@ void Model::addTruckModel()
     double rndPX = (qrand() % 200)/100000.0;
     double rndPY = (qrand() % 200)/100000.0;
     osg::Vec3d nPosition(rndPX, rndPY, 0.0);
+
     nPosition += position;
     //model->setLatLongPosition(nPosition);
     //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);

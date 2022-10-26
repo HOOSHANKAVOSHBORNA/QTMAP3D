@@ -160,7 +160,7 @@ Item {
                 }
                 Image {
                     id: iconmenu
-                    source: "qrc:/res/toolbarmenu.png"
+                    source: "qrc:/res/tracking.png"
                     anchors.centerIn: parent
                     width:iconzie
                     height: iconzie
