@@ -101,7 +101,6 @@ Item {
                             backmenu.anchors.topMargin = -12
                             backmenu.anchors.leftMargin= -8
                             NamePlugin.setSizeWidget(true)
-
                         }
                     }
                 }
