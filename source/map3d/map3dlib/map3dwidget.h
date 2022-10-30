@@ -9,12 +9,15 @@
 #include <osg/Referenced>
 #include <osgEarth/Viewpoint>
 #include <osgEarth/MapNode>
+#include <osgEarthAnnotation/ModelNode>
+
 //#include <osgQOpenGL/osgQOpenGLWidget>
 #include <osgEarthUtil/EarthManipulator>
 
 #include "cameramanipulatorwidget.h"
 #include "compasswidget.h"
 #include "locationwidget.h"
+#include "objectinfowidget.h"
 
 class osgQOpenGLWidget;
 
@@ -54,6 +57,7 @@ private:
     // Intersect with the scene and update info about the intersected point
     void  getPos(osgViewer::View *view, const osgGA::GUIEventAdapter &ea);
 
+
 private:
     osg::Vec3d mCurrentLocalPos;
     osg::Vec3d mCurrentWorldPos;
@@ -83,7 +87,14 @@ public slots:
     void typeChanged(bool);
     const osgEarth::SpatialReference* getMapSRS() const;
     void goPosition(double latitude ,double longitude ,double range);
+
+    void setObjectInfoWidgetVisible(bool bVisible);
+    void setSelectedAirplane(osgEarth::Annotation::ModelNode *airplane);
+
 signals :
+
+public slots:
+    void onFrame();
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
@@ -103,9 +114,13 @@ private:
     osgQOpenGLWidget* mMapOpenGLWidget;
     CameraManipulatorWidget *mCmWidget{nullptr};
     CompassWidget *mCompassWidget{nullptr};
+    ObjectInfoWidget *mObjectInfoWidget{nullptr};
     LocationWidget* mLocationWidget{nullptr};
     QHBoxLayout *mLayout{nullptr};
     bool mIsGeocentric;
+
+    bool mIsObjectInfoWidgetVisible{false};
+    osgEarth::Annotation::ModelNode *mSelectedAirplane = nullptr;
 };
 
 #endif // MAP3DWIDGET_H
