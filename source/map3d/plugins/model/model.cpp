@@ -92,32 +92,37 @@ void Model::setUpUI()
                 for(auto truckName: truckNames)
                 {
                     auto modeltruck = dynamic_cast<Truck*>(mModels[TRUCK][truckName]);
-                    if(modeltruck->shoot())
+                    if(modeltruck->hasRocket())
                     {
-                        addRocketModel(modeltruck->getPosition().vec3d());
-                        auto modelRocket = dynamic_cast<Rocket*>(mModels[ROCKET].last());
+//                        addRocketModel(modeltruck->getPosition().vec3d());
+//                        auto modelRocket = dynamic_cast<Rocket*>(mModels[ROCKET].last());
+                        auto activeRocket = modeltruck->getActiveRocket();
                         auto modelAirplane = dynamic_cast<Airplane*>(mModels[AIRPLANE].last());
                         modelAirplane->stop();//
-                        modelRocket->setFollowModel(modelAirplane);
+                        activeRocket->setFollowModel(modelAirplane);
                         //modelRocket->setTruckModel(modeltruck);
 
-                        osg::Vec3d wPoint;
-                        modelAirplane->getPosition().toWorld(wPoint);
-                        modeltruck->aimTarget(wPoint);
+//                        modeltruck->aimTarget(modelAirplane->getPosition().vec3d());
 
-                        modelAirplane->setFollowModel(modelRocket);
+                        modelAirplane->setFollowModel(activeRocket);
                         modelAirplane->setTruckModel(modeltruck);
-                        modelRocket->shoot(modelAirplane->getPosition().vec3d(), 3000);//1000 m/s
+
+                        modeltruck->shoot(modelAirplane->getPosition().vec3d(), 3000);//1000 m/s
+//                        activeRocket->setPosition(modeltruck->getPosition());
+//                        mMap3dWidget->addNode(activeRocket);
+//                        activeRocket->shoot(modelAirplane->getPosition().vec3d(), 3000);
+
+                        mMap3dWidget->setTrackNode(activeRocket->getGeoTransform());
 
                         //draw line
-                        //                        osg::Vec3d truckPosition;
-                        //                        modeltruck->getPosition().toWorld(truckPosition);
-                        //                        osg::Vec3d wPoint;
-                        //                        modelAirplane->getPosition().toWorld(wPoint);
-                        //                        osg::Vec3Array* keyPoint = new osg::Vec3Array;
-                        //                        keyPoint->push_back(truckPosition + osg::Vec3d(5, 0, -2.6));
-                        //                        keyPoint->push_back(wPoint);
-                        //                        mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
+//                        osg::Vec3d truckPosition;
+//                        modeltruck->getPosition().toWorld(truckPosition);
+//                        osg::Vec3d wPoint1;
+//                        modelAirplane->getPosition().toWorld(wPoint1);
+//                        osg::Vec3Array* keyPoint = new osg::Vec3Array;
+//                        keyPoint->push_back(truckPosition + osg::Vec3d(5, 0, -2.6));
+//                        keyPoint->push_back(wPoint1);
+//                        mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
                         break;
                     }
                 }
@@ -280,12 +285,12 @@ void Model::flyTo(QString type, QString name, const osg::Vec3d &pos, double spee
 
 void Model::addTruckModel()
 {
-    osg::Vec3d position(52.8603, 35.277, 845.5);
+    osg::Vec3d position(52.8603, 35.274, 845.5);
     //create and setting model--------------------------------------------
     osg::ref_ptr<Truck> model = new Truck(mMap3dWidget->getMapNode());
     QString name = TRUCK + QString::number(mModels[TRUCK].count());
     model->setName(name.toStdString());
-    model->setLatLongPosition(position);
+    model->setGeographicPosition(position);
     //model->setLocalRotation(osg::Quat(osg::inDegrees(-30.0),osg::Z_AXIS));
     model->setScale(osg::Vec3(1,1,1));
 
@@ -343,9 +348,9 @@ void Model::addAirplaineModel()
             auto truck = dynamic_cast<Truck*>(mModels[TRUCK][truckName]);
             if(truck->hasRocket())
             {
-                osg::Vec3d wPoint;
-                position.toWorld(wPoint);
-                truck->aimTarget(wPoint);
+//                osg::Vec3d wPoint;
+//                position.toWorld(wPoint);
+                truck->aimTarget(position.vec3d());
             }
         }
     });
