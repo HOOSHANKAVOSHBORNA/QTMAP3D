@@ -18,5 +18,6 @@
         <file>locationwidget/LoactionWidget.qml</file>
         <file>locationwidget/RecSavePosition.qml</file>
         <file>locationwidget/SavePosition.qml</file>
+        <file>ObjectInfoItem.qml</file>
     </qresource>
 </RCC>
