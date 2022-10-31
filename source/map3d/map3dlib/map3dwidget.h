@@ -24,6 +24,7 @@ class osgQOpenGLWidget;
 namespace osgEarth{
 class Viewpoint;
 class SpatialReference;
+class Layer;
 //class Map;
 //class MapNode;
 //namespace  Util{
@@ -78,6 +79,7 @@ public:
     osgEarth::Viewpoint getViewpoint() const;
     //void mousePressEvent (QMouseEvent *event) override;
     osgEarth::MapNode* getMapNode();
+    void addLayer(osgEarth::Layer* layer);
     osg::ref_ptr<osg::Group> mMapRoot;
     osg::ref_ptr<osgEarth::Util::EarthManipulator> mEarthManipulator;
 

@@ -17,6 +17,7 @@
 #include <osg/Camera>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/StateSetManipulator>
+#include <osgEarth/Layer>
 //#include <osgEarthAnnotation/TrackNode>
 //#include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 
@@ -289,6 +290,12 @@ MapNode *Map3dWidget::getMapNode()
         return mMapNodeGeo;
     else
         return mMapNodeProj;
+}
+
+void Map3dWidget::addLayer(osgEarth::Layer *layer)
+{
+    mMapNodeGeo->getMap()->addLayer(layer);
+    mMapNodeProj->getMap()->addLayer(layer);
 }
 
 void Map3dWidget::createManipulator()
