@@ -72,7 +72,7 @@ void TerrainLayer::addArcGIS()
 {
     QMap<QString, QString> examples;
     examples[tr("3DEP")] = "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer";
-    URLDialog* dialog = new URLDialog(examples,this);
+    URLDialog* dialog = new URLDialog(examples,mMainWindow);
     dialog->setWindowTitle("Select ArcGIS url");
 
     int accepted = dialog->exec();
@@ -95,7 +95,7 @@ void TerrainLayer::addWCS()
 {
     QMap<QString, QString> examples;
     examples["3DEP"] = "https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WCSServer?";
-    URLDialog* dialog = new URLDialog(examples,this);
+    URLDialog* dialog = new URLDialog(examples,mMainWindow);
     dialog->setWindowTitle("Select WCS url");
 
     int accepted = dialog->exec();
@@ -121,7 +121,7 @@ void TerrainLayer::addTMS()
 {
     QMap<QString, QString> examples;
     examples[tr("readymap")] = "http://readymap.org/readymap/tiles/1.0.0/116/";
-    URLDialog* dialog = new URLDialog(examples,this);
+    URLDialog* dialog = new URLDialog(examples,mMainWindow);
     dialog->setWindowTitle("Select TMS url");
 
     int accepted = dialog->exec();

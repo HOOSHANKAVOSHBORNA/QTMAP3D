@@ -51,7 +51,7 @@ void EarthFile::setUpUI()
         }
         else if(cat == category && name == nameExport)
         {
-            auto fileName = QFileDialog::getSaveFileName(this, tr("Save Earth File"), "../map3dlib/data", tr("Earth File (*.earth)"));
+            auto fileName = QFileDialog::getSaveFileName(mMainWindow, tr("Save Earth File"), "../map3dlib/data", tr("Earth File (*.earth)"));
             if( !fileName.isNull() )
             {
                 osg::ref_ptr<osgDB::Options>  myReadOptions = osgEarth::Registry::cloneOrCreateOptions(nullptr);

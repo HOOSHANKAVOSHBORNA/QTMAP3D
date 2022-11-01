@@ -1,17 +1,17 @@
 #ifndef PLUGININTERFACE_H
 #define PLUGININTERFACE_H
 
-#include <QWidget>
+#include <QObject>
 #include "map3dlib.h"
 
 class Map3dWidget;
 class ToolBarWidget;
 
-class PluginInterface: public QWidget
+class PluginInterface: public QObject
 {
     Q_OBJECT
 public:
-    PluginInterface(QWidget *parent = nullptr);
+    PluginInterface(QObject *parent = nullptr);
     ~PluginInterface()override{}
     virtual void setUpUI() = 0;
     void setMainWindow(Map3dlib *mainWindow);

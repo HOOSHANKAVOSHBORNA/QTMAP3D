@@ -4,8 +4,8 @@
 
 #include <QVBoxLayout>
 
-PluginInterface::PluginInterface(QWidget *parent)
-    : QWidget(parent)
+PluginInterface::PluginInterface(QObject *parent)
+    : QObject(parent)
 {
 
 }

@@ -56,7 +56,7 @@ void  PluginManager::loadPlugin(QString path)
         {
             return;
         }
-        plugin->setParent(mMainWindow);
+//        plugin->setParent(mMainWindow);
         plugin->setToolBar(mToolBar);
         plugin->setMap3dWidget(mMap3dWidget);
         plugin->setMainWindow(mMainWindow);
