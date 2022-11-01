@@ -58,12 +58,13 @@ void Rocket::shoot(const osg::Vec3d &pos, double speed)
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 
     path->insert(0, osg::AnimationPath::ControlPoint(currentWPoint, rotate, getScale()));
-    path->insert(t,osg::AnimationPath::ControlPoint(wPos,rotate, getScale()));
+    //create first pause
+    path->insert(2, osg::AnimationPath::ControlPoint(currentWPoint, rotate, getScale()));
+    path->insert(t + 2,osg::AnimationPath::ControlPoint(wPos,rotate, getScale()));
 
     mAnimationPathCallback = new ModelAnimationPathCallback();
     mAnimationPathCallback->setAnimationPath(path);
     setUpdateCallback(mAnimationPathCallback);
-
     addEffect(path->getPeriod());
     //draw line for debuge------------------------------------------------
 //        osg::Vec3Array* keyPoint = new osg::Vec3Array;

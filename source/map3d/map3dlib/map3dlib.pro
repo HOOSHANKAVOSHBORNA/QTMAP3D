@@ -22,6 +22,7 @@ SOURCES += \
     locationwidget.cpp \
     map3dlib.cpp \
     map3dwidget.cpp \
+    objectinfowidget.cpp \
     plugininterface.cpp \
     pluginmanager.cpp \
     toolbarwidget.cpp
@@ -33,6 +34,7 @@ HEADERS += \
     map3dlib_global.h \
     map3dlib.h \
     map3dwidget.h \
+    objectinfowidget.h \
     plugininterface.h \
     pluginmanager.h \
     toolbarwidget.h

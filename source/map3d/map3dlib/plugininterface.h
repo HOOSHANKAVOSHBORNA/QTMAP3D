@@ -12,6 +12,7 @@ class PluginInterface: public QWidget
     Q_OBJECT
 public:
     PluginInterface(QWidget *parent = nullptr);
+    ~PluginInterface()override{}
     virtual void setUpUI() = 0;
     void setMainWindow(Map3dlib *mainWindow);
     void setMap3dWidget(Map3dWidget *value);

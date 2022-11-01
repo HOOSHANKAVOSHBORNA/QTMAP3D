@@ -1,4 +1,5 @@
-﻿#include "map3dwidget.h"
+﻿
+#include "map3dwidget.h"
 
 #include <osgQOpenGL/osgQOpenGLWidget>
 #include <osgDB/FileUtils>
@@ -16,6 +17,7 @@
 #include <osg/Camera>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/StateSetManipulator>
+#include <osgEarth/Layer>
 //#include <osgEarthAnnotation/TrackNode>
 //#include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 
@@ -154,9 +156,7 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         QObject::connect(mousePicker, &MousePicker::currentWorldPos, this,  &Map3dWidget::mouseWorldPos);
         QObject::connect(mousePicker, &MousePicker::mousePressEvent, this,  &Map3dWidget::onMapPressEvent);
         QObject::connect(mousePicker, &MousePicker::mousePressEvent, mLocationWidget,  &LocationWidget::setClose);
-        QObject::connect(mousePicker, &MousePicker::frame, [this](){
-            this->mCompassWidget->setRotate(-this->getViewpoint().getHeading());
-        });
+        QObject::connect(mousePicker, &MousePicker::frame, this, &Map3dWidget::onFrame);
         mMapOpenGLWidget->getOsgViewer()->addEventHandler(mousePicker);
         //create map node---------------------------------------------
         GDALOptions gdal;
@@ -238,6 +238,8 @@ void Map3dWidget::setTrackNode(osg::Node *value)
     auto vp = mEarthManipulator->getViewpoint();
     if(vp.getNode() == value)
         return;
+
+
     vp.setNode(value);//to track
     //vp.setRange(100);
     mEarthManipulator->setViewpoint(vp);
@@ -245,6 +247,7 @@ void Map3dWidget::setTrackNode(osg::Node *value)
     camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
     //    camSet->getBreakTetherActions().push_back(osgEarth::Util::EarthManipulator::ACTION_GOTO );
     mEarthManipulator->applySettings(camSet);
+
 }
 
 void Map3dWidget::unTrackNode()
@@ -289,6 +292,12 @@ MapNode *Map3dWidget::getMapNode()
         return mMapNodeProj;
 }
 
+void Map3dWidget::addLayer(osgEarth::Layer *layer)
+{
+    mMapNodeGeo->getMap()->addLayer(layer);
+    mMapNodeProj->getMap()->addLayer(layer);
+}
+
 void Map3dWidget::createManipulator()
 {
     mEarthManipulator = new osgEarth::Util::EarthManipulator;
@@ -331,6 +340,9 @@ void Map3dWidget::createWidgets()
     connect(mLocationWidget, &LocationWidget::saveLocation,this, &Map3dWidget::saveCurrentPosition);
     //connect(mLocationWidget, &LocationWidget::clickedPosition,this, &Map3dWidget::onClickedPosition);
     //mLocationWidget->addViewPoint( osgEarth::Viewpoint("hasan",23,444,555,66,77,88));
+
+    mObjectInfoWidget = new ObjectInfoWidget(this);
+    mObjectInfoWidget->setVisible(false);
 }
 
 void Map3dWidget::setZoom(double val)
@@ -393,6 +405,44 @@ void Map3dWidget::goPosition(double latitude, double longitude, double range)
     setViewpoint(vp, DURATION);
 }
 
+void Map3dWidget::setObjectInfoWidgetVisible(bool bVisible)
+{
+    mIsObjectInfoWidgetVisible = bVisible;
+    mObjectInfoWidget->setVisible(bVisible);
+}
+
+void Map3dWidget::setSelectedAirplane(Annotation::ModelNode *airplane)
+{
+    mSelectedAirplane = airplane;
+}
+
+void Map3dWidget::onFrame()
+{
+
+    this->mCompassWidget->setRotate(-this->getViewpoint().getHeading());
+    if (this->mIsObjectInfoWidgetVisible) {
+
+        osgViewer::Viewer::Views views;
+        const osg::Matrixd modelViewMat  = this->mEarthManipulator->getInverseMatrix();
+        const osg::Matrixd projectionMat = this->mMapOpenGLWidget->getOsgViewer()->getCamera()->getProjectionMatrix();
+
+        if (this->mSelectedAirplane) {
+            const osgEarth::GeoPoint pt = this->mSelectedAirplane->getPosition();
+            osg::Vec3d w;
+            pt.toWorld(w);
+
+            w = w * modelViewMat;
+            w = w * projectionMat;
+
+            const int x = static_cast<int>(((w.x() + 1.0) / 2.0) * double(mMapOpenGLWidget->width()));
+            const int y = static_cast<int>((( (w.y()*-1.0) + 1.0) / 2.0) * double(mMapOpenGLWidget->height()));
+
+            mObjectInfoWidget->move(x, y);
+        }
+    }
+
+}
+
 void Map3dWidget::saveCurrentPosition(QString name)
 {
     osgEarth::Viewpoint vp = getViewpoint();
@@ -422,6 +472,8 @@ void Map3dWidget::resizeEvent(QResizeEvent* event)
         mCompassWidget->move(this->width()- mCompassWidget->width() - 5, this->height()- mCompassWidget->height() - 5);
     if(mLocationWidget)
         mLocationWidget->move(mCmWidget->geometry().x() + mCmWidget->width(), this->height() - mLocationWidget->height() - 13);
+    if(mObjectInfoWidget)
+        mObjectInfoWidget->move(this->width() / 2, this->height() / 2);
 
     //mMapOpenGLWidget->resize(height(), height());
 }
