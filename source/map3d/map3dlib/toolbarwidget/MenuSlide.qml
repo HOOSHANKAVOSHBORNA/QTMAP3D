@@ -8,7 +8,7 @@ Item {
     property alias getstart: open
     property alias getstart1: close
     property int space: 3
-    property int  tools_btn_width: 32
+    property int  tools_btn_width: 30
     property int  tools_btn_height: 32
     height: 70
     width:  80
@@ -101,7 +101,6 @@ Item {
                             backmenu.anchors.topMargin = -12
                             backmenu.anchors.leftMargin= -8
                             NamePlugin.setSizeWidget(true)
-
                         }
                     }
                 }

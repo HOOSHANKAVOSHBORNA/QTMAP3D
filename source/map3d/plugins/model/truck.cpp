@@ -2,6 +2,8 @@
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/ExplosionDebrisEffect>
 #include <osgParticle/FireEffect>
+#include <osgEarthDrivers/gdal/GDALOptions>
+#include <osgEarth/ElevationLayer>
 
 Truck::Truck(osgEarth::MapNode *mapNode):
     osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
@@ -164,15 +166,19 @@ void Truck::setLatLongPosition(const osg::Vec3d &pos)
     setPosition(mapPoint);
 
     auto abbas = getPosition();
-    qDebug()<<"abbas z: "<<abbas.z();
-    abbas.z() = 0;
-    qDebug()<<"abbas z: "<<abbas.z();
-    abbas.makeRelative(getMapNode()->getTerrain());
-    qDebug()<<"abbas z: "<<abbas.z();
+
 
 }
 void Truck::moveTo(osg::Vec3d desti, double speed)
 {
+
+    osgEarth::Drivers::GDALOptions opt;
+    std::string abbas = "/home/client111/Documents/QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif";
+    opt.url() = abbas;
+    osg::ref_ptr<osgEarth::ElevationLayer> layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(abbas, opt));
+    getMapNode()->getMap()->addLayer(layer);
+//    qDebug()<<"abbas z: "<<desti.z();
+//    desti.z() = 0;
 
     _wholeTruckUpdateCallback->stop();
     _leftWheelUpdateCallback->stop();
@@ -195,13 +201,19 @@ void Truck::moveTo(osg::Vec3d desti, double speed)
 
 
     osgEarth::GeoPoint destiG (osgEarth::SpatialReference::get("wgs84"),desti);
+
+    qDebug()<<"destiG z1: "<<destiG.z();
+    destiG.z() = 0;
+    qDebug()<<"destiG z2: "<<destiG.z();
+
+
     destiG.makeRelative(getMapNode()->getTerrain());
-
-
-
+    qDebug()<<"destiG z3: "<<destiG.z();
 
     osg::Vec3d destination;
     destiG.toWorld(destination,getMapNode()->getTerrain());
+
+
     auto mapPosition = getPosition();
     osg::Matrixd sampleM;
     mapPosition.createWorldToLocal(sampleM);

@@ -315,6 +315,7 @@ void Model::addTruckModel()
     double rndPY = (qrand() % 200)/100000.0;
     osg::Vec3d nPosition(rndPX, rndPY, 0.0);
 
+
     nPosition += position;
     //model->setLatLongPosition(nPosition);
     //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
