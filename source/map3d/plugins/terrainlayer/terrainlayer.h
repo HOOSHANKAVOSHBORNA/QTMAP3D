@@ -15,6 +15,8 @@ public:
 private:
     void addGDAL();
     void addArcGIS();
+    void addWCS();
+    void addTMS();
 };
 
 #endif // TERRAINLAYER_H

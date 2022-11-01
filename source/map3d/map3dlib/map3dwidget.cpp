@@ -30,6 +30,7 @@
 #include <QObject>
 #include <QMouseEvent>
 #include <QApplication>
+#include <QMessageBox>
 //#include <qcoreevent.h>
 
 using namespace osgEarth;
@@ -296,6 +297,16 @@ void Map3dWidget::addLayer(osgEarth::Layer *layer)
 {
     mMapNodeGeo->getMap()->addLayer(layer);
     mMapNodeProj->getMap()->addLayer(layer);
+    // Check if the layer is added successfully
+    auto added = mMapNodeGeo->getMap()->getLayerByName(layer->getName());
+    if (added && added->getEnabled())
+    {
+
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Error"), tr("Data loading failed!"));
+    }
 }
 
 void Map3dWidget::createManipulator()
