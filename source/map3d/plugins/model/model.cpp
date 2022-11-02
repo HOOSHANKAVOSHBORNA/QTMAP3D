@@ -420,10 +420,10 @@ void Model::addRocketModel(osg::Vec3d position)
 
 void Model::clickedTrackNode(QString type, QString name, bool isClick)
 {
-//    if (isClick){
-//        //        osg::Node* node =mModels[type][name];
-//        mMap3dWidget->setTrackNode(mModels[type][name]->getGeoTransform());
-//        //qDebug()<<"fgd";
+    if (isClick){
+        //        osg::Node* node =mModels[type][name];
+        mMap3dWidget->setTrackNode(mModels[type][name]->getGeoTransform());
+        //qDebug()<<"fgd";
 
 //        if(type == AIRPLANE) {
 //            mMap3dWidget->setObjectInfoWidgetVisible(true);
@@ -432,12 +432,12 @@ void Model::clickedTrackNode(QString type, QString name, bool isClick)
 //            mMap3dWidget->setObjectInfoWidgetVisible(false);
 //        }
 
-//    } else {
+    } else {
 
-//        mMap3dWidget->unTrackNode();
+        mMap3dWidget->unTrackNode();
 //        mMap3dWidget->setObjectInfoWidgetVisible(false);
 
-//    }
+    }
 }
 
 void Model::positionChanged(QString type, QString name, osgEarth::GeoPoint position)
