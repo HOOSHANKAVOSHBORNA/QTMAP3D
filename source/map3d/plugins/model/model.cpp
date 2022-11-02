@@ -401,7 +401,7 @@ void Model::addRocketModel(osg::Vec3d position)
     mMap3dWidget->addNode(model);
     //mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
     mMap3dWidget->setTrackNode(model->getGeoTransform());
-    mMap3dWidget->setObjectInfoWidgetVisible(false);
+//    mMap3dWidget->setObjectInfoWidgetVisible(false);
 
     //add to track widget ------------------------------------------------
     mTrackModelWidget->addModel(ROCKET, name);
@@ -420,24 +420,24 @@ void Model::addRocketModel(osg::Vec3d position)
 
 void Model::clickedTrackNode(QString type, QString name, bool isClick)
 {
-    if (isClick){
-        //        osg::Node* node =mModels[type][name];
-        mMap3dWidget->setTrackNode(mModels[type][name]->getGeoTransform());
-        //qDebug()<<"fgd";
+//    if (isClick){
+//        //        osg::Node* node =mModels[type][name];
+//        mMap3dWidget->setTrackNode(mModels[type][name]->getGeoTransform());
+//        //qDebug()<<"fgd";
 
-        if(type == AIRPLANE) {
-            mMap3dWidget->setObjectInfoWidgetVisible(true);
-            mMap3dWidget->setSelectedAirplane(mModels[type][name]);
-        } else {
-            mMap3dWidget->setObjectInfoWidgetVisible(false);
-        }
+//        if(type == AIRPLANE) {
+//            mMap3dWidget->setObjectInfoWidgetVisible(true);
+//            mMap3dWidget->setSelectedAirplane(mModels[type][name]);
+//        } else {
+//            mMap3dWidget->setObjectInfoWidgetVisible(false);
+//        }
 
-    } else {
+//    } else {
 
-        mMap3dWidget->unTrackNode();
-        mMap3dWidget->setObjectInfoWidgetVisible(false);
+//        mMap3dWidget->unTrackNode();
+//        mMap3dWidget->setObjectInfoWidgetVisible(false);
 
-    }
+//    }
 }
 
 void Model::positionChanged(QString type, QString name, osgEarth::GeoPoint position)
