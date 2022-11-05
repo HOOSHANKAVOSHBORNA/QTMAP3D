@@ -37,7 +37,7 @@ unix {
 }
 !isEmpty(target.path): INSTALLS += target
 INCLUDEPATH  += ../../map3dlib
-
+INCLUDEPATH += $$PWD/../../../osgQt/include
 
 FORMS += \
     urldialog.ui

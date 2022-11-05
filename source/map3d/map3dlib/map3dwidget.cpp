@@ -1,7 +1,6 @@
 ﻿
 #include "map3dwidget.h"
 
-#include <osgQOpenGL/osgQOpenGLWidget>
 #include <osgDB/FileUtils>
 #include <osgViewer/Viewer>
 //#include <osgEarth/Map>
@@ -49,10 +48,9 @@ const double MAX_OFSET{5000.0};
 const double DURATION{3};
 
 
-MousePicker::MousePicker(QObject *parent)
-    :QObject(parent)
+MousePicker::MousePicker(Map3dWidget *map3dWidget)
 {
-
+    mMap3dWidget = map3dWidget;
 }
 
 bool MousePicker::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -60,105 +58,91 @@ bool MousePicker::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapt
 
     osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
 
+    QEvent::Type qEventType;
     switch (ea.getEventType())
     {
     case osgGA::GUIEventAdapter::FRAME:
-        emit frame();
+        mMap3dWidget->frame();
         break;
     case (osgGA::GUIEventAdapter::PUSH):
-        if (view) { getPos(view, ea); }
-        return false;
+        qEventType = QEvent::Type::MouseButtonPress;
+    case (osgGA::GUIEventAdapter::RELEASE):
+        qEventType = QEvent::Type::MouseButtonRelease;
     case (osgGA::GUIEventAdapter::MOVE):
-        if (view) { getPos(view, ea); }
-        return false;
+        qEventType = QEvent::Type::MouseMove;
+    case (osgGA::GUIEventAdapter::SCROLL):
+        qEventType = QEvent::Type::Wheel;
     case (osgGA::GUIEventAdapter::DOUBLECLICK):
-    case (osgGA::GUIEventAdapter::KEYDOWN):
-        if (view) { getPos(view, ea); }
-        return false;
+        qEventType = QEvent::Type::MouseButtonDblClick;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
     default:
-
-        return false;
+        break;
     }
+    return false;
 }
 
-void MousePicker::getPos(osgViewer::View *view, const osgGA::GUIEventAdapter &ea)
+void MousePicker::mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType)
 {
-    if(ea.getEventType() == osgGA::GUIEventAdapter::PUSH)
+    QMouseEvent* event;
+    Qt::MouseButton mb;
+    switch (ea.getButtonMask())
     {
-        Qt::MouseButton mb;
-        switch (ea.getButtonMask())
-        {
-        case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
-            mb = Qt::MouseButton::LeftButton;
-            break;
-        case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
-            mb = Qt::MouseButton::RightButton;
-            break;
-        case osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON:
-            mb = Qt::MouseButton::MiddleButton;
-            break;
-        }
-
-        QMouseEvent* event = new QMouseEvent(QEvent::Type::MouseButtonPress,
-                                             QPointF(static_cast<qreal>(ea.getX()),static_cast<qreal>(ea.getY())),
-                                             mb, mb, Qt::KeyboardModifier::NoModifier);
-        emit mousePressEvent(event);
+    case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
+        mb = Qt::MouseButton::LeftButton;
+        break;
+    case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
+        mb = Qt::MouseButton::RightButton;
+        break;
+    case osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON:
+        mb = Qt::MouseButton::MiddleButton;
+        break;
+    default:
+        mb = Qt::MouseButton::NoButton;
     }
 
+    event = new QMouseEvent(qEventType,
+                             QPointF(static_cast<qreal>(ea.getX()),static_cast<qreal>(ea.getY())),
+                             mb, mb, Qt::KeyboardModifier::NoModifier);
+
     osgUtil::LineSegmentIntersector::Intersections intersections;
-    // Only interact with data nodes and map nodes
     if (view->computeIntersections(ea, intersections))
     {
         for (const auto &intersection : intersections)
         {
-            bool  visible = true;
-            //                for (const auto node : intersection.nodePath)
-            //                {
-            //                    // Only count the intersection in main view
-            //                    if ((node->getNodeMask() & 0x10000000) == 0)
-            //                    {
-            //                        visible = false;
-            //                        break;
-            //                    }
-            //                }
-
-            if (visible)
-            {
-                mCurrentLocalPos    = intersection.getLocalIntersectPoint();
-                mCurrentWorldPos    = intersection.getWorldIntersectPoint();
-                emit currentWorldPos(mCurrentWorldPos);
-                //qDebug() << mCurrentWorldPos.x()<<" "<<mCurrentWorldPos.y()<<" "<<mCurrentWorldPos.z();
-                return;
-            }
+//            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
+            osg::Vec3d currentWorldPos = intersection.getWorldIntersectPoint();
+            mMap3dWidget->mapMouseEvent(event,currentWorldPos);
+            return;
         }
     }
 }
 
 
 Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
-    : QWidget(parent)
+    : osgQOpenGLWidget(parent)
     , mSRSwgs84(osgEarth::SpatialReference::get("wgs84"))
 {
     mIsGeocentric = isGeocentric;
-    mLayout = new QHBoxLayout(this);
-    mLayout->setMargin(0);
-    mMapOpenGLWidget = new osgQOpenGLWidget(this);
-    mMapOpenGLWidget->setMouseTracking(true);
+//    mLayout = new QHBoxLayout(this);
+//    mLayout->setMargin(0);
+//    mMapOpenGLWidget = new osgQOpenGLWidget(this);
+    setMouseTracking(true);
 
-    mLayout->addWidget(mMapOpenGLWidget);
+//    mLayout->addWidget(mMapOpenGLWidget);
     createWidgets();
     // init signal handle-------------------------------------------------------
-    QObject::connect(mMapOpenGLWidget, &osgQOpenGLWidget::initialized, [=]{
+    QObject::connect(this, &osgQOpenGLWidget::initialized, [=]{
         //create camera ----------------------------------------------
         createManipulator();
-        mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
+        getOsgViewer()->setCameraManipulator(mEarthManipulator);
         //add mouse event handler
-        auto mousePicker = new MousePicker(mMapOpenGLWidget);
-        QObject::connect(mousePicker, &MousePicker::currentWorldPos, this,  &Map3dWidget::mouseWorldPos);
-        QObject::connect(mousePicker, &MousePicker::mousePressEvent, this,  &Map3dWidget::onMapPressEvent);
-        QObject::connect(mousePicker, &MousePicker::mousePressEvent, mLocationWidget,  &LocationWidget::setClose);
-        QObject::connect(mousePicker, &MousePicker::frame, this, &Map3dWidget::onFrame);
-        mMapOpenGLWidget->getOsgViewer()->addEventHandler(mousePicker);
+        auto mousePicker = new MousePicker(this);
+//        QObject::connect(mousePicker, &MousePicker::currentWorldPos, this,  &Map3dWidget::mouseWorldPos);
+//        QObject::connect(mousePicker, &MousePicker::mousePressEvent, this,  &Map3dWidget::onMapPressEvent);
+//        QObject::connect(mousePicker, &MousePicker::mousePressEvent, mLocationWidget,  &LocationWidget::setClose);
+//        QObject::connect(mousePicker, &MousePicker::frame, this, &Map3dWidget::onFrame);
+        getOsgViewer()->addEventHandler(mousePicker);
         //create map node---------------------------------------------
         GDALOptions gdal;
         gdal.url() = "../map3dlib/data/earth_files/world.tif";
@@ -190,7 +174,7 @@ Map3dWidget::Map3dWidget(bool isGeocentric, QWidget *parent)
         mMapNodeGeo->setNodeMask(isGeocentric);
         mMapNodeProj->setNodeMask(!isGeocentric);
 
-        mMapOpenGLWidget->getOsgViewer()->setSceneData(mMapRoot);
+        getOsgViewer()->setSceneData(mMapRoot);
         mHomeViewpoint = mEarthManipulator->getViewpoint();
 
         mCmWidget->setStateMap(isGeocentric);
@@ -351,14 +335,11 @@ void Map3dWidget::createWidgets()
     connect(mLocationWidget, &LocationWidget::saveLocation,this, &Map3dWidget::saveCurrentPosition);
     //connect(mLocationWidget, &LocationWidget::clickedPosition,this, &Map3dWidget::onClickedPosition);
     //mLocationWidget->addViewPoint( osgEarth::Viewpoint("hasan",23,444,555,66,77,88));
-
-    mObjectInfoWidget = new ObjectInfoWidget(this);
-    mObjectInfoWidget->setVisible(false);
 }
 
 void Map3dWidget::setZoom(double val)
 {
-    mEarthManipulator->zoom(0, -val, mMapOpenGLWidget->getOsgViewer());
+    mEarthManipulator->zoom(0, -val, getOsgViewer());
 }
 
 void Map3dWidget::home()
@@ -390,7 +371,7 @@ void Map3dWidget::typeChanged(bool isGeocentric)
     //    qDebug()<<"vp.pitch():"<<QString::fromUtf8(vp.pitch()->asString().c_str());
     //    qDebug()<<"vp.range():"<<QString::fromUtf8(vp.range()->asString().c_str());
     createManipulator();
-    mMapOpenGLWidget->getOsgViewer()->setCameraManipulator(mEarthManipulator);
+    getOsgViewer()->setCameraManipulator(mEarthManipulator);
     mEarthManipulator->setViewpoint(vp);
 }
 
@@ -416,42 +397,25 @@ void Map3dWidget::goPosition(double latitude, double longitude, double range)
     setViewpoint(vp, DURATION);
 }
 
-void Map3dWidget::setObjectInfoWidgetVisible(bool bVisible)
+void Map3dWidget::frame()
 {
-    mIsObjectInfoWidgetVisible = bVisible;
-    mObjectInfoWidget->setVisible(bVisible);
-}
-
-void Map3dWidget::setSelectedAirplane(Annotation::ModelNode *airplane)
-{
-    mSelectedAirplane = airplane;
-}
-
-void Map3dWidget::onFrame()
-{
-
     this->mCompassWidget->setRotate(-this->getViewpoint().getHeading());
-    if (this->mIsObjectInfoWidgetVisible) {
+    auto vp = getViewpoint();
+    mLocationWidget->setCurrentLocation(vp.focalPoint()->x(),vp.focalPoint()->y());
+}
 
-        osgViewer::Viewer::Views views;
-        const osg::Matrixd modelViewMat  = this->mEarthManipulator->getInverseMatrix();
-        const osg::Matrixd projectionMat = this->mMapOpenGLWidget->getOsgViewer()->getCamera()->getProjectionMatrix();
+void Map3dWidget::mapMouseEvent(QMouseEvent *event, osg::Vec3d worldPos)
+{
+    osgEarth::GeoPoint geoPos;
+    geoPos.fromWorld(getMapSRS(), worldPos);
 
-        if (this->mSelectedAirplane) {
-            const osgEarth::GeoPoint pt = this->mSelectedAirplane->getPosition();
-            osg::Vec3d w;
-            pt.toWorld(w);
+    osgEarth::GeoPoint  geographicPos = geoPos.transform(mSRSwgs84);
 
-            w = w * modelViewMat;
-            w = w * projectionMat;
-
-            const int x = static_cast<int>(((w.x() + 1.0) / 2.0) * double(mMapOpenGLWidget->width()));
-            const int y = static_cast<int>((( (w.y()*-1.0) + 1.0) / 2.0) * double(mMapOpenGLWidget->height()));
-
-            mObjectInfoWidget->move(x, y);
-        }
-    }
-
+    mLocationWidget->setMousePosition(tr("Lat Lon: [%1, %2, %3]")
+                                      .arg(geographicPos.x(), 0, 'f', 3)
+                                      .arg(geographicPos.y(), 0, 'f', 3)
+                                      .arg(geographicPos.z(), 0, 'f', 3));
+    emit mouseEvent(event, geoPos);
 }
 
 void Map3dWidget::saveCurrentPosition(QString name)
@@ -461,38 +425,34 @@ void Map3dWidget::saveCurrentPosition(QString name)
     mLocationWidget->addLocation(name,vp.focalPoint()->x(),vp.focalPoint()->y() ,vp.getRange());
 }
 
-void Map3dWidget::mouseWorldPos(osg::Vec3d pos)
-{
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(getMapSRS(),pos);
-    osgEarth::GeoPoint  latLon;
-    geoPos.transform(mSRSwgs84, latLon);
-    mLocationWidget->setMousePosition(tr("Lat Lon: [%1, %2, %3]")
-                                      .arg(latLon.x(), 0, 'f', 3)
-                                      .arg(latLon.y(), 0, 'f', 3)
-                                      .arg(latLon.z(), 0, 'f', 3));
+//void Map3dWidget::mouseWorldPos(osg::Vec3d pos)
+//{
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(getMapSRS(),pos);
+//    osgEarth::GeoPoint  latLon;
+//    geoPos.transform(mSRSwgs84, latLon);
+//    mLocationWidget->setMousePosition(tr("Lat Lon: [%1, %2, %3]")
+//                                      .arg(latLon.x(), 0, 'f', 3)
+//                                      .arg(latLon.y(), 0, 'f', 3)
+//                                      .arg(latLon.z(), 0, 'f', 3));
 
-    //    qDebug() << latLon.x()<<" "<<latLon.y()<<" "<<latLon.z();
-}
+//    //    qDebug() << latLon.x()<<" "<<latLon.y()<<" "<<latLon.z();
+//}
 void Map3dWidget::resizeEvent(QResizeEvent* event)
 {
-    QWidget::resizeEvent(event);
+    osgQOpenGLWidget::resizeEvent(event);
     if(mCmWidget)
         mCmWidget->move(0, this->height()- mCmWidget->height());
     if(mCompassWidget)
         mCompassWidget->move(this->width()- mCompassWidget->width() - 5, this->height()- mCompassWidget->height() - 5);
     if(mLocationWidget)
         mLocationWidget->move(mCmWidget->geometry().x() + mCmWidget->width(), this->height() - mLocationWidget->height() - 13);
-    if(mObjectInfoWidget)
-        mObjectInfoWidget->move(this->width() / 2, this->height() / 2);
-
-    //mMapOpenGLWidget->resize(height(), height());
 }
 
-void Map3dWidget::onMapPressEvent(QMouseEvent *event)
-{
-    QApplication::postEvent(this,event);
-    auto vp = getViewpoint();
-    mLocationWidget->setCurrentLocation(vp.focalPoint()->x(),vp.focalPoint()->y());
-    //qDebug()<<event;
-}
+//void Map3dWidget::onMapPressEvent(QMouseEvent *event)
+//{
+//    //QApplication::postEvent(this,event);
+////    auto vp = getViewpoint();
+////    mLocationWidget->setCurrentLocation(vp.focalPoint()->x(),vp.focalPoint()->y());
+//    //qDebug()<<event;
+//}

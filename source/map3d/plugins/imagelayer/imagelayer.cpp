@@ -66,10 +66,14 @@ void ImageLayer::setUpUI()
 void ImageLayer::XYZ()
 {
     QMap<QString, QString> examples;
-    examples[tr("Map Box")] = "http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg?access_token=YOUR_TOKEN_HERE";
+    examples[tr("Google r")] = "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}";
+    examples[tr("Google s")] = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
+    examples[tr("Gitanegaran")] = "https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg";
     examples[tr("Open Street Map")] = "http://[abc].tile.openstreetmap.org/{z}/{x}/{y}.png";
     examples[tr("Gaode")] = "http://wprd0[1234].is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}";
     examples[tr("OpenWeatherMap")] = "http://[abc].tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png";
+    examples[tr("Map Box")] = "http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg?access_token=YOUR_TOKEN_HERE";
+
     URLDialog* dialog = new URLDialog(examples,mMainWindow);
     dialog->setWindowTitle("Select XYZ url");
 

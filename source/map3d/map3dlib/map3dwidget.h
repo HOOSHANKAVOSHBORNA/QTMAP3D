@@ -4,7 +4,7 @@
 #include <QHBoxLayout>
 #include <QWidget>
 
-
+#include <osgQOpenGL/osgQOpenGLWidget>
 #include <osg/ref_ptr>
 #include <osg/Referenced>
 #include <osgEarth/Viewpoint>
@@ -18,8 +18,6 @@
 #include "compasswidget.h"
 #include "locationwidget.h"
 #include "objectinfowidget.h"
-
-class osgQOpenGLWidget;
 
 namespace osgEarth{
 class Viewpoint;
@@ -39,32 +37,23 @@ namespace osgViewer
 {
 class View;
 }
+class Map3dWidget;
 
-class  MousePicker:public QObject, public osgGA::GUIEventHandler
+class  MousePicker: public osgGA::GUIEventHandler
 {
-    Q_OBJECT
-
 public:
-    MousePicker(QObject *parent = nullptr);
+    MousePicker(Map3dWidget *map3dWidget);
     virtual ~MousePicker()override{}
-signals:
-    void  currentWorldPos(osg::Vec3d pos);
-    void mousePressEvent(QMouseEvent *event);
-    void frame();
 protected:
-    // Public main entrance for GUIEventHandler
     bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private:
-    // Intersect with the scene and update info about the intersected point
-    void  getPos(osgViewer::View *view, const osgGA::GUIEventAdapter &ea);
-
+    void  mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType);
 
 private:
-    osg::Vec3d mCurrentLocalPos;
-    osg::Vec3d mCurrentWorldPos;
+   Map3dWidget* mMap3dWidget;
 };
 
-class Map3dWidget: public QWidget
+class Map3dWidget: public osgQOpenGLWidget
 {
     Q_OBJECT
 public:
@@ -90,39 +79,32 @@ public slots:
     const osgEarth::SpatialReference* getMapSRS() const;
     void goPosition(double latitude ,double longitude ,double range);
 
-    void setObjectInfoWidgetVisible(bool bVisible);
-    void setSelectedAirplane(osgEarth::Annotation::ModelNode *airplane);
-
 signals :
-
-public slots:
-    void onFrame();
-
+    void mouseEvent(QMouseEvent* event, osgEarth::GeoPoint worldPos);
 protected:
     void resizeEvent(QResizeEvent* event) override;
 private slots:
     void saveCurrentPosition(QString name);
-    void mouseWorldPos(osg::Vec3d pos);
-    void onMapPressEvent(QMouseEvent *event);
+    //void mouseWorldPos(osg::Vec3d pos);
+    //void onMapPressEvent(QMouseEvent *event);
 private:
     void createManipulator();
     void createWidgets();
+    void frame();
+    void mapMouseEvent(QMouseEvent* event, osg::Vec3d worldPos);
 private:
     osg::ref_ptr<osgEarth::MapNode> mMapNodeGeo;
     osg::ref_ptr<osgEarth::MapNode> mMapNodeProj;
     osg::ref_ptr<const osgEarth::SpatialReference>  mSRSwgs84;
     osgEarth::Viewpoint mHomeViewpoint;
 private:
-    osgQOpenGLWidget* mMapOpenGLWidget;
+    friend class MousePicker;
+//    osgQOpenGLWidget* mMapOpenGLWidget;
     CameraManipulatorWidget *mCmWidget{nullptr};
     CompassWidget *mCompassWidget{nullptr};
-    ObjectInfoWidget *mObjectInfoWidget{nullptr};
     LocationWidget* mLocationWidget{nullptr};
     QHBoxLayout *mLayout{nullptr};
     bool mIsGeocentric;
-
-    bool mIsObjectInfoWidgetVisible{false};
-    osgEarth::Annotation::ModelNode *mSelectedAirplane = nullptr;
 };
 
 #endif // MAP3DWIDGET_H
