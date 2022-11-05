@@ -21,23 +21,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     MultiChooseDlg.cpp \
-    imagelayer.cpp \
+    featurelayer.cpp \
     urldialog.cpp
 
 HEADERS += \
     MultiChooseDlg.h \
-    imagelayer.h \
+    featurelayer.h \
     urldialog.h
 
-DISTFILES += imagelayer.json
+DISTFILES += featurelayer.json
 
 # Default rules for deployment.
 unix {
     target.path = $$[QT_INSTALL_PLUGINS]/generic
 }
 !isEmpty(target.path): INSTALLS += target
-INCLUDEPATH  += ../../map3dlib
 
+INCLUDEPATH  += ../../map3dlib
 
 FORMS += \
     urldialog.ui

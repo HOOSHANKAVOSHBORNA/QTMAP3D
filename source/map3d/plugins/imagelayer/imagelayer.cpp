@@ -1,8 +1,11 @@
 #include "imagelayer.h"
+#include "MultiChooseDlg.h"
 #include "map3dwidget.h"
 #include "toolbarwidget.h"
 #include "urldialog.h"
 
+#include <osgEarth/Registry>
+#include <osgEarth/XmlUtils>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/arcgis/ArcGISOptions>
 #include <osgEarthDrivers/wms/WMSOptions>
@@ -82,7 +85,7 @@ void ImageLayer::XYZ()
         opt.url() = nodeName;
         opt.profile() = { "spherical-mercator" };
 
-        osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
+        osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
         mMap3dWidget->addLayer(layer);
 
 }
@@ -106,7 +109,7 @@ void ImageLayer::ArcGis()
         osgEarth::Drivers::ArcGISOptions opt;
         opt.url() = nodeName;
 
-        osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
+        osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
         mMap3dWidget->addLayer(layer);
     }
 }
@@ -121,7 +124,7 @@ void ImageLayer::GDAL()
 
         osgEarth::Drivers::GDALOptions  opt;
         opt.url() = nodeName;
-        osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
+        osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
         mMap3dWidget->addLayer(layer);
     }
 }
@@ -143,10 +146,109 @@ void ImageLayer::TMS()
         auto nodeName = url.toStdString();
         osgEarth::Drivers::TMSOptions opt;
         opt.url() = nodeName;
-        osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
+        osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
         mMap3dWidget->addLayer(layer);
     }
 }
+
+
+typedef QPair<QString, QString> attrib;
+static QVector<attrib>  getWMSInfo(std::string &path, osgEarth::GeoExtent * &extent)
+{
+    QVector<attrib>              attribList;
+    char                         str[1000];
+    osgEarth::URI                          uri(path);
+    osg::ref_ptr<const osgEarth::Profile>  result;
+    char                         sep    = uri.full().find_first_of('?') == std::string::npos ? '?' : '&';
+    osgEarth::URI                          capUrl = osgEarth::URI(
+                uri.full()
+                + sep
+                + std::string("service=WMS")
+                + std::string("&REQUEST=GetCapabilities"));
+    osgEarth::XmlDocument *doc = osgEarth::XmlDocument::load(capUrl.full());
+
+    if (!doc)
+    {
+        return attribList;
+    }
+
+    auto         capabilities = doc->getSubElement("WMS_Capabilities")->getSubElement("Capability");
+    auto         rootLayer    = capabilities->getSubElement("Layer");
+    osgEarth::XmlNodeList  layers       = rootLayer->getSubElements("Layer");
+    std::string  layersStr;
+
+    for (auto layer : layers)
+    {
+        auto  layerInfo = static_cast<osgEarth::XmlElement *>(layer.get());
+        auto  title     = layerInfo->getSubElement("Name");
+
+        if (!title)
+        {
+            title = layerInfo->getSubElement("name");
+        }
+
+        if (!title)
+        {
+            title = layerInfo->getSubElement("Title");
+        }
+
+        if (!title)
+        {
+            title = layerInfo->getSubElement("title");
+        }
+
+        if (title)
+        {
+            layersStr += title->getText() + ',';
+        }
+
+        double  minX, minY, maxX, maxY;
+        auto    e_bb = layerInfo->getSubElement("latlonboundingbox");
+
+        if (e_bb)
+        {
+            minX = osgEarth::as<double>(e_bb->getAttr("minx"), 0);
+            minY = osgEarth::as<double>(e_bb->getAttr("miny"), 0);
+            maxX = osgEarth::as<double>(e_bb->getAttr("maxx"), 0);
+            maxY = osgEarth::as<double>(e_bb->getAttr("maxy"), 0);
+        }
+        else
+        {
+            auto  e_gbb = layerInfo->getSubElement("ex_geographicboundingbox");
+
+            if (e_gbb)
+            {
+                minX = osgEarth::as<double>(e_gbb->getSubElementText("westBoundLongitude"), 0);
+                minY = osgEarth::as<double>(e_gbb->getSubElementText("southBoundLatitude"), 0);
+                maxX = osgEarth::as<double>(e_gbb->getSubElementText("eastBoundLongitude"), 0);
+                maxY = osgEarth::as<double>(e_gbb->getSubElementText("northBoundLatitude"), 0);
+            }
+        }
+
+        osgEarth::GeoExtent  layerExtent(osgEarth::Registry::instance()->getGlobalGeodeticProfile()->getSRS(), minX, minY, maxX, maxY);
+
+        if (!extent)
+        {
+            extent = new osgEarth::GeoExtent(layerExtent);
+        }
+        else
+        {
+            extent->expandToInclude(layerExtent);
+        }
+    }
+
+    sprintf(str, "(%.3lf, %.3lf)", extent->xMin(), extent->yMin());
+    attribList.push_back(attrib("min", str));
+    sprintf(str, "(%.3lf, %.3lf)", extent->xMax(), extent->yMax());
+    attribList.push_back(attrib("max", str));
+
+    layersStr.pop_back();
+    attribList.push_back(attrib("layers", layersStr.c_str()));
+
+    return attribList;
+}
+
+
 
 void ImageLayer::WMS()
 {
@@ -162,14 +264,22 @@ void ImageLayer::WMS()
         if (url.isEmpty())
             return;
 
-        auto nodeName = url.toStdString();
+        auto nodeName = url.toLocal8Bit().toStdString();
+        osgEarth::GeoExtent *extent   = nullptr;
+        auto  attribute = getWMSInfo(nodeName, extent);
+
+        // Promt for the users to choose layers
+        QStringList     layerNames = attribute.back().second.split(',');
+        MultiChooseDlg  chooseDlg(static_cast<QWidget *>(parent()), layerNames);
+        chooseDlg.exec();
+        QStringList  layersToShow = chooseDlg.getCheckedItems();
         osgEarth::Drivers::WMSOptions  opt;
         opt.url()         = nodeName;
         opt.transparent() = true;
         opt.format()      = "png";
         opt.profile()     = { "EPSG:4326" };
 
-        osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
+        osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
         mMap3dWidget->addLayer(layer);
     }
 }
