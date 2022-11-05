@@ -10,9 +10,8 @@
 #include <osgEarth/Viewpoint>
 #include <osgEarth/MapNode>
 #include <osgEarthAnnotation/ModelNode>
-
-//#include <osgQOpenGL/osgQOpenGLWidget>
 #include <osgEarthUtil/EarthManipulator>
+#include <osgEarthUtil/Sky>
 
 #include "cameramanipulatorwidget.h"
 #include "compasswidget.h"
@@ -67,7 +66,7 @@ public:
     void setViewpoint( const osgEarth::Viewpoint& vp, double duration_s =0.0 );
     osgEarth::Viewpoint getViewpoint() const;
     //void mousePressEvent (QMouseEvent *event) override;
-    osgEarth::MapNode* getMapNode();
+    osgEarth::MapNode *getMapNode();
     void addLayer(osgEarth::Layer* layer);
     osg::ref_ptr<osg::Group> mMapRoot;
     osg::ref_ptr<osgEarth::Util::EarthManipulator> mEarthManipulator;
@@ -81,6 +80,7 @@ public slots:
 
 signals :
     void mouseEvent(QMouseEvent* event, osgEarth::GeoPoint worldPos);
+    void mapNodeChanged(osgEarth::MapNode* newMapNode);
 protected:
     void resizeEvent(QResizeEvent* event) override;
 private slots:
@@ -88,13 +88,16 @@ private slots:
     //void mouseWorldPos(osg::Vec3d pos);
     //void onMapPressEvent(QMouseEvent *event);
 private:
+    void createMapNode(bool isGeocentric);
     void createManipulator();
     void createWidgets();
     void frame();
     void mapMouseEvent(QMouseEvent* event, osg::Vec3d worldPos);
 private:
-    osg::ref_ptr<osgEarth::MapNode> mMapNodeGeo;
-    osg::ref_ptr<osgEarth::MapNode> mMapNodeProj;
+//    osg::ref_ptr<osgEarth::MapNode> mMapNodeGeo;
+//    osg::ref_ptr<osgEarth::MapNode> mMapNodeProj;
+    osg::ref_ptr<osgEarth::MapNode> mMapNode;
+    osg::ref_ptr<osgEarth::Util::SkyNode> mSkyNode;
     osg::ref_ptr<const osgEarth::SpatialReference>  mSRSwgs84;
     osgEarth::Viewpoint mHomeViewpoint;
 private:
