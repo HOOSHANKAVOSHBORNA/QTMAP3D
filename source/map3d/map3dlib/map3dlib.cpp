@@ -14,7 +14,7 @@ Map3dlib::Map3dlib(QWidget *parent)
     : QMainWindow(parent)
 {
     //--main window setting----------------------------------------------------------------
-    setWindowTitle("Map3D Demo");
+    setWindowTitle("Map3D Application");
     QIcon ic(":/res/map3d.ico");
     setWindowIcon(ic);
     setStyleSheet("background-color:#282a31;");

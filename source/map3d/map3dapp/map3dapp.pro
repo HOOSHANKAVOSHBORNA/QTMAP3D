@@ -41,3 +41,25 @@ unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
 INCLUDEPATH += $$PWD/../../osgQt/include
 DEPENDPATH += $$PWD/../../osgQt/include
 
+RESOURCES += \
+    map3dapp.qrc
+
+
+#copy resource folder
+defineTest(copyToDestDir) {
+    files = $$1
+    dir = $$2
+    # replace slashes in destination path for Windows
+    win32:dir ~= s,/,\\,g
+
+    for(file, files) {
+        # replace slashes in source path for Windows
+        win32:file ~= s,/,\\,g
+
+        QMAKE_POST_LINK += $$QMAKE_COPY_DIR $$shell_quote($$file) $$shell_quote($$dir) $$escape_expand(\\n\\t)
+    }
+
+    export(QMAKE_POST_LINK)
+}
+copyToDestDir($$PWD/Images, $$OUT_PWD/Images)
+QMAKE_POST_LINK += $$QMAKE_COPY_DIR $$shell_quote($$PWD/moon_1024x512.jpg) $$shell_quote($$OUT_PWD/moon_1024x512.jpg) $$escape_expand(\\n\\t)

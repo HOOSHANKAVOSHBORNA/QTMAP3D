@@ -279,6 +279,7 @@ void ImageLayer::WMS()
         QStringList  layersToShow = chooseDlg.getCheckedItems();
         osgEarth::Drivers::WMSOptions  opt;
         opt.url()         = nodeName;
+        opt.layers()      = layersToShow.join(',').toLocal8Bit().toStdString();
         opt.transparent() = true;
         opt.format()      = "png";
         opt.profile()     = { "EPSG:4326" };
