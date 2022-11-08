@@ -6,6 +6,7 @@
 
 class Map3dWidget;
 class ToolBarWidget;
+class WebSocketClient;
 
 class PluginInterface: public QObject
 {
@@ -18,10 +19,15 @@ public:
     void setMap3dWidget(Map3dWidget *value);
     void setToolBar(ToolBarWidget *toolBar);
 
+    void setName(const QString &name);
+    void createWebSocket();
+
 protected:
-    Map3dlib* mMainWindow;
-    Map3dWidget *mMap3dWidget;
-    ToolBarWidget* mToolBar;
+    Map3dlib* mMainWindow{nullptr};
+    Map3dWidget *mMap3dWidget{nullptr};
+    ToolBarWidget* mToolBar{nullptr};
+    WebSocketClient* mWebSocket{nullptr};
+    QString mName;
 };
 
 QT_BEGIN_NAMESPACE

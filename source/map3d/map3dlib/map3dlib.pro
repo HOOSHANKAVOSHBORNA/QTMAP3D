@@ -1,5 +1,6 @@
 QT += core gui quick quickcontrols2 quickwidgets
 QT += widgets
+QT += websockets
 
 TEMPLATE = lib
 DEFINES += MAP3DLIB_LIBRARY
@@ -25,7 +26,8 @@ SOURCES += \
     objectinfowidget.cpp \
     plugininterface.cpp \
     pluginmanager.cpp \
-    toolbarwidget.cpp
+    toolbarwidget.cpp \
+    websocketclient.cpp
 
 HEADERS += \
     cameramanipulatorwidget.h \
@@ -37,7 +39,8 @@ HEADERS += \
     objectinfowidget.h \
     plugininterface.h \
     pluginmanager.h \
-    toolbarwidget.h
+    toolbarwidget.h \
+    websocketclient.h
 
 # Default rules for deployment.
 unix {

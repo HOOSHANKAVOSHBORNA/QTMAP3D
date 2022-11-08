@@ -14,7 +14,7 @@ public:
     PluginManager(Map3dlib *mainWindow, Map3dWidget* map3dWidget, ToolBarWidget *toolBar);
     void  loadPlugins();
 private:
-    void loadPlugin(QString path);
+    void loadPlugin(QString path, QString name);
 private:
     Map3dWidget* mMap3dWidget;
     ToolBarWidget* mToolBar;

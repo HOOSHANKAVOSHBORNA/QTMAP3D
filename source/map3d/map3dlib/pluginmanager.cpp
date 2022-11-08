@@ -37,11 +37,11 @@ void  PluginManager::loadPlugins()
         if ((fileName.split('.').back() == "so") || (fileName.split('.').back() == "dll"))
         {
             QString path = pluginsDir.absoluteFilePath(fileName);
-            loadPlugin(path);
+            loadPlugin(path, fileName.split('.').front());
         }
     }
 }
-void  PluginManager::loadPlugin(QString path)
+void  PluginManager::loadPlugin(QString path, QString name)
 {
     // Try load plugin
     QPluginLoader  pluginLoader(path);
@@ -56,6 +56,8 @@ void  PluginManager::loadPlugin(QString path)
         {
             return;
         }
+        name.replace("lib","");
+        plugin->setName(name);
 //        plugin->setParent(mMainWindow);
         plugin->setToolBar(mToolBar);
         plugin->setMap3dWidget(mMap3dWidget);

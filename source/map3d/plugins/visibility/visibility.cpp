@@ -1,6 +1,7 @@
 #include "visibility.h"
 #include "map3dwidget.h"
 #include "toolbarwidget.h"
+#include "websocketclient.h"
 
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
@@ -22,36 +23,63 @@ void Visibility::setUpUI()
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
         if(cat == category && name == nameVisibility)
         {
+            createWebSocket();
             if(isCheck)
             {
-                mBackVisibilityNode = makeBackground(20000.0f);
-                osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.461);
-                mBackVisibilityNode->setPosition(point);
-                mMap3dWidget->addNode(mBackVisibilityNode);
-                ///////////
-                QVector<osg::Vec3d> vertices;
-                vertices.push_back( osg::Vec3d(52.77,35.52, 0) );
-                vertices.push_back( osg::Vec3d(52.86,35.55, 0) );
-                vertices.push_back( osg::Vec3d(52.96,35.52, 0) );
-                vertices.push_back( osg::Vec3d(53.01,35.47, 0) );
-                vertices.push_back( osg::Vec3d(52.92,35.37, 0) );
-                vertices.push_back( osg::Vec3d(52.80,35.34, 0) );
-                vertices.push_back( osg::Vec3d(52.76,35.40, 0) );
-                vertices.push_back( osg::Vec3d(52.74,35.49, 0) );
+                QObject::connect(mMap3dWidget,&Map3dWidget::mouseEvent, this, &Visibility::onMouseEvent);
 
-                mVisibilityNode = makepolygan(vertices);
-                mMap3dWidget->addNode(mVisibilityNode);
 
-                //Set view point------------------------------------------------------------------
-                mMap3dWidget->goPosition(point.x(), point.y(), 100000);
             }
             else
             {
+                QObject::disconnect(mMap3dWidget,&Map3dWidget::mouseEvent, this, &Visibility::onMouseEvent);
+
                 mMap3dWidget->removeNode(mBackVisibilityNode);
                 mMap3dWidget->removeNode(mVisibilityNode);
             }
         }
     });
+}
+
+void Visibility::onMouseEvent(QMouseEvent *event, osgEarth::GeoPoint geoPos)
+{
+    if(event->button() == Qt::MouseButton::RightButton && event->type() ==  QEvent::Type::MouseButtonPress)
+    {
+
+        mMap3dWidget->removeNode(mBackVisibilityNode);
+        mMap3dWidget->removeNode(mVisibilityNode);
+
+        geoPos.makeGeographic();
+        mWebSocket->sendTextMessage(QString::fromStdString(geoPos.toString()));
+
+        mBackVisibilityNode = makeBackground(20000.0f);
+        //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.461);
+        mBackVisibilityNode->setPosition(geoPos);
+        mMap3dWidget->addNode(mBackVisibilityNode);
+        ///////////
+        QVector<osg::Vec3d> vertices;
+        vertices.push_back( osg::Vec3d(geoPos.x() - 0.089,geoPos.y() + 0.059, 0));
+//        vertices.push_back( osg::Vec3d(52.86,35.55, 0) );
+        vertices.push_back( osg::Vec3d(geoPos.x() + 0.001,geoPos.y() + 0.089, 0));
+//        vertices.push_back( osg::Vec3d(52.96,35.52, 0) );
+        vertices.push_back( osg::Vec3d(geoPos.x() + 0.101,geoPos.y() + 0.059, 0));
+//        vertices.push_back( osg::Vec3d(53.01,35.47, 0) );
+        vertices.push_back( osg::Vec3d(geoPos.x() + 0.151,geoPos.y() + 0.009, 0));
+//        vertices.push_back( osg::Vec3d(52.92,35.37, 0) );
+        vertices.push_back( osg::Vec3d(geoPos.x() + 0.061,geoPos.y() - 0.091, 0));
+//        vertices.push_back( osg::Vec3d(52.80,35.34, 0) );
+        vertices.push_back( osg::Vec3d(geoPos.x() - 0.059,geoPos.y() - 0.121, 0));
+//        vertices.push_back( osg::Vec3d(52.76,35.40, 0) );
+        vertices.push_back( osg::Vec3d(geoPos.x() - 0.099,geoPos.y() - 0.061, 0));
+//        vertices.push_back( osg::Vec3d(52.74,35.49, 0) );
+        vertices.push_back( osg::Vec3d(geoPos.x() - 0.119,geoPos.y() + 0.029, 0));
+
+        mVisibilityNode = makepolygan(vertices);
+        mMap3dWidget->addNode(mVisibilityNode);
+
+        //Set view point------------------------------------------------------------------
+        mMap3dWidget->goPosition(geoPos.x(), geoPos.y(), 100000);
+    }
 }
 
 osgEarth::Annotation::FeatureNode* Visibility::makepolygan(QVector<osg::Vec3d> vertices){

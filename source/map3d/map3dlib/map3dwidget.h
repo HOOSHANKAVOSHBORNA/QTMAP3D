@@ -79,7 +79,7 @@ public slots:
     void goPosition(double latitude ,double longitude ,double range);
 
 signals :
-    void mouseEvent(QMouseEvent* event, osgEarth::GeoPoint worldPos);
+    void mouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void mapNodeChanged(osgEarth::MapNode* newMapNode);
 protected:
     void resizeEvent(QResizeEvent* event) override;

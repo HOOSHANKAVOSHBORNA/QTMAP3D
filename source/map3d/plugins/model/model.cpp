@@ -107,7 +107,7 @@ void Model::setUpUI()
                         modelAirplane->setFollowModel(activeRocket);
                         modelAirplane->setTruckModel(modeltruck);
 
-                        modeltruck->shoot(modelAirplane->getPosition().vec3d(), 3000);//1000 m/s
+                        modeltruck->shoot(modelAirplane->getPosition().vec3d(), 2000);//1000 m/s
 //                        activeRocket->setPosition(modeltruck->getPosition());
 //                        mMap3dWidget->addNode(activeRocket);
 //                        activeRocket->shoot(modelAirplane->getPosition().vec3d(), 3000);
@@ -285,7 +285,7 @@ void Model::flyTo(QString type, QString name, const osg::Vec3d &pos, double spee
 
 void Model::addTruckModel()
 {
-    osg::Vec3d position(52.8603, 35.274, 845.5);
+    osg::Vec3d position(52.8603, 35.274, 842.5);
     //create and setting model--------------------------------------------
     osg::ref_ptr<Truck> model = new Truck(mMap3dWidget->getMapNode());
     QString name = TRUCK + QString::number(mModels[TRUCK].count());

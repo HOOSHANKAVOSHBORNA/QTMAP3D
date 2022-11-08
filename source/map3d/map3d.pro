@@ -4,5 +4,6 @@ SUBDIRS += \
     libs \
     map3dlib \
     plugins \
-    map3dapp
+    map3dapp \
+    websocketserver
 

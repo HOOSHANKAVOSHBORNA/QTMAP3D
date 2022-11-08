@@ -23,6 +23,8 @@ class Visibility : public PluginInterface
 public:
     Visibility(QWidget *parent = nullptr);
     void setUpUI() override;
+private slots:
+    void onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos);
 private:
     osgEarth::Annotation::FeatureNode* makepolygan(QVector<osg::Vec3d> vertices);
     osgEarth::Annotation::ModelNode* makeBackground(float radius);
