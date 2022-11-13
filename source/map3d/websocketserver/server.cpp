@@ -2,6 +2,7 @@
 
 #include "QtWebSockets/QWebSocketServer"
 #include "QtWebSockets/QWebSocket"
+#include <QJsonDocument>
 #include <QtCore/QDebug>
 #include <QtCore/QFile>
 #include <QtNetwork/QSslCertificate>
@@ -42,6 +43,13 @@ Server::~Server()
 {
     mWebSocketServer->close();
     qDeleteAll(mClients.begin(), mClients.end());
+}
+
+void Server::sendMessageToAll(const QJsonDocument &message)
+{
+    QString txtMessage = QString::fromUtf8(message.toJson(QJsonDocument::Compact));
+    for(auto client: mClients)
+        client->sendTextMessage(txtMessage);
 }
 
 //! [onNewConnection]

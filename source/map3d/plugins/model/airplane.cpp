@@ -26,6 +26,11 @@ Airplane::Airplane(osgEarth::MapNode* mapNode, const QString &fileName, QObject 
     //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
     //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1000;
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 0.09;
+
+//    setScale(osg::Vec3(0.09f,0.09f,0.09f));
     setStyle(style);
     //-------------------------------------------------------------------------------------------------------------
     //osg::Vec3d center = getBound().center();
@@ -46,7 +51,7 @@ Airplane::Airplane(osgEarth::MapNode* mapNode, const QString &fileName, QObject 
 
 void Airplane::flyTo(const osg::Vec3d &pos, double speed)
 {
-    qDebug()<<"setanimation---------------------- ";
+//    qDebug()<<"setanimation---------------------- ";
     if(mIsStop)
         return;
     osg::Vec3d currentWPoint;
@@ -82,7 +87,7 @@ void Airplane::flyTo(const osg::Vec3d &pos, double speed)
     mAnimationPathCallback->setAnimationPath(path);
     setUpdateCallback(mAnimationPathCallback);
 
-    addEffect(path->getPeriod());
+    //addEffect(path->getPeriod());
     //draw line------------------------------------------------
     //    osg::Vec3Array* keyPoint = new osg::Vec3Array;
     //    keyPoint->push_back(currentWPoint);

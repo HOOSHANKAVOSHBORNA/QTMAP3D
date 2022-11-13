@@ -7,6 +7,7 @@
 #include "map3dwidget.h"
 
 class ToolBarWidget;
+class WebSocketClient;
 
 class MAP3DLIB_EXPORT Map3dlib: public QMainWindow
 {
@@ -15,6 +16,8 @@ public:
     Map3dlib(QWidget *parent = nullptr);
     void addMenuWidget(QWidget* widget);
     void removeMenuWidget(QWidget* widget);
+    WebSocketClient *getWebSocket() const;
+
 public slots:
 
 signals:
@@ -30,6 +33,7 @@ private:
     QDockWidget *mToolBarDocWidget;
     ToolBarWidget* mToolBarWidget;
     QList<QWidget*> mWidgets;
+    WebSocketClient* mWebSocket{nullptr};
 };
 
 #endif // MAP3DLIB_H

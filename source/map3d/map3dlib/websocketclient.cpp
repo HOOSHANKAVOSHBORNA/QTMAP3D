@@ -1,12 +1,12 @@
 #include "websocketclient.h"
 
 #include <QDebug>
+#include <QJsonDocument>
 #include <QWebSocket>
 
-WebSocketClient::WebSocketClient(QString name, QObject *parent) : QObject(parent)
+WebSocketClient::WebSocketClient(QObject *parent) : QObject(parent)
 {
-    mName = name;
-    mWebSocket = new QWebSocket(mName);
+    mWebSocket = new QWebSocket();
     mWebSocket->setParent(this);
     connect(mWebSocket, &QWebSocket::connected, this, &WebSocketClient::onConnected);
     connect(mWebSocket, QOverload<const QList<QSslError>&>::of(&QWebSocket::sslErrors),
@@ -15,15 +15,15 @@ WebSocketClient::WebSocketClient(QString name, QObject *parent) : QObject(parent
     mWebSocket->open(QUrl(QStringLiteral("wss://localhost:1234")));
 }
 
-void WebSocketClient::sendTextMessage(const QString &message)
+void WebSocketClient::sendMessage(const QJsonDocument &message)
 {
-    mWebSocket->sendTextMessage(message);
+    mWebSocket->sendTextMessage(QString::fromUtf8(message.toJson(QJsonDocument::Compact)));
 }
 
 //! [onConnected]
 void WebSocketClient::onConnected()
 {
-    qDebug() << "WebSocket connected: "<< mName;
+    qDebug() << "WebSocket connected: ";
     connect(mWebSocket, &QWebSocket::textMessageReceived,
             this, &WebSocketClient::onTextMessageReceived);
 }
@@ -32,7 +32,13 @@ void WebSocketClient::onConnected()
 //! [onTextMessageReceived]
 void WebSocketClient::onTextMessageReceived(QString message)
 {
-    qDebug() << mName << " Message received:" << message;
+    //qDebug()<< " Message received:" << message;
+    QJsonDocument messageDocument = QJsonDocument::fromJson(message.toUtf8());
+    if(messageDocument.isObject())
+        messageReceived(messageDocument);
+    else
+        qDebug() << "received is not a JSON object";
+
 }
 
 void WebSocketClient::onSslErrors(const QList<QSslError> &errors)
@@ -42,7 +48,7 @@ void WebSocketClient::onSslErrors(const QList<QSslError> &errors)
     // WARNING: Never ignore SSL errors in production code.
     // The proper way to handle self-signed certificates is to add a custom root
     // to the CA store.
-//    qDebug() << "mWebSocket error:" << mWebSocket->errorString();
+    //    qDebug() << "mWebSocket error:" << mWebSocket->errorString();
     mWebSocket->ignoreSslErrors();
 }
 //! [onTextMessageReceived]

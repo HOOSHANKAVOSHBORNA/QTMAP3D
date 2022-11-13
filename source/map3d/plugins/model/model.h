@@ -41,6 +41,7 @@ public slots:
     void clickedTrackNode(QString type ,QString name ,bool isClick);
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
+    void onMessageReceived(const QJsonDocument &message);
 private:
     void demo();
     void onToolBarWidgetPin(bool isPin);

@@ -4,12 +4,18 @@
 #include "draw.h"
 #include "truck.h"
 #include "rocket.h"
+#include "websocketclient.h"
 
 #include <QDebug>
 #include <QMainWindow>
 #include <QTimer>
 #include <QDockWidget>
 #include <QRandomGenerator>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
 
 #include <osgDB/ReadFile>
 #include <osgEarthSymbology/GeometryFactory>
@@ -134,7 +140,6 @@ void Model::setUpUI()
         }
         if(cat == category && name == nameTrack)
         {
-
             if(isCheck)
             {
                 mMainWindow->addMenuWidget(mTrackModelWidget);
@@ -154,6 +159,8 @@ void Model::setUpUI()
             //mMap3dWidget->setTrackNode(nullptr);
         }
     });
+    //--websocket data-------------------------------------------------------------------
+    QObject::connect(mMainWindow->getWebSocket(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
 }
 
 
@@ -443,5 +450,14 @@ void Model::clickedTrackNode(QString type, QString name, bool isClick)
 void Model::positionChanged(QString type, QString name, osgEarth::GeoPoint position)
 {
     mTrackModelWidget->setModelPosition(type, name, position.x(), position.y(), position.z());
+}
+
+void Model::onMessageReceived(const QJsonDocument &message)
+{
+    if(message.object().value("Name").toString() == "Target")
+    {
+        QJsonObject data = message.object().value("Data").toObject();
+        qDebug()<<"target:"<< data;
+    }
 }
 

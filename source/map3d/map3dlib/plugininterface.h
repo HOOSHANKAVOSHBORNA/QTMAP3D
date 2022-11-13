@@ -20,13 +20,11 @@ public:
     void setToolBar(ToolBarWidget *toolBar);
 
     void setName(const QString &name);
-    void createWebSocket();
 
 protected:
     Map3dlib* mMainWindow{nullptr};
     Map3dWidget *mMap3dWidget{nullptr};
     ToolBarWidget* mToolBar{nullptr};
-    WebSocketClient* mWebSocket{nullptr};
     QString mName;
 };
 

@@ -7,11 +7,11 @@
 int main(int argc, char *argv[])
 {
 
-    QSurfaceFormat  fmt;
-    fmt.setVersion(2,0);
-    fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
-    fmt.setSamples(1);
-    QSurfaceFormat::setDefaultFormat(fmt);
+//    QSurfaceFormat  fmt;
+//    fmt.setVersion(2,0);
+//    fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
+//    fmt.setSamples(1024);
+//    QSurfaceFormat::setDefaultFormat(fmt);
 
     QApplication a(argc, argv);
     //Q_INIT_RESOURCE(map3dlib);

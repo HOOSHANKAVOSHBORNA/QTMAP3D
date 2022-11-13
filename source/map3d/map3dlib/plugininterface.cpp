@@ -29,9 +29,3 @@ void PluginInterface::setName(const QString &name)
 {
     mName = name;
 }
-
-void PluginInterface::createWebSocket()
-{
-    if(!mWebSocket)
-        mWebSocket = new WebSocketClient(mName, this);
-}

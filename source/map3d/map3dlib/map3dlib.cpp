@@ -1,5 +1,6 @@
 #include "map3dlib.h"
 #include "toolbarwidget.h"
+#include "websocketclient.h"
 
 #include "pluginmanager.h"
 #include <QAction>
@@ -38,7 +39,8 @@ Map3dlib::Map3dlib(QWidget *parent)
     //mToolBarDocWidget->setMinimumHeight(250);
     addDockWidget(Qt::LeftDockWidgetArea, mToolBarDocWidget);
     mToolBarDocWidget->hide();
-
+    //--WebSocket--------------------------------------------------------------------------
+    mWebSocket = new WebSocketClient(this);
     //--load plugins-----------------------------------------------------------------------
     PluginManager pluginmanager(this, map3dWidget, mToolBarWidget);
     pluginmanager.loadPlugins();
@@ -108,5 +110,10 @@ void Map3dlib::reorderMenuWidgets()
             w += widget->width();
         }
     }
+}
+
+WebSocketClient *Map3dlib::getWebSocket() const
+{
+    return mWebSocket;
 }
 

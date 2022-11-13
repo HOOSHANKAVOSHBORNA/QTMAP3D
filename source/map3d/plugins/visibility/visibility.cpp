@@ -8,6 +8,10 @@
 #include <osg/Shader>
 #include <osg/ShapeDrawable>
 #include <osg/LineWidth>
+#include <osgEarthAnnotation/PlaceNode>
+#include <osgEarthAnnotation/ImageOverlay>
+#include <osgEarthAnnotation/ImageOverlayEditor>
+
 #include <QDebug>
 Visibility::Visibility(QWidget *parent)
     : PluginInterface(parent)
@@ -23,12 +27,9 @@ void Visibility::setUpUI()
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
         if(cat == category && name == nameVisibility)
         {
-            createWebSocket();
             if(isCheck)
             {
                 QObject::connect(mMap3dWidget,&Map3dWidget::mouseEvent, this, &Visibility::onMouseEvent);
-
-
             }
             else
             {
@@ -50,7 +51,7 @@ void Visibility::onMouseEvent(QMouseEvent *event, osgEarth::GeoPoint geoPos)
         mMap3dWidget->removeNode(mVisibilityNode);
 
         geoPos.makeGeographic();
-        mWebSocket->sendTextMessage(QString::fromStdString(geoPos.toString()));
+//        mMainWindow->webSocket()->sendMessage(QString::fromStdString(geoPos.toString()));
 
         mBackVisibilityNode = makeBackground(20000.0f);
         //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.461);
@@ -79,6 +80,18 @@ void Visibility::onMouseEvent(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 
         //Set view point------------------------------------------------------------------
         mMap3dWidget->goPosition(geoPos.x(), geoPos.y(), 100000);
+    }
+
+    if(event->button() == Qt::MouseButton::LeftButton && event->type() ==  QEvent::Type::MouseButtonDblClick)
+    {
+        osgEarth::Symbology::Style pm;
+        pm.getOrCreate<osgEarth::Symbology::IconSymbol>()->url()->setLiteral("/home/client110/Downloads/setting.png");
+        pm.getOrCreate<osgEarth::Symbology::IconSymbol>()->declutter() = true;
+        pm.getOrCreate<osgEarth::Symbology::TextSymbol>()->halo() = osgEarth::Color("#5f5f5f");
+
+        auto pn = new osgEarth::Annotation::PlaceNode(geoPos, "", pm);
+        pn->setScale(osg::Vec3(0.5,0.5,0.5));
+         mMap3dWidget->addNode(pn);
     }
 }
 

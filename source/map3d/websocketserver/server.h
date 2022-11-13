@@ -16,6 +16,8 @@ public:
     explicit Server(quint16 port, QObject *parent = nullptr);
     ~Server() override;
 
+    void sendMessageToAll(const QJsonDocument &message);
+
 signals:
 
 public slots:
