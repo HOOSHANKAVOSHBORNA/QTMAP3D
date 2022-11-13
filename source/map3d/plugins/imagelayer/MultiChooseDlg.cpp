@@ -3,30 +3,49 @@
 #include <QHeaderView>
 #include <QCheckBox>
 #include <QTableWidget>
+#include <QPushButton>
+#include <QDialogButtonBox>
+#include <QFormLayout>
+#include <QVBoxLayout>
 
 MultiChooseDlg::MultiChooseDlg(QWidget *parent, QStringList& itemToChoose)
     : QDialog(parent)
 {
+    QVBoxLayout* vlayout = new QVBoxLayout(this);
+
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                         );
+
+
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+
+
     setWindowTitle(tr("Layers"));
+    mTable = new QTableWidget(this);
+//    mTable->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-    _table = new QTableWidget(this);
-    _table->setRowCount(itemToChoose.size());
-    _table->setColumnCount(2);
-    _table->verticalHeader()->hide();
-    _table->horizontalHeader()->hide();
-    _table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    mTable->setRowCount(itemToChoose.size());
+    mTable->setColumnCount(2);
+    mTable->verticalHeader()->hide();
+    mTable->horizontalHeader()->hide();
+//    mTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    mTable->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Stretch);
 
-    _table->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    _table->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    mTable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    mTable->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+
+
 
     for (int i = 0; i < itemToChoose.size(); i++)
     {
         QTableWidgetItem* tableItem = new QTableWidgetItem(itemToChoose[i]);
-        _table->setItem(i, 0, tableItem);
-        _table->setCellWidget(i, 1, new QCheckBox);
+        mTable->setItem(i, 0, tableItem);
+        mTable->setCellWidget(i, 1, new QCheckBox);
     }
 
-    _table->adjustSize();
+    mTable->adjustSize();
+    vlayout->addWidget(mTable);
+    vlayout->addWidget(buttonBox);
 }
 
 MultiChooseDlg::~MultiChooseDlg()
@@ -38,11 +57,11 @@ QStringList MultiChooseDlg::getCheckedItems()
 {
     QStringList checkedItems;
 
-    for (int i = 0; i < _table->rowCount(); i++)
+    for (int i = 0; i < mTable->rowCount(); i++)
     {
-        if (static_cast<QCheckBox*>(_table->cellWidget(i, 1))->isChecked())
+        if (static_cast<QCheckBox*>(mTable->cellWidget(i, 1))->isChecked())
         {
-            checkedItems.push_back(_table->item(i, 0)->text());
+            checkedItems.push_back(mTable->item(i, 0)->text());
         }
     }
     return checkedItems;

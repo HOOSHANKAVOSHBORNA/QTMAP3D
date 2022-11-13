@@ -23,3 +23,4 @@ QString URLDialog::getURL() const
 {
     return ui->lineEdit->text();
 }
+

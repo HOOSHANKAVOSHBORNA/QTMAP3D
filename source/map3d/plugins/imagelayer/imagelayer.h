@@ -13,10 +13,10 @@ public:
     ~ImageLayer()override{}
     void setUpUI() override;
 private:
-    void XYZ();
-    void ArcGis();
-    void GDAL();
-    void TMS();
-    void WMS();
+    void addXYZ();
+    void addArcGIS();
+    void addGDAL();
+    void addTMS();
+    void addWMS();
 };
 #endif // IMAGELAYER_H

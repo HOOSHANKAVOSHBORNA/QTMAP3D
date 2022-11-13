@@ -14,9 +14,9 @@ public:
     void setUpUI() override;
 
 private:
-    void GDAL();
-    void WFS();
-    void ArcGis();
+    void addGDAL();
+    void addWFS();
+    void addArcGIS();
 };
 
 #endif // FEATURELAYER_H

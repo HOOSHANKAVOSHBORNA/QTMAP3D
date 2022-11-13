@@ -27,7 +27,7 @@ void ImageLayer::setUpUI()
     QString nameGDAL = "GDAL(local file)";
     mToolBar->addItem(cat, nameGDAL, "", false);
 
-    QString nameArcGIS = "Arc Gis";
+    QString nameArcGIS = "ArcGIS";
     mToolBar->addItem(cat, nameArcGIS, "", false);
 
     QString nameWMS = "WMS";
@@ -42,28 +42,28 @@ void ImageLayer::setUpUI()
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool /*isCheck*/){
         if(cat == category && name == nameGDAL)
         {
-            GDAL();
+            addGDAL();
         }
         if(cat == category && name == nameArcGIS)
         {
-            ArcGis();
+            addArcGIS();
         }
         if(cat == category && name == nameXYZ)
         {
-            XYZ();
+            addXYZ();
         }
         if(cat == category && name == nameWMS)
         {
-            WMS();
+            addWMS();
         }
         if(cat == category && name == nameTMS)
         {
-            TMS();
+            addTMS();
         }
     });
 }
 
-void ImageLayer::XYZ()
+void ImageLayer::addXYZ()
 {
     QMap<QString, QString> examples;
     examples[tr("Google r")] = "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}";
@@ -94,7 +94,7 @@ void ImageLayer::XYZ()
 
 }
 }
-void ImageLayer::ArcGis()
+void ImageLayer::addArcGIS()
 {
     QMap<QString, QString> examples;
     examples[tr("ArcGIS Online - world")] = "http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer";
@@ -118,7 +118,7 @@ void ImageLayer::ArcGis()
     }
 }
 
-void ImageLayer::GDAL()
+void ImageLayer::addGDAL()
 {
     auto fileNames = QFileDialog::getOpenFileNames(nullptr, tr("Open Image File"), "../map3dlib/data",
                                                    tr("Image File (*.img *.tif *.tiff);;Allfile(*.*)"),nullptr,QFileDialog::DontUseNativeDialog);
@@ -133,7 +133,7 @@ void ImageLayer::GDAL()
     }
 }
 
-void ImageLayer::TMS()
+void ImageLayer::addTMS()
 {
     QMap<QString, QString> examples;
     examples[tr("readymap")] = "http://readymap.org/readymap/tiles/1.0.0/116/";
@@ -254,7 +254,7 @@ static QVector<attrib>  getWMSInfo(std::string &path, osgEarth::GeoExtent * &ext
 
 
 
-void ImageLayer::WMS()
+void ImageLayer::addWMS()
 {
     QMap<QString, QString> examples;
     examples[tr("NEXRAD")] = "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi";
@@ -275,16 +275,27 @@ void ImageLayer::WMS()
         // Promt for the users to choose layers
         QStringList     layerNames = attribute.back().second.split(',');
         MultiChooseDlg  chooseDlg(static_cast<QWidget *>(parent()), layerNames);
-        chooseDlg.exec();
-        QStringList  layersToShow = chooseDlg.getCheckedItems();
+//        chooseDlg.exec();
+
+        int acceptedd = chooseDlg.exec();
+        if (acceptedd == MultiChooseDlg::Accepted)
+        {
+            QStringList  layersToShow = chooseDlg.getCheckedItems();
+
+            if (chooseDlg.getCheckedItems().empty())
+                return;
         osgEarth::Drivers::WMSOptions  opt;
         opt.url()         = nodeName;
+        opt.layers()      = layersToShow.join(',').toLocal8Bit().toStdString();
+        opt.transparent() = true;
         opt.transparent() = true;
         opt.format()      = "png";
         opt.profile()     = { "EPSG:4326" };
 
         osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
         mMap3dWidget->addLayer(layer);
+
+    }
     }
 }
 

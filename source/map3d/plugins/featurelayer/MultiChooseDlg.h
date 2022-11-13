@@ -18,7 +18,7 @@ public:
     QStringList getCheckedItems();
 
 private:
-    QTableWidget* _table;
+    QTableWidget* mtable;
 };
 
 #endif // MULTICHOOSEDLG_H

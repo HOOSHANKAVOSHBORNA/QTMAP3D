@@ -9,24 +9,24 @@ MultiChooseDlg::MultiChooseDlg(QWidget *parent, QStringList& itemToChoose)
 {
     setWindowTitle(tr("Layers"));
 
-    _table = new QTableWidget(this);
-    _table->setRowCount(itemToChoose.size());
-    _table->setColumnCount(2);
-    _table->verticalHeader()->hide();
-    _table->horizontalHeader()->hide();
-    _table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    mtable = new QTableWidget(this);
+    mtable->setRowCount(itemToChoose.size());
+    mtable->setColumnCount(2);
+    mtable->verticalHeader()->hide();
+    mtable->horizontalHeader()->hide();
+    mtable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-    _table->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    _table->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    mtable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    mtable->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 
     for (int i = 0; i < itemToChoose.size(); i++)
     {
         QTableWidgetItem* tableItem = new QTableWidgetItem(itemToChoose[i]);
-        _table->setItem(i, 0, tableItem);
-        _table->setCellWidget(i, 1, new QCheckBox);
+        mtable->setItem(i, 0, tableItem);
+        mtable->setCellWidget(i, 1, new QCheckBox);
     }
 
-    _table->adjustSize();
+    mtable->adjustSize();
 }
 
 MultiChooseDlg::~MultiChooseDlg()
@@ -38,11 +38,11 @@ QStringList MultiChooseDlg::getCheckedItems()
 {
     QStringList checkedItems;
 
-    for (int i = 0; i < _table->rowCount(); i++)
+    for (int i = 0; i < mtable->rowCount(); i++)
     {
-        if (static_cast<QCheckBox*>(_table->cellWidget(i, 1))->isChecked())
+        if (static_cast<QCheckBox*>(mtable->cellWidget(i, 1))->isChecked())
         {
-            checkedItems.push_back(_table->item(i, 0)->text());
+            checkedItems.push_back(mtable->item(i, 0)->text());
         }
     }
     return checkedItems;

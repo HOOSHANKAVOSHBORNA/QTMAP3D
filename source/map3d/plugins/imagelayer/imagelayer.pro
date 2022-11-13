@@ -33,7 +33,7 @@ DISTFILES += imagelayer.json
 
 # Default rules for deployment.
 unix {
-    target.path = $$[QT_INSTALL_PLUGINS]/generic
+    target.path = /usr/lib
 }
 !isEmpty(target.path): INSTALLS += target
 INCLUDEPATH  += ../../map3dlib

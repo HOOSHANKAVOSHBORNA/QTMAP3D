@@ -1,8 +1,11 @@
 ﻿#ifndef MULTICHOOSEDLG_H
 #define MULTICHOOSEDLG_H
 
+
 #include <QDialog>
 #include <QStringList>
+#include <QDialogButtonBox>
+#include <QFormLayout>
 
 QT_BEGIN_NAMESPACE
 class QTableWidget;
@@ -16,9 +19,12 @@ public:
     MultiChooseDlg(QWidget *parent, QStringList& itemToChoose);
     ~MultiChooseDlg();
     QStringList getCheckedItems();
+    QDialogButtonBox* buttonBox;
 
 private:
-    QTableWidget* _table;
+    QTableWidget* mTable;
+
+
 };
 
 #endif // MULTICHOOSEDLG_H

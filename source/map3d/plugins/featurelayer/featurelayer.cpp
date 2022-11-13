@@ -35,21 +35,21 @@ void FeatureLayer::setUpUI()
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool /*isCheck*/){
         if(cat == category && name == nameGDAL)
         {
-            GDAL();
+            addGDAL();
         }
         if(cat == category && name == nameArcGIS)
         {
-            ArcGis();
+            addArcGIS();
         }
         if(cat == category && name == nameWFS)
         {
-            WFS();
+            addWFS();
         }
 
     });
 }
 
-void FeatureLayer::GDAL()
+void FeatureLayer::addGDAL()
 {
     QStringList  fileNames = QFileDialog::getOpenFileNames(dynamic_cast<QWidget *>(parent()), tr("Open File"), "", tr("Tiff File (*.shp);;Allfile(*.*)"));
 
@@ -82,7 +82,7 @@ void FeatureLayer::GDAL()
 
 }
 
-void FeatureLayer::WFS()
+void FeatureLayer::addWFS()
 {
     QString  fileName = QInputDialog::getText(
                 dynamic_cast<QWidget *>(parent()), tr("Please enter file location"), "");
@@ -112,7 +112,7 @@ void FeatureLayer::WFS()
     }
 }
 
-void FeatureLayer::ArcGis()
+void FeatureLayer::addArcGIS()
 {
     QString  fileName = QInputDialog::getText(
                 dynamic_cast<QWidget *>(parent()), tr("Please enter file location"), "");
