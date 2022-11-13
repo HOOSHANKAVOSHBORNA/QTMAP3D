@@ -1,6 +1,8 @@
 TEMPLATE = subdirs
 SUBDIRS += \
-    demo \
     libs \
     map3dlib \
-    plugins 
+    plugins \
+    map3dapp \
+    websocketserver
+

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>moon_1024x512.jpg</file>
+        <file>Images/continous_smoke.rgb</file>
+        <file>Images/particle.rgb</file>
+        <file>Images/smoke.rgb</file>
+    </qresource>
+</RCC>

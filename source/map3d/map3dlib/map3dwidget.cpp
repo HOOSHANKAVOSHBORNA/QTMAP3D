@@ -66,12 +66,20 @@ bool MousePicker::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapt
         break;
     case (osgGA::GUIEventAdapter::PUSH):
         qEventType = QEvent::Type::MouseButtonPress;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
     case (osgGA::GUIEventAdapter::RELEASE):
         qEventType = QEvent::Type::MouseButtonRelease;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
     case (osgGA::GUIEventAdapter::MOVE):
         qEventType = QEvent::Type::MouseMove;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
     case (osgGA::GUIEventAdapter::SCROLL):
         qEventType = QEvent::Type::Wheel;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
     case (osgGA::GUIEventAdapter::DOUBLECLICK):
         qEventType = QEvent::Type::MouseButtonDblClick;
         if (view) { mouseEvent(view, ea, qEventType); }

@@ -1,9 +1,9 @@
-QT       += core gui quick quickcontrols2 quickwidgets
+QT -= gui
+QT += websockets
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+CONFIG += c++11 console
+CONFIG -= app_bundle
 
-CONFIG += c++11
-CONFIG+=qml_debug
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -16,28 +16,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    main.cpp
-
-HEADERS +=
-
-FORMS +=
+        main.cpp \
+        server.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-unix:!macx: LIBS += -L$$OUT_PWD/../map3dlib/ -lmap3dlib
+HEADERS += \
+    server.h
 
-INCLUDEPATH += $$PWD/../map3dlib
-DEPENDPATH += $$PWD/../map3dlib
-
-
-LIBS  +=  -losg -losgViewer -losgGA -losgDB -losgManipulator -losgSim -losgParticle -losgText -losgUtil
-LIBS  +=  -lgdal -losgEarth -losgEarthFeatures -losgEarthUtil -losgEarthSymbology -losgEarthAnnotation
-
-unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
-
-INCLUDEPATH += $$PWD/../../osgQt/include
-DEPENDPATH += $$PWD/../../osgQt/include
-
+RESOURCES += \
+    websocketserver.qrc

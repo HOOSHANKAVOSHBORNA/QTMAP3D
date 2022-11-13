@@ -288,7 +288,6 @@ void ImageLayer::addWMS()
         opt.url()         = nodeName;
         opt.layers()      = layersToShow.join(',').toLocal8Bit().toStdString();
         opt.transparent() = true;
-        opt.transparent() = true;
         opt.format()      = "png";
         opt.profile()     = { "EPSG:4326" };
 

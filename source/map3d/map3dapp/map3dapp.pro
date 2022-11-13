@@ -1,11 +1,9 @@
-QT += core gui quick quickcontrols2 quickwidgets
-QT += widgets
-QT += websockets
+QT       += core gui quick quickcontrols2 quickwidgets
 
-TEMPLATE = lib
-DEFINES += MAP3DLIB_LIBRARY
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
+CONFIG+=qml_debug
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -18,47 +16,33 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    cameramanipulatorwidget.cpp \
-    compasswidget.cpp \
-    locationwidget.cpp \
-    map3dlib.cpp \
-    map3dwidget.cpp \
-    objectinfowidget.cpp \
-    plugininterface.cpp \
-    pluginmanager.cpp \
-    toolbarwidget.cpp \
-    websocketclient.cpp
+    main.cpp
 
-HEADERS += \
-    cameramanipulatorwidget.h \
-    compasswidget.h \
-    locationwidget.h \
-    map3dlib_global.h \
-    map3dlib.h \
-    map3dwidget.h \
-    objectinfowidget.h \
-    plugininterface.h \
-    pluginmanager.h \
-    toolbarwidget.h \
-    websocketclient.h
-
-# Default rules for deployment.
-unix {
-    target.path = /usr/lib
-}
-!isEmpty(target.path): INSTALLS += target
+HEADERS +=
 
 FORMS +=
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
+
+unix:!macx: LIBS += -L$$OUT_PWD/../map3dlib/ -lmap3dlib
+
+INCLUDEPATH += $$PWD/../map3dlib
+DEPENDPATH += $$PWD/../map3dlib
+
 
 LIBS  +=  -losg -losgViewer -losgGA -losgDB -losgManipulator -losgSim -losgParticle -losgText -losgUtil
 LIBS  +=  -lgdal -losgEarth -losgEarthFeatures -losgEarthUtil -losgEarthSymbology -losgEarthAnnotation
 
+unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
 
+INCLUDEPATH += $$PWD/../../osgQt/include
+DEPENDPATH += $$PWD/../../osgQt/include
 
 RESOURCES += \
-    map3dlib.qrc \
-    qml.qrc
-
+    map3dapp.qrc
 
 
 #copy resource folder
@@ -77,18 +61,5 @@ defineTest(copyToDestDir) {
 
     export(QMAKE_POST_LINK)
 }
-copyToDestDir($$PWD/data, $$OUT_PWD/data)
-
-unix:!macx: LIBS += -L$$PWD/../../osgQt/lib/ -losgQOpenGL
-
-INCLUDEPATH += $$PWD/../../osgQt/include
-DEPENDPATH += $$PWD/../../osgQt/include
-
-DISTFILES += \
-    *.qml \ \
-    data/earth_files/geocentric.earth \
-    data/earth_files/projected.earth \
-    data/earth_files/world.tif
-
-QMAKE_RESOURCE_FLAGS += -compress 1
-#QMAKE_RESOURCE_FLAGS += -no-compress
+copyToDestDir($$PWD/Images, $$OUT_PWD/Images)
+QMAKE_POST_LINK += $$QMAKE_COPY_DIR $$shell_quote($$PWD/moon_1024x512.jpg) $$shell_quote($$OUT_PWD/moon_1024x512.jpg) $$escape_expand(\\n\\t)
