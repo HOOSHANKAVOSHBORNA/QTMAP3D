@@ -1,4 +1,5 @@
 #include "basemodel.h"
+#include "draw.h"
 
 #include <QDebug>
 
@@ -94,9 +95,9 @@ void BaseModel::setGeographicPosition(const osg::Vec3d &pos)
     setPosition(geoPoint);
 
     //draw line------------------------------------------------
-    //    osg::Vec3d worldpos;
-    //    mapPoint.toWorld(worldpos);
-    //    getMapNode()->addChild(drawCordination(worldpos + osg::Vec3d(0,2,0)));
+//        osg::Vec3d worldpos;
+//        geoPoint.toWorld(worldpos);
+//        getMapNode()->addChild(drawCordination(worldpos + osg::Vec3d(0,2,0)));
 }
 
 osg::Vec3d BaseModel::getGeographicPosition() const

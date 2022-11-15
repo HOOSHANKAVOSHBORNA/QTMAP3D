@@ -18,7 +18,7 @@ class Airplane: public BaseModel
 {
 public:
     Airplane(osgEarth::MapNode* mapNode, const QString &fileName, QObject* parent = nullptr);
-    void flyTo(const osg::Vec3d& pos, double speed);
+    void flyTo(const osg::Vec3d& pos, double heading, double speed);
     void stop() override;
     void setTruckModel(osgEarth::Annotation::ModelNode* truckModel);
     osgEarth::Annotation::ModelNode *getTruckModel() const;

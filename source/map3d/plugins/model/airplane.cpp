@@ -49,56 +49,72 @@ Airplane::Airplane(osgEarth::MapNode* mapNode, const QString &fileName, QObject 
     //    getMapNode()->addChild(mGeodeParticle);
 }
 
-void Airplane::flyTo(const osg::Vec3d &pos, double speed)
+void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
 {
-//    qDebug()<<"setanimation---------------------- ";
+
     if(mIsStop)
         return;
-    osg::Vec3d currentWPoint;
-    getPosition().toWorld(currentWPoint);
+//    heading = 30;
+    osgEarth::GeoPoint posGeo(getMapNode()->getMapSRS(), pos);
 
-    osg::Vec3d wPos;
-    osgEarth::GeoPoint(getMapNode()->getMapSRS(), pos).toWorld(wPos);
+    osg::Vec3d currentPosW;
+    getPosition().toWorld(currentPosW);
 
-    osg::Vec3d wDef = wPos - currentWPoint;
-    double len = wDef.normalize();
-    //transfer def vector to local----------------------------------------
-    osg::Matrixd localTransfer;
-    getPosition().createWorldToLocal(localTransfer);
-    osg::Quat localRotation;
-    localRotation = localTransfer.getRotate();
-    osg::Matrixd rotateTransfer = osg::Matrixd::rotate(localRotation);
-    osg::Vec3f localDef = wDef * rotateTransfer;
-    //--------------------------------------------------------------------
-    osg::Quat rotate;
-    rotate.makeRotate(-osg::Y_AXIS, localDef);
+    osg::Vec3d posW;
+    posGeo.toWorld(posW);
+    //move---------------------------------------------------------------------------------------------------
+    osg::Vec3d diffW = posW - currentPosW;
+    osg::Matrixd currentPoslocalTransfer;
+    getPosition().createWorldToLocal(currentPoslocalTransfer);
+    osg::Vec3d diffLocal = diffW * osg::Matrixd::rotate(currentPoslocalTransfer.getRotate());
+    diffLocal.normalize();
 
-    osg::Vec3d estimatePos = wPos + wDef*100*len;
-    double t = (estimatePos - wPos).length() / speed;
+    osg::Quat diffRotate;
+    diffRotate.makeRotate(-osg::Vec3d(0, 1, 0), diffLocal);
+    //heading----------------------------------------------------------------------------------------------
+    osg::Vec3d northVec(0, 1, 0);//in local
+    osg::Vec3d headingVecLocal = northVec * osg::Matrixd::rotate(osg::inDegrees(-heading), osg::Z_AXIS);
+    headingVecLocal.normalize();
+
+    headingVecLocal.z() = diffLocal.z();
+
+    osg::Matrixd posLocalToWorld;
+    posGeo.createLocalToWorld(posLocalToWorld);
+    osg::Vec3d headingVecW = headingVecLocal * osg::Matrixd::rotate(posLocalToWorld.getRotate());
+
+    osg::Quat headingRotate;
+    headingRotate.makeRotate(-osg::Vec3d(0, 1, 0), headingVecLocal);
+    //-------------------------------------------------------------------------------------------------------
+    osg::Vec3d posEstimateW1 = posW + (headingVecW * 100.0);
+    osg::Vec3d posEstimateW = posW + (headingVecW * 100000.0);
+//    qDebug()<<"estimatePos"<<estimatePos.z();
+    double timeEstimate = (posEstimateW - posW).length() / speed;
 
     osg::AnimationPath* path = new osg::AnimationPath();
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 
-    path->insert(0, osg::AnimationPath::ControlPoint(currentWPoint,getPositionAttitudeTransform()->getAttitude(),getScale()));
-    path->insert(2,osg::AnimationPath::ControlPoint(wPos,rotate, getScale()));
-    path->insert(t,osg::AnimationPath::ControlPoint(estimatePos,rotate, getScale()));
+    path->insert(0, osg::AnimationPath::ControlPoint(currentPosW,getPositionAttitudeTransform()->getAttitude(),getScale()));
+    path->insert(2,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
+    path->insert(3,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
+    path->insert(timeEstimate,osg::AnimationPath::ControlPoint(posEstimateW, headingRotate, getScale()));
 
     mAnimationPathCallback = new ModelAnimationPathCallback();
     mAnimationPathCallback->setAnimationPath(path);
     setUpdateCallback(mAnimationPathCallback);
 
-    //addEffect(path->getPeriod());
-    //draw line------------------------------------------------
-    //    osg::Vec3Array* keyPoint = new osg::Vec3Array;
-    //    keyPoint->push_back(currentWPoint);
-    //    keyPoint->push_back(wPos);
-    //    keyPoint->push_back(estimatePos);
-    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawLine(keyPoint, 1.0));
-    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(currentWPoint));
-    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(wPos));
-    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(estimatePos));
-}
 
+
+    //    //draw line------------------------------------------------
+//            osg::Vec3Array* keyPoint = new osg::Vec3Array;
+//            keyPoint->push_back(currentPosW);
+//            keyPoint->push_back(posW);
+//            keyPoint->push_back(posEstimateW);
+//            getMapNode()->getParent(0)->getParent(0)->addChild(drawLine(keyPoint, 1.0));
+//            getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(currentPosW));
+//            getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(posW));
+//            getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(posEstimateW));
+
+}
 
 void Airplane::stop()
 {

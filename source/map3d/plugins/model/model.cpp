@@ -78,15 +78,17 @@ void Model::setUpUI()
     QString nameTrack = "Track Models";
     mToolBar->addItem(cat, nameTrack, "qrc:/res/tracking.png",true);
     //run demo ------------------------------------------------
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout,this, &Model::demo);
-    timer->start(10000);
+//    QTimer *timer = new QTimer(this);
+//    connect(timer, &QTimer::timeout,this, &Model::demo);
+//    timer->start(10000);
     //---------------------------------------------------------
 
     QObject::connect(mToolBar,&ToolBarWidget::onItemClicked, [=](ToolBarWidget::Category category ,QString name, bool isCheck){
         if(cat == category && name == nameAddAirplaineModel)
         {
-            addAirplaineModel();
+            osg::Vec3d position(52.8601, 35.277, 9100);
+            QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
+            addAirplaineModel(name, position);
             //demo();
         }
         if(cat == category && name == nameAddRocketModel)
@@ -206,7 +208,7 @@ void Model::demo()
         //    setPosition(mCurrentWorldPoint, 138);
         latLongPoint.fromWorld(osgEarth::SpatialReference::get("wgs84"), currentPos);
         //qDebug()<<QString::fromUtf8(latLongPoint.toString().c_str());
-        model->flyTo(mapPoint.vec3d(), 138);
+        model->flyTo(mapPoint.vec3d(),30, 138);
 
         // fallow racket
         //        auto truckNames = mModels[TRUCK].keys();
@@ -286,7 +288,7 @@ void Model::flyTo(QString type, QString name, const osg::Vec3d &pos, double spee
     {
         Airplane* model = dynamic_cast<Airplane*>(mModels[type][name]);
         if(model != nullptr)
-            model->flyTo(pos, speed);
+            model->flyTo(pos,100, speed);
     }
 }
 
@@ -335,14 +337,14 @@ void Model::addTruckModel()
     model->moveTo(nPosition,10);
 }
 
-void Model::addAirplaineModel()
+void Model::addAirplaineModel(QString name, osg::Vec3d position)
 {
-    osg::Vec3d position(52.8601, 35.277, 9100);
+//    osg::Vec3d position(52.8601, 35.277, 9100);
     //osg::Vec3d position(52.8601, 35.277, 844);
 
     //create and setting model--------------------------------------------
     osg::ref_ptr<Airplane> model = new Airplane(mMap3dWidget->getMapNode(), "../map3dlib/data/models/airplane-red.osgb");
-    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
+//    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
     model->setName(name.toStdString());
     model->setGeographicPosition(position);
     model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
@@ -458,6 +460,23 @@ void Model::onMessageReceived(const QJsonDocument &message)
     {
         QJsonObject data = message.object().value("Data").toObject();
         qDebug()<<"target:"<< data;
+
+        double latitude = data.value("Latitude").toDouble();
+        double longitude = data.value("Longitude").toDouble();
+        double altitude = data.value("Altitude").toDouble();
+        double speed = data.value("Speed").toDouble();
+        double heading = data.value("Heading").toDouble();
+        osg::Vec3d position(latitude, longitude, altitude);
+        QString name = QString::number(data.value("TN").toInt());
+        if(mModels.contains(AIRPLANE) && mModels[AIRPLANE].contains(name))
+        {
+            Airplane* model = dynamic_cast<Airplane*>(mModels[AIRPLANE][name]);
+            model->flyTo(position, heading, speed);
+        }
+        else
+            addAirplaineModel(name, position);
+
+
     }
 }
 

@@ -18,11 +18,11 @@ QJsonDocument CreateData::createTargetinfo()
     jsonObject.insert("Master Radar", "radar1");
     jsonObject.insert("Identification", "F");// F, K, Z, X, U, H
     jsonObject.insert("Identification Method", "mt1");//3 char
-    jsonObject.insert("time", "12345678954213");//epoch
+    jsonObject.insert("Time", "12345678954213");//epoch
     jsonObject.insert("Pos", "pos");
     //
-    jsonObject.insert("latitude", 52.1);
-    jsonObject.insert("longitude", 35.1);
+    jsonObject.insert("Latitude", 52.1);
+    jsonObject.insert("Longitude", 35.1);
     jsonObject.insert("Altitude", 4000);//meter
     jsonObject.insert("Heading", 30);
     jsonObject.insert("Speed", 300);//m/s
@@ -45,7 +45,69 @@ QJsonDocument CreateData::createTargetinfo()
     QJsonDocument jsonDoc;
     jsonDoc.setObject(jsonMain);
 
+    targetInfo = jsonDoc;
     return jsonDoc;
+}
+
+QJsonDocument CreateData::updateTargetinfo()
+{
+    QJsonObject mainObject = targetInfo.object();
+    QJsonObject data = mainObject.value("Data").toObject();
+    //------------------------
+    double latitude = data.value("Latitude").toDouble();
+    double longitude = data.value("Longitude").toDouble();
+    double altitude = data.value("Altitude").toDouble();
+    double speed = data.value("Speed").toDouble();
+    double heading = data.value("Heading").toDouble();
+
+    double latitudeDiff = latitude;
+    double longitudeDiff = longitude;
+    double altitudeDiff = altitude;
+
+    int randomX = (100 + (qrand() % 19));
+    int randomY = (100 + (qrand() % 19));
+
+    altitude = (2000 + (qrand() % 9000));
+
+    speed = (138 + (qrand() % 137));
+    heading = (0 + (qrand() % 361));
+    int val = qrand() % 4;
+    if(val == 1)
+    {
+        latitude += randomX/10000.0;
+        longitude += randomY/10000.0;
+    }
+    else if(val == 2)
+    {
+        latitude += randomX/10000.0;
+        longitude -= randomY/10000.0;
+    }
+    else if(val == 3)
+    {
+        latitude -= randomX/10000.0;
+        longitude += randomY/10000.0;
+    }
+    else
+    {
+        latitude -= randomX/10000.0;
+        longitude -= randomY/10000.0;
+    }
+    //calculat heading----------------------
+//    latitudeDiff = latitude - latitudeDiff;
+//    longitudeDiff = longitude - longitudeDiff;
+//    altitudeDiff = altitude - altitudeDiff;
+//    //north =(0, 1, 0)
+//    heading = acos(longitudeDiff/sqrt(latitudeDiff * latitudeDiff + longitudeDiff * longitudeDiff + altitudeDiff * altitudeDiff));
+//    heading *= (180.0/3.141592653589793238463);
+    data["Latitude"] = latitude;
+    data["Longitude"] = longitude;
+    data["Altitude"] = altitude;
+    data["Speed"] = speed;
+    data["Heading"] = heading;
+    //------------------------
+    mainObject["Data"] = data;
+    targetInfo.setObject(mainObject);
+    return targetInfo;
 }
 
 QJsonDocument CreateData::createRinfo()
