@@ -1,20 +1,40 @@
-#ifndef BASEMODEL_H
+﻿#ifndef BASEMODEL_H
 #define BASEMODEL_H
 
 #include <osgEarthAnnotation/ModelNode>
+#include <osgEarthAnnotation/PlaceNode>
 #include <osgParticle/FireEffect>
 #include <osgParticle/SmokeTrailEffect>
 #include <osgParticle/SmokeEffect>
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/ExplosionDebrisEffect>
 #include <osgEarth/Registry>
+#include <osgGA/GUIEventHandler>
+#include <osgViewer/Viewer>
 
 #include <QObject>
+class BaseModel;
 
 class ModelAnimationPathCallback: public osg::AnimationPathCallback
 {
 public:
     void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
+};
+
+class  PickHandler: public osgGA::GUIEventHandler
+{
+public:
+    PickHandler(){}
+    virtual ~PickHandler()override{}
+protected:
+    bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+private:
+    void pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea);
+    void findSceneModels(osgViewer::Viewer* viewer);
+private:
+    BaseModel* mLastPushModel{nullptr};
+    BaseModel* mLastMoveModel{nullptr};
+    BaseModel* mCurrentModel{nullptr};
 };
 
 class BaseModel: public QObject, public osgEarth::Annotation::ModelNode
@@ -26,7 +46,7 @@ public:
     QString getType() const;
     void setQStringName(QString name);
     QString getQStringName();
-    void setGeographicPosition(const osg::Vec3d &pos);
+    virtual void setGeographicPosition(const osg::Vec3d &pos);
     osg::Vec3d getGeographicPosition() const;
     bool hasHit() const;
     BaseModel *getFollowModel() const;
@@ -38,9 +58,18 @@ signals:
     void hit(BaseModel *hitWith);
 protected:
     virtual void playExplosionEffect(float scale);
+    virtual void mousePushEvent(bool /*onModel*/, const osgGA::GUIEventAdapter& /*ea*/){}
+//    void mouseReleaseEvent(QMouseEvent* event);
+//    void mouseDoubleClickEvent(QMouseEvent* event);
+    virtual void mouseMoveEvent(bool /*onModel*/, const osgGA::GUIEventAdapter& /*ea*/){}
+    virtual void cameraRangeChanged(double /*range*/){}
+protected:
+    bool mIsSelected{false};
+    bool mIs3d{false};
 private:
     void collision(BaseModel *collidedWith);
     friend class ModelAnimationPathCallback;
+    friend class PickHandler;
 private:
     bool mHasHit{false};
     QString mType;

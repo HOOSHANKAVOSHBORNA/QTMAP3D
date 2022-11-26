@@ -12,6 +12,7 @@
 #include <osgEarthDrivers/tms/TMSOptions>
 #include <osgEarthDrivers/xyz/XYZOptions>
 #include <osgEarth/ImageLayer>
+#include <osgEarth/ModelLayer>
 #include <QFileDialog>
 #include <QLabel>
 #include <QLineEdit>
@@ -88,11 +89,10 @@ void ImageLayer::addXYZ()
         osgEarth::Drivers::XYZOptions opt;
         opt.url() = nodeName;
         opt.profile() = { "spherical-mercator" };
-
+        auto imageLayerOptions = osgEarth::ImageLayerOptions(nodeName, opt);
         osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
         mMap3dWidget->addLayer(layer);
-
-}
+    }
 }
 void ImageLayer::addArcGIS()
 {
@@ -275,7 +275,7 @@ void ImageLayer::addWMS()
         // Promt for the users to choose layers
         QStringList     layerNames = attribute.back().second.split(',');
         MultiChooseDlg  chooseDlg(static_cast<QWidget *>(parent()), layerNames);
-//        chooseDlg.exec();
+        //        chooseDlg.exec();
 
         int acceptedd = chooseDlg.exec();
         if (acceptedd == MultiChooseDlg::Accepted)
@@ -284,17 +284,17 @@ void ImageLayer::addWMS()
 
             if (chooseDlg.getCheckedItems().empty())
                 return;
-        osgEarth::Drivers::WMSOptions  opt;
-        opt.url()         = nodeName;
-        opt.layers()      = layersToShow.join(',').toLocal8Bit().toStdString();
-        opt.transparent() = true;
-        opt.format()      = "png";
-        opt.profile()     = { "EPSG:4326" };
+            osgEarth::Drivers::WMSOptions  opt;
+            opt.url()         = nodeName;
+            opt.layers()      = layersToShow.join(',').toLocal8Bit().toStdString();
+            opt.transparent() = true;
+            opt.format()      = "png";
+            opt.profile()     = { "EPSG:4326" };
 
-        osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mMap3dWidget->addLayer(layer);
+            osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
+            mMap3dWidget->addLayer(layer);
 
-    }
+        }
     }
 }
 

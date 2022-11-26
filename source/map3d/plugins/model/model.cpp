@@ -32,6 +32,7 @@
 #include <osgParticle/SmokeTrailEffect>
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/ExplosionDebrisEffect>
+#include <osgViewer/Viewer>
 
 //const QString FLYING = "Flying";
 const QString AIRPLANE = "Airplane";
@@ -343,11 +344,12 @@ void Model::addAirplaineModel(QString name, osg::Vec3d position)
     //osg::Vec3d position(52.8601, 35.277, 844);
 
     //create and setting model--------------------------------------------
-    osg::ref_ptr<Airplane> model = new Airplane(mMap3dWidget->getMapNode(), "../map3dlib/data/models/airplane-red.osgb");
+    osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../map3dlib/data/models/new-airplane-red.osgb");
+    osg::ref_ptr<Airplane> model = new Airplane(mMap3dWidget, mMap3dWidget->getMapNode(), node);
 //    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
     model->setName(name.toStdString());
     model->setGeographicPosition(position);
-    model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
+//    model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
 
     QObject::connect(model.get(), &BaseModel::positionChanged, [=](osgEarth::GeoPoint position){
         //positionChanged(AIRPLANE, name, position);

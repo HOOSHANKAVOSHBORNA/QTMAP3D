@@ -397,7 +397,7 @@ void Map3dWidget::createMapNode(bool isGeocentric)
     }
     mSkyNode->addChild(mMapNode);
     mMapRoot->addChild(mSkyNode);
-    mMapRoot->addChild(mMapNode);
+//    mMapRoot->addChild(mMapNode);
 
 }
 

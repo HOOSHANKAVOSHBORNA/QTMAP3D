@@ -13,10 +13,13 @@ int main(int argc, char *argv[])
 //    Q_UNUSED(server)
     //run demo ------------------------------------------------
     CreateData createData;
-    createData.createTargetinfo();
     QTimer *timer = new QTimer();
+    //createData.createTargetinfo();
     QObject::connect(timer, &QTimer::timeout, [&](){
-        server.sendMessageToAll(createData.updateTargetinfo());
+        createData.createTargetinfo();
+        createData.updateTargetinfo();
+        for(auto targetInfo:createData.targetList)
+            server.sendMessageToAll(targetInfo);
     });
     timer->start(10000);
     //---------------------------------------------------------

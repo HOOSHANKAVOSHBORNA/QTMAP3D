@@ -1,4 +1,4 @@
-#include "airplane.h"
+﻿#include "airplane.h"
 #include "draw.h"
 
 #include <QDebug>
@@ -8,31 +8,49 @@
 #include <osgViewer/View>
 #include <osgEarth/IntersectionPicker>
 #include <QMouseEvent>
+#include <osgEarthAnnotation/PlaceNode>
+#include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
+#include <osgEarthAnnotation/AnnotationUtils>
+#include <osg/Material>
+#include<osg/Switch>
 
 
-Airplane::Airplane(osgEarth::MapNode* mapNode, const QString &fileName, QObject *parent)
+
+Airplane::Airplane(Map3dWidget *value, osgEarth::MapNode *mapNode, osg::Node *node, QObject *parent)
     :BaseModel(mapNode, parent)
 {
-    osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile(fileName.toStdString());
-
+    mMap3dWidget = value;
     if (!node)
     {
         //todo show massage here
         return;
     }
-    //create style-------------------------------------------------------------------------------------------------
-    osgEarth::Symbology::Style  style;
-    //style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
-    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    //style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1000;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 0.09;
 
-//    setScale(osg::Vec3(0.09f,0.09f,0.09f));
-    setStyle(style);
-    //-------------------------------------------------------------------------------------------------------------
+    //create switch node for root--------------------------------------------------------------------
+    mRoot = new osg::Switch;
+    osgEarth::Symbology::Style  rootStyle;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRoot);
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    setStyle(rootStyle);
+    //--create icon Nodes---------------------------------------------------------------------------
+    osg::Image* redIcon = osgDB::readImageFile("../map3dlib/data/models/aircraft-red.png");
+    redIcon->scaleImage(64, 64, redIcon->r());
+    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
+    osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
+    //    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
+    redGeode->addDrawable(redImageDrawable);
+
+    osg::Image* yellowIcon = osgDB::readImageFile("../map3dlib/data/models/aircraft-yellow.png");
+    yellowIcon->scaleImage(64, 64, yellowIcon->r());
+    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
+    osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
+    yellowGeode->addDrawable(yellowImageDrawable);
+    //--add nods--------------------------------------------------------------------------------
+    mRoot->addChild(node, false);
+    mRoot->addChild(redGeode,true);
+    mRoot->addChild(yellowGeode,false);
+    //----------------------------------------------------------------------------------------
     //osg::Vec3d center = getBound().center();
     float radius = getBound().radius();
     float scale = 3;
@@ -47,6 +65,10 @@ Airplane::Airplane(osgEarth::MapNode* mapNode, const QString &fileName, QObject 
     //    mGeodeParticle->addDrawable(mSmoke->getParticleSystem());
     //    osgEarth::Registry::shaderGenerator().run(mGeodeParticle);// for textures or lighting
     //    getMapNode()->addChild(mGeodeParticle);
+
+
+
+
 }
 
 void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
@@ -54,7 +76,7 @@ void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
 
     if(mIsStop)
         return;
-//    heading = 30;
+    //    heading = 30;
     osgEarth::GeoPoint posGeo(getMapNode()->getMapSRS(), pos);
 
     osg::Vec3d currentPosW;
@@ -70,7 +92,7 @@ void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
     diffLocal.normalize();
 
     osg::Quat diffRotate;
-    diffRotate.makeRotate(-osg::Vec3d(0, 1, 0), diffLocal);
+    diffRotate.makeRotate(osg::Vec3d(0, 1, 0), diffLocal);
     //heading----------------------------------------------------------------------------------------------
     osg::Vec3d northVec(0, 1, 0);//in local
     osg::Vec3d headingVecLocal = northVec * osg::Matrixd::rotate(osg::inDegrees(-heading), osg::Z_AXIS);
@@ -83,11 +105,11 @@ void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
     osg::Vec3d headingVecW = headingVecLocal * osg::Matrixd::rotate(posLocalToWorld.getRotate());
 
     osg::Quat headingRotate;
-    headingRotate.makeRotate(-osg::Vec3d(0, 1, 0), headingVecLocal);
+    headingRotate.makeRotate(osg::Vec3d(0, 1, 0), headingVecLocal);
     //-------------------------------------------------------------------------------------------------------
     osg::Vec3d posEstimateW1 = posW + (headingVecW * 100.0);
     osg::Vec3d posEstimateW = posW + (headingVecW * 100000.0);
-//    qDebug()<<"estimatePos"<<estimatePos.z();
+    //    qDebug()<<"estimatePos"<<estimatePos.z();
     double timeEstimate = (posEstimateW - posW).length() / speed;
 
     osg::AnimationPath* path = new osg::AnimationPath();
@@ -102,17 +124,21 @@ void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
     mAnimationPathCallback->setAnimationPath(path);
     setUpdateCallback(mAnimationPathCallback);
 
-
+    //    osgEarth::Symbology::Style st = getStyle();
+    //    double y =  st.getOrCreate<osgEarth::Symbology::ModelSymbol>()->scaleY().value().eval();
+    //    qDebug()<<"getScale:"<<y;
 
     //    //draw line------------------------------------------------
-//            osg::Vec3Array* keyPoint = new osg::Vec3Array;
-//            keyPoint->push_back(currentPosW);
-//            keyPoint->push_back(posW);
-//            keyPoint->push_back(posEstimateW);
-//            getMapNode()->getParent(0)->getParent(0)->addChild(drawLine(keyPoint, 1.0));
-//            getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(currentPosW));
-//            getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(posW));
-//            getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(posEstimateW));
+    //    osg::Vec3Array* keyPoint = new osg::Vec3Array;
+    //    keyPoint->push_back(currentPosW);
+    //    keyPoint->push_back(posW);
+    //    keyPoint->push_back(posEstimateW);
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawLine(keyPoint, 1.0));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(currentPosW));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(posW));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(posEstimateW));
+
+    //----------------------------------------------------
 
 }
 
@@ -132,6 +158,79 @@ void Airplane::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
 osgEarth::Annotation::ModelNode *Airplane::getTruckModel() const
 {
     return mTruckModel;
+}
+
+void Airplane::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+{
+    select(onModel);
+    mIsSelected = onModel;
+
+//    //track node
+//    if(onModel)
+//        mMap3dWidget->setTrackNode(getGeoTransform());
+//    else
+//        mMap3dWidget->unTrackNode();
+
+}
+
+void Airplane::mouseMoveEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+{
+    if(!mIsSelected)
+    {
+        select(onModel);
+    }
+}
+
+void Airplane::cameraRangeChanged(double range)
+{
+    if(!mIs3d && range < 200)
+    {
+        osg::Callback* cl = getCullCallback();
+        while(cl)
+        {
+            osgEarth::Annotation::GeoPositionNodeAutoScaler* cullcb = dynamic_cast<osgEarth::Annotation::GeoPositionNodeAutoScaler*>(cl);
+            if(cullcb)
+            {
+                removeCullCallback(cl);
+            }
+            cl = cl->getNestedCallback();
+        }
+
+        mRoot->setValue(0, true);
+        mRoot->setValue(1, false);
+        mRoot->setValue(2, false);
+        osgEarth::Symbology::Style  style = getStyle();
+        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
+        setStyle(style);
+        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+        mIs3d = true;
+        select(mIsSelected);
+    }
+    if(mIs3d && range > 200)
+    {
+        osg::Callback* cl = getCullCallback();
+        while(cl)
+        {
+            osgEarth::Annotation::GeoPositionNodeAutoScaler* cullcb = dynamic_cast<osgEarth::Annotation::GeoPositionNodeAutoScaler*>(cl);
+            if(cullcb)
+            {
+                removeCullCallback(cl);
+            }
+            cl = cl->getNestedCallback();
+        }
+
+        mRoot->setValue(0, false);
+        mRoot->setValue(1, true);
+        mRoot->setValue(2, false);
+        osgEarth::Symbology::Style  style = getStyle();
+        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+        setStyle(style);
+        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+        mIs3d = false;
+        select(mIsSelected);
+    }
+
+    //    qDebug()<<"name:"<<getQStringName()<<" "<<range;
 }
 
 void Airplane::addEffect(double emitterDuration)
@@ -160,5 +259,24 @@ void Airplane::removeEffect()
     //remove smoke--------------------------------------------
     getMapNode()->removeChild(mSmoke->getParticleSystem());
     getPositionAttitudeTransform()->removeChild(mSmoke);
+}
+
+void Airplane::select(bool val)
+{
+    if(!mIs3d)
+    {
+        mRoot->setValue(0, false);
+        mRoot->setValue(1, !val);
+        mRoot->setValue(2, val);
+    }
+    else
+    {
+        osg::ref_ptr<osg::Material> mat = new osg::Material;
+        if(!val)
+            mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 0.0, 0.0, 1.0));
+        else
+            mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 0.0, 1.0));
+        getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    }
 }
 

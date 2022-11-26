@@ -3,6 +3,8 @@
 
 #include <QDebug>
 
+#include <osgEarthUtil/EarthManipulator>
+
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
     BaseModel* baseModel;
@@ -42,7 +44,27 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 geoPoint.fromWorld(baseModel->getMapNode()->getMapSRS(), cp.getPosition());
                 baseModel->setPosition(geoPoint);
                 baseModel->getPositionAttitudeTransform()->setScale(cp.getScale());
-                baseModel->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
+                if(baseModel->mIs3d)
+                    baseModel->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
+                else
+                {
+                    double angle;
+                    osg::Vec3 vec;
+                    cp.getRotation().getRotate(angle, vec);
+                    vec.x() = 0;
+                    vec.y() = 0;
+                    baseModel->getPositionAttitudeTransform()->setAttitude(osg::Quat(angle, vec));
+//                    qDebug()<<"angle:"<<osg::RadiansToDegrees(angle);
+//                    qDebug()<<"vec:"<<vec.x()<<","<<vec.y()<<","<<vec.z();
+
+                }
+
+                //                double angel;
+                //                osg::Vec3d vec;
+                //                cp.getRotation().getRotate(angel, vec);
+                //                osgEarth::Symbology::Style pm = baseModel->getPlaceNode()->getStyle();
+                //                pm.getOrCreate<osgEarth::Symbology::IconSymbol>()->heading() = osg::RadiansToDegrees(angel);
+                //                baseModel->getPlaceNode()->setStyle(pm);
                 //emit current position----------------------------------------------------------------------
                 positionCanged = true;
             }
@@ -60,11 +82,113 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
         emit baseModel->positionChanged(geoPoint);
 }
 
+
+bool PickHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+
+    osgViewer::Viewer *view = dynamic_cast<osgViewer::Viewer *>(&aa);
+
+    osgEarth::Util::EarthManipulator* camera;
+    switch (ea.getEventType())
+    {
+    case osgGA::GUIEventAdapter::FRAME:
+        camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(view->getCameraManipulator());
+        if(camera)
+        {
+            findSceneModels(view);
+        }
+        break;
+    case (osgGA::GUIEventAdapter::PUSH):
+        if (view)
+        {
+            pick(view, ea);
+            if(mCurrentModel) {mCurrentModel->mousePushEvent(true, ea);}
+            if(mLastPushModel && mLastPushModel != mCurrentModel)
+                mLastPushModel->mousePushEvent(false, ea);
+        }
+        mLastPushModel = mCurrentModel;
+        break;
+    case (osgGA::GUIEventAdapter::MOVE):
+        if (view)
+        {
+            pick(view, ea);
+            if(mCurrentModel) {mCurrentModel->mouseMoveEvent(true, ea);}
+            if(mLastMoveModel && mLastMoveModel != mCurrentModel)
+                mLastMoveModel->mouseMoveEvent(false, ea);
+        }
+        mLastMoveModel = mCurrentModel;
+        break;
+    case (osgGA::GUIEventAdapter::RELEASE):
+        break;
+    case (osgGA::GUIEventAdapter::SCROLL):
+        break;
+    case (osgGA::GUIEventAdapter::DOUBLECLICK):
+        break;
+    default:
+        break;
+    }
+    return false;
+}
+void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea)
+{
+    osg::Group* root = dynamic_cast<osg::Group*>(viewer->getSceneData());
+    if (!root) return;
+
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    mCurrentModel = nullptr;
+    if (viewer->computeIntersections(ea,intersections))
+    {
+        for(osgUtil::LineSegmentIntersector::Intersection hit : intersections)
+        {
+            const osg::NodePath& nodePath = hit.nodePath;
+            for(osg::NodePath::const_iterator nitr=nodePath.begin();
+                nitr!=nodePath.end();
+                ++nitr)
+            {
+                mCurrentModel = dynamic_cast<BaseModel*>(*nitr);
+                if (mCurrentModel)
+                    break;
+            }
+            if(mCurrentModel)
+                break;
+        }
+    }
+}
+
+void PickHandler::findSceneModels(osgViewer::Viewer *viewer)
+{
+//    const osg::NodePath& nodePath = viewer->getCoordinateSystemNodePath();
+//    for(osg::NodePath::const_iterator nitr=nodePath.begin();
+//        nitr!=nodePath.end();
+//        ++nitr)
+//    {
+//        BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
+        if (mLastPushModel)
+        {
+            osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
+            mLastPushModel->cameraRangeChanged(camera->getViewpoint().getRange());
+        }
+//    }
+}
+
+static bool addedEvent = false;
 BaseModel::BaseModel(osgEarth::MapNode *mapNode, QObject *parent):
     QObject(parent),
     osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
 {
+    //--add place node-------------------------------------------------------------------------------------------
+    //    osgEarth::Symbology::Style pm;
+    //    pm.getOrCreate<osgEarth::Symbology::IconSymbol>()->url()->setLiteral("/home/client110/Downloads/setting.png");
+    //    pm.getOrCreate<osgEarth::Symbology::IconSymbol>()->declutter() = true;
+    //    pm.getOrCreate<osgEarth::Symbology::TextSymbol>()->halo() = osgEarth::Color("#5f5f5f");
 
+    //    mPlaceNode = new osgEarth::Annotation::PlaceNode();
+    //getGeoTransform()->addChild(mPlaceNode);
+    if(!addedEvent)
+    {
+        addEventCallback(new PickHandler());
+        addedEvent = true;
+    }
 }
 
 QString BaseModel::getType() const
@@ -89,15 +213,17 @@ QString BaseModel::getQStringName()
 
 void BaseModel::setGeographicPosition(const osg::Vec3d &pos)
 {
-    osgEarth::GeoPoint  geoPoint(osgEarth::SpatialReference::get("wgs84"), pos);
+    osgEarth::GeoPoint  geoPoint(getMapNode()->getMapSRS()->getGeographicSRS(), pos);
     //transfer to map srs
     geoPoint.transformInPlace(getMapNode()->getMapSRS());
     setPosition(geoPoint);
 
+    //mPlaceNode->setPosition(geoPoint);
+
     //draw line------------------------------------------------
-//        osg::Vec3d worldpos;
-//        geoPoint.toWorld(worldpos);
-//        getMapNode()->addChild(drawCordination(worldpos + osg::Vec3d(0,2,0)));
+    //        osg::Vec3d worldpos;
+    //        geoPoint.toWorld(worldpos);
+    //        getMapNode()->addChild(drawCordination(worldpos + osg::Vec3d(0,2,0)));
 }
 
 osg::Vec3d BaseModel::getGeographicPosition() const
@@ -139,15 +265,15 @@ void BaseModel::playExplosionEffect(float scale)
 
     smoke->setTextureFileName("../map3dlib/data/images/smoke_p1.png");
 
-//    osgEarth::Registry::shaderGenerator().run(explosion3);
+    //    osgEarth::Registry::shaderGenerator().run(explosion3);
     pSphereGroup->addChild(explosion3);
-//    osgEarth::Registry::shaderGenerator().run(explosion4);
+    //    osgEarth::Registry::shaderGenerator().run(explosion4);
     pSphereGroup->addChild(explosion4);
 
-//    osgEarth::Registry::shaderGenerator().run(debris1);
+    //    osgEarth::Registry::shaderGenerator().run(debris1);
     pSphereGroup->addChild(debris1);
 
-//    osgEarth::Registry::shaderGenerator().run(smoke);
+    //    osgEarth::Registry::shaderGenerator().run(smoke);
     pSphereGroup->addChild(smoke);
     pSphereGroup->setPosition(worldPosition);
 
@@ -157,21 +283,21 @@ void BaseModel::playExplosionEffect(float scale)
 
 void BaseModel::collision(BaseModel *collidedWith)
 {
-//    qDebug()<<QString(getQStringName());
+    //    qDebug()<<QString(getQStringName());
     mHasHit = true;
-//    setPause(true);
-//    if(other != nullptr)
-//    {
-//        playExplosionEffect(1.0f);
-//        other->collision(nullptr);
-//    }
+    //    setPause(true);
+    //    if(other != nullptr)
+    //    {
+    //        playExplosionEffect(1.0f);
+    //        other->collision(nullptr);
+    //    }
     playExplosionEffect(1.0f);
     setNodeMask(false);
-//    mSmoke->setNodeMask(false);
-//    mSmoke->getParticleSystem()->setNodeMask(false);
-//    mFire->setNodeMask(false);
-//    mFire->getParticleSystem()->setNodeMask(false);
-//    //    getMapNode()->removeChild(this);
+    //    mSmoke->setNodeMask(false);
+    //    mSmoke->getParticleSystem()->setNodeMask(false);
+    //    mFire->setNodeMask(false);
+    //    mFire->getParticleSystem()->setNodeMask(false);
+    //    //    getMapNode()->removeChild(this);
 
     emit hit(collidedWith);
     stop();

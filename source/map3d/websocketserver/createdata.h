@@ -2,6 +2,7 @@
 #define CREATEDATA_H
 
 #include <QJsonDocument>
+#include <QList>
 
 
 
@@ -10,12 +11,12 @@ class CreateData
 public:
     CreateData();
     QJsonDocument createTargetinfo();
-    QJsonDocument updateTargetinfo();
+    void updateTargetinfo();
     QJsonDocument createRinfo();
     QJsonDocument createSinfo();
     QJsonDocument createMinfo();
-private:
-    QJsonDocument targetInfo;
+public:
+    QList<QJsonDocument> targetList;
 };
 
 #endif // CREATEDATA_H
