@@ -27,6 +27,7 @@ private:
     void drawEllipse();
     void drawRect();
     osgEarth::Symbology::Geometry* linePath = new osgEarth::Symbology::LineString();
+    osgEarth::Annotation::FeatureNode* pathNode;
 
 private slots:
     void onMouseClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
