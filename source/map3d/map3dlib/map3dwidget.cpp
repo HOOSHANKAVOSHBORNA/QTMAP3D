@@ -329,7 +329,7 @@ void Map3dWidget::typeChanged(bool isGeocentric)
 
 const SpatialReference *Map3dWidget::getMapSRS() const
 {
-    mMapNode->getMapSRS();
+    return mMapNode->getMapSRS();
 }
 
 void Map3dWidget::goPosition(double latitude, double longitude, double range)
@@ -395,6 +395,7 @@ void Map3dWidget::createMapNode(bool isGeocentric)
         mapOpt.profile() = ProfileOptions();
         mMapNode = new MapNode(new Map(mapOpt));
     }
+//    osgEarth::Registry::shaderGenerator().run(mMapNode);
     mSkyNode->addChild(mMapNode);
     mMapRoot->addChild(mSkyNode);
 //    mMapRoot->addChild(mMapNode);

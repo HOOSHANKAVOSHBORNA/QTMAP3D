@@ -35,8 +35,10 @@ public:
     //    osg::AnimationPath* createAnimationPath(const osg::Vec3d &pos1, const osg::Vec3d &pos2, float speed);
     void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
     void addTruckModel();
-    void addAirplaineModel(QString name, osg::Vec3d position);
+    void addAirplaineModel(QString name, osg::Vec3d position, double heading);
     void addRocketModel(osg::Vec3d position = osg::Vec3d(52.8601, 35.277, 846));
+    void addSystemModel(osg::Vec3d position);
+    void addStationModel(osg::Vec3d position);
 public slots:
     void clickedTrackNode(QString type ,QString name ,bool isClick);
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);

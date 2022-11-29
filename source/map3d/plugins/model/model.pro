@@ -24,6 +24,8 @@ SOURCES += \
     basemodel.cpp \
     model.cpp \
     rocket.cpp \
+    station.cpp \
+    system.cpp \
     trackmodelwidget.cpp \
     truck.cpp
 
@@ -33,6 +35,8 @@ HEADERS += \
     draw.h \
     model.h \
     rocket.h \
+    station.h \
+    system.h \
     trackmodelwidget.h \
     truck.h
 

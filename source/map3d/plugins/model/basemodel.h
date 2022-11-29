@@ -46,35 +46,36 @@ public:
     QString getType() const;
     void setQStringName(QString name);
     QString getQStringName();
-    virtual void setGeographicPosition(const osg::Vec3d &pos);
+    virtual void setGeographicPosition(const osg::Vec3d &pos, double heading);
     osg::Vec3d getGeographicPosition() const;
     bool hasHit() const;
     BaseModel *getFollowModel() const;
     void setFollowModel(BaseModel *followModel);
-    virtual void stop() = 0;
+    virtual void stop(){}
 
 signals:
     void positionChanged(osgEarth::GeoPoint pos);
     void hit(BaseModel *hitWith);
 protected:
     virtual void playExplosionEffect(float scale);
-    virtual void mousePushEvent(bool /*onModel*/, const osgGA::GUIEventAdapter& /*ea*/){}
+    virtual void mousePushEvent(bool /*onModel*/, const osgGA::GUIEventAdapter& /*ea*/);
 //    void mouseReleaseEvent(QMouseEvent* event);
 //    void mouseDoubleClickEvent(QMouseEvent* event);
-    virtual void mouseMoveEvent(bool /*onModel*/, const osgGA::GUIEventAdapter& /*ea*/){}
-    virtual void cameraRangeChanged(double /*range*/){}
+    virtual void mouseMoveEvent(bool /*onModel*/, const osgGA::GUIEventAdapter& /*ea*/);
+    virtual void cameraRangeChanged(double /*range*/);
 protected:
     bool mIsSelected{false};
     bool mIs3d{false};
+    osg::ref_ptr<osg::Switch> mRoot;
 private:
     void collision(BaseModel *collidedWith);
+    void select(bool val);
     friend class ModelAnimationPathCallback;
     friend class PickHandler;
 private:
     bool mHasHit{false};
     QString mType;
     BaseModel* mFollowModel{nullptr};
-
 };
 
 #endif // BASEMODEL_H

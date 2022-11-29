@@ -142,10 +142,14 @@ Truck::Truck(osgEarth::MapNode *mapNode, QObject *parent):
     mMoveAnimationPathCallback->setAnimationPath(path);
     setUpdateCallback(mMoveAnimationPathCallback);
     //--create style------------------------------------------------------------------------------------------
+    mRoot = new osg::Switch;
     osgEarth::Symbology::Style  style;
 //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(truckGroup);
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRoot);
     setStyle(style);
+
+    mRoot->addChild(truckGroup, true);
+    mIs3d = true;
 
 }
 

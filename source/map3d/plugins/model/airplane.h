@@ -25,13 +25,9 @@ public:
     void setTruckModel(osgEarth::Annotation::ModelNode* truckModel);
     osgEarth::Annotation::ModelNode *getTruckModel() const;
 protected:
-    void mousePushEvent(bool onModel, const osgGA::GUIEventAdapter& ea) override;
-    void mouseMoveEvent(bool onModel, const osgGA::GUIEventAdapter& ea) override;
-    void cameraRangeChanged(double range) override;
 private:
     void addEffect(double emitterDuration);
     void removeEffect();
-    void select(bool val);
 private:
     Map3dWidget* mMap3dWidget{nullptr};
     ModelAnimationPathCallback* mAnimationPathCallback{nullptr};
@@ -39,7 +35,6 @@ private:
 //    osg::ref_ptr<osg::Geode> mGeodeParticle;
     osg::ref_ptr<osgParticle::SmokeTrailEffect> mSmoke;
     osg::ref_ptr<osgParticle::FireEffect> mFire;
-    osg::ref_ptr<osg::Switch> mRoot;
 
     bool mIsStop{false};
 };

@@ -1,10 +1,12 @@
-#include "model.h"
+    #include "model.h"
 #include "map3dwidget.h"
 #include "toolbarwidget.h"
 #include "draw.h"
 #include "truck.h"
 #include "rocket.h"
 #include "websocketclient.h"
+#include "system.h"
+#include "station.h"
 
 #include <QDebug>
 #include <QMainWindow>
@@ -76,6 +78,12 @@ void Model::setUpUI()
     QString nameAddTruckModel = "Add Truck Model";
     mToolBar->addItem(cat, nameAddTruckModel, "qrc:/res/missleLauncher_2.png");
 
+    QString nameAddSystemModel = "Add System Model";
+    mToolBar->addItem(cat, nameAddSystemModel, "");
+
+    QString nameAddStationModel = "Add Station Model";
+    mToolBar->addItem(cat, nameAddStationModel, "");
+
     QString nameTrack = "Track Models";
     mToolBar->addItem(cat, nameTrack, "qrc:/res/tracking.png",true);
     //run demo ------------------------------------------------
@@ -89,7 +97,7 @@ void Model::setUpUI()
         {
             osg::Vec3d position(52.8601, 35.277, 9100);
             QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
-            addAirplaineModel(name, position);
+            addAirplaineModel(name, position, -30);
             //demo();
         }
         if(cat == category && name == nameAddRocketModel)
@@ -140,6 +148,16 @@ void Model::setUpUI()
         else if(cat == category && name == nameAddTruckModel)
         {
             addTruckModel();
+        }
+        else if(cat == category && name == nameAddSystemModel)
+        {
+            osg::Vec3d position(52.9, 35.3, 842.5);
+            addSystemModel(position);
+        }
+        else if(cat == category && name == nameAddStationModel)
+        {
+            osg::Vec3d position(53, 35.2, 842.5);
+            addStationModel(position);
         }
         if(cat == category && name == nameTrack)
         {
@@ -300,7 +318,7 @@ void Model::addTruckModel()
     osg::ref_ptr<Truck> model = new Truck(mMap3dWidget->getMapNode());
     QString name = TRUCK + QString::number(mModels[TRUCK].count());
     model->setName(name.toStdString());
-    model->setGeographicPosition(position);
+    model->setGeographicPosition(position, 0.0);
     //model->setLocalRotation(osg::Quat(osg::inDegrees(-30.0),osg::Z_AXIS));
     model->setScale(osg::Vec3(1,1,1));
 
@@ -338,7 +356,7 @@ void Model::addTruckModel()
     model->moveTo(nPosition,10);
 }
 
-void Model::addAirplaineModel(QString name, osg::Vec3d position)
+void Model::addAirplaineModel(QString name, osg::Vec3d position, double heading)
 {
 //    osg::Vec3d position(52.8601, 35.277, 9100);
     //osg::Vec3d position(52.8601, 35.277, 844);
@@ -348,7 +366,7 @@ void Model::addAirplaineModel(QString name, osg::Vec3d position)
     osg::ref_ptr<Airplane> model = new Airplane(mMap3dWidget, mMap3dWidget->getMapNode(), node);
 //    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
     model->setName(name.toStdString());
-    model->setGeographicPosition(position);
+    model->setGeographicPosition(position, heading);
 //    model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
 
     QObject::connect(model.get(), &BaseModel::positionChanged, [=](osgEarth::GeoPoint position){
@@ -397,7 +415,7 @@ void Model::addRocketModel(osg::Vec3d position)
     osg::ref_ptr<Rocket> model = new Rocket(mMap3dWidget->getMapNode());
     QString name = ROCKET + QString::number(mModels[ROCKET].count());
     model->setName(name.toStdString());
-    model->setGeographicPosition(position);
+    model->setGeographicPosition(position, 0.0);
     model->setScale(osg::Vec3(1,1,1));
 
     QObject::connect(model.get(), &BaseModel::positionChanged, [=](osgEarth::GeoPoint position){
@@ -427,6 +445,44 @@ void Model::addRocketModel(osg::Vec3d position)
         mModels[ROCKET].remove(QString(model->getName().c_str()));
         mTrackModelWidget->removeModel(ROCKET, QString(model->getName().c_str()));
     });
+}
+
+void Model::addSystemModel(osg::Vec3d position)
+{
+    //create and setting model--------------------------------------------
+    osg::ref_ptr<System> model = new System(mMap3dWidget->getMapNode());
+    QString name = "System" + QString::number(mModels["System"].count());
+    model->setName(name.toStdString());
+    model->setGeographicPosition(position, 0.0);
+    model->setScale(osg::Vec3(1,1,1));
+    //add to container-----------------------------------------------------
+    mModels["System"][name] = model;
+
+
+    //add to map ---------------------------------------------------------
+    mMap3dWidget->addNode(model);
+    //add to track widget ------------------------------------------------
+    mTrackModelWidget->addModel("System", name);
+    mTrackModelWidget->setModelPosition("System", name, position.x(), position.y(), position.z());
+}
+
+void Model::addStationModel(osg::Vec3d position)
+{
+    //create and setting model--------------------------------------------
+    osg::ref_ptr<Station> model = new Station(mMap3dWidget->getMapNode());
+    QString name = "Station" + QString::number(mModels["Station"].count());
+    model->setName(name.toStdString());
+    model->setGeographicPosition(position, 0.0);
+    model->setScale(osg::Vec3(1,1,1));
+    //add to container-----------------------------------------------------
+    mModels["Station"][name] = model;
+
+
+    //add to map ---------------------------------------------------------
+    mMap3dWidget->addNode(model);
+    //add to track widget ------------------------------------------------
+    mTrackModelWidget->addModel("Station", name);
+    mTrackModelWidget->setModelPosition("Station", name, position.x(), position.y(), position.z());
 }
 
 void Model::clickedTrackNode(QString type, QString name, bool isClick)
@@ -476,7 +532,7 @@ void Model::onMessageReceived(const QJsonDocument &message)
             model->flyTo(position, heading, speed);
         }
         else
-            addAirplaineModel(name, position);
+            addAirplaineModel(name, position, -heading);
 
 
     }

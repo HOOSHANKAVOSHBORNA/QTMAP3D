@@ -11,6 +11,7 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 #include <osgEarthAnnotation/AnnotationUtils>
+#include <osgEarthAnnotation/ImageOverlay>
 #include <osg/Material>
 #include<osg/Switch>
 
@@ -31,6 +32,11 @@ Airplane::Airplane(Map3dWidget *value, osgEarth::MapNode *mapNode, osg::Node *no
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRoot);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 100000000000;
+
+//    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
+//    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
+
     setStyle(rootStyle);
     //--create icon Nodes---------------------------------------------------------------------------
     osg::Image* redIcon = osgDB::readImageFile("../map3dlib/data/models/aircraft-red.png");
@@ -40,12 +46,15 @@ Airplane::Airplane(Map3dWidget *value, osgEarth::MapNode *mapNode, osg::Node *no
     //    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
     redGeode->addDrawable(redImageDrawable);
+//    osgEarth::Annotation::ImageOverlay*  redImageOverlay = new osgEarth::Annotation::ImageOverlay(getMapNode(), redIcon);
+//    redImageOverlay->setBounds(osgEarth::Bounds(0.0, 0.0, 64.0, 64.0));
 
     osg::Image* yellowIcon = osgDB::readImageFile("../map3dlib/data/models/aircraft-yellow.png");
     yellowIcon->scaleImage(64, 64, yellowIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->addDrawable(yellowImageDrawable);
+//    osgEarth::Annotation::ImageOverlay*  yellowImageOverlay = new osgEarth::Annotation::ImageOverlay(getMapNode(), yellowIcon);
     //--add nods--------------------------------------------------------------------------------
     mRoot->addChild(node, false);
     mRoot->addChild(redGeode,true);
@@ -160,79 +169,6 @@ osgEarth::Annotation::ModelNode *Airplane::getTruckModel() const
     return mTruckModel;
 }
 
-void Airplane::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
-{
-    select(onModel);
-    mIsSelected = onModel;
-
-//    //track node
-//    if(onModel)
-//        mMap3dWidget->setTrackNode(getGeoTransform());
-//    else
-//        mMap3dWidget->unTrackNode();
-
-}
-
-void Airplane::mouseMoveEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
-{
-    if(!mIsSelected)
-    {
-        select(onModel);
-    }
-}
-
-void Airplane::cameraRangeChanged(double range)
-{
-    if(!mIs3d && range < 200)
-    {
-        osg::Callback* cl = getCullCallback();
-        while(cl)
-        {
-            osgEarth::Annotation::GeoPositionNodeAutoScaler* cullcb = dynamic_cast<osgEarth::Annotation::GeoPositionNodeAutoScaler*>(cl);
-            if(cullcb)
-            {
-                removeCullCallback(cl);
-            }
-            cl = cl->getNestedCallback();
-        }
-
-        mRoot->setValue(0, true);
-        mRoot->setValue(1, false);
-        mRoot->setValue(2, false);
-        osgEarth::Symbology::Style  style = getStyle();
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
-        setStyle(style);
-        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-        mIs3d = true;
-        select(mIsSelected);
-    }
-    if(mIs3d && range > 200)
-    {
-        osg::Callback* cl = getCullCallback();
-        while(cl)
-        {
-            osgEarth::Annotation::GeoPositionNodeAutoScaler* cullcb = dynamic_cast<osgEarth::Annotation::GeoPositionNodeAutoScaler*>(cl);
-            if(cullcb)
-            {
-                removeCullCallback(cl);
-            }
-            cl = cl->getNestedCallback();
-        }
-
-        mRoot->setValue(0, false);
-        mRoot->setValue(1, true);
-        mRoot->setValue(2, false);
-        osgEarth::Symbology::Style  style = getStyle();
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-        setStyle(style);
-        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-        mIs3d = false;
-        select(mIsSelected);
-    }
-
-    //    qDebug()<<"name:"<<getQStringName()<<" "<<range;
-}
-
 void Airplane::addEffect(double emitterDuration)
 {
     //add fire-----------------------------------------------------------------------------------------------------
@@ -260,23 +196,3 @@ void Airplane::removeEffect()
     getMapNode()->removeChild(mSmoke->getParticleSystem());
     getPositionAttitudeTransform()->removeChild(mSmoke);
 }
-
-void Airplane::select(bool val)
-{
-    if(!mIs3d)
-    {
-        mRoot->setValue(0, false);
-        mRoot->setValue(1, !val);
-        mRoot->setValue(2, val);
-    }
-    else
-    {
-        osg::ref_ptr<osg::Material> mat = new osg::Material;
-        if(!val)
-            mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 0.0, 0.0, 1.0));
-        else
-            mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 0.0, 1.0));
-        getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-    }
-}
-

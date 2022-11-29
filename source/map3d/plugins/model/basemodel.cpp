@@ -5,6 +5,8 @@
 
 #include <osgEarthUtil/EarthManipulator>
 
+#include <osg/Material>
+
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
     BaseModel* baseModel;
@@ -106,7 +108,8 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapt
             if(mLastPushModel && mLastPushModel != mCurrentModel)
                 mLastPushModel->mousePushEvent(false, ea);
         }
-        mLastPushModel = mCurrentModel;
+        if(mCurrentModel)
+            mLastPushModel = mCurrentModel;
         break;
     case (osgGA::GUIEventAdapter::MOVE):
         if (view)
@@ -116,7 +119,8 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapt
             if(mLastMoveModel && mLastMoveModel != mCurrentModel)
                 mLastMoveModel->mouseMoveEvent(false, ea);
         }
-        mLastMoveModel = mCurrentModel;
+        if(mCurrentModel)
+            mLastMoveModel = mCurrentModel;
         break;
     case (osgGA::GUIEventAdapter::RELEASE):
         break;
@@ -145,6 +149,9 @@ void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& 
                 nitr!=nodePath.end();
                 ++nitr)
             {
+                auto pl = dynamic_cast<osgEarth::Annotation::PlaceNode*>(*nitr);
+                if (pl)
+                    qDebug()<<pl;
                 mCurrentModel = dynamic_cast<BaseModel*>(*nitr);
                 if (mCurrentModel)
                     break;
@@ -171,7 +178,7 @@ void PickHandler::findSceneModels(osgViewer::Viewer *viewer)
 //    }
 }
 
-static bool addedEvent = false;
+static bool mAddedEvent = false;
 BaseModel::BaseModel(osgEarth::MapNode *mapNode, QObject *parent):
     QObject(parent),
     osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
@@ -184,10 +191,10 @@ BaseModel::BaseModel(osgEarth::MapNode *mapNode, QObject *parent):
 
     //    mPlaceNode = new osgEarth::Annotation::PlaceNode();
     //getGeoTransform()->addChild(mPlaceNode);
-    if(!addedEvent)
+    if(!mAddedEvent)
     {
         addEventCallback(new PickHandler());
-        addedEvent = true;
+        mAddedEvent = true;
     }
 }
 
@@ -211,14 +218,16 @@ QString BaseModel::getQStringName()
     return QString(getName().c_str());
 }
 
-void BaseModel::setGeographicPosition(const osg::Vec3d &pos)
+void BaseModel::setGeographicPosition(const osg::Vec3d &pos, double heading)
 {
     osgEarth::GeoPoint  geoPoint(getMapNode()->getMapSRS()->getGeographicSRS(), pos);
     //transfer to map srs
     geoPoint.transformInPlace(getMapNode()->getMapSRS());
     setPosition(geoPoint);
 
-    //mPlaceNode->setPosition(geoPoint);
+    osgEarth::Symbology::Style pm = getStyle();
+    pm.getOrCreate<osgEarth::Symbology::ModelSymbol>()->heading() = heading;
+    setStyle(pm);
 
     //draw line------------------------------------------------
     //        osg::Vec3d worldpos;
@@ -317,4 +326,69 @@ void BaseModel::setFollowModel(BaseModel *followModel)
 bool BaseModel::hasHit() const
 {
     return mHasHit;
+}
+
+void BaseModel::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+{
+    if(ea.getButtonMask() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
+    {
+        select(onModel);
+        mIsSelected = onModel;
+    }
+}
+
+void BaseModel::mouseMoveEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+{
+    if(!mIsSelected)
+    {
+        select(onModel);
+    }
+}
+
+void BaseModel::cameraRangeChanged(double range)
+{
+
+    osgEarth::Symbology::Style  style = getStyle();
+    if(!mIs3d && range < 200)
+    {
+        setCullCallback(nullptr);
+        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
+        setStyle(style);
+        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+        mIs3d = true;
+        select(mIsSelected);
+    }
+    if(mIs3d && range > 200)
+    {
+        setCullCallback(nullptr);
+        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+        setStyle(style);
+        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+        mIs3d = false;
+        select(mIsSelected);
+    }
+}
+
+void BaseModel::select(bool val)
+{
+
+    if(!mIs3d)
+    {
+        mRoot->setValue(0, false);
+        mRoot->setValue(1, !val);
+        mRoot->setValue(2, val);
+    }
+    else
+    {
+        mRoot->setValue(0, true);
+        mRoot->setValue(1, false);
+        mRoot->setValue(2, false);
+
+        osg::ref_ptr<osg::Material> mat = new osg::Material;
+        if(!val)
+            mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 0.0, 0.0, 1.0));
+        else
+            mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 0.2f, 1.0));
+        getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    }
 }
