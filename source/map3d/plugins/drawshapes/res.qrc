@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>res/line.png</file>
+        <file>res/sphere.png</file>
+        <file>res/polygon.png</file>
+        <file>res/extroPolygon.png</file>
     </qresource>
 </RCC>

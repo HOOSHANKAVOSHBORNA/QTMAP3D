@@ -18,8 +18,9 @@ public:
 
 
 private:
+    bool cancelBtn;
     void drawLine();
-    void drawSphere();
+    osgEarth::Annotation::ModelNode* mDrawSphere(float radius);
     void drawPolygone();
     void drawExtrPoly();
     void drawImageOverlay();
@@ -30,8 +31,17 @@ private:
     osgEarth::Annotation::FeatureNode* pathNode;
 
 private slots:
-    void onMouseClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onLineBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onSphereBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onPolygoneBtnClick(QMouseEvent* event);
+    void onExtrPolyBtnClick(QMouseEvent* event);
+    void onImgOvlyBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onCircleBtnClick(QMouseEvent* event);
+    void onRectBtnClick(QMouseEvent* event);
+
     void onMouseMove(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+
+    osgEarth::Annotation::ModelNode* mSphere(float radius);
 };
 
 #endif // GENERICPLUGIN_H
