@@ -4,17 +4,17 @@
 
 Test1Plugin::Test1Plugin()
 {
-    Q_INIT_RESOURCE(Test1Plugin);
+    Q_INIT_RESOURCE(test1plugin);
 }
 
 bool Test1Plugin::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
 {
     pDesc->pluginHasSideItem = true;
     pDesc->sideItemMenuBarTitle = "Layers";
-    pDesc->sideItemMenuBarIconUrl = "qrc:///Test1Plugin/Resources/Layers.png";
-    pDesc->sideItemUrl = "qrc:///Test1Plugin/Layers.qml";
+    pDesc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
+    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
-    pDesc->toolboxItemsList.push_back(new ToolboxItemDesc{"One", "Two", "", true});
+    pDesc->toolboxItemsList.push_back(new ToolboxItemDesc{"One", "Two", "", true, false, ""});
 
     return true;
 }

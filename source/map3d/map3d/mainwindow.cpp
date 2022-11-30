@@ -61,24 +61,22 @@ void MainWindow::initializePluginsUI(std::list<CrystalPluginInfo> pluginsInfoLis
 {
 
     const auto simple_add_toolbox_item = [this](
-            QString name      = QString(),
-            QString category  = QString(),
-            QString iconUrl   = QString(),
-            bool    checkable = false,
-            bool    hasMenu   = false,
-            QString menuUrl   = QString()) {
+                    QString name      = QString(),
+                    QString category  = QString(),
+                    QString iconUrl   = QString(),
+                    bool    checkable = false,
+                    bool    hasMenu   = false,
+                    QString menuUrl   = QString()) {
         QVariant ret;
-        const auto item = new ToolboxItemDesc(
-                    name,
-                    category,
-                    iconUrl,
-                    checkable,
-                    hasMenu,
-                    menuUrl
-                    );
+        QObject obj;
+        obj.setProperty("name", QVariant::fromValue<QString>(name));
+        obj.setProperty("category", QVariant::fromValue<QString>(category));
+        obj.setProperty("iconUrl", QVariant::fromValue<QString>(iconUrl));
+        obj.setProperty("checkable", QVariant::fromValue<bool>(checkable));
+        obj.setProperty("hasMenu", QVariant::fromValue<bool>(hasMenu));
+        obj.setProperty("menuUrl", QVariant::fromValue<QString>(menuUrl));
         QMetaObject::invokeMethod(this, "addToolboxItem", Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret),
-                                  Q_ARG(QVariant, QVariant::fromValue<ToolboxItemDesc*>(item)));
-        delete item;
+                                  Q_ARG(QVariant, QVariant::fromValue<QObject*>(&obj)));
     };
 
     simple_add_toolbox_item("Amir",   "Jafari","qrc:/Resources/extrudepoly.png" ,true );
@@ -97,7 +95,9 @@ void MainWindow::initializePluginsUI(std::list<CrystalPluginInfo> pluginsInfoLis
 
 
 
+    qDebug() << "------------------------";
     for (auto& item : pluginsInfoList) {
+        qDebug() << "++++++++++++++++++++++++";
 
         if (item.qmlDesc->pluginHasSideItem) {
             QVariant ret;
@@ -118,12 +118,20 @@ void MainWindow::initializePluginsUI(std::list<CrystalPluginInfo> pluginsInfoLis
         }
 
         for (auto toolboxItemDesc : item.qmlDesc->toolboxItemsList) {
+            QObject obj;
+            obj.setProperty("name", QVariant::fromValue<QString>(toolboxItemDesc->name));
+            obj.setProperty("category", QVariant::fromValue<QString>(toolboxItemDesc->category));
+            obj.setProperty("iconUrl", QVariant::fromValue<QString>(toolboxItemDesc->iconUrl));
+            obj.setProperty("checkable", QVariant::fromValue<bool>(toolboxItemDesc->checkable));
+            obj.setProperty("hasMenu", QVariant::fromValue<bool>(toolboxItemDesc->hasMenu));
+            obj.setProperty("menuUrl", QVariant::fromValue<QString>(toolboxItemDesc->menuUrl));
+
             QVariant ret;
             QMetaObject::invokeMethod(this,
                                       "addToolboxItem",
                                       Qt::DirectConnection,
                                       Q_RETURN_ARG(QVariant, ret),
-                                      Q_ARG(QVariant, QVariant::fromValue<ToolboxItemDesc*>(toolboxItemDesc))
+                                      Q_ARG(QVariant, QVariant::fromValue<QObject*>(&obj))
                                       );
             bool bOk = false;
             const int idx = ret.toInt(&bOk);

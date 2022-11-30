@@ -41,3 +41,5 @@ target_link_libraries(Map3d
         )
 
 target_compile_definitions(Map3d PUBLIC EXTERNAL_RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources/")
+target_compile_definitions(Map3d PUBLIC PLUGINS_OUTPUT_DIR="${PLUGINS_OUTPUT_DIR}/")
+

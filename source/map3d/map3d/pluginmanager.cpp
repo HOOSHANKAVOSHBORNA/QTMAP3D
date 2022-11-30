@@ -17,8 +17,7 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
 
 void PluginManager::loadPlugins()
 {
-    QDir pluginsDir = QCoreApplication::applicationDirPath();
-    pluginsDir.cd("../../CPTest/build");
+    QDir pluginsDir(PLUGINS_OUTPUT_DIR);
 
     for (const QString& fileName : pluginsDir.entryList(QDir::Files)) {
 
@@ -31,13 +30,16 @@ void PluginManager::loadPlugins()
 
             QObject* instance = pluginLoader.instance();
 
+            qDebug() << "11111111111111111111111";
             if (!instance)
                 continue;
 
             PluginInterface *pluginInterface =
                     dynamic_cast<PluginInterface*>(instance);
 
+            qDebug() << "11111111111111111111111";
             if (pluginInterface) {
+                qDebug() << "22222222222222222222222";
                 CrystalPluginInfo cpi;
                 cpi.interface = pluginInterface;
                 cpi.qmlDesc    = new PluginQMLDesc;
