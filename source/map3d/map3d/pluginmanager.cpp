@@ -94,7 +94,7 @@ void PluginManager::onToolboxItemClicked(const QString &name, const QString &cat
         if (mToolboxItemsMap[category].contains(name)) {
                 PluginInterface* pInterface = mToolboxItemsMap[category][name];
                 if (pInterface) {
-                    pInterface->onToolboxItemClicked(name, category, nullptr);
+                    pInterface->onToolboxItemClicked(name, category);
                 }
         }
     }
