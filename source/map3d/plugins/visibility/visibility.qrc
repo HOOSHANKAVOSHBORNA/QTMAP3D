@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>res/visibility.png</file>
-    </qresource>
-</RCC>

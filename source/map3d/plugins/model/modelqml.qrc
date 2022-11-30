@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>trackwidget/Panel.qml</file>
-        <file>trackwidget/PanelItem.qml</file>
-        <file>trackwidget/trackwidget.qml</file>
-    </qresource>
-</RCC>

@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/Toolbox.png</file>
+        <file>Resources/Settings.png</file>
+        <file>Resources/Layers.png</file>
+        <file>Resources/File.png</file>
+        <file>Resources/zoomin-r.png</file>
+        <file>Resources/projection.png</file>
+        <file>Resources/home-r.png</file>
+        <file>Resources/geocentric.png</file>
+        <file>Resources/zoomout-r.png</file>
+        <file>Resources/chevron.png</file>
+        <file>Resources/head-pitch.png</file>
+        <file>Resources/rotate.png</file>
+        <file>Resources/compass.png</file>
+        <file>Resources/extrudepoly.png</file>
+        <file>Resources/sphere.png</file>
+        <file>Resources/rectangle.png</file>
+        <file>Resources/polygon.png</file>
+        <file>Resources/line.png</file>
+        <file>Resources/image.png</file>
+        <file>Resources/ellipse.png</file>
+        <file>Resources/circle.png</file>
+        <file>Resources/location.png</file>
+    </qresource>
+</RCC>

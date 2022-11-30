@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Main.qml</file>
+        <file>MenuWidget.qml</file>
+        <file>Toolbox.qml</file>
+        <file>NavigationWidget.qml</file>
+        <file>File.qml</file>
+        <file>Settings.qml</file>
+        <file>Layers.qml</file>
+        <file>SideWidget.qml</file>
+        <file>DelegateItem.qml</file>
+        <file>ControlCamera.qml</file>
+        <file>Compass.qml</file>
+        <file>LocationWidget.qml</file>
+        <file>GPointWidget.qml</file>
+        <file>Location.qml</file>
+        <file>SPointWidget.qml</file>
+    </qresource>
+</RCC>
