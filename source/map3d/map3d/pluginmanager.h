@@ -28,8 +28,6 @@ class PluginManager : public QObject
 public:
     explicit PluginManager(QObject *parent = nullptr);
 
-signals:
-
 public:
     void loadPlugins();
     void performPluginsInitQMLDesc(QQmlEngine *qmlEngine);

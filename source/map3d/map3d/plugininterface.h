@@ -25,14 +25,13 @@ class ToolboxItemDesc : public QObject
     Q_PROPERTY(QString menuUrl   READ menuUrl   WRITE setMenuUrl   NOTIFY menuUrlChanged)
 
 public:
-    ToolboxItemDesc() {}
     ToolboxItemDesc(
-            QString name,
-            QString category,
-            QString iconUrl,
-            bool    checkable,
-            bool    hasMenu,
-            QString menuUrl
+            QString name      = QString(),
+            QString category  = QString(),
+            QString iconUrl   = QString(),
+            bool    checkable = false,
+            bool    hasMenu   = false,
+            QString menuUrl   = QString()
             ) :
         mName     (name)     ,
         mCategory (category) ,
@@ -108,7 +107,7 @@ struct PluginQMLDesc
     QString        sideItemMenuBarIconUrl;
     QString        sideItemUrl;
 
-//    QList<ToolboxItemDesc*> toolboxItemsList;
+    QList<ToolboxItemDesc*> toolboxItemsList;
 };
 
 class PluginInterface
@@ -119,8 +118,7 @@ public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) = 0;
     virtual void onSideItemCreated(int index, QObject *sideItem) = 0;
     virtual void onToolboxItemClicked(const QString& name,
-                                      const QString& category,
-                                      QObject *menuItem) = 0;
+                                      const QString& category) = 0;
 
     virtual bool initialize3D(MapController *mapController) = 0;
 

@@ -140,7 +140,7 @@ void OsgController::initializeOsgEarth()
     mpOsgRenderer->setSceneData(mMapRoot);
 
     osgEarth::Drivers::GDALOptions gdal;
-    gdal.url() = "../../world.tif";
+    gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
     mMapNode->getMap()->addLayer(imlayer);
 }

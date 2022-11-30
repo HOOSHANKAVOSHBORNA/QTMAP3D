@@ -59,6 +59,44 @@ qreal MainWindow::headingAngle() const
 
 void MainWindow::initializePluginsUI(std::list<CrystalPluginInfo> pluginsInfoList)
 {
+
+    const auto simple_add_toolbox_item = [this](
+            QString name      = QString(),
+            QString category  = QString(),
+            QString iconUrl   = QString(),
+            bool    checkable = false,
+            bool    hasMenu   = false,
+            QString menuUrl   = QString()) {
+        QVariant ret;
+        const auto item = new ToolboxItemDesc(
+                    name,
+                    category,
+                    iconUrl,
+                    checkable,
+                    hasMenu,
+                    menuUrl
+                    );
+        QMetaObject::invokeMethod(this, "addToolboxItem", Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret),
+                                  Q_ARG(QVariant, QVariant::fromValue<ToolboxItemDesc*>(item)));
+        delete item;
+    };
+
+    simple_add_toolbox_item("Amir",   "Jafari","qrc:/Resources/extrudepoly.png" ,true );
+    simple_add_toolbox_item("Bagher", "Roodsarab","qrc:/Resources/geocentric.png" ,false);
+    simple_add_toolbox_item("Hasan",  "Roodsarabi","qrc:/Resources/geocentric.png" ,true);
+    simple_add_toolbox_item("Hasan1",  "Roodsarabi","qrc:/Resources/geocentric.png" ,false);
+    simple_add_toolbox_item("Hasan2",  "Roodsarabi","qrc:/Resources/geocentric.png" ,false);
+    simple_add_toolbox_item("Hasa3",  "Roodsara","qrc:/Resources/circle.png" ,true);
+    simple_add_toolbox_item("Hasa4",  "Roodsara","qrc:/Resources/ellipse.png" ,false);
+    simple_add_toolbox_item("Hasa5",  "Roodsara","qrc:/Resources/image.png" ,false);
+    simple_add_toolbox_item("Hasa6",  "Roodsara","qrc:/Resources/line.png" ,false);
+    simple_add_toolbox_item("Hasa7", "Roodsara", "qrc:/Resources/polygon.png" ,true);
+    simple_add_toolbox_item("Hasa8", "Roodsara", "qrc:/Resources/rectangle.png" ,true);
+    simple_add_toolbox_item("Hasa9",  "Roodsara","qrc:/Resources/sphere.png" ,false);
+    simple_add_toolbox_item("Hasa10",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
+
+
+
     for (auto& item : pluginsInfoList) {
 
         if (item.qmlDesc->pluginHasSideItem) {
@@ -79,19 +117,17 @@ void MainWindow::initializePluginsUI(std::list<CrystalPluginInfo> pluginsInfoLis
             }
         }
 
-//        for (auto toolboxItemDesc : item.qmlDesc->toolboxItemsList) {
-
-
-//            QVariant ret;
-//            QMetaObject::invokeMethod(this,
-//                                      "addToolboxItem",
-//                                      Qt::DirectConnection,
-//                                      Q_RETURN_ARG(QVariant, ret),
-//                                      Q_ARG(QVariant, QVariant::fromValue<ToolboxItemDesc*>(toolboxItemDesc))
-//                                      );
-//             bool bOk = false;
-//            const int idx = ret.toInt(&bOk);
-        //}
+        for (auto toolboxItemDesc : item.qmlDesc->toolboxItemsList) {
+            QVariant ret;
+            QMetaObject::invokeMethod(this,
+                                      "addToolboxItem",
+                                      Qt::DirectConnection,
+                                      Q_RETURN_ARG(QVariant, ret),
+                                      Q_ARG(QVariant, QVariant::fromValue<ToolboxItemDesc*>(toolboxItemDesc))
+                                      );
+            bool bOk = false;
+            const int idx = ret.toInt(&bOk);
+        }
     }
 }
 
