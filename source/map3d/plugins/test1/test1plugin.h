@@ -13,7 +13,7 @@
 #include <osgEarthAnnotation/ImageOverlay>
 #include <osgEarthAnnotation/ImageOverlayEditor>
 
-class Test1Plugin : public QObject, public PluginInterface
+class Test1Plugin : public PluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID PluginInterface_iid FILE "test1plugin.json")
