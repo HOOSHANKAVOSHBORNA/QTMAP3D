@@ -4,6 +4,15 @@
 
 #include "plugininterface.h"
 
+#include <osgEarthAnnotation/FeatureNode>
+#include <osgEarthAnnotation/ModelNode>
+#include <osg/Shader>
+#include <osg/ShapeDrawable>
+#include <osg/LineWidth>
+#include <osgEarthAnnotation/PlaceNode>
+#include <osgEarthAnnotation/ImageOverlay>
+#include <osgEarthAnnotation/ImageOverlayEditor>
+
 class Test1Plugin : public QObject, public PluginInterface
 {
     Q_OBJECT
@@ -19,6 +28,10 @@ public:
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
 
     virtual bool initialize3D(MapController *pMapController) override;
+private:
+    osgEarth::Annotation::ModelNode* makeBackground(MapController *pMapController, float radius);
+private:
+    MapController *mMapController;
 };
 
 #endif // CPTESTPLUGIN_H

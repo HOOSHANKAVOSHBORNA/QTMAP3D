@@ -79,12 +79,9 @@ void PluginManager::onSideItemCreated(int index, QObject *sideItem)
     }
 }
 
-void PluginManager::onToolboxItemCreated(const QString &name,
-                                         const QString &category,
-                                         QObject *menuItem,
-                                         PluginInterface *interface)
+void PluginManager::onToolboxItemCreated(ToolboxItemDescProxy *itemProxy)
 {
-    mToolboxItemsMap[category][name] = interface;
+    mToolboxItemsMap[itemProxy->category()][itemProxy->name()] = itemProxy->pluginInterface();
 }
 
 void PluginManager::onToolboxItemClicked(const QString &name, const QString &category)

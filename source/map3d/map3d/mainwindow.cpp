@@ -119,7 +119,7 @@ void MainWindow::initializePluginsUI(std::list<CrystalPluginInfo> pluginsInfoLis
 
         for (auto toolboxItemDesc : item.qmlDesc->toolboxItemsList) {
             QVariant ret;
-            ToolboxItemDescProxy proxy(*toolboxItemDesc);
+            ToolboxItemDescProxy proxy(*toolboxItemDesc, item.interface);
             QMetaObject::invokeMethod(this,
                                       "addToolboxItem",
                                       Qt::DirectConnection,

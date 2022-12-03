@@ -4,6 +4,8 @@
 #include <QQmlComponent>
 #include "osgquickwindow.h"
 
+#include "pluginmanager.h"
+
 class CrystalPluginInfo;
 class PluginInterface;
 
@@ -20,9 +22,7 @@ public:
 
 signals:
     void sideItemCreated(int index, QObject *pSideItem);
-    void toolboxItemCreated(const QString& itemName, const QString& categoryName,
-                            QObject *menuItem,
-                            PluginInterface *pInterface);
+    void toolboxItemCreated(ToolboxItemDescProxy *itemProxy);
     void toolboxItemClicked(const QString& itemName, const QString& categoryName);
 
     void homeButtonClicked();
