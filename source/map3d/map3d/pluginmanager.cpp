@@ -17,7 +17,8 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
 
 void PluginManager::loadPlugins()
 {
-    QDir pluginsDir(PLUGINS_OUTPUT_DIR);
+    QDir pluginsDir = QCoreApplication::applicationDirPath();
+    pluginsDir.cd("../plugins/bin");
 
     for (const QString& fileName : pluginsDir.entryList(QDir::Files)) {
 
