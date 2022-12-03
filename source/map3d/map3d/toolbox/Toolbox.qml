@@ -16,7 +16,7 @@ Item {
             anchors.fill: parent
             contentHeight: columnLayout.implicitHeight
             //ScrollBar.vertical.interactive: true
-
+            ScrollBar.vertical.interactive : false
             clip : true
             Item {
                 id: tmp

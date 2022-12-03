@@ -8,17 +8,18 @@ import Crystal 1.0
 MainWindow {
 
 
-    readonly property int       _iconSize   : 32
+    readonly  property int       _iconSize   : 32
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
     readonly property color     _colorRec   : "#404040"
     readonly property color     _colorHover : "#FFCC00"
     readonly property color     _colorPresed : "#908000"
     readonly property color     _colorIcon  : "#FFFFFF"
+    readonly property color     _colorButton: "#55FFFFFF"
     readonly property string    _fontFamily : "Srouce Sans Pro"
-    readonly property int    _fontPointSize : 11
-    readonly property color itemColor: "#404040"
-    readonly property real widgetsMargis: 10
+    readonly property int       _fontPointSize : 11
+    readonly property color     itemColor: "#404040"
+    readonly property real      widgetsMargis: 10
 
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
@@ -65,12 +66,12 @@ MainWindow {
         ListElement {
             title_text: "Toolbox"
             icon_url: "qrc:///Resources/Toolbox.png"
-            side_itemurl: "qrc:///Toolbox.qml"
+            side_itemurl: "qrc:/toolbox/Toolbox.qml"
         }
         ListElement {
             title_text: "Location"
             icon_url: "qrc:/Resources/location.png"
-            side_itemurl: "qrc:/Location.qml"
+            side_itemurl: "qrc:/location/Location.qml"
         }
 
     }

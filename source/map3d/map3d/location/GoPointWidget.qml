@@ -8,7 +8,7 @@ Rectangle{
     opacity: 0.8
     height:columnGo.implicitHeight * 1.3
     signal goPointClicked(real latitude , real longtitude, real range)
-    width: parent.width
+    width: parent.width / 2
     Column{
         id :columnGo
         spacing: 3
@@ -30,12 +30,12 @@ Rectangle{
                 hoverEnabled : true
                 font.family: _fontFamily
                 font.pointSize: _fontPointSize
-                color: "black"
+                color: "#FFFFFF"
                 validator: IntValidator {bottom: -90; top: 90}
                 background: Rectangle{
+                    color: _colorButton
                     radius: _radius
-                    border.width: 1
-                    border.color: pressAndHold ? _colorHover : "#FFFFFF"
+                    opacity: 0.3
                 }
 
 
@@ -46,7 +46,7 @@ Rectangle{
             height: 30
             hoverEnabled: true
             width: parent.width - _margin
-            text: "Go Point"
+            text: "Go To"
             font.family: _fontFamily
             font.pointSize: _fontPointSize
             onClicked:{
