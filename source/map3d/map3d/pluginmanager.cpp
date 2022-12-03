@@ -17,8 +17,7 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
 
 void PluginManager::loadPlugins()
 {
-    QDir pluginsDir = QCoreApplication::applicationDirPath();
-    pluginsDir.cd("../../CPTest/build");
+    QDir pluginsDir(PLUGINS_OUTPUT_DIR);
 
     for (const QString& fileName : pluginsDir.entryList(QDir::Files)) {
 
@@ -94,7 +93,7 @@ void PluginManager::onToolboxItemClicked(const QString &name, const QString &cat
         if (mToolboxItemsMap[category].contains(name)) {
                 PluginInterface* pInterface = mToolboxItemsMap[category][name];
                 if (pInterface) {
-                    pInterface->onToolboxItemClicked(name, category, nullptr);
+                    pInterface->onToolboxItemClicked(name, category);
                 }
         }
     }

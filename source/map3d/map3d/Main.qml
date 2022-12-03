@@ -142,19 +142,20 @@ MainWindow {
     function addSideItem(_title_text, _icon_url, _side_itemurl) {
         var new_index = sideItemsModel.count;
         sideItemsModel.append({"title_text": _title_text,
-                                  "icon_url": _icon_url,
-                                  "side_itemurl": _side_itemurl});
+                          "icon_url": _icon_url,
+                          "side_itemurl": _side_itemurl});
         return new_index;
     }
 
 
-    function addToolboxItem(_name, _category, _url, _checkable,
-                            _hasMenu, _menuUrl) {
+    function addToolboxItem(itemDesc) {
+
+
         const toolboxModelCount = toolboxModel.count;
         var category_found = false;
         var category_index = -1;
         for (var i = 0; i < toolboxModelCount; i++) {
-            if (toolboxModel.get(i).categoryName === _category) {
+            if (toolboxModel.get(i).categoryName === itemDesc.category) {
                 category_found = true;
                 category_index = i;
                 break;
@@ -164,26 +165,26 @@ MainWindow {
             const categoryModelCount = toolboxModel.get(category_index).categoryModel.count;
             var itemfound = false;
             for (var j = 0; j < categoryModelCount; j++) {
-                if (toolboxModel.get(category_index).categoryModel.get(j).itemName === _name) {
+                if (toolboxModel.get(category_index).categoryModel.get(j).itemName === itemDesc.name) {
                     itemfound = true;
                     break;
                 }
             }
             if (itemfound === false) {
-                toolboxModel.get(category_index).categoryModel.append({'itemName': _name,
-                                                                       'itemIcon' : _url,
-                                                                       'itemCheckable' : _checkable
-                                                                      });
+                toolboxModel.get(category_index).categoryModel.append({'itemName': itemDesc.name,
+                                                  'itemIcon' : itemDesc.iconUrl,
+                                                  'itemCheckable' : itemDesc.checkable
+                                              });
             } else {
                 return false;
             }
         } else {
-            toolboxModel.append({'categoryName': _category,
-                                    'categoryModel': listModelComponent.createObject(null, {})});
-            toolboxModel.get(toolboxModelCount).categoryModel.append({'itemName': _name,
-                                                                      'itemIcon' : _url,
-                                                                      'itemCheckable' : _checkable
-                                                                      });
+            toolboxModel.append({'categoryName': itemDesc.category,
+                            'categoryModel': listModelComponent.createObject(null, {})});
+            toolboxModel.get(toolboxModelCount).categoryModel.append({'itemName': itemDesc.name,
+                                             'itemIcon' : itemDesc.iconUrl,
+                                             'itemCheckable' : itemDesc.checkable
+                                         });
         }
 
         return true;
@@ -195,21 +196,7 @@ MainWindow {
         }
     }
 
-    Component.onCompleted: function() {
-        addToolboxItem("Amir",   "Jafari","qrc:/Resources/extrudepoly.png" ,true );
-        addToolboxItem("Bagher", "Roodsarab","qrc:/Resources/geocentric.png" ,false);
-        addToolboxItem("Hasan",  "Roodsarabi","qrc:/Resources/geocentric.png" ,true);
-        addToolboxItem("Hasan1",  "Roodsarabi","qrc:/Resources/geocentric.png" ,false);
-        addToolboxItem("Hasan2",  "Roodsarabi","qrc:/Resources/geocentric.png" ,false);
-        addToolboxItem("Hasa3",  "Roodsara","qrc:/Resources/circle.png" ,true);
-        addToolboxItem("Hasa4",  "Roodsara","qrc:/Resources/ellipse.png" ,false);
-        addToolboxItem("Hasa5",  "Roodsara","qrc:/Resources/image.png" ,false);
-        addToolboxItem("Hasa6",  "Roodsara","qrc:/Resources/line.png" ,false);
-        addToolboxItem("Hasa7", "Roodsara", "qrc:/Resources/polygon.png" ,true);
-        addToolboxItem("Hasa8", "Roodsara", "qrc:/Resources/rectangle.png" ,true);
-         addToolboxItem("Hasa9",  "Roodsara","qrc:/Resources/sphere.png" ,false);
-         addToolboxItem("Hasa10",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
-    }
+    Component.onCompleted: function() {    }
 
     NavigationWidget{
         id : navigationWidget
@@ -252,7 +239,7 @@ MainWindow {
         onBtnRotateUpClicked: {
             wnd.rotateUpButtonClicked();
         }
-       ///
+        ///
     }
     Compass{
         id:compass
@@ -270,6 +257,8 @@ MainWindow {
         anchors.bottomMargin:  widgetsMargis
         y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
     }
+
+
 
 
 }
