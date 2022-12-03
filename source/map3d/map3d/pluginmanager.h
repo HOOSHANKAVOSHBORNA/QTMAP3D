@@ -57,7 +57,7 @@ private:
     PluginInterface *_pluginInterface = nullptr;
 };
 
-struct CrystalPluginInfo
+struct PluginInfo
 {
     PluginInterface *interface = nullptr;
     PluginQMLDesc   *qmlDesc    = nullptr;
@@ -76,7 +76,7 @@ public:
     void performPluginsInitQMLDesc(QQmlEngine *qmlEngine);
     void performPluginsInit3D(MapController *mapController);
 
-    std::list<CrystalPluginInfo>& pluginsInfoList();
+    std::list<PluginInfo>& pluginsInfoList();
 
 public slots:
     void onSideItemCreated(int index, QObject *sideItem);
@@ -85,7 +85,7 @@ public slots:
                               const QString& category);
 
 private:
-    std::list<CrystalPluginInfo> mPluginsInfoList;
+    std::list<PluginInfo> mPluginsInfoList;
     QMap<QString, QMap<QString, PluginInterface*>> mToolboxItemsMap;
 };
 

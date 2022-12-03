@@ -57,7 +57,7 @@ qreal MainWindow::headingAngle() const
     return mheadingAngle;
 }
 
-void MainWindow::initializePluginsUI(std::list<CrystalPluginInfo> pluginsInfoList)
+void MainWindow::initializePluginsUI(std::list<PluginInfo> pluginsInfoList)
 {
 
     const auto simple_add_toolbox_item = [this](

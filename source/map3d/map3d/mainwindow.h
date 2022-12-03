@@ -6,7 +6,7 @@
 
 #include "pluginmanager.h"
 
-class CrystalPluginInfo;
+class PluginInfo;
 class PluginInterface;
 
 class MainWindow : public OsgQuickWindow
@@ -41,7 +41,7 @@ signals:
     void headingAngleChanged(qreal angle);
 
 public slots:
-    void initializePluginsUI(std::list<CrystalPluginInfo> pluginsInfoList);
+    void initializePluginsUI(std::list<PluginInfo> pluginsInfoList);
     void setHeadingAngle(qreal angle);
 
 protected:

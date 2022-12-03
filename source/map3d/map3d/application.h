@@ -10,7 +10,6 @@
 
 
 class MainWindow;
-class CRYSTAL_PLUGIN_QML_INPUT_DESC;
 class QQmlApplicationEngine;
 
 class Application : public QObject

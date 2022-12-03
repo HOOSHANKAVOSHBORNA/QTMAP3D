@@ -37,7 +37,7 @@ void PluginManager::loadPlugins()
                     dynamic_cast<PluginInterface*>(instance);
 
             if (pluginInterface) {
-                CrystalPluginInfo cpi;
+                PluginInfo cpi;
                 cpi.interface = pluginInterface;
                 cpi.qmlDesc    = new PluginQMLDesc;
                 cpi.sideItemIndex = -1;
@@ -61,7 +61,7 @@ void PluginManager::performPluginsInit3D(MapController *mapController)
     }
 }
 
-std::list<CrystalPluginInfo> &PluginManager::pluginsInfoList()
+std::list<PluginInfo> &PluginManager::pluginsInfoList()
 {
     return mPluginsInfoList;
 }
@@ -70,7 +70,7 @@ void PluginManager::onSideItemCreated(int index, QObject *sideItem)
 {
     const auto it = std::find_if(mPluginsInfoList.begin(),
                  mPluginsInfoList.end(),
-                 [index](const CrystalPluginInfo& item){
+                 [index](const PluginInfo& item){
         return (item.sideItemIndex == index);
     });
 
