@@ -6,14 +6,14 @@ Rectangle{
 
     property real longtitude: 0.0
     property real latitude: 0.0
-    signal savePointClicked(real latitude , real longtitude, real range)
+    signal savePointClicked(string name , string longtitude, string latitude)
 
 
     color: _colorRec
     radius: _radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.3
-    width: parent.width
+    width: parent.width / 2
     Column{
         id :columnGo
         spacing: 3
@@ -25,6 +25,7 @@ Rectangle{
             margins: _margin
         }
         TextField{
+            id:nameTextfeild
             height: 30
             width: parent.width - _margin
             anchors.topMargin: _margin
@@ -32,12 +33,11 @@ Rectangle{
             hoverEnabled : true
             font.family: _fontFamily
             font.pointSize: _fontPointSize
-            color: "black"
-            validator: IntValidator {bottom: -90; top: 90}
+            color: "#FFFFFF"
             background: Rectangle{
+                color: _colorButton
                 radius: _radius
-                border.width: 1
-                border.color: pressAndHold ? _colorHover : "#FFFFFF"
+                opacity: 0.3
             }
 
 
@@ -50,15 +50,15 @@ Rectangle{
                 width: parent.width - _margin
                 anchors.topMargin: _margin
                 text: modelData
-                color: "black"
+                color: "#FFFFFF"
                 padding : _margin
                 font.family: _fontFamily
                 font.pointSize: _fontPointSize
                 verticalAlignment : Text.AlignVCenter
                 background: Rectangle{
+                    color: _colorButton
                     radius: _radius
-                    border.width: 1
-                    border.color: _colorHover
+                    opacity: 0.3
                 }
 
 
@@ -68,12 +68,14 @@ Rectangle{
             id:btnGo
             height: 30
             hoverEnabled: true
-            width: parent.width - _margin
-            text: "Save Point"
+            width: parent.width - (_margin * 2)
+            text: "Save"
+            anchors.horizontalCenter: nameTextfeild.horizontalCenter
             font.family: _fontFamily
             font.pointSize: _fontPointSize
+
             onClicked:{
-                savePointClicked(repeter.itemAt(0).text, repeter.itemAt(1).text, repeter.itemAt(2).text)
+                savePointClicked(nameTextfeild.text, repeter.itemAt(0).text.split(":")[1], repeter.itemAt(1).text.split(":")[1])
             }
 
             contentItem:Text {
