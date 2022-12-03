@@ -148,6 +148,8 @@ MainWindow {
 
 
     function addToolboxItem(itemDesc) {
+
+
         const toolboxModelCount = toolboxModel.count;
         var category_found = false;
         var category_index = -1;
