@@ -1,5 +1,7 @@
 
 #include <iostream>
+
+#include <QMessageBox>
 #include "test1plugin.h"
 #include "mapcontroller.h"
 
