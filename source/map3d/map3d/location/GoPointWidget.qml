@@ -3,11 +3,12 @@ import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.13
 
 Rectangle{
+    id:root
     color: _colorRec
     radius: _radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.3
-    signal goPointClicked(real latitude , real longtitude, real range)
+    signal goToLocation(real latitude , real longtitude, real range)
     width: parent.width / 2
     Column{
         id :columnGo
@@ -52,7 +53,7 @@ Rectangle{
             font.family: _fontFamily
             font.pointSize: _fontPointSize
             onClicked:{
-                goPointClicked(parseFloat(repeter.itemAt(0).text), parseFloat(repeter.itemAt(1).text), parseFloat(repeter.itemAt(2).text))
+                root.goToLocation(parseFloat(repeter.itemAt(0).text), parseFloat(repeter.itemAt(1).text), parseFloat(repeter.itemAt(2).text))
             }
 
             contentItem:Text {

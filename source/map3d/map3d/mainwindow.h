@@ -43,10 +43,10 @@ signals:
 
     void headingAngleChanged(qreal angle);
     void mousePointedLocationChanged();
-    void goToLocation(qreal lat, qreal long, qreal range);
+    void goToLocation(qreal lat, qreal lon, qreal range);
 
 public slots:
-    void initializePluginsUI(std::list<PluginInfo> pluginsInfoList);
+    void initializePluginsUI(std::list<PluginInfo>& pluginsInfoList);
     void setHeadingAngle(qreal angle);
     void setMousePointedLocation(const QVector3D& pointedLoc);
 

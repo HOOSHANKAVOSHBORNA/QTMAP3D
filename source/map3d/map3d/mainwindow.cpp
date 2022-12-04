@@ -68,7 +68,7 @@ QVector3D MainWindow::mousePointedLocation() const
     return mMousePointedLocation;
 }
 
-void MainWindow::initializePluginsUI(std::list<PluginInfo> pluginsInfoList)
+void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
 {
 
     const auto simple_add_toolbox_item = [this](

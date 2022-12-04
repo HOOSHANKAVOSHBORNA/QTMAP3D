@@ -2,14 +2,18 @@ import QtQuick 2.13
 import QtQuick.Controls 2.13
 
 Item {
+    id:rootItem
+    property string txt
 
-    Button {
-        anchors.centerIn: parent
-        text: "OOOPS"
-
-        onClicked: function() {
-            console.log("OOPS clicked")
-        }
-
+    Rectangle {
+        anchors.fill: parent
+        color: "orangered"
     }
+
+    Label {
+        anchors.centerIn: parent
+        text: rootItem.txt
+        font.pointSize: 25
+    }
+
 }

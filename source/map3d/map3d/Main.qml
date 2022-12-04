@@ -142,10 +142,11 @@ MainWindow {
 
 
             case 3:
-                item.goPointClicked.connect(wnd.goToLocation);
+                item.goToLocation.connect(wnd.goToLocation);
                 break;
             }
 
+            wnd.sideItemCreated(index, item);
         }
     }
 
