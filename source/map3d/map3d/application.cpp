@@ -93,6 +93,9 @@ void Application::onMainWindowCreated()
     QObject::connect(mpMainWindow, &MainWindow::toolboxItemClicked,
                      mpPluginManager, &PluginManager::onToolboxItemClicked,
                      Qt::DirectConnection);
+    QObject::connect(mpMainWindow, &MainWindow::toolboxItemCheckedChanged,
+                     mpPluginManager, &PluginManager::onToolboxItemCheckedChanged,
+                     Qt::DirectConnection);
     QObject::connect(mpMainWindow, &MainWindow::osgInitialized,
                      this, &Application::initialize3D,
                      Qt::DirectConnection);

@@ -27,6 +27,9 @@ signals:
     void sideItemCreated(int index, QObject *pSideItem);
     void toolboxItemCreated(ToolboxItemDescProxy *itemProxy);
     void toolboxItemClicked(const QString& itemName, const QString& categoryName);
+    void toolboxItemCheckedChanged(const QString& itemName,
+                                   const QString& categoryName,
+                                   bool checked);
 
     void homeButtonClicked();
     void projectionButtonClicked();
