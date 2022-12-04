@@ -24,5 +24,9 @@
         <file>Resources/location.png</file>
         <file>Resources/info.png</file>
         <file>Resources/airplan.jpg</file>
+        <file>Resources/route.png</file>
+        <file>Resources/more.png</file>
+        <file>Resources/3D.png</file>
+        <file>Resources/tracking.png</file>
     </qresource>
 </RCC>

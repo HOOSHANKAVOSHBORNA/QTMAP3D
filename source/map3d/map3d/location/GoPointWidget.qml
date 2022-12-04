@@ -3,13 +3,35 @@ import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.13
 
 Rectangle{
+
+    signal goToLocation(real latitude , real longitude, real range)
+
+
     id:root
     color: _colorRec
     radius: _radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.3
-    signal goToLocation(real latitude , real longtitude, real range)
-    width: parent.width / 2
+     width: parent.width / 2
+     ListModel{
+         id : listelemnt
+         ListElement{
+              placeholdername: "latitude"
+              rangebottem : -180.0
+              rangetop : 180.0
+         }
+         ListElement{
+              placeholdername: "longitude"
+              rangebottem : -90.0
+              rangetop : 90.0
+         }
+         ListElement{
+              placeholdername: "Range"
+              rangebottem : 0
+              rangetop : 50000
+         }
+     }
+
     Column{
         id :columnGo
         spacing: 3
@@ -22,17 +44,17 @@ Rectangle{
         }
         Repeater{
             id:repeter
-            model:["latitude" ,"longtitude","Range"]
+            model:listelemnt
             delegate: TextField{
                 height: 30
                 width: parent.width
                 anchors.topMargin: _margin
-                placeholderText: modelData
+                placeholderText: placeholdername
                 hoverEnabled : true
                 font.family: _fontFamily
                 font.pointSize: _fontPointSize
                 color: "#FFFFFF"
-                validator:  DoubleValidator {bottom: -90.0; top: 90.0}
+                validator:  DoubleValidator {bottom:rangebottem ; top: rangetop ; decimals:5 }
                 background: Rectangle{
                     color: _colorButton
                     radius: _radius
@@ -53,6 +75,7 @@ Rectangle{
             font.family: _fontFamily
             font.pointSize: _fontPointSize
             onClicked:{
+                console.log(parseFloat(repeter.itemAt(0).text))
                 root.goToLocation(parseFloat(repeter.itemAt(0).text), parseFloat(repeter.itemAt(1).text), parseFloat(repeter.itemAt(2).text))
             }
 
