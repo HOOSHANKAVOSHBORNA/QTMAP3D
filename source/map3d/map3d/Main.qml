@@ -73,7 +73,11 @@ MainWindow {
             icon_url: "qrc:/Resources/location.png"
             side_itemurl: "qrc:/location/Location.qml"
         }
-
+        ListElement {
+            title_text: "Info"
+            icon_url: "qrc:/Resources/info.png"
+            side_itemurl: "qrc:/infotarget/InfoTarget.qml"
+        }
     }
 
     property var toolboxModel: ListModel {

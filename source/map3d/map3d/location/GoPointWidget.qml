@@ -24,7 +24,7 @@ Rectangle{
             model:["latitude" ,"longtitude","Range"]
             delegate: TextField{
                 height: 30
-                width: parent.width - _margin
+                width: parent.width
                 anchors.topMargin: _margin
                 placeholderText: modelData
                 hoverEnabled : true
@@ -45,7 +45,9 @@ Rectangle{
             id:btnGo
             height: 30
             hoverEnabled: true
-            width: parent.width - _margin
+            width: parent.width - (_margin * 2 )
+            anchors.horizontalCenter: parent.horizontalCenter
+
             text: "Go To"
             font.family: _fontFamily
             font.pointSize: _fontPointSize

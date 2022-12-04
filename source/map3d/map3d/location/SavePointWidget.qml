@@ -6,6 +6,8 @@ Rectangle{
 
     property real longtitude: 0.0
     property real latitude: 0.0
+    property real pitch: 0.0
+    property real  range: 0.0
     signal savePointClicked(string name , string longtitude, string latitude)
 
 
@@ -27,7 +29,7 @@ Rectangle{
         TextField{
             id:nameTextfeild
             height: 30
-            width: parent.width - _margin
+            width: parent.width
             anchors.topMargin: _margin
             placeholderText: "name"
             hoverEnabled : true
@@ -38,32 +40,54 @@ Rectangle{
                 color: _colorButton
                 radius: _radius
                 opacity: 0.3
+                width: parent.width
             }
 
 
         }
-        Repeater{
-            id:repeter
-            model:["Lon :" + longtitude  ,"Lat :" + latitude]
-            delegate: Label{
-                height: 30
-                width: parent.width - _margin
-                anchors.topMargin: _margin
-                text: modelData
-                color: "#FFFFFF"
-                padding : _margin
-                font.family: _fontFamily
-                font.pointSize: _fontPointSize
-                verticalAlignment : Text.AlignVCenter
-                background: Rectangle{
-                    color: _colorButton
-                    radius: _radius
-                    opacity: 0.3
+        Rectangle{
+            color: _colorButton
+            opacity: 0.3
+            radius: _radius
+            height: 70
+            width: parent.width
+            Column{
+                anchors{
+                    top: parent.top
+                    bottom: parent.bottom
+                    left: parent.left
+                    right: parent.right
+                    margins: _margin
+                }
+                spacing: 1
+                Repeater{
+                    id:repeter
+                    model:["Lon :" + longtitude  ,"Lat :" + latitude, "Range :" + range, "Pitch :" + pitch]
+                    delegate: Label{
+                        height: 10
+                        width: parent.width
+                        anchors.topMargin: _margin
+                        text: modelData
+                        color: "#FFFFFF"
+
+                        font.family: _fontFamily
+                        font.pointSize: _fontPointSize - 2
+                        verticalAlignment : Text.AlignVCenter
+                        //                background: Rectangle{
+                        //                    color: _colorButton
+                        //                    radius: _radius
+                        //                    opacity: 0.3
+                        //                }
+
+
+                    }
                 }
 
-
             }
+
         }
+
+
         Button{
             id:btnGo
             height: 30

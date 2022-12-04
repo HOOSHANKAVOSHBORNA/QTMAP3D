@@ -22,5 +22,7 @@
         <file>Resources/ellipse.png</file>
         <file>Resources/circle.png</file>
         <file>Resources/location.png</file>
+        <file>Resources/info.png</file>
+        <file>Resources/airplan.jpg</file>
     </qresource>
 </RCC>

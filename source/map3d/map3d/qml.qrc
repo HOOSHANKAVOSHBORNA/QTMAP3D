@@ -16,5 +16,9 @@
         <file>location/SavePointWidget.qml</file>
         <file>toolbox/DelegateItem.qml</file>
         <file>toolbox/Toolbox.qml</file>
+        <file>infotarget/InfoTarget.qml</file>
+        <file>infotarget/InfoMapTarget.qml</file>
+        <file>infotarget/InfoJson.qml</file>
+        <file>infotarget/ListTarget.qml</file>
     </qresource>
 </RCC>
