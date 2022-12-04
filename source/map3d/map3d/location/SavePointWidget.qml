@@ -8,13 +8,14 @@ Rectangle{
     property real latitude: 0.0
     property real pitch: 0.0
     property real range: 0.0
+    property real head: 0.0
 
     signal savePointClicked(string name , string longitude, string latitude)
 
     color: _colorRec
     radius: _radius
     opacity: 0.8
-    height:columnGo.implicitHeight * 1.3
+    height:columnGo.implicitHeight * 1.2
     width: parent.width / 2
     Column{
         id :columnGo
@@ -24,7 +25,9 @@ Rectangle{
             bottom: parent.bottom
             left: parent.left
             right: parent.right
-            margins: _margin
+            leftMargin: _margin / 5
+            rightMargin: _margin / 5
+            topMargin : _margin
         }
         TextField{
             id:nameTextfeild
@@ -46,10 +49,10 @@ Rectangle{
 
         }
         Rectangle{
-            color: _colorButton
-            opacity: 0.3
+            color:Qt.lighter(_colorButton,.5) //_colorButton
+            //opacity: 0.3
             radius: _radius
-            height: 70
+            height: parent.width  / 1.2
             width: parent.width
             Column{
                 anchors{
@@ -65,22 +68,23 @@ Rectangle{
                 spacing: 3
                 Repeater{
                     id:repeter
-                    model:["Lon :" + Number(longitude).toLocaleString(Qt.locale(), 'f', 3),
-                        "Lat :" +    Number(latitude).toLocaleString(Qt.locale(), 'f', 3),
-                        "Range :" +  Number(range).toLocaleString(Qt.locale(), 'e', 2),
-                        "Pitch :" +  Number(pitch).toLocaleString(Qt.locale(), 'f', 3)]
+                    model:["Lon: " + Number(longitude).toLocaleString(Qt.locale(), 'f', 3),
+                        "Lat: " +    Number(latitude).toLocaleString(Qt.locale(), 'f', 3),
+                        "Range: " +  Number(range).toLocaleString(Qt.locale(), 'e', 2),
+                        "Pitch: " +  Number(pitch).toLocaleString(Qt.locale(), 'f', 3),
+                        "Head: " +  Number(head).toLocaleString(Qt.locale(), 'f', 3)
+                    ]
                     delegate: Label{
-                        height: 10
+                        height: 20
                         width: parent.width
                         anchors.topMargin: _margin
                         text: modelData
-                        color: "#FFFFFF"
-
+                        color: "#EEFFFFFF"
+                        padding: 1
                         font.family: _fontFamily
-                        font.pointSize: _fontPointSize - 1
+                        font.pointSize: _fontPointSize
                         verticalAlignment : Text.AlignVCenter
-
-
+                        opacity: 1
                     }
                 }
 

@@ -12,25 +12,25 @@ Rectangle{
     radius: _radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.3
-     width: parent.width / 2
-     ListModel{
-         id : listelemnt
-         ListElement{
-              placeholdername: "latitude"
-              rangebottem : -180.0
-              rangetop : 180.0
-         }
-         ListElement{
-              placeholdername: "longitude"
-              rangebottem : -90.0
-              rangetop : 90.0
-         }
-         ListElement{
-              placeholdername: "Range"
-              rangebottem : 0
-              rangetop : 50000
-         }
-     }
+    width: parent.width / 2
+    ListModel{
+        id : listelemnt
+        ListElement{
+            placeholdername: "latitude"
+            rangebottem : -180.0
+            rangetop : 180.0
+        }
+        ListElement{
+            placeholdername: "longitude"
+            rangebottem : -90.0
+            rangetop : 90.0
+        }
+        ListElement{
+            placeholdername: "Range"
+            rangebottem : 0
+            rangetop : 5000000
+        }
+    }
 
     Column{
         id :columnGo
@@ -40,7 +40,9 @@ Rectangle{
             bottom: parent.bottom
             left: parent.left
             right: parent.right
-            margins: _margin
+            leftMargin: _margin / 5
+            rightMargin: _margin / 5
+            topMargin : _margin
         }
         Repeater{
             id:repeter
@@ -54,6 +56,10 @@ Rectangle{
                 font.family: _fontFamily
                 font.pointSize: _fontPointSize
                 color: "#FFFFFF"
+                onPressed:{
+                    text = ""
+                }
+
                 validator:  DoubleValidator {bottom:rangebottem ; top: rangetop ; decimals:5 }
                 background: Rectangle{
                     color: _colorButton
@@ -75,8 +81,13 @@ Rectangle{
             font.family: _fontFamily
             font.pointSize: _fontPointSize
             onClicked:{
-                console.log(parseFloat(repeter.itemAt(0).text))
-                root.goToLocation(parseFloat(repeter.itemAt(0).text), parseFloat(repeter.itemAt(1).text), parseFloat(repeter.itemAt(2).text))
+                if(repeter.itemAt(0).text !=="" &&
+                   repeter.itemAt(1).text !=="" &&
+                   repeter.itemAt(2).text !==""){
+                    root.goToLocation(parseFloat(repeter.itemAt(0).text),
+                                      parseFloat(repeter.itemAt(1).text),
+                                      parseFloat(repeter.itemAt(2).text))
+                }
             }
 
             contentItem:Text {

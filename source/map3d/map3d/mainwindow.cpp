@@ -61,6 +61,8 @@ MainWindow::MainWindow(QWindow *parent) :
                      this, &MainWindow::setFocalPointRange);
     QObject::connect(mMapController, &MapController::focalPointPitchChanged,
                      this, &MainWindow::setFocalPointPitch);
+    QObject::connect(mMapController, &MapController::focalPointHeadChanged,
+                     this, &MainWindow::setFocalPointHead);
 }
 
 MainWindow::~MainWindow()
@@ -97,6 +99,11 @@ qreal MainWindow::focalPointRange() const
 qreal MainWindow::focalPointPitch() const
 {
     return mFocalPointPitch;
+}
+
+qreal MainWindow::focalPointHead() const
+{
+    return mFocalPointHead;
 }
 
 void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
@@ -220,6 +227,14 @@ void MainWindow::setFocalPointPitch(qreal focalPointPitch)
     if (mFocalPointPitch != focalPointPitch) {
         mFocalPointPitch = focalPointPitch;
         emit focalPointPitchChanged();
+    }
+}
+
+void MainWindow::setFocalPointHead(qreal focalPointHead)
+{
+    if (mFocalPointHead != focalPointHead) {
+        mFocalPointHead = focalPointHead;
+        emit focalPointHeadChanged();
     }
 }
 

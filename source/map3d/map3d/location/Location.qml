@@ -6,11 +6,11 @@ Item {
     id:rootItem
     signal goToLocation(real latitude , real longitude, real range)
 
-    property real longtitude: wnd.focalPointLong
-    property real latitude: wnd.focalPointLat
-    property real pitch: wnd.focalPointPitch
-    property real range: wnd.focalPointRange
-
+    property real longitude
+    property real latitude
+    property real pitch
+    property real range
+    property real head
     property var listSaveLocation: ListModel {
 
     }
@@ -64,10 +64,11 @@ Item {
             addListSaveLocation(name,longitude,latitude);
         }
 
-        longitude: rootItem.longtitude
+        longitude: rootItem.longitude
         latitude: rootItem.latitude
         pitch: rootItem.pitch
         range: rootItem.range
+        head : rootItem.head
 
 
     }

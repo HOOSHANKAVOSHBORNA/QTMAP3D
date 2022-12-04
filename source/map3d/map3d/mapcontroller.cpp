@@ -213,6 +213,7 @@ void MapController::frame()
         emit focalPointLongChanged(pointLatLong.y());
         emit focalPointRangeChanged(vp.range().get().getValue());
         emit focalPointPitchChanged(vp.pitch().get().getValue());
+        emit focalPointHeadChanged(vp.heading().get().getValue());
 
     }
 

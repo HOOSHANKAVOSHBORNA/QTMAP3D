@@ -32,6 +32,7 @@ signals:
     void focalPointLongChanged (qreal focalPointLong);
     void focalPointRangeChanged(qreal focalPointRange);
     void focalPointPitchChanged(qreal focalPointPitch);
+    void focalPointHeadChanged(qreal focalPointHead);
 
 public:
     osgViewer::Viewer *getViewer();
