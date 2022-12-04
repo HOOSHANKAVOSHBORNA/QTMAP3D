@@ -4,7 +4,7 @@ import QtGraphicalEffects 1.13
 import QtQuick.Layouts 1.12
 Item {
     id:rootItem
-    signal goToLocation(real latitude , real longtitude, real range)
+    signal goToLocation(real latitude , real longitude, real range)
 
     property real longtitude: wnd.focalPointLong
     property real latitude: wnd.focalPointLat
@@ -14,7 +14,7 @@ Item {
     property var listSaveLocation: ListModel {
 
     }
-    function addListSaveLocation( _namelocation,  _longtitude, _latitude){
+    function addListSaveLocation( _namelocation,  _longitude, _latitude){
         const listSaveLocationCount = listSaveLocation.count;
         var category_found = false;
         var category_index = -1;
@@ -27,7 +27,7 @@ Item {
         }
         if (category_found !== true) {
             listSaveLocation.append({"Name"       : _namelocation,
-                                     "Longtitude" : _longtitude,
+                                     "Longitude" : _longitude,
                                      "Latitude"   : _latitude})
         }
     }
@@ -51,7 +51,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 30
         onLocationClicked: {
-            console.log(name,longtitude,latitude)
+            console.log(name,longitude,latitude)
         }
     }
 
@@ -61,10 +61,10 @@ Item {
         anchors.topMargin: 5
 
         onSavePointClicked: {
-            addListSaveLocation(name,longtitude,latitude);
+            addListSaveLocation(name,longitude,latitude);
         }
 
-        longtitude: rootItem.longtitude
+        longitude: rootItem.longtitude
         latitude: rootItem.latitude
         pitch: rootItem.pitch
         range: rootItem.range

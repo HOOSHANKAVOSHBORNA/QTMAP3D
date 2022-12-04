@@ -38,6 +38,7 @@ Item{
         anchors{
             top: header.bottom
             bottom: parent.bottom
+            bottomMargin: _margin * 3.5
         }
         color: "#FFFFFF"
         width: parent.width
@@ -46,6 +47,7 @@ Item{
          anchors{
              top: header.bottom
              bottom: parent.bottom
+             bottomMargin: _margin * 3
          }
          width: parent.width
          spacing: 5
@@ -71,6 +73,33 @@ Item{
          ListTarget{
              height: parent.height / 6
              width: parent.width - _widgetmargin
+         }
+
+     }
+     ListButton{
+         listbutton: list
+         width: parent.width - _widgetmargin
+         anchors.top: backgrand.bottom
+         anchors.bottom: parent.bottom
+         //anchors.topMargin: _margin
+     }
+     ListModel{
+         id:list
+         ListElement{
+             buttonName : "3D view"
+             buttonIcon : "qrc:/Resources/3D.png"
+         }
+         ListElement{
+             buttonName : "route"
+             buttonIcon : "qrc:/Resources/route.png"
+         }
+         ListElement{
+             buttonName : "Follow"
+             buttonIcon : "qrc:/Resources/tracking.png"
+         }
+         ListElement{
+             buttonName : "more"
+             buttonIcon : "qrc:/Resources/more.png"
          }
      }
 

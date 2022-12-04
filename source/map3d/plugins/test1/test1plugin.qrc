@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/test1plugin">
-        <file>resources/Layers.png</file>
-        <file>Layers.qml</file>
-    </qresource>
-</RCC>

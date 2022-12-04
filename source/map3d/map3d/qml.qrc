@@ -20,5 +20,6 @@
         <file>infotarget/InfoMapTarget.qml</file>
         <file>infotarget/InfoJson.qml</file>
         <file>infotarget/ListTarget.qml</file>
+        <file>infotarget/ListButton.qml</file>
     </qresource>
 </RCC>
