@@ -20,8 +20,6 @@ class OsgController : public QObject
 
     Q_OBJECT
 
-public:
-
 protected:
     explicit OsgController(QQuickWindow *window);
     virtual ~OsgController();

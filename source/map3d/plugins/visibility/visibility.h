@@ -34,11 +34,11 @@ private slots:
 private:
     osgEarth::Annotation::FeatureNode* makepolygan(QVector<osg::Vec3d> vertices);
     osgEarth::Annotation::ModelNode* makeBackground(float radius);
-    osgEarth::Annotation::ModelNode* makeIconModel();
+    osgEarth::Annotation::ModelNode *makeIconNode();
 private:
     osg::ref_ptr<osgEarth::Annotation::ModelNode>  mBackVisibilityNode{nullptr};
     osg::ref_ptr<osgEarth::Annotation::FeatureNode> mVisibilityNode{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::ModelNode> mIconModel{nullptr};
+    osg::ref_ptr<osgEarth::Annotation::ModelNode> mIconModelNode{nullptr};
     MapController* mMapController{nullptr};
 };
 
