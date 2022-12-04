@@ -35,7 +35,7 @@ void PluginManager::loadPlugins()
                 continue;
 
             PluginInterface *pluginInterface =
-                    dynamic_cast<PluginInterface*>(instance);
+                            dynamic_cast<PluginInterface*>(instance);
 
             if (pluginInterface) {
                 PluginInfo cpi;
@@ -70,8 +70,8 @@ std::list<PluginInfo> &PluginManager::pluginsInfoList()
 void PluginManager::onSideItemCreated(int index, QObject *sideItem)
 {
     const auto it = std::find_if(mPluginsInfoList.begin(),
-                 mPluginsInfoList.end(),
-                 [index](const PluginInfo& item){
+                                 mPluginsInfoList.end(),
+                                 [index](const PluginInfo& item){
         return (item.sideItemIndex == index);
     });
 
@@ -89,10 +89,23 @@ void PluginManager::onToolboxItemClicked(const QString &name, const QString &cat
 {
     if (mToolboxItemsMap.contains(category)) {
         if (mToolboxItemsMap[category].contains(name)) {
-                PluginInterface* pInterface = mToolboxItemsMap[category][name];
-                if (pInterface) {
-                    pInterface->onToolboxItemClicked(name, category);
-                }
+            PluginInterface* pInterface = mToolboxItemsMap[category][name];
+            if (pInterface) {
+                pInterface->onToolboxItemClicked(name, category);
+            }
         }
     }
+}
+
+void PluginManager::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+{
+    if (mToolboxItemsMap.contains(category)) {
+        if (mToolboxItemsMap[category].contains(name)) {
+            PluginInterface* pInterface = mToolboxItemsMap[category][name];
+            if (pInterface) {
+                pInterface->onToolboxItemCheckedChanged(name, category, checked);
+            }
+        }
+    }
+
 }

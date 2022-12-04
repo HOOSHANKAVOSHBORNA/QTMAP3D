@@ -138,6 +138,7 @@ MainWindow {
             case 2:
                 item.toolboxModel = wnd.toolboxModel;
                 item.itemClicked.connect(wnd.toolboxItemClicked);
+                item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                 break;
 
 

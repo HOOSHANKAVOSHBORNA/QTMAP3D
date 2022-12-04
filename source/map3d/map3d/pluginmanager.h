@@ -83,6 +83,9 @@ public slots:
     void onToolboxItemCreated(ToolboxItemDescProxy *itemProxy);
     void onToolboxItemClicked(const QString& name,
                               const QString& category);
+    void onToolboxItemCheckedChanged(const QString& name,
+                                     const QString& category,
+                                     bool checked);
 
 private:
     std::list<PluginInfo> mPluginsInfoList;

@@ -60,12 +60,15 @@ public:
     PluginInterface(QObject *parent = nullptr) : QObject(parent) { }
     virtual ~PluginInterface() { }
 
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) = 0;
-    virtual void onSideItemCreated(int index, QObject *sideItem) = 0;
+    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {}
+    virtual void onSideItemCreated(int index, QObject *sideItem) {}
     virtual void onToolboxItemClicked(const QString& name,
-                                      const QString& category) = 0;
+                                      const QString& category) {}
+    virtual void onToolboxItemCheckedChanged(const QString& name,
+                                             const QString& category,
+                                             bool checked) {}
 
-    virtual bool initialize3D(MapController *mapController) = 0;
+    virtual bool initialize3D(MapController *mapController) {}
 
 };
 

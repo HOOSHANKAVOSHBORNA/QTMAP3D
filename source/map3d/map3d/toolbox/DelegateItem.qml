@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 Item {
     readonly property int round: 5
     signal itemClicked(string itemname, string category_name);
-    signal changeCheckable(bool check)
+    signal changeCheckable(string itemname, string category_name, bool check)
     id :delegateItem
     clip: true
     Rectangle {
@@ -48,7 +48,7 @@ Item {
                     font.pointSize: _fontPointSize - 1
                     opacity: 1
                     onClicked: function() {
-                        delegateItem.changeCheckable(checked)
+                        delegateItem.changeCheckable(itemName, categoryName, checked)
                         delegateItem.itemClicked(itemName, categoryName);
                     }
 

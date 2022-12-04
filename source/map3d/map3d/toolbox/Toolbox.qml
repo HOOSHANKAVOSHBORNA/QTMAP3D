@@ -8,7 +8,7 @@ Item {
     id : rootItem
     readonly property int margin: 5
     signal itemClicked(string itemname, string category_name);
-    signal changeCheckable(bool check)
+    signal changeCheckable(string itemname, string category_name, bool check)
 
     property var toolboxModel
         ScrollView {
@@ -37,7 +37,7 @@ Item {
                             rootItem.itemClicked(itemname, category_name)
                         }
                         onChangeCheckable: {
-                            rootItem.changeCheckable(check)
+                            rootItem.changeCheckable(itemname, category_name, check)
                         }
                     }
                 }
