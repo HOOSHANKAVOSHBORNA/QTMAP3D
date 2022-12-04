@@ -28,6 +28,11 @@ signals:
     void mouseEvent(QMouseEvent* event, const osgEarth::GeoPoint& geoPos);
     void mousePointedLocationChanged(QVector3D location);
 
+    void focalPointLatChanged  (qreal focalPointLat);
+    void focalPointLongChanged (qreal focalPointLong);
+    void focalPointRangeChanged(qreal focalPointRange);
+    void focalPointPitchChanged(qreal focalPointPitch);
+
 public:
     osgViewer::Viewer *getViewer();
     osgEarth::Util::EarthManipulator *getEarthManipulator();

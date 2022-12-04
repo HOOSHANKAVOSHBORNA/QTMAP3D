@@ -196,6 +196,22 @@ void MapController::toggleProjection()
 void MapController::frame()
 {
     emit headingAngleChanged(-getViewpoint().getHeading());
+
+    const auto vp = mpEarthManipulator->getViewpoint();
+    const auto fp = vp.focalPoint();
+    if (fp.isSet()) {
+        const osgEarth::GeoPoint mapPoint = fp.get();
+        osgEarth::GeoPoint  pointLatLong;
+        mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), pointLatLong);
+
+
+        emit focalPointLatChanged(pointLatLong.x());
+        emit focalPointLongChanged(pointLatLong.y());
+        emit focalPointRangeChanged(vp.range().get().getValue());
+        emit focalPointPitchChanged(vp.pitch().get().getValue());
+
+    }
+
 }
 
 void MapController::panUp()

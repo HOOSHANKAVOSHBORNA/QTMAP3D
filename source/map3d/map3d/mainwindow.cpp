@@ -9,7 +9,7 @@
 #include "pluginmanager.h"
 
 MainWindow::MainWindow(QWindow *parent) :
-    OsgQuickWindow(parent)
+        OsgQuickWindow(parent)
 {
 
     QObject::connect(this, &MainWindow::homeButtonClicked,
@@ -51,6 +51,16 @@ MainWindow::MainWindow(QWindow *parent) :
                      this, &MainWindow::setMousePointedLocation);
     QObject::connect(this, &MainWindow::goToLocation,
                      mMapController, &MapController::goToPosition);
+
+
+    QObject::connect(mMapController, &MapController::focalPointLatChanged,
+                     this, &MainWindow::setFocalPointLat);
+    QObject::connect(mMapController, &MapController::focalPointLongChanged,
+                     this, &MainWindow::setFocalPointLong);
+    QObject::connect(mMapController, &MapController::focalPointRangeChanged,
+                     this, &MainWindow::setFocalPointRange);
+    QObject::connect(mMapController, &MapController::focalPointPitchChanged,
+                     this, &MainWindow::setFocalPointPitch);
 }
 
 MainWindow::~MainWindow()
@@ -68,6 +78,27 @@ QVector3D MainWindow::mousePointedLocation() const
     return mMousePointedLocation;
 }
 
+qreal MainWindow::focalPointLat() const
+{
+    return mFocalPointLat;
+}
+
+qreal MainWindow::focalPointLong() const
+{
+    return mFocalPointLong;
+}
+
+qreal MainWindow::focalPointRange() const
+{
+    return mFocalPointRange;
+
+}
+
+qreal MainWindow::focalPointPitch() const
+{
+    return mFocalPointPitch;
+}
+
 void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
 {
 
@@ -80,31 +111,31 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
                     QString menuUrl   = QString()) {
         QVariant ret;
         const ToolboxItemDesc desc(
-                    name     ,
-                    category ,
-                    iconUrl  ,
-                    checkable,
-                    hasMenu  ,
-                    menuUrl  );
+                                name     ,
+                                category ,
+                                iconUrl  ,
+                                checkable,
+                                hasMenu  ,
+                                menuUrl  );
 
         ToolboxItemDescProxy proxy(desc);
         QMetaObject::invokeMethod(this, "addToolboxItem", Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret),
                                   Q_ARG(QVariant, QVariant::fromValue<ToolboxItemDescProxy*>(&proxy)));
     };
 
-//    simple_add_toolbox_item("Amir",   "Jafari","qrc:/Resources/extrudepoly.png" ,true );
-//    simple_add_toolbox_item("Bagher", "Roodsarab","qrc:/Resources/geocentric.png" ,false);
-//    simple_add_toolbox_item("Hasan",  "Roodsarabi","qrc:/Resources/geocentric.png" ,true);
-//    simple_add_toolbox_item("Hasan1",  "Roodsarabi","qrc:/Resources/geocentric.png" ,false);
-//    simple_add_toolbox_item("Hasan2",  "Roodsarabi","qrc:/Resources/geocentric.png" ,false);
-//    simple_add_toolbox_item("Hasa3",  "Roodsara","qrc:/Resources/circle.png" ,true);
-//    simple_add_toolbox_item("Hasa4",  "Roodsara","qrc:/Resources/ellipse.png" ,false);
-//    simple_add_toolbox_item("Hasa5",  "Roodsara","qrc:/Resources/image.png" ,false);
-//    simple_add_toolbox_item("Hasa6",  "Roodsara","qrc:/Resources/line.png" ,false);
-//    simple_add_toolbox_item("Hasa7", "Roodsara", "qrc:/Resources/polygon.png" ,true);
-//    simple_add_toolbox_item("Hasa8", "Roodsara", "qrc:/Resources/rectangle.png" ,true);
-//    simple_add_toolbox_item("Hasa9",  "Roodsara","qrc:/Resources/sphere.png" ,false);
-//    simple_add_toolbox_item("Hasa10",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
+    //    simple_add_toolbox_item("Amir",   "Jafari","qrc:/Resources/extrudepoly.png" ,true );
+    //    simple_add_toolbox_item("Bagher", "Roodsarab","qrc:/Resources/geocentric.png" ,false);
+    //    simple_add_toolbox_item("Hasan",  "Roodsarabi","qrc:/Resources/geocentric.png" ,true);
+    //    simple_add_toolbox_item("Hasan1",  "Roodsarabi","qrc:/Resources/geocentric.png" ,false);
+    //    simple_add_toolbox_item("Hasan2",  "Roodsarabi","qrc:/Resources/geocentric.png" ,false);
+    //    simple_add_toolbox_item("Hasa3",  "Roodsara","qrc:/Resources/circle.png" ,true);
+    //    simple_add_toolbox_item("Hasa4",  "Roodsara","qrc:/Resources/ellipse.png" ,false);
+    //    simple_add_toolbox_item("Hasa5",  "Roodsara","qrc:/Resources/image.png" ,false);
+    //    simple_add_toolbox_item("Hasa6",  "Roodsara","qrc:/Resources/line.png" ,false);
+    //    simple_add_toolbox_item("Hasa7", "Roodsara", "qrc:/Resources/polygon.png" ,true);
+    //    simple_add_toolbox_item("Hasa8", "Roodsara", "qrc:/Resources/rectangle.png" ,true);
+    //    simple_add_toolbox_item("Hasa9",  "Roodsara","qrc:/Resources/sphere.png" ,false);
+    //    simple_add_toolbox_item("Hasa10",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
 
 
 
@@ -156,6 +187,39 @@ void MainWindow::setMousePointedLocation(const QVector3D &pointedLoc)
     if (mMousePointedLocation != pointedLoc) {
         mMousePointedLocation = pointedLoc;
         emit mousePointedLocationChanged();
+    }
+}
+
+void MainWindow::setFocalPointLat(qreal focalPointLat)
+{
+    if (mFocalPointLat != focalPointLat) {
+        mFocalPointLat = focalPointLat;
+        emit focalPointLatChanged();
+    }
+}
+
+void MainWindow::setFocalPointLong(qreal focalPointLong)
+{
+    if (mFocalPointLong != focalPointLong) {
+        mFocalPointLong = focalPointLong;
+        emit focalPointLongChanged();
+    }
+}
+
+void MainWindow::setFocalPointRange(qreal focalPointRange)
+{
+    if (mFocalPointRange != focalPointRange) {
+        mFocalPointRange = focalPointRange;
+        emit focalPointRangeChanged();
+    }
+
+}
+
+void MainWindow::setFocalPointPitch(qreal focalPointPitch)
+{
+    if (mFocalPointPitch != focalPointPitch) {
+        mFocalPointPitch = focalPointPitch;
+        emit focalPointPitchChanged();
     }
 }
 

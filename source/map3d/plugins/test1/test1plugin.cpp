@@ -26,8 +26,6 @@ bool Test1Plugin::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
 void Test1Plugin::onSideItemCreated(int index, QObject *pSideItem)
 {
 
-    qDebug() << "$$$$$$$$$$$$$$$$$$$$$$$$$";
-
     QTimer *timer = new QTimer;
     QObject::connect(timer, &QTimer::timeout, [this, pSideItem]()mutable{
         static int n = 0;

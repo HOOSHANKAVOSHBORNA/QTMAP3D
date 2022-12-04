@@ -7,7 +7,7 @@ Rectangle{
     property real longtitude: 0.0
     property real latitude: 0.0
     property real pitch: 0.0
-    property real  range: 0.0
+    property real range: 0.0
     signal savePointClicked(string name , string longtitude, string latitude)
 
 
@@ -62,7 +62,10 @@ Rectangle{
                 spacing: 1
                 Repeater{
                     id:repeter
-                    model:["Lon :" + longtitude  ,"Lat :" + latitude, "Range :" + range, "Pitch :" + pitch]
+                    model:["Lon :" + Number(longtitude).toLocaleString(Qt.locale(), 'f', 3),
+                        "Lat :" +    Number(latitude).toLocaleString(Qt.locale(), 'f', 3),
+                        "Range :" +  Number(range).toLocaleString(Qt.locale(), 'f', 3),
+                        "Pitch :" +  Number(pitch).toLocaleString(Qt.locale(), 'f', 3)]
                     delegate: Label{
                         height: 10
                         width: parent.width

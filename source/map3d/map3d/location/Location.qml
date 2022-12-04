@@ -6,6 +6,11 @@ Item {
     id:rootItem
     signal goToLocation(real latitude , real longtitude, real range)
 
+    property real longtitude: wnd.focalPointLong
+    property real latitude: wnd.focalPointLat
+    property real pitch: wnd.focalPointPitch
+    property real range: wnd.focalPointRange
+
     property var listSaveLocation: ListModel {
 
     }
@@ -26,6 +31,7 @@ Item {
                                      "Latitude"   : _latitude})
         }
     }
+
 
     GoPointWidget{
         id:gPointWidget
@@ -57,6 +63,13 @@ Item {
         onSavePointClicked: {
             addListSaveLocation(name,longtitude,latitude);
         }
+
+        longtitude: rootItem.longtitude
+        latitude: rootItem.latitude
+        pitch: rootItem.pitch
+        range: rootItem.range
+
+
     }
 
 }
