@@ -44,14 +44,14 @@ void MapController::mapMouseEvent(QMouseEvent *event, const osg::Vec3d &worldPos
 {
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(getMapSRS(), worldPos);
-    osgEarth::GeoPoint  geographicPos = geoPos.transform(osgEarth::SpatialReference::get("wgs84"));
+    osgEarth::GeoPoint  geographicPos = geoPos.transform(getMapSRS()->getGeocentricSRS()->getGeographicSRS());
 
     emit mousePointedLocationChanged(QVector3D(
                                          static_cast<float>(geographicPos.x()),
                                          static_cast<float>(geographicPos.y()),
                                          static_cast<float>(geographicPos.z())));
 
-    emit mouseEvent(event, geoPos);
+    emit mouseEvent(event, geoPos, worldPos);
 }
 
 osgViewer::Viewer *MapController::getViewer()
@@ -74,6 +74,10 @@ osgEarth::Viewpoint MapController::getViewpoint() const
 osgEarth::MapNode *MapController::getMapNode()
 {
     return mMapNode;
+}
+osg::ref_ptr<osg::Group> MapController::getRoot() const
+{
+    return mMapRoot;
 }
 
 const osgEarth::SpatialReference *MapController::getMapSRS() const

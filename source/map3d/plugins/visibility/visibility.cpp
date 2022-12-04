@@ -30,7 +30,7 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
             QObject::connect(mMapController,&MapController::mouseEvent, this, &Visibility::onMouseEvent);
-            mMapController->addNode(mIconModel);
+            mMapController->addNode(mIconModelNode);
         }
         else
         {
@@ -39,7 +39,7 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
             mMapController->removeNode(mBackVisibilityNode);
             mMapController->removeNode(mVisibilityNode);
 
-            mMapController->removeNode(mIconModel);
+            mMapController->removeNode(mIconModelNode);
         }
     }
 }
@@ -47,11 +47,11 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
 bool Visibility::initialize3D(MapController *mapController)
 {
     mMapController = mapController;
-    mIconModel = makeIconModel();
+    mIconModelNode = makeIconNode();
     return true;
 }
 
-void Visibility::onMouseEvent(QMouseEvent *event, osgEarth::GeoPoint geoPos)
+void Visibility::onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos)
 {
     if(event->button() == Qt::MouseButton::LeftButton && event->type() ==  QEvent::Type::MouseButtonPress)
     {
@@ -93,7 +93,7 @@ void Visibility::onMouseEvent(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 
     if(event->type() ==  QEvent::Type::MouseMove)
     {
-        mIconModel->setPosition(geoPos);
+        mIconModelNode->setPosition(geoPos);
     }
 }
 
@@ -148,7 +148,7 @@ osgEarth::Annotation::ModelNode *Visibility::makeBackground(float radius)
     return model.release();
 }
 
-osgEarth::Annotation::ModelNode *Visibility::makeIconModel()
+osgEarth::Annotation::ModelNode *Visibility::makeIconNode()
 {
     osg::ref_ptr<osg::Image> icon = osgDB::readImageFile("../data/images/visibility.png");
     icon->scaleImage(32, 32, icon->r());
@@ -158,7 +158,6 @@ osgEarth::Annotation::ModelNode *Visibility::makeIconModel()
     osgEarth::Symbology::Style  style;
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(geode);
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-    osg::ref_ptr<osgEarth::Annotation::ModelNode> iconModel = new osgEarth::Annotation::ModelNode(mMapController->getMapNode(), style);
-
-    return iconModel.release();
+    osg::ref_ptr<osgEarth::Annotation::ModelNode>  model = new osgEarth::Annotation::ModelNode(mMapController->getMapNode(), style);
+    return model.release();
 }
