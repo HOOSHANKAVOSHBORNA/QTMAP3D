@@ -45,6 +45,12 @@ void MapController::mapMouseEvent(QMouseEvent *event, const osg::Vec3d &worldPos
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(getMapSRS(), worldPos);
     osgEarth::GeoPoint  geographicPos = geoPos.transform(osgEarth::SpatialReference::get("wgs84"));
+
+    emit mousePointedLocationChanged(QVector3D(
+                                         static_cast<float>(geographicPos.x()),
+                                         static_cast<float>(geographicPos.y()),
+                                         static_cast<float>(geographicPos.z())));
+
     emit mouseEvent(event, geoPos);
 }
 

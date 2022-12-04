@@ -262,6 +262,10 @@ MainWindow {
         anchors.rightMargin: _margin / 2
         anchors.bottomMargin:  widgetsMargis
         y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
+
+        latitude: wnd.mousePointedLocation.x
+        longitude: wnd.mousePointedLocation.y
+        altitude: wnd.mousePointedLocation.z
     }
 
 

@@ -45,6 +45,10 @@ MainWindow::MainWindow(QWindow *parent) :
 
     QObject::connect(mMapController, &MapController::headingAngleChanged,
                      this, &MainWindow::setHeadingAngle);
+
+
+    QObject::connect(mMapController, &MapController::mousePointedLocationChanged,
+                     this, &MainWindow::setMousePointedLocation);
 }
 
 MainWindow::~MainWindow()
@@ -55,6 +59,11 @@ MainWindow::~MainWindow()
 qreal MainWindow::headingAngle() const
 {
     return mheadingAngle;
+}
+
+QVector3D MainWindow::mousePointedLocation() const
+{
+    return mMousePointedLocation;
 }
 
 void MainWindow::initializePluginsUI(std::list<PluginInfo> pluginsInfoList)
@@ -137,6 +146,14 @@ void MainWindow::setHeadingAngle(qreal angle)
     if (mheadingAngle != angle) {
         mheadingAngle = angle;
         emit headingAngleChanged(angle);
+    }
+}
+
+void MainWindow::setMousePointedLocation(const QVector3D &pointedLoc)
+{
+    if (mMousePointedLocation != pointedLoc) {
+        mMousePointedLocation = pointedLoc;
+        emit mousePointedLocationChanged();
     }
 }
 

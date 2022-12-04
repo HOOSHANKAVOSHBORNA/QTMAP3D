@@ -2,6 +2,7 @@
 #define MainWindow_H
 
 #include <QQmlComponent>
+#include <QVector3D>
 #include "osgquickwindow.h"
 
 #include "pluginmanager.h"
@@ -13,12 +14,14 @@ class MainWindow : public OsgQuickWindow
 {
     Q_OBJECT
     Q_PROPERTY(qreal headingAngle READ headingAngle WRITE setHeadingAngle NOTIFY headingAngleChanged)
+    Q_PROPERTY(QVector3D mousePointedLocation READ mousePointedLocation WRITE setMousePointedLocation NOTIFY mousePointedLocationChanged)
 
 public:
     MainWindow(QWindow *parent = nullptr);
     ~MainWindow();
 
     qreal headingAngle() const;
+    QVector3D mousePointedLocation() const;
 
 signals:
     void sideItemCreated(int index, QObject *pSideItem);
@@ -39,16 +42,19 @@ signals:
     void rotateRightButtonClicked();
 
     void headingAngleChanged(qreal angle);
+    void mousePointedLocationChanged();
 
 public slots:
     void initializePluginsUI(std::list<PluginInfo> pluginsInfoList);
     void setHeadingAngle(qreal angle);
+    void setMousePointedLocation(const QVector3D& pointedLoc);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
     qreal mheadingAngle = 0.0;
+    QVector3D mMousePointedLocation;
 };
 
 #endif // MainWindow_H

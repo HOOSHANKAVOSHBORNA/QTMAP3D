@@ -26,6 +26,7 @@ class MapController : public OsgController
 signals:
     void headingAngleChanged(qreal angle);
     void mouseEvent(QMouseEvent* event, const osgEarth::GeoPoint& geoPos);
+    void mousePointedLocationChanged(QVector3D location);
 
 public:
     osgViewer::Viewer *getViewer();
