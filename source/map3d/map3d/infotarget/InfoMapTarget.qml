@@ -7,7 +7,7 @@ Item {
     readonly property int _padding: 3
 
 
-    property real longtitude : 0.0
+    property real longitude : 0.0
     property real latitude : 0.0
     property real altitude : 0.0
     property real head : 0.0
@@ -47,7 +47,7 @@ Item {
 
         Label {
             id: label1
-            text: "<font color='black'>Longtitude: </font><font color='gray'>"+longtitude+"</font>"
+            text: "<font color='black'>Longitude: </font><font color='gray'>"+longitude+"</font>"
             verticalAlignment: Text.AlignVCenter
             Layout.fillHeight: true
             Layout.fillWidth: true

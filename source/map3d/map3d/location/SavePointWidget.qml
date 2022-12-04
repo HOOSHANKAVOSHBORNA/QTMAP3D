@@ -4,11 +4,12 @@ import QtGraphicalEffects 1.13
 
 Rectangle{
 
-    property real longtitude: 0.0
+    property real longitude: 0.0
     property real latitude: 0.0
     property real pitch: 0.0
     property real  range: 0.0
-    signal savePointClicked(string name , string longtitude, string latitude)
+
+    signal savePointClicked(string name , string longitude, string latitude)
 
 
     color: _colorRec
@@ -57,12 +58,15 @@ Rectangle{
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
-                    margins: _margin
+                    topMargin: _margin / 2
+                    bottomMargin: _margin / 2
+                    leftMargin: 2
+                    rightMargin: 2
                 }
-                spacing: 1
+                spacing: 3
                 Repeater{
                     id:repeter
-                    model:["Lon :" + longtitude  ,"Lat :" + latitude, "Range :" + range, "Pitch :" + pitch]
+                    model:["Lon :" + longitude  ,"Lat :" + latitude, "Range :" + range, "Pitch :" + pitch]
                     delegate: Label{
                         height: 10
                         width: parent.width
@@ -71,13 +75,8 @@ Rectangle{
                         color: "#FFFFFF"
 
                         font.family: _fontFamily
-                        font.pointSize: _fontPointSize - 2
+                        font.pointSize: _fontPointSize - 1
                         verticalAlignment : Text.AlignVCenter
-                        //                background: Rectangle{
-                        //                    color: _colorButton
-                        //                    radius: _radius
-                        //                    opacity: 0.3
-                        //                }
 
 
                     }

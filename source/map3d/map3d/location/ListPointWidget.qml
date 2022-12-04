@@ -3,7 +3,7 @@ import Qt.labs.platform 1.1
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.13
 Item {
-    signal locationClicked(string name, real longtitude, real latitude);
+    signal locationClicked(string name, real longitude, real latitude);
     Rectangle{
         anchors.fill: parent
         color: _colorRec
@@ -41,7 +41,7 @@ Item {
                     font.pointSize: _fontPointSize - 1
                     opacity: 1
                     onClicked: function() {
-                            locationClicked(Name,parseFloat(Longtitude),parseFloat(Latitude))
+                            locationClicked(Name,parseFloat(Longitude),parseFloat(Latitude))
                     }
                     contentItem:
                             Text {
