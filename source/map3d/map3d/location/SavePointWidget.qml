@@ -67,7 +67,7 @@ Rectangle{
                     id:repeter
                     model:["Lon :" + Number(longitude).toLocaleString(Qt.locale(), 'f', 3),
                         "Lat :" +    Number(latitude).toLocaleString(Qt.locale(), 'f', 3),
-                        "Range :" +  Number(range).toLocaleString(Qt.locale(), 'f', 3),
+                        "Range :" +  Number(range).toLocaleString(Qt.locale(), 'e', 2),
                         "Pitch :" +  Number(pitch).toLocaleString(Qt.locale(), 'f', 3)]
                     delegate: Label{
                         height: 10
