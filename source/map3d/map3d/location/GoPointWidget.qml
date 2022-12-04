@@ -31,7 +31,7 @@ Rectangle{
                 font.family: _fontFamily
                 font.pointSize: _fontPointSize
                 color: "#FFFFFF"
-                validator: IntValidator {bottom: -90; top: 90}
+                validator:  DoubleValidator {bottom: -90.0; top: 90.0}
                 background: Rectangle{
                     color: _colorButton
                     radius: _radius
@@ -52,7 +52,7 @@ Rectangle{
             font.family: _fontFamily
             font.pointSize: _fontPointSize
             onClicked:{
-                goPointClicked(repeter.itemAt(0).text, repeter.itemAt(1).text, repeter.itemAt(2).text)
+                goPointClicked(parseFloat(repeter.itemAt(0).text), parseFloat(repeter.itemAt(1).text), parseFloat(repeter.itemAt(2).text))
             }
 
             contentItem:Text {

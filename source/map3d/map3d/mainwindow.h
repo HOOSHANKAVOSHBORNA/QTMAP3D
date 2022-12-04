@@ -43,6 +43,7 @@ signals:
 
     void headingAngleChanged(qreal angle);
     void mousePointedLocationChanged();
+    void goToLocation(qreal lat, qreal long, qreal range);
 
 public slots:
     void initializePluginsUI(std::list<PluginInfo> pluginsInfoList);

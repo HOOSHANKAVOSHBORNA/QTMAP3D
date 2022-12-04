@@ -49,6 +49,8 @@ MainWindow::MainWindow(QWindow *parent) :
 
     QObject::connect(mMapController, &MapController::mousePointedLocationChanged,
                      this, &MainWindow::setMousePointedLocation);
+    QObject::connect(this, &MainWindow::goToLocation,
+                     mMapController, &MapController::goToPosition);
 }
 
 MainWindow::~MainWindow()

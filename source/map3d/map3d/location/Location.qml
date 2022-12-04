@@ -4,6 +4,8 @@ import QtGraphicalEffects 1.13
 import QtQuick.Layouts 1.12
 Item {
     id:rootItem
+    signal goPointClicked(real latitude , real longtitude, real range)
+
     property var listSaveLocation: ListModel {
 
     }
@@ -30,8 +32,8 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: 0
 
-        onGoPointClicked: {
-            console.log(longtitude ,latitude , range)
+        onGoPointClicked: function(lat, lon, range){
+            rootItem.goPointClicked(lat, lon, range);
         }
     }
     ListPointWidget{

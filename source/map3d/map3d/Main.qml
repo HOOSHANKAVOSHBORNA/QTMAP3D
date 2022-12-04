@@ -139,7 +139,13 @@ MainWindow {
                 item.toolboxModel = wnd.toolboxModel;
                 item.itemClicked.connect(wnd.toolboxItemClicked);
                 break;
+
+
+            case 3:
+                item.goPointClicked.connect(wnd.goToLocation);
+                break;
             }
+
         }
     }
 
@@ -266,6 +272,8 @@ MainWindow {
         latitude: wnd.mousePointedLocation.x
         longitude: wnd.mousePointedLocation.y
         altitude: wnd.mousePointedLocation.z
+
+
     }
 
 
