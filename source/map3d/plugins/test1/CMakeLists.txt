@@ -9,7 +9,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 COMPONENTS Gui Quick REQUIRED)
+find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(Test1Plugin SHARED
   test1plugin.cpp
@@ -19,7 +19,7 @@ add_library(Test1Plugin SHARED
 )
 
 target_include_directories(Test1Plugin PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
-target_link_libraries(Test1Plugin PRIVATE Qt5::Gui Qt5::Quick)
+target_link_libraries(Test1Plugin PRIVATE Qt5::Gui Qt5::Quick Qt5::Widgets)
 
 target_compile_definitions(Test1Plugin PRIVATE CPTEST_LIBRARY)
 

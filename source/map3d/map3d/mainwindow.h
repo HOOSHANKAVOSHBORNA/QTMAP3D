@@ -4,7 +4,9 @@
 #include <QQmlComponent>
 #include "osgquickwindow.h"
 
-class CrystalPluginInfo;
+#include "pluginmanager.h"
+
+class PluginInfo;
 class PluginInterface;
 
 class MainWindow : public OsgQuickWindow
@@ -20,9 +22,7 @@ public:
 
 signals:
     void sideItemCreated(int index, QObject *pSideItem);
-    void toolboxItemCreated(const QString& itemName, const QString& categoryName,
-                            QObject *menuItem,
-                            PluginInterface *pInterface);
+    void toolboxItemCreated(ToolboxItemDescProxy *itemProxy);
     void toolboxItemClicked(const QString& itemName, const QString& categoryName);
 
     void homeButtonClicked();
@@ -41,7 +41,7 @@ signals:
     void headingAngleChanged(qreal angle);
 
 public slots:
-    void initializePluginsUI(std::list<CrystalPluginInfo> pluginsInfoList);
+    void initializePluginsUI(std::list<PluginInfo> pluginsInfoList);
     void setHeadingAngle(qreal angle);
 
 protected:

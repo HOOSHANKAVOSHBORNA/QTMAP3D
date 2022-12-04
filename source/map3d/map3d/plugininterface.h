@@ -52,9 +52,12 @@ struct PluginQMLDesc
     QList<ToolboxItemDesc*> toolboxItemsList;
 };
 
-class PluginInterface
+class PluginInterface : public QObject
 {
+    Q_OBJECT
+
 public:
+    PluginInterface(QObject *parent = nullptr) : QObject(parent) { }
     virtual ~PluginInterface() { }
 
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) = 0;

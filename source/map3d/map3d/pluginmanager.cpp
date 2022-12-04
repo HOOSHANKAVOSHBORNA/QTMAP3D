@@ -17,7 +17,8 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
 
 void PluginManager::loadPlugins()
 {
-    QDir pluginsDir(PLUGINS_OUTPUT_DIR);
+    QDir pluginsDir = QCoreApplication::applicationDirPath();
+    pluginsDir.cd("../plugins/bin");
 
     for (const QString& fileName : pluginsDir.entryList(QDir::Files)) {
 
@@ -37,7 +38,7 @@ void PluginManager::loadPlugins()
                     dynamic_cast<PluginInterface*>(instance);
 
             if (pluginInterface) {
-                CrystalPluginInfo cpi;
+                PluginInfo cpi;
                 cpi.interface = pluginInterface;
                 cpi.qmlDesc    = new PluginQMLDesc;
                 cpi.sideItemIndex = -1;
@@ -61,7 +62,7 @@ void PluginManager::performPluginsInit3D(MapController *mapController)
     }
 }
 
-std::list<CrystalPluginInfo> &PluginManager::pluginsInfoList()
+std::list<PluginInfo> &PluginManager::pluginsInfoList()
 {
     return mPluginsInfoList;
 }
@@ -70,7 +71,7 @@ void PluginManager::onSideItemCreated(int index, QObject *sideItem)
 {
     const auto it = std::find_if(mPluginsInfoList.begin(),
                  mPluginsInfoList.end(),
-                 [index](const CrystalPluginInfo& item){
+                 [index](const PluginInfo& item){
         return (item.sideItemIndex == index);
     });
 
@@ -79,12 +80,9 @@ void PluginManager::onSideItemCreated(int index, QObject *sideItem)
     }
 }
 
-void PluginManager::onToolboxItemCreated(const QString &name,
-                                         const QString &category,
-                                         QObject *menuItem,
-                                         PluginInterface *interface)
+void PluginManager::onToolboxItemCreated(ToolboxItemDescProxy *itemProxy)
 {
-    mToolboxItemsMap[category][name] = interface;
+    mToolboxItemsMap[itemProxy->category()][itemProxy->name()] = itemProxy->pluginInterface();
 }
 
 void PluginManager::onToolboxItemClicked(const QString &name, const QString &category)

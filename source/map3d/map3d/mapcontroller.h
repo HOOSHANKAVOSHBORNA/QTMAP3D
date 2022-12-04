@@ -20,10 +20,12 @@ class MainEventHandler;
 class MapController : public OsgController
 {
     friend class OsgQuickWindow;
+    friend class MainEventHandler;
     Q_OBJECT
 
 signals:
     void headingAngleChanged(qreal angle);
+    void mouseEvent(QMouseEvent* event, const osgEarth::GeoPoint& geoPos);
 
 public:
     osgViewer::Viewer *getViewer();
@@ -69,6 +71,7 @@ private:
 
 
     virtual void installEventHandler() override;
+    void mapMouseEvent(QMouseEvent *event, const osg::Vec3d& worldPos);
 };
 
 #endif // MapController_H

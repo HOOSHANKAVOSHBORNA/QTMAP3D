@@ -179,6 +179,7 @@ MainWindow {
                                                   'itemIcon' : itemDesc.iconUrl,
                                                   'itemCheckable' : itemDesc.checkable
                                               });
+                wnd.toolboxItemCreated(itemDesc);
             } else {
                 return false;
             }
@@ -189,6 +190,7 @@ MainWindow {
                                              'itemIcon' : itemDesc.iconUrl,
                                              'itemCheckable' : itemDesc.checkable
                                          });
+            wnd.toolboxItemCreated(itemDesc);
         }
 
         return true;

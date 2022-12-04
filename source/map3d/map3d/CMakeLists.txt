@@ -40,6 +40,10 @@ target_link_libraries(Map3d
         GL
         )
 
-target_compile_definitions(Map3d PUBLIC EXTERNAL_RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources/")
+target_compile_definitions(Map3d PUBLIC EXTERNAL_RESOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../data/")
 target_compile_definitions(Map3d PUBLIC PLUGINS_OUTPUT_DIR="${PLUGINS_OUTPUT_DIR}/")
 
+
+add_custom_command(TARGET Map3d POST_BUILD
+    COMMAND mkdir ARGS "-p" "${CMAKE_CURRENT_BINARY_DIR}/../data"
+    COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/../data/*" "${CMAKE_CURRENT_BINARY_DIR}/../data/")

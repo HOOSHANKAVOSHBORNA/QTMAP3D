@@ -28,7 +28,6 @@ private:
 MapController::MapController(QQuickWindow *window) :
     OsgController(window)
 {
-//        QTimer::singleShot(10000, [this](){this->setGeocentric(false);});
 }
 
 MapController::~MapController()
@@ -39,6 +38,14 @@ MapController::~MapController()
 void MapController::installEventHandler()
 {
     getViewer()->addEventHandler(new MainEventHandler(this));
+}
+
+void MapController::mapMouseEvent(QMouseEvent *event, const osg::Vec3d &worldPos)
+{
+    osgEarth::GeoPoint geoPos;
+    geoPos.fromWorld(getMapSRS(), worldPos);
+    osgEarth::GeoPoint  geographicPos = geoPos.transform(osgEarth::SpatialReference::get("wgs84"));
+    emit mouseEvent(event, geoPos);
 }
 
 osgViewer::Viewer *MapController::getViewer()
@@ -304,7 +311,7 @@ void MainEventHandler::mouseEvent(osgViewer::View *view, const osgGA::GUIEventAd
         {
             //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
             osg::Vec3d currentWorldPos = intersection.getWorldIntersectPoint();
-            //mpMapController->mapMouseEvent(event,currentWorldPos);
+            mpMapController->mapMouseEvent(event,currentWorldPos);
             return;
         }
     }

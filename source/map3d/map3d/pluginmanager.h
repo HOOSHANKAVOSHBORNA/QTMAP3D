@@ -17,22 +17,24 @@ class PluginInterface;
 class ToolboxItemDescProxy : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString name      READ name      WRITE setName      NOTIFY nameChanged     )
-    Q_PROPERTY(QString category  READ category  WRITE setCategory  NOTIFY categoryChanged )
-    Q_PROPERTY(QString iconUrl   READ iconUrl   WRITE setIconUrl   NOTIFY iconUrlChanged  )
-    Q_PROPERTY(bool    checkable READ checkable WRITE setCheckable NOTIFY checkableChanged)
-    Q_PROPERTY(bool    hasMenu   READ hasMenu   WRITE setHasMenu   NOTIFY hasMenuChanged  )
-    Q_PROPERTY(QString menuUrl   READ menuUrl   WRITE setMenuUrl   NOTIFY menuUrlChanged  )
+    Q_PROPERTY(QString name      READ name     )
+    Q_PROPERTY(QString category  READ category )
+    Q_PROPERTY(QString iconUrl   READ iconUrl  )
+    Q_PROPERTY(bool    checkable READ checkable)
+    Q_PROPERTY(bool    hasMenu   READ hasMenu  )
+    Q_PROPERTY(QString menuUrl   READ menuUrl  )
+    Q_PROPERTY(PluginInterface* pluginInterface READ pluginInterface)
 
 
 public:
-    ToolboxItemDescProxy(const ToolboxItemDesc& desc) :
+    ToolboxItemDescProxy(const ToolboxItemDesc& desc, PluginInterface *interface = nullptr) :
         _name     (desc.name     ),
         _category (desc.category ),
         _iconUrl  (desc.iconUrl  ),
         _checkable(desc.checkable),
         _hasMenu  (desc.hasMenu  ),
-        _menuUrl  (desc.menuUrl  )
+        _menuUrl  (desc.menuUrl  ),
+        _pluginInterface(interface)
     {
 
     }
@@ -43,52 +45,7 @@ public:
     bool    checkable(){return _checkable;}
     bool    hasMenu  (){return _hasMenu;  }
     QString menuUrl  (){return _menuUrl;  }
-
-signals:
-    void nameChanged     ();
-    void categoryChanged ();
-    void iconUrlChanged  ();
-    void checkableChanged();
-    void hasMenuChanged  ();
-    void menuUrlChanged  ();
-
-public slots:
-    void setName     (const QString& name) {
-        if (name != _name) {
-            _name = name;
-            emit nameChanged();
-        }
-    }
-    void setCategory (const QString& category) {
-        if (category != _category) {
-            _category = category;
-            emit categoryChanged();
-        }
-    }
-    void setIconUrl  (const QString& iconUrl) {
-        if (iconUrl != _iconUrl) {
-            _iconUrl = iconUrl;
-            emit iconUrlChanged();
-        }
-    }
-    void setCheckable(bool checkable) {
-        if (checkable != _checkable) {
-            _checkable = checkable;
-            emit checkableChanged();
-        }
-    }
-    void setHasMenu  (bool hasMenu) {
-        if (hasMenu != _hasMenu) {
-            _hasMenu = hasMenu;
-            emit hasMenuChanged();
-        }
-    }
-    void setMenuUrl  (const QString& menuUrl) {
-        if (menuUrl != _menuUrl) {
-            _menuUrl = menuUrl;
-            emit menuUrlChanged();
-        }
-    }
+    PluginInterface *pluginInterface() { return _pluginInterface; }
 
 private:
     QString _name;
@@ -97,9 +54,10 @@ private:
     bool    _checkable = false;
     bool    _hasMenu   = false;
     QString _menuUrl;
+    PluginInterface *_pluginInterface = nullptr;
 };
 
-struct CrystalPluginInfo
+struct PluginInfo
 {
     PluginInterface *interface = nullptr;
     PluginQMLDesc   *qmlDesc    = nullptr;
@@ -118,19 +76,16 @@ public:
     void performPluginsInitQMLDesc(QQmlEngine *qmlEngine);
     void performPluginsInit3D(MapController *mapController);
 
-    std::list<CrystalPluginInfo>& pluginsInfoList();
+    std::list<PluginInfo>& pluginsInfoList();
 
 public slots:
     void onSideItemCreated(int index, QObject *sideItem);
-    void onToolboxItemCreated(const QString& name,
-                              const QString& category,
-                              QObject *menuItem,
-                              PluginInterface *interface);
+    void onToolboxItemCreated(ToolboxItemDescProxy *itemProxy);
     void onToolboxItemClicked(const QString& name,
                               const QString& category);
 
 private:
-    std::list<CrystalPluginInfo> mPluginsInfoList;
+    std::list<PluginInfo> mPluginsInfoList;
     QMap<QString, QMap<QString, PluginInterface*>> mToolboxItemsMap;
 };
 
