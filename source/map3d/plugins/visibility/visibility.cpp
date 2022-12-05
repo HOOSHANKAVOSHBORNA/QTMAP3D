@@ -30,7 +30,7 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
             QObject::connect(mMapController,&MapController::mouseEvent, this, &Visibility::onMouseEvent);
-            mMapController->addNode(mIconModelNode);
+            mMapController->addNode(mIconNode);
         }
         else
         {
@@ -39,7 +39,7 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
             mMapController->removeNode(mBackVisibilityNode);
             mMapController->removeNode(mVisibilityNode);
 
-            mMapController->removeNode(mIconModelNode);
+            mMapController->removeNode(mIconNode);
         }
     }
 }
@@ -47,7 +47,7 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
 bool Visibility::initialize3D(MapController *mapController)
 {
     mMapController = mapController;
-    mIconModelNode = makeIconNode();
+    mIconNode = makeIconNode();
     return true;
 }
 
@@ -88,12 +88,13 @@ void Visibility::onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos)
         mMapController->addNode(mVisibilityNode);
 
         //Set view point------------------------------------------------------------------
-        mMapController->goToPosition(geoPos.x(), geoPos.y(), 100000);
+//        mMapController->goToPosition(geoPos.x(), geoPos.y(), 100000);
     }
 
     if(event->type() ==  QEvent::Type::MouseMove)
     {
-        mIconModelNode->setPosition(geoPos);
+//        mIconNode->setText(geoPos.toString());
+        mIconNode->setPosition(geoPos);
     }
 }
 
@@ -148,16 +149,17 @@ osgEarth::Annotation::ModelNode *Visibility::makeBackground(float radius)
     return model.release();
 }
 
-osgEarth::Annotation::ModelNode *Visibility::makeIconNode()
+osgEarth::Annotation::PlaceNode *Visibility::makeIconNode()
 {
     osg::ref_ptr<osg::Image> icon = osgDB::readImageFile("../data/images/visibility.png");
     icon->scaleImage(32, 32, icon->r());
-    osg::ref_ptr<osg::Geometry> imageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(icon, osg::Vec2s(0,0), 0, 0, 1);
-    osg::ref_ptr<osg::Geode>  geode = new osg::Geode();
-    geode->addDrawable(imageDrawable);
-    osgEarth::Symbology::Style  style;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(geode);
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-    osg::ref_ptr<osgEarth::Annotation::ModelNode>  model = new osgEarth::Annotation::ModelNode(mMapController->getMapNode(), style);
+//    osg::ref_ptr<osg::Geometry> imageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(icon, osg::Vec2s(0,0), 0, 0, 1);
+//    osg::ref_ptr<osg::Geode>  geode = new osg::Geode();
+//    geode->addDrawable(imageDrawable);
+//    osgEarth::Symbology::Style  style;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(geode);
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode>  model = new osgEarth::Annotation::PlaceNode();
+    model->setIconImage(icon);
     return model.release();
 }
