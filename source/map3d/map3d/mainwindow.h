@@ -20,6 +20,7 @@ class MainWindow : public OsgQuickWindow
     Q_PROPERTY(qreal focalPointLong  READ focalPointLong  WRITE setFocalPointLong  NOTIFY focalPointLongChanged )
     Q_PROPERTY(qreal focalPointRange READ focalPointRange WRITE setFocalPointRange NOTIFY focalPointRangeChanged)
     Q_PROPERTY(qreal focalPointPitch READ focalPointPitch WRITE setFocalPointPitch NOTIFY focalPointPitchChanged)
+    Q_PROPERTY(qreal focalPointHead READ focalPointHead WRITE setFocalPointHead NOTIFY focalPointHeadChanged)
 
 public:
     MainWindow(QWindow *parent = nullptr);
@@ -32,6 +33,7 @@ public:
     qreal focalPointLong () const;
     qreal focalPointRange() const;
     qreal focalPointPitch() const;
+    qreal focalPointHead() const;
 
 
 signals:
@@ -63,6 +65,7 @@ signals:
     void focalPointLongChanged ();
     void focalPointRangeChanged();
     void focalPointPitchChanged();
+    void focalPointHeadChanged();
 
 
 public slots:
@@ -74,8 +77,13 @@ public slots:
     void setFocalPointLong (qreal focalPointLong);
     void setFocalPointRange(qreal focalPointRange) ;
     void setFocalPointPitch(qreal focalPointPitch) ;
+    void setFocalPointHead(qreal focalPointHead) ;
 
-
+    void travelToViewpoint(qreal latitude,
+                           qreal longitude,
+                           qreal range,
+                           qreal pitch,
+                           qreal heading);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -88,6 +96,7 @@ private:
     qreal mFocalPointLong  = 0.0;
     qreal mFocalPointRange = 0.0;
     qreal mFocalPointPitch = 0.0;
+    qreal mFocalPointHead = 0.0;
 
 };
 

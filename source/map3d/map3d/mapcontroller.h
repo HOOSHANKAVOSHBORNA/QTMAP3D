@@ -32,6 +32,7 @@ signals:
     void focalPointLongChanged (qreal focalPointLong);
     void focalPointRangeChanged(qreal focalPointRange);
     void focalPointPitchChanged(qreal focalPointPitch);
+    void focalPointHeadChanged(qreal focalPointHead);
 
 public:
     osgViewer::Viewer *getViewer();
@@ -70,6 +71,12 @@ public slots:
 
     void zoomIn();
     void zoomOut();
+
+    void travelToViewpoint(qreal latitude,
+                           qreal longitude,
+                           qreal range,
+                           qreal pitch,
+                           qreal heading);
 
 
 private:
