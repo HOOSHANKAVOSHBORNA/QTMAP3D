@@ -23,12 +23,7 @@ Item {
         border.color: _colorRec
         radius: _radius
         layer.enabled: true
-        layer.effect: DropShadow {
-            transparentBorder: true
-            horizontalOffset: 7
-            verticalOffset: 7
-            color: "#88000000"
-        }
+
     }
 
     GridLayout {

@@ -3,7 +3,10 @@ import Qt.labs.platform 1.1
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.13
 Item {
-    signal locationClicked(string name, real longitude, real latitude);
+    id :rootItem
+    signal goToView(string name, real longitude, real latitude,
+                    real range, real pitch ,real head);
+
     Rectangle{
         anchors.fill: parent
         color: _colorRec
@@ -14,8 +17,6 @@ Item {
         id: scroller
         anchors.fill: parent
         contentHeight: columnLayout.implicitHeight
-        //ScrollBar.vertical.interactive: true
-
         clip : true
         Item {
             id: tmp
@@ -33,7 +34,7 @@ Item {
                     id:subbutton
                     width: columnLayout.width
                     height: 30
-                    text: Name
+                    text: _Name
 
                     hoverEnabled: true
                     display: AbstractButton.TextOnly
@@ -41,7 +42,13 @@ Item {
                     font.pointSize: _fontPointSize - 1
                     opacity: 1
                     onClicked: function() {
-                            locationClicked(Name,parseFloat(Longitude),parseFloat(Latitude))
+                            rootItem.goToView(_Name,
+                                            parseFloat(_Longitude),
+                                            parseFloat(_Latitude),
+                                            parseFloat(_Range),
+                                            parseFloat(_Pitch),
+                                            parseFloat(_Head)
+                                              )
                     }
                     contentItem:
                             Text {
