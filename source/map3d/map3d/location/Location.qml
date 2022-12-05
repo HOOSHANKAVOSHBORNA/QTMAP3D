@@ -57,7 +57,6 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 30
         onGoToView:function(name, lon, lat, range,pitch, head) {
-            console.log(name, lon, lat, range, pitch, head);
             rootItem.goToView(name, lon, lat, range, pitch, head);
         }
     }

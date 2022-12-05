@@ -54,7 +54,7 @@ MainWindow {
         ListElement {
             title_text: "File"
             icon_url: "qrc:///Resources/File.png"
-            side_itemurl: "qrc:///File.qml"
+            side_itemurl: "qrc:/toolbox/Toolbox.qml"
         }
 
         ListElement {
@@ -135,6 +135,11 @@ MainWindow {
 
         onSideItemCreated: function(index, item) {
             switch(index) {
+            case 1:
+                item.toolboxModel = wnd.toolboxModel;
+                item.itemClicked.connect(wnd.toolboxItemClicked);
+                item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
+                break
             case 2:
                 item.toolboxModel = wnd.toolboxModel;
                 item.itemClicked.connect(wnd.toolboxItemClicked);
