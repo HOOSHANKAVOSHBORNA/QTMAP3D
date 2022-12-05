@@ -56,13 +56,9 @@ Item {
         anchors.leftMargin: 5
         anchors.top: parent.top
         anchors.topMargin: 30
-<<<<<<< HEAD
-        onGoToView:function(name, lon, lat, range,pitch, head) {
-            rootItem.goToView(name, lon, lat, range, pitch, head);
-=======
+
         onGoToView:function(name, lat,  lon, range,pitch, head) {
             rootItem.goToView(lat, lon, range, pitch, head);
->>>>>>> bd80881510344ef4821a0741a74a2911802fac34
         }
     }
 

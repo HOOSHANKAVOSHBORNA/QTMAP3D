@@ -10,7 +10,7 @@ Item {
     signal itemClicked(string itemname, string category_name);
     signal changeCheckable(string itemname, string category_name, bool check)
 
-    property var toolboxModel
+    property var listModel
         ScrollView {
             id: scroller
             anchors.fill: parent
@@ -28,7 +28,7 @@ Item {
                 spacing: 2
                 Repeater {
                     id: repeater
-                    model: rootItem.toolboxModel
+                    model: rootItem.listModel
                     delegate: DelegateItem{
                         Layout.fillWidth: true
                         width: tmp.width

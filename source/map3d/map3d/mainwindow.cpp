@@ -128,6 +128,29 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
         ToolboxItemDescProxy proxy(desc);
         QMetaObject::invokeMethod(this, "addToolboxItem", Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret),
                                   Q_ARG(QVariant, QVariant::fromValue<ToolboxItemDescProxy*>(&proxy)));
+
+    };
+
+    const auto simple_add_file_item = [this](
+                    QString name      = QString(),
+                    QString category  = QString(),
+                    QString iconUrl   = QString(),
+                    bool    checkable = false,
+                    bool    hasMenu   = false,
+                    QString menuUrl   = QString()) {
+        QVariant ret;
+        const ToolboxItemDesc desc(
+                                name     ,
+                                category ,
+                                iconUrl  ,
+                                checkable,
+                                hasMenu  ,
+                                menuUrl  );
+
+        ToolboxItemDescProxy proxy(desc);
+        QMetaObject::invokeMethod(this, "addFileItem", Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret),
+                                  Q_ARG(QVariant, QVariant::fromValue<ToolboxItemDescProxy*>(&proxy)));
+
     };
 
     //    simple_add_toolbox_item("Amir",   "Jafari","qrc:/Resources/extrudepoly.png" ,true );
@@ -143,6 +166,9 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
     //    simple_add_toolbox_item("Hasa8", "Roodsara", "qrc:/Resources/rectangle.png" ,true);
     //    simple_add_toolbox_item("Hasa9",  "Roodsara","qrc:/Resources/sphere.png" ,false);
     //    simple_add_toolbox_item("Hasa10",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
+
+
+    //simple_add_file_item("Hasa10",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
 
 
 

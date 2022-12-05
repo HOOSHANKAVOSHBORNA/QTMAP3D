@@ -83,7 +83,9 @@ MainWindow {
     property var toolboxModel: ListModel {
 
     }
+    property var fileModel: ListModel {
 
+    }
     PropertyAnimation {
         id: widgetsShowAnimation
         target: wnd
@@ -135,13 +137,13 @@ MainWindow {
 
         onSideItemCreated: function(index, item) {
             switch(index) {
-            case 1:
-                item.toolboxModel = wnd.toolboxModel;
+            case 0:
+                item.listModel = wnd.fileModel;
                 item.itemClicked.connect(wnd.toolboxItemClicked);
                 item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                 break
             case 2:
-                item.toolboxModel = wnd.toolboxModel;
+                item.listModel = wnd.toolboxModel;
                 item.itemClicked.connect(wnd.toolboxItemClicked);
                 item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                 break;
@@ -215,7 +217,49 @@ MainWindow {
 
         return true;
     }
+    function addFileItem(itemDesc) {
 
+
+        const fileModelCount = fileModel.count;
+        var category_found = false;
+        var category_index = -1;
+        for (var i = 0; i < fileModelCount; i++) {
+            if (fileModel.get(i).categoryName === itemDesc.category) {
+                category_found = true;
+                category_index = i;
+                break;
+            }
+        }
+        if (category_found === true) {
+            const categoryModelCount = fileModel.get(category_index).categoryModel.count;
+            var itemfound = false;
+            for (var j = 0; j < categoryModelCount; j++) {
+                if (fileModelModel.get(category_index).categoryModel.get(j).itemName === itemDesc.name) {
+                    itemfound = true;
+                    break;
+                }
+            }
+            if (itemfound === false) {
+                fileModel.get(category_index).categoryModel.append({'itemName': itemDesc.name,
+                                                  'itemIcon' : itemDesc.iconUrl,
+                                                  'itemCheckable' : itemDesc.checkable
+                                              });
+                wnd.toolboxItemCreated(itemDesc);
+            } else {
+                return false;
+            }
+        } else {
+            fileModel.append({'categoryName': itemDesc.category,
+                            'categoryModel': listModelComponent.createObject(null, {})});
+            fileModel.get(fileModelCount).categoryModel.append({'itemName': itemDesc.name,
+                                             'itemIcon' : itemDesc.iconUrl,
+                                             'itemCheckable' : itemDesc.checkable
+                                         });
+            wnd.toolboxItemCreated(itemDesc);
+        }
+
+        return true;
+    }
     Component {
         id: listModelComponent
         ListModel {
