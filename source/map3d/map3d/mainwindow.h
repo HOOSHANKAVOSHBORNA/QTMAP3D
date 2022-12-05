@@ -79,7 +79,11 @@ public slots:
     void setFocalPointPitch(qreal focalPointPitch) ;
     void setFocalPointHead(qreal focalPointHead) ;
 
-
+    void travelToViewpoint(qreal latitude,
+                           qreal longitude,
+                           qreal range,
+                           qreal pitch,
+                           qreal heading);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

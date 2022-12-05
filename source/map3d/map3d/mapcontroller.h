@@ -72,6 +72,12 @@ public slots:
     void zoomIn();
     void zoomOut();
 
+    void travelToViewpoint(qreal latitude,
+                           qreal longitude,
+                           qreal range,
+                           qreal pitch,
+                           qreal heading);
+
 
 private:
     explicit MapController(QQuickWindow *window);

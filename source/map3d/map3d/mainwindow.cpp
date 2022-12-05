@@ -238,6 +238,15 @@ void MainWindow::setFocalPointHead(qreal focalPointHead)
     }
 }
 
+void MainWindow::travelToViewpoint(qreal latitude, qreal longitude, qreal range, qreal pitch, qreal heading)
+{
+    mMapController->travelToViewpoint(latitude,
+                                      longitude,
+                                      range,
+                                      pitch,
+                                      heading);
+}
+
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {

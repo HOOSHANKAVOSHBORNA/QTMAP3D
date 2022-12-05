@@ -269,6 +269,24 @@ void MapController::zoomOut()
     getEarthManipulator()->zoom(0.0, 0.4, getViewer());
 }
 
+
+void MapController::travelToViewpoint(qreal latitude,
+                                      qreal longitude,
+                                      qreal range,
+                                      qreal pitch,
+                                      qreal heading)
+{
+    osgEarth::Viewpoint vp;
+    vp.focalPoint()->x() = latitude;
+    vp.focalPoint()->y() = longitude;
+    vp.range() = range;
+    vp.pitch() = pitch;
+    vp.heading() = heading;
+    mpEarthManipulator->setViewpoint(vp, 3.0);
+}
+
+
+
 bool MainEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
 
