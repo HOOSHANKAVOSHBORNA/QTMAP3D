@@ -1,22 +1,24 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.13
-
+import Qt.labs.platform 1.1
 Rectangle{
-
+    id : rootItem
     property real longitude: 0.0
     property real latitude: 0.0
     property real pitch: 0.0
     property real range: 0.0
     property real head: 0.0
 
-    signal savePointClicked(string name , string longitude, string latitude)
+    signal saveLocation(string name, real longitude, real latitude,
+                       real pitch ,real range, real head)
 
     color: _colorRec
     radius: _radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.2
     width: parent.width / 2
+
     Column{
         id :columnGo
         spacing: 3
@@ -44,6 +46,9 @@ Rectangle{
                 radius: _radius
                 opacity: 0.3
                 width: parent.width
+            }
+            onPressed: {
+                text = ""
             }
 
 
@@ -104,7 +109,16 @@ Rectangle{
             font.pointSize: _fontPointSize
 
             onClicked:{
-                savePointClicked(nameTextfeild.text, repeter.itemAt(0).text.split(":")[1], repeter.itemAt(1).text.split(":")[1])
+                if (nameTextfeild.text !== ""){
+                rootItem.saveLocation(nameTextfeild.text,
+                                      parseFloat(repeter.itemAt(0).text.split(":")[1]),
+                                      parseFloat(repeter.itemAt(1).text.split(":")[1]),
+                                      parseFloat(repeter.itemAt(2).text.split(":")[1]),
+                                      parseFloat(repeter.itemAt(3).text.split(":")[1]),
+                                      parseFloat(repeter.itemAt(4).text.split(":")[1])
+                            )
+            }
+                //savePointClicked(nameTextfeild.text, , repeter.itemAt(1).text.split(":")[1])
             }
 
             contentItem:Text {
