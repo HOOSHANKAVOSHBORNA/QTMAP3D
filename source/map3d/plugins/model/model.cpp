@@ -61,11 +61,11 @@ bool Model::initializeQMLDesc(QQmlEngine */*engine*/, PluginQMLDesc *pDesc)
     //    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
     QString cat = "model";
-    pDesc->toolboxItemsList.push_back(new ToolboxItemDesc{ADD_AIRPLANE, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ToolboxItemDesc{ADD_ROCKET, CATEGORY, "", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ToolboxItemDesc{ADD_TRUCK, CATEGORY, "qrc:/resources/truck.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ToolboxItemDesc{ADD_STATION, CATEGORY, "", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ToolboxItemDesc{ADD_SYSTEM, CATEGORY, "", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_AIRPLANE, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_TRUCK, CATEGORY, "qrc:/resources/truck.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_STATION, CATEGORY, "", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_SYSTEM, CATEGORY, "", false, false, ""});
 
     return true;
 }

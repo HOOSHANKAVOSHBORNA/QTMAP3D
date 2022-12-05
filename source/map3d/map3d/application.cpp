@@ -100,6 +100,13 @@ void Application::onMainWindowCreated()
                      this, &Application::initialize3D,
                      Qt::DirectConnection);
 
+    QObject::connect(mpMainWindow, &MainWindow::fileItemCreated,
+                     mpPluginManager, &PluginManager::onFileItemCreated,
+                     Qt::DirectConnection);
+    QObject::connect(mpMainWindow, &MainWindow::fileItemClicked,
+                     mpPluginManager, &PluginManager::onFileItemClicked,
+                     Qt::DirectConnection);
+
     mpPluginManager->performPluginsInitQMLDesc(mpQmlEngine);
 
     mpMainWindow->initializePluginsUI(mpPluginManager->pluginsInfoList());

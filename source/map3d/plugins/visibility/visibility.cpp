@@ -18,7 +18,7 @@ bool Visibility::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 //    desc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
 //    desc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{VISIBILITY, CATEGORY, "qrc:/resources/visibility.png", true, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{VISIBILITY, CATEGORY, "qrc:/resources/visibility.png", true, false, ""});
 
     return true;
 }

@@ -14,9 +14,9 @@ namespace osgViewer {
     class Viewer;
 };
 
-struct ToolboxItemDesc
+struct ItemDesc
 {
-    ToolboxItemDesc(
+    ItemDesc(
             QString _name      = QString(),
             QString _category  = QString(),
             QString _iconUrl   = QString(),
@@ -49,7 +49,8 @@ struct PluginQMLDesc
     QString        sideItemMenuBarIconUrl;
     QString        sideItemUrl;
 
-    QList<ToolboxItemDesc*> toolboxItemsList;
+    QList<ItemDesc*> toolboxItemsList;
+    QList<ItemDesc*> fileItemsList;
 };
 
 class PluginInterface : public QObject
@@ -67,6 +68,8 @@ public:
     virtual void onToolboxItemCheckedChanged(const QString& name,
                                              const QString& category,
                                              bool checked) {}
+    virtual void onFileItemClicked(const QString& name,
+                                      const QString& category) {}
 
     virtual bool initialize3D(MapController *mapController) {}
 

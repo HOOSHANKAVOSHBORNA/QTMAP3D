@@ -139,8 +139,7 @@ MainWindow {
             switch(index) {
             case 0:
                 item.listModel = wnd.fileModel;
-                item.itemClicked.connect(wnd.toolboxItemClicked);
-                item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
+                item.itemClicked.connect(wnd.fileItemClicked);
                 break
             case 2:
                 item.listModel = wnd.toolboxModel;
@@ -244,7 +243,7 @@ MainWindow {
                                                   'itemIcon' : itemDesc.iconUrl,
                                                   'itemCheckable' : itemDesc.checkable
                                               });
-                wnd.toolboxItemCreated(itemDesc);
+                wnd.fileItemCreated(itemDesc);
             } else {
                 return false;
             }
@@ -255,7 +254,7 @@ MainWindow {
                                              'itemIcon' : itemDesc.iconUrl,
                                              'itemCheckable' : itemDesc.checkable
                                          });
-            wnd.toolboxItemCreated(itemDesc);
+            wnd.fileItemCreated(itemDesc);
         }
 
         return true;

@@ -26,9 +26,9 @@ FeatureLayer::FeatureLayer(QWidget *parent)
 bool FeatureLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{GDAL, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{ARCGIS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{WFS, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{WFS, CATEGORY, "", false, false, ""});
 
     return true;
 }
