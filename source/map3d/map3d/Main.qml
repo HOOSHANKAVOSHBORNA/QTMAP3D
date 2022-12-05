@@ -233,7 +233,7 @@ MainWindow {
             const categoryModelCount = fileModel.get(category_index).categoryModel.count;
             var itemfound = false;
             for (var j = 0; j < categoryModelCount; j++) {
-                if (fileModelModel.get(category_index).categoryModel.get(j).itemName === itemDesc.name) {
+                if (fileModel.get(category_index).categoryModel.get(j).itemName === itemDesc.name) {
                     itemfound = true;
                     break;
                 }

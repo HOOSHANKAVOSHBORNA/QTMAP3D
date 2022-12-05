@@ -131,27 +131,27 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
 
 //    };
 
-    const auto simple_add_file_item = [this](
-                    QString name      = QString(),
-                    QString category  = QString(),
-                    QString iconUrl   = QString(),
-                    bool    checkable = false,
-                    bool    hasMenu   = false,
-                    QString menuUrl   = QString()) {
-        QVariant ret;
-        const ItemDesc desc(
-                                name     ,
-                                category ,
-                                iconUrl  ,
-                                checkable,
-                                hasMenu  ,
-                                menuUrl  );
+//    const auto simple_add_file_item = [this](
+//                    QString name      = QString(),
+//                    QString category  = QString(),
+//                    QString iconUrl   = QString(),
+//                    bool    checkable = false,
+//                    bool    hasMenu   = false,
+//                    QString menuUrl   = QString()) {
+//        QVariant ret;
+//        const ItemDesc desc(
+//                                name     ,
+//                                category ,
+//                                iconUrl  ,
+//                                checkable,
+//                                hasMenu  ,
+//                                menuUrl  );
 
-        ItemDescProxy proxy(desc);
-        QMetaObject::invokeMethod(this, "addFileItem", Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret),
-                                  Q_ARG(QVariant, QVariant::fromValue<ItemDescProxy*>(&proxy)));
+//        ItemDescProxy proxy(desc);
+//        QMetaObject::invokeMethod(this, "addFileItem", Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret),
+//                                  Q_ARG(QVariant, QVariant::fromValue<ItemDescProxy*>(&proxy)));
 
-    };
+//    };
 
     //    simple_add_toolbox_item("Amir",   "Jafari","qrc:/Resources/extrudepoly.png" ,true );
     //    simple_add_toolbox_item("Bagher", "Roodsarab","qrc:/Resources/geocentric.png" ,false);
@@ -168,8 +168,8 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
     //    simple_add_toolbox_item("Hasa10",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
 
 
-    simple_add_file_item("Hasa10",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
-    simple_add_file_item("Hasa101",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
+//    simple_add_file_item("Hasa10",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
+//    simple_add_file_item("Hasa101",  "Roodsara","qrc:/Resources/extrudepoly.png" ,false);
 
 
 
