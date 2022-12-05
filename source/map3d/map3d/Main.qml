@@ -149,6 +149,7 @@ MainWindow {
                 wnd.focalPointRangeChanged.connect(function(){item.range = wnd.focalPointRange;});
                 wnd.focalPointPitchChanged.connect(function(){item.pitch = wnd.focalPointPitch;});
                 wnd.focalPointHeadChanged.connect(function(){item.head = wnd.focalPointHead;});
+                item.goToView.connect(wnd.travelToViewpoint);
 
                 break;
             }

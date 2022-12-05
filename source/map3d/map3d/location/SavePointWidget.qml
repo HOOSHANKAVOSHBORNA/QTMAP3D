@@ -10,7 +10,7 @@ Rectangle{
     property real range: 0.0
     property real head: 0.0
 
-    signal saveLocation(string name, real longitude, real latitude,
+    signal saveLocation(string name, real latitude, real longitude,
                        real pitch ,real range, real head)
 
     color: _colorRec
@@ -73,8 +73,9 @@ Rectangle{
                 spacing: 3
                 Repeater{
                     id:repeter
-                    model:["Lon: " + Number(longitude).toLocaleString(Qt.locale(), 'f', 3),
-                        "Lat: " +    Number(latitude).toLocaleString(Qt.locale(), 'f', 3),
+                    model:[
+                        "Lat: " +    Number(latitude).toLocaleString(Qt.locale(), 'f', 2),
+                        "Lon: " + Number(longitude).toLocaleString(Qt.locale(), 'f', 3),
                         "Range: " +  Number(range).toLocaleString(Qt.locale(), 'e', 2),
                         "Pitch: " +  Number(pitch).toLocaleString(Qt.locale(), 'f', 3),
                         "Head: " +  Number(head).toLocaleString(Qt.locale(), 'f', 3)
