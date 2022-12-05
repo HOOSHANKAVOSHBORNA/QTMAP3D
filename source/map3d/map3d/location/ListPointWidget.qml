@@ -4,7 +4,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.13
 Item {
     id :rootItem
-    signal goToView(string name, real longitude, real latitude,
+    signal goToView(string name, real latitude, real longitude,
                     real range, real pitch ,real head);
 
     Rectangle{
@@ -43,8 +43,8 @@ Item {
                     opacity: 1
                     onClicked: function() {
                             rootItem.goToView(_Name,
-                                            parseFloat(_Longitude),
                                             parseFloat(_Latitude),
+                                            parseFloat(_Longitude),
                                             parseFloat(_Range),
                                             parseFloat(_Pitch),
                                             parseFloat(_Head)

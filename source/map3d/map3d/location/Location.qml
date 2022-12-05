@@ -5,8 +5,8 @@ import QtQuick.Layouts 1.12
 Item {
     id:rootItem
     signal goToLocation(real latitude , real longitude, real range)
-    signal goToView(string name, real longitude, real latitude,
-                    real range, real pitch);
+    signal goToView(real latitude, real longitude,
+                    real range, real pitch, real heading);
     property real longitude
     property real latitude
     property real pitch
@@ -15,7 +15,7 @@ Item {
     property var listSaveLocation: ListModel {
 
     }
-    function addListSaveLocation( _namelocation, _longitude, _latitude,
+    function addListSaveLocation( _namelocation, _latitude, _longitude,
                                  _range, _pitch, _head){
         const listSaveLocationCount = listSaveLocation.count;
         var category_found = false;
@@ -29,8 +29,8 @@ Item {
         }
         if (category_found !== true) {
             listSaveLocation.append({"_Name"       : _namelocation,
-                                     "_Longitude"  : _longitude,
                                      "_Latitude"   : _latitude,
+                                     "_Longitude"  : _longitude,
                                      "_Range"      : _range,
                                      "_Pitch"      : _pitch,
                                      "_Head"       : _head
@@ -56,8 +56,13 @@ Item {
         anchors.leftMargin: 5
         anchors.top: parent.top
         anchors.topMargin: 30
+<<<<<<< HEAD
         onGoToView:function(name, lon, lat, range,pitch, head) {
             rootItem.goToView(name, lon, lat, range, pitch, head);
+=======
+        onGoToView:function(name, lat,  lon, range,pitch, head) {
+            rootItem.goToView(lat, lon, range, pitch, head);
+>>>>>>> bd80881510344ef4821a0741a74a2911802fac34
         }
     }
 
@@ -66,8 +71,8 @@ Item {
         anchors.top: gPointWidget.bottom
         anchors.topMargin: 5
 
-        onSaveLocation:function(name, lon, lat, range, pitch, head) {
-            addListSaveLocation(name, lon, lat, range, pitch, head);
+        onSaveLocation:function(name, lat, lon, range, pitch, head) {
+            addListSaveLocation(name, lat, lon, range, pitch, head);
         }
 
         longitude: rootItem.longitude
