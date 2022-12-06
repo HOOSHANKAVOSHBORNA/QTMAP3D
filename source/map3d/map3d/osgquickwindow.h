@@ -73,6 +73,10 @@ private:
     QOpenGLContext *mContext = nullptr;
     QSurface       *mSurface = nullptr;
 
+
+    bool mMousePressOusideClickProcess = false;
+    bool mInClickProcess = false;
+
 protected:
     MapController *mMapController = nullptr;
 };

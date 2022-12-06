@@ -134,7 +134,7 @@ void OsgQuickWindow::keyPressEvent(QKeyEvent *event)
         }
         event->accept();
     }
-    break;
+        break;
     case Qt::Key_Down:
     {
         auto manip = mMapController->getEarthManipulator();
@@ -143,7 +143,7 @@ void OsgQuickWindow::keyPressEvent(QKeyEvent *event)
         }
         event->accept();
     }
-    break;
+        break;
     case Qt::Key_Left:
     {
         auto manip = mMapController->getEarthManipulator();
@@ -152,7 +152,7 @@ void OsgQuickWindow::keyPressEvent(QKeyEvent *event)
         }
         event->accept();
     }
-    break;
+        break;
     case Qt::Key_Right:
     {
         auto manip = mMapController->getEarthManipulator();
@@ -161,7 +161,7 @@ void OsgQuickWindow::keyPressEvent(QKeyEvent *event)
         }
         event->accept();
     }
-    break;
+        break;
     }
 
 
@@ -208,6 +208,13 @@ void OsgQuickWindow::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         mLastMousePressTime = QTime::currentTime();
         mLastPressPoint = event->pos();
+
+        if (!mInClickProcess) {
+            mMousePressOusideClickProcess = true;
+        } else {
+            mMousePressOusideClickProcess = false;
+        }
+
     }
 }
 
@@ -225,21 +232,31 @@ void OsgQuickWindow::mouseReleaseEvent(QMouseEvent *event)
         if (mLastMousePressTime.msecsTo(QTime::currentTime()) < 400) {
             const QPoint diff = event->pos() - mLastPressPoint;
             if (std::abs(diff.x()) < 10 && std::abs(diff.y()) < 10) {
-                emit clicked();
+
+                if (!mInClickProcess && mMousePressOusideClickProcess) {
+                    mInClickProcess = true;
+                    QTimer::singleShot(300, [this](){
+                        if (mMousePressOusideClickProcess)
+                            emit clicked();
+                        this->mInClickProcess = false;
+                    });
+
+                }
             }
         }
     }
+
 }
 
 void OsgQuickWindow::mouseDoubleClickEvent(QMouseEvent *event)
 {
+
     QQuickWindow::mouseDoubleClickEvent(event);
 
     if (event->isAccepted())
         return;
 
     mMapController->mouseDoubleClickEvent(event);
-
 
 }
 
