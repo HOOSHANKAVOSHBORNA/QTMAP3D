@@ -9,5 +9,6 @@ set(PLUGINS_OUTPUT_DIR "${CMAKE_BINARY_DIR}/plugins/bin")
 
 add_subdirectory(map3d)
 add_subdirectory(plugins)
+add_subdirectory(websocketserver)
 
 

@@ -16,7 +16,7 @@ set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build")
 
 set(CMAKE_CXX_EXTENSIONS ON)
 
-find_package(Qt5 COMPONENTS Core Quick Gui Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core Quick Gui Widgets WebSockets REQUIRED)
 
 add_executable(Map3d
         main.cpp
@@ -28,13 +28,14 @@ add_executable(Map3d
         mapcontroller.cpp
         pluginmanager.cpp
         osgcontroller.cpp
+        websocketclient.cpp
         qml.qrc
         resources.qrc)
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include")
 target_link_libraries(Map3d
-        PRIVATE Qt5::Core Qt5::Quick Qt5::Gui Qt5::Widgets
+        PRIVATE Qt5::Core Qt5::Quick Qt5::Gui Qt5::Widgets Qt5::WebSockets
         PUBLIC osg osgViewer osgDB osgGA OpenThreads osgManipulator osgSim osgParticle osgText osgUtil
         gdal osgEarth osgEarthFeatures osgEarthUtil osgEarthSymbology osgEarthAnnotation
         GL

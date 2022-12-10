@@ -20,6 +20,7 @@ add_library(imagelayer SHARED
   multichoosedlg.cpp
   multichoosedlg.h
   imagelayer.json
+  imagelayer.qrc
 )
 
 target_include_directories(imagelayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
