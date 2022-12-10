@@ -318,22 +318,30 @@ MainWindow {
         anchors.bottomMargin: widgetsMargis
         y: wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
     }
-    LocationWidget{
-        anchors.left: navigationWidget.right
-        anchors.leftMargin: _margin
-        anchors.right: compass.left
-        anchors.rightMargin: _margin / 2
-        anchors.bottomMargin:  widgetsMargis
-        y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
+//    LocationWidget{
+//        anchors.left: navigationWidget.right
+//        anchors.leftMargin: _margin
+//        anchors.right: compass.left
+//        anchors.rightMargin: _margin / 2
+//        anchors.bottomMargin:  widgetsMargis
+//        y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
 
+//        latitude: wnd.mousePointedLocation.x
+//        longitude: wnd.mousePointedLocation.y
+//        altitude: wnd.mousePointedLocation.z
+
+
+//    }
+
+    StatusBars {
+        anchors.bottom: parent.bottom
+        width: parent.width
+        height: 25
         latitude: wnd.mousePointedLocation.x
         longitude: wnd.mousePointedLocation.y
         altitude: wnd.mousePointedLocation.z
 
-
     }
-
-
 
 
 }
