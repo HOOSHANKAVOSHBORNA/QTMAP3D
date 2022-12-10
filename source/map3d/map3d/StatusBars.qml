@@ -11,21 +11,32 @@ Item {
         anchors.fill: parent
         color: "#404040"
         RowLayout {
+            anchors.leftMargin: 4
+            anchors.left: parent.left
             Label {
+                Layout.minimumWidth: hiddenn.implicitWidth
                 id: lon
                 color: "white"
                 text: "Longitude: "+Number(longitude).toLocaleString(Qt.locale(), 'f', 3)
             }
             Label {
                 id: lat
+                Layout.minimumWidth: hiddenn.implicitWidth
                 color: "white"
                 text: "Latitude: "+Number(latitude).toLocaleString(Qt.locale(), 'f', 3)
             }
             Label {
                 id: alt
+                Layout.minimumWidth: hiddenn.implicitWidth
                 color: "white"
                 text: "Altitude: "+Number(altitude).toLocaleString(Qt.locale(), 'f', 3)
             }
+
         }
+    }
+    Label {
+        id: hiddenn
+        text: "Longitude: -254.000"
+        visible: false
     }
 }
