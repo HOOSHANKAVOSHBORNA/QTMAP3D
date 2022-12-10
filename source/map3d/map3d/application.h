@@ -7,6 +7,7 @@
 
 #include "plugininterface.h"
 #include "pluginmanager.h"
+#include "networkmanager.h"
 
 
 class MainWindow;
@@ -32,13 +33,15 @@ private:
     void registerTypes();
     void initializeQmlEngine();
     void createMainWindow();
+    void initializeNetworkManager();
 
 private slots:
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
     void onMainWindowCreated();
-    void initialize3D();
+    void setup();
 
-signals:
+public:
+    inline NetworkManager * networkManager() const {return mNetworkManager;}
 
 private:
     QQmlApplicationEngine *mpQmlEngine = nullptr;
@@ -46,6 +49,7 @@ private:
     MainWindow *mpMainWindow = nullptr;
 
     PluginManager *mpPluginManager = nullptr;
+    NetworkManager *mNetworkManager = nullptr;
 };
 
 #endif // Application_H

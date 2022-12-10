@@ -74,7 +74,7 @@ public:
 public:
     void loadPlugins();
     void performPluginsInitQMLDesc(QQmlEngine *qmlEngine);
-    void performPluginsInit3D(MapController *mapController);
+    void performPluginsSetup(MapController *mapController);
 
     std::list<PluginInfo>& pluginsInfoList();
 

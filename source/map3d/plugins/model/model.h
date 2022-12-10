@@ -34,7 +34,7 @@ public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
     virtual void onSideItemCreated(int index, QObject *pSideItem) override;
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
-    virtual bool initialize3D(MapController *pMapController) override;
+    virtual bool setup(MapController *pMapController, NetworkManager *networkManager) override;
 
     void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
     void addTruckModel();

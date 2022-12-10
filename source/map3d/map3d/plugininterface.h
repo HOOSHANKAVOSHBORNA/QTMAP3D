@@ -9,6 +9,7 @@
 class QQmlEngine;
 class QQmlComponent;
 class MapController;
+class NetworkManager;
 
 namespace osgViewer {
     class Viewer;
@@ -71,7 +72,7 @@ public:
     virtual void onFileItemClicked(const QString& name,
                                       const QString& category) {}
 
-    virtual bool initialize3D(MapController *mapController) {}
+    virtual bool setup(MapController *mapController, NetworkManager * networkManager) {}
 
 };
 

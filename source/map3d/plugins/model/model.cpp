@@ -147,7 +147,7 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
     //QObject::connect(mMainWindow->getWebSocket(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
 }
 
-bool Model::initialize3D(MapController *pMapController)
+bool Model::setup(MapController *pMapController, NetworkManager *networkManager)
 {
     mMapController = pMapController;
 }

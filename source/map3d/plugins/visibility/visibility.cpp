@@ -44,7 +44,7 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
     }
 }
 
-bool Visibility::initialize3D(MapController *mapController)
+bool Visibility::setup(MapController *mapController, NetworkManager *networkManager)
 {
     mMapController = mapController;
     mIconNode = makeIconNode();

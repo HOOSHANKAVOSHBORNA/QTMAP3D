@@ -49,7 +49,7 @@ void FeatureLayer::onToolboxItemClicked(const QString &name, const QString &cate
     }
 }
 
-bool FeatureLayer::initialize3D(MapController *mapController)
+bool FeatureLayer::setup(MapController *mapController, NetworkManager *networkManager)
 {
     mMapController = mapController;
 }

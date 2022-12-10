@@ -13,7 +13,7 @@ public:
     ~TerrainLayer()override{}
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     void onToolboxItemClicked(const QString &name, const QString &category) override;
-    bool initialize3D(MapController *mapController) override;
+    bool setup(MapController *mapController, NetworkManager *networkManager) override;
 private:
     void addGDAL();
     void addArcGIS();

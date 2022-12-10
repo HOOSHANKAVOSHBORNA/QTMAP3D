@@ -63,7 +63,7 @@ void ImageLayer::onToolboxItemClicked(const QString &name, const QString &catego
     }
 }
 
-bool ImageLayer::initialize3D(MapController *mapController)
+bool ImageLayer::setup(MapController *mapController, NetworkManager *networkManager)
 {
     mMapController = mapController;
 }

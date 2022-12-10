@@ -29,6 +29,7 @@ add_executable(Map3d
         pluginmanager.cpp
         osgcontroller.cpp
         websocketclient.cpp
+        networkmanager.cpp
         qml.qrc
         resources.qrc)
 

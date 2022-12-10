@@ -9,6 +9,8 @@
 
 #include "pluginmanager.h"
 #include "plugininterface.h"
+#include "application.h"
+#include "networkmanager.h"
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
@@ -55,10 +57,11 @@ void PluginManager::performPluginsInitQMLDesc(QQmlEngine *qmlEngine)
     }
 }
 
-void PluginManager::performPluginsInit3D(MapController *mapController)
+void PluginManager::performPluginsSetup(MapController *mapController)
 {
+    const auto networkManager = Application::instance()->networkManager();
     for (const auto& item : mPluginsInfoList) {
-        item.interface->initialize3D(mapController);
+        item.interface->setup(mapController, networkManager);
     }
 }
 

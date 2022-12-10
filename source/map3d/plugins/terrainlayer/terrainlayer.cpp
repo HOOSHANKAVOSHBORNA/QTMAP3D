@@ -54,7 +54,7 @@ void TerrainLayer::onToolboxItemClicked(const QString &name, const QString &cate
     }
 }
 
-bool TerrainLayer::initialize3D(MapController *mapController)
+bool TerrainLayer::setup(MapController *mapController, NetworkManager *networkManager)
 {
     mMapController = mapController;
 }

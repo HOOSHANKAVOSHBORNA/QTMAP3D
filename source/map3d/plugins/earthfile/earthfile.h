@@ -13,7 +13,7 @@ public:
     explicit EarthFile(QWidget *parent = nullptr);
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     void onFileItemClicked(const QString &name, const QString &category) override;
-    bool initialize3D(MapController *mapController) override;
+    bool setup(MapController *mapController, NetworkManager *networkManager) override;
 private:
     MapController* mMapController{nullptr};
 };
