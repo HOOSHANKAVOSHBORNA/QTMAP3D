@@ -170,6 +170,16 @@ MainWindow {
                 wnd.sideItemCreated(index, item);
             }
         }
+
+        InfoWidget {
+            id: infoWidget
+            x:  -(600 + (widgetsMargis*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargis*2.0)))
+            y: menuWidget.height + (widgetsMargis * 2.0)
+            width: 600 + (widgetsMargis * 2)
+            height: parent.height - menuWidget.height - (widgetsMargis * 3) - navigationWidget.height
+
+        }
+
         Compass{
             id:compass
             headingAngle: wnd.headingAngle

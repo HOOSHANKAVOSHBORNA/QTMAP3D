@@ -22,5 +22,6 @@
         <file>infotarget/ListTarget.qml</file>
         <file>infotarget/ListButton.qml</file>
         <file>StatusBars.qml</file>
+        <file>InfoWidget.qml</file>
     </qresource>
 </RCC>
