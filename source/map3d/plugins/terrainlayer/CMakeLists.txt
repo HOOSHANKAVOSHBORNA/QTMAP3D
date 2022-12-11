@@ -18,6 +18,7 @@ add_library(terrainlayer SHARED
   urldialog.h
   urldialog.ui
   terrainlayer.json
+  terrainlayer.qrc
 )
 
 target_include_directories(terrainlayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
