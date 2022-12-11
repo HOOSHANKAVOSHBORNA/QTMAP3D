@@ -76,7 +76,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
     {
         if(checked)
         {
-        mSphere = new Sphere(mMapController,mRadius);        
+        mSphere = new Sphere(mMapController,mRadius, false);
         QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onSphereBtnClick);
         }
         else
@@ -131,12 +131,19 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
         mIsFinished = false;
 
         mLine->addPoint(geoPos.vec3d());
-        mLine->setLineStyle(osgEarth::Color::Purple,7,false);
+        //mLine->setLineStyle(osgEarth::Color::Purple,7,false);
+
+        mLine->setLineColor(osgEarth::Color::Purple);
+        mLine->setLineWidth(7);
+        mLine->setLineClamp(false);
         mMapController->addNode(mLine->getNode());
     }
     if(event->button() == Qt::MouseButton::RightButton && event->type() ==  QEvent::Type::MouseButtonPress)
     {
         //mLine->setPointStyle(osgEarth::Color::Purple,20,true);
+        mLine->setPointColor(osgEarth::Color::Yellow);
+        mLine->setPointSize(20);
+        mLine->setPointClamp(true);
 
         mLine->removePoint();
         mIsFinished = true;
@@ -171,7 +178,11 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
     if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         mRadius = 200000;
-        mSphere->setProp(osg::Vec4(1,0,0,1),osg::Vec3(0,0,0),mRadius);
+        //mSphere->setProp(osg::Vec4(1,0,0,1),osg::Vec3(0,0,0),mRadius);
+        mSphere->setColor(osg::Vec4(1,0,0,1));
+        mSphere->setCenter(osg::Vec3(0,0,0));
+        mSphere->setRadius(mRadius);
+        mSphere->setClamp(true);
     }
 }
 
