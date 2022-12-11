@@ -26,10 +26,10 @@ TerrainLayer::TerrainLayer(QWidget *parent)
 bool TerrainLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{GDAL, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{ARCGIS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{WCS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{TMS, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{WCS, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "", false, false, ""});
 
     return true;
 }
@@ -54,7 +54,9 @@ void TerrainLayer::onToolboxItemClicked(const QString &name, const QString &cate
     }
 }
 
-bool TerrainLayer::initialize3D(MapController *mapController)
+bool TerrainLayer::setup(MapController *mapController,
+                         NetworkManager *networkManager,
+                         InfoWidgetHandle *infoWidgetHandle)
 {
     mMapController = mapController;
 }

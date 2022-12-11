@@ -9,14 +9,32 @@
 class QQmlEngine;
 class QQmlComponent;
 class MapController;
+class NetworkManager;
 
 namespace osgViewer {
     class Viewer;
 };
 
-struct ToolboxItemDesc
+class InfoWidgetHandle
 {
-    ToolboxItemDesc(
+    enum class InfoWidgetType {
+        Airplane,
+        Station,
+        System
+    };
+
+public:
+    InfoWidgetHandle() { }
+    virtual ~InfoWidgetHandle() { }
+
+public:
+    void showInfoWidget(InfoWidgetType infoWidgetType);
+    void updateData(const QString& infoJSON);
+};
+
+struct ItemDesc
+{
+    ItemDesc(
             QString _name      = QString(),
             QString _category  = QString(),
             QString _iconUrl   = QString(),
@@ -49,7 +67,8 @@ struct PluginQMLDesc
     QString        sideItemMenuBarIconUrl;
     QString        sideItemUrl;
 
-    QList<ToolboxItemDesc*> toolboxItemsList;
+    QList<ItemDesc*> toolboxItemsList;
+    QList<ItemDesc*> fileItemsList;
 };
 
 class PluginInterface : public QObject
@@ -67,8 +86,12 @@ public:
     virtual void onToolboxItemCheckedChanged(const QString& name,
                                              const QString& category,
                                              bool checked) {}
+    virtual void onFileItemClicked(const QString& name,
+                                      const QString& category) {}
 
-    virtual bool initialize3D(MapController *mapController) {}
+    virtual bool setup(MapController *mapController,
+                       NetworkManager * networkManager,
+                       InfoWidgetHandle *infoWidgetHandle) {}
 
 };
 

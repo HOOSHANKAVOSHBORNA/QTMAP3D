@@ -8,6 +8,13 @@ Item {
 
     signal sideItemCreated(int index, Item item)
 
+    function hideAllItems() {
+        for (var i = 0; i < rootItem.sideItemsModel.count; i++) {
+            sideItemsRepeater.itemAt(i).x = 0;
+        }
+    }
+
+
     function menuWidgetItemClicked(index) {
 
         sideItemHideAnimation.stop();
@@ -34,7 +41,6 @@ Item {
             rootItem.currentVisibleIndex = index;
             sideItemShowAnimation.start();
         }
-
     }
 
 

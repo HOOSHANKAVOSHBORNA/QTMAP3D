@@ -29,6 +29,7 @@ int Application::main(int argc, char **argv)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
+    initializeNetworkManager();
 
     registerTypes();
     initializeQmlEngine();
@@ -71,6 +72,11 @@ void Application::createMainWindow()
     mpQmlEngine->load(mmainUrl);
 }
 
+void Application::initializeNetworkManager()
+{
+    mNetworkManager = new NetworkManager;
+}
+
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 {
     if (!obj && mmainUrl == objUrl)
@@ -97,7 +103,14 @@ void Application::onMainWindowCreated()
                      mpPluginManager, &PluginManager::onToolboxItemCheckedChanged,
                      Qt::DirectConnection);
     QObject::connect(mpMainWindow, &MainWindow::osgInitialized,
-                     this, &Application::initialize3D,
+                     this, &Application::setup,
+                     Qt::DirectConnection);
+
+    QObject::connect(mpMainWindow, &MainWindow::fileItemCreated,
+                     mpPluginManager, &PluginManager::onFileItemCreated,
+                     Qt::DirectConnection);
+    QObject::connect(mpMainWindow, &MainWindow::fileItemClicked,
+                     mpPluginManager, &PluginManager::onFileItemClicked,
                      Qt::DirectConnection);
 
     mpPluginManager->performPluginsInitQMLDesc(mpQmlEngine);
@@ -105,8 +118,8 @@ void Application::onMainWindowCreated()
     mpMainWindow->initializePluginsUI(mpPluginManager->pluginsInfoList());
 }
 
-void Application::initialize3D()
+void Application::setup()
 {
-    mpPluginManager->performPluginsInit3D(mpMainWindow->mapController());
+    mpPluginManager->performPluginsSetup(mpMainWindow->mapController());
 }
 

@@ -38,8 +38,10 @@ public:
 
 signals:
     void sideItemCreated(int index, QObject *pSideItem);
-    void toolboxItemCreated(ToolboxItemDescProxy *itemProxy);
+    void toolboxItemCreated(ItemDescProxy *itemProxy);
+    void fileItemCreated(ItemDescProxy *itemProxy);
     void toolboxItemClicked(const QString& itemName, const QString& categoryName);
+    void fileItemClicked(const QString& itemName, const QString& categoryName);
     void toolboxItemCheckedChanged(const QString& itemName,
                                    const QString& categoryName,
                                    bool checked);

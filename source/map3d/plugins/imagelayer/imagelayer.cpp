@@ -30,11 +30,11 @@ ImageLayer::ImageLayer(QWidget *parent)
 bool ImageLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{GDAL, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{ARCGIS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{WMS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{TMS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ToolboxItemDesc{XYZ, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false});
+    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false});
+    desc->toolboxItemsList.push_back(new ItemDesc{WMS, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{XYZ, CATEGORY, "", false, false, ""});
 
     return true;
 }
@@ -63,7 +63,9 @@ void ImageLayer::onToolboxItemClicked(const QString &name, const QString &catego
     }
 }
 
-bool ImageLayer::initialize3D(MapController *mapController)
+bool ImageLayer::setup(MapController *mapController,
+                       NetworkManager *networkManager,
+                       InfoWidgetHandle *infoWidgetHandle)
 {
     mMapController = mapController;
 }

@@ -14,7 +14,7 @@
 class MapController;
 class PluginInterface;
 
-class ToolboxItemDescProxy : public QObject
+class ItemDescProxy : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name      READ name     )
@@ -27,7 +27,7 @@ class ToolboxItemDescProxy : public QObject
 
 
 public:
-    ToolboxItemDescProxy(const ToolboxItemDesc& desc, PluginInterface *interface = nullptr) :
+    ItemDescProxy(const ItemDesc& desc, PluginInterface *interface = nullptr) :
         _name     (desc.name     ),
         _category (desc.category ),
         _iconUrl  (desc.iconUrl  ),
@@ -74,22 +74,26 @@ public:
 public:
     void loadPlugins();
     void performPluginsInitQMLDesc(QQmlEngine *qmlEngine);
-    void performPluginsInit3D(MapController *mapController);
+    void performPluginsSetup(MapController *mapController);
 
     std::list<PluginInfo>& pluginsInfoList();
 
 public slots:
     void onSideItemCreated(int index, QObject *sideItem);
-    void onToolboxItemCreated(ToolboxItemDescProxy *itemProxy);
+    void onToolboxItemCreated(ItemDescProxy *itemProxy);
+    void onFileItemCreated(ItemDescProxy *itemProxy);
     void onToolboxItemClicked(const QString& name,
                               const QString& category);
     void onToolboxItemCheckedChanged(const QString& name,
                                      const QString& category,
                                      bool checked);
+    void onFileItemClicked(const QString& name,
+                           const QString& category);
 
 private:
     std::list<PluginInfo> mPluginsInfoList;
     QMap<QString, QMap<QString, PluginInterface*>> mToolboxItemsMap;
+    QMap<QString, QMap<QString, PluginInterface*>> mFileItemsMap;
 };
 
 #endif // PluginManager_H

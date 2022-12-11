@@ -276,9 +276,10 @@ void MapController::travelToViewpoint(qreal latitude,
                                       qreal pitch,
                                       qreal heading)
 {
+
+    osgEarth::GeoPoint  pt(osgEarth::SpatialReference::get("wgs84"), latitude, longitude, 0);
     osgEarth::Viewpoint vp;
-    vp.focalPoint()->x() = latitude;
-    vp.focalPoint()->y() = longitude;
+    vp.focalPoint() = pt;
     vp.range() = range;
     vp.pitch() = pitch;
     vp.heading() = heading;

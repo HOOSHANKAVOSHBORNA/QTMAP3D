@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/gdal.png</file>
+        <file>resources/arcgis.png</file>
+    </qresource>
+</RCC>

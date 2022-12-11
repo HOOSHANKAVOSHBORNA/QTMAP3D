@@ -9,6 +9,8 @@
 
 #include "pluginmanager.h"
 #include "plugininterface.h"
+#include "application.h"
+#include "networkmanager.h"
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
@@ -55,10 +57,11 @@ void PluginManager::performPluginsInitQMLDesc(QQmlEngine *qmlEngine)
     }
 }
 
-void PluginManager::performPluginsInit3D(MapController *mapController)
+void PluginManager::performPluginsSetup(MapController *mapController)
 {
+    const auto networkManager = Application::instance()->networkManager();
     for (const auto& item : mPluginsInfoList) {
-        item.interface->initialize3D(mapController);
+        item.interface->setup(mapController, networkManager, nullptr);
     }
 }
 
@@ -80,9 +83,14 @@ void PluginManager::onSideItemCreated(int index, QObject *sideItem)
     }
 }
 
-void PluginManager::onToolboxItemCreated(ToolboxItemDescProxy *itemProxy)
+void PluginManager::onToolboxItemCreated(ItemDescProxy *itemProxy)
 {
     mToolboxItemsMap[itemProxy->category()][itemProxy->name()] = itemProxy->pluginInterface();
+}
+
+void PluginManager::onFileItemCreated(ItemDescProxy *itemProxy)
+{
+    mFileItemsMap[itemProxy->category()][itemProxy->name()] = itemProxy->pluginInterface();
 }
 
 void PluginManager::onToolboxItemClicked(const QString &name, const QString &category)
@@ -108,4 +116,16 @@ void PluginManager::onToolboxItemCheckedChanged(const QString &name, const QStri
         }
     }
 
+}
+
+void PluginManager::onFileItemClicked(const QString &name, const QString &category)
+{
+    if (mFileItemsMap.contains(category)) {
+        if (mFileItemsMap[category].contains(name)) {
+            PluginInterface* pInterface = mFileItemsMap[category][name];
+            if (pInterface) {
+                pInterface->onFileItemClicked(name, category);
+            }
+        }
+    }
 }
