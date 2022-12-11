@@ -19,7 +19,9 @@ public:
     explicit DrawShapes(QWidget *parent = nullptr);
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    virtual bool initialize3D(MapController *mapController) override;
+    virtual bool setup(MapController *mapController,
+                       NetworkManager *networkManager,
+                       InfoWidgetHandle *infoWidgetHandle) override;
 
 
 private:
