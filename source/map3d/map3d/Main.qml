@@ -111,57 +111,128 @@ MainWindow {
         sideWidget.menuWidgetItemClicked(index);
     }
 
-    MenuWidget {
-        id: menuWidget
+    Item {
+
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.bottom: statusBar.top
+        width: parent.width
 
-        y: (-height - widgetsMargis) + (wnd.widgetsPositionFactor * (height + (widgetsMargis * 2.0)))
+        MenuWidget {
+            id: menuWidget
+            anchors.horizontalCenter: parent.horizontalCenter
 
-        width: implicitWidth
-        height: implicitHeight
+            y: (-height - widgetsMargis) + (wnd.widgetsPositionFactor * (height + (widgetsMargis * 2.0)))
 
-        itemsModel: sideItemsModel
-        clickCallback: function(index) {
-            wnd.menuWidgetClickCallback(index);
-        }
-    }
+            width: implicitWidth
+            height: implicitHeight
 
-    SideWidget {
-        id: sideWidget
-        x:  -(600 + (widgetsMargis*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargis*2.0)))
-        y: menuWidget.height + (widgetsMargis * 2.0)
-        width: 600 + (widgetsMargis * 2)
-        height: parent.height - menuWidget.height - (widgetsMargis * 3) - navigationWidget.height
-
-        sideItemsModel: wnd.sideItemsModel
-
-        onSideItemCreated: function(index, item) {
-            switch(index) {
-            case 0:
-                item.listModel = wnd.fileModel;
-                item.itemClicked.connect(wnd.fileItemClicked);
-                break
-            case 2:
-                item.listModel = wnd.toolboxModel;
-                item.itemClicked.connect(wnd.toolboxItemClicked);
-                item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
-                break;
-
-
-            case 3:
-                item.goToLocation.connect(wnd.goToLocation);
-                wnd.focalPointLatChanged.connect(function(){item.latitude = wnd.focalPointLat;});
-                wnd.focalPointLongChanged.connect(function(){item.longitude = wnd.focalPointLong;});
-                wnd.focalPointRangeChanged.connect(function(){item.range = wnd.focalPointRange;});
-                wnd.focalPointPitchChanged.connect(function(){item.pitch = wnd.focalPointPitch;});
-                wnd.focalPointHeadChanged.connect(function(){item.head = wnd.focalPointHead;});
-                item.goToView.connect(wnd.travelToViewpoint);
-
-                break;
+            itemsModel: sideItemsModel
+            clickCallback: function(index) {
+                wnd.menuWidgetClickCallback(index);
             }
-
-            wnd.sideItemCreated(index, item);
         }
+
+        SideWidget {
+            id: sideWidget
+            x:  -(600 + (widgetsMargis*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargis*2.0)))
+            y: menuWidget.height + (widgetsMargis * 2.0)
+            width: 600 + (widgetsMargis * 2)
+            height: parent.height - menuWidget.height - (widgetsMargis * 3) - navigationWidget.height
+
+            sideItemsModel: wnd.sideItemsModel
+
+            onSideItemCreated: function(index, item) {
+                switch(index) {
+                case 0:
+                    item.listModel = wnd.fileModel;
+                    item.itemClicked.connect(wnd.fileItemClicked);
+                    break
+                case 2:
+                    item.listModel = wnd.toolboxModel;
+                    item.itemClicked.connect(wnd.toolboxItemClicked);
+                    item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
+                    break;
+
+
+                case 3:
+                    item.goToLocation.connect(wnd.goToLocation);
+                    wnd.focalPointLatChanged.connect(function(){item.latitude = wnd.focalPointLat;});
+                    wnd.focalPointLongChanged.connect(function(){item.longitude = wnd.focalPointLong;});
+                    wnd.focalPointRangeChanged.connect(function(){item.range = wnd.focalPointRange;});
+                    wnd.focalPointPitchChanged.connect(function(){item.pitch = wnd.focalPointPitch;});
+                    wnd.focalPointHeadChanged.connect(function(){item.head = wnd.focalPointHead;});
+                    item.goToView.connect(wnd.travelToViewpoint);
+
+                    break;
+                }
+
+                wnd.sideItemCreated(index, item);
+            }
+        }
+
+        InfoWidget {
+            id: infoWidget
+            x:  -(600 + (widgetsMargis*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargis*2.0)))
+            y: menuWidget.height + (widgetsMargis * 2.0)
+            width: 600 + (widgetsMargis * 2)
+            height: parent.height - menuWidget.height - (widgetsMargis * 3) - navigationWidget.height
+
+        }
+
+        Compass{
+            id:compass
+            headingAngle: wnd.headingAngle
+            anchors.right: parent.right
+            anchors.rightMargin: widgetsMargis
+            anchors.bottomMargin: widgetsMargis
+            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
+        }
+
+        NavigationWidget{
+            id : navigationWidget
+            anchors.horizontalCenter: parent.horizontalCenter
+            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis/2)))
+            // slot button
+            onBtnHomeClicked: function() {
+                wnd.homeButtonClicked();
+            }
+            onBtnProjectionClicked: function() {
+                wnd.projectionButtonClicked();
+            }
+            onBtnZoomInClicked: {
+                wnd.zoomInButtonClicked();
+            }
+            onBtnZoomOutClicked: {
+                wnd.zoomOutButtonClicked();
+            }
+            onBtnUpClicked: {
+                wnd.upButtonClicked();
+            }
+            onBtnDownClicked: {
+                wnd.downButtonClicked();
+            }
+            onBtnLeftClicked: {
+                wnd.leftButtonClicked();
+            }
+            onBtnRightClicked: {
+                wnd.rightButtonClicked();
+            }
+            onBtnRotateLeftClicked:{
+                wnd.rotateLeftButtonClicked();
+            }
+            onBtnRotateRightClicked:{
+                wnd.rotateRightButtonClicked();
+            }
+            onBtnRotateDownClicked: {
+                wnd.rotateDownButtonClicked();
+            }
+            onBtnRotateUpClicked: {
+                wnd.rotateUpButtonClicked();
+            }
+            ///
+        }
+
     }
 
     function addSideItem(_title_text, _icon_url, _side_itemurl) {
@@ -267,73 +338,31 @@ MainWindow {
 
     Component.onCompleted: function() {    }
 
-    NavigationWidget{
-        id : navigationWidget
-        anchors.horizontalCenter: parent.horizontalCenter
-        y: wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis/2)))
-        // slot button
-        onBtnHomeClicked: function() {
-            wnd.homeButtonClicked();
-        }
-        onBtnProjectionClicked: function() {
-            wnd.projectionButtonClicked();
-        }
-        onBtnZoomInClicked: {
-            wnd.zoomInButtonClicked();
-        }
-        onBtnZoomOutClicked: {
-            wnd.zoomOutButtonClicked();
-        }
-        onBtnUpClicked: {
-            wnd.upButtonClicked();
-        }
-        onBtnDownClicked: {
-            wnd.downButtonClicked();
-        }
-        onBtnLeftClicked: {
-            wnd.leftButtonClicked();
-        }
-        onBtnRightClicked: {
-            wnd.rightButtonClicked();
-        }
-        onBtnRotateLeftClicked:{
-            wnd.rotateLeftButtonClicked();
-        }
-        onBtnRotateRightClicked:{
-            wnd.rotateRightButtonClicked();
-        }
-        onBtnRotateDownClicked: {
-            wnd.rotateDownButtonClicked();
-        }
-        onBtnRotateUpClicked: {
-            wnd.rotateUpButtonClicked();
-        }
-        ///
-    }
-    Compass{
-        id:compass
-        headingAngle: wnd.headingAngle
-        anchors.right: parent.right
-        anchors.rightMargin: widgetsMargis
-        anchors.bottomMargin: widgetsMargis
-        y: wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
-    }
-    LocationWidget{
-        anchors.left: navigationWidget.right
-        anchors.leftMargin: _margin
-        anchors.right: compass.left
-        anchors.rightMargin: _margin / 2
-        anchors.bottomMargin:  widgetsMargis
-        y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
+//    LocationWidget{
+//        anchors.left: navigationWidget.right
+//        anchors.leftMargin: _margin
+//        anchors.right: compass.left
+//        anchors.rightMargin: _margin / 2
+//        anchors.bottomMargin:  widgetsMargis
+//        y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
 
+//        latitude: wnd.mousePointedLocation.x
+//        longitude: wnd.mousePointedLocation.y
+//        altitude: wnd.mousePointedLocation.z
+
+
+//    }
+
+    StatusBars {
+        id: statusBar
+        anchors.bottom: parent.bottom
+        width: parent.width
+        height: 25
         latitude: wnd.mousePointedLocation.x
         longitude: wnd.mousePointedLocation.y
         altitude: wnd.mousePointedLocation.z
 
-
     }
-
-
 
 
 }

@@ -147,7 +147,9 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
     }
 }
 
-bool Model::setup(MapController *pMapController, NetworkManager *networkManager)
+bool Model::setup(MapController *pMapController,
+                  NetworkManager *networkManager,
+                  InfoWidgetHandle *infoWidgetHandle)
 {
     mMapController = pMapController;
 
