@@ -371,4 +371,16 @@ MainWindow {
     }
 
 
+    Label {
+        id: fpsLabel
+        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
+        color: 'red'
+        font.pointSize: 20
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 100
+        anchors.rightMargin: 100
+    }
+
+
 }

@@ -6,6 +6,8 @@
 #include <osgEarth/Registry>
 #include <QMessageBox>
 #include <QTimer>
+#include <deque>
+#include <chrono>
 
 #include "mapcontroller.h"
 
@@ -216,6 +218,21 @@ void MapController::frame()
         emit focalPointHeadChanged(vp.heading().get().getValue());
 
     }
+
+
+    static std::deque<std::chrono::high_resolution_clock::time_point> timepoint_list;
+
+    timepoint_list.push_back(std::chrono::high_resolution_clock::now());
+    while (timepoint_list.size() > 100) {
+        timepoint_list.pop_front();
+    }
+
+    const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timepoint_list.back() - timepoint_list.front()).count());
+    if (duration > 0) {
+        const qreal fps = qreal(timepoint_list.size() * 1000) / duration;
+        emit fpsChanged(fps);
+    }
+
 
 }
 
