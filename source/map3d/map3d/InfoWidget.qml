@@ -20,7 +20,6 @@ Item {
                 break;
             }
         }
-
     }
 
     function updateData(infoJSON) {
@@ -33,7 +32,7 @@ Item {
                break;
            case "STATION":
 
-               break
+               break;
            case "SYSTEM":
 
                break;
