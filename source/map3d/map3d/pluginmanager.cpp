@@ -61,7 +61,7 @@ void PluginManager::performPluginsSetup(MapController *mapController)
 {
     const auto networkManager = Application::instance()->networkManager();
     for (const auto& item : mPluginsInfoList) {
-        item.interface->setup(mapController, networkManager);
+        item.interface->setup(mapController, networkManager, nullptr);
     }
 }
 

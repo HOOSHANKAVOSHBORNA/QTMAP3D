@@ -28,7 +28,9 @@ public:
 public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    virtual bool setup(MapController *mapController, NetworkManager *networkManager) override;
+    virtual bool setup(MapController *mapController,
+                       NetworkManager *networkManager,
+                       InfoWidgetHandle *infoWidgetHandle) override;
 private slots:
     void onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos);
 private:

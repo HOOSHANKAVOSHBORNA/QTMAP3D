@@ -15,6 +15,23 @@ namespace osgViewer {
     class Viewer;
 };
 
+class InfoWidgetHandle
+{
+    enum class InfoWidgetType {
+        Airplane,
+        Station,
+        System
+    };
+
+public:
+    InfoWidgetHandle() { }
+    virtual ~InfoWidgetHandle() { }
+
+public:
+    void showInfoWidget(InfoWidgetType infoWidgetType);
+    void updateData(const QString& infoJSON);
+};
+
 struct ItemDesc
 {
     ItemDesc(
@@ -72,7 +89,9 @@ public:
     virtual void onFileItemClicked(const QString& name,
                                       const QString& category) {}
 
-    virtual bool setup(MapController *mapController, NetworkManager * networkManager) {}
+    virtual bool setup(MapController *mapController,
+                       NetworkManager * networkManager,
+                       InfoWidgetHandle *infoWidgetHandle) {}
 
 };
 
