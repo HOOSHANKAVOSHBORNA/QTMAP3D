@@ -21,6 +21,11 @@ class MainWindow : public OsgQuickWindow
     Q_PROPERTY(qreal focalPointRange READ focalPointRange WRITE setFocalPointRange NOTIFY focalPointRangeChanged)
     Q_PROPERTY(qreal focalPointPitch READ focalPointPitch WRITE setFocalPointPitch NOTIFY focalPointPitchChanged)
     Q_PROPERTY(qreal focalPointHead READ focalPointHead WRITE setFocalPointHead NOTIFY focalPointHeadChanged)
+    Q_PROPERTY(qreal fps READ fps WRITE setFps NOTIFY fpsChanged)
+
+    enum class InfoWidgetType {
+
+    };
 
 public:
     MainWindow(QWindow *parent = nullptr);
@@ -35,6 +40,8 @@ public:
     qreal focalPointPitch() const;
     qreal focalPointHead() const;
 
+
+    qreal fps() const;
 
 signals:
     void sideItemCreated(int index, QObject *pSideItem);
@@ -69,6 +76,7 @@ signals:
     void focalPointPitchChanged();
     void focalPointHeadChanged();
 
+    void fpsChanged();
 
 public slots:
     void initializePluginsUI(std::list<PluginInfo>& pluginsInfoList);
@@ -81,11 +89,16 @@ public slots:
     void setFocalPointPitch(qreal focalPointPitch) ;
     void setFocalPointHead(qreal focalPointHead) ;
 
+    void setFps(qreal fps);
+
     void travelToViewpoint(qreal latitude,
                            qreal longitude,
                            qreal range,
                            qreal pitch,
                            qreal heading);
+
+    void showInfoWidget(InfoWidgetType infoWidgetType);
+    void updateInfoWidgetData(const QString& dataJSON);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -99,6 +112,8 @@ private:
     qreal mFocalPointRange = 0.0;
     qreal mFocalPointPitch = 0.0;
     qreal mFocalPointHead = 0.0;
+
+    qreal mFps = 0.0f;
 
 };
 

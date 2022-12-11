@@ -1,11 +1,60 @@
 
 import QtQuick 2.13
+import QtQuick.Controls 2.13
 
 Item {
     id: rootItem
-    property ListModel infoItemsModel
+    implicitWidth: 600
 
-    signal infoItemCreated()
+
+    property int currentShowingIndex: -1
+
+    function showInfoItem(itemTypeString) {
+
+        rootItem.currentShowingIndex = -1;
+
+        var modelCount = infoItemsModel.count;
+        for (var i = 0; i < modelCount; i++) {
+            if (infoItemsModel[rootItem.currentShowingIndex].typeString === itemTypeString) {
+                rootItem.currentShowingIndex = i;
+                break;
+            }
+        }
+    }
+
+    function updateData(infoJSON) {
+        var jsonObject = JSON.parse(infoJSON);
+
+        if (rootItem.currentShowingIndex !== -1) {
+           switch(infoItemsModel[rootItem.currentShowingIndex].typeString) {
+           case "AIRPLANE":
+
+               break;
+           case "STATION":
+
+               break;
+           case "SYSTEM":
+
+               break;
+           }
+        }
+    }
+
+    ListModel {
+        id: infoItemsModel
+
+        ListElement {
+            typeString: "AIRPLANE"
+        }
+
+        ListElement {
+            typeString: "STATION"
+        }
+
+        ListElement {
+            typeString: "SYSTEM"
+        }
+    }
 
     PropertyAnimation {
         id: sideItemShowAnimation
@@ -34,5 +83,7 @@ Item {
             }
         }
     }
-}
 
+
+
+}

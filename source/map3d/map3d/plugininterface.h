@@ -10,6 +10,7 @@ class QQmlEngine;
 class QQmlComponent;
 class MapController;
 class NetworkManager;
+class MainWindow;
 
 namespace osgViewer {
     class Viewer;
@@ -24,12 +25,15 @@ class InfoWidgetHandle
     };
 
 public:
-    InfoWidgetHandle() { }
+    InfoWidgetHandle(MainWindow *mainWindow) { mMainWindow = mainWindow; }
     virtual ~InfoWidgetHandle() { }
 
 public:
     void showInfoWidget(InfoWidgetType infoWidgetType);
     void updateData(const QString& infoJSON);
+
+private:
+    MainWindow *mMainWindow = nullptr;
 };
 
 struct ItemDesc

@@ -20,6 +20,7 @@ add_library(featurelayer SHARED
   multichoosedlg.cpp
   multichoosedlg.h
   featurelayer.json
+  featurelayer.qrc
 )
 
 target_include_directories(featurelayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

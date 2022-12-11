@@ -63,6 +63,11 @@ MainWindow::MainWindow(QWindow *parent) :
                      this, &MainWindow::setFocalPointPitch);
     QObject::connect(mMapController, &MapController::focalPointHeadChanged,
                      this, &MainWindow::setFocalPointHead);
+
+
+
+    QObject::connect(mMapController, &MapController::fpsChanged,
+                     this, &MainWindow::setFps);
 }
 
 MainWindow::~MainWindow()
@@ -104,6 +109,11 @@ qreal MainWindow::focalPointPitch() const
 qreal MainWindow::focalPointHead() const
 {
     return mFocalPointHead;
+}
+
+qreal MainWindow::fps() const
+{
+    return mFps;
 }
 
 void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
@@ -212,6 +222,14 @@ void MainWindow::setFocalPointHead(qreal focalPointHead)
     }
 }
 
+void MainWindow::setFps(qreal fps)
+{
+    if (mFps != fps) {
+        mFps = fps;
+        emit fpsChanged();
+    }
+}
+
 void MainWindow::travelToViewpoint(qreal latitude, qreal longitude, qreal range, qreal pitch, qreal heading)
 {
     mMapController->travelToViewpoint(latitude,
@@ -219,6 +237,16 @@ void MainWindow::travelToViewpoint(qreal latitude, qreal longitude, qreal range,
                                       range,
                                       pitch,
                                       heading);
+}
+
+void MainWindow::showInfoWidget(MainWindow::InfoWidgetType infoWidgetType)
+{
+
+}
+
+void MainWindow::updateInfoWidgetData(const QString &dataJSON)
+{
+
 }
 
 

@@ -26,10 +26,10 @@ TerrainLayer::TerrainLayer(QWidget *parent)
 bool TerrainLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{WCS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{WCS, CATEGORY, "qrc:/resources/wcs.png", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "qrc:/resources/tms.png", false, false, ""});
 
     return true;
 }

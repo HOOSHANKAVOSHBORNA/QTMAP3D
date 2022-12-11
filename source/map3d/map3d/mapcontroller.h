@@ -34,6 +34,8 @@ signals:
     void focalPointPitchChanged(qreal focalPointPitch);
     void focalPointHeadChanged(qreal focalPointHead);
 
+    void fpsChanged(qreal fps);
+
 public:
     osgViewer::Viewer *getViewer();
     osgEarth::Util::EarthManipulator *getEarthManipulator();
