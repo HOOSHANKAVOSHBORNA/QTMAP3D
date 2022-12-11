@@ -32,9 +32,9 @@ bool ImageLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     Q_UNUSED(engine)
     desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false});
     desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false});
-    desc->toolboxItemsList.push_back(new ItemDesc{WMS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{XYZ, CATEGORY, "", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{WMS, CATEGORY, "qrc:/resources/wms.png", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "qrc:/resources/tms.png", false, false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{XYZ, CATEGORY, "qrc:/resources/xyz.png", false, false, ""});
 
     return true;
 }

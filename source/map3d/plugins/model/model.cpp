@@ -5,6 +5,8 @@
 #include "system.h"
 #include "station.h"
 #include "mapcontroller.h"
+#include "networkmanager.h"
+#include "websocketclient.h"
 
 #include <QDebug>
 #include <QMainWindow>
@@ -143,13 +145,15 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
         osg::Vec3d position(53, 35.2, 842.5);
         addStationModel(position);
     }
-    ////--websocket data-------------------------------------------------------------------
-    //QObject::connect(mMainWindow->getWebSocket(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
 }
 
 bool Model::setup(MapController *pMapController, NetworkManager *networkManager)
 {
     mMapController = pMapController;
+
+    ////--websocket data-------------------------------------------------------------------
+    QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
+
 }
 
 void Model::demo()
