@@ -22,6 +22,10 @@ class MainWindow : public OsgQuickWindow
     Q_PROPERTY(qreal focalPointPitch READ focalPointPitch WRITE setFocalPointPitch NOTIFY focalPointPitchChanged)
     Q_PROPERTY(qreal focalPointHead READ focalPointHead WRITE setFocalPointHead NOTIFY focalPointHeadChanged)
 
+    enum class InfoWidgetType {
+
+    };
+
 public:
     MainWindow(QWindow *parent = nullptr);
     ~MainWindow();
@@ -86,6 +90,9 @@ public slots:
                            qreal range,
                            qreal pitch,
                            qreal heading);
+
+    void showInfoWidget(InfoWidgetType infoWidgetType);
+    void updateInfoWidgetData(const QString& dataJSON);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

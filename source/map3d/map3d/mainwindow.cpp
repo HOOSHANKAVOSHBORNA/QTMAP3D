@@ -221,6 +221,16 @@ void MainWindow::travelToViewpoint(qreal latitude, qreal longitude, qreal range,
                                       heading);
 }
 
+void MainWindow::showInfoWidget(MainWindow::InfoWidgetType infoWidgetType)
+{
+
+}
+
+void MainWindow::updateInfoWidgetData(const QString &dataJSON)
+{
+
+}
+
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {

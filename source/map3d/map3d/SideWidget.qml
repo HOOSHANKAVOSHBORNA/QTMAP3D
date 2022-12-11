@@ -7,6 +7,7 @@ Item {
     property int currentVisibleIndex: -1
 
     signal sideItemCreated(int index, Item item)
+    implicitWidth: 600
 
     function hideAllItems() {
         for (var i = 0; i < rootItem.sideItemsModel.count; i++) {

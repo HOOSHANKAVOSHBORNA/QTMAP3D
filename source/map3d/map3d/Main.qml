@@ -135,9 +135,9 @@ MainWindow {
 
         SideWidget {
             id: sideWidget
-            x:  -(600 + (widgetsMargis*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargis*2.0)))
+            x:  -(implicitWidth + (widgetsMargis*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargis*2.0)))
             y: menuWidget.height + (widgetsMargis * 2.0)
-            width: 600 + (widgetsMargis * 2)
+            width: implicitWidth + (widgetsMargis * 2)
             height: parent.height - menuWidget.height - (widgetsMargis * 3) - navigationWidget.height
 
             sideItemsModel: wnd.sideItemsModel
@@ -330,6 +330,12 @@ MainWindow {
 
         return true;
     }
+
+
+    function showInfoItem(itemTypeString) {
+        infoWidget.showInfoItem(itemTypeString);
+    }
+
     Component {
         id: listModelComponent
         ListModel {
