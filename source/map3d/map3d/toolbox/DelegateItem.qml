@@ -114,8 +114,8 @@ Item {
         onToggled: {
             if (checked){
                 img1.rotation = 180
-                container.height += columnLayout.implicitHeight + widgetsMargis
-                delegateItem.height += columnLayout.implicitHeight + widgetsMargis
+                container.height += columnLayout.implicitHeight + widgetsMargins
+                delegateItem.height += columnLayout.implicitHeight + widgetsMargins
 
             }
             else{

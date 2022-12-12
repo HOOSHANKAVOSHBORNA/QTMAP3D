@@ -9,6 +9,7 @@
 
 class PluginInfo;
 class PluginInterface;
+class InfoWidgetHandle;
 
 
 class MainWindow : public OsgQuickWindow
@@ -24,7 +25,9 @@ class MainWindow : public OsgQuickWindow
     Q_PROPERTY(qreal fps READ fps WRITE setFps NOTIFY fpsChanged)
 
     enum class InfoWidgetType {
-
+        Airplane,
+        Station,
+        System
     };
 
 public:
@@ -42,6 +45,8 @@ public:
 
 
     qreal fps() const;
+
+    InfoWidgetHandle *infoWidgetHandle() const;
 
 signals:
     void sideItemCreated(int index, QObject *pSideItem);
@@ -115,6 +120,7 @@ private:
 
     qreal mFps = 0.0f;
 
+    InfoWidgetHandle *mInfoWidgetHandle = nullptr;
 };
 
 #endif // MainWindow_H

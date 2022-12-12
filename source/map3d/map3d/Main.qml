@@ -8,7 +8,7 @@ import Crystal 1.0
 MainWindow {
 
 
-    readonly  property int       _iconSize   : 32
+    readonly  property int      _iconSize   : 32
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
     readonly property color     _colorRec   : "#404040"
@@ -19,7 +19,7 @@ MainWindow {
     readonly property string    _fontFamily : "Srouce Sans Pro"
     readonly property int       _fontPointSize : 11
     readonly property color     itemColor: "#404040"
-    readonly property real      widgetsMargis: 10
+    readonly property real      widgetsMargins: 10
 
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
@@ -31,8 +31,6 @@ MainWindow {
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("Hello World")
-
-
 
 
 
@@ -52,32 +50,34 @@ MainWindow {
 
 
         ListElement {
-            title_text: "File"
-            icon_url: "qrc:///Resources/File.png"
+            title_text:   "File"
+            icon_url:     "qrc:///Resources/File.png"
             side_itemurl: "qrc:/toolbox/Toolbox.qml"
         }
 
         ListElement {
-            title_text: "Settings"
-            icon_url: "qrc:///Resources/Settings.png"
+            title_text:   "Settings"
+            icon_url:     "qrc:///Resources/Settings.png"
             side_itemurl: "qrc:///Settings.qml"
         }
 
         ListElement {
-            title_text: "Toolbox"
-            icon_url: "qrc:///Resources/Toolbox.png"
+            title_text:   "Toolbox"
+            icon_url:     "qrc:///Resources/Toolbox.png"
             side_itemurl: "qrc:/toolbox/Toolbox.qml"
         }
+
         ListElement {
-            title_text: "Location"
-            icon_url: "qrc:/Resources/location.png"
+            title_text:   "Location"
+            icon_url:     "qrc:/Resources/location.png"
             side_itemurl: "qrc:/location/Location.qml"
         }
-        ListElement {
-            title_text: "Info"
-            icon_url: "qrc:/Resources/info.png"
-            side_itemurl: "qrc:/infotarget/InfoTarget.qml"
-        }
+
+//        ListElement {
+//            title_text:   "Info"
+//            icon_url:     "qrc:/Resources/info.png"
+//            side_itemurl: "qrc:/infotarget/InfoTarget.qml"
+//        }
     }
 
     property var toolboxModel: ListModel {
@@ -107,10 +107,6 @@ MainWindow {
         easing.type: Easing.InQuint
     }
 
-    function menuWidgetClickCallback(index) {
-        sideWidget.menuWidgetItemClicked(index);
-    }
-
     Item {
 
         anchors.horizontalCenter: parent.horizontalCenter
@@ -122,7 +118,7 @@ MainWindow {
             id: menuWidget
             anchors.horizontalCenter: parent.horizontalCenter
 
-            y: (-height - widgetsMargis) + (wnd.widgetsPositionFactor * (height + (widgetsMargis * 2.0)))
+            y: (-height - widgetsMargins) + (wnd.widgetsPositionFactor * (height + (widgetsMargins * 2.0)))
 
             width: implicitWidth
             height: implicitHeight
@@ -135,10 +131,10 @@ MainWindow {
 
         SideWidget {
             id: sideWidget
-            x:  -(implicitWidth + (widgetsMargis*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargis*2.0)))
-            y: menuWidget.height + (widgetsMargis * 2.0)
-            width: implicitWidth + (widgetsMargis * 2)
-            height: parent.height - menuWidget.height - (widgetsMargis * 3) - navigationWidget.height
+            x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*2.0)))
+            y: menuWidget.height + (widgetsMargins * 2.0)
+            width: implicitWidth + (widgetsMargins * 2)
+            height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
 
             sideItemsModel: wnd.sideItemsModel
 
@@ -173,10 +169,10 @@ MainWindow {
 
         InfoWidget {
             id: infoWidget
-            x:  -(600 + (widgetsMargis*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargis*2.0)))
-            y: menuWidget.height + (widgetsMargis * 2.0)
-            width: 600 + (widgetsMargis * 2)
-            height: parent.height - menuWidget.height - (widgetsMargis * 3) - navigationWidget.height
+            x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
+            y: menuWidget.height + (widgetsMargins * 2.0)
+            width: 600 + (widgetsMargins * 2)
+            height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
 
         }
 
@@ -184,15 +180,15 @@ MainWindow {
             id:compass
             headingAngle: wnd.headingAngle
             anchors.right: parent.right
-            anchors.rightMargin: widgetsMargis
-            anchors.bottomMargin: widgetsMargis
-            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
+            anchors.rightMargin: widgetsMargins
+            anchors.bottomMargin: widgetsMargins
+            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
         }
 
         NavigationWidget{
             id : navigationWidget
             anchors.horizontalCenter: parent.horizontalCenter
-            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis/2)))
+            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins/2)))
             // slot button
             onBtnHomeClicked: function() {
                 wnd.homeButtonClicked();
@@ -234,6 +230,12 @@ MainWindow {
         }
 
     }
+
+    function menuWidgetClickCallback(index) {
+        infoWidget.hideAllItems();
+        sideWidget.menuWidgetItemClicked(index);
+    }
+
 
     function addSideItem(_title_text, _icon_url, _side_itemurl) {
         var new_index = sideItemsModel.count;
@@ -333,7 +335,11 @@ MainWindow {
 
 
     function showInfoItem(itemTypeString) {
+        sideWidget.hideAllItems();
         infoWidget.showInfoItem(itemTypeString);
+    }
+    function updateInfoWidgetData(infoJson) {
+        infoWidget.updateData(infoJson);
     }
 
     Component {
@@ -349,8 +355,8 @@ MainWindow {
 //        anchors.leftMargin: _margin
 //        anchors.right: compass.left
 //        anchors.rightMargin: _margin / 2
-//        anchors.bottomMargin:  widgetsMargis
-//        y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargis)))
+//        anchors.bottomMargin:  widgetsMargins
+//        y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
 
 //        latitude: wnd.mousePointedLocation.x
 //        longitude: wnd.mousePointedLocation.y

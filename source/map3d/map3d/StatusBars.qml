@@ -13,7 +13,7 @@ Item {
         RowLayout {
             anchors.leftMargin: 4
             anchors.left: parent.left
-            Layout.alignment: Qt.RightArrow
+            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
             Label {
                 Layout.minimumWidth: hiddenn.implicitWidth
                 id: lon

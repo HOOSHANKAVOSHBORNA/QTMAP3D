@@ -11,6 +11,7 @@
 #include "plugininterface.h"
 #include "application.h"
 #include "networkmanager.h"
+#include "mainwindow.h"
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
@@ -60,8 +61,9 @@ void PluginManager::performPluginsInitQMLDesc(QQmlEngine *qmlEngine)
 void PluginManager::performPluginsSetup(MapController *mapController)
 {
     const auto networkManager = Application::instance()->networkManager();
+    InfoWidgetHandle * const infoWidgetHandle = Application::instance()->mainWindow()->infoWidgetHandle();
     for (const auto& item : mPluginsInfoList) {
-        item.interface->setup(mapController, networkManager, nullptr);
+        item.interface->setup(mapController, networkManager, infoWidgetHandle);
     }
 }
 

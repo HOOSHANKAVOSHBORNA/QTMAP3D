@@ -7,6 +7,7 @@
 
 #include "mainwindow.h"
 #include "pluginmanager.h"
+#include "plugininterface.h"
 
 MainWindow::MainWindow(QWindow *parent) :
         OsgQuickWindow(parent)
@@ -68,6 +69,8 @@ MainWindow::MainWindow(QWindow *parent) :
 
     QObject::connect(mMapController, &MapController::fpsChanged,
                      this, &MainWindow::setFps);
+
+    mInfoWidgetHandle = new InfoWidgetHandle(this);
 }
 
 MainWindow::~MainWindow()
@@ -114,6 +117,11 @@ qreal MainWindow::focalPointHead() const
 qreal MainWindow::fps() const
 {
     return mFps;
+}
+
+InfoWidgetHandle *MainWindow::infoWidgetHandle() const
+{
+    return mInfoWidgetHandle;
 }
 
 void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)

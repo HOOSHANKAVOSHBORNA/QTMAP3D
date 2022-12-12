@@ -23,5 +23,8 @@
         <file>infotarget/ListButton.qml</file>
         <file>StatusBars.qml</file>
         <file>InfoWidget.qml</file>
+        <file>infowidget/AirplaneInfo.qml</file>
+        <file>infowidget/StationInfo.qml</file>
+        <file>infowidget/SystemInfo.qml</file>
     </qresource>
 </RCC>
