@@ -18,6 +18,7 @@ namespace osgViewer {
 
 class InfoWidgetHandle
 {
+public:
     enum class InfoWidgetType {
         Airplane,
         Station,
