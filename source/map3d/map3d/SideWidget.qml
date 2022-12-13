@@ -10,6 +10,7 @@ Item {
     implicitWidth: 600
 
     function hideAllItems() {
+        rootItem.currentVisibleIndex = -1;
         for (var i = 0; i < rootItem.sideItemsModel.count; i++) {
             sideItemsRepeater.itemAt(i).x = 0;
         }

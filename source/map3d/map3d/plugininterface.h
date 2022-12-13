@@ -34,7 +34,8 @@ public:
     void iw_show(QObject* receiverObject, InfoWidgetType infoWidgetType);
     void iw_updateData(QObject *receiverObject, const QString& infoJSON);
 
-
+public:
+    void sb_showMessage(const QString& message, qreal duration);
 
 private:
     void onInfoWidget2D3DButtonClicked();

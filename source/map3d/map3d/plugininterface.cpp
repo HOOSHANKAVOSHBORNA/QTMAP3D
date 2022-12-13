@@ -54,6 +54,11 @@ void UIHandle::iw_updateData(QObject *receiverObject, const QString &infoJSON)
 
 }
 
+void UIHandle::sb_showMessage(const QString &message, qreal duration)
+{
+
+}
+
 void UIHandle::onInfoWidget2D3DButtonClicked()
 {
     if (mReceiverObject) {
