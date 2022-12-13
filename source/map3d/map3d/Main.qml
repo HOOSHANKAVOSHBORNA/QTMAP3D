@@ -374,9 +374,9 @@ MainWindow {
 //        anchors.bottomMargin:  widgetsMargins
 //        y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
 
-//        latitude: wnd.mousePointedLocation.x
-//        longitude: wnd.mousePointedLocation.y
-//        altitude: wnd.mousePointedLocation.z
+//        latitude: wnd.mousePointingLocationWgs84.x
+//        longitude: wnd.mousePointingLocationWgs84.y
+//        altitude: wnd.mousePointingLocationWgs84.z
 
 
 //    }
@@ -386,9 +386,9 @@ MainWindow {
         anchors.bottom: parent.bottom
         width: parent.width
         height: 25
-        latitude: wnd.mousePointedLocation.x
-        longitude: wnd.mousePointedLocation.y
-        altitude: wnd.mousePointedLocation.z
+        latitude: wnd.mousePointingLocationWgs84.x
+        longitude: wnd.mousePointingLocationWgs84.y
+        altitude: wnd.mousePointingLocationWgs84.z
 
     }
 
