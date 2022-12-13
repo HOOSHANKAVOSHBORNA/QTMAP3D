@@ -25,19 +25,19 @@ Truck::Truck(osgEarth::MapNode *mapNode, QObject *parent):
     mRocket1->setType(ROCKET);
     mRocket1->setQStringName(ROCKET + 1);
     mRocket1->getPositionAttitudeTransform()->setPosition(osg::Vec3d(6.8, -1.3, 0));
-    mRocket1->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Z_AXIS));
+    mRocket1->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(-90.0),osg::Z_AXIS));
 
     mRocket2 = new Rocket(getMapNode(),parent);
     mRocket2->setType(ROCKET);
     mRocket2->setQStringName(ROCKET + 2);
     mRocket2->getPositionAttitudeTransform()->setPosition(osg::Vec3d(6.8, 0.0, 0));
-    mRocket2->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Z_AXIS));
+    mRocket2->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(-90.0),osg::Z_AXIS));
 
     mRocket3 = new Rocket(getMapNode(),parent);
     mRocket3->setType(ROCKET);
     mRocket3->setQStringName(ROCKET + 3);
     mRocket3->getPositionAttitudeTransform()->setPosition(osg::Vec3d(6.8, 1.3, 0));
-    mRocket3->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Z_AXIS));
+    mRocket3->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(-90.0),osg::Z_AXIS));
     //--create holder and add rockets to i---------------------------------------------------------------------
     mHolder = new osg::PositionAttitudeTransform();
     mHolder->setPosition(osg::Vec3d(-2, 0, 1.3));
@@ -222,7 +222,7 @@ void Truck::aimTarget(const osg::Vec3d &pos)
 
 bool Truck::shoot(const osg::Vec3d &pos, double speed)
 {
-    //aimTarget(pos);
+    aimTarget(pos);
     switch(mRocketIndex) {
     case 1:
     {

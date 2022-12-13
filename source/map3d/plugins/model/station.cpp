@@ -31,10 +31,12 @@ Station::Station(osgEarth::MapNode *mapNode, QObject *parent)
     yellowGeode->addDrawable(yellowImageDrawable);
     //truck model--------------------------------------------------------------------------
     osg::ref_ptr<Truck> truck = new Truck(getMapNode());
+    truck->setQStringName("truck");
     //--add nods--------------------------------------------------------------------------------
     mRoot->addChild(truck, false);
     mRoot->addChild(redGeode,true);
     mRoot->addChild(yellowGeode, false);
     //----------------------------------------------------------------------------------------
+    mCameraRangeChangeable = true;
 }
 

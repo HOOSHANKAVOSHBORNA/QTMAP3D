@@ -7,6 +7,8 @@
 
 #include <osg/Material>
 
+const osg::Node::NodeMask NODE_MASK = 0x00000001;
+
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
     BaseModel* baseModel;
@@ -56,8 +58,8 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                     vec.x() = 0;
                     vec.y() = 0;
                     baseModel->getPositionAttitudeTransform()->setAttitude(osg::Quat(angle, vec));
-//                    qDebug()<<"angle:"<<osg::RadiansToDegrees(angle);
-//                    qDebug()<<"vec:"<<vec.x()<<","<<vec.y()<<","<<vec.z();
+                    //                    qDebug()<<"angle:"<<osg::RadiansToDegrees(angle);
+                    //                    qDebug()<<"vec:"<<vec.x()<<","<<vec.y()<<","<<vec.z();
 
                 }
 
@@ -90,15 +92,10 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapt
 
     osgViewer::Viewer *view = dynamic_cast<osgViewer::Viewer *>(&aa);
 
-    osgEarth::Util::EarthManipulator* camera;
     switch (ea.getEventType())
     {
     case osgGA::GUIEventAdapter::FRAME:
-        camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(view->getCameraManipulator());
-        if(camera)
-        {
             findSceneModels(view);
-        }
         break;
     case (osgGA::GUIEventAdapter::PUSH):
         if (view)
@@ -164,18 +161,53 @@ void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& 
 
 void PickHandler::findSceneModels(osgViewer::Viewer *viewer)
 {
-//    const osg::NodePath& nodePath = viewer->getCoordinateSystemNodePath();
-//    for(osg::NodePath::const_iterator nitr=nodePath.begin();
-//        nitr!=nodePath.end();
-//        ++nitr)
-//    {
-//        BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
-        if (mLastPushModel)
+    osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
+    if(!camera)
+        return;
+    int range = static_cast<int>(camera->getViewpoint().getRange());
+    if(range != mPreRange && range < 12000)
+    {
+        mPreRange = range;
+        osg::Viewport* viewport = viewer->getCamera()->getViewport();
+        osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
+        intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
+                                                       viewport->x() + viewport->width(), viewport->y() + viewport->height());
+
+        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES);
+        intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
+
+        osgUtil::IntersectionVisitor iv(intersector);
+//        iv.setTraversalMask(NODE_MASK);
+//        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+//        iv.setTraversalNumber(1000);
+        viewer->getCamera()->accept(iv);
+
+        if(intersector->containsIntersections())
         {
-            osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
-            mLastPushModel->cameraRangeChanged(camera->getViewpoint().getRange());
+            auto intersections = intersector->getIntersections();
+            //qDebug() <<"intersections: "<<intersections.size();
+            for(auto hit : intersections)
+            {
+
+                const osg::NodePath& nodePath = hit.nodePath;
+                //qDebug() <<"nodePath: "<<nodePath.size();
+                for(osg::NodePath::const_iterator nitr=nodePath.begin();
+                    nitr!=nodePath.end();
+                    ++nitr)
+                {
+                    BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
+                    if (model && model->mCameraRangeChangeable)
+                    {
+                        //qDebug() <<model->getQStringName();
+                        model->cameraRangeChanged(camera->getViewpoint().getRange() - model->getPosition().z());
+                        //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
+                        //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
+                    }
+                }
+            }
+
         }
-//    }
+    }
 }
 
 static bool mAddedEvent = false;
@@ -196,6 +228,7 @@ BaseModel::BaseModel(osgEarth::MapNode *mapNode, QObject *parent):
         addEventCallback(new PickHandler());
         mAddedEvent = true;
     }
+//    setNodeMask(NODE_MASK);
 }
 
 QString BaseModel::getType() const
@@ -337,7 +370,7 @@ void BaseModel::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
     }
 }
 
-void BaseModel::mouseMoveEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+void BaseModel::mouseMoveEvent(bool onModel, const osgGA::GUIEventAdapter &/*ea*/)
 {
     if(!mIsSelected)
     {
@@ -349,8 +382,9 @@ void BaseModel::cameraRangeChanged(double range)
 {
 
     osgEarth::Symbology::Style  style = getStyle();
-    if(!mIs3d && range < 200)
+    if(!mIs3d && range < 300)
     {
+//        qDebug()<<getQStringName();
         setCullCallback(nullptr);
         style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
         setStyle(style);
@@ -358,8 +392,9 @@ void BaseModel::cameraRangeChanged(double range)
         mIs3d = true;
         select(mIsSelected);
     }
-    if(mIs3d && range > 200)
+    if(mIs3d && range > 300)
     {
+//        qDebug()<<getQStringName();
         setCullCallback(nullptr);
         style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
         setStyle(style);

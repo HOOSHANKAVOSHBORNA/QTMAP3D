@@ -75,9 +75,7 @@ Airplane::Airplane(MapController *value, osgEarth::MapNode *mapNode, osg::Node *
     //    osgEarth::Registry::shaderGenerator().run(mGeodeParticle);// for textures or lighting
     //    getMapNode()->addChild(mGeodeParticle);
 
-
-
-
+    mCameraRangeChangeable = true;
 }
 
 void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)

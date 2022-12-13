@@ -13,20 +13,12 @@ find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(model SHARED
   model.cpp
-  model.h
-  draw.h
   basemodel.cpp
-  basemodel.h
   airplane.cpp
-  airplane.h
   rocket.cpp
-  rocket.h
   station.cpp
-  station.h
   system.cpp
-  system.h
   truck.cpp
-  truck.h
   model.json
   model.qrc
 )
