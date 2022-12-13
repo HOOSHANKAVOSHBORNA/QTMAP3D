@@ -292,3 +292,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     OsgQuickWindow::keyPressEvent(event);
 }
+
+void MainWindow::setStatusBarText(const QString message, int time) {
+    QVariant ret;
+    QMetaObject::invokeMethod(this,
+                              "showStatusMessage",
+                              Qt::DirectConnection,
+                              Q_ARG(QVariant, QVariant::fromValue<QString>(message)),
+                              Q_ARG(QVariant, QVariant::fromValue<int>(time))
+                              );
+}

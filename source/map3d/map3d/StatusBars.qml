@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+
 Item {
 
     property real longitude : 0.0
@@ -15,9 +16,21 @@ Item {
     property var _lat_color: "#20bd5f"
     property var _map_color: "#22f2ad"
 
-    property var message: "for message"
+    property var timer: 0
+    property var message: ""
 
     property var fe: ["f", modeMap == "geocentric" ? "f" : "E", modeMap == "geocentric" ? "f" : "E"]
+
+    function showMessage(messages, timerr){
+        timer = timerr
+        message = messages
+        time.running = true
+    }
+
+    function stopp(){
+        if(timer != -1)
+            message = "Ready"
+    }
 
 
     Rectangle {
@@ -111,7 +124,15 @@ Item {
             id: msg
             anchors.left: statusbar.left
             anchors.leftMargin: 5
+            Timer {
+                id: time
+                interval: timer === -1 ? 100000: timer; repeat: false
+                onTriggered: stopp()
+
+            }
+
             Label {
+                id: timeMessage
                 text: message
                 color: "white"
                 font.family: _font

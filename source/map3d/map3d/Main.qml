@@ -393,22 +393,23 @@ MainWindow {
         coordinate1: wnd.mousePointingLocation.x
         coordinate2: wnd.mousePointingLocation.y
         coordinate3: wnd.mousePointingLocation.z
-        message: "for message"
+        message: "Ready"
+        timer: -1
 
     }
 
-
-    Label {
-        id: fpsLabel
-        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
-        color: 'red'
+    Button {
         font.pointSize: 20
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.topMargin: 100
+        anchors.topMargin: 300
         anchors.rightMargin: 100
+        onClicked: wnd.showStatusMessage("salamm", 5000)
     }
 
+    function showStatusMessage(message, timer) {
+        statusBar.showMessage(message, timer);
+    }
 
 
 }

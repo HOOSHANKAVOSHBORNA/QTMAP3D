@@ -116,6 +116,7 @@ public slots:
 
     void showInfoWidget(InfoWidgetType infoWidgetType);
     void updateInfoWidgetData(const QString& dataJSON);
+    void setStatusBarText(const QString message, int time);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
