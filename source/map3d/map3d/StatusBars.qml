@@ -11,42 +11,60 @@ Item {
     property real cordinate2 : 0.0
     property real cordinate3 : 0.0
 
+    property var _font: "Liberation Serif"
+    property var _lat_color: "#20bd5f"
+    property var _map_color: "#22f2ad"
+
     property var names: ["Long: ", "Lat: ", "Alt: "]
     Rectangle {
         id: statusbar
         anchors.fill: parent
-        color: "#404040"
-        RowLayout {
+        color: "#0c55cc"
+        GridLayout {
             anchors.leftMargin: 4
+            columnSpacing: 0
             anchors.right: parent.right
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             layoutDirection: Qt.RightToLeft
+
+
             Repeater {
 
+                id: lon
                 model: [longitude, latitude, altitude]
-                Label {
+
+                delegate: Label {
                     Layout.minimumWidth: hiddenn.implicitWidth
-                    id: lon
                     color: "white"
                     background: Rectangle {
                         id: t
-                        border.color: "black"
-                        border.width: 2
-                        color: "red"
+                        color: _lat_color
                     }
 
                     Text {
                         anchors.centerIn: t
                         text: Number(modelData).toLocaleString(Qt.locale(), 'f', 3)
+                        font.family: _font
                     }
                 }
             }
             Label {
-                color: "white"
-                text: "Lat, Lang: "
+                Layout.minimumWidth: hiddenn.implicitWidth
+                color: "black"
                 background: Rectangle {
-                    color: "red"
+                    id: t3
+                    color: _lat_color
                 }
+
+                Text {
+                    anchors.centerIn: t3
+                    text: "Lat, Long: "
+                    font.family: _font
+                }
+            }
+
+            Rectangle {
+                width: 10
             }
 
             Repeater {
@@ -55,32 +73,42 @@ Item {
                 Label {
                     Layout.minimumWidth: hiddenn.implicitWidth
                     id: mp
-                    color: "white"
+                    color: "black"
                     background: Rectangle {
                         id: t2
-                        color: "blue"
+                        color: _map_color
                     }
 
                     Text {
                         anchors.centerIn: t2
                         text: Number(modelData).toLocaleString(Qt.locale(), 'f', 3)
+                        font.family: _font
                     }
                 }
             }
             Label {
-                color: "white"
-                text: "Coordinate: "
+                Layout.minimumWidth: hiddenn.implicitWidth
+                color: "black"
                 background: Rectangle {
-                    color: "blue"
+                    id: t4
+                    color: _map_color
+                }
+
+                Text {
+                    anchors.centerIn: t4
+                    text: "Coordinate: "
+                    font.family: _font
                 }
             }
 
         }
         Rectangle {
             anchors.left: statusbar.left
+            anchors.leftMargin: 5
             Label {
                 text: "for message"
                 color: "white"
+                font.family: _font
 
             }
         }
