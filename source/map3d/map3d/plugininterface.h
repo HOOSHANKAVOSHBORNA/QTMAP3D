@@ -16,24 +16,38 @@ namespace osgViewer {
     class Viewer;
 };
 
-class InfoWidgetHandle
+class UIHandle
 {
+    friend class MainWindow;
+public:
+    UIHandle(MainWindow *mainWindow) { mMainWindow = mainWindow; }
+    virtual ~UIHandle() { }
+
+public:
     enum class InfoWidgetType {
         Airplane,
         Station,
         System
     };
 
-public:
-    InfoWidgetHandle(MainWindow *mainWindow) { mMainWindow = mainWindow; }
-    virtual ~InfoWidgetHandle() { }
+    void iw_setReceiverObject(QObject *receiverObject);
+    void iw_show(QObject* receiverObject, InfoWidgetType infoWidgetType);
+    void iw_updateData(QObject *receiverObject, const QString& infoJSON);
 
 public:
-    void showInfoWidget(InfoWidgetType infoWidgetType);
-    void updateData(const QString& infoJSON);
+    void sb_showMessage(const QString& message, qreal duration);
+
+private:
+    void onInfoWidget2D3DButtonClicked();
+    void onInfoWidgetRouteButtonClicked();
+    void onInfoWidgetFollowButtonClicked();
+    void onInfoWidgetMoreButtonClicked();
+
+
 
 private:
     MainWindow *mMainWindow = nullptr;
+    QObject *mReceiverObject = nullptr;
 };
 
 struct ItemDesc
@@ -95,7 +109,7 @@ public:
 
     virtual bool setup(MapController *mapController,
                        NetworkManager * networkManager,
-                       InfoWidgetHandle *infoWidgetHandle) {}
+                       UIHandle *uiHandle) {}
 
 };
 

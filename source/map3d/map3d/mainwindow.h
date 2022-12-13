@@ -9,13 +9,17 @@
 
 class PluginInfo;
 class PluginInterface;
+class UIHandle;
 
 
 class MainWindow : public OsgQuickWindow
 {
     Q_OBJECT
     Q_PROPERTY(qreal headingAngle READ headingAngle WRITE setHeadingAngle NOTIFY headingAngleChanged)
-    Q_PROPERTY(QVector3D mousePointedLocation READ mousePointedLocation WRITE setMousePointedLocation NOTIFY mousePointedLocationChanged)
+    Q_PROPERTY(QVector3D mousePointingLocationWgs84 READ mousePointingLocationWgs84 WRITE setMousePointingLocationWgs84 NOTIFY mousePointingLocationWgs84Changed)
+    Q_PROPERTY(QVector3D mousePointingLocation READ mousePointingLocation WRITE setMousePointingLocation NOTIFY mousePointingLocationChanged)
+
+
     Q_PROPERTY(qreal focalPointLat   READ focalPointLat   WRITE setFocalPointLat   NOTIFY focalPointLatChanged  )
     Q_PROPERTY(qreal focalPointLong  READ focalPointLong  WRITE setFocalPointLong  NOTIFY focalPointLongChanged )
     Q_PROPERTY(qreal focalPointRange READ focalPointRange WRITE setFocalPointRange NOTIFY focalPointRangeChanged)
@@ -24,7 +28,9 @@ class MainWindow : public OsgQuickWindow
     Q_PROPERTY(qreal fps READ fps WRITE setFps NOTIFY fpsChanged)
 
     enum class InfoWidgetType {
-
+        Airplane,
+        Station,
+        System
     };
 
 public:
@@ -32,7 +38,8 @@ public:
     ~MainWindow();
 
     qreal headingAngle() const;
-    QVector3D mousePointedLocation() const;
+    QVector3D mousePointingLocationWgs84() const;
+    QVector3D mousePointingLocation() const;
 
     qreal focalPointLat  () const;
     qreal focalPointLong () const;
@@ -43,6 +50,8 @@ public:
 
     qreal fps() const;
 
+    UIHandle *uiHandle() const;
+
 signals:
     void sideItemCreated(int index, QObject *pSideItem);
     void toolboxItemCreated(ItemDescProxy *itemProxy);
@@ -52,6 +61,12 @@ signals:
     void toolboxItemCheckedChanged(const QString& itemName,
                                    const QString& categoryName,
                                    bool checked);
+
+
+    void infoWidget2D3DButtonClicked();
+    void infoWidgetRouteButtonClicked();
+    void infoWidgetFollowButtonClicked();
+    void infoWidgetMoreButtonClicked();
 
     void homeButtonClicked();
     void projectionButtonClicked();
@@ -67,7 +82,8 @@ signals:
     void rotateRightButtonClicked();
 
     void headingAngleChanged(qreal angle);
-    void mousePointedLocationChanged();
+    void mousePointingLocationWgs84Changed();
+    void mousePointingLocationChanged();
     void goToLocation(qreal lat, qreal lon, qreal range);
 
     void focalPointLatChanged  ();
@@ -81,7 +97,8 @@ signals:
 public slots:
     void initializePluginsUI(std::list<PluginInfo>& pluginsInfoList);
     void setHeadingAngle(qreal angle);
-    void setMousePointedLocation(const QVector3D& pointedLoc);
+    void setMousePointingLocationWgs84(const QVector3D& pointedLoc);
+    void setMousePointingLocation(const QVector3D& pointedLoc);
 
     void setFocalPointLat  (qreal focalPointLat) ;
     void setFocalPointLong (qreal focalPointLong);
@@ -105,7 +122,8 @@ protected:
 
 private:
     qreal mheadingAngle = 0.0;
-    QVector3D mMousePointedLocation;
+    QVector3D mMousePointingLocationWgs84;
+    QVector3D mMousePointingLocation;
 
     qreal mFocalPointLat   = 0.0;
     qreal mFocalPointLong  = 0.0;
@@ -115,6 +133,7 @@ private:
 
     qreal mFps = 0.0f;
 
+    UIHandle *mUIHandle = nullptr;
 };
 
 #endif // MainWindow_H

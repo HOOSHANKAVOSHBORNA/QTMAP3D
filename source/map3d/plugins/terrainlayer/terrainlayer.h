@@ -15,7 +15,7 @@ public:
     void onToolboxItemClicked(const QString &name, const QString &category) override;
     bool setup(MapController *mapController,
                NetworkManager *networkManager,
-               InfoWidgetHandle *infoWidgetHandle) override;
+               UIHandle *UIHandle) override;
 private:
     void addGDAL();
     void addArcGIS();

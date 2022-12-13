@@ -21,7 +21,7 @@ public:
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     virtual bool setup(MapController *mapController,
                        NetworkManager *networkManager,
-                       InfoWidgetHandle *infoWidgetHandle) override;
+                       UIHandle *UIHandle) override;
 
 
 private:

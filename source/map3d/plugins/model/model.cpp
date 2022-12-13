@@ -149,7 +149,7 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
 
 bool Model::setup(MapController *pMapController,
                   NetworkManager *networkManager,
-                  InfoWidgetHandle *infoWidgetHandle)
+                  UIHandle *UIHandle)
 {
     mMapController = pMapController;
 
