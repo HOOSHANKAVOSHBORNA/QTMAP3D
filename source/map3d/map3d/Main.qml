@@ -73,11 +73,11 @@ MainWindow {
             side_itemurl: "qrc:/location/Location.qml"
         }
 
-//        ListElement {
-//            title_text:   "Info"
-//            icon_url:     "qrc:/Resources/info.png"
-//            side_itemurl: "qrc:/infotarget/InfoTarget.qml"
-//        }
+        ListElement {
+            title_text:   "Info"
+            icon_url:     "qrc:/Resources/info.png"
+            side_itemurl: "qrc:/infotarget/InfoTarget.qml"
+        }
     }
 
     property var toolboxModel: ListModel {
@@ -398,18 +398,21 @@ MainWindow {
 
     }
 
-    Button {
-        font.pointSize: 20
+
+    Label {
+        id: fpsLabel
+        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
+        color: 'red'
+        font.pointSize: 30
+        font.weight: Font.Bold
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.topMargin: 300
+        anchors.topMargin: 100
         anchors.rightMargin: 100
-        onClicked: wnd.showStatusMessage("salamm", 5000)
     }
 
     function showStatusMessage(message, timer) {
         statusBar.showMessage(message, timer);
     }
-
 
 }
