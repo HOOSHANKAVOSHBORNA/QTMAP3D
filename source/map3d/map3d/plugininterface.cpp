@@ -2,23 +2,32 @@
 #include "plugininterface.h"
 #include "mainwindow.h"
 
-void InfoWidgetHandle::showInfoWidget(InfoWidgetHandle::InfoWidgetType infoWidgetType)
+void InfoWidgetHandle::setReceiverObject(QObject *receiverObject)
 {
+    mReceiverObject = receiverObject;
+}
+
+void InfoWidgetHandle::showInfoWidget(QObject *receiverObject, InfoWidgetHandle::InfoWidgetType infoWidgetType)
+{
+
+    if (!mReceiverObject) return;
+    if (mReceiverObject != receiverObject) return;
+
     if (mMainWindow) {
         bool bValidType = false;
         QString itemTypeString = "";
         switch (infoWidgetType) {
         case InfoWidgetHandle::InfoWidgetType::Airplane:
             bValidType = true;
-            itemTypeString = "AIRPLANE";
+            itemTypeString = "Airplane";
             break;
         case InfoWidgetHandle::InfoWidgetType::Station:
             bValidType = true;
-            itemTypeString = "STATION";
+            itemTypeString = "Station";
             break;
         case InfoWidgetHandle::InfoWidgetType::System:
             bValidType = true;
-            itemTypeString = "SYSTEM";
+            itemTypeString = "System";
             break;
         }
 
@@ -31,12 +40,48 @@ void InfoWidgetHandle::showInfoWidget(InfoWidgetHandle::InfoWidgetType infoWidge
     }
 }
 
-void InfoWidgetHandle::updateData(const QString &infoJSON)
+void InfoWidgetHandle::updateData(QObject *receiverObject, const QString &infoJSON)
 {
+    if (!mReceiverObject) return;
+    if (mReceiverObject != receiverObject) return;
+
     if (mMainWindow) {
         QMetaObject::invokeMethod(mMainWindow,
                                   "updateInfoWidgetData",
                                   Q_ARG(QVariant, QVariant::fromValue<QString>(infoJSON))
                                   );
+    }
+
+}
+
+void InfoWidgetHandle::onInfoWidget2D3DButtonClicked()
+{
+    if (mReceiverObject) {
+        QMetaObject::invokeMethod(mReceiverObject,
+                                  "IW_2D3DButtonClicked");
+    }
+}
+
+void InfoWidgetHandle::onInfoWidgetRouteButtonClicked()
+{
+    if (mReceiverObject) {
+        QMetaObject::invokeMethod(mReceiverObject,
+                                  "IW_RouteButtonClicked");
+    }
+}
+
+void InfoWidgetHandle::onInfoWidgetFollowButtonClicked()
+{
+    if (mReceiverObject) {
+        QMetaObject::invokeMethod(mReceiverObject,
+                                  "IW_FollowButtonClicked");
+    }
+}
+
+void InfoWidgetHandle::onInfoWidgetMoreButtonClicked()
+{
+    if (mReceiverObject) {
+        QMetaObject::invokeMethod(mReceiverObject,
+                                  "IW_MoreButtonClicked");
     }
 }

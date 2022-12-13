@@ -48,8 +48,10 @@ MainWindow::MainWindow(QWindow *parent) :
                      this, &MainWindow::setHeadingAngle);
 
 
-    QObject::connect(mMapController, &MapController::mousePointedLocationChanged,
-                     this, &MainWindow::setMousePointedLocation);
+    QObject::connect(mMapController, &MapController::mousePointingLocationWgs84Changed,
+                     this, &MainWindow::setMousePointingLocationWgs84);
+    QObject::connect(mMapController, &MapController::mousePointingLocationChanged,
+                     this, &MainWindow::setMousePointingLocation);
     QObject::connect(this, &MainWindow::goToLocation,
                      mMapController, &MapController::goToPosition);
 
@@ -71,7 +73,21 @@ MainWindow::MainWindow(QWindow *parent) :
                      this, &MainWindow::setFps);
 
     mInfoWidgetHandle = new InfoWidgetHandle(this);
+
+    QObject::connect(this, &MainWindow::infoWidget2D3DButtonClicked, [this](){
+        mInfoWidgetHandle->onInfoWidget2D3DButtonClicked();
+    });
+    QObject::connect(this, &MainWindow::infoWidgetRouteButtonClicked, [this](){
+        mInfoWidgetHandle->onInfoWidgetRouteButtonClicked();
+    });
+    QObject::connect(this, &MainWindow::infoWidgetFollowButtonClicked, [this](){
+        mInfoWidgetHandle->onInfoWidgetFollowButtonClicked();
+    });
+    QObject::connect(this, &MainWindow::infoWidgetMoreButtonClicked, [this](){
+        mInfoWidgetHandle->onInfoWidgetMoreButtonClicked();
+    });
 }
+
 
 MainWindow::~MainWindow()
 {
@@ -83,10 +99,16 @@ qreal MainWindow::headingAngle() const
     return mheadingAngle;
 }
 
-QVector3D MainWindow::mousePointedLocation() const
+QVector3D MainWindow::mousePointingLocationWgs84() const
 {
-    return mMousePointedLocation;
+    return mMousePointingLocationWgs84;
 }
+
+QVector3D MainWindow::mousePointingLocation() const
+{
+    return mMousePointingLocation;
+}
+
 
 qreal MainWindow::focalPointLat() const
 {
@@ -181,13 +203,21 @@ void MainWindow::setHeadingAngle(qreal angle)
     }
 }
 
-void MainWindow::setMousePointedLocation(const QVector3D &pointedLoc)
+void MainWindow::setMousePointingLocationWgs84(const QVector3D &pointedLoc)
 {
-    if (mMousePointedLocation != pointedLoc) {
-        mMousePointedLocation = pointedLoc;
-        emit mousePointedLocationChanged();
+    if (mMousePointingLocationWgs84 != pointedLoc) {
+        mMousePointingLocationWgs84 = pointedLoc;
+        emit mousePointingLocationWgs84Changed();
     }
 }
+void MainWindow::setMousePointingLocation(const QVector3D &pointedLoc)
+{
+    if (mMousePointingLocation != pointedLoc) {
+        mMousePointingLocation = pointedLoc;
+        emit mousePointingLocationChanged();
+    }
+}
+
 
 void MainWindow::setFocalPointLat(qreal focalPointLat)
 {

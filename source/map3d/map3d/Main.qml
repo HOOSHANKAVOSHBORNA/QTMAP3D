@@ -73,11 +73,11 @@ MainWindow {
             side_itemurl: "qrc:/location/Location.qml"
         }
 
-//        ListElement {
-//            title_text:   "Info"
-//            icon_url:     "qrc:/Resources/info.png"
-//            side_itemurl: "qrc:/infotarget/InfoTarget.qml"
-//        }
+        ListElement {
+            title_text:   "Info"
+            icon_url:     "qrc:/Resources/info.png"
+            side_itemurl: "qrc:/infotarget/InfoTarget.qml"
+        }
     }
 
     property var toolboxModel: ListModel {
@@ -173,6 +173,22 @@ MainWindow {
             y: menuWidget.height + (widgetsMargins * 2.0)
             width: 600 + (widgetsMargins * 2)
             height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
+
+            onView2D3DButtonClicked: function() {
+                wnd.infoWidget2D3DButtonClicked();
+            }
+
+            onRouteButtonClicked: function() {
+                wnd.infoWidgetRouteButtonClicked();
+            }
+
+            onFollowButtonClicked: function() {
+                wnd.infoWidgetFollowButtonClicked();
+            }
+
+            onMoreButtonClicked: function() {
+                wnd.infoWidgetMoreButtonClicked();
+            }
 
         }
 
@@ -358,9 +374,9 @@ MainWindow {
 //        anchors.bottomMargin:  widgetsMargins
 //        y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
 
-//        latitude: wnd.mousePointedLocation.x
-//        longitude: wnd.mousePointedLocation.y
-//        altitude: wnd.mousePointedLocation.z
+//        latitude: wnd.mousePointingLocationWgs84.x
+//        longitude: wnd.mousePointingLocationWgs84.y
+//        altitude: wnd.mousePointingLocationWgs84.z
 
 
 //    }
@@ -370,9 +386,9 @@ MainWindow {
         anchors.bottom: parent.bottom
         width: parent.width
         height: 25
-        latitude: wnd.mousePointedLocation.x
-        longitude: wnd.mousePointedLocation.y
-        altitude: wnd.mousePointedLocation.z
+        latitude: wnd.mousePointingLocationWgs84.x
+        longitude: wnd.mousePointingLocationWgs84.y
+        altitude: wnd.mousePointingLocationWgs84.z
 
     }
 

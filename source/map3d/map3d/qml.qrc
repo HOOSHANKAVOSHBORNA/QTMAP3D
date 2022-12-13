@@ -26,5 +26,6 @@
         <file>infowidget/AirplaneInfo.qml</file>
         <file>infowidget/StationInfo.qml</file>
         <file>infowidget/SystemInfo.qml</file>
+        <file>infowidget/InfoButtonGroup.qml</file>
     </qresource>
 </RCC>
