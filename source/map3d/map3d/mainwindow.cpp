@@ -71,7 +71,21 @@ MainWindow::MainWindow(QWindow *parent) :
                      this, &MainWindow::setFps);
 
     mInfoWidgetHandle = new InfoWidgetHandle(this);
+
+    QObject::connect(this, &MainWindow::infoWidget2D3DButtonClicked, [this](){
+        mInfoWidgetHandle->onInfoWidget2D3DButtonClicked();
+    });
+    QObject::connect(this, &MainWindow::infoWidgetRouteButtonClicked, [this](){
+        mInfoWidgetHandle->onInfoWidgetRouteButtonClicked();
+    });
+    QObject::connect(this, &MainWindow::infoWidgetFollowButtonClicked, [this](){
+        mInfoWidgetHandle->onInfoWidgetFollowButtonClicked();
+    });
+    QObject::connect(this, &MainWindow::infoWidgetMoreButtonClicked, [this](){
+        mInfoWidgetHandle->onInfoWidgetMoreButtonClicked();
+    });
 }
+
 
 MainWindow::~MainWindow()
 {

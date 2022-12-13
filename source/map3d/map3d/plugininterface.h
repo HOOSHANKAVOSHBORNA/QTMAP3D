@@ -30,11 +30,22 @@ public:
     virtual ~InfoWidgetHandle() { }
 
 public:
-    void showInfoWidget(InfoWidgetType infoWidgetType);
-    void updateData(const QString& infoJSON);
+    void setReceiverObject(QObject *receiverObject);
+    void showInfoWidget(QObject* receiverObject, InfoWidgetType infoWidgetType);
+    void updateData(QObject *receiverObject, const QString& infoJSON);
+
+
+
+    void onInfoWidget2D3DButtonClicked();
+    void onInfoWidgetRouteButtonClicked();
+    void onInfoWidgetFollowButtonClicked();
+    void onInfoWidgetMoreButtonClicked();
+
+
 
 private:
     MainWindow *mMainWindow = nullptr;
+    QObject *mReceiverObject = nullptr;
 };
 
 struct ItemDesc

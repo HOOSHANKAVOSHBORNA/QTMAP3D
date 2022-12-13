@@ -58,6 +58,12 @@ signals:
                                    const QString& categoryName,
                                    bool checked);
 
+
+    void infoWidget2D3DButtonClicked();
+    void infoWidgetRouteButtonClicked();
+    void infoWidgetFollowButtonClicked();
+    void infoWidgetMoreButtonClicked();
+
     void homeButtonClicked();
     void projectionButtonClicked();
     void zoomInButtonClicked();
