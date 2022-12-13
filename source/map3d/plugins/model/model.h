@@ -36,7 +36,7 @@ public:
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
     virtual bool setup(MapController *pMapController,
                        NetworkManager *networkManager,
-                       InfoWidgetHandle *infoWidgetHandle) override;
+                       UIHandle *UIHandle) override;
 
     void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
     void addTruckModel();

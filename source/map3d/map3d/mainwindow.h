@@ -9,7 +9,7 @@
 
 class PluginInfo;
 class PluginInterface;
-class InfoWidgetHandle;
+class UIHandle;
 
 
 class MainWindow : public OsgQuickWindow
@@ -50,7 +50,7 @@ public:
 
     qreal fps() const;
 
-    InfoWidgetHandle *infoWidgetHandle() const;
+    UIHandle *uiHandle() const;
 
 signals:
     void sideItemCreated(int index, QObject *pSideItem);
@@ -133,7 +133,7 @@ private:
 
     qreal mFps = 0.0f;
 
-    InfoWidgetHandle *mInfoWidgetHandle = nullptr;
+    UIHandle *mUIHandle = nullptr;
 };
 
 #endif // MainWindow_H

@@ -16,8 +16,13 @@ namespace osgViewer {
     class Viewer;
 };
 
-class InfoWidgetHandle
+class UIHandle
 {
+    friend class MainWindow;
+public:
+    UIHandle(MainWindow *mainWindow) { mMainWindow = mainWindow; }
+    virtual ~UIHandle() { }
+
 public:
     enum class InfoWidgetType {
         Airplane,
@@ -25,17 +30,13 @@ public:
         System
     };
 
-public:
-    InfoWidgetHandle(MainWindow *mainWindow) { mMainWindow = mainWindow; }
-    virtual ~InfoWidgetHandle() { }
-
-public:
-    void setReceiverObject(QObject *receiverObject);
-    void showInfoWidget(QObject* receiverObject, InfoWidgetType infoWidgetType);
-    void updateData(QObject *receiverObject, const QString& infoJSON);
+    void iw_setReceiverObject(QObject *receiverObject);
+    void iw_show(QObject* receiverObject, InfoWidgetType infoWidgetType);
+    void iw_updateData(QObject *receiverObject, const QString& infoJSON);
 
 
 
+private:
     void onInfoWidget2D3DButtonClicked();
     void onInfoWidgetRouteButtonClicked();
     void onInfoWidgetFollowButtonClicked();
@@ -107,7 +108,7 @@ public:
 
     virtual bool setup(MapController *mapController,
                        NetworkManager * networkManager,
-                       InfoWidgetHandle *infoWidgetHandle) {}
+                       UIHandle *uiHandle) {}
 
 };
 

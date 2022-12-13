@@ -65,7 +65,7 @@ void ImageLayer::onToolboxItemClicked(const QString &name, const QString &catego
 
 bool ImageLayer::setup(MapController *mapController,
                        NetworkManager *networkManager,
-                       InfoWidgetHandle *infoWidgetHandle)
+                       UIHandle *UIHandle)
 {
     mMapController = mapController;
 }

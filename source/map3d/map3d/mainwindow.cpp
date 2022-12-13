@@ -72,19 +72,19 @@ MainWindow::MainWindow(QWindow *parent) :
     QObject::connect(mMapController, &MapController::fpsChanged,
                      this, &MainWindow::setFps);
 
-    mInfoWidgetHandle = new InfoWidgetHandle(this);
+    mUIHandle = new UIHandle(this);
 
     QObject::connect(this, &MainWindow::infoWidget2D3DButtonClicked, [this](){
-        mInfoWidgetHandle->onInfoWidget2D3DButtonClicked();
+        mUIHandle->onInfoWidget2D3DButtonClicked();
     });
     QObject::connect(this, &MainWindow::infoWidgetRouteButtonClicked, [this](){
-        mInfoWidgetHandle->onInfoWidgetRouteButtonClicked();
+        mUIHandle->onInfoWidgetRouteButtonClicked();
     });
     QObject::connect(this, &MainWindow::infoWidgetFollowButtonClicked, [this](){
-        mInfoWidgetHandle->onInfoWidgetFollowButtonClicked();
+        mUIHandle->onInfoWidgetFollowButtonClicked();
     });
     QObject::connect(this, &MainWindow::infoWidgetMoreButtonClicked, [this](){
-        mInfoWidgetHandle->onInfoWidgetMoreButtonClicked();
+        mUIHandle->onInfoWidgetMoreButtonClicked();
     });
 }
 
@@ -141,9 +141,9 @@ qreal MainWindow::fps() const
     return mFps;
 }
 
-InfoWidgetHandle *MainWindow::infoWidgetHandle() const
+UIHandle *MainWindow::uiHandle() const
 {
-    return mInfoWidgetHandle;
+    return mUIHandle;
 }
 
 void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
