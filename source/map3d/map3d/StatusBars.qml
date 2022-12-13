@@ -7,15 +7,15 @@ Item {
     property real latitude : 0.0
     property real altitude : 0.0
 
-    property real cordinate1 : 0.0
-    property real cordinate2 : 0.0
-    property real cordinate3 : 0.0
+    property real coordinate1 : 0.0
+    property real coordinate2 : 0.0
+    property real coordinate3 : 0.0
 
     property var _font: "Liberation Serif"
     property var _lat_color: "#20bd5f"
     property var _map_color: "#22f2ad"
 
-    property var names: ["Long: ", "Lat: ", "Alt: "]
+
     Rectangle {
         id: statusbar
         anchors.fill: parent
@@ -31,7 +31,7 @@ Item {
             Repeater {
 
                 id: lon
-                model: [longitude, latitude, altitude]
+                model: [latitude, longitude, altitude]
 
                 delegate: Label {
                     Layout.minimumWidth: hiddenn.implicitWidth
@@ -68,7 +68,7 @@ Item {
             }
 
             Repeater {
-                model: [cordinate1, cordinate2, cordinate3]
+                model: [coordinate1, coordinate2, coordinate3]
                 anchors.leftMargin: 10
                 Label {
                     Layout.minimumWidth: hiddenn.implicitWidth

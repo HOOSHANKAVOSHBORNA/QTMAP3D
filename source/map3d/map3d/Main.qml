@@ -385,10 +385,14 @@ MainWindow {
         id: statusBar
         anchors.bottom: parent.bottom
         width: parent.width
-        height: 25
+        height: childrenRect.height
         latitude: wnd.mousePointingLocationWgs84.x
         longitude: wnd.mousePointingLocationWgs84.y
         altitude: wnd.mousePointingLocationWgs84.z
+
+        coordinate1: wnd.mousePointingLocation.x
+        coordinate2: wnd.mousePointingLocation.y
+        coordinate3: wnd.mousePointingLocation.z
 
     }
 
