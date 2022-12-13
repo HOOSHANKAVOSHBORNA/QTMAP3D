@@ -15,7 +15,6 @@
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
-    mToolboxItemsMap["Ali"]["Askari"] = nullptr;
 }
 
 void PluginManager::loadPlugins()
