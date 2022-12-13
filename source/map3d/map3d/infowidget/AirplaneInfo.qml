@@ -20,8 +20,6 @@ Item {
             width: rootItem.width - 30
 
 
-            onWidthChanged: console.log(width);
-
             Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: width * (img.sourceSize.height / img.sourceSize.width)
