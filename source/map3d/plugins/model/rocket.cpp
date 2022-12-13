@@ -12,19 +12,25 @@ Rocket::Rocket(osgEarth::MapNode *mapNode, QObject *parent):
         return;
     }
     //create style-------------------------------------------------------------------------------------------------
+     mRoot = new osg::Switch;
     osgEarth::Symbology::Style  style;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRoot);
     setStyle(style);
 
     //osg::Vec3d center = getBound().center();
     float radius = getBound().radius();
     float scale = 3;
 
-    mFire = new osgParticle::FireEffect(osg::Vec3f(0, 2*radius,0),scale,100.0);
+    mFire = new osgParticle::FireEffect(osg::Vec3f(0, -2*radius,0),scale,100.0);
     mFire->setUseLocalParticleSystem(false);
 
-    mSmoke = new osgParticle::SmokeTrailEffect(osg::Vec3f(0, 2*radius,0),scale/3,100.0);
+    mSmoke = new osgParticle::SmokeTrailEffect(osg::Vec3f(0, -2*radius,0),scale/3,100.0);
     mSmoke->setUseLocalParticleSystem(false);
+    mIs3d = true;
+
+    mRoot->addChild(node, false);
+    mRoot->addChild(node,true);
+    mRoot->addChild(node,false);
 }
 
 void Rocket::shoot(const osg::Vec3d &pos, double speed)
@@ -40,20 +46,19 @@ void Rocket::shoot(const osg::Vec3d &pos, double speed)
     osg::Vec3d wPos;
     osgEarth::GeoPoint(getMapNode()->getMapSRS(), pos).toWorld(wPos);
 
-    osg::Vec3d wDef = wPos - currentWPoint;
-    double distance = wDef.normalize();
+    osg::Vec3d wDiff = wPos - currentWPoint;
+    double distance = wDiff.normalize();
     //transfer def vector to local----------------------------------------
     osg::Matrixd localTransfer;
     getPosition().createWorldToLocal(localTransfer);
     osg::Quat localRotation;
     localRotation = localTransfer.getRotate();
     osg::Matrixd rotateTransfer = osg::Matrixd::rotate(localRotation);
-    osg::Vec3f localDef =  wDef * rotateTransfer;
+    osg::Vec3f localDiff =  wDiff * rotateTransfer;
     //-------------------------------------------------------------------
     osg::Quat rotate;
-    rotate.makeRotate(-osg::Y_AXIS, localDef);
+    rotate.makeRotate(osg::Y_AXIS, localDiff);
     double t = distance / speed;
-
     osg::AnimationPath* path = new osg::AnimationPath();
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 

@@ -258,7 +258,7 @@ void Model::addTruckModel()
     //model->setLatLongPosition(nPosition);
     //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
     //move
-    model->moveTo(nPosition,10);
+    //model->moveTo(nPosition,10);
 }
 
 void Model::addAirplaineModel(QString name, osg::Vec3d position, double heading)

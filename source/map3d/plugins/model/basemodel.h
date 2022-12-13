@@ -35,6 +35,7 @@ private:
     BaseModel* mLastPushModel{nullptr};
     BaseModel* mLastMoveModel{nullptr};
     BaseModel* mCurrentModel{nullptr};
+    int mPreRange{0};
 };
 
 class BaseModel: public QObject, public osgEarth::Annotation::ModelNode
@@ -66,6 +67,7 @@ protected:
 protected:
     bool mIsSelected{false};
     bool mIs3d{false};
+    bool mCameraRangeChangeable{false};
     osg::ref_ptr<osg::Switch> mRoot;
 private:
     void collision(BaseModel *collidedWith);
