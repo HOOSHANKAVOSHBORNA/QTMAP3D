@@ -15,6 +15,10 @@ Item {
     property var _lat_color: "#20bd5f"
     property var _map_color: "#22f2ad"
 
+    property var message: "for message"
+
+    property var fe: ["f", modeMap == "geocentric" ? "f" : "E", modeMap == "geocentric" ? "f" : "E"]
+
 
     Rectangle {
         id: statusbar
@@ -31,7 +35,7 @@ Item {
             Repeater {
 
                 id: lon
-                model: [latitude, longitude, altitude]
+                model: [altitude, longitude, latitude]
 
                 delegate: Label {
                     Layout.minimumWidth: hiddenn.implicitWidth
@@ -42,7 +46,8 @@ Item {
                     }
 
                     Text {
-                        anchors.centerIn: t
+                        anchors.right: t.right
+                        anchors.rightMargin: 8
                         text: Number(modelData).toLocaleString(Qt.locale(), 'f', 3)
                         font.family: _font
                     }
@@ -68,7 +73,7 @@ Item {
             }
 
             Repeater {
-                model: [coordinate1, coordinate2, coordinate3]
+                model: [coordinate3, coordinate2, coordinate1]
                 anchors.leftMargin: 10
                 Label {
                     Layout.minimumWidth: hiddenn.implicitWidth
@@ -78,10 +83,10 @@ Item {
                         id: t2
                         color: _map_color
                     }
-
                     Text {
-                        anchors.centerIn: t2
-                        text: Number(modelData).toLocaleString(Qt.locale(), 'f', 3)
+                        anchors.right: t2.right
+                        anchors.rightMargin: 6
+                        text: Number(modelData).toLocaleString(Qt.locale(), fe[index], 3)
                         font.family: _font
                     }
                 }
@@ -103,10 +108,11 @@ Item {
 
         }
         Rectangle {
+            id: msg
             anchors.left: statusbar.left
             anchors.leftMargin: 5
             Label {
-                text: "for message"
+                text: message
                 color: "white"
                 font.family: _font
 
