@@ -393,6 +393,7 @@ MainWindow {
         coordinate1: wnd.mousePointingLocation.x
         coordinate2: wnd.mousePointingLocation.y
         coordinate3: wnd.mousePointingLocation.z
+        message: "for message"
 
     }
 
