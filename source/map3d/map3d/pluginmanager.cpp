@@ -15,7 +15,6 @@
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
-    mToolboxItemsMap["Ali"]["Askari"] = nullptr;
 }
 
 void PluginManager::loadPlugins()
@@ -61,9 +60,9 @@ void PluginManager::performPluginsInitQMLDesc(QQmlEngine *qmlEngine)
 void PluginManager::performPluginsSetup(MapController *mapController)
 {
     const auto networkManager = Application::instance()->networkManager();
-    InfoWidgetHandle * const infoWidgetHandle = Application::instance()->mainWindow()->infoWidgetHandle();
+    UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
     for (const auto& item : mPluginsInfoList) {
-        item.interface->setup(mapController, networkManager, infoWidgetHandle);
+        item.interface->setup(mapController, networkManager, uiHandle);
     }
 }
 

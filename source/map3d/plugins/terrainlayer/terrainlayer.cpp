@@ -56,7 +56,7 @@ void TerrainLayer::onToolboxItemClicked(const QString &name, const QString &cate
 
 bool TerrainLayer::setup(MapController *mapController,
                          NetworkManager *networkManager,
-                         InfoWidgetHandle *infoWidgetHandle)
+                         UIHandle *UIHandle)
 {
     mMapController = mapController;
 }

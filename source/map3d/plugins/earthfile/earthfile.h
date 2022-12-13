@@ -15,7 +15,7 @@ public:
     void onFileItemClicked(const QString &name, const QString &category) override;
     bool setup(MapController *mapController,
                NetworkManager *networkManager,
-               InfoWidgetHandle *infoWidgetHandle) override;
+               UIHandle *UIHandle) override;
 private:
     MapController* mMapController{nullptr};
 };

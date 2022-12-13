@@ -2,12 +2,12 @@
 #include "plugininterface.h"
 #include "mainwindow.h"
 
-void InfoWidgetHandle::setReceiverObject(QObject *receiverObject)
+void UIHandle::iw_setReceiverObject(QObject *receiverObject)
 {
     mReceiverObject = receiverObject;
 }
 
-void InfoWidgetHandle::showInfoWidget(QObject *receiverObject, InfoWidgetHandle::InfoWidgetType infoWidgetType)
+void UIHandle::iw_show(QObject *receiverObject, UIHandle::InfoWidgetType infoWidgetType)
 {
 
     if (!mReceiverObject) return;
@@ -17,15 +17,15 @@ void InfoWidgetHandle::showInfoWidget(QObject *receiverObject, InfoWidgetHandle:
         bool bValidType = false;
         QString itemTypeString = "";
         switch (infoWidgetType) {
-        case InfoWidgetHandle::InfoWidgetType::Airplane:
+        case UIHandle::InfoWidgetType::Airplane:
             bValidType = true;
             itemTypeString = "Airplane";
             break;
-        case InfoWidgetHandle::InfoWidgetType::Station:
+        case UIHandle::InfoWidgetType::Station:
             bValidType = true;
             itemTypeString = "Station";
             break;
-        case InfoWidgetHandle::InfoWidgetType::System:
+        case UIHandle::InfoWidgetType::System:
             bValidType = true;
             itemTypeString = "System";
             break;
@@ -40,7 +40,7 @@ void InfoWidgetHandle::showInfoWidget(QObject *receiverObject, InfoWidgetHandle:
     }
 }
 
-void InfoWidgetHandle::updateData(QObject *receiverObject, const QString &infoJSON)
+void UIHandle::iw_updateData(QObject *receiverObject, const QString &infoJSON)
 {
     if (!mReceiverObject) return;
     if (mReceiverObject != receiverObject) return;
@@ -54,34 +54,39 @@ void InfoWidgetHandle::updateData(QObject *receiverObject, const QString &infoJS
 
 }
 
-void InfoWidgetHandle::onInfoWidget2D3DButtonClicked()
+void UIHandle::sb_showMessage(const QString &message, qreal duration)
+{
+
+}
+
+void UIHandle::onInfoWidget2D3DButtonClicked()
 {
     if (mReceiverObject) {
         QMetaObject::invokeMethod(mReceiverObject,
-                                  "IW_2D3DButtonClicked");
+                                  "iw_2D3DButtonClicked");
     }
 }
 
-void InfoWidgetHandle::onInfoWidgetRouteButtonClicked()
+void UIHandle::onInfoWidgetRouteButtonClicked()
 {
     if (mReceiverObject) {
         QMetaObject::invokeMethod(mReceiverObject,
-                                  "IW_RouteButtonClicked");
+                                  "iw_routeButtonClicked");
     }
 }
 
-void InfoWidgetHandle::onInfoWidgetFollowButtonClicked()
+void UIHandle::onInfoWidgetFollowButtonClicked()
 {
     if (mReceiverObject) {
         QMetaObject::invokeMethod(mReceiverObject,
-                                  "IW_FollowButtonClicked");
+                                  "iw_followButtonClicked");
     }
 }
 
-void InfoWidgetHandle::onInfoWidgetMoreButtonClicked()
+void UIHandle::onInfoWidgetMoreButtonClicked()
 {
     if (mReceiverObject) {
         QMetaObject::invokeMethod(mReceiverObject,
-                                  "IW_MoreButtonClicked");
+                                  "iw_moreButtonClicked");
     }
 }

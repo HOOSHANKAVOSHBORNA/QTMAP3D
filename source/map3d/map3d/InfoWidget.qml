@@ -130,7 +130,7 @@ Item {
                 spacing: 0
                 Item {
                     Layout.fillWidth: true
-                    Layout.minimumHeight: 80
+                    Layout.minimumHeight: 60
 
                     Text {
                         anchors.centerIn: parent
@@ -145,9 +145,13 @@ Item {
                     Layout.fillHeight: true
                     source: itemUrl
                 }
+                Item {
+                    Layout.minimumHeight: 5
+                }
+
                 InfoButtonGroup {
                     Layout.fillWidth: true
-                    Layout.minimumHeight: 80
+                    Layout.minimumHeight: 60
 
                     onView2D3DButtonClicked: function() {
                         rootItem.view2D3DButtonClicked();
