@@ -211,6 +211,7 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPo
         circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Red, 0.5);
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+        //circleStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 
         osgEarth::Annotation::CircleNode* circle = new osgEarth::Annotation::CircleNode;
         circle->set(
@@ -226,36 +227,9 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPo
     {
         if (mPoly->geom->size()>=3){
         mMapController->addNode(mPoly);
+
         }
-
-//        osgEarth::Features::Geometry* geom = new osgEarth::Features::Polygon();
-//        geom->push_back(osg::Vec3d(0, 40, 0));
-//        geom->push_back(osg::Vec3d(-60, 40, 0));
-//        geom->push_back(osg::Vec3d(-60, 60, 0));
-//        geom->push_back(osg::Vec3d(0, 60, 0));
-
-//        osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(geom, osgEarth::SpatialReference::get("wgs84"));
-//        feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
-
-//        osgEarth::Symbology::Style geomStyle;
-//        geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::White;
-//        geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 5.0f;
-//        geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
-//        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-//        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_GPU;
-
-//        osgEarth::Annotation::FeatureNode* fnode = new osgEarth::Annotation::FeatureNode( feature, geomStyle);
-
-
-//        //osgEarth::Annotation::FeatureNode* pathNode = nullptr;
-//        //mMapController->addNode(mPathNode);
-//        mMapController->addNode(fnode);
-
-
     }
-
-//        osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
-
 
 }
 
