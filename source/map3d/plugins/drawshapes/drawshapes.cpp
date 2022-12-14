@@ -130,7 +130,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
 
 bool DrawShapes::setup(MapController *mapController,
                               NetworkManager *networkManager,
-                              InfoWidgetHandle *infoWidgetHandle)
+                              UIHandle *UIHandle)
 {
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());

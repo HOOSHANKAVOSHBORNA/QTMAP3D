@@ -48,7 +48,11 @@ void MapController::mapMouseEvent(QMouseEvent *event, const osg::Vec3d &worldPos
     geoPos.fromWorld(getMapSRS(), worldPos);
     osgEarth::GeoPoint  geographicPos = geoPos.transform(getMapSRS()->getGeocentricSRS()->getGeographicSRS());
 
-    emit mousePointedLocationChanged(QVector3D(
+    emit mousePointingLocationChanged(QVector3D(
+                                         static_cast<float>(geoPos.x()),
+                                         static_cast<float>(geoPos.y()),
+                                         static_cast<float>(geoPos.z())));
+    emit mousePointingLocationWgs84Changed(QVector3D(
                                          static_cast<float>(geographicPos.x()),
                                          static_cast<float>(geographicPos.y()),
                                          static_cast<float>(geographicPos.z())));
@@ -229,7 +233,7 @@ void MapController::frame()
 
     const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timepoint_list.back() - timepoint_list.front()).count());
     if (duration > 0) {
-        const qreal fps = qreal(timepoint_list.size() * 1000) / duration;
+        const qreal fps = qreal((timepoint_list.size()-1) * 1000) / duration;
         emit fpsChanged(fps);
     }
 

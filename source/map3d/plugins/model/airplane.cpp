@@ -17,10 +17,11 @@
 
 
 
-Airplane::Airplane(MapController *value, osgEarth::MapNode *mapNode, osg::Node *node, QObject *parent)
+Airplane::Airplane(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *mapNode, osg::Node *node, QObject *parent)
     :BaseModel(mapNode, parent)
 {
     mMapController = value;
+    mUIHandle = uiHandle;
     if (!node)
     {
         //todo show massage here
@@ -75,9 +76,7 @@ Airplane::Airplane(MapController *value, osgEarth::MapNode *mapNode, osg::Node *
     //    osgEarth::Registry::shaderGenerator().run(mGeodeParticle);// for textures or lighting
     //    getMapNode()->addChild(mGeodeParticle);
 
-
-
-
+    mCameraRangeChangeable = true;
 }
 
 void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
@@ -167,6 +166,46 @@ void Airplane::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
 osgEarth::Annotation::ModelNode *Airplane::getTruckModel() const
 {
     return mTruckModel;
+}
+
+void Airplane::setInformation(QString info)
+{
+    mInformation = info;
+    mUIHandle->iwUpdateData(this, mInformation);
+}
+
+void Airplane::iw2D3DButtonClicked()
+{
+    qDebug()<<"iw2D3DButtonClicked";
+}
+
+void Airplane::iwRouteButtonClicked()
+{
+    qDebug()<<"iwRouteButtonClicked";
+}
+
+void Airplane::iwFollowButtonClicked()
+{
+    qDebug()<<"iwFollowButtonClicked";
+    mMapController->setTrackNode(getGeoTransform());
+}
+
+void Airplane::iwMoreButtonClicked()
+{
+    qDebug()<<"iwMoreButtonClicked";
+}
+
+void Airplane::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+{
+    BaseModel::mousePushEvent(onModel, ea);
+    if(onModel)
+    {
+        mUIHandle->iwSetReceiverObject(this);
+        mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
+        mUIHandle->iwUpdateData(this, mInformation);
+    }
+    else
+        mMapController->untrackNode();
 }
 
 void Airplane::addEffect(double emitterDuration)

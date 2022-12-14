@@ -34,5 +34,6 @@ System::System(osgEarth::MapNode *mapNode, QObject *parent)
     mRoot->addChild(redGeode,true);
     mRoot->addChild(yellowGeode, false);
     //----------------------------------------------------------------------------------------
+    mCameraRangeChangeable = true;
 }
 
