@@ -13,13 +13,12 @@ find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(drawshapes SHARED
   drawshapes.cpp
-  drawshapes.h
+  rect.cpp
   line.cpp
-  line.h
   res.qrc
   sphere.cpp
-  sphere.h
   drawshapes.json
+  polygone.cpp
 )
 
 target_include_directories(drawshapes PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

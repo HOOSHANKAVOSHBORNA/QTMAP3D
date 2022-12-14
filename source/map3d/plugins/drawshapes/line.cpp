@@ -8,7 +8,7 @@ Line::Line()
     osgEarth::Symbology::Style pathStyle;
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::Red;
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 2.0;
-    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 7500;
+    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
 
 
     pathStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;

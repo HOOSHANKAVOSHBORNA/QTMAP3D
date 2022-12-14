@@ -87,7 +87,16 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
     }
     if(CATEGORY == category && name == POLYGON)
     {
+        if(checked)
+        {
 
+        mPoly = new Polygone(true);
+        QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onPolygoneBtnClick);
+        }
+        else
+        {
+        QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onPolygoneBtnClick);
+        }
     }
     if(CATEGORY == category && name == EXTRPOLY)
     {
@@ -107,7 +116,15 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
     }
     if(CATEGORY == category && name == RECT)
     {
-
+        if(checked)
+        {
+        mRect = new Rect(true, 600, 300);
+        QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onRectBtnClick);
+        }
+        else
+        {
+        QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onRectBtnClick);
+        }
     }
 }
 
@@ -186,33 +203,60 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
     }
 }
 
-void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
+void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 {
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
-        osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
-        osgEarth::Features::Geometry* geom = new osgEarth::Features::Polygon();
-        geom->push_back(osg::Vec3d(0, 40, 0));
-        geom->push_back(osg::Vec3d(-60, 40, 0));
-        geom->push_back(osg::Vec3d(-60, 60, 0));
-        geom->push_back(osg::Vec3d(0, 60, 0));
+        osgEarth::Symbology::Style circleStyle;
+        circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Red, 0.5);
+        circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
+        circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
-        osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(geom, osgEarth::SpatialReference::get("wgs84"));
-        feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
-
-        osgEarth::Symbology::Style geomStyle;
-        geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::White;
-        geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 5.0f;
-        geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
-        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_GPU;
-
-        osgEarth::Annotation::FeatureNode* fnode = new osgEarth::Annotation::FeatureNode( feature, geomStyle);
-        //osgEarth::Annotation::FeatureNode* pathNode = nullptr;
-        mMapController->addNode(mPathNode);
-        mMapController->addNode(fnode);
+        osgEarth::Annotation::CircleNode* circle = new osgEarth::Annotation::CircleNode;
+        circle->set(
+                    osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y(), 1000, osgEarth::ALTMODE_RELATIVE),
+                    osgEarth::Distance(50, osgEarth::Units::KILOMETERS),
+                    circleStyle, osgEarth::Angle(0.0, osgEarth::Units::DEGREES), osgEarth::Angle(360.0, osgEarth::Units::DEGREES), true);
+        mMapController->addNode(circle);
+        geoPos.z() = 0;
+        mPoly->addPoints(geoPos.vec3d());
 
     }
+    if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
+    {
+        if (mPoly->geom->size()>=3){
+        mMapController->addNode(mPoly);
+        }
+
+//        osgEarth::Features::Geometry* geom = new osgEarth::Features::Polygon();
+//        geom->push_back(osg::Vec3d(0, 40, 0));
+//        geom->push_back(osg::Vec3d(-60, 40, 0));
+//        geom->push_back(osg::Vec3d(-60, 60, 0));
+//        geom->push_back(osg::Vec3d(0, 60, 0));
+
+//        osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(geom, osgEarth::SpatialReference::get("wgs84"));
+//        feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
+
+//        osgEarth::Symbology::Style geomStyle;
+//        geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::White;
+//        geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 5.0f;
+//        geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
+//        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
+//        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_GPU;
+
+//        osgEarth::Annotation::FeatureNode* fnode = new osgEarth::Annotation::FeatureNode( feature, geomStyle);
+
+
+//        //osgEarth::Annotation::FeatureNode* pathNode = nullptr;
+//        //mMapController->addNode(mPathNode);
+//        mMapController->addNode(fnode);
+
+
+    }
+
+//        osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
+
+
 }
 
 void DrawShapes::onExtrPolyBtnClick(QMouseEvent *event)
@@ -275,17 +319,16 @@ void DrawShapes::onRectBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 {
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
-        osgEarth::Symbology::Style rectStyle;
-        rectStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Red, 0.5);
-        rectStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-        rectStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-        osgEarth::Annotation::RectangleNode* rect = new osgEarth::Annotation::RectangleNode(
-                    osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y()),
-                    osgEarth::Distance(300, osgEarth::Units::KILOMETERS),
-                    osgEarth::Distance(600, osgEarth::Units::KILOMETERS),
-                    rectStyle);
-
-        mMapController->addNode(rect);
+        mRect->setPosition(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y()));
+        mMapController->addNode(mRect);
+    }
+    if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
+    {
+        mRect->setClamp(false);
+        mRect->setWidth(osgEarth::Distance(600, osgEarth::Units::KILOMETERS));
+        mRect->setHeight(osgEarth::Distance(300, osgEarth::Units::KILOMETERS));
+        mRect->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Y_AXIS));
+        mRect->setColor(osgEarth::Color::Blue);
     }
 }
 
