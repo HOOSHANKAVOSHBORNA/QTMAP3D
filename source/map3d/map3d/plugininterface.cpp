@@ -2,12 +2,12 @@
 #include "plugininterface.h"
 #include "mainwindow.h"
 
-void UIHandle::iw_setReceiverObject(QObject *receiverObject)
+void UIHandle::iwSetReceiverObject(QObject *receiverObject)
 {
     mReceiverObject = receiverObject;
 }
 
-void UIHandle::iw_show(QObject *receiverObject, UIHandle::InfoWidgetType infoWidgetType)
+void UIHandle::iwShow(QObject *receiverObject, UIHandle::InfoWidgetType infoWidgetType)
 {
 
     if (!mReceiverObject) return;
@@ -40,7 +40,7 @@ void UIHandle::iw_show(QObject *receiverObject, UIHandle::InfoWidgetType infoWid
     }
 }
 
-void UIHandle::iw_updateData(QObject *receiverObject, const QString &infoJSON)
+void UIHandle::iwUpdateData(QObject *receiverObject, const QString &infoJSON)
 {
     if (!mReceiverObject) return;
     if (mReceiverObject != receiverObject) return;
@@ -54,7 +54,7 @@ void UIHandle::iw_updateData(QObject *receiverObject, const QString &infoJSON)
 
 }
 
-void UIHandle::sb_showMessage(const QString &message, qreal duration)
+void UIHandle::sbShowMessage(const QString &message, qreal duration)
 {
 
 }
@@ -63,7 +63,7 @@ void UIHandle::onInfoWidget2D3DButtonClicked()
 {
     if (mReceiverObject) {
         QMetaObject::invokeMethod(mReceiverObject,
-                                  "iw_2D3DButtonClicked");
+                                  "iw2D3DButtonClicked");
     }
 }
 
@@ -71,7 +71,7 @@ void UIHandle::onInfoWidgetRouteButtonClicked()
 {
     if (mReceiverObject) {
         QMetaObject::invokeMethod(mReceiverObject,
-                                  "iw_routeButtonClicked");
+                                  "iwRouteButtonClicked");
     }
 }
 
@@ -79,7 +79,7 @@ void UIHandle::onInfoWidgetFollowButtonClicked()
 {
     if (mReceiverObject) {
         QMetaObject::invokeMethod(mReceiverObject,
-                                  "iw_followButtonClicked");
+                                  "iwFollowButtonClicked");
     }
 }
 
@@ -87,6 +87,6 @@ void UIHandle::onInfoWidgetMoreButtonClicked()
 {
     if (mReceiverObject) {
         QMetaObject::invokeMethod(mReceiverObject,
-                                  "iw_moreButtonClicked");
+                                  "iwMoreButtonClicked");
     }
 }
