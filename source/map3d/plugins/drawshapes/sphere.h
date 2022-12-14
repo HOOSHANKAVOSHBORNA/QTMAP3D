@@ -12,16 +12,18 @@ class Sphere : public osg::ClipNode
 {
 
 public:
-    Sphere(MapController *mapController,float radius);
+    Sphere(MapController *mapController,float radius, bool clamp);
     void setProp(osg::Vec4 color, osg::Vec3 center, float radius);
     osg::ref_ptr<osgEarth::Annotation::ModelNode> model;
-
+    void setColor(osg::Vec4 color);
+    void setCenter(osg::Vec3 center);
+    void setRadius(float radius);
+    void setClamp(bool clamp);
 private:
     MapController* mMapController{nullptr};
     osg::ref_ptr<osg::ShapeDrawable> pShapeDrawable;
-    osg::ref_ptr<osg::Geode> geode;
     osgEarth::Symbology::Style style;
-    osg::ClipNode* clipnode;
+    osg::ref_ptr<osg::Sphere> pSphereShape;
 };
 
 

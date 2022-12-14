@@ -8,6 +8,8 @@
 #include "plugininterface.h"
 #include "line.h"
 #include "sphere.h"
+#include "rect.h"
+#include "polygone.h"
 
 class DrawShapes : public PluginInterface
 {
@@ -39,7 +41,7 @@ private:
 private slots:
     void onLineBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onSphereBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onPolygoneBtnClick(QMouseEvent* event);
+    void onPolygoneBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onExtrPolyBtnClick(QMouseEvent* event);
     void onImgOvlyBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onCircleBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
@@ -51,6 +53,8 @@ private slots:
 private:
     Line* mLine;
     Sphere* mSphere;
+    Rect* mRect;
+    Polygone* mPoly;
     MapController* mMapController{nullptr};
     osgEarth::Annotation::FeatureNode* mPathNode;
     float mRadius{20000};

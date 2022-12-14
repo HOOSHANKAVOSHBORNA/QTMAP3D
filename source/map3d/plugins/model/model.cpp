@@ -149,9 +149,10 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
 
 bool Model::setup(MapController *pMapController,
                   NetworkManager *networkManager,
-                  UIHandle *UIHandle)
+                  UIHandle *uiHandle)
 {
     mMapController = pMapController;
+    mUIHandle = uiHandle;
 
     ////--websocket data-------------------------------------------------------------------
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
@@ -268,7 +269,7 @@ void Model::addAirplaineModel(QString name, osg::Vec3d position, double heading)
 
     //create and setting model--------------------------------------------
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/aircraft/airplane-red.osgb");
-    osg::ref_ptr<Airplane> model = new Airplane(mMapController, mMapController->getMapNode(), node);
+    osg::ref_ptr<Airplane> model = new Airplane(mMapController,mUIHandle, mMapController->getMapNode(), node);
     //    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
     model->setName(name.toStdString());
     model->setGeographicPosition(position, heading);
@@ -405,7 +406,7 @@ void Model::onMessageReceived(const QJsonDocument &message)
     if(message.object().value("Name").toString() == "Target")
     {
         QJsonObject data = message.object().value("Data").toObject();
-        qDebug()<<"target:"<< data;
+        //qDebug()<<"target:"<< data;
 
         double latitude = data.value("Latitude").toDouble();
         double longitude = data.value("Longitude").toDouble();
@@ -414,15 +415,22 @@ void Model::onMessageReceived(const QJsonDocument &message)
         double heading = data.value("Heading").toDouble();
         osg::Vec3d position(latitude, longitude, altitude);
         QString name = QString::number(data.value("TN").toInt());
+        QString txtMessage = QString::fromUtf8(message.toJson(QJsonDocument::Compact));
         if(mModels.contains(AIRPLANE) && mModels[AIRPLANE].contains(name))
         {
             Airplane* model = dynamic_cast<Airplane*>(mModels[AIRPLANE][name]);
             model->flyTo(position, heading, speed);
+
+            model->setInformation(txtMessage);
         }
         else
+        {
             addAirplaineModel(name, position, -heading);
-
+            Airplane* model = dynamic_cast<Airplane*>(mModels[AIRPLANE][name]);
+            model->setInformation(txtMessage);
+        }
 
     }
+
 }
 

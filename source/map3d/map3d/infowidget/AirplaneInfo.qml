@@ -6,6 +6,10 @@ Item {
     clip:true
     id:rootItem
 
+
+    function updateData(jsonObject) {
+    }
+
     ScrollView {
         anchors.fill: parent
         contentWidth: lay.width + 30
@@ -51,6 +55,7 @@ Item {
                     Layout.preferredWidth: implicitWidth
                 }
                 Label {
+                    id: latitudeLabel
                     text: "0.0"
                     color: "white"
                     Layout.fillWidth: true
@@ -63,6 +68,7 @@ Item {
                     Layout.preferredWidth: implicitWidth
                 }
                 Label {
+                    id: longitudeLabel
                     text: "0.0"
                     color: "white"
                     Layout.fillWidth: true

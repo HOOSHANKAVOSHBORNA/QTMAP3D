@@ -30,12 +30,12 @@ public:
         System
     };
 
-    void iw_setReceiverObject(QObject *receiverObject);
-    void iw_show(QObject* receiverObject, InfoWidgetType infoWidgetType);
-    void iw_updateData(QObject *receiverObject, const QString& infoJSON);
+    void iwSetReceiverObject(QObject *receiverObject);
+    void iwShow(QObject* receiverObject, InfoWidgetType infoWidgetType);
+    void iwUpdateData(QObject *receiverObject, const QString& infoJSON);
 
 public:
-    void sb_showMessage(const QString& message, qreal duration);
+    void sbShowMessage(const QString& message, qreal duration);
 
 private:
     void onInfoWidget2D3DButtonClicked();

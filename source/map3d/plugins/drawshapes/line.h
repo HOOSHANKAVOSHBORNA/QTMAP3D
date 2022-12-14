@@ -8,6 +8,14 @@ public:
     Line();
     void setLineStyle(osgEarth::Color color, float width, bool clamp);
     void setPointStyle(osgEarth::Color color, float size, bool clamp);
+
+    void setLineColor(osgEarth::Color color);
+    void setLineWidth(float width);
+    void setLineClamp(bool clamp);
+    void setPointColor(osgEarth::Color color);
+    void setPointSize(float size);
+    void setPointClamp(bool clamp);
+
     void addPoint(const osg::Vec3d& vec);
     void removePoint();
     int getSize();

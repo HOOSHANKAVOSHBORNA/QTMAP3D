@@ -56,20 +56,11 @@ Item {
     }
 
     function updateData(infoJSON) {
+        console.log(infoJSON);
         var jsonObject = JSON.parse(infoJSON);
 
         if (rootItem.currentShowingIndex !== -1) {
-           switch(infoItemsModel[rootItem.currentShowingIndex].typeString) {
-           case "AIRPLANE":
-
-               break;
-           case "STATION":
-
-               break;
-           case "SYSTEM":
-
-               break;
-           }
+            infoItemsRepeater.itemAt(rootItem.currentShowingIndex).updateData(jsonObject);
         }
     }
 
@@ -112,10 +103,19 @@ Item {
         model: infoItemsModel
 
         delegate: Item {
+            id: delegItem
             anchors.top:parent.top
             anchors.bottom: parent.bottom
             x: 0
             width: 300
+
+            property Item infoItem
+
+            function updateData(jsonObject) {
+                if (delegItem.infoItem) {
+                    delegItem.infoItem.updateData(jsonObject);
+                }
+            }
 
             Rectangle{
                 anchors.fill: parent
@@ -144,6 +144,9 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     source: itemUrl
+                    onLoaded: function() {
+                        delegItem.infoItem = item;
+                    }
                 }
                 Item {
                     Layout.minimumHeight: 5

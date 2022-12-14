@@ -233,7 +233,7 @@ void MapController::frame()
 
     const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timepoint_list.back() - timepoint_list.front()).count());
     if (duration > 0) {
-        const qreal fps = qreal(timepoint_list.size() * 1000) / duration;
+        const qreal fps = qreal((timepoint_list.size()-1) * 1000) / duration;
         emit fpsChanged(fps);
     }
 

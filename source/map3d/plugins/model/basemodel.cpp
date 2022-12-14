@@ -101,12 +101,19 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapt
         if (view)
         {
             pick(view, ea);
-            if(mCurrentModel) {mCurrentModel->mousePushEvent(true, ea);}
+            if(mCurrentModel)
+            {
+                mCurrentModel->mousePushEvent(true, ea);
+
+            }
             if(mLastPushModel && mLastPushModel != mCurrentModel)
                 mLastPushModel->mousePushEvent(false, ea);
         }
         if(mCurrentModel)
+        {
             mLastPushModel = mCurrentModel;
+            return true;
+        }
         break;
     case (osgGA::GUIEventAdapter::MOVE):
         if (view)
