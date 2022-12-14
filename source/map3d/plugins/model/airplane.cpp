@@ -8,6 +8,7 @@
 #include <osgViewer/View>
 #include <osgEarth/IntersectionPicker>
 #include <QMouseEvent>
+#include <QTimer>
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 #include <osgEarthAnnotation/AnnotationUtils>
@@ -77,6 +78,8 @@ Airplane::Airplane(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *
     //    getMapNode()->addChild(mGeodeParticle);
 
     mCameraRangeChangeable = true;
+    mLocationPoints = new osg::Vec3Array();
+    mTempLocationPoints = new osg::Vec3Array();
 }
 
 void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
@@ -92,6 +95,10 @@ void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
 
     osg::Vec3d posW;
     posGeo.toWorld(posW);
+    //---------------------------------------
+    if(mLocationPoints->empty())
+        mLocationPoints->push_back(currentPosW);
+    mLocationPoints->push_back(posW);
     //move---------------------------------------------------------------------------------------------------
     osg::Vec3d diffW = posW - currentPosW;
     osg::Matrixd currentPoslocalTransfer;
@@ -181,7 +188,17 @@ void Airplane::iw2D3DButtonClicked()
 
 void Airplane::iwRouteButtonClicked()
 {
+//    mIsRoute = true;
     qDebug()<<"iwRouteButtonClicked";
+    mMapController->getRoot()->addChild(drawLine(mLocationPoints, 1.0));
+
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, [=](){
+        mMapController->getRoot()->addChild(drawLine(mTempLocationPoints, 1.0));
+    });
+    timer->start(200);
+
 }
 
 void Airplane::iwFollowButtonClicked()
@@ -206,6 +223,18 @@ void Airplane::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
     }
     else
         mMapController->untrackNode();
+}
+
+void Airplane::curentPosition(osgEarth::GeoPoint pos)
+{
+    BaseModel::curentPosition(pos);
+
+//    if(mIsRoute)
+//    {
+        osg::Vec3d currentPosW;
+        pos.toWorld(currentPosW);
+        mTempLocationPoints->push_back(currentPosW);
+//    }
 }
 
 void Airplane::addEffect(double emitterDuration)

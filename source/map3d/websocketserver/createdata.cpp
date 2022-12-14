@@ -47,7 +47,7 @@ QJsonDocument CreateData::createTargetinfo()
     sends.push_back("send1");
     sends.push_back("send2");
     sends.push_back("send3");
-    jsonObject.insert("Detection System", sends);
+    jsonObject.insert("Send", sends);
 
     QJsonObject jsonMain;
     jsonMain.insert("Name", "Target");

@@ -43,7 +43,8 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
             if (_firstTime == DBL_MAX) _firstTime = time;
             //------------------------------------------------------------------------------------------------
             osg::AnimationPath::ControlPoint cp;
-            if (getAnimationPath()->getInterpolatedControlPoint(getAnimationTime(),cp))
+            double animatTime = getAnimationTime();
+            if (getAnimationPath()->getInterpolatedControlPoint(animatTime,cp))
             {
                 geoPoint.fromWorld(baseModel->getMapNode()->getMapSRS(), cp.getPosition());
                 baseModel->setPosition(geoPoint);
@@ -71,6 +72,8 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 //                baseModel->getPlaceNode()->setStyle(pm);
                 //emit current position----------------------------------------------------------------------
                 positionCanged = true;
+                //if(static_cast<int>(animatTime) % 3 == 0)
+                    baseModel->curentPosition(geoPoint);
             }
 
             if((_latestTime - _firstTime) > _animationPath->getPeriod())
@@ -82,8 +85,8 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
     NodeCallback::traverse(node,nv);
     if(hit)
         baseModel->collision(baseModel->getFollowModel());
-    if(positionCanged)
-        emit baseModel->positionChanged(geoPoint);
+    //if(positionCanged)
+//        baseModel->curentPosition(geoPoint);
 }
 
 
@@ -153,9 +156,9 @@ void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& 
                 nitr!=nodePath.end();
                 ++nitr)
             {
-                auto pl = dynamic_cast<osgEarth::Annotation::PlaceNode*>(*nitr);
-                if (pl)
-                    qDebug()<<pl;
+                //auto pl = dynamic_cast<osgEarth::Annotation::PlaceNode*>(*nitr);
+//                if (pl)
+//                    qDebug()<<pl;
                 mCurrentModel = dynamic_cast<BaseModel*>(*nitr);
                 if (mCurrentModel)
                     break;
@@ -409,6 +412,11 @@ void BaseModel::cameraRangeChanged(double range)
         mIs3d = false;
         select(mIsSelected);
     }
+}
+
+void BaseModel::curentPosition(osgEarth::GeoPoint pos)
+{
+    emit positionChanged(pos);
 }
 
 void BaseModel::select(bool val)

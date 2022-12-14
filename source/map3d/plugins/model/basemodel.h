@@ -64,6 +64,7 @@ protected:
 //    void mouseDoubleClickEvent(QMouseEvent* event);
     virtual void mouseMoveEvent(bool /*onModel*/, const osgGA::GUIEventAdapter& /*ea*/);
     virtual void cameraRangeChanged(double /*range*/);
+    virtual void curentPosition(osgEarth::GeoPoint pos);
 protected:
     bool mIsSelected{false};
     bool mIs3d{false};

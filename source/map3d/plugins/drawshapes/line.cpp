@@ -120,7 +120,7 @@ void Line::removePoint()
 
 int Line::getSize()
 {
-    return mLinePath->size();
+    return static_cast<int>(mLinePath->size());
 }
 
 osgEarth::Annotation::FeatureNode *Line::getNode()
