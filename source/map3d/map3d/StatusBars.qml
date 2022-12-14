@@ -13,8 +13,8 @@ Item {
     property real coordinate3 : 0.0
 
     property var _font: "Liberation Serif"
-    property var _lat_color: "#252525"
-    property var _map_color: "#252525"
+    property var _lat_color: "#353535"
+    property var _map_color: "#353535"
 
     property var timer: 0
     property var message: ""
