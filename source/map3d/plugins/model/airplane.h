@@ -37,7 +37,8 @@ public:
     Q_INVOKABLE
     void iwMoreButtonClicked();
 protected:
-    virtual void mousePushEvent(bool onModel, const osgGA::GUIEventAdapter& ea);
+    virtual void mousePushEvent(bool onModel, const osgGA::GUIEventAdapter& ea) override;
+    virtual void curentPosition(osgEarth::GeoPoint pos) override;
 private:
     void addEffect(double emitterDuration);
     void removeEffect();
@@ -50,8 +51,11 @@ private:
     osg::ref_ptr<osgParticle::FireEffect> mFire;
 
     bool mIsStop{false};
+    bool mIsRoute{false};
     UIHandle* mUIHandle;
     QString mInformation;
+    osg::ref_ptr<osg::Vec3Array> mLocationPoints;
+    osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
 };
 
 #endif // FLYINGMODEL_H

@@ -29,7 +29,7 @@ static osg::Node* drawLine(osg::Vec3Array* vertex, float lineWidth)
     geom->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
 
     // Set add as line
-    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP, 0, vertex->size()));
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, vertex->size()));
 
     return gnode;
 }
