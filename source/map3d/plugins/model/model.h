@@ -58,6 +58,7 @@ private:
     osg::PositionAttitudeTransform* modelNode;
 
     MapController *mMapController;
+    UIHandle* mUIHandle;
 };
 
 #endif // MODEL_H
