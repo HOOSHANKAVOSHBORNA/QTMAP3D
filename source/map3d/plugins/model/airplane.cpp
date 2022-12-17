@@ -183,13 +183,14 @@ void Airplane::setInformation(QString info)
 
 void Airplane::iw2D3DButtonClicked()
 {
-    qDebug()<<"iw2D3DButtonClicked";
+//    qDebug()<<"iw2D3DButtonClicked";
+    mMapController->goToPosition(getPosition(), 200);
 }
 
 void Airplane::iwRouteButtonClicked()
 {
 //    mIsRoute = true;
-    qDebug()<<"iwRouteButtonClicked";
+//    qDebug()<<"iwRouteButtonClicked";
     mMapController->getRoot()->addChild(drawLine(mLocationPoints, 1.0));
 
 
@@ -203,7 +204,7 @@ void Airplane::iwRouteButtonClicked()
 
 void Airplane::iwFollowButtonClicked()
 {
-    qDebug()<<"iwFollowButtonClicked";
+//    qDebug()<<"iwFollowButtonClicked";
     mMapController->setTrackNode(getGeoTransform());
 }
 

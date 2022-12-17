@@ -58,6 +58,7 @@ public slots:
     void setZoom(double);
     void goToHome();
     void goToPosition(double latitude, double longitude, double range);
+    void goToPosition(osgEarth::GeoPoint mapPoint, double range);
     void setGeocentric(bool bGeocentric);
     void toggleProjection();
     void frame();

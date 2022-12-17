@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWindow *parent) :
     QObject::connect(mMapController, &MapController::mousePointingLocationChanged,
                      this, &MainWindow::setMousePointingLocation);
     QObject::connect(this, &MainWindow::goToLocation,
-                     mMapController, &MapController::goToPosition);
+                     mMapController, QOverload<double, double, double>::of(&MapController::goToPosition));
 
 
     QObject::connect(mMapController, &MapController::focalPointLatChanged,

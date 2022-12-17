@@ -177,6 +177,14 @@ void MapController::goToPosition(double latitude, double longitude, double range
     setViewpoint(vp, 3.0);
 }
 
+void MapController::goToPosition(osgEarth::GeoPoint mapPoint, double range)
+{
+    osgEarth::Viewpoint vp;
+    vp.focalPoint() = mapPoint;
+    vp.range()= range;
+    setViewpoint(vp, 3.0);
+}
+
 void MapController::setGeocentric(bool bGeocentric)
 {
     if (mbGeocentric == bGeocentric)
