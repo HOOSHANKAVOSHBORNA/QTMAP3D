@@ -21,7 +21,7 @@ QJsonDocument CreateData::createTargetinfo()
     jsonObject.insert("Type", "type1");
     jsonObject.insert("MasterRadar", "radar1");
     jsonObject.insert("Identification", "F");// F, K, Z, X, U, H
-    jsonObject.insert("Identification Method", "mt1");//3 char
+    jsonObject.insert("IdentificationMethod", "mt1");//3 char
     jsonObject.insert("Time", "12345678954213");//epoch
     jsonObject.insert("Pos", "pos");
     //
