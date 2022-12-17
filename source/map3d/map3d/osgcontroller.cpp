@@ -167,7 +167,7 @@ void OsgController::createMapNode(bool bGeocentric)
 
     mSkyNode->addChild(mMapNode);
     mMapRoot->addChild(mSkyNode);
-    mMapRoot->addChild(mMapNode);
+//    mMapRoot->addChild(mMapNode);
 }
 
 void OsgController::createCameraManipulator()
