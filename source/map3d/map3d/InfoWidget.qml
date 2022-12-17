@@ -56,7 +56,7 @@ Item {
     }
 
     function updateData(infoJSON) {
-        console.log(infoJSON);
+        //console.log(infoJSON);
         var jsonObject = JSON.parse(infoJSON);
 
         if (rootItem.currentShowingIndex !== -1) {

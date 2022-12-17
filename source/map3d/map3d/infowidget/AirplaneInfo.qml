@@ -7,9 +7,24 @@ Item {
     id:rootItem
 
 
+    property ListModel detectionSystemsModel: ListModel {
+    }
+    property ListModel sendsModel: ListModel {
+    }
+
     function updateData(jsonObject) {
 
-        console.log(jsonObject);
+
+        rootItem.detectionSystemsModel.clear();
+        for (var idx1 in jsonObject.Data.DetectionSystem) {
+            detectionSystemsModel.append({"systemName": jsonObject.Data.DetectionSystem[idx1]});
+        }
+
+        rootItem.sendsModel.clear();
+        for (var idx2 in jsonObject.Data.Send) {
+            sendsModel.append({"sendName": jsonObject.Data.Send[idx2]});
+        }
+
 
         if (jsonObject.Data.TN)                   tnLabel.text = jsonObject.Data.TN;
         if (jsonObject.Data.IFFCode)              iffCodeLabel.text = jsonObject.Data.IFFCode;
@@ -276,6 +291,59 @@ Item {
 
             }
 
+            Rectangle {
+                Layout.preferredWidth: rootItem.width - 30
+                Layout.preferredHeight: 2
+                color: "white"
+
+            }
+
+            Label {
+                Layout.preferredWidth: rootItem.width - 30
+                Layout.preferredHeight: implicitHeight
+                color: "white"
+                text: "Detection Systems"
+                horizontalAlignment: Qt.AlignHCenter
+            }
+
+            Repeater {
+                model: rootItem.detectionSystemsModel
+                Label {
+                    Layout.preferredWidth: rootItem.width - 30
+                    Layout.preferredHeight: implicitHeight
+                    color: "white"
+                    text: systemName
+                    horizontalAlignment: Qt.AlignLeft
+                }
+
+            }
+
+            Rectangle {
+                Layout.preferredWidth: rootItem.width - 30
+                Layout.preferredHeight: 2
+                color: "white"
+
+            }
+
+            Label {
+                Layout.preferredWidth: rootItem.width - 30
+                Layout.preferredHeight: implicitHeight
+                color: "white"
+                text: "Sends"
+                horizontalAlignment: Qt.AlignHCenter
+            }
+
+            Repeater {
+                model: rootItem.sendsModel
+                Label {
+                    Layout.preferredWidth: rootItem.width - 30
+                    Layout.preferredHeight: implicitHeight
+                    color: "white"
+                    text: sendName
+                    horizontalAlignment: Qt.AlignLeft
+                }
+
+            }
 
 
         }
