@@ -7,6 +7,7 @@ Item {
     width: 330
     height: 80
 
+    property var xTarget: 250
     // signal Button
     signal btnUpClicked()
     signal btnDownClicked()
@@ -37,7 +38,7 @@ Item {
             anchors.topMargin: 3
             hoverEnabled: true
             display: AbstractButton.IconOnly
-            anchors.left: parent.left
+            anchors.right: parent.right
             anchors.leftMargin: _margin
             icon.source : "qrc:/Resources/home-r.png"
             icon.width : _iconSize
@@ -52,31 +53,84 @@ Item {
             onClicked: btnHomeClicked()
         }
 
-        ControlCamera{
-            id: recMove
-            width: 100
-            anchors.left: home.right
-            anchors.leftMargin: _margin
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 3
+        Rectangle {
+            id: control
+            color: "transparent"
+            width: 200 + _margin
+            height: sliderMenuBtn.height
+            anchors.right: sliderMenuBtn.left
+            anchors.rightMargin: 3
             anchors.top: parent.top
             anchors.topMargin: 3
-            color: "transparent"
-            onItemClicked: {
-                switch (direction){
-                case "UP" :
-                    btnUpClicked()
-                    break
-                case "DOWN" :
-                    btnDownClicked()
-                    break
-                case "LEFT" :
-                    btnLeftClicked()
-                    break
-                case "RIGHT" :
-                    btnRightClicked()
+            clip: true
+            ControlCamera{
+                id: recRotation
+                width: 100
+                radius: _radius
+                anchors.leftMargin: _margin
+                anchors.left: recMove.right
+                anchors.rightMargin: 0
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 1
+                anchors.top: parent.top
+                anchors.topMargin: 3
+                color: "transparent"
+                buttonIcon: "qrc:/Resources/rotate.png"
+                onItemClicked: {
+                    switch (direction){
+                    case "UP" :
+                        btnRotateUpClicked()
+                        break
+                    case "DOWN" :
+                        btnRotateDownClicked()
+                        break
+                    case "LEFT" :
+                        btnRotateLeftClicked()
+                        break
+                    case "RIGHT" :
+                        btnRotateRightClicked()
+                    }
+                }
+
+            }
+
+            ControlCamera{
+                id: recMove
+                width: 100
+//                anchors.right: recRotation.left
+                x: 250
+//                anchors.left: parent.left
+                anchors.rightMargin: _margin
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 1
+                anchors.top: parent.top
+                anchors.topMargin: 3
+                color: "transparent"
+                onItemClicked: {
+                    switch (direction){
+                    case "UP" :
+                        btnUpClicked()
+                        break
+                    case "DOWN" :
+                        btnDownClicked()
+                        break
+                    case "LEFT" :
+                        btnLeftClicked()
+                        break
+                    case "RIGHT" :
+                        btnRightClicked()
+                    }
+                }
+                NumberAnimation on x {
+                    duration: 1000
+                    id: myni
+                    running: false
+                    from: recMove.x
+                    to: xTarget
                 }
             }
+
+
         }
 
         Button {
@@ -84,8 +138,9 @@ Item {
             width: rootItem.height /2 - 4
             height: rootItem.height /2 - 4
             anchors.leftMargin: _margin
-            anchors.left: recRotation.right
+            anchors.rightMargin: 4
             anchors.top: parent.top
+            anchors.right: home.left
             anchors.topMargin: 3
             icon.source : "qrc:/Resources/zoomin-r.png"
             icon.width : _iconSize
@@ -116,10 +171,12 @@ Item {
             height: rootItem.height /2 - 4
             text: qsTr("Button")
             anchors.leftMargin: _margin
+
+            anchors.rightMargin: 4
             display: AbstractButton.IconOnly
-            anchors.left: recRotation.right
+            anchors.right: project.left
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 1
             icon.source : "qrc:/Resources/zoomout-r.png"
             icon.width : _iconSize
             icon.height : _iconSize
@@ -142,46 +199,16 @@ Item {
                 onTriggered:  btnZoomOutClicked()
             }
         }
-        ControlCamera{
-            id: recRotation
-            width: 100
-            radius: _radius
-            anchors.left: recMove.right
-            anchors.leftMargin: _margin
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 3
-            anchors.top: parent.top
-            anchors.topMargin: 3
-            color: "transparent"
-            buttonIcon: "qrc:/Resources/rotate.png"
-            onItemClicked: {
-                switch (direction){
-                case "UP" :
-                    btnRotateUpClicked()
-                    break
-                case "DOWN" :
-                    btnRotateDownClicked()
-                    break
-                case "LEFT" :
-                    btnRotateLeftClicked()
-                    break
-                case "RIGHT" :
-                    btnRotateRightClicked()
-                }
-            }
-
-        }
-
 
         Button {
             id: project
             width: rootItem.height /2 - 4
             height: rootItem.height /2 - 4
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 1
             anchors.leftMargin: _margin
             display: AbstractButton.IconOnly
-            anchors.left: parent.left
+            anchors.right: parent.right
             icon.source : modeMap === "projection" ? "qrc:/Resources/projection.png" :"qrc:/Resources/geocentric.png"
             icon.width : _iconSize
             icon.height : _iconSize
@@ -200,6 +227,54 @@ Item {
                 btnProjectionClicked()
             }
         }
+        //////////////////////////////////////////
+        Button {
+            id: sliderMenuBtn
+            width: 35
+            height: parent.height
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 1
+            anchors.leftMargin: _margin
+            display: AbstractButton.IconOnly
+            anchors.right: positive.left
+            anchors.rightMargin: 0
+            anchors.top: parent.top
+            anchors.topMargin: 3
+            icon.source: "qrc:/Resources/chevron.png"
+            icon.width : 64
+            icon.height : 64
+            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                   (pressed ? _colorHover : "#FFFFFF");
+            background: Rectangle{
+                radius: _radius
+                color: "transparent"
+            }
+            checkable: true
+            states: [
+                    State {
+                        name: "rotated"
+                        PropertyChanges { target: sliderMenuBtn; rotation: 180 }
+                    },
+                    State {
+                        name: "default"
+                        PropertyChanges { target: sliderMenuBtn; rotation: 0 }
+                }
+
+            ]
+            onClicked: function() {
+                console.log(recMove.x)
+                sliderMenuBtn.state = sliderMenuBtn.state === "rotated"? "default" : "rotated"
+                control.x = control.x + 50
+                xTarget = xTarget === 0 ? 250 : 0
+                myni.running = true
+            }
+
+            transitions: Transition {
+                            RotationAnimation { duration: 1000; direction: RotationAnimation.Counterclockwise }
+                        }
+        }
+
+        ////////////////////////////////////////
     }
 
 }

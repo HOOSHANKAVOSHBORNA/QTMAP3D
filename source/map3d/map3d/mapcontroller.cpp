@@ -28,7 +28,7 @@ private:
 };
 
 MapController::MapController(QQuickWindow *window) :
-    OsgController(window)
+    mpWindow(window)
 {
 }
 
@@ -171,6 +171,14 @@ void MapController::goToPosition(double latitude, double longitude, double range
     osgEarth::GeoPoint  mapPoint;
     pointLatLong.transform(getMapSRS(), mapPoint);
 
+    osgEarth::Viewpoint vp;
+    vp.focalPoint() = mapPoint;
+    vp.range()= range;
+    setViewpoint(vp, 3.0);
+}
+
+void MapController::goToPosition(osgEarth::GeoPoint mapPoint, double range)
+{
     osgEarth::Viewpoint vp;
     vp.focalPoint() = mapPoint;
     vp.range()= range;
@@ -387,5 +395,190 @@ void MainEventHandler::mouseEvent(osgViewer::View *view, const osgGA::GUIEventAd
 MainEventHandler::MainEventHandler(MapController *pMapController) :
     mpMapController(pMapController)
 {
+
+}
+
+
+
+/////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void MapController::cleanup()
+{
+    if (mpOsgRenderer) {
+        mpOsgRenderer->deleteLater();
+        mpOsgRenderer = nullptr;
+    }
+}
+
+void MapController::initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId)
+{
+
+    mrenderTargetId = renderTargetId;
+
+    createOsgRenderer(width, height, screen);
+
+    if(mpWindow) {
+        QObject::connect(mpOsgRenderer, &OSGRenderer::needsUpdate,
+                         mpWindow, &QQuickWindow::update,
+                         Qt::DirectConnection);
+    }
+}
+
+void MapController::resizeGL(int width, int height, QScreen *screen)
+{
+    if (mpOsgRenderer) {
+        const float pixelRatio = static_cast<float>(screen->devicePixelRatio());
+        mpOsgRenderer->resize(0, 0, width, height, pixelRatio);
+    }
+}
+
+void MapController::paintGL()
+{
+    if (mpOsgRenderer) {
+        if (misFirstFrame) {
+            misFirstFrame = false;
+            mpOsgRenderer->getCamera()->getGraphicsContext()->setDefaultFboId(mrenderTargetId);
+        }
+
+        mpOsgRenderer->frame();
+    }
+}
+
+void MapController::keyPressEvent(QKeyEvent *event)
+{
+    if (mpOsgRenderer)
+        mpOsgRenderer->keyPressEvent(event);
+}
+
+void MapController::keyReleaseEvent(QKeyEvent *event)
+{
+
+    if (mpOsgRenderer)
+        mpOsgRenderer->keyReleaseEvent(event);
+}
+
+void MapController::mousePressEvent(QMouseEvent *event)
+{
+    if (mpOsgRenderer) {
+        mpOsgRenderer->mousePressEvent(event);
+    }
+
+}
+
+void MapController::mouseReleaseEvent(QMouseEvent *event)
+{
+
+    if (mpOsgRenderer) {
+        mpOsgRenderer->mouseReleaseEvent(event);
+    }
+}
+
+void MapController::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (mpOsgRenderer)
+        mpOsgRenderer->mouseDoubleClickEvent(event);
+
+}
+
+void MapController::mouseMoveEvent(QMouseEvent *event)
+{
+
+    if (mpOsgRenderer) {
+        mpOsgRenderer->mouseMoveEvent(event);
+    }
+}
+
+void MapController::wheelEvent(QWheelEvent *event)
+{
+
+    if (mpOsgRenderer)
+        mpOsgRenderer->wheelEvent(event);
+}
+
+
+void MapController::createOsgRenderer(int width, int height, QScreen *screen)
+{
+    osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+    ds->setNvOptimusEnablement(1);
+    ds->setStereo(false);
+
+
+    mpOsgRenderer = new OSGRenderer(this);
+    const float pixelRatio = static_cast<float>(screen->devicePixelRatio());
+    mpOsgRenderer->setupOSG(0 , 0, width, height, pixelRatio);
+
+    mpOsgRenderer->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
+
+}
+
+void MapController::initializeOsgEarth()
+{
+    createCameraManipulator();
+    mpOsgRenderer->setCameraManipulator(mpEarthManipulator);
+
+    installEventHandler();
+
+    mMapRoot = new osg::Group();
+    mSkyNode = osgEarth::Util::SkyNode::create(mMapNode);
+    createMapNode(true);
+
+    mpOsgRenderer->setSceneData(mMapRoot);
+
+    osgEarth::Drivers::GDALOptions gdal;
+    gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
+    osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
+    mMapNode->getMap()->addLayer(imlayer);
+}
+
+void MapController::createMapNode(bool bGeocentric)
+{
+    mSkyNode->removeChild(mMapNode);
+    mMapRoot->removeChild(mMapNode);
+    mMapRoot->removeChild(mSkyNode);
+
+    osgEarth::MapOptions mapOpt;
+    if(bGeocentric)
+    {
+        mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_GEOCENTRIC;
+        mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
+        mMapNode = new osgEarth::MapNode(new osgEarth::Map(mapOpt));
+    }
+    else
+    {
+        mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_PROJECTED;
+        mapOpt.profile() = osgEarth::ProfileOptions();
+        mMapNode = new osgEarth::MapNode(new osgEarth::Map(mapOpt));
+    }
+
+    mSkyNode->addChild(mMapNode);
+    mMapRoot->addChild(mSkyNode);
+//    mMapRoot->addChild(mMapNode);
+}
+
+void MapController::createCameraManipulator()
+{
+    mpEarthManipulator = new osgEarth::Util::EarthManipulator;
+    auto  settings = mpEarthManipulator->getSettings();
+    settings->setSingleAxisRotation(true);
+
+    settings->setMinMaxDistance(10.0, 1000000000.0);
+    settings->setMaxOffset(5000.0, 5000.0);
+    settings->setMinMaxPitch(-90, 90);
+    settings->setTerrainAvoidanceEnabled(true);
+    settings->setThrowingEnabled(false);
 
 }

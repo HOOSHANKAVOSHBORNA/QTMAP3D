@@ -11,7 +11,7 @@
 Server::Server(quint16 port, QObject *parent) : QObject(parent),
   mWebSocketServer(nullptr)
 {
-    mWebSocketServer = new QWebSocketServer(QStringLiteral("SSL Echo Server"),
+    mWebSocketServer = new QWebSocketServer(QStringLiteral("Map3d Web Socket Server"),
                                               QWebSocketServer::SecureMode,
                                               this);
     QSslConfiguration sslConfiguration;
@@ -31,7 +31,7 @@ Server::Server(quint16 port, QObject *parent) : QObject(parent),
 
     if (mWebSocketServer->listen(QHostAddress::Any, port))
     {
-        qDebug() << "SSL Echo Server listening on port" << port;
+        qDebug() <<tr("%1 listening on port: %2").arg(mWebSocketServer->serverName()).arg(port);
         connect(mWebSocketServer, &QWebSocketServer::newConnection,
                 this, &Server::onNewConnection);
         connect(mWebSocketServer, &QWebSocketServer::sslErrors,
@@ -94,17 +94,22 @@ void Server::processBinaryMessage(QByteArray message)
 //! [socketDisconnected]
 void Server::socketDisconnected()
 {
-    qDebug() << "Client disconnected";
+    qDebug() << "Client disconnected: ";
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (pClient)
     {
+        qDebug() << pClient->peerName() << pClient->origin();
         mClients.removeAll(pClient);
         pClient->deleteLater();
     }
 }
 
-void Server::onSslErrors(const QList<QSslError> &)
+void Server::onSslErrors(const QList<QSslError> &errors)
 {
-    qDebug() << "Ssl errors occurred";
+    qDebug()<<tr("%1 errors:").arg(mWebSocketServer->serverName());
+    for(auto error: errors)
+    {
+        qDebug()<<error.errorString();
+    }
 }
 //! [socketDisconnected]

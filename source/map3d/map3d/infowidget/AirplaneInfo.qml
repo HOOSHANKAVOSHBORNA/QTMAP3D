@@ -7,7 +7,41 @@ Item {
     id:rootItem
 
 
+    property ListModel detectionSystemsModel: ListModel {
+    }
+    property ListModel sendsModel: ListModel {
+    }
+
     function updateData(jsonObject) {
+
+
+        rootItem.detectionSystemsModel.clear();
+        for (var idx1 in jsonObject.Data.DetectionSystem) {
+            detectionSystemsModel.append({"systemName": jsonObject.Data.DetectionSystem[idx1]});
+        }
+
+        rootItem.sendsModel.clear();
+        for (var idx2 in jsonObject.Data.Send) {
+            sendsModel.append({"sendName": jsonObject.Data.Send[idx2]});
+        }
+
+
+        if (jsonObject.Data.TN)                   tnLabel.text = jsonObject.Data.TN;
+        if (jsonObject.Data.IFFCode)              iffCodeLabel.text = jsonObject.Data.IFFCode;
+        if (jsonObject.Data.CallSign)             callSignLabel.text = jsonObject.Data.CallSign;
+        if (jsonObject.Data.Type)                 typeLabel.text = jsonObject.Data.Type;
+        if (jsonObject.Data.MasterRadar)          masterLabel.text = jsonObject.Data.MasterRadar;
+        if (jsonObject.Data.Identification)       identificationLabel.text = jsonObject.Data.Identification;
+        if (jsonObject.Data.IdentificationMethod) identificationMethodLabel.text = jsonObject.Data.IdentificationMethod;
+        if (jsonObject.Data.Time)                 timeLabel.text = jsonObject.Data.Time;
+        if (jsonObject.Data.Pos)                  posLabel.text = jsonObject.Data.Pos;
+
+
+        if (jsonObject.Data.Latitude)  latitudeLabel.text = jsonObject.Data.Latitude;
+        if (jsonObject.Data.Longitude) longitudeLabel.text = jsonObject.Data.Longitude;
+        if (jsonObject.Data.Altitude)  altitudeLabel.text = jsonObject.Data.Altitude;
+        if (jsonObject.Data.Heading)   headingLabel.text = jsonObject.Data.Heading;
+        if (jsonObject.Data.Speed)     speedLabel.text = jsonObject.Data.Speed;
     }
 
     ScrollView {
@@ -44,7 +78,142 @@ Item {
             }
 
             GridLayout {
-                rows: 6
+                rows: 9
+                columns: 2
+                Layout.fillWidth: true
+                Layout.preferredHeight: implicitHeight
+
+                Label {
+                    text: "TN: "
+                    color: "white"
+                    Layout.preferredWidth: implicitWidth
+                }
+                Label {
+                    id: tnLabel
+                    text: "0.0"
+                    color: "white"
+                    Layout.fillWidth: true
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+
+                Label {
+                    text: "IFFCode: "
+                    color: "white"
+                    Layout.preferredWidth: implicitWidth
+                }
+                Label {
+                    id: iffCodeLabel
+                    text: "0.0"
+                    color: "white"
+                    Layout.fillWidth: true
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+                Label {
+                    text: "CallSign: "
+                    color: "white"
+                    Layout.preferredWidth: implicitWidth
+                }
+                Label {
+                    id: callSignLabel
+                    text: "0.0"
+                    color: "white"
+                    Layout.fillWidth: true
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+
+                Label {
+                    text: "Type: "
+                    color: "white"
+                    Layout.preferredWidth: implicitWidth
+                }
+                Label {
+                    id: typeLabel
+                    text: "0.0"
+                    color: "white"
+                    Layout.fillWidth: true
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+
+                Label {
+                    text: "Master: "
+                    color: "white"
+                    Layout.preferredWidth: implicitWidth
+                }
+                Label {
+                    id: masterLabel
+                    text: "0.0"
+                    color: "white"
+                    Layout.fillWidth: true
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+                Label {
+                    text: "Identification: "
+                    color: "white"
+                    Layout.preferredWidth: implicitWidth
+                }
+                Label {
+                    id: identificationLabel
+                    text: "0.0"
+                    color: "white"
+                    Layout.fillWidth: true
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+                Label {
+                    text: "Identification Method: "
+                    color: "white"
+                    Layout.preferredWidth: implicitWidth
+                }
+                Label {
+                    id: identificationMethodLabel
+                    text: "0.0"
+                    color: "white"
+                    Layout.fillWidth: true
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+                Label {
+                    text: "Time: "
+                    color: "white"
+                    Layout.preferredWidth: implicitWidth
+                }
+                Label {
+                    id: timeLabel
+                    text: "0.0"
+                    color: "white"
+                    Layout.fillWidth: true
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+                Label {
+                    text: "Pos: "
+                    color: "white"
+                    Layout.preferredWidth: implicitWidth
+                }
+                Label {
+                    id: posLabel
+                    text: "0.0"
+                    color: "white"
+                    Layout.fillWidth: true
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+            }
+
+            Rectangle {
+                Layout.preferredWidth: rootItem.width - 30
+                Layout.preferredHeight: 2
+                color: "white"
+
+            }
+
+            GridLayout {
+                rows: 5
                 columns: 2
                 Layout.fillWidth: true
                 Layout.preferredHeight: implicitHeight
@@ -62,6 +231,8 @@ Item {
                     horizontalAlignment: Qt.AlignRight
                 }
 
+
+
                 Label {
                     text: "Longitude: "
                     color: "white"
@@ -75,29 +246,21 @@ Item {
                     horizontalAlignment: Qt.AlignRight
                 }
 
+
                 Label {
                     text: "Altitude: "
                     color: "white"
                     Layout.preferredWidth: implicitWidth
                 }
                 Label {
+                    id: altitudeLabel
                     text: "0.0"
                     color: "white"
                     Layout.fillWidth: true
                     horizontalAlignment: Qt.AlignRight
                 }
 
-                Label {
-                    text: "Range: "
-                    color: "white"
-                    Layout.preferredWidth: implicitWidth
-                }
-                Label {
-                    text: "0.0"
-                    color: "white"
-                    Layout.fillWidth: true
-                    horizontalAlignment: Qt.AlignRight
-                }
+
 
                 Label {
                     text: "Heading: "
@@ -105,24 +268,83 @@ Item {
                     Layout.preferredWidth: implicitWidth
                 }
                 Label {
+                    id: headingLabel
                     text: "0.0"
                     color: "white"
                     Layout.fillWidth: true
                     horizontalAlignment: Qt.AlignRight
                 }
 
+
                 Label {
-                    text: "Time: "
+                    text: "Speed: "
                     color: "white"
                     Layout.preferredWidth: implicitWidth
                 }
                 Label {
+                    id: speedLabel
                     text: "0.0"
                     color: "white"
                     Layout.fillWidth: true
                     horizontalAlignment: Qt.AlignRight
                 }
+
             }
+
+            Rectangle {
+                Layout.preferredWidth: rootItem.width - 30
+                Layout.preferredHeight: 2
+                color: "white"
+
+            }
+
+            Label {
+                Layout.preferredWidth: rootItem.width - 30
+                Layout.preferredHeight: implicitHeight
+                color: "white"
+                text: "Detection Systems"
+                horizontalAlignment: Qt.AlignHCenter
+            }
+
+            Repeater {
+                model: rootItem.detectionSystemsModel
+                Label {
+                    Layout.preferredWidth: rootItem.width - 30
+                    Layout.preferredHeight: implicitHeight
+                    color: "white"
+                    text: systemName
+                    horizontalAlignment: Qt.AlignLeft
+                }
+
+            }
+
+            Rectangle {
+                Layout.preferredWidth: rootItem.width - 30
+                Layout.preferredHeight: 2
+                color: "white"
+
+            }
+
+            Label {
+                Layout.preferredWidth: rootItem.width - 30
+                Layout.preferredHeight: implicitHeight
+                color: "white"
+                text: "Sends"
+                horizontalAlignment: Qt.AlignHCenter
+            }
+
+            Repeater {
+                model: rootItem.sendsModel
+                Label {
+                    Layout.preferredWidth: rootItem.width - 30
+                    Layout.preferredHeight: implicitHeight
+                    color: "white"
+                    text: sendName
+                    horizontalAlignment: Qt.AlignLeft
+                }
+
+            }
+
 
         }
     }
