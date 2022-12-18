@@ -122,7 +122,7 @@ Item {
                     }
                 }
                 NumberAnimation on x {
-                    duration: 1000
+                    duration: 300
                     id: myni
                     running: false
                     from: recMove.x
@@ -227,7 +227,7 @@ Item {
                 btnProjectionClicked()
             }
         }
-        //////////////////////////////////////////
+
         Button {
             id: sliderMenuBtn
             width: 35
@@ -261,20 +261,30 @@ Item {
                 }
 
             ]
+            Timer {
+                id: sliderTimer
+                interval: 200
+
+            }
+
             onClicked: function() {
-                console.log(recMove.x)
                 sliderMenuBtn.state = sliderMenuBtn.state === "rotated"? "default" : "rotated"
-                control.x = control.x + 50
                 xTarget = xTarget === 0 ? 250 : 0
+                if(sliderTimer.running){
+                    sliderTimer.stop()
+                    myni.running = false
+                }
+                else
+                    sliderTimer.restart()
                 myni.running = true
+
             }
 
             transitions: Transition {
-                            RotationAnimation { duration: 1000; direction: RotationAnimation.Counterclockwise }
+                            RotationAnimation { duration: 300; direction: RotationAnimation.Counterclockwise }
                         }
         }
 
-        ////////////////////////////////////////
     }
 
 }
