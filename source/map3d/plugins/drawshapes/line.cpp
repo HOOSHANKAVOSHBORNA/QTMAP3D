@@ -17,41 +17,18 @@ Line::Line()
 
 }
 
-void Line::setLineStyle(osgEarth::Color color, float width, bool clamp)
+void Line::setLineHeight(float hieght)
 {
     auto style = mPathNode->getStyle();
-    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = color;
-    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = width;
-    if (clamp){
-        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    }
-    else{
-        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
-    }
+    style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = hieght;
     mPathNode->setStyle(style);
 }
 
-void Line::setPointStyle(osgEarth::Color color, float size, bool clamp)
-{
-    osgEarth::Symbology::Style style;
-    style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = size;
-    style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = color;
-    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
-    if (clamp){
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    }
-    else{
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
-    }
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-    mPathNode->setStyle(style);
-}
 
 void Line::setLineColor(osgEarth::Color color)
 {
     auto style = mPathNode->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = color;
-
     mPathNode->setStyle(style);
 }
 

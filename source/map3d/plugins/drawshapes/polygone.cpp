@@ -6,7 +6,6 @@ Polygone::Polygone(bool clamp)
 {
     geom = new osgEarth::Features::Polygon();
 
-
     osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(geom,osgEarth::SpatialReference::get("wgs84"));
     feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
     osgEarth::Symbology::Style geomStyle;
@@ -39,7 +38,7 @@ Polygone::Polygone(bool clamp)
     {
         style = *feature->style();
     }
-    setStyle( style );
+    setStyle(style);
 }
 
 void Polygone::setColor(osgEarth::Color color)
@@ -74,16 +73,8 @@ void Polygone::addPoints(osg::Vec3d point)
     geom->push_back(point);
     fea->setGeometry(geom);
 
-
 }
 
-osgEarth::Features::Polygon Polygone::points()
-{
-    osgEarth::Features::Polygon* geom = new osgEarth::Features::Polygon();
-    geom->push_back(osg::Vec3d(0, 40, 0));
-    geom->push_back(osg::Vec3d(-60, 40, 0));
-    geom->push_back(osg::Vec3d(-60, 60, 0));
-    geom->push_back(osg::Vec3d(0, 60, 0));
 
-    return *geom;
-}
+
+

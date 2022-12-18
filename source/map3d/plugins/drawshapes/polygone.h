@@ -10,7 +10,6 @@ public:
     void setWidth(float width);
     void setClamp(bool clamp);
     void addPoints(osg::Vec3d point);
-    osgEarth::Features::Polygon points();
     osgEarth::Features::Geometry* geom;
 private:
 

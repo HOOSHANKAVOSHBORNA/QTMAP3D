@@ -108,11 +108,28 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
     }
     if(CATEGORY == category && name == CIRCLE)
     {
+        if(checked)
+        {
+        mCircle = new Circle(true);
+        QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onCircleBtnClick);
+        }
+        else
+        {
+        QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onCircleBtnClick);
+        }
 
     }
     if(CATEGORY == category && name == ELLIPSE)
     {
-
+        if(checked)
+        {
+        mEllipse = new Ellipse(true);
+        QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onEllipseBtnClick);
+        }
+        else
+        {
+        QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onEllipseBtnClick);
+        }
     }
     if(CATEGORY == category && name == RECT)
     {
@@ -161,6 +178,8 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
         mLine->setPointColor(osgEarth::Color::Yellow);
         mLine->setPointSize(20);
         mLine->setPointClamp(true);
+        mLine->setLineHeight(250000);
+        mLine->setLineColor(osgEarth::Color::White);
 
         mLine->removePoint();
         mIsFinished = true;
@@ -195,7 +214,6 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
     if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         mRadius = 200000;
-        //mSphere->setProp(osg::Vec4(1,0,0,1),osg::Vec3(0,0,0),mRadius);
         mSphere->setColor(osg::Vec4(1,0,0,1));
         mSphere->setCenter(osg::Vec3(0,0,0));
         mSphere->setRadius(mRadius);
@@ -211,7 +229,6 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPo
         circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Red, 0.5);
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-        //circleStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 
         osgEarth::Annotation::CircleNode* circle = new osgEarth::Annotation::CircleNode;
         circle->set(
@@ -223,37 +240,40 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPo
         mPoly->addPoints(geoPos.vec3d());
 
     }
-    if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
+
+    if(event->button() == Qt::MouseButton::MiddleButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         if (mPoly->geom->size()>=3){
         mMapController->addNode(mPoly);
+        mPoly = new Polygone(true);
 
-        }
+
+       }
     }
 
 }
 
-void DrawShapes::onExtrPolyBtnClick(QMouseEvent *event)
-{
-    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
-    {
-        osgEarth::Features::Geometry* utah = new osgEarth::Features::Polygon();
-        utah->push_back(-114.052, 37.0);
-        utah->push_back(-109.054, 37.0);
-        utah->push_back(-109.054, 41.0);
-        utah->push_back(-111.040, 41.0);
-        //utah->push_back(-111.080, 42.059);
-        //utah->push_back(-114.080, 42.024);
+//void DrawShapes::onExtrPolyBtnClick(QMouseEvent *event)
+//{
+//    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+//    {
+//        osgEarth::Features::Geometry* utah = new osgEarth::Features::Polygon();
+//        utah->push_back(-114.052, 37.0);
+//        utah->push_back(-109.054, 37.0);
+//        utah->push_back(-109.054, 41.0);
+//        utah->push_back(-111.040, 41.0);
+//        //utah->push_back(-111.080, 42.059);
+//        //utah->push_back(-114.080, 42.024);
 
-        osgEarth::Symbology::Style utahStyle;
-        utahStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 250000.0; // meters MSL
-        utahStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::White, 0.8f);
+//        osgEarth::Symbology::Style utahStyle;
+//        utahStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 250000.0; // meters MSL
+//        utahStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::White, 0.8f);
 
-        osgEarth::Annotation::Feature*     utahFeature = new osgEarth::Annotation::Feature(utah, osgEarth::SpatialReference::get("wgs84"));
-        osgEarth::Annotation::FeatureNode* featureNode = new osgEarth::Annotation::FeatureNode(utahFeature, utahStyle);
-        mMapController->addNode(featureNode);
-    }
-}
+//        osgEarth::Annotation::Feature*     utahFeature = new osgEarth::Annotation::Feature(utah, osgEarth::SpatialReference::get("wgs84"));
+//        osgEarth::Annotation::FeatureNode* featureNode = new osgEarth::Annotation::FeatureNode(utahFeature, utahStyle);
+//        mMapController->addNode(featureNode);
+//    }
+//}
 
 void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 {
@@ -275,17 +295,21 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 {
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
-        osgEarth::Symbology::Style circleStyle;
-        circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Cyan, 0.5);
-        circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-        circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+        mCircle->setPosition(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y()));
+        mCircle->setArcStart(-45);
+        mCircle->setArcEnd(45);
+        mMapController->addNode(mCircle);
+    }
+    if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
+    {
+        mCircle->setClamp(false);
+        mCircle->setColor(osgEarth::Color::Blue);
+        mCircle->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Y_AXIS));
+        mCircle->setArcStart(-60);
+        mCircle->setArcEnd(60);
+        mCircle->setPosition(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y(),geoPos.z()+1000000));
+        mCircle->setCircleHeight(25000);
 
-        osgEarth::Annotation::CircleNode* circle = new osgEarth::Annotation::CircleNode;
-        circle->set(
-                    osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y(), 1000., osgEarth::ALTMODE_RELATIVE),
-                    osgEarth::Distance(300, osgEarth::Units::KILOMETERS),
-                    circleStyle, osgEarth::Angle(-45.0, osgEarth::Units::DEGREES), osgEarth::Angle(45.0, osgEarth::Units::DEGREES), true);
-        mMapController->addNode(circle);
     }
 }
 
@@ -310,23 +334,15 @@ void DrawShapes::onEllipseBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos
 {
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
-        osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
+        mEllipse->setPosition(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y()));
+        mMapController->addNode(mEllipse);
 
-        osgEarth::Symbology::Style ellipseStyle;
-        ellipseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Orange, 0.75);
-        ellipseStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 250000.0; // meters MSL
-        osgEarth::Annotation::EllipseNode* ellipse = new osgEarth::Annotation::EllipseNode;
-        ellipse->set(
-                    osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"),geoPos.x(), geoPos.y(), 0.0, osgEarth::ALTMODE_RELATIVE),
-                    osgEarth::Distance(250, osgEarth::Units::MILES),
-                    osgEarth::Distance(250, osgEarth::Units::MILES),
-                    osgEarth::Angle(0, osgEarth::Units::DEGREES),
-                    ellipseStyle,
-                    osgEarth::Angle(360.0, osgEarth::Units::DEGREES),
-                    //Angle(360.0 - 45.0, Units::DEGREES),
-                    true);
-        mMapController->addNode(ellipse);
-
+    }
+    if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
+    {
+        mEllipse->setClamp(false);
+        mEllipse->setColor(osgEarth::Color::Blue);
+        mEllipse->setHeight(250000);
     }
 }
 

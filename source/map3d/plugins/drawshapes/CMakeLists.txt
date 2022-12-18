@@ -19,7 +19,8 @@ add_library(drawshapes SHARED
   sphere.cpp
   drawshapes.json
   polygone.cpp
-  imageoverlay.cpp
+  circle.cpp
+  ellipse.cpp
 )
 
 target_include_directories(drawshapes PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

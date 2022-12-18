@@ -10,6 +10,8 @@
 #include "sphere.h"
 #include "rect.h"
 #include "polygone.h"
+#include "circle.h"
+#include "ellipse.h"
 
 class DrawShapes : public PluginInterface
 {
@@ -55,6 +57,8 @@ private:
     Sphere* mSphere;
     Rect* mRect;
     Polygone* mPoly;
+    Circle* mCircle;
+    Ellipse* mEllipse;
     MapController* mMapController{nullptr};
     osgEarth::Annotation::FeatureNode* mPathNode;
     float mRadius{20000};
