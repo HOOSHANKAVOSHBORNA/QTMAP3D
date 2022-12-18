@@ -195,16 +195,17 @@ MainWindow {
         Compass{
             id:compass
             headingAngle: wnd.headingAngle
-            anchors.right: parent.right
-            anchors.rightMargin: widgetsMargins
+            anchors.left: parent.left
+            anchors.leftMargin: widgetsMargins
             anchors.bottomMargin: widgetsMargins
             y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
         }
 
         NavigationWidget{
             id : navigationWidget
-            anchors.horizontalCenter: parent.horizontalCenter
-            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins/2)))
+            anchors.right: parent.right
+            anchors.rightMargin: _margin
+            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins/2+3)))
             // slot button
             onBtnHomeClicked: function() {
                 wnd.homeButtonClicked();

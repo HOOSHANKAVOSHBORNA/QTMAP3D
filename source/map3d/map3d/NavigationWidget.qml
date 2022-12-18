@@ -37,7 +37,7 @@ Item {
             anchors.topMargin: 3
             hoverEnabled: true
             display: AbstractButton.IconOnly
-            anchors.left: parent.left
+            anchors.right: parent.right
             anchors.leftMargin: _margin
             icon.source : "qrc:/Resources/home-r.png"
             icon.width : _iconSize
@@ -55,10 +55,10 @@ Item {
         ControlCamera{
             id: recMove
             width: 100
-            anchors.left: home.right
-            anchors.leftMargin: _margin
+            anchors.right: recRotation.left
+            anchors.rightMargin: _margin
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 1
             anchors.top: parent.top
             anchors.topMargin: 3
             color: "transparent"
@@ -84,8 +84,9 @@ Item {
             width: rootItem.height /2 - 4
             height: rootItem.height /2 - 4
             anchors.leftMargin: _margin
-            anchors.left: recRotation.right
+            anchors.rightMargin: 4
             anchors.top: parent.top
+            anchors.right: home.left
             anchors.topMargin: 3
             icon.source : "qrc:/Resources/zoomin-r.png"
             icon.width : _iconSize
@@ -116,10 +117,12 @@ Item {
             height: rootItem.height /2 - 4
             text: qsTr("Button")
             anchors.leftMargin: _margin
+
+            anchors.rightMargin: 4
             display: AbstractButton.IconOnly
-            anchors.left: recRotation.right
+            anchors.right: project.left
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 1
             icon.source : "qrc:/Resources/zoomout-r.png"
             icon.width : _iconSize
             icon.height : _iconSize
@@ -146,10 +149,11 @@ Item {
             id: recRotation
             width: 100
             radius: _radius
-            anchors.left: recMove.right
+            anchors.right: positive.left
             anchors.leftMargin: _margin
+            anchors.rightMargin: _margin
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 1
             anchors.top: parent.top
             anchors.topMargin: 3
             color: "transparent"
@@ -178,10 +182,10 @@ Item {
             width: rootItem.height /2 - 4
             height: rootItem.height /2 - 4
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 3
+            anchors.bottomMargin: 1
             anchors.leftMargin: _margin
             display: AbstractButton.IconOnly
-            anchors.left: parent.left
+            anchors.right: parent.right
             icon.source : modeMap === "projection" ? "qrc:/Resources/projection.png" :"qrc:/Resources/geocentric.png"
             icon.width : _iconSize
             icon.height : _iconSize
