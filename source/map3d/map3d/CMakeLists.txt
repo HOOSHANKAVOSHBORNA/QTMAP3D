@@ -21,7 +21,6 @@ find_package(Qt5 COMPONENTS Core Quick Gui Widgets WebSockets REQUIRED)
 add_executable(Map3d
         main.cpp
         osgrenderer.cpp
-        osgquickwindow.cpp
         mainwindow.cpp
         plugininterface.cpp
         application.cpp

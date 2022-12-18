@@ -19,7 +19,7 @@ class MainEventHandler;
 
 class MapController : public OsgController
 {
-    friend class OsgQuickWindow;
+    friend class MainWindow;
     friend class MainEventHandler;
     Q_OBJECT
 

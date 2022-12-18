@@ -1,18 +1,21 @@
 #ifndef MainWindow_H
 #define MainWindow_H
 
+#include <QQuickWindow>
 #include <QQmlComponent>
 #include <QVector3D>
-#include "osgquickwindow.h"
+#include <QTime>
+#include <QPoint>
 
 #include "pluginmanager.h"
 
+class QOpenGLFunctions_2_0;
 class PluginInfo;
 class PluginInterface;
 class UIHandle;
 
 
-class MainWindow : public OsgQuickWindow
+class MainWindow : public QQuickWindow
 {
     Q_OBJECT
     Q_PROPERTY(qreal headingAngle READ headingAngle WRITE setHeadingAngle NOTIFY headingAngleChanged)
@@ -118,8 +121,64 @@ public slots:
     void updateInfoWidgetData(const QString& dataJSON);
     void setStatusBarText(const QString message, int time);
 
+
+public:
+
+    MapController* mapController() const;
+
+
+public slots:
+    void cleanup();
+    void frame();
+
+    void restoreContext();
+
+private:
+    void initializeGL();
+    void resizeGL();
+    void paintGL();
+
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
+    void resizeEvent(QResizeEvent *) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void keyReleaseEvent(QKeyEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void wheelEvent(QWheelEvent* event) override;
+
+
+
+signals:
+    void clicked();
+    void osgInitialized();
+
+private:
+    QOpenGLFunctions_2_0 *mOGLF = nullptr;
+
+    bool mResized     = false;
+
+    int mViewportWidth = 0;
+    int mViewportHeight = 0;
+
+    bool mIsFirstFrame = true;
+
+
+    QTime mLastMousePressTime = QTime::currentTime();
+    QPoint mLastPressPoint = QPoint();
+
+    QOpenGLContext *mContext = nullptr;
+    QSurface       *mSurface = nullptr;
+
+
+    bool mMousePressOusideClickProcess = false;
+    bool mInClickProcess = false;
+
+protected:
+    MapController *mMapController = nullptr;
+
+
 
 private:
     qreal mheadingAngle = 0.0;

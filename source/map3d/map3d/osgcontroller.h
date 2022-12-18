@@ -16,7 +16,8 @@
 
 class OsgController : public QObject
 {
-    friend class OsgQuickWindow;
+    friend class MainWindow;
+    friend class MainWindow;
 
     Q_OBJECT
 

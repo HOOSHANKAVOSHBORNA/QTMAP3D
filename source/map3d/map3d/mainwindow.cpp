@@ -4,14 +4,36 @@
 #include <osgEarth/ImageLayer>
 #include <osgGA/GUIEventAdapter>
 #include <iostream>
+#include <QTimer>
+#include <QWindow>
+#include <QOpenGLFunctions_2_0>
 
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "plugininterface.h"
+#include "mapcontroller.h"
 
 MainWindow::MainWindow(QWindow *parent) :
-        OsgQuickWindow(parent)
+        QQuickWindow(parent),
+        mMapController(new MapController(this))
 {
+    mOGLF = new QOpenGLFunctions_2_0;
+
+
+    QObject::connect(this, &MainWindow::sceneGraphInitialized,
+                     this, &MainWindow::initializeGL,
+                     Qt::DirectConnection);
+    QObject::connect(this, &MainWindow::sceneGraphInvalidated,
+                     this, &MainWindow::cleanup,
+                     Qt::DirectConnection);
+
+    setClearBeforeRendering(false);
+    setColor(Qt::black);
+
+
+
+
+
 
     QObject::connect(this, &MainWindow::homeButtonClicked,
                      mMapController, &MapController::goToHome);
@@ -91,6 +113,8 @@ MainWindow::MainWindow(QWindow *parent) :
 
 MainWindow::~MainWindow()
 {
+    cleanup();
+    mMapController->deleteLater();
 
 }
 
@@ -288,10 +312,6 @@ void MainWindow::updateInfoWidgetData(const QString &dataJSON)
 }
 
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    OsgQuickWindow::keyPressEvent(event);
-}
 
 void MainWindow::setStatusBarText(const QString message, int time) {
     QVariant ret;
@@ -301,4 +321,255 @@ void MainWindow::setStatusBarText(const QString message, int time) {
                               Q_ARG(QVariant, QVariant::fromValue<QString>(message)),
                               Q_ARG(QVariant, QVariant::fromValue<int>(time))
                               );
+}
+
+
+
+
+
+
+
+MapController *MainWindow::mapController() const
+{
+    return mMapController;
+}
+
+
+void MainWindow::cleanup()
+{
+    mMapController->cleanup();
+}
+
+void MainWindow::frame()
+{
+    if (mResized) {
+        resizeGL();
+        mResized = false;
+    }
+
+    paintGL();
+}
+
+void MainWindow::restoreContext()
+{
+    if (mContext && mSurface) {
+        mContext->makeCurrent(mSurface);
+    }
+}
+
+
+void MainWindow::initializeGL()
+{
+    mOGLF->initializeOpenGLFunctions();
+
+    mContext = QOpenGLContext::currentContext();
+    mSurface = mContext->surface();
+
+
+    mMapController->initializeGL(width(), height(), screen(), renderTargetId());
+
+    restoreContext();
+    mMapController->initializeOsgEarth();
+    restoreContext();
+    emit osgInitialized();
+    restoreContext();
+
+    resetOpenGLState();
+
+    QObject::connect(this, &MainWindow::beforeRendering,
+                     this, &MainWindow::frame,
+                     Qt::DirectConnection);
+}
+
+void MainWindow::resizeGL()
+{
+    mMapController->resizeGL(mViewportWidth, mViewportHeight, screen());
+}
+
+void MainWindow::paintGL()
+{
+    resetOpenGLState();
+
+    mMapController->paintGL();
+
+    mOGLF->glClear(GL_DEPTH_BUFFER_BIT);
+
+    resetOpenGLState();
+}
+
+void MainWindow::resizeEvent(QResizeEvent *ev)
+{
+    QQuickWindow::resizeEvent(ev);
+
+    const QSize s = ev->size();
+    mResized       = true;
+    mViewportWidth  = s.width();
+    mViewportHeight = s.height();
+
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    QQuickWindow::keyPressEvent(event);
+
+    if (event->isAccepted())
+        return;
+
+
+    switch (event->key()) {
+    case Qt::Key_Up:
+    {
+        auto manip = mMapController->getEarthManipulator();
+        if (manip) {
+            manip->pan(0, -0.03);
+        }
+        event->accept();
+    }
+        break;
+    case Qt::Key_Down:
+    {
+        auto manip = mMapController->getEarthManipulator();
+        if (manip) {
+            manip->pan(0, 0.03);
+        }
+        event->accept();
+    }
+        break;
+    case Qt::Key_Left:
+    {
+        auto manip = mMapController->getEarthManipulator();
+        if (manip) {
+            manip->pan(0.03, 0);
+        }
+        event->accept();
+    }
+        break;
+    case Qt::Key_Right:
+    {
+        auto manip = mMapController->getEarthManipulator();
+        if (manip) {
+            manip->pan(-0.03, 0);
+        }
+        event->accept();
+    }
+        break;
+    }
+
+
+    if (event->isAccepted())
+        return;
+
+    mMapController->keyPressEvent(event);
+
+
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    QQuickWindow::keyReleaseEvent(event);
+
+    if (event->isAccepted())
+        return;
+
+    switch (event->key()) {
+    case Qt::Key_Up:
+    case Qt::Key_Down:
+    case Qt::Key_Left:
+    case Qt::Key_Right:
+        event->accept();
+        break;
+    }
+
+    if (event->isAccepted())
+        return;
+
+    mMapController->keyReleaseEvent(event);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    QQuickWindow::mousePressEvent(event);
+
+    if (event->isAccepted())
+        return;
+
+    mMapController->mousePressEvent(event);
+
+
+    if (event->button() == Qt::LeftButton) {
+        mLastMousePressTime = QTime::currentTime();
+        mLastPressPoint = event->pos();
+
+        if (!mInClickProcess) {
+            mMousePressOusideClickProcess = true;
+        } else {
+            mMousePressOusideClickProcess = false;
+        }
+
+    }
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    QQuickWindow::mouseReleaseEvent(event);
+
+    if (event->isAccepted())
+        return;
+
+    mMapController->mouseReleaseEvent(event);
+
+
+    if (event->button() == Qt::LeftButton) {
+        if (mLastMousePressTime.msecsTo(QTime::currentTime()) < 400) {
+            const QPoint diff = event->pos() - mLastPressPoint;
+            if (std::abs(diff.x()) < 10 && std::abs(diff.y()) < 10) {
+
+                if (!mInClickProcess && mMousePressOusideClickProcess) {
+                    mInClickProcess = true;
+                    QTimer::singleShot(300, [this](){
+                        if (mMousePressOusideClickProcess)
+                            emit clicked();
+                        this->mInClickProcess = false;
+                    });
+
+                }
+            }
+        }
+    }
+
+}
+
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
+{
+
+    QQuickWindow::mouseDoubleClickEvent(event);
+
+    if (event->isAccepted())
+        return;
+
+    mMapController->mouseDoubleClickEvent(event);
+
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    QQuickWindow::mouseMoveEvent(event);
+
+    if (event->isAccepted())
+        return;
+
+    mMapController->mouseMoveEvent(event);
+
+}
+
+void MainWindow::wheelEvent(QWheelEvent *event)
+{
+    QQuickWindow::wheelEvent(event);
+
+    if (event->isAccepted())
+        return;
+
+
+    mMapController->wheelEvent(event);
+
 }
