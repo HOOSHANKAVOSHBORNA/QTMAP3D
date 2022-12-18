@@ -209,7 +209,14 @@ void PickHandler::findSceneModels(osgViewer::Viewer *viewer)
                     if (model && model->mCameraRangeChangeable)
                     {
                         //qDebug() <<model->getQStringName();
-                        model->cameraRangeChanged(camera->getViewpoint().getRange() - model->getPosition().z());
+                        //qDebug() <<"range: "<<camera->getViewpoint().getRange();
+                        //qDebug() <<"z: "<<model->getPosition().z();
+                        double distance = 0;
+                        if(camera->getViewpoint().getRange() < model->getPosition().z())///for track node
+                            distance = camera->getViewpoint().getRange();
+                        else
+                            distance = camera->getViewpoint().getRange() - model->getPosition().z();
+                        model->cameraRangeChanged(distance);
                         //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
                         //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
                     }
