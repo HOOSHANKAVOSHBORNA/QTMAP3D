@@ -28,5 +28,7 @@
         <file>Resources/more.png</file>
         <file>Resources/3D.png</file>
         <file>Resources/tracking.png</file>
+        <file>Resources/websocketkey/localhost.cert</file>
+        <file>Resources/websocketkey/localhost.key</file>
     </qresource>
 </RCC>
