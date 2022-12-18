@@ -233,18 +233,25 @@ void MapController::frame()
 
 
     static std::deque<std::chrono::high_resolution_clock::time_point> timepoint_list;
+    const auto now_timepoint = std::chrono::high_resolution_clock::now();
 
-    timepoint_list.push_back(std::chrono::high_resolution_clock::now());
-    while (timepoint_list.size() > 100) {
-        timepoint_list.pop_front();
+    timepoint_list.push_back(now_timepoint);
+    while (timepoint_list.size() > 2) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>
+                (now_timepoint - timepoint_list.front()).count() > 2000) {
+            timepoint_list.pop_front();
+        } else {
+            break;
+        }
     }
 
-    const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timepoint_list.back() - timepoint_list.front()).count());
-    if (duration > 0) {
-        const qreal fps = qreal((timepoint_list.size()-1) * 1000) / duration;
-        emit fpsChanged(fps);
+    if (timepoint_list.size() >= 2) {
+        const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timepoint_list.back() - timepoint_list.front()).count());
+        if (duration > 0) {
+            const qreal fps = qreal((timepoint_list.size()-1) * 1000) / duration;
+            emit fpsChanged(fps);
+        }
     }
-
 
 }
 
