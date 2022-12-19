@@ -27,8 +27,91 @@ private:
     MapController *mpMapController = nullptr;
 };
 
+
+bool MainEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+
+    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
+
+    QEvent::Type qEventType;
+    switch (ea.getEventType())
+    {
+    case osgGA::GUIEventAdapter::FRAME:
+        mpMapController->frame();
+        break;
+    case (osgGA::GUIEventAdapter::PUSH):
+        qEventType = QEvent::Type::MouseButtonPress;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
+    case (osgGA::GUIEventAdapter::RELEASE):
+        qEventType = QEvent::Type::MouseButtonRelease;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
+    case (osgGA::GUIEventAdapter::MOVE):
+        qEventType = QEvent::Type::MouseMove;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
+    case (osgGA::GUIEventAdapter::SCROLL):
+        qEventType = QEvent::Type::Wheel;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
+    case (osgGA::GUIEventAdapter::DOUBLECLICK):
+        qEventType = QEvent::Type::MouseButtonDblClick;
+        if (view) { mouseEvent(view, ea, qEventType); }
+        break;
+    default:
+        break;
+    }
+    return false;
+
+}
+
+void MainEventHandler::mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType)
+{
+
+    QMouseEvent* event;
+    Qt::MouseButton mb;
+    switch (ea.getButtonMask())
+    {
+    case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
+        mb = Qt::MouseButton::LeftButton;
+        break;
+    case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
+        mb = Qt::MouseButton::RightButton;
+        break;
+    case osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON:
+        mb = Qt::MouseButton::MiddleButton;
+        break;
+    default:
+        mb = Qt::MouseButton::NoButton;
+    }
+
+    event = new QMouseEvent(qEventType,
+                            QPointF(static_cast<qreal>(ea.getX()),static_cast<qreal>(ea.getY())),
+                            mb, mb, Qt::KeyboardModifier::NoModifier);
+
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    if (view->computeIntersections(ea, intersections))
+    {
+        for (const auto &intersection : intersections)
+        {
+            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
+            osg::Vec3d currentWorldPos = intersection.getWorldIntersectPoint();
+            mpMapController->mapMouseEvent(event,currentWorldPos);
+            return;
+        }
+    }
+}
+
+MainEventHandler::MainEventHandler(MapController *pMapController) :
+    mpMapController(pMapController)
+{
+
+}
+//--MapController---------------------------------------------------------------------------------------------------------
+
 MapController::MapController(QQuickWindow *window) :
-    mpWindow(window)
+    mWindow(window)
 {
 }
 
@@ -62,18 +145,18 @@ void MapController::mapMouseEvent(QMouseEvent *event, const osg::Vec3d &worldPos
 
 osgViewer::Viewer *MapController::getViewer()
 {
-    return dynamic_cast<osgViewer::Viewer*>(mpOsgRenderer);
+    return dynamic_cast<osgViewer::Viewer*>(mOsgRenderer);
 }
 
 osgEarth::Util::EarthManipulator *MapController::getEarthManipulator()
 {
-    return mpEarthManipulator;
+    return mEarthManipulator;
 }
 
 osgEarth::Viewpoint MapController::getViewpoint() const
 {
-    if (mpEarthManipulator)
-        return mpEarthManipulator->getViewpoint();
+    if (mEarthManipulator)
+        return mEarthManipulator->getViewpoint();
     return osgEarth::Viewpoint();
 }
 
@@ -167,12 +250,11 @@ void MapController::goToHome()
 
 void MapController::goToPosition(double latitude, double longitude, double range)
 {
-    osgEarth::GeoPoint  pointLatLong(osgEarth::SpatialReference::get("wgs84"), latitude, longitude, 0);
-    osgEarth::GeoPoint  mapPoint;
-    pointLatLong.transform(getMapSRS(), mapPoint);
+    osgEarth::GeoPoint  geoPoint(getMapSRS()->getGeographicSRS(), latitude, longitude, 0);
+    geoPoint.transformInPlace(getMapSRS());
 
     osgEarth::Viewpoint vp;
-    vp.focalPoint() = mapPoint;
+    vp.focalPoint() = geoPoint;
     vp.range()= range;
     setViewpoint(vp, 3.0);
 }
@@ -185,17 +267,27 @@ void MapController::goToPosition(osgEarth::GeoPoint mapPoint, double range)
     setViewpoint(vp, 3.0);
 }
 
-void MapController::setGeocentric(bool bGeocentric)
+void MapController::set3DView(bool is3DView)
 {
-    if (mbGeocentric == bGeocentric)
+    mIs3DView = is3DView;
+    auto  settings = mEarthManipulator->getSettings();
+    if(is3DView)
+        settings->setMinMaxPitch(-90, 0);
+    else
+        settings->setMinMaxPitch(-90, -90);
+}
+
+void MapController::setGeocentric(bool geocentric)
+{
+    if (mGeocentric == geocentric)
         return;
 
-    mbGeocentric = bGeocentric;
+    mGeocentric = geocentric;
 
     osgEarth::LayerVector layers;
     mMapNode->getMap()->getLayers(layers);
 
-    createMapNode(bGeocentric);
+    createMapNode(geocentric);
     for(auto layer: layers)
        addLayer(layer);
 
@@ -206,21 +298,23 @@ void MapController::setGeocentric(bool bGeocentric)
     getEarthManipulator()->setViewpoint(vp);
 }
 
-void MapController::toggleProjection()
+void MapController::toggle3DView()
 {
-    setGeocentric(!mbGeocentric);
+//    setGeocentric(!mGeocentric);
+    set3DView(!mIs3DView);
 }
 
 void MapController::frame()
 {
     emit headingAngleChanged(-getViewpoint().getHeading());
 
-    const auto vp = mpEarthManipulator->getViewpoint();
+    const auto vp = mEarthManipulator->getViewpoint();
     const auto fp = vp.focalPoint();
     if (fp.isSet()) {
         const osgEarth::GeoPoint mapPoint = fp.get();
+//        mapPoint.makeGeographic();
         osgEarth::GeoPoint  pointLatLong;
-        mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), pointLatLong);
+        mapPoint.transform(getMapSRS()->getGeographicSRS(), pointLatLong);
 
 
         emit focalPointLatChanged(pointLatLong.x());
@@ -257,37 +351,37 @@ void MapController::frame()
 
 void MapController::panUp()
 {
-    getEarthManipulator()->pan(0.0, -0.1);
+    getEarthManipulator()->pan(0.0, -0.3);
 }
 
 void MapController::panDown()
 {
-    getEarthManipulator()->pan(0.0, 0.1);
+    getEarthManipulator()->pan(0.0, 0.3);
 }
 
 void MapController::panLeft()
 {
-    getEarthManipulator()->pan(0.1, 0.0);
+    getEarthManipulator()->pan(0.3, 0.0);
 }
 
 void MapController::panRight()
 {
-    getEarthManipulator()->pan(-0.1, 0.0);
+    getEarthManipulator()->pan(-0.3, 0.0);
 }
 
 void MapController::rotateUp()
 {
-    getEarthManipulator()->rotate(0.0, -0.1);
+    getEarthManipulator()->rotate(0.0, -0.3);
 }
 
 void MapController::rotateDown()
 {
-    getEarthManipulator()->rotate(0.0, 0.1);
+    getEarthManipulator()->rotate(0.0, 0.3);
 }
 
 void MapController::rotateLeft()
 {
-    getEarthManipulator()->rotate(-0.1, 0.0);
+    getEarthManipulator()->rotate(-0.3, 0.0);
 }
 
 void MapController::rotateRight()
@@ -313,157 +407,77 @@ void MapController::travelToViewpoint(qreal latitude,
                                       qreal heading)
 {
 
-    osgEarth::GeoPoint  pt(osgEarth::SpatialReference::get("wgs84"), latitude, longitude, 0);
+    osgEarth::GeoPoint  pt(getMapSRS()->getGeographicSRS(), latitude, longitude, 0);
+    pt.transformInPlace(getMapSRS());
     osgEarth::Viewpoint vp;
     vp.focalPoint() = pt;
     vp.range() = range;
     vp.pitch() = pitch;
     vp.heading() = heading;
-    mpEarthManipulator->setViewpoint(vp, 3.0);
+    mEarthManipulator->setViewpoint(vp, 3.0);
 }
 
 
-
-bool MainEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-{
-
-    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
-
-    QEvent::Type qEventType;
-    switch (ea.getEventType())
-    {
-    case osgGA::GUIEventAdapter::FRAME:
-        mpMapController->frame();
-        break;
-    case (osgGA::GUIEventAdapter::PUSH):
-        qEventType = QEvent::Type::MouseButtonPress;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    case (osgGA::GUIEventAdapter::RELEASE):
-        qEventType = QEvent::Type::MouseButtonRelease;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    case (osgGA::GUIEventAdapter::MOVE):
-        qEventType = QEvent::Type::MouseMove;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    case (osgGA::GUIEventAdapter::SCROLL):
-        qEventType = QEvent::Type::Wheel;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    case (osgGA::GUIEventAdapter::DOUBLECLICK):
-        qEventType = QEvent::Type::MouseButtonDblClick;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    default:
-        break;
-    }
-    return false;
-
-}
-
-void MainEventHandler::mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType)
-{
-
-    QMouseEvent* event;
-    Qt::MouseButton mb;
-    switch (ea.getButtonMask())
-    {
-    case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
-        mb = Qt::MouseButton::LeftButton;
-        break;
-    case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
-        mb = Qt::MouseButton::RightButton;
-        break;
-    case osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON:
-        mb = Qt::MouseButton::MiddleButton;
-        break;
-    default:
-        mb = Qt::MouseButton::NoButton;
-    }
-
-    event = new QMouseEvent(qEventType,
-                            QPointF(static_cast<qreal>(ea.getX()),static_cast<qreal>(ea.getY())),
-                            mb, mb, Qt::KeyboardModifier::NoModifier);
-
-    osgUtil::LineSegmentIntersector::Intersections intersections;
-    if (view->computeIntersections(ea, intersections))
-    {
-        for (const auto &intersection : intersections)
-        {
-            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
-            osg::Vec3d currentWorldPos = intersection.getWorldIntersectPoint();
-            mpMapController->mapMouseEvent(event,currentWorldPos);
-            return;
-        }
-    }
-}
-
-MainEventHandler::MainEventHandler(MapController *pMapController) :
-    mpMapController(pMapController)
-{
-
-}
 
 void MapController::cleanup()
 {
-    if (mpOsgRenderer) {
-        mpOsgRenderer->deleteLater();
-        mpOsgRenderer = nullptr;
+    if (mOsgRenderer) {
+        mOsgRenderer->deleteLater();
+        mOsgRenderer = nullptr;
     }
 }
 
 void MapController::initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId)
 {
 
-    mrenderTargetId = renderTargetId;
+    mRenderTargetId = renderTargetId;
 
     createOsgRenderer(width, height, screen);
 
-    if(mpWindow) {
-        QObject::connect(mpOsgRenderer, &OSGRenderer::needsUpdate,
-                         mpWindow, &QQuickWindow::update,
+    if(mWindow) {
+        QObject::connect(mOsgRenderer, &OSGRenderer::needsUpdate,
+                         mWindow, &QQuickWindow::update,
                          Qt::DirectConnection);
     }
 }
 
 void MapController::resizeGL(int width, int height, QScreen *screen)
 {
-    if (mpOsgRenderer) {
+    if (mOsgRenderer) {
         const float pixelRatio = static_cast<float>(screen->devicePixelRatio());
-        mpOsgRenderer->resize(0, 0, width, height, pixelRatio);
+        mOsgRenderer->resize(0, 0, width, height, pixelRatio);
     }
 }
 
 void MapController::paintGL()
 {
-    if (mpOsgRenderer) {
-        if (misFirstFrame) {
-            misFirstFrame = false;
-            mpOsgRenderer->getCamera()->getGraphicsContext()->setDefaultFboId(mrenderTargetId);
+    if (mOsgRenderer) {
+        if (mIsFirstFrame) {
+            mIsFirstFrame = false;
+            mOsgRenderer->getCamera()->getGraphicsContext()->setDefaultFboId(mRenderTargetId);
         }
 
-        mpOsgRenderer->frame();
+        mOsgRenderer->frame();
     }
 }
 
 void MapController::keyPressEvent(QKeyEvent *event)
 {
-    if (mpOsgRenderer)
-        mpOsgRenderer->keyPressEvent(event);
+    if (mOsgRenderer)
+        mOsgRenderer->keyPressEvent(event);
 }
 
 void MapController::keyReleaseEvent(QKeyEvent *event)
 {
 
-    if (mpOsgRenderer)
-        mpOsgRenderer->keyReleaseEvent(event);
+    if (mOsgRenderer)
+        mOsgRenderer->keyReleaseEvent(event);
 }
 
 void MapController::mousePressEvent(QMouseEvent *event)
 {
-    if (mpOsgRenderer) {
-        mpOsgRenderer->mousePressEvent(event);
+    if (mOsgRenderer) {
+        mOsgRenderer->mousePressEvent(event);
     }
 
 }
@@ -471,31 +485,31 @@ void MapController::mousePressEvent(QMouseEvent *event)
 void MapController::mouseReleaseEvent(QMouseEvent *event)
 {
 
-    if (mpOsgRenderer) {
-        mpOsgRenderer->mouseReleaseEvent(event);
+    if (mOsgRenderer) {
+        mOsgRenderer->mouseReleaseEvent(event);
     }
 }
 
 void MapController::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if (mpOsgRenderer)
-        mpOsgRenderer->mouseDoubleClickEvent(event);
+    if (mOsgRenderer)
+        mOsgRenderer->mouseDoubleClickEvent(event);
 
 }
 
 void MapController::mouseMoveEvent(QMouseEvent *event)
 {
 
-    if (mpOsgRenderer) {
-        mpOsgRenderer->mouseMoveEvent(event);
+    if (mOsgRenderer) {
+        mOsgRenderer->mouseMoveEvent(event);
     }
 }
 
 void MapController::wheelEvent(QWheelEvent *event)
 {
 
-    if (mpOsgRenderer)
-        mpOsgRenderer->wheelEvent(event);
+    if (mOsgRenderer)
+        mOsgRenderer->wheelEvent(event);
 }
 
 
@@ -506,11 +520,11 @@ void MapController::createOsgRenderer(int width, int height, QScreen *screen)
     ds->setStereo(false);
 
 
-    mpOsgRenderer = new OSGRenderer(this);
+    mOsgRenderer = new OSGRenderer(this);
     const float pixelRatio = static_cast<float>(screen->devicePixelRatio());
-    mpOsgRenderer->setupOSG(0 , 0, width, height, pixelRatio);
+    mOsgRenderer->setupOSG(0 , 0, width, height, pixelRatio);
 
-    mpOsgRenderer->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
+    mOsgRenderer->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
 
 }
 
@@ -522,7 +536,7 @@ void MapController::initializeOsgEarth()
     mSkyNode = osgEarth::Util::SkyNode::create(mMapNode);
     createMapNode(true);
 
-    mpOsgRenderer->setSceneData(mMapRoot);
+    mOsgRenderer->setSceneData(mMapRoot);
 
     osgEarth::Drivers::GDALOptions gdal;
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
@@ -530,7 +544,7 @@ void MapController::initializeOsgEarth()
     mMapNode->getMap()->addLayer(imlayer);
     //create camera after create map node
     createCameraManipulator();
-    mpOsgRenderer->setCameraManipulator(mpEarthManipulator);
+    mOsgRenderer->setCameraManipulator(mEarthManipulator);
 }
 
 void MapController::createMapNode(bool bGeocentric)
@@ -560,11 +574,15 @@ void MapController::createMapNode(bool bGeocentric)
 
 void MapController::createCameraManipulator()
 {
-    mpEarthManipulator = new osgEarth::Util::EarthManipulator;
-    auto  settings = mpEarthManipulator->getSettings();
+    mEarthManipulator = new osgEarth::Util::EarthManipulator;
+    auto  settings = mEarthManipulator->getSettings();
 //    settings->setSingleAxisRotation(true);
 
     settings->setMinMaxDistance(0.0, 30000000.0);
+    if(mIs3DView)
+        settings->setMinMaxPitch(-90, 0);
+    else
+        settings->setMinMaxPitch(-90, -90);
 //    settings->setMaxOffset(5000.0, 5000.0);
 //    settings->setMinMaxPitch(-90, 90);
 //    settings->setTerrainAvoidanceEnabled(true);

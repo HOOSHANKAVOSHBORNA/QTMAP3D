@@ -38,8 +38,8 @@ MainWindow::MainWindow(QWindow *parent) :
 
     QObject::connect(this, &MainWindow::homeButtonClicked,
                      mMapController, &MapController::goToHome);
-    QObject::connect(this, &MainWindow::projectionButtonClicked,
-                     mMapController, &MapController::toggleProjection);
+    QObject::connect(this, &MainWindow::view3DButtonClicked,
+                     mMapController, &MapController::toggle3DView);
 
 
     QObject::connect(this, &MainWindow::upButtonClicked,
