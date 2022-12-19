@@ -43,8 +43,8 @@ Item {
         }
 
         if (rootItem.currentShowingIndex !== -1) {
-            for (var i = 0; i < modelCount; i++) {
-                infoItemsRepeater.itemAt(i).x = 0;
+            for (var j = 0; j < modelCount; j++) {
+                infoItemsRepeater.itemAt(j).x = 0;
             }
 
             infoItemShowAnimation.target = infoItemsRepeater.itemAt(rootItem.currentShowingIndex);
