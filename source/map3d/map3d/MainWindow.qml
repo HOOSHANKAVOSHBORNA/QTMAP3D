@@ -212,7 +212,7 @@ CMainWindow {
                 wnd.homeButtonClicked();
             }
             onBtnProjectionClicked: function() {
-                wnd.projectionButtonClicked();
+                wnd.view3DButtonClicked();
             }
             onBtnZoomInClicked: {
                 wnd.zoomInButtonClicked();

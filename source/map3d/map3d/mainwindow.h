@@ -72,7 +72,7 @@ signals:
     void infoWidgetMoreButtonClicked();
 
     void homeButtonClicked();
-    void projectionButtonClicked();
+    void view3DButtonClicked();
     void zoomInButtonClicked();
     void zoomOutButtonClicked();
     void upButtonClicked();

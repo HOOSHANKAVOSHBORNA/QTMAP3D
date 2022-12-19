@@ -61,8 +61,9 @@ public slots:
     void goToHome();
     void goToPosition(double latitude, double longitude, double range);
     void goToPosition(osgEarth::GeoPoint mapPoint, double range);
-    void setGeocentric(bool bGeocentric);
-    void toggleProjection();
+    void set3DView(bool is3DView);
+    void setGeocentric(bool geocentric);
+    void toggle3DView();
     void frame();
 
     void panUp();
@@ -89,19 +90,15 @@ private:
     explicit MapController(QQuickWindow *window);
     ~MapController();
 
-
     void installEventHandler();
     void mapMouseEvent(QMouseEvent *event, const osg::Vec3d& worldPos);
-
 
 public:
 
     void cleanup();
-
     void initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId);
     void resizeGL(int width, int height, QScreen *screen);
     void paintGL();
-
 
     void keyPressEvent(QKeyEvent* event); void keyReleaseEvent(QKeyEvent* event);  void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
@@ -120,15 +117,13 @@ protected:
     osg::ref_ptr<osg::Group> mMapRoot;
 
 protected:
-    OSGRenderer *mpOsgRenderer = nullptr;
-    bool misFirstFrame = true;
-    GLuint mrenderTargetId = 0;
-    QQuickWindow *mpWindow = nullptr;
-
-    osgEarth::Util::EarthManipulator *mpEarthManipulator = nullptr;
-
-    bool mbGeocentric = true;
-
+    OSGRenderer *mOsgRenderer{nullptr};
+    bool mIsFirstFrame{true};
+    GLuint mRenderTargetId{0};
+    QQuickWindow *mWindow{nullptr};
+    osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
+    bool mGeocentric{true};
+    bool mIs3DView{true};
 
 };
 
