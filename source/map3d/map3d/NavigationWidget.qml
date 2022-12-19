@@ -7,7 +7,9 @@ Item {
     width: 330
     height: 80
 
-    property var xTarget: 250
+    property real positionFactor: 1.0
+    property bool showRecMov: true
+    property real myDuration: 300.0
     // signal Button
     signal btnUpClicked()
     signal btnDownClicked()
@@ -97,9 +99,7 @@ Item {
             ControlCamera{
                 id: recMove
                 width: 100
-//                anchors.right: recRotation.left
-                x: 250
-//                anchors.left: parent.left
+                x: positionFactor * 215
                 anchors.rightMargin: _margin
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 1
@@ -121,16 +121,7 @@ Item {
                         btnRightClicked()
                     }
                 }
-                NumberAnimation on x {
-                    duration: 300
-                    id: myni
-                    running: false
-                    from: recMove.x
-                    to: xTarget
-                }
             }
-
-
         }
 
         Button {
@@ -199,6 +190,26 @@ Item {
                 onTriggered:  btnZoomOutClicked()
             }
         }
+        PropertyAnimation {
+            id: showSlider
+            target: rootItem
+            property: "positionFactor"
+            from: rootItem.positionFactor
+            to: 1.0
+            duration: myDuration * Math.abs(1.0 - positionFactor)
+
+            easing.type: Easing.OutQuint
+        }
+        PropertyAnimation {
+            id: hideSlider
+            target: rootItem
+            property: "positionFactor"
+            from: rootItem.positionFactor
+            to: 0.0
+            duration: myDuration * Math.abs(positionFactor)
+
+            easing.type: Easing.InQuint
+        }
 
         Button {
             id: project
@@ -253,7 +264,7 @@ Item {
             states: [
                     State {
                         name: "rotated"
-                        PropertyChanges { target: sliderMenuBtn; rotation: 180 }
+                        PropertyChanges { target: sliderMenuBtn; rotation: 180; }
                     },
                     State {
                         name: "default"
@@ -261,27 +272,22 @@ Item {
                 }
 
             ]
-            Timer {
-                id: sliderTimer
-                interval: 200
-
-            }
 
             onClicked: function() {
-                sliderMenuBtn.state = sliderMenuBtn.state === "rotated"? "default" : "rotated"
-                xTarget = xTarget === 0 ? 250 : 0
-                if(sliderTimer.running){
-                    sliderTimer.stop()
-                    myni.running = false
+                sliderMenuBtn.state = showRecMov ? "rotated" : "default"
+                if(showRecMov){
+                    showSlider.stop()
+                    hideSlider.start()
+                    showRecMov = false
+                } else {
+                    hideSlider.stop()
+                    showSlider.start()
+                    showRecMov = true
                 }
-                else
-                    sliderTimer.restart()
-                myni.running = true
-
             }
 
             transitions: Transition {
-                            RotationAnimation { duration: 300; direction: RotationAnimation.Counterclockwise }
+                            RotationAnimation { duration: myDuration; direction: RotationAnimation.Counterclockwise }
                         }
         }
 
