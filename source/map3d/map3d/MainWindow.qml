@@ -277,7 +277,7 @@ CMainWindow {
                 break;
             }
         }
-        if (category_found == true) {
+        if (category_found === true) {
             const categoryModelCount = toolboxModel.get(category_index).categoryModel.count;
             var itemfound = false;
             for (var j = 0; j < categoryModelCount; j++) {

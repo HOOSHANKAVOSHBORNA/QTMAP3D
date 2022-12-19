@@ -28,7 +28,7 @@ Item {
             }
         }
 
-        if (index == rootItem.currentVisibleIndex) {
+        if (index === rootItem.currentVisibleIndex) {
             sideItemHideAnimation.target = sideItemsRepeater.itemAt(index);
             sideItemHideAnimation.from = 300 + (widgetsMargins * 2.0);
             sideItemHideAnimation.to = 0;
