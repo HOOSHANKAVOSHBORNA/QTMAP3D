@@ -11,6 +11,7 @@ class QQmlComponent;
 class MapController;
 class NetworkManager;
 class MainWindow;
+class QQuickItem;
 
 namespace osgViewer {
     class Viewer;
@@ -37,6 +38,11 @@ public:
 public:
     void sbShowMessage(const QString& message, qreal duration);
 
+public:
+    void cmShowContextMenu(QQuickItem* contextMenu, int x, int y);
+    void cmSetContextMenuPosition(QQuickItem* contextMenu, int x, int y);
+    void cmHideContextMenu(QQuickItem* contextMenu);
+
 private:
     void onInfoWidget2D3DButtonClicked();
     void onInfoWidgetRouteButtonClicked();
@@ -48,6 +54,7 @@ private:
 private:
     MainWindow *mMainWindow = nullptr;
     QObject *mReceiverObject = nullptr;
+    QQuickItem *mCurrentContextMenuItem = nullptr;
 };
 
 struct ItemDesc

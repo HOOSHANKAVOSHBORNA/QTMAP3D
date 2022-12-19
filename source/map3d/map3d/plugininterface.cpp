@@ -56,7 +56,40 @@ void UIHandle::iwUpdateData(QObject *receiverObject, const QString &infoJSON)
 
 void UIHandle::sbShowMessage(const QString &message, qreal duration)
 {
+    if (mMainWindow) {
+        QMetaObject::invokeMethod(mMainWindow,
+                                  "showStatusMessage",
+                                  Q_ARG(QVariant, QVariant::fromValue<QString>(message)),
+                                  Q_ARG(QVariant, QVariant::fromValue<int>(int(duration * 1000.0)))
+                                  );
 
+    }
+}
+
+void UIHandle::cmShowContextMenu(QQuickItem *contextMenu, int x, int y)
+{
+    if (mMainWindow) {
+
+        if (mCurrentContextMenuItem) {
+            cmHideContextMenu(mCurrentContextMenuItem);
+            mCurrentContextMenuItem = nullptr;
+        }
+
+    }
+}
+
+void UIHandle::cmSetContextMenuPosition(QQuickItem *contextMenu, int x, int y)
+{
+    if (mMainWindow) {
+
+    }
+}
+
+void UIHandle::cmHideContextMenu(QQuickItem *contextMenu)
+{
+    if (mMainWindow) {
+
+    }
 }
 
 void UIHandle::onInfoWidget2D3DButtonClicked()

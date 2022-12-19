@@ -12,6 +12,7 @@
 #include "pluginmanager.h"
 #include "plugininterface.h"
 #include "mapcontroller.h"
+#include "listwindow.h"
 
 MainWindow::MainWindow(QWindow *parent) :
         QQuickWindow(parent),
@@ -115,7 +116,6 @@ MainWindow::~MainWindow()
 {
     cleanup();
     mMapController->deleteLater();
-
 }
 
 qreal MainWindow::headingAngle() const
@@ -355,6 +355,11 @@ void MainWindow::restoreContext()
     if (mContext && mSurface) {
         mContext->makeCurrent(mSurface);
     }
+}
+
+void MainWindow::setListWindow(ListWindow *listWindow)
+{
+    mListWindow = listWindow;
 }
 
 

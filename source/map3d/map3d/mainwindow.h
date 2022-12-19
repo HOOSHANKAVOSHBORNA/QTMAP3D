@@ -13,6 +13,7 @@ class QOpenGLFunctions_2_0;
 class PluginInfo;
 class PluginInterface;
 class UIHandle;
+class ListWindow;
 
 
 class MainWindow : public QQuickWindow
@@ -132,6 +133,7 @@ public slots:
     void frame();
 
     void restoreContext();
+    void setListWindow(ListWindow *listWindow);
 
 private:
     void initializeGL();
@@ -194,6 +196,8 @@ private:
     qreal mFps = 0.0f;
 
     UIHandle *mUIHandle = nullptr;
+
+    ListWindow *mListWindow = nullptr;
 };
 
 #endif // MainWindow_H

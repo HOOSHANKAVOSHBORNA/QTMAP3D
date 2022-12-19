@@ -103,6 +103,10 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
         emit listWindowCreated();
     }
 
+
+    if (mMainWindow && mListWindow) {
+        mMainWindow->setListWindow(mListWindow);
+    }
 }
 
 void Application::onMainWindowCreated()
@@ -133,40 +137,6 @@ void Application::onMainWindowCreated()
     mPluginManager->performPluginsInitQMLDesc(mQmlEngine);
 
     mMainWindow->initializePluginsUI(mPluginManager->pluginsInfoList());
-
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-   QQmlComponent *component = new QQmlComponent(mQmlEngine);
-
-    QObject::connect(component, &QQmlComponent::statusChanged, [component, this](){
-        if (component->status() == QQmlComponent::Status::Ready) {
-
-            QQuickItem *item = reinterpret_cast<QQuickItem*>(component->create());
-            this->mQmlEngine->setObjectOwnership(item, QQmlEngine::ObjectOwnership::JavaScriptOwnership);
-
-            QMetaObject::invokeMethod(this->mMainWindow,
-                                      "addItemToMainWindow",
-                                      Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)));
-
-        }
-    });
-
-    component->setData(
-R"(
-    import QtQuick 2.13
-
-    Rectangle {
-        x: 100
-        y: 100
-        width: 100
-        height: 100
-        color: 'red'
-
-    }
-)", QUrl());
 
 
 }
