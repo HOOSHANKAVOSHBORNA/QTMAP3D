@@ -398,24 +398,6 @@ MainEventHandler::MainEventHandler(MapController *pMapController) :
 
 }
 
-
-
-/////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void MapController::cleanup()
 {
     if (mpOsgRenderer) {
@@ -527,9 +509,6 @@ void MapController::createOsgRenderer(int width, int height, QScreen *screen)
 
 void MapController::initializeOsgEarth()
 {
-    createCameraManipulator();
-    mpOsgRenderer->setCameraManipulator(mpEarthManipulator);
-
     installEventHandler();
 
     mMapRoot = new osg::Group();
@@ -542,6 +521,9 @@ void MapController::initializeOsgEarth()
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
     mMapNode->getMap()->addLayer(imlayer);
+    //create camera after create map node
+    createCameraManipulator();
+    mpOsgRenderer->setCameraManipulator(mpEarthManipulator);
 }
 
 void MapController::createMapNode(bool bGeocentric)
@@ -573,12 +555,22 @@ void MapController::createCameraManipulator()
 {
     mpEarthManipulator = new osgEarth::Util::EarthManipulator;
     auto  settings = mpEarthManipulator->getSettings();
-    settings->setSingleAxisRotation(true);
+//    settings->setSingleAxisRotation(true);
 
-    settings->setMinMaxDistance(10.0, 1000000000.0);
-    settings->setMaxOffset(5000.0, 5000.0);
-    settings->setMinMaxPitch(-90, 90);
-    settings->setTerrainAvoidanceEnabled(true);
-    settings->setThrowingEnabled(false);
+    settings->setMinMaxDistance(0.0, 30000000.0);
+//    settings->setMaxOffset(5000.0, 5000.0);
+//    settings->setMinMaxPitch(-90, 90);
+//    settings->setTerrainAvoidanceEnabled(true);
+//    settings->setThrowingEnabled(false);
+
+//    // set home to tehran
+    osgEarth::GeoPoint  geoPoint(getMapSRS()->getGeographicSRS(), 51.3347, 35.7219,0);
+    geoPoint.transformInPlace(getMapSRS());
+    osgEarth::Viewpoint vp;
+    vp.focalPoint() = geoPoint;
+    vp.range()= 5000000;
+    vp.pitch() = -90;
+    vp.heading() = 0;
+    getEarthManipulator()->setHomeViewpoint(vp, 0);
 
 }

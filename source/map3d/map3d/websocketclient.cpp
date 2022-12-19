@@ -32,8 +32,8 @@ WebSocketClient::WebSocketClient(QObject *parent) : QObject(parent)
     sslConfiguration.setProtocol(QSsl::TlsV1SslV3);
     mWebSocket->setSslConfiguration(sslConfiguration);
 
-//    mWebSocket->open(QUrl(QStringLiteral("wss://localhost:1234")));
-    mWebSocket->open(QUrl(QStringLiteral("wss://192.168.10.115:1234")));
+    mWebSocket->open(QUrl(QStringLiteral("wss://localhost:1234")));
+//    mWebSocket->open(QUrl(QStringLiteral("wss://192.168.10.115:1234")));
 }
 
 void WebSocketClient::sendMessage(const QJsonDocument &message)
