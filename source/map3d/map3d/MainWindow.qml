@@ -7,36 +7,6 @@ import Crystal 1.0
 
 CMainWindow {
 
-    Timer {
-        id: timer1
-        running: false
-        repeat: false
-        interval: 5000
-        onTriggered: function() {
-            const cnt= itemsList.length;
-            for (var i = 0; i<cnt; i++) {
-                itemsList[i].parent = null;
-                itemsList[i].destroy();
-            }
-        }
-
-        property var itemsList: []
-    }
-
-    function addItemToMainWindow(item) {
-        item.parent = wnd.contentItem;
-        timer1.itemsList.push(item);
-        timer1.start();
-    }
-
-
-    //////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////
-
-
     readonly  property int      _iconSize   : 32
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
@@ -54,6 +24,7 @@ CMainWindow {
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
 
+    property var previousContextmenuItem: null
 
 
     id: wnd
@@ -444,6 +415,21 @@ CMainWindow {
 
     function showStatusMessage(message, timer) {
         statusBar.showMessage(message, timer);
+    }
+    function addContextmenu(item) {
+        contextmenu.showItem(item, previousContextmenuItem)
+        previousContextmenuItem = item
+        timer1.start();
+    }
+    function hideContextmenu(item){
+        contextmenu.hideItem(item)
+    }
+    function updateXYContextmenu(item, x, y) {
+        contextmenu.updatePosition(item, x, y)
+    }
+
+    ContextmenuWidget {
+        id: contextmenu
     }
 
 }
