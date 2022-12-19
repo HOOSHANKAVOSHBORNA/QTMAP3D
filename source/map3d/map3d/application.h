@@ -33,6 +33,7 @@ private:
     void registerTypes();
     void initializeQmlEngine();
     void createMainWindow();
+    void createListWindow();
     void initializeNetworkManager();
 
 private slots:
@@ -46,7 +47,8 @@ public:
 
 private:
     QQmlApplicationEngine *mpQmlEngine = nullptr;
-    const QUrl mmainUrl{QStringLiteral("qrc:///Main.qml")};
+    const QUrl mMainWindowUrl{QStringLiteral("qrc:///MainWindow.qml")};
+    const QUrl mListWindowUrl{QStringLiteral("qrc:///ListWindow.qml")};
     MainWindow *mpMainWindow = nullptr;
 
     PluginManager *mpPluginManager = nullptr;

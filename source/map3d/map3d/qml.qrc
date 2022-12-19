@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>Main.qml</file>
+        <file>MainWindow.qml</file>
         <file>MenuWidget.qml</file>
         <file>NavigationWidget.qml</file>
         <file>File.qml</file>
@@ -27,5 +27,6 @@
         <file>infowidget/StationInfo.qml</file>
         <file>infowidget/SystemInfo.qml</file>
         <file>infowidget/InfoButtonGroup.qml</file>
+        <file>ListWindow.qml</file>
     </qresource>
 </RCC>

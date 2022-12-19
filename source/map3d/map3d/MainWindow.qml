@@ -5,7 +5,7 @@ import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import Crystal 1.0
 
-MainWindow {
+CMainWindow {
 
     Timer {
         id: timer1
@@ -60,7 +60,7 @@ MainWindow {
     visible: true
     minimumWidth: 800
     minimumHeight: 600
-    title: qsTr("Hello World")
+    title: qsTr("MAP3D")
 
 
 

@@ -9,6 +9,7 @@
 
 #include "application.h"
 #include "mainwindow.h"
+#include "listwindow.h"
 
 Application::Application() :
     mpPluginManager(new PluginManager)
@@ -40,7 +41,11 @@ int Application::main(int argc, char **argv)
                      this, &Application::onMainWindowCreated,
                      Qt::DirectConnection);
 
+    QObject::connect(mpQmlEngine, &QQmlApplicationEngine::objectCreated,
+                     this, &Application::onQmlObjectCreated,
+                     Qt::DirectConnection);
     createMainWindow();
+    createListWindow();
 
     return app.exec();
 }
@@ -56,7 +61,8 @@ void Application::initializeSurfaceFormat()
 
 void Application::registerTypes()
 {
-    qmlRegisterType<MainWindow>("Crystal", 1, 0, "MainWindow");
+    qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
+    qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
 }
 
 void Application::initializeQmlEngine()
@@ -67,11 +73,14 @@ void Application::initializeQmlEngine()
 
 void Application::createMainWindow()
 {
-    QObject::connect(mpQmlEngine, &QQmlApplicationEngine::objectCreated,
-                     this, &Application::onQmlObjectCreated,
-                     Qt::DirectConnection);
-    mpQmlEngine->load(mmainUrl);
+    mpQmlEngine->load(mMainWindowUrl);
 }
+
+void Application::createListWindow()
+{
+    mpQmlEngine->load(mListWindowUrl);
+}
+
 
 void Application::initializeNetworkManager()
 {
@@ -80,7 +89,7 @@ void Application::initializeNetworkManager()
 
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 {
-    if (!obj && mmainUrl == objUrl)
+    if (!obj && mMainWindowUrl == objUrl)
         QCoreApplication::exit(-1);
     MainWindow *wnd = qobject_cast<MainWindow*>(obj);
     if (wnd && !mpMainWindow) {
