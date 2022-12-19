@@ -7,6 +7,35 @@ import Crystal 1.0
 
 MainWindow {
 
+    Timer {
+        id: timer1
+        running: false
+        repeat: false
+        interval: 5000
+        onTriggered: function() {
+            const cnt= itemsList.length;
+            for (var i = 0; i<cnt; i++) {
+                itemsList[i].parent = null;
+                itemsList[i].destroy();
+            }
+        }
+
+        property var itemsList: []
+    }
+
+    function addItemToMainWindow(item) {
+        item.parent = wnd.contentItem;
+        timer1.itemsList.push(item);
+        timer1.start();
+    }
+
+
+    //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////
+
 
     readonly  property int      _iconSize   : 32
     readonly property int       _margin     : 15
@@ -24,6 +53,7 @@ MainWindow {
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
+
 
 
     id: wnd

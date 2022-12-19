@@ -5,6 +5,7 @@
 #include <QQmlApplicationEngine>
 #include <QPluginLoader>
 #include <QDir>
+#include <QQuickItem>
 
 #include "application.h"
 #include "mainwindow.h"
@@ -116,6 +117,42 @@ void Application::onMainWindowCreated()
     mpPluginManager->performPluginsInitQMLDesc(mpQmlEngine);
 
     mpMainWindow->initializePluginsUI(mpPluginManager->pluginsInfoList());
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+
+   QQmlComponent *component = new QQmlComponent(mpQmlEngine);
+
+    QObject::connect(component, &QQmlComponent::statusChanged, [component, this](){
+        if (component->status() == QQmlComponent::Status::Ready) {
+
+            QQuickItem *item = reinterpret_cast<QQuickItem*>(component->create());
+            this->mpQmlEngine->setObjectOwnership(item, QQmlEngine::ObjectOwnership::JavaScriptOwnership);
+
+            QMetaObject::invokeMethod(this->mpMainWindow,
+                                      "addItemToMainWindow",
+                                      Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)));
+
+        }
+    });
+
+    component->setData(
+R"(
+    import QtQuick 2.13
+
+    Rectangle {
+        x: 100
+        y: 100
+        width: 100
+        height: 100
+        color: 'red'
+
+    }
+)", QUrl());
+
+
 }
 
 void Application::setup()

@@ -52,6 +52,10 @@ void PluginManager::loadPlugins()
 
 void PluginManager::performPluginsInitQMLDesc(QQmlEngine *qmlEngine)
 {
+
+
+
+
     for (const auto& item : mPluginsInfoList) {
         item.interface->initializeQMLDesc(qmlEngine, item.qmlDesc);
     }
