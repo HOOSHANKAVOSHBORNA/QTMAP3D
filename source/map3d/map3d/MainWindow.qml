@@ -5,8 +5,7 @@ import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import Crystal 1.0
 
-MainWindow {
-
+CMainWindow {
 
     readonly  property int      _iconSize   : 32
     readonly property int       _margin     : 15
@@ -25,12 +24,14 @@ MainWindow {
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
 
+    property var previousContextmenuItem: null
+
 
     id: wnd
     visible: true
     minimumWidth: 800
     minimumHeight: 600
-    title: qsTr("Hello World")
+    title: qsTr("MAP3D")
 
 
 
@@ -414,6 +415,21 @@ MainWindow {
 
     function showStatusMessage(message, timer) {
         statusBar.showMessage(message, timer);
+    }
+    function addContextmenu(item) {
+        contextmenu.showItem(item, previousContextmenuItem)
+        previousContextmenuItem = item
+        timer1.start();
+    }
+    function hideContextmenu(item){
+        contextmenu.hideItem(item)
+    }
+    function updateXYContextmenu(item, x, y) {
+        contextmenu.updatePosition(item, x, y)
+    }
+
+    ContextmenuWidget {
+        id: contextmenu
     }
 
 }
