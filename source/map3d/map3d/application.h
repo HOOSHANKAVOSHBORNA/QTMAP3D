@@ -11,6 +11,7 @@
 
 
 class MainWindow;
+class ListWindow;
 class QQmlApplicationEngine;
 
 class Application : public QObject
@@ -26,6 +27,7 @@ public:
 
 signals:
     void  mainWindowCreated();
+    void  listWindowCreated();
 
 
 private:
@@ -43,15 +45,16 @@ private slots:
 
 public:
     inline NetworkManager * networkManager() const {return mNetworkManager;}
-    inline MainWindow *mainWindow() const { return mpMainWindow; }
+    inline MainWindow *mainWindow() const { return mMainWindow; }
 
 private:
-    QQmlApplicationEngine *mpQmlEngine = nullptr;
+    QQmlApplicationEngine *mQmlEngine = nullptr;
     const QUrl mMainWindowUrl{QStringLiteral("qrc:///MainWindow.qml")};
     const QUrl mListWindowUrl{QStringLiteral("qrc:///ListWindow.qml")};
-    MainWindow *mpMainWindow = nullptr;
+    MainWindow *mMainWindow = nullptr;
+    ListWindow *mListWindow = nullptr;
 
-    PluginManager *mpPluginManager = nullptr;
+    PluginManager *mPluginManager = nullptr;
     NetworkManager *mNetworkManager = nullptr;
 };
 

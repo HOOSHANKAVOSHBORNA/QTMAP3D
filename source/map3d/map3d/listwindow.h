@@ -5,6 +5,8 @@
 
 class ListWindow : public QQuickWindow
 {
+    Q_OBJECT
+
 public:
     ListWindow(QQuickWindow *parent = nullptr);
 };

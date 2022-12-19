@@ -1,6 +1,7 @@
 #include "listwindow.h"
 
-ListWindow::ListWindow(QQuickWindow *parent)
+ListWindow::ListWindow(QQuickWindow *parent) :
+    QQuickWindow(parent)
 {
 
 }

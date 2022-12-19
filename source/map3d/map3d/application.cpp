@@ -12,7 +12,7 @@
 #include "listwindow.h"
 
 Application::Application() :
-    mpPluginManager(new PluginManager)
+    mPluginManager(new PluginManager)
 {
 }
 
@@ -36,12 +36,12 @@ int Application::main(int argc, char **argv)
     registerTypes();
     initializeQmlEngine();
 
-    mpPluginManager->loadPlugins();
+    mPluginManager->loadPlugins();
     QObject::connect(this, &Application::mainWindowCreated,
                      this, &Application::onMainWindowCreated,
                      Qt::DirectConnection);
 
-    QObject::connect(mpQmlEngine, &QQmlApplicationEngine::objectCreated,
+    QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreated,
                      this, &Application::onQmlObjectCreated,
                      Qt::DirectConnection);
     createMainWindow();
@@ -67,18 +67,18 @@ void Application::registerTypes()
 
 void Application::initializeQmlEngine()
 {
-    mpQmlEngine = new QQmlApplicationEngine();
+    mQmlEngine = new QQmlApplicationEngine();
 }
 
 
 void Application::createMainWindow()
 {
-    mpQmlEngine->load(mMainWindowUrl);
+    mQmlEngine->load(mMainWindowUrl);
 }
 
 void Application::createListWindow()
 {
-    mpQmlEngine->load(mListWindowUrl);
+    mQmlEngine->load(mListWindowUrl);
 }
 
 
@@ -91,56 +91,63 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 {
     if (!obj && mMainWindowUrl == objUrl)
         QCoreApplication::exit(-1);
-    MainWindow *wnd = qobject_cast<MainWindow*>(obj);
-    if (wnd && !mpMainWindow) {
-        mpMainWindow = wnd;
+    MainWindow *mainWnd = qobject_cast<MainWindow*>(obj);
+    if (mainWnd && !mMainWindow) {
+        mMainWindow = mainWnd;
         emit mainWindowCreated();
     }
+
+    ListWindow *listWnd = qobject_cast<ListWindow*>(obj);
+    if (listWnd && !mListWindow) {
+        mListWindow = listWnd;
+        emit listWindowCreated();
+    }
+
 }
 
 void Application::onMainWindowCreated()
 {
-    QObject::connect(mpMainWindow, &MainWindow::sideItemCreated,
-                     mpPluginManager, &PluginManager::onSideItemCreated,
+    QObject::connect(mMainWindow, &MainWindow::sideItemCreated,
+                     mPluginManager, &PluginManager::onSideItemCreated,
                      Qt::QueuedConnection);
-    QObject::connect(mpMainWindow, &MainWindow::toolboxItemCreated,
-                     mpPluginManager, &PluginManager::onToolboxItemCreated,
+    QObject::connect(mMainWindow, &MainWindow::toolboxItemCreated,
+                     mPluginManager, &PluginManager::onToolboxItemCreated,
                      Qt::DirectConnection);
-    QObject::connect(mpMainWindow, &MainWindow::toolboxItemClicked,
-                     mpPluginManager, &PluginManager::onToolboxItemClicked,
+    QObject::connect(mMainWindow, &MainWindow::toolboxItemClicked,
+                     mPluginManager, &PluginManager::onToolboxItemClicked,
                      Qt::DirectConnection);
-    QObject::connect(mpMainWindow, &MainWindow::toolboxItemCheckedChanged,
-                     mpPluginManager, &PluginManager::onToolboxItemCheckedChanged,
+    QObject::connect(mMainWindow, &MainWindow::toolboxItemCheckedChanged,
+                     mPluginManager, &PluginManager::onToolboxItemCheckedChanged,
                      Qt::DirectConnection);
-    QObject::connect(mpMainWindow, &MainWindow::osgInitialized,
+    QObject::connect(mMainWindow, &MainWindow::osgInitialized,
                      this, &Application::setup,
                      Qt::DirectConnection);
 
-    QObject::connect(mpMainWindow, &MainWindow::fileItemCreated,
-                     mpPluginManager, &PluginManager::onFileItemCreated,
+    QObject::connect(mMainWindow, &MainWindow::fileItemCreated,
+                     mPluginManager, &PluginManager::onFileItemCreated,
                      Qt::DirectConnection);
-    QObject::connect(mpMainWindow, &MainWindow::fileItemClicked,
-                     mpPluginManager, &PluginManager::onFileItemClicked,
+    QObject::connect(mMainWindow, &MainWindow::fileItemClicked,
+                     mPluginManager, &PluginManager::onFileItemClicked,
                      Qt::DirectConnection);
 
-    mpPluginManager->performPluginsInitQMLDesc(mpQmlEngine);
+    mPluginManager->performPluginsInitQMLDesc(mQmlEngine);
 
-    mpMainWindow->initializePluginsUI(mpPluginManager->pluginsInfoList());
+    mMainWindow->initializePluginsUI(mPluginManager->pluginsInfoList());
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-   QQmlComponent *component = new QQmlComponent(mpQmlEngine);
+   QQmlComponent *component = new QQmlComponent(mQmlEngine);
 
     QObject::connect(component, &QQmlComponent::statusChanged, [component, this](){
         if (component->status() == QQmlComponent::Status::Ready) {
 
             QQuickItem *item = reinterpret_cast<QQuickItem*>(component->create());
-            this->mpQmlEngine->setObjectOwnership(item, QQmlEngine::ObjectOwnership::JavaScriptOwnership);
+            this->mQmlEngine->setObjectOwnership(item, QQmlEngine::ObjectOwnership::JavaScriptOwnership);
 
-            QMetaObject::invokeMethod(this->mpMainWindow,
+            QMetaObject::invokeMethod(this->mMainWindow,
                                       "addItemToMainWindow",
                                       Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)));
 
@@ -166,6 +173,6 @@ R"(
 
 void Application::setup()
 {
-    mpPluginManager->performPluginsSetup(mpMainWindow->mapController());
+    mPluginManager->performPluginsSetup(mMainWindow->mapController());
 }
 
