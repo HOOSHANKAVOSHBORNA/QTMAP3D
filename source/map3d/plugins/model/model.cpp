@@ -466,16 +466,19 @@ void Model::frameEvent()
 
 void Model::mousePressEvent(QMouseEvent *event)
 {
-    BaseModel* model = pick(event->x(), event->y());
-    if(model)
+    if(event->button() == Qt::LeftButton)
     {
-        model->mousePressEvent(event, true);
-        event->accept();
+        BaseModel* model = pick(event->x(), event->y());
+        if(model)
+        {
+            model->mousePressEvent(event, true);
+            event->accept();
+        }
+        if(mLastSelectedModel && mLastSelectedModel != model)
+            mLastSelectedModel->mousePressEvent(event, false);
+        if(model)
+            mLastSelectedModel = model;
     }
-    if(mLastSelectedModel && mLastSelectedModel != model)
-        mLastSelectedModel->mousePressEvent(event, false);
-    if(model)
-        mLastSelectedModel = model;
 
 }
 
