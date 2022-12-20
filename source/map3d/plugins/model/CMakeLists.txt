@@ -21,6 +21,7 @@ add_library(model SHARED
   truck.cpp
   model.json
   model.qrc
+  qml.qrc
 )
 
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
