@@ -50,11 +50,13 @@ public slots:
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
     void onMessageReceived(const QJsonDocument &message);
 protected:
-    virtual void mousePressEvent      (QMouseEvent* event);
-    virtual void mouseDoubleClickEvent(QMouseEvent* event) {}
-    virtual void mouseMoveEvent       (QMouseEvent* event);
+    virtual void frameEvent() override;
+    virtual void mousePressEvent(QMouseEvent* event)override;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event)override {}
+    virtual void mouseMoveEvent(QMouseEvent* event)override;
 private:
     BaseModel* pick(float x, float y);
+    void findSceneModels(osgViewer::Viewer *viewer);
     void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
@@ -67,6 +69,7 @@ private:
     MapController *mMapController;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine = nullptr;
+    int mPreCameraRange{0};
 };
 
 #endif // MODEL_H
