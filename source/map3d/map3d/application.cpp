@@ -40,6 +40,9 @@ int Application::main(int argc, char **argv)
     QObject::connect(this, &Application::mainWindowCreated,
                      this, &Application::onMainWindowCreated,
                      Qt::DirectConnection);
+    QObject::connect(this, &Application::listWindowCreated,
+                     this, &Application::onListWindowCreated,
+                     Qt::DirectConnection);
 
     QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreated,
                      this, &Application::onQmlObjectCreated,
@@ -92,25 +95,55 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
     if (!obj && mMainWindowUrl == objUrl)
         QCoreApplication::exit(-1);
     MainWindow *mainWnd = qobject_cast<MainWindow*>(obj);
+    ListWindow *listWnd = qobject_cast<ListWindow*>(obj);
+
+
+
+
+
+
     if (mainWnd && !mMainWindow) {
         mMainWindow = mainWnd;
         emit mainWindowCreated();
     }
-
-    ListWindow *listWnd = qobject_cast<ListWindow*>(obj);
     if (listWnd && !mListWindow) {
         mListWindow = listWnd;
         emit listWindowCreated();
     }
 
 
-    if (mMainWindow && mListWindow) {
-        mMainWindow->setListWindow(mListWindow);
-    }
 }
 
 void Application::onMainWindowCreated()
 {
+    mMainWindowIsReady = true;
+
+    if (mMainWindowIsReady && mListWindowIsReady) {
+        onAllWindowsCreated();
+    }
+}
+
+void Application::onListWindowCreated()
+{
+    mListWindowIsReady = true;
+
+    if (mMainWindowIsReady && mListWindowIsReady) {
+        onAllWindowsCreated();
+    }
+}
+
+void Application::onAllWindowsCreated()
+{
+    if (mMainWindow && mListWindow) {
+        static bool bFirst = true;
+        if (bFirst) {
+            mMainWindow->setListWindow(mListWindow);
+            bFirst = false;
+        }
+    }
+
+
+
     QObject::connect(mMainWindow, &MainWindow::sideItemCreated,
                      mPluginManager, &PluginManager::onSideItemCreated,
                      Qt::QueuedConnection);

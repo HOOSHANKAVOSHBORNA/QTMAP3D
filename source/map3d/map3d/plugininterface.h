@@ -11,6 +11,7 @@ class QQmlComponent;
 class MapController;
 class NetworkManager;
 class MainWindow;
+class ListWindow;
 class QQuickItem;
 
 namespace osgViewer {
@@ -43,16 +44,20 @@ public:
     void cmSetContextMenuPosition(QQuickItem* contextMenu, int x, int y);
     void cmHideContextMenu(QQuickItem* contextMenu);
 
+public:
+    void lwAddTab(const QString& tabTitle, QQuickItem *tabItem);
+
 private:
     void onInfoWidget2D3DButtonClicked();
     void onInfoWidgetRouteButtonClicked();
     void onInfoWidgetFollowButtonClicked();
     void onInfoWidgetMoreButtonClicked();
 
-
+    void setListWindow(ListWindow *listWindow);
 
 private:
     MainWindow *mMainWindow = nullptr;
+    ListWindow *mListWindow = nullptr;
     QObject *mReceiverObject = nullptr;
     QQuickItem *mCurrentContextMenuItem = nullptr;
 };

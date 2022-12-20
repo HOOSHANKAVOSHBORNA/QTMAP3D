@@ -360,6 +360,7 @@ void MainWindow::restoreContext()
 void MainWindow::setListWindow(ListWindow *listWindow)
 {
     mListWindow = listWindow;
+    mUIHandle->setListWindow(listWindow);
 }
 
 
@@ -577,4 +578,19 @@ void MainWindow::wheelEvent(QWheelEvent *event)
 
     mMapController->wheelEvent(event);
 
+}
+
+bool MainWindow::event(QEvent *ev)
+{
+    switch (ev->type()) {
+    case QEvent::Close:
+        if (mListWindow) {
+            mListWindow->close();
+        }
+        break;
+
+    default: break;
+    }
+
+    return QQuickWindow::event(ev);
 }
