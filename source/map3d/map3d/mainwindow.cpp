@@ -13,6 +13,7 @@
 #include "plugininterface.h"
 #include "mapcontroller.h"
 #include "listwindow.h"
+#include "application.h"
 
 MainWindow::MainWindow(QWindow *parent) :
         QQuickWindow(parent),
@@ -109,6 +110,14 @@ MainWindow::MainWindow(QWindow *parent) :
     QObject::connect(this, &MainWindow::infoWidgetMoreButtonClicked, [this](){
         mUIHandle->onInfoWidgetMoreButtonClicked();
     });
+
+
+
+    QTimer *timer = new QTimer;
+    QObject::connect(timer, &QTimer::timeout, [this](){
+        if (mListWindow) mListWindow->show();
+    });
+    timer->start(4000);
 }
 
 
@@ -465,6 +474,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if (event->isAccepted())
         return;
 
+    const auto pluginManager = Application::instance()->pluginManager();
+    if (pluginManager) {
+        pluginManager->keyPressEvent(event);
+    }
+
+    if (event->isAccepted())
+        return;
+
     mMapController->keyPressEvent(event);
 
 
@@ -489,6 +506,13 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
     if (event->isAccepted())
         return;
 
+    const auto pluginManager = Application::instance()->pluginManager();
+    if (pluginManager) {
+        pluginManager->keyReleaseEvent(event);
+    }
+    if (event->isAccepted())
+        return;
+
     mMapController->keyReleaseEvent(event);
 }
 
@@ -498,6 +522,15 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
     if (event->isAccepted())
         return;
+
+
+    const auto pluginManager = Application::instance()->pluginManager();
+    if (pluginManager) {
+        pluginManager->mousePressEvent(event);
+    }
+    if (event->isAccepted())
+        return;
+
 
     mMapController->mousePressEvent(event);
 
@@ -513,6 +546,8 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         }
 
     }
+
+
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *event)
@@ -521,6 +556,14 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 
     if (event->isAccepted())
         return;
+
+    const auto pluginManager = Application::instance()->pluginManager();
+    if (pluginManager) {
+        pluginManager->mouseReleaseEvent(event);
+    }
+    if (event->isAccepted())
+        return;
+
 
     mMapController->mouseReleaseEvent(event);
 
@@ -553,6 +596,14 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
     if (event->isAccepted())
         return;
 
+    const auto pluginManager = Application::instance()->pluginManager();
+    if (pluginManager) {
+        pluginManager->mouseDoubleClickEvent(event);
+    }
+    if (event->isAccepted())
+        return;
+
+
     mMapController->mouseDoubleClickEvent(event);
 
 }
@@ -563,6 +614,14 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 
     if (event->isAccepted())
         return;
+
+    const auto pluginManager = Application::instance()->pluginManager();
+    if (pluginManager) {
+        pluginManager->mouseMoveEvent(event);
+    }
+    if (event->isAccepted())
+        return;
+
 
     mMapController->mouseMoveEvent(event);
 
@@ -575,6 +634,12 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     if (event->isAccepted())
         return;
 
+    const auto pluginManager = Application::instance()->pluginManager();
+    if (pluginManager) {
+        pluginManager->wheelEvent(event);
+    }
+    if (event->isAccepted())
+        return;
 
     mMapController->wheelEvent(event);
 

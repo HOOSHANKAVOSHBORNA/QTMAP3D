@@ -134,3 +134,52 @@ void PluginManager::onFileItemClicked(const QString &name, const QString &catego
         }
     }
 }
+
+void PluginManager::keyPressEvent(QKeyEvent *event)
+{
+    for (auto item : mPluginsInfoList) {
+        item.interface->keyPressEvent(event);
+    }
+}
+
+void PluginManager::keyReleaseEvent(QKeyEvent *event)
+{
+    for (auto item : mPluginsInfoList) {
+        item.interface->keyReleaseEvent(event);
+    }
+}
+
+void PluginManager::mousePressEvent(QMouseEvent *event)
+{
+    for (auto item : mPluginsInfoList) {
+        item.interface->mousePressEvent(event);
+    }
+}
+
+void PluginManager::mouseReleaseEvent(QMouseEvent *event)
+{
+    for (auto item : mPluginsInfoList) {
+        item.interface->mouseReleaseEvent(event);
+    }
+}
+
+void PluginManager::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    for (auto item : mPluginsInfoList) {
+        item.interface->mouseDoubleClickEvent(event);
+    }
+}
+
+void PluginManager::mouseMoveEvent(QMouseEvent *event)
+{
+    for (auto item : mPluginsInfoList) {
+        item.interface->mouseMoveEvent(event);
+    }
+}
+
+void PluginManager::wheelEvent(QWheelEvent *event)
+{
+    for (auto item : mPluginsInfoList) {
+        item.interface->wheelEvent(event);
+    }
+}
