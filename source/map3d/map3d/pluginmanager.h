@@ -92,6 +92,7 @@ public slots:
 
 
 public:
+    void frameEvent           ();
     void keyPressEvent        (QKeyEvent* event);
     void keyReleaseEvent      (QKeyEvent* event);
     void mousePressEvent      (QMouseEvent* event);

@@ -113,11 +113,6 @@ MainWindow::MainWindow(QWindow *parent) :
 
 
 
-    QTimer *timer = new QTimer;
-    QObject::connect(timer, &QTimer::timeout, [this](){
-        if (mListWindow) mListWindow->show();
-    });
-    timer->start(4000);
 }
 
 
@@ -357,6 +352,12 @@ void MainWindow::frame()
     }
 
     paintGL();
+
+    const auto pluginManager = Application::instance()->pluginManager();
+    if (pluginManager) {
+        pluginManager->frameEvent();
+    }
+
 }
 
 void MainWindow::restoreContext()
