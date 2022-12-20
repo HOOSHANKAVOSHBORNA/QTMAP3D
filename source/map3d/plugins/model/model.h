@@ -2,7 +2,7 @@
 #define MODEL_H
 
 #include "plugininterface.h"
-#include "airplane.h"
+#include "aircraft.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
@@ -40,7 +40,7 @@ public:
 
     void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
     void addTruckModel();
-    void addAirplaineModel(QString name, osg::Vec3d position, double heading);
+    void addAircraftModel(QString name, osg::Vec3d geographicPosition, double heading);
     void addRocketModel(osg::Vec3d position = osg::Vec3d(52.8601, 35.277, 846));
     void addSystemModel(osg::Vec3d position);
     void addStationModel(osg::Vec3d position);

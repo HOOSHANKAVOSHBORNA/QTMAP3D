@@ -1,4 +1,4 @@
-﻿#include "airplane.h"
+﻿#include "aircraft.h"
 #include "draw.h"
 
 #include <QDebug>
@@ -18,7 +18,7 @@
 
 
 
-Airplane::Airplane(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *mapNode, osg::Node *node, QObject *parent)
+Aircraft::Aircraft(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *mapNode, osg::Node *node, QObject *parent)
     :BaseModel(mapNode, parent)
 {
     mMapController = value;
@@ -82,7 +82,7 @@ Airplane::Airplane(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *
     mTempLocationPoints = new osg::Vec3Array();
 }
 
-void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
+void Aircraft::flyTo(const osg::Vec3d &pos, double heading, double speed)
 {
 
     if(mIsStop)
@@ -157,7 +157,7 @@ void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
 
 }
 
-void Airplane::stop()
+void Aircraft::stop()
 {
     mIsStop = true;
     if(mAnimationPathCallback != nullptr)
@@ -166,28 +166,28 @@ void Airplane::stop()
 }
 
 
-void Airplane::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
+void Aircraft::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
 {
     mTruckModel = truckModel;
 }
-osgEarth::Annotation::ModelNode *Airplane::getTruckModel() const
+osgEarth::Annotation::ModelNode *Aircraft::getTruckModel() const
 {
     return mTruckModel;
 }
 
-void Airplane::setInformation(QString info)
+void Aircraft::setInformation(QString info)
 {
     mInformation = info;
     mUIHandle->iwUpdateData(this, mInformation);
 }
 
-void Airplane::iw2D3DButtonClicked()
+void Aircraft::iw2D3DButtonClicked()
 {
 //    qDebug()<<"iw2D3DButtonClicked";
     mMapController->goToPosition(getPosition(), 200);
 }
 
-void Airplane::iwRouteButtonClicked()
+void Aircraft::iwRouteButtonClicked()
 {
 //    mIsRoute = true;
 //    qDebug()<<"iwRouteButtonClicked";
@@ -202,18 +202,18 @@ void Airplane::iwRouteButtonClicked()
 
 }
 
-void Airplane::iwFollowButtonClicked()
+void Aircraft::iwFollowButtonClicked()
 {
 //    qDebug()<<"iwFollowButtonClicked";
     mMapController->setTrackNode(getGeoTransform());
 }
 
-void Airplane::iwMoreButtonClicked()
+void Aircraft::iwMoreButtonClicked()
 {
     qDebug()<<"iwMoreButtonClicked";
 }
 
-void Airplane::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+void Aircraft::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
 {
     BaseModel::mousePushEvent(onModel, ea);
     if(onModel)
@@ -226,7 +226,7 @@ void Airplane::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
         mMapController->untrackNode();
 }
 
-void Airplane::curentPosition(osgEarth::GeoPoint pos)
+void Aircraft::curentPosition(osgEarth::GeoPoint pos)
 {
     BaseModel::curentPosition(pos);
 
@@ -238,7 +238,7 @@ void Airplane::curentPosition(osgEarth::GeoPoint pos)
 //    }
 }
 
-void Airplane::addEffect(double emitterDuration)
+void Aircraft::addEffect(double emitterDuration)
 {
     //add fire-----------------------------------------------------------------------------------------------------
     osgEarth::Registry::shaderGenerator().run(mFire);// for textures or lighting
@@ -256,7 +256,7 @@ void Airplane::addEffect(double emitterDuration)
     getMapNode()->addChild(mSmoke->getParticleSystem());
 }
 
-void Airplane::removeEffect()
+void Aircraft::removeEffect()
 {
     //remove fire---------------------------------------------
     getMapNode()->removeChild(mFire->getParticleSystem());

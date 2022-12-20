@@ -37,12 +37,12 @@
 #include <osgViewer/Viewer>
 
 //const QString FLYING = "Flying";
-const QString AIRPLANE = "Airplane";
+const QString AIRCRAFT = "Aircraft";
 const QString ROCKET = "Rocket";
 const QString TRUCK = "Truck";
 //----------------------------------------------
 const QString CATEGORY = "Model";
-const QString ADD_AIRPLANE = "Add Airplan";
+const QString ADD_AIRCRAFT = "Add Aircraft";
 const QString ADD_ROCKET = "Add Rocket";
 const QString ADD_TRUCK = "Add Truck";
 const QString ADD_STATION = "Add Station";
@@ -63,7 +63,7 @@ bool Model::initializeQMLDesc(QQmlEngine */*engine*/, PluginQMLDesc *pDesc)
     //    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
     QString cat = "model";
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_AIRPLANE, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_TRUCK, CATEGORY, "qrc:/resources/truck.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_STATION, CATEGORY, "", false, false, ""});
@@ -79,17 +79,17 @@ void Model::onSideItemCreated(int /*index*/, QObject */*pSideItem*/)
 
 void Model::onToolboxItemClicked(const QString &name, const QString &category)
 {
-    if(CATEGORY == category && name == ADD_AIRPLANE)
+    if(CATEGORY == category && name == ADD_AIRCRAFT)
     {
         osg::Vec3d position(52.8601, 35.277, 9100);
-        QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
-        addAirplaineModel(name, position, -30);
+        QString name = AIRCRAFT + QString::number(mModels[AIRCRAFT].count());
+        addAircraftModel(name, position, -30);
         //demo();
     }
     if(CATEGORY == category && name == ADD_ROCKET)
     {
         // fallow racket
-        if(!mModels[AIRPLANE].isEmpty())
+        if(!mModels[AIRCRAFT].isEmpty())
         {
             auto truckNames = mModels[TRUCK].keys();
             for(auto truckName: truckNames)
@@ -100,7 +100,7 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
                     //                        addRocketModel(modeltruck->getPosition().vec3d());
                     //                        auto modelRocket = dynamic_cast<Rocket*>(mModels[ROCKET].last());
                     auto activeRocket = modeltruck->getActiveRocket();
-                    auto modelAirplane = dynamic_cast<Airplane*>(mModels[AIRPLANE].last());
+                    auto modelAirplane = dynamic_cast<Aircraft*>(mModels[AIRCRAFT].last());
                     modelAirplane->stop();//
                     activeRocket->setFollowModel(modelAirplane);
                     //modelRocket->setTruckModel(modeltruck);
@@ -162,10 +162,10 @@ bool Model::setup(MapController *pMapController,
 void Model::demo()
 {
     //    int index = 0;
-    auto airplaneNames = mModels[AIRPLANE].keys();
+    auto airplaneNames = mModels[AIRCRAFT].keys();
     for (auto name: airplaneNames)
     {
-        auto model = dynamic_cast<Airplane*>(mModels[AIRPLANE][name]);
+        auto model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
         auto mapPoint = model->getPosition();
         osgEarth::GeoPoint  latLongPoint;
         //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
@@ -262,17 +262,17 @@ void Model::addTruckModel()
     //model->moveTo(nPosition,10);
 }
 
-void Model::addAirplaineModel(QString name, osg::Vec3d position, double heading)
+void Model::addAircraftModel(QString name, osg::Vec3d geographicPosition, double heading)
 {
     //    osg::Vec3d position(52.8601, 35.277, 9100);
     //osg::Vec3d position(52.8601, 35.277, 844);
 
     //create and setting model--------------------------------------------
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/aircraft/airplane-red.osgb");
-    osg::ref_ptr<Airplane> model = new Airplane(mMapController,mUIHandle, mMapController->getMapNode(), node);
+    osg::ref_ptr<Aircraft> model = new Aircraft(mMapController,mUIHandle, mMapController->getMapNode(), node);
     //    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
     model->setName(name.toStdString());
-    model->setGeographicPosition(position, heading);
+    model->setGeographicPosition(geographicPosition, heading);
     //    model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
 
     QObject::connect(model.get(), &BaseModel::positionChanged, [=](osgEarth::GeoPoint position){
@@ -291,7 +291,7 @@ void Model::addAirplaineModel(QString name, osg::Vec3d position, double heading)
         }
     });
     //add to container-----------------------------------------------------
-    mModels[AIRPLANE][name] = model;
+    mModels[AIRCRAFT][name] = model;
 
 
     //add to map ---------------------------------------------------------
@@ -305,7 +305,7 @@ void Model::addAirplaineModel(QString name, osg::Vec3d position, double heading)
     //hit------------------------------------------------------------------
     QObject::connect(model.get(), &BaseModel::hit, [=](BaseModel */*other*/){
 
-        mModels[AIRPLANE].remove(QString(model->getName().c_str()));
+        mModels[AIRCRAFT].remove(QString(model->getName().c_str()));
     });
 }
 
@@ -416,17 +416,17 @@ void Model::onMessageReceived(const QJsonDocument &message)
         osg::Vec3d position(latitude, longitude, altitude);
         QString name = QString::number(data.value("TN").toInt());
         QString txtMessage = QString::fromUtf8(message.toJson(QJsonDocument::Compact));
-        if(mModels.contains(AIRPLANE) && mModels[AIRPLANE].contains(name))
+        if(mModels.contains(AIRCRAFT) && mModels[AIRCRAFT].contains(name))
         {
-            Airplane* model = dynamic_cast<Airplane*>(mModels[AIRPLANE][name]);
+            Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
             model->flyTo(position, heading, speed);
 
             model->setInformation(txtMessage);
         }
         else
         {
-            addAirplaineModel(name, position, -heading);
-            Airplane* model = dynamic_cast<Airplane*>(mModels[AIRPLANE][name]);
+            addAircraftModel(name, position, -heading);
+            Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
             model->setInformation(txtMessage);
         }
 
