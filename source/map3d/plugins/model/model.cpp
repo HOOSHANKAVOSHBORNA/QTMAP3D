@@ -66,8 +66,8 @@ bool Model::initializeQMLDesc(QQmlEngine */*engine*/, PluginQMLDesc *pDesc)
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_AIRPLANE, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_TRUCK, CATEGORY, "qrc:/resources/truck.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_STATION, CATEGORY, "", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_SYSTEM, CATEGORY, "", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_STATION, CATEGORY, "qrc:/resources/station_lV.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_SYSTEM, CATEGORY, "qrc:/resources/system.png", false, false, ""});
 
     return true;
 }

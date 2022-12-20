@@ -27,7 +27,7 @@ Item {
             anchors.topMargin: 4
             anchors.left: parent.left
             anchors.leftMargin: 4
-            spacing: 2
+            spacing: 10
             Repeater {
                 //clip: true
                 id: repeater
@@ -53,15 +53,18 @@ Item {
                     }
 
                     contentItem:Item {
-                        Row{
+                        RowLayout{
                             anchors.fill: parent
                             spacing: 5
                             Image {
                                 id: img
                                 source: subbutton.icon.source
-                                width: subbutton.icon.width
-                                height: subbutton.icon.height
-                                anchors.verticalCenter: parent.verticalCenter
+                                Layout.preferredWidth: subbutton.icon.width
+                                Layout.preferredHeight: subbutton.icon.height
+//                                anchors.verticalCenter: parent.verticalCenter
+
+                                Layout.alignment: Qt.AlignCenter
+
 
                             }
 
@@ -73,11 +76,18 @@ Item {
                                 font.pointSize:  subbutton.font.pointSize
                                 color: hovered || checked  ? (pressed ? _colorPresed: _colorHover) :
                                                              (pressed ? _colorHover : "#FFFFFF");
-                                anchors.verticalCenter: parent.verticalCenter
-                                horizontalAlignment: Text.AlignHCenter
+//                                anchors.verticalCenter: parent.verticalCenter
+                                horizontalAlignment: Text.AlignLeft
                                 verticalAlignment: Text.AlignVCenter
+
+
                                 elide: Text.ElideRight
                                 opacity: 1
+
+                                Layout.alignment: Qt.AlignCenter
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+
                             }
                         }
                     }

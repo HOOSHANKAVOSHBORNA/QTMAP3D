@@ -220,11 +220,11 @@ Item {
             anchors.leftMargin: _margin
             display: AbstractButton.IconOnly
             anchors.right: parent.right
-            icon.source : modeMap === "projection" ? "qrc:/Resources/projection.png" :"qrc:///Resources/3D.png"
+            icon.source : modeMap === "projection" ? "qrc:/Resources/projection.png" :"qrc:///Resources/3d.png"
             icon.width : _iconSize
             icon.height : _iconSize
             icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                   (pressed ? _colorHover : "#FFFFFF");
+                                   (pressed ? _colorHover : "transparent");
             background: Rectangle{
                 radius: _radius
                 color: _colorRec
