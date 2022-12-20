@@ -3,19 +3,22 @@ import QtQuick 2.0
 
 Item {
     id: root
-    function showItem(item, previousContextmenuItem) {
-        if (previousContextmenuItem)
-            removeItem(previousContextmenuItem)
+    property var nowItem: null
+
+    function showItem(item) {
+        if (nowItem)
+            removeItem()
         item.parent = root.parent
+        nowItem = item
     }
 
-    function updatePosition(item, x, y) {
-        item.x = x
-        item.y = y
+    function updatePosition(x, y) {
+        nowItem.x = x
+        nowItem.y = y
     }
 
-    function hideItem(item){
-        item.parent = null
-        item.destroy()
+    function hideItem(){
+        nowItem.parent = null
+        nowItem.destroy()
     }
 }

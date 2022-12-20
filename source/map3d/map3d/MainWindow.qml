@@ -24,8 +24,6 @@ CMainWindow {
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
 
-    property var previousContextmenuItem: null
-
 
     id: wnd
     visible: true
@@ -416,16 +414,15 @@ CMainWindow {
     function showStatusMessage(message, timer) {
         statusBar.showMessage(message, timer);
     }
-    function addContextmenu(item) {
-        contextmenu.showItem(item, previousContextmenuItem)
-        previousContextmenuItem = item
-        timer1.start();
+    function addContextmenu(item, x, y) {
+        contextmenu.showItem(item)
+        contextmenu.updatePosition(x, y)
     }
-    function hideContextmenu(item){
-        contextmenu.hideItem(item)
+    function hideContextmenu(){
+        contextmenu.hideItem()
     }
-    function updateXYContextmenu(item, x, y) {
-        contextmenu.updatePosition(item, x, y)
+    function updateXYContextmenu(x, y) {
+        contextmenu.updatePosition(x, y)
     }
 
     ContextmenuWidget {
