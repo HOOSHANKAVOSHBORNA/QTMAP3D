@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include <QQuickItem>
 
+
 void UIHandle::iwSetReceiverObject(QObject *receiverObject)
 {
     mReceiverObject = receiverObject;
@@ -93,7 +94,6 @@ void UIHandle::cmSetContextMenuPosition(QQuickItem *contextMenu, int x, int y)
         if (contextMenu == mCurrentContextMenuItem) {
             QMetaObject::invokeMethod(mMainWindow,
                                       "updateXYContextmenu",
-                                      Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(contextMenu)),
                                       Q_ARG(QVariant, QVariant::fromValue<int>(x)),
                                       Q_ARG(QVariant, QVariant::fromValue<int>(y))
                                       );
@@ -107,8 +107,7 @@ void UIHandle::cmHideContextMenu(QQuickItem *contextMenu)
     if (mMainWindow) {
         if (contextMenu == mCurrentContextMenuItem) {
             QMetaObject::invokeMethod(mMainWindow,
-                                      "hideContextmenu",
-                                      Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(contextMenu))
+                                      "hideContextmenu"
                                       );
 
         }
