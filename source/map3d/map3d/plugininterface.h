@@ -129,6 +129,7 @@ public:
                        UIHandle *uiHandle) {}
 
 protected:
+    virtual void frameEvent           () {}
     virtual void keyPressEvent        (QKeyEvent* event) {}
     virtual void keyReleaseEvent      (QKeyEvent* event) {}
     virtual void mousePressEvent      (QMouseEvent* event) {}

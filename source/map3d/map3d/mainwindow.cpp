@@ -352,6 +352,12 @@ void MainWindow::frame()
     }
 
     paintGL();
+
+    const auto pluginManager = Application::instance()->pluginManager();
+    if (pluginManager) {
+        pluginManager->frameEvent();
+    }
+
 }
 
 void MainWindow::restoreContext()
