@@ -41,6 +41,8 @@ private:
 private slots:
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
     void onMainWindowCreated();
+    void onListWindowCreated();
+    void onAllWindowsCreated();
     void setup();
 
 public:
@@ -57,6 +59,10 @@ private:
 
     PluginManager *mPluginManager = nullptr;
     NetworkManager *mNetworkManager = nullptr;
+
+
+    bool mMainWindowIsReady = false;
+    bool mListWindowIsReady = false;
 };
 
 #endif // Application_H

@@ -9,6 +9,8 @@ CListWindow {
     property var buttonsModel : ListModel {
 
     }
+    property var selectColor: "#808080"
+    property var unselectColor: "#606060"
     visible: true
     width: 400
     height: 300
@@ -34,7 +36,7 @@ CListWindow {
                     anchors.leftMargin: 0
                     background: Rectangle {
                         radius: 4
-                        color: "#808080"
+                        color: selectColor
                     }
 
                     anchors.top: parent.top
@@ -58,15 +60,16 @@ CListWindow {
     function addTab(titleString, item){
         buttonsModel.append({"buttonText": titleString})
         stacklayout.data.push(item)
+        showTab(stacklayout.count - 1)
     }
 
     function showTab(indx){
         stacklayout.currentIndex = indx
         for (var i = 0; i < stacklayout.count; i++){
-            rep.itemAt(i).background.color = "#808080"
+            rep.itemAt(i).background.color = unselectColor
         }
 
-        rep.itemAt(indx).background.color = "#606060"
+        rep.itemAt(indx).background.color = selectColor
 
     }
 

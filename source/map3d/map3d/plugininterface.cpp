@@ -1,5 +1,6 @@
 
 #include "plugininterface.h"
+#include "listwindow.h"
 #include "mainwindow.h"
 #include <QQuickItem>
 #include <QTimer>
@@ -125,6 +126,18 @@ void UIHandle::cmHideContextMenu(QQuickItem *contextMenu)
     }
 }
 
+void UIHandle::lwAddTab(const QString &tabTitle, QQuickItem *tabItem)
+{
+    if (mListWindow) {
+        QMetaObject::invokeMethod(mListWindow,
+                                  "addTab",
+                                  Q_ARG(QVariant, QVariant::fromValue<QString>(tabTitle)),
+                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(tabItem))
+                                  );
+
+    }
+}
+
 void UIHandle::onInfoWidget2D3DButtonClicked()
 {
     if (mReceiverObject) {
@@ -155,4 +168,9 @@ void UIHandle::onInfoWidgetMoreButtonClicked()
         QMetaObject::invokeMethod(mReceiverObject,
                                   "iwMoreButtonClicked");
     }
+}
+
+void UIHandle::setListWindow(ListWindow *listWindow)
+{
+    mListWindow = listWindow;
 }

@@ -150,6 +150,7 @@ protected:
     void mouseMoveEvent(QMouseEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
 
+    bool event(QEvent *ev) override;
 
 
 signals:
