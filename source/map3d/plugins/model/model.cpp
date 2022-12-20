@@ -18,6 +18,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
+#include <QQmlComponent>
 
 #include <osgDB/ReadFile>
 #include <osgEarthSymbology/GeometryFactory>
@@ -36,6 +37,9 @@
 #include <osgParticle/ExplosionDebrisEffect>
 #include <osgViewer/Viewer>
 
+
+#include "aircrafttablemodel.h"
+
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
 const QString ROCKET = "Rocket";
@@ -53,14 +57,19 @@ Model::Model(QObject *parent)
 {
     //    Q_INIT_RESOURCE(modelqml);
     Q_INIT_RESOURCE(model);
+    Q_INIT_RESOURCE(modelplugin);
 }
 
-bool Model::initializeQMLDesc(QQmlEngine */*engine*/, PluginQMLDesc *pDesc)
+bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
 {
     //    pDesc->pluginHasSideItem = true;
     //    pDesc->sideItemMenuBarTitle = "Layers";
     //    pDesc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
     //    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
+
+    qmlRegisterType<AircraftTableModel>("Crystal", 1, 0, "AircraftTableModel");
+
+    mQmlEngine = engine;
 
     QString cat = "model";
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
@@ -156,6 +165,22 @@ bool Model::setup(MapController *pMapController,
 
     ////--websocket data-------------------------------------------------------------------
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
+
+
+    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~" << comp->status();
+        qDebug() << comp->errorString();
+
+        if (comp->status() == QQmlComponent::Ready) {
+            QQuickItem *item = (QQuickItem*) comp->create(nullptr);
+            mUIHandle->lwAddTab("Aircrafts", item);
+        }
+
+    });
+
+    qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~";
+    comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
 
 }
 

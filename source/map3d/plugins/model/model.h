@@ -59,6 +59,7 @@ private:
 
     MapController *mMapController;
     UIHandle* mUIHandle;
+    QQmlEngine *mQmlEngine = nullptr;
 };
 
 #endif // MODEL_H

@@ -113,11 +113,6 @@ MainWindow::MainWindow(QWindow *parent) :
 
 
 
-    QTimer *timer = new QTimer;
-    QObject::connect(timer, &QTimer::timeout, [this](){
-        if (mListWindow) mListWindow->show();
-    });
-    timer->start(4000);
 }
 
 
