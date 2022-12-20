@@ -21,7 +21,7 @@ class UIHandle
 {
     friend class MainWindow;
 public:
-    UIHandle(MainWindow *mainWindow) { mMainWindow = mainWindow; }
+    UIHandle(MainWindow *mainWindow);
     virtual ~UIHandle() { }
 
 public:

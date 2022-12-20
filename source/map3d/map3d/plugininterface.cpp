@@ -2,6 +2,17 @@
 #include "plugininterface.h"
 #include "mainwindow.h"
 #include <QQuickItem>
+#include <QTimer>
+#include <QQmlComponent>
+#include <QQmlApplicationEngine>
+#include "application.h"
+
+
+
+UIHandle::UIHandle(MainWindow *mainWindow)
+{
+    mMainWindow = mainWindow;
+}
 
 
 void UIHandle::iwSetReceiverObject(QObject *receiverObject)

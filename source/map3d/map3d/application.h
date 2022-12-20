@@ -46,6 +46,7 @@ private slots:
 public:
     inline NetworkManager * networkManager() const {return mNetworkManager;}
     inline MainWindow *mainWindow() const { return mMainWindow; }
+    inline QQmlApplicationEngine *qmlEngine() { return mQmlEngine; }
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
