@@ -10,6 +10,7 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include <osgEarthAnnotation/PlaceNode>
+#include <osgEarthAnnotation/LabelNode>
 #include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osgEarthAnnotation/ImageOverlay>
@@ -56,11 +57,32 @@ Aircraft::Aircraft(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->addDrawable(yellowImageDrawable);
+    //--create text-----------------------------------------------------------------------------
+//    osgText::Text* text = new osgText::Text;
+//    text->setFont();
+//    text->setColor(osg::Vec4(1.0, 0.0, 0.0, 1.0));
+//    text->setCharacterSize(2);
+//    text->setPosition(osg::Vec3d(-5,0,0));
+
+//    // the default layout is left to right, typically used in languages
+//    // originating from europe such as English, French, German, Spanish etc..
+//    text->setLayout(osgText::Text::LEFT_TO_RIGHT);
+//    text->setText("Aircraft");
+//    osg::Geode* textGeode = new osg::Geode;
+//    textGeode->addDrawable(text);
 //    osgEarth::Annotation::ImageOverlay*  yellowImageOverlay = new osgEarth::Annotation::ImageOverlay(getMapNode(), yellowIcon);
+    osgEarth::Symbology::Style labelStyle;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
+    labelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 0.1;
+    osg::ref_ptr<osgEarth::Annotation::LabelNode> lable = new osgEarth::Annotation::LabelNode("Aircraft",labelStyle);
+    lable->setScale(osg::Vec3(1,1,1));
     //--add nods--------------------------------------------------------------------------------
     mRoot->addChild(node, false);
     mRoot->addChild(redGeode,true);
     mRoot->addChild(yellowGeode,false);
+    mRoot->addChild(lable, true);
     //----------------------------------------------------------------------------------------
     //osg::Vec3d center = getBound().center();
     float radius = getBound().radius();
@@ -213,9 +235,9 @@ void Aircraft::iwMoreButtonClicked()
     qDebug()<<"iwMoreButtonClicked";
 }
 
-void Aircraft::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
 {
-    BaseModel::mousePushEvent(onModel, ea);
+    BaseModel::mousePressEvent(event, onModel);
     if(onModel)
     {
         mUIHandle->iwSetReceiverObject(this);

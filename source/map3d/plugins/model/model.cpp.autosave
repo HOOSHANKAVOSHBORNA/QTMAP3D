@@ -485,3 +485,61 @@ BaseModel* Model::pick(float x, float y)
     }
     return model;
 }
+
+void Model::findSceneModels(osgViewer::Viewer *viewer)
+{
+    osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
+    if(!camera)
+        return;
+    int range = static_cast<int>(camera->getViewpoint().getRange());
+    if(range != mPreCameraRange && range < 12000)
+    {
+        mPreCameraRange = range;
+        osg::Viewport* viewport = viewer->getCamera()->getViewport();
+        osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
+        intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
+                                                       viewport->x() + viewport->width(), viewport->y() + viewport->height());
+
+        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES);
+        intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
+
+        osgUtil::IntersectionVisitor iv(intersector);
+//        iv.setTraversalMask(NODE_MASK);
+//        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+//        iv.setTraversalNumber(1000);
+        viewer->getCamera()->accept(iv);
+
+        if(intersector->containsIntersections())
+        {
+            auto intersections = intersector->getIntersections();
+            //qDebug() <<"intersections: "<<intersections.size();
+            for(auto hit : intersections)
+            {
+
+                const osg::NodePath& nodePath = hit.nodePath;
+                //qDebug() <<"nodePath: "<<nodePath.size();
+                for(osg::NodePath::const_iterator nitr=nodePath.begin();
+                    nitr!=nodePath.end();
+                    ++nitr)
+                {
+                    BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
+                    if (model && model->mCameraRangeChangeable)
+                    {
+                        //qDebug() <<model->getQStringName();
+                        //qDebug() <<"range: "<<camera->getViewpoint().getRange();
+                        //qDebug() <<"z: "<<model->getPosition().z();
+                        double distance = 0;
+                        if(camera->getViewpoint().getRange() < model->getPosition().z())///for track node
+                            distance = camera->getViewpoint().getRange();
+                        else
+                            distance = camera->getViewpoint().getRange() - model->getPosition().z();
+                        model->cameraRangeChanged(distance);
+                        //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
+                        //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
+                    }
+                }
+            }
+
+        }
+    }
+}

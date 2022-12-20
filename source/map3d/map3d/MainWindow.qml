@@ -351,6 +351,7 @@ CMainWindow {
 
 
     function showInfoItem(itemTypeString) {
+        if (wnd.widgetsVisible === false) wnd.clicked();
         sideWidget.hideAllItems();
         infoWidget.showInfoItem(itemTypeString);
     }

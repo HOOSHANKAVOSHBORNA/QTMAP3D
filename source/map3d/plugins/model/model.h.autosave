@@ -55,6 +55,7 @@ protected:
     virtual void mouseMoveEvent       (QMouseEvent* event);
 private:
     BaseModel* pick(float x, float y);
+    void findSceneModels(osgViewer::Viewer *viewer);
     void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
@@ -66,6 +67,7 @@ private:
 
     MapController *mMapController;
     UIHandle* mUIHandle;
+    int mPreCameraRange{0};
 };
 
 #endif // MODEL_H
