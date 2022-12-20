@@ -18,6 +18,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
+#include <QQmlComponent>
 
 #include <osgDB/ReadFile>
 #include <osgEarthSymbology/GeometryFactory>
@@ -36,13 +37,16 @@
 #include <osgParticle/ExplosionDebrisEffect>
 #include <osgViewer/Viewer>
 
+
+#include "aircrafttablemodel.h"
+
 //const QString FLYING = "Flying";
-const QString AIRPLANE = "Airplane";
+const QString AIRCRAFT = "Aircraft";
 const QString ROCKET = "Rocket";
 const QString TRUCK = "Truck";
 //----------------------------------------------
 const QString CATEGORY = "Model";
-const QString ADD_AIRPLANE = "Add Airplan";
+const QString ADD_AIRCRAFT = "Add Aircraft";
 const QString ADD_ROCKET = "Add Rocket";
 const QString ADD_TRUCK = "Add Truck";
 const QString ADD_STATION = "Add Station";
@@ -53,17 +57,22 @@ Model::Model(QObject *parent)
 {
     //    Q_INIT_RESOURCE(modelqml);
     Q_INIT_RESOURCE(model);
+    Q_INIT_RESOURCE(modelplugin);
 }
 
-bool Model::initializeQMLDesc(QQmlEngine */*engine*/, PluginQMLDesc *pDesc)
+bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
 {
     //    pDesc->pluginHasSideItem = true;
     //    pDesc->sideItemMenuBarTitle = "Layers";
     //    pDesc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
     //    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
+    qmlRegisterType<AircraftTableModel>("Crystal", 1, 0, "AircraftTableModel");
+
+    mQmlEngine = engine;
+
     QString cat = "model";
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_AIRPLANE, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_TRUCK, CATEGORY, "qrc:/resources/truck.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_STATION, CATEGORY, "qrc:/resources/station_lV.png", false, false, ""});
@@ -79,17 +88,17 @@ void Model::onSideItemCreated(int /*index*/, QObject */*pSideItem*/)
 
 void Model::onToolboxItemClicked(const QString &name, const QString &category)
 {
-    if(CATEGORY == category && name == ADD_AIRPLANE)
+    if(CATEGORY == category && name == ADD_AIRCRAFT)
     {
         osg::Vec3d position(52.8601, 35.277, 9100);
-        QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
-        addAirplaineModel(name, position, -30);
+        QString name = AIRCRAFT + QString::number(mModels[AIRCRAFT].count());
+        addAircraftModel(name, position, -30);
         //demo();
     }
     if(CATEGORY == category && name == ADD_ROCKET)
     {
         // fallow racket
-        if(!mModels[AIRPLANE].isEmpty())
+        if(!mModels[AIRCRAFT].isEmpty())
         {
             auto truckNames = mModels[TRUCK].keys();
             for(auto truckName: truckNames)
@@ -100,7 +109,7 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
                     //                        addRocketModel(modeltruck->getPosition().vec3d());
                     //                        auto modelRocket = dynamic_cast<Rocket*>(mModels[ROCKET].last());
                     auto activeRocket = modeltruck->getActiveRocket();
-                    auto modelAirplane = dynamic_cast<Airplane*>(mModels[AIRPLANE].last());
+                    auto modelAirplane = dynamic_cast<Aircraft*>(mModels[AIRCRAFT].last());
                     modelAirplane->stop();//
                     activeRocket->setFollowModel(modelAirplane);
                     //modelRocket->setTruckModel(modeltruck);
@@ -157,15 +166,31 @@ bool Model::setup(MapController *pMapController,
     ////--websocket data-------------------------------------------------------------------
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
 
+
+    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~" << comp->status();
+        qDebug() << comp->errorString();
+
+        if (comp->status() == QQmlComponent::Ready) {
+            QQuickItem *item = (QQuickItem*) comp->create(nullptr);
+            mUIHandle->lwAddTab("Aircrafts", item);
+        }
+
+    });
+
+    qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~";
+    comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
+
 }
 
 void Model::demo()
 {
     //    int index = 0;
-    auto airplaneNames = mModels[AIRPLANE].keys();
+    auto airplaneNames = mModels[AIRCRAFT].keys();
     for (auto name: airplaneNames)
     {
-        auto model = dynamic_cast<Airplane*>(mModels[AIRPLANE][name]);
+        auto model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
         auto mapPoint = model->getPosition();
         osgEarth::GeoPoint  latLongPoint;
         //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
@@ -262,17 +287,17 @@ void Model::addTruckModel()
     //model->moveTo(nPosition,10);
 }
 
-void Model::addAirplaineModel(QString name, osg::Vec3d position, double heading)
+void Model::addAircraftModel(QString name, osg::Vec3d geographicPosition, double heading)
 {
     //    osg::Vec3d position(52.8601, 35.277, 9100);
     //osg::Vec3d position(52.8601, 35.277, 844);
 
     //create and setting model--------------------------------------------
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/aircraft/airplane-red.osgb");
-    osg::ref_ptr<Airplane> model = new Airplane(mMapController,mUIHandle, mMapController->getMapNode(), node);
+    osg::ref_ptr<Aircraft> model = new Aircraft(mMapController,mUIHandle, mMapController->getMapNode(), node);
     //    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
     model->setName(name.toStdString());
-    model->setGeographicPosition(position, heading);
+    model->setGeographicPosition(geographicPosition, heading);
     //    model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
 
     QObject::connect(model.get(), &BaseModel::positionChanged, [=](osgEarth::GeoPoint position){
@@ -291,7 +316,7 @@ void Model::addAirplaineModel(QString name, osg::Vec3d position, double heading)
         }
     });
     //add to container-----------------------------------------------------
-    mModels[AIRPLANE][name] = model;
+    mModels[AIRCRAFT][name] = model;
 
 
     //add to map ---------------------------------------------------------
@@ -305,7 +330,7 @@ void Model::addAirplaineModel(QString name, osg::Vec3d position, double heading)
     //hit------------------------------------------------------------------
     QObject::connect(model.get(), &BaseModel::hit, [=](BaseModel */*other*/){
 
-        mModels[AIRPLANE].remove(QString(model->getName().c_str()));
+        mModels[AIRCRAFT].remove(QString(model->getName().c_str()));
     });
 }
 
@@ -416,17 +441,17 @@ void Model::onMessageReceived(const QJsonDocument &message)
         osg::Vec3d position(latitude, longitude, altitude);
         QString name = QString::number(data.value("TN").toInt());
         QString txtMessage = QString::fromUtf8(message.toJson(QJsonDocument::Compact));
-        if(mModels.contains(AIRPLANE) && mModels[AIRPLANE].contains(name))
+        if(mModels.contains(AIRCRAFT) && mModels[AIRCRAFT].contains(name))
         {
-            Airplane* model = dynamic_cast<Airplane*>(mModels[AIRPLANE][name]);
+            Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
             model->flyTo(position, heading, speed);
 
             model->setInformation(txtMessage);
         }
         else
         {
-            addAirplaineModel(name, position, -heading);
-            Airplane* model = dynamic_cast<Airplane*>(mModels[AIRPLANE][name]);
+            addAircraftModel(name, position, -heading);
+            Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
             model->setInformation(txtMessage);
         }
 
@@ -434,3 +459,119 @@ void Model::onMessageReceived(const QJsonDocument &message)
 
 }
 
+void Model::frameEvent()
+{
+    findSceneModels(mMapController->getViewer());
+}
+
+void Model::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        BaseModel* model = pick(event->x(), event->y());
+        if(model)
+        {
+            model->mousePressEvent(event, true);
+            event->accept();
+        }
+        if(mLastSelectedModel && mLastSelectedModel != model)
+            mLastSelectedModel->mousePressEvent(event, false);
+        if(model)
+            mLastSelectedModel = model;
+    }
+
+}
+
+void Model::mouseMoveEvent(QMouseEvent *event)
+{
+    BaseModel* model = pick(event->x(), event->y());
+    if(model)
+    {
+        model->mouseMoveEvent(event, true);
+    }
+    if(mLastMoveModel && mLastMoveModel != model)
+        mLastMoveModel->mouseMoveEvent(event, false);
+    if(model)
+        mLastMoveModel = model;
+}
+
+BaseModel* Model::pick(float x, float y)
+{
+    BaseModel* model = nullptr;
+    osgViewer::Viewer * viewer = mMapController->getViewer();
+    float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    if (viewer->computeIntersections(x, height - y, intersections))
+    {
+        for(osgUtil::LineSegmentIntersector::Intersection hit : intersections)
+        {
+            const osg::NodePath& nodePath = hit.nodePath;
+            for(osg::NodePath::const_iterator nitr=nodePath.begin();
+                nitr!=nodePath.end();
+                ++nitr)
+            {
+                model = dynamic_cast<BaseModel*>(*nitr);
+                if (model)
+                    return model;
+            }
+        }
+    }
+    return model;
+}
+void Model::findSceneModels(osgViewer::Viewer *viewer)
+{
+    osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
+    if(!camera)
+        return;
+    int range = static_cast<int>(camera->getViewpoint().getRange());
+    if(range != mPreCameraRange && range < 12000)
+    {
+        mPreCameraRange = range;
+        osg::Viewport* viewport = viewer->getCamera()->getViewport();
+        osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
+        intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
+                                                       viewport->x() + viewport->width(), viewport->y() + viewport->height());
+
+        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES);
+        intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
+
+        osgUtil::IntersectionVisitor iv(intersector);
+//        iv.setTraversalMask(NODE_MASK);
+//        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+//        iv.setTraversalNumber(1000);
+        viewer->getCamera()->accept(iv);
+
+        if(intersector->containsIntersections())
+        {
+            auto intersections = intersector->getIntersections();
+            //qDebug() <<"intersections: "<<intersections.size();
+            for(auto hit : intersections)
+            {
+
+                const osg::NodePath& nodePath = hit.nodePath;
+                //qDebug() <<"nodePath: "<<nodePath.size();
+                for(osg::NodePath::const_iterator nitr=nodePath.begin();
+                    nitr!=nodePath.end();
+                    ++nitr)
+                {
+                    BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
+                    if (model && model->mCameraRangeChangeable)
+                    {
+                        //qDebug() <<model->getQStringName();
+                        //qDebug() <<"range: "<<camera->getViewpoint().getRange();
+                        //qDebug() <<"z: "<<model->getPosition().z();
+                        double distance = 0;
+                        if(camera->getViewpoint().getRange() < model->getPosition().z())///for track node
+                            distance = camera->getViewpoint().getRange();
+                        else
+                            distance = camera->getViewpoint().getRange() - model->getPosition().z();
+                        model->cameraRangeChanged(distance);
+                        //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
+                        //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
+                    }
+                }
+            }
+
+        }
+    }
+}

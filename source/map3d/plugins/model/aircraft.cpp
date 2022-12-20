@@ -1,4 +1,4 @@
-﻿#include "airplane.h"
+﻿#include "aircraft.h"
 #include "draw.h"
 
 #include <QDebug>
@@ -10,6 +10,7 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include <osgEarthAnnotation/PlaceNode>
+#include <osgEarthAnnotation/LabelNode>
 #include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osgEarthAnnotation/ImageOverlay>
@@ -18,7 +19,7 @@
 
 
 
-Airplane::Airplane(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *mapNode, osg::Node *node, QObject *parent)
+Aircraft::Aircraft(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *mapNode, osg::Node *node, QObject *parent)
     :BaseModel(mapNode, parent)
 {
     mMapController = value;
@@ -56,11 +57,32 @@ Airplane::Airplane(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->addDrawable(yellowImageDrawable);
+    //--create text-----------------------------------------------------------------------------
+//    osgText::Text* text = new osgText::Text;
+//    text->setFont();
+//    text->setColor(osg::Vec4(1.0, 0.0, 0.0, 1.0));
+//    text->setCharacterSize(2);
+//    text->setPosition(osg::Vec3d(-5,0,0));
+
+//    // the default layout is left to right, typically used in languages
+//    // originating from europe such as English, French, German, Spanish etc..
+//    text->setLayout(osgText::Text::LEFT_TO_RIGHT);
+//    text->setText("Aircraft");
+//    osg::Geode* textGeode = new osg::Geode;
+//    textGeode->addDrawable(text);
 //    osgEarth::Annotation::ImageOverlay*  yellowImageOverlay = new osgEarth::Annotation::ImageOverlay(getMapNode(), yellowIcon);
+    osgEarth::Symbology::Style labelStyle;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
+    labelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 0.1;
+    osg::ref_ptr<osgEarth::Annotation::LabelNode> lable = new osgEarth::Annotation::LabelNode("Aircraft",labelStyle);
+    lable->setScale(osg::Vec3(1,1,1));
     //--add nods--------------------------------------------------------------------------------
     mRoot->addChild(node, false);
     mRoot->addChild(redGeode,true);
     mRoot->addChild(yellowGeode,false);
+    mRoot->addChild(lable, true);
     //----------------------------------------------------------------------------------------
     //osg::Vec3d center = getBound().center();
     float radius = getBound().radius();
@@ -82,7 +104,7 @@ Airplane::Airplane(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *
     mTempLocationPoints = new osg::Vec3Array();
 }
 
-void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
+void Aircraft::flyTo(const osg::Vec3d &pos, double heading, double speed)
 {
 
     if(mIsStop)
@@ -157,7 +179,7 @@ void Airplane::flyTo(const osg::Vec3d &pos, double heading, double speed)
 
 }
 
-void Airplane::stop()
+void Aircraft::stop()
 {
     mIsStop = true;
     if(mAnimationPathCallback != nullptr)
@@ -166,28 +188,28 @@ void Airplane::stop()
 }
 
 
-void Airplane::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
+void Aircraft::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
 {
     mTruckModel = truckModel;
 }
-osgEarth::Annotation::ModelNode *Airplane::getTruckModel() const
+osgEarth::Annotation::ModelNode *Aircraft::getTruckModel() const
 {
     return mTruckModel;
 }
 
-void Airplane::setInformation(QString info)
+void Aircraft::setInformation(QString info)
 {
     mInformation = info;
     mUIHandle->iwUpdateData(this, mInformation);
 }
 
-void Airplane::iw2D3DButtonClicked()
+void Aircraft::iw2D3DButtonClicked()
 {
 //    qDebug()<<"iw2D3DButtonClicked";
     mMapController->goToPosition(getPosition(), 200);
 }
 
-void Airplane::iwRouteButtonClicked()
+void Aircraft::iwRouteButtonClicked()
 {
 //    mIsRoute = true;
 //    qDebug()<<"iwRouteButtonClicked";
@@ -202,20 +224,20 @@ void Airplane::iwRouteButtonClicked()
 
 }
 
-void Airplane::iwFollowButtonClicked()
+void Aircraft::iwFollowButtonClicked()
 {
 //    qDebug()<<"iwFollowButtonClicked";
     mMapController->setTrackNode(getGeoTransform());
 }
 
-void Airplane::iwMoreButtonClicked()
+void Aircraft::iwMoreButtonClicked()
 {
     qDebug()<<"iwMoreButtonClicked";
 }
 
-void Airplane::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
 {
-    BaseModel::mousePushEvent(onModel, ea);
+    BaseModel::mousePressEvent(event, onModel);
     if(onModel)
     {
         mUIHandle->iwSetReceiverObject(this);
@@ -226,7 +248,7 @@ void Airplane::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
         mMapController->untrackNode();
 }
 
-void Airplane::curentPosition(osgEarth::GeoPoint pos)
+void Aircraft::curentPosition(osgEarth::GeoPoint pos)
 {
     BaseModel::curentPosition(pos);
 
@@ -238,7 +260,7 @@ void Airplane::curentPosition(osgEarth::GeoPoint pos)
 //    }
 }
 
-void Airplane::addEffect(double emitterDuration)
+void Aircraft::addEffect(double emitterDuration)
 {
     //add fire-----------------------------------------------------------------------------------------------------
     osgEarth::Registry::shaderGenerator().run(mFire);// for textures or lighting
@@ -256,7 +278,7 @@ void Airplane::addEffect(double emitterDuration)
     getMapNode()->addChild(mSmoke->getParticleSystem());
 }
 
-void Airplane::removeEffect()
+void Aircraft::removeEffect()
 {
     //remove fire---------------------------------------------
     getMapNode()->removeChild(mFire->getParticleSystem());

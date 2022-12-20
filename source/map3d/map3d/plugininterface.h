@@ -5,12 +5,17 @@
 
 #include <QObject>
 #include <QString>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QKeyEvent>
 
 class QQmlEngine;
 class QQmlComponent;
 class MapController;
 class NetworkManager;
 class MainWindow;
+class ListWindow;
 class QQuickItem;
 
 namespace osgViewer {
@@ -21,7 +26,7 @@ class UIHandle
 {
     friend class MainWindow;
 public:
-    UIHandle(MainWindow *mainWindow) { mMainWindow = mainWindow; }
+    UIHandle(MainWindow *mainWindow);
     virtual ~UIHandle() { }
 
 public:
@@ -43,16 +48,20 @@ public:
     void cmSetContextMenuPosition(QQuickItem* contextMenu, int x, int y);
     void cmHideContextMenu(QQuickItem* contextMenu);
 
+public:
+    void lwAddTab(const QString& tabTitle, QQuickItem *tabItem);
+
 private:
     void onInfoWidget2D3DButtonClicked();
     void onInfoWidgetRouteButtonClicked();
     void onInfoWidgetFollowButtonClicked();
     void onInfoWidgetMoreButtonClicked();
 
-
+    void setListWindow(ListWindow *listWindow);
 
 private:
     MainWindow *mMainWindow = nullptr;
+    ListWindow *mListWindow = nullptr;
     QObject *mReceiverObject = nullptr;
     QQuickItem *mCurrentContextMenuItem = nullptr;
 };
@@ -98,6 +107,7 @@ struct PluginQMLDesc
 
 class PluginInterface : public QObject
 {
+    friend class PluginManager;
     Q_OBJECT
 
 public:
@@ -118,6 +128,15 @@ public:
                        NetworkManager * networkManager,
                        UIHandle *uiHandle) {}
 
+protected:
+    virtual void frameEvent           () {}
+    virtual void keyPressEvent        (QKeyEvent* event) {}
+    virtual void keyReleaseEvent      (QKeyEvent* event) {}
+    virtual void mousePressEvent      (QMouseEvent* event) {}
+    virtual void mouseReleaseEvent    (QMouseEvent* event) {}
+    virtual void mouseDoubleClickEvent(QMouseEvent* event) {}
+    virtual void mouseMoveEvent       (QMouseEvent* event) {}
+    virtual void wheelEvent           (QWheelEvent* event) {}
 };
 
 

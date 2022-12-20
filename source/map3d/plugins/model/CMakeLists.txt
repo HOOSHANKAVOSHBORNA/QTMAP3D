@@ -12,15 +12,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(model SHARED
+  aircrafttablemodel.cpp
+  stationtablemodel.cpp
+  systemtablemodel.cpp
   model.cpp
   basemodel.cpp
-  airplane.cpp
+  aircraft.cpp
   rocket.cpp
   station.cpp
   system.cpp
   truck.cpp
   model.json
   model.qrc
+  modelplugin.qrc
 )
 
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

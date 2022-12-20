@@ -90,6 +90,18 @@ public slots:
     void onFileItemClicked(const QString& name,
                            const QString& category);
 
+
+public:
+    void frameEvent           ();
+    void keyPressEvent        (QKeyEvent* event);
+    void keyReleaseEvent      (QKeyEvent* event);
+    void mousePressEvent      (QMouseEvent* event);
+    void mouseReleaseEvent    (QMouseEvent* event);
+    void mouseDoubleClickEvent(QMouseEvent* event);
+    void mouseMoveEvent       (QMouseEvent* event);
+    void wheelEvent           (QWheelEvent* event);
+
+
 private:
     std::list<PluginInfo> mPluginsInfoList;
     QMap<QString, QMap<QString, PluginInterface*>> mToolboxItemsMap;

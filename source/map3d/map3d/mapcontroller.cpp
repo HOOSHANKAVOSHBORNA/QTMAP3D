@@ -11,103 +11,103 @@
 
 #include "mapcontroller.h"
 
-class MainEventHandler : public osgGA::GUIEventHandler
-{
-public:
-    MainEventHandler(MapController *pMapController);
-    virtual ~MainEventHandler() override { }
+//class MainEventHandler : public osgGA::GUIEventHandler
+//{
+//public:
+//    MainEventHandler(MapController *pMapController);
+//    virtual ~MainEventHandler() override { }
 
-protected:
-    bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+//protected:
+//    bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 
-private:
-    void mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType);
+//private:
+//    void mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType);
 
-private:
-    MapController *mpMapController = nullptr;
-};
+//private:
+//    MapController *mpMapController = nullptr;
+//};
 
 
-bool MainEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-{
+//bool MainEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+//{
 
-    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
+//    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
 
-    QEvent::Type qEventType;
-    switch (ea.getEventType())
-    {
-    case osgGA::GUIEventAdapter::FRAME:
-        mpMapController->frame();
-        break;
-    case (osgGA::GUIEventAdapter::PUSH):
-        qEventType = QEvent::Type::MouseButtonPress;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    case (osgGA::GUIEventAdapter::RELEASE):
-        qEventType = QEvent::Type::MouseButtonRelease;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    case (osgGA::GUIEventAdapter::MOVE):
-        qEventType = QEvent::Type::MouseMove;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    case (osgGA::GUIEventAdapter::SCROLL):
-        qEventType = QEvent::Type::Wheel;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    case (osgGA::GUIEventAdapter::DOUBLECLICK):
-        qEventType = QEvent::Type::MouseButtonDblClick;
-        if (view) { mouseEvent(view, ea, qEventType); }
-        break;
-    default:
-        break;
-    }
-    return false;
+//    QEvent::Type qEventType;
+//    switch (ea.getEventType())
+//    {
+//    case osgGA::GUIEventAdapter::FRAME:
+//        mpMapController->frame();
+//        break;
+//    case (osgGA::GUIEventAdapter::PUSH):
+//        qEventType = QEvent::Type::MouseButtonPress;
+//        if (view) { mouseEvent(view, ea, qEventType); }
+//        break;
+//    case (osgGA::GUIEventAdapter::RELEASE):
+//        qEventType = QEvent::Type::MouseButtonRelease;
+//        if (view) { mouseEvent(view, ea, qEventType); }
+//        break;
+//    case (osgGA::GUIEventAdapter::MOVE):
+//        qEventType = QEvent::Type::MouseMove;
+//        if (view) { mouseEvent(view, ea, qEventType); }
+//        break;
+//    case (osgGA::GUIEventAdapter::SCROLL):
+//        qEventType = QEvent::Type::Wheel;
+//        if (view) { mouseEvent(view, ea, qEventType); }
+//        break;
+//    case (osgGA::GUIEventAdapter::DOUBLECLICK):
+//        qEventType = QEvent::Type::MouseButtonDblClick;
+//        if (view) { mouseEvent(view, ea, qEventType); }
+//        break;
+//    default:
+//        break;
+//    }
+//    return false;
 
-}
+//}
 
-void MainEventHandler::mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType)
-{
+//void MainEventHandler::mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType)
+//{
 
-    QMouseEvent* event;
-    Qt::MouseButton mb;
-    switch (ea.getButtonMask())
-    {
-    case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
-        mb = Qt::MouseButton::LeftButton;
-        break;
-    case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
-        mb = Qt::MouseButton::RightButton;
-        break;
-    case osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON:
-        mb = Qt::MouseButton::MiddleButton;
-        break;
-    default:
-        mb = Qt::MouseButton::NoButton;
-    }
+//    QMouseEvent* event;
+//    Qt::MouseButton mb;
+//    switch (ea.getButtonMask())
+//    {
+//    case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
+//        mb = Qt::MouseButton::LeftButton;
+//        break;
+//    case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
+//        mb = Qt::MouseButton::RightButton;
+//        break;
+//    case osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON:
+//        mb = Qt::MouseButton::MiddleButton;
+//        break;
+//    default:
+//        mb = Qt::MouseButton::NoButton;
+//    }
 
-    event = new QMouseEvent(qEventType,
-                            QPointF(static_cast<qreal>(ea.getX()),static_cast<qreal>(ea.getY())),
-                            mb, mb, Qt::KeyboardModifier::NoModifier);
+//    event = new QMouseEvent(qEventType,
+//                            QPointF(static_cast<qreal>(ea.getX()),static_cast<qreal>(ea.getY())),
+//                            mb, mb, Qt::KeyboardModifier::NoModifier);
 
-    osgUtil::LineSegmentIntersector::Intersections intersections;
-    if (view->computeIntersections(ea, intersections))
-    {
-        for (const auto &intersection : intersections)
-        {
-            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
-            osg::Vec3d currentWorldPos = intersection.getWorldIntersectPoint();
-            mpMapController->mapMouseEvent(event,currentWorldPos);
-            return;
-        }
-    }
-}
+//    osgUtil::LineSegmentIntersector::Intersections intersections;
+//    if (view->computeIntersections(ea, intersections))
+//    {
+//        for (const auto &intersection : intersections)
+//        {
+//            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
+//            osg::Vec3d currentWorldPos = intersection.getWorldIntersectPoint();
+//            mpMapController->mapMouseEvent(event,currentWorldPos);
+//            return;
+//        }
+//    }
+//}
 
-MainEventHandler::MainEventHandler(MapController *pMapController) :
-    mpMapController(pMapController)
-{
+//MainEventHandler::MainEventHandler(MapController *pMapController) :
+//    mpMapController(pMapController)
+//{
 
-}
+//}
 //--MapController---------------------------------------------------------------------------------------------------------
 
 MapController::MapController(QQuickWindow *window) :
@@ -122,7 +122,7 @@ MapController::~MapController()
 
 void MapController::installEventHandler()
 {
-    getViewer()->addEventHandler(new MainEventHandler(this));
+    //getViewer()->addEventHandler(new MainEventHandler(this));
 }
 
 void MapController::mapMouseEvent(QMouseEvent *event, const osg::Vec3d &worldPos)
@@ -274,7 +274,10 @@ void MapController::set3DView(bool is3DView)
     if(is3DView)
         settings->setMinMaxPitch(-90, 0);
     else
+    {
         settings->setMinMaxPitch(-90, -90);
+        mEarthManipulator->setRotation(osg::Quat());
+    }
 }
 
 void MapController::setGeocentric(bool geocentric)
@@ -456,9 +459,39 @@ void MapController::paintGL()
             mIsFirstFrame = false;
             mOsgRenderer->getCamera()->getGraphicsContext()->setDefaultFboId(mRenderTargetId);
         }
-
+        frame();
         mOsgRenderer->frame();
     }
+}
+
+void MapController::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
+{
+    float height = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->height());
+//    osgUtil::LineSegmentIntersector::Intersections intersections;
+//    if (mOsgRenderer->computeIntersections(x, height - y, intersections))
+//    {
+//        for (const auto &intersection : intersections)
+//        {
+//            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
+//            out_coords = intersection.getWorldIntersectPoint();
+//            return;
+//        }
+//    }
+    mEarthManipulator->screenToWorld(x, height - y,mOsgRenderer, outWorldPoint);
+}
+
+void MapController::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) const
+{
+    float height = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->height());
+    float width = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->width());
+
+    const osg::Matrixd pMatrix = mOsgRenderer->getCamera()->getProjectionMatrix();
+    const osg::Matrixd vMatrix = mOsgRenderer->getCamera()->getViewMatrix();
+    osg::Vec3f result =   (worldPoint * vMatrix) * pMatrix;
+    outX = result.x() * (width/2.0f) + width/2.0f;
+    outY = result.y() * (height/2.0f) + height/2.0f;
+    outY = height - outY;
+
 }
 
 void MapController::keyPressEvent(QKeyEvent *event)
@@ -480,6 +513,17 @@ void MapController::mousePressEvent(QMouseEvent *event)
         mOsgRenderer->mousePressEvent(event);
     }
 
+    osg::Vec3d worldPos;
+    screenToWorld(event->x(), event->y(), worldPos);
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(getMapSRS(), worldPos);
+//    qDebug()<<"mpos:"<<QString::fromStdString(geoPos.toString());
+//    qDebug()<<event->x()<<", "<<event->y();
+//    float x;
+//    float y;
+//    worldToScreen(worldPos, x, y);
+//    qDebug()<<x<<", "<<y;
+    mapMouseEvent(event, worldPos);
 }
 
 void MapController::mouseReleaseEvent(QMouseEvent *event)
@@ -488,12 +532,18 @@ void MapController::mouseReleaseEvent(QMouseEvent *event)
     if (mOsgRenderer) {
         mOsgRenderer->mouseReleaseEvent(event);
     }
+    osg::Vec3d worldPos;
+    screenToWorld(event->x(),  event->y(), worldPos);
+    mapMouseEvent(event, worldPos);
 }
 
 void MapController::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (mOsgRenderer)
         mOsgRenderer->mouseDoubleClickEvent(event);
+    osg::Vec3d worldPos;
+    screenToWorld(event->x(),  event->y(), worldPos);
+    mapMouseEvent(event, worldPos);
 
 }
 
@@ -503,6 +553,9 @@ void MapController::mouseMoveEvent(QMouseEvent *event)
     if (mOsgRenderer) {
         mOsgRenderer->mouseMoveEvent(event);
     }
+    osg::Vec3d worldPos;
+    screenToWorld(event->x(),  event->y(), worldPos);
+    mapMouseEvent(event, worldPos);
 }
 
 void MapController::wheelEvent(QWheelEvent *event)
@@ -510,6 +563,9 @@ void MapController::wheelEvent(QWheelEvent *event)
 
     if (mOsgRenderer)
         mOsgRenderer->wheelEvent(event);
+//    osg::Vec3d worldPos;
+//    mEarthManipulator->screenToWorld(event->x(),  event->y(),mOsgRenderer, worldPos);
+//    mapMouseEvent(event, worldPos);
 }
 
 

@@ -9,53 +9,67 @@ CListWindow {
     property var buttonsModel : ListModel {
 
     }
+    property var selectColor: "#808080"
+    property var unselectColor: "#606060"
     visible: true
     width: 400
     height: 300
     title: "List Window"
     color: "#404040"
-    Row {
-        id: buttons
-        height: 30
-        width: parent.width
-        spacing: 3
-        Repeater {
-            id: rep
-            model: buttonsModel
-            Button {
-                anchors.topMargin: 10
-                text: buttonText
-                anchors.leftMargin: 0
-                background: Rectangle {
-                    radius: 4
-                    color: "#808080"
-                }
+    ColumnLayout {
+        anchors.fill: parent
+        anchors.margins: 0
+        spacing: 0
+        Row {
+            id: buttons
+            //height: 30
+            Layout.minimumHeight: 30
+            Layout.preferredHeight: 30
+            Layout.fillWidth: true
+            width: parent.width
+            spacing: 3
+            Repeater {
+                id: rep
+                model: buttonsModel
+                Button {
+                    text: buttonText
+                    anchors.leftMargin: 0
+                    background: Rectangle {
+                        radius: 4
+                        color: selectColor
+                    }
 
-                height: 30
-                width: buttons.width / 3
-                onClicked: showTab(index)
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+
+                    width: buttons.width / 3
+                    onClicked: showTab(index)
+                }
             }
         }
-    }
 
-    StackLayout {
-        id: stacklayout
-        y: 50
+        StackLayout {
+            id: stacklayout
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
+
+        }
     }
 
     function addTab(titleString, item){
         buttonsModel.append({"buttonText": titleString})
         stacklayout.data.push(item)
+        showTab(stacklayout.count - 1)
     }
 
     function showTab(indx){
         stacklayout.currentIndex = indx
         for (var i = 0; i < stacklayout.count; i++){
-            rep.itemAt(i).background.color = "#808080"
+            rep.itemAt(i).background.color = unselectColor
         }
 
-        rep.itemAt(indx).background.color = "#606060"
+        rep.itemAt(indx).background.color = selectColor
 
     }
 

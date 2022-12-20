@@ -1,6 +1,20 @@
 
 #include "plugininterface.h"
+#include "listwindow.h"
 #include "mainwindow.h"
+#include <QQuickItem>
+#include <QTimer>
+#include <QQmlComponent>
+#include <QQmlApplicationEngine>
+#include "application.h"
+
+
+
+UIHandle::UIHandle(MainWindow *mainWindow)
+{
+    mMainWindow = mainWindow;
+}
+
 
 void UIHandle::iwSetReceiverObject(QObject *receiverObject)
 {
@@ -72,8 +86,16 @@ void UIHandle::cmShowContextMenu(QQuickItem *contextMenu, int x, int y)
 
         if (mCurrentContextMenuItem) {
             cmHideContextMenu(mCurrentContextMenuItem);
-            mCurrentContextMenuItem = nullptr;
         }
+
+        mCurrentContextMenuItem = contextMenu;
+        QMetaObject::invokeMethod(mMainWindow,
+                              "addContextmenu",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(contextMenu)),
+                              Q_ARG(QVariant, QVariant::fromValue<int>(x)),
+                              Q_ARG(QVariant, QVariant::fromValue<int>(y))
+                              );
+
 
     }
 }
@@ -81,13 +103,37 @@ void UIHandle::cmShowContextMenu(QQuickItem *contextMenu, int x, int y)
 void UIHandle::cmSetContextMenuPosition(QQuickItem *contextMenu, int x, int y)
 {
     if (mMainWindow) {
+        if (contextMenu == mCurrentContextMenuItem) {
+            QMetaObject::invokeMethod(mMainWindow,
+                                      "updateXYContextmenu",
+                                      Q_ARG(QVariant, QVariant::fromValue<int>(x)),
+                                      Q_ARG(QVariant, QVariant::fromValue<int>(y))
+                                      );
 
+        }
     }
 }
 
 void UIHandle::cmHideContextMenu(QQuickItem *contextMenu)
 {
     if (mMainWindow) {
+        if (contextMenu == mCurrentContextMenuItem) {
+            QMetaObject::invokeMethod(mMainWindow,
+                                      "hideContextmenu"
+                                      );
+
+        }
+    }
+}
+
+void UIHandle::lwAddTab(const QString &tabTitle, QQuickItem *tabItem)
+{
+    if (mListWindow) {
+        QMetaObject::invokeMethod(mListWindow,
+                                  "addTab",
+                                  Q_ARG(QVariant, QVariant::fromValue<QString>(tabTitle)),
+                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(tabItem))
+                                  );
 
     }
 }
@@ -122,4 +168,9 @@ void UIHandle::onInfoWidgetMoreButtonClicked()
         QMetaObject::invokeMethod(mReceiverObject,
                                   "iwMoreButtonClicked");
     }
+}
+
+void UIHandle::setListWindow(ListWindow *listWindow)
+{
+    mListWindow = listWindow;
 }

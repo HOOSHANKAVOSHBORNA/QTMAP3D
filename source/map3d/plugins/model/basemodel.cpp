@@ -90,144 +90,144 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
 }
 
 
-bool PickHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-{
+//bool PickHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+//{
 
-    osgViewer::Viewer *view = dynamic_cast<osgViewer::Viewer *>(&aa);
+//    osgViewer::Viewer *view = dynamic_cast<osgViewer::Viewer *>(&aa);
 
-    switch (ea.getEventType())
-    {
-    case osgGA::GUIEventAdapter::FRAME:
-            findSceneModels(view);
-        break;
-    case (osgGA::GUIEventAdapter::PUSH):
-        if (view)
-        {
-            pick(view, ea);
-            if(mCurrentModel)
-            {
-                mCurrentModel->mousePushEvent(true, ea);
+//    switch (ea.getEventType())
+//    {
+//    case osgGA::GUIEventAdapter::FRAME:
+//            findSceneModels(view);
+//        break;
+//    case (osgGA::GUIEventAdapter::PUSH):
+//        if (view)
+//        {
+//            pick(view, ea);
+//            if(mCurrentModel)
+//            {
+//                mCurrentModel->mousePushEvent(true, ea);
 
-            }
-            if(mLastPushModel && mLastPushModel != mCurrentModel)
-                mLastPushModel->mousePushEvent(false, ea);
-        }
-        if(mCurrentModel)
-        {
-            mLastPushModel = mCurrentModel;
-            return true;
-        }
-        break;
-    case (osgGA::GUIEventAdapter::MOVE):
-        if (view)
-        {
-            pick(view, ea);
-            if(mCurrentModel) {mCurrentModel->mouseMoveEvent(true, ea);}
-            if(mLastMoveModel && mLastMoveModel != mCurrentModel)
-                mLastMoveModel->mouseMoveEvent(false, ea);
-        }
-        if(mCurrentModel)
-            mLastMoveModel = mCurrentModel;
-        break;
-    case (osgGA::GUIEventAdapter::RELEASE):
-        break;
-    case (osgGA::GUIEventAdapter::SCROLL):
-        break;
-    case (osgGA::GUIEventAdapter::DOUBLECLICK):
-        break;
-    default:
-        break;
-    }
-    return false;
-}
-void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea)
-{
-    osg::Group* root = dynamic_cast<osg::Group*>(viewer->getSceneData());
-    if (!root) return;
+//            }
+//            if(mLastPushModel && mLastPushModel != mCurrentModel)
+//                mLastPushModel->mousePushEvent(false, ea);
+//        }
+//        if(mCurrentModel)
+//        {
+//            mLastPushModel = mCurrentModel;
+//            return true;
+//        }
+//        break;
+//    case (osgGA::GUIEventAdapter::MOVE):
+//        if (view)
+//        {
+//            pick(view, ea);
+//            if(mCurrentModel) {mCurrentModel->mouseMoveEvent(true, ea);}
+//            if(mLastMoveModel && mLastMoveModel != mCurrentModel)
+//                mLastMoveModel->mouseMoveEvent(false, ea);
+//        }
+//        if(mCurrentModel)
+//            mLastMoveModel = mCurrentModel;
+//        break;
+//    case (osgGA::GUIEventAdapter::RELEASE):
+//        break;
+//    case (osgGA::GUIEventAdapter::SCROLL):
+//        break;
+//    case (osgGA::GUIEventAdapter::DOUBLECLICK):
+//        break;
+//    default:
+//        break;
+//    }
+//    return false;
+//}
+//void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea)
+//{
+//    osg::Group* root = dynamic_cast<osg::Group*>(viewer->getSceneData());
+//    if (!root) return;
 
-    osgUtil::LineSegmentIntersector::Intersections intersections;
-    mCurrentModel = nullptr;
-    if (viewer->computeIntersections(ea,intersections))
-    {
-        for(osgUtil::LineSegmentIntersector::Intersection hit : intersections)
-        {
-            const osg::NodePath& nodePath = hit.nodePath;
-            for(osg::NodePath::const_iterator nitr=nodePath.begin();
-                nitr!=nodePath.end();
-                ++nitr)
-            {
-                //auto pl = dynamic_cast<osgEarth::Annotation::PlaceNode*>(*nitr);
-//                if (pl)
-//                    qDebug()<<pl;
-                mCurrentModel = dynamic_cast<BaseModel*>(*nitr);
-                if (mCurrentModel)
-                    break;
-            }
-            if(mCurrentModel)
-                break;
-        }
-    }
-}
+//    osgUtil::LineSegmentIntersector::Intersections intersections;
+//    mCurrentModel = nullptr;
+//    if (viewer->computeIntersections(ea,intersections))
+//    {
+//        for(osgUtil::LineSegmentIntersector::Intersection hit : intersections)
+//        {
+//            const osg::NodePath& nodePath = hit.nodePath;
+//            for(osg::NodePath::const_iterator nitr=nodePath.begin();
+//                nitr!=nodePath.end();
+//                ++nitr)
+//            {
+//                //auto pl = dynamic_cast<osgEarth::Annotation::PlaceNode*>(*nitr);
+////                if (pl)
+////                    qDebug()<<pl;
+//                mCurrentModel = dynamic_cast<BaseModel*>(*nitr);
+//                if (mCurrentModel)
+//                    break;
+//            }
+//            if(mCurrentModel)
+//                break;
+//        }
+//    }
+//}
 
-void PickHandler::findSceneModels(osgViewer::Viewer *viewer)
-{
-    osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
-    if(!camera)
-        return;
-    int range = static_cast<int>(camera->getViewpoint().getRange());
-    if(range != mPreRange && range < 12000)
-    {
-        mPreRange = range;
-        osg::Viewport* viewport = viewer->getCamera()->getViewport();
-        osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
-        intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
-                                                       viewport->x() + viewport->width(), viewport->y() + viewport->height());
+//void PickHandler::findSceneModels(osgViewer::Viewer *viewer)
+//{
+//    osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
+//    if(!camera)
+//        return;
+//    int range = static_cast<int>(camera->getViewpoint().getRange());
+//    if(range != mPreRange && range < 12000)
+//    {
+//        mPreRange = range;
+//        osg::Viewport* viewport = viewer->getCamera()->getViewport();
+//        osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
+//        intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
+//                                                       viewport->x() + viewport->width(), viewport->y() + viewport->height());
 
-        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES);
-        intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
+//        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES);
+//        intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
 
-        osgUtil::IntersectionVisitor iv(intersector);
-//        iv.setTraversalMask(NODE_MASK);
-//        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-//        iv.setTraversalNumber(1000);
-        viewer->getCamera()->accept(iv);
+//        osgUtil::IntersectionVisitor iv(intersector);
+////        iv.setTraversalMask(NODE_MASK);
+////        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+////        iv.setTraversalNumber(1000);
+//        viewer->getCamera()->accept(iv);
 
-        if(intersector->containsIntersections())
-        {
-            auto intersections = intersector->getIntersections();
-            //qDebug() <<"intersections: "<<intersections.size();
-            for(auto hit : intersections)
-            {
+//        if(intersector->containsIntersections())
+//        {
+//            auto intersections = intersector->getIntersections();
+//            //qDebug() <<"intersections: "<<intersections.size();
+//            for(auto hit : intersections)
+//            {
 
-                const osg::NodePath& nodePath = hit.nodePath;
-                //qDebug() <<"nodePath: "<<nodePath.size();
-                for(osg::NodePath::const_iterator nitr=nodePath.begin();
-                    nitr!=nodePath.end();
-                    ++nitr)
-                {
-                    BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
-                    if (model && model->mCameraRangeChangeable)
-                    {
-                        //qDebug() <<model->getQStringName();
-                        //qDebug() <<"range: "<<camera->getViewpoint().getRange();
-                        //qDebug() <<"z: "<<model->getPosition().z();
-                        double distance = 0;
-                        if(camera->getViewpoint().getRange() < model->getPosition().z())///for track node
-                            distance = camera->getViewpoint().getRange();
-                        else
-                            distance = camera->getViewpoint().getRange() - model->getPosition().z();
-                        model->cameraRangeChanged(distance);
-                        //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
-                        //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
-                    }
-                }
-            }
+//                const osg::NodePath& nodePath = hit.nodePath;
+//                //qDebug() <<"nodePath: "<<nodePath.size();
+//                for(osg::NodePath::const_iterator nitr=nodePath.begin();
+//                    nitr!=nodePath.end();
+//                    ++nitr)
+//                {
+//                    BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
+//                    if (model && model->mCameraRangeChangeable)
+//                    {
+//                        //qDebug() <<model->getQStringName();
+//                        //qDebug() <<"range: "<<camera->getViewpoint().getRange();
+//                        //qDebug() <<"z: "<<model->getPosition().z();
+//                        double distance = 0;
+//                        if(camera->getViewpoint().getRange() < model->getPosition().z())///for track node
+//                            distance = camera->getViewpoint().getRange();
+//                        else
+//                            distance = camera->getViewpoint().getRange() - model->getPosition().z();
+//                        model->cameraRangeChanged(distance);
+//                        //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
+//                        //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
+//                    }
+//                }
+//            }
 
-        }
-    }
-}
+//        }
+//    }
+//}
 
-static bool mAddedEvent = false;
+//static bool mAddedEvent = false;
 BaseModel::BaseModel(osgEarth::MapNode *mapNode, QObject *parent):
     QObject(parent),
     osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
@@ -240,11 +240,11 @@ BaseModel::BaseModel(osgEarth::MapNode *mapNode, QObject *parent):
 
     //    mPlaceNode = new osgEarth::Annotation::PlaceNode();
     //getGeoTransform()->addChild(mPlaceNode);
-    if(!mAddedEvent)
-    {
-        addEventCallback(new PickHandler());
-        mAddedEvent = true;
-    }
+//    if(!mAddedEvent)
+//    {
+//        addEventCallback(new PickHandler());
+//        mAddedEvent = true;
+//    }
 //    setNodeMask(NODE_MASK);
 }
 
@@ -378,16 +378,16 @@ bool BaseModel::hasHit() const
     return mHasHit;
 }
 
-void BaseModel::mousePushEvent(bool onModel, const osgGA::GUIEventAdapter &ea)
+void BaseModel::mousePressEvent(QMouseEvent* event, bool onModel)
 {
-    if(ea.getButtonMask() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
-    {
+//    if(ea.getButtonMask() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
+//    {
         select(onModel);
         mIsSelected = onModel;
-    }
+//    }
 }
 
-void BaseModel::mouseMoveEvent(bool onModel, const osgGA::GUIEventAdapter &/*ea*/)
+void BaseModel::mouseMoveEvent(QMouseEvent* event, bool onModel)
 {
     if(!mIsSelected)
     {

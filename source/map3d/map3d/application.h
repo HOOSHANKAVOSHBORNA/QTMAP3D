@@ -41,11 +41,15 @@ private:
 private slots:
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
     void onMainWindowCreated();
+    void onListWindowCreated();
+    void onAllWindowsCreated();
     void setup();
 
 public:
     inline NetworkManager * networkManager() const {return mNetworkManager;}
     inline MainWindow *mainWindow() const { return mMainWindow; }
+    inline QQmlApplicationEngine *qmlEngine() const { return mQmlEngine; }
+    inline PluginManager *pluginManager() const { return mPluginManager; }
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
@@ -56,6 +60,10 @@ private:
 
     PluginManager *mPluginManager = nullptr;
     NetworkManager *mNetworkManager = nullptr;
+
+
+    bool mMainWindowIsReady = false;
+    bool mListWindowIsReady = false;
 };
 
 #endif // Application_H

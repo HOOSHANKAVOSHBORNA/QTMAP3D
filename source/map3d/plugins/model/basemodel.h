@@ -12,6 +12,7 @@
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/Viewer>
 
+#include <QMouseEvent>
 #include <QObject>
 class BaseModel;
 
@@ -21,22 +22,22 @@ public:
     void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
 };
 
-class  PickHandler: public osgGA::GUIEventHandler
-{
-public:
-    PickHandler(){}
-    virtual ~PickHandler()override{}
-protected:
-    bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-private:
-    void pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea);
-    void findSceneModels(osgViewer::Viewer* viewer);
-private:
-    BaseModel* mLastPushModel{nullptr};
-    BaseModel* mLastMoveModel{nullptr};
-    BaseModel* mCurrentModel{nullptr};
-    int mPreRange{0};
-};
+//class  PickHandler: public osgGA::GUIEventHandler
+//{
+//public:
+//    PickHandler(){}
+//    virtual ~PickHandler()override{}
+//protected:
+//    bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+//private:
+//    void pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea);
+//    void findSceneModels(osgViewer::Viewer* viewer);
+//private:
+//    BaseModel* mLastPushModel{nullptr};
+//    BaseModel* mLastMoveModel{nullptr};
+//    BaseModel* mCurrentModel{nullptr};
+//    int mPreRange{0};
+//};
 
 class BaseModel: public QObject, public osgEarth::Annotation::ModelNode
 {
@@ -59,16 +60,16 @@ signals:
     void hit(BaseModel *hitWith);
 protected:
     virtual void playExplosionEffect(float scale);
-    virtual void mousePushEvent(bool /*onModel*/, const osgGA::GUIEventAdapter& /*ea*/);
-//    void mouseReleaseEvent(QMouseEvent* event);
-//    void mouseDoubleClickEvent(QMouseEvent* event);
-    virtual void mouseMoveEvent(bool /*onModel*/, const osgGA::GUIEventAdapter& /*ea*/);
+public:
+    virtual void mousePressEvent      (QMouseEvent* event, bool onModel);
+//    virtual void mouseDoubleClickEvent(QMouseEvent* event, bool onModel);
+    virtual void mouseMoveEvent       (QMouseEvent* event, bool onModel);
     virtual void cameraRangeChanged(double /*range*/);
     virtual void curentPosition(osgEarth::GeoPoint pos);
+    bool mCameraRangeChangeable{false};
 protected:
     bool mIsSelected{false};
     bool mIs3d{false};
-    bool mCameraRangeChangeable{false};
     osg::ref_ptr<osg::Switch> mRoot;
 private:
     void collision(BaseModel *collidedWith);
