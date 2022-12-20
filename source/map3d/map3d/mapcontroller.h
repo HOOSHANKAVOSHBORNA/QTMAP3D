@@ -16,13 +16,13 @@
 #include "osgrenderer.h"
 
 
-class MainEventHandler;
+//class MainEventHandler;
 
 
 class MapController : public QObject
 {
     friend class MainWindow;
-    friend class MainEventHandler;
+//    friend class MainEventHandler;
     Q_OBJECT
 
 signals:
@@ -100,6 +100,8 @@ public:
     void resizeGL(int width, int height, QScreen *screen);
     void paintGL();
 
+    void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;
+    void worldToScreen(osg::Vec3d worldPoint, float& outX, float& outY) const;
     void keyPressEvent(QKeyEvent* event); void keyReleaseEvent(QKeyEvent* event);  void mousePressEvent(QMouseEvent* event);
     void mouseReleaseEvent(QMouseEvent* event);
     void mouseDoubleClickEvent(QMouseEvent* event);
