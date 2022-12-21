@@ -2,7 +2,7 @@
     <qresource prefix="/modelplugin">
         <file>tmp.qml</file>
         <file>AircraftTableView.qml</file>
+        <file>AircraftContextmenuView.qml</file>
     </qresource>
-    <qresource prefix="/">
-    </qresource>
+    <qresource prefix="/"/>
 </RCC>
