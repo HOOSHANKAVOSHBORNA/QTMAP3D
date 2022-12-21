@@ -57,7 +57,7 @@ Model::Model(QObject *parent)
 {
     //    Q_INIT_RESOURCE(modelqml);
     Q_INIT_RESOURCE(model);
-    Q_INIT_RESOURCE(modelplugin);
+    Q_INIT_RESOURCE(modelqml);
 }
 
 bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
@@ -169,7 +169,6 @@ bool Model::setup(MapController *pMapController,
 
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~" << comp->status();
         qDebug() << comp->errorString();
 
         if (comp->status() == QQmlComponent::Ready) {
@@ -179,7 +178,6 @@ bool Model::setup(MapController *pMapController,
 
     });
 
-    qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~";
     comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
 
 }
