@@ -16,13 +16,13 @@ Item {
         model: rootItem.model
 
         delegate: Rectangle {
-            color: "red"
+            color: "skyblue"
             implicitWidth:200
             implicitHeight:  30
             Text {
                 anchors.centerIn: parent
                 text: display
-                color: "white"
+                color: "black"
             }
         }
 

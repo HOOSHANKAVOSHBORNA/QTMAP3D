@@ -154,10 +154,6 @@ bool DrawShapes::setup(MapController *mapController,
     return true;
 }
 
-
-
-
-
 void DrawShapes::onLineBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 {
     if(event->button() == Qt::MouseButton::LeftButton && event->type() ==  QEvent::Type::MouseButtonPress)
@@ -253,27 +249,6 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPo
 
 }
 
-//void DrawShapes::onExtrPolyBtnClick(QMouseEvent *event)
-//{
-//    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
-//    {
-//        osgEarth::Features::Geometry* utah = new osgEarth::Features::Polygon();
-//        utah->push_back(-114.052, 37.0);
-//        utah->push_back(-109.054, 37.0);
-//        utah->push_back(-109.054, 41.0);
-//        utah->push_back(-111.040, 41.0);
-//        //utah->push_back(-111.080, 42.059);
-//        //utah->push_back(-114.080, 42.024);
-
-//        osgEarth::Symbology::Style utahStyle;
-//        utahStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 250000.0; // meters MSL
-//        utahStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::White, 0.8f);
-
-//        osgEarth::Annotation::Feature*     utahFeature = new osgEarth::Annotation::Feature(utah, osgEarth::SpatialReference::get("wgs84"));
-//        osgEarth::Annotation::FeatureNode* featureNode = new osgEarth::Annotation::FeatureNode(utahFeature, utahStyle);
-//        mMapController->addNode(featureNode);
-//    }
-//}
 
 void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 {

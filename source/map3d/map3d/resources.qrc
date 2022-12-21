@@ -30,5 +30,6 @@
         <file>Resources/tracking.png</file>
         <file>Resources/websocketkey/localhost.cert</file>
         <file>Resources/websocketkey/localhost.key</file>
+        <file>Resources/3d.png</file>
     </qresource>
 </RCC>

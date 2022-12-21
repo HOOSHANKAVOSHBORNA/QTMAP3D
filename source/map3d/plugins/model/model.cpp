@@ -58,7 +58,7 @@ Model::Model(QObject *parent)
 {
     //    Q_INIT_RESOURCE(modelqml);
     Q_INIT_RESOURCE(model);
-    Q_INIT_RESOURCE(modelplugin);
+    Q_INIT_RESOURCE(modelqml);
 }
 
 bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
@@ -76,8 +76,8 @@ bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_TRUCK, CATEGORY, "qrc:/resources/truck.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_STATION, CATEGORY, "", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_SYSTEM, CATEGORY, "", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_STATION, CATEGORY, "qrc:/resources/station_lV.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_SYSTEM, CATEGORY, "qrc:/resources/system.png", false, false, ""});
 
     return true;
 }
@@ -170,7 +170,6 @@ bool Model::setup(MapController *pMapController,
 
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~" << comp->status();
         qDebug() << comp->errorString();
 
         if (comp->status() == QQmlComponent::Ready) {
@@ -180,7 +179,6 @@ bool Model::setup(MapController *pMapController,
 
     });
 
-    qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~";
     comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
 
 }
@@ -460,3 +458,119 @@ void Model::onMessageReceived(const QJsonDocument &message)
 
 }
 
+void Model::frameEvent()
+{
+    findSceneModels(mMapController->getViewer());
+}
+
+void Model::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        BaseModel* model = pick(event->x(), event->y());
+        if(model)
+        {
+            model->mousePressEvent(event, true);
+            event->accept();
+        }
+        if(mLastSelectedModel && mLastSelectedModel != model)
+            mLastSelectedModel->mousePressEvent(event, false);
+        if(model)
+            mLastSelectedModel = model;
+    }
+
+}
+
+void Model::mouseMoveEvent(QMouseEvent *event)
+{
+    BaseModel* model = pick(event->x(), event->y());
+    if(model)
+    {
+        model->mouseMoveEvent(event, true);
+    }
+    if(mLastMoveModel && mLastMoveModel != model)
+        mLastMoveModel->mouseMoveEvent(event, false);
+    if(model)
+        mLastMoveModel = model;
+}
+
+BaseModel* Model::pick(float x, float y)
+{
+    BaseModel* model = nullptr;
+    osgViewer::Viewer * viewer = mMapController->getViewer();
+    float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    if (viewer->computeIntersections(x, height - y, intersections))
+    {
+        for(osgUtil::LineSegmentIntersector::Intersection hit : intersections)
+        {
+            const osg::NodePath& nodePath = hit.nodePath;
+            for(osg::NodePath::const_iterator nitr=nodePath.begin();
+                nitr!=nodePath.end();
+                ++nitr)
+            {
+                model = dynamic_cast<BaseModel*>(*nitr);
+                if (model)
+                    return model;
+            }
+        }
+    }
+    return model;
+}
+void Model::findSceneModels(osgViewer::Viewer *viewer)
+{
+    osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
+    if(!camera)
+        return;
+    int range = static_cast<int>(camera->getViewpoint().getRange());
+    if(range != mPreCameraRange && range < 12000)
+    {
+        mPreCameraRange = range;
+        osg::Viewport* viewport = viewer->getCamera()->getViewport();
+        osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
+        intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
+                                                       viewport->x() + viewport->width(), viewport->y() + viewport->height());
+
+        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES);
+        intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
+
+        osgUtil::IntersectionVisitor iv(intersector);
+//        iv.setTraversalMask(NODE_MASK);
+//        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+//        iv.setTraversalNumber(1000);
+        viewer->getCamera()->accept(iv);
+
+        if(intersector->containsIntersections())
+        {
+            auto intersections = intersector->getIntersections();
+            //qDebug() <<"intersections: "<<intersections.size();
+            for(auto hit : intersections)
+            {
+
+                const osg::NodePath& nodePath = hit.nodePath;
+                //qDebug() <<"nodePath: "<<nodePath.size();
+                for(osg::NodePath::const_iterator nitr=nodePath.begin();
+                    nitr!=nodePath.end();
+                    ++nitr)
+                {
+                    BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
+                    if (model && model->mCameraRangeChangeable)
+                    {
+                        //qDebug() <<model->getQStringName();
+                        //qDebug() <<"range: "<<camera->getViewpoint().getRange();
+                        //qDebug() <<"z: "<<model->getPosition().z();
+                        double distance = 0;
+                        if(camera->getViewpoint().getRange() < model->getPosition().z())///for track node
+                            distance = camera->getViewpoint().getRange();
+                        else
+                            distance = camera->getViewpoint().getRange() - model->getPosition().z();
+                        model->cameraRangeChanged(distance);
+                        //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
+                        //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
+                    }
+                }
+            }
+
+        }
+    }
+}

@@ -36,8 +36,8 @@ public:
     void iwFollowButtonClicked();
     Q_INVOKABLE
     void iwMoreButtonClicked();
-protected:
-    virtual void mousePushEvent(bool onModel, const osgGA::GUIEventAdapter& ea) override;
+public:
+    virtual void mousePressEvent(QMouseEvent *event, bool onModel) override;
     virtual void curentPosition(osgEarth::GeoPoint pos) override;
 private:
     void addEffect(double emitterDuration);

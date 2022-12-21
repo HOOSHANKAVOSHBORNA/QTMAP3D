@@ -4,7 +4,6 @@ AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
 
-    mAircraftInfoList.push_back(AircraftInfo{"xxx"});
 }
 
 int AircraftTableModel::columnCount(const QModelIndex &parent) const

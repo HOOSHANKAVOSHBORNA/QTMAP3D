@@ -34,15 +34,7 @@ CMainWindow {
 
 
     onClicked: function() {
-        if (wnd.widgetsVisible === true) {
-            widgetsShowAnimation.stop();
-            widgetsHideAnimation.start();
-            wnd.widgetsVisible = false;
-        } else {
-            widgetsHideAnimation.stop();
-            widgetsShowAnimation.start();
-            wnd.widgetsVisible = true;
-        }
+        toggleWidgetsVisible();
     }
 
     property var sideItemsModel: ListModel {
@@ -72,11 +64,11 @@ CMainWindow {
             side_itemurl: "qrc:/location/Location.qml"
         }
 
-//        ListElement {
-//            title_text:   "Info"
-//            icon_url:     "qrc:/Resources/info.png"
-//            side_itemurl: "qrc:/infotarget/InfoTarget.qml"
-//        }
+        //        ListElement {
+        //            title_text:   "Info"
+        //            icon_url:     "qrc:/Resources/info.png"
+        //            side_itemurl: "qrc:/infotarget/InfoTarget.qml"
+        //        }
     }
 
     property var toolboxModel: ListModel {
@@ -246,6 +238,45 @@ CMainWindow {
         }
 
     }
+    Component {
+        id: listModelComponent
+        ListModel {
+        }
+    }
+
+    StatusBars {
+        id: statusBar
+        anchors.bottom: parent.bottom
+        width: parent.width
+        height: childrenRect.height
+        latitude: wnd.mousePointingLocationWgs84.x
+        longitude: wnd.mousePointingLocationWgs84.y
+        altitude: wnd.mousePointingLocationWgs84.z
+
+        coordinate1: wnd.mousePointingLocation.x
+        coordinate2: wnd.mousePointingLocation.y
+        coordinate3: wnd.mousePointingLocation.z
+        message: "Ready"
+        timer: -1
+
+    }
+
+
+    Label {
+        id: fpsLabel
+        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
+        color: 'red'
+        font.pointSize: 30
+        font.weight: Font.Bold
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 100
+        anchors.rightMargin: 100
+    }
+    ContextmenuWidget {
+        id: contextmenu
+    }
+
 
     function menuWidgetClickCallback(index) {
         infoWidget.hideAllItems();
@@ -329,20 +360,20 @@ CMainWindow {
             }
             if (itemfound === false) {
                 fileModel.get(category_index).categoryModel.append({'itemName': itemDesc.name,
-                                                  'itemIcon' : itemDesc.iconUrl,
-                                                  'itemCheckable' : itemDesc.checkable
-                                              });
+                                               'itemIcon' : itemDesc.iconUrl,
+                                               'itemCheckable' : itemDesc.checkable
+                                           });
                 wnd.fileItemCreated(itemDesc);
             } else {
                 return false;
             }
         } else {
             fileModel.append({'categoryName': itemDesc.category,
-                            'categoryModel': listModelComponent.createObject(null, {})});
+                         'categoryModel': listModelComponent.createObject(null, {})});
             fileModel.get(fileModelCount).categoryModel.append({'itemName': itemDesc.name,
-                                             'itemIcon' : itemDesc.iconUrl,
-                                             'itemCheckable' : itemDesc.checkable
-                                         });
+                                           'itemIcon' : itemDesc.iconUrl,
+                                           'itemCheckable' : itemDesc.checkable
+                                       });
             wnd.fileItemCreated(itemDesc);
         }
 
@@ -351,6 +382,7 @@ CMainWindow {
 
 
     function showInfoItem(itemTypeString) {
+        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
         sideWidget.hideAllItems();
         infoWidget.showInfoItem(itemTypeString);
     }
@@ -358,58 +390,6 @@ CMainWindow {
         infoWidget.updateData(infoJson);
     }
 
-    Component {
-        id: listModelComponent
-        ListModel {
-        }
-    }
-
-    Component.onCompleted: function() {    }
-
-//    LocationWidget{
-//        anchors.left: navigationWidget.right
-//        anchors.leftMargin: _margin
-//        anchors.right: compass.left
-//        anchors.rightMargin: _margin / 2
-//        anchors.bottomMargin:  widgetsMargins
-//        y : wnd.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
-
-//        latitude: wnd.mousePointingLocationWgs84.x
-//        longitude: wnd.mousePointingLocationWgs84.y
-//        altitude: wnd.mousePointingLocationWgs84.z
-
-
-//    }
-
-    StatusBars {
-        id: statusBar
-        anchors.bottom: parent.bottom
-        width: parent.width
-        height: childrenRect.height
-        latitude: wnd.mousePointingLocationWgs84.x
-        longitude: wnd.mousePointingLocationWgs84.y
-        altitude: wnd.mousePointingLocationWgs84.z
-
-        coordinate1: wnd.mousePointingLocation.x
-        coordinate2: wnd.mousePointingLocation.y
-        coordinate3: wnd.mousePointingLocation.z
-        message: "Ready"
-        timer: -1
-
-    }
-
-
-    Label {
-        id: fpsLabel
-        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
-        color: 'red'
-        font.pointSize: 30
-        font.weight: Font.Bold
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.topMargin: 100
-        anchors.rightMargin: 100
-    }
 
     function showStatusMessage(message, timer) {
         statusBar.showMessage(message, timer);
@@ -425,8 +405,23 @@ CMainWindow {
         contextmenu.updatePosition(x, y)
     }
 
-    ContextmenuWidget {
-        id: contextmenu
+
+    function toggleWidgetsVisible() {
+        if (wnd.widgetsVisible === true) {
+            widgetsShowAnimation.stop();
+            widgetsHideAnimation.start();
+            wnd.widgetsVisible = false;
+
+
+        } else {
+            sideWidget.hideAllItems();
+            infoWidget.hideAllItems();
+
+            widgetsHideAnimation.stop();
+            widgetsShowAnimation.start();
+            wnd.widgetsVisible = true;
+        }
+
     }
 
 }

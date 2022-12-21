@@ -49,17 +49,27 @@ public slots:
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
     void onMessageReceived(const QJsonDocument &message);
+protected:
+    virtual void frameEvent() override;
+    virtual void mousePressEvent(QMouseEvent* event)override;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event)override {}
+    virtual void mouseMoveEvent(QMouseEvent* event)override;
 private:
+    BaseModel* pick(float x, float y);
+    void findSceneModels(osgViewer::Viewer *viewer);
     void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
     QMap<QString,QMap<QString, osgEarth::Annotation::ModelNode*>>  mModels;
     osgEarth::Annotation::ModelNode* mCurrentModel;
+    BaseModel* mLastSelectedModel{nullptr};
+    BaseModel* mLastMoveModel{nullptr};
     osg::PositionAttitudeTransform* modelNode;
 
     MapController *mMapController;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine = nullptr;
+    int mPreCameraRange{0};
 };
 
 #endif // MODEL_H
