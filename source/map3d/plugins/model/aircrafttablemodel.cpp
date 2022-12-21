@@ -1,4 +1,6 @@
 #include "aircrafttablemodel.h"
+#include <QHash>
+#include <QColor>
 
 AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
@@ -31,9 +33,9 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
             case  1: return QVariant::fromValue<QString>("IFFCode");
             case  2: return QVariant::fromValue<QString>("CallSign");
             case  3: return QVariant::fromValue<QString>("Type");
-            case  4: return QVariant::fromValue<QString>("MasterRadar");
+            case  4: return QVariant::fromValue<QString>("Master Radar");
             case  5: return QVariant::fromValue<QString>("Identification");
-            case  6: return QVariant::fromValue<QString>("IdentificationMethod");
+            case  6: return QVariant::fromValue<QString>("Identification Method");
             case  7: return QVariant::fromValue<QString>("Time");
             case  8: return QVariant::fromValue<QString>("Pos");
             case  9: return QVariant::fromValue<QString>("Latitude");
@@ -41,7 +43,7 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
             case 11: return QVariant::fromValue<QString>("Altitude");
             case 12: return QVariant::fromValue<QString>("Heading");
             case 13: return QVariant::fromValue<QString>("Speed");
-            case 14: return QVariant::fromValue<QString>("DetectionSystems");
+            case 14: return QVariant::fromValue<QString>("Detection Systems");
             case 15: return QVariant::fromValue<QString>("Sends");
             }
 
@@ -68,9 +70,36 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
 
         break;
     }
+
+    case BackColorRole:
+    {
+        if (index.row() == 0) {
+            return QVariant::fromValue<QColor>(QColor("skyblue"));
+        } else {
+            return QVariant::fromValue<QColor>(QColor("darkkhaki"));
+        }
+
+        break;
+    }
+
+    case TextColorRole:
+    {
+        return QVariant::fromValue<QColor>(QColor("black"));
+        break;
+    }
+
+
     }
 
     return QVariant();
+}
+
+QHash<int, QByteArray> AircraftTableModel::roleNames() const
+{
+    QHash<int, QByteArray> hash = QAbstractTableModel::roleNames();
+    hash[BackColorRole] = "d_bkcolor";
+    hash[TextColorRole] = "d_txtcolor";
+    return hash;
 }
 
 void AircraftTableModel::updateItemData(const QString &jsonStr)

@@ -32,10 +32,19 @@ class AircraftTableModel : public QAbstractTableModel
 public:
     AircraftTableModel(QObject * parent = nullptr);
 
+    enum CustomRoles {
+        BackColorRole = Qt::UserRole + 100,
+        TextColorRole = Qt::UserRole + 101
+    };
+
 public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QHash<int,QByteArray> roleNames() const override;
+
+
+
 
 public:
     void updateItemData(const QString& jsonStr);
