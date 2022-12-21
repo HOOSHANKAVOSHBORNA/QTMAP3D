@@ -2,7 +2,7 @@
 
 AirplaneContextMenumodel::AirplaneContextMenumodel(QObject * parent):QAbstractListModel(parent)
 {
-    a_list << "hello1";
+
 }
 
 int AirplaneContextMenumodel::rowCount(const QModelIndex &parent) const {

@@ -7,10 +7,7 @@ Item {
     id: rootItem
     anchors.fill: parent
 
-    property AircraftTableModel model: AircraftTableModel {
-
-    }
-
+    property AircraftTableModel model
     ScrollView {
         anchors.fill: parent
         TableView {

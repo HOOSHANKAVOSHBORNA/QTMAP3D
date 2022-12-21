@@ -121,6 +121,7 @@ void UIHandle::cmHideContextMenu(QQuickItem *contextMenu)
             QMetaObject::invokeMethod(mMainWindow,
                                       "hideContextmenu"
                                       );
+            mCurrentContextMenuItem = nullptr;
 
         }
     }
