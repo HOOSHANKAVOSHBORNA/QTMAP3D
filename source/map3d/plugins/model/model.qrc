@@ -8,5 +8,6 @@
         <file>resources/station_lll.png</file>
         <file>resources/system.png</file>
         <file>resources/station_lV.png</file>
+        <file>resources/system_1.png</file>
     </qresource>
 </RCC>
