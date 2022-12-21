@@ -12,8 +12,10 @@ CListWindow {
     property var selectColor: "#808080"
     property var unselectColor: "#606060"
     visible: true
-    width: 400
-    height: 300
+    x: 800
+    y: 600
+    width: 800
+    height: 600
     title: "List Window"
     color: "#404040"
     ColumnLayout {
