@@ -82,15 +82,19 @@ Aircraft::Aircraft(QQmlEngine *qmlEngine,MapController *value, UIHandle *uiHandl
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Green;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> lable = new osgEarth::Annotation::PlaceNode("Aircraft",labelStyle, yellowIcon);
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 12;
+//    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->haloImplementation() = osgText::Text::BackdropImplementation::POLYGON_OFFSET;
+//    labelStyle.getOrCreate<osgEarth::Symbology::IconSymbol>()->scale() = 0;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> lable = new osgEarth::Annotation::PlaceNode("Aircraft",labelStyle);
     lable->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 1));
     lable->setScale(osg::Vec3(1,1,1));
+    getGeoTransform()->addChild(lable);
     //--add nods--------------------------------------------------------------------------------
-    //mRoot->addChild(node, mIs3d);
+    mRoot->addChild(node, mIs3d);
     mRoot->addChild(redGeode, !mIs3d);
     mRoot->addChild(yellowGeode,false);
-    mRoot->addChild(lable, true);
+
+//    mRoot->addChild(lable, true);
     //----------------------------------------------------------------------------------------
     //osg::Vec3d center = getBound().center();
     float radius = getBound().radius();
@@ -265,6 +269,7 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
         }
         else
             mMapController->untrackNode();
+        event->accept();
     }
     if(event->button() == Qt::RightButton) {
         QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
@@ -272,9 +277,9 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
             qDebug() << comp2->errorString();
 
             if (comp2->status() == QQmlComponent::Ready) {
-                mCurrentContextMenuItem = (QQuickItem*) comp2->create(nullptr);
+                mCurrentContextMenuItem = static_cast<QQuickItem*>(comp2->create(nullptr));
                 AirplaneContextMenumodel *model = new AirplaneContextMenumodel;
-                model->addRow("test52");
+                model->addRow("test521");
                 model->addRow("test52");
                 model->addRow("test52");
 
