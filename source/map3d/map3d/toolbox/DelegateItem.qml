@@ -14,6 +14,8 @@ Item {
         anchors.top: rectangle.bottom
         anchors.left: parent.left
         anchors.right: parent.right
+
+
         radius: round
         opacity: 0.7
         border.color: "black"
@@ -24,7 +26,8 @@ Item {
             //anchors.fill : parent
             width: scroller.width -10
             anchors.top: parent.top
-            anchors.topMargin: 4
+            anchors.topMargin: 5
+//            anchors.bottomMargin: 100
             anchors.left: parent.left
             anchors.leftMargin: 4
             spacing: 10
@@ -67,7 +70,6 @@ Item {
 
 
                             }
-
 
                             Text {
                                 id:subtxt
@@ -124,8 +126,8 @@ Item {
         onToggled: {
             if (checked){
                 img1.rotation = 180
-                container.height += columnLayout.implicitHeight + widgetsMargins
-                delegateItem.height += columnLayout.implicitHeight + widgetsMargins
+                container.height += columnLayout.implicitHeight + widgetsMargins + 10
+                delegateItem.height += columnLayout.implicitHeight + widgetsMargins + 10
 
             }
             else{
