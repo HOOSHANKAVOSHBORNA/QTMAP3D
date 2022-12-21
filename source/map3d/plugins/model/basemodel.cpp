@@ -398,27 +398,27 @@ void BaseModel::mouseMoveEvent(QMouseEvent* event, bool onModel)
 void BaseModel::cameraRangeChanged(double range)
 {
 
-    osgEarth::Symbology::Style  style = getStyle();
-    if(!mIs3d && range < 300)
-    {
-//        qDebug()<<getQStringName();
-        setCullCallback(nullptr);
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
-        setStyle(style);
-        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-        mIs3d = true;
-        select(mIsSelected);
-    }
-    if(mIs3d && range > 300)
-    {
-//        qDebug()<<getQStringName();
-        setCullCallback(nullptr);
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-        setStyle(style);
-        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-        mIs3d = false;
-        select(mIsSelected);
-    }
+//    osgEarth::Symbology::Style  style = getStyle();
+//    if(!mIs3d && range < 300)
+//    {
+////        qDebug()<<getQStringName();
+//        setCullCallback(nullptr);
+//        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
+//        setStyle(style);
+//        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+//        mIs3d = true;
+//        select(mIsSelected);
+//    }
+//    if(mIs3d && range > 300)
+//    {
+////        qDebug()<<getQStringName();
+//        setCullCallback(nullptr);
+//        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+//        setStyle(style);
+//        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+//        mIs3d = false;
+//        select(mIsSelected);
+//    }
 }
 
 void BaseModel::curentPosition(osgEarth::GeoPoint pos)

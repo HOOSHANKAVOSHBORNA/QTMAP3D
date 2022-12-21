@@ -67,13 +67,13 @@ public:
     virtual void cameraRangeChanged(double /*range*/);
     virtual void curentPosition(osgEarth::GeoPoint pos);
     bool mCameraRangeChangeable{false};
+    void select(bool val);
 protected:
     bool mIsSelected{false};
     bool mIs3d{false};
     osg::ref_ptr<osg::Switch> mRoot;
 private:
     void collision(BaseModel *collidedWith);
-    void select(bool val);
     friend class ModelAnimationPathCallback;
     friend class PickHandler;
 private:

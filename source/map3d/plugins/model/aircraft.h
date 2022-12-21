@@ -36,6 +36,8 @@ public:
     void iwFollowButtonClicked();
     Q_INVOKABLE
     void iwMoreButtonClicked();
+public slots:
+    void onModeChanged(bool is3DView);
 public:
     virtual void mousePressEvent(QMouseEvent *event, bool onModel) override;
     virtual void curentPosition(osgEarth::GeoPoint pos) override;
