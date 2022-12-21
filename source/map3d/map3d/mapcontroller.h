@@ -38,6 +38,7 @@ signals:
     void focalPointHeadChanged(qreal focalPointHead);
 
     void fpsChanged(qreal fps);
+    void modeChanged(bool is3DView);
 
 public:
     osgViewer::Viewer *getViewer();
@@ -61,7 +62,8 @@ public slots:
     void goToHome();
     void goToPosition(double latitude, double longitude, double range);
     void goToPosition(osgEarth::GeoPoint mapPoint, double range);
-    void set3DView(bool is3DView);
+    void setMode(bool is3DView);
+    bool getMode();
     void setGeocentric(bool geocentric);
     void toggle3DView();
     void frame();

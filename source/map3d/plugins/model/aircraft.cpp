@@ -23,6 +23,8 @@ Aircraft::Aircraft(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *
     :BaseModel(mapNode, parent)
 {
     mMapController = value;
+    mIs3d = mMapController->getMode();
+
     mUIHandle = uiHandle;
     if (!node)
     {
@@ -35,7 +37,8 @@ Aircraft::Aircraft(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRoot);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 100000000000;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 100;
 
 //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
 //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
@@ -73,14 +76,14 @@ Aircraft::Aircraft(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *
 //    osgEarth::Annotation::ImageOverlay*  yellowImageOverlay = new osgEarth::Annotation::ImageOverlay(getMapNode(), yellowIcon);
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Green;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    labelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 0.1;
-    osg::ref_ptr<osgEarth::Annotation::LabelNode> lable = new osgEarth::Annotation::LabelNode("Aircraft",labelStyle);
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> lable = new osgEarth::Annotation::PlaceNode("Aircraft",labelStyle, yellowIcon);
+    lable->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 1));
     lable->setScale(osg::Vec3(1,1,1));
     //--add nods--------------------------------------------------------------------------------
-    mRoot->addChild(node, false);
-    mRoot->addChild(redGeode,true);
+    //mRoot->addChild(node, mIs3d);
+    mRoot->addChild(redGeode, !mIs3d);
     mRoot->addChild(yellowGeode,false);
     mRoot->addChild(lable, true);
     //----------------------------------------------------------------------------------------
@@ -102,6 +105,9 @@ Aircraft::Aircraft(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *
     mCameraRangeChangeable = true;
     mLocationPoints = new osg::Vec3Array();
     mTempLocationPoints = new osg::Vec3Array();
+
+    //map mode changed
+    connect(mMapController, &MapController::modeChanged, this, &Aircraft::onModeChanged);
 }
 
 void Aircraft::flyTo(const osg::Vec3d &pos, double heading, double speed)
@@ -233,6 +239,12 @@ void Aircraft::iwFollowButtonClicked()
 void Aircraft::iwMoreButtonClicked()
 {
     qDebug()<<"iwMoreButtonClicked";
+}
+
+void Aircraft::onModeChanged(bool is3DView)
+{
+    mIs3d = is3DView;
+    select(mIsSelected);
 }
 
 void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)

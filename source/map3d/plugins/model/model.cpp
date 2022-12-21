@@ -22,6 +22,7 @@
 
 #include <osgDB/ReadFile>
 #include <osgEarthSymbology/GeometryFactory>
+#include <osgEarthAnnotation/LabelNode>
 #include <osgEarthAnnotation/ModelNode>
 #include <osg/PositionAttitudeTransform>
 #include <osgEarth/GeoData>
@@ -94,6 +95,27 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
         QString name = AIRCRAFT + QString::number(mModels[AIRCRAFT].count());
         addAircraftModel(name, position, -30);
         //demo();
+//        osgEarth::Symbology::Style labelStyle;
+//        labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
+//        labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Green;
+//        labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
+//        osg::ref_ptr<osgEarth::Annotation::LabelNode> lable = new osgEarth::Annotation::LabelNode("Test",labelStyle);
+
+//        osgEarth::Symbology::Style modelStyle;
+//        modelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+//        modelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(lable);
+//        modelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxSizeX() = 0.002;
+//        modelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxSizeY() = 0.002;
+
+//        osg::ref_ptr<osgEarth::Annotation::ModelNode> ml = new osgEarth::Annotation::ModelNode(mMapController->getMapNode(),modelStyle);
+//        //ml->getGeoTransform()->addChild(lable);
+//        lable->setPosition(mModels[AIRCRAFT].first()->getPosition());
+////        lable->setScale(osg::Vec3(1,1,1));
+//        mMapController->addNode(lable);
+        //        osgEarth::Symbology::Style modelStyle;
+        //        osg::ref_ptr<osgEarth::Annotation::PlaceNode> ml = new osgEarth::Annotation::PlaceNode("test",modelStyle);
+        //        ml->setPosition(mModels[AIRCRAFT].first()->getPosition());
+        //        mMapController->addNode(ml);
     }
     if(CATEGORY == category && name == ADD_ROCKET)
     {
