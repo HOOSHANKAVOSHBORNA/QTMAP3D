@@ -36,9 +36,11 @@
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/ExplosionDebrisEffect>
 #include <osgViewer/Viewer>
+#include <QQuickItem>
 
 
 #include "aircrafttablemodel.h"
+#include "airplanecontextmenumodel.h"
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
@@ -68,7 +70,7 @@ bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
     //    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
     qmlRegisterType<AircraftTableModel>("Crystal", 1, 0, "AircraftTableModel");
-
+    qmlRegisterType<AirplaneContextMenumodel>("Crystal", 1, 0, "AirplaneContextMenumodel");
     mQmlEngine = engine;
 
     QString cat = "model";
@@ -172,12 +174,18 @@ bool Model::setup(MapController *pMapController,
 
         if (comp->status() == QQmlComponent::Ready) {
             QQuickItem *item = (QQuickItem*) comp->create(nullptr);
+            AircraftTableModel *model = new AircraftTableModel;
+            item->setProperty("model", QVariant::fromValue<AircraftTableModel*>(model));
             mUIHandle->lwAddTab("Aircrafts", item);
         }
 
     });
 
     comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
+
+
+
+
 
 }
 
@@ -291,7 +299,7 @@ void Model::addAircraftModel(QString name, osg::Vec3d geographicPosition, double
 
     //create and setting model--------------------------------------------
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/aircraft/airplane-red.osgb");
-    osg::ref_ptr<Aircraft> model = new Aircraft(mMapController,mUIHandle, mMapController->getMapNode(), node);
+    osg::ref_ptr<Aircraft> model = new Aircraft(mQmlEngine,mMapController,mUIHandle, mMapController->getMapNode(), node);
     //    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
     model->setName(name.toStdString());
     model->setGeographicPosition(geographicPosition, heading);
@@ -463,19 +471,17 @@ void Model::frameEvent()
 
 void Model::mousePressEvent(QMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton)
+
+    BaseModel* model = pick(event->x(), event->y());
+    if(model)
     {
-        BaseModel* model = pick(event->x(), event->y());
-        if(model)
-        {
-            model->mousePressEvent(event, true);
-            event->accept();
-        }
-        if(mLastSelectedModel && mLastSelectedModel != model)
-            mLastSelectedModel->mousePressEvent(event, false);
-        if(model)
-            mLastSelectedModel = model;
+        model->mousePressEvent(event, true);
+        event->accept();
     }
+    if(mLastSelectedModel && mLastSelectedModel != model)
+        mLastSelectedModel->mousePressEvent(event, false);
+    if(model)
+        mLastSelectedModel = model;
 
 }
 
