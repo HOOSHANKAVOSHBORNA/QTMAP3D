@@ -1,4 +1,5 @@
 ﻿#include "aircraft.h"
+#include "airplanecontextmenumodel.h"
 #include "draw.h"
 
 #include <QDebug>
@@ -8,6 +9,9 @@
 #include <osgViewer/View>
 #include <osgEarth/IntersectionPicker>
 #include <QMouseEvent>
+#include <QQmlComponent>
+#include <QQmlEngine>
+#include <QQuickItem>
 #include <QTimer>
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/LabelNode>
@@ -19,9 +23,10 @@
 
 
 
-Aircraft::Aircraft(MapController *value, UIHandle *uiHandle, osgEarth::MapNode *mapNode, osg::Node *node, QObject *parent)
+Aircraft::Aircraft(QQmlEngine *qmlEngine,MapController *value, UIHandle *uiHandle, osgEarth::MapNode *mapNode, osg::Node *node, QObject *parent)
     :BaseModel(mapNode, parent)
 {
+    mQmlEngine = qmlEngine;
     mMapController = value;
     mIs3d = mMapController->getMode();
 
@@ -249,15 +254,49 @@ void Aircraft::onModeChanged(bool is3DView)
 
 void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
 {
-    BaseModel::mousePressEvent(event, onModel);
-    if(onModel)
+    if(event->button() == Qt::LeftButton)
     {
-        mUIHandle->iwSetReceiverObject(this);
-        mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
-        mUIHandle->iwUpdateData(this, mInformation);
+        BaseModel::mousePressEvent(event, onModel);
+        if(onModel)
+        {
+            mUIHandle->iwSetReceiverObject(this);
+            mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
+            mUIHandle->iwUpdateData(this, mInformation);
+        }
+        else
+            mMapController->untrackNode();
     }
-    else
-        mMapController->untrackNode();
+    if(event->button() == Qt::RightButton) {
+        QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
+        QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
+            qDebug() << comp2->errorString();
+
+            if (comp2->status() == QQmlComponent::Ready) {
+                mCurrentContextMenuItem = (QQuickItem*) comp2->create(nullptr);
+                AirplaneContextMenumodel *model = new AirplaneContextMenumodel;
+                model->addRow("test52");
+                model->addRow("test52");
+                model->addRow("test52");
+
+                mCurrentContextMenuItem->setProperty("model", QVariant::fromValue<AirplaneContextMenumodel*>(model));
+
+                osg::Vec3d wordPos;
+                getPosition().toWorld(wordPos);
+                float x, y;
+                QQmlEngine::setObjectOwnership(mCurrentContextMenuItem, QQmlEngine::JavaScriptOwnership);
+                mMapController->worldToScreen(wordPos,x, y);
+                mUIHandle->cmShowContextMenu(mCurrentContextMenuItem, x, y);
+            }
+
+        });
+
+        comp2->loadUrl(QUrl("qrc:/modelplugin/AircraftContextmenuView.qml"));
+    }
+    if(!onModel && mCurrentContextMenuItem){
+        mUIHandle->cmHideContextMenu(mCurrentContextMenuItem);
+        mCurrentContextMenuItem = nullptr;
+    }
+
 }
 
 void Aircraft::curentPosition(osgEarth::GeoPoint pos)

@@ -4,17 +4,18 @@ import QtQuick 2.0
 Item {
     id: root
     property var nowItem: null
-
+    height: parent.height
     function showItem(item) {
         if (nowItem)
-            removeItem()
-        item.parent = root.parent
+            hideItem()
+        item.parent = root
         nowItem = item
+
     }
 
     function updatePosition(x, y) {
-        nowItem.x = x
-        nowItem.y = y
+        root.x = x
+        root.y = y
     }
 
     function hideItem(){

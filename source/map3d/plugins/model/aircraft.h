@@ -22,7 +22,7 @@ class Aircraft: public BaseModel
 {
     Q_OBJECT
 public:
-    Aircraft(MapController *value, UIHandle* uiHandle, osgEarth::MapNode* mapNode, osg::Node* node, QObject* parent = nullptr);
+    Aircraft(QQmlEngine *qmlEngine, MapController *value, UIHandle* uiHandle, osgEarth::MapNode* mapNode, osg::Node* node, QObject* parent = nullptr);
     void flyTo(const osg::Vec3d& pos, double heading, double speed);
     void stop() override;
     void setTruckModel(osgEarth::Annotation::ModelNode* truckModel);
@@ -58,6 +58,8 @@ private:
     QString mInformation;
     osg::ref_ptr<osg::Vec3Array> mLocationPoints;
     osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
+    QQmlEngine *mQmlEngine;
+    QQuickItem *mCurrentContextMenuItem;
 };
 
 #endif // FLYINGMODEL_H
