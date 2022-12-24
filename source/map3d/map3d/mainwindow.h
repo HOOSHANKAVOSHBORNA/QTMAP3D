@@ -31,6 +31,19 @@ class MainWindow : public QQuickWindow
     Q_PROPERTY(qreal focalPointHead READ focalPointHead WRITE setFocalPointHead NOTIFY focalPointHeadChanged)
     Q_PROPERTY(qreal fps READ fps WRITE setFps NOTIFY fpsChanged)
 
+
+    Q_PROPERTY(bool zoomInButtonPressed      READ zoomInButtonPressed      WRITE setZoomInButtonPressed      NOTIFY zoomInButtonPressedChanged)
+    Q_PROPERTY(bool zoomOutButtonPressed     READ zoomOutButtonPressed     WRITE setZoomOutButtonPressed     NOTIFY zoomOutButtonPressedChanged)
+    Q_PROPERTY(bool upButtonPressed          READ upButtonPressed          WRITE setUpButtonPressed          NOTIFY upButtonPressedChanged)
+    Q_PROPERTY(bool downButtonPressed        READ downButtonPressed        WRITE setdownButtonPressed        NOTIFY downButtonPressedChanged)
+    Q_PROPERTY(bool leftButtonPressed        READ leftButtonPressed        WRITE setleftButtonPressed        NOTIFY leftButtonPressedChanged)
+    Q_PROPERTY(bool rightButtonPressed       READ rightButtonPressed       WRITE setrightButtonPressed       NOTIFY rightButtonPressedChanged)
+    Q_PROPERTY(bool rotateUpButtonPressed    READ rotateUpButtonPressed    WRITE setrotateUpButtonPressed    NOTIFY rotateUpButtonPressedChanged)
+    Q_PROPERTY(bool rotateDownButtonPressed  READ rotateDownButtonPressed  WRITE setrotateDownButtonPressed  NOTIFY rotateDownButtonPressedChanged)
+    Q_PROPERTY(bool rotateLeftButtonPressed  READ rotateLeftButtonPressed  WRITE setrotateLeftButtonPressed  NOTIFY rotateLeftButtonPressedChanged)
+    Q_PROPERTY(bool rotateRightButtonPressed READ rotateRightButtonPressed WRITE setrotateRightButtonPressed NOTIFY rotateRightButtonPressedChanged)
+
+
     enum class InfoWidgetType {
         Airplane,
         Station,
@@ -51,8 +64,18 @@ public:
     qreal focalPointPitch() const;
     qreal focalPointHead() const;
 
-
     qreal fps() const;
+
+    bool zoomInButtonPressed() const;
+    bool zoomOutButtonPressed() const;
+    bool upButtonPressed() const;
+    bool downButtonPressed() const;
+    bool leftButtonPressed() const;
+    bool rightButtonPressed() const;
+    bool rotateUpButtonPressed() const;
+    bool rotateDownButtonPressed() const;
+    bool rotateLeftButtonPressed() const;
+    bool rotateRightButtonPressed() const;
 
     UIHandle *uiHandle() const;
 
@@ -74,16 +97,6 @@ signals:
 
     void homeButtonClicked();
     void view3DButtonClicked();
-    void zoomInButtonClicked();
-    void zoomOutButtonClicked();
-    void upButtonClicked();
-    void downButtonClicked();
-    void leftButtonClicked();
-    void rightButtonClicked();
-    void rotateUpButtonClicked();
-    void rotateDownButtonClicked();
-    void rotateLeftButtonClicked();
-    void rotateRightButtonClicked();
 
     void headingAngleChanged(qreal angle);
     void mousePointingLocationWgs84Changed();
@@ -98,6 +111,20 @@ signals:
 
     void fpsChanged();
 
+
+    void zoomInButtonPressedChanged();
+    void zoomOutButtonPressedChanged();
+    void upButtonPressedChanged();
+    void downButtonPressedChanged();
+    void leftButtonPressedChanged();
+    void rightButtonPressedChanged();
+    void rotateUpButtonPressedChanged();
+    void rotateDownButtonPressedChanged();
+    void rotateLeftButtonPressedChanged();
+    void rotateRightButtonPressedChanged();
+
+
+
 public slots:
     void initializePluginsUI(std::list<PluginInfo>& pluginsInfoList);
     void setHeadingAngle(qreal angle);
@@ -111,6 +138,17 @@ public slots:
     void setFocalPointHead(qreal focalPointHead) ;
 
     void setFps(qreal fps);
+
+    void setZoomInButtonPressed(bool pressed);
+    void setZoomOutButtonPressed(bool pressed);
+    void setUpButtonPressed(bool pressed);
+    void setdownButtonPressed(bool pressed);
+    void setleftButtonPressed(bool pressed);
+    void setrightButtonPressed(bool pressed);
+    void setrotateUpButtonPressed(bool pressed);
+    void setrotateDownButtonPressed(bool pressed);
+    void setrotateLeftButtonPressed(bool pressed);
+    void setrotateRightButtonPressed(bool pressed);
 
     void travelToViewpoint(qreal latitude,
                            qreal longitude,
@@ -131,6 +169,7 @@ public:
 public slots:
     void cleanup();
     void frame();
+    void tickNavigation(double deltaTime);
 
     void restoreContext();
     void setListWindow(ListWindow *listWindow);
@@ -195,6 +234,17 @@ private:
     qreal mFocalPointHead = 0.0;
 
     qreal mFps = 0.0f;
+
+    bool mZoomInButtonPressed{false};
+    bool mZoomOutButtonPressed{false};
+    bool mUpButtonPressed{false};
+    bool mDownButtonPressed{false};
+    bool mLeftButtonPressed{false};
+    bool mRightButtonPressed{false};
+    bool mRotateUpButtonPressed{false};
+    bool mRotateDownButtonPressed{false};
+    bool mRotateLeftButtonPressed{false};
+    bool mRotateRightButtonPressed{false};
 
     UIHandle *mUIHandle = nullptr;
 
