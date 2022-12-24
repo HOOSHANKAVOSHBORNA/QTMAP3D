@@ -12,18 +12,32 @@ Item {
     property bool showRecMov: true
     property real myDuration: 300.0
     // signal Button
-    signal btnUpClicked()
-    signal btnDownClicked()
-    signal btnLeftClicked()
-    signal btnRightClicked()
+//    signal btnUpClicked()
+//    signal btnDownClicked()
+//    signal btnLeftClicked()
+//    signal btnRightClicked()
+//
+//    signal btnRotateUpClicked()
+//    signal btnRotateDownClicked()
+//    signal btnRotateLeftClicked()
+//    signal btnRotateRightClicked()
+//
+//    signal btnZoomInClicked()
+//    signal btnZoomOutClicked()
 
-    signal btnRotateUpClicked()
-    signal btnRotateDownClicked()
-    signal btnRotateLeftClicked()
-    signal btnRotateRightClicked()
+    property bool zoomInButtonPressed: positive.pressed
+    property bool zoomOutButtonPressed: negative.pressed
 
-    signal btnZoomInClicked()
-    signal btnZoomOutClicked()
+    property bool upButtonPressed:    moveControlCamera.upButtonPressed
+    property bool downButtonPressed:  moveControlCamera.downButtonPressed
+    property bool leftButtonPressed:  moveControlCamera.leftButtonPressed
+    property bool rightButtonPressed: moveControlCamera.rightButtonPressed
+
+    property bool rotateUpButtonPressed:   rotationControlCamera.upButtonPressed
+    property bool rotateDownButtonPressed: rotationControlCamera.downButtonPressed
+    property bool rotateLeftButtonPressed: rotationControlCamera.leftButtonPressed
+    property bool rotateRightButtonPressed:rotationControlCamera.rightButtonPressed
+
 
     signal btnHomeClicked()
     signal btnProjectionClicked()
@@ -45,11 +59,11 @@ Item {
 
             clip: true
             ControlCamera{
-                id: recRotation
+                id: rotationControlCamera
                 width: 100
                 radius: _radius
                 anchors.leftMargin: _margin
-                anchors.left: recMove.right
+                anchors.left: moveControlCamera.right
                 anchors.rightMargin: 0
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 1
@@ -57,26 +71,11 @@ Item {
                 anchors.topMargin: 3
                 color: "transparent"
                 buttonIcon: "qrc:/Resources/rotate.png"
-                onItemClicked: {
-                    switch (direction){
-                    case "UP" :
-                        btnRotateUpClicked()
-                        break
-                    case "DOWN" :
-                        btnRotateDownClicked()
-                        break
-                    case "LEFT" :
-                        btnRotateLeftClicked()
-                        break
-                    case "RIGHT" :
-                        btnRotateRightClicked()
-                    }
-                }
 
             }
 
             ControlCamera{
-                id: recMove
+                id: moveControlCamera
                 width: 100
                 x: positionFactor * 215
                 anchors.rightMargin: _margin
@@ -85,21 +84,6 @@ Item {
                 anchors.top: parent.top
                 anchors.topMargin: 3
                 color: "transparent"
-                onItemClicked: {
-                    switch (direction){
-                    case "UP" :
-                        btnUpClicked()
-                        break
-                    case "DOWN" :
-                        btnDownClicked()
-                        break
-                    case "LEFT" :
-                        btnLeftClicked()
-                        break
-                    case "RIGHT" :
-                        btnRightClicked()
-                    }
-                }
             }
         }
 
@@ -172,18 +156,6 @@ Item {
                     color:_colorRec
                     radius: _radius
                 }
-                //onClicked: btnZoomInClicked()
-                onPressed:{
-                    timerPositive.running =true
-                }
-                onReleased:{
-                    timerPositive.running = false
-                }
-                Timer {
-                    id:timerPositive
-                    interval: 150; running: false; repeat: true
-                    onTriggered:  btnZoomInClicked()
-                }
             }
 
 
@@ -221,18 +193,6 @@ Item {
                 background:Rectangle {
                     color:_colorRec
                     radius: _radius
-                }
-
-                onPressed:{
-                    timerNegative.running =true
-                }
-                onReleased:{
-                    timerNegative.running = false
-                }
-                Timer {
-                    id:timerNegative
-                    interval: 150; running: false; repeat: true
-                    onTriggered:  btnZoomOutClicked()
                 }
             }
 

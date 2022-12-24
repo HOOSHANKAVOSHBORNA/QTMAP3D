@@ -25,6 +25,18 @@ CMainWindow {
     property string modeMap: "geocentric"
 
 
+    zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
+    zoomOutButtonPressed:     navigationWidget.zoomOutButtonPressed
+    upButtonPressed:          navigationWidget.upButtonPressed
+    downButtonPressed:        navigationWidget.downButtonPressed
+    leftButtonPressed:        navigationWidget.leftButtonPressed
+    rightButtonPressed:       navigationWidget.rightButtonPressed
+    rotateUpButtonPressed:    navigationWidget.rotateUpButtonPressed
+    rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
+    rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
+    rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
+
+
     id: wnd
     visible: true
     minimumWidth: 800
@@ -204,37 +216,6 @@ CMainWindow {
             onBtnProjectionClicked: function() {
                 wnd.view3DButtonClicked();
             }
-            onBtnZoomInClicked: {
-                wnd.zoomInButtonClicked();
-            }
-            onBtnZoomOutClicked: {
-                wnd.zoomOutButtonClicked();
-            }
-            onBtnUpClicked: {
-                wnd.upButtonClicked();
-            }
-            onBtnDownClicked: {
-                wnd.downButtonClicked();
-            }
-            onBtnLeftClicked: {
-                wnd.leftButtonClicked();
-            }
-            onBtnRightClicked: {
-                wnd.rightButtonClicked();
-            }
-            onBtnRotateLeftClicked:{
-                wnd.rotateLeftButtonClicked();
-            }
-            onBtnRotateRightClicked:{
-                wnd.rotateRightButtonClicked();
-            }
-            onBtnRotateDownClicked: {
-                wnd.rotateDownButtonClicked();
-            }
-            onBtnRotateUpClicked: {
-                wnd.rotateUpButtonClicked();
-            }
-            ///
         }
 
     }

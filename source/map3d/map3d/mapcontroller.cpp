@@ -238,7 +238,7 @@ void MapController::addLayer(osgEarth::Layer *layer)
     }
 }
 
-void MapController::setZoom(double val)
+void MapController::zoom(double val)
 {
     getEarthManipulator()->zoom(0, -val, getViewer());
 }
@@ -358,55 +358,17 @@ void MapController::frame()
 
 }
 
-void MapController::panUp()
+void MapController::pan(double xVal, double yVal)
 {
-    getEarthManipulator()->pan(0.0, -0.3);
+    getEarthManipulator()->pan(xVal, yVal);
 }
 
-void MapController::panDown()
+void MapController::rotate(double xVal, double yVal)
 {
-    getEarthManipulator()->pan(0.0, 0.3);
+    getEarthManipulator()->rotate(xVal, yVal);
 }
 
-void MapController::panLeft()
-{
-    getEarthManipulator()->pan(0.3, 0.0);
-}
 
-void MapController::panRight()
-{
-    getEarthManipulator()->pan(-0.3, 0.0);
-}
-
-void MapController::rotateUp()
-{
-    getEarthManipulator()->rotate(0.0, -0.3);
-}
-
-void MapController::rotateDown()
-{
-    getEarthManipulator()->rotate(0.0, 0.3);
-}
-
-void MapController::rotateLeft()
-{
-    getEarthManipulator()->rotate(-0.3, 0.0);
-}
-
-void MapController::rotateRight()
-{
-    getEarthManipulator()->rotate(0.1, 0.0);
-}
-
-void MapController::zoomIn()
-{
-    getEarthManipulator()->zoom(0.0, -0.4, getViewer());
-}
-
-void MapController::zoomOut()
-{
-    getEarthManipulator()->zoom(0.0, 0.4, getViewer());
-}
 
 
 void MapController::travelToViewpoint(qreal latitude,
