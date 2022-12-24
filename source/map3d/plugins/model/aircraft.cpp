@@ -1,5 +1,5 @@
 ﻿#include "aircraft.h"
-#include "airplanecontextmenumodel.h"
+#include "aircraftcontextmenumodel.h"
 #include "draw.h"
 
 #include <QDebug>
@@ -267,7 +267,7 @@ void Aircraft::frameEvent()
     getPosition().toWorld(wordPos);
     float x, y;
     mMapController->worldToScreen(wordPos,x, y);
-    mUIHandle->cmSetContextMenuPosition(mCurrentContextMenuItem, x, y);
+    mUIHandle->cmSetContextMenuPosition(mCurrentContextMenuItem, static_cast<int>(x), static_cast<int>(y));
 }
 
 void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -286,13 +286,13 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
             mMapController->untrackNode();
     }
     if(event->button() == Qt::RightButton) {
-        QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
-        QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
-            qDebug() << comp2->errorString();
+        QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+        QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+            qDebug() << comp->errorString();
 
-            if (comp2->status() == QQmlComponent::Ready) {
-                mCurrentContextMenuItem = static_cast<QQuickItem*>(comp2->create(nullptr));
-                AirplaneContextMenumodel *model = new AirplaneContextMenumodel;
+            if (comp->status() == QQmlComponent::Ready) {
+                mCurrentContextMenuItem = static_cast<QQuickItem*>(comp->create(nullptr));
+                AircraftContextMenumodel *model = new AircraftContextMenumodel;
                 model->addRow("test1");
                 model->addRow("test12");
                 model->addRow("test123");
@@ -308,20 +308,20 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
                 model->addRow("test1");
                 model->addRow("test12");
                 model->addRow("test123");
-                mCurrentContextMenuItem->setProperty("model", QVariant::fromValue<AirplaneContextMenumodel*>(model));
+                mCurrentContextMenuItem->setProperty("model", QVariant::fromValue<AircraftContextMenumodel*>(model));
 
                 osg::Vec3d wordPos;
                 getPosition().toWorld(wordPos);
                 float x, y;
                 QQmlEngine::setObjectOwnership(mCurrentContextMenuItem, QQmlEngine::JavaScriptOwnership);
                 mMapController->worldToScreen(wordPos,x, y);
-                mUIHandle->cmShowContextMenu(mCurrentContextMenuItem, x, y);
-                connect(model, &AirplaneContextMenumodel::returnIndex, this, &Aircraft::onContextmenuItemClicked);
+                mUIHandle->cmShowContextMenu(mCurrentContextMenuItem, static_cast<int>(x), static_cast<int>(y));
+                connect(model, &AircraftContextMenumodel::itemClicked, this, &Aircraft::onContextmenuItemClicked);
             }
 
         });
 
-        comp2->loadUrl(QUrl("qrc:/modelplugin/AircraftContextmenuView.qml"));
+        comp->loadUrl(QUrl("qrc:/modelplugin/AircraftContextmenuView.qml"));
     }
     if(!onModel && mCurrentContextMenuItem){
         mUIHandle->cmHideContextMenu(mCurrentContextMenuItem);
@@ -329,8 +329,8 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
     }
 
 }
-void Aircraft::onContextmenuItemClicked(int index){
-    std::cout << index << std::endl;
+void Aircraft::onContextmenuItemClicked(int index,  QString systemName){
+    std::cout << index << ", " << systemName.toStdString() << std::endl;
 }
 
 void Aircraft::curentPosition(osgEarth::GeoPoint pos)
