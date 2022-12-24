@@ -22,6 +22,7 @@
 
 #include <osgDB/ReadFile>
 #include <osgEarthSymbology/GeometryFactory>
+#include <osgEarthAnnotation/LabelNode>
 #include <osgEarthAnnotation/ModelNode>
 #include <osg/PositionAttitudeTransform>
 #include <osgEarth/GeoData>
@@ -476,7 +477,6 @@ void Model::mousePressEvent(QMouseEvent *event)
     if(model)
     {
         model->mousePressEvent(event, true);
-        event->accept();
     }
     if(mLastSelectedModel && mLastSelectedModel != model)
         mLastSelectedModel->mousePressEvent(event, false);

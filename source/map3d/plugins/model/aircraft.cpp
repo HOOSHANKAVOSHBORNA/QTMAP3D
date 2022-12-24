@@ -28,6 +28,8 @@ Aircraft::Aircraft(QQmlEngine *qmlEngine,MapController *value, UIHandle *uiHandl
 {
     mQmlEngine = qmlEngine;
     mMapController = value;
+    mIs3d = mMapController->getMode();
+
     mUIHandle = uiHandle;
     if (!node)
     {
@@ -40,7 +42,8 @@ Aircraft::Aircraft(QQmlEngine *qmlEngine,MapController *value, UIHandle *uiHandl
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRoot);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 100000000000;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 100;
 
 //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
 //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
@@ -78,16 +81,20 @@ Aircraft::Aircraft(QQmlEngine *qmlEngine,MapController *value, UIHandle *uiHandl
 //    osgEarth::Annotation::ImageOverlay*  yellowImageOverlay = new osgEarth::Annotation::ImageOverlay(getMapNode(), yellowIcon);
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    labelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 0.1;
-    osg::ref_ptr<osgEarth::Annotation::LabelNode> lable = new osgEarth::Annotation::LabelNode("Aircraft",labelStyle);
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Green;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 12;
+//    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->haloImplementation() = osgText::Text::BackdropImplementation::POLYGON_OFFSET;
+//    labelStyle.getOrCreate<osgEarth::Symbology::IconSymbol>()->scale() = 0;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> lable = new osgEarth::Annotation::PlaceNode("Aircraft",labelStyle);
+    lable->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 1));
     lable->setScale(osg::Vec3(1,1,1));
+    getGeoTransform()->addChild(lable);
     //--add nods--------------------------------------------------------------------------------
-    mRoot->addChild(node, false);
-    mRoot->addChild(redGeode,true);
+    mRoot->addChild(node, mIs3d);
+    mRoot->addChild(redGeode, !mIs3d);
     mRoot->addChild(yellowGeode,false);
-    mRoot->addChild(lable, true);
+
+//    mRoot->addChild(lable, true);
     //----------------------------------------------------------------------------------------
     //osg::Vec3d center = getBound().center();
     float radius = getBound().radius();
@@ -107,6 +114,9 @@ Aircraft::Aircraft(QQmlEngine *qmlEngine,MapController *value, UIHandle *uiHandl
     mCameraRangeChangeable = true;
     mLocationPoints = new osg::Vec3Array();
     mTempLocationPoints = new osg::Vec3Array();
+
+    //map mode changed
+    connect(mMapController, &MapController::modeChanged, this, &Aircraft::onModeChanged);
 }
 
 void Aircraft::flyTo(const osg::Vec3d &pos, double heading, double speed)
@@ -240,6 +250,12 @@ void Aircraft::iwMoreButtonClicked()
     qDebug()<<"iwMoreButtonClicked";
 }
 
+void Aircraft::onModeChanged(bool is3DView)
+{
+    mIs3d = is3DView;
+    select(mIsSelected);
+}
+
 void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
 {
     if(event->button() == Qt::LeftButton)
@@ -253,6 +269,7 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
         }
         else
             mMapController->untrackNode();
+        event->accept();
     }
     if(event->button() == Qt::RightButton) {
         QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
@@ -260,9 +277,9 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
             qDebug() << comp2->errorString();
 
             if (comp2->status() == QQmlComponent::Ready) {
-                mCurrentContextMenuItem = (QQuickItem*) comp2->create(nullptr);
+                mCurrentContextMenuItem = static_cast<QQuickItem*>(comp2->create(nullptr));
                 AirplaneContextMenumodel *model = new AirplaneContextMenumodel;
-                model->addRow("test52");
+                model->addRow("test521");
                 model->addRow("test52");
                 model->addRow("test52");
 

@@ -267,7 +267,7 @@ void MapController::goToPosition(osgEarth::GeoPoint mapPoint, double range)
     setViewpoint(vp, 3.0);
 }
 
-void MapController::set3DView(bool is3DView)
+void MapController::setMode(bool is3DView)
 {
     mIs3DView = is3DView;
     auto  settings = mEarthManipulator->getSettings();
@@ -278,6 +278,12 @@ void MapController::set3DView(bool is3DView)
         settings->setMinMaxPitch(-90, -90);
         mEarthManipulator->setRotation(osg::Quat());
     }
+    emit modeChanged(is3DView);
+}
+
+bool MapController::getMode()
+{
+    return mIs3DView;
 }
 
 void MapController::setGeocentric(bool geocentric)
@@ -304,7 +310,7 @@ void MapController::setGeocentric(bool geocentric)
 void MapController::toggle3DView()
 {
 //    setGeocentric(!mGeocentric);
-    set3DView(!mIs3DView);
+    setMode(!mIs3DView);
 }
 
 void MapController::frame()

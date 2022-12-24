@@ -16,7 +16,7 @@ Item {
         delegate: Button {
                 Text {
                     anchors.centerIn: parent
-                    text: display
+                    text: disp
                     color: "white"
                 }
                 background: Rectangle {
