@@ -104,8 +104,6 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
     //    mGeodeParticle->addDrawable(mSmoke->getParticleSystem());
     //    osgEarth::Registry::shaderGenerator().run(mGeodeParticle);// for textures or lighting
     //    getMapNode()->addChild(mGeodeParticle);
-
-    mCameraRangeChangeable = true;
     mLocationPoints = new osg::Vec3Array();
     mTempLocationPoints = new osg::Vec3Array();
 
@@ -249,8 +247,8 @@ void Aircraft::onModeChanged(bool is3DView)
     mIs3D = is3DView;
     if(mIs3D)
     {
-        mRootNode->setRange(0, 0, 300);
-        mRootNode->setRange(1, 300, std::numeric_limits<float>::max());
+        mRootNode->setRange(0, 0, RANGE3D);
+        mRootNode->setRange(1, RANGE3D, std::numeric_limits<float>::max());
     }
     else
     {

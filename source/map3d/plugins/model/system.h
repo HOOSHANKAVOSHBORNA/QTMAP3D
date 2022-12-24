@@ -1,7 +1,7 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-
+#include "mapcontroller.h"
 #include "basemodel.h"
 
 #include <osgEarthAnnotation/ModelNode>
@@ -11,9 +11,10 @@
 class System: public BaseModel
 {
 public:
-    System(osgEarth::MapNode* mapNode, QObject* parent = nullptr);
+    System(MapController *mapControler, QObject* parent = nullptr);
 protected:
-private:
+private slots:
+    void onModeChanged(bool is3DView);
 private:
 };
 

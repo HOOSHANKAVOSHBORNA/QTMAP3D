@@ -377,9 +377,9 @@ void Model::addRocketModel(osg::Vec3d position)
 void Model::addSystemModel(osg::Vec3d position)
 {
     //create and setting model--------------------------------------------
-    osg::ref_ptr<System> model = new System(mMapController->getMapNode());
+    osg::ref_ptr<System> model = new System(mMapController);
     QString name = "System" + QString::number(mModels["System"].count());
-    model->setName(name.toStdString());
+    model->setQStringName(name);
     model->setGeographicPosition(position, 0.0);
     model->setScale(osg::Vec3(1,1,1));
     //add to container-----------------------------------------------------
@@ -393,9 +393,9 @@ void Model::addSystemModel(osg::Vec3d position)
 void Model::addStationModel(osg::Vec3d position)
 {
     //create and setting model--------------------------------------------
-    osg::ref_ptr<Station> model = new Station(mMapController->getMapNode());
+    osg::ref_ptr<Station> model = new Station(mMapController);
     QString name = "Station" + QString::number(mModels["Station"].count());
-    model->setName(name.toStdString());
+    model->setQStringName(name);
     model->setGeographicPosition(position, 0.0);
     model->setScale(osg::Vec3(1,1,1));
     //add to container-----------------------------------------------------
@@ -560,7 +560,7 @@ void Model::findSceneModels(osgViewer::Viewer *viewer)
                     ++nitr)
                 {
                     BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
-                    if (model && model->mCameraRangeChangeable)
+                    if (model)
                     {
                         //qDebug() <<model->getQStringName();
                         //qDebug() <<"range: "<<camera->getViewpoint().getRange();

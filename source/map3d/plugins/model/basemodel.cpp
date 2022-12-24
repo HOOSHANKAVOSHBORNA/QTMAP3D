@@ -261,7 +261,8 @@ void BaseModel::setType(const QString &value)
 void BaseModel::setQStringName(QString name)
 {
     setName(name.toStdString());
-    mLableNode->setText(name.toStdString());
+    if(mLableNode)
+        mLableNode->setText(name.toStdString());
 }
 
 QString BaseModel::getQStringName()
