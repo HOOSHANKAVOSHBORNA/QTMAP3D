@@ -507,29 +507,29 @@ void MainWindow::frame()
 void MainWindow::tickNavigation(double deltaTime)
 {
     if (mZoomInButtonPressed) {
-        mMapController->zoom(0.0015 * deltaTime);
+        mMapController->zoom(0.0018 * deltaTime);
     } else if (mZoomOutButtonPressed) {
-        mMapController->zoom(-0.0015 * deltaTime);
+        mMapController->zoom(-0.0018 * deltaTime);
     }
 
     if (mUpButtonPressed) {
-        mMapController->pan(0.0, 0.0008 * deltaTime);
+        mMapController->pan(0.0, -0.0015 * deltaTime);
     } else if (mDownButtonPressed) {
-        mMapController->pan(0.0, -0.0008 * deltaTime);
+        mMapController->pan(0.0, 0.0015 * deltaTime);
     } else if (mLeftButtonPressed) {
-        mMapController->pan(-0.0008 * deltaTime, 0.0);
+        mMapController->pan(0.0015 * deltaTime, 0.0);
     } else if (mRightButtonPressed) {
-        mMapController->pan(0.0008 * deltaTime, 0.0);
+        mMapController->pan(-0.0015 * deltaTime, 0.0);
     }
 
     if (mRotateUpButtonPressed) {
-        mMapController->rotate(0.0, 0.0008 * deltaTime);
+        mMapController->rotate(0.0, 0.001 * deltaTime);
     } else if (mRotateDownButtonPressed) {
-        mMapController->rotate(0.0, -0.0008 * deltaTime);
+        mMapController->rotate(0.0, -0.001 * deltaTime);
     } else if (mRotateLeftButtonPressed) {
-        mMapController->rotate(0.0008 * deltaTime, 0.0);
+        mMapController->rotate(-0.001 * deltaTime, 0.0);
     } else if (mRotateRightButtonPressed) {
-        mMapController->rotate(-0.0008 * deltaTime, 0.0);
+        mMapController->rotate(0.001 * deltaTime, 0.0);
     }
 }
 
