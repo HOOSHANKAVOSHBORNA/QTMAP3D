@@ -58,7 +58,7 @@ public:
     void addLayer(osgEarth::Layer* layer);
 
 public slots:
-    void setZoom(double);
+    void zoom(double);
     void goToHome();
     void goToPosition(double latitude, double longitude, double range);
     void goToPosition(osgEarth::GeoPoint mapPoint, double range);
@@ -68,18 +68,8 @@ public slots:
     void toggle3DView();
     void frame();
 
-    void panUp();
-    void panDown();
-    void panLeft();
-    void panRight();
-
-    void rotateUp();
-    void rotateDown();
-    void rotateLeft();
-    void rotateRight();
-
-    void zoomIn();
-    void zoomOut();
+    void pan(double xVal, double yVal);
+    void rotate(double xVal, double yVal);
 
     void travelToViewpoint(qreal latitude,
                            qreal longitude,

@@ -16,6 +16,8 @@ public:
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     void addRow(QString row) {a_list << row;}
     QHash<int, QByteArray> roleNames() const;
+Q_SIGNALS:
+    void returnIndex(int index);
 private:
     QStringList a_list;
 };

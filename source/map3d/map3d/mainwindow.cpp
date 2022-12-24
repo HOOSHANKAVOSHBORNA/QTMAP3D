@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QWindow>
 #include <QOpenGLFunctions_2_0>
+#include <chrono>
 
 #include "mainwindow.h"
 #include "pluginmanager.h"
@@ -43,30 +44,30 @@ MainWindow::MainWindow(QWindow *parent) :
                      mMapController, &MapController::toggle3DView);
 
 
-    QObject::connect(this, &MainWindow::upButtonClicked,
-                     mMapController, &MapController::panUp);
-    QObject::connect(this, &MainWindow::downButtonClicked,
-                     mMapController, &MapController::panDown);
-    QObject::connect(this, &MainWindow::leftButtonClicked,
-                     mMapController, &MapController::panLeft);
-    QObject::connect(this, &MainWindow::rightButtonClicked,
-                     mMapController, &MapController::panRight);
-
-
-    QObject::connect(this, &MainWindow::rotateUpButtonClicked,
-                     mMapController, &MapController::rotateUp);
-    QObject::connect(this, &MainWindow::rotateDownButtonClicked,
-                     mMapController, &MapController::rotateDown);
-    QObject::connect(this, &MainWindow::rotateLeftButtonClicked,
-                     mMapController, &MapController::rotateLeft);
-    QObject::connect(this, &MainWindow::rotateRightButtonClicked,
-                     mMapController, &MapController::rotateRight);
-
-
-    QObject::connect(this, &MainWindow::zoomInButtonClicked,
-                     mMapController, &MapController::zoomIn);
-    QObject::connect(this, &MainWindow::zoomOutButtonClicked,
-                     mMapController, &MapController::zoomOut);
+//    QObject::connect(this, &MainWindow::upButtonClicked,
+//                     mMapController, &MapController::panUp);
+//    QObject::connect(this, &MainWindow::downButtonClicked,
+//                     mMapController, &MapController::panDown);
+//    QObject::connect(this, &MainWindow::leftButtonClicked,
+//                     mMapController, &MapController::panLeft);
+//    QObject::connect(this, &MainWindow::rightButtonClicked,
+//                     mMapController, &MapController::panRight);
+//
+//
+//    QObject::connect(this, &MainWindow::rotateUpButtonClicked,
+//                     mMapController, &MapController::rotateUp);
+//    QObject::connect(this, &MainWindow::rotateDownButtonClicked,
+//                     mMapController, &MapController::rotateDown);
+//    QObject::connect(this, &MainWindow::rotateLeftButtonClicked,
+//                     mMapController, &MapController::rotateLeft);
+//    QObject::connect(this, &MainWindow::rotateRightButtonClicked,
+//                     mMapController, &MapController::rotateRight);
+//
+//
+//    QObject::connect(this, &MainWindow::zoomInButtonClicked,
+//                     mMapController, &MapController::zoomIn);
+//    QObject::connect(this, &MainWindow::zoomOutButtonClicked,
+//                     mMapController, &MapController::zoomOut);
 
     QObject::connect(mMapController, &MapController::headingAngleChanged,
                      this, &MainWindow::setHeadingAngle);
@@ -167,6 +168,56 @@ qreal MainWindow::focalPointHead() const
 qreal MainWindow::fps() const
 {
     return mFps;
+}
+
+bool MainWindow::zoomInButtonPressed() const
+{
+    return mZoomInButtonPressed;
+}
+
+bool MainWindow::zoomOutButtonPressed() const
+{
+    return mZoomOutButtonPressed;
+}
+
+bool MainWindow::upButtonPressed() const
+{
+    return mUpButtonPressed;
+}
+
+bool MainWindow::downButtonPressed() const
+{
+    return mDownButtonPressed;
+}
+
+bool MainWindow::leftButtonPressed() const
+{
+    return mLeftButtonPressed;
+}
+
+bool MainWindow::rightButtonPressed() const
+{
+    return mRightButtonPressed;
+}
+
+bool MainWindow::rotateUpButtonPressed() const
+{
+    return mRotateUpButtonPressed;
+}
+
+bool MainWindow::rotateDownButtonPressed() const
+{
+    return mRotateDownButtonPressed;
+}
+
+bool MainWindow::rotateLeftButtonPressed() const
+{
+    return mRotateLeftButtonPressed;
+}
+
+bool MainWindow::rotateRightButtonPressed() const
+{
+    return mRotateRightButtonPressed;
 }
 
 UIHandle *MainWindow::uiHandle() const
@@ -296,6 +347,87 @@ void MainWindow::setFps(qreal fps)
     }
 }
 
+void MainWindow::setZoomInButtonPressed(bool pressed)
+{
+    if (mZoomInButtonPressed != pressed) {
+        mZoomInButtonPressed = pressed;
+        emit zoomInButtonPressedChanged();
+    }
+}
+
+void MainWindow::setZoomOutButtonPressed(bool pressed)
+{
+    if (mZoomOutButtonPressed != pressed) {
+        mZoomOutButtonPressed = pressed;
+        emit zoomOutButtonPressedChanged();
+    }
+}
+
+void MainWindow::setUpButtonPressed(bool pressed)
+{
+    if (mUpButtonPressed != pressed) {
+        mUpButtonPressed = pressed;
+        emit upButtonPressedChanged();
+    }
+
+}
+
+void MainWindow::setdownButtonPressed(bool pressed)
+{
+    if (mDownButtonPressed != pressed) {
+        mDownButtonPressed = pressed;
+        emit downButtonPressedChanged();
+    }
+}
+
+void MainWindow::setleftButtonPressed(bool pressed)
+{
+    if (mLeftButtonPressed != pressed) {
+        mLeftButtonPressed = pressed;
+        emit leftButtonPressedChanged();
+    }
+}
+
+void MainWindow::setrightButtonPressed(bool pressed)
+{
+    if (mRightButtonPressed != pressed) {
+        mRightButtonPressed = pressed;
+        emit rightButtonPressedChanged();
+    }
+}
+
+void MainWindow::setrotateUpButtonPressed(bool pressed)
+{
+    if (mRotateUpButtonPressed != pressed) {
+        mRotateUpButtonPressed = pressed;
+        emit rotateUpButtonPressedChanged();
+    }
+}
+
+void MainWindow::setrotateDownButtonPressed(bool pressed)
+{
+    if (mRotateDownButtonPressed != pressed) {
+        mRotateDownButtonPressed = pressed;
+        emit rotateDownButtonPressedChanged();
+    }
+}
+
+void MainWindow::setrotateLeftButtonPressed(bool pressed)
+{
+    if (mRotateLeftButtonPressed != pressed) {
+        mRotateLeftButtonPressed = pressed;
+        emit rotateLeftButtonPressedChanged();
+    }
+}
+
+void MainWindow::setrotateRightButtonPressed(bool pressed)
+{
+    if (mRotateRightButtonPressed != pressed) {
+        mRotateRightButtonPressed = pressed;
+        emit rotateRightButtonPressedChanged();
+    }
+}
+
 void MainWindow::travelToViewpoint(qreal latitude, qreal longitude, qreal range, qreal pitch, qreal heading)
 {
     mMapController->travelToViewpoint(latitude,
@@ -346,11 +478,21 @@ void MainWindow::cleanup()
 
 void MainWindow::frame()
 {
+    static auto lastFrameTimePoint = std::chrono::high_resolution_clock::now() - std::chrono::milliseconds(10);
+    auto now = std::chrono::high_resolution_clock::now();
+
+
+    const double deltaTime =
+            static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrameTimePoint).count())
+            * 0.001;
+
+
     if (mResized) {
         resizeGL();
         mResized = false;
     }
 
+    tickNavigation(deltaTime);
     paintGL();
 
     const auto pluginManager = Application::instance()->pluginManager();
@@ -358,6 +500,37 @@ void MainWindow::frame()
         pluginManager->frameEvent();
     }
 
+    lastFrameTimePoint = now;
+
+}
+
+void MainWindow::tickNavigation(double deltaTime)
+{
+    if (mZoomInButtonPressed) {
+        mMapController->zoom(0.0018 * deltaTime);
+    } else if (mZoomOutButtonPressed) {
+        mMapController->zoom(-0.0018 * deltaTime);
+    }
+
+    if (mUpButtonPressed) {
+        mMapController->pan(0.0, -0.0015 * deltaTime);
+    } else if (mDownButtonPressed) {
+        mMapController->pan(0.0, 0.0015 * deltaTime);
+    } else if (mLeftButtonPressed) {
+        mMapController->pan(0.0015 * deltaTime, 0.0);
+    } else if (mRightButtonPressed) {
+        mMapController->pan(-0.0015 * deltaTime, 0.0);
+    }
+
+    if (mRotateUpButtonPressed) {
+        mMapController->rotate(0.0, 0.001 * deltaTime);
+    } else if (mRotateDownButtonPressed) {
+        mMapController->rotate(0.0, -0.001 * deltaTime);
+    } else if (mRotateLeftButtonPressed) {
+        mMapController->rotate(-0.001 * deltaTime, 0.0);
+    } else if (mRotateRightButtonPressed) {
+        mMapController->rotate(0.001 * deltaTime, 0.0);
+    }
 }
 
 void MainWindow::restoreContext()
@@ -405,11 +578,8 @@ void MainWindow::resizeGL()
 void MainWindow::paintGL()
 {
     resetOpenGLState();
-
     mMapController->paintGL();
-
     mOGLF->glClear(GL_DEPTH_BUFFER_BIT);
-
     resetOpenGLState();
 }
 
