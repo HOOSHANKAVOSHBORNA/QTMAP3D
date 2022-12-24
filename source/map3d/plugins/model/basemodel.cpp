@@ -49,7 +49,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 geoPoint.fromWorld(baseModel->getMapNode()->getMapSRS(), cp.getPosition());
                 baseModel->setPosition(geoPoint);
                 baseModel->getPositionAttitudeTransform()->setScale(cp.getScale());
-                if(baseModel->mIs3d)
+                if(baseModel->mIs3D)
                     baseModel->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
                 else
                 {
@@ -73,7 +73,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 //emit current position----------------------------------------------------------------------
                 positionCanged = true;
                 //if(static_cast<int>(animatTime) % 3 == 0)
-                    baseModel->curentPosition(geoPoint);
+                baseModel->curentPosition(geoPoint);
             }
 
             if((_latestTime - _firstTime) > _animationPath->getPeriod())
@@ -86,7 +86,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
     if(hit)
         baseModel->collision(baseModel->getFollowModel());
     //if(positionCanged)
-//        baseModel->curentPosition(geoPoint);
+    //        baseModel->curentPosition(geoPoint);
 }
 
 
@@ -240,12 +240,12 @@ BaseModel::BaseModel(osgEarth::MapNode *mapNode, QObject *parent):
 
     //    mPlaceNode = new osgEarth::Annotation::PlaceNode();
     //getGeoTransform()->addChild(mPlaceNode);
-//    if(!mAddedEvent)
-//    {
-//        addEventCallback(new PickHandler());
-//        mAddedEvent = true;
-//    }
-//    setNodeMask(NODE_MASK);
+    //    if(!mAddedEvent)
+    //    {
+    //        addEventCallback(new PickHandler());
+    //        mAddedEvent = true;
+    //    }
+    //    setNodeMask(NODE_MASK);
 }
 
 QString BaseModel::getType() const
@@ -261,6 +261,7 @@ void BaseModel::setType(const QString &value)
 void BaseModel::setQStringName(QString name)
 {
     setName(name.toStdString());
+    mLableNode->setText(name.toStdString());
 }
 
 QString BaseModel::getQStringName()
@@ -380,11 +381,11 @@ bool BaseModel::hasHit() const
 
 void BaseModel::mousePressEvent(QMouseEvent* event, bool onModel)
 {
-//    if(ea.getButtonMask() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
-//    {
-        select(onModel);
-        mIsSelected = onModel;
-//    }
+    //    if(ea.getButtonMask() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
+    //    {
+    select(onModel);
+    mIsSelected = onModel;
+    //    }
 }
 
 void BaseModel::mouseMoveEvent(QMouseEvent* event, bool onModel)
@@ -395,31 +396,31 @@ void BaseModel::mouseMoveEvent(QMouseEvent* event, bool onModel)
     }
 }
 
-void BaseModel::cameraRangeChanged(double range)
-{
+//void BaseModel::cameraRangeChanged(double range)
+//{
 
-//    osgEarth::Symbology::Style  style = getStyle();
-//    if(!mIs3d && range < 300)
-//    {
-////        qDebug()<<getQStringName();
-//        setCullCallback(nullptr);
-//        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
-//        setStyle(style);
-//        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-//        mIs3d = true;
-//        select(mIsSelected);
-//    }
-//    if(mIs3d && range > 300)
-//    {
-////        qDebug()<<getQStringName();
-//        setCullCallback(nullptr);
-//        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-//        setStyle(style);
-//        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-//        mIs3d = false;
-//        select(mIsSelected);
-//    }
-}
+////    osgEarth::Symbology::Style  style = getStyle();
+////    if(!mIs3d && range < 300)
+////    {
+//////        qDebug()<<getQStringName();
+////        setCullCallback(nullptr);
+////        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
+////        setStyle(style);
+////        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+////        mIs3d = true;
+////        select(mIsSelected);
+////    }
+////    if(mIs3d && range > 300)
+////    {
+//////        qDebug()<<getQStringName();
+////        setCullCallback(nullptr);
+////        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+////        setStyle(style);
+////        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+////        mIs3d = false;
+////        select(mIsSelected);
+////    }
+//}
 
 void BaseModel::curentPosition(osgEarth::GeoPoint pos)
 {
@@ -428,24 +429,13 @@ void BaseModel::curentPosition(osgEarth::GeoPoint pos)
 
 void BaseModel::select(bool val)
 {
+    mNode2D->setValue(0, val);
+    mNode2D->setValue(1, !val);
 
-    if(!mIs3d)
-    {
-        mRoot->setValue(0, false);
-        mRoot->setValue(1, !val);
-        mRoot->setValue(2, val);
-    }
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    if(!val)
+        mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 0.0, 0.0, 1.0));
     else
-    {
-        mRoot->setValue(0, true);
-        mRoot->setValue(1, false);
-        mRoot->setValue(2, false);
-
-        osg::ref_ptr<osg::Material> mat = new osg::Material;
-        if(!val)
-            mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 0.0, 0.0, 1.0));
-        else
-            mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 0.2f, 1.0));
-        getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-    }
+        mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 0.2f, 1.0));
+    getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 }

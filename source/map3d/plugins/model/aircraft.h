@@ -22,7 +22,7 @@ class Aircraft: public BaseModel
 {
     Q_OBJECT
 public:
-    Aircraft(QQmlEngine *qmlEngine, MapController *value, UIHandle* uiHandle, osgEarth::MapNode* mapNode, osg::Node* node, QObject* parent = nullptr);
+    Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void flyTo(const osg::Vec3d& pos, double heading, double speed);
     void stop() override;
     void setTruckModel(osgEarth::Annotation::ModelNode* truckModel);
@@ -39,6 +39,7 @@ public:
 public slots:
     void onModeChanged(bool is3DView);
 public:
+    virtual void frameEvent()override;
     virtual void mousePressEvent(QMouseEvent *event, bool onModel) override;
     virtual void curentPosition(osgEarth::GeoPoint pos) override;
 private:

@@ -61,17 +61,21 @@ signals:
 protected:
     virtual void playExplosionEffect(float scale);
 public:
-    virtual void mousePressEvent      (QMouseEvent* event, bool onModel);
+    virtual void frameEvent() {}
+    virtual void mousePressEvent(QMouseEvent* event, bool onModel);
 //    virtual void mouseDoubleClickEvent(QMouseEvent* event, bool onModel);
-    virtual void mouseMoveEvent       (QMouseEvent* event, bool onModel);
-    virtual void cameraRangeChanged(double /*range*/);
+    virtual void mouseMoveEvent(QMouseEvent* event, bool onModel);
+//    virtual void cameraRangeChanged(double /*range*/);
     virtual void curentPosition(osgEarth::GeoPoint pos);
     bool mCameraRangeChangeable{false};
     void select(bool val);
 protected:
     bool mIsSelected{false};
-    bool mIs3d{false};
-    osg::ref_ptr<osg::Switch> mRoot;
+    bool mIs3D{false};
+    osg::ref_ptr<osg::LOD> mRootNode;
+    osg::ref_ptr<osg::Node> mNode3D;
+    osg::ref_ptr<osg::Switch> mNode2D;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLableNode;
 private:
     void collision(BaseModel *collidedWith);
     friend class ModelAnimationPathCallback;
