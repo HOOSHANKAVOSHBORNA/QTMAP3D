@@ -12,11 +12,11 @@ Item {
 
     ScrollView {
         anchors.fill: parent
-        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+//        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
         ScrollBar.horizontal.interactive: true
         ListView {
         id: items
-        height: childrenRect.height > parent.height /2 ? parent.height : childrenRect.height
+        height: 200
         model: root.model
         delegate: Button {
                 Text {
