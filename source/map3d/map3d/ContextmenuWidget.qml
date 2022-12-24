@@ -18,11 +18,11 @@ Item {
     }
 
     function updatePosition(x, y) {
-        _height = nowItem.model.rowCount() * 25 > 200 ? 200 : nowItem.model.rowCount()*25
-        if (x > root.parent.width || y > root.parent.height){
-            hideItem()
-            return
-        }
+        if (nowItem)
+            _height = nowItem.model.rowCount() * 25 > 200 ? 200 : nowItem.model.rowCount()*25
+        else
+            _height = 200
+
         if (x + _width > root.parent.width) {
             x = x - _width
         }
