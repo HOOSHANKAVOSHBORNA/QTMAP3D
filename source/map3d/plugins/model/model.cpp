@@ -299,10 +299,10 @@ void Model::addAircraftModel(QString name, osg::Vec3d geographicPosition, double
     //osg::Vec3d position(52.8601, 35.277, 844);
 
     //create and setting model--------------------------------------------
-    osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/aircraft/airplane-red.osgb");
-    osg::ref_ptr<Aircraft> model = new Aircraft(mQmlEngine,mMapController,mUIHandle, mMapController->getMapNode(), node);
+
+    osg::ref_ptr<Aircraft> model = new Aircraft(mMapController, mQmlEngine,mUIHandle);
     //    QString name = AIRPLANE + QString::number(mModels[AIRPLANE].count());
-    model->setName(name.toStdString());
+    model->setQStringName(name);
     model->setGeographicPosition(geographicPosition, heading);
     //    model->setScale(osg::Vec3(0.09f,0.09f,0.09f));
 
@@ -467,7 +467,9 @@ void Model::onMessageReceived(const QJsonDocument &message)
 
 void Model::frameEvent()
 {
-    findSceneModels(mMapController->getViewer());
+//    findSceneModels(mMapController->getViewer());
+    if(mLastSelectedModel)
+        mLastSelectedModel->frameEvent();
 }
 
 void Model::mousePressEvent(QMouseEvent *event)
@@ -568,7 +570,7 @@ void Model::findSceneModels(osgViewer::Viewer *viewer)
                             distance = camera->getViewpoint().getRange();
                         else
                             distance = camera->getViewpoint().getRange() - model->getPosition().z();
-                        model->cameraRangeChanged(distance);
+//                        model->cameraRangeChanged(distance);
                         //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
                         //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
                     }
