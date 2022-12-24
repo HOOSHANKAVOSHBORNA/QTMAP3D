@@ -31,5 +31,8 @@
         <file>Resources/websocketkey/localhost.cert</file>
         <file>Resources/websocketkey/localhost.key</file>
         <file>Resources/3d.png</file>
+        <file>Resources/2d.png</file>
+        <file>Resources/3d_l.png</file>
+        <file>Resources/TwoD.png</file>
     </qresource>
 </RCC>
