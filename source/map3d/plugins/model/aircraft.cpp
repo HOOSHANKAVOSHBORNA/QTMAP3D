@@ -32,7 +32,7 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
     mIs3D = mMapController->getMode();
 
     mUIHandle = uiHandle;
-    mNode3D = osgDB::readRefNodeFile("/home/client111/Downloads/Boeing 747/Boeing_747.osgb");
+    mNode3D = osgDB::readRefNodeFile("../data/models/aircraft/airplane-red.osgb");
     if (!mNode3D)
     {
         //todo show massage here
