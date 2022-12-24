@@ -1,11 +1,12 @@
 
 import QtQuick 2.13
 import QtQuick.Controls 2.13
+import QtQuick.Layouts 1.13
 
 Item {
     id:rootItem
-    width: 330
-    height: 80
+    width: mainRowLayout.implicitWidth
+    height: mainRowLayout.implicitHeight
 
     property real positionFactor: 1.0
     property bool showRecMov: true
@@ -26,44 +27,22 @@ Item {
 
     signal btnHomeClicked()
     signal btnProjectionClicked()
-    Rectangle {
-        id: rootRec
-        color: "transparent"
-        radius: _radius
-        opacity: 0.8
-        anchors.fill: parent
-        Button {
-            id: home
-            width: rootItem.height /2 - 4
-            height: rootItem.height /2 - 4
-            anchors.top: parent.top
-            anchors.topMargin: 3
-            hoverEnabled: true
-            display: AbstractButton.IconOnly
-            anchors.right: parent.right
-            anchors.leftMargin: _margin
-            icon.source : "qrc:/Resources/home-r.png"
-            icon.width : _iconSize
-            icon.height : _iconSize
-            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                   (pressed ? _colorHover : "#FFFFFF");
-            background: Rectangle{
-                radius: 10
-                color: _colorRec
-            }
 
-            onClicked: btnHomeClicked()
-        }
+    RowLayout {
+        id: mainRowLayout
+        anchors.fill: parent
+
 
         Rectangle {
             id: control
             color: "transparent"
-            width: 200 + _margin
-            height: sliderMenuBtn.height
-            anchors.right: sliderMenuBtn.left
-            anchors.rightMargin: 3
-            anchors.top: parent.top
-            anchors.topMargin: 3
+
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            Layout.minimumWidth: 215
+            Layout.maximumWidth: 215
+
+
             clip: true
             ControlCamera{
                 id: recRotation
@@ -124,133 +103,14 @@ Item {
             }
         }
 
-        Button {
-            id: positive
-            width: rootItem.height /2 - 4
-            height: rootItem.height /2 - 4
-            anchors.leftMargin: _margin
-            anchors.rightMargin: 4
-            anchors.top: parent.top
-            anchors.right: home.left
-            anchors.topMargin: 3
-            icon.source : "qrc:/Resources/zoomin-r.png"
-            icon.width : _iconSize
-            icon.height : _iconSize
-            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                   (pressed ? _colorHover : "#FFFFFF");
-            background:Rectangle {
-                color:_colorRec
-                radius: _radius
-            }
-            //onClicked: btnZoomInClicked()
-            onPressed:{
-                timerPositive.running =true
-            }
-            onReleased:{
-                timerPositive.running = false
-               }
-            Timer {
-                id:timerPositive
-                interval: 150; running: false; repeat: true
-                onTriggered:  btnZoomInClicked()
-            }
-        }
-
-        Button {
-            id: negative
-            width: rootItem.height /2 - 4
-            height: rootItem.height /2 - 4
-            text: qsTr("Button")
-            anchors.leftMargin: _margin
-
-            anchors.rightMargin: 4
-            display: AbstractButton.IconOnly
-            anchors.right: project.left
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 1
-            icon.source : "qrc:/Resources/zoomout-r.png"
-            icon.width : _iconSize
-            icon.height : _iconSize
-            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                   (pressed ? _colorHover : "#FFFFFF");
-            background:Rectangle {
-                color:_colorRec
-                radius: _radius
-            }
-
-            onPressed:{
-                timerNegative.running =true
-               }
-            onReleased:{
-                timerNegative.running = false
-            }
-            Timer {
-                id:timerNegative
-                interval: 150; running: false; repeat: true
-                onTriggered:  btnZoomOutClicked()
-            }
-        }
-        PropertyAnimation {
-            id: showSlider
-            target: rootItem
-            property: "positionFactor"
-            from: rootItem.positionFactor
-            to: 1.0
-            duration: myDuration * Math.abs(1.0 - positionFactor)
-
-            easing.type: Easing.OutQuint
-        }
-        PropertyAnimation {
-            id: hideSlider
-            target: rootItem
-            property: "positionFactor"
-            from: rootItem.positionFactor
-            to: 0.0
-            duration: myDuration * Math.abs(positionFactor)
-
-            easing.type: Easing.InQuint
-        }
-
-        Button {
-            id: project
-            width: rootItem.height /2 - 4
-            height: rootItem.height /2 - 4
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 1
-            anchors.leftMargin: _margin
-            display: AbstractButton.IconOnly
-            anchors.right: parent.right
-            icon.source : modeMap === "projection" ? "qrc:/Resources/projection.png" :"qrc:///Resources/3d.png"
-            icon.width : _iconSize
-            icon.height : _iconSize
-            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                   (pressed ? _colorHover : "transparent");
-            background: Rectangle{
-                radius: _radius
-                color: _colorRec
-            }
-
-            onClicked:{
-                if (modeMap==="projection")
-                    modeMap = "geocentric"
-                else
-                    modeMap = "projection"
-                btnProjectionClicked()
-            }
-        }
 
         Button {
             id: sliderMenuBtn
-            width: 35
-            height: parent.height
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 1
-            anchors.leftMargin: _margin
+            Layout.preferredWidth: 32
+            Layout.preferredHeight: 32
+            Layout.alignment: Qt.AlignCenter
+
             display: AbstractButton.IconOnly
-            anchors.right: positive.left
-            anchors.rightMargin: 0
-            anchors.top: parent.top
-            anchors.topMargin: 3
             icon.source: "qrc:/Resources/chevron.png"
             icon.width : 64
             icon.height : 64
@@ -262,13 +122,13 @@ Item {
             }
             checkable: true
             states: [
-                    State {
-                        name: "rotated"
-                        PropertyChanges { target: sliderMenuBtn; rotation: 180; }
-                    },
-                    State {
-                        name: "default"
-                        PropertyChanges { target: sliderMenuBtn; rotation: 0 }
+                State {
+                    name: "rotated"
+                    PropertyChanges { target: sliderMenuBtn; rotation: 180; }
+                },
+                State {
+                    name: "default"
+                    PropertyChanges { target: sliderMenuBtn; rotation: 0 }
                 }
 
             ]
@@ -287,10 +147,145 @@ Item {
             }
 
             transitions: Transition {
-                            RotationAnimation { duration: myDuration; direction: RotationAnimation.Counterclockwise }
-                        }
+                RotationAnimation { duration: myDuration; direction: RotationAnimation.Counterclockwise }
+            }
         }
 
+
+        GridLayout {
+            columns:  2
+            rows: 2
+            rowSpacing: 5
+            columnSpacing: 5
+
+            Layout.preferredWidth: implicitWidth
+            Layout.preferredHeight: implicitHeight
+
+            Button {
+                id: positive
+                icon.source : "qrc:/Resources/zoomin-r.png"
+                icon.width : _iconSize
+                icon.height : _iconSize
+                icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                       (pressed ? _colorHover : "#FFFFFF");
+                background:Rectangle {
+                    color:_colorRec
+                    radius: _radius
+                }
+                //onClicked: btnZoomInClicked()
+                onPressed:{
+                    timerPositive.running =true
+                }
+                onReleased:{
+                    timerPositive.running = false
+                }
+                Timer {
+                    id:timerPositive
+                    interval: 150; running: false; repeat: true
+                    onTriggered:  btnZoomInClicked()
+                }
+            }
+
+
+            Button {
+                id: home
+                hoverEnabled: true
+                display: AbstractButton.IconOnly
+                icon.source : "qrc:/Resources/home-r.png"
+                icon.width : _iconSize
+                icon.height : _iconSize
+                icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                       (pressed ? _colorHover : "#FFFFFF");
+                background: Rectangle{
+                    radius: 10
+                    color: _colorRec
+                }
+
+                onClicked: btnHomeClicked()
+            }
+
+
+
+
+
+
+            Button {
+                id: negative
+                text: qsTr("Button")
+                display: AbstractButton.IconOnly
+                icon.source : "qrc:/Resources/zoomout-r.png"
+                icon.width : _iconSize
+                icon.height : _iconSize
+                icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                       (pressed ? _colorHover : "#FFFFFF");
+                background:Rectangle {
+                    color:_colorRec
+                    radius: _radius
+                }
+
+                onPressed:{
+                    timerNegative.running =true
+                }
+                onReleased:{
+                    timerNegative.running = false
+                }
+                Timer {
+                    id:timerNegative
+                    interval: 150; running: false; repeat: true
+                    onTriggered:  btnZoomOutClicked()
+                }
+            }
+
+
+            Button {
+                id: project
+                display: AbstractButton.IconOnly
+                icon.source : modeMap === "projection" ? "qrc:///Resources/3d_l.png": "qrc:/Resources/TwoD.png"
+                icon.width : _iconSize
+                icon.height : _iconSize
+                icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                       (pressed ? _colorHover : "transparent");
+                background: Rectangle{
+                    radius: _radius
+                    color: _colorRec
+                }
+                smooth: true
+
+                onClicked:{
+                    if (modeMap==="projection")
+                        modeMap = "geocentric"
+                    else
+                        modeMap = "projection"
+                    btnProjectionClicked()
+                }
+            }
+
+        }
+
+
+    }
+
+
+
+    PropertyAnimation {
+        id: showSlider
+        target: rootItem
+        property: "positionFactor"
+        from: rootItem.positionFactor
+        to: 1.0
+        duration: myDuration * Math.abs(1.0 - positionFactor)
+
+        easing.type: Easing.OutQuint
+    }
+    PropertyAnimation {
+        id: hideSlider
+        target: rootItem
+        property: "positionFactor"
+        from: rootItem.positionFactor
+        to: 0.0
+        duration: myDuration * Math.abs(positionFactor)
+
+        easing.type: Easing.InQuint
     }
 
 }

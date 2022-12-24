@@ -7,7 +7,7 @@ import Crystal 1.0
 
 CMainWindow {
 
-    readonly  property int      _iconSize   : 32
+    readonly  property int      _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
     readonly property color     _colorRec   : "#404040"
