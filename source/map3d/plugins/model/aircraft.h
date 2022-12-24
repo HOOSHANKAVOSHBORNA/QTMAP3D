@@ -38,7 +38,7 @@ public:
     void iwMoreButtonClicked();
 public slots:
     void onModeChanged(bool is3DView);
-    void onContextmenuItemClicked(int index);
+    void onContextmenuItemClicked(int index, QString systemName);
 public:
     virtual void frameEvent()override;
     virtual void mousePressEvent(QMouseEvent *event, bool onModel) override;
