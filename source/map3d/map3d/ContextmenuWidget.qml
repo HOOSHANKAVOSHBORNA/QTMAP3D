@@ -4,7 +4,10 @@ import QtQuick 2.0
 Item {
     id: root
     property var nowItem: null
-    height: parent.height
+    property var _height: 110
+    clip: true
+    width: 200
+    height: _height
     function showItem(item) {
         if (nowItem)
             hideItem()
@@ -14,6 +17,11 @@ Item {
     }
 
     function updatePosition(x, y) {
+        if (x + 200 > root.parent.width) {
+            x = x - 200
+        }
+        if (y + _height > root.parent.height)
+            y = y - _height
         root.x = x
         root.y = y
     }

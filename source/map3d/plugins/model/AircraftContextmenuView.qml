@@ -1,5 +1,6 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
+import QtQuick.Layouts 1.13
 import Crystal 1.0
 
 Item {
@@ -9,7 +10,11 @@ Item {
 
     }
 
-    ListView {
+    ScrollView {
+        anchors.fill: parent
+        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+        ScrollBar.horizontal.interactive: true
+        ListView {
         id: items
         height: childrenRect.height > parent.height /2 ? parent.height : childrenRect.height
         model: root.model
@@ -25,9 +30,12 @@ Item {
                     border.color: "#303030"
                 }
                 implicitWidth: 200
-                implicitHeight: 30
+                implicitHeight: 25
+                onClicked: root.model.returnIndex(index)
             }
 
-        }
+
+    }}
+
 
 }
