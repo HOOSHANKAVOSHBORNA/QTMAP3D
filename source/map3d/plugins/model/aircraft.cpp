@@ -22,7 +22,7 @@
 #include<osg/Switch>
 
 
-const int RANGE3D = 300;
+const int RANGE3D = 1000;
 
 Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :BaseModel(mapControler->getMapNode(), parent)
@@ -32,7 +32,7 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
     mIs3D = mMapController->getMode();
 
     mUIHandle = uiHandle;
-    mNode3D = osgDB::readRefNodeFile("../data/models/aircraft/airplane-red.osgb");
+    mNode3D = osgDB::readRefNodeFile("/home/client111/Downloads/Boeing 747/Boeing_747.osgb");
     if (!mNode3D)
     {
         //todo show massage here
