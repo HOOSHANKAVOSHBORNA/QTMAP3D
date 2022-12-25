@@ -5,11 +5,11 @@
 AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-    for (int i = 0; i < 100; i++) {
-        AircraftInfo ai;
-        ai.TN = QStringLiteral("OOPS") + QString::number(i);
-        updateItemData(ai);
-    }
+//    for (int i = 0; i < 100; i++) {
+//        AircraftInfo ai;
+//        ai.TN = QStringLiteral("OOPS") + QString::number(i);
+//        updateItemData(ai);
+//    }
 }
 
 int AircraftTableModel::columnCount(const QModelIndex &parent) const

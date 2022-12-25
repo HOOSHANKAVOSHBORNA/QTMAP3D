@@ -176,14 +176,14 @@ bool Model::setup(MapController *pMapController,
 
         if (comp->status() == QQmlComponent::Ready) {
             QQuickItem *item = (QQuickItem*) comp->create(nullptr);
-            AircraftTableModel *model = new AircraftTableModel;
+            mAircraftTableModel = new AircraftTableModel;
 
             QObject::connect(item,
                              SIGNAL(filterTextChanged(const QString&)),
-                             model,
+                             mAircraftTableModel,
                              SLOT(setFilterWildcard(const QString&)));
 
-            item->setProperty("model", QVariant::fromValue<AircraftTableModel*>(model));
+            item->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
             mUIHandle->lwAddTab("Aircrafts", item);
         }
 
@@ -467,6 +467,13 @@ void Model::onMessageReceived(const QJsonDocument &message)
             Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
             model->setInformation(txtMessage);
         }
+        AircraftInfo airInfo;
+        airInfo.TN = name;
+        airInfo.Latitude = QString::number(latitude);
+        airInfo.Altitude = QString::number(altitude);
+        airInfo.Speed = QString::number(speed);
+        airInfo.Heading = QString::number(heading);
+        mAircraftTableModel->updateItemData(airInfo);
 
     }
 
