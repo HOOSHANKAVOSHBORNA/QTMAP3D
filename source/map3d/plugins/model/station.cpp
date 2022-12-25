@@ -46,9 +46,10 @@ Station::Station(MapController *mapControler, QObject *parent)
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Green;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle);
+    osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
+    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
     getGeoTransform()->addChild(mLableNode);
     //--add nods--------------------------------------------------------------------------------
@@ -64,6 +65,11 @@ Station::Station(MapController *mapControler, QObject *parent)
     }
     //map mode changed-----------------------------------------------------------------------
     connect(mapControler, &MapController::modeChanged, this, &Station::onModeChanged);
+}
+
+void Station::frameEvent()
+{
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
 }
 
 void Station::onModeChanged(bool is3DView)
