@@ -3,6 +3,7 @@
 
 #include <QAbstractTableModel>
 #include <deque>
+#include <QSharedPointer>
 
 struct AircraftInfo
 {
@@ -44,6 +45,8 @@ public:
     QHash<int,QByteArray> roleNames() const override;
 
 
+public slots:
+    void setFilterWildcard(const QString& wildcard);
 
 
 public:
@@ -51,7 +54,10 @@ public:
     void updateItemData(const AircraftInfo& aircraftInfo);
 
 private:
-    std::deque<AircraftInfo> mAircraftInfoList;
+    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoList;
+    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoListProxy;
+
+    QString mFilter;
 };
 
 #endif // AIRCRAFTTABLEMODEL_H

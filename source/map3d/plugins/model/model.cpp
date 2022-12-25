@@ -38,6 +38,7 @@
 #include <osgParticle/ExplosionDebrisEffect>
 #include <osgViewer/Viewer>
 #include <QQuickItem>
+#include <QSortFilterProxyModel>
 
 
 #include "aircrafttablemodel.h"
@@ -176,6 +177,12 @@ bool Model::setup(MapController *pMapController,
         if (comp->status() == QQmlComponent::Ready) {
             QQuickItem *item = (QQuickItem*) comp->create(nullptr);
             AircraftTableModel *model = new AircraftTableModel;
+
+            QObject::connect(item,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             model,
+                             SLOT(setFilterWildcard(const QString&)));
+
             item->setProperty("model", QVariant::fromValue<AircraftTableModel*>(model));
             mUIHandle->lwAddTab("Aircrafts", item);
         }
