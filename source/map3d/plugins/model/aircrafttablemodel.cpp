@@ -1,6 +1,7 @@
 #include "aircrafttablemodel.h"
 #include <QHash>
 #include <QColor>
+#include <QRegularExpression>
 
 AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
@@ -111,6 +112,7 @@ void AircraftTableModel::setFilterWildcard(const QString &wildcard)
     beginResetModel();
 
     mFilter = wildcard;
+    mFilter.remove(QRegularExpression("\\s"));
 
     mAircraftInfoListProxy.clear();
     for (auto& item : mAircraftInfoList) {
