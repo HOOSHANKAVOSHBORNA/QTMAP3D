@@ -46,6 +46,8 @@
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
+const QString SYSTEM = "System";
+const QString STATION = "Station";
 const QString ROCKET = "Rocket";
 const QString TRUCK = "Truck";
 //----------------------------------------------
@@ -385,12 +387,12 @@ void Model::addSystemModel(osg::Vec3d position)
 {
     //create and setting model--------------------------------------------
     osg::ref_ptr<System> model = new System(mMapController);
-    QString name = "System" + QString::number(mModels["System"].count());
+    QString name = SYSTEM + QString::number(mModels["System"].count());
     model->setQStringName(name);
     model->setGeographicPosition(position, 0.0);
     model->setScale(osg::Vec3(1,1,1));
     //add to container-----------------------------------------------------
-    mModels["System"][name] = model;
+    mModels[SYSTEM][name] = model;
 
 
     //add to map ---------------------------------------------------------
@@ -401,12 +403,12 @@ void Model::addStationModel(osg::Vec3d position)
 {
     //create and setting model--------------------------------------------
     osg::ref_ptr<Station> model = new Station(mMapController);
-    QString name = "Station" + QString::number(mModels["Station"].count());
+    QString name = STATION + QString::number(mModels["Station"].count());
     model->setQStringName(name);
     model->setGeographicPosition(position, 0.0);
     model->setScale(osg::Vec3(1,1,1));
     //add to container-----------------------------------------------------
-    mModels["Station"][name] = model;
+    mModels[STATION][name] = model;
 
 
     //add to map ---------------------------------------------------------
@@ -483,6 +485,14 @@ void Model::frameEvent()
 {
 //    findSceneModels(mMapController->getViewer());
     for(auto model: mModels[AIRCRAFT])
+    {
+        model->frameEvent();
+    }
+    for(auto model: mModels[SYSTEM])
+    {
+        model->frameEvent();
+    }
+    for(auto model: mModels[STATION])
     {
         model->frameEvent();
     }

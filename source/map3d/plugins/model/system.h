@@ -12,6 +12,8 @@ class System: public BaseModel
 {
 public:
     System(MapController *mapControler, QObject* parent = nullptr);
+public:
+    virtual void frameEvent()override;
 protected:
 private slots:
     void onModeChanged(bool is3DView);
