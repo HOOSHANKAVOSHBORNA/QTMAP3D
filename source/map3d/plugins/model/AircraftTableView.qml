@@ -25,34 +25,57 @@ Item {
         anchors.fill: parent
         anchors.topMargin: 10
 
-        Rectangle {
+        RowLayout {
             Layout.alignment: Qt.AlignCenter
-            Layout.minimumWidth: 320
-            Layout.preferredWidth: 320
-            Layout.minimumHeight: 40
-            Layout.preferredHeight: 40
-            color: "transparent"
-            border.color: "white"
-            radius: 5
+            Layout.minimumWidth:   implicitWidth
+            Layout.preferredWidth: implicitWidth
+            Layout.minimumHeight:   implicitHeight
+            Layout.preferredHeight: implicitHeight
+            spacing: 10
 
-
-            TextInput {
-                id: filterInput
-                anchors.centerIn: parent
-                width: 300
-                height: 40
-                color: "white"
-                clip: true
-                onTextChanged: function() {
-                    if (signalTimer.running === true) {
-                        signalTimer.restart();
-                    } else {
-                        signalTimer.start();
-                    }
-                }
-                verticalAlignment: Qt.AlignVCenter
-
+            Label {
+                id: searchLabel
+                text: "Search TN : "
+                color : "white"
+                Layout.minimumWidth: implicitWidth
+                Layout.minimumHeight:   implicitHeight
+                Layout.alignment: Qt.AlignCenter
             }
+
+            Rectangle {
+                color: "transparent"
+                border.color: "white"
+                radius: 5
+                Layout.minimumWidth:   320
+                Layout.preferredWidth: 320
+                Layout.minimumHeight:   40
+                Layout.preferredHeight: 40
+
+
+                TextInput {
+                    id: filterInput
+                    anchors.centerIn: parent
+                    width: 300
+                    height: 40
+                    color: "white"
+                    clip: true
+                    onTextChanged: function() {
+                        if (signalTimer.running === true) {
+                            signalTimer.restart();
+                        } else {
+                            signalTimer.start();
+                        }
+                    }
+                    verticalAlignment: Qt.AlignVCenter
+
+                }
+            }
+            Item {
+                Layout.minimumWidth: searchLabel.implicitWidth
+                Layout.minimumHeight: searchLabel.implicitHeight
+                Layout.alignment: Qt.AlignCenter
+            }
+
         }
 
         ScrollView {
