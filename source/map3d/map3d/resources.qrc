@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>Resources/Toolbox.png</file>
         <file>Resources/Settings.png</file>
-        <file>Resources/Layers.png</file>
+        <file>Resources/Outliner.png</file>
         <file>Resources/File.png</file>
         <file>Resources/zoomin-r.png</file>
         <file>Resources/projection.png</file>

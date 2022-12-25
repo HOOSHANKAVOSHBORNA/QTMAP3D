@@ -130,6 +130,11 @@ CMainWindow {
             clickCallback: function(index) {
                 wnd.menuWidgetClickCallback(index);
             }
+
+
+            onListsButtonClicked: function() {
+                wnd.showListWindow();
+            }
         }
 
         SideWidget {
