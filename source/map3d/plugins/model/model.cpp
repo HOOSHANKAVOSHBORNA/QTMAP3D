@@ -468,8 +468,12 @@ void Model::onMessageReceived(const QJsonDocument &message)
 void Model::frameEvent()
 {
 //    findSceneModels(mMapController->getViewer());
-    if(mLastSelectedModel)
-        mLastSelectedModel->frameEvent();
+    for(auto model: mModels[AIRCRAFT])
+    {
+        model->frameEvent();
+    }
+//    if(mLastSelectedModel)
+//        mLastSelectedModel->frameEvent();
 }
 
 void Model::mousePressEvent(QMouseEvent *event)

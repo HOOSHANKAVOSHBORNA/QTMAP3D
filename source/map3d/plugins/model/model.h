@@ -60,7 +60,7 @@ private:
     void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
-    QMap<QString,QMap<QString, osgEarth::Annotation::ModelNode*>>  mModels;
+    QMap<QString,QMap<QString, BaseModel*>>  mModels;
     osgEarth::Annotation::ModelNode* mCurrentModel;
     BaseModel* mLastSelectedModel{nullptr};
     BaseModel* mLastMoveModel{nullptr};

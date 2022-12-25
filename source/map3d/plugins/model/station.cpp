@@ -23,16 +23,22 @@ Station::Station(MapController *mapControler, QObject *parent)
     osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     redGeode->addDrawable(redImageDrawable);
+//    auto redPlaceNode = new osgEarth::Annotation::PlaceNode();
+//    redPlaceNode->setIconImage(redIcon);
 
     osg::Image* yellowIcon = osgDB::readImageFile("../data/models/station/station_ll_yell.png");
     yellowIcon->scaleImage(32, 32, yellowIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->addDrawable(yellowImageDrawable);
+//    auto yellowPlaceNode = new osgEarth::Annotation::PlaceNode();
+//    yellowPlaceNode->setIconImage(yellowIcon);
 
     mNode2D = new osg::Switch;
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
+//    mNode2D->addChild(yellowPlaceNode, false);
+//    mNode2D->addChild(redPlaceNode, true);
     //--create 3D node---------------------------------------------------------------------------
     osg::ref_ptr<Truck> truck = new Truck(getMapNode());
     mNode3D = truck;
