@@ -168,6 +168,11 @@ bool Model::setup(MapController *pMapController,
     mUIHandle = uiHandle;
 
     mDataManager = new DataManager(mQmlEngine, mUIHandle, this);
+    connect(mDataManager, &DataManager::aircraftDoubleClicked,[=](const QString& TN){
+        Aircraft* selectedModel = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][TN]);
+        if(selectedModel)
+            selectedModel->iw2D3DButtonClicked();
+    });
 
     ////--websocket data-------------------------------------------------------------------
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
@@ -420,38 +425,23 @@ void Model::onMessageReceived(const QJsonDocument &message)
     if(message.object().value("Name").toString() == "Target")
     {
         QJsonObject data = message.object().value("Data").toObject();
+        AircraftInfo airInfo;
+        airInfo.fromJson(QJsonDocument(data));
         //qDebug()<<"target:"<< data;
-
-        double latitude = data.value("Latitude").toDouble();
-        double longitude = data.value("Longitude").toDouble();
-        double altitude = data.value("Altitude").toDouble();
-        double speed = data.value("Speed").toDouble();
-        double heading = data.value("Heading").toDouble();
-        osg::Vec3d position(latitude, longitude, altitude);
-        QString name = QString::number(data.value("TN").toInt());
-        QString txtMessage = QString::fromUtf8(message.toJson(QJsonDocument::Compact));
-
-        Aircraft::Information info;
+        osg::Vec3d position(airInfo.Latitude, airInfo.Longitude, airInfo.Altitude);
+        QString name = airInfo.TN;
         if(mModels.contains(AIRCRAFT) && mModels[AIRCRAFT].contains(name))
         {
             Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
-            model->flyTo(position, heading, speed);
-
-
-            model->setInformation(info);
+            model->flyTo(position, airInfo.Heading, airInfo.Speed);
+            model->setInformation(airInfo);
         }
         else
         {
-            addAircraftModel(name, position, -heading);
+            addAircraftModel(name, position, -airInfo.Heading);
             Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
-            model->setInformation(info);
+            model->setInformation(airInfo);
         }
-        AircraftInfo airInfo;
-        airInfo.TN = name;
-        airInfo.Latitude = QString::number(latitude);
-        airInfo.Altitude = QString::number(altitude);
-        airInfo.Speed = QString::number(speed);
-        airInfo.Heading = QString::number(heading);
         //mAircraftTableModel->updateItemData(airInfo);
         if (mDataManager) {
             mDataManager->setAircraftInfo(airInfo);

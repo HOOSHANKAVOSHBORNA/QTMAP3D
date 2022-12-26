@@ -206,7 +206,7 @@ osgEarth::Annotation::ModelNode *Aircraft::getTruckModel() const
     return mTruckModel;
 }
 
-void Aircraft::setInformation(Information info)
+void Aircraft::setInformation(AircraftInfo info)
 {
     mInformation = info;
     QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
