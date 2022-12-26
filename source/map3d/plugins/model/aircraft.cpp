@@ -206,10 +206,11 @@ osgEarth::Annotation::ModelNode *Aircraft::getTruckModel() const
     return mTruckModel;
 }
 
-void Aircraft::setInformation(QString info)
+void Aircraft::setInformation(Information info)
 {
     mInformation = info;
-    mUIHandle->iwUpdateData(this, mInformation);
+    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
+    mUIHandle->iwUpdateData(this, txtInfo);
 }
 
 void Aircraft::iw2D3DButtonClicked()
@@ -288,7 +289,8 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
         {
             mUIHandle->iwSetReceiverObject(this);
             mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
-            mUIHandle->iwUpdateData(this, mInformation);
+            QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
+            mUIHandle->iwUpdateData(this, txtInfo);
             event->accept();
         }
         else

@@ -456,18 +456,21 @@ void Model::onMessageReceived(const QJsonDocument &message)
         osg::Vec3d position(latitude, longitude, altitude);
         QString name = QString::number(data.value("TN").toInt());
         QString txtMessage = QString::fromUtf8(message.toJson(QJsonDocument::Compact));
+
+        Aircraft::Information info;
         if(mModels.contains(AIRCRAFT) && mModels[AIRCRAFT].contains(name))
         {
             Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
             model->flyTo(position, heading, speed);
 
-            model->setInformation(txtMessage);
+
+            model->setInformation(info);
         }
         else
         {
             addAircraftModel(name, position, -heading);
             Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
-            model->setInformation(txtMessage);
+            model->setInformation(info);
         }
         AircraftInfo airInfo;
         airInfo.TN = name;
