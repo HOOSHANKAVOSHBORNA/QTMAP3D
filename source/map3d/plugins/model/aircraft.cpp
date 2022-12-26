@@ -1,5 +1,5 @@
 ﻿#include "aircraft.h"
-#include "airplanecontextmenumodel.h"
+#include "aircraftcontextmenumodel.h"
 #include "draw.h"
 
 #include <QDebug>
@@ -22,7 +22,7 @@
 #include<osg/Switch>
 
 
-const int RANGE3D = 1000;
+const float RANGE3D = std::numeric_limits<float>::max();
 
 Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :BaseModel(mapControler->getMapNode(), parent)
@@ -32,7 +32,7 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
     mIs3D = mMapController->getMode();
 
     mUIHandle = uiHandle;
-    mNode3D = osgDB::readRefNodeFile("/home/client111/Downloads/Boeing 747/Boeing_747.osgb");
+    mNode3D = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
     if (!mNode3D)
     {
         //todo show massage here
@@ -54,7 +54,7 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
 
     setStyle(rootStyle);
     //--create icon Nodes---------------------------------------------------------------------------
-    osg::Image* redIcon = osgDB::readImageFile("../data/models/aircraft/airplane_red.png");
+    osg::Image* redIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_red.png");
     redIcon->scaleImage(25, 32, redIcon->r());
     osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
@@ -62,7 +62,7 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
     //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
     redGeode->addDrawable(redImageDrawable);
 
-    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/aircraft/airplane_yellow.png");
+    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_yellow.png");
     yellowIcon->scaleImage(25, 32, yellowIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
@@ -73,10 +73,12 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Green;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 12;
-    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle);
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
+    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
+    osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
+    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle,lableImage);
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
+    //    mLableNode->getGeoTransform()->setPosition(osg::Vec3(0, 0, 2));
     getGeoTransform()->addChild(mLableNode);
     //--add nods--------------------------------------------------------------------------------
     if(mIs3D)
@@ -104,8 +106,6 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
     //    mGeodeParticle->addDrawable(mSmoke->getParticleSystem());
     //    osgEarth::Registry::shaderGenerator().run(mGeodeParticle);// for textures or lighting
     //    getMapNode()->addChild(mGeodeParticle);
-
-    mCameraRangeChangeable = true;
     mLocationPoints = new osg::Vec3Array();
     mTempLocationPoints = new osg::Vec3Array();
 
@@ -249,13 +249,20 @@ void Aircraft::onModeChanged(bool is3DView)
     mIs3D = is3DView;
     if(mIs3D)
     {
-        mRootNode->setRange(0, 0, 300);
-        mRootNode->setRange(1, 300, std::numeric_limits<float>::max());
+        mRootNode->setRange(0, 0, RANGE3D);
+        mRootNode->setRange(1, RANGE3D, std::numeric_limits<float>::max());
+
+        auto style = getStyle();
+        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+        setStyle(style);
     }
     else
     {
         mRootNode->setRange(0, 0, 0);
         mRootNode->setRange(1,0, std::numeric_limits<float>::max());
+        auto style = getStyle();
+        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 0;
+        setStyle(style);
     }
 
     select(mIsSelected);
@@ -267,7 +274,9 @@ void Aircraft::frameEvent()
     getPosition().toWorld(wordPos);
     float x, y;
     mMapController->worldToScreen(wordPos,x, y);
-    mUIHandle->cmSetContextMenuPosition(mCurrentContextMenuItem, x, y);
+    mUIHandle->cmSetContextMenuPosition(mCurrentContextMenuItem, static_cast<int>(x), static_cast<int>(y));
+
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
 }
 
 void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -286,13 +295,13 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
             mMapController->untrackNode();
     }
     if(event->button() == Qt::RightButton) {
-        QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
-        QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
-            qDebug() << comp2->errorString();
+        QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+        QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+            qDebug() << comp->errorString();
 
-            if (comp2->status() == QQmlComponent::Ready) {
-                mCurrentContextMenuItem = static_cast<QQuickItem*>(comp2->create(nullptr));
-                AirplaneContextMenumodel *model = new AirplaneContextMenumodel;
+            if (comp->status() == QQmlComponent::Ready) {
+                mCurrentContextMenuItem = static_cast<QQuickItem*>(comp->create(nullptr));
+                AircraftContextMenumodel *model = new AircraftContextMenumodel;
                 model->addRow("test1");
                 model->addRow("test12");
                 model->addRow("test123");
@@ -308,20 +317,20 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
                 model->addRow("test1");
                 model->addRow("test12");
                 model->addRow("test123");
-                mCurrentContextMenuItem->setProperty("model", QVariant::fromValue<AirplaneContextMenumodel*>(model));
+                mCurrentContextMenuItem->setProperty("model", QVariant::fromValue<AircraftContextMenumodel*>(model));
 
                 osg::Vec3d wordPos;
                 getPosition().toWorld(wordPos);
                 float x, y;
                 QQmlEngine::setObjectOwnership(mCurrentContextMenuItem, QQmlEngine::JavaScriptOwnership);
                 mMapController->worldToScreen(wordPos,x, y);
-                mUIHandle->cmShowContextMenu(mCurrentContextMenuItem, x, y);
-                connect(model, &AirplaneContextMenumodel::returnIndex, this, &Aircraft::onContextmenuItemClicked);
+                mUIHandle->cmShowContextMenu(mCurrentContextMenuItem, static_cast<int>(x), static_cast<int>(y));
+                connect(model, &AircraftContextMenumodel::itemClicked, this, &Aircraft::onContextmenuItemClicked);
             }
 
         });
 
-        comp2->loadUrl(QUrl("qrc:/modelplugin/AircraftContextmenuView.qml"));
+        comp->loadUrl(QUrl("qrc:/modelplugin/AircraftContextmenuView.qml"));
     }
     if(!onModel && mCurrentContextMenuItem){
         mUIHandle->cmHideContextMenu(mCurrentContextMenuItem);
@@ -329,8 +338,8 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
     }
 
 }
-void Aircraft::onContextmenuItemClicked(int index){
-    std::cout << index << std::endl;
+void Aircraft::onContextmenuItemClicked(int index,  QString systemName){
+    std::cout << index << ", " << systemName.toStdString() << std::endl;
 }
 
 void Aircraft::curentPosition(osgEarth::GeoPoint pos)

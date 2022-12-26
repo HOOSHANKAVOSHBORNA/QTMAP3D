@@ -161,6 +161,9 @@ public slots:
     void setStatusBarText(const QString message, int time);
 
 
+    void showListWindow();
+
+
 public:
 
     MapController* mapController() const;

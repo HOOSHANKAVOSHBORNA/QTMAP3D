@@ -67,7 +67,6 @@ public:
     virtual void mouseMoveEvent(QMouseEvent* event, bool onModel);
 //    virtual void cameraRangeChanged(double /*range*/);
     virtual void curentPosition(osgEarth::GeoPoint pos);
-    bool mCameraRangeChangeable{false};
     void select(bool val);
 protected:
     bool mIsSelected{false};

@@ -3,6 +3,7 @@
 
 #include "plugininterface.h"
 #include "aircraft.h"
+#include "aircrafttablemodel.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
@@ -60,7 +61,7 @@ private:
     void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
-    QMap<QString,QMap<QString, osgEarth::Annotation::ModelNode*>>  mModels;
+    QMap<QString,QMap<QString, BaseModel*>>  mModels;
     osgEarth::Annotation::ModelNode* mCurrentModel;
     BaseModel* mLastSelectedModel{nullptr};
     BaseModel* mLastMoveModel{nullptr};
@@ -70,6 +71,8 @@ private:
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine = nullptr;
     int mPreCameraRange{0};
+
+    AircraftTableModel *mAircraftTableModel;
 };
 
 #endif // MODEL_H

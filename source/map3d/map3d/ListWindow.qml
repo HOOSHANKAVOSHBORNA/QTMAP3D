@@ -11,12 +11,12 @@ CListWindow {
     }
     property var selectColor: "#808080"
     property var unselectColor: "#606060"
-    visible: true
+    visible: false
     x: 800
     y: 600
     width: 800
     height: 600
-    title: "List Window"
+    title: "Outliner"
     color: "#404040"
     ColumnLayout {
         anchors.fill: parent

@@ -13,6 +13,8 @@ Item {
     property ListModel itemsModel
     property var clickCallback
 
+    signal listsButtonClicked()
+
     Rectangle {
         id: rect
         anchors.fill: parent
@@ -97,11 +99,76 @@ Item {
                         anchors.fill: col
                         source: col
                         color: mouseArea.isMouseOnItem ?
-                                   (mouseArea.pressed ? _colorPresed: _colorHover) :
-                                   (mouseArea.pressed ? _colorHover : "#FFFFFF");
+                               (mouseArea.pressed ? _colorPresed: _colorHover) :
+                               (mouseArea.pressed ? _colorHover : "#FFFFFF");
                     }
                 }
             }
+
+
+            // independent buttons
+            Item {
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: 64
+                Layout.preferredHeight: 64
+
+                ColumnLayout {
+                    id: col1
+                    anchors.centerIn: parent
+                    Image {
+                        id: img1
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 24
+                        Layout.preferredHeight: 24
+                        source: "qrc:///Resources/Outliner.png"
+                        width: 24
+                        height: 24
+                    }
+
+                    Label {
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: implicitWidth
+                        Layout.preferredHeight: implicitHeight
+                        text: "Outliner"
+                        color: "white"
+                        font.family: _fontFamily
+                        font.pointSize: _fontPointSize
+                    }
+                    visible: false
+                }
+
+                MouseArea {
+                    id: mouseArea1
+                    anchors.fill: col1
+                    hoverEnabled: true
+
+                    property bool isMouseOnItem: false
+
+                    onEntered: function() {
+                        isMouseOnItem = true;
+                    }
+                    onExited: function() {
+                        isMouseOnItem = false;
+                    }
+
+                    onClicked: function() {
+                        rootItem.listsButtonClicked();
+                        //rootItem.clickCallback(index);
+                    }
+                }
+
+                ColorOverlay {
+                    anchors.fill: col1
+                    source: col1
+                    color: mouseArea1.isMouseOnItem ?
+                           (mouseArea1.pressed ? _colorPresed: _colorHover) :
+                           (mouseArea1.pressed ? _colorHover : "#FFFFFF");
+                }
+            }
+
+
+
+
         }
     }
 }

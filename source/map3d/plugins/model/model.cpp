@@ -38,13 +38,16 @@
 #include <osgParticle/ExplosionDebrisEffect>
 #include <osgViewer/Viewer>
 #include <QQuickItem>
+#include <QSortFilterProxyModel>
 
 
 #include "aircrafttablemodel.h"
-#include "airplanecontextmenumodel.h"
+#include "aircraftcontextmenumodel.h"
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
+const QString SYSTEM = "System";
+const QString STATION = "Station";
 const QString ROCKET = "Rocket";
 const QString TRUCK = "Truck";
 //----------------------------------------------
@@ -71,7 +74,7 @@ bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
     //    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
     qmlRegisterType<AircraftTableModel>("Crystal", 1, 0, "AircraftTableModel");
-    qmlRegisterType<AirplaneContextMenumodel>("Crystal", 1, 0, "AirplaneContextMenumodel");
+    qmlRegisterType<AircraftContextMenumodel>("Crystal", 1, 0, "AircraftContextMenumodel");
     mQmlEngine = engine;
 
     QString cat = "model";
@@ -175,8 +178,14 @@ bool Model::setup(MapController *pMapController,
 
         if (comp->status() == QQmlComponent::Ready) {
             QQuickItem *item = (QQuickItem*) comp->create(nullptr);
-            AircraftTableModel *model = new AircraftTableModel;
-            item->setProperty("model", QVariant::fromValue<AircraftTableModel*>(model));
+            mAircraftTableModel = new AircraftTableModel;
+
+            QObject::connect(item,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mAircraftTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
+
+            item->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
             mUIHandle->lwAddTab("Aircrafts", item);
         }
 
@@ -377,13 +386,13 @@ void Model::addRocketModel(osg::Vec3d position)
 void Model::addSystemModel(osg::Vec3d position)
 {
     //create and setting model--------------------------------------------
-    osg::ref_ptr<System> model = new System(mMapController->getMapNode());
-    QString name = "System" + QString::number(mModels["System"].count());
-    model->setName(name.toStdString());
+    osg::ref_ptr<System> model = new System(mMapController);
+    QString name = SYSTEM + QString::number(mModels["System"].count());
+    model->setQStringName(name);
     model->setGeographicPosition(position, 0.0);
     model->setScale(osg::Vec3(1,1,1));
     //add to container-----------------------------------------------------
-    mModels["System"][name] = model;
+    mModels[SYSTEM][name] = model;
 
 
     //add to map ---------------------------------------------------------
@@ -393,13 +402,13 @@ void Model::addSystemModel(osg::Vec3d position)
 void Model::addStationModel(osg::Vec3d position)
 {
     //create and setting model--------------------------------------------
-    osg::ref_ptr<Station> model = new Station(mMapController->getMapNode());
-    QString name = "Station" + QString::number(mModels["Station"].count());
-    model->setName(name.toStdString());
+    osg::ref_ptr<Station> model = new Station(mMapController);
+    QString name = STATION + QString::number(mModels["Station"].count());
+    model->setQStringName(name);
     model->setGeographicPosition(position, 0.0);
     model->setScale(osg::Vec3(1,1,1));
     //add to container-----------------------------------------------------
-    mModels["Station"][name] = model;
+    mModels[STATION][name] = model;
 
 
     //add to map ---------------------------------------------------------
@@ -460,6 +469,13 @@ void Model::onMessageReceived(const QJsonDocument &message)
             Aircraft* model = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][name]);
             model->setInformation(txtMessage);
         }
+        AircraftInfo airInfo;
+        airInfo.TN = name;
+        airInfo.Latitude = QString::number(latitude);
+        airInfo.Altitude = QString::number(altitude);
+        airInfo.Speed = QString::number(speed);
+        airInfo.Heading = QString::number(heading);
+        mAircraftTableModel->updateItemData(airInfo);
 
     }
 
@@ -468,8 +484,20 @@ void Model::onMessageReceived(const QJsonDocument &message)
 void Model::frameEvent()
 {
 //    findSceneModels(mMapController->getViewer());
-    if(mLastSelectedModel)
-        mLastSelectedModel->frameEvent();
+    for(auto model: mModels[AIRCRAFT])
+    {
+        model->frameEvent();
+    }
+    for(auto model: mModels[SYSTEM])
+    {
+        model->frameEvent();
+    }
+    for(auto model: mModels[STATION])
+    {
+        model->frameEvent();
+    }
+//    if(mLastSelectedModel)
+//        mLastSelectedModel->frameEvent();
 }
 
 void Model::mousePressEvent(QMouseEvent *event)
@@ -560,7 +588,7 @@ void Model::findSceneModels(osgViewer::Viewer *viewer)
                     ++nitr)
                 {
                     BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
-                    if (model && model->mCameraRangeChangeable)
+                    if (model)
                     {
                         //qDebug() <<model->getQStringName();
                         //qDebug() <<"range: "<<camera->getViewpoint().getRange();

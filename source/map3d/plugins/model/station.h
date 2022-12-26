@@ -2,7 +2,7 @@
 #define STATION_H
 
 
-
+#include "mapcontroller.h"
 #include "basemodel.h"
 
 #include <osgEarthAnnotation/ModelNode>
@@ -12,9 +12,12 @@
 class Station: public BaseModel
 {
 public:
-    Station(osgEarth::MapNode* mapNode, QObject* parent = nullptr);
+    Station(MapController *mapControler, QObject* parent = nullptr);
+public:
+    virtual void frameEvent()override;
 protected:
-private:
+private slots:
+    void onModeChanged(bool is3DView);
 private:
 };
 

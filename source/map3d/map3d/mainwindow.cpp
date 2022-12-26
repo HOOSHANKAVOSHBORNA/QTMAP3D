@@ -459,6 +459,16 @@ void MainWindow::setStatusBarText(const QString message, int time) {
                               );
 }
 
+void MainWindow::showListWindow()
+{
+    if (mListWindow) {
+        if (!mListWindow->isVisible())
+            mListWindow->showNormal();
+        else
+            mListWindow->hide();
+    }
+}
+
 
 
 

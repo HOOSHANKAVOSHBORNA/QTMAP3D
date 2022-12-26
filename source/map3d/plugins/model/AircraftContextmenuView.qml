@@ -6,7 +6,7 @@ import Crystal 1.0
 Item {
     id: root
     anchors.fill: parent
-    property AirplaneContextMenumodel model: AirplaneContextMenumodel {
+    property AircraftContextMenumodel model: AircraftContextMenumodel {
 
     }
 
@@ -31,7 +31,7 @@ Item {
                 }
                 implicitWidth: 200
                 implicitHeight: 25
-                onClicked: root.model.returnIndex(index)
+                onClicked: root.model.itemClicked(index, disp)
             }
 
 
