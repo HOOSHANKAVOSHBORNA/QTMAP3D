@@ -88,7 +88,6 @@ bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
 
 void Model::onSideItemCreated(int /*index*/, QObject */*pSideItem*/)
 {
-
 }
 
 void Model::onToolboxItemClicked(const QString &name, const QString &category)
@@ -168,35 +167,10 @@ bool Model::setup(MapController *pMapController,
     mMapController = pMapController;
     mUIHandle = uiHandle;
 
+    mDataManager = new DataManager(mQmlEngine, mUIHandle, this);
+
     ////--websocket data-------------------------------------------------------------------
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
-
-
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        qDebug() << comp->errorString();
-
-        if (comp->status() == QQmlComponent::Ready) {
-            QQuickItem *item = (QQuickItem*) comp->create(nullptr);
-            mAircraftTableModel = new AircraftTableModel;
-
-            QObject::connect(item,
-                             SIGNAL(filterTextChanged(const QString&)),
-                             mAircraftTableModel,
-                             SLOT(setFilterWildcard(const QString&)));
-
-            item->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
-            mUIHandle->lwAddTab("Aircrafts", item);
-        }
-
-    });
-
-    comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
-
-
-
-
-
 }
 
 void Model::demo()
@@ -478,7 +452,10 @@ void Model::onMessageReceived(const QJsonDocument &message)
         airInfo.Altitude = QString::number(altitude);
         airInfo.Speed = QString::number(speed);
         airInfo.Heading = QString::number(heading);
-        mAircraftTableModel->updateItemData(airInfo);
+        //mAircraftTableModel->updateItemData(airInfo);
+        if (mDataManager) {
+            mDataManager->setAircraftInfo(airInfo);
+        }
 
     }
 

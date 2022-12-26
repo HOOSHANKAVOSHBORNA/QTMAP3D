@@ -3,7 +3,7 @@
 
 #include "plugininterface.h"
 #include "aircraft.h"
-#include "aircrafttablemodel.h"
+#include "datamanager.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
@@ -72,7 +72,8 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     int mPreCameraRange{0};
 
-    AircraftTableModel *mAircraftTableModel;
+    //AircraftTableModel *mAircraftTableModel;
+    DataManager *mDataManager = nullptr;
 };
 
 #endif // MODEL_H

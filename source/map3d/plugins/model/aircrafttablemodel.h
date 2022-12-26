@@ -45,6 +45,8 @@ public:
     QHash<int,QByteArray> roleNames() const override;
 
 
+    Q_INVOKABLE QString getTN(int row) const;
+
 public slots:
     void setFilterWildcard(const QString& wildcard);
 
