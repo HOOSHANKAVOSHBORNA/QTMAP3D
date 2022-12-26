@@ -9,6 +9,7 @@ Item {
     anchors.fill: parent
 
     signal filterTextChanged(string txt)
+    signal aircraftDoubleClicked(string TN)
 
     Timer {
         id: signalTimer
@@ -21,6 +22,7 @@ Item {
     }
 
     property AircraftTableModel model
+
     ColumnLayout {
         anchors.fill: parent
         anchors.topMargin: 10
@@ -88,6 +90,15 @@ Item {
                 delegate: Item {
                     implicitWidth:   rct.implicitWidth + 4
                     implicitHeight:  rct.implicitHeight + 4
+                    MouseArea {
+                        anchors.fill: parent
+                        onDoubleClicked: function() {
+                            if (rootItem.model) {
+                                rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
+                            }
+                        }
+                    }
+
                     Rectangle {
                         id: rct
                         anchors.centerIn: parent
