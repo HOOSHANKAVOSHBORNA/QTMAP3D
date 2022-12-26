@@ -107,6 +107,17 @@ QHash<int, QByteArray> AircraftTableModel::roleNames() const
     return hash;
 }
 
+QString AircraftTableModel::getTN(int row) const
+{
+    if (row < 1) return QString();
+
+    if (row > static_cast<int>(mAircraftInfoListProxy.size())) {
+        return QString();
+    }
+
+    return mAircraftInfoListProxy[std::size_t(row-1)]->TN;
+}
+
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 {
     beginResetModel();
