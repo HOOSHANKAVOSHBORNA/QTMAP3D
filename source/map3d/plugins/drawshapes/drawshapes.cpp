@@ -47,7 +47,7 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/res/line.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/res/sphere.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/res/polygon.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{EXTRPOLY, CATEGORY, "qrc:/res/extroPolygon.png", true});
+    //desc->toolboxItemsList.push_back(new ItemDesc{EXTRPOLY, CATEGORY, "qrc:/res/extroPolygon.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/res/image.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/res/circle.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/res/ellipse.png", true});
@@ -98,13 +98,21 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onPolygoneBtnClick);
         }
     }
-    if(CATEGORY == category && name == EXTRPOLY)
-    {
+//    if(CATEGORY == category && name == EXTRPOLY)
+//    {
 
-    }
+//    }
     if(CATEGORY == category && name == IMAGE_OVERLAY)
     {
+        if(checked)
+        {
 
+        QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onImgOvlyBtnClick);
+        }
+        else
+        {
+        QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onImgOvlyBtnClick);
+        }
     }
     if(CATEGORY == category && name == CIRCLE)
     {
