@@ -58,11 +58,7 @@ CMainWindow {
             side_itemurl: "qrc:/toolbox/Toolbox.qml"
         }
 
-        ListElement {
-            title_text:   "Settings"
-            icon_url:     "qrc:///Resources/Settings.png"
-            side_itemurl: "qrc:///Settings.qml"
-        }
+
 
         ListElement {
             title_text:   "Toolbox"
@@ -74,6 +70,12 @@ CMainWindow {
             title_text:   "Location"
             icon_url:     "qrc:/Resources/location.png"
             side_itemurl: "qrc:/location/Location.qml"
+        }
+
+        ListElement {
+            title_text:   "Settings"
+            icon_url:     "qrc:///Resources/Settings.png"
+            side_itemurl: "qrc:///Settings.qml"
         }
 
         //        ListElement {
@@ -152,14 +154,14 @@ CMainWindow {
                     item.listModel = wnd.fileModel;
                     item.itemClicked.connect(wnd.fileItemClicked);
                     break
-                case 2:
+                case 1:
                     item.listModel = wnd.toolboxModel;
                     item.itemClicked.connect(wnd.toolboxItemClicked);
                     item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                     break;
 
 
-                case 3:
+                case 2:
                     item.goToLocation.connect(wnd.goToLocation);
                     wnd.focalPointLatChanged.connect(function(){item.latitude = wnd.focalPointLat;});
                     wnd.focalPointLongChanged.connect(function(){item.longitude = wnd.focalPointLong;});
