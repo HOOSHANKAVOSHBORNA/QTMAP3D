@@ -171,7 +171,12 @@ bool Model::setup(MapController *pMapController,
     connect(mDataManager, &DataManager::aircraftDoubleClicked,[=](const QString& TN){
         Aircraft* selectedModel = dynamic_cast<Aircraft*>(mModels[AIRCRAFT][TN]);
         if(selectedModel)
-            selectedModel->iw2D3DButtonClicked();
+        {
+            mLastSelectedModel->select(false);
+            selectedModel->select(true);
+            selectedModel->showInfoWidget();
+            selectedModel->goOnTrack();
+        }
     });
 
     ////--websocket data-------------------------------------------------------------------

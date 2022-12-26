@@ -32,6 +32,8 @@ public:
     void setTruckModel(osgEarth::Annotation::ModelNode* truckModel);
     osgEarth::Annotation::ModelNode *getTruckModel() const;
     void setInformation(AircraftInfo info);
+    void goOnTrack();
+    void showInfoWidget();
 public slots:
     void iw2D3DButtonClicked();
     void iwRouteButtonClicked();

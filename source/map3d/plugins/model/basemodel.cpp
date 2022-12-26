@@ -382,18 +382,15 @@ bool BaseModel::hasHit() const
 
 void BaseModel::mousePressEvent(QMouseEvent* event, bool onModel)
 {
-    //    if(ea.getButtonMask() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
-    //    {
-    select(onModel);
-    mIsSelected = onModel;
-    //    }
+    if(event->button() != Qt::MiddleButton)
+        select(onModel);
 }
 
-void BaseModel::mouseMoveEvent(QMouseEvent* event, bool onModel)
+void BaseModel::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
 {
     if(!mIsSelected)
     {
-        select(onModel);
+        hover(onModel);
     }
 }
 
@@ -430,22 +427,28 @@ void BaseModel::curentPosition(osgEarth::GeoPoint pos)
 
 void BaseModel::select(bool val)
 {
+    hover(val);
+    mIsSelected = val;
+}
+
+void BaseModel::hover(bool val)
+{
     mNode2D->setValue(0, val);
     mNode2D->setValue(1, !val);
 
-//    auto lbStyle = mLableNode->getStyle();
+    //    auto lbStyle = mLableNode->getStyle();
 
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     if(!val)
     {
         mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 0.0, 0.0, 1.0));
-//        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Red;
+        //        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Red;
     }
     else
     {
         mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 0.2f, 1.0));
-//        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
+        //        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
     }
     getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-//    mLableNode->setStyle(lbStyle);
+    //    mLableNode->setStyle(lbStyle);
 }

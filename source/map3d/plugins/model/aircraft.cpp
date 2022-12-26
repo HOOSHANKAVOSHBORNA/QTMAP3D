@@ -213,9 +213,24 @@ void Aircraft::setInformation(AircraftInfo info)
     mUIHandle->iwUpdateData(this, txtInfo);
 }
 
+void Aircraft::goOnTrack()
+{
+    mMapController->setTrackNode(getGeoTransform());
+    //mMapController->goToPosition(getPosition(), 200);
+}
+
+void Aircraft::showInfoWidget()
+{
+    mUIHandle->iwSetReceiverObject(this);
+    mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
+    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
+    mUIHandle->iwUpdateData(this, txtInfo);
+}
+
 void Aircraft::iw2D3DButtonClicked()
 {
     //    qDebug()<<"iw2D3DButtonClicked";
+//    goOnTrack();
     mMapController->goToPosition(getPosition(), 200);
 }
 
@@ -282,15 +297,12 @@ void Aircraft::frameEvent()
 
 void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
 {
+    BaseModel::mousePressEvent(event, onModel);
     if(event->button() == Qt::LeftButton)
     {
-        BaseModel::mousePressEvent(event, onModel);
         if(onModel)
         {
-            mUIHandle->iwSetReceiverObject(this);
-            mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
-            QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
-            mUIHandle->iwUpdateData(this, txtInfo);
+           showInfoWidget();
             event->accept();
         }
         else
@@ -304,21 +316,9 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
             if (comp->status() == QQmlComponent::Ready) {
                 mCurrentContextMenuItem = static_cast<QQuickItem*>(comp->create(nullptr));
                 AircraftContextMenumodel *model = new AircraftContextMenumodel;
-                model->addRow("test1");
-                model->addRow("test12");
-                model->addRow("test123");
-                model->addRow("test1");
-                model->addRow("test12");
-                model->addRow("test123");
-                model->addRow("test1");
-                model->addRow("test12");
-                model->addRow("test123");
-                model->addRow("test1");
-                model->addRow("test12");
-                model->addRow("test123");
-                model->addRow("test1");
-                model->addRow("test12");
-                model->addRow("test123");
+                for(auto detectSystem: mInformation.DetectionSystems)
+                    model->addRow(detectSystem);
+
                 mCurrentContextMenuItem->setProperty("model", QVariant::fromValue<AircraftContextMenumodel*>(model));
 
                 osg::Vec3d wordPos;

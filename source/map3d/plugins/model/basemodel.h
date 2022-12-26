@@ -68,6 +68,7 @@ public:
 //    virtual void cameraRangeChanged(double /*range*/);
     virtual void curentPosition(osgEarth::GeoPoint pos);
     void select(bool val);
+    void hover(bool val);
 protected:
     bool mIsSelected{false};
     bool mIs3D{false};
