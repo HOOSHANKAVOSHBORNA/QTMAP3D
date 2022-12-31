@@ -278,7 +278,7 @@ void BaseModel::setGeographicPosition(const osg::Vec3d &pos, double heading)
     setPosition(geoPoint);
 
     osgEarth::Symbology::Style pm = getStyle();
-    pm.getOrCreate<osgEarth::Symbology::ModelSymbol>()->heading() = heading;
+    pm.getOrCreate<osgEarth::Symbology::ModelSymbol>()->heading() = -heading;
     setStyle(pm);
 
     //draw line------------------------------------------------

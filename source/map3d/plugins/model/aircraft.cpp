@@ -76,7 +76,7 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
     osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
-    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle,lableImage);
+    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
     //    mLableNode->getGeoTransform()->setPosition(osg::Vec3(0, 0, 2));
     getGeoTransform()->addChild(mLableNode);

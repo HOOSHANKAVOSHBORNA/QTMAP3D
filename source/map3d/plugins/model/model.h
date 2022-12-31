@@ -41,7 +41,7 @@ public:
 
     void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
     void addTruckModel();
-    void addAircraftModel(QString name, osg::Vec3d geographicPosition, double heading);
+    void addUpdateAircraft(AircraftInfo aircraftInfo);
     void addRocketModel(osg::Vec3d position = osg::Vec3d(52.8601, 35.277, 846));
     void addSystemModel(osg::Vec3d position);
     void addStationModel(osg::Vec3d position);
@@ -61,11 +61,10 @@ private:
     void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
-    QMap<QString,QMap<QString, BaseModel*>>  mModels;
+    QMap<QString,QMap<QString, BaseModel*>>  mModelNodes;
     osgEarth::Annotation::ModelNode* mCurrentModel;
     BaseModel* mLastSelectedModel{nullptr};
     BaseModel* mLastMoveModel{nullptr};
-    osg::PositionAttitudeTransform* modelNode;
 
     MapController *mMapController;
     UIHandle* mUIHandle;
