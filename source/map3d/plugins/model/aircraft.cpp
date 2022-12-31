@@ -1,5 +1,6 @@
 ﻿#include "aircraft.h"
 #include "aircraftcontextmenumodel.h"
+#include "infomodel.h"
 #include "draw.h"
 
 #include <QDebug>
@@ -221,10 +222,34 @@ void Aircraft::goOnTrack()
 
 void Aircraft::showInfoWidget()
 {
-    mUIHandle->iwSetReceiverObject(this);
-    mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
-    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
-    mUIHandle->iwUpdateData(this, txtInfo);
+//    mUIHandle->iwSetReceiverObject(this);
+//    mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
+//    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
+//    mUIHandle->iwUpdateData(this, txtInfo);
+    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+        qDebug() << comp->errorString();
+
+        if (comp->status() == QQmlComponent::Ready) {
+            QQuickItem *item = static_cast<QQuickItem*>(comp->create(nullptr));
+            InfoModel *model = new InfoModel;
+
+            model->setAircraftInfo(mInformation);
+            item->setProperty("model", QVariant::fromValue<InfoModel*>(model));
+            QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
+
+
+            QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
+            connect(model, &InfoModel::view2D3DButtonClicked, this, &Aircraft::iw2D3DButtonClicked);
+            connect(model, &InfoModel::routeButtonClicked, this, &Aircraft::iwRouteButtonClicked);
+            connect(model, &InfoModel::followButtonClicked, this, &Aircraft::iwFollowButtonClicked);
+            connect(model, &InfoModel::moreButtonClicked, this, &Aircraft::iwMoreButtonClicked);
+            mUIHandle->iwShow(item);
+        }
+
+    });
+
+    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
 }
 
 void Aircraft::iw2D3DButtonClicked()

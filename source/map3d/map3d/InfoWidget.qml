@@ -156,6 +156,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.minimumHeight: 60
 
+
                     onView2D3DButtonClicked: function() {
                         rootItem.view2D3DButtonClicked();
                     }
