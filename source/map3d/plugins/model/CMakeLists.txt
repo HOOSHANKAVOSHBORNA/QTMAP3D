@@ -14,6 +14,7 @@ find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 add_library(model SHARED
   aircrafttablemodel.cpp
   aircraftcontextmenumodel.cpp
+  infomodel.cpp
   stationtablemodel.cpp
   systemtablemodel.cpp
   model.cpp

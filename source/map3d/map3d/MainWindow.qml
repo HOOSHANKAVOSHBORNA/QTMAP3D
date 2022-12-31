@@ -177,30 +177,30 @@ CMainWindow {
             }
         }
 
-        InfoWidget {
-            id: infoWidget
-            x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
-            y: menuWidget.height + (widgetsMargins * 2.0)
-            width: 600 + (widgetsMargins * 2)
-            height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
+//        InfoWidget {
+//            id: infoWidget
+//            x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
+//            y: menuWidget.height + (widgetsMargins * 2.0)
+//            width: 600 + (widgetsMargins * 2)
+//            height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
 
-            onView2D3DButtonClicked: function() {
-                wnd.infoWidget2D3DButtonClicked();
-            }
+//            onView2D3DButtonClicked: function() {
+//                wnd.infoWidget2D3DButtonClicked();
+//            }
 
-            onRouteButtonClicked: function() {
-                wnd.infoWidgetRouteButtonClicked();
-            }
+//            onRouteButtonClicked: function() {
+//                wnd.infoWidgetRouteButtonClicked();
+//            }
 
-            onFollowButtonClicked: function() {
-                wnd.infoWidgetFollowButtonClicked();
-            }
+//            onFollowButtonClicked: function() {
+//                wnd.infoWidgetFollowButtonClicked();
+//            }
 
-            onMoreButtonClicked: function() {
-                wnd.infoWidgetMoreButtonClicked();
-            }
+//            onMoreButtonClicked: function() {
+//                wnd.infoWidgetMoreButtonClicked();
+//            }
 
-        }
+//        }
 
         Compass{
             id:compass
@@ -267,7 +267,7 @@ CMainWindow {
 
 
     function menuWidgetClickCallback(index) {
-        infoWidget.hideAllItems();
+//        infoWidget.hideAllItems();
         sideWidget.menuWidgetItemClicked(index);
     }
 
@@ -369,14 +369,14 @@ CMainWindow {
     }
 
 
-    function showInfoItem(itemTypeString) {
-        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
-        sideWidget.hideAllItems();
-        infoWidget.showInfoItem(itemTypeString);
-    }
-    function updateInfoWidgetData(infoJson) {
-        infoWidget.updateData(infoJson);
-    }
+//    function showInfoItem(itemTypeString) {
+//        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+//        sideWidget.hideAllItems();
+//        infoWidget.showInfoItem(itemTypeString);
+//    }
+//    function updateInfoWidgetData(infoJson) {
+//        infoWidget.updateData(infoJson);
+//    }
 
 
     function showStatusMessage(message, timer) {
@@ -403,13 +403,27 @@ CMainWindow {
 
         } else {
             sideWidget.hideAllItems();
-            infoWidget.hideAllItems();
+//            infoWidget.hideAllItems();
 
             widgetsHideAnimation.stop();
             widgetsShowAnimation.start();
             wnd.widgetsVisible = true;
         }
 
+    }
+    InformationView {
+        id: infoo
+        x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
+        y: menuWidget.height + (widgetsMargins * 2.0)
+        width: 600 + (widgetsMargins * 2)
+        height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
+
+    }
+
+    function showInfoView(item) {
+        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+        sideWidget.hideAllItems();
+        infoo.showInfo(item)
     }
 
 }
