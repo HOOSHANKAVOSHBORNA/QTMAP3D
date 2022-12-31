@@ -18,7 +18,14 @@ Item {
         interval: 500
         onTriggered: function() {
             rootItem.filterTextChanged(filterInput.text);
+            tableView.contentX = 0;
+            tableView.contentY = 0;
         }
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        color: "#303030"
     }
 
     property AircraftTableModel model
@@ -80,41 +87,71 @@ Item {
 
         }
 
-        ScrollView {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            clip: true
-            TableView {
-                model: rootItem.model
+        Item {
+            Layout.fillWidth: true;
+            Layout.preferredHeight: 50
+            Layout.minimumHeight: 50
 
-                delegate: Item {
-                    implicitWidth:   rct.implicitWidth + 4
-                    implicitHeight:  rct.implicitHeight + 4
-                    MouseArea {
-                        anchors.fill: parent
-                        onDoubleClicked: function() {
-                            if (rootItem.model) {
-                                rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
-                            }
+            Row {
+                anchors.top: parent.top
+                height: 50
+                width: 16 * (150 + 4)
+                spacing: 4
+                anchors.leftMargin: 2 - tableView.contentX
+                anchors.rightMargin: 2
+                anchors.left: parent.left
+
+                Repeater {
+                    model: 16
+                    Rectangle {
+                        width: 150
+                        height: 50
+                        radius: 10
+                        color: 'darkgreen'
+                        Text {
+                            color: 'skyblue'
+                            text: rootItem.model ? rootItem.model.headerText(index) : "";
+                            anchors.centerIn: parent
                         }
                     }
+                }
+            }
+        }
 
-                    Rectangle {
-                        id: rct
-                        anchors.centerIn: parent
-                        color: d_bkcolor
-                        implicitWidth: 150
-                        implicitHeight:  txt.implicitHeight + 10
-                        Text {
-                            id: txt
-                            anchors.centerIn: parent
-                            text: display
-                            color: d_txtcolor
+        TableView {
+            id: tableView
+            model: rootItem.model
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            clip:true
+
+            delegate: Item {
+                implicitWidth:   rct.implicitWidth + 4
+                implicitHeight:  rct.implicitHeight + 4
+                MouseArea {
+                    anchors.fill: parent
+                    onDoubleClicked: function() {
+                        if (rootItem.model) {
+                            rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
                         }
                     }
                 }
 
+                Rectangle {
+                    id: rct
+                    anchors.centerIn: parent
+                    color: d_bkcolor
+                    implicitWidth: 150
+                    implicitHeight:  txt.implicitHeight + 10
+                    Text {
+                        id: txt
+                        anchors.centerIn: parent
+                        text: display
+                        color: d_txtcolor
+                    }
+                }
             }
+
         }
     }
 }

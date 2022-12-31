@@ -6,11 +6,11 @@
 AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-//    for (int i = 0; i < 100; i++) {
-//        AircraftInfo ai;
-//        ai.TN = QStringLiteral("OOPS") + QString::number(i);
-//        updateItemData(ai);
-//    }
+    //    for (int i = 0; i < 100; i++) {
+    //        AircraftInfo ai;
+    //        ai.TN = QStringLiteral("OOPS") + QString::number(i);
+    //        updateItemData(ai);
+    //    }
 }
 
 int AircraftTableModel::columnCount(const QModelIndex &parent) const
@@ -20,7 +20,7 @@ int AircraftTableModel::columnCount(const QModelIndex &parent) const
 
 int AircraftTableModel::rowCount(const QModelIndex &parent) const
 {
-    return static_cast<int>(mAircraftInfoListProxy.size()) + 1;
+    return static_cast<int>(mAircraftInfoListProxy.size());
 }
 
 QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
@@ -31,46 +31,23 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
     {
-        if (index.row() == 0) {
-
-            switch(index.column()) {
-            case  0: return QVariant::fromValue<QString>("TN");
-            case  1: return QVariant::fromValue<QString>("IFFCode");
-            case  2: return QVariant::fromValue<QString>("CallSign");
-            case  3: return QVariant::fromValue<QString>("Type");
-            case  4: return QVariant::fromValue<QString>("Master Radar");
-            case  5: return QVariant::fromValue<QString>("Identification");
-            case  6: return QVariant::fromValue<QString>("Identification Method");
-            case  7: return QVariant::fromValue<QString>("Time");
-            case  8: return QVariant::fromValue<QString>("Pos");
-            case  9: return QVariant::fromValue<QString>("Latitude");
-            case 10: return QVariant::fromValue<QString>("Longitude");
-            case 11: return QVariant::fromValue<QString>("Altitude");
-            case 12: return QVariant::fromValue<QString>("Heading");
-            case 13: return QVariant::fromValue<QString>("Speed");
-            case 14: return QVariant::fromValue<QString>("Detection Systems");
-            case 15: return QVariant::fromValue<QString>("Sends");
-            }
-
-        } else {
-            switch(index.column()) {
-            case  0: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->TN);
-            case  1: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->IFFCode);
-            case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->CallSign);
-            case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->Type);
-            case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->MasterRadar);
-            case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->Identification);
-            case  6: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->IdentificationMethod);
-            case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->Time);
-            case  8: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->Pos);
-            case  9: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->Latitude);
-            case 10: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->Longitude);
-            case 11: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->Altitude);
-            case 12: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->Heading);
-            case 13: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->Speed);
-            case 14: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->detectionSystemsToString());
-            case 15: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row()-1)]->sendsToString());
-            }
+        switch(index.column()) {
+        case  0: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->TN);
+        case  1: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->IFFCode);
+        case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->CallSign);
+        case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->Type);
+        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->MasterRadar);
+        case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->Identification);
+        case  6: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->IdentificationMethod);
+        case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->Time);
+        case  8: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->Pos);
+        case  9: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Latitude);
+        case 10: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Longitude);
+        case 11: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Altitude);
+        case 12: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Heading);
+        case 13: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Speed);
+        case 14: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->detectionSystemsToString());
+        case 15: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->sendsToString());
         }
 
         break;
@@ -78,18 +55,38 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
 
     case BackColorRole:
     {
-        if (index.row() == 0) {
-            return QVariant::fromValue<QColor>(QColor("skyblue"));
-        } else {
-            return QVariant::fromValue<QColor>(QColor("darkkhaki"));
-        }
+        return QVariant::fromValue<QColor>(QColor("transparent"));
 
         break;
     }
 
     case TextColorRole:
     {
-        return QVariant::fromValue<QColor>(QColor("black"));
+        return QVariant::fromValue<QColor>(QColor("white"));
+        break;
+    }
+
+    case HeaderTextRole:
+    {
+        switch(index.row()) {
+        case  0: return QVariant::fromValue<QString>("TN");
+        case  1: return QVariant::fromValue<QString>("IFFCode");
+        case  2: return QVariant::fromValue<QString>("CallSign");
+        case  3: return QVariant::fromValue<QString>("Type");
+        case  4: return QVariant::fromValue<QString>("Master Radar");
+        case  5: return QVariant::fromValue<QString>("Identification");
+        case  6: return QVariant::fromValue<QString>("Identify Method");
+        case  7: return QVariant::fromValue<QString>("Time");
+        case  8: return QVariant::fromValue<QString>("Pos");
+        case  9: return QVariant::fromValue<QString>("Latitude");
+        case 10: return QVariant::fromValue<QString>("Longitude");
+        case 11: return QVariant::fromValue<QString>("Altitude");
+        case 12: return QVariant::fromValue<QString>("Heading");
+        case 13: return QVariant::fromValue<QString>("Speed");
+        case 14: return QVariant::fromValue<QString>("Detection Systems");
+        case 15: return QVariant::fromValue<QString>("Sends");
+        }
+
         break;
     }
 
@@ -104,7 +101,32 @@ QHash<int, QByteArray> AircraftTableModel::roleNames() const
     QHash<int, QByteArray> hash = QAbstractTableModel::roleNames();
     hash[BackColorRole] = "d_bkcolor";
     hash[TextColorRole] = "d_txtcolor";
+    hash[HeaderTextRole] = "d_headerTxt";
     return hash;
+}
+
+QString AircraftTableModel::headerText(int column) const
+{
+    switch(column) {
+    case  0: return QStringLiteral("TN");
+    case  1: return QStringLiteral("IFFCode");
+    case  2: return QStringLiteral("CallSign");
+    case  3: return QStringLiteral("Type");
+    case  4: return QStringLiteral("Master Radar");
+    case  5: return QStringLiteral("Identification");
+    case  6: return QStringLiteral("Identification Method");
+    case  7: return QStringLiteral("Time");
+    case  8: return QStringLiteral("Pos");
+    case  9: return QStringLiteral("Latitude");
+    case 10: return QStringLiteral("Longitude");
+    case 11: return QStringLiteral("Altitude");
+    case 12: return QStringLiteral("Heading");
+    case 13: return QStringLiteral("Speed");
+    case 14: return QStringLiteral("Detection Systems");
+    case 15: return QStringLiteral("Sends");
+    }
+
+    return QStringLiteral("");
 }
 
 QString AircraftTableModel::getTN(int row) const
@@ -115,7 +137,7 @@ QString AircraftTableModel::getTN(int row) const
         return QString();
     }
 
-    return mAircraftInfoListProxy[std::size_t(row-1)]->TN;
+    return mAircraftInfoListProxy[std::size_t(row)]->TN;
 }
 
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)
@@ -144,7 +166,7 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
     beginResetModel();
 
     const auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(),
-                               [aircraftInfo](const QSharedPointer<AircraftInfo>& itemInfo){
+                                 [aircraftInfo](const QSharedPointer<AircraftInfo>& itemInfo){
         return itemInfo->TN == aircraftInfo.TN;
     });
 

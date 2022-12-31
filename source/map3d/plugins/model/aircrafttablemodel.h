@@ -115,7 +115,8 @@ public:
 
     enum CustomRoles {
         BackColorRole = Qt::UserRole + 100,
-        TextColorRole = Qt::UserRole + 101
+        TextColorRole = Qt::UserRole + 101,
+        HeaderTextRole = Qt::UserRole + 102
     };
 
 public:
@@ -124,6 +125,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int,QByteArray> roleNames() const override;
 
+    Q_INVOKABLE QString headerText(int column) const;
 
     Q_INVOKABLE QString getTN(int row) const;
 
