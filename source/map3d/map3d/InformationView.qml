@@ -36,7 +36,9 @@ Item {
     }
 
     function hideItem(){
-        nowItem.parent = null
-        nowItem.destroy()
+        if (nowItem){
+            nowItem.parent = null
+            nowItem.destroy()
+        }
     }
 }

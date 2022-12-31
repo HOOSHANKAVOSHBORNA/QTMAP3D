@@ -267,7 +267,7 @@ CMainWindow {
 
 
     function menuWidgetClickCallback(index) {
-//        infoWidget.hideAllItems();
+        infoo.hideItem();
         sideWidget.menuWidgetItemClicked(index);
     }
 
