@@ -23,7 +23,9 @@ public:
         Longitude = Qt::UserRole + 211,
         Altitude = Qt::UserRole + 212,
         Heading = Qt::UserRole + 213,
-        Speed = Qt::UserRole + 214
+        Speed = Qt::UserRole + 214,
+        DetectionSystems = Qt::UserRole + 215,
+        Sends = Qt::UserRole + 216
     };
 
     InfoModel(QObject* parent = nullptr);

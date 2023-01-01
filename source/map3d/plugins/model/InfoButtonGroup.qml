@@ -15,8 +15,8 @@ Item {
         id: buttonsModel
 
         ListElement {
-            buttonText: "2D/3D"
-            iconUrl: "qrc:///Resources/3D.png"
+            buttonText: "Go to"
+            iconUrl: "qrc:///Resources/goto.png"
             clickCallback: function() { rootItem.view2D3DButtonClicked(); }
         }
 
@@ -77,7 +77,7 @@ Item {
                             text: control.text
                             font: control.font
                             opacity: enabled ? 1.0 : 0.3
-                            color: control.down ? "#17a81a" : "white"
+                            color: hovered ? "#FFCC00" :"#FFFFFF"
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             elide: Text.ElideRight

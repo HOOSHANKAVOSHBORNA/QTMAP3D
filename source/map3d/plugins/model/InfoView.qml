@@ -303,12 +303,12 @@ Item {
                         }
 
                         Repeater {
-                            model: rootItem.detectionSystemsModel
+                            model: DetectionSystems
                             Label {
                                 Layout.preferredWidth: rootItem.width - 30
                                 Layout.preferredHeight: implicitHeight
                                 color: "white"
-                                text: systemName
+                                text: DetectionSystems[index]
                                 horizontalAlignment: Qt.AlignLeft
                             }
 
@@ -330,12 +330,12 @@ Item {
                         }
 
                         Repeater {
-                            model: rootItem.sendsModel
+                            model: Sends
                             Label {
                                 Layout.preferredWidth: rootItem.width - 30
                                 Layout.preferredHeight: implicitHeight
                                 color: "white"
-                                text: sendName
+                                text: Sends[index]
                                 horizontalAlignment: Qt.AlignLeft
                             }
 
