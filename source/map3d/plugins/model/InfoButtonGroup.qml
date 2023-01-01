@@ -11,31 +11,36 @@ Item {
     signal followButtonClicked();
     signal moreButtonClicked();
 
+
     ListModel {
         id: buttonsModel
 
         ListElement {
             buttonText: "Go to"
             iconUrl: "qrc:///Resources/goto.png"
-            clickCallback: function() { rootItem.view2D3DButtonClicked(); }
+            checked: false
+            clickCallback: function() { rootItem.view2D3DButtonClicked();}
         }
 
         ListElement {
             buttonText: "Route"
             iconUrl:"qrc:///Resources/route.png"
-            clickCallback: function() { rootItem.routeButtonClicked(); }
+            checked: false
+            clickCallback: function() { rootItem.routeButtonClicked();}
         }
 
         ListElement {
             buttonText: "Follow"
             iconUrl:"qrc:///Resources/tracking.png"
-            clickCallback: function() { rootItem.followButtonClicked(); }
+            checked: false
+            clickCallback: function() { rootItem.followButtonClicked();}
         }
 
         ListElement {
             buttonText: "More"
             iconUrl: "qrc:///Resources/more.png"
-            clickCallback: function() { rootItem.moreButtonClicked(); }
+            checked: false
+            clickCallback: function() { rootItem.moreButtonClicked();}
         }
     }
 
@@ -44,6 +49,7 @@ Item {
         spacing: 0
 
         Repeater {
+            id: rep
             model: buttonsModel
             Button {
                 id: control
@@ -87,6 +93,7 @@ Item {
                 }
 
                 onClicked: function() {
+                    checked = checked ? false: true
                     clickCallback()
                 }
 
