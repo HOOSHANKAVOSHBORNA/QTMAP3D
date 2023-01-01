@@ -11,6 +11,8 @@ Item {
     signal filterTextChanged(string txt)
     signal aircraftDoubleClicked(string TN)
 
+    signal s
+
     Timer {
         id: signalTimer
         running: false

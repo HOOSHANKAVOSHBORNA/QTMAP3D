@@ -131,9 +131,9 @@ QString AircraftTableModel::headerText(int column) const
 
 QString AircraftTableModel::getTN(int row) const
 {
-    if (row < 1) return QString();
+    if (row < 0) return QString();
 
-    if (row > static_cast<int>(mAircraftInfoListProxy.size())) {
+    if (row >= static_cast<int>(mAircraftInfoListProxy.size())) {
         return QString();
     }
 
