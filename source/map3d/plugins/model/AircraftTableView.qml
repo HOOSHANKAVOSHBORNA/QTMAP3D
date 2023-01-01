@@ -11,6 +11,8 @@ Item {
     signal filterTextChanged(string txt)
     signal aircraftDoubleClicked(string TN)
 
+    signal s
+
     Timer {
         id: signalTimer
         running: false
@@ -89,12 +91,12 @@ Item {
 
         Item {
             Layout.fillWidth: true;
-            Layout.preferredHeight: 50
-            Layout.minimumHeight: 50
+            Layout.preferredHeight: 40
+            Layout.minimumHeight: 40
 
             Row {
                 anchors.top: parent.top
-                height: 50
+                height: 40
                 width: 16 * (150 + 4)
                 spacing: 4
                 anchors.leftMargin: 2 - tableView.contentX
@@ -105,9 +107,9 @@ Item {
                     model: 16
                     Rectangle {
                         width: 150
-                        height: 50
-                        radius: 10
-                        color: 'darkgreen'
+                        height: 40
+                        radius: 5
+                        color: '#27556c'
                         Text {
                             color: 'skyblue'
                             text: rootItem.model ? rootItem.model.headerText(index) : "";
@@ -118,40 +120,44 @@ Item {
             }
         }
 
-        TableView {
-            id: tableView
-            model: rootItem.model
+        ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            clip:true
 
-            delegate: Item {
-                implicitWidth:   rct.implicitWidth + 4
-                implicitHeight:  rct.implicitHeight + 4
-                MouseArea {
-                    anchors.fill: parent
-                    onDoubleClicked: function() {
-                        if (rootItem.model) {
-                            rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
+            TableView {
+                id: tableView
+                model: rootItem.model
+                contentWidth: 16 * (150+4)
+                clip:true
+
+                delegate: Item {
+                    implicitWidth:   rct.implicitWidth + 4
+                    implicitHeight:  rct.implicitHeight + 4
+                    MouseArea {
+                        anchors.fill: parent
+                        onDoubleClicked: function() {
+                            if (rootItem.model) {
+                                rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        id: rct
+                        anchors.centerIn: parent
+                        color: d_bkcolor
+                        implicitWidth: 150
+                        implicitHeight:  txt.implicitHeight + 10
+                        Text {
+                            id: txt
+                            anchors.centerIn: parent
+                            text: display
+                            color: d_txtcolor
                         }
                     }
                 }
 
-                Rectangle {
-                    id: rct
-                    anchors.centerIn: parent
-                    color: d_bkcolor
-                    implicitWidth: 150
-                    implicitHeight:  txt.implicitHeight + 10
-                    Text {
-                        id: txt
-                        anchors.centerIn: parent
-                        text: display
-                        color: d_txtcolor
-                    }
-                }
             }
-
         }
     }
 }

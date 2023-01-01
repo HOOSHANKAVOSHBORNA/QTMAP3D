@@ -2,7 +2,7 @@
 #define MODEL_H
 
 #include "plugininterface.h"
-#include "aircraft.h"
+#include "aircraftmodelnode.h"
 #include "datamanager.h"
 
 #include<osg/Array>
@@ -35,7 +35,7 @@ public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
     virtual void onSideItemCreated(int index, QObject *pSideItem) override;
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
-    virtual bool setup(MapController *pMapController,
+    virtual bool setup(MapController *mapController,
                        NetworkManager *networkManager,
                        UIHandle *UIHandle) override;
 
@@ -63,8 +63,8 @@ private:
 private:
     QMap<QString,QMap<QString, BaseModel*>>  mModelNodes;
     osgEarth::Annotation::ModelNode* mCurrentModel;
-    BaseModel* mLastSelectedModel{nullptr};
-    BaseModel* mLastMoveModel{nullptr};
+    BaseModel* mSelectedModelNode{nullptr};
+    BaseModel* mOnMoveModelNode{nullptr};
 
     MapController *mMapController;
     UIHandle* mUIHandle;

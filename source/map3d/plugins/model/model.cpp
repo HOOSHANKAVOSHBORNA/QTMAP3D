@@ -119,7 +119,7 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
                     //                        addRocketModel(modeltruck->getPosition().vec3d());
                     //                        auto modelRocket = dynamic_cast<Rocket*>(mModels[ROCKET].last());
                     auto activeRocket = modeltruck->getActiveRocket();
-                    auto modelAirplane = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT].last());
+                    auto modelAirplane = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT].last());
                     modelAirplane->stop();//
                     activeRocket->setFollowModel(modelAirplane);
                     //modelRocket->setTruckModel(modeltruck);
@@ -166,22 +166,25 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
     }
 }
 
-bool Model::setup(MapController *pMapController,
+bool Model::setup(MapController *mapController,
                   NetworkManager *networkManager,
                   UIHandle *uiHandle)
 {
-    mMapController = pMapController;
+    mMapController = mapController;
     mUIHandle = uiHandle;
 
     mDataManager = new DataManager(mQmlEngine, mUIHandle, this);
     connect(mDataManager, &DataManager::aircraftDoubleClicked,[=](const QString& TN){
-        Aircraft* selectedModel = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT][TN]);
-        if(selectedModel)
+
+        if(mModelNodes[AIRCRAFT].contains(TN))
         {
-            mLastSelectedModel->select(false);
-            selectedModel->select(true);
-            selectedModel->showInfoWidget();
-            selectedModel->goOnTrack();
+            AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][TN]);
+            if(mSelectedModelNode)
+                mSelectedModelNode->select(false);
+            aircraftModelNode->select(true);
+            aircraftModelNode->showInfoWidget();
+            aircraftModelNode->goOnTrack();
+            mSelectedModelNode = aircraftModelNode;
         }
     });
 
@@ -195,7 +198,7 @@ void Model::demo()
     auto airplaneNames = mModelNodes[AIRCRAFT].keys();
     for (auto name: airplaneNames)
     {
-        auto model = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT][name]);
+        auto model = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][name]);
         auto mapPoint = model->getPosition();
         osgEarth::GeoPoint  latLongPoint;
         //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
@@ -294,19 +297,19 @@ void Model::addTruckModel()
 
 void Model::addUpdateAircraft(AircraftInfo aircraftInfo)
 {
-    osg::ref_ptr<Aircraft> aircraftModelNode;
+    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
     osg::Vec3d geographicPosition(aircraftInfo.Latitude, aircraftInfo.Longitude, aircraftInfo.Altitude);
 
     if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(aircraftInfo.TN))
     {
-        aircraftModelNode = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT][aircraftInfo.TN]);
+        aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][aircraftInfo.TN]);
         aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
 
     }
     else
     {
         //create and model node------------------------------------------------
-        aircraftModelNode = new Aircraft(mMapController, mQmlEngine,mUIHandle);
+        aircraftModelNode = new AircraftModelNode(mMapController, mQmlEngine,mUIHandle);
         aircraftModelNode->setQStringName(aircraftInfo.TN);
         aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
@@ -453,18 +456,9 @@ void Model::onMessageReceived(const QJsonDocument &message)
 void Model::frameEvent()
 {
 //    findSceneModels(mMapController->getViewer());
-    for(auto model: mModelNodes[AIRCRAFT])
-    {
-        model->frameEvent();
-    }
-    for(auto model: mModelNodes[SYSTEM])
-    {
-        model->frameEvent();
-    }
-    for(auto model: mModelNodes[STATION])
-    {
-        model->frameEvent();
-    }
+    for(auto modelNodeList: mModelNodes)
+        for(auto modelNode: modelNodeList)
+            modelNode->frameEvent();
 //    if(mLastSelectedModel)
 //        mLastSelectedModel->frameEvent();
 }
@@ -472,29 +466,29 @@ void Model::frameEvent()
 void Model::mousePressEvent(QMouseEvent *event)
 {
 
-    BaseModel* model = pick(event->x(), event->y());
-    if(model)
+    BaseModel* modelNode = pick(event->x(), event->y());
+    if(modelNode)
     {
-        model->mousePressEvent(event, true);
+        modelNode->mousePressEvent(event, true);
     }
-    if(mLastSelectedModel && mLastSelectedModel != model)
-        mLastSelectedModel->mousePressEvent(event, false);
-    if(model)
-        mLastSelectedModel = model;
+    if(mSelectedModelNode && mSelectedModelNode != modelNode)
+        mSelectedModelNode->mousePressEvent(event, false);
+    if(modelNode)
+        mSelectedModelNode = modelNode;
 
 }
 
 void Model::mouseMoveEvent(QMouseEvent *event)
 {
-    BaseModel* model = pick(event->x(), event->y());
-    if(model)
+    BaseModel* modelNode = pick(event->x(), event->y());
+    if(modelNode)
     {
-        model->mouseMoveEvent(event, true);
+        modelNode->mouseMoveEvent(event, true);
     }
-    if(mLastMoveModel && mLastMoveModel != model)
-        mLastMoveModel->mouseMoveEvent(event, false);
-    if(model)
-        mLastMoveModel = model;
+    if(mOnMoveModelNode && mOnMoveModelNode != modelNode)
+        mOnMoveModelNode->mouseMoveEvent(event, false);
+    if(modelNode)
+        mOnMoveModelNode = modelNode;
 }
 
 BaseModel* Model::pick(float x, float y)

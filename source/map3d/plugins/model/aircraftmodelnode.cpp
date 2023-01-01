@@ -1,4 +1,4 @@
-﻿#include "aircraft.h"
+﻿#include "aircraftmodelnode.h"
 #include "aircraftcontextmenumodel.h"
 #include "infomodel.h"
 #include "draw.h"
@@ -25,7 +25,7 @@
 
 const float RANGE3D = std::numeric_limits<float>::max();
 
-Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
+AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :BaseModel(mapControler->getMapNode(), parent)
 {
     mQmlEngine = qmlEngine;
@@ -111,10 +111,10 @@ Aircraft::Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle 
     mTempLocationPoints = new osg::Vec3Array();
 
     //map mode changed-----------------------------------------------------------------------
-    connect(mMapController, &MapController::modeChanged, this, &Aircraft::onModeChanged);
+    connect(mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
 }
 
-void Aircraft::flyTo(const osg::Vec3d &pos, double heading, double speed)
+void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double speed)
 {
 
     if(mIsStop)
@@ -189,7 +189,7 @@ void Aircraft::flyTo(const osg::Vec3d &pos, double heading, double speed)
 
 }
 
-void Aircraft::stop()
+void AircraftModelNode::stop()
 {
     mIsStop = true;
     if(mAnimationPathCallback != nullptr)
@@ -198,29 +198,29 @@ void Aircraft::stop()
 }
 
 
-void Aircraft::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
+void AircraftModelNode::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
 {
     mTruckModel = truckModel;
 }
-osgEarth::Annotation::ModelNode *Aircraft::getTruckModel() const
+osgEarth::Annotation::ModelNode *AircraftModelNode::getTruckModel() const
 {
     return mTruckModel;
 }
 
-void Aircraft::setInformation(AircraftInfo info)
+void AircraftModelNode::setInformation(AircraftInfo info)
 {
     mInformation = info;
     QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
     mUIHandle->iwUpdateData(this, txtInfo);
 }
 
-void Aircraft::goOnTrack()
+void AircraftModelNode::goOnTrack()
 {
     mMapController->setTrackNode(getGeoTransform());
     //mMapController->goToPosition(getPosition(), 200);
 }
 
-void Aircraft::showInfoWidget()
+void AircraftModelNode::showInfoWidget()
 {
 //    mUIHandle->iwSetReceiverObject(this);
 //    mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
@@ -240,10 +240,10 @@ void Aircraft::showInfoWidget()
 
 
             QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
-            connect(model, &InfoModel::view2D3DButtonClicked, this, &Aircraft::iw2D3DButtonClicked);
-            connect(model, &InfoModel::routeButtonClicked, this, &Aircraft::iwRouteButtonClicked);
-            connect(model, &InfoModel::followButtonClicked, this, &Aircraft::iwFollowButtonClicked);
-            connect(model, &InfoModel::moreButtonClicked, this, &Aircraft::iwMoreButtonClicked);
+            connect(model, &InfoModel::view2D3DButtonClicked, this, &AircraftModelNode::iw2D3DButtonClicked);
+            connect(model, &InfoModel::routeButtonClicked, this, &AircraftModelNode::iwRouteButtonClicked);
+            connect(model, &InfoModel::followButtonClicked, this, &AircraftModelNode::iwFollowButtonClicked);
+            connect(model, &InfoModel::moreButtonClicked, this, &AircraftModelNode::iwMoreButtonClicked);
             mUIHandle->iwShow(item);
         }
 
@@ -252,14 +252,14 @@ void Aircraft::showInfoWidget()
     comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
 }
 
-void Aircraft::iw2D3DButtonClicked()
+void AircraftModelNode::iw2D3DButtonClicked()
 {
     //    qDebug()<<"iw2D3DButtonClicked";
 //    goOnTrack();
     mMapController->goToPosition(getPosition(), 200);
 }
 
-void Aircraft::iwRouteButtonClicked()
+void AircraftModelNode::iwRouteButtonClicked()
 {
     //    mIsRoute = true;
     //    qDebug()<<"iwRouteButtonClicked";
@@ -274,18 +274,18 @@ void Aircraft::iwRouteButtonClicked()
 
 }
 
-void Aircraft::iwFollowButtonClicked()
+void AircraftModelNode::iwFollowButtonClicked()
 {
     //    qDebug()<<"iwFollowButtonClicked";
     mMapController->setTrackNode(getGeoTransform());
 }
 
-void Aircraft::iwMoreButtonClicked()
+void AircraftModelNode::iwMoreButtonClicked()
 {
     qDebug()<<"iwMoreButtonClicked";
 }
 
-void Aircraft::onModeChanged(bool is3DView)
+void AircraftModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
     if(mIs3D)
@@ -309,7 +309,7 @@ void Aircraft::onModeChanged(bool is3DView)
     select(mIsSelected);
 }
 
-void Aircraft::frameEvent()
+void AircraftModelNode::frameEvent()
 {
     osg::Vec3d wordPos;
     getPosition().toWorld(wordPos);
@@ -320,7 +320,7 @@ void Aircraft::frameEvent()
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
 }
 
-void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
+void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
     BaseModel::mousePressEvent(event, onModel);
     if(event->button() == Qt::LeftButton)
@@ -352,7 +352,7 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
                 QQmlEngine::setObjectOwnership(mCurrentContextMenuItem, QQmlEngine::JavaScriptOwnership);
                 mMapController->worldToScreen(wordPos,x, y);
                 mUIHandle->cmShowContextMenu(mCurrentContextMenuItem, static_cast<int>(x), static_cast<int>(y));
-                connect(model, &AircraftContextMenumodel::itemClicked, this, &Aircraft::onContextmenuItemClicked);
+                connect(model, &AircraftContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
             }
 
         });
@@ -365,11 +365,11 @@ void Aircraft::mousePressEvent(QMouseEvent *event, bool onModel)
     }
 
 }
-void Aircraft::onContextmenuItemClicked(int index,  QString systemName){
+void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName){
     std::cout << index << ", " << systemName.toStdString() << std::endl;
 }
 
-void Aircraft::curentPosition(osgEarth::GeoPoint pos)
+void AircraftModelNode::curentPosition(osgEarth::GeoPoint pos)
 {
     BaseModel::curentPosition(pos);
 
@@ -381,7 +381,7 @@ void Aircraft::curentPosition(osgEarth::GeoPoint pos)
     //    }
 }
 
-void Aircraft::addEffect(double emitterDuration)
+void AircraftModelNode::addEffect(double emitterDuration)
 {
     //add fire-----------------------------------------------------------------------------------------------------
     osgEarth::Registry::shaderGenerator().run(mFire);// for textures or lighting
@@ -399,7 +399,7 @@ void Aircraft::addEffect(double emitterDuration)
     getMapNode()->addChild(mSmoke->getParticleSystem());
 }
 
-void Aircraft::removeEffect()
+void AircraftModelNode::removeEffect()
 {
     //remove fire---------------------------------------------
     getMapNode()->removeChild(mFire->getParticleSystem());
