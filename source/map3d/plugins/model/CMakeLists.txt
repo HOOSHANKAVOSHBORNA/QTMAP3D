@@ -19,7 +19,7 @@ add_library(model SHARED
   systemtablemodel.cpp
   model.cpp
   basemodel.cpp
-  aircraft.cpp
+  aircraftmodelnode.cpp
   rocket.cpp
   station.cpp
   system.cpp

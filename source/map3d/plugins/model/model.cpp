@@ -119,7 +119,7 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
                     //                        addRocketModel(modeltruck->getPosition().vec3d());
                     //                        auto modelRocket = dynamic_cast<Rocket*>(mModels[ROCKET].last());
                     auto activeRocket = modeltruck->getActiveRocket();
-                    auto modelAirplane = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT].last());
+                    auto modelAirplane = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT].last());
                     modelAirplane->stop();//
                     activeRocket->setFollowModel(modelAirplane);
                     //modelRocket->setTruckModel(modeltruck);
@@ -178,7 +178,7 @@ bool Model::setup(MapController *mapController,
 
         if(mModelNodes[AIRCRAFT].contains(TN))
         {
-            Aircraft* aircraftModelNode = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT][TN]);
+            AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][TN]);
             if(mSelectedModelNode)
                 mSelectedModelNode->select(false);
             aircraftModelNode->select(true);
@@ -198,7 +198,7 @@ void Model::demo()
     auto airplaneNames = mModelNodes[AIRCRAFT].keys();
     for (auto name: airplaneNames)
     {
-        auto model = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT][name]);
+        auto model = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][name]);
         auto mapPoint = model->getPosition();
         osgEarth::GeoPoint  latLongPoint;
         //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
@@ -297,19 +297,19 @@ void Model::addTruckModel()
 
 void Model::addUpdateAircraft(AircraftInfo aircraftInfo)
 {
-    osg::ref_ptr<Aircraft> aircraftModelNode;
+    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
     osg::Vec3d geographicPosition(aircraftInfo.Latitude, aircraftInfo.Longitude, aircraftInfo.Altitude);
 
     if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(aircraftInfo.TN))
     {
-        aircraftModelNode = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT][aircraftInfo.TN]);
+        aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][aircraftInfo.TN]);
         aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
 
     }
     else
     {
         //create and model node------------------------------------------------
-        aircraftModelNode = new Aircraft(mMapController, mQmlEngine,mUIHandle);
+        aircraftModelNode = new AircraftModelNode(mMapController, mQmlEngine,mUIHandle);
         aircraftModelNode->setQStringName(aircraftInfo.TN);
         aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 

@@ -22,11 +22,11 @@
 
 class MapAnimationPathCallback;
 class EventCallback;
-class Aircraft: public BaseModel
+class AircraftModelNode: public BaseModel
 {
     Q_OBJECT
 public:
-    Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
+    AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void flyTo(const osg::Vec3d& pos, double heading, double speed);
     void stop() override;
     void setTruckModel(osgEarth::Annotation::ModelNode* truckModel);

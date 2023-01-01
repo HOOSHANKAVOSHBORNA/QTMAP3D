@@ -2,7 +2,7 @@
 #define MODEL_H
 
 #include "plugininterface.h"
-#include "aircraft.h"
+#include "aircraftmodelnode.h"
 #include "datamanager.h"
 
 #include<osg/Array>
