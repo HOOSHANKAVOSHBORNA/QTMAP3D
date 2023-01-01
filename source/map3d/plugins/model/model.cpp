@@ -166,22 +166,25 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
     }
 }
 
-bool Model::setup(MapController *pMapController,
+bool Model::setup(MapController *mapController,
                   NetworkManager *networkManager,
                   UIHandle *uiHandle)
 {
-    mMapController = pMapController;
+    mMapController = mapController;
     mUIHandle = uiHandle;
 
     mDataManager = new DataManager(mQmlEngine, mUIHandle, this);
     connect(mDataManager, &DataManager::aircraftDoubleClicked,[=](const QString& TN){
-        Aircraft* selectedModel = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT][TN]);
-        if(selectedModel)
+
+        if(mModelNodes[AIRCRAFT].contains(TN))
         {
-            mLastSelectedModel->select(false);
-            selectedModel->select(true);
-            selectedModel->showInfoWidget();
-            selectedModel->goOnTrack();
+            Aircraft* aircraftModelNode = dynamic_cast<Aircraft*>(mModelNodes[AIRCRAFT][TN]);
+            if(mSelectedModelNode)
+                mSelectedModelNode->select(false);
+            aircraftModelNode->select(true);
+            aircraftModelNode->showInfoWidget();
+            aircraftModelNode->goOnTrack();
+            mSelectedModelNode = aircraftModelNode;
         }
     });
 
@@ -453,18 +456,9 @@ void Model::onMessageReceived(const QJsonDocument &message)
 void Model::frameEvent()
 {
 //    findSceneModels(mMapController->getViewer());
-    for(auto model: mModelNodes[AIRCRAFT])
-    {
-        model->frameEvent();
-    }
-    for(auto model: mModelNodes[SYSTEM])
-    {
-        model->frameEvent();
-    }
-    for(auto model: mModelNodes[STATION])
-    {
-        model->frameEvent();
-    }
+    for(auto modelNodeList: mModelNodes)
+        for(auto modelNode: modelNodeList)
+            modelNode->frameEvent();
 //    if(mLastSelectedModel)
 //        mLastSelectedModel->frameEvent();
 }
@@ -472,29 +466,29 @@ void Model::frameEvent()
 void Model::mousePressEvent(QMouseEvent *event)
 {
 
-    BaseModel* model = pick(event->x(), event->y());
-    if(model)
+    BaseModel* modelNode = pick(event->x(), event->y());
+    if(modelNode)
     {
-        model->mousePressEvent(event, true);
+        modelNode->mousePressEvent(event, true);
     }
-    if(mLastSelectedModel && mLastSelectedModel != model)
-        mLastSelectedModel->mousePressEvent(event, false);
-    if(model)
-        mLastSelectedModel = model;
+    if(mSelectedModelNode && mSelectedModelNode != modelNode)
+        mSelectedModelNode->mousePressEvent(event, false);
+    if(modelNode)
+        mSelectedModelNode = modelNode;
 
 }
 
 void Model::mouseMoveEvent(QMouseEvent *event)
 {
-    BaseModel* model = pick(event->x(), event->y());
-    if(model)
+    BaseModel* modelNode = pick(event->x(), event->y());
+    if(modelNode)
     {
-        model->mouseMoveEvent(event, true);
+        modelNode->mouseMoveEvent(event, true);
     }
-    if(mLastMoveModel && mLastMoveModel != model)
-        mLastMoveModel->mouseMoveEvent(event, false);
-    if(model)
-        mLastMoveModel = model;
+    if(mOnMoveModelNode && mOnMoveModelNode != modelNode)
+        mOnMoveModelNode->mouseMoveEvent(event, false);
+    if(modelNode)
+        mOnMoveModelNode = modelNode;
 }
 
 BaseModel* Model::pick(float x, float y)
