@@ -25,6 +25,8 @@ QVariant InfoModel::data(const QModelIndex &/*index*/, int role) const{
         case Altitude: return QVariant::fromValue<double>(aircraftInfo.Altitude);
         case Heading: return QVariant::fromValue<double>(aircraftInfo.Heading);
         case Speed: return QVariant::fromValue<double>(aircraftInfo.Speed);
+        case DetectionSystems: return QVariant::fromValue<QStringList>(aircraftInfo.DetectionSystems);
+        case Sends: return QVariant::fromValue<QStringList>(aircraftInfo.Sends);
     }
     return aircraftInfo.TN;
 }
@@ -51,5 +53,7 @@ QHash<int, QByteArray> InfoModel::roleNames() const
     hash[Altitude] = "Altitude";
     hash[Heading] = "Heading";
     hash[Speed] = "Speed";
+    hash[DetectionSystems] = "DetectionSystems";
+    hash[Sends] = "Sends";
     return hash;
 }
