@@ -11,7 +11,8 @@ Item {
     signal filterTextChanged(string txt)
     signal aircraftDoubleClicked(string TN)
 
-    signal s
+    property int hoveredIndex: -1
+    property int selectedIndex: -1
 
     Timer {
         id: signalTimer
@@ -127,17 +128,29 @@ Item {
             TableView {
                 id: tableView
                 model: rootItem.model
-                contentWidth: 16 * (150+4)
+                contentWidth: 17 * (154)
                 clip:true
 
                 delegate: Item {
-                    implicitWidth:   rct.implicitWidth + 4
+                    implicitWidth:   rct.implicitWidth
                     implicitHeight:  rct.implicitHeight + 4
                     MouseArea {
+                        id: mouseArea
+                        hoverEnabled: true
                         anchors.fill: parent
                         onDoubleClicked: function() {
                             if (rootItem.model) {
                                 rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
+                            }
+                        }
+
+                        onContainsMouseChanged: function() {
+                            if (mouseArea.containsMouse) {
+                                rootItem.hoveredIndex = row;
+                            } else {
+                                if (rootItem.hoveredIndex == row) {
+                                    rootItem.hoveredIndex = -1;
+                                }
                             }
                         }
                     }
@@ -145,9 +158,14 @@ Item {
                     Rectangle {
                         id: rct
                         anchors.centerIn: parent
-                        color: d_bkcolor
-                        implicitWidth: 150
+                        implicitWidth: 154
                         implicitHeight:  txt.implicitHeight + 10
+                        color: "transparent"
+                        Rectangle {
+                            opacity: 0.2
+                            color: (rootItem.hoveredIndex == row) ? "lightskyblue" : "transparent"
+                            anchors.fill: parent
+                        }
                         Text {
                             id: txt
                             anchors.centerIn: parent
