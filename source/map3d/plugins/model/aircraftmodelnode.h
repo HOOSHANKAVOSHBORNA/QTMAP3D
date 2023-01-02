@@ -3,7 +3,8 @@
 
 #include "basemodel.h"
 #include "mapcontroller.h"
-#include <plugininterface.h>
+#include "plugininterface.h"
+#include "datamanager.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -15,53 +16,58 @@
 
 #include <QObject>
 #include <QMouseEvent>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 class MapAnimationPathCallback;
 class EventCallback;
-class Aircraft: public BaseModel
+class AircraftModelNode: public BaseModel
 {
     Q_OBJECT
 public:
-    Aircraft(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
+    AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void flyTo(const osg::Vec3d& pos, double heading, double speed);
     void stop() override;
     void setTruckModel(osgEarth::Annotation::ModelNode* truckModel);
     osgEarth::Annotation::ModelNode *getTruckModel() const;
-    void setInformation(QString info);
-    Q_INVOKABLE
-    void iw2D3DButtonClicked();
-    Q_INVOKABLE
-    void iwRouteButtonClicked();
-    Q_INVOKABLE
-    void iwFollowButtonClicked();
-    Q_INVOKABLE
-    void iwMoreButtonClicked();
+    void setInformation(AircraftInfo info);
+    void goOnTrack();
 public slots:
+
+    void onLeftButtonClicked(bool val);
+public:
+    void frameEvent()override;
+    void mousePressEvent(QMouseEvent *event, bool onModel) override;
+    void curentPosition(osgEarth::GeoPoint pos) override;
+private slots:
+    void onGotoButtonClicked();
+    void onRouteButtonToggled(bool check);
+    void onTrackButtonToggled(bool check);
     void onModeChanged(bool is3DView);
     void onContextmenuItemClicked(int index, QString systemName);
-public:
-    virtual void frameEvent()override;
-    virtual void mousePressEvent(QMouseEvent *event, bool onModel) override;
-    virtual void curentPosition(osgEarth::GeoPoint pos) override;
 private:
+    void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();
 private:
     MapController* mMapController{nullptr};
     ModelAnimationPathCallback* mAnimationPathCallback{nullptr};
     osgEarth::Annotation::ModelNode* mTruckModel;
-//    osg::ref_ptr<osg::Geode> mGeodeParticle;
+    //    osg::ref_ptr<osg::Geode> mGeodeParticle;
     osg::ref_ptr<osgParticle::SmokeTrailEffect> mSmoke;
     osg::ref_ptr<osgParticle::FireEffect> mFire;
 
     bool mIsStop{false};
     bool mIsRoute{false};
     UIHandle* mUIHandle;
-    QString mInformation;
+    AircraftInfo mInformation;
     osg::ref_ptr<osg::Vec3Array> mLocationPoints;
     osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
     QQmlEngine *mQmlEngine;
     QQuickItem *mCurrentContextMenuItem;
+
+    static osg::ref_ptr<osg::Node> mNode3DRef;
 };
 
 #endif // FLYINGMODEL_H

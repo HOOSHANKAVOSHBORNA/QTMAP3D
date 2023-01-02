@@ -29,5 +29,6 @@
         <file>infowidget/InfoButtonGroup.qml</file>
         <file>ListWindow.qml</file>
         <file>ContextmenuWidget.qml</file>
+        <file>InformationView.qml</file>
     </qresource>
 </RCC>

@@ -16,32 +16,32 @@ Item {
 
 
         rootItem.detectionSystemsModel.clear();
-        for (var idx1 in jsonObject.Data.DetectionSystem) {
-            detectionSystemsModel.append({"systemName": jsonObject.Data.DetectionSystem[idx1]});
+        for (var idx1 in jsonObject.DetectionSystem) {
+            detectionSystemsModel.append({"systemName": jsonObject.DetectionSystem[idx1]});
         }
 
         rootItem.sendsModel.clear();
-        for (var idx2 in jsonObject.Data.Send) {
-            sendsModel.append({"sendName": jsonObject.Data.Send[idx2]});
+        for (var idx2 in jsonObject.Send) {
+            sendsModel.append({"sendName": jsonObject.Send[idx2]});
         }
 
 
-        if (jsonObject.Data.TN)                   tnLabel.text = jsonObject.Data.TN;
-        if (jsonObject.Data.IFFCode)              iffCodeLabel.text = jsonObject.Data.IFFCode;
-        if (jsonObject.Data.CallSign)             callSignLabel.text = jsonObject.Data.CallSign;
-        if (jsonObject.Data.Type)                 typeLabel.text = jsonObject.Data.Type;
-        if (jsonObject.Data.MasterRadar)          masterLabel.text = jsonObject.Data.MasterRadar;
-        if (jsonObject.Data.Identification)       identificationLabel.text = jsonObject.Data.Identification;
-        if (jsonObject.Data.IdentificationMethod) identificationMethodLabel.text = jsonObject.Data.IdentificationMethod;
-        if (jsonObject.Data.Time)                 timeLabel.text = jsonObject.Data.Time;
-        if (jsonObject.Data.Pos)                  posLabel.text = jsonObject.Data.Pos;
+        if (jsonObject.TN)                   tnLabel.text = jsonObject.TN;
+        if (jsonObject.IFFCode)              iffCodeLabel.text = jsonObject.IFFCode;
+        if (jsonObject.CallSign)             callSignLabel.text = jsonObject.CallSign;
+        if (jsonObject.Type)                 typeLabel.text = jsonObject.Type;
+        if (jsonObject.MasterRadar)          masterLabel.text = jsonObject.MasterRadar;
+        if (jsonObject.Identification)       identificationLabel.text = jsonObject.Identification;
+        if (jsonObject.IdentificationMethod) identificationMethodLabel.text = jsonObject.IdentificationMethod;
+        if (jsonObject.Time)                 timeLabel.text = jsonObject.Time;
+        if (jsonObject.Pos)                  posLabel.text = jsonObject.Pos;
 
 
-        if (jsonObject.Data.Latitude)  latitudeLabel.text = jsonObject.Data.Latitude;
-        if (jsonObject.Data.Longitude) longitudeLabel.text = jsonObject.Data.Longitude;
-        if (jsonObject.Data.Altitude)  altitudeLabel.text = jsonObject.Data.Altitude;
-        if (jsonObject.Data.Heading)   headingLabel.text = jsonObject.Data.Heading;
-        if (jsonObject.Data.Speed)     speedLabel.text = jsonObject.Data.Speed;
+        if (jsonObject.Latitude)  latitudeLabel.text = jsonObject.Latitude;
+        if (jsonObject.Longitude) longitudeLabel.text = jsonObject.Longitude;
+        if (jsonObject.Altitude)  altitudeLabel.text = jsonObject.Altitude;
+        if (jsonObject.Heading)   headingLabel.text = jsonObject.Heading;
+        if (jsonObject.Speed)     speedLabel.text = jsonObject.Speed;
     }
 
     ScrollView {

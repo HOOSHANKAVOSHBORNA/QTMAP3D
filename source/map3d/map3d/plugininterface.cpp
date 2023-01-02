@@ -21,38 +21,43 @@ void UIHandle::iwSetReceiverObject(QObject *receiverObject)
     mReceiverObject = receiverObject;
 }
 
-void UIHandle::iwShow(QObject *receiverObject, UIHandle::InfoWidgetType infoWidgetType)
+void UIHandle::iwShow(QQuickItem* item)
 {
 
-    if (!mReceiverObject) return;
-    if (mReceiverObject != receiverObject) return;
+//    if (!mReceiverObject) return;
+//    if (mReceiverObject != receiverObject) return;
 
-    if (mMainWindow) {
-        bool bValidType = false;
-        QString itemTypeString = "";
-        switch (infoWidgetType) {
-        case UIHandle::InfoWidgetType::Airplane:
-            bValidType = true;
-            itemTypeString = "Airplane";
-            break;
-        case UIHandle::InfoWidgetType::Station:
-            bValidType = true;
-            itemTypeString = "Station";
-            break;
-        case UIHandle::InfoWidgetType::System:
-            bValidType = true;
-            itemTypeString = "System";
-            break;
-        }
+//    if (mMainWindow) {
+//        bool bValidType = false;
+//        QString itemTypeString = "";
+//        switch (infoWidgetType) {
+//        case UIHandle::InfoWidgetType::Airplane:
+//            bValidType = true;
+//            itemTypeString = "Airplane";
+//            break;
+//        case UIHandle::InfoWidgetType::Station:
+//            bValidType = true;
+//            itemTypeString = "Station";
+//            break;
+//        case UIHandle::InfoWidgetType::System:
+//            bValidType = true;
+//            itemTypeString = "System";
+//            break;
+//        }
 
-        if (bValidType) {
-            QMetaObject::invokeMethod(mMainWindow,
-                                      "showInfoItem",
-                                      Q_ARG(QVariant, QVariant::fromValue<QString>(itemTypeString))
-                                      );
-        }
-    }
+//        if (bValidType) {
+//            QMetaObject::invokeMethod(mMainWindow,
+//                                      "showInfoItem",
+//                                      Q_ARG(QVariant, QVariant::fromValue<QString>(itemTypeString))
+//                                      );
+//        }
+//    }
+    QMetaObject::invokeMethod(mMainWindow,
+                              "showInfoView",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              );
 }
+
 
 void UIHandle::iwUpdateData(QObject *receiverObject, const QString &infoJSON)
 {

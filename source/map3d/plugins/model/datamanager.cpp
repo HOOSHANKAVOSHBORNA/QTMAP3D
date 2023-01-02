@@ -29,7 +29,7 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
             QObject::connect(item,
                              SIGNAL(aircraftDoubleClicked(const QString&)),
                              this,
-                             SIGNAL(onAircraftDoubleClicked(const QString&)));
+                             SIGNAL(aircraftDoubleClicked(const QString&)));
 
 
             item->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));

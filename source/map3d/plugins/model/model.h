@@ -2,7 +2,7 @@
 #define MODEL_H
 
 #include "plugininterface.h"
-#include "aircraft.h"
+#include "aircraftmodelnode.h"
 #include "datamanager.h"
 
 #include<osg/Array>
@@ -35,13 +35,13 @@ public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
     virtual void onSideItemCreated(int index, QObject *pSideItem) override;
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
-    virtual bool setup(MapController *pMapController,
+    virtual bool setup(MapController *mapController,
                        NetworkManager *networkManager,
                        UIHandle *UIHandle) override;
 
     void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
     void addTruckModel();
-    void addAircraftModel(QString name, osg::Vec3d geographicPosition, double heading);
+    void addUpdateAircraft(AircraftInfo aircraftInfo);
     void addRocketModel(osg::Vec3d position = osg::Vec3d(52.8601, 35.277, 846));
     void addSystemModel(osg::Vec3d position);
     void addStationModel(osg::Vec3d position);
@@ -61,11 +61,10 @@ private:
     void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
-    QMap<QString,QMap<QString, BaseModel*>>  mModels;
+    QMap<QString,QMap<QString, BaseModel*>>  mModelNodes;
     osgEarth::Annotation::ModelNode* mCurrentModel;
-    BaseModel* mLastSelectedModel{nullptr};
-    BaseModel* mLastMoveModel{nullptr};
-    osg::PositionAttitudeTransform* modelNode;
+    BaseModel* mSelectedModelNode{nullptr};
+    BaseModel* mOnMoveModelNode{nullptr};
 
     MapController *mMapController;
     UIHandle* mUIHandle;

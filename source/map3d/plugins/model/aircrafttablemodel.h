@@ -4,6 +4,10 @@
 #include <QAbstractTableModel>
 #include <deque>
 #include <QSharedPointer>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QPair>
 
 struct AircraftInfo
 {
@@ -17,14 +21,91 @@ struct AircraftInfo
     QString Time;
     QString Pos;
 
-    QString Latitude;
-    QString Longitude;
-    QString Altitude;
-    QString Heading;
-    QString Speed;
+    double Latitude;
+    double Longitude;
+    double Altitude;
+    double Heading;
+    double Speed;
 
-    QString DetectionSystems;
-    QString Sends;
+    QStringList DetectionSystems;
+    QStringList Sends;
+
+    QString detectionSystemsToString()
+    {
+        QString result = "";
+        for(auto detectSystem: DetectionSystems)
+            result += detectSystem + ", ";
+        return result;
+    }
+    QString sendsToString()
+    {
+        QString result = "";
+        for(auto send: Sends)
+            result += send + ", ";
+        return result;
+    }
+
+    QJsonDocument toJson()
+    {
+        QJsonObject jsonObject;
+        jsonObject.insert("TN", TN);
+        jsonObject.insert("IFFCode", IFFCode);
+        jsonObject.insert("CallSign", CallSign);
+        jsonObject.insert("Type", Type);
+        jsonObject.insert("MasterRadar", MasterRadar);
+        jsonObject.insert("Identification", Identification);// F, K, Z, X, U, H
+        jsonObject.insert("IdentificationMethod", IdentificationMethod);//3 char
+        jsonObject.insert("Time", Time);//epoch
+        jsonObject.insert("Pos", Pos);
+
+        jsonObject.insert("Latitude", Latitude);
+        jsonObject.insert("Longitude", Longitude);
+        jsonObject.insert("Altitude", Altitude);//meter
+        jsonObject.insert("Heading", Heading);
+        jsonObject.insert("Speed", Speed);//m/s
+        //
+        QJsonArray detectSystems;
+        for(auto detectSystem: DetectionSystems)
+            detectSystems.push_back(detectSystem);
+        jsonObject.insert("DetectionSystem", detectSystems);
+        //
+        QJsonArray sends;
+        for(auto send: Sends)
+            sends.push_back(send);
+        jsonObject.insert("Send", sends);
+
+        QJsonDocument jsonDoc;
+        jsonDoc.setObject(jsonObject);
+        return jsonDoc;
+    }
+
+    void fromJson(QJsonDocument jsonDoc)
+    {
+        QJsonObject data = jsonDoc.object();
+        TN = QString::number(data.value("TN").toInt());
+        IFFCode = data.value("IFFCode").toString();
+        CallSign = data.value("CallSign").toString();
+        Type = data.value("Type").toString();
+        MasterRadar = data.value("MasterRadar").toString();
+        Identification = data.value("Identification").toString();
+        IdentificationMethod = data.value("IdentificationMethod").toString();
+        Time = data.value("Time").toString();
+        Pos = data.value("Pos").toString();
+
+        Latitude = data.value("Latitude").toDouble();
+        Longitude = data.value("Longitude").toDouble();
+        Altitude = data.value("Altitude").toDouble();
+        Heading = data.value("Heading").toDouble();
+        Speed = data.value("Speed").toDouble();
+
+        QJsonArray detectSystems = data.value("DetectionSystem").toArray();
+        for(auto detectSystem: detectSystems)
+            DetectionSystems.append(detectSystem.toString());
+
+        QJsonArray sends = data.value("Send").toArray();
+        for(auto send: sends)
+            Sends.append(send.toString());
+    }
 };
 
 class AircraftTableModel : public QAbstractTableModel
@@ -35,7 +116,8 @@ public:
 
     enum CustomRoles {
         BackColorRole = Qt::UserRole + 100,
-        TextColorRole = Qt::UserRole + 101
+        TextColorRole = Qt::UserRole + 101,
+        HeaderTextRole = Qt::UserRole + 102
     };
 
 public:
@@ -44,6 +126,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int,QByteArray> roleNames() const override;
 
+    Q_INVOKABLE QString headerText(int column) const;
 
     Q_INVOKABLE QString getTN(int row) const;
 
@@ -56,8 +139,8 @@ public:
     void updateItemData(const AircraftInfo& aircraftInfo);
 
 private:
-    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoList;
-    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoListProxy;
+    std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoList;
+    std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoListProxy;
 
     QString mFilter;
 };

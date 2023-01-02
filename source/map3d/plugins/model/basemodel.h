@@ -54,11 +54,13 @@ public:
     BaseModel *getFollowModel() const;
     void setFollowModel(BaseModel *followModel);
     virtual void stop(){}
+//    virtual void traverse(osg::NodeVisitor& nv) override;
 
 signals:
     void positionChanged(osgEarth::GeoPoint pos);
     void hit(BaseModel *hitWith);
 protected:
+//    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
     virtual void playExplosionEffect(float scale);
 public:
     virtual void frameEvent() {}
@@ -68,6 +70,7 @@ public:
 //    virtual void cameraRangeChanged(double /*range*/);
     virtual void curentPosition(osgEarth::GeoPoint pos);
     void select(bool val);
+    void hover(bool val);
 protected:
     bool mIsSelected{false};
     bool mIs3D{false};

@@ -129,7 +129,7 @@ Item {
                         Layout.alignment: Qt.AlignCenter
                         Layout.preferredWidth: implicitWidth
                         Layout.preferredHeight: implicitHeight
-                        text: "Outliner"
+                        text: "List"
                         color: "white"
                         font.family: _fontFamily
                         font.pointSize: _fontPointSize

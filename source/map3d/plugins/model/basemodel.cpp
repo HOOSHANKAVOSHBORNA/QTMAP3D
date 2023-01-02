@@ -278,7 +278,7 @@ void BaseModel::setGeographicPosition(const osg::Vec3d &pos, double heading)
     setPosition(geoPoint);
 
     osgEarth::Symbology::Style pm = getStyle();
-    pm.getOrCreate<osgEarth::Symbology::ModelSymbol>()->heading() = heading;
+    pm.getOrCreate<osgEarth::Symbology::ModelSymbol>()->heading() = -heading;
     setStyle(pm);
 
     //draw line------------------------------------------------
@@ -374,6 +374,28 @@ void BaseModel::setFollowModel(BaseModel *followModel)
     mFollowModel = followModel;
 }
 
+//void BaseModel::traverse(osg::NodeVisitor &nv)
+//{
+//    qDebug()<<"traverse:"<<getQStringName();
+//    if (nv.getVisitorType() == osg::NodeVisitor::EVENT_VISITOR)
+//    {
+//        osgGA::EventVisitor* ev = static_cast<osgGA::EventVisitor*>(&nv);
+//        for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
+//            itr != ev->getEvents().end();
+//            ++itr)
+//        {
+//            osgGA::GUIEventAdapter* ea = dynamic_cast<osgGA::GUIEventAdapter*>(itr->get());
+//            if ( ea && handle(*ea, *(ev->getActionAdapter())))
+//                ea->setHandled(true);
+//        }
+//    }
+//    GeoPositionNode::traverse( nv );
+//}
+//bool BaseModel::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+//{
+//    if (ea.getHandled()) return false;
+//}
+
 
 bool BaseModel::hasHit() const
 {
@@ -382,18 +404,15 @@ bool BaseModel::hasHit() const
 
 void BaseModel::mousePressEvent(QMouseEvent* event, bool onModel)
 {
-    //    if(ea.getButtonMask() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
-    //    {
-    select(onModel);
-    mIsSelected = onModel;
-    //    }
+    if(event->button() != Qt::MiddleButton)
+        select(onModel);
 }
 
-void BaseModel::mouseMoveEvent(QMouseEvent* event, bool onModel)
+void BaseModel::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
 {
     if(!mIsSelected)
     {
-        select(onModel);
+        hover(onModel);
     }
 }
 
@@ -430,22 +449,30 @@ void BaseModel::curentPosition(osgEarth::GeoPoint pos)
 
 void BaseModel::select(bool val)
 {
+    hover(val);
+    mIsSelected = val;
+    mLableNode->setNodeMask(val);
+}
+
+void BaseModel::hover(bool val)
+{
+    mLableNode->setNodeMask(val);
     mNode2D->setValue(0, val);
     mNode2D->setValue(1, !val);
 
-//    auto lbStyle = mLableNode->getStyle();
+    //    auto lbStyle = mLableNode->getStyle();
 
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     if(!val)
     {
         mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 0.0, 0.0, 1.0));
-//        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Red;
+        //        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Red;
     }
     else
     {
         mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 0.2f, 1.0));
-//        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
+        //        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
     }
     getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-//    mLableNode->setStyle(lbStyle);
+    //    mLableNode->setStyle(lbStyle);
 }
