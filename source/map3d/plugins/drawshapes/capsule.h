@@ -1,5 +1,6 @@
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef CAPSULE_H
+#define CAPSULE_H
+
 #include <osgEarth/Color>
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
@@ -8,11 +9,11 @@
 #include <osg/ClipNode>
 #include <osg/ClipPlane>
 
-class Sphere : public osg::ClipNode
+class Capsule : public osg::ClipNode
 {
 
 public:
-    Sphere(MapController *mapController,float radius, bool clamp);
+    Capsule(MapController *mapController,float radius, float height, bool clamp);
     osg::ref_ptr<osgEarth::Annotation::ModelNode> model;
     void setColor(osg::Vec4 color);
     void setCenter(osg::Vec3 center);
@@ -22,8 +23,7 @@ private:
     MapController* mMapController{nullptr};
     osg::ref_ptr<osg::ShapeDrawable> pShapeDrawable;
     osgEarth::Symbology::Style style;
-    osg::ref_ptr<osg::Sphere> pSphereShape;
+    osg::ref_ptr<osg::Capsule> pCapsuleShape;
 };
 
-
-#endif // SPHERE_H
+#endif // CAPSULE_H

@@ -12,6 +12,10 @@
 #include "polygone.h"
 #include "circle.h"
 #include "ellipse.h"
+#include "cone.h"
+#include "cylinder.h"
+#include "capsule.h"
+#include "box.h"
 
 class DrawShapes : public PluginInterface
 {
@@ -43,6 +47,10 @@ private:
 private slots:
     void onLineBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onSphereBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onConeBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onCylinderBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onCapsuleBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onBoxBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onPolygoneBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onExtrPolyBtnClick(QMouseEvent* event);
     void onImgOvlyBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
@@ -54,11 +62,16 @@ private slots:
 
 private:
     Line* mLine;
+    osg::Group* changiz;
     Sphere* mSphere;
+    Cone* mCone;
+    Cylinder* mCylinder;
+    Box* mBox;
     Rect* mRect;
     Polygone* mPoly;
     Circle* mCircle;
     Ellipse* mEllipse;
+    Capsule* mCapsule;
     MapController* mMapController{nullptr};
     osgEarth::Annotation::FeatureNode* mPathNode;
     float mRadius{20000};

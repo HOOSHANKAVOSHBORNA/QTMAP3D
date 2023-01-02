@@ -8,5 +8,9 @@
         <file>res/rectangle.png</file>
         <file>res/ellipse.png</file>
         <file>res/image.png</file>
+        <file>res/cone.png</file>
+        <file>res/cylinder.png</file>
+        <file>res/capsule.png</file>
+        <file>res/box.png</file>
     </qresource>
 </RCC>

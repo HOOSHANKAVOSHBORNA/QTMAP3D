@@ -24,8 +24,6 @@ private:
     osgEarth::Symbology::Geometry* mLinePath;
     osgEarth::Annotation::FeatureNode* mPathNode;
     
-    
-
 };
 
 #endif // LINE_H
