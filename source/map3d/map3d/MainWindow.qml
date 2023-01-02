@@ -403,7 +403,7 @@ CMainWindow {
 
         } else {
             sideWidget.hideAllItems();
-//            infoWidget.hideAllItems();
+            infoo.hideItem()
 
             widgetsHideAnimation.stop();
             widgetsShowAnimation.start();

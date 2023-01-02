@@ -11,6 +11,7 @@ Item {
     signal trackButtonClicked(bool check);
     signal moreButtonClicked();
 
+    property var _checked: "#908000"
     property var _colorHover: "#FFCC00"
     ListModel {
         id: buttonsModel
@@ -87,7 +88,8 @@ Item {
                             text: control.text
                             font: control.font
                             opacity: enabled ? 1.0 : 0.3
-                            color: buttonsModel.get(index).checkable ? (buttonsModel.get(index).checked ? _colorHover : (hovered ?  _colorHover : "#FFFFFF")) : "#FFFFFF"
+                            color: buttonsModel.get(index).checkable ? (buttonsModel.get(index).checked ? _checked :
+                                                                              (hovered ?  _colorHover : "#FFFFFF")) : (hovered ? "#FFCC00" :  "#FFFFFF")
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             elide: Text.ElideRight
@@ -97,7 +99,7 @@ Item {
                 }
 
                 onClicked: function() {
-                    clickCallback(buttonsModel.get(index).checked)
+                    clickCallback(!buttonsModel.get(index).checked)
                     buttonsModel.setProperty(index, "checked", buttonsModel.get(index).checked ? false : true)
 
                 }
