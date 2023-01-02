@@ -1,6 +1,7 @@
 #ifndef INFOMODEL_H
 #define INFOMODEL_H
 #include <QAbstractListModel>
+#include <QQuickItem>
 #include "datamanager.h"
 
 class InfoModel : public QAbstractListModel
@@ -45,6 +46,20 @@ Q_SIGNALS:
 private:
     AircraftInfo aircraftInfo;
 
+};
+
+class AircraftInformation : public QObject
+{
+    Q_OBJECT
+public:
+    explicit AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, AircraftInfo mInformation, QObject *parent = nullptr);
+    InfoModel* getInfo(){return infomodel;}
+    void show();
+private:
+    AircraftInfo mInformation;
+    InfoModel *infomodel;
+    UIHandle *mUiHandle = nullptr;
+    QQuickItem *item;
 };
 
 #endif // INFOMODEL_H

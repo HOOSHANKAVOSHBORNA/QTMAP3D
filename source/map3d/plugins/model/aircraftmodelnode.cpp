@@ -219,7 +219,7 @@ void AircraftModelNode::setInformation(AircraftInfo info)
 {
     mInformation = info;
     QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
-    mUIHandle->iwUpdateData(this, txtInfo);
+//    mUIHandle->iwUpdateData(this, txtInfo);
 }
 
 void AircraftModelNode::goOnTrack()
@@ -233,6 +233,10 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     select(val);
     if(val)
     {
+        aircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
+        connect(aircraftinformation->getInfo(), &InfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
+        connect(aircraftinformation->getInfo(), &InfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
+        connect(aircraftinformation->getInfo(), &InfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
         showInfoWidget();
     }
     else
@@ -377,29 +381,28 @@ void AircraftModelNode::showInfoWidget()
     //    mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
     //    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
     //    mUIHandle->iwUpdateData(this, txtInfo);
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        qDebug() << comp->errorString();
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+//        qDebug() << comp->errorString();
 
-        if (comp->status() == QQmlComponent::Ready) {
-            QQuickItem *item = static_cast<QQuickItem*>(comp->create(nullptr));
-            InfoModel *model = new InfoModel;
+//        if (comp->status() == QQmlComponent::Ready) {
+//            QQuickItem *item = static_cast<QQuickItem*>(comp->create(nullptr));
+//            InfoModel *model = new InfoModel;
 
-            model->setAircraftInfo(mInformation);
-            item->setProperty("model", QVariant::fromValue<InfoModel*>(model));
-            QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
+//            model->setAircraftInfo(mInformation);
+//            item->setProperty("model", QVariant::fromValue<InfoModel*>(model));
+//            QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
 
+//            connect(model, &InfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
+//            connect(model, &InfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
+//            connect(model, &InfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
+//            mUIHandle->iwShow(item);
+//        }
 
-            QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
-            connect(model, &InfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
-            connect(model, &InfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
-            connect(model, &InfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
-            mUIHandle->iwShow(item);
-        }
+//    });
 
-    });
-
-    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
+//    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
+    aircraftinformation->show();
 }
 
 void AircraftModelNode::addEffect(double emitterDuration)

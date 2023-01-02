@@ -1,4 +1,11 @@
 #include "aircraftInformation.h"
+#include <QDebug>
+#include <QQmlComponent>
+#include <QQmlEngine>
+#include <QQuickItem>
+#include "aircraftmodelnode.h"
+#include "plugininterface.h"
+
 
 InfoModel::InfoModel(QObject* parent): QAbstractListModel(parent)
 {
@@ -56,4 +63,28 @@ QHash<int, QByteArray> InfoModel::roleNames() const
     hash[DetectionSystems] = "DetectionSystems";
     hash[Sends] = "Sends";
     return hash;
+}
+
+AircraftInformation::AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *muiHandle, const AircraftInfo minformation, QObject *parent): mInformation(minformation), mUiHandle(muiHandle)
+{
+    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+        qDebug() << comp->errorString();
+
+        if (comp->status() == QQmlComponent::Ready) {
+            item = static_cast<QQuickItem*>(comp->create(nullptr));
+            infomodel = new InfoModel;
+
+            infomodel->setAircraftInfo(mInformation);
+            item->setProperty("model", QVariant::fromValue<InfoModel*>(infomodel));
+            QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
+
+        }
+
+    });
+
+    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
+}
+void AircraftInformation::show() {
+    mUiHandle->iwShow(item);
 }
