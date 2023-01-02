@@ -64,6 +64,8 @@ private:
     osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
     QQmlEngine *mQmlEngine;
     QQuickItem *mCurrentContextMenuItem;
+
+    static osg::ref_ptr<osg::Node> mNode3DRef;
 };
 
 #endif // FLYINGMODEL_H

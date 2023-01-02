@@ -16,7 +16,7 @@ CListWindow {
     y: 600
     width: 800
     height: 600
-    title: "Outliner"
+    title: "List Window"
     color: "#404040"
     ColumnLayout {
         anchors.fill: parent

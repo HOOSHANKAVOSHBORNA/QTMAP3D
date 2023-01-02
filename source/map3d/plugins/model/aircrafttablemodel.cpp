@@ -15,7 +15,7 @@ AircraftTableModel::AircraftTableModel(QObject *parent) :
 
 int AircraftTableModel::columnCount(const QModelIndex &parent) const
 {
-    return 16;
+    return 17;
 }
 
 int AircraftTableModel::rowCount(const QModelIndex &parent) const
@@ -32,23 +32,23 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
     {
         switch(index.column()) {
-        case  0: return QVariant::fromValue<QString>(QString::number(index.row()));
-        case  1: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->TN);
-        case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->IFFCode);
-        case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->CallSign);
-        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->Type);
-        case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->MasterRadar);
-        case  6: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->Identification);
-        case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->IdentificationMethod);
-        case  8: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->Time);
-        case  9: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->Pos);
-        case 10: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Latitude);
-        case 11: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Longitude);
-        case 12: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Altitude);
-        case 13: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Heading);
-        case 14: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )]->Speed);
-        case 15: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->detectionSystemsToString());
-        case 16: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->sendsToString());
+        case  0: return QVariant::fromValue<QString>(QString::number(mAircraftInfoListProxy[static_cast<size_t>(index.row())].first));
+        case  1: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->TN);
+        case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->IFFCode);
+        case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->CallSign);
+        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->Type);
+        case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->MasterRadar);
+        case  6: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->Identification);
+        case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->IdentificationMethod);
+        case  8: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->Time);
+        case  9: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->Pos);
+        case 10: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Latitude);
+        case 11: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Longitude);
+        case 12: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Altitude);
+        case 13: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Heading);
+        case 14: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Speed);
+        case 15: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->detectionSystemsToString());
+        case 16: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->sendsToString());
         }
 
         break;
@@ -140,7 +140,7 @@ QString AircraftTableModel::getTN(int row) const
         return QString();
     }
 
-    return mAircraftInfoListProxy[std::size_t(row)]->TN;
+    return mAircraftInfoListProxy[std::size_t(row)].second->TN;
 }
 
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)
@@ -152,7 +152,7 @@ void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 
     mAircraftInfoListProxy.clear();
     for (auto& item : mAircraftInfoList) {
-        if (item->TN.contains(mFilter))
+        if (item.second->TN.contains(mFilter))
             mAircraftInfoListProxy.push_back(item);
     }
 
@@ -169,22 +169,24 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
     beginResetModel();
 
     const auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(),
-                                 [aircraftInfo](const QSharedPointer<AircraftInfo>& itemInfo){
-        return itemInfo->TN == aircraftInfo.TN;
+                                 [aircraftInfo](const QPair<int, QSharedPointer<AircraftInfo>>& itemInfo){
+        return itemInfo.second->TN == aircraftInfo.TN;
     });
 
 
     if (it != mAircraftInfoList.end()) {
-        *(*it) = aircraftInfo;
+        *(*it).second = aircraftInfo;
     } else {
-        QSharedPointer<AircraftInfo> isp(new AircraftInfo);
-        *isp = aircraftInfo;
+        QPair<int, QSharedPointer<AircraftInfo>> isp;
+        isp.first = mAircraftInfoList.size();
+        isp.second.reset(new AircraftInfo);
+        *(isp.second) = aircraftInfo;
         mAircraftInfoList.push_back(isp);
     }
 
     mAircraftInfoListProxy.clear();
     for (auto& item : mAircraftInfoList) {
-        if (item->TN.contains(mFilter))
+        if (item.second->TN.contains(mFilter))
             mAircraftInfoListProxy.push_back(item);
     }
 

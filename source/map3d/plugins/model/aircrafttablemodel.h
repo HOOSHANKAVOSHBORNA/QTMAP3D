@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QPair>
 
 struct AircraftInfo
 {
@@ -138,8 +139,8 @@ public:
     void updateItemData(const AircraftInfo& aircraftInfo);
 
 private:
-    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoList;
-    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoListProxy;
+    std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoList;
+    std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoListProxy;
 
     QString mFilter;
 };
