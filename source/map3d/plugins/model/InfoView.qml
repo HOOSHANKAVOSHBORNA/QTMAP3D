@@ -354,14 +354,14 @@ Item {
             Layout.fillWidth: true
             Layout.minimumHeight: 60
 
-            onView2D3DButtonClicked: function() {
-                rootItem.model.view2D3DButtonClicked();
+            onGotoButtonClicked: function() {
+                rootItem.model.gotoButtonClicked();
             }
-            onRouteButtonClicked: function() {
-                rootItem.model.routeButtonClicked();
+            onRouteButtonClicked: function(check) {
+                rootItem.model.routeButtonClicked(check);
             }
-            onFollowButtonClicked: function() {
-                rootItem.model.followButtonClicked();
+            onTrackButtonClicked: function(check) {
+                rootItem.model.trackButtonClicked(check);
             }
             onMoreButtonClicked: function() {
                 rootItem.model.moreButtonClicked();

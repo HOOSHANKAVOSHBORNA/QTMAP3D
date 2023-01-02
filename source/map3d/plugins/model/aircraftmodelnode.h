@@ -35,9 +35,9 @@ public:
     void goOnTrack();
     void showInfoWidget();
 public slots:
-    void iw2D3DButtonClicked();
-    void iwRouteButtonClicked();
-    void iwFollowButtonClicked();
+    void iwGotoButtonClicked();
+    void iwRouteButtonClicked(bool check);
+    void iwTrackButtonClicked(bool check);
     void iwMoreButtonClicked();
     void onModeChanged(bool is3DView);
     void onContextmenuItemClicked(int index, QString systemName);

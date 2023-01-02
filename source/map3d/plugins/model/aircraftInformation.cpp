@@ -1,4 +1,4 @@
-#include "infomodel.h"
+#include "aircraftInformation.h"
 
 InfoModel::InfoModel(QObject* parent): QAbstractListModel(parent)
 {

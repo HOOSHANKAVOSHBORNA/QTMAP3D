@@ -37,9 +37,9 @@ public:
     QHash<int, QByteArray> roleNames() const;
 
 Q_SIGNALS:
-    void view2D3DButtonClicked();
-    void routeButtonClicked();
-    void followButtonClicked();
+    void gotoButtonClicked();
+    void routeButtonClicked(bool checked);
+    void trackButtonClicked(bool checked);
     void moreButtonClicked();
 
 private:

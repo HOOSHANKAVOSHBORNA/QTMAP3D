@@ -43,7 +43,7 @@
 
 #include "aircrafttablemodel.h"
 #include "aircraftcontextmenumodel.h"
-#include "infomodel.h"
+#include "aircraftInformation.h"
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";

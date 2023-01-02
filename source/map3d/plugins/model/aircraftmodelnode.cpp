@@ -1,6 +1,6 @@
 ﻿#include "aircraftmodelnode.h"
 #include "aircraftcontextmenumodel.h"
-#include "infomodel.h"
+#include "aircraftInformation.h"
 #include "draw.h"
 
 #include <QDebug>
@@ -245,9 +245,9 @@ void AircraftModelNode::showInfoWidget()
 
 
             QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
-            connect(model, &InfoModel::view2D3DButtonClicked, this, &AircraftModelNode::iw2D3DButtonClicked);
+            connect(model, &InfoModel::gotoButtonClicked, this, &AircraftModelNode::iwGotoButtonClicked);
             connect(model, &InfoModel::routeButtonClicked, this, &AircraftModelNode::iwRouteButtonClicked);
-            connect(model, &InfoModel::followButtonClicked, this, &AircraftModelNode::iwFollowButtonClicked);
+            connect(model, &InfoModel::trackButtonClicked, this, &AircraftModelNode::iwTrackButtonClicked);
             connect(model, &InfoModel::moreButtonClicked, this, &AircraftModelNode::iwMoreButtonClicked);
             mUIHandle->iwShow(item);
         }
@@ -257,19 +257,19 @@ void AircraftModelNode::showInfoWidget()
     comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
 }
 
-void AircraftModelNode::iw2D3DButtonClicked()
+void AircraftModelNode::iwGotoButtonClicked()
 {
     //    qDebug()<<"iw2D3DButtonClicked";
 //    goOnTrack();
     mMapController->goToPosition(getPosition(), 200);
 }
 
-void AircraftModelNode::iwRouteButtonClicked()
+void AircraftModelNode::iwRouteButtonClicked(bool check)
 {
     //    mIsRoute = true;
     //    qDebug()<<"iwRouteButtonClicked";
     mMapController->getRoot()->addChild(drawLine(mLocationPoints, 1.0));
-
+    std::cout << check << std::endl;
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, [=](){
@@ -279,9 +279,11 @@ void AircraftModelNode::iwRouteButtonClicked()
 
 }
 
-void AircraftModelNode::iwFollowButtonClicked()
+void AircraftModelNode::iwTrackButtonClicked(bool check)
 {
     //    qDebug()<<"iwFollowButtonClicked";
+    std::cout << check << std::endl;
+
     mMapController->setTrackNode(getGeoTransform());
 }
 

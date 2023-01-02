@@ -6,41 +6,45 @@ import QtQuick.Layouts 1.13
 Item {
     id:rootItem
 
-    signal view2D3DButtonClicked();
-    signal routeButtonClicked();
-    signal followButtonClicked();
+    signal gotoButtonClicked();
+    signal routeButtonClicked(bool check);
+    signal trackButtonClicked(bool check);
     signal moreButtonClicked();
 
-
+    property var _colorHover: "#FFCC00"
     ListModel {
         id: buttonsModel
 
         ListElement {
             buttonText: "Go to"
             iconUrl: "qrc:///Resources/goto.png"
+            checkable: false
             checked: false
-            clickCallback: function() { rootItem.view2D3DButtonClicked();}
+            clickCallback: function(check) { rootItem.gotoButtonClicked();}
         }
 
         ListElement {
             buttonText: "Route"
             iconUrl:"qrc:///Resources/route.png"
+            checkable: true
             checked: false
-            clickCallback: function() { rootItem.routeButtonClicked();}
+            clickCallback: function(check) { rootItem.routeButtonClicked(check);}
         }
 
         ListElement {
-            buttonText: "Follow"
+            buttonText: "Track"
             iconUrl:"qrc:///Resources/tracking.png"
+            checkable: true
             checked: false
-            clickCallback: function() { rootItem.followButtonClicked();}
+            clickCallback: function(check) { rootItem.trackButtonClicked(check);}
         }
 
         ListElement {
             buttonText: "More"
             iconUrl: "qrc:///Resources/more.png"
+            checkable: false
             checked: false
-            clickCallback: function() { rootItem.moreButtonClicked();}
+            clickCallback: function(check) { rootItem.moreButtonClicked();}
         }
     }
 
@@ -83,7 +87,7 @@ Item {
                             text: control.text
                             font: control.font
                             opacity: enabled ? 1.0 : 0.3
-                            color: hovered ? "#FFCC00" :"#FFFFFF"
+                            color: buttonsModel.get(index).checkable ? (buttonsModel.get(index).checked ? _colorHover : (hovered ?  _colorHover : "#FFFFFF")) : "#FFFFFF"
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             elide: Text.ElideRight
@@ -93,8 +97,9 @@ Item {
                 }
 
                 onClicked: function() {
-                    checked = checked ? false: true
-                    clickCallback()
+                    clickCallback(buttonsModel.get(index).checked)
+                    buttonsModel.setProperty(index, "checked", buttonsModel.get(index).checked ? false : true)
+
                 }
 
             }
