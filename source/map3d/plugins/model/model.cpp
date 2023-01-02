@@ -181,8 +181,7 @@ bool Model::setup(MapController *mapController,
             AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][TN]);
             if(mSelectedModelNode)
                 mSelectedModelNode->select(false);
-            aircraftModelNode->select(true);
-            aircraftModelNode->showInfoWidget();
+            aircraftModelNode->onLeftButtonClicked(true);
             aircraftModelNode->goOnTrack();
             mSelectedModelNode = aircraftModelNode;
         }
