@@ -311,14 +311,13 @@ void AircraftModelNode::curentPosition(osgEarth::GeoPoint pos)
     //    }
 }
 
-void AircraftModelNode::iwGotoButtonClicked()
+void AircraftModelNode::onGotoButtonClicked()
 {
-    //    qDebug()<<"iw2D3DButtonClicked";
     //    goOnTrack();
     mMapController->goToPosition(getPosition(), 200);
 }
 
-void AircraftModelNode::iwRouteButtonClicked(bool check)
+void AircraftModelNode::onRouteButtonToggled(bool check)
 {
     //    mIsRoute = true;
     //    qDebug()<<"iwRouteButtonClicked";
@@ -333,17 +332,14 @@ void AircraftModelNode::iwRouteButtonClicked(bool check)
 
 }
 
-void AircraftModelNode::iwTrackButtonClicked(bool check)
+void AircraftModelNode::onTrackButtonToggled(bool check)
 {
     //    qDebug()<<"iwFollowButtonClicked";
     std::cout << check << std::endl;
-
-    mMapController->setTrackNode(getGeoTransform());
-}
-
-void AircraftModelNode::iwMoreButtonClicked()
-{
-    qDebug()<<"iwMoreButtonClicked";
+    if(check)
+        mMapController->setTrackNode(getGeoTransform());
+    else
+        mMapController->untrackNode();
 }
 
 void AircraftModelNode::onModeChanged(bool is3DView)
@@ -395,10 +391,9 @@ void AircraftModelNode::showInfoWidget()
 
 
             QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
-            connect(model, &InfoModel::gotoButtonClicked, this, &AircraftModelNode::iwGotoButtonClicked);
-            connect(model, &InfoModel::routeButtonClicked, this, &AircraftModelNode::iwRouteButtonClicked);
-            connect(model, &InfoModel::trackButtonClicked, this, &AircraftModelNode::iwTrackButtonClicked);
-            connect(model, &InfoModel::moreButtonClicked, this, &AircraftModelNode::iwMoreButtonClicked);
+            connect(model, &InfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
+            connect(model, &InfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
+            connect(model, &InfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
             mUIHandle->iwShow(item);
         }
 

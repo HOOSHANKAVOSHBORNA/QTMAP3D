@@ -41,10 +41,9 @@ public:
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
     void curentPosition(osgEarth::GeoPoint pos) override;
 private slots:
-    void iwGotoButtonClicked();
-    void iwRouteButtonClicked(bool check);
-    void iwTrackButtonClicked(bool check);
-    void iwMoreButtonClicked();
+    void onGotoButtonClicked();
+    void onRouteButtonToggled(bool check);
+    void onTrackButtonToggled(bool check);
     void onModeChanged(bool is3DView);
     void onContextmenuItemClicked(int index, QString systemName);
 private:
