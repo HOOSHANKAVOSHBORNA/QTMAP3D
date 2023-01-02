@@ -21,6 +21,10 @@ add_library(drawshapes SHARED
   polygone.cpp
   circle.cpp
   ellipse.cpp
+  cone.cpp
+  cylinder.cpp
+  capsule.cpp
+  box.cpp
 )
 
 target_include_directories(drawshapes PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

@@ -24,6 +24,9 @@
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
 #include "mapcontroller.h"
+#include "osg/Group"
+#include "osgEarth/ModelLayer"
+#include "osgEarth/Layer"
 
 #include <line.h>
 DrawShapes::DrawShapes(QWidget *parent)
@@ -40,19 +43,26 @@ const QString IMAGE_OVERLAY = "ImageOverlay";
 const QString CIRCLE = "Circle";
 const QString ELLIPSE = "Ellipse";
 const QString RECT = "Rect";
+const QString CONE = "Cone";
+const QString CYLINDER = "Cylinder";
+const QString CAPSULE = "Capsule";
+const QString BOX = "Box";
 
 bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     Q_UNUSED(engine)
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/res/line.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/res/sphere.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/res/cone.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/res/cylinder.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/res/capsule.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/res/box.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/res/polygon.png", true});
     //desc->toolboxItemsList.push_back(new ItemDesc{EXTRPOLY, CATEGORY, "qrc:/res/extroPolygon.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/res/image.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/res/circle.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/res/ellipse.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/res/rectangle.png", true});
-
     return true;
 }
 
@@ -83,7 +93,54 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
         QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onSphereBtnClick);
         }
-        
+}
+        if(CATEGORY == category && name == CONE)
+        {
+            if(checked)
+            {
+            mCone = new Cone(mMapController,mRadius, 11110,false);
+            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onConeBtnClick);
+            }
+            else
+            {
+            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onConeBtnClick);
+            }
+    }
+        if(CATEGORY == category && name == CYLINDER)
+        {
+            if(checked)
+            {
+            mCylinder = new Cylinder(mMapController,mRadius, 111111,false);
+            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onCylinderBtnClick);
+            }
+            else
+            {
+            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onCylinderBtnClick);
+            }
+    }
+        if(CATEGORY == category && name == CAPSULE)
+        {
+            if(checked)
+            {
+            mCapsule = new Capsule(mMapController,mRadius, 111111,false);
+            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onCapsuleBtnClick);
+            }
+            else
+            {
+            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onCapsuleBtnClick);
+            }
+    }
+        if(CATEGORY == category && name == BOX)
+        {
+            if(checked)
+            {
+            mBox = new Box(mMapController,50000, 60000, 40000, false);
+            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onBoxBtnClick);
+            }
+            else
+            {
+            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onBoxBtnClick);
+            }
     }
     if(CATEGORY == category && name == POLYGON)
     {
@@ -159,6 +216,11 @@ bool DrawShapes::setup(MapController *mapController,
 {
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
+//    auto abbas = new osgEarth::ModelLayer("abbas", mCircle);
+//    mMapController->addLayer(abbas);
+//    auto changiz = new osg::Group;
+//    changiz->addChild(mCircle);
+//    mMapController->addNode(changiz)
     return true;
 }
 
@@ -214,6 +276,7 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
     {
         mSphere->model->setPosition(geoPos);
         mMapController->addNode(mSphere);
+        mSphere->setClamp(false);
     }
     if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
     {
@@ -222,6 +285,46 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
         mSphere->setCenter(osg::Vec3(0,0,0));
         mSphere->setRadius(mRadius);
         mSphere->setClamp(true);
+    }
+}
+
+void DrawShapes::onConeBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
+{
+    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+    {
+        mCone->model->setPosition(geoPos);
+        mMapController->addNode(mCone);
+
+    }
+}
+
+void DrawShapes::onCylinderBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
+{
+    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+    {
+        mCylinder->model->setPosition(geoPos);
+        mMapController->addNode(mCylinder);
+
+    }
+}
+
+void DrawShapes::onCapsuleBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
+{
+    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+    {
+        mCapsule->model->setPosition(geoPos);
+        mMapController->addNode(mCapsule);
+
+    }
+}
+
+void DrawShapes::onBoxBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
+{
+    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+    {
+        mBox->model->setPosition(geoPos);
+        mMapController->addNode(mBox);
+
     }
 }
 

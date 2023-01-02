@@ -1,5 +1,7 @@
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef BOX_H
+#define BOX_H
+
+
 #include <osgEarth/Color>
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
@@ -8,11 +10,11 @@
 #include <osg/ClipNode>
 #include <osg/ClipPlane>
 
-class Sphere : public osg::ClipNode
+class Box : public osg::ClipNode
 {
 
 public:
-    Sphere(MapController *mapController,float radius, bool clamp);
+    Box(MapController *mapController,float length, float width, float height, bool clamp);
     osg::ref_ptr<osgEarth::Annotation::ModelNode> model;
     void setColor(osg::Vec4 color);
     void setCenter(osg::Vec3 center);
@@ -22,8 +24,7 @@ private:
     MapController* mMapController{nullptr};
     osg::ref_ptr<osg::ShapeDrawable> pShapeDrawable;
     osgEarth::Symbology::Style style;
-    osg::ref_ptr<osg::Sphere> pSphereShape;
+    osg::ref_ptr<osg::Box> pBoxShape;
 };
 
-
-#endif // SPHERE_H
+#endif // BOX_H

@@ -1,4 +1,6 @@
 #include "circle.h"
+#include "osgEarth/ModelLayer"
+#include "osgEarth/Layer"
 
 
 
@@ -7,6 +9,7 @@ void Circle::setCircleHeight(float hieght)
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = hieght;
     this->setStyle(style);
+
 }
 
 Circle::Circle(bool clamp)
@@ -26,12 +29,15 @@ Circle::Circle(bool clamp)
     this->setArcStart(osgEarth::Angle(0, osgEarth::Units::DEGREES));
     this->setArcEnd(osgEarth::Angle(360, osgEarth::Units::DEGREES));
     this->setPie(true);
+
+
+
 }
 
 void Circle::setColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
-//    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color);
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color);
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = false;
     this->setStyle(style);
 }
