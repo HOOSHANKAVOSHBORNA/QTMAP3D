@@ -451,10 +451,12 @@ void BaseModel::select(bool val)
 {
     hover(val);
     mIsSelected = val;
+    mLableNode->setNodeMask(val);
 }
 
 void BaseModel::hover(bool val)
 {
+    mLableNode->setNodeMask(val);
     mNode2D->setValue(0, val);
     mNode2D->setValue(1, !val);
 

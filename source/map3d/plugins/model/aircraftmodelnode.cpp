@@ -88,6 +88,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
     //    mLableNode->getGeoTransform()->setPosition(osg::Vec3(0, 0, 2));
     getGeoTransform()->addChild(mLableNode);
+    mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
     if(mIs3D)
     {
@@ -366,7 +367,8 @@ void AircraftModelNode::onModeChanged(bool is3DView)
     select(mIsSelected);
 }
 
-void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName){
+void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)
+{
     std::cout << index << ", " << systemName.toStdString() << std::endl;
 }
 
