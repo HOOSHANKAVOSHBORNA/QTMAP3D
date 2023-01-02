@@ -33,19 +33,21 @@ public:
     osgEarth::Annotation::ModelNode *getTruckModel() const;
     void setInformation(AircraftInfo info);
     void goOnTrack();
-    void showInfoWidget();
 public slots:
+    void onLeftButtonClicked(bool val);
+public:
+    void frameEvent()override;
+    void mousePressEvent(QMouseEvent *event, bool onModel) override;
+    void curentPosition(osgEarth::GeoPoint pos) override;
+private slots:
     void iw2D3DButtonClicked();
     void iwRouteButtonClicked();
     void iwFollowButtonClicked();
     void iwMoreButtonClicked();
     void onModeChanged(bool is3DView);
     void onContextmenuItemClicked(int index, QString systemName);
-public:
-    virtual void frameEvent()override;
-    virtual void mousePressEvent(QMouseEvent *event, bool onModel) override;
-    virtual void curentPosition(osgEarth::GeoPoint pos) override;
 private:
+    void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();
 private:

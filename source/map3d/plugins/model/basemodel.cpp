@@ -374,6 +374,28 @@ void BaseModel::setFollowModel(BaseModel *followModel)
     mFollowModel = followModel;
 }
 
+//void BaseModel::traverse(osg::NodeVisitor &nv)
+//{
+//    qDebug()<<"traverse:"<<getQStringName();
+//    if (nv.getVisitorType() == osg::NodeVisitor::EVENT_VISITOR)
+//    {
+//        osgGA::EventVisitor* ev = static_cast<osgGA::EventVisitor*>(&nv);
+//        for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
+//            itr != ev->getEvents().end();
+//            ++itr)
+//        {
+//            osgGA::GUIEventAdapter* ea = dynamic_cast<osgGA::GUIEventAdapter*>(itr->get());
+//            if ( ea && handle(*ea, *(ev->getActionAdapter())))
+//                ea->setHandled(true);
+//        }
+//    }
+//    GeoPositionNode::traverse( nv );
+//}
+//bool BaseModel::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+//{
+//    if (ea.getHandled()) return false;
+//}
+
 
 bool BaseModel::hasHit() const
 {
