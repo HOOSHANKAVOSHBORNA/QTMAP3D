@@ -25,6 +25,8 @@
 
 const float RANGE3D = std::numeric_limits<float>::max();
 
+osg::ref_ptr<osg::Node> AircraftModelNode::mNode3DRef;
+
 AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :BaseModel(mapControler->getMapNode(), parent)
 {
@@ -33,12 +35,15 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     mIs3D = mMapController->getMode();
 
     mUIHandle = uiHandle;
-    mNode3D = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
-    if (!mNode3D)
+    if (!mNode3DRef.valid()) {
+        mNode3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
+    }
+    if (!mNode3DRef)
     {
-        //todo show massage here
         return;
     }
+
+    mNode3D = mNode3DRef.get();
 
     //create switch node for root--------------------------------------------------------------------
     mRootNode = new osg::LOD;
