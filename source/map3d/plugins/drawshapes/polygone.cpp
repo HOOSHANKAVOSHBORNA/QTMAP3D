@@ -1,12 +1,14 @@
 #include "polygone.h"
 #include <osgEarthDrivers/model_feature_geom/FeatureGeomModelOptions>
 #include <osgEarthFeatures/GeometryCompiler>
-Polygone::Polygone(bool clamp)
+#include "osgEarthAnnotation/AnnotationEditing"
+
+Polygone::Polygone(MapController *mapController, bool clamp)
 
 {
     geom = new osgEarth::Features::Polygon();
-
-    osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(geom,osgEarth::SpatialReference::get("wgs84"));
+    mMapController = mapController;
+    osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(geom,mMapController->getMapSRS());
     feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
     osgEarth::Symbology::Style geomStyle;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::White;

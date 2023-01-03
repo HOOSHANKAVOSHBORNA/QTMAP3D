@@ -2,10 +2,11 @@
 #define LINE_H
 #include <osgEarth/Color>
 #include <osgEarthAnnotation/FeatureNode>
+#include "mapcontroller.h"
 class Line
 {
 public:
-    Line();
+    Line(MapController *mapController);
     void setLineHeight(float hieght);
     void setLineColor(osgEarth::Color color);
     void setLineWidth(float width);
@@ -23,6 +24,7 @@ public:
 private:
     osgEarth::Symbology::Geometry* mLinePath;
     osgEarth::Annotation::FeatureNode* mPathNode;
+    MapController* mMapController{nullptr};
     
 };
 
