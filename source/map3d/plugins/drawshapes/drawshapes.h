@@ -35,7 +35,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* event);
 private:
     bool mIsFinished{true};
-    enum class Shape { noOne, line, sphere, cone, cylinder, capsule, box, polygon, imgOvly,
+    enum class Shape {noOne ,line, sphere, cone, cylinder, capsule, box, polygon, imgOvly,
                circle, rect, ellipse};
     Shape shape;
 //    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();

@@ -32,6 +32,16 @@ osg::ref_ptr<osg::Node> AircraftModelNode::mNode3DRef;
 AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :BaseModel(mapControler->getMapNode(), parent)
 {
+    mRouteLine = new Line(mapControler);
+    mRouteLine->setLineClamp(false);
+    mRouteLine->setLineColor(osgEarth::Color::Purple);
+    mRouteLine->setLineWidth(6);
+
+    mTempRouteLine = new Line(mapControler);
+    mTempRouteLine->setLineClamp(false);
+    mTempRouteLine->setLineColor(osgEarth::Color::Purple);
+    mTempRouteLine->setLineWidth(6);
+
     mQmlEngine = qmlEngine;
     mMapController = mapControler;
     mIs3D = mMapController->getMode();
@@ -136,9 +146,13 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double spee
     osg::Vec3d posW;
     posGeo.toWorld(posW);
     //---------------------------------------
-    if(mLocationPoints->empty())
-        mLocationPoints->push_back(currentPosW);
-    mLocationPoints->push_back(posW);
+//    if(mLocationPoints->empty())
+//        mLocationPoints->push_back(currentPosW);
+//    mLocationPoints->push_back(posW);
+    if(mRouteLine->getSize() > 0)
+        mRouteLine->addPoint(getPosition().vec3d());
+    mRouteLine->addPoint(posGeo.vec3d());
+    mTempRouteLine->clearPoints();
     //move---------------------------------------------------------------------------------------------------
     osg::Vec3d diffW = posW - currentPosW;
     osg::Matrixd currentPoslocalTransfer;
@@ -305,10 +319,11 @@ void AircraftModelNode::curentPosition(osgEarth::GeoPoint pos)
 
     //    if(mIsRoute)
     //    {
-    osg::Vec3d currentPosW;
-    pos.toWorld(currentPosW);
-    mTempLocationPoints->push_back(currentPosW);
+//    osg::Vec3d currentPosW;
+//    pos.toWorld(currentPosW);
+//    mTempLocationPoints->push_back(currentPosW);
     //    }
+    mTempRouteLine->addPoint(pos.vec3d());
 }
 
 void AircraftModelNode::onGotoButtonClicked()
@@ -321,14 +336,25 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 {
     //    mIsRoute = true;
     //    qDebug()<<"iwRouteButtonClicked";
-    mMapController->getRoot()->addChild(drawLine(mLocationPoints, 1.0));
-    std::cout << check << std::endl;
+    if(check)
+    {
+        mMapController->addNode(mRouteLine->getNode());
+        mMapController->addNode(mTempRouteLine->getNode());
+    }
+    else
+    {
+        mMapController->removeNode(mRouteLine->getNode());
+        mMapController->removeNode(mTempRouteLine->getNode());
+    }
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, [=](){
-        mMapController->getRoot()->addChild(drawLine(mTempLocationPoints, 1.0));
-    });
-    timer->start(200);
+//    mMapController->getRoot()->addChild(drawLine(mLocationPoints, 1.0));
+//    std::cout << check << std::endl;
+
+//    QTimer *timer = new QTimer(this);
+//    connect(timer, &QTimer::timeout, this, [=](){
+//        mMapController->getRoot()->addChild(drawLine(mTempLocationPoints, 1.0));
+//    });
+//    timer->start(200);
 
 }
 

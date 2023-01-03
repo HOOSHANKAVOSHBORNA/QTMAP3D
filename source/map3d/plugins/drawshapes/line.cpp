@@ -94,7 +94,11 @@ void Line::removePoint()
     mLinePath->pop_back();
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, osgEarth::SpatialReference::get("wgs84"));
     mPathNode->setFeature(pathFeature);
+}
 
+void Line::clearPoints()
+{
+    mLinePath->clear();
 }
 
 int Line::getSize()
