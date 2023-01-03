@@ -27,13 +27,17 @@
 #include "osg/Group"
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
-
 #include <line.h>
+#include <osgEarthAnnotation/ImageOverlayEditor>
+
+using namespace osgEarth::Annotation;
+
 DrawShapes::DrawShapes(QWidget *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(res);
 }
+
 const QString CATEGORY = "Draw";
 const QString LINE = "Line";
 const QString SPHERE = "Sphere";
@@ -68,18 +72,23 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 
 void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 {
+
     if(CATEGORY == category && name == LINE)
     {
         if(checked)
         {
-            mLine = new Line();
-            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onLineBtnClick);
-            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onMouseMove);
+
+            mLine = new Line(mMapController);
+            shape = Shape::line;
+//            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onLineBtnClick);
+//            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onMouseMove);
         }
         else
         {
-            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onLineBtnClick);
-            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onMouseMove);
+            //delete mLine;
+           // mLine = nullptr;
+//            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onLineBtnClick);
+//            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onMouseMove);
         }
     }
     if(CATEGORY == category && name == SPHERE)
@@ -98,7 +107,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
             if(checked)
             {
-            mCone = new Cone(mMapController,mRadius, 11110,false);
+            mCone = new Cone(mMapController,111100, 111100,false);
             QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onConeBtnClick);
             }
             else
@@ -147,7 +156,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
 
-        mPoly = new Polygone(true);
+        mPoly = new Polygone(mMapController, true);
         QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onPolygoneBtnClick);
         }
         else
@@ -224,8 +233,26 @@ bool DrawShapes::setup(MapController *mapController,
     return true;
 }
 
-void DrawShapes::onLineBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
+void DrawShapes::mousePressEvent(QMouseEvent *event)
 {
+    if(shape == Shape::line)
+        onLineBtnClick(event);
+
+}
+
+void DrawShapes::mouseMoveEvent(QMouseEvent *event)
+{
+    if(shape == Shape::line)
+        onMouseMove(event);
+}
+
+void DrawShapes::onLineBtnClick(QMouseEvent *event)
+{
+    osg::Vec3d worldPos;
+    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+    osgEarth::GeoPoint geoPos;
+    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+
     if(event->button() == Qt::MouseButton::LeftButton && event->type() ==  QEvent::Type::MouseButtonPress)
     {
         mIsFinished = false;
@@ -249,12 +276,12 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 
         mLine->removePoint();
         mIsFinished = true;
-        mLine = new Line();
+        mLine = new Line(mMapController);
     }
 
 }
 
-void DrawShapes::onMouseMove(QMouseEvent *event, osgEarth::GeoPoint geoPos)
+void DrawShapes::onMouseMove(QMouseEvent *event)
 {
     if (event->type() ==  QEvent::Type::MouseMove)
     {
@@ -264,6 +291,10 @@ void DrawShapes::onMouseMove(QMouseEvent *event, osgEarth::GeoPoint geoPos)
              {
                  mLine->removePoint();
             }
+             osg::Vec3d worldPos;
+             mMapController->screenToWorld(event->x(), event->y(), worldPos);
+             osgEarth::GeoPoint geoPos;
+             geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
              mLine->addPoint(geoPos.vec3d());
        }
@@ -352,7 +383,7 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPo
     {
         if (mPoly->geom->size()>=3){
         mMapController->addNode(mPoly);
-        mPoly = new Polygone(true);
+        mPoly = new Polygone(mMapController,true);
 
 
        }
@@ -372,7 +403,9 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos
             imageOverlay = new osgEarth::Annotation::ImageOverlay(mMapController->getMapNode(), image);
             //imageOverlay->setBounds(osgEarth::Bounds(-100.0, 35.0, -90.0, 40.0));
             imageOverlay->setCenter(geoPos.x(),geoPos.y());
-            mMapController->addNode(imageOverlay);
+
+            osg::Node* editor = new osgEarth::Annotation::ImageOverlayEditor( imageOverlay, true );
+            mMapController->addNode(editor);
         }
     }
 }

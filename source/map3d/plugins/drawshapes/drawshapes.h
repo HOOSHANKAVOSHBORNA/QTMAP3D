@@ -30,39 +30,34 @@ public:
     virtual bool setup(MapController *mapController,
                        NetworkManager *networkManager,
                        UIHandle *UIHandle) override;
-
-
+protected:
+    virtual void mousePressEvent(QMouseEvent* event);
+    virtual void mouseMoveEvent(QMouseEvent* event);
 private:
     bool mIsFinished{true};
-    void drawLine();
-    void drawPolygone();
-    void drawExtrPoly();
-    void drawImageOverlay();
-    void drawCircle();
-    void drawEllipse();
-    void drawRect();
+    enum class Shape { line, sphere, cone, cylinder, capsule, box, polygon, imgOvly,
+               circle, rect, ellipse};
+    Shape shape;
 //    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();
 
 
 private slots:
-    void onLineBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onLineBtnClick(QMouseEvent* event);
     void onSphereBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onConeBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onCylinderBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onCapsuleBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onBoxBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onPolygoneBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onExtrPolyBtnClick(QMouseEvent* event);
     void onImgOvlyBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onCircleBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onRectBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
     void onEllipseBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onMouseMove(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onMouseMove(QMouseEvent* event);
 
 
 private:
-    Line* mLine;
-    osg::Group* changiz;
+    Line* mLine{nullptr};
     Sphere* mSphere;
     Cone* mCone;
     Cylinder* mCylinder;
