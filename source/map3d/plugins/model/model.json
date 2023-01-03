@@ -1,3 +1,10 @@
 {
-    "Keys" : [ ]
+    "Name": "model",
+    "Version": "0.0.1",
+    "Dependencies": [
+      {
+        "Name": "drawshapes",
+        "Version": "0.0.1"
+      }
+    ]
 }

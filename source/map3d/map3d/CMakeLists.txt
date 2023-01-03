@@ -34,6 +34,7 @@ add_executable(Map3d
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include")
+target_link_directories(Map3d PUBLIC ${PLUGINS_OUTPUT_DIR})
 target_link_libraries(Map3d
         PRIVATE Qt5::Core Qt5::Quick Qt5::Gui Qt5::Widgets Qt5::WebSockets
         PUBLIC osg osgViewer osgDB osgGA OpenThreads osgManipulator osgSim osgParticle osgText osgUtil
