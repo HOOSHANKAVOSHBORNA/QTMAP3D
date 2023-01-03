@@ -2,8 +2,6 @@
 #define CIRCLE_H
 #include <osgEarthAnnotation/CircleNode>
 
-
-
 class Circle: public osgEarth::Annotation::CircleNode
 {
 public:

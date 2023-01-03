@@ -27,10 +27,12 @@ Item {
             Layout.minimumHeight: 60
 
             Text {
+                id: airplane
                 anchors.centerIn: parent
                 text: "Airplane"
                 color:"yellow"
                 font.pointSize: 20
+
             }
 
         }
@@ -44,6 +46,7 @@ Item {
 //                contentWidth: lay.width + 30
 //                contentHeight: lay.height + 15
                 ListView {
+                    id: listview
                     model: rootItem.model
                     delegate: ColumnLayout {
                         id:lay
@@ -90,6 +93,11 @@ Item {
                                 color: "white"
                                 Layout.fillWidth: true
                                 horizontalAlignment: Qt.AlignRight
+                                Binding {
+                                    target: airplane
+                                    property: "text"
+                                    value: tnLabel.text
+                                }
                             }
 
 

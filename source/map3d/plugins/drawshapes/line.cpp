@@ -1,9 +1,10 @@
 #include "line.h"
 
-Line::Line()
+Line::Line(MapController *mapController)
 {
+    mMapController = mapController;
     mLinePath = new osgEarth::Symbology::Geometry();
-    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, osgEarth::SpatialReference::get("wgs84"));
+    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, mMapController->getMapSRS());
     pathFeature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
     osgEarth::Symbology::Style pathStyle;
     //pathStyle.getOrCreate<osgEarth::Symbology::StyleSheet().setScript()
