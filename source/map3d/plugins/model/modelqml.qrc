@@ -3,8 +3,8 @@
         <file>tmp.qml</file>
         <file>AircraftTableView.qml</file>
         <file>AircraftContextmenuView.qml</file>
-        <file>InfoView.qml</file>
-        <file>InfoButtonGroup.qml</file>
+        <file>AircraftInfoView.qml</file>
+        <file>AircraftInfoButtonGroup.qml</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

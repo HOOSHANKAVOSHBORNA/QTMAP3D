@@ -9,7 +9,7 @@ Item {
     width: 300
     clip: true
 
-    property InfoModel model
+    property AircraftInfoModel model
 
     Rectangle{
         anchors.fill: parent

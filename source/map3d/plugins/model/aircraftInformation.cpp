@@ -7,16 +7,16 @@
 #include "plugininterface.h"
 
 
-InfoModel::InfoModel(QObject* parent): QAbstractListModel(parent)
+AircraftInfoModel::AircraftInfoModel(QObject* parent): QAbstractListModel(parent)
 {
 
 }
 
-int InfoModel::rowCount(const QModelIndex &/*parent*/) const {
+int AircraftInfoModel::rowCount(const QModelIndex &/*parent*/) const {
     return 1;
 }
 
-QVariant InfoModel::data(const QModelIndex &/*index*/, int role) const{
+QVariant AircraftInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
         case TN: return QVariant::fromValue<QString>(aircraftInfo.TN);
         case IFFCode: return QVariant::fromValue<QString>(aircraftInfo.IFFCode);
@@ -38,12 +38,12 @@ QVariant InfoModel::data(const QModelIndex &/*index*/, int role) const{
     return aircraftInfo.TN;
 }
 
-void InfoModel::setAircraftInfo(AircraftInfo &a)
+void AircraftInfoModel::setAircraftInfo(AircraftInfo &a)
 {
     aircraftInfo = a;
 }
 
-QHash<int, QByteArray> InfoModel::roleNames() const
+QHash<int, QByteArray> AircraftInfoModel::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractListModel::roleNames();
     hash[TN] = "TN";
@@ -73,17 +73,17 @@ AircraftInformation::AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *muiHa
 
         if (comp->status() == QQmlComponent::Ready) {
             item = static_cast<QQuickItem*>(comp->create(nullptr));
-            infomodel = new InfoModel;
+            infomodel = new AircraftInfoModel;
 
             infomodel->setAircraftInfo(mInformation);
-            item->setProperty("model", QVariant::fromValue<InfoModel*>(infomodel));
+            item->setProperty("model", QVariant::fromValue<AircraftInfoModel*>(infomodel));
             QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
 
         }
 
     });
 
-    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
+    comp->loadUrl(QUrl("qrc:/modelplugin/AircraftInfoView.qml"));
 }
 void AircraftInformation::show() {
     mUiHandle->iwShow(item);

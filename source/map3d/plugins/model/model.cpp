@@ -76,7 +76,7 @@ bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
 
     qmlRegisterType<AircraftTableModel>("Crystal", 1, 0, "AircraftTableModel");
     qmlRegisterType<AircraftContextMenumodel>("Crystal", 1, 0, "AircraftContextMenumodel");
-    qmlRegisterType<InfoModel>("Crystal", 1, 0, "InfoModel");
+    qmlRegisterType<AircraftInfoModel>("Crystal", 1, 0, "AircraftInfoModel");
     mQmlEngine = engine;
 
     QString cat = "model";

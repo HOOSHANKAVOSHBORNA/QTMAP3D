@@ -233,10 +233,6 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     select(val);
     if(val)
     {
-        aircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
-        connect(aircraftinformation->getInfo(), &InfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
-        connect(aircraftinformation->getInfo(), &InfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
-        connect(aircraftinformation->getInfo(), &InfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
         showInfoWidget();
     }
     else
@@ -402,6 +398,10 @@ void AircraftModelNode::showInfoWidget()
 //    });
 
 //    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
+    aircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
+    connect(aircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
+    connect(aircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
+    connect(aircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
     aircraftinformation->show();
 }
 

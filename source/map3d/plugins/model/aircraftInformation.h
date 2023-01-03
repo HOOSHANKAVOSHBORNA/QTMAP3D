@@ -4,7 +4,7 @@
 #include <QQuickItem>
 #include "datamanager.h"
 
-class InfoModel : public QAbstractListModel
+class AircraftInfoModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
@@ -29,7 +29,7 @@ public:
         Sends = Qt::UserRole + 216
     };
 
-    InfoModel(QObject* parent = nullptr);
+    AircraftInfoModel(QObject* parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -53,11 +53,11 @@ class AircraftInformation : public QObject
     Q_OBJECT
 public:
     explicit AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, AircraftInfo mInformation, QObject *parent = nullptr);
-    InfoModel* getInfo(){return infomodel;}
+    AircraftInfoModel* getInfo(){return infomodel;}
     void show();
 private:
     AircraftInfo mInformation;
-    InfoModel *infomodel;
+    AircraftInfoModel *infomodel;
     UIHandle *mUiHandle = nullptr;
     QQuickItem *item;
 };
