@@ -5,6 +5,7 @@
 #include "mapcontroller.h"
 #include "plugininterface.h"
 #include "datamanager.h"
+#include "aircraftInformation.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>

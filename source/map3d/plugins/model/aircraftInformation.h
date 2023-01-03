@@ -1,9 +1,10 @@
 #ifndef INFOMODEL_H
 #define INFOMODEL_H
 #include <QAbstractListModel>
+#include <QQuickItem>
 #include "datamanager.h"
 
-class InfoModel : public QAbstractListModel
+class AircraftInfoModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
@@ -28,13 +29,13 @@ public:
         Sends = Qt::UserRole + 216
     };
 
-    InfoModel(QObject* parent = nullptr);
+    AircraftInfoModel(QObject* parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    AircraftInfo getAircraftInfo() {return aircraftInfo;}
+    AircraftInfo getAircraftInfo() {return mAircraftInfo;}
     void setAircraftInfo(AircraftInfo &a);
-    QHash<int, QByteArray> roleNames() const;
+    QHash<int, QByteArray> roleNames() const override;
 
 Q_SIGNALS:
     void gotoButtonClicked();
@@ -43,8 +44,22 @@ Q_SIGNALS:
     void moreButtonClicked();
 
 private:
-    AircraftInfo aircraftInfo;
+    AircraftInfo mAircraftInfo;
 
+};
+
+class AircraftInformation : public QObject
+{
+    Q_OBJECT
+public:
+    explicit AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, AircraftInfo mInformation, QObject *parent = nullptr);
+    AircraftInfoModel* getInfo(){return mInfomodel;}
+    void show();
+private:
+    AircraftInfo mInformation;
+    AircraftInfoModel *mInfomodel;
+    UIHandle *mUiHandle = nullptr;
+    QQuickItem *mItem;
 };
 
 #endif // INFOMODEL_H

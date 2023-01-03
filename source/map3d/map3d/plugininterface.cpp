@@ -59,19 +59,19 @@ void UIHandle::iwShow(QQuickItem* item)
 }
 
 
-void UIHandle::iwUpdateData(QObject *receiverObject, const QString &infoJSON)
-{
-    if (!mReceiverObject) return;
-    if (mReceiverObject != receiverObject) return;
+//void UIHandle::iwUpdateData(QObject *receiverObject, const QString &infoJSON)
+//{
+//    if (!mReceiverObject) return;
+//    if (mReceiverObject != receiverObject) return;
 
-    if (mMainWindow) {
-        QMetaObject::invokeMethod(mMainWindow,
-                                  "updateInfoWidgetData",
-                                  Q_ARG(QVariant, QVariant::fromValue<QString>(infoJSON))
-                                  );
-    }
+//    if (mMainWindow) {
+//        QMetaObject::invokeMethod(mMainWindow,
+//                                  "updateInfoWidgetData",
+//                                  Q_ARG(QVariant, QVariant::fromValue<QString>(infoJSON))
+//                                  );
+//    }
 
-}
+//}
 
 void UIHandle::sbShowMessage(const QString &message, qreal duration)
 {

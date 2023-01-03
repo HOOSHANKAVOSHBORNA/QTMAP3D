@@ -402,7 +402,7 @@ CMainWindow {
 
 
         } else {
-            sideWidget.hideAllItems();
+//            sideWidget.hideAllItems();
             infoo.hideItem()
 
             widgetsHideAnimation.stop();
