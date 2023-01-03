@@ -40,6 +40,7 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
     comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
 
+
 }
 
 void DataManager::setAircraftInfo(const AircraftInfo &aircraftInof)
