@@ -9,7 +9,7 @@ Item {
 //    anchors.fill: parent
 
     signal filterTextChanged(string txt)
-    signal aircraftDoubleClicked(string TN)
+    signal stationDoubleClicked(string Name)
 
     property int hoveredIndex: -1
     property int selectedIndex: -1
@@ -31,7 +31,7 @@ Item {
         color: "#303030"
     }
 
-    property AircraftTableModel model
+    property StationTableModel model
 
     ColumnLayout {
         anchors.fill: parent
@@ -47,7 +47,7 @@ Item {
 
             Label {
                 id: searchLabel
-                text: "Search TN : "
+                text: "Search Name : "
                 color : "white"
                 Layout.minimumWidth: implicitWidth
                 Layout.minimumHeight:   implicitHeight
@@ -105,7 +105,7 @@ Item {
                 anchors.left: parent.left
 
                 Repeater {
-                    model: 17
+                    model: 7
                     Rectangle {
                         width: 160
                         height: 40
@@ -128,7 +128,7 @@ Item {
             TableView {
                 id: tableView
                 model: rootItem.model
-                contentWidth: 17 * (164)
+                contentWidth: 7 * (164)
                 clip:true
 
                 delegate: Item {
@@ -140,7 +140,7 @@ Item {
                         anchors.fill: parent
                         onDoubleClicked: function() {
                             if (rootItem.model) {
-                                rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
+                                rootItem.stationDoubleClicked(rootItem.model.getName(row));
                             }
                         }
 

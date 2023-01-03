@@ -2,6 +2,7 @@
 #include "datamanager.h"
 #include "plugininterface.h"
 #include "aircrafttablemodel.h"
+#include "stationtablemodel.h"
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <QQuickItem>
@@ -18,27 +19,54 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
         qDebug() << comp->errorString();
 
         if (comp->status() == QQmlComponent::Ready) {
-            QQuickItem *item = (QQuickItem*) comp->create(nullptr);
+            QQuickItem *aircraftTab = (QQuickItem*) comp->create(nullptr);
             mAircraftTableModel = new AircraftTableModel;
 
-            QObject::connect(item,
+            QObject::connect(aircraftTab,
                              SIGNAL(filterTextChanged(const QString&)),
                              mAircraftTableModel,
                              SLOT(setFilterWildcard(const QString&)));
 
-            QObject::connect(item,
+            QObject::connect(aircraftTab,
                              SIGNAL(aircraftDoubleClicked(const QString&)),
                              this,
                              SIGNAL(aircraftDoubleClicked(const QString&)));
 
 
-            item->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
-            mUiHandle->lwAddTab("Aircrafts", item);
+            aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
+            mUiHandle->lwAddTab("Aircrafts", aircraftTab);
         }
 
     });
 
     comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
+    QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
+    QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
+        qDebug() << comp2->errorString();
+
+        if (comp2->status() == QQmlComponent::Ready) {
+            QQuickItem *stationTab = (QQuickItem*) comp2->create(nullptr);
+            mStationTableModel = new StationTableModel;
+
+//            QObject::connect(item2,
+//                             SIGNAL(filterTextChanged(const QString&)),
+//                             mAircraftTableModel,
+//                             SLOT(setFilterWildcard(const QString&)));
+
+//            QObject::connect(item2,
+//                             SIGNAL(stationDoubleClicked(const QString&)),
+//                             this,
+//                             SIGNAL(stationDoubleClicked(const QString&)));
+
+
+            stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
+            mUiHandle->lwAddTab("Stations", stationTab);
+        }
+
+    });
+
+    comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
+
 
 }
 

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "aircrafttablemodel.h"
-
+#include "stationtablemodel.h"
 class UIHandle;
 class QQmlEngine;
 class AircraftTableModel;
@@ -29,6 +29,7 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     UIHandle *mUiHandle = nullptr;
     AircraftTableModel *mAircraftTableModel = nullptr;
+    StationTableModel *mStationTableModel = nullptr;
 
 };
 
