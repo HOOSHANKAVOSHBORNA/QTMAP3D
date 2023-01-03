@@ -350,7 +350,7 @@ Item {
             Layout.minimumHeight: 5
         }
 
-        InfoButtonGroup {
+        AircraftInfoButtonGroup {
             Layout.fillWidth: true
             Layout.minimumHeight: 60
 

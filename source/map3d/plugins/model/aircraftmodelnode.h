@@ -67,7 +67,6 @@ private:
     osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
     QQmlEngine *mQmlEngine;
     QQuickItem *mCurrentContextMenuItem;
-    AircraftInformation *aircraftinformation;
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
 };

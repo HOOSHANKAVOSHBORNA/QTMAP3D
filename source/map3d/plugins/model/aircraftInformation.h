@@ -33,9 +33,9 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    AircraftInfo getAircraftInfo() {return aircraftInfo;}
+    AircraftInfo getAircraftInfo() {return mAircraftInfo;}
     void setAircraftInfo(AircraftInfo &a);
-    QHash<int, QByteArray> roleNames() const;
+    QHash<int, QByteArray> roleNames() const override;
 
 Q_SIGNALS:
     void gotoButtonClicked();
@@ -44,7 +44,7 @@ Q_SIGNALS:
     void moreButtonClicked();
 
 private:
-    AircraftInfo aircraftInfo;
+    AircraftInfo mAircraftInfo;
 
 };
 
@@ -53,13 +53,13 @@ class AircraftInformation : public QObject
     Q_OBJECT
 public:
     explicit AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, AircraftInfo mInformation, QObject *parent = nullptr);
-    AircraftInfoModel* getInfo(){return infomodel;}
+    AircraftInfoModel* getInfo(){return mInfomodel;}
     void show();
 private:
     AircraftInfo mInformation;
-    AircraftInfoModel *infomodel;
+    AircraftInfoModel *mInfomodel;
     UIHandle *mUiHandle = nullptr;
-    QQuickItem *item;
+    QQuickItem *mItem;
 };
 
 #endif // INFOMODEL_H

@@ -398,7 +398,7 @@ void AircraftModelNode::showInfoWidget()
 //    });
 
 //    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
-    aircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
+    AircraftInformation *aircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
     connect(aircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
     connect(aircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
     connect(aircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
