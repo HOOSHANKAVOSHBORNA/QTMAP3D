@@ -6,7 +6,7 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    anchors.fill: parent
+//    anchors.fill: parent
 
     signal filterTextChanged(string txt)
     signal aircraftDoubleClicked(string TN)

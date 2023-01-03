@@ -6,7 +6,7 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    anchors.fill: parent
+//    anchors.fill: parent
 
     signal filterTextChanged(string txt)
     signal stationDoubleClicked(string Name)
@@ -47,7 +47,7 @@ Item {
 
             Label {
                 id: searchLabel
-                text: "Search TN : "
+                text: "Search Name : "
                 color : "white"
                 Layout.minimumWidth: implicitWidth
                 Layout.minimumHeight:   implicitHeight
@@ -105,7 +105,7 @@ Item {
                 anchors.left: parent.left
 
                 Repeater {
-                    model: 17
+                    model: 7
                     Rectangle {
                         width: 160
                         height: 40
@@ -128,7 +128,7 @@ Item {
             TableView {
                 id: tableView
                 model: rootItem.model
-                contentWidth: 17 * (164)
+                contentWidth: 7 * (164)
                 clip:true
 
                 delegate: Item {
