@@ -404,8 +404,11 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos
             //imageOverlay->setBounds(osgEarth::Bounds(-100.0, 35.0, -90.0, 40.0));
             imageOverlay->setCenter(geoPos.x(),geoPos.y());
 
-            osg::Node* editor = new osgEarth::Annotation::ImageOverlayEditor( imageOverlay, true );
-            mMapController->addNode(editor);
+            osg::Node* editor = new osgEarth::Annotation::ImageOverlayEditor( imageOverlay, false );
+            osg::Group* hh = new osg::Group;
+            hh->addChild(editor);
+            mMapController->getMapNode()->addChild(hh);
+
         }
     }
 }
