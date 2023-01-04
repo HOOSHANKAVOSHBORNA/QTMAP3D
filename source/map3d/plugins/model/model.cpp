@@ -445,13 +445,18 @@ void Model::positionChanged(QString /*type*/, QString /*name*/, osgEarth::GeoPoi
 
 void Model::onMessageReceived(const QJsonDocument &message)
 {
-    if(message.object().value("Name").toString() == "Target")
+    if(message.object().value("Name").toString() == "Aircraft")
     {
         QJsonObject data = message.object().value("Data").toObject();
         AircraftInfo aircraftInfo;
         aircraftInfo.fromJson(QJsonDocument(data));
         //qDebug()<<"target:"<< data;
         addUpdateAircraft(aircraftInfo);
+    }
+    if(message.object().value("Name").toString() == "Station")
+    {
+        QJsonObject data = message.object().value("Data").toObject();
+        qDebug()<<"station:"<< data;
     }
 
 }

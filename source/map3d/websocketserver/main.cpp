@@ -14,12 +14,17 @@ int main(int argc, char *argv[])
     //run demo ------------------------------------------------
     CreateData createData;
     QTimer *timer = new QTimer();
-    //createData.createTargetinfo();
+
+    createData.createStationInfo();
+    //----------------------------------------------------------
     QObject::connect(timer, &QTimer::timeout, [&](){
-        createData.createTargetinfo();
-        createData.updateTargetinfo();
-        for(auto targetInfo:createData.targetList)
+        createData.createAircraftInfo();
+        createData.updateAircraftInfo();
+        for(auto targetInfo:createData.aircraftList)
             server.sendMessageToAll(targetInfo);
+        //---------------------------------------------
+        for(auto station:createData.stationList)
+            server.sendMessageToAll(station);
     });
     timer->start(10000);
     //---------------------------------------------------------
