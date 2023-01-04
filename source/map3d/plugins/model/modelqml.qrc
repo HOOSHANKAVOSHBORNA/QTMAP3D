@@ -6,6 +6,8 @@
         <file>AircraftInfoView.qml</file>
         <file>AircraftInfoButtonGroup.qml</file>
         <file>StationTableView.qml</file>
+        <file>StationInfoView.qml</file>
+        <file>StationInfoButtonGroup.qml</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>
