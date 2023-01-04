@@ -16,6 +16,7 @@ add_library(model SHARED
   stationtablemodel.cpp
   aircraftcontextmenumodel.cpp
   aircraftInformation.cpp
+  stationinformation.cpp
   stationtablemodel.cpp
   systemtablemodel.cpp
   model.cpp
