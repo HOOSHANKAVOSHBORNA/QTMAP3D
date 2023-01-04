@@ -13,19 +13,20 @@ Item {
 
     property var _checked: "#908000"
     property var _colorHover: "#FFCC00"
+    property var activeButton: "Active"
     ListModel {
         id: buttonsModel
 
         ListElement {
-            buttonText: "Go to"
+            buttonText: "Range"
             iconUrl: "qrc:///Resources/goto.png"
-            checkable: false
+            checkable: true
             checked: false
             clickCallback: function(check) { rootItem.gotoButtonClicked();}
         }
 
         ListElement {
-            buttonText: "Route"
+            buttonText: "Visibility"
             iconUrl:"qrc:///Resources/route.png"
             checkable: true
             checked: false
@@ -33,7 +34,7 @@ Item {
         }
 
         ListElement {
-            buttonText: "Track"
+            buttonText: activeButton
             iconUrl:"qrc:///Resources/tracking.png"
             checkable: true
             checked: false
