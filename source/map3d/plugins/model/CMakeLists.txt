@@ -16,6 +16,7 @@ add_library(model SHARED
   stationtablemodel.cpp
   aircraftcontextmenumodel.cpp
   aircraftInformation.cpp
+  stationinformation.cpp
   stationtablemodel.cpp
   systemtablemodel.cpp
   model.cpp
@@ -32,6 +33,8 @@ add_library(model SHARED
 )
 
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
+target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawshapes")
+target_link_libraries(model PRIVATE drawshapes)
 target_link_libraries(model PRIVATE Qt5::Gui Qt5::Quick Qt5::Widgets)
 
 target_compile_definitions(model PRIVATE CPTEST_LIBRARY)

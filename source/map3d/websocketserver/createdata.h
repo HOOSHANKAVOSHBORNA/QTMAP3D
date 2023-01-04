@@ -10,13 +10,14 @@ class CreateData
 {
 public:
     CreateData();
-    QJsonDocument createTargetinfo();
-    void updateTargetinfo();
-    QJsonDocument createRinfo();
-    QJsonDocument createSinfo();
+    QJsonDocument createAircraftInfo();
+    void updateAircraftInfo();
+    void createStationInfo();
+    QJsonDocument createSystemInfo();
     QJsonDocument createMinfo();
 public:
-    QList<QJsonDocument> targetList;
+    QList<QJsonDocument> aircraftList;
+    QList<QJsonDocument> stationList;
 };
 
 #endif // CREATEDATA_H

@@ -45,6 +45,7 @@
 #include "aircraftcontextmenumodel.h"
 #include "aircraftInformation.h"
 #include "stationtablemodel.h"
+#include "stationinformation.h"
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
@@ -79,6 +80,7 @@ bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
     qmlRegisterType<AircraftContextMenumodel>("Crystal", 1, 0, "AircraftContextMenumodel");
     qmlRegisterType<AircraftInfoModel>("Crystal", 1, 0, "AircraftInfoModel");
     qmlRegisterType<StationTableModel>("Crystal", 1, 0, "StationTableModel");
+    qmlRegisterType<StationInfoModel>("Crystal", 1, 0, "StationInfoModel");
     mQmlEngine = engine;
 
     QString cat = "model";
@@ -443,13 +445,18 @@ void Model::positionChanged(QString /*type*/, QString /*name*/, osgEarth::GeoPoi
 
 void Model::onMessageReceived(const QJsonDocument &message)
 {
-    if(message.object().value("Name").toString() == "Target")
+    if(message.object().value("Name").toString() == "Aircraft")
     {
         QJsonObject data = message.object().value("Data").toObject();
         AircraftInfo aircraftInfo;
         aircraftInfo.fromJson(QJsonDocument(data));
         //qDebug()<<"target:"<< data;
         addUpdateAircraft(aircraftInfo);
+    }
+    if(message.object().value("Name").toString() == "Station")
+    {
+        QJsonObject data = message.object().value("Data").toObject();
+        qDebug()<<"station:"<< data;
     }
 
 }

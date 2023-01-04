@@ -17,13 +17,14 @@ public:
 
     void addPoint(const osg::Vec3d& vec);
     void removePoint();
+    void clearPoints();
     int getSize();
 
     osgEarth::Annotation::FeatureNode* getNode();
 
 private:
     osgEarth::Symbology::Geometry* mLinePath;
-    osgEarth::Annotation::FeatureNode* mPathNode;
+    osg::ref_ptr<osgEarth::Annotation::FeatureNode> mPathNode;
     MapController* mMapController{nullptr};
     
 };

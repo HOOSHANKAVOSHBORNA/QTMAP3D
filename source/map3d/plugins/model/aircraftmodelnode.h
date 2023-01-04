@@ -6,6 +6,7 @@
 #include "plugininterface.h"
 #include "datamanager.h"
 #include "aircraftInformation.h"
+#include "line.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -67,6 +68,9 @@ private:
     osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
     QQmlEngine *mQmlEngine;
     QQuickItem *mCurrentContextMenuItem;
+
+    Line *mRouteLine;
+    Line *mTempRouteLine;
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
 };

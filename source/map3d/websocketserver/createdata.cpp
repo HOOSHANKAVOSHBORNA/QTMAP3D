@@ -11,9 +11,9 @@ CreateData::CreateData()
     qsrand(cd.toTime_t());
 }
 
-QJsonDocument CreateData::createTargetinfo()
+QJsonDocument CreateData::createAircraftInfo()
 {
-    int tn = 10000 + targetList.count();
+    int tn = 10000 + aircraftList.count();
     QJsonObject jsonObject;
     jsonObject.insert("TN", tn);
     jsonObject.insert("IFFCode", "a12345");
@@ -26,11 +26,11 @@ QJsonDocument CreateData::createTargetinfo()
     jsonObject.insert("Pos", "pos");
     //
 //    int latitude = ((qrand() % 360) - 180);
-    int latitude = ((qrand() % 270) - 100);
+    double latitude = 35 + (qrand() % (75 - 35));
 //    int longitude = ((qrand() % 180) - 90);
-    int longitude = ((qrand() % 150) - 50);
+    double longitude = 25 + (qrand() % (43 - 25));
 
-    int altitude = (2000 + (qrand() % 9000));
+    double altitude = (2000 + (qrand() % (9000 - 2000)));
 
     jsonObject.insert("Latitude", latitude);
     jsonObject.insert("Longitude", longitude);
@@ -50,21 +50,21 @@ QJsonDocument CreateData::createTargetinfo()
     jsonObject.insert("Send", sends);
 
     QJsonObject jsonMain;
-    jsonMain.insert("Name", "Target");
+    jsonMain.insert("Name", "Aircraft");
     jsonMain.insert("Data", jsonObject);
 
     QJsonDocument jsonDoc;
     jsonDoc.setObject(jsonMain);
 
-    targetList.append(jsonDoc);
+    aircraftList.append(jsonDoc);
     return jsonDoc;
 }
 
-void CreateData::updateTargetinfo()
+void CreateData::updateAircraftInfo()
 {
-    for(int i = 0; i < targetList.count(); ++i)
+    for(int i = 0; i < aircraftList.count(); ++i)
     {
-        QJsonObject mainObject = targetList[i].object();
+        QJsonObject mainObject = aircraftList[i].object();
         QJsonObject data = mainObject.value("Data").toObject();
         //------------------------
         double latitude = data.value("Latitude").toDouble();
@@ -80,7 +80,7 @@ void CreateData::updateTargetinfo()
         int randomX = (100 + (qrand() % 19));
         int randomY = (100 + (qrand() % 19));
 
-        altitude = (2000 + (qrand() % 9000));
+        altitude = (2000 + (qrand() % (9000 - 2000)));
 
         speed = (138 + (qrand() % 137));
         heading = (0 + (qrand() % 361));
@@ -119,33 +119,44 @@ void CreateData::updateTargetinfo()
         data["Heading"] = heading;
         //------------------------
         mainObject["Data"] = data;
-        targetList[i].setObject(mainObject);
+        aircraftList[i].setObject(mainObject);
 
 //        qDebug()<<heading;
     }
 }
 
-QJsonDocument CreateData::createRinfo()
+void CreateData::createStationInfo()
 {
-    QJsonObject jsonObject;
-    jsonObject.insert("Name", "rName1");
-    jsonObject.insert("Number", 123456789);
-    jsonObject.insert("Type", "rType1");
-    jsonObject.insert("Latitude", 52.1);
-    jsonObject.insert("Longitude", 35.1);
-    jsonObject.insert("Primary/Secondary", "secondary");
+    for(int i = 0; i < 30; ++i)
+    {
+        QString name = "Station" + QString::number(stationList.count());
+        double latitude = 48 + (qrand() % (59 - 48));
+        double longitude = 27 + (qrand() % (38 - 27));
+        double radius = (4000 + (qrand() % (9000 - 4000)));
 
-    QJsonObject jsonMain;
-    jsonMain.insert("Name", "Radar");
-    jsonMain.insert("Data", jsonObject);
+        QJsonObject jsonObject;
+        jsonObject.insert("Name", name);
+        jsonObject.insert("Number", 123456789);
+        jsonObject.insert("Type", "Type1");
+        jsonObject.insert("Latitude", latitude);
+        jsonObject.insert("Longitude", longitude);
+        jsonObject.insert("Primary/Secondary", "secondary");
+        jsonObject.insert("Radius", radius);//meter
+        jsonObject.insert("CycleTime", 123123456);//
 
-    QJsonDocument jsonDoc;
-    jsonDoc.setObject(jsonMain);
+        QJsonObject jsonMain;
+        jsonMain.insert("Name", "Station");
+        jsonMain.insert("Data", jsonObject);
 
-    return jsonDoc;
+        QJsonDocument jsonDoc;
+        jsonDoc.setObject(jsonMain);
+
+        stationList.append(jsonDoc);
+    }
+
 }
 
-QJsonDocument CreateData::createSinfo()
+QJsonDocument CreateData::createSystemInfo()
 {
     QJsonObject jsonObject;
     jsonObject.insert("Terminal", "terminal1");
@@ -174,7 +185,7 @@ QJsonDocument CreateData::createSinfo()
     jsonObject.insert("Inrange", "inrange");
 
     QJsonObject jsonMain;
-    jsonMain.insert("Name", "Samaneh");
+    jsonMain.insert("Name", "System");
     jsonMain.insert("Data", jsonObject);
 
     QJsonDocument jsonDoc;
