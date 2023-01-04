@@ -15,7 +15,7 @@ Ellipse::Ellipse(bool clamp)
     this->setStyle(ellipseStyle);
     this->setArcStart(osgEarth::Angle(0, osgEarth::Units::DEGREES));
     this->setArcEnd(osgEarth::Angle(360.0 - 45.0, osgEarth::Units::DEGREES));
-    this->setPie(true);
+    this->setPie(false);
 
 }
 

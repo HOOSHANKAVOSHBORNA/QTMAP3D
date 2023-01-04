@@ -1,7 +1,8 @@
 #include "circle.h"
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
-#include "osgEarthAnnotation/AnnotationEditing"
+
+
 
 void Circle::setCircleHeight(float hieght)
 {
@@ -11,8 +12,9 @@ void Circle::setCircleHeight(float hieght)
 
 }
 
-Circle::Circle(bool clamp)
+Circle::Circle(MapController *mapController, bool clamp)
 {
+    mMapController = mapController;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Cyan, 0.5);
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = false;
     if (clamp){
@@ -28,6 +30,8 @@ Circle::Circle(bool clamp)
     this->setArcStart(osgEarth::Angle(0, osgEarth::Units::DEGREES));
     this->setArcEnd(osgEarth::Angle(360, osgEarth::Units::DEGREES));
     this->setPie(true);
+
+
 
 
 

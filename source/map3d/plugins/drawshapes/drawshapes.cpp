@@ -29,6 +29,7 @@
 #include "osgEarth/Layer"
 #include <line.h>
 #include <osgEarthAnnotation/ImageOverlayEditor>
+#include "osgEarthAnnotation/AnnotationEditing"
 
 using namespace osgEarth::Annotation;
 
@@ -184,7 +185,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
     {
         if(checked)
         {
-        mCircle = new Circle(true);
+        mCircle = new Circle(mMapController,true);
         QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onCircleBtnClick);
         }
         else
@@ -403,11 +404,11 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos
             imageOverlay = new osgEarth::Annotation::ImageOverlay(mMapController->getMapNode(), image);
             //imageOverlay->setBounds(osgEarth::Bounds(-100.0, 35.0, -90.0, 40.0));
             imageOverlay->setCenter(geoPos.x(),geoPos.y());
-
+            mMapController->addNode(imageOverlay);
             osg::Node* editor = new osgEarth::Annotation::ImageOverlayEditor( imageOverlay, false );
-            osg::Group* hh = new osg::Group;
-            hh->addChild(editor);
-            mMapController->getMapNode()->addChild(hh);
+            osg::Group* gr = new osg::Group;
+            gr->addChild(editor);
+            mMapController->getMapNode()->addChild(gr);
 
         }
     }
@@ -418,21 +419,26 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         mCircle->setPosition(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y()));
-        mCircle->setArcStart(-45);
-        mCircle->setArcEnd(45);
+        mCircle->setArcStart(0);
+        mCircle->setArcEnd(360);
         mMapController->addNode(mCircle);
+        osgEarth::Annotation::CircleNodeEditor* editor = new osgEarth::Annotation::CircleNodeEditor(mCircle);
+        osg::Group* gr = new osg::Group;
+        gr->addChild(editor);
+        mMapController->getMapNode()->addChild(gr);
     }
-    if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
-    {
-        mCircle->setClamp(false);
-        mCircle->setColor(osgEarth::Color::Blue);
-        mCircle->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Y_AXIS));
-        mCircle->setArcStart(-60);
-        mCircle->setArcEnd(60);
-        mCircle->setPosition(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y(),geoPos.z()+1000000));
-        mCircle->setCircleHeight(25000);
+//    if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
+//    {
+//        mCircle->setClamp(false);
+//        mCircle->setColor(osgEarth::Color::Blue);
+//        mCircle->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Y_AXIS));
+//        mCircle->setArcStart(-60);
+//        mCircle->setArcEnd(60);
+//        mCircle->setPosition(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y(),geoPos.z()+1000000));
+//        mCircle->setCircleHeight(25000);
 
-    }
+
+//    }
 }
 
 void DrawShapes::onRectBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
@@ -452,13 +458,21 @@ void DrawShapes::onRectBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
     }
 }
 
+
+
+
+
+
 void DrawShapes::onEllipseBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
 {
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         mEllipse->setPosition(osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y()));
         mMapController->addNode(mEllipse);
-
+        EllipseNodeEditor* editor = new EllipseNodeEditor(mEllipse);
+        osg::Group* gr = new osg::Group;
+        gr->addChild(editor);
+        mMapController->getMapNode()->addChild(gr);
     }
     if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
     {
