@@ -415,7 +415,7 @@ void Model::addUpdateStation(StationInfo stationInfo)
     else
     {
         //create and setting model-------------------------------------------
-        stationModelNode = new StationModelNode(mMapController);
+        stationModelNode = new StationModelNode(mMapController, mQmlEngine, mUIHandle);
         stationModelNode->setQStringName(stationInfo.Name);
         stationModelNode->setGeographicPosition(geographicPosition, 0.0);
         //add to container---------------------------------------------------

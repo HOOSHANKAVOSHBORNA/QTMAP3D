@@ -7,8 +7,8 @@
 
 const int RANGE3D = 500;
 
-StationModelNode::StationModelNode(MapController *mapControler, QObject *parent)
-    :BaseModel(mapControler->getMapNode(), parent)
+StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
+    :BaseModel(mapControler->getMapNode(), parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
     //--create root node---------------------------------------------------------------------------
     mRootNode = new osg::LOD;
@@ -72,9 +72,33 @@ void StationModelNode::setInformation(const StationInfo& info)
     mInformation = info;
 }
 
+void StationModelNode::onLeftButtonClicked(bool val)
+{
+    select(val);
+    if(val)
+    {
+        showInfoWidget();
+    }
+    else
+    {
+        mMapController->untrackNode();
+    }
+}
+
 void StationModelNode::frameEvent()
 {
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+}
+
+void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
+{
+    BaseModel::mousePressEvent(event, onModel);
+    if(event->button() == Qt::LeftButton)
+    {
+        onLeftButtonClicked(onModel);
+        if(onModel)
+            event->accept();
+    }
 }
 
 void StationModelNode::onModeChanged(bool is3DView)
@@ -92,4 +116,10 @@ void StationModelNode::onModeChanged(bool is3DView)
     }
 
     select(mIsSelected);
+}
+
+void StationModelNode::showInfoWidget()
+{
+    StationInformtion *stationInformation = new StationInformtion(mQmlEngine, mUIHandle, mInformation, this);
+    stationInformation->show();
 }

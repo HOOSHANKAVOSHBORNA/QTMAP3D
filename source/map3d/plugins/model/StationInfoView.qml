@@ -63,7 +63,7 @@ Item {
                             Image {
                                 id: img
                                 anchors.fill: parent
-                                source: "qrc:///Resources/airplan.jpg"
+                                source: "qrc:///Resources/station.jpg"
                                 fillMode: Image.Stretch
                             }
                         }
@@ -77,7 +77,7 @@ Item {
                         }
 
                         GridLayout {
-                            rows: 9
+                            rows: 3
                             columns: 2
                             Layout.fillWidth: true
                             Layout.preferredHeight: implicitHeight
@@ -96,7 +96,7 @@ Item {
                                 Binding {
                                     target: airplane
                                     property: "text"
-                                    value: tnLabel.text
+                                    value: nameLabel.text
                                 }
                             }
 
@@ -125,7 +125,7 @@ Item {
                                 color: "white"
                                 Layout.fillWidth: true
                                 horizontalAlignment: Qt.AlignRight
-                            }
+                            }}
 
                             Rectangle {
                                 Layout.preferredWidth: rootItem.width - 30
@@ -136,7 +136,7 @@ Item {
 
 
                             GridLayout {
-                                rows: 3
+                                rows: 6
                                 columns: 2
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: implicitHeight
@@ -178,6 +178,30 @@ Item {
                                     Layout.fillWidth: true
                                     horizontalAlignment: Qt.AlignRight
                                 }
+                                Label {
+                                    text: "Radius: "
+                                    color: "white"
+                                    Layout.preferredWidth: implicitWidth
+                                }
+                                Label {
+                                    id: radiusLabel
+                                    text: Radius
+                                    color: "white"
+                                    Layout.fillWidth: true
+                                    horizontalAlignment: Qt.AlignRight
+                                }
+                                Label {
+                                    text: "CycleTime: "
+                                    color: "white"
+                                    Layout.preferredWidth: implicitWidth
+                                }
+                                Label {
+                                    id: cycleTimeLabel
+                                    text: CycleTime
+                                    color: "white"
+                                    Layout.fillWidth: true
+                                    horizontalAlignment: Qt.AlignRight
+                                }
                                 Rectangle {
                                     Layout.preferredWidth: rootItem.width - 30
                                     Layout.preferredHeight: 2
@@ -187,7 +211,7 @@ Item {
 
                             }
                         }
-                    }
+
                 }
             }
 
@@ -201,14 +225,14 @@ Item {
             Layout.fillWidth: true
             Layout.minimumHeight: 60
 
-            onGotoButtonClicked: function() {
-                rootItem.model.gotoButtonClicked();
+            onRangeButtonClicked: function(check) {
+                rootItem.model.rangeButtonClicked(check);
             }
-            onRouteButtonClicked: function(check) {
-                rootItem.model.routeButtonClicked(check);
+            onVisibleButtonClicked: function(check) {
+                rootItem.model.visibleButtonClicked(check);
             }
-            onTrackButtonClicked: function(check) {
-                rootItem.model.trackButtonClicked(check);
+            onActivateButtonClicked: function(check) {
+                rootItem.model.activateButtonClicked(check);
             }
             onMoreButtonClicked: function() {
                 rootItem.model.moreButtonClicked();
