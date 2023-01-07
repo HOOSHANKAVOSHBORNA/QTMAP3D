@@ -225,6 +225,10 @@ Item {
             Layout.fillWidth: true
             Layout.minimumHeight: 60
 
+            onGotoButtonClicked: function() {
+                rootItem.model.gotoButtonClicked();
+            }
+
             onRangeButtonClicked: function(check) {
                 rootItem.model.rangeButtonClicked(check);
             }

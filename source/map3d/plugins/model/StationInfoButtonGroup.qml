@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.13
 Item {
     id:rootItem
 
+    signal gotoButtonClicked();
     signal rangeButtonClicked(bool check);
     signal visibleButtonClicked(bool check);
     signal activateButtonClicked(bool check);
@@ -16,6 +17,14 @@ Item {
     property var activeButton: "Active"
     ListModel {
         id: buttonsModel
+
+        ListElement {
+            buttonText: "Goto"
+            iconUrl: "qrc:///Resources/goto.png"
+            checkable: false
+            checked: false
+            clickCallback: function() { rootItem.gotoButtonClicked();}
+        }
 
         ListElement {
             buttonText: "Range"
@@ -40,7 +49,7 @@ Item {
             checked: false
             clickCallback: function(check) {
                 rootItem.activateButtonClicked(check);
-                buttonsModel.get(2).buttonText = buttonsModel.get(2).checked ? "Activated" : "Deactivated"
+                buttonsModel.get(3).buttonText = buttonsModel.get(2).checked ? "Activated" : "Deactivated"
             }
         }
 

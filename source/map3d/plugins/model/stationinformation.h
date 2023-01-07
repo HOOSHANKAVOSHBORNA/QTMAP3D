@@ -31,6 +31,7 @@ public:
     void setInformtion(const StationInfo &stationInfo);
 
 Q_SIGNALS:
+    void gotoButtonClicked();
     void rangeButtonClicked(bool check);
     void visibleButtonClicked(bool checked);
     void activateButtonClicked(bool checked);
