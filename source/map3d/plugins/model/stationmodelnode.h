@@ -9,10 +9,10 @@
 #include <osgEarthAnnotation/PlaceNode>
 
 
-class Station: public BaseModel
+class StationModelNode: public BaseModel
 {
 public:
-    Station(MapController *mapControler, QObject* parent = nullptr);
+    StationModelNode(MapController *mapControler, QObject* parent = nullptr);
 public:
     virtual void frameEvent()override;
 protected:

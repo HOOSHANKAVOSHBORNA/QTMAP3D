@@ -3,7 +3,7 @@
 #include "truck.h"
 #include "rocket.h"
 #include "system.h"
-#include "station.h"
+#include "stationmodelnode.h"
 #include "mapcontroller.h"
 #include "networkmanager.h"
 #include "websocketclient.h"
@@ -406,16 +406,16 @@ void Model::addSystemModel(osg::Vec3d position)
 
 void Model::addUpdateStation(StationInfo stationInfo)
 {
-    osg::ref_ptr<Station> stationModelNode;
+    osg::ref_ptr<StationModelNode> stationModelNode;
     osg::Vec3d geographicPosition(stationInfo.Latitude, stationInfo.Longitude, 0);
     if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Name))
     {
-        stationModelNode = dynamic_cast<Station*>(mModelNodes[AIRCRAFT][stationInfo.Name]);
+        stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[AIRCRAFT][stationInfo.Name]);
     }
     else
     {
         //create and setting model--------------------------------------------
-        stationModelNode = new Station(mMapController);
+        stationModelNode = new StationModelNode(mMapController);
         stationModelNode->setQStringName(stationInfo.Name);
         stationModelNode->setGeographicPosition(geographicPosition, 0.0);
         //add to container-----------------------------------------------------

@@ -1,4 +1,4 @@
-#include "station.h"
+#include "stationmodelnode.h"
 #include "system.h"
 #include "truck.h"
 
@@ -7,7 +7,7 @@
 
 const int RANGE3D = 500;
 
-Station::Station(MapController *mapControler, QObject *parent)
+StationModelNode::StationModelNode(MapController *mapControler, QObject *parent)
     :BaseModel(mapControler->getMapNode(), parent)
 {
     //--create root node---------------------------------------------------------------------------
@@ -64,15 +64,15 @@ Station::Station(MapController *mapControler, QObject *parent)
         mRootNode->addChild(mNode2D, 0, std::numeric_limits<float>::max());
     }
     //map mode changed-----------------------------------------------------------------------
-    connect(mapControler, &MapController::modeChanged, this, &Station::onModeChanged);
+    connect(mapControler, &MapController::modeChanged, this, &StationModelNode::onModeChanged);
 }
 
-void Station::frameEvent()
+void StationModelNode::frameEvent()
 {
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
 }
 
-void Station::onModeChanged(bool is3DView)
+void StationModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
     if(mIs3D)

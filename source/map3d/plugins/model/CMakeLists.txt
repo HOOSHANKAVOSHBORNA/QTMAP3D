@@ -23,7 +23,7 @@ add_library(model SHARED
   basemodel.cpp
   aircraftmodelnode.cpp
   rocket.cpp
-  station.cpp
+  stationmodelnode.cpp
   system.cpp
   truck.cpp
   model.json
