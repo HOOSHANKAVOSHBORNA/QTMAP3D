@@ -80,6 +80,9 @@ public:
     Q_INVOKABLE QString headerText(int column) const;
     Q_INVOKABLE QString getName(int row) const;
 
+public slots:
+    void setFilterWildcard(const QString& wildcard);
+
 public:
     void updateItemData(const QString& jsonStr);
     void updateItemData(const StationInfo& stationInfo);
