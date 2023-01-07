@@ -67,6 +67,11 @@ StationModelNode::StationModelNode(MapController *mapControler, QObject *parent)
     connect(mapControler, &MapController::modeChanged, this, &StationModelNode::onModeChanged);
 }
 
+void StationModelNode::setInformation(const StationInfo& info)
+{
+    mInformation = info;
+}
+
 void StationModelNode::frameEvent()
 {
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));

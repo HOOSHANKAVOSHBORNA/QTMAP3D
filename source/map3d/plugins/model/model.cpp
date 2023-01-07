@@ -319,30 +319,30 @@ void Model::addUpdateAircraft(AircraftInfo aircraftInfo)
         aircraftModelNode->setQStringName(aircraftInfo.TN);
         aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
-//        QObject::connect(modelNode.get(), &BaseModel::positionChanged, [=](osgEarth::GeoPoint position){
-//            //positionChanged(AIRPLANE, name, position);
+        //        QObject::connect(modelNode.get(), &BaseModel::positionChanged, [=](osgEarth::GeoPoint position){
+        //            //positionChanged(AIRPLANE, name, position);
 
-//            auto truckNames = modelNode[TRUCK].keys();
-//            for(auto truckName: truckNames)
-//            {
-//                auto truck = dynamic_cast<Truck*>(modelNode[TRUCK][truckName]);
-//                if(truck->hasRocket())
-//                {
-//                    //                osg::Vec3d wPoint;
-//                    //                position.toWorld(wPoint);
-//                    truck->aimTarget(position.vec3d());
-//                }
-//            }
-//        });
+        //            auto truckNames = modelNode[TRUCK].keys();
+        //            for(auto truckName: truckNames)
+        //            {
+        //                auto truck = dynamic_cast<Truck*>(modelNode[TRUCK][truckName]);
+        //                if(truck->hasRocket())
+        //                {
+        //                    //                osg::Vec3d wPoint;
+        //                    //                position.toWorld(wPoint);
+        //                    truck->aimTarget(position.vec3d());
+        //                }
+        //            }
+        //        });
         //add to container-----------------------------------------------------
         mModelNodes[AIRCRAFT][aircraftInfo.TN] = aircraftModelNode;
         //add to map ---------------------------------------------------------
         mMapController->addNode(aircraftModelNode);
         //hit------------------------------------------------------------------
-//        QObject::connect(modelNode.get(), &BaseModel::hit, [=](BaseModel */*other*/){
+        //        QObject::connect(modelNode.get(), &BaseModel::hit, [=](BaseModel */*other*/){
 
-//            mModelNodes[AIRCRAFT].remove(QString(modelNode->getName().c_str()));
-//        });
+        //            mModelNodes[AIRCRAFT].remove(QString(modelNode->getName().c_str()));
+        //        });
     }
     //update information------------------------------------------------------------------
     aircraftModelNode->setInformation(aircraftInfo);
@@ -410,26 +410,26 @@ void Model::addUpdateStation(StationInfo stationInfo)
     osg::Vec3d geographicPosition(stationInfo.Latitude, stationInfo.Longitude, 0);
     if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Name))
     {
-        stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[AIRCRAFT][stationInfo.Name]);
+        stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][stationInfo.Name]);
     }
     else
     {
-        //create and setting model--------------------------------------------
+        //create and setting model-------------------------------------------
         stationModelNode = new StationModelNode(mMapController);
         stationModelNode->setQStringName(stationInfo.Name);
         stationModelNode->setGeographicPosition(geographicPosition, 0.0);
-        //add to container-----------------------------------------------------
+        //add to container---------------------------------------------------
         mModelNodes[STATION][stationInfo.Name] = stationModelNode;
-        //add to map ---------------------------------------------------------
+        //add to map --------------------------------------------------------
         mMapController->addNode(stationModelNode);
     }
-//    //update information------------------------------------------------------------------
-//    stationModelNode->setInformation(stationInfo);
-//    //add update list view-----------------------------------------------------------------
-//    if (mDataManager)
-//    {
-//        mDataManager->setStationInfo(stationInfo);
-//    }
+    //update information-----------------------------------------------------
+    stationModelNode->setInformation(stationInfo);
+    //    //add update list view-----------------------------------------------------------------
+    //    if (mDataManager)
+    //    {
+    //        mDataManager->setStationInfo(stationInfo);
+    //    }
 
 }
 
@@ -472,19 +472,22 @@ void Model::onMessageReceived(const QJsonDocument &message)
     if(message.object().value("Name").toString() == "Station")
     {
         QJsonObject data = message.object().value("Data").toObject();
-        qDebug()<<"station:"<< data;
+        StationInfo stationInfo;
+        stationInfo.fromJson(QJsonDocument(data));
+//        qDebug()<<"station:"<< data;
+        addUpdateStation(stationInfo);
     }
 
 }
 
 void Model::frameEvent()
 {
-//    findSceneModels(mMapController->getViewer());
+    //    findSceneModels(mMapController->getViewer());
     for(auto modelNodeList: mModelNodes)
         for(auto modelNode: modelNodeList)
             modelNode->frameEvent();
-//    if(mLastSelectedModel)
-//        mLastSelectedModel->frameEvent();
+    //    if(mLastSelectedModel)
+    //        mLastSelectedModel->frameEvent();
 }
 
 void Model::mousePressEvent(QMouseEvent *event)
@@ -556,9 +559,9 @@ void Model::findSceneModels(osgViewer::Viewer *viewer)
         intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
 
         osgUtil::IntersectionVisitor iv(intersector);
-//        iv.setTraversalMask(NODE_MASK);
-//        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-//        iv.setTraversalNumber(1000);
+        //        iv.setTraversalMask(NODE_MASK);
+        //        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+        //        iv.setTraversalNumber(1000);
         viewer->getCamera()->accept(iv);
 
         if(intersector->containsIntersections())
@@ -585,7 +588,7 @@ void Model::findSceneModels(osgViewer::Viewer *viewer)
                             distance = camera->getViewpoint().getRange();
                         else
                             distance = camera->getViewpoint().getRange() - model->getPosition().z();
-//                        model->cameraRangeChanged(distance);
+                        //                        model->cameraRangeChanged(distance);
                         //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
                         //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
                     }

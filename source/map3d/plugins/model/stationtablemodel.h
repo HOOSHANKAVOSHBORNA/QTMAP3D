@@ -44,7 +44,7 @@ struct StationInfo
     void fromJson(QJsonDocument jsonDoc)
     {
         QJsonObject data = jsonDoc.object();
-        Name = QString::number(data.value("Name").toInt());
+        Name = data.value("Name").toString();
         Type = data.value("Type").toString();
         PrimSec = data.value("Primary/Secondary").toString();
 
