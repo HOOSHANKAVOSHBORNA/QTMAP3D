@@ -52,6 +52,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QObject *parent)
     mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
     getGeoTransform()->addChild(mLableNode);
+    mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
     if(mIs3D)
     {

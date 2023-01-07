@@ -10,16 +10,26 @@
 #include <QDebug>
 
 const QString ROCKET = "Rocket";
+osg::ref_ptr<osg::Node> truckNode;
+osg::ref_ptr<osg::Node> wheelNode;
+osg::ref_ptr<osg::Node> dualWheelNode;
+osg::ref_ptr<osg::Node> spinerNode;
+osg::ref_ptr<osg::Node> holderNode;
 
 Truck::Truck(osgEarth::MapNode *mapNode, QObject *parent):
     BaseModel(mapNode, parent)
 {
     //--read nodes-------------------------------------------------------------------------------------------
-    osg::ref_ptr<osg::Node> truckNode     = osgDB::readRefNodeFile("../data/models/system/truck/truck-body.osgt");
-    osg::ref_ptr<osg::Node> wheelNode     = osgDB::readRefNodeFile("../data/models/system/truck/wheel.osgt");
-    osg::ref_ptr<osg::Node> dualWheelNode = osgDB::readRefNodeFile("../data/models/system/truck/wheel-dual.osgt");
-    osg::ref_ptr<osg::Node> spinerNode    = osgDB::readRefNodeFile("../data/models/system/truck/truck-spiner.osgt");
-    osg::ref_ptr<osg::Node> holderNode    = osgDB::readRefNodeFile("../data/models/system/truck/truck-holder.osgt");
+    if(!truckNode.valid())
+        truckNode     = osgDB::readRefNodeFile("../data/models/system/truck/truck-body.osgt");
+    if(!wheelNode.valid())
+        wheelNode     = osgDB::readRefNodeFile("../data/models/system/truck/wheel.osgt");
+    if(!dualWheelNode.valid())
+        dualWheelNode = osgDB::readRefNodeFile("../data/models/system/truck/wheel-dual.osgt");
+    if(!spinerNode.valid())
+        spinerNode    = osgDB::readRefNodeFile("../data/models/system/truck/truck-spiner.osgt");
+    if(!holderNode.valid())
+        holderNode    = osgDB::readRefNodeFile("../data/models/system/truck/truck-holder.osgt");
     //--create rockets---------------------------------------------------------------------------------------
     mRocket1 = new Rocket(getMapNode(),parent);
     mRocket1->setType(ROCKET);
@@ -144,7 +154,7 @@ Truck::Truck(osgEarth::MapNode *mapNode, QObject *parent):
     //--create style------------------------------------------------------------------------------------------
     mRootNode = new osg::LOD;
     osgEarth::Symbology::Style  style;
-//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     setStyle(style);
 
@@ -313,7 +323,7 @@ osg::Vec3d Truck::computeRocketWorldPosition(Rocket *rocket)
     getPosition().createLocalToWorld(toWorldMatrix);
     osg::Vec3d worldPosition = localPosition * toHolderMatrix * toSpinnerMatrix * toTruckMatrix * toWorldMatrix;
     //draw line for debuge------------------------------------------------
-//    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(worldPosition));
+    //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(worldPosition));
     return worldPosition;
 }
 
