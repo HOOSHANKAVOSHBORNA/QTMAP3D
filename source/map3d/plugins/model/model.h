@@ -44,7 +44,7 @@ public:
     void addUpdateAircraft(AircraftInfo aircraftInfo);
     void addRocketModel(osg::Vec3d position = osg::Vec3d(52.8601, 35.277, 846));
     void addSystemModel(osg::Vec3d position);
-    void addStationModel(osg::Vec3d position);
+    void addUpdateStation(StationInfo stationInfo);
 public slots:
     void clickedTrackNode(QString type ,QString name ,bool isClick);
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);

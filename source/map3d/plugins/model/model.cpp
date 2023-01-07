@@ -165,8 +165,11 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
     }
     else if(CATEGORY == category && name == ADD_STATION)
     {
-        osg::Vec3d position(53, 35.2, 842.5);
-        addStationModel(position);
+        StationInfo stationInfo;
+        stationInfo.Name = STATION + QString::number(mModelNodes[STATION].count());
+        stationInfo.Latitude = 53;
+        stationInfo.Longitude = 35.2;
+        addUpdateStation(stationInfo);
     }
 }
 
@@ -401,20 +404,33 @@ void Model::addSystemModel(osg::Vec3d position)
     mMapController->addNode(model);
 }
 
-void Model::addStationModel(osg::Vec3d position)
+void Model::addUpdateStation(StationInfo stationInfo)
 {
-    //create and setting model--------------------------------------------
-    osg::ref_ptr<Station> model = new Station(mMapController);
-    QString name = STATION + QString::number(mModelNodes["Station"].count());
-    model->setQStringName(name);
-    model->setGeographicPosition(position, 0.0);
-    model->setScale(osg::Vec3(1,1,1));
-    //add to container-----------------------------------------------------
-    mModelNodes[STATION][name] = model;
+    osg::ref_ptr<Station> stationModelNode;
+    osg::Vec3d geographicPosition(stationInfo.Latitude, stationInfo.Longitude, 0);
+    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Name))
+    {
+        stationModelNode = dynamic_cast<Station*>(mModelNodes[AIRCRAFT][stationInfo.Name]);
+    }
+    else
+    {
+        //create and setting model--------------------------------------------
+        stationModelNode = new Station(mMapController);
+        stationModelNode->setQStringName(stationInfo.Name);
+        stationModelNode->setGeographicPosition(geographicPosition, 0.0);
+        //add to container-----------------------------------------------------
+        mModelNodes[STATION][stationInfo.Name] = stationModelNode;
+        //add to map ---------------------------------------------------------
+        mMapController->addNode(stationModelNode);
+    }
+//    //update information------------------------------------------------------------------
+//    stationModelNode->setInformation(stationInfo);
+//    //add update list view-----------------------------------------------------------------
+//    if (mDataManager)
+//    {
+//        mDataManager->setStationInfo(stationInfo);
+//    }
 
-
-    //add to map ---------------------------------------------------------
-    mMapController->addNode(model);
 }
 
 void Model::clickedTrackNode(QString type, QString name, bool isClick)

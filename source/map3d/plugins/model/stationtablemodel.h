@@ -20,6 +20,8 @@ struct StationInfo
     double Number;
     double Latitude;
     double Longitude;
+    double Radius;
+    int CycleTime;
 
     QJsonDocument toJson()
     {
@@ -31,6 +33,8 @@ struct StationInfo
         jsonObject.insert("Number", Number);
         jsonObject.insert("Latitude", Latitude);
         jsonObject.insert("Longitude", Longitude);
+        jsonObject.insert("Radius", Radius);
+        jsonObject.insert("CycleTime", CycleTime);
 
         QJsonDocument jsonDoc;
         jsonDoc.setObject(jsonObject);
@@ -47,6 +51,8 @@ struct StationInfo
         Number = data.value("Number").toDouble();
         Latitude = data.value("Latitude").toDouble();
         Longitude = data.value("Longitude").toDouble();
+        Radius = data.value("Radius").toDouble();
+        CycleTime = data.value("CycleTime").toInt();
 
     }
 
