@@ -48,15 +48,15 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
             QQuickItem *stationTab = (QQuickItem*) comp2->create(nullptr);
             mStationTableModel = new StationTableModel;
 
-//            QObject::connect(item2,
-//                             SIGNAL(filterTextChanged(const QString&)),
-//                             mAircraftTableModel,
-//                             SLOT(setFilterWildcard(const QString&)));
+            QObject::connect(stationTab,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mAircraftTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
 
-//            QObject::connect(item2,
-//                             SIGNAL(stationDoubleClicked(const QString&)),
-//                             this,
-//                             SIGNAL(stationDoubleClicked(const QString&)));
+            QObject::connect(stationTab,
+                             SIGNAL(stationDoubleClicked(const QString&)),
+                             this,
+                             SIGNAL(stationDoubleClicked(const QString&)));
 
 
             stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
@@ -74,6 +74,13 @@ void DataManager::setAircraftInfo(const AircraftInfo &aircraftInof)
 {
     if (mAircraftTableModel) {
         mAircraftTableModel->updateItemData(aircraftInof);
+    }
+}
+
+void DataManager::setStationInfo(const StationInfo &stationInfo)
+{
+    if (mStationTableModel) {
+        mStationTableModel->updateItemData(stationInfo);
     }
 }
 

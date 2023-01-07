@@ -1,6 +1,7 @@
 #include "stationtablemodel.h"
 
 #include <QColor>
+#include <QRegularExpression>
 
 StationTableModel::StationTableModel(QObject *parent): QAbstractTableModel(parent)
 {
@@ -103,6 +104,22 @@ QString StationTableModel::getName(int row) const
     }
 
     return mStationInfoListProxy[std::size_t(row)].second->Name;
+}
+
+void StationTableModel::setFilterWildcard(const QString &wildcard)
+{
+    beginResetModel();
+
+    mFilter = wildcard;
+    mFilter.remove(QRegularExpression("\\s"));
+
+    mStationInfoListProxy.clear();
+    for (auto& item : mStationInfoList) {
+        if (item.second->Name.contains(mFilter))
+            mStationInfoListProxy.push_back(item);
+    }
+
+    endResetModel();
 }
 
 

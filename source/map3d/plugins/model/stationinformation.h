@@ -1,6 +1,7 @@
 #ifndef STATIONINFOMODEL_H
 #define STATIONINFOMODEL_H
 #include <QAbstractListModel>
+#include <QQuickItem>
 
 #include "datamanager.h"
 
@@ -14,7 +15,10 @@ public:
         PrimSec = Qt::UserRole + 202,
         Numberr = Qt::UserRole + 203,
         Latitude = Qt::UserRole + 204,
-        Longitude = Qt::UserRole + 205
+        Longitude = Qt::UserRole + 205,
+        Radius = Qt::UserRole + 206,
+        CycleTime = Qt::UserRole + 207
+
     };
 
     StationInfoModel(QObject *parent = nullptr);
@@ -24,14 +28,31 @@ public:
     StationInfo getStationInfo() {return mStationInfo;}
     QHash<int, QByteArray> roleNames() const override;
 
+    void setInformtion(const StationInfo &stationInfo);
+
 Q_SIGNALS:
-    void gotoButtonClicked();
-    void routeButtonClicked(bool checked);
-    void trackButtonClicked(bool checked);
+    void rangeButtonClicked(bool check);
+    void visibleButtonClicked(bool checked);
+    void activateButtonClicked(bool checked);
     void moreButtonClicked();
 
 private:
     StationInfo mStationInfo;
+};
+
+class StationInformtion : public QObject
+{
+    Q_OBJECT
+
+public:
+    StationInformtion(QQmlEngine *qmlEngine, UIHandle *uiHandle, StationInfo stationInfo, QObject *parent = nullptr);
+    StationInfoModel *getInfo() {return mInfoModel;}
+    void show();
+private:
+    StationInfo mInformation;
+    StationInfoModel *mInfoModel;
+    UIHandle *mUiHandle;
+    QQuickItem *mItem;
 };
 
 #endif

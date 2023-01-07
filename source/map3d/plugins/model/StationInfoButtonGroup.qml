@@ -6,9 +6,9 @@ import QtQuick.Layouts 1.13
 Item {
     id:rootItem
 
-    signal gotoButtonClicked();
-    signal routeButtonClicked(bool check);
-    signal trackButtonClicked(bool check);
+    signal rangeButtonClicked(bool check);
+    signal visibleButtonClicked(bool check);
+    signal activateButtonClicked(bool check);
     signal moreButtonClicked();
 
     property var _checked: "#908000"
@@ -19,26 +19,29 @@ Item {
 
         ListElement {
             buttonText: "Range"
-            iconUrl: "qrc:///Resources/goto.png"
+            iconUrl: "qrc:///Resources/radar.png"
             checkable: true
             checked: false
-            clickCallback: function(check) { rootItem.gotoButtonClicked();}
+            clickCallback: function(check) { rootItem.rangeButtonClicked(check);}
         }
 
         ListElement {
             buttonText: "Visibility"
-            iconUrl:"qrc:///Resources/route.png"
+            iconUrl:"qrc:///Resources/geocentric.png"
             checkable: true
             checked: false
-            clickCallback: function(check) { rootItem.routeButtonClicked(check);}
+            clickCallback: function(check) { rootItem.visibleButtonClicked(check);}
         }
 
         ListElement {
-            buttonText: activeButton
-            iconUrl:"qrc:///Resources/tracking.png"
+            buttonText: "Activated"
+            iconUrl:"qrc:///Resources/activeradar.png"
             checkable: true
             checked: false
-            clickCallback: function(check) { rootItem.trackButtonClicked(check);}
+            clickCallback: function(check) {
+                rootItem.activateButtonClicked(check);
+                buttonsModel.get(2).buttonText = buttonsModel.get(2).checked ? "Activated" : "Deactivated"
+            }
         }
 
         ListElement {
