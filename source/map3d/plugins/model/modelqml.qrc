@@ -8,6 +8,9 @@
         <file>StationTableView.qml</file>
         <file>StationInfoView.qml</file>
         <file>StationInfoButtonGroup.qml</file>
+        <file>SystemInfoView.qml</file>
+        <file>SystemTableView.qml</file>
+        <file>SystemInfoButtonGroup.qml</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

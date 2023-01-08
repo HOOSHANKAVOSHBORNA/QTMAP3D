@@ -4,6 +4,8 @@
 #include <QObject>
 #include "aircrafttablemodel.h"
 #include "stationtablemodel.h"
+#include "systemtablemodel.h"
+
 class UIHandle;
 class QQmlEngine;
 class AircraftTableModel;
