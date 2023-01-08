@@ -14,7 +14,6 @@ Item {
 
     property var _checked: "#908000"
     property var _colorHover: "#FFCC00"
-    property var activeButton: "Active"
     ListModel {
         id: buttonsModel
 
