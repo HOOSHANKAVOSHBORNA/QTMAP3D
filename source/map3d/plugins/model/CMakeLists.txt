@@ -17,13 +17,14 @@ add_library(model SHARED
   aircraftcontextmenumodel.cpp
   aircraftInformation.cpp
   stationinformation.cpp
+  systeminformation.cpp
   stationtablemodel.cpp
   systemtablemodel.cpp
   model.cpp
   basemodel.cpp
   aircraftmodelnode.cpp
   rocket.cpp
-  station.cpp
+  stationmodelnode.cpp
   system.cpp
   truck.cpp
   model.json

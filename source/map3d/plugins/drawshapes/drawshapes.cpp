@@ -155,6 +155,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         mCircleGr = new osg::Group;
         mMapController->addNode(mCircleGr);
         mPoly = new Polygone(mMapController, true);
+        mPoly->setFillColor(osgEarth::Color::Green);
         QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onPolygoneBtnClick);
         }
         else
@@ -379,7 +380,7 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPo
 
     if(event->button() == Qt::MouseButton::MiddleButton && event->type() == QEvent::Type::MouseButtonPress)
     {
-        if (mPoly->geom->size()>=3){
+        if (mPoly->getSize() >= 3){
         mMapController->addNode(mPoly);
         mMapController->removeNode(mCircleGr);
         mPoly = new Polygone(mMapController,true);
@@ -424,9 +425,9 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPos)
         mCircle->setArcEnd(360);
         mMapController->addNode(mCircle);
         osgEarth::Annotation::CircleNodeEditor* editor = new osgEarth::Annotation::CircleNodeEditor(mCircle);
-        osg::Group* gr = new osg::Group;
-        gr->addChild(editor);
-        mMapController->getMapNode()->addChild(gr);
+//        osg::Group* gr = new osg::Group;
+//        gr->addChild(editor);
+        mMapController->addNode(editor);
     }
 //    if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
 //    {

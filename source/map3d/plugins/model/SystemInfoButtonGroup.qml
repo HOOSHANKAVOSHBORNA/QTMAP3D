@@ -6,36 +6,57 @@ import QtQuick.Layouts 1.13
 Item {
     id:rootItem
 
-    signal view2D3DButtonClicked();
-    signal routeButtonClicked();
-    signal followButtonClicked();
+    signal gotoButtonClicked();
+    signal rangeButtonClicked(bool check);
+    signal wezButtonClicked(bool check);
+    signal mezButtonClicked(bool check);
     signal moreButtonClicked();
 
+    property var _checked: "#908000"
+    property var _colorHover: "#FFCC00"
     ListModel {
         id: buttonsModel
 
         ListElement {
-            buttonText: "2D/3D"
-            iconUrl: "qrc:///Resources/3D.png"
-            clickCallback: function() { rootItem.view2D3DButtonClicked(); }
+            buttonText: "Goto"
+            iconUrl: "qrc:///Resources/goto.png"
+            checkable: false
+            checked: false
+            clickCallback: function() { rootItem.gotoButtonClicked();}
         }
 
         ListElement {
-            buttonText: "Route"
-            iconUrl:"qrc:///Resources/route.png"
-            clickCallback: function() { rootItem.routeButtonClicked(); }
+            buttonText: "Range"
+            iconUrl: "qrc:///Resources/radar.png"
+            checkable: true
+            checked: false
+            clickCallback: function(check) { rootItem.rangeButtonClicked(check);}
         }
 
         ListElement {
-            buttonText: "Follow"
-            iconUrl:"qrc:///Resources/tracking.png"
-            clickCallback: function() { rootItem.followButtonClicked(); }
+            buttonText: "Wez"
+            iconUrl:"qrc:///Resources/geocentric.png"
+            checkable: true
+            checked: false
+            clickCallback: function(check) { rootItem.visibleButtonClicked(check);}
+        }
+
+        ListElement {
+            buttonText: "Mez"
+            iconUrl:"qrc:///Resources/activeradar.png"
+            checkable: true
+            checked: false
+            clickCallback: function(check) {
+                rootItem.activateButtonClicked(check);
+            }
         }
 
         ListElement {
             buttonText: "More"
             iconUrl: "qrc:///Resources/more.png"
-            clickCallback: function() { rootItem.moreButtonClicked(); }
+            checkable: false
+            checked: false
+            clickCallback: function(check) { rootItem.moreButtonClicked();}
         }
     }
 
@@ -44,6 +65,7 @@ Item {
         spacing: 0
 
         Repeater {
+            id: rep
             model: buttonsModel
             Button {
                 id: control
@@ -77,7 +99,8 @@ Item {
                             text: control.text
                             font: control.font
                             opacity: enabled ? 1.0 : 0.3
-                            color: control.down ? "#17a81a" : "white"
+                            color: buttonsModel.get(index).checkable ? (buttonsModel.get(index).checked ? _checked :
+                                                                              (hovered ?  _colorHover : "#FFFFFF")) : (hovered ? "#FFCC00" :  "#FFFFFF")
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                             elide: Text.ElideRight
@@ -87,7 +110,9 @@ Item {
                 }
 
                 onClicked: function() {
-                    clickCallback()
+                    clickCallback(!buttonsModel.get(index).checked)
+                    buttonsModel.setProperty(index, "checked", buttonsModel.get(index).checked ? false : true)
+
                 }
 
             }

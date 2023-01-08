@@ -4,6 +4,8 @@
 #include <QObject>
 #include "aircrafttablemodel.h"
 #include "stationtablemodel.h"
+#include "systemtablemodel.h"
+
 class UIHandle;
 class QQmlEngine;
 class AircraftTableModel;
@@ -16,9 +18,12 @@ public:
 
 signals:
     void aircraftItemClicked(const QString& TN);
+    void stationItemClicked(const QString& Name);
+    void stationDoubleClicked(const QString& Name);
 
 public slots:
     void setAircraftInfo(const AircraftInfo& aircraftInof);
+    void setStationInfo(const StationInfo& stationInfo);
 
 
 signals:

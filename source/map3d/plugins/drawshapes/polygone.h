@@ -7,13 +7,16 @@ class Polygone : public osgEarth::Annotation::FeatureNode
 {
 public:
     Polygone(MapController *mapController, bool clamp);
-    void setColor(osgEarth::Color color);
-    void setWidth(float width);
+    void setLineColor(osgEarth::Color color);
+    void setFillColor(osgEarth::Color color);
+    void setLineWidth(float width);
     void setClamp(bool clamp);
     void addPoints(osg::Vec3d point);
-    osgEarth::Features::Geometry* geom;
+    void clearPoints();
+    unsigned long getSize()const;
 private:
     MapController* mMapController{nullptr};
+    osg::ref_ptr<osgEarth::Features::Geometry> mPolygonGeom;
 };
 
 

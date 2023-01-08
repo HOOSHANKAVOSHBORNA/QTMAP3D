@@ -127,7 +127,7 @@ void CreateData::updateAircraftInfo()
 
 void CreateData::createStationInfo()
 {
-    for(int i = 0; i < 30; ++i)
+    for(int i = 0; i < 10; ++i)
     {
         QString name = "Station" + QString::number(stationList.count());
         double latitude = 48 + (qrand() % (59 - 48));

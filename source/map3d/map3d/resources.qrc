@@ -35,5 +35,8 @@
         <file>Resources/3d_l.png</file>
         <file>Resources/TwoD.png</file>
         <file>Resources/goto.png</file>
+        <file>Resources/station.jpg</file>
+        <file>Resources/radar.png</file>
+        <file>Resources/activeradar.png</file>
     </qresource>
 </RCC>

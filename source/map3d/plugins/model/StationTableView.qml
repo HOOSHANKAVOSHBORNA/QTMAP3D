@@ -105,7 +105,7 @@ Item {
                 anchors.left: parent.left
 
                 Repeater {
-                    model: 7
+                    model: 9
                     Rectangle {
                         width: 160
                         height: 40
@@ -128,7 +128,7 @@ Item {
             TableView {
                 id: tableView
                 model: rootItem.model
-                contentWidth: 7 * (164)
+                contentWidth: 9 * (164)
                 clip:true
 
                 delegate: Item {

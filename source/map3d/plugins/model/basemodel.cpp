@@ -270,11 +270,12 @@ QString BaseModel::getQStringName()
     return QString(getName().c_str());
 }
 
-void BaseModel::setGeographicPosition(const osg::Vec3d &pos, double heading)
+void BaseModel::setGeographicPosition(const osgEarth::GeoPoint &pos, double heading)
 {
-    osgEarth::GeoPoint  geoPoint(getMapNode()->getMapSRS()->getGeographicSRS(), pos);
+    osgEarth::GeoPoint  geoPoint;
+    pos.transform(getMapNode()->getMapSRS(), geoPoint);
     //transfer to map srs
-    geoPoint.transformInPlace(getMapNode()->getMapSRS());
+    //geoPoint.transformInPlace(getMapNode()->getMapSRS());
     setPosition(geoPoint);
 
     osgEarth::Symbology::Style pm = getStyle();

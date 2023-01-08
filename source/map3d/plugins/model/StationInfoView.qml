@@ -63,7 +63,7 @@ Item {
                             Image {
                                 id: img
                                 anchors.fill: parent
-                                source: "qrc:///Resources/airplan.jpg"
+                                source: "qrc:///Resources/station.jpg"
                                 fillMode: Image.Stretch
                             }
                         }
@@ -77,7 +77,7 @@ Item {
                         }
 
                         GridLayout {
-                            rows: 9
+                            rows: 4
                             columns: 2
                             Layout.fillWidth: true
                             Layout.preferredHeight: implicitHeight
@@ -96,11 +96,22 @@ Item {
                                 Binding {
                                     target: airplane
                                     property: "text"
-                                    value: tnLabel.text
+                                    value: nameLabel.text
                                 }
                             }
 
-
+                            Label {
+                                text: "Number: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                id: numberLabel
+                                text: Numberr
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
                             Label {
                                 text: "Type: "
                                 color: "white"
@@ -125,7 +136,7 @@ Item {
                                 color: "white"
                                 Layout.fillWidth: true
                                 horizontalAlignment: Qt.AlignRight
-                            }
+                            }}
 
                             Rectangle {
                                 Layout.preferredWidth: rootItem.width - 30
@@ -136,7 +147,7 @@ Item {
 
 
                             GridLayout {
-                                rows: 3
+                                rows: 6
                                 columns: 2
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: implicitHeight
@@ -166,14 +177,27 @@ Item {
                                     Layout.fillWidth: true
                                     horizontalAlignment: Qt.AlignRight
                                 }
+
                                 Label {
-                                    text: "Number: "
+                                    text: "Radius: "
                                     color: "white"
                                     Layout.preferredWidth: implicitWidth
                                 }
                                 Label {
-                                    id: numberLabel
-                                    text: Numberr
+                                    id: radiusLabel
+                                    text: Radius
+                                    color: "white"
+                                    Layout.fillWidth: true
+                                    horizontalAlignment: Qt.AlignRight
+                                }
+                                Label {
+                                    text: "CycleTime: "
+                                    color: "white"
+                                    Layout.preferredWidth: implicitWidth
+                                }
+                                Label {
+                                    id: cycleTimeLabel
+                                    text: CycleTime
                                     color: "white"
                                     Layout.fillWidth: true
                                     horizontalAlignment: Qt.AlignRight
@@ -187,7 +211,7 @@ Item {
 
                             }
                         }
-                    }
+
                 }
             }
 
@@ -204,11 +228,15 @@ Item {
             onGotoButtonClicked: function() {
                 rootItem.model.gotoButtonClicked();
             }
-            onRouteButtonClicked: function(check) {
-                rootItem.model.routeButtonClicked(check);
+
+            onRangeButtonClicked: function(check) {
+                rootItem.model.rangeButtonClicked(check);
             }
-            onTrackButtonClicked: function(check) {
-                rootItem.model.trackButtonClicked(check);
+            onVisibleButtonClicked: function(check) {
+                rootItem.model.visibleButtonClicked(check);
+            }
+            onActivateButtonClicked: function(check) {
+                rootItem.model.activateButtonClicked(check);
             }
             onMoreButtonClicked: function() {
                 rootItem.model.moreButtonClicked();

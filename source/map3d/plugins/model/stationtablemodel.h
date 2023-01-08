@@ -20,6 +20,8 @@ struct StationInfo
     double Number;
     double Latitude;
     double Longitude;
+    double Radius{10000};
+    int CycleTime;
 
     QJsonDocument toJson()
     {
@@ -31,6 +33,8 @@ struct StationInfo
         jsonObject.insert("Number", Number);
         jsonObject.insert("Latitude", Latitude);
         jsonObject.insert("Longitude", Longitude);
+        jsonObject.insert("Radius", Radius);
+        jsonObject.insert("CycleTime", CycleTime);
 
         QJsonDocument jsonDoc;
         jsonDoc.setObject(jsonObject);
@@ -40,13 +44,15 @@ struct StationInfo
     void fromJson(QJsonDocument jsonDoc)
     {
         QJsonObject data = jsonDoc.object();
-        Name = QString::number(data.value("Name").toInt());
+        Name = data.value("Name").toString();
         Type = data.value("Type").toString();
         PrimSec = data.value("Primary/Secondary").toString();
 
         Number = data.value("Number").toDouble();
         Latitude = data.value("Latitude").toDouble();
         Longitude = data.value("Longitude").toDouble();
+        Radius = data.value("Radius").toDouble();
+        CycleTime = data.value("CycleTime").toInt();
 
     }
 
@@ -73,6 +79,9 @@ public:
 
     Q_INVOKABLE QString headerText(int column) const;
     Q_INVOKABLE QString getName(int row) const;
+
+public slots:
+    void setFilterWildcard(const QString& wildcard);
 
 public:
     void updateItemData(const QString& jsonStr);
