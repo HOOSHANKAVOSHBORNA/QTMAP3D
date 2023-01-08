@@ -1,4 +1,4 @@
-#include "stationmodelnode.h"
+﻿#include "stationmodelnode.h"
 #include "system.h"
 #include "truck.h"
 
@@ -12,7 +12,6 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 {
     //--create root node---------------------------------------------------------------------------
     mRootNode = new osg::LOD;
-
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
@@ -66,11 +65,23 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     }
     //map mode changed-----------------------------------------------------------------------
     connect(mapControler, &MapController::modeChanged, this, &StationModelNode::onModeChanged);
+    //--create shapes-----------------------------------------------------------------------------
+    mRangeCircle = new Circle(mMapController, true);
+    mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
+
+    mVisiblePolygone = new Polygone(mMapController, true);
+    mVisiblePolygone->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.5f));
+    mVisiblePolygone->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.5f));
 }
 
 void StationModelNode::setInformation(const StationInfo& info)
 {
     mInformation = info;
+}
+void StationModelNode::goOnTrack()
+{
+    mMapController->setTrackNode(getGeoTransform());
+    //mMapController->goToPosition(getPosition(), 200);
 }
 
 void StationModelNode::onLeftButtonClicked(bool val)
@@ -102,6 +113,52 @@ void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
     }
 }
 
+void StationModelNode::onGotoButtonClicked()
+{
+    mMapController->goToPosition(getPosition(), 200);
+}
+
+void StationModelNode::onRangeButtonToggled(bool check)
+{
+    if(check)
+    {
+        mRangeCircle->setPosition(getPosition());
+        mRangeCircle->setRadius(osgEarth::Distance(mInformation.Radius, osgEarth::Units::METERS));
+        mMapController->addNode(mRangeCircle);
+    }
+    else
+    {
+        mMapController->removeNode(mRangeCircle);
+    }
+}
+
+void StationModelNode::onVisibleButtonToggled(bool checked)
+{
+    if(checked)
+    {
+        mVisiblePolygone->addPoints(osg::Vec3d(getPosition().x() - 0.089,getPosition().y() + 0.059, 0));
+        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() + 0.001,getPosition().y() + 0.089, 0));
+        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() + 0.101,getPosition().y() + 0.059, 0));
+        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() + 0.151,getPosition().y() + 0.009, 0));
+        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() + 0.061,getPosition().y() - 0.091, 0));
+        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() - 0.059,getPosition().y() - 0.121, 0));
+        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() - 0.099,getPosition().y() - 0.061, 0));
+        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() - 0.119,getPosition().y() + 0.029, 0));
+
+        mMapController->addNode(mVisiblePolygone);
+    }
+    else
+    {
+        mMapController->removeNode(mVisiblePolygone);
+        mVisiblePolygone->clearPoints();
+    }
+}
+
+void StationModelNode::onActivateButtonToggled(bool checked)
+{
+
+}
+
 void StationModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -122,5 +179,9 @@ void StationModelNode::onModeChanged(bool is3DView)
 void StationModelNode::showInfoWidget()
 {
     StationInformtion *stationInformation = new StationInformtion(mQmlEngine, mUIHandle, mInformation, this);
+    connect(stationInformation->getInfo(), &StationInfoModel::gotoButtonClicked, this, &StationModelNode::onGotoButtonClicked);
+    connect(stationInformation->getInfo(), &StationInfoModel::rangeButtonClicked, this, &StationModelNode::onRangeButtonToggled);
+    connect(stationInformation->getInfo(), &StationInfoModel::visibleButtonClicked, this, &StationModelNode::onVisibleButtonToggled);
+    connect(stationInformation->getInfo(), &StationInfoModel::activateButtonClicked, this, &StationModelNode::onActivateButtonToggled);
     stationInformation->show();
 }

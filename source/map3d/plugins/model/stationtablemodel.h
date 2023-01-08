@@ -20,7 +20,7 @@ struct StationInfo
     double Number;
     double Latitude;
     double Longitude;
-    double Radius;
+    double Radius{10000};
     int CycleTime;
 
     QJsonDocument toJson()

@@ -203,7 +203,7 @@ bool Model::setup(MapController *mapController,
             if(mSelectedModelNode)
                 mSelectedModelNode->select(false);
             stationModelNode->onLeftButtonClicked(true);
-//            stationModelNode->goOnTrack();
+            stationModelNode->goOnTrack();
             mSelectedModelNode = stationModelNode;
         }
     });
