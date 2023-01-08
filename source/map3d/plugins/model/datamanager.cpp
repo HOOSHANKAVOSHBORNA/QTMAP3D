@@ -50,7 +50,7 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
             QObject::connect(stationTab,
                              SIGNAL(filterTextChanged(const QString&)),
-                             mAircraftTableModel,
+                             mStationTableModel ,
                              SLOT(setFilterWildcard(const QString&)));
 
             QObject::connect(stationTab,

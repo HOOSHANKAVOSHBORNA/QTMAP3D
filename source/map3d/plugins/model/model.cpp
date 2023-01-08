@@ -193,6 +193,18 @@ bool Model::setup(MapController *mapController,
             mSelectedModelNode = aircraftModelNode;
         }
     });
+    connect(mDataManager, &DataManager::stationDoubleClicked,[=](const QString& Name){
+
+        if(mModelNodes[STATION].contains(Name))
+        {
+            StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][Name]);
+            if(mSelectedModelNode)
+                mSelectedModelNode->select(false);
+            stationModelNode->onLeftButtonClicked(true);
+//            stationModelNode->goOnTrack();
+            mSelectedModelNode = stationModelNode;
+        }
+    });
 
     ////--websocket data-------------------------------------------------------------------
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
@@ -426,10 +438,10 @@ void Model::addUpdateStation(StationInfo stationInfo)
     //update information-----------------------------------------------------
     stationModelNode->setInformation(stationInfo);
     //    //add update list view-----------------------------------------------------------------
-    //    if (mDataManager)
-    //    {
-    //        mDataManager->setStationInfo(stationInfo);
-    //    }
+        if (mDataManager)
+        {
+            mDataManager->setStationInfo(stationInfo);
+        }
 
 }
 
