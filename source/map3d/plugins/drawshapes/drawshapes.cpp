@@ -78,18 +78,14 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
     {
         if(checked)
         {
-
             mLine = new Line(mMapController);
             shape = Shape::line;
-//            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onLineBtnClick);
-//            QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onMouseMove);
         }
         else
         {
-            //delete mLine;
-           // mLine = nullptr;
-//            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onLineBtnClick);
-//            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onMouseMove);
+            mIsFinished = true;
+            mLine->removePoint();
+            shape = Shape::noOne;
         }
     }
     if(CATEGORY == category && name == SPHERE)
@@ -156,7 +152,8 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
     {
         if(checked)
         {
-
+        mCircleGr = new osg::Group;
+        mMapController->addNode(mCircleGr);
         mPoly = new Polygone(mMapController, true);
         mPoly->setFillColor(osgEarth::Color::Green);
         QObject::connect(mMapController,&MapController::mouseEvent, this, &DrawShapes::onPolygoneBtnClick);
@@ -370,12 +367,12 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPo
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
-        osgEarth::Annotation::CircleNode* circle = new osgEarth::Annotation::CircleNode;
+        circle = new osgEarth::Annotation::CircleNode;
         circle->set(
                     osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), geoPos.x(), geoPos.y(), 1000, osgEarth::ALTMODE_RELATIVE),
                     osgEarth::Distance(50, osgEarth::Units::KILOMETERS),
                     circleStyle, osgEarth::Angle(0.0, osgEarth::Units::DEGREES), osgEarth::Angle(360.0, osgEarth::Units::DEGREES), true);
-        mMapController->addNode(circle);
+        mCircleGr->addChild(circle);
         geoPos.z() = 0;
         mPoly->addPoints(geoPos.vec3d());
 
@@ -385,7 +382,11 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event, osgEarth::GeoPoint geoPo
     {
         if (mPoly->getSize() >= 3){
         mMapController->addNode(mPoly);
+        mMapController->removeNode(mCircleGr);
         mPoly = new Polygone(mMapController,true);
+        mCircleGr = new osg::Group;
+        mMapController->addNode(mCircleGr);
+
 
 
        }

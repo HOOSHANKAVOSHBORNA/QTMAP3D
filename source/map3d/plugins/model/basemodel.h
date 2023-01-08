@@ -48,7 +48,7 @@ public:
     QString getType() const;
     void setQStringName(QString name);
     QString getQStringName();
-    virtual void setGeographicPosition(const osg::Vec3d &pos, double heading);
+    virtual void setGeographicPosition(const osgEarth::GeoPoint& pos, double heading);
     osg::Vec3d getGeographicPosition() const;
     bool hasHit() const;
     BaseModel *getFollowModel() const;

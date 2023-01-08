@@ -1,7 +1,7 @@
 #include "circle.h"
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
-
+#include "osgEarthAnnotation/AnnotationEditing"
 
 
 void Circle::setCircleHeight(float hieght)
@@ -30,6 +30,8 @@ Circle::Circle(MapController *mapController, bool clamp)
     this->setArcStart(osgEarth::Angle(0, osgEarth::Units::DEGREES));
     this->setArcEnd(osgEarth::Angle(360, osgEarth::Units::DEGREES));
     this->setPie(true);
+
+
 
 
 

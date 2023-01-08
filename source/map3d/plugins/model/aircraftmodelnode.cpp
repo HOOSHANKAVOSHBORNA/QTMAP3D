@@ -252,6 +252,8 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode();
+        mMapController->removeNode(mRouteLine->getNode());
+        mMapController->removeNode(mTempRouteLine->getNode());
     }
     if(mCurrentContextMenuItem){
         mUIHandle->cmHideContextMenu(mCurrentContextMenuItem);

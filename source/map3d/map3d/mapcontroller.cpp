@@ -261,6 +261,8 @@ void MapController::goToPosition(double latitude, double longitude, double range
 
 void MapController::goToPosition(osgEarth::GeoPoint mapPoint, double range)
 {
+    if(mapPoint.isRelative())
+        mapPoint.makeAbsolute(mMapNode->getTerrain());
     osgEarth::Viewpoint vp;
     vp.focalPoint() = mapPoint;
     vp.range()= range;
