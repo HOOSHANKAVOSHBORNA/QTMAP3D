@@ -15,6 +15,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+//    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     setStyle(rootStyle);
     //--create 2d node----------------------------------------------------------------------------
     osg::Image* redIcon = osgDB::readImageFile("../data/models/station/station_ll_red.png");
@@ -94,6 +95,8 @@ void StationModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode();
+        mMapController->removeNode(mRangeCircle);
+        mMapController->removeNode(mVisiblePolygone);
     }
 }
 
@@ -136,21 +139,26 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
 {
     if(checked)
     {
-        mVisiblePolygone->addPoints(osg::Vec3d(getPosition().x() - 0.089,getPosition().y() + 0.059, 0));
-        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() + 0.001,getPosition().y() + 0.089, 0));
-        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() + 0.101,getPosition().y() + 0.059, 0));
-        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() + 0.151,getPosition().y() + 0.009, 0));
-        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() + 0.061,getPosition().y() - 0.091, 0));
-        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() - 0.059,getPosition().y() - 0.121, 0));
-        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() - 0.099,getPosition().y() - 0.061, 0));
-        mVisiblePolygone->addPoints( osg::Vec3d(getPosition().x() - 0.119,getPosition().y() + 0.029, 0));
+        mVisiblePolygone->clearPoints();
+        osg::Vec3d worldPosition;
+        getPosition().toWorld(worldPosition, mMapController->getMapNode()->getTerrain());
+        osgEarth::GeoPoint geoPoint;
+        double radius = mInformation.Radius;
+
+        geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
+        mVisiblePolygone->addPoints(geoPoint.vec3d());
+        geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() + radius*2/3, worldPosition.z()));
+        mVisiblePolygone->addPoints(geoPoint.vec3d());
+        geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() + radius*2/3, worldPosition.y() + radius*2/3, worldPosition.z()));
+        mVisiblePolygone->addPoints(geoPoint.vec3d());
+        geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() + radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
+        mVisiblePolygone->addPoints(geoPoint.vec3d());
 
         mMapController->addNode(mVisiblePolygone);
     }
     else
     {
         mMapController->removeNode(mVisiblePolygone);
-        mVisiblePolygone->clearPoints();
     }
 }
 

@@ -274,7 +274,7 @@ void Model::demo()
 
 void Model::addTruckModel()
 {
-    osg::Vec3d position(52.8603, 35.274, 842.5);
+    osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     //create and setting model--------------------------------------------
     osg::ref_ptr<Truck> model = new Truck(mMapController->getMapNode());
     QString name = TRUCK + QString::number(mModelNodes[TRUCK].count());
@@ -306,7 +306,7 @@ void Model::addTruckModel()
     osg::Vec3d nPosition(rndPX, rndPY, 0.0);
 
 
-    nPosition += position;
+//    nPosition += position;
     //model->setLatLongPosition(nPosition);
     //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
     //move
@@ -316,12 +316,13 @@ void Model::addTruckModel()
 void Model::addUpdateAircraft(AircraftInfo aircraftInfo)
 {
     osg::ref_ptr<AircraftModelNode> aircraftModelNode;
-    osg::Vec3d geographicPosition(aircraftInfo.Latitude, aircraftInfo.Longitude, aircraftInfo.Altitude);
+    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+                                          aircraftInfo.Latitude, aircraftInfo.Longitude, aircraftInfo.Altitude);
 
     if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(aircraftInfo.TN))
     {
         aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][aircraftInfo.TN]);
-        aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
+        aircraftModelNode->flyTo(geographicPosition.vec3d(), aircraftInfo.Heading, aircraftInfo.Speed);
 
     }
     else
@@ -368,12 +369,12 @@ void Model::addUpdateAircraft(AircraftInfo aircraftInfo)
 
 void Model::addRocketModel(osg::Vec3d position)
 {
-
+    osgEarth::GeoPoint geoposition(mMapController->getMapSRS()->getGeographicSRS(),position);
     //create and setting model--------------------------------------------
     osg::ref_ptr<Rocket> model = new Rocket(mMapController->getMapNode());
     QString name = ROCKET + QString::number(mModelNodes[ROCKET].count());
     model->setName(name.toStdString());
-    model->setGeographicPosition(position, 0.0);
+    model->setGeographicPosition(geoposition, 0.0);
     model->setScale(osg::Vec3(1,1,1));
 
     QObject::connect(model.get(), &BaseModel::positionChanged, [=](osgEarth::GeoPoint position){
@@ -402,11 +403,12 @@ void Model::addRocketModel(osg::Vec3d position)
 
 void Model::addSystemModel(osg::Vec3d position)
 {
+    osgEarth::GeoPoint geoposition(mMapController->getMapSRS()->getGeographicSRS(),position);
     //create and setting model--------------------------------------------
     osg::ref_ptr<System> model = new System(mMapController);
     QString name = SYSTEM + QString::number(mModelNodes["System"].count());
     model->setQStringName(name);
-    model->setGeographicPosition(position, 0.0);
+    model->setGeographicPosition(geoposition, 0.0);
     model->setScale(osg::Vec3(1,1,1));
     //add to container-----------------------------------------------------
     mModelNodes[SYSTEM][name] = model;
@@ -419,7 +421,8 @@ void Model::addSystemModel(osg::Vec3d position)
 void Model::addUpdateStation(StationInfo stationInfo)
 {
     osg::ref_ptr<StationModelNode> stationModelNode;
-    osg::Vec3d geographicPosition(stationInfo.Latitude, stationInfo.Longitude, 0);
+    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+                                          stationInfo.Latitude, stationInfo.Longitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Name))
     {
         stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][stationInfo.Name]);
