@@ -1,4 +1,4 @@
-#include "system.h"
+#include "systemmodelnode.h"
 #include "truck.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
@@ -6,8 +6,8 @@
 
 const int RANGE3D = 500;
 
-System::System(MapController *mapControler, QObject *parent)
-    :BaseModel(mapControler->getMapNode(), parent)
+SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
+    :BaseModel(mapControler->getMapNode(), parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
     //--create root node--------------------------------------------------------------------------
     mRootNode = new osg::LOD;
@@ -56,15 +56,25 @@ System::System(MapController *mapControler, QObject *parent)
         mRootNode->addChild(mNode2D, 0, std::numeric_limits<float>::max());
     }
     //map mode changed-----------------------------------------------------------------------
-    connect(mapControler, &MapController::modeChanged, this, &System::onModeChanged);
+    connect(mapControler, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
 }
 
-void System::frameEvent()
+void SystemModelNode::setInformation(const SystemInfo& info)
+{
+    mInformation = info;
+}
+
+void SystemModelNode::goOnTrack()
+{
+    mMapController->setTrackNode(getGeoTransform());
+}
+
+void SystemModelNode::frameEvent()
 {
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
 }
 
-void System::onModeChanged(bool is3DView)
+void SystemModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
     if(mIs3D)
@@ -79,4 +89,34 @@ void System::onModeChanged(bool is3DView)
     }
 
     select(mIsSelected);
+}
+
+void SystemModelNode::onLeftButtonClicked(bool val)
+{
+    select(val);
+    if(val)
+    {
+        showInfoWidget();
+    }
+    else
+    {
+        mMapController->untrackNode();
+    }
+}
+
+void SystemModelNode::showInfoWidget()
+{
+    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, this);
+    systemInformation->show();
+}
+
+void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
+{
+    BaseModel::mousePressEvent(event, onModel);
+    if(event->button() == Qt::LeftButton)
+    {
+        onLeftButtonClicked(onModel);
+        if(onModel)
+            event->accept();
+    }
 }

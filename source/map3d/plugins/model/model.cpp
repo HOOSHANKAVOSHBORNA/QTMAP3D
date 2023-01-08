@@ -2,7 +2,7 @@
 #include "draw.h"
 #include "truck.h"
 #include "rocket.h"
-#include "system.h"
+#include "systemmodelnode.h"
 #include "stationmodelnode.h"
 #include "mapcontroller.h"
 #include "networkmanager.h"
@@ -405,7 +405,7 @@ void Model::addRocketModel(osg::Vec3d position)
 void Model::addSystemModel(osg::Vec3d position)
 {
     //create and setting model--------------------------------------------
-    osg::ref_ptr<System> model = new System(mMapController);
+    osg::ref_ptr<SystemModelNode> model = new SystemModelNode(mMapController, mQmlEngine, mUIHandle);
     QString name = SYSTEM + QString::number(mModelNodes["System"].count());
     model->setQStringName(name);
     model->setGeographicPosition(position, 0.0);

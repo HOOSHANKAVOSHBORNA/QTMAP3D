@@ -1,5 +1,5 @@
 ﻿#include "stationmodelnode.h"
-#include "system.h"
+#include "systemmodelnode.h"
 #include "truck.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>

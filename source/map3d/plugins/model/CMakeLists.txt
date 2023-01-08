@@ -25,7 +25,7 @@ add_library(model SHARED
   aircraftmodelnode.cpp
   rocket.cpp
   stationmodelnode.cpp
-  system.cpp
+  systemmodelnode.cpp
   truck.cpp
   model.json
   model.qrc

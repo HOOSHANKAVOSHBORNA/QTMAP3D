@@ -38,5 +38,6 @@
         <file>Resources/station.jpg</file>
         <file>Resources/radar.png</file>
         <file>Resources/activeradar.png</file>
+        <file>Resources/system.jpg</file>
     </qresource>
 </RCC>
