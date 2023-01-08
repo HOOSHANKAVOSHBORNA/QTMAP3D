@@ -10,7 +10,7 @@ StationTableModel::StationTableModel(QObject *parent): QAbstractTableModel(paren
 
 int StationTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
-    return 7;
+    return 9;
 }
 
 int StationTableModel::rowCount(const QModelIndex &/*parent*/) const
@@ -34,6 +34,8 @@ QVariant StationTableModel::data(const QModelIndex &index, int role) const
         case  4: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Number);
         case  5: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Latitude);
         case  6: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Longitude);
+        case  7: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Radius);
+        case  8: return QVariant::fromValue<int>(mStationInfoListProxy[static_cast<size_t>(index.row()    )].second->CycleTime);
         }
 
         break;
@@ -62,6 +64,8 @@ QVariant StationTableModel::data(const QModelIndex &index, int role) const
         case  4: return QVariant::fromValue<QString>("Number");
         case  5: return QVariant::fromValue<QString>("Latitude");
         case  6: return QVariant::fromValue<QString>("Longitude");
+        case  7: return QVariant::fromValue<QString>("Radius");
+        case  8: return QVariant::fromValue<QString>("CycleTime");
         }
         break;
     }
@@ -90,6 +94,8 @@ QString StationTableModel::headerText(int column) const
     case  4: return QStringLiteral("Number");
     case  5: return QStringLiteral("Latitude");
     case  6: return QStringLiteral("Longitude");
+    case  7: return QStringLiteral("Radius");
+    case  8: return QStringLiteral("CycleTime");
     }
 
     return QStringLiteral("");
