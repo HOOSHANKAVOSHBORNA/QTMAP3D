@@ -38,6 +38,8 @@ private:
     enum class Shape {noOne ,line, sphere, cone, cylinder, capsule, box, polygon, imgOvly,
                circle, rect, ellipse};
     Shape shape;
+    osgEarth::Annotation::CircleNode* circle;
+    osg::Group* mCircleGr;
 //    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();
 
 
