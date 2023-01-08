@@ -6,16 +6,16 @@
 Polygone::Polygone(MapController *mapController, bool clamp)
 
 {
-    geom = new osgEarth::Features::Polygon();
+    mPolygonGeom = new osgEarth::Features::Polygon();
     mMapController = mapController;
-    osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(geom,mMapController->getMapSRS());
+    osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(mPolygonGeom, mMapController->getMapSRS());
     feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
     osgEarth::Symbology::Style geomStyle;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::White;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 5.0f;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
-    geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 250000.0;
-    geomStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+//    geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 250000.0;
+//    geomStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 
     if (clamp){
         geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
@@ -24,7 +24,7 @@ Polygone::Polygone(MapController *mapController, bool clamp)
         geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
     }
 
-    geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_GPU;
+    geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
 
     _options = osgEarth::Features::GeometryCompilerOptions();
@@ -43,14 +43,21 @@ Polygone::Polygone(MapController *mapController, bool clamp)
     setStyle(style);
 }
 
-void Polygone::setColor(osgEarth::Color color)
+void Polygone::setLineColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = color;
     this->setStyle(style);
 }
 
-void Polygone::setWidth(float width)
+void Polygone::setFillColor(osgEarth::Color color)
+{
+    auto style = this->getStyle();
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = color;
+    this->setStyle(style);
+}
+
+void Polygone::setLineWidth(float width)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = width;
@@ -72,9 +79,18 @@ void Polygone::setClamp(bool clamp)
 void Polygone::addPoints(osg::Vec3d point)
 {
     auto fea = this->getFeature();
-    geom->push_back(point);
-    fea->setGeometry(geom);
+    mPolygonGeom->push_back(point);
+    fea->setGeometry(mPolygonGeom);
+}
 
+void Polygone::clearPoints()
+{
+    mPolygonGeom->clear();
+}
+
+unsigned long Polygone::getSize() const
+{
+    return mPolygonGeom->size();
 }
 
 
