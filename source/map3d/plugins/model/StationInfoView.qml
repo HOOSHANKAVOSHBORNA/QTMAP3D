@@ -77,7 +77,7 @@ Item {
                         }
 
                         GridLayout {
-                            rows: 3
+                            rows: 4
                             columns: 2
                             Layout.fillWidth: true
                             Layout.preferredHeight: implicitHeight
@@ -100,7 +100,18 @@ Item {
                                 }
                             }
 
-
+                            Label {
+                                text: "Number: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                id: numberLabel
+                                text: Numberr
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
                             Label {
                                 text: "Type: "
                                 color: "white"
@@ -166,18 +177,7 @@ Item {
                                     Layout.fillWidth: true
                                     horizontalAlignment: Qt.AlignRight
                                 }
-                                Label {
-                                    text: "Number: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    id: numberLabel
-                                    text: Numberr
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
+
                                 Label {
                                     text: "Radius: "
                                     color: "white"
