@@ -46,6 +46,7 @@
 #include "aircraftInformation.h"
 #include "stationtablemodel.h"
 #include "stationinformation.h"
+#include "systeminformation.h"
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
@@ -81,6 +82,7 @@ bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
     qmlRegisterType<AircraftInfoModel>("Crystal", 1, 0, "AircraftInfoModel");
     qmlRegisterType<StationTableModel>("Crystal", 1, 0, "StationTableModel");
     qmlRegisterType<StationInfoModel>("Crystal", 1, 0, "StationInfoModel");
+    qmlRegisterType<SystemInfoModel>("Crystal", 1, 0, "SystemInfoModel");
     mQmlEngine = engine;
 
     QString cat = "model";

@@ -13,12 +13,12 @@ AircraftTableModel::AircraftTableModel(QObject *parent) :
     //    }
 }
 
-int AircraftTableModel::columnCount(const QModelIndex &parent) const
+int AircraftTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return 17;
 }
 
-int AircraftTableModel::rowCount(const QModelIndex &parent) const
+int AircraftTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
     return static_cast<int>(mAircraftInfoListProxy.size());
 }
@@ -159,7 +159,7 @@ void AircraftTableModel::setFilterWildcard(const QString &wildcard)
     endResetModel();
 }
 
-void AircraftTableModel::updateItemData(const QString &jsonStr)
+void AircraftTableModel::updateItemData(const QString &/*jsonStr*/)
 {
 
 }
