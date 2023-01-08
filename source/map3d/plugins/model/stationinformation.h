@@ -33,8 +33,8 @@ public:
 Q_SIGNALS:
     void gotoButtonClicked();
     void rangeButtonClicked(bool check);
-    void wezButtonClicked(bool checked);
-    void mezButtonClicked(bool checked);
+    void visibleButtonClicked(bool checked);
+    void activateButtonClicked(bool checked);
     void moreButtonClicked();
 
 private:
