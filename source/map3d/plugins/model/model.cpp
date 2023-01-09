@@ -162,8 +162,11 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
     }
     else if(CATEGORY == category && name == ADD_SYSTEM)
     {
-        osg::Vec3d position(52.9, 35.3, 842.5);
-        addSystemModel(position);
+        SystemInfo systemInfo;
+        systemInfo.Name = SYSTEM + QString::number(mModelNodes[SYSTEM].count());
+        systemInfo.Latitude = 52.9;
+        systemInfo.Longitude = 35.3;
+        addUpdateSystem(systemInfo);
     }
     else if(CATEGORY == category && name == ADD_STATION)
     {
@@ -308,7 +311,7 @@ void Model::addTruckModel()
     osg::Vec3d nPosition(rndPX, rndPY, 0.0);
 
 
-//    nPosition += position;
+    //    nPosition += position;
     //model->setLatLongPosition(nPosition);
     //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
     //move
@@ -403,21 +406,33 @@ void Model::addRocketModel(osg::Vec3d position)
     });
 }
 
-void Model::addSystemModel(osg::Vec3d position)
+void Model::addUpdateSystem(SystemInfo systemInfo)
 {
-    osgEarth::GeoPoint geoposition(mMapController->getMapSRS()->getGeographicSRS(),position);
-    //create and setting model--------------------------------------------
-    osg::ref_ptr<SystemModelNode> model = new SystemModelNode(mMapController, mQmlEngine, mUIHandle);
-    QString name = SYSTEM + QString::number(mModelNodes["System"].count());
-    model->setQStringName(name);
-    model->setGeographicPosition(geoposition, 0.0);
-    model->setScale(osg::Vec3(1,1,1));
-    //add to container-----------------------------------------------------
-    mModelNodes[SYSTEM][name] = model;
-
-
-    //add to map ---------------------------------------------------------
-    mMapController->addNode(model);
+    osg::ref_ptr<SystemModelNode> systemModelNode;
+    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+                                          systemInfo.Latitude, systemInfo.Longitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemInfo.Name))
+    {
+        systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemInfo.Name]);
+    }
+    else
+    {
+        //create and setting model-------------------------------------------
+        systemModelNode = new SystemModelNode(mMapController, mQmlEngine, mUIHandle);
+        systemModelNode->setQStringName(systemInfo.Name);
+        systemModelNode->setGeographicPosition(geographicPosition, 0.0);
+        //add to container---------------------------------------------------
+        mModelNodes[SYSTEM][systemInfo.Name] = systemModelNode;
+        //add to map --------------------------------------------------------
+        mMapController->addNode(systemModelNode);
+    }
+    //update information-----------------------------------------------------
+    systemModelNode->setInformation(systemInfo);
+    //add update list view-----------------------------------------------------------------
+//    if (mDataManager)
+//    {
+//        mDataManager->setSystemInfo(systemInfo);
+//    }
 }
 
 void Model::addUpdateStation(StationInfo stationInfo)
@@ -442,11 +457,11 @@ void Model::addUpdateStation(StationInfo stationInfo)
     }
     //update information-----------------------------------------------------
     stationModelNode->setInformation(stationInfo);
-    //    //add update list view-----------------------------------------------------------------
-        if (mDataManager)
-        {
-            mDataManager->setStationInfo(stationInfo);
-        }
+    //add update list view-----------------------------------------------------------------
+    if (mDataManager)
+    {
+        mDataManager->setStationInfo(stationInfo);
+    }
 
 }
 
@@ -491,7 +506,7 @@ void Model::onMessageReceived(const QJsonDocument &message)
         QJsonObject data = message.object().value("Data").toObject();
         StationInfo stationInfo;
         stationInfo.fromJson(QJsonDocument(data));
-//        qDebug()<<"station:"<< data;
+        //        qDebug()<<"station:"<< data;
         addUpdateStation(stationInfo);
     }
 
