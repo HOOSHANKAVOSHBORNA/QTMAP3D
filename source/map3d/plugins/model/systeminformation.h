@@ -43,6 +43,13 @@ public:
 
     void setInformtion(const SystemInfo &systemInfo);
 
+Q_SIGNALS:
+    void gotoButtonClicked();
+    void rangeButtonClicked(bool check);
+    void wezButtonClicked(bool checked);
+    void mezButtonClicked(bool checked);
+    void moreButtonClicked();
+
 private:
     SystemInfo mSystemInfo;
 };
