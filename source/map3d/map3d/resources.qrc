@@ -39,5 +39,7 @@
         <file>Resources/radar.png</file>
         <file>Resources/activeradar.png</file>
         <file>Resources/system.jpg</file>
+        <file>Resources/airplane1.jpg</file>
+        <file>Resources/airplane2.jpg</file>
     </qresource>
 </RCC>

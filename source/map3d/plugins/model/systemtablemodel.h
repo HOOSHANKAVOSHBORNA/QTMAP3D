@@ -30,7 +30,7 @@ struct SystemInfo
     QString MissileCount;
     QString RadarMode;
     //combat info
-    QString TN;
+    double TN;
     QString Acceptance;
     QString Phase;
     double Antenna;
@@ -90,7 +90,7 @@ struct SystemInfo
         Operational = data.value("Operational").toString();
         MissileCount = data.value("MissileCount").toString();
         RadarMode = data.value("RadarMode").toString();
-        TN = data.value("TN").toString();
+        TN = data.value("TN").toDouble();
         Acceptance = data.value("Acceptance").toString();
         Phase = data.value("Phase").toString();
         Antenna = data.value("Antenna").toDouble();
