@@ -158,7 +158,7 @@ void SystemTableModel::setFilterWildcard(const QString &wildcard)
 
     mSystemInfoListProxy.clear();
     for (auto& item : mSystemInfoList) {
-        if (item.second->TN.contains(mFilter))
+        if (item.second->Name.contains(mFilter))
             mSystemInfoListProxy.push_back(item);
     }
 
@@ -171,7 +171,7 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
 
     const auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(),
                                  [systemInfo](const QPair<int, QSharedPointer<SystemInfo>>& itemInfo){
-        return itemInfo.second->TN == systemInfo.TN;
+        return itemInfo.second->TN == systemInfo.Name;
     });
 
 
@@ -187,7 +187,7 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
 
     mSystemInfoListProxy.clear();
     for (auto& item : mSystemInfoList) {
-        if (item.second->TN.contains(mFilter))
+        if (item.second->Name.contains(mFilter))
             mSystemInfoListProxy.push_back(item);
     }
 
