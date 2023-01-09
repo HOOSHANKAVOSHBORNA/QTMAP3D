@@ -212,7 +212,18 @@ bool Model::setup(MapController *mapController,
             mSelectedModelNode = stationModelNode;
         }
     });
+    connect(mDataManager, &DataManager::systemDoubleClicked,[=](const QString& Name){
 
+        if(mModelNodes[SYSTEM].contains(Name))
+        {
+            SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][Name]);
+            if(mSelectedModelNode)
+                mSelectedModelNode->select(false);
+            systemModelNode->onLeftButtonClicked(true);
+            systemModelNode->goOnTrack();
+            mSelectedModelNode = systemModelNode;
+        }
+    });
     ////--websocket data-------------------------------------------------------------------
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
 }
