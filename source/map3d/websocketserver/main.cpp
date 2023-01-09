@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     QTimer *timer = new QTimer();
 
     createData.createStationInfo();
+    createData.createSystemInfo();
     //----------------------------------------------------------
     QObject::connect(timer, &QTimer::timeout, [&](){
         createData.createAircraftInfo();
@@ -25,6 +26,9 @@ int main(int argc, char *argv[])
         //---------------------------------------------
         for(auto station:createData.stationList)
             server.sendMessageToAll(station);
+        //---------------------------------------------
+        for(auto system:createData.systemList)
+            server.sendMessageToAll(system);
     });
     timer->start(10000);
     //---------------------------------------------------------

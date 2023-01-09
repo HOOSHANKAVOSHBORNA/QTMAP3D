@@ -13,11 +13,12 @@ public:
     QJsonDocument createAircraftInfo();
     void updateAircraftInfo();
     void createStationInfo();
-    QJsonDocument createSystemInfo();
+    void createSystemInfo();
     QJsonDocument createMinfo();
 public:
     QList<QJsonDocument> aircraftList;
     QList<QJsonDocument> stationList;
+    QList<QJsonDocument> systemList;
 };
 
 #endif // CREATEDATA_H

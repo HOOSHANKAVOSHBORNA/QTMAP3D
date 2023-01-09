@@ -511,6 +511,14 @@ void Model::onMessageReceived(const QJsonDocument &message)
         //        qDebug()<<"station:"<< data;
         addUpdateStation(stationInfo);
     }
+    if(message.object().value("Name").toString() == "System")
+    {
+        QJsonObject data = message.object().value("Data").toObject();
+        SystemInfo systemInfo;
+        systemInfo.fromJson(QJsonDocument(data));
+        //        qDebug()<<"station:"<< data;
+        addUpdateSystem(systemInfo);
+    }
 
 }
 
