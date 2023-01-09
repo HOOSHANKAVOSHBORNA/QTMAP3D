@@ -104,7 +104,7 @@ class SystemTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    SystemTableModel(QObject *parent = nullptr);\
+    SystemTableModel(QObject *parent = nullptr);
     enum CustomRoles {
         BackColorRole = Qt::UserRole + 100,
         TextColorRole = Qt::UserRole + 101,
