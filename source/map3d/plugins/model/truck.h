@@ -7,7 +7,7 @@
 
 class TruckUpdateCallback;
 
-class Truck: public BaseModel
+class Truck: public osgEarth::Annotation::ModelNode
 {
 public:
     Truck(osgEarth::MapNode* mapNode, QObject* parent = nullptr);
@@ -16,7 +16,7 @@ public:
     bool shoot(const osg::Vec3d &pos, double speed);
     Rocket* getActiveRocket()const;
     bool hasRocket();
-    void stop() override;
+//    void stop() override;
 private:
     osg::Vec3d computeRocketWorldPosition(Rocket* rocket);
 private:

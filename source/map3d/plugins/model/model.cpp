@@ -276,12 +276,12 @@ void Model::demo()
 
 void Model::addTruckModel()
 {
-    osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+    osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 100, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     //create and setting model--------------------------------------------
     osg::ref_ptr<Truck> model = new Truck(mMapController->getMapNode());
     QString name = TRUCK + QString::number(mModelNodes[TRUCK].count());
     model->setName(name.toStdString());
-    model->setGeographicPosition(position, 0.0);
+    model->setPosition(position);
     //model->setLocalRotation(osg::Quat(osg::inDegrees(-30.0),osg::Z_AXIS));
     model->setScale(osg::Vec3(1,1,1));
 
@@ -292,7 +292,7 @@ void Model::addTruckModel()
     //    });
 
     //add to container-----------------------------------------------------
-    mModelNodes[TRUCK][name] = model;
+    //mModelNodes[TRUCK][name] = model;
 
     //add to map ---------------------------------------------------------
     mMapController->addNode(model);

@@ -17,7 +17,7 @@ osg::ref_ptr<osg::Node> spinerNode;
 osg::ref_ptr<osg::Node> holderNode;
 
 Truck::Truck(osgEarth::MapNode *mapNode, QObject *parent):
-    BaseModel(mapNode, parent)
+    osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
 {
     //--read nodes-------------------------------------------------------------------------------------------
     if(!truckNode.valid())
@@ -152,14 +152,13 @@ Truck::Truck(osgEarth::MapNode *mapNode, QObject *parent):
     mMoveAnimationPathCallback->setAnimationPath(path);
     setUpdateCallback(mMoveAnimationPathCallback);
     //--create style------------------------------------------------------------------------------------------
-    mRootNode = new osg::LOD;
+    //mRootNode = new osg::LOD;
     osgEarth::Symbology::Style  style;
     //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(truckGroup);
     setStyle(style);
 
-    mRootNode->addChild(truckGroup);
-    mIs3D = true;
+    //mRootNode->addChild(truckGroup, 0, std::numeric_limits<float>::max());
 
 }
 
@@ -304,11 +303,11 @@ bool Truck::hasRocket()
     return true;
 }
 
-void Truck::stop()
-{
-    mLeftWheelUpdateCallback->setPause(true);
-    mRightWheelUpdateCallback->setPause(true);
-}
+//void Truck::stop()
+//{
+//    mLeftWheelUpdateCallback->setPause(true);
+//    mRightWheelUpdateCallback->setPause(true);
+//}
 
 osg::Vec3d Truck::computeRocketWorldPosition(Rocket *rocket)
 {

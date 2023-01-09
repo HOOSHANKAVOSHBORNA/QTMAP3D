@@ -5,16 +5,18 @@
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Material>
 
-const int RANGE3D = 500;
+const float RANGE3D = std::numeric_limits<float>::max();;
 
 StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :BaseModel(mapControler->getMapNode(), parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
+    mIs3D = mMapController->getMode();
     //--create root node---------------------------------------------------------------------------
     mRootNode = new osg::LOD;
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
 //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     setStyle(rootStyle);
     //--create 2d node----------------------------------------------------------------------------
@@ -87,17 +89,17 @@ void StationModelNode::goOnTrack()
 
 void StationModelNode::onLeftButtonClicked(bool val)
 {
-    select(val);
-    if(val)
+    if(val && !mIsSelected)
     {
         showInfoWidget();
     }
-    else
+    if(!val)
     {
         mMapController->untrackNode();
-        mMapController->removeNode(mRangeCircle);
-        mMapController->removeNode(mVisiblePolygone);
+        onRangeButtonToggled(val);
+        onVisibleButtonToggled(val);
     }
+    select(val);
 }
 
 void StationModelNode::frameEvent()
@@ -107,13 +109,13 @@ void StationModelNode::frameEvent()
 
 void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
-    BaseModel::mousePressEvent(event, onModel);
     if(event->button() == Qt::LeftButton)
     {
         onLeftButtonClicked(onModel);
         if(onModel)
             event->accept();
     }
+    //BaseModel::mousePressEvent(event, onModel);
 }
 
 void StationModelNode::onGotoButtonClicked()
