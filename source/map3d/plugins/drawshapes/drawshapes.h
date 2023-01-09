@@ -16,6 +16,7 @@
 #include "cylinder.h"
 #include "capsule.h"
 #include "box.h"
+#include "osgEarthAnnotation/AnnotationEditing"
 
 class DrawShapes : public PluginInterface
 {
@@ -31,30 +32,33 @@ public:
                        NetworkManager *networkManager,
                        UIHandle *UIHandle) override;
 protected:
-    virtual void mousePressEvent(QMouseEvent* event);
-    virtual void mouseMoveEvent(QMouseEvent* event);
+    virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 private:
     bool mIsFinished{true};
-    enum class Shape {noOne ,line, sphere, cone, cylinder, capsule, box, polygon, imgOvly,
+    enum class Shape {none ,line, sphere, cone, cylinder, capsule, box, polygon, imgOvly,
                circle, rect, ellipse};
     Shape shape;
     osgEarth::Annotation::CircleNode* circle;
+    osgEarth::Annotation::CircleNodeEditor* mCircleEditor{nullptr};
+    osgEarth::Annotation::RectangleNodeEditor* mRectEditor{nullptr};
     osg::Group* mCircleGr;
 //    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();
 
 
 private slots:
     void onLineBtnClick(QMouseEvent* event);
-    void onSphereBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onConeBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onCylinderBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onCapsuleBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onBoxBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onPolygoneBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onImgOvlyBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onCircleBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onRectBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
-    void onEllipseBtnClick(QMouseEvent* event, osgEarth::GeoPoint geoPos);
+    void onSphereBtnClick(QMouseEvent* event);
+    void onConeBtnClick(QMouseEvent* event);
+    void onCylinderBtnClick(QMouseEvent* event);
+    void onCapsuleBtnClick(QMouseEvent* event);
+    void onBoxBtnClick(QMouseEvent* event);
+    void onPolygoneBtnClick(QMouseEvent* event);
+    void onImgOvlyBtnClick(QMouseEvent* event);
+    void onCircleBtnClick(QMouseEvent* event);
+    void onRectBtnClick(QMouseEvent* event);
+    void onEllipseBtnClick(QMouseEvent* event);
     void onMouseMove(QMouseEvent* event);
 
 
@@ -66,7 +70,7 @@ private:
     Box* mBox;
     Rect* mRect;
     Polygone* mPoly;
-    Circle* mCircle;
+    Circle* mCircle{nullptr};
     Ellipse* mEllipse;
     Capsule* mCapsule;
     MapController* mMapController{nullptr};

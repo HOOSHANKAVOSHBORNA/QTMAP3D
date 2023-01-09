@@ -88,6 +88,13 @@ void Polygone::clearPoints()
     mPolygonGeom->clear();
 }
 
+void Polygone::setHeight(float height)
+{
+    auto style = this->getStyle();
+    style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = height;
+    this->setStyle(style);
+}
+
 unsigned long Polygone::getSize() const
 {
     return mPolygonGeom->size();
