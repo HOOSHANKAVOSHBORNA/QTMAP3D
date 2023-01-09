@@ -68,32 +68,32 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
     comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
 
-//    QQmlComponent *comp3 = new QQmlComponent(mQmlEngine);
-//    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
-//        qDebug() << comp3->errorString();
+    QQmlComponent *comp3 = new QQmlComponent(mQmlEngine);
+    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
+        qDebug() << comp3->errorString();
 
-//        if (comp3->status() == QQmlComponent::Ready) {
-//            QQuickItem *systemTab = (QQuickItem*) comp3->create(nullptr);
-//            mSystemTableModel = new SystemTableModel;
+        if (comp3->status() == QQmlComponent::Ready) {
+            QQuickItem *systemTab = (QQuickItem*) comp3->create(nullptr);
+            mSystemTableModel = new SystemTableModel;
 
-//            QObject::connect(systemTab,
-//                             SIGNAL(filterTextChanged(const QString&)),
-//                             mSystemTableModel,
-//                             SLOT(setFilterWildcard(const QString&)));
+            QObject::connect(systemTab,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mSystemTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
 
-//            QObject::connect(systemTab,
-//                             SIGNAL(systemDoubleClicked(const QString&)),
-//                             this,
-//                             SIGNAL(systemDoubleClicked(const QString&)));
+            QObject::connect(systemTab,
+                             SIGNAL(systemDoubleClicked(const QString&)),
+                             this,
+                             SIGNAL(systemDoubleClicked(const QString&)));
 
 
-//            systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
-//            mUiHandle->lwAddTab("Systems", systemTab);
-//        }
+            systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
+            mUiHandle->lwAddTab("Systems", systemTab);
+        }
 
-//    });
+    });
 
-//    comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
+    comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
 
 
 }

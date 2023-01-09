@@ -98,14 +98,14 @@ Item {
             Row {
                 anchors.top: parent.top
                 height: 40
-                width: 16 * (160 + 4)
+                width: 22 * (160 + 4)
                 spacing: 4
                 anchors.leftMargin: 2 - tableView.contentX
                 anchors.rightMargin: 2
                 anchors.left: parent.left
 
                 Repeater {
-                    model: 23
+                    model: 22
                     Rectangle {
                         width: 160
                         height: 40
@@ -128,7 +128,7 @@ Item {
             TableView {
                 id: tableView
                 model: rootItem.model
-                contentWidth: 23 * (164)
+                contentWidth: 22 * (164)
                 clip:true
 
                 delegate: Item {
