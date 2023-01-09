@@ -24,7 +24,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
         _latestTime = time;
 
         baseModel = dynamic_cast<BaseModel*>(node);
-        if (!baseModel->hasHit())
+        if (baseModel && !baseModel->hasHit())
             //check collision----------------------------------------------------------------------------
             if(baseModel->getFollowModel() != nullptr)
             {
@@ -76,7 +76,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 baseModel->curentPosition(geoPoint);
             }
 
-            if((_latestTime - _firstTime) > _animationPath->getPeriod())
+            if(baseModel && (_latestTime - _firstTime) > _animationPath->getPeriod())
                 baseModel->stop();
         }
     }
