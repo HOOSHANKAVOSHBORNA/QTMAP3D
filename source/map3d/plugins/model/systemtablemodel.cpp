@@ -48,8 +48,8 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         case 17: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Acceptance);
         case 18: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Phase);
         case 19: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Antenna);
-        case 21: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->ChanelNo);
-        case 22: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Inrange);
+        case 20: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->ChanelNo);
+        case 21: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Inrange);
 
         }
         break;
@@ -89,8 +89,8 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         case 17: return QVariant::fromValue<QString>("Acceptance");
         case 18: return QVariant::fromValue<QString>("Phase");
         case 19: return QVariant::fromValue<QString>("Antenna");
-        case 21: return QVariant::fromValue<QString>("ChanelNo");
-        case 22: return QVariant::fromValue<QString>("Inrange");
+        case 20: return QVariant::fromValue<QString>("ChanelNo");
+        case 21: return QVariant::fromValue<QString>("Inrange");
 
         }
         break;
@@ -132,8 +132,8 @@ QString SystemTableModel::headerText(int column) const
     case 17: return QStringLiteral("Acceptance");
     case 18: return QStringLiteral("Phase");
     case 19: return QStringLiteral("Antenna");
-    case 21: return QStringLiteral("ChanelNo");
-    case 22: return QStringLiteral("Inrange");
+    case 20: return QStringLiteral("ChanelNo");
+    case 21: return QStringLiteral("Inrange");
     default: QStringLiteral("");
     }
 }
@@ -158,7 +158,7 @@ void SystemTableModel::setFilterWildcard(const QString &wildcard)
 
     mSystemInfoListProxy.clear();
     for (auto& item : mSystemInfoList) {
-        if (item.second->TN.contains(mFilter))
+        if (item.second->Name.contains(mFilter))
             mSystemInfoListProxy.push_back(item);
     }
 
@@ -171,7 +171,7 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
 
     const auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(),
                                  [systemInfo](const QPair<int, QSharedPointer<SystemInfo>>& itemInfo){
-        return itemInfo.second->TN == systemInfo.TN;
+        return itemInfo.second->Name == systemInfo.Name;
     });
 
 
@@ -187,7 +187,7 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
 
     mSystemInfoListProxy.clear();
     for (auto& item : mSystemInfoList) {
-        if (item.second->TN.contains(mFilter))
+        if (item.second->Name.contains(mFilter))
             mSystemInfoListProxy.push_back(item);
     }
 

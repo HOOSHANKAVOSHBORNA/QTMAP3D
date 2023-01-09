@@ -2,7 +2,7 @@
 #include "draw.h"
 #include "truck.h"
 #include "rocket.h"
-#include "system.h"
+#include "systemmodelnode.h"
 #include "stationmodelnode.h"
 #include "mapcontroller.h"
 #include "networkmanager.h"
@@ -47,6 +47,7 @@
 #include "stationtablemodel.h"
 #include "stationinformation.h"
 #include "systeminformation.h"
+#include "systemtablemodel.h"
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
@@ -83,6 +84,7 @@ bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
     qmlRegisterType<StationTableModel>("Crystal", 1, 0, "StationTableModel");
     qmlRegisterType<StationInfoModel>("Crystal", 1, 0, "StationInfoModel");
     qmlRegisterType<SystemInfoModel>("Crystal", 1, 0, "SystemInfoModel");
+    qmlRegisterType<SystemTableModel>("Crystal", 1, 0, "SystemTableModel");
     mQmlEngine = engine;
 
     QString cat = "model";
@@ -162,8 +164,11 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
     }
     else if(CATEGORY == category && name == ADD_SYSTEM)
     {
-        osg::Vec3d position(52.9, 35.3, 842.5);
-        addSystemModel(position);
+        SystemInfo systemInfo;
+        systemInfo.Name = SYSTEM + QString::number(mModelNodes[SYSTEM].count());
+        systemInfo.Latitude = 52.9;
+        systemInfo.Longitude = 35.3;
+        addUpdateSystem(systemInfo);
     }
     else if(CATEGORY == category && name == ADD_STATION)
     {
@@ -207,7 +212,18 @@ bool Model::setup(MapController *mapController,
             mSelectedModelNode = stationModelNode;
         }
     });
+    connect(mDataManager, &DataManager::systemDoubleClicked,[=](const QString& Name){
 
+        if(mModelNodes[SYSTEM].contains(Name))
+        {
+            SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][Name]);
+            if(mSelectedModelNode)
+                mSelectedModelNode->select(false);
+            systemModelNode->onLeftButtonClicked(true);
+            systemModelNode->goOnTrack();
+            mSelectedModelNode = systemModelNode;
+        }
+    });
     ////--websocket data-------------------------------------------------------------------
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
 }
@@ -276,12 +292,12 @@ void Model::demo()
 
 void Model::addTruckModel()
 {
-    osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+    osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 100, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     //create and setting model--------------------------------------------
     osg::ref_ptr<Truck> model = new Truck(mMapController->getMapNode());
     QString name = TRUCK + QString::number(mModelNodes[TRUCK].count());
     model->setName(name.toStdString());
-    model->setGeographicPosition(position, 0.0);
+    model->setPosition(position);
     //model->setLocalRotation(osg::Quat(osg::inDegrees(-30.0),osg::Z_AXIS));
     model->setScale(osg::Vec3(1,1,1));
 
@@ -292,7 +308,7 @@ void Model::addTruckModel()
     //    });
 
     //add to container-----------------------------------------------------
-    mModelNodes[TRUCK][name] = model;
+    //mModelNodes[TRUCK][name] = model;
 
     //add to map ---------------------------------------------------------
     mMapController->addNode(model);
@@ -308,7 +324,7 @@ void Model::addTruckModel()
     osg::Vec3d nPosition(rndPX, rndPY, 0.0);
 
 
-//    nPosition += position;
+    //    nPosition += position;
     //model->setLatLongPosition(nPosition);
     //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
     //move
@@ -403,21 +419,33 @@ void Model::addRocketModel(osg::Vec3d position)
     });
 }
 
-void Model::addSystemModel(osg::Vec3d position)
+void Model::addUpdateSystem(SystemInfo systemInfo)
 {
-    osgEarth::GeoPoint geoposition(mMapController->getMapSRS()->getGeographicSRS(),position);
-    //create and setting model--------------------------------------------
-    osg::ref_ptr<System> model = new System(mMapController);
-    QString name = SYSTEM + QString::number(mModelNodes["System"].count());
-    model->setQStringName(name);
-    model->setGeographicPosition(geoposition, 0.0);
-    model->setScale(osg::Vec3(1,1,1));
-    //add to container-----------------------------------------------------
-    mModelNodes[SYSTEM][name] = model;
-
-
-    //add to map ---------------------------------------------------------
-    mMapController->addNode(model);
+    osg::ref_ptr<SystemModelNode> systemModelNode;
+    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+                                          systemInfo.Latitude, systemInfo.Longitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemInfo.Name))
+    {
+        systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemInfo.Name]);
+    }
+    else
+    {
+        //create and setting model-------------------------------------------
+        systemModelNode = new SystemModelNode(mMapController, mQmlEngine, mUIHandle);
+        systemModelNode->setQStringName(systemInfo.Name);
+        systemModelNode->setGeographicPosition(geographicPosition, 0.0);
+        //add to container---------------------------------------------------
+        mModelNodes[SYSTEM][systemInfo.Name] = systemModelNode;
+        //add to map --------------------------------------------------------
+        mMapController->addNode(systemModelNode);
+    }
+    //update information-----------------------------------------------------
+    systemModelNode->setInformation(systemInfo);
+    //add update list view-----------------------------------------------------------------
+    if (mDataManager)
+    {
+        mDataManager->setSystemInfo(systemInfo);
+    }
 }
 
 void Model::addUpdateStation(StationInfo stationInfo)
@@ -442,11 +470,11 @@ void Model::addUpdateStation(StationInfo stationInfo)
     }
     //update information-----------------------------------------------------
     stationModelNode->setInformation(stationInfo);
-    //    //add update list view-----------------------------------------------------------------
-        if (mDataManager)
-        {
-            mDataManager->setStationInfo(stationInfo);
-        }
+    //add update list view-----------------------------------------------------------------
+    if (mDataManager)
+    {
+        mDataManager->setStationInfo(stationInfo);
+    }
 
 }
 
@@ -491,8 +519,16 @@ void Model::onMessageReceived(const QJsonDocument &message)
         QJsonObject data = message.object().value("Data").toObject();
         StationInfo stationInfo;
         stationInfo.fromJson(QJsonDocument(data));
-//        qDebug()<<"station:"<< data;
+        //        qDebug()<<"station:"<< data;
         addUpdateStation(stationInfo);
+    }
+    if(message.object().value("Name").toString() == "System")
+    {
+        QJsonObject data = message.object().value("Data").toObject();
+        SystemInfo systemInfo;
+        systemInfo.fromJson(QJsonDocument(data));
+        //        qDebug()<<"station:"<< data;
+        addUpdateSystem(systemInfo);
     }
 
 }

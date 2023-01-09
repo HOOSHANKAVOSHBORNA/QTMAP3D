@@ -19,15 +19,17 @@ public:
 signals:
     void aircraftItemClicked(const QString& TN);
     void stationItemClicked(const QString& Name);
-    void stationDoubleClicked(const QString& Name);
 
 public slots:
     void setAircraftInfo(const AircraftInfo& aircraftInof);
     void setStationInfo(const StationInfo& stationInfo);
+    void setSystemInfo(const SystemInfo& systemInfo);
 
 
 signals:
     void aircraftDoubleClicked(const QString& NT);
+    void stationDoubleClicked(const QString& Name);
+    void systemDoubleClicked(const QString& Name);
 
 
 private:
@@ -35,6 +37,7 @@ private:
     UIHandle *mUiHandle = nullptr;
     AircraftTableModel *mAircraftTableModel = nullptr;
     StationTableModel *mStationTableModel = nullptr;
+    SystemTableModel *mSystemTableModel = nullptr;
 
 };
 

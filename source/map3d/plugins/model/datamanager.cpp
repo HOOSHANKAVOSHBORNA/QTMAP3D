@@ -16,7 +16,7 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        qDebug() << comp->errorString();
+//        qDebug() << comp->errorString();
 
         if (comp->status() == QQmlComponent::Ready) {
             QQuickItem *aircraftTab = (QQuickItem*) comp->create(nullptr);
@@ -40,9 +40,10 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
     });
 
     comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
+
     QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
     QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
-        qDebug() << comp2->errorString();
+//        qDebug() << comp2->errorString();
 
         if (comp2->status() == QQmlComponent::Ready) {
             QQuickItem *stationTab = (QQuickItem*) comp2->create(nullptr);
@@ -67,6 +68,33 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
     comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
 
+    QQmlComponent *comp3 = new QQmlComponent(mQmlEngine);
+    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
+//        qDebug() << comp3->errorString();
+
+        if (comp3->status() == QQmlComponent::Ready) {
+            QQuickItem *systemTab = (QQuickItem*) comp3->create(nullptr);
+            mSystemTableModel = new SystemTableModel;
+
+            QObject::connect(systemTab,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mSystemTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
+
+            QObject::connect(systemTab,
+                             SIGNAL(systemDoubleClicked(const QString&)),
+                             this,
+                             SIGNAL(systemDoubleClicked(const QString&)));
+
+
+            systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
+            mUiHandle->lwAddTab("Systems", systemTab);
+        }
+
+    });
+
+    comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
+
 
 }
 
@@ -81,6 +109,13 @@ void DataManager::setStationInfo(const StationInfo &stationInfo)
 {
     if (mStationTableModel) {
         mStationTableModel->updateItemData(stationInfo);
+    }
+}
+
+void DataManager::setSystemInfo(const SystemInfo &systemInfo)
+{
+    if (mSystemTableModel) {
+        mSystemTableModel->updateItemData(systemInfo);
     }
 }
 

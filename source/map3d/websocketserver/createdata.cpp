@@ -25,9 +25,9 @@ QJsonDocument CreateData::createAircraftInfo()
     jsonObject.insert("Time", "12345678954213");//epoch
     jsonObject.insert("Pos", "pos");
     //
-//    int latitude = ((qrand() % 360) - 180);
+    //    int latitude = ((qrand() % 360) - 180);
     double latitude = 35 + (qrand() % (75 - 35));
-//    int longitude = ((qrand() % 180) - 90);
+    //    int longitude = ((qrand() % 180) - 90);
     double longitude = 25 + (qrand() % (43 - 25));
 
     double altitude = (2000 + (qrand() % (9000 - 2000)));
@@ -73,9 +73,9 @@ void CreateData::updateAircraftInfo()
         double speed = data.value("Speed").toDouble();
         double heading = data.value("Heading").toDouble();
 
-    //    double latitudeDiff = latitude;
-    //    double longitudeDiff = longitude;
-    //    double altitudeDiff = altitude;
+        //    double latitudeDiff = latitude;
+        //    double longitudeDiff = longitude;
+        //    double altitudeDiff = altitude;
 
         int randomX = (100 + (qrand() % 19));
         int randomY = (100 + (qrand() % 19));
@@ -106,12 +106,12 @@ void CreateData::updateAircraftInfo()
             longitude -= randomY/10000.0;
         }
         //calculat heading----------------------
-    //    latitudeDiff = latitude - latitudeDiff;
-    //    longitudeDiff = longitude - longitudeDiff;
-    //    altitudeDiff = altitude - altitudeDiff;
-    //    //north =(0, 1, 0)
-    //    heading = acos(longitudeDiff/sqrt(latitudeDiff * latitudeDiff + longitudeDiff * longitudeDiff + altitudeDiff * altitudeDiff));
-    //    heading *= (180.0/3.141592653589793238463);
+        //    latitudeDiff = latitude - latitudeDiff;
+        //    longitudeDiff = longitude - longitudeDiff;
+        //    altitudeDiff = altitude - altitudeDiff;
+        //    //north =(0, 1, 0)
+        //    heading = acos(longitudeDiff/sqrt(latitudeDiff * latitudeDiff + longitudeDiff * longitudeDiff + altitudeDiff * altitudeDiff));
+        //    heading *= (180.0/3.141592653589793238463);
         data["Latitude"] = latitude;
         data["Longitude"] = longitude;
         data["Altitude"] = altitude;
@@ -121,7 +121,7 @@ void CreateData::updateAircraftInfo()
         mainObject["Data"] = data;
         aircraftList[i].setObject(mainObject);
 
-//        qDebug()<<heading;
+        //        qDebug()<<heading;
     }
 }
 
@@ -156,42 +156,52 @@ void CreateData::createStationInfo()
 
 }
 
-QJsonDocument CreateData::createSystemInfo()
+void CreateData::createSystemInfo()
 {
-    QJsonObject jsonObject;
-    jsonObject.insert("Terminal", "terminal1");
-    jsonObject.insert("Name", "sName1");
-    jsonObject.insert("Number", 123456);
-    jsonObject.insert("Type", "sType1");
-    jsonObject.insert("Latitude", 52.1);
-    jsonObject.insert("Longitude", 35.1);
-    jsonObject.insert("Altitude", 4000);//meter
-    jsonObject.insert("ViewRange", 100);//meter
-    jsonObject.insert("MezRange", 50);//meter
-    //status info
-    jsonObject.insert("ReceiveTime", "1392/12/01: 12:10");
-    jsonObject.insert("Simulation", "simulation");
-    jsonObject.insert("BCCStatus", "s");//s, us
-    jsonObject.insert("RadarSearch Status", "us");//s, us
-    jsonObject.insert("Operational", "operational");
-    jsonObject.insert("MissileCount", 5);
-    jsonObject.insert("RadarMode", "rMode");
-    //combat info
-    jsonObject.insert("TN", 10000);
-    jsonObject.insert("Acceptance", "acceptance1");
-    jsonObject.insert("Phase", "search");//search, lock, ...
-    jsonObject.insert("Antenna", 50);//degree (lock sight)
-    jsonObject.insert("ChanelNo", "123014s");
-    jsonObject.insert("Inrange", "inrange");
+    for(int i = 0; i < 10; ++i)
+    {
+        QString name = "System" + QString::number(systemList.count());
+        double latitude = 48 + (qrand() % (59 - 48));
+        double longitude = 27 + (qrand() % (38 - 27));
+        double viewRange = (4000 + (qrand() % (9000 - 4000)));
+        double mezRange = (4000 + (qrand() % (9000 - 4000)));
 
-    QJsonObject jsonMain;
-    jsonMain.insert("Name", "System");
-    jsonMain.insert("Data", jsonObject);
+        QJsonObject jsonObject;
+        jsonObject.insert("Terminal", "terminal1");
+        jsonObject.insert("Name", name);
+        jsonObject.insert("Number", 123456);
+        jsonObject.insert("Type", "Type1");
+        //
+        jsonObject.insert("Latitude", latitude);
+        jsonObject.insert("Longitude", longitude);
+        jsonObject.insert("Altitude", 4000);//meter
+        jsonObject.insert("ViewRange", viewRange);//meter
+        jsonObject.insert("MezRange", mezRange);//meter
+        //status info
+        jsonObject.insert("ReceiveTime", "1392/12/01: 12:10");
+        jsonObject.insert("Simulation", "simulation");
+        jsonObject.insert("BCCStatus", "s");//s, us
+        jsonObject.insert("RadarSearch Status", "us");//s, us
+        jsonObject.insert("Operational", "operational");
+        jsonObject.insert("MissileCount", 5);
+        jsonObject.insert("RadarMode", "rMode");
+        //combat info
+        jsonObject.insert("TN", 10000);
+        jsonObject.insert("Acceptance", "acceptance1");
+        jsonObject.insert("Phase", "search");//search, lock, ...
+        jsonObject.insert("Antenna", 50);//degree (lock sight)
+        jsonObject.insert("ChanelNo", "123014s");
+        jsonObject.insert("Inrange", "inrange");
 
-    QJsonDocument jsonDoc;
-    jsonDoc.setObject(jsonMain);
+        QJsonObject jsonMain;
+        jsonMain.insert("Name", "System");
+        jsonMain.insert("Data", jsonObject);
 
-    return jsonDoc;
+        QJsonDocument jsonDoc;
+        jsonDoc.setObject(jsonMain);
+
+        systemList.append(jsonDoc);
+    }
 }
 
 QJsonDocument CreateData::createMinfo()

@@ -9,7 +9,7 @@ Item {
     width: 300
     clip: true
 
-    property SystemInfoView model
+    property SystemInfoModel model
 
     Rectangle{
         anchors.fill: parent
@@ -63,7 +63,7 @@ Item {
                             Image {
                                 id: img
                                 anchors.fill: parent
-                                source: "qrc:///Resources/station.jpg"
+                                source: "qrc:///Resources/system.jpg"
                                 fillMode: Image.Stretch
                             }
                         }
@@ -125,24 +125,29 @@ Item {
                                 horizontalAlignment: Qt.AlignRight
                             }
                             Label {
-                                text: "Terminl: "
+                                text: "Terminal: "
                                 color: "white"
                                 Layout.preferredWidth: implicitWidth
                             }
                             Label {
                                 id: terminlLabel
-                                text: Terminl
+                                text: Terminal
                                 color: "white"
                                 Layout.fillWidth: true
                                 horizontalAlignment: Qt.AlignRight
-                            }}
-                            Rectangle {
-                                Layout.preferredWidth: rootItem.width - 30
-                                Layout.preferredHeight: 2
-                                color: "white"
-
                             }
-
+                        }
+                        Rectangle {
+                            Layout.preferredWidth: rootItem.width - 150
+                            Layout.leftMargin: 60
+                            Layout.preferredHeight: 0.5
+                            color: "white"
+                        }
+                        GridLayout {
+                            rows: 5
+                            columns: 2
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: implicitHeight
                             Label {
                                 text: "Latitude: "
                                 color: "white"
@@ -203,193 +208,199 @@ Item {
                                 Layout.fillWidth: true
                                 horizontalAlignment: Qt.AlignRight
                             }
+                        }
 
-                            Rectangle {
-                                Layout.preferredWidth: rootItem.width - 30
-                                Layout.preferredHeight: 2
+                        Rectangle {
+                            Layout.preferredWidth: rootItem.width - 30
+                            Layout.preferredHeight: 2
+                            color: "white"
+
+                        }
+                        Label {
+                            Layout.preferredWidth: rootItem.width - 30
+                            Layout.preferredHeight: implicitHeight
+                            color: "white"
+                            text: "Status Information"
+                            horizontalAlignment: Qt.AlignHCenter
+                        }
+
+                        GridLayout {
+                            rows: 7
+                            columns: 2
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: implicitHeight
+
+                            Label {
+                                text: "ReceiveTime: "
                                 color: "white"
-
+                                Layout.preferredWidth: implicitWidth
                             }
                             Label {
-                                Layout.preferredWidth: rootItem.width - 30
-                                Layout.preferredHeight: implicitHeight
+                                text: ReceiveTime
                                 color: "white"
-                                text: "Status Information"
-                                horizontalAlignment: Qt.AlignHCenter
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
                             }
 
-                            GridLayout {
-                                rows: 6
-                                columns: 2
+                            Label {
+                                text: "Simulation: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: Simulation
+                                color: "white"
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: implicitHeight
+                                horizontalAlignment: Qt.AlignRight
+                            }
 
-                                Label {
-                                    text: "ReceiveTime: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: ReceiveTime
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-
-                                Label {
-                                    text: "Simulation: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: Simulation
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-
-                                Label {
-                                    text: "BCCStatus: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: BCCStatus
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "RadarSearch Status: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: RadarSearchStatus
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "Operational: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: Operational
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "MissileCount: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: MissileCount
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "RadarMode: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: RadarMode
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Rectangle {
-                                    Layout.preferredWidth: rootItem.width - 30
-                                    Layout.preferredHeight: 2
-                                    color: "white"
-
-                                }
-                                Label {
-                                    Layout.preferredWidth: rootItem.width - 30
-                                    Layout.preferredHeight: implicitHeight
-                                    color: "white"
-                                    text: "Combat Information"
-                                    horizontalAlignment: Qt.AlignHCenter
-                                }
-                                Label {
-                                    text: "TN: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: TN
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "Acceptance: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: Acceptance
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "Phase: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: Phase
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "Antenna: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: Antenna
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "ChanelNo: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: ChanelNo
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "Inrange: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    text: Inrange
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-
+                            Label {
+                                text: "BCCStatus: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: BCCStatus
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+                            Label {
+                                text: "RadarSearch Status: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: RadarSearchStatus
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+                            Label {
+                                text: "Operational: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: Operational
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+                            Label {
+                                text: "MissileCount: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: MissileCount
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+                            Label {
+                                text: "RadarMode: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: RadarMode
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
                             }
                         }
 
+                        Rectangle {
+                            Layout.preferredWidth: rootItem.width - 30
+                            Layout.preferredHeight: 2
+                            color: "white"
+
+                        }
+                        Label {
+                            Layout.preferredWidth: rootItem.width - 30
+                            Layout.preferredHeight: implicitHeight
+                            color: "white"
+                            text: "Combat Information"
+                            horizontalAlignment: Qt.AlignHCenter
+                        }
+                        GridLayout {
+                            rows: 6
+                            columns: 2
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: implicitHeight
+
+                            Label {
+                                text: "TN: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: TN
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+                            Label {
+                                text: "Acceptance: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: Acceptance
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+                            Label {
+                                text: "Phase: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: Phase
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+                            Label {
+                                text: "Antenna: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: Antenna
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+                            Label {
+                                text: "ChanelNo: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: ChanelNo
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+                            Label {
+                                text: "Inrange: "
+                                color: "white"
+                                Layout.preferredWidth: implicitWidth
+                            }
+                            Label {
+                                text: Inrange
+                                color: "white"
+                                Layout.fillWidth: true
+                                horizontalAlignment: Qt.AlignRight
+                            }
+
+                        }
+                    }
                 }
             }
-
-
         }
         Item {
             Layout.minimumHeight: 5

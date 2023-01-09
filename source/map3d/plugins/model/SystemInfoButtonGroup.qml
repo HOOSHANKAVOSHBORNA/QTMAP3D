@@ -38,7 +38,7 @@ Item {
             iconUrl:"qrc:///Resources/geocentric.png"
             checkable: true
             checked: false
-            clickCallback: function(check) { rootItem.visibleButtonClicked(check);}
+            clickCallback: function(check) { rootItem.wezButtonClicked(check);}
         }
 
         ListElement {
@@ -47,7 +47,7 @@ Item {
             checkable: true
             checked: false
             clickCallback: function(check) {
-                rootItem.activateButtonClicked(check);
+                rootItem.mezButtonClicked(check);
             }
         }
 

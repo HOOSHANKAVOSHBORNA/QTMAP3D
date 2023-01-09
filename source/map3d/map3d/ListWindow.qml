@@ -62,7 +62,7 @@ CListWindow {
     function addTab(titleString, item){
         buttonsModel.append({"buttonText": titleString})
         stacklayout.data.push(item)
-        showTab(stacklayout.count - 1)
+        showTab(0)
     }
 
     function showTab(indx){
