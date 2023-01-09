@@ -431,10 +431,10 @@ void Model::addUpdateSystem(SystemInfo systemInfo)
     //update information-----------------------------------------------------
     systemModelNode->setInformation(systemInfo);
     //add update list view-----------------------------------------------------------------
-//    if (mDataManager)
-//    {
-//        mDataManager->setSystemInfo(systemInfo);
-//    }
+    if (mDataManager)
+    {
+        mDataManager->setSystemInfo(systemInfo);
+    }
 }
 
 void Model::addUpdateStation(StationInfo stationInfo)
