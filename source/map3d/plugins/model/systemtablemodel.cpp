@@ -171,7 +171,7 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
 
     const auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(),
                                  [systemInfo](const QPair<int, QSharedPointer<SystemInfo>>& itemInfo){
-        return itemInfo.second->TN == systemInfo.Name;
+        return itemInfo.second->Name == systemInfo.Name;
     });
 
 
