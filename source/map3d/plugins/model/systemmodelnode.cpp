@@ -57,6 +57,12 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     }
     //map mode changed-----------------------------------------------------------------------
     connect(mapControler, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
+    //--create shapes-----------------------------------------------------------------------------
+    mRangeCircle = new Circle(mMapController, true);
+    mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
+
+    mMezSphere = new SphereNode();
+
 }
 
 void SystemModelNode::setInformation(const SystemInfo& info)
@@ -132,7 +138,16 @@ void SystemModelNode::onGotoButtonClicked()
 
 void SystemModelNode::onRangeButtonToggled(bool check)
 {
-
+    if(check)
+    {
+        mRangeCircle->setPosition(getPosition());
+        mRangeCircle->setRadius(osgEarth::Distance(mInformation.ViewRange, osgEarth::Units::METERS));
+        mMapController->addNode(mRangeCircle);
+    }
+    else
+    {
+        mMapController->removeNode(mRangeCircle);
+    }
 }
 
 void SystemModelNode::onWezButtonToggled(bool checked)
@@ -142,5 +157,15 @@ void SystemModelNode::onWezButtonToggled(bool checked)
 
 void SystemModelNode::onMezButtonToggled(bool checked)
 {
-
+    if(checked)
+    {
+        mMezSphere->setPosition(getPosition());
+        mMezSphere->setRadius(mInformation.MezRange);
+        mMezSphere->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
+        mMapController->addNode(mMezSphere);
+    }
+    else
+    {
+        mMapController->removeNode(mMezSphere);
+    }
 }

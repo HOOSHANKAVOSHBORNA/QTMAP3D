@@ -1,4 +1,6 @@
 #include "drawshapes.h"
+#include "spherenode.h"
+
 #include <osgEarthSymbology/Style>
 #include <osgEarth/ModelLayer>
 #include <osgEarthDrivers/arcgis/ArcGISOptions>
@@ -93,6 +95,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
             mSphere = new Sphere(mMapController,mRadius, false);
+            mSphereNode = new SphereNode();
             shape = Shape::sphere;
         }
         else
@@ -340,17 +343,34 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
 
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
-        mSphere->model->setPosition(geoPos);
-        mMapController->addNode(mSphere);
-        mSphere->setClamp(false);
+//        mSphere->model->setPosition(geoPos);
+//        mMapController->addNode(mSphere);
+//        mSphere->setClamp(false);
+        mSphereNode->setRadius(osgEarth::Distance(2000, osgEarth::Units::METERS));
+        mSphereNode->setColor(osg::Vec4(0.8f, 0.0f, 1.0, 0.5f));
+//        mSphereNode->setPosition(geoPos);
     }
     if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
     {
+//        osgEarth::Symbology::Style style;
+//        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
+//        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+        osg::ClipPlane* clipplane = new osg::ClipPlane();
+        clipplane->setClipPlane(0, 1, 0, 1);
+        osg::ClipNode* cNode = new  osg::ClipNode();
+        cNode->addClipPlane(clipplane);
         mRadius = 200000;
-        mSphere->setColor(osg::Vec4(1,0,0,1));
-        mSphere->setCenter(osg::Vec3(0,0,0));
-        mSphere->setRadius(mRadius);
-        mSphere->setClamp(true);
+        mSphereNode->setRadius(osgEarth::Distance(mRadius, osgEarth::Units::METERS));
+        geoPos.z() += 300000;
+        mSphereNode->setPosition(geoPos);
+        cNode->addChild(mSphereNode);
+        mMapController->addNode(cNode);
+
+//        mMapController->addNode(mSphereNode);
+//        mSphere->setColor(osg::Vec4(1,0,0,1));
+//        mSphere->setCenter(osg::Vec3(0,0,0));
+//        mSphere->setRadius(mRadius);
+//        mSphere->setClamp(true);
     }
 }
 
