@@ -37,6 +37,7 @@ QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case Antenna: return QVariant::fromValue<double>(mSystemInfo.Antenna);
         case ChanelNo: return QVariant::fromValue<QString>(mSystemInfo.ChanelNo);
         case Inrange: return QVariant::fromValue<QString>(mSystemInfo.Inrange);
+        case Active: return QVariant::fromValue<bool>(mSystemInfo.Active);
         default  : return QVariant::fromValue<QString>(mSystemInfo.Name);
 
     }
@@ -68,6 +69,7 @@ QHash<int, QByteArray> SystemInfoModel::roleNames() const
     hash[Antenna] = "Antenna";
     hash[ChanelNo] = "ChanelNo";
     hash[Inrange] = "Inrange";
+    hash[Active] = "Active";
     return hash;
 }
 

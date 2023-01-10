@@ -36,6 +36,7 @@ struct SystemInfo
     double Antenna;
     QString ChanelNo;
     QString Inrange;
+    bool Active;
 
     QJsonDocument toJson()
     {
@@ -64,6 +65,7 @@ struct SystemInfo
         jsonObject.insert("Antenna", Antenna);
         jsonObject.insert("ChanelNo", ChanelNo);
         jsonObject.insert("Inrange", Inrange);
+        jsonObject.insert("Active", Active);
 
         QJsonDocument jsonDoc;
         jsonDoc.setObject(jsonObject);
@@ -96,6 +98,7 @@ struct SystemInfo
         Antenna = data.value("Antenna").toDouble();
         ChanelNo = data.value("ChanelNo").toString();
         Inrange = data.value("Inrange").toString();
+        Active = data.value("Active").toBool();
     }
 
 };

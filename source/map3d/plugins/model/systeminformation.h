@@ -34,7 +34,8 @@ public:
         Phase = Qt::UserRole + 119,
         Antenna = Qt::UserRole + 120,
         ChanelNo = Qt::UserRole + 121,
-        Inrange = Qt::UserRole + 122
+        Inrange = Qt::UserRole + 122,
+        Active = Qt::UserRole + 123
     };
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -48,6 +49,7 @@ Q_SIGNALS:
     void rangeButtonClicked(bool check);
     void wezButtonClicked(bool checked);
     void mezButtonClicked(bool checked);
+    void activeButtonToggled(bool checked);
     void moreButtonClicked();
 
 private:

@@ -117,6 +117,7 @@ void SystemModelNode::showInfoWidget()
     connect(systemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
     connect(systemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
     connect(systemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+    connect(systemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
     systemInformation->show();
 }
 
@@ -168,4 +169,9 @@ void SystemModelNode::onMezButtonToggled(bool checked)
     {
         mMapController->removeNode(mMezSphere);
     }
+}
+
+void SystemModelNode::onActiveButtonToggled(bool checked)
+{
+    mInformation.Active = checked;
 }

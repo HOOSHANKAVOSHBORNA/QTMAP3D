@@ -28,6 +28,7 @@ private slots:
     void onRangeButtonToggled(bool check);
     void onWezButtonToggled(bool checked);
     void onMezButtonToggled(bool checked);
+    void onActiveButtonToggled(bool checked);
     void onModeChanged(bool is3DView);
 private:
     void showInfoWidget();
