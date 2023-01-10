@@ -2,7 +2,8 @@
 
 Ellipse::Ellipse(bool clamp)
 {
-    ellipseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Orange, 0.75);
+    ellipseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Red, 1);
+
     if (clamp){
         ellipseStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     }
@@ -16,6 +17,7 @@ Ellipse::Ellipse(bool clamp)
     this->setArcStart(osgEarth::Angle(0, osgEarth::Units::DEGREES));
     this->setArcEnd(osgEarth::Angle(360.0 - 45.0, osgEarth::Units::DEGREES));
     this->setPie(false);
+    this->setHeight(10000);
 
 }
 

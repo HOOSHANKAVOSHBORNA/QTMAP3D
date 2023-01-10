@@ -30,6 +30,7 @@
 #include <line.h>
 #include <osgEarthAnnotation/ImageOverlayEditor>
 #include "osgEarthAnnotation/AnnotationEditing"
+#include <osgEarthAnnotation/AnnotationLayer>
 
 using namespace osgEarth::Annotation;
 
@@ -55,6 +56,7 @@ const QString BOX = "Box";
 
 bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
+    mAnnoLayer = new osgEarth::Annotation::AnnotationLayer;
     Q_UNUSED(engine)
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/res/line.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/res/sphere.png", true});
@@ -193,7 +195,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
             shape = Shape::ellipse;
-            mEllipse = new Ellipse(true);
+
         }
         else
         {
@@ -265,6 +267,7 @@ void DrawShapes::mousePressEvent(QMouseEvent *event)
     }
 
 }
+
 
 void DrawShapes::mouseMoveEvent(QMouseEvent *event)
 {
@@ -341,16 +344,16 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         mSphere->model->setPosition(geoPos);
-        mMapController->addNode(mSphere);
+        mMapController->addNode(mSphere->model);
         mSphere->setClamp(false);
     }
     if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         mRadius = 200000;
-        mSphere->setColor(osg::Vec4(1,0,0,1));
-        mSphere->setCenter(osg::Vec3(0,0,0));
-        mSphere->setRadius(mRadius);
-        mSphere->setClamp(true);
+        mSphere->setColor(osg::Vec4(0,0,1,1));
+        mSphere->setRadius(300000);
+
+        //mSphere->setClamp(true);
     }
 }
 
@@ -365,6 +368,10 @@ void DrawShapes::onConeBtnClick(QMouseEvent *event)
     {
         mCone->model->setPosition(geoPos);
         mMapController->addNode(mCone);
+        osg::Group* abbas = mAnnoLayer->getGroup();
+        abbas->addChild(mCone);
+
+
 
     }
 }
@@ -563,11 +570,6 @@ void DrawShapes::onRectBtnClick(QMouseEvent *event)
     }
 }
 
-
-
-
-
-
 void DrawShapes::onEllipseBtnClick(QMouseEvent *event)
 {
     osg::Vec3d worldPos;
@@ -575,20 +577,30 @@ void DrawShapes::onEllipseBtnClick(QMouseEvent *event)
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+    if(event->button() == Qt::MouseButton::LeftButton && !mEllipse)
     {
+        event->accept();
+        mEllipse = new Ellipse(true);
         mEllipse->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
         mMapController->addNode(mEllipse);
-        EllipseNodeEditor* editor = new EllipseNodeEditor(mEllipse);
-        osg::Group* gr = new osg::Group;
-        gr->addChild(editor);
-        mMapController->getMapNode()->addChild(gr);
+        ElpsEditor = new EllipseNodeEditor(mEllipse);
+        mMapController->addNode(ElpsEditor);
     }
-    if(event->button() == Qt::MouseButton::LeftButton && event->type() == QEvent::Type::MouseButtonPress)
+    if(event->button() == Qt::MouseButton::RightButton)
     {
-        mEllipse->setClamp(false);
-        mEllipse->setColor(osgEarth::Color::Blue);
-        mEllipse->setHeight(250000);
+//        mEllipse->setClamp(false);
+//        mEllipse->setColor(osgEarth::Color::Blue);
+//        mEllipse->setHeight(250000);
+        mMapController->removeNode(mEllipse);
+        mMapController->removeNode(ElpsEditor);
+        mEllipse = nullptr;
+        ElpsEditor = nullptr;
+    }
+    if(event->button() == Qt::MouseButton::MiddleButton)
+    {
+        mMapController->removeNode(ElpsEditor);
+        mEllipse = nullptr;
+        ElpsEditor = nullptr;
     }
 }
 

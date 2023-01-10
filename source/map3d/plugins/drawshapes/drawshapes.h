@@ -17,6 +17,7 @@
 #include "capsule.h"
 #include "box.h"
 #include "osgEarthAnnotation/AnnotationEditing"
+#include <osgEarthAnnotation/AnnotationLayer>
 
 class DrawShapes : public PluginInterface
 {
@@ -43,7 +44,9 @@ private:
     osgEarth::Annotation::CircleNode* circle;
     osgEarth::Annotation::CircleNodeEditor* mCircleEditor{nullptr};
     osgEarth::Annotation::RectangleNodeEditor* mRectEditor{nullptr};
+    osgEarth::Annotation::EllipseNodeEditor* ElpsEditor{nullptr};
     osg::Group* mCircleGr;
+    osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
 //    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();
 
 
@@ -68,10 +71,10 @@ private:
     Cone* mCone;
     Cylinder* mCylinder;
     Box* mBox;
-    Rect* mRect;
+    Rect* mRect{nullptr};
     Polygone* mPoly;
     Circle* mCircle{nullptr};
-    Ellipse* mEllipse;
+    Ellipse* mEllipse{nullptr};
     Capsule* mCapsule;
     MapController* mMapController{nullptr};
     osgEarth::Annotation::FeatureNode* mPathNode;
