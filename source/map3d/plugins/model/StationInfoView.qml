@@ -1,6 +1,7 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.13
+import QtQuick.Extras 1.4
 import Crystal 1.0
 
 Item {
@@ -10,6 +11,7 @@ Item {
     clip: true
 
     property StationInfoModel model
+    property bool on: false
 
     Rectangle{
         anchors.fill: parent
@@ -25,14 +27,60 @@ Item {
         Item {
             Layout.fillWidth: true
             Layout.minimumHeight: 60
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 35
+                Text {
+                    id: station
+//                    anchors.centerIn: parent
+                    Layout.alignment: Qt.AlignLeft
+                    Layout.preferredWidth: implicitWidth
+                    text: "Station"
+                    color:"yellow"
+                    font.pointSize: 20
+                }
+                Switch {
+                    id: control
+                    ToolTip {
+                        parent: control
+                        y: control.y + control.height
+//                        x: station.x + 50
+                        Text{
+                            text: control.checked ? "Click to deactivate Station" : "Click to activate Station"
+                            color: "white"
+                        }
 
-            Text {
-                id: airplane
-                anchors.centerIn: parent
-                text: "Station"
-                color:"yellow"
-                font.pointSize: 20
+                        background: Rectangle {
+                            color: "#404040"
+                            radius: 4
+                        }
 
+                        visible:  control.hovered
+                    }
+                    onToggled: function() {
+                        rootItem.model.activeButtonToggled(checked);
+                    }
+
+                    Layout.alignment: Qt.AlignRight
+                    indicator: Rectangle {
+                        implicitWidth: 48
+                        implicitHeight: 26
+                        x: control.leftPadding
+                        y: parent.height / 2 - height / 2
+                        radius: 13
+                        color: control.checked ? "#17a81a" : "#a8171a"
+                        border.color: control.checked ? "#17a81a" : "#a8171a"
+
+                        Rectangle {
+                            x: control.checked ? parent.width - width : 0
+                            width: 26
+                            height: 26
+                            radius: 13
+                            color: control.down ? "#cccccc" : "#ffffff"
+                            border.color: control.checked ? (control.down ? "#17a81a" : "#21be2b") : "#999999"
+                        }
+                    }
+                }
             }
 
         }
@@ -94,9 +142,17 @@ Item {
                                 Layout.fillWidth: true
                                 horizontalAlignment: Qt.AlignRight
                                 Binding {
-                                    target: airplane
+                                    target: station
                                     property: "text"
                                     value: nameLabel.text
+                                }
+                            }
+                            Label {
+                                visible: false
+                                Binding {
+                                    target: control
+                                    property: "checked"
+                                    value: Active
                                 }
                             }
 
