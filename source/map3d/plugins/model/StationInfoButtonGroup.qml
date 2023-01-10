@@ -35,22 +35,12 @@ Item {
 
         ListElement {
             buttonText: "Visibility"
-            iconUrl:"qrc:///Resources/geocentric.png"
+            iconUrl:"qrc:/resources/radarvisible.png"
             checkable: true
             checked: false
             clickCallback: function(check) { rootItem.visibleButtonClicked(check);}
         }
 
-        ListElement {
-            buttonText: "Activated"
-            iconUrl:"qrc:///Resources/activeradar.png"
-            checkable: true
-            checked: false
-            clickCallback: function(check) {
-                rootItem.activateButtonClicked(check);
-                buttonsModel.get(3).buttonText = buttonsModel.get(2).checked ? "Activated" : "Deactivated"
-            }
-        }
 
         ListElement {
             buttonText: "More"

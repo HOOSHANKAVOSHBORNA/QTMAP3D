@@ -9,5 +9,8 @@
         <file>resources/system.png</file>
         <file>resources/station_lV.png</file>
         <file>resources/system_1.png</file>
+        <file>resources/radarvisible.png</file>
+        <file>resources/wez.png</file>
+        <file>resources/mez.png</file>
     </qresource>
 </RCC>

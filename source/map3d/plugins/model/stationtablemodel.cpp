@@ -129,11 +129,6 @@ void StationTableModel::setFilterWildcard(const QString &wildcard)
 }
 
 
-void StationTableModel::updateItemData(const QString &jsonStr)
-{
-
-}
-
 void StationTableModel::updateItemData(const StationInfo &stationInfo)
 {
     beginResetModel();

@@ -34,22 +34,23 @@ Item {
         }
 
         ListElement {
-            buttonText: "Wez"
-            iconUrl:"qrc:///Resources/geocentric.png"
-            checkable: true
-            checked: false
-            clickCallback: function(check) { rootItem.wezButtonClicked(check);}
-        }
-
-        ListElement {
             buttonText: "Mez"
-            iconUrl:"qrc:///Resources/activeradar.png"
+            iconUrl:"qrc:/resources/mez.png"
             checkable: true
             checked: false
             clickCallback: function(check) {
                 rootItem.mezButtonClicked(check);
             }
         }
+
+        ListElement {
+            buttonText: "Wez"
+            iconUrl:"qrc:/resources/wez.png"
+            checkable: true
+            checked: false
+            clickCallback: function(check) { rootItem.wezButtonClicked(check);}
+        }
+
 
         ListElement {
             buttonText: "More"
