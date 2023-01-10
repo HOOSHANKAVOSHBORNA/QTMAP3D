@@ -16,7 +16,9 @@
 #include "cylinder.h"
 #include "capsule.h"
 #include "box.h"
+#include "spherenode.h"
 #include "osgEarthAnnotation/AnnotationEditing"
+#include <osgEarthAnnotation/AnnotationLayer>
 
 class DrawShapes : public PluginInterface
 {
@@ -43,7 +45,9 @@ private:
     osgEarth::Annotation::CircleNode* circle;
     osgEarth::Annotation::CircleNodeEditor* mCircleEditor{nullptr};
     osgEarth::Annotation::RectangleNodeEditor* mRectEditor{nullptr};
+    osgEarth::Annotation::EllipseNodeEditor* ElpsEditor{nullptr};
     osg::Group* mCircleGr;
+    osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
 //    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();
 
 
@@ -68,14 +72,15 @@ private:
     Cone* mCone;
     Cylinder* mCylinder;
     Box* mBox;
-    Rect* mRect;
+    Rect* mRect{nullptr};
     Polygone* mPoly;
     Circle* mCircle{nullptr};
-    Ellipse* mEllipse;
+    Ellipse* mEllipse{nullptr};
     Capsule* mCapsule;
     MapController* mMapController{nullptr};
     osgEarth::Annotation::FeatureNode* mPathNode;
-    float mRadius{20000};
+    SphereNode* mSphereNode;
+    double mRadius{20000};
 //    osgEarth::Annotation::ModelNode* mSphere(float radius);
 //    osgEarth::Annotation::ModelNode* mDrawSphere(float radius);
 
