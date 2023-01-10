@@ -31,7 +31,7 @@ QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case Operational: return QVariant::fromValue<QString>(mSystemInfo.Operational);
         case MissileCount: return QVariant::fromValue<QString>(mSystemInfo.MissileCount);
         case RadarMode: return QVariant::fromValue<QString>(mSystemInfo.RadarMode);
-        case TN: return QVariant::fromValue<QString>(mSystemInfo.TN);
+        case TN: return QVariant::fromValue<double>(mSystemInfo.TN);
         case Acceptance: return QVariant::fromValue<QString>(mSystemInfo.Acceptance);
         case Phase: return QVariant::fromValue<QString>(mSystemInfo.Phase);
         case Antenna: return QVariant::fromValue<double>(mSystemInfo.Antenna);

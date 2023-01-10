@@ -4,6 +4,8 @@
 #include "mapcontroller.h"
 #include "basemodel.h"
 #include "systeminformation.h"
+#include "circle.h"
+#include "spherenode.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -34,6 +36,8 @@ private:
     SystemInfo mInformation;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
+    osg::ref_ptr<Circle> mRangeCircle;
+    osg::ref_ptr<SphereNode> mMezSphere;
 };
 
 #endif // SYSTEM_H

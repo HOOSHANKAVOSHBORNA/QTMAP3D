@@ -16,6 +16,7 @@ struct StationInfo
     QString Name;
     QString Type;
     QString PrimSec;
+    bool Active;
 
     double Number;
     double Latitude;
@@ -29,6 +30,7 @@ struct StationInfo
         jsonObject.insert("Name", Name);
         jsonObject.insert("Type", Type);
         jsonObject.insert("Primary/Secondary", PrimSec);
+        jsonObject.insert("Active", Active);
 
         jsonObject.insert("Number", Number);
         jsonObject.insert("Latitude", Latitude);
@@ -47,6 +49,7 @@ struct StationInfo
         Name = data.value("Name").toString();
         Type = data.value("Type").toString();
         PrimSec = data.value("Primary/Secondary").toString();
+        Active = data.value("Active").toBool();
 
         Number = data.value("Number").toDouble();
         Latitude = data.value("Latitude").toDouble();

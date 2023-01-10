@@ -1,6 +1,6 @@
 #include "stationinformation.h"
 #include "plugininterface.h"
-
+#include <iostream>
 #include <QQmlEngine>
 StationInfoModel::StationInfoModel(QObject *parent) : QAbstractListModel(parent)
 {
@@ -22,6 +22,7 @@ QVariant StationInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case Numberr: return QVariant::fromValue<double>(mStationInfo.Number);
         case Radius: return QVariant::fromValue<double>(mStationInfo.Radius);
         case CycleTime: return QVariant::fromValue<int>(mStationInfo.CycleTime);
+        case Active: return QVariant::fromValue<bool>(mStationInfo.Active);
         default: return mStationInfo.Name;
     }
 }
@@ -38,6 +39,7 @@ QHash<int, QByteArray> StationInfoModel::roleNames() const
     hash[Longitude] = "Longitude";
     hash[Radius] = "Radius";
     hash[CycleTime] = "CycleTime";
+    hash[Active] = "Active";
     return hash;
 }
 
@@ -47,7 +49,7 @@ void StationInfoModel::setInformtion(const StationInfo &stationInfo)
 }
 
 StationInformtion::StationInformtion(QQmlEngine *qmlEngine, UIHandle *uiHandle, StationInfo stationInfo, QObject *parent) :
-    QObject(parent), mUiHandle(uiHandle), mInformation(stationInfo)
+    QObject(parent), mInformation(stationInfo), mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(qmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){

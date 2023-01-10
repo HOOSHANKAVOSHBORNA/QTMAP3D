@@ -17,6 +17,7 @@ add_library(drawshapes SHARED
   line.cpp
   res.qrc
   sphere.cpp
+  spherenode.cpp
   drawshapes.json
   polygone.cpp
   circle.cpp

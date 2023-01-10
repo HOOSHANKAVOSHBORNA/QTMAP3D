@@ -166,7 +166,7 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
 
 void StationModelNode::onActivateButtonToggled(bool checked)
 {
-
+    mInformation.Active = checked;
 }
 
 void StationModelNode::onModeChanged(bool is3DView)
@@ -192,6 +192,6 @@ void StationModelNode::showInfoWidget()
     connect(stationInformation->getInfo(), &StationInfoModel::gotoButtonClicked, this, &StationModelNode::onGotoButtonClicked);
     connect(stationInformation->getInfo(), &StationInfoModel::rangeButtonClicked, this, &StationModelNode::onRangeButtonToggled);
     connect(stationInformation->getInfo(), &StationInfoModel::visibleButtonClicked, this, &StationModelNode::onVisibleButtonToggled);
-    connect(stationInformation->getInfo(), &StationInfoModel::activateButtonClicked, this, &StationModelNode::onActivateButtonToggled);
+    connect(stationInformation->getInfo(), &StationInfoModel::activeButtonToggled, this, &StationModelNode::onActivateButtonToggled);
     stationInformation->show();
 }

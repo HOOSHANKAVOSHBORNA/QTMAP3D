@@ -59,11 +59,11 @@ Item {
 
                         Item {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: width * (img.sourceSize.height / img.sourceSize.width)
+                            Layout.preferredHeight: 200
                             Image {
                                 id: img
                                 anchors.fill: parent
-                                source: "qrc:///Resources/airplan.jpg"
+                                source: "qrc:///Resources/airplane1.jpg"
                                 fillMode: Image.Stretch
                             }
                         }

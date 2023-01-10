@@ -16,6 +16,7 @@
 #include "cylinder.h"
 #include "capsule.h"
 #include "box.h"
+#include "spherenode.h"
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 
@@ -78,7 +79,8 @@ private:
     Capsule* mCapsule;
     MapController* mMapController{nullptr};
     osgEarth::Annotation::FeatureNode* mPathNode;
-    float mRadius{20000};
+    SphereNode* mSphereNode;
+    double mRadius{20000};
 //    osgEarth::Annotation::ModelNode* mSphere(float radius);
 //    osgEarth::Annotation::ModelNode* mDrawSphere(float radius);
 

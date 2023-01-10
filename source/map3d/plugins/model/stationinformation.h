@@ -17,7 +17,8 @@ public:
         Latitude = Qt::UserRole + 204,
         Longitude = Qt::UserRole + 205,
         Radius = Qt::UserRole + 206,
-        CycleTime = Qt::UserRole + 207
+        CycleTime = Qt::UserRole + 207,
+        Active = Qt::UserRole + 208
 
     };
 
@@ -35,8 +36,11 @@ Q_SIGNALS:
     void rangeButtonClicked(bool check);
     void visibleButtonClicked(bool checked);
     void activateButtonClicked(bool checked);
+    void activeButtonToggled(bool checked);
     void moreButtonClicked();
 
+public slots:
+    void onActiveToggled(bool checked);
 private:
     StationInfo mStationInfo;
 };
