@@ -30,6 +30,7 @@ signals:
     void aircraftDoubleClicked(const QString& NT);
     void stationDoubleClicked(const QString& Name);
     void systemDoubleClicked(const QString& Name);
+    void systemActiveToggled(bool act);
 
 
 private:

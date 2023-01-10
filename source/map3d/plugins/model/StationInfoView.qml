@@ -58,7 +58,7 @@ Item {
                         visible:  control.hovered
                     }
                     onToggled: function() {
-                        console.log(checked)
+                        rootItem.model.activeButtonToggled(checked);
                     }
 
                     Layout.alignment: Qt.AlignRight
@@ -152,7 +152,7 @@ Item {
                                 Binding {
                                     target: control
                                     property: "checked"
-                                    value: Active == "Active"
+                                    value: Active
                                 }
                             }
 

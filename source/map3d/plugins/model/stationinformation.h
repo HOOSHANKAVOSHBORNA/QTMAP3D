@@ -36,8 +36,11 @@ Q_SIGNALS:
     void rangeButtonClicked(bool check);
     void visibleButtonClicked(bool checked);
     void activateButtonClicked(bool checked);
+    void activeButtonToggled(bool checked);
     void moreButtonClicked();
 
+public slots:
+    void onActiveToggled(bool checked);
 private:
     StationInfo mStationInfo;
 };

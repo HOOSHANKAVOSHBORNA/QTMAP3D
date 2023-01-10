@@ -16,7 +16,7 @@ struct StationInfo
     QString Name;
     QString Type;
     QString PrimSec;
-    QString Active;
+    bool Active;
 
     double Number;
     double Latitude;
@@ -49,7 +49,7 @@ struct StationInfo
         Name = data.value("Name").toString();
         Type = data.value("Type").toString();
         PrimSec = data.value("Primary/Secondary").toString();
-        Active = data.value("Active").toString();
+        Active = data.value("Active").toBool();
 
         Number = data.value("Number").toDouble();
         Latitude = data.value("Latitude").toDouble();

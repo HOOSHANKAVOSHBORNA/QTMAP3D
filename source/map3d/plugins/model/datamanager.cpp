@@ -86,7 +86,6 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
                              this,
                              SIGNAL(systemDoubleClicked(const QString&)));
 
-
             systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
             mUiHandle->lwAddTab("Systems", systemTab);
         }
