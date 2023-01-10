@@ -22,6 +22,7 @@ QVariant StationInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case Numberr: return QVariant::fromValue<double>(mStationInfo.Number);
         case Radius: return QVariant::fromValue<double>(mStationInfo.Radius);
         case CycleTime: return QVariant::fromValue<int>(mStationInfo.CycleTime);
+        case Active: return QVariant::fromValue<QString>(mStationInfo.Active);
         default: return mStationInfo.Name;
     }
 }
@@ -38,6 +39,7 @@ QHash<int, QByteArray> StationInfoModel::roleNames() const
     hash[Longitude] = "Longitude";
     hash[Radius] = "Radius";
     hash[CycleTime] = "CycleTime";
+    hash[Active] = "Active";
     return hash;
 }
 

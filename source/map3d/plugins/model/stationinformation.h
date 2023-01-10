@@ -17,7 +17,8 @@ public:
         Latitude = Qt::UserRole + 204,
         Longitude = Qt::UserRole + 205,
         Radius = Qt::UserRole + 206,
-        CycleTime = Qt::UserRole + 207
+        CycleTime = Qt::UserRole + 207,
+        Active = Qt::UserRole + 208
 
     };
 

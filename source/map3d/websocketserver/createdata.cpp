@@ -136,6 +136,7 @@ void CreateData::createStationInfo()
 
         QJsonObject jsonObject;
         jsonObject.insert("Name", name);
+        jsonObject.insert("Active", "Active");
         jsonObject.insert("Number", 123456789);
         jsonObject.insert("Type", "Type1");
         jsonObject.insert("Latitude", latitude);
