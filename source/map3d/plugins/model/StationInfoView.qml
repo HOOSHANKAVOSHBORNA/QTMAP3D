@@ -33,7 +33,7 @@ Item {
                 Text {
                     id: station
 //                    anchors.centerIn: parent
-                    Layout.alignment: Qt.AlignLeft
+                    Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: implicitWidth
                     text: "Station"
                     color:"yellow"

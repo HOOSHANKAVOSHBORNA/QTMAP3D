@@ -25,14 +25,60 @@ Item {
         Item {
             Layout.fillWidth: true
             Layout.minimumHeight: 60
+            RowLayout {
+                anchors.fill: parent
+                anchors.leftMargin: 35
+                Text {
+                    id: system
+//                    anchors.centerIn: parent
+                    Layout.alignment: Qt.AlignCenter
+                    Layout.preferredWidth: implicitWidth
+                    text: "System"
+                    color:"yellow"
+                    font.pointSize: 20
+                }
+                Switch {
+                    id: control
+                    ToolTip {
+                        parent: control
+                        y: control.y + control.height
+//                        x: station.x + 50
+                        Text{
+                            text: control.checked ? "Click to deactivate Station" : "Click to activate Station"
+                            color: "white"
+                        }
 
-            Text {
-                id: airplane
-                anchors.centerIn: parent
-                text: "System"
-                color:"yellow"
-                font.pointSize: 20
+                        background: Rectangle {
+                            color: "#404040"
+                            radius: 4
+                        }
 
+                        visible:  control.hovered
+                    }
+                    onToggled: function() {
+                        rootItem.model.activeButtonToggled(checked);
+                    }
+
+                    Layout.alignment: Qt.AlignRight
+                    indicator: Rectangle {
+                        implicitWidth: 48
+                        implicitHeight: 26
+                        x: control.leftPadding
+                        y: parent.height / 2 - height / 2
+                        radius: 13
+                        color: control.checked ? "#17a81a" : "#a8171a"
+                        border.color: control.checked ? "#17a81a" : "#a8171a"
+
+                        Rectangle {
+                            x: control.checked ? parent.width - width : 0
+                            width: 26
+                            height: 26
+                            radius: 13
+                            color: control.down ? "#cccccc" : "#ffffff"
+                            border.color: control.checked ? (control.down ? "#17a81a" : "#21be2b") : "#999999"
+                        }
+                    }
+                }
             }
 
         }
@@ -88,13 +134,21 @@ Item {
                                 Layout.preferredWidth: implicitWidth
                             }
                             Label {
+                                visible: false
+                                Binding {
+                                    target: control
+                                    property: "checked"
+                                    value: Active
+                                }
+                            }
+                            Label {
                                 id: nameLabel
                                 text: Name
                                 color: "white"
                                 Layout.fillWidth: true
                                 horizontalAlignment: Qt.AlignRight
                                 Binding {
-                                    target: airplane
+                                    target: system
                                     property: "text"
                                     value: nameLabel.text
                                 }
