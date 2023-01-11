@@ -19,8 +19,8 @@ struct SystemInfo
     double Latitude;
     double Longitude;
     double Altitude;
-    double ViewRange{5000};
-    double MezRange{4000};
+    double ViewRange{300000};
+    double MezRange{250000};
     //status info
     QString ReceiveTime;
     QString Simulation;

@@ -1,5 +1,6 @@
 #include "systemmodelnode.h"
 #include "truck.h"
+#include "polygone.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Material>
@@ -9,12 +10,15 @@ const int RANGE3D = 500;
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :BaseModel(mapControler->getMapNode(), parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
+    mIs3D = mMapController->getMode();
     //--create root node--------------------------------------------------------------------------
     mRootNode = new osg::LOD;
 
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+//    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_GPU;
+//    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     setStyle(rootStyle);
     //--create 2D Nodes---------------------------------------------------------------------------
     osg::Image* redIcon = osgDB::readImageFile("../data/models/system/system_red.png");
@@ -44,6 +48,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
     getGeoTransform()->addChild(mLableNode);
+    mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
     if(mIs3D)
     {
@@ -59,9 +64,13 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     connect(mapControler, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------
     mRangeCircle = new Circle(mMapController, true);
-    mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
+    mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
 
     mMezSphere = new SphereNode();
+
+    mWezPolygon = new Polygone(mMapController, false);
+    mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
+    mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
 }
 
@@ -107,6 +116,9 @@ void SystemModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode();
+        onRangeButtonToggled(val);
+        onWezButtonToggled(val);
+        onMezButtonToggled(val);
     }
 }
 
@@ -122,7 +134,8 @@ void SystemModelNode::showInfoWidget()
 
 void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
-    BaseModel::mousePressEvent(event, onModel);
+//    qDebug()<<"type:"<<event->type();
+//    BaseModel::mousePressEvent(event, onModel);
     if(event->button() == Qt::LeftButton)
     {
         onLeftButtonClicked(onModel);
@@ -152,7 +165,50 @@ void SystemModelNode::onRangeButtonToggled(bool check)
 
 void SystemModelNode::onWezButtonToggled(bool checked)
 {
+    if(checked)
+    {
+        mWezPolygon->clearPoints();
+        osg::Vec3d worldPosition;
+        getPosition().toWorld(worldPosition, mMapController->getMapNode()->getTerrain());
+        osgEarth::GeoPoint geoPoint;
+        double radius = mInformation.MezRange;
 
+        osg::Vec3d v1 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
+        osg::Vec3d v2 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() + radius*2/4, worldPosition.z());
+        osg::Vec3d v3 = osg::Vec3d(worldPosition.x() + radius*2/4, worldPosition.y() + radius*2/4, worldPosition.z());
+        osg::Vec3d v4 = osg::Vec3d(worldPosition.x() + radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
+
+        osgEarth::GeoPoint geoPoint1;
+        geoPoint1.fromWorld(mMapController->getMapSRS(), v1);
+        geoPoint1.z() = 0;
+        geoPoint1.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        osgEarth::GeoPoint geoPoint2;
+        geoPoint2.fromWorld(mMapController->getMapSRS(), v2);
+        geoPoint2.z() = 0;
+        geoPoint2.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        osgEarth::GeoPoint geoPoint3;
+        geoPoint3.fromWorld(mMapController->getMapSRS(), v3);
+        geoPoint3.z() = 0;
+        geoPoint3.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        osgEarth::GeoPoint geoPoint4;
+        geoPoint4.fromWorld(mMapController->getMapSRS(), v4);
+        geoPoint4.z() = 0;
+        geoPoint4.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+
+        mWezPolygon->addPoints(geoPoint1.vec3d());
+        mWezPolygon->addPoints(geoPoint2.vec3d());
+        mWezPolygon->addPoints(geoPoint3.vec3d());
+        mWezPolygon->addPoints(geoPoint4.vec3d());
+
+        float height = static_cast<float>(radius/3);
+        mWezPolygon->setHeight(height);
+
+//        mMapController->addNode(mWezPolygon);
+        mMapController->getMapNode()->insertChild(0,mWezPolygon);
+
+    }
+    else
+        mMapController->removeNode(mWezPolygon);
 }
 
 void SystemModelNode::onMezButtonToggled(bool checked)
@@ -161,7 +217,7 @@ void SystemModelNode::onMezButtonToggled(bool checked)
     {
         mMezSphere->setPosition(getPosition());
         mMezSphere->setRadius(mInformation.MezRange);
-        mMezSphere->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
+        mMezSphere->setColor(osg::Vec4(1.0, 0.0, 1.0, 0.2f));
         mMapController->addNode(mMezSphere);
     }
     else
