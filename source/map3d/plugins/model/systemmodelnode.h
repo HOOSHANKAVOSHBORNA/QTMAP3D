@@ -6,6 +6,7 @@
 #include "systeminformation.h"
 #include "circle.h"
 #include "spherenode.h"
+#include <polygone.h>
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -39,6 +40,7 @@ private:
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
+    osg::ref_ptr<Polygone> mWezPolygon;
 };
 
 #endif // SYSTEM_H

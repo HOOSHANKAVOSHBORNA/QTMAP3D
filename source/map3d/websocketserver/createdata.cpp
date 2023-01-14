@@ -132,7 +132,7 @@ void CreateData::createStationInfo()
         QString name = "Station" + QString::number(stationList.count());
         double latitude = 48 + (qrand() % (59 - 48));
         double longitude = 27 + (qrand() % (38 - 27));
-        double radius = (4000 + (qrand() % (9000 - 4000)));
+        double radius = (200000 + (qrand() % (500000 - 200000)));
 
         QJsonObject jsonObject;
         jsonObject.insert("Name", name);
@@ -164,8 +164,8 @@ void CreateData::createSystemInfo()
         QString name = "System" + QString::number(systemList.count());
         double latitude = 48 + (qrand() % (59 - 48));
         double longitude = 27 + (qrand() % (38 - 27));
-        double viewRange = (4000 + (qrand() % (9000 - 4000)));
-        double mezRange = (4000 + (qrand() % (9000 - 4000)));
+        double viewRange = (100000 + (qrand() % (300000 - 100000)));
+        double mezRange = viewRange - 10000;
 
         QJsonObject jsonObject;
         jsonObject.insert("Terminal", "terminal1");
