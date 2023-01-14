@@ -76,6 +76,7 @@ Item {
                     Column {
                         anchors.centerIn: parent
                         spacing: 5
+                        ChartView
                         Image {
                             anchors.horizontalCenter: parent.horizontalCenter
 

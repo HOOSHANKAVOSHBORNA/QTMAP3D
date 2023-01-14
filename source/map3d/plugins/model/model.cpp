@@ -110,6 +110,14 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
         aircraftInfo.Longitude = 35.277;
         aircraftInfo.Altitude = 9100;
         aircraftInfo.Heading = 30;
+        aircraftInfo.IFFCode = "a12345";
+        aircraftInfo.CallSign = "cls";
+        aircraftInfo.Type = "type2";
+        aircraftInfo.MasterRadar = "radar2";
+        aircraftInfo.Identification = "F";
+        aircraftInfo.IdentificationMethod = "method1";
+        aircraftInfo.Time = "1401/10/21 10:00 fdfd";
+        aircraftInfo.Pos = "pos1";
         addUpdateAircraft(aircraftInfo);
         //demo();
     }

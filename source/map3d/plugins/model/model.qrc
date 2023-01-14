@@ -12,5 +12,7 @@
         <file>resources/radarvisible.png</file>
         <file>resources/wez.png</file>
         <file>resources/mez.png</file>
+        <file>resources/latlong.png</file>
+        <file>resources/aircraftinfo.png</file>
     </qresource>
 </RCC>

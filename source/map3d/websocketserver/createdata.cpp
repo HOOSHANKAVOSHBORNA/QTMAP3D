@@ -172,6 +172,7 @@ void CreateData::createSystemInfo()
         jsonObject.insert("Name", name);
         jsonObject.insert("Number", 123456);
         jsonObject.insert("Type", "Type1");
+        jsonObject.insert("Active", true);
         //
         jsonObject.insert("Latitude", latitude);
         jsonObject.insert("Longitude", longitude);
