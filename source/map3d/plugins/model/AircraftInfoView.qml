@@ -405,7 +405,7 @@ Item {
 
                         Label {
                             Layout.preferredWidth: rootItem.width
-                            Layout.preferredHeight: 2
+                            Layout.preferredHeight: 1
                             verticalAlignment: Label.AlignVCenter
                             color: "white"
                             text: ""
