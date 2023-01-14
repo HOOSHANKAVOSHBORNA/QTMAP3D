@@ -19,6 +19,7 @@
 #include "spherenode.h"
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
+#include <osgEarthAnnotation/ImageOverlayEditor>
 
 class DrawShapes : public PluginInterface
 {
@@ -39,15 +40,20 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 private:
     bool mIsFinished{true};
-    enum class Shape {none ,line, sphere, cone, cylinder, capsule, box, polygon, imgOvly,
-               circle, rect, ellipse};
-    Shape shape;
-    osgEarth::Annotation::CircleNode* circle;
+    enum class Shape {NONE ,LINE, SPHERE, CONE, CYLINDER, CAPSULE, BOX, POLYGON, IMGOVLY,
+               CIRCLE, RECT, ELLIPSE};
+    Shape mShape;
+    enum class DrawingState {NONE, START, FINISH, DELETE};
+    DrawingState mDrawingState;
+    osgEarth::Annotation::ImageOverlay* mImageOverlay{nullptr};
     osgEarth::Annotation::CircleNodeEditor* mCircleEditor{nullptr};
     osgEarth::Annotation::RectangleNodeEditor* mRectEditor{nullptr};
-    osgEarth::Annotation::EllipseNodeEditor* ElpsEditor{nullptr};
+    osgEarth::Annotation::EllipseNodeEditor* mElpsEditor{nullptr};
+    osgEarth::Annotation::ImageOverlayEditor* mImgOvlEditor{nullptr};
     osg::Group* mCircleGr;
     osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
+
+    osgEarth::Annotation::SphereDragger* x;
 //    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();
 
 
@@ -63,7 +69,8 @@ private slots:
     void onCircleBtnClick(QMouseEvent* event);
     void onRectBtnClick(QMouseEvent* event);
     void onEllipseBtnClick(QMouseEvent* event);
-    void onMouseMove(QMouseEvent* event);
+    void onLineMouseMove(QMouseEvent* event);
+    void onCircleMouseMove(QMouseEvent* event);
 
 
 private:
