@@ -1,7 +1,7 @@
 #ifndef TRUCK_H
 #define TRUCK_H
 
-#include "basemodel.h"
+#include "defenseModelNode.h"
 #include "rocket.h"
 
 

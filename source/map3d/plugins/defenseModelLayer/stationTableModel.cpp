@@ -1,4 +1,4 @@
-#include "stationtablemodel.h"
+#include "stationTableModel.h"
 
 #include <QColor>
 #include <QRegularExpression>

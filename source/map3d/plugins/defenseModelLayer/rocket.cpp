@@ -2,7 +2,7 @@
 #include "draw.h"
 
 Rocket::Rocket(osgEarth::MapNode *mapNode, QObject *parent):
-    BaseModel(mapNode, parent)
+    DefenseModelNode(mapNode, parent)
 {
 //    osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/system/truck/rocket.osgb");
 

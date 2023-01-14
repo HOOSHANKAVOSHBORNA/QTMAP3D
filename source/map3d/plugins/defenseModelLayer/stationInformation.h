@@ -3,7 +3,7 @@
 #include <QAbstractListModel>
 #include <QQuickItem>
 
-#include "datamanager.h"
+#include "dataManager.h"
 
 class StationInfoModel : public QAbstractListModel
 {

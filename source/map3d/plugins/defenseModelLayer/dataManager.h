@@ -2,9 +2,9 @@
 #define DATAMANAGER_H
 
 #include <QObject>
-#include "aircrafttablemodel.h"
-#include "stationtablemodel.h"
-#include "systemtablemodel.h"
+#include "aircraftTableModel.h"
+#include "stationTableModel.h"
+#include "systemTableModel.h"
 
 class UIHandle;
 class QQmlEngine;

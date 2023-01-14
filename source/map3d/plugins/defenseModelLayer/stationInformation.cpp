@@ -1,4 +1,4 @@
-#include "stationinformation.h"
+#include "stationInformation.h"
 #include "plugininterface.h"
 #include <iostream>
 #include <QQmlEngine>

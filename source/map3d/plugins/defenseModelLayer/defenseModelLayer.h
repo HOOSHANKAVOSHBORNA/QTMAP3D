@@ -2,8 +2,8 @@
 #define MODEL_H
 
 #include "plugininterface.h"
-#include "aircraftmodelnode.h"
-#include "datamanager.h"
+#include "aircraftModelNode.h"
+#include "dataManager.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
@@ -23,14 +23,14 @@ class Vec3d;
 class Node;
 }
 
-class Model :public PluginInterface
+class DefenseModelLayer :public PluginInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID PluginInterface_iid FILE "model.json")
+    Q_PLUGIN_METADATA(IID PluginInterface_iid FILE "defenseModelLayer.json")
     Q_INTERFACES(PluginInterface)
 
 public:
-    explicit Model(QObject *parent = nullptr);
+    explicit DefenseModelLayer(QObject *parent = nullptr);
 public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
     virtual void onSideItemCreated(int index, QObject *pSideItem) override;
@@ -56,15 +56,15 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override {}
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 private:
-    BaseModel* pick(float x, float y);
+    DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
     void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
-    QMap<QString,QMap<QString, BaseModel*>>  mModelNodes;
-    osgEarth::Annotation::ModelNode* mCurrentModel;
-    BaseModel* mSelectedModelNode{nullptr};
-    BaseModel* mOnMoveModelNode{nullptr};
+    QMap<QString,QMap<QString, DefenseModelNode*>>  mModelNodes;
+//    DefenseModelNode* mCurrentModel;
+    DefenseModelNode* mSelectedModelNode{nullptr};
+    DefenseModelNode* mOnMoveModelNode{nullptr};
 
     MapController *mMapController;
     UIHandle* mUIHandle;

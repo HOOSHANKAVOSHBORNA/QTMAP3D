@@ -1,22 +1,23 @@
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#ifndef STATION_H
+#define STATION_H
+
 
 #include "mapcontroller.h"
-#include "basemodel.h"
-#include "systeminformation.h"
+#include "defenseModelNode.h"
+#include "dataManager.h"
+#include "stationInformation.h"
 #include "circle.h"
-#include "spherenode.h"
-#include <polygone.h>
+#include "polygone.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 
 
-class SystemModelNode: public BaseModel
+class StationModelNode: public DefenseModelNode
 {
 public:
-    SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
-    void setInformation(const SystemInfo &info);
+    StationModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
+    void setInformation(const StationInfo &info);
     void goOnTrack();
 public slots:
     void onLeftButtonClicked(bool val);
@@ -27,20 +28,19 @@ protected:
 private slots:
     void onGotoButtonClicked();
     void onRangeButtonToggled(bool check);
-    void onWezButtonToggled(bool checked);
-    void onMezButtonToggled(bool checked);
-    void onActiveButtonToggled(bool checked);
+    void onVisibleButtonToggled(bool checked);
+    void onActivateButtonToggled(bool checked);
     void onModeChanged(bool is3DView);
 private:
     void showInfoWidget();
 private:
     MapController* mMapController{nullptr};
-    SystemInfo mInformation;
+    StationInfo mInformation;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;
-    osg::ref_ptr<SphereNode> mMezSphere;
-    osg::ref_ptr<Polygone> mWezPolygon;
+    osg::ref_ptr<Polygone> mVisiblePolygone;
 };
 
-#endif // SYSTEM_H
+
+#endif // STATION_H

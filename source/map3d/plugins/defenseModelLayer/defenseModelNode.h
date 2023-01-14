@@ -14,7 +14,8 @@
 
 #include <QMouseEvent>
 #include <QObject>
-class BaseModel;
+
+class DefenseModelNode;
 
 class ModelAnimationPathCallback: public osg::AnimationPathCallback
 {
@@ -39,11 +40,11 @@ public:
 //    int mPreRange{0};
 //};
 
-class BaseModel: public QObject, public osgEarth::Annotation::ModelNode
+class DefenseModelNode: public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    BaseModel(osgEarth::MapNode* mapNode, QObject* parent = nullptr);
+    DefenseModelNode(osgEarth::MapNode* mapNode, QObject* parent = nullptr);
     void setType(const QString &value);
     QString getType() const;
     void setQStringName(QString name);
@@ -51,14 +52,14 @@ public:
     virtual void setGeographicPosition(const osgEarth::GeoPoint& pos, double heading);
     osg::Vec3d getGeographicPosition() const;
     bool hasHit() const;
-    BaseModel *getFollowModel() const;
-    void setFollowModel(BaseModel *followModel);
+    DefenseModelNode *getFollowModel() const;
+    void setFollowModel(DefenseModelNode *followModel);
     virtual void stop(){}
 //    virtual void traverse(osg::NodeVisitor& nv) override;
 
 signals:
     void positionChanged(osgEarth::GeoPoint pos);
-    void hit(BaseModel *hitWith);
+    void hit(DefenseModelNode *hitWith);
 protected:
 //    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
     virtual void playExplosionEffect(float scale);
@@ -79,13 +80,13 @@ protected:
     osg::ref_ptr<osg::Switch> mNode2D;
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLableNode;
 private:
-    void collision(BaseModel *collidedWith);
+    void collision(DefenseModelNode *collidedWith);
     friend class ModelAnimationPathCallback;
     friend class PickHandler;
 private:
     bool mHasHit{false};
     QString mType;
-    BaseModel* mFollowModel{nullptr};
+    DefenseModelNode* mFollowModel{nullptr};
 };
 
 #endif // BASEMODEL_H

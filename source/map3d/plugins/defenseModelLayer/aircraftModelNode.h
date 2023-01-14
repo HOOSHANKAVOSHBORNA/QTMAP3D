@@ -1,10 +1,10 @@
 #ifndef FLYINGMODEL_H
 #define FLYINGMODEL_H
 
-#include "basemodel.h"
+#include "defenseModelNode.h"
 #include "mapcontroller.h"
 #include "plugininterface.h"
-#include "datamanager.h"
+#include "dataManager.h"
 #include "aircraftInformation.h"
 #include "line.h"
 
@@ -24,7 +24,7 @@
 
 class MapAnimationPathCallback;
 class EventCallback;
-class AircraftModelNode: public BaseModel
+class AircraftModelNode: public DefenseModelNode
 {
     Q_OBJECT
 public:

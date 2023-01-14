@@ -1,9 +1,9 @@
-#include "model.h"
+#include "defenseModelLayer.h"
 #include "draw.h"
 #include "truck.h"
 #include "rocket.h"
-#include "systemmodelnode.h"
-#include "stationmodelnode.h"
+#include "systemModelNode.h"
+#include "stationModelNode.h"
 #include "mapcontroller.h"
 #include "networkmanager.h"
 #include "websocketclient.h"
@@ -41,13 +41,13 @@
 #include <QSortFilterProxyModel>
 
 
-#include "aircrafttablemodel.h"
+#include "aircraftTableModel.h"
 #include "aircraftcontextmenumodel.h"
 #include "aircraftInformation.h"
-#include "stationtablemodel.h"
-#include "stationinformation.h"
-#include "systeminformation.h"
-#include "systemtablemodel.h"
+#include "stationTableModel.h"
+#include "stationInformation.h"
+#include "systemInformation.h"
+#include "systemTableModel.h"
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
@@ -56,22 +56,22 @@ const QString STATION = "Station";
 const QString ROCKET = "Rocket";
 const QString TRUCK = "Truck";
 //----------------------------------------------
-const QString CATEGORY = "Model";
-const QString ADD_AIRCRAFT = "Add Aircraft";
+const QString CATEGORY = "Defense Model";
+//const QString ADD_AIRCRAFT = "Add Aircraft";
 const QString ADD_ROCKET = "Add Rocket";
 const QString ADD_TRUCK = "Add Truck";
-const QString ADD_STATION = "Add Station";
-const QString ADD_SYSTEM = "Add System";
+//const QString ADD_STATION = "Add Station";
+//const QString ADD_SYSTEM = "Add System";
 
-Model::Model(QObject *parent)
+DefenseModelLayer::DefenseModelLayer(QObject *parent)
     : PluginInterface(parent)
 {
     //    Q_INIT_RESOURCE(modelqml);
-    Q_INIT_RESOURCE(model);
-    Q_INIT_RESOURCE(modelqml);
+    Q_INIT_RESOURCE(defenseModelLayer);
+    Q_INIT_RESOURCE(defenseModelLayerqml);
 }
 
-bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
+bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
 {
     //    pDesc->pluginHasSideItem = true;
     //    pDesc->sideItemMenuBarTitle = "Layers";
@@ -88,21 +88,21 @@ bool Model::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
     mQmlEngine = engine;
 
     QString cat = "model";
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_SYSTEM, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_STATION, CATEGORY, "qrc:/resources/station_lV.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{SYSTEM, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{STATION, CATEGORY, "qrc:/resources/station_lV.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_TRUCK, CATEGORY, "qrc:/resources/truck.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "", false, false, ""});
     return true;
 }
 
-void Model::onSideItemCreated(int /*index*/, QObject */*pSideItem*/)
+void DefenseModelLayer::onSideItemCreated(int /*index*/, QObject */*pSideItem*/)
 {
 }
 
-void Model::onToolboxItemClicked(const QString &name, const QString &category)
+void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString &category)
 {
-    if(CATEGORY == category && name == ADD_AIRCRAFT)
+    if(CATEGORY == category && name == AIRCRAFT)
     {
         AircraftInfo aircraftInfo;
         aircraftInfo.TN = AIRCRAFT + QString::number(mModelNodes[AIRCRAFT].count());
@@ -170,7 +170,7 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
     {
         addTruckModel();
     }
-    else if(CATEGORY == category && name == ADD_SYSTEM)
+    else if(CATEGORY == category && name == SYSTEM)
     {
         SystemInfo systemInfo;
         systemInfo.Name = SYSTEM + QString::number(mModelNodes[SYSTEM].count());
@@ -178,7 +178,7 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
         systemInfo.Longitude = 35.3;
         addUpdateSystem(systemInfo);
     }
-    else if(CATEGORY == category && name == ADD_STATION)
+    else if(CATEGORY == category && name == STATION)
     {
         StationInfo stationInfo;
         stationInfo.Name = STATION + QString::number(mModelNodes[STATION].count());
@@ -188,7 +188,7 @@ void Model::onToolboxItemClicked(const QString &name, const QString &category)
     }
 }
 
-bool Model::setup(MapController *mapController,
+bool DefenseModelLayer::setup(MapController *mapController,
                   NetworkManager *networkManager,
                   UIHandle *uiHandle)
 {
@@ -233,10 +233,10 @@ bool Model::setup(MapController *mapController,
         }
     });
     ////--websocket data-------------------------------------------------------------------
-    QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&Model::onMessageReceived);
+    QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&DefenseModelLayer::onMessageReceived);
 }
 
-void Model::demo()
+void DefenseModelLayer::demo()
 {
     //    int index = 0;
     auto airplaneNames = mModelNodes[AIRCRAFT].keys();
@@ -298,7 +298,7 @@ void Model::demo()
     }
 }
 
-void Model::addTruckModel()
+void DefenseModelLayer::addTruckModel()
 {
     osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 100, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     //create and setting model--------------------------------------------
@@ -339,7 +339,7 @@ void Model::addTruckModel()
     //model->moveTo(nPosition,10);
 }
 
-void Model::addUpdateAircraft(AircraftInfo aircraftInfo)
+void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 {
     osg::ref_ptr<AircraftModelNode> aircraftModelNode;
     osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
@@ -393,7 +393,7 @@ void Model::addUpdateAircraft(AircraftInfo aircraftInfo)
 
 }
 
-void Model::addRocketModel(osg::Vec3d position)
+void DefenseModelLayer::addRocketModel(osg::Vec3d position)
 {
     osgEarth::GeoPoint geoposition(mMapController->getMapSRS()->getGeographicSRS(),position);
     //create and setting model--------------------------------------------
@@ -403,7 +403,7 @@ void Model::addRocketModel(osg::Vec3d position)
     model->setGeographicPosition(geoposition, 0.0);
     model->setScale(osg::Vec3(1,1,1));
 
-    QObject::connect(model.get(), &BaseModel::positionChanged, [=](osgEarth::GeoPoint position){
+    QObject::connect(model.get(), &DefenseModelNode::positionChanged, [=](osgEarth::GeoPoint position){
         positionChanged(ROCKET, name, position);
     });
 
@@ -421,13 +421,13 @@ void Model::addRocketModel(osg::Vec3d position)
     //    double rnd = qrand() % 360;
     //    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
     //hit------------------------------------------------------------------
-    QObject::connect(model.get(), &BaseModel::hit, [=](BaseModel */*other*/){
+    QObject::connect(model.get(), &DefenseModelNode::hit, [=](DefenseModelNode */*other*/){
 
         mModelNodes[ROCKET].remove(QString(model->getName().c_str()));
     });
 }
 
-void Model::addUpdateSystem(SystemInfo systemInfo)
+void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
 {
     osg::ref_ptr<SystemModelNode> systemModelNode;
     osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
@@ -456,7 +456,7 @@ void Model::addUpdateSystem(SystemInfo systemInfo)
     }
 }
 
-void Model::addUpdateStation(StationInfo stationInfo)
+void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
 {
     osg::ref_ptr<StationModelNode> stationModelNode;
     osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
@@ -486,7 +486,7 @@ void Model::addUpdateStation(StationInfo stationInfo)
 
 }
 
-void Model::clickedTrackNode(QString type, QString name, bool isClick)
+void DefenseModelLayer::clickedTrackNode(QString type, QString name, bool isClick)
 {
     if (isClick){
         //        osg::Node* node =mModels[type][name];
@@ -508,11 +508,11 @@ void Model::clickedTrackNode(QString type, QString name, bool isClick)
     }
 }
 
-void Model::positionChanged(QString /*type*/, QString /*name*/, osgEarth::GeoPoint /*position*/)
+void DefenseModelLayer::positionChanged(QString /*type*/, QString /*name*/, osgEarth::GeoPoint /*position*/)
 {
 }
 
-void Model::onMessageReceived(const QJsonDocument &message)
+void DefenseModelLayer::onMessageReceived(const QJsonDocument &message)
 {
     if(message.object().value("Name").toString() == "Aircraft")
     {
@@ -541,7 +541,7 @@ void Model::onMessageReceived(const QJsonDocument &message)
 
 }
 
-void Model::frameEvent()
+void DefenseModelLayer::frameEvent()
 {
     //    findSceneModels(mMapController->getViewer());
     for(auto modelNodeList: mModelNodes)
@@ -551,10 +551,10 @@ void Model::frameEvent()
     //        mLastSelectedModel->frameEvent();
 }
 
-void Model::mousePressEvent(QMouseEvent *event)
+void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
 {
 
-    BaseModel* modelNode = pick(event->x(), event->y());
+    DefenseModelNode* modelNode = pick(event->x(), event->y());
     if(modelNode)
     {
         modelNode->mousePressEvent(event, true);
@@ -566,9 +566,9 @@ void Model::mousePressEvent(QMouseEvent *event)
 
 }
 
-void Model::mouseMoveEvent(QMouseEvent *event)
+void DefenseModelLayer::mouseMoveEvent(QMouseEvent *event)
 {
-    BaseModel* modelNode = pick(event->x(), event->y());
+    DefenseModelNode* modelNode = pick(event->x(), event->y());
     if(modelNode)
     {
         modelNode->mouseMoveEvent(event, true);
@@ -579,9 +579,9 @@ void Model::mouseMoveEvent(QMouseEvent *event)
         mOnMoveModelNode = modelNode;
 }
 
-BaseModel* Model::pick(float x, float y)
+DefenseModelNode *DefenseModelLayer::pick(float x, float y)
 {
-    BaseModel* model = nullptr;
+    DefenseModelNode* defenseModelNode = nullptr;
     osgViewer::Viewer * viewer = mMapController->getViewer();
     float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
     osgUtil::LineSegmentIntersector::Intersections intersections;
@@ -594,15 +594,15 @@ BaseModel* Model::pick(float x, float y)
                 nitr!=nodePath.end();
                 ++nitr)
             {
-                model = dynamic_cast<BaseModel*>(*nitr);
-                if (model)
-                    return model;
+                defenseModelNode = dynamic_cast<DefenseModelNode*>(*nitr);
+                if (defenseModelNode)
+                    return defenseModelNode;
             }
         }
     }
-    return model;
+    return defenseModelNode;
 }
-void Model::findSceneModels(osgViewer::Viewer *viewer)
+void DefenseModelLayer::findSceneModels(osgViewer::Viewer *viewer)
 {
     osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
     if(!camera)
@@ -638,17 +638,17 @@ void Model::findSceneModels(osgViewer::Viewer *viewer)
                     nitr!=nodePath.end();
                     ++nitr)
                 {
-                    BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
-                    if (model)
+                    DefenseModelNode* defenseModelNode = dynamic_cast<DefenseModelNode*>(*nitr);
+                    if (defenseModelNode)
                     {
                         //qDebug() <<model->getQStringName();
                         //qDebug() <<"range: "<<camera->getViewpoint().getRange();
                         //qDebug() <<"z: "<<model->getPosition().z();
                         double distance = 0;
-                        if(camera->getViewpoint().getRange() < model->getPosition().z())///for track node
+                        if(camera->getViewpoint().getRange() < defenseModelNode->getPosition().z())///for track node
                             distance = camera->getViewpoint().getRange();
                         else
-                            distance = camera->getViewpoint().getRange() - model->getPosition().z();
+                            distance = camera->getViewpoint().getRange() - defenseModelNode->getPosition().z();
                         //                        model->cameraRangeChanged(distance);
                         //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
                         //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();

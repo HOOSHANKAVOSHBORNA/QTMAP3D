@@ -1,4 +1,4 @@
-#include "aircrafttablemodel.h"
+#include "aircraftTableModel.h"
 #include <QHash>
 #include <QColor>
 #include <QRegularExpression>

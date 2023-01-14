@@ -1,4 +1,4 @@
-﻿#include "aircraftmodelnode.h"
+﻿#include "aircraftModelNode.h"
 #include "aircraftcontextmenumodel.h"
 #include "aircraftInformation.h"
 #include "draw.h"
@@ -30,7 +30,7 @@ const float RANGE3D = std::numeric_limits<float>::max();
 osg::ref_ptr<osg::Node> AircraftModelNode::mNode3DRef;
 
 AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
-    :BaseModel(mapControler->getMapNode(), parent)
+    :DefenseModelNode(mapControler->getMapNode(), parent)
 {
     mRouteLine = new Line(mapControler);
     mRouteLine->setLineClamp(false);
@@ -274,7 +274,7 @@ void AircraftModelNode::frameEvent()
 
 void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
-    BaseModel::mousePressEvent(event, onModel);
+    DefenseModelNode::mousePressEvent(event, onModel);
     if(event->button() == Qt::LeftButton)
     {
         onLeftButtonClicked(onModel);
@@ -317,7 +317,7 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 void AircraftModelNode::curentPosition(osgEarth::GeoPoint pos)
 {
-    BaseModel::curentPosition(pos);
+    DefenseModelNode::curentPosition(pos);
 
     //    if(mIsRoute)
     //    {

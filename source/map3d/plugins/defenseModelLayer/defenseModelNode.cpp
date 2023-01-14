@@ -1,4 +1,4 @@
-#include "basemodel.h"
+#include "defenseModelNode.h"
 #include "draw.h"
 
 #include <QDebug>
@@ -11,7 +11,7 @@ const osg::Node::NodeMask NODE_MASK = 0x00000001;
 
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
-    BaseModel* baseModel;
+    DefenseModelNode* defenseModelNode;
     bool hit = false;
     bool positionCanged = false;
     osgEarth::GeoPoint geoPoint;
@@ -23,15 +23,15 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
         double time = nv->getFrameStamp()->getSimulationTime();
         _latestTime = time;
 
-        baseModel = dynamic_cast<BaseModel*>(node);
-        if (baseModel && !baseModel->hasHit())
+        defenseModelNode = dynamic_cast<DefenseModelNode*>(node);
+        if (defenseModelNode && !defenseModelNode->hasHit())
             //check collision----------------------------------------------------------------------------
-            if(baseModel->getFollowModel() != nullptr)
+            if(defenseModelNode->getFollowModel() != nullptr)
             {
                 osg::Vec3d wPosition;
-                baseModel->getPosition().toWorld(wPosition);
+                defenseModelNode->getPosition().toWorld(wPosition);
                 osg::Vec3d wFolowPosition;
-                baseModel->getFollowModel()->getPosition().toWorld(wFolowPosition);
+                defenseModelNode->getFollowModel()->getPosition().toWorld(wFolowPosition);
                 double distance = (wPosition - wFolowPosition).length();
                 if(distance < 3)
                     hit = true;
@@ -46,11 +46,11 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
             double animatTime = getAnimationTime();
             if (getAnimationPath()->getInterpolatedControlPoint(animatTime,cp))
             {
-                geoPoint.fromWorld(baseModel->getMapNode()->getMapSRS(), cp.getPosition());
-                baseModel->setPosition(geoPoint);
-                baseModel->getPositionAttitudeTransform()->setScale(cp.getScale());
-                if(baseModel->mIs3D)
-                    baseModel->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
+                geoPoint.fromWorld(defenseModelNode->getMapNode()->getMapSRS(), cp.getPosition());
+                defenseModelNode->setPosition(geoPoint);
+                defenseModelNode->getPositionAttitudeTransform()->setScale(cp.getScale());
+                if(defenseModelNode->mIs3D)
+                    defenseModelNode->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
                 else
                 {
                     double angle;
@@ -58,7 +58,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                     cp.getRotation().getRotate(angle, vec);
                     vec.x() = 0;
                     vec.y() = 0;
-                    baseModel->getPositionAttitudeTransform()->setAttitude(osg::Quat(angle, vec));
+                    defenseModelNode->getPositionAttitudeTransform()->setAttitude(osg::Quat(angle, vec));
                     //                    qDebug()<<"angle:"<<osg::RadiansToDegrees(angle);
                     //                    qDebug()<<"vec:"<<vec.x()<<","<<vec.y()<<","<<vec.z();
 
@@ -73,18 +73,18 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 //emit current position----------------------------------------------------------------------
                 positionCanged = true;
                 //if(static_cast<int>(animatTime) % 3 == 0)
-                baseModel->curentPosition(geoPoint);
+                defenseModelNode->curentPosition(geoPoint);
             }
 
-            if(baseModel && (_latestTime - _firstTime) > _animationPath->getPeriod())
-                baseModel->stop();
+            if(defenseModelNode && (_latestTime - _firstTime) > _animationPath->getPeriod())
+                defenseModelNode->stop();
         }
     }
 
     // must call any nested node callbacks and continue subgraph traversal.
     NodeCallback::traverse(node,nv);
     if(hit)
-        baseModel->collision(baseModel->getFollowModel());
+        defenseModelNode->collision(defenseModelNode->getFollowModel());
     //if(positionCanged)
     //        baseModel->curentPosition(geoPoint);
 }
@@ -228,7 +228,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
 //}
 
 //static bool mAddedEvent = false;
-BaseModel::BaseModel(osgEarth::MapNode *mapNode, QObject *parent):
+DefenseModelNode::DefenseModelNode(osgEarth::MapNode *mapNode, QObject *parent):
     QObject(parent),
     osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
 {
@@ -248,29 +248,29 @@ BaseModel::BaseModel(osgEarth::MapNode *mapNode, QObject *parent):
     //    setNodeMask(NODE_MASK);
 }
 
-QString BaseModel::getType() const
+QString DefenseModelNode::getType() const
 {
     return mType;
 }
 
-void BaseModel::setType(const QString &value)
+void DefenseModelNode::setType(const QString &value)
 {
     mType = value;
 }
 
-void BaseModel::setQStringName(QString name)
+void DefenseModelNode::setQStringName(QString name)
 {
     setName(name.toStdString());
     if(mLableNode)
         mLableNode->setText(name.toStdString());
 }
 
-QString BaseModel::getQStringName()
+QString DefenseModelNode::getQStringName()
 {
     return QString(getName().c_str());
 }
 
-void BaseModel::setGeographicPosition(const osgEarth::GeoPoint &pos, double heading)
+void DefenseModelNode::setGeographicPosition(const osgEarth::GeoPoint &pos, double heading)
 {
     osgEarth::GeoPoint  geoPoint;
     pos.transform(getMapNode()->getMapSRS(), geoPoint);
@@ -288,14 +288,14 @@ void BaseModel::setGeographicPosition(const osgEarth::GeoPoint &pos, double head
     //        getMapNode()->addChild(drawCordination(worldpos + osg::Vec3d(0,2,0)));
 }
 
-osg::Vec3d BaseModel::getGeographicPosition() const
+osg::Vec3d DefenseModelNode::getGeographicPosition() const
 {
     osgEarth::GeoPoint position = getPosition();
     position.makeGeographic();
     return position.vec3d();
 }
 
-void BaseModel::playExplosionEffect(float scale)
+void DefenseModelNode::playExplosionEffect(float scale)
 {
     osg::Vec3d worldPosition;
     getPosition().toWorld(worldPosition);
@@ -343,7 +343,7 @@ void BaseModel::playExplosionEffect(float scale)
     getMapNode()->addChild(pSphereGroup);
 }
 
-void BaseModel::collision(BaseModel *collidedWith)
+void DefenseModelNode::collision(DefenseModelNode *collidedWith)
 {
     //    qDebug()<<QString(getQStringName());
     mHasHit = true;
@@ -365,12 +365,12 @@ void BaseModel::collision(BaseModel *collidedWith)
     stop();
 }
 
-BaseModel *BaseModel::getFollowModel() const
+DefenseModelNode *DefenseModelNode::getFollowModel() const
 {
     return mFollowModel;
 }
 
-void BaseModel::setFollowModel(BaseModel *followModel)
+void DefenseModelNode::setFollowModel(DefenseModelNode *followModel)
 {
     mFollowModel = followModel;
 }
@@ -398,18 +398,18 @@ void BaseModel::setFollowModel(BaseModel *followModel)
 //}
 
 
-bool BaseModel::hasHit() const
+bool DefenseModelNode::hasHit() const
 {
     return mHasHit;
 }
 
-void BaseModel::mousePressEvent(QMouseEvent* event, bool onModel)
+void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
 {
     if(event->button() != Qt::MiddleButton)
         select(onModel);
 }
 
-void BaseModel::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
+void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
 {
     if(!mIsSelected)
     {
@@ -443,19 +443,19 @@ void BaseModel::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
 ////    }
 //}
 
-void BaseModel::curentPosition(osgEarth::GeoPoint pos)
+void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
 {
     emit positionChanged(pos);
 }
 
-void BaseModel::select(bool val)
+void DefenseModelNode::select(bool val)
 {
     hover(val);
     mIsSelected = val;
     mLableNode->setNodeMask(val);
 }
 
-void BaseModel::hover(bool val)
+void DefenseModelNode::hover(bool val)
 {
     mLableNode->setNodeMask(val);
     mNode2D->setValue(0, val);

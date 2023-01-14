@@ -3,7 +3,7 @@
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQuickItem>
-#include "aircraftmodelnode.h"
+#include "aircraftModelNode.h"
 #include "plugininterface.h"
 
 

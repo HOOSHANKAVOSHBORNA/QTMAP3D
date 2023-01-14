@@ -1,4 +1,4 @@
-#include "systemmodelnode.h"
+#include "systemModelNode.h"
 #include "truck.h"
 #include "polygone.h"
 
@@ -8,7 +8,7 @@
 const int RANGE3D = 500;
 
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
-    :BaseModel(mapControler->getMapNode(), parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
+    :DefenseModelNode(mapControler->getMapNode(), parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
     mIs3D = mMapController->getMode();
     //--create root node--------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 #define INFOMODEL_H
 #include <QAbstractListModel>
 #include <QQuickItem>
-#include "datamanager.h"
+#include "dataManager.h"
 
 class AircraftInfoModel : public QAbstractListModel
 {

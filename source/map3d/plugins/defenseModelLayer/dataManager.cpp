@@ -1,8 +1,8 @@
 
-#include "datamanager.h"
+#include "dataManager.h"
 #include "plugininterface.h"
-#include "aircrafttablemodel.h"
-#include "stationtablemodel.h"
+#include "aircraftTableModel.h"
+#include "stationTableModel.h"
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <QQuickItem>

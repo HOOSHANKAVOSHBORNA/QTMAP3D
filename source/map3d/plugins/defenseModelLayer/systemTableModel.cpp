@@ -1,4 +1,4 @@
-#include "systemtablemodel.h"
+#include "systemTableModel.h"
 
 #include <QColor>
 #include <QRegularExpression>

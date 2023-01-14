@@ -1,9 +1,9 @@
 #ifndef ROCKET_H
 #define ROCKET_H
 
-#include "basemodel.h"
+#include "defenseModelLayer.h"
 
-class Rocket: public BaseModel
+class Rocket: public DefenseModelNode
 {
 public:
     Rocket(osgEarth::MapNode* mapNode, QObject* parent = nullptr);

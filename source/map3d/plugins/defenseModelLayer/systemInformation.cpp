@@ -1,4 +1,4 @@
-#include "systeminformation.h"
+#include "systemInformation.h"
 #include "plugininterface.h"
 #include <QQmlEngine>
 
