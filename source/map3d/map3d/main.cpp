@@ -19,10 +19,15 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     Application *const map3DApp = Application::instance();
-    QObject::connect(map3DApp, &Application::mainWindowCreated, [map3DApp]() {
-        map3DApp->mainWindow()->show();
-    });
     map3DApp->initialize();
+
+    if (map3DApp->isMainWindowReady()) {
+        map3DApp->mainWindow()->show();
+    } else {
+        QObject::connect(map3DApp, &Application::mainWindowCreated, [map3DApp]() {
+            map3DApp->mainWindow()->show();
+        });
+    }
 
     return app.exec();
 }
