@@ -5,13 +5,29 @@
 #include <QSurfaceFormat>
 #include <iostream>
 #include <QObject>
+#include <QApplication>
+#include <QDebug>
 
 #include "application.h"
+#include "mainwindow.h"
 
 
 int main(int argc, char *argv[])
 {
-    Application *const app = Application::instance();
+    Application::performStartupConfiguration();
 
-    return app->main(argc, argv);
+    QApplication app(argc, argv);
+
+    Application *const map3DApp = Application::instance();
+    map3DApp->initialize();
+
+    if (map3DApp->isMainWindowReady()) {
+        map3DApp->mainWindow()->show();
+    } else {
+        QObject::connect(map3DApp, &Application::mainWindowCreated, [map3DApp]() {
+            map3DApp->mainWindow()->show();
+        });
+    }
+
+    return app.exec();
 }

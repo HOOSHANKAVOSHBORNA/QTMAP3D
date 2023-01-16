@@ -38,7 +38,7 @@ CMainWindow {
 
 
     id: wnd
-    visible: true
+    visible: false
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("MAP3D")

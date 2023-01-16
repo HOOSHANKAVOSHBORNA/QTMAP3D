@@ -23,7 +23,9 @@ private:
 
 public:
     static Application *instance();
-    int main(int argc, char **argv);
+
+    static void performStartupConfiguration();
+    void initialize();
 
 signals:
     void  mainWindowCreated();
@@ -31,7 +33,7 @@ signals:
 
 
 private:
-    void initializeSurfaceFormat();
+    static void initializeSurfaceFormat();
     void registerTypes();
     void initializeQmlEngine();
     void createMainWindow();
@@ -50,6 +52,9 @@ public:
     inline MainWindow *mainWindow() const { return mMainWindow; }
     inline QQmlApplicationEngine *qmlEngine() const { return mQmlEngine; }
     inline PluginManager *pluginManager() const { return mPluginManager; }
+
+    inline bool isMainWindowReady() const { return mMainWindowIsReady; }
+    inline bool isListWindowReady() const { return mListWindowIsReady; }
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;

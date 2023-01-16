@@ -22,14 +22,16 @@ Application *Application::instance()
     return &app;
 }
 
-int Application::main(int argc, char **argv)
+void Application::performStartupConfiguration()
 {
     qputenv("QSG_RENDER_LOOP", "basic"); // This line is very important and can not be removed
-
     initializeSurfaceFormat();
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QApplication app(argc, argv);
+
+}
+
+void Application::initialize()
+{
 
     initializeNetworkManager();
 
@@ -50,7 +52,6 @@ int Application::main(int argc, char **argv)
     createMainWindow();
     createListWindow();
 
-    return app.exec();
 }
 
 void Application::initializeSurfaceFormat()
