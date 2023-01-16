@@ -23,7 +23,9 @@ private:
 
 public:
     static Application *instance();
-    int main(int argc, char **argv);
+
+    static void performStartupConfiguration();
+    void initialize();
 
 signals:
     void  mainWindowCreated();
@@ -31,7 +33,7 @@ signals:
 
 
 private:
-    void initializeSurfaceFormat();
+    static void initializeSurfaceFormat();
     void registerTypes();
     void initializeQmlEngine();
     void createMainWindow();

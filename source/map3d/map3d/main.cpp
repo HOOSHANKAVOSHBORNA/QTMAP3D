@@ -5,13 +5,22 @@
 #include <QSurfaceFormat>
 #include <iostream>
 #include <QObject>
+#include <QApplication>
 
 #include "application.h"
 
 
 int main(int argc, char *argv[])
 {
-    Application *const app = Application::instance();
+    Application::performStartupConfiguration();
 
-    return app->main(argc, argv);
+    QApplication app(argc, argv);
+
+    Application *const map3DApp = Application::instance();
+    map3DApp->initialize();
+
+
+
+
+    return app.exec();
 }
