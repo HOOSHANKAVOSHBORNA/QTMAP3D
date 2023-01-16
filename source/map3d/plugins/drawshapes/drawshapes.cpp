@@ -382,8 +382,8 @@ void DrawShapes::onPolyMouseMove(QMouseEvent *event)
     if (mShape == Shape::POLYGON && mDrawingState == DrawingState::FINISH){
         //qDebug()<<"h:"<< mPolyHdragger->Dragger::getPosition().z();
 
-//        mPoly->setHeight(250000);
-        qDebug()<< mPoly->printHeight();
+        mPoly->setHeight(mPolyHdragger->Dragger::getPosition().z());
+        //qDebug()<< mPoly->printHeight();
     }
 }
 
@@ -531,11 +531,10 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::MiddleButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         if (mPoly->getSize() >= 3){
+//            mPoly = new Polygone(mMapController,false);
+//            mCircleGr = new osg::Group;
             mMapController->addNode(mPoly);
             mMapController->removeNode(mCircleGr);
-            mPoly = new Polygone(mMapController,false);
-            mCircleGr = new osg::Group;
-            mMapController->addNode(mCircleGr);
             mPolyHdragger = new osgEarth::Annotation::SphereDragger(mMapController->getMapNode());
             mPolyHdragger->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
             mMapController->addNode(mPolyHdragger);
@@ -543,11 +542,6 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
             mPoly->setFillColor(osgEarth::Color::Purple);
             mDrawingState = DrawingState::FINISH;
         }
-    }
-
-    if(event->button() == Qt::MouseButton::LeftButton && mDrawingState == DrawingState::FINISH)
-    {
-        mPoly->setHeight(250000);
     }
 
 }
