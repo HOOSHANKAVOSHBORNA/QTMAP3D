@@ -15,7 +15,7 @@ add_library(drawshapes SHARED
   drawshapes.cpp
   rect.cpp
   line.cpp
-  res.qrc
+  drawShapes.qrc
   sphere.cpp
   spherenode.cpp
   drawshapes.json

@@ -38,7 +38,7 @@ using namespace osgEarth::Annotation;
 DrawShapes::DrawShapes(QWidget *parent)
     : PluginInterface(parent)
 {
-    Q_INIT_RESOURCE(res);
+    Q_INIT_RESOURCE(drawShapes);
 }
 
 const QString CATEGORY = "Draw";
@@ -59,18 +59,18 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     mAnnoLayer = new osgEarth::Annotation::AnnotationLayer;
     Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/res/line.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/res/sphere.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/res/cone.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/res/cylinder.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/res/capsule.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/res/box.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/res/polygon.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/resources/capsule.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true});
     //desc->toolboxItemsList.push_back(new ItemDesc{EXTRPOLY, CATEGORY, "qrc:/res/extroPolygon.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/res/image.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/res/circle.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/res/ellipse.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/res/rectangle.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/resources/rectangle.png", true});
     return true;
 }
 
@@ -161,6 +161,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
             mShape = Shape::POLYGON;
+            mDrawingState = DrawingState::START;
             mCircleGr = new osg::Group;
             mMapController->addNode(mCircleGr);
             mPoly = new Polygone(mMapController, true);
@@ -189,9 +190,10 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
     {
         if(checked)
         {
-            mCircle = new Circle(mMapController,true);
-            x = new osgEarth::Annotation::SphereDragger(mMapController->getMapNode());
+
+            mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapController->getMapNode());
             mShape = Shape::CIRCLE;
+
         }
         else
         {
@@ -286,8 +288,11 @@ void DrawShapes::mouseMoveEvent(QMouseEvent *event)
     if(mShape == Shape::LINE){
         onLineMouseMove(event);
     }
-    else if (mDrawingState == DrawingState::FINISH) {
+    else if (mShape == Shape::CIRCLE) {
         onCircleMouseMove(event);
+    }
+    else if (mShape == Shape::POLYGON) {
+        onPolyMouseMove(event);
     }
 }
 
@@ -352,23 +357,32 @@ void DrawShapes::onLineMouseMove(QMouseEvent *event)
 
 void DrawShapes::onCircleMouseMove(QMouseEvent *event)
 {
-    osg::Vec3d worldPos;
-    mMapController->screenToWorld(event->x(), event->y(), worldPos);
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+//    osg::Vec3d worldPos;
+//    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+      if (mCircle){
+      mCircle->setCircleHeight(mCircleHdragger->Dragger::getPosition().z());
+}
+//    //x->setSize(30000);
+//    x->setColor(osg::Vec4f(0,255,0,1));
+//    x->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
+//    mMapController->addNode(x);
+//    x->addChild(mCircle);
+//    x->setDynamic(true);
+//    x->setHorizonCulling(true);
+//    x->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
+//    x->enter();
+//    mCircle->setClamp(false);
+      //    mCircle->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), x->getPosition().x(), x->getPosition().y(),x->getPosition().z()));
+}
 
-
-    //x->setSize(30000);
-    x->setColor(osg::Vec4f(0,255,0,1));
-    x->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
-    mMapController->addNode(x);
-    x->addChild(mCircle);
-    x->setDynamic(true);
-    x->setHorizonCulling(true);
-    x->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
-    x->enter();
-    mCircle->setClamp(false);
-    mCircle->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), x->getPosition().x(), x->getPosition().y(),x->getPosition().z()));
+void DrawShapes::onPolyMouseMove(QMouseEvent *event)
+{
+    if (mShape == Shape::POLYGON && mDrawingState == DrawingState::FINISH){
+        qDebug()<<"h:"<< mPolyHdragger->Dragger::getPosition().z();
+        mPoly->setHeight(25000);
+    }
 }
 
 void DrawShapes::onSphereBtnClick(QMouseEvent *event)
@@ -498,6 +512,8 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
+
+
         osgEarth::Annotation::CircleNode* circle = new osgEarth::Annotation::CircleNode;
         circle->set(
                     osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y(), 1000, osgEarth::ALTMODE_RELATIVE),
@@ -515,10 +531,16 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
         if (mPoly->getSize() >= 3){
             mMapController->addNode(mPoly);
             mMapController->removeNode(mCircleGr);
-            mPoly = new Polygone(mMapController,true);
+            mPoly = new Polygone(mMapController,false);
             mCircleGr = new osg::Group;
             mMapController->addNode(mCircleGr);
+            mPolyHdragger = new osgEarth::Annotation::SphereDragger(mMapController->getMapNode());
+            mPolyHdragger->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
+            mMapController->addNode(mPolyHdragger);
+            mPolyHdragger->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
             mPoly->setFillColor(osgEarth::Color::Purple);
+
+            mDrawingState = DrawingState::FINISH;
         }
     }
 
@@ -578,27 +600,33 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
     {
         mDrawingState = DrawingState::START;
 
-
+        mCircle = new Circle(mMapController,false);
         mCircle->setArcStart(0);
         mCircle->setArcEnd(360);
 
-        mCircleEditor = new osgEarth::Annotation::CircleNodeEditor(mCircle);
-        //mMapController->addNode(mCircleEditor);
 
+        //mMapController->addNode(mCircleEditor);
+            mCircleHdragger->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
+            mMapController->addNode(mCircleHdragger);
+            mCircleHdragger->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
         mCircle->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
         mMapController->addNode(mCircle);
+        mCircleEditor = new osgEarth::Annotation::CircleNodeEditor(mCircle);
+        mCircleEditor->getPositionDragger()->setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
+        //mMapController->addNode(mCircleEditor);
+
 
         event->accept();
     }
-//    if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
-//    {
+    if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
+    {
 
 
-//        mDrawingState = DrawingState::DELETE;
-//        mMapController->removeNode(mCircle);
-//        mMapController->removeNode(mCircleEditor);
-//        mCircle = nullptr;
-//        mCircleEditor = nullptr;
+        mDrawingState = DrawingState::DELETE;
+        mMapController->removeNode(mCircle);
+        mMapController->removeNode(mCircleEditor);
+        mCircle = nullptr;
+        mCircleEditor = nullptr;
 ////        mCircle->setClamp(false);
 ////        mCircle->setColor(osgEarth::Color::Blue);
 ////        mCircle->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Y_AXIS));
@@ -606,16 +634,16 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
 ////        mCircle->setArcEnd(60);
 ////        mCircle->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y(),geoPos.z()+1000000));
 ////        mCircle->setCircleHeight(25000);
-//        event->accept();
-//    }
-    if(event->button() == Qt::MouseButton::MidButton && mDrawingState==DrawingState::START)
-    {
-        mDrawingState = DrawingState::FINISH;
+        event->accept();
+    }
+//    if(event->button() == Qt::MouseButton::MidButton && mDrawingState==DrawingState::START)
+//    {
+//        mDrawingState = DrawingState::FINISH;
 //        mMapController->removeNode(mCircleEditor);
 //        mCircle = nullptr;
 //        mCircleEditor = nullptr;
-        event->accept();
-    }
+//        event->accept();
+//    }
 }
 
 void DrawShapes::onRectBtnClick(QMouseEvent *event)
@@ -676,6 +704,7 @@ void DrawShapes::onEllipseBtnClick(QMouseEvent *event)
         mEllipse->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
         mMapController->addNode(mEllipse);
         mElpsEditor = new EllipseNodeEditor(mEllipse);
+        mElpsEditor->getPositionDragger()->setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
         mMapController->addNode(mElpsEditor);
     }
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
@@ -692,9 +721,11 @@ void DrawShapes::onEllipseBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::FINISH;
+        mEllipse->setHeight(250000);
         mMapController->removeNode(mElpsEditor);
         mEllipse = nullptr;
         mElpsEditor = nullptr;
+
     }
 }
 

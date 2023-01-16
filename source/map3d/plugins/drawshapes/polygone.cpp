@@ -71,7 +71,7 @@ void Polygone::setClamp(bool clamp)
         style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     }
     else{
-        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
+        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
     }
     this->setStyle(style);
 }
@@ -88,7 +88,7 @@ void Polygone::clearPoints()
     mPolygonGeom->clear();
 }
 
-void Polygone::setHeight(float height)
+void Polygone::setHeight(double height)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = height;

@@ -53,7 +53,8 @@ private:
     osg::Group* mCircleGr;
     osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
 
-    osgEarth::Annotation::SphereDragger* x;
+    osgEarth::Annotation::SphereDragger* mCircleHdragger;
+    osgEarth::Annotation::SphereDragger* mPolyHdragger;
 //    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();
 
 
@@ -71,6 +72,7 @@ private slots:
     void onEllipseBtnClick(QMouseEvent* event);
     void onLineMouseMove(QMouseEvent* event);
     void onCircleMouseMove(QMouseEvent* event);
+    void onPolyMouseMove(QMouseEvent* event);
 
 
 private:
