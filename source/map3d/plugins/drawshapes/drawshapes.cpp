@@ -164,7 +164,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
             mDrawingState = DrawingState::START;
             mCircleGr = new osg::Group;
             mMapController->addNode(mCircleGr);
-            mPoly = new Polygone(mMapController, true);
+            mPoly = new Polygone(mMapController, false);
             mPoly->setFillColor(osgEarth::Color::Green);
         }
         else
@@ -380,8 +380,10 @@ void DrawShapes::onCircleMouseMove(QMouseEvent *event)
 void DrawShapes::onPolyMouseMove(QMouseEvent *event)
 {
     if (mShape == Shape::POLYGON && mDrawingState == DrawingState::FINISH){
-        qDebug()<<"h:"<< mPolyHdragger->Dragger::getPosition().z();
-        mPoly->setHeight(25000);
+        //qDebug()<<"h:"<< mPolyHdragger->Dragger::getPosition().z();
+
+//        mPoly->setHeight(250000);
+        qDebug()<< mPoly->printHeight();
     }
 }
 
@@ -505,7 +507,7 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+    if(event->button() == Qt::MouseButton::RightButton)
     {
         osgEarth::Symbology::Style circleStyle;
         circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Red, 0.5);
@@ -539,9 +541,13 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
             mMapController->addNode(mPolyHdragger);
             mPolyHdragger->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
             mPoly->setFillColor(osgEarth::Color::Purple);
-
             mDrawingState = DrawingState::FINISH;
         }
+    }
+
+    if(event->button() == Qt::MouseButton::LeftButton && mDrawingState == DrawingState::FINISH)
+    {
+        mPoly->setHeight(250000);
     }
 
 }

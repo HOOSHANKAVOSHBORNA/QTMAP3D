@@ -14,6 +14,7 @@ Polygone::Polygone(MapController *mapController, bool clamp)
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::White;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 5.0f;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
+    qDebug()<<"h:"<< geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
 //    geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 250000.0;
 //    geomStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 
@@ -21,7 +22,7 @@ Polygone::Polygone(MapController *mapController, bool clamp)
         geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     }
     else{
-        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
+        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
     }
 
     geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
@@ -88,11 +89,18 @@ void Polygone::clearPoints()
     mPolygonGeom->clear();
 }
 
-void Polygone::setHeight(double height)
+void Polygone::setHeight(float height)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = height;
     this->setStyle(style);
+}
+
+float Polygone::printHeight()
+{
+    auto style = this->getStyle();
+    float x = style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
+    return x;
 }
 
 unsigned long Polygone::getSize() const

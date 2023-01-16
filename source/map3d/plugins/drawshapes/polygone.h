@@ -13,7 +13,8 @@ public:
     void setClamp(bool clamp);
     void addPoints(osg::Vec3d point);
     void clearPoints();
-    void setHeight(double height);
+    void setHeight(float height);
+    float printHeight();
     unsigned long getSize()const;
 private:
     MapController* mMapController{nullptr};
