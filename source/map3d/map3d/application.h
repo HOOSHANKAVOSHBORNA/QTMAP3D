@@ -53,6 +53,9 @@ public:
     inline QQmlApplicationEngine *qmlEngine() const { return mQmlEngine; }
     inline PluginManager *pluginManager() const { return mPluginManager; }
 
+    inline bool isMainWindowReady() const { return mMainWindowIsReady; }
+    inline bool isListWindowReady() const { return mListWindowIsReady; }
+
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
     const QUrl mMainWindowUrl{QStringLiteral("qrc:///MainWindow.qml")};
