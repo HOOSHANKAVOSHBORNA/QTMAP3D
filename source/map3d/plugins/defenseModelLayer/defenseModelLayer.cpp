@@ -42,7 +42,7 @@
 
 
 #include "aircraftTableModel.h"
-#include "aircraftcontextmenumodel.h"
+#include "contextMenu.h"
 #include "aircraftInformation.h"
 #include "stationTableModel.h"
 #include "stationInformation.h"
@@ -79,7 +79,7 @@ bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDe
     //    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
     qmlRegisterType<AircraftTableModel>("Crystal", 1, 0, "AircraftTableModel");
-    qmlRegisterType<AircraftContextMenumodel>("Crystal", 1, 0, "AircraftContextMenumodel");
+    qmlRegisterType<ContextMenumodel>("Crystal", 1, 0, "ContextMenumodel");
     qmlRegisterType<AircraftInfoModel>("Crystal", 1, 0, "AircraftInfoModel");
     qmlRegisterType<StationTableModel>("Crystal", 1, 0, "StationTableModel");
     qmlRegisterType<StationInfoModel>("Crystal", 1, 0, "StationInfoModel");

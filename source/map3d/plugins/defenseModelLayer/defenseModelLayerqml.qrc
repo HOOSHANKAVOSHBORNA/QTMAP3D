@@ -2,7 +2,6 @@
     <qresource prefix="/modelplugin">
         <file>tmp.qml</file>
         <file>AircraftTableView.qml</file>
-        <file>AircraftContextmenuView.qml</file>
         <file>AircraftInfoView.qml</file>
         <file>AircraftInfoButtonGroup.qml</file>
         <file>StationTableView.qml</file>
@@ -11,6 +10,7 @@
         <file>SystemInfoView.qml</file>
         <file>SystemTableView.qml</file>
         <file>SystemInfoButtonGroup.qml</file>
+        <file>ContextMenuView.qml</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

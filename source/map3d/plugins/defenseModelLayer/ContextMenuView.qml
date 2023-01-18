@@ -6,7 +6,7 @@ import Crystal 1.0
 Item {
     id: root
     anchors.fill: parent
-    property AircraftContextMenumodel model: AircraftContextMenumodel {
+    property ContextMenumodel model: ContextMenumodel {
 
     }
 
