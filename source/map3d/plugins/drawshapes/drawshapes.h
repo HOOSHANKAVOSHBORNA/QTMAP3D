@@ -17,6 +17,7 @@
 #include "capsule.h"
 #include "box.h"
 #include "spherenode.h"
+#include "spherenodeeditor.h"
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
@@ -61,6 +62,7 @@ private:
 private slots:
     void onLineBtnClick(QMouseEvent* event);
     void onSphereBtnClick(QMouseEvent* event);
+    void onSphereBtnDoubleClick(QMouseEvent* event);
     void onConeBtnClick(QMouseEvent* event);
     void onCylinderBtnClick(QMouseEvent* event);
     void onCapsuleBtnClick(QMouseEvent* event);
@@ -77,7 +79,7 @@ private slots:
 
 private:
     Line* mLine{nullptr};
-    Sphere* mSphere;
+//    Sphere* mSphere;
     Cone* mCone;
     Cylinder* mCylinder;
     Box* mBox;
@@ -88,8 +90,10 @@ private:
     Capsule* mCapsule;
     MapController* mMapController{nullptr};
     osgEarth::Annotation::FeatureNode* mPathNode;
-    SphereNode* mSphereNode;
-    double mRadius{20000};
+
+    osg::ref_ptr<SphereNode> mSphereNode;
+    osg::ref_ptr<SphereNodeEditor> mSphereNodeEditor;
+    double mRadius{200000};
 //    osgEarth::Annotation::ModelNode* mSphere(float radius);
 //    osgEarth::Annotation::ModelNode* mDrawSphere(float radius);
 

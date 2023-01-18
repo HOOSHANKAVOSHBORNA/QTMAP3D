@@ -1,5 +1,5 @@
 ﻿#include "aircraftModelNode.h"
-#include "aircraftcontextmenumodel.h"
+#include "contextMenu.h"
 #include "aircraftInformation.h"
 #include "draw.h"
 
@@ -289,11 +289,11 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
             if (comp->status() == QQmlComponent::Ready) {
                 mCurrentContextMenuItem = static_cast<QQuickItem*>(comp->create(nullptr));
-                AircraftContextMenumodel *model = new AircraftContextMenumodel;
+                ContextMenumodel *model = new ContextMenumodel;
                 for(auto detectSystem: mInformation.DetectionSystems)
                     model->addRow(detectSystem);
 
-                mCurrentContextMenuItem->setProperty("model", QVariant::fromValue<AircraftContextMenumodel*>(model));
+                mCurrentContextMenuItem->setProperty("model", QVariant::fromValue<ContextMenumodel*>(model));
 
                 osg::Vec3d wordPos;
                 getPosition().toWorld(wordPos);
@@ -301,12 +301,12 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
                 QQmlEngine::setObjectOwnership(mCurrentContextMenuItem, QQmlEngine::JavaScriptOwnership);
                 mMapController->worldToScreen(wordPos,x, y);
                 mUIHandle->cmShowContextMenu(mCurrentContextMenuItem, static_cast<int>(x), static_cast<int>(y));
-                connect(model, &AircraftContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
+                connect(model, &ContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
             }
 
         });
 
-        comp->loadUrl(QUrl("qrc:/modelplugin/AircraftContextmenuView.qml"));
+        comp->loadUrl(QUrl("qrc:/modelplugin/ContextMenuView.qml"));
     }
     if(!onModel && mCurrentContextMenuItem){
         mUIHandle->cmHideContextMenu(mCurrentContextMenuItem);
