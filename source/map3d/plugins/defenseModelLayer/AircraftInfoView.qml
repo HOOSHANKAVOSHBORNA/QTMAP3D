@@ -640,17 +640,20 @@ Item {
                                 }
                                 color: "#474747"
                             }
-                            Repeater {
-                                model: DetectionSystems
-                                Label {
-                                    Layout.preferredWidth: rootItem.width - 30
+                            ColumnLayout {
                                     Layout.preferredHeight: implicitHeight
-                                    color: "white"
-                                    text: DetectionSystems[index]
-                                    horizontalAlignment: Qt.AlignLeft
-                                    Layout.bottomMargin: 3
-                                }
+                                Repeater {
+                                    model: DetectionSystems
+                                    Label {
+                                        Layout.preferredWidth: rootItem.width - 30
+                                        Layout.preferredHeight: implicitHeight
+                                        color: "white"
+                                        text: DetectionSystems[index]
+                                        horizontalAlignment: Qt.AlignLeft
+                                        Layout.bottomMargin: 3
+                                    }
 
+                                }
                             }
                         }
 //                        Rectangle {
@@ -671,17 +674,38 @@ Item {
                                 color: "#1a75ff"
                             }
                         }
+                        RowLayout {
+                            spacing: 2
+                            Layout.preferredWidth: rootItem.width
+                            Rectangle {
+                                Layout.preferredWidth: img4.width + 6
+                                Layout.fillHeight: true
+                                Image {
+                                    anchors.top: parent.top
+                                    id: img4
+                                    verticalAlignment: Image.AlignTop
+                                    source: "qrc:/resources/station_lV.png"
+                                    sourceSize: Qt.size(24,24)
+                                    width: 24
+                                    height:24
 
-                        Repeater {
-                            model: Sends
-                            Label {
-                                Layout.preferredWidth: rootItem.width - 30
-                                Layout.preferredHeight: implicitHeight
-                                color: "white"
-                                text: Sends[index]
-                                horizontalAlignment: Qt.AlignLeft
+                                }
+                                color: "#474747"
                             }
+                            ColumnLayout {
+                                Layout.preferredHeight: implicitHeight
+                                Repeater {
+                                    model: Sends
+                                    Label {
+                                        Layout.preferredWidth: rootItem.width - 30
+                                        Layout.preferredHeight: implicitHeight
+                                        color: "white"
+                                        text: Sends[index]
+                                        horizontalAlignment: Qt.AlignLeft
+                                    }
 
+                                }
+                            }
                         }
                     }
                 }
