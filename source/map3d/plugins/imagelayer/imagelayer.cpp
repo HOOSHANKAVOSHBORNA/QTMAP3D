@@ -81,6 +81,8 @@ void ImageLayer::addXYZ()
     examples[tr("OpenWeatherMap")] = "http://[abc].tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png";
     examples[tr("Map Box")] = "http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg?access_token=YOUR_TOKEN_HERE";
 
+    examples[tr("Carto CDN")] = "https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png";
+
     URLDialog* dialog = new URLDialog(examples,nullptr);
     dialog->setWindowTitle("Select XYZ url");
 

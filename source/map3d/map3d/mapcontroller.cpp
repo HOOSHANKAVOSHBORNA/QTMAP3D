@@ -559,7 +559,8 @@ void MapController::initializeOsgEarth()
     installEventHandler();
 
     mMapRoot = new osg::Group();
-    mSkyNode = osgEarth::Util::SkyNode::create(mMapNode);
+    osgEarth::Util::SkyOptions sopts;
+    mSkyNode = osgEarth::Util::SkyNode::create(sopts);
     createMapNode(true);
 
     mOsgRenderer->setSceneData(mMapRoot);
@@ -595,7 +596,7 @@ void MapController::createMapNode(bool bGeocentric)
 
     mSkyNode->addChild(mMapNode);
     mMapRoot->addChild(mSkyNode);
-//    mMapRoot->addChild(mMapNode);
+    //mMapRoot->addChild(mMapNode);
 }
 
 void MapController::createCameraManipulator()
