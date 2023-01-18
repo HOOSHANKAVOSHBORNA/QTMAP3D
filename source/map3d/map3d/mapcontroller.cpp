@@ -259,14 +259,14 @@ void MapController::goToPosition(double latitude, double longitude, double range
     setViewpoint(vp, 3.0);
 }
 
-void MapController::goToPosition(osgEarth::GeoPoint mapPoint, double range)
+void MapController::goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration)
 {
     if(mapPoint.isRelative())
         mapPoint.makeAbsolute(mMapNode->getTerrain());
     osgEarth::Viewpoint vp;
     vp.focalPoint() = mapPoint;
     vp.range()= range;
-    setViewpoint(vp, 3.0);
+    setViewpoint(vp, duration);
 }
 
 void MapController::setMode(bool is3DView)

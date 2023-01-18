@@ -382,6 +382,11 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 
         //            mModelNodes[AIRCRAFT].remove(QString(modelNode->getName().c_str()));
         //        });
+        if(mModelNodes.contains(SYSTEM))
+        {
+            auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM].first());
+            systemModelNode->setAssignedModelNode(aircraftModelNode);
+        }
     }
     //update information------------------------------------------------------------------
     aircraftModelNode->setInformation(aircraftInfo);

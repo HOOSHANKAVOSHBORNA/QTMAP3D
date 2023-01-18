@@ -86,11 +86,6 @@ void SystemModelNode::goOnTrack()
     mMapController->setTrackNode(getGeoTransform());
 }
 
-void SystemModelNode::frameEvent()
-{
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
-}
-
 void SystemModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -135,10 +130,38 @@ void SystemModelNode::showInfoWidget()
     systemInformation->show();
 }
 
+DefenseModelNode *SystemModelNode::getAssignedModelNode() const
+{
+    return mAssignedModelNode;
+}
+
+void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
+{
+    mAssignedModelNode = assignedModelNode;
+    mAssignedLine = new Line(mMapController);
+    mAssignedLine->setLineClamp(false);
+    mAssignedLine->setLineColor(osgEarth::Color::Green);
+    mAssignedLine->setLineWidth(6);
+    mMapController->addNode(mAssignedLine->getNode());
+}
+
+void SystemModelNode::frameEvent()
+{
+    //--update lable position---------------------------------------------------
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    //--update assigned line----------------------------------------------------
+    if(mAssignedModelNode)
+    {
+        mAssignedLine->clearPoints();
+        mAssignedLine->addPoint(getPosition().vec3d());
+        mAssignedLine->addPoint(mAssignedModelNode->getPosition().vec3d());
+    }
+}
+
 void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
-//    qDebug()<<"type:"<<event->type();
-//    BaseModel::mousePressEvent(event, onModel);
+    //    qDebug()<<"type:"<<event->type();
+    //    BaseModel::mousePressEvent(event, onModel);
     if(event->button() == Qt::LeftButton)
     {
         onLeftButtonClicked(onModel);

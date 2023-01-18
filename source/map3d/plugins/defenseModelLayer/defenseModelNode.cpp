@@ -457,6 +457,10 @@ void DefenseModelNode::select(bool val)
 
 void DefenseModelNode::hover(bool val)
 {
+//    const osg::BoundingSphere& bound = getBound();
+//    qDebug()<<"radius: "<<bound.radius();
+//    qDebug()<<"center:("<<bound.center().x()<<", "<<bound.center().y()<<", "<<bound.center().z()<<")";
+    //---------------------------------------------------
     mLableNode->setNodeMask(val);
     mNode2D->setValue(0, val);
     mNode2D->setValue(1, !val);
@@ -466,12 +470,12 @@ void DefenseModelNode::hover(bool val)
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     if(!val)
     {
-        mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 0.0, 0.0, 0.5));
+        mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 0.0, 0.0, 1.0));
         //        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Red;
     }
     else
     {
-        mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 0.2f, 0.5));
+        mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(1.0, 1.0, 0.2f, 1.0));
         //        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
     }
     getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);

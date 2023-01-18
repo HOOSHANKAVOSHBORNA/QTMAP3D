@@ -61,7 +61,7 @@ public slots:
     void zoom(double);
     void goToHome();
     void goToPosition(double latitude, double longitude, double range);
-    void goToPosition(osgEarth::GeoPoint mapPoint, double range);
+    void goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration = 3.0);
     void setMode(bool is3DView);
     bool getMode();
     void setGeocentric(bool geocentric);

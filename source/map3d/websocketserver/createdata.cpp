@@ -80,7 +80,7 @@ void CreateData::updateAircraftInfo()
         int randomX = (100 + (qrand() % 19));
         int randomY = (100 + (qrand() % 19));
 
-        altitude = (2000 + (qrand() % (9000 - 2000)));
+        //altitude = (2000 + (qrand() % (9000 - 2000)));
 
         speed = (138 + (qrand() % 137));
         heading = (0 + (qrand() % 361));

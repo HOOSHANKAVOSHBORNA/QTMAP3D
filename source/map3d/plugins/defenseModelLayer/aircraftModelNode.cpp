@@ -238,8 +238,8 @@ void AircraftModelNode::setInformation(AircraftInfo info)
 
 void AircraftModelNode::goOnTrack()
 {
+    //mMapController->goToPosition(getPosition(), 200, 0);
     mMapController->setTrackNode(getGeoTransform());
-    //mMapController->goToPosition(getPosition(), 200);
 }
 
 void AircraftModelNode::onLeftButtonClicked(bool val)
@@ -331,7 +331,8 @@ void AircraftModelNode::curentPosition(osgEarth::GeoPoint pos)
 void AircraftModelNode::onGotoButtonClicked()
 {
     //    goOnTrack();
-    mMapController->goToPosition(getPosition(), 200);
+    mMapController->goToPosition(getPosition(), 200, 0);
+    mMapController->setTrackNode(getGeoTransform());
 }
 
 void AircraftModelNode::onRouteButtonToggled(bool check)

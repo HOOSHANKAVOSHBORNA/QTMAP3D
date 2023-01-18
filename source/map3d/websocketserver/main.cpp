@@ -17,18 +17,20 @@ int main(int argc, char *argv[])
 
     createData.createStationInfo();
     createData.createSystemInfo();
+    createData.createAircraftInfo();
     //----------------------------------------------------------
     QObject::connect(timer, &QTimer::timeout, [&](){
-        createData.createAircraftInfo();
-        createData.updateAircraftInfo();
-        for(auto targetInfo:createData.aircraftList)
-            server.sendMessageToAll(targetInfo);
         //---------------------------------------------
         for(auto station:createData.stationList)
             server.sendMessageToAll(station);
         //---------------------------------------------
         for(auto system:createData.systemList)
             server.sendMessageToAll(system);
+        //---------------------------------------------
+        //createData.createAircraftInfo();
+        createData.updateAircraftInfo();
+        for(auto targetInfo:createData.aircraftList)
+            server.sendMessageToAll(targetInfo);
     });
     timer->start(10000);
     //---------------------------------------------------------

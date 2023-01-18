@@ -6,7 +6,9 @@
 #include "systemInformation.h"
 #include "circle.h"
 #include "spherenode.h"
-#include <polygone.h>
+#include "polygone.h"
+#include "aircraftModelNode.h"
+#include "line.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -23,6 +25,10 @@ public slots:
 public:
     virtual void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
+
+    DefenseModelNode *getAssignedModelNode() const;
+    void setAssignedModelNode(DefenseModelNode *assignedModelNode);
+
 protected:
 private slots:
     void onGotoButtonClicked();
@@ -41,6 +47,8 @@ private:
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
     osg::ref_ptr<Polygone> mWezPolygon;
+    DefenseModelNode* mAssignedModelNode{nullptr};
+    Line* mAssignedLine;
 };
 
 #endif // SYSTEM_H
