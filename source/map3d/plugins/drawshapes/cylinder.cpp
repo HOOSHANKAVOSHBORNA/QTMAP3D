@@ -5,7 +5,7 @@
 Cylinder::Cylinder(MapController *mapController, float radius, float height, bool clamp)
 {
     mMapController = mapController;
-    osg::Vec3 eye(0.f,0.f,0.f);
+    osg::Vec3 eye(0.f,0.f,radius + height);
 
     pCylinderShape = new osg::Cylinder(eye, radius, height);
     pShapeDrawable = new osg::ShapeDrawable(pCylinderShape.get());

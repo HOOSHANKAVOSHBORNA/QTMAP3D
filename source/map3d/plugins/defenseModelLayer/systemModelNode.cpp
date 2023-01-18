@@ -67,6 +67,8 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
 
     mMezSphere = new SphereNode();
+    mMezSphere->setColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
+    mMezSphere->setSphereShape(SphereNode::SphereShape::SphereTopHalf);
 
     mWezPolygon = new Polygone(mMapController, false);
     mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
@@ -218,7 +220,6 @@ void SystemModelNode::onMezButtonToggled(bool checked)
     {
         mMezSphere->setPosition(getPosition());
         mMezSphere->setRadius(mInformation.MezRange);
-        mMezSphere->setColor(osg::Vec4(1.0, 0.0, 1.0, 0.2f));
         mMapController->addNode(mMezSphere);
     }
     else

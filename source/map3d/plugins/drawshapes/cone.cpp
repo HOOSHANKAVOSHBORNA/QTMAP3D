@@ -4,7 +4,7 @@
 Cone::Cone(MapController *mapController, float radius, float height, bool clamp)
 {
     mMapController = mapController;
-    osg::Vec3 eye(0.f,0.f,0.f);
+    osg::Vec3 eye(0.f,0.f,radius + height);
 
     pConeShape = new osg::Cone(eye, radius, height);
     pShapeDrawable = new osg::ShapeDrawable(pConeShape.get());
