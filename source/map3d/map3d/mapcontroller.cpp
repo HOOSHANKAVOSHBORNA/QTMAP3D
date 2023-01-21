@@ -337,6 +337,10 @@ void MapController::frame()
     }
 
 
+
+    //
+    // Calculate FPS
+    //
     static std::deque<std::chrono::high_resolution_clock::time_point> timepoint_list;
     const auto now_timepoint = std::chrono::high_resolution_clock::now();
 
@@ -357,6 +361,25 @@ void MapController::frame()
             emit fpsChanged(fps);
         }
     }
+
+
+
+    auto sunLight = mSkyNode->getSunLight();
+    sunLight->setAmbient(osg::Vec4(0.01f, 0.01f, 0.01f, 1));
+    sunLight->setDiffuse(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
+    sunLight->setSpecular(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
+
+
+    float splen = sunLight->getPosition().length();
+    osg::Vec3 spos = mEarthManipulator->getMatrix().getTrans();
+    spos.normalize();
+    spos *= splen;
+
+    mSkyNode->setSunVisible(false);
+
+    sunLight->setPosition(osg::Vec4(spos, 0));
+
+
 
 }
 
