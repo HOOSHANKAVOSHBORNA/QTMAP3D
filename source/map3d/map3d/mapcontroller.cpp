@@ -363,22 +363,21 @@ void MapController::frame()
     }
 
 
-
+    //
+    // Set SkyNode sun light rotate with camera
+    //
     auto sunLight = mSkyNode->getSunLight();
     sunLight->setAmbient(osg::Vec4(0.01f, 0.01f, 0.01f, 1));
     sunLight->setDiffuse(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
     sunLight->setSpecular(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
-
 
     float splen = sunLight->getPosition().length();
     osg::Vec3 spos = mEarthManipulator->getMatrix().getTrans();
     spos.normalize();
     spos *= splen;
 
-    mSkyNode->setSunVisible(false);
-
     sunLight->setPosition(osg::Vec4(spos, 0));
-
+    mSkyNode->setSunVisible(false);
 
 
 }
