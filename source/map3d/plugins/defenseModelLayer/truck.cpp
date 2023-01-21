@@ -16,9 +16,10 @@ osg::ref_ptr<osg::Node> dualWheelNode;
 osg::ref_ptr<osg::Node> spinerNode;
 osg::ref_ptr<osg::Node> holderNode;
 
-Truck::Truck(osgEarth::MapNode *mapNode, QObject *parent):
+Truck::Truck(osgEarth::MapNode *mapNode, GeoPositionNode *parent):
     osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
 {
+    mParent = parent;
     //--read nodes-------------------------------------------------------------------------------------------
     if(!truckNode.valid())
         truckNode     = osgDB::readRefNodeFile("../data/models/system/truck/truck-body.osgt");
@@ -31,19 +32,19 @@ Truck::Truck(osgEarth::MapNode *mapNode, QObject *parent):
     if(!holderNode.valid())
         holderNode    = osgDB::readRefNodeFile("../data/models/system/truck/truck-holder.osgt");
     //--create rockets---------------------------------------------------------------------------------------
-    mRocket1 = new Rocket(getMapNode(),parent);
+    mRocket1 = new Rocket(getMapNode(),nullptr);
     mRocket1->setType(ROCKET);
     mRocket1->setQStringName(ROCKET + 1);
     mRocket1->getPositionAttitudeTransform()->setPosition(osg::Vec3d(6.8, -1.3, 0));
     mRocket1->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(-90.0),osg::Z_AXIS));
 
-    mRocket2 = new Rocket(getMapNode(),parent);
+    mRocket2 = new Rocket(getMapNode(),nullptr);
     mRocket2->setType(ROCKET);
     mRocket2->setQStringName(ROCKET + 2);
     mRocket2->getPositionAttitudeTransform()->setPosition(osg::Vec3d(6.8, 0.0, 0));
     mRocket2->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(-90.0),osg::Z_AXIS));
 
-    mRocket3 = new Rocket(getMapNode(),parent);
+    mRocket3 = new Rocket(getMapNode(),nullptr);
     mRocket3->setType(ROCKET);
     mRocket3->setQStringName(ROCKET + 3);
     mRocket3->getPositionAttitudeTransform()->setPosition(osg::Vec3d(6.8, 1.3, 0));
@@ -169,7 +170,7 @@ void Truck::moveTo(const osg::Vec3d &pos, double speed)
     mRightWheelUpdateCallback->setPause(false);
 
     osg::Vec3d currentWPoint;
-    getPosition().toWorld(currentWPoint);
+    mParent->getPosition().toWorld(currentWPoint);
 
     osg::Vec3d wPos;
     osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), pos).toWorld(wPos);
@@ -179,7 +180,7 @@ void Truck::moveTo(const osg::Vec3d &pos, double speed)
     double distance = wDef.normalize();
     //transfer def vector to local----------------------------------------
     osg::Matrixd localTransfer;
-    getPosition().createWorldToLocal(localTransfer);
+    mParent->getPosition().createWorldToLocal(localTransfer);
     osg::Quat localRotation;
     localRotation = localTransfer.getRotate();
     osg::Matrixd rotateTransfer = osg::Matrixd::rotate(localRotation);
@@ -198,15 +199,15 @@ void Truck::moveTo(const osg::Vec3d &pos, double speed)
 void Truck::aimTarget(const osg::Vec3d &pos)
 {
     osg::Vec3d currentWPoint;
-    getPosition().toWorld(currentWPoint);
+    mParent->getPosition().toWorld(currentWPoint);
 
     osg::Vec3d wPos;
-    osgEarth::GeoPoint(osgEarth::SpatialReference::get("wgs84"), pos).toWorld(wPos);
+    osgEarth::GeoPoint(getMapNode()->getMapSRS(), pos).toWorld(wPos);
 
     osg::Vec3d wDef = wPos - currentWPoint;
     //--transfer def vector to local----------------------------------------
     osg::Matrixd localTransfer;
-    getPosition().createWorldToLocal(localTransfer);
+    mParent->getPosition().createWorldToLocal(localTransfer);
     osg::Quat localRotation;
     localRotation = localTransfer.getRotate();
     osg::Matrixd rotateTransfer = osg::Matrixd::rotate(localRotation);
@@ -214,7 +215,7 @@ void Truck::aimTarget(const osg::Vec3d &pos)
     //--set spiner rotation-------------------------------------------------------------------
     //    currentSpinPos += _wholeTruckTransform->getMatrix().getTrans();
     //    currentSpinPos += _spinerTransform->getMatrix().getTrans();
-    osg::Quat truckRot = this->getPositionAttitudeTransform()->getAttitude();
+    osg::Quat truckRot = getPositionAttitudeTransform()->getAttitude();
     osg::Matrixd truckRotMat = osg::Matrixd::rotate(truckRot);
     osg::Quat rotateSpiner;
     rotateSpiner.makeRotate(osg::X_AXIS * truckRotMat , osg::Vec3f(localDef.x(),localDef.y(), 0));
@@ -264,6 +265,8 @@ bool Truck::shoot(const osg::Vec3d &pos, double speed)
         rocketPosition.fromWorld(getMapNode()->getMapSRS(), computeRocketWorldPosition(mRocket3));
         mRocket3->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0, 0, 0));
         mRocket3->setPosition(rocketPosition);
+//        auto er = getPosition();
+//        mRocket3->setPosition(getPosition());
 
         mHolder->removeChild(mRocket3);
         getMapNode()->addChild(mRocket3);
@@ -319,7 +322,7 @@ osg::Vec3d Truck::computeRocketWorldPosition(Rocket *rocket)
     osg::Matrix toTruckMatrix;
     getPositionAttitudeTransform()->computeLocalToWorldMatrix(toTruckMatrix, mSpiner->asNodeVisitor());
     osg::Matrix toWorldMatrix;
-    getPosition().createLocalToWorld(toWorldMatrix);
+    mParent->getPosition().createLocalToWorld(toWorldMatrix);
     osg::Vec3d worldPosition = localPosition * toHolderMatrix * toSpinnerMatrix * toTruckMatrix * toWorldMatrix;
     //draw line for debuge------------------------------------------------
     //    getMapNode()->getParent(0)->getParent(0)->addChild(drawCordination(worldPosition));

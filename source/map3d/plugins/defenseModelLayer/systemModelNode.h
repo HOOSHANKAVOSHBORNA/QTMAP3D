@@ -9,6 +9,7 @@
 #include "polygone.h"
 #include "aircraftModelNode.h"
 #include "line.h"
+#include "truck.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -28,6 +29,7 @@ public:
 
     DefenseModelNode *getAssignedModelNode() const;
     void setAssignedModelNode(DefenseModelNode *assignedModelNode);
+    void fire();
 
 protected:
 private slots:
@@ -38,6 +40,7 @@ private slots:
     void onActiveButtonToggled(bool checked);
     void onModeChanged(bool is3DView);
 private:
+    void collision();
     void showInfoWidget();
 private:
     MapController* mMapController{nullptr};
@@ -49,6 +52,9 @@ private:
     osg::ref_ptr<Polygone> mWezPolygon;
     DefenseModelNode* mAssignedModelNode{nullptr};
     Line* mAssignedLine;
+    osg::ref_ptr<Truck> mTruck;
+    Rocket* mFiredRocket{nullptr};
+    bool mHit{false};
 };
 
 #endif // SYSTEM_H

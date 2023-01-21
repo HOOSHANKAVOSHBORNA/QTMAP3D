@@ -51,15 +51,16 @@ public:
     QString getQStringName();
     virtual void setGeographicPosition(const osgEarth::GeoPoint& pos, double heading);
     osg::Vec3d getGeographicPosition() const;
-    bool hasHit() const;
-    DefenseModelNode *getFollowModel() const;
-    void setFollowModel(DefenseModelNode *followModel);
+//    bool hasHit() const;
+//    DefenseModelNode *getFollowModel() const;
+//    void setFollowModel(DefenseModelNode *followModel);
     virtual void stop(){}
+    void collision();
 //    virtual void traverse(osg::NodeVisitor& nv) override;
 
 signals:
-    void positionChanged(osgEarth::GeoPoint pos);
-    void hit(DefenseModelNode *hitWith);
+//    void positionChanged(osgEarth::GeoPoint pos);
+//    void hit(DefenseModelNode *hitWith);
 protected:
 //    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
     virtual void playExplosionEffect(float scale);
@@ -80,13 +81,12 @@ protected:
     osg::ref_ptr<osg::Switch> mNode2D;
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLableNode;
 private:
-    void collision(DefenseModelNode *collidedWith);
     friend class ModelAnimationPathCallback;
     friend class PickHandler;
 private:
-    bool mHasHit{false};
+    //bool mHasHit{false};
     QString mType;
-    DefenseModelNode* mFollowModel{nullptr};
+    //DefenseModelNode* mFollowModel{nullptr};
 };
 
 #endif // BASEMODEL_H

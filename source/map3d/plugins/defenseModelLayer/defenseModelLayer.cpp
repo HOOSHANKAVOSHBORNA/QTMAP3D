@@ -123,48 +123,52 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     }
     if(CATEGORY == category && name == ADD_ROCKET)
     {
-        // fallow racket
-        if(!mModelNodes[AIRCRAFT].isEmpty())
-        {
-            auto truckNames = mModelNodes[TRUCK].keys();
-            for(auto truckName: truckNames)
-            {
-                auto modeltruck = dynamic_cast<Truck*>(mModelNodes[TRUCK][truckName]);
-                if(modeltruck->hasRocket())
-                {
-                    //                        addRocketModel(modeltruck->getPosition().vec3d());
-                    //                        auto modelRocket = dynamic_cast<Rocket*>(mModels[ROCKET].last());
-                    auto activeRocket = modeltruck->getActiveRocket();
-                    auto modelAirplane = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT].last());
-                    modelAirplane->stop();//
-                    activeRocket->setFollowModel(modelAirplane);
-                    //modelRocket->setTruckModel(modeltruck);
+        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM].first());
+        if(systemModelNode)
+            systemModelNode->fire();
 
-                    //                        modeltruck->aimTarget(modelAirplane->getPosition().vec3d());
+//        // fallow racket
+//        if(!mModelNodes[AIRCRAFT].isEmpty())
+//        {
+//            auto truckNames = mModelNodes[TRUCK].keys();
+//            for(auto truckName: truckNames)
+//            {
+//                auto modeltruck = dynamic_cast<Truck*>(mModelNodes[TRUCK][truckName]);
+//                if(modeltruck->hasRocket())
+//                {
+//                    //                        addRocketModel(modeltruck->getPosition().vec3d());
+//                    //                        auto modelRocket = dynamic_cast<Rocket*>(mModels[ROCKET].last());
+//                    auto activeRocket = modeltruck->getActiveRocket();
+//                    auto modelAirplane = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT].last());
+//                    modelAirplane->stop();//
+//                    activeRocket->setFollowModel(modelAirplane);
+//                    //modelRocket->setTruckModel(modeltruck);
 
-                    modelAirplane->setFollowModel(activeRocket);
-                    modelAirplane->setTruckModel(modeltruck);
+//                    //                        modeltruck->aimTarget(modelAirplane->getPosition().vec3d());
 
-                    modeltruck->shoot(modelAirplane->getPosition().vec3d(), 2000);//1000 m/s
-                    //                        activeRocket->setPosition(modeltruck->getPosition());
-                    //                        mMap3dWidget->addNode(activeRocket);
-                    //                        activeRocket->shoot(modelAirplane->getPosition().vec3d(), 3000);
+//                    modelAirplane->setFollowModel(activeRocket);
+//                    modelAirplane->setTruckModel(modeltruck);
 
-                    mMapController->setTrackNode(activeRocket->getGeoTransform());
+//                    modeltruck->shoot(modelAirplane->getPosition().vec3d(), 2000);//1000 m/s
+//                    //                        activeRocket->setPosition(modeltruck->getPosition());
+//                    //                        mMap3dWidget->addNode(activeRocket);
+//                    //                        activeRocket->shoot(modelAirplane->getPosition().vec3d(), 3000);
 
-                    //draw line
-                    //                        osg::Vec3d truckPosition;
-                    //                        modeltruck->getPosition().toWorld(truckPosition);
-                    //                        osg::Vec3d wPoint1;
-                    //                        modelAirplane->getPosition().toWorld(wPoint1);
-                    //                        osg::Vec3Array* keyPoint = new osg::Vec3Array;
-                    //                        keyPoint->push_back(truckPosition + osg::Vec3d(5, 0, -2.6));
-                    //                        keyPoint->push_back(wPoint1);
-                    //                        mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
-                    break;
-                }
-            }
-        }
+//                    mMapController->setTrackNode(activeRocket->getGeoTransform());
+
+//                    //draw line
+//                    //                        osg::Vec3d truckPosition;
+//                    //                        modeltruck->getPosition().toWorld(truckPosition);
+//                    //                        osg::Vec3d wPoint1;
+//                    //                        modelAirplane->getPosition().toWorld(wPoint1);
+//                    //                        osg::Vec3Array* keyPoint = new osg::Vec3Array;
+//                    //                        keyPoint->push_back(truckPosition + osg::Vec3d(5, 0, -2.6));
+//                    //                        keyPoint->push_back(wPoint1);
+//                    //                        mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
+//                    break;
+//                }
+//            }
+//        }
     }
     else if(CATEGORY == category && name == ADD_TRUCK)
     {
@@ -302,7 +306,7 @@ void DefenseModelLayer::addTruckModel()
 {
     osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 100, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     //create and setting model--------------------------------------------
-    osg::ref_ptr<Truck> model = new Truck(mMapController->getMapNode());
+    osg::ref_ptr<Truck> model = new Truck(mMapController->getMapNode(), nullptr);
     QString name = TRUCK + QString::number(mModelNodes[TRUCK].count());
     model->setName(name.toStdString());
     model->setPosition(position);
@@ -402,15 +406,15 @@ void DefenseModelLayer::addRocketModel(osg::Vec3d position)
 {
     osgEarth::GeoPoint geoposition(mMapController->getMapSRS()->getGeographicSRS(),position);
     //create and setting model--------------------------------------------
-    osg::ref_ptr<Rocket> model = new Rocket(mMapController->getMapNode());
+    osg::ref_ptr<Rocket> model = new Rocket(mMapController->getMapNode(), parent());
     QString name = ROCKET + QString::number(mModelNodes[ROCKET].count());
     model->setName(name.toStdString());
     model->setGeographicPosition(geoposition, 0.0);
     model->setScale(osg::Vec3(1,1,1));
 
-    QObject::connect(model.get(), &DefenseModelNode::positionChanged, [=](osgEarth::GeoPoint position){
-        positionChanged(ROCKET, name, position);
-    });
+//    QObject::connect(model.get(), &DefenseModelNode::positionChanged, [=](osgEarth::GeoPoint position){
+//        positionChanged(ROCKET, name, position);
+//    });
 
     //add to container-----------------------------------------------------
     mModelNodes[ROCKET][name] = model;
@@ -426,10 +430,10 @@ void DefenseModelLayer::addRocketModel(osg::Vec3d position)
     //    double rnd = qrand() % 360;
     //    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
     //hit------------------------------------------------------------------
-    QObject::connect(model.get(), &DefenseModelNode::hit, [=](DefenseModelNode */*other*/){
+//    QObject::connect(model.get(), &DefenseModelNode::hit, [=](DefenseModelNode */*other*/){
 
-        mModelNodes[ROCKET].remove(QString(model->getName().c_str()));
-    });
+//        mModelNodes[ROCKET].remove(QString(model->getName().c_str()));
+//    });
 }
 
 void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)

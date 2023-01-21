@@ -4,29 +4,32 @@
 Rocket::Rocket(osgEarth::MapNode *mapNode, QObject *parent):
     DefenseModelNode(mapNode, parent)
 {
-//    osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/system/truck/rocket.osgb");
+    osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/system/truck/rocket.osgb");
 
-//    if (!node)
-//    {
-//        //todo show massage here
-//        return;
-//    }
+    if (!node)
+    {
+        //todo show massage here
+        return;
+    }
+    mNode3D = node.get();
 //    //create style-------------------------------------------------------------------------------------------------
-//     mRoot = new osg::Switch;
-//    osgEarth::Symbology::Style  style;
-//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRoot);
-//    setStyle(style);
+    mRootNode = new osg::LOD;
+    mNode2D = new osg::Switch;
+    osgEarth::Symbology::Style  style;
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
+    setStyle(style);
+    mRootNode->addChild(mNode3D, 0, std::numeric_limits<float>::max());
 
-//    //osg::Vec3d center = getBound().center();
-//    float radius = getBound().radius();
-//    float scale = 3;
+    //osg::Vec3d center = getBound().center();
+    float radius = getBound().radius();
+    float scale = 3;
 
-//    mFire = new osgParticle::FireEffect(osg::Vec3f(0, -2*radius,0),scale,100.0);
-//    mFire->setUseLocalParticleSystem(false);
+    mFire = new osgParticle::FireEffect(osg::Vec3f(0, -2*radius,0),scale,100.0);
+    mFire->setUseLocalParticleSystem(false);
 
-//    mSmoke = new osgParticle::SmokeTrailEffect(osg::Vec3f(0, -2*radius,0),scale/3,100.0);
-//    mSmoke->setUseLocalParticleSystem(false);
-//    mIs3D = true;
+    mSmoke = new osgParticle::SmokeTrailEffect(osg::Vec3f(0, -2*radius,0),scale/3,100.0);
+    mSmoke->setUseLocalParticleSystem(false);
+    mIs3D = true;
 
 //    mRoot->addChild(node, false);
 //    mRoot->addChild(node,true);
@@ -82,6 +85,7 @@ void Rocket::shoot(const osg::Vec3d &pos, double speed)
 
 void Rocket::stop()
 {
+    //setNodeMask(false);
     removeEffect();
 }
 

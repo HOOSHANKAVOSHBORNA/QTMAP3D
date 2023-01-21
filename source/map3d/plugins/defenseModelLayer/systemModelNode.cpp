@@ -1,11 +1,10 @@
 #include "systemModelNode.h"
-#include "truck.h"
 #include "polygone.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Material>
 
-const int RANGE3D = 500;
+const float RANGE3D = std::numeric_limits<float>::max();;
 
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler->getMapNode(), parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
@@ -17,8 +16,9 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-//    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_GPU;
-//    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_GPU;
+    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     setStyle(rootStyle);
     //--create 2D Nodes---------------------------------------------------------------------------
     osg::Image* redIcon = osgDB::readImageFile("../data/models/system/system_red.png");
@@ -37,8 +37,8 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
     //--create 3D node---------------------------------------------------------------------------
-    osg::ref_ptr<Truck> truck = new Truck(getMapNode());
-    mNode3D = truck;
+    mTruck = new Truck(getMapNode(), this);
+    mNode3D = mTruck;
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
@@ -103,6 +103,25 @@ void SystemModelNode::onModeChanged(bool is3DView)
     select(mIsSelected);
 }
 
+void SystemModelNode::collision()
+{
+    if(mAssignedModelNode && mFiredRocket)
+    {
+        osg::Vec3d wAssignedPosition;
+        mAssignedModelNode->getPosition().toWorld(wAssignedPosition);
+        osg::Vec3d wRocketPosition;
+        mFiredRocket->getPosition().toWorld(wRocketPosition);
+        double distance = (wAssignedPosition - wRocketPosition).length();
+        if(distance < 3 && !mHit)
+        {
+            mAssignedModelNode->collision();
+            mFiredRocket->collision();
+            mMapController->removeNode(mAssignedLine->getNode());
+            mHit = true;
+        }
+    }
+}
+
 void SystemModelNode::onLeftButtonClicked(bool val)
 {
     select(val);
@@ -143,6 +162,21 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
     mAssignedLine->setLineColor(osgEarth::Color::Green);
     mAssignedLine->setLineWidth(6);
     mMapController->addNode(mAssignedLine->getNode());
+
+    mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
+}
+
+void SystemModelNode::fire()
+{
+    if(mAssignedModelNode)
+    {
+        mFiredRocket = mTruck->getActiveRocket();
+        if(mFiredRocket)
+        {
+            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 2000);//1000 m/s
+            mMapController->setTrackNode(mFiredRocket->getGeoTransform());
+        }
+    }
 }
 
 void SystemModelNode::frameEvent()
@@ -156,6 +190,8 @@ void SystemModelNode::frameEvent()
         mAssignedLine->addPoint(getPosition().vec3d());
         mAssignedLine->addPoint(mAssignedModelNode->getPosition().vec3d());
     }
+    //--check collision--------------------------------------------------------
+    collision();
 }
 
 void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -229,7 +265,7 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         float height = static_cast<float>(radius/3);
         mWezPolygon->setHeight(height);
 
-//        mMapController->addNode(mWezPolygon);
+        //        mMapController->addNode(mWezPolygon);
         mMapController->getMapNode()->insertChild(0,mWezPolygon);
 
     }

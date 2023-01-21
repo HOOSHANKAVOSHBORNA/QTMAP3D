@@ -12,7 +12,7 @@ const osg::Node::NodeMask NODE_MASK = 0x00000001;
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
     DefenseModelNode* defenseModelNode;
-    bool hit = false;
+    //bool hit = false;
     bool positionCanged = false;
     osgEarth::GeoPoint geoPoint;
 
@@ -24,18 +24,18 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
         _latestTime = time;
 
         defenseModelNode = dynamic_cast<DefenseModelNode*>(node);
-        if (defenseModelNode && !defenseModelNode->hasHit())
-            //check collision----------------------------------------------------------------------------
-            if(defenseModelNode->getFollowModel() != nullptr)
-            {
-                osg::Vec3d wPosition;
-                defenseModelNode->getPosition().toWorld(wPosition);
-                osg::Vec3d wFolowPosition;
-                defenseModelNode->getFollowModel()->getPosition().toWorld(wFolowPosition);
-                double distance = (wPosition - wFolowPosition).length();
-                if(distance < 3)
-                    hit = true;
-            }
+//        if (defenseModelNode && !defenseModelNode->hasHit())
+//            //check collision----------------------------------------------------------------------------
+//            if(defenseModelNode->getFollowModel() != nullptr)
+//            {
+//                osg::Vec3d wPosition;
+//                defenseModelNode->getPosition().toWorld(wPosition);
+//                osg::Vec3d wFolowPosition;
+//                defenseModelNode->getFollowModel()->getPosition().toWorld(wFolowPosition);
+//                double distance = (wPosition - wFolowPosition).length();
+//                if(distance < 3)
+//                    hit = true;
+//            }
 
         if (!_pause)
         {
@@ -83,8 +83,8 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
 
     // must call any nested node callbacks and continue subgraph traversal.
     NodeCallback::traverse(node,nv);
-    if(hit)
-        defenseModelNode->collision(defenseModelNode->getFollowModel());
+//    if(hit)
+//        defenseModelNode->collision(defenseModelNode->getFollowModel());
     //if(positionCanged)
     //        baseModel->curentPosition(geoPoint);
 }
@@ -343,10 +343,10 @@ void DefenseModelNode::playExplosionEffect(float scale)
     getMapNode()->addChild(pSphereGroup);
 }
 
-void DefenseModelNode::collision(DefenseModelNode *collidedWith)
+void DefenseModelNode::collision()
 {
     //    qDebug()<<QString(getQStringName());
-    mHasHit = true;
+//    mHasHit = true;
     //    setPause(true);
     //    if(other != nullptr)
     //    {
@@ -361,19 +361,19 @@ void DefenseModelNode::collision(DefenseModelNode *collidedWith)
     //    mFire->getParticleSystem()->setNodeMask(false);
     //    //    getMapNode()->removeChild(this);
 
-    emit hit(collidedWith);
+//    emit hit(collidedWith);
     stop();
 }
 
-DefenseModelNode *DefenseModelNode::getFollowModel() const
-{
-    return mFollowModel;
-}
+//DefenseModelNode *DefenseModelNode::getFollowModel() const
+//{
+//    return mFollowModel;
+//}
 
-void DefenseModelNode::setFollowModel(DefenseModelNode *followModel)
-{
-    mFollowModel = followModel;
-}
+//void DefenseModelNode::setFollowModel(DefenseModelNode *followModel)
+//{
+//    mFollowModel = followModel;
+//}
 
 //void BaseModel::traverse(osg::NodeVisitor &nv)
 //{
@@ -398,10 +398,10 @@ void DefenseModelNode::setFollowModel(DefenseModelNode *followModel)
 //}
 
 
-bool DefenseModelNode::hasHit() const
-{
-    return mHasHit;
-}
+//bool DefenseModelNode::hasHit() const
+//{
+//    return mHasHit;
+//}
 
 void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
 {
@@ -445,14 +445,15 @@ void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
 
 void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
 {
-    emit positionChanged(pos);
+    //emit positionChanged(pos);
 }
 
 void DefenseModelNode::select(bool val)
 {
     hover(val);
     mIsSelected = val;
-    mLableNode->setNodeMask(val);
+    if(mLableNode)
+        mLableNode->setNodeMask(val);
 }
 
 void DefenseModelNode::hover(bool val)
@@ -461,7 +462,8 @@ void DefenseModelNode::hover(bool val)
 //    qDebug()<<"radius: "<<bound.radius();
 //    qDebug()<<"center:("<<bound.center().x()<<", "<<bound.center().y()<<", "<<bound.center().z()<<")";
     //---------------------------------------------------
-    mLableNode->setNodeMask(val);
+    if(mLableNode)
+        mLableNode->setNodeMask(val);
     mNode2D->setValue(0, val);
     mNode2D->setValue(1, !val);
 

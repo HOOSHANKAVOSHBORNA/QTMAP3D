@@ -39,14 +39,25 @@ QJsonDocument CreateData::createAircraftInfo()
     jsonObject.insert("Speed", 150);//m/s
     //
     QJsonArray detectSystems;
-    detectSystems.push_back("system1");
-    detectSystems.push_back("system2");
+    for(auto system: systemList)
+    {
+        QJsonObject mainObject = system.object();
+        QJsonObject data = mainObject.value("Data").toObject();
+        //------------------------
+        QString name = data.value("Name").toString();
+        detectSystems.push_back(name);
+    }
     jsonObject.insert("DetectionSystem", detectSystems);
     //
     QJsonArray sends;
-    sends.push_back("send1");
-    sends.push_back("send2");
-    sends.push_back("send3");
+    for(auto station: stationList)
+    {
+        QJsonObject mainObject = station.object();
+        QJsonObject data = mainObject.value("Data").toObject();
+        //------------------------
+        QString name = data.value("Name").toString();
+        sends.push_back(name);
+    }
     jsonObject.insert("Send", sends);
 
     QJsonObject jsonMain;

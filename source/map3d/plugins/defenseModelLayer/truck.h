@@ -10,7 +10,7 @@ class TruckUpdateCallback;
 class Truck: public osgEarth::Annotation::ModelNode
 {
 public:
-    Truck(osgEarth::MapNode* mapNode, QObject* parent = nullptr);
+    Truck(osgEarth::MapNode* mapNode, osgEarth::Annotation::GeoPositionNode* parent);
     void moveTo(const osg::Vec3d &pos, double speed);
     void aimTarget(const osg::Vec3d &pos);
     bool shoot(const osg::Vec3d &pos, double speed);
@@ -32,6 +32,7 @@ private:
     osg::ref_ptr<ModelAnimationPathCallback> mMoveAnimationPathCallback;
 
     int mRocketIndex{3};
+    osgEarth::Annotation::GeoPositionNode* mParent;
 };
 
 

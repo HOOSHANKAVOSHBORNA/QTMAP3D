@@ -5,7 +5,7 @@
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Material>
 
-const float RANGE3D = std::numeric_limits<float>::max();;
+const float RANGE3D = std::numeric_limits<float>::max();
 
 StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler->getMapNode(), parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
@@ -42,7 +42,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 //    mNode2D->addChild(yellowPlaceNode, false);
 //    mNode2D->addChild(redPlaceNode, true);
     //--create 3D node---------------------------------------------------------------------------
-    osg::ref_ptr<Truck> truck = new Truck(getMapNode());
+    osg::ref_ptr<Truck> truck = new Truck(getMapNode(),this);
     mNode3D = truck;
 //    truck->setQStringName("truck");
     //--create lable-----------------------------------------------------------------------------

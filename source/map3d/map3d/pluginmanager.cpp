@@ -34,7 +34,12 @@ void PluginManager::loadPlugins()
             QObject* instance = pluginLoader.instance();
 
             if (!instance)
+            {
+                QString errStr = pluginLoader.errorString();
+                qWarning() << "Plugin loading failed: [" << fileName
+                           << "] " << pluginLoader.errorString();
                 continue;
+            }
 
             PluginInterface *pluginInterface =
                             dynamic_cast<PluginInterface*>(instance);
