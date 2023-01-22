@@ -7,6 +7,7 @@
 #include "dataManager.h"
 #include "aircraftInformation.h"
 #include "line.h"
+#include "contextMenu.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -67,7 +68,7 @@ private:
     osg::ref_ptr<osg::Vec3Array> mLocationPoints;
     osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
     QQmlEngine *mQmlEngine;
-    QQuickItem *mCurrentContextMenuItem;
+    ContextMenu *mCurrentContextMenu = nullptr;
 
     Line *mRouteLine;
     Line *mTempRouteLine;

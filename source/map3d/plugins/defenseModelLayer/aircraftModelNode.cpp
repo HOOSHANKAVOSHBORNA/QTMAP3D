@@ -255,20 +255,21 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
         mMapController->removeNode(mRouteLine->getNode());
         mMapController->removeNode(mTempRouteLine->getNode());
     }
-    if(mCurrentContextMenuItem){
-        mUIHandle->cmHideContextMenu(mCurrentContextMenuItem);
-        mCurrentContextMenuItem = nullptr;
+    if(mCurrentContextMenu){
+        mCurrentContextMenu->hideMenu();
+        mCurrentContextMenu = nullptr;
     }
 }
 
 void AircraftModelNode::frameEvent()
 {
-    osg::Vec3d wordPos;
-    getPosition().toWorld(wordPos);
-    float x, y;
-    mMapController->worldToScreen(wordPos,x, y);
-    mUIHandle->cmSetContextMenuPosition(mCurrentContextMenuItem, static_cast<int>(x), static_cast<int>(y));
-
+    if (mCurrentContextMenu) {
+        osg::Vec3d wordPos;
+        getPosition().toWorld(wordPos);
+        float x, y;
+        mMapController->worldToScreen(wordPos,x, y);
+        mCurrentContextMenu->updatePosition(static_cast<int>(x), static_cast<int>(y));
+    }
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
 }
 
@@ -282,35 +283,20 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
             event->accept();
     }
     if(event->button() == Qt::RightButton) {
-        QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-        QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-            qDebug() << comp->errorString();
+        mCurrentContextMenu = new ContextMenu(mQmlEngine, mUIHandle, this);
+        for(auto detectSystem: mInformation.DetectionSystems)
+            mCurrentContextMenu->addRow(detectSystem);
 
-
-            if (comp->status() == QQmlComponent::Ready) {
-                mCurrentContextMenuItem = static_cast<QQuickItem*>(comp->create(nullptr));
-                ContextMenumodel *model = new ContextMenumodel;
-                for(auto detectSystem: mInformation.DetectionSystems)
-                    model->addRow(detectSystem);
-
-                mCurrentContextMenuItem->setProperty("model", QVariant::fromValue<ContextMenumodel*>(model));
-
-                osg::Vec3d wordPos;
-                getPosition().toWorld(wordPos);
-                float x, y;
-                QQmlEngine::setObjectOwnership(mCurrentContextMenuItem, QQmlEngine::JavaScriptOwnership);
-                mMapController->worldToScreen(wordPos,x, y);
-                mUIHandle->cmShowContextMenu(mCurrentContextMenuItem, static_cast<int>(x), static_cast<int>(y));
-                connect(model, &ContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
-            }
-
-        });
-
-        comp->loadUrl(QUrl("qrc:/modelplugin/ContextMenuView.qml"));
+        connect(mCurrentContextMenu->getModel(), &ContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
+        osg::Vec3d wordPos;
+        getPosition().toWorld(wordPos);
+        float x, y;
+        mMapController->worldToScreen(wordPos,x, y);
+        mCurrentContextMenu->show(static_cast<int>(x), static_cast<int>(y));
     }
-    if(!onModel && mCurrentContextMenuItem){
-        mUIHandle->cmHideContextMenu(mCurrentContextMenuItem);
-        mCurrentContextMenuItem = nullptr;
+    if(!onModel && mCurrentContextMenu){
+        mCurrentContextMenu->hideMenu();
+        mCurrentContextMenu = nullptr;
     }
 
 }
