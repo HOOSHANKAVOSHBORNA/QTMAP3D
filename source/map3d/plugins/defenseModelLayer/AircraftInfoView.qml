@@ -1,6 +1,7 @@
-import QtQuick 2.0
+import QtQuick 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.13
+import QtGraphicalEffects 1.0
 import Crystal 1.0
 
 Item {
@@ -50,7 +51,6 @@ Item {
             Layout.fillHeight: true
             ScrollView {
                 ScrollBar.vertical.interactive: false
-
                 clip: true
                 anchors.fill: parent
 //                contentWidth: lay.width + 30
@@ -411,7 +411,7 @@ Item {
                             text: ""
                             horizontalAlignment: Qt.AlignHCenter
                             background: Rectangle {
-                                color: "#679BE1"
+                                color: "#909090"
                             }
                         }
                         RowLayout {
@@ -609,20 +609,61 @@ Item {
 
 //                        }
 
-                        Label {
+                        Rectangle {
+                            id: firstButton
                             Layout.preferredWidth: rootItem.width
-                            Layout.preferredHeight: implicitHeight + 7
-                            verticalAlignment: Label.AlignVCenter
-                            color: "white"
-                            text: "Detection Systems"
-                            horizontalAlignment: Qt.AlignHCenter
-                            background: Rectangle {
-                                color: "#1a75ff"
+                            Layout.preferredHeight: implicitHeight + 25
+                            property var checked: true
+
+                            MouseArea {
+                                hoverEnabled: true
+                                anchors.fill: parent
+                                cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: if (firstButton.checked) {
+                                               detectionLayout.Layout.preferredHeight = detectionLayout.implicitHeight
+                                               imgd.rotation = 180
+                                               firstButton.checked = false
+                                           }
+                                           else {
+                                               detectionLayout.Layout.preferredHeight = 0
+                                               imgd.rotation = -90
+                                               firstButton.checked = true
+                                           }
                             }
+
+                            color: "#1a75ff"
+
+                            Text {
+                                text: "Detection Systems"
+                                color: "white"
+                                anchors.centerIn: parent
+                                anchors.left: parent.left
+                            }
+                            Image {
+                                id: imgd
+                                source: "qrc:/Resources/chevron.png"
+                                width: 16
+                                height: 16
+                                rotation: -90
+                                ColorOverlay {
+                                    source: imgd
+                                    anchors.fill: imgd
+                                    color: "white"
+                                }
+                                anchors.right: parent.right
+                                anchors.rightMargin: 5
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
                         }
 
+
+
                         RowLayout {
+                            id: detectionLayout
+                            Layout.preferredHeight: 0
                             spacing: 2
+                            clip: true
                             Layout.preferredWidth: rootItem.width
                             Rectangle {
                                 Layout.preferredWidth: img3.width + 6
@@ -636,13 +677,11 @@ Item {
                                     width: 24
                                     height:24
                                     rotation: 45
-
                                 }
                                 color: "#474747"
                             }
                             ColumnLayout {
-                                    Layout.preferredHeight: implicitHeight
-                                    spacing: 0
+                                spacing: 0
                                 Repeater {
                                     model: DetectionSystems
                                     Label {
@@ -670,20 +709,61 @@ Item {
 
 //                        }
 
-                        Label {
+                        Rectangle {
+                            id: secondButton
                             Layout.preferredWidth: rootItem.width
-                            Layout.preferredHeight: implicitHeight + 7
-                            verticalAlignment: Label.AlignVCenter
-                            color: "white"
-                            text: "Sends"
-                            horizontalAlignment: Qt.AlignHCenter
-                            background: Rectangle {
-                                color: "#1a75ff"
+                            Layout.preferredHeight: implicitHeight + 25
+                            property var checked: true
+
+                            MouseArea {
+                                hoverEnabled: true
+                                anchors.fill: parent
+                                cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: if (secondButton.checked) {
+                                               sendsLayout.Layout.preferredHeight = sendsLayout.implicitHeight
+                                               imgs.rotation = 180
+                                               secondButton.checked = false
+                                           }
+                                           else {
+                                               sendsLayout.Layout.preferredHeight = 0
+                                               imgs.rotation = -90
+                                               secondButton.checked = true
+                                           }
                             }
+
+                            color: "#1a75ff"
+
+                            Text {
+                                text: "Sends"
+                                color: "white"
+                                anchors.centerIn: parent
+                                anchors.left: parent.left
+                            }
+                            Image {
+                                id: imgs
+                                source: "qrc:/Resources/chevron.png"
+                                width: 16
+                                height: 16
+                                rotation: -90
+                                ColorOverlay {
+                                    source: imgs
+                                    anchors.fill: imgs
+                                    color: "white"
+                                }
+                                anchors.right: parent.right
+                                anchors.rightMargin: 5
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
                         }
+
                         RowLayout {
+                            id: sendsLayout
+                            Layout.preferredHeight: 0
                             spacing: 2
+                            clip: true
                             Layout.preferredWidth: rootItem.width
+
                             Rectangle {
                                 Layout.preferredWidth: img4.width + 6
                                 Layout.fillHeight: true
@@ -694,13 +774,11 @@ Item {
                                     source: "qrc:/resources/station_lV.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
-                                    height:24
-                                    visible: Sends.length > 0
+                                    height: 24
                                 }
                                 color: "#474747"
                             }
                             ColumnLayout {
-                                Layout.preferredHeight: implicitHeight
                                 spacing: 0
                                 Repeater {
                                     model: Sends
