@@ -642,15 +642,22 @@ Item {
                             }
                             ColumnLayout {
                                     Layout.preferredHeight: implicitHeight
+                                    spacing: 0
                                 Repeater {
                                     model: DetectionSystems
                                     Label {
                                         Layout.preferredWidth: rootItem.width - 30
                                         Layout.preferredHeight: implicitHeight
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.bottomMargin: 3
+                                        bottomInset: -3
                                         color: "white"
                                         text: DetectionSystems[index]
                                         horizontalAlignment: Qt.AlignLeft
-                                        Layout.bottomMargin: 3
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
                                     }
 
                                 }
@@ -688,20 +695,28 @@ Item {
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height:24
-
+                                    visible: Sends.length > 0
                                 }
                                 color: "#474747"
                             }
                             ColumnLayout {
                                 Layout.preferredHeight: implicitHeight
+                                spacing: 0
                                 Repeater {
                                     model: Sends
                                     Label {
                                         Layout.preferredWidth: rootItem.width - 30
                                         Layout.preferredHeight: implicitHeight
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.bottomMargin: 3
+                                        bottomInset: -3
                                         color: "white"
                                         text: Sends[index]
                                         horizontalAlignment: Qt.AlignLeft
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
                                     }
 
                                 }
