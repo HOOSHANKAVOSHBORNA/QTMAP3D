@@ -53,13 +53,13 @@
 const QString AIRCRAFT = "Aircraft";
 const QString SYSTEM = "System";
 const QString STATION = "Station";
-const QString ROCKET = "Rocket";
-const QString TRUCK = "Truck";
+//const QString ROCKET = "Rocket";
+//const QString TRUCK = "Truck";
 //----------------------------------------------
 const QString CATEGORY = "Defense Model";
 //const QString ADD_AIRCRAFT = "Add Aircraft";
 const QString ADD_ROCKET = "Add Rocket";
-const QString ADD_TRUCK = "Add Truck";
+//const QString ADD_TRUCK = "Add Truck";
 //const QString ADD_STATION = "Add Station";
 //const QString ADD_SYSTEM = "Add System";
 
@@ -91,7 +91,6 @@ bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDe
     pDesc->toolboxItemsList.push_back(new ItemDesc{AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{SYSTEM, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{STATION, CATEGORY, "qrc:/resources/station_lV.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_TRUCK, CATEGORY, "qrc:/resources/truck.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "", false, false, ""});
     return true;
 }
@@ -169,10 +168,6 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
 //                }
 //            }
 //        }
-    }
-    else if(CATEGORY == category && name == ADD_TRUCK)
-    {
-        addTruckModel();
     }
     else if(CATEGORY == category && name == SYSTEM)
     {
@@ -302,46 +297,46 @@ void DefenseModelLayer::demo()
     }
 }
 
-void DefenseModelLayer::addTruckModel()
-{
-    osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 100, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
-    //create and setting model--------------------------------------------
-    osg::ref_ptr<Truck> model = new Truck(mMapController->getMapNode(), nullptr);
-    QString name = TRUCK + QString::number(mModelNodes[TRUCK].count());
-    model->setName(name.toStdString());
-    model->setPosition(position);
-    //model->setLocalRotation(osg::Quat(osg::inDegrees(-30.0),osg::Z_AXIS));
-    model->setScale(osg::Vec3(1,1,1));
+//void DefenseModelLayer::addTruckModel()
+//{
+//    osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 100, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+//    //create and setting model--------------------------------------------
+//    osg::ref_ptr<Truck> model = new Truck(mMapController->getMapNode(), nullptr);
+//    QString name = TRUCK + QString::number(mModelNodes[TRUCK].count());
+//    model->setName(name.toStdString());
+//    model->setPosition(position);
+//    //model->setLocalRotation(osg::Quat(osg::inDegrees(-30.0),osg::Z_AXIS));
+//    model->setScale(osg::Vec3(1,1,1));
 
 
 
-    //    QObject::connect(model.get(), &FlyingModel::positionChanged, [=](osgEarth::GeoPoint position){
-    //        positionChanged(ROCKET, name, position);
-    //    });
+//    //    QObject::connect(model.get(), &FlyingModel::positionChanged, [=](osgEarth::GeoPoint position){
+//    //        positionChanged(ROCKET, name, position);
+//    //    });
 
-    //add to container-----------------------------------------------------
-    //mModelNodes[TRUCK][name] = model;
+//    //add to container-----------------------------------------------------
+//    //mModelNodes[TRUCK][name] = model;
 
-    //add to map ---------------------------------------------------------
-    mMapController->addNode(model);
-    mMapController->goToPosition(position.x(), position.y(), position.z() + 600);
+//    //add to map ---------------------------------------------------------
+//    mMapController->addNode(model);
+//    mMapController->goToPosition(position.x(), position.y(), position.z() + 600);
 
-    //create random position ---------------------------------------------
-    //    double rnd = QRandomGenerator::global()->generateDouble();
-    double rndRotate = qrand() % 360;
-    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rndRotate), osg::Z_AXIS));
+//    //create random position ---------------------------------------------
+//    //    double rnd = QRandomGenerator::global()->generateDouble();
+//    double rndRotate = qrand() % 360;
+//    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rndRotate), osg::Z_AXIS));
 
-    double rndPX = (qrand() % 200)/100000.0;
-    double rndPY = (qrand() % 200)/100000.0;
-    osg::Vec3d nPosition(rndPX, rndPY, 0.0);
+//    double rndPX = (qrand() % 200)/100000.0;
+//    double rndPY = (qrand() % 200)/100000.0;
+//    osg::Vec3d nPosition(rndPX, rndPY, 0.0);
 
 
-    //    nPosition += position;
-    //model->setLatLongPosition(nPosition);
-    //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
-    //move
-    //model->moveTo(nPosition,10);
-}
+//    //    nPosition += position;
+//    //model->setLatLongPosition(nPosition);
+//    //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
+//    //move
+//    //model->moveTo(nPosition,10);
+//}
 
 void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 {
@@ -402,39 +397,39 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 
 }
 
-void DefenseModelLayer::addRocketModel(osg::Vec3d position)
-{
-    osgEarth::GeoPoint geoposition(mMapController->getMapSRS()->getGeographicSRS(),position);
-    //create and setting model--------------------------------------------
-    osg::ref_ptr<Rocket> model = new Rocket(mMapController->getMapNode(), parent());
-    QString name = ROCKET + QString::number(mModelNodes[ROCKET].count());
-    model->setName(name.toStdString());
-    model->setGeographicPosition(geoposition, 0.0);
-    model->setScale(osg::Vec3(1,1,1));
+//void DefenseModelLayer::addRocketModel(osg::Vec3d position)
+//{
+//    osgEarth::GeoPoint geoposition(mMapController->getMapSRS()->getGeographicSRS(),position);
+//    //create and setting model--------------------------------------------
+//    osg::ref_ptr<Rocket> model = new Rocket(mMapController->getMapNode(), parent());
+//    QString name = ROCKET + QString::number(mModelNodes[ROCKET].count());
+//    model->setName(name.toStdString());
+//    model->setGeographicPosition(geoposition, 0.0);
+//    model->setScale(osg::Vec3(1,1,1));
 
-//    QObject::connect(model.get(), &DefenseModelNode::positionChanged, [=](osgEarth::GeoPoint position){
-//        positionChanged(ROCKET, name, position);
-//    });
+////    QObject::connect(model.get(), &DefenseModelNode::positionChanged, [=](osgEarth::GeoPoint position){
+////        positionChanged(ROCKET, name, position);
+////    });
 
-    //add to container-----------------------------------------------------
-    mModelNodes[ROCKET][name] = model;
+//    //add to container-----------------------------------------------------
+//    mModelNodes[ROCKET][name] = model;
 
 
-    //add to map ---------------------------------------------------------
-    mMapController->addNode(model);
-    //mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
-    mMapController->setTrackNode(model->getGeoTransform());
-    //    mMap3dWidget->setObjectInfoWidgetVisible(false);
+//    //add to map ---------------------------------------------------------
+//    mMapController->addNode(model);
+//    //mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
+//    mMapController->setTrackNode(model->getGeoTransform());
+//    //    mMap3dWidget->setObjectInfoWidgetVisible(false);
 
-    //    double rnd = QRandomGenerator::global()->generateDouble();
-    //    double rnd = qrand() % 360;
-    //    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
-    //hit------------------------------------------------------------------
-//    QObject::connect(model.get(), &DefenseModelNode::hit, [=](DefenseModelNode */*other*/){
+//    //    double rnd = QRandomGenerator::global()->generateDouble();
+//    //    double rnd = qrand() % 360;
+//    //    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
+//    //hit------------------------------------------------------------------
+////    QObject::connect(model.get(), &DefenseModelNode::hit, [=](DefenseModelNode */*other*/){
 
-//        mModelNodes[ROCKET].remove(QString(model->getName().c_str()));
-//    });
-}
+////        mModelNodes[ROCKET].remove(QString(model->getName().c_str()));
+////    });
+//}
 
 void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
 {

@@ -12,7 +12,7 @@ Polygone::Polygone(MapController *mapController, bool clamp)
     feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
     osgEarth::Symbology::Style geomStyle;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::White;
-    geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 5.0f;
+    geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 2.0f;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
     qDebug()<<"h:"<< geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
 //    geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 250000.0;
