@@ -156,6 +156,7 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() + radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
         mVisiblePolygone->addPoints(geoPoint.vec3d());
 
+        mVisiblePolygone->setHeight(0);
         mMapController->addNode(mVisiblePolygone);
     }
     else

@@ -39,10 +39,10 @@ public:
                        NetworkManager *networkManager,
                        UIHandle *UIHandle) override;
 
-    void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
-    void addTruckModel();
+    //void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
+    //void addTruckModel();
     void addUpdateAircraft(AircraftInfo aircraftInfo);
-    void addRocketModel(osg::Vec3d position = osg::Vec3d(52.8601, 35.277, 846));
+    //void addRocketModel(osg::Vec3d position = osg::Vec3d(52.8601, 35.277, 846));
     void addUpdateSystem(SystemInfo systemInfo);
     void addUpdateStation(StationInfo stationInfo);
 public slots:
