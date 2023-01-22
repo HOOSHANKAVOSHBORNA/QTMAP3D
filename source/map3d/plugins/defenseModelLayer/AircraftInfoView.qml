@@ -50,6 +50,10 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             ScrollView {
+                background: Rectangle {
+                    color: boxColor
+                }
+
                 ScrollBar.vertical.interactive: false
                 clip: true
                 anchors.fill: parent
@@ -805,9 +809,6 @@ Item {
             }
 
 
-        }
-        Item {
-            Layout.minimumHeight: 5
         }
 
         AircraftInfoButtonGroup {
