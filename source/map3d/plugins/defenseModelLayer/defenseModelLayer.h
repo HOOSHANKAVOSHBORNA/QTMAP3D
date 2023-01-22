@@ -51,6 +51,7 @@ public slots:
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
     void onMessageReceived(const QJsonDocument &message);
+    void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;

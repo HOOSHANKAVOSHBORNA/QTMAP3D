@@ -116,4 +116,15 @@ signals:
 public slots:
 };
 
+class Demo
+{
+public:
+    Demo(DefenseDataManager* defenseDataManager);
+    AircraftInfo createAircraftInfo();
+    void updateAircraftInfo();
+public:
+    DefenseDataManager* mDefenseDataManager;
+    QList<AircraftInfo> mAircraftList;
+};
+
 #endif // DEFENSEDATAMANAGER_H

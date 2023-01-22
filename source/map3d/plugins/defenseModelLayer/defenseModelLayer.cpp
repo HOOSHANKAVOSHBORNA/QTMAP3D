@@ -7,6 +7,7 @@
 #include "mapcontroller.h"
 #include "networkmanager.h"
 #include "websocketclient.h"
+#include "defenseDataManager.h"
 
 #include <QDebug>
 #include <QMainWindow>
@@ -237,7 +238,7 @@ bool DefenseModelLayer::setup(MapController *mapController,
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
-
+    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DefenseModelLayer::onAircraftInfoChanged);
 }
 
 void DefenseModelLayer::demo()
@@ -548,6 +549,11 @@ void DefenseModelLayer::onMessageReceived(const QJsonDocument &message)
         addUpdateSystem(systemInfo);
     }
 
+}
+
+void DefenseModelLayer::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
+{
+    addUpdateAircraft(aircraftInfo);
 }
 
 void DefenseModelLayer::frameEvent()
