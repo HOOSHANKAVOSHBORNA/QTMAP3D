@@ -35,6 +35,7 @@ void Application::initialize()
 {
 
     initializeNetworkManager();
+    initializeDefenseDataManager();
 
     registerTypes();
     initializeQmlEngine();
@@ -91,6 +92,12 @@ void Application::createListWindow()
 void Application::initializeNetworkManager()
 {
     mNetworkManager = new NetworkManager;
+}
+
+void Application::initializeDefenseDataManager()
+{
+    //TODO set parent
+    mDefenseDataManager = new DefenseDataManager;
 }
 
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)

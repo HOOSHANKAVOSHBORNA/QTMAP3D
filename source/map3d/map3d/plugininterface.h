@@ -17,6 +17,7 @@ class NetworkManager;
 class MainWindow;
 class ListWindow;
 class QQuickItem;
+class DefenseDataManager;
 
 namespace osgViewer {
     class Viewer;
@@ -127,6 +128,7 @@ public:
     virtual bool setup(MapController *mapController,
                        NetworkManager * networkManager,
                        UIHandle *uiHandle) {}
+    virtual void setDefenseDataManager(DefenseDataManager* defenseDataManager){}
 
 protected:
     virtual void frameEvent           () {}

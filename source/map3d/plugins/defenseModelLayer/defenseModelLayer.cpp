@@ -235,6 +235,11 @@ bool DefenseModelLayer::setup(MapController *mapController,
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&DefenseModelLayer::onMessageReceived);
 }
 
+void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
+{
+
+}
+
 void DefenseModelLayer::demo()
 {
     //    int index = 0;
@@ -567,6 +572,7 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
         mSelectedModelNode->mousePressEvent(event, false);
     if(modelNode)
         mSelectedModelNode = modelNode;
+    
 
 }
 

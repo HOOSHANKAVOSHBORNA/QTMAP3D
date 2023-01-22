@@ -38,6 +38,7 @@ public:
     virtual bool setup(MapController *mapController,
                        NetworkManager *networkManager,
                        UIHandle *UIHandle) override;
+    virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
     //void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
     //void addTruckModel();

@@ -32,9 +32,9 @@ public:
     explicit DrawShapes(QWidget *parent = nullptr);
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    virtual bool setup(MapController *mapController,
-                       NetworkManager *networkManager,
-                       UIHandle *UIHandle) override;
+    bool setup(MapController *mapController,
+               NetworkManager *networkManager,
+               UIHandle *UIHandle) override;
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;

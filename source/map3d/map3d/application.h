@@ -8,6 +8,7 @@
 #include "plugininterface.h"
 #include "pluginmanager.h"
 #include "networkmanager.h"
+#include "defenseDataManager.h"
 
 
 class MainWindow;
@@ -39,6 +40,7 @@ private:
     void createMainWindow();
     void createListWindow();
     void initializeNetworkManager();
+    void initializeDefenseDataManager();
 
 private slots:
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
@@ -56,6 +58,8 @@ public:
     inline bool isMainWindowReady() const { return mMainWindowIsReady; }
     inline bool isListWindowReady() const { return mListWindowIsReady; }
 
+    inline DefenseDataManager *defenseDataManager() const{ return mDefenseDataManager; }
+
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
     const QUrl mMainWindowUrl{QStringLiteral("qrc:///MainWindow.qml")};
@@ -65,6 +69,7 @@ private:
 
     PluginManager *mPluginManager = nullptr;
     NetworkManager *mNetworkManager = nullptr;
+    DefenseDataManager *mDefenseDataManager{nullptr};
 
 
     bool mMainWindowIsReady = false;

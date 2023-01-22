@@ -69,9 +69,11 @@ void PluginManager::performPluginsInitQMLDesc(QQmlEngine *qmlEngine)
 void PluginManager::performPluginsSetup(MapController *mapController)
 {
     const auto networkManager = Application::instance()->networkManager();
+    DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
     UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
     for (const auto& item : mPluginsInfoList) {
         item.interface->setup(mapController, networkManager, uiHandle);
+        item.interface->setDefenseDataManager(defenseDataManager);
     }
 }
 
