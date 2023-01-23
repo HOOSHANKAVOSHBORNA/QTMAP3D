@@ -137,7 +137,7 @@ Item {
                                     anchors.top: parent.top
                                     id: img2
                                     verticalAlignment: Image.AlignTop
-                                    source: "qrc:/resources/aircraftinfo.png"
+                                    source: "qrc:/resources/stationinformation.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height:24
@@ -347,7 +347,7 @@ Item {
                                     id: img3
                                     verticalAlignment: Image.AlignTop
                                     horizontalAlignment: Image.AlignHCenter
-                                    source: "qrc:/resources/latlong.png"
+                                    source: "qrc:/resources/statusinfo.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height:24
@@ -475,7 +475,7 @@ Item {
                                     id: img4
                                     verticalAlignment: Image.AlignTop
                                     horizontalAlignment: Image.AlignHCenter
-                                    source: "qrc:/resources/latlong.png"
+                                    source: "qrc:/resources/combatinfo.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height:24
