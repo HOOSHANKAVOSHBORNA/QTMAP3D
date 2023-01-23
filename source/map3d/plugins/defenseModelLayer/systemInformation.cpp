@@ -38,6 +38,14 @@ QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case ChanelNo: return QVariant::fromValue<QString>(mSystemInfo.ChanelNo);
         case Inrange: return QVariant::fromValue<QString>(mSystemInfo.Inrange);
         case Active: return QVariant::fromValue<bool>(mSystemInfo.Active);
+        case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
+        case MainInfoHeaders: return QVariant::fromValue<QStringList>(getMainInfoHeaders());
+        case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());
+        case LocationInfoHeaders: return QVariant::fromValue<QStringList>(getLocationInfoHeaders());
+        case StatusInfo: return QVariant::fromValue<QStringList>(getStatusInfo());
+        case StatusInfoHeaders: return QVariant::fromValue<QStringList>(getStatusInfoHeaders());
+        case CombatInfo: return QVariant::fromValue<QStringList>(getCombatInfo());
+        case CombatInfoHeaders: return QVariant::fromValue<QStringList>(getCombatInfoHeaders());
         default  : return QVariant::fromValue<QString>(mSystemInfo.Name);
 
     }
@@ -70,13 +78,69 @@ QHash<int, QByteArray> SystemInfoModel::roleNames() const
     hash[ChanelNo] = "ChanelNo";
     hash[Inrange] = "Inrange";
     hash[Active] = "Active";
+    hash[MainInfo] = "MainInfo";
+    hash[MainInfoHeaders] = "MainInfoHeaders";
+    hash[LocationInfo] = "LocationInfo";
+    hash[LocationInfoHeaders] = "LocationInfoHeaders";
+    hash[StatusInfo] = "StatusInfo";
+    hash[StatusInfoHeaders] = "StatusInfoHeaders";
+    hash[CombatInfo] = "CombatInfo";
+    hash[CombatInfoHeaders] = "CombatInfoHeaders";
     return hash;
 }
 
 
-void SystemInfoModel::setInformtion(const SystemInfo &systremInfo)
+void SystemInfoModel::setInformtion(const SystemInfo &systemInfo)
 {
-    mSystemInfo = systremInfo;
+    mSystemInfo = systemInfo;
+}
+
+QStringList SystemInfoModel::getMainInfo() const
+{
+    return QStringList {mSystemInfo.Name, QString::number(mSystemInfo.Number),
+                        mSystemInfo.Type, mSystemInfo.Terminal};
+}
+
+QStringList SystemInfoModel::getMainInfoHeaders() const
+{
+    return QStringList {"Name", "Number", "Type", "Terminal"};
+}
+
+QStringList SystemInfoModel::getLocationInfo() const
+{
+    return QStringList {QString::number(mSystemInfo.Latitude),
+                        QString::number(mSystemInfo.Longitude),
+                        QString::number(mSystemInfo.Altitude),
+                        QString::number(mSystemInfo.ViewRange),
+                        QString::number(mSystemInfo.MezRange)};
+}
+
+QStringList SystemInfoModel::getLocationInfoHeaders() const
+{
+    return QStringList {"Latitude", "Longitude", "Altitude", "ViewRange", "MezRange"};
+}
+
+QStringList SystemInfoModel::getStatusInfo() const
+{
+    return QStringList {mSystemInfo.ReceiveTime, mSystemInfo.Simulation, mSystemInfo.BCCStatus,
+                        mSystemInfo.RadarSearchStatus, mSystemInfo.Operational,
+                        mSystemInfo.MissileCount, mSystemInfo.RadarMode};
+}
+
+QStringList SystemInfoModel::getStatusInfoHeaders() const
+{
+    return QStringList {"ReceiveTime", "Simulation", "BCCStatus", "RadarSearch Status", "Operational", "MissileCount", "RadarMode"};
+}
+
+QStringList SystemInfoModel::getCombatInfo() const
+{
+    return QStringList {QString::number(mSystemInfo.TN), mSystemInfo.Acceptance, mSystemInfo.Phase,
+                        QString::number(mSystemInfo.Antenna), mSystemInfo.ChanelNo, mSystemInfo.Inrange};
+}
+
+QStringList SystemInfoModel::getCombatInfoHeaders() const
+{
+    return QStringList {"TN", "Acceptance", "Phase", "Antenna", "ChanelNo", "Inrange"};
 }
 
 

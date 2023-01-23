@@ -35,7 +35,15 @@ public:
         Antenna = Qt::UserRole + 120,
         ChanelNo = Qt::UserRole + 121,
         Inrange = Qt::UserRole + 122,
-        Active = Qt::UserRole + 123
+        Active = Qt::UserRole + 123,
+        MainInfo = Qt::UserRole + 200,
+        MainInfoHeaders = Qt::UserRole + 201,
+        LocationInfo = Qt::UserRole + 202,
+        LocationInfoHeaders = Qt::UserRole + 203,
+        StatusInfo = Qt::UserRole + 204,
+        StatusInfoHeaders = Qt::UserRole + 205,
+        CombatInfo = Qt::UserRole + 206,
+        CombatInfoHeaders = Qt::UserRole + 207
     };
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -43,6 +51,14 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     void setInformtion(const SystemInfo &systemInfo);
+    QStringList getMainInfo() const;
+    QStringList getMainInfoHeaders() const;
+    QStringList getLocationInfo() const;
+    QStringList getLocationInfoHeaders() const;
+    QStringList getStatusInfo() const;
+    QStringList getStatusInfoHeaders() const;
+    QStringList getCombatInfo() const;
+    QStringList getCombatInfoHeaders() const;
 
 Q_SIGNALS:
     void gotoButtonClicked();
