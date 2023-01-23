@@ -11,15 +11,15 @@ class StationInfoModel : public QAbstractListModel
 public:
     enum MyRoles {
         Name = Qt::UserRole + 200,
-        Type = Qt::UserRole + 201,
-        PrimSec = Qt::UserRole + 202,
-        Numberr = Qt::UserRole + 203,
         Latitude = Qt::UserRole + 204,
         Longitude = Qt::UserRole + 205,
         Radius = Qt::UserRole + 206,
         CycleTime = Qt::UserRole + 207,
-        Active = Qt::UserRole + 208
-
+        Active = Qt::UserRole + 208,
+        MainInfo = Qt::UserRole + 209,
+        MainInfoHeaders = Qt::UserRole + 210,
+        LocationInfoHeaders = Qt::UserRole + 211,
+        LocationInfo = Qt::UserRole + 212
     };
 
     StationInfoModel(QObject *parent = nullptr);
@@ -30,6 +30,10 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     void setInformtion(const StationInfo &stationInfo);
+    QStringList getMainInfo() const;
+    QStringList getMainInfoHeaders() const;
+    QStringList getLocationInfo() const;
+    QStringList getLocationInfoHeaders() const;
 
 Q_SIGNALS:
     void gotoButtonClicked();

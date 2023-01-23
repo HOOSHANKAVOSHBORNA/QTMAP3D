@@ -15,31 +15,48 @@ int StationInfoModel::rowCount(const QModelIndex &/*parent*/) const {
 QVariant StationInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
         case Name: return QVariant::fromValue<QString>(mStationInfo.Name);
-        case Type: return QVariant::fromValue<QString>(mStationInfo.Type);
-        case PrimSec: return QVariant::fromValue<QString>(mStationInfo.PrimSec);
-        case Latitude: return QVariant::fromValue<double>(mStationInfo.Latitude);
-        case Longitude: return QVariant::fromValue<double>(mStationInfo.Longitude);
-        case Numberr: return QVariant::fromValue<double>(mStationInfo.Number);
-        case Radius: return QVariant::fromValue<double>(mStationInfo.Radius);
-        case CycleTime: return QVariant::fromValue<int>(mStationInfo.CycleTime);
+        case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());
+        case LocationInfoHeaders: return QVariant::fromValue<QStringList>(getLocationInfoHeaders());
         case Active: return QVariant::fromValue<bool>(mStationInfo.Active);
+        case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
+        case MainInfoHeaders: return QVariant::fromValue<QStringList>(getMainInfoHeaders());
         default: return mStationInfo.Name;
     }
 }
 
+QStringList StationInfoModel::getMainInfo() const {
+    QStringList tmp;
+    tmp << mStationInfo.Name << QString::number(mStationInfo.Number) << mStationInfo.Type << mStationInfo.PrimSec;
+    return tmp;
+}
+
+QStringList StationInfoModel::getMainInfoHeaders() const
+{
+    return QStringList {"Name" , "Number", "Type", "Prim/Sec"};
+}
+
+QStringList StationInfoModel::getLocationInfo() const
+{
+    return QStringList {QString::number(mStationInfo.Latitude),
+                        QString::number(mStationInfo.Longitude),
+                        QString::number(mStationInfo.Radius),
+                        QString::number(mStationInfo.CycleTime)};
+}
+
+QStringList StationInfoModel::getLocationInfoHeaders() const
+{
+    return QStringList {"Latitude", "Longitude", "Radius", "CycleTime"};
+}
 
 QHash<int, QByteArray> StationInfoModel::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractListModel::roleNames();
     hash[Name] = "Name";
-    hash[Type] = "Type";
-    hash[PrimSec] = "PrimSec";
-    hash[Numberr] = "Numberr";
-    hash[Latitude] = "Latitude";
-    hash[Longitude] = "Longitude";
-    hash[Radius] = "Radius";
-    hash[CycleTime] = "CycleTime";
     hash[Active] = "Active";
+    hash[MainInfo] = "MainInfo";
+    hash[MainInfoHeaders] = "MainInfoHeaders";
+    hash[LocationInfo] = "LocationInfo";
+    hash[LocationInfoHeaders] = "LocationInfoHeaders";
     return hash;
 }
 
@@ -53,7 +70,6 @@ StationInformtion::StationInformtion(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
 {
     QQmlComponent *comp = new QQmlComponent(qmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        qDebug() << comp->errorString();
 
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
