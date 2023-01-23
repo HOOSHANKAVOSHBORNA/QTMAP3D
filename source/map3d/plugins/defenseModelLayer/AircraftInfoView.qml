@@ -94,6 +94,7 @@ Item {
                                     anchors.top: parent.top
                                     id: img2
                                     verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
                                     source: "qrc:/resources/aircraftinfo.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
@@ -174,8 +175,8 @@ Item {
                                     anchors.top: parent.top
                                     id: img1
                                     verticalAlignment: Image.AlignTop
-                                    horizontalAlignment: Image.AlignHCenter
-                                    source: "qrc:/resources/latlong.png"
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    source: "qrc:/resources/location.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height:24
@@ -305,6 +306,7 @@ Item {
                                     anchors.top: parent.top
                                     id: img3
                                     verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
                                     source: "qrc:/resources/system.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
@@ -399,6 +401,7 @@ Item {
                                     anchors.top: parent.top
                                     id: img4
                                     verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
                                     source: "qrc:/resources/station_lV.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
