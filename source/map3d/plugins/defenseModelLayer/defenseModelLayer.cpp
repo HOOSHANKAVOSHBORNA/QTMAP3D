@@ -7,6 +7,7 @@
 #include "mapcontroller.h"
 #include "networkmanager.h"
 #include "websocketclient.h"
+#include "defenseDataManager.h"
 
 #include <QDebug>
 #include <QMainWindow>
@@ -233,6 +234,11 @@ bool DefenseModelLayer::setup(MapController *mapController,
     });
     ////--websocket data-------------------------------------------------------------------
     QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&DefenseModelLayer::onMessageReceived);
+}
+
+void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
+{
+    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DefenseModelLayer::onAircraftInfoChanged);
 }
 
 void DefenseModelLayer::demo()
@@ -545,6 +551,11 @@ void DefenseModelLayer::onMessageReceived(const QJsonDocument &message)
 
 }
 
+void DefenseModelLayer::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
+{
+    addUpdateAircraft(aircraftInfo);
+}
+
 void DefenseModelLayer::frameEvent()
 {
     //    findSceneModels(mMapController->getViewer());
@@ -567,6 +578,7 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
         mSelectedModelNode->mousePressEvent(event, false);
     if(modelNode)
         mSelectedModelNode = modelNode;
+    
 
 }
 

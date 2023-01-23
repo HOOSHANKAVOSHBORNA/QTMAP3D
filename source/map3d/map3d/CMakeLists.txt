@@ -28,8 +28,9 @@ add_executable(Map3d
         pluginmanager.cpp
         websocketclient.cpp
         networkmanager.cpp
+        defenseDataManager.cpp
         listwindow.cpp
-		outlinermodel.cpp
+        outlinermodel.cpp
         qml.qrc
         resources.qrc)
 

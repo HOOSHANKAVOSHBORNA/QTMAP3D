@@ -38,6 +38,7 @@ public:
     virtual bool setup(MapController *mapController,
                        NetworkManager *networkManager,
                        UIHandle *UIHandle) override;
+    virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
     //void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
     //void addTruckModel();
@@ -50,6 +51,7 @@ public slots:
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
     void onMessageReceived(const QJsonDocument &message);
+    void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;

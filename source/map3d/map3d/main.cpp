@@ -10,6 +10,7 @@
 
 #include "application.h"
 #include "mainwindow.h"
+#include "defenseDataManager.h"
 
 
 int main(int argc, char *argv[])
@@ -20,6 +21,9 @@ int main(int argc, char *argv[])
 
     Application *const map3DApp = Application::instance();
     map3DApp->initialize();
+    //--run demo------------------------
+    Demo demo(Application::instance()->defenseDataManager());
+    //---------------------------------
 
     if (map3DApp->isMainWindowReady()) {
         map3DApp->mainWindow()->show();
