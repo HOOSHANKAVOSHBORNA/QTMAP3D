@@ -376,8 +376,12 @@ void MapController::frame()
     spos.normalize();
     spos *= splen;
 
-    sunLight->setPosition(osg::Vec4(spos, 0));
     mSkyNode->setSunVisible(false);
+    mSkyNode->setAtmosphereVisible(false);
+    sunLight->setPosition(osg::Vec4(spos, 0));
+    spos.normalize();
+    spos *= -1.0f;
+    sunLight->setDirection(spos);
 
 
 }

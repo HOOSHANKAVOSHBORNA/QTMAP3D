@@ -14,5 +14,6 @@
         <file>resources/mez.png</file>
         <file>resources/latlong.png</file>
         <file>resources/aircraftinfo.png</file>
+        <file>resources/missle_icon.png</file>
     </qresource>
 </RCC>
