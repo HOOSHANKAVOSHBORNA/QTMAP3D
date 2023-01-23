@@ -29,6 +29,7 @@ public:
 
     DefenseModelNode *getAssignedModelNode() const;
     void setAssignedModelNode(DefenseModelNode *assignedModelNode);
+    void unassignedModelNode();
     void fire();
 
 protected:

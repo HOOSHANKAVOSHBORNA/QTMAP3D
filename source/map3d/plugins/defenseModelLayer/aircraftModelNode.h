@@ -36,6 +36,7 @@ public:
     osgEarth::Annotation::ModelNode *getTruckModel() const;
     void setInformation(AircraftInfo info);
     void goOnTrack();
+    osgEarth::Annotation::ModelNode* getDragModelNode() const;
 public slots:
 
     void onLeftButtonClicked(bool val);

@@ -88,7 +88,6 @@ bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDe
     qmlRegisterType<SystemTableModel>("Crystal", 1, 0, "SystemTableModel");
     mQmlEngine = engine;
 
-    QString cat = "model";
     pDesc->toolboxItemsList.push_back(new ItemDesc{AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{SYSTEM, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{STATION, CATEGORY, "qrc:/resources/station_lV.png", false, false, ""});
@@ -106,8 +105,8 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     {
         AircraftInfo aircraftInfo;
         aircraftInfo.TN = AIRCRAFT + QString::number(mModelNodes[AIRCRAFT].count());
-        aircraftInfo.Latitude = 52.8601;
-        aircraftInfo.Longitude = 35.277;
+        aircraftInfo.Longitude = 52.8601;
+        aircraftInfo.Latitude = 35.277;
         aircraftInfo.Altitude = 9100;
         aircraftInfo.Heading = 30;
         aircraftInfo.IFFCode = "a12345";
@@ -174,16 +173,16 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     {
         SystemInfo systemInfo;
         systemInfo.Name = SYSTEM + QString::number(mModelNodes[SYSTEM].count());
-        systemInfo.Latitude = 52.9;
-        systemInfo.Longitude = 35.3;
+        systemInfo.Longitude = 54.2;
+        systemInfo.Latitude = 35.3;
         addUpdateSystem(systemInfo);
     }
     else if(CATEGORY == category && name == STATION)
     {
         StationInfo stationInfo;
         stationInfo.Name = STATION + QString::number(mModelNodes[STATION].count());
-        stationInfo.Latitude = 53;
-        stationInfo.Longitude = 35.2;
+        stationInfo.Longitude = 52;
+        stationInfo.Latitude = 35.2;
         addUpdateStation(stationInfo);
     }
 }
@@ -241,67 +240,67 @@ void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataMan
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DefenseModelLayer::onAircraftInfoChanged);
 }
 
-void DefenseModelLayer::demo()
-{
-    //    int index = 0;
-    auto airplaneNames = mModelNodes[AIRCRAFT].keys();
-    for (auto name: airplaneNames)
-    {
-        auto model = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][name]);
-        auto mapPoint = model->getPosition();
-        osgEarth::GeoPoint  latLongPoint;
-        //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
-        //mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), latLongPoint);
-        osg::Vec3d currentPos;
-        mapPoint.toWorld(currentPos);
-        //osg::Vec3d currentPos(latLongPoint.vec3d());
-        //-- 500 km/h ~ 139 m/s ------------------
-        //    int randomX = 10*(138 + (qrand() % 139));
-        //    int randomY = 10*(138 + (qrand() % 139));
-        //    int val = qrand() % 4;
-        //    if(val == 1)
-        //        currentPos += osg::Vec3d(randomX, randomY, 0.0);
-        //    else if(val == 2)
-        //        currentPos += osg::Vec3d(randomX, -randomY, 0.0);
-        //    else if(val == 3)
-        //        currentPos += osg::Vec3d(-randomX, randomY, 0.0);
-        //    else
-        //        currentPos += osg::Vec3d(-randomX, -randomY, 0.0);
+//void DefenseModelLayer::demo()
+//{
+//    //    int index = 0;
+//    auto airplaneNames = mModelNodes[AIRCRAFT].keys();
+//    for (auto name: airplaneNames)
+//    {
+//        auto model = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][name]);
+//        auto mapPoint = model->getPosition();
+//        osgEarth::GeoPoint  latLongPoint;
+//        //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
+//        //mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), latLongPoint);
+//        osg::Vec3d currentPos;
+//        mapPoint.toWorld(currentPos);
+//        //osg::Vec3d currentPos(latLongPoint.vec3d());
+//        //-- 500 km/h ~ 139 m/s ------------------
+//        //    int randomX = 10*(138 + (qrand() % 139));
+//        //    int randomY = 10*(138 + (qrand() % 139));
+//        //    int val = qrand() % 4;
+//        //    if(val == 1)
+//        //        currentPos += osg::Vec3d(randomX, randomY, 0.0);
+//        //    else if(val == 2)
+//        //        currentPos += osg::Vec3d(randomX, -randomY, 0.0);
+//        //    else if(val == 3)
+//        //        currentPos += osg::Vec3d(-randomX, randomY, 0.0);
+//        //    else
+//        //        currentPos += osg::Vec3d(-randomX, -randomY, 0.0);
 
-        int randomX = (100 + (qrand() % 19));
-        int randomY = (100 + (qrand() % 19));
-        int val = qrand() % 4;
-        if(val == 1)
-            mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, randomY/10000.0, 0.0);
-        else if(val == 2)
-            mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, -randomY/10000.0, 0.0);
-        else if(val == 3)
-            mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, randomY/10000.0, 0.0);
-        else
-            mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, -randomY/10000.0, 0.0);
+//        int randomX = (100 + (qrand() % 19));
+//        int randomY = (100 + (qrand() % 19));
+//        int val = qrand() % 4;
+//        if(val == 1)
+//            mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, randomY/10000.0, 0.0);
+//        else if(val == 2)
+//            mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, -randomY/10000.0, 0.0);
+//        else if(val == 3)
+//            mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, randomY/10000.0, 0.0);
+//        else
+//            mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, -randomY/10000.0, 0.0);
 
-        //    setPosition(mCurrentWorldPoint, 138);
-        latLongPoint.fromWorld(osgEarth::SpatialReference::get("wgs84"), currentPos);
-        //qDebug()<<QString::fromUtf8(latLongPoint.toString().c_str());
-        model->flyTo(mapPoint.vec3d(),30, 138);
+//        //    setPosition(mCurrentWorldPoint, 138);
+//        latLongPoint.fromWorld(osgEarth::SpatialReference::get("wgs84"), currentPos);
+//        //qDebug()<<QString::fromUtf8(latLongPoint.toString().c_str());
+//        model->flyTo(mapPoint.vec3d(),30, 138);
 
-        // fallow racket
-        //        auto truckNames = mModels[TRUCK].keys();
-        //        for(auto truckName: truckNames)
-        //        {
-        //            auto modeltruck = dynamic_cast<Truck*>(mModels[TRUCK][truckName]);
-        //            if(modeltruck->shoot())
-        //            {
-        //                addRocketModel(modeltruck->getPosition().vec3d());
-        //                auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET].last());
-        //                modelRocket->flyTo(mapPoint.vec3d(), 120);
-        //                model->setFollowingModel(modelRocket);
-        //                break;
-        //            }
-        //        }
-        //        index += 1;
-    }
-}
+//        // fallow racket
+//        //        auto truckNames = mModels[TRUCK].keys();
+//        //        for(auto truckName: truckNames)
+//        //        {
+//        //            auto modeltruck = dynamic_cast<Truck*>(mModels[TRUCK][truckName]);
+//        //            if(modeltruck->shoot())
+//        //            {
+//        //                addRocketModel(modeltruck->getPosition().vec3d());
+//        //                auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET].last());
+//        //                modelRocket->flyTo(mapPoint.vec3d(), 120);
+//        //                model->setFollowingModel(modelRocket);
+//        //                break;
+//        //            }
+//        //        }
+//        //        index += 1;
+//    }
+//}
 
 //void DefenseModelLayer::addTruckModel()
 //{
@@ -348,7 +347,7 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 {
     osg::ref_ptr<AircraftModelNode> aircraftModelNode;
     osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
-                                          aircraftInfo.Latitude, aircraftInfo.Longitude, aircraftInfo.Altitude);
+                                          aircraftInfo.Longitude, aircraftInfo.Latitude, aircraftInfo.Altitude);
 
     if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(aircraftInfo.TN))
     {
@@ -387,11 +386,11 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 
         //            mModelNodes[AIRCRAFT].remove(QString(modelNode->getName().c_str()));
         //        });
-        if(mModelNodes.contains(SYSTEM))
-        {
-            auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM].first());
-            systemModelNode->setAssignedModelNode(aircraftModelNode);
-        }
+//        if(mModelNodes.contains(SYSTEM))
+//        {
+//            auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM].first());
+//            systemModelNode->setAssignedModelNode(aircraftModelNode);
+//        }
     }
     //update information------------------------------------------------------------------
     aircraftModelNode->setInformation(aircraftInfo);
@@ -441,7 +440,7 @@ void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
 {
     osg::ref_ptr<SystemModelNode> systemModelNode;
     osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
-                                          systemInfo.Latitude, systemInfo.Longitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+                                          systemInfo.Longitude, systemInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemInfo.Name))
     {
         systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemInfo.Name]);
@@ -470,7 +469,7 @@ void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
 {
     osg::ref_ptr<StationModelNode> stationModelNode;
     osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
-                                          stationInfo.Latitude, stationInfo.Longitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+                                          stationInfo.Longitude, stationInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Name))
     {
         stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][stationInfo.Name]);
@@ -578,8 +577,30 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
         mSelectedModelNode->mousePressEvent(event, false);
     if(modelNode)
         mSelectedModelNode = modelNode;
-    
+    //--drag aircraft---------------------------------------
+    auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
+    if(aircraftModelNode)
+    {
+        mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
+        mMapController->addNode(mDragAircraftModelNode);
+    }
 
+}
+
+void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
+{
+    //--drag aircraft--------------------------------------------
+    if(mDragAircraftModelNode)
+    {
+        auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
+        if(systemModelNode)
+        {
+            auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
+            systemModelNode->setAssignedModelNode(aircraftModelNode);
+        }
+        mMapController->removeNode(mDragAircraftModelNode);
+        mDragAircraftModelNode = nullptr;
+    }
 }
 
 void DefenseModelLayer::mouseMoveEvent(QMouseEvent *event)
@@ -593,6 +614,12 @@ void DefenseModelLayer::mouseMoveEvent(QMouseEvent *event)
         mOnMoveModelNode->mouseMoveEvent(event, false);
     if(modelNode)
         mOnMoveModelNode = modelNode;
+    //--drag aircraft---------------------------------------
+    if(mDragAircraftModelNode)
+    {
+        osgEarth::GeoPoint mouseGeoPoint = mMapController->screenToGeoPoint(event->x(), event->y());
+        mDragAircraftModelNode->setPosition(mouseGeoPoint);
+    }
 }
 
 DefenseModelNode *DefenseModelLayer::pick(float x, float y)

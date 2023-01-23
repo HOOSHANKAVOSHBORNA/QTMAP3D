@@ -156,6 +156,10 @@ DefenseModelNode *SystemModelNode::getAssignedModelNode() const
 
 void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
 {
+    if(!assignedModelNode)
+        return;
+    unassignedModelNode();
+
     mAssignedModelNode = assignedModelNode;
     mAssignedLine = new Line(mMapController);
     mAssignedLine->setLineClamp(false);
@@ -164,6 +168,14 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
     mMapController->addNode(mAssignedLine->getNode());
 
     mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
+}
+
+void SystemModelNode::unassignedModelNode()
+{
+    if(mAssignedModelNode)
+    {
+        mMapController->removeNode(mAssignedLine->getNode());
+    }
 }
 
 void SystemModelNode::fire()

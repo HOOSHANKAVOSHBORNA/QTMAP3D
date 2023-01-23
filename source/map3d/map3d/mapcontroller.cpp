@@ -472,6 +472,15 @@ void MapController::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) c
     mEarthManipulator->screenToWorld(x, height - y,mOsgRenderer, outWorldPoint);
 }
 
+osgEarth::GeoPoint MapController::screenToGeoPoint(float x, float y) const
+{
+    osg::Vec3d worldPoint;
+    screenToWorld(x, y, worldPoint);
+    osgEarth::GeoPoint geoPint;
+    geoPint.fromWorld(getMapSRS(), worldPoint);
+    return geoPint;
+}
+
 void MapController::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) const
 {
     float height = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->height());

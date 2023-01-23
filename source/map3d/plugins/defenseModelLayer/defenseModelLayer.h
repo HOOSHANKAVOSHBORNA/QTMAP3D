@@ -55,12 +55,13 @@ public slots:
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override {}
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
-    void demo();
+//    void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
     QMap<QString,QMap<QString, DefenseModelNode*>>  mModelNodes;
@@ -75,6 +76,7 @@ private:
 
     //AircraftTableModel *mAircraftTableModel;
     DataManager *mDataManager = nullptr;
+    osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
 };
 
 #endif // MODEL_H

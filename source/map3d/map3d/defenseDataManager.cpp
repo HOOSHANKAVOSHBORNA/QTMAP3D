@@ -50,9 +50,9 @@ AircraftInfo Demo::createAircraftInfo()
     aircraftInfo.Pos="pos";
     //
     //    int latitude = ((qrand() % 360) - 180);
-    double latitude = 35 + (qrand() % (75 - 35));
+    double longitude = 35 + (qrand() % (75 - 35));
     //    int longitude = ((qrand() % 180) - 90);
-    double longitude = 25 + (qrand() % (43 - 25));
+    double latitude = 25 + (qrand() % (43 - 25));
 
     double altitude = (2000 + (qrand() % (9000 - 2000)));
 
