@@ -19,19 +19,10 @@ int AircraftInfoModel::rowCount(const QModelIndex &/*parent*/) const {
 QVariant AircraftInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
         case TN: return QVariant::fromValue<QString>(mAircraftInfo.TN);
-        case IFFCode: return QVariant::fromValue<QString>(mAircraftInfo.IFFCode);
-        case CallSign: return QVariant::fromValue<QString>(mAircraftInfo.CallSign);
-        case Type: return QVariant::fromValue<QString>(mAircraftInfo.Type);
-        case Master: return QVariant::fromValue<QString>(mAircraftInfo.MasterRadar);
-        case Identification: return QVariant::fromValue<QString>(mAircraftInfo.Identification);
-        case IdentificationMethod: return QVariant::fromValue<QString>(mAircraftInfo.IdentificationMethod);
-        case Time: return QVariant::fromValue<QString>(mAircraftInfo.Time);
-        case Pos: return QVariant::fromValue<QString>(mAircraftInfo.Pos);
-        case Latitude: return QVariant::fromValue<double>(mAircraftInfo.Latitude);
-        case Longitude: return QVariant::fromValue<double>(mAircraftInfo.Longitude);
-        case Altitude: return QVariant::fromValue<double>(mAircraftInfo.Altitude);
-        case Heading: return QVariant::fromValue<double>(mAircraftInfo.Heading);
-        case Speed: return QVariant::fromValue<double>(mAircraftInfo.Speed);
+        case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
+        case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());
+        case LocationInfoHeaders: return QVariant::fromValue<QStringList>(getLocationInfoHeader());
+        case MainInfoHeaders: return QVariant::fromValue<QStringList>(getmainInfoHeaders());
         case DetectionSystems: return QVariant::fromValue<QStringList>(mAircraftInfo.DetectionSystems);
         case Sends: return QVariant::fromValue<QStringList>(mAircraftInfo.Sends);
         default: return mAircraftInfo.TN;
@@ -43,23 +34,41 @@ void AircraftInfoModel::setAircraftInfo(AircraftInfo &a)
     mAircraftInfo = a;
 }
 
+QStringList AircraftInfoModel::getMainInfo() const
+{
+    return QStringList {mAircraftInfo.TN, mAircraftInfo.IFFCode, mAircraftInfo.CallSign,
+                mAircraftInfo.Type, mAircraftInfo.MasterRadar, mAircraftInfo.Identification,
+                mAircraftInfo.IdentificationMethod, mAircraftInfo.Time, mAircraftInfo.Pos};
+}
+
+QStringList AircraftInfoModel::getmainInfoHeaders() const
+{
+    return QStringList {"TN", "IFFCode", "CallSign", "Type", "Master", "Identification"
+        , "Identif. Method", "Time", "Pos"};
+}
+
+QStringList AircraftInfoModel::getLocationInfo() const
+{
+    return QStringList {QString::number(mAircraftInfo.Latitude),
+                        QString::number(mAircraftInfo.Longitude),
+                        QString::number(mAircraftInfo.Altitude),
+                        QString::number(mAircraftInfo.Heading),
+                        QString::number(mAircraftInfo.Speed)};
+}
+
+QStringList AircraftInfoModel::getLocationInfoHeader() const
+{
+    return QStringList {"Latitude", "Longitude", "Altitude", "Heading", "Speed"};
+}
+
 QHash<int, QByteArray> AircraftInfoModel::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractListModel::roleNames();
     hash[TN] = "TN";
-    hash[IFFCode] = "IFFCode";
-    hash[CallSign] = "CallSign";
-    hash[Type] = "Type";
-    hash[Master] = "Master";
-    hash[Identification] = "Identification";
-    hash[IdentificationMethod] = "IdentificationMethod";
-    hash[Time] = "Time";
-    hash[Pos] = "Pos";
-    hash[Latitude] = "Latitude";
-    hash[Longitude] = "Longitude";
-    hash[Altitude] = "Altitude";
-    hash[Heading] = "Heading";
-    hash[Speed] = "Speed";
+    hash[MainInfo] = "MainInfo";
+    hash[MainInfoHeaders] = "MainInfoHeaders";
+    hash[LocationInfo] = "LocationInfo";
+    hash[LocationInfoHeaders] = "LocationInfoHeaders";
     hash[DetectionSystems] = "DetectionSystems";
     hash[Sends] = "Sends";
     return hash;
@@ -71,7 +80,6 @@ AircraftInformation::AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *muiHa
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        qDebug() << comp->errorString();
 
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));

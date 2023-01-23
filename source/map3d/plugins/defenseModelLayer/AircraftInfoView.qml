@@ -50,11 +50,13 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             ScrollView {
+                background: Rectangle {
+                    color: boxColor
+                }
+
                 ScrollBar.vertical.interactive: false
                 clip: true
                 anchors.fill: parent
-//                contentWidth: lay.width + 30
-//                contentHeight: lay.height + 15
                 ListView {
                     id: listview
                     model: rootItem.model
@@ -66,7 +68,11 @@ Item {
                         anchors.top: parent.top
                         width: rootItem.width
 
-
+                        Binding {
+                            target: airplane
+                            property: "text"
+                            value: TN
+                        }
                         Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 200
@@ -78,13 +84,6 @@ Item {
                             }
                         }
 
-
-//                        Rectangle {
-//                            Layout.preferredWidth: rootItem.width - 30
-//                            Layout.preferredHeight: 2
-//                            color: "white"
-
-//                        }
                         RowLayout {
                             spacing: 2
                             Layout.preferredWidth: rootItem.width
@@ -95,6 +94,7 @@ Item {
                                     anchors.top: parent.top
                                     id: img2
                                     verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
                                     source: "qrc:/resources/aircraftinfo.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
@@ -104,305 +104,56 @@ Item {
                                 color: "#474747"
                             }
                             GridLayout {
+                                id: wid
                                 rows: 9
-                                columns: 2
+                                columns: 1
                                 Layout.fillWidth: true
+                                Layout.preferredWidth: implicitWidth
                                 Layout.preferredHeight: implicitHeight
                                 columnSpacing: 0
                                 rowSpacing: 0
+                                Repeater {
+                                    model: MainInfoHeaders
+                                    Label {
+                                        text: MainInfoHeaders[index]
+                                        color: keyTextColor
+                                        Layout.fillWidth: true
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
 
-                                Label {
-                                    text: "TN "
-                                    color: keyTextColor
-//                                    Layout.preferredWidth: 135
-                                    Layout.fillWidth: true
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
+                                }
+                            }
+                            GridLayout {
+                                rows: 9
+                                columns: 1
+//                                Layout.fillWidth: true
+                                Layout.preferredHeight: implicitHeight
+                                columnSpacing: 0
+                                rowSpacing: 0
+                                Repeater {
+                                    model: MainInfo
+                                    Label {
+                                        id: txt
+                                        text: MainInfo[index]
+                                        color: "white"
+                                        Layout.fillWidth: true
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
                                     }
                                 }
-                                Label {
-                                    id: tnLabel
-                                    text: TN
-                                    color: "white"
-//                                    Layout.preferredWidth: 135
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignLeft
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-
-                                    Binding {
-                                        target: airplane
-                                        property: "text"
-                                        value: tnLabel.text
-                                    }
-                                    background: Rectangle {
-                                        color: valueColor
-
-                                    }
-                                }
-
-
-                                Label {
-                                    text: "IFFCode "
-                                    color: keyTextColor
-//                                    Layout.preferredWidth: 135
-                                    Layout.fillWidth: true
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: iffCodeLabel
-                                    text: IFFCode
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    horizontalAlignment: Qt.AlignLeft
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-                                Label {
-                                    text: "CallSign "
-                                    color: keyTextColor
-    //                                Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: callSignLabel
-                                    text: CallSign
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    horizontalAlignment: Qt.AlignLeft
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-
-                                Label {
-                                    text: "Type "
-                                    color: keyTextColor
-    //                                Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: typeLabel
-                                    text: Type
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    horizontalAlignment: Qt.AlignLeft
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-
-                                Label {
-                                    text: "Master "
-                                    color: keyTextColor
-    //                                Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: masterLabel
-                                    text: Master
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    horizontalAlignment: Qt.AlignLeft
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-                                Label {
-                                    text: "Identification "
-                                    color: keyTextColor
-    //                                Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: identificationLabel
-                                    text: Identification
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    horizontalAlignment: Qt.AlignLeft
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-                                Label {
-                                    id: idenLabel
-                                    text: "Identif. Method "
-                                    color: keyTextColor
-//                                    Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-                                    Layout.preferredWidth: 110
-                                    Layout.minimumWidth: 110
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: identificationMethodLabel
-                                    text: IdentificationMethod
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    Layout.preferredWidth: 160
-                                    Layout.minimumWidth: 160
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: idenLabel.implicitHeight + spacee
-                                    horizontalAlignment: Qt.AlignLeft
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-                                Label {
-                                    text: "Time "
-                                    color: keyTextColor
-    //                                Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: timeLabel
-                                    text: Time
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-    //                                Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    clip: true
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    horizontalAlignment: Qt.AlignLeft
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-                                Label {
-                                    text: "Pos "
-                                    color: keyTextColor
-    //                                Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: posLabel
-                                    text: Pos
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    horizontalAlignment: Qt.AlignLeft
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
                             }
                         }
-
-//                        Rectangle {
-//                            Layout.preferredWidth: rootItem.width
-//                            Layout.preferredHeight: 2
-//                            color: "white"
-
-//                        }
-
                         Label {
                             Layout.preferredWidth: rootItem.width
                             Layout.preferredHeight: 1
@@ -424,8 +175,8 @@ Item {
                                     anchors.top: parent.top
                                     id: img1
                                     verticalAlignment: Image.AlignTop
-                                    horizontalAlignment: Image.AlignHCenter
-                                    source: "qrc:/resources/latlong.png"
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    source: "qrc:/resources/location.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height:24
@@ -436,178 +187,61 @@ Item {
                             GridLayout {
                                 rows: 5
                                 columns: 2
-                                Layout.fillWidth: true
-                                Layout.preferredWidth: implicitWidth
+//                                Layout.fillWidth: true
+//                                Layout.preferredWidth: implicitWidth
                                 Layout.preferredHeight: implicitHeight
                                 rowSpacing: 0
                                 columnSpacing: 0
+                                GridLayout {
+                                    rows: 5
+                                    columns: 1
+                                    Layout.preferredHeight: implicitHeight
+                                    Layout.preferredWidth: wid.implicitWidth - 55
+                                    columnSpacing: 0
+                                    rowSpacing: 0
+                                    Repeater {
+                                        model: LocationInfoHeaders
+                                        Label {
+                                            text: LocationInfoHeaders[index]
+                                            color: keyTextColor
+                                            Layout.fillWidth: true
+                                            verticalAlignment: Label.AlignVCenter
+                                            Layout.leftMargin: 5
+                                            leftInset: -5
+                                            Layout.preferredHeight: implicitHeight + spacee
+                                            background: Rectangle {
+                                                color: boxColor
+                                            }
+                                        }
 
-                                Label {
-                                    text: "Latitude "
-                                    color: keyTextColor
-                                    Layout.fillWidth: true
-                                    Layout.preferredWidth: 110
-                                    Layout.minimumWidth: 110
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
                                     }
                                 }
-                                Label {
-                                    id: latitudeLabel
-                                    text: Latitude
-                                    color: "white"
-//                                    Layout.preferredWidth: tnLabel.implicitWidth
-                                    Layout.fillWidth: true
-                                    Layout.preferredWidth: 160
-                                    Layout.minimumWidth: 160
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: idenLabel.implicitHeight + spacee
-                                    horizontalAlignment: Qt.AlignLeft
-                                    background: Rectangle {
-                                        color: valueColor
+                                GridLayout {
+                                    rows: 4
+                                    columns: 1
+//                                    Layout.fillWidth: true
+                                    Layout.preferredHeight: implicitHeight
+                                    columnSpacing: 0
+                                    rowSpacing: 0
+                                    Repeater {
+                                        model: LocationInfo
+                                        Label {
+                                            text: LocationInfo[index]
+                                            color: "white"
+                                            Layout.fillWidth: true
+                                            Layout.leftMargin: 5
+                                            leftInset: -5
+                                            verticalAlignment: Label.AlignVCenter
+                                            Layout.preferredHeight: implicitHeight + spacee
+                                            background: Rectangle {
+                                                color: boxColor
+                                            }
+                                        }
                                     }
                                 }
-
-                                Label {
-                                    text: "Longitude "
-                                    color: keyTextColor
-//                                    Layout.preferredWidth: 80
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: longitudeLabel
-                                    text: Longitude
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: idenLabel.implicitHeight + spacee
-                                    horizontalAlignment: Qt.AlignLeft
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-
-                                Label {
-                                    text: "Altitude "
-                                    color: keyTextColor
-    //                                Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: altitudeLabel
-                                    text: Altitude
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: idenLabel.implicitHeight + spacee
-                                    horizontalAlignment: Qt.AlignLeft
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-
-
-                                Label {
-                                    text: "Heading "
-                                    color: keyTextColor
-    //                                Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: headingLabel
-                                    text: Heading
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: idenLabel.implicitHeight + spacee
-                                    horizontalAlignment: Qt.AlignLeft
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
-
-                                Label {
-                                    text: "Speed "
-                                    color: keyTextColor
-    //                                Layout.preferredWidth: implicitWidth
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: implicitHeight + spacee
-                                    background: Rectangle {
-                                        color: boxColor
-                                    }
-                                }
-                                Label {
-                                    id: speedLabel
-                                    text: Speed
-                                    color: "white"
-                                    Layout.fillWidth: true
-//                                    Layout.preferredWidth: 135
-                                    Layout.leftMargin: 5
-                                    leftInset: -5
-    //                                clip: true
-                                    verticalAlignment: Label.AlignVCenter
-                                    Layout.preferredHeight: idenLabel.implicitHeight + spacee
-                                    horizontalAlignment: Qt.AlignLeft
-                                    background: Rectangle {
-                                        color: valueColor
-                                    }
-                                }
-
                             }
                         }
 
-//                        Rectangle {
-//                            Layout.preferredWidth: rootItem.width - 30
-//                            Layout.preferredHeight: 2
-//                            color: "white"
-
-//                        }
 
                         Rectangle {
                             id: firstButton
@@ -672,6 +306,7 @@ Item {
                                     anchors.top: parent.top
                                     id: img3
                                     verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
                                     source: "qrc:/resources/system.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
@@ -702,12 +337,7 @@ Item {
                                 }
                             }
                         }
-//                        Rectangle {
-//                            Layout.preferredWidth: rootItem.width - 30
-//                            Layout.preferredHeight: 2
-//                            color: "white"
 
-//                        }
 
                         Rectangle {
                             id: secondButton
@@ -771,6 +401,7 @@ Item {
                                     anchors.top: parent.top
                                     id: img4
                                     verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
                                     source: "qrc:/resources/station_lV.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
@@ -803,13 +434,7 @@ Item {
                     }
                 }
             }
-
-
         }
-        Item {
-            Layout.minimumHeight: 5
-        }
-
         AircraftInfoButtonGroup {
             Layout.fillWidth: true
             Layout.minimumHeight: 60

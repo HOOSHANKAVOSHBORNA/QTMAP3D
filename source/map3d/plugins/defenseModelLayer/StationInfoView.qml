@@ -11,12 +11,14 @@ Item {
     clip: true
 
     property StationInfoModel model
-    property bool on: false
+    property var boxColor: "#363739"
+    property var valueColor: "#363739"
+    property var keyTextColor: "#9b9ca0"
+    property var spacee: 5
 
     Rectangle{
         anchors.fill: parent
-        color: "#404040"
-        opacity: 0.8
+        color: "#2F2E2C"
         radius: 10
     }
 
@@ -32,7 +34,6 @@ Item {
                 anchors.leftMargin: 35
                 Text {
                     id: station
-//                    anchors.centerIn: parent
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: implicitWidth
                     text: "Station"
@@ -44,7 +45,6 @@ Item {
                     ToolTip {
                         parent: control
                         y: control.y + control.height
-//                        x: station.x + 50
                         Text{
                             text: control.checked ? "Click to deactivate Station" : "Click to activate Station"
                             color: "white"
@@ -88,22 +88,34 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             ScrollView {
+                background: Rectangle {
+                    color: boxColor
+                }
 
                 clip: true
+                ScrollBar.vertical.interactive: false
                 anchors.fill: parent
-//                contentWidth: lay.width + 30
-//                contentHeight: lay.height + 15
                 ListView {
                     id: listview
                     model: rootItem.model
                     delegate: ColumnLayout {
                         id:lay
-                        spacing: 10
+                        spacing: 1
 
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.top: parent.top
-                        width: rootItem.width - 30
+                        width: rootItem.width
 
+                        Binding {
+                            target: station
+                            property: "text"
+                            value: Name
+                        }
+                        Binding {
+                            target: control
+                            property: "checked"
+                            value: Active
+                        }
 
                         Item {
                             Layout.fillWidth: true
@@ -116,167 +128,157 @@ Item {
                             }
                         }
 
-
-                        Rectangle {
-                            Layout.preferredWidth: rootItem.width - 30
-                            Layout.preferredHeight: 2
-                            color: "white"
-
-                        }
-
-                        GridLayout {
-                            rows: 4
-                            columns: 2
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: implicitHeight
-
-                            Label {
-                                text: "Name: "
-                                color: "white"
-                                Layout.preferredWidth: implicitWidth
-                            }
-                            Label {
-                                id: nameLabel
-                                text: Name
-                                color: "white"
-                                Layout.fillWidth: true
-                                horizontalAlignment: Qt.AlignRight
-                                Binding {
-                                    target: station
-                                    property: "text"
-                                    value: nameLabel.text
-                                }
-                            }
-                            Label {
-                                visible: false
-                                Binding {
-                                    target: control
-                                    property: "checked"
-                                    value: Active
-                                }
-                            }
-
-                            Label {
-                                text: "Number: "
-                                color: "white"
-                                Layout.preferredWidth: implicitWidth
-                            }
-                            Label {
-                                id: numberLabel
-                                text: Numberr
-                                color: "white"
-                                Layout.fillWidth: true
-                                horizontalAlignment: Qt.AlignRight
-                            }
-                            Label {
-                                text: "Type: "
-                                color: "white"
-                                Layout.preferredWidth: implicitWidth
-                            }
-                            Label {
-                                id: typeLabel
-                                text: Type
-                                color: "white"
-                                Layout.fillWidth: true
-                                horizontalAlignment: Qt.AlignRight
-                            }
-
-                            Label {
-                                text: "Primary/Secondry: "
-                                color: "white"
-                                Layout.preferredWidth: implicitWidth
-                            }
-                            Label {
-                                id: primLabel
-                                text: PrimSec
-                                color: "white"
-                                Layout.fillWidth: true
-                                horizontalAlignment: Qt.AlignRight
-                            }}
-
+                        RowLayout {
+                            spacing: 2
+                            Layout.preferredWidth: rootItem.width
                             Rectangle {
-                                Layout.preferredWidth: rootItem.width - 30
-                                Layout.preferredHeight: 2
-                                color: "white"
+                                Layout.preferredWidth: img2.width + 6
+                                Layout.fillHeight: true
+                                Image {
+                                    anchors.top: parent.top
+                                    id: img2
+                                    verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    source: "qrc:/resources/sinfo.png"
+                                    sourceSize: Qt.size(24,24)
+                                    width: 24
+                                    height:24
 
+                                }
+                                color: "#474747"
                             }
-
-
                             GridLayout {
-                                rows: 6
-                                columns: 2
+                                rows: 4
+                                columns: 1
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: implicitHeight
-
-                                Label {
-                                    text: "Latitude: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    id: latLabel
-                                    text: Latitude
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-
-                                Label {
-                                    text: "Longitude: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    id: longLabel
-                                    text: Longitude
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-
-                                Label {
-                                    text: "Radius: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    id: radiusLabel
-                                    text: Radius
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Label {
-                                    text: "CycleTime: "
-                                    color: "white"
-                                    Layout.preferredWidth: implicitWidth
-                                }
-                                Label {
-                                    id: cycleTimeLabel
-                                    text: CycleTime
-                                    color: "white"
-                                    Layout.fillWidth: true
-                                    horizontalAlignment: Qt.AlignRight
-                                }
-                                Rectangle {
-                                    Layout.preferredWidth: rootItem.width - 30
-                                    Layout.preferredHeight: 2
-                                    color: "white"
+                                columnSpacing: 0
+                                rowSpacing: 0
+                                Repeater {
+                                    model: MainInfoHeaders
+                                    Label {
+                                        text: MainInfoHeaders[index]
+                                        color: keyTextColor
+                                        Layout.fillWidth: true
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
 
                                 }
-
+                            }
+                            GridLayout {
+                                rows: 4
+                                columns: 1
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: implicitHeight
+                                columnSpacing: 0
+                                rowSpacing: 0
+                                Repeater {
+                                    model: MainInfo
+                                    Label {
+                                        text: MainInfo[index]
+                                        color: "white"
+                                        Layout.fillWidth: true
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
+                                }
                             }
                         }
 
+
+                        Label {
+                            Layout.preferredWidth: rootItem.width
+                            Layout.preferredHeight: 1
+                            verticalAlignment: Label.AlignVCenter
+                            color: "white"
+                            text: ""
+                            horizontalAlignment: Qt.AlignHCenter
+                            background: Rectangle {
+                                color: "#909090"
+                            }
+                        }
+                        RowLayout {
+                            spacing: 2
+                            Layout.preferredWidth: rootItem.width
+                            Rectangle {
+                                Layout.preferredWidth: img1.width + 6
+                                Layout.fillHeight: true
+                                Image {
+                                    anchors.top: parent.top
+                                    id: img1
+                                    verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    source: "qrc:/resources/location.png"
+                                    sourceSize: Qt.size(24,24)
+                                    width: 24
+                                    height:24
+
+                                }
+                                color: "#474747"
+                            }
+                            GridLayout {
+                                rows: 4
+                                columns: 1
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: implicitHeight
+                                columnSpacing: 0
+                                rowSpacing: 0
+                                Repeater {
+                                    model: LocationInfoHeaders
+                                    Label {
+                                        text: LocationInfoHeaders[index]
+                                        color: keyTextColor
+                                        Layout.fillWidth: true
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
+
+                                }
+                            }
+                            GridLayout {
+                                rows: 4
+                                columns: 1
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: implicitHeight
+                                columnSpacing: 0
+                                rowSpacing: 0
+                                Repeater {
+                                    model: LocationInfo
+                                    Label {
+                                        text: LocationInfo[index]
+                                        color: "white"
+                                        Layout.fillWidth: true
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
-
         }
-        Item {
-            Layout.minimumHeight: 5
-        }
-
         StationInfoButtonGroup {
             Layout.fillWidth: true
             Layout.minimumHeight: 60

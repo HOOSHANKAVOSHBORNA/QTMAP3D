@@ -74,7 +74,7 @@ Item {
                 Text {
                     color: "white"
                     anchors.centerIn: t3
-                    text: "Lat, Long: "
+                    text: "Long, Lat: "
                     font.family: _font
                 }
             }
