@@ -85,7 +85,6 @@ SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
 {
     QQmlComponent *comp = new QQmlComponent(qmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        qDebug() << comp->errorString();
 
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));

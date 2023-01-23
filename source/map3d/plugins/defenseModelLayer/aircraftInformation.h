@@ -11,20 +11,10 @@ public:
 
     enum MyRoles {
         TN = Qt::UserRole + 200,
-        IFFCode = Qt::UserRole + 201,
-        CallSign = Qt::UserRole + 202,
-        Type = Qt::UserRole + 203,
-        Master = Qt::UserRole + 204,
-        Identification = Qt::UserRole + 205,
-        IdentificationMethod = Qt::UserRole + 206,
-        Time = Qt::UserRole + 207,
-        Pos = Qt::UserRole + 208,
-
-        Latitude = Qt::UserRole + 210,
-        Longitude = Qt::UserRole + 211,
-        Altitude = Qt::UserRole + 212,
-        Heading = Qt::UserRole + 213,
-        Speed = Qt::UserRole + 214,
+        MainInfo = Qt::UserRole + 207,
+        MainInfoHeaders = Qt::UserRole + 208,
+        LocationInfo = Qt::UserRole + 213,
+        LocationInfoHeaders = Qt::UserRole + 214,
         DetectionSystems = Qt::UserRole + 215,
         Sends = Qt::UserRole + 216
     };
@@ -33,9 +23,14 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QHash<int, QByteArray> roleNames() const override;
+
     AircraftInfo getAircraftInfo() {return mAircraftInfo;}
     void setAircraftInfo(AircraftInfo &a);
-    QHash<int, QByteArray> roleNames() const override;
+    QStringList getMainInfo() const;
+    QStringList getmainInfoHeaders() const;
+    QStringList getLocationInfo() const;
+    QStringList getLocationInfoHeader() const;
 
 Q_SIGNALS:
     void gotoButtonClicked();

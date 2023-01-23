@@ -30,7 +30,6 @@ Item {
                 anchors.leftMargin: 35
                 Text {
                     id: system
-//                    anchors.centerIn: parent
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: implicitWidth
                     text: "System"
@@ -42,7 +41,6 @@ Item {
                     ToolTip {
                         parent: control
                         y: control.y + control.height
-//                        x: station.x + 50
                         Text{
                             text: control.checked ? "Click to deactivate Station" : "Click to activate Station"
                             color: "white"
@@ -89,8 +87,6 @@ Item {
 
                 clip: true
                 anchors.fill: parent
-//                contentWidth: lay.width + 30
-//                contentHeight: lay.height + 15
                 ListView {
                     id: listview
                     model: rootItem.model
