@@ -80,6 +80,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 void SystemModelNode::setInformation(const SystemInfo& info)
 {
     mInformation = info;
+    setDisplayText(mInformation.Name);
 }
 
 void SystemModelNode::goOnTrack()
@@ -112,8 +113,11 @@ void SystemModelNode::setMissleCount(int numMissles)
 
 void SystemModelNode::setDisplayText(QString displayText)
 {
-    mDisplayText = displayText;
-    updateOrCreateLabelImage();
+    if(mDisplayText != displayText)
+    {
+        mDisplayText = displayText;
+        updateOrCreateLabelImage();
+    }
 }
 
 void SystemModelNode::setBCCStatus(QString bccStatus)
