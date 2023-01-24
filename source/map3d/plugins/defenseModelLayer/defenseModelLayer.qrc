@@ -21,5 +21,7 @@
         <file>resources/sinfo.png</file>
         <file>resources/missle_green_icon.png</file>
         <file>resources/missle_red_icon.png</file>
+        <file>resources/bullet_green.png</file>
+        <file>resources/bullet_red.png</file>
     </qresource>
 </RCC>
