@@ -13,6 +13,8 @@
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
+#include <QImage>
+#include <QPainter>
 
 
 class SystemModelNode: public DefenseModelNode
@@ -40,9 +42,22 @@ private slots:
     void onMezButtonToggled(bool checked);
     void onActiveButtonToggled(bool checked);
     void onModeChanged(bool is3DView);
+
+    void setMissleCount(int numMissles);
+    void setDisplayText(QString displayText);
+    void setBCCStatus(QString bccStatus);
+    void setRadarSearchStatus(QString radarSearchStatus);
+
+public:
+    int getMissleCount() const;
+    QString getDisplayText() const;
+
 private:
     void collision();
     void showInfoWidget();
+
+    void updateOrCreateLabelImage();
+
 private:
     MapController* mMapController{nullptr};
     SystemInfo mInformation;
@@ -56,6 +71,19 @@ private:
     osg::ref_ptr<Truck> mTruck;
     Rocket* mFiredRocket{nullptr};
     bool mHit{false};
+
+
+private:
+    QImage                  *mRenderTargetImage = nullptr;
+    osg::ref_ptr<osg::Image> mLabelImage = nullptr;
+    static constexpr int LABEL_IMAGE_WIDTH = 160;
+    static constexpr int LABEL_IMAGE_HEIGHT = 180;
+
+    int     mMissleCount = 3;
+    QString mDisplayText = "System0";
+    QString mBCCStatus = "us";
+    QString mRadarSearchStatus = "s";
+
 };
 
 #endif // SYSTEM_H

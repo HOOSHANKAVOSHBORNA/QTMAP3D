@@ -44,8 +44,9 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
-    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
+    //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
+    updateOrCreateLabelImage();
+    mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
     getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
@@ -103,6 +104,28 @@ void SystemModelNode::onModeChanged(bool is3DView)
     select(mIsSelected);
 }
 
+void SystemModelNode::setMissleCount(int numMissles)
+{
+    mMissleCount = numMissles;
+    updateOrCreateLabelImage();
+}
+
+void SystemModelNode::setDisplayText(QString displayText)
+{
+    mDisplayText = displayText;
+    updateOrCreateLabelImage();
+}
+
+int SystemModelNode::getMissleCount() const
+{
+    return mMissleCount;
+}
+
+QString SystemModelNode::getDisplayText() const
+{
+    return mDisplayText;
+}
+
 void SystemModelNode::collision()
 {
     if(mAssignedModelNode && mFiredRocket)
@@ -147,6 +170,108 @@ void SystemModelNode::showInfoWidget()
     connect(systemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
     connect(systemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
     systemInformation->show();
+}
+
+void SystemModelNode::updateOrCreateLabelImage()
+{
+    if (!mRenderTargetImage) {
+        mRenderTargetImage = new QImage(
+                    LABEL_IMAGE_WIDTH,
+                    LABEL_IMAGE_HEIGHT,
+                    QImage::Format_RGBA8888
+                    );
+    }
+
+    if (!mLabelImage) {
+        mLabelImage = new osg::Image;
+    }
+
+    {
+        mRenderTargetImage->fill(QColor(Qt::transparent));
+        QPainter painter(mRenderTargetImage);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+
+        static const QBrush backgroundBrush = QBrush(QColor("darkslategray"));
+
+        static const QFont textFont("SourceSansPro", 14, QFont::Normal);
+        static const QPen  textPen(QColor(255, 255, 255));
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(backgroundBrush);
+
+        painter.drawRoundedRect(
+                    mRenderTargetImage->rect(),
+                    8,8);
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
+                         Qt::AlignCenter,
+                         mDisplayText);
+
+
+        static const QPen linePen(QColor(255, 255, 255),
+                                  1,
+                                  Qt::PenStyle::DashLine
+                                  );
+
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
+
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "MissleNo");
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         QString::number(mMissleCount));
+
+
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "BCC");
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mBCCStatus);
+
+
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Radar");
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mRadarSearchStatus);
+
+
+
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, 135, LABEL_IMAGE_WIDTH, 135);
+
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(Qt::white);
+        for (int i = 0; i < mMissleCount; i++) {
+            painter.drawRect(
+                        QRect(10 + (i * 15), 145, 10, 25)
+                        );
+        }
+
+    }
+    *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
+
+    mLabelImage->setImage(LABEL_IMAGE_WIDTH,
+                          LABEL_IMAGE_HEIGHT,
+                          1,
+                          GL_RGBA,
+                          GL_RGBA,
+                          GL_UNSIGNED_BYTE,
+                          mRenderTargetImage->bits(),
+                          osg::Image::AllocationMode::NO_DELETE);
 }
 
 DefenseModelNode *SystemModelNode::getAssignedModelNode() const

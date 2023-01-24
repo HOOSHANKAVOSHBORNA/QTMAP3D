@@ -138,7 +138,8 @@ Item {
                                     anchors.top: parent.top
                                     id: img2
                                     verticalAlignment: Image.AlignTop
-                                    source: "qrc:/resources/stationinformation.png"
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    source: "qrc:/resources/sinfo.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height:24
@@ -217,8 +218,8 @@ Item {
                                     anchors.top: parent.top
                                     id: img1
                                     verticalAlignment: Image.AlignTop
-                                    horizontalAlignment: Image.AlignHCenter
-                                    source: "qrc:/resources/latlong.png"
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    source: "qrc:/resources/location.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height:24

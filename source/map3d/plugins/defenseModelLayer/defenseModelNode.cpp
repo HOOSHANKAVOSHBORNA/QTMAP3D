@@ -261,8 +261,8 @@ void DefenseModelNode::setType(const QString &value)
 void DefenseModelNode::setQStringName(QString name)
 {
     setName(name.toStdString());
-    if(mLableNode)
-        mLableNode->setText(name.toStdString());
+//    if(mLableNode)
+//        mLableNode->setText(name.toStdString());
 }
 
 QString DefenseModelNode::getQStringName()
