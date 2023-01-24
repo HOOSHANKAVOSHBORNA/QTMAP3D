@@ -72,6 +72,7 @@ private:
 
     Line *mRouteLine;
     Line *mTempRouteLine;
+    AircraftInformation *mAircraftinformation{nullptr};
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
 };

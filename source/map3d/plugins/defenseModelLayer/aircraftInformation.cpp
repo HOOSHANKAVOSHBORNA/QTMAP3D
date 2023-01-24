@@ -31,7 +31,9 @@ QVariant AircraftInfoModel::data(const QModelIndex &/*index*/, int role) const{
 
 void AircraftInfoModel::setAircraftInfo(AircraftInfo &a)
 {
+    beginResetModel();
     mAircraftInfo = a;
+    endResetModel();
 }
 
 QStringList AircraftInfoModel::getMainInfo() const
@@ -93,6 +95,11 @@ AircraftInformation::AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *muiHa
     });
 
     comp->loadUrl(QUrl("qrc:/modelplugin/AircraftInfoView.qml"));
+}
+
+void AircraftInformation::updateAircraft(AircraftInfo &mInformation)
+{
+    mInfomodel->setAircraftInfo(mInformation);
 }
 void AircraftInformation::show() {
     mUiHandle->iwShow(mItem);

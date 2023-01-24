@@ -2,6 +2,7 @@
 
 #include <QTimer>
 
+static int aircraftNumber = 0;
 DefenseDataManager::DefenseDataManager(QObject *parent):
     QObject(parent)
 {
@@ -15,7 +16,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 
     createStationInfo();
     createSystemInfo();
-    //createAircraftInfo();
+    createAircraftInfo();
     //----------------------------------------------------------
     QObject::connect(timer, &QTimer::timeout, [&](){
         //---------------------------------------------
@@ -29,6 +30,9 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         createAircraftInfo();
         for(auto aircraft:mAircraftList)
             emit mDefenseDataManager->aircraftInfoChanged(aircraft);
+
+        //emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
+        //mAircraftList.removeFirst();
     });
     timer->start(10000);
     //---------------------------------------------------------
@@ -38,7 +42,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
-    int tn = 10000 + mAircraftList.count();
+    int tn = 10000 + aircraftNumber++;
     aircraftInfo.TN = QString::number(tn);
     aircraftInfo.IFFCode="a12345";
     aircraftInfo.CallSign="cls";

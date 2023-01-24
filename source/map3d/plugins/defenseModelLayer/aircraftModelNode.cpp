@@ -72,7 +72,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
     setStyle(rootStyle);
     //--create icon Nodes---------------------------------------------------------------------------
-    osg::Image* redIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_red.png");
+    osg::Image* redIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_gray.png");
     redIcon->scaleImage(25, 32, redIcon->r());
     osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
@@ -80,7 +80,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
     redGeode->addDrawable(redImageDrawable);
 
-    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_yellow.png");
+    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_darkGray.png");
     yellowIcon->scaleImage(25, 32, yellowIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
@@ -134,7 +134,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
 void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double speed)
 {
-
+    speed = 1;
     if(mIsStop)
         return;
     //    heading = 30;
@@ -185,8 +185,8 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double spee
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 
     path->insert(0, osg::AnimationPath::ControlPoint(currentPosW,getPositionAttitudeTransform()->getAttitude(),getScale()));
-    path->insert(2,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
-    path->insert(3,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
+    path->insert(1,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
+    path->insert(2,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
     path->insert(timeEstimate,osg::AnimationPath::ControlPoint(posEstimateW, headingRotate, getScale()));
 
     mAnimationPathCallback = new ModelAnimationPathCallback();
@@ -233,7 +233,10 @@ void AircraftModelNode::setInformation(AircraftInfo info)
 {
     mInformation = info;
     QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
-//    mUIHandle->iwUpdateData(this, txtInfo);
+
+    if(mAircraftinformation)
+        mAircraftinformation->updateAircraft(info);
+    //    mUIHandle->iwUpdateData(this, txtInfo);
 }
 
 void AircraftModelNode::goOnTrack()
@@ -413,11 +416,11 @@ void AircraftModelNode::showInfoWidget()
 //    });
 
 //    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
-    AircraftInformation *aircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
-    connect(aircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
-    connect(aircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
-    connect(aircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
-    aircraftinformation->show();
+    mAircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
+    connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
+    connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
+    connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
+    mAircraftinformation->show();
 }
 
 void AircraftModelNode::addEffect(double emitterDuration)

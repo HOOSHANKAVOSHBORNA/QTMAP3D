@@ -54,6 +54,7 @@ public slots:
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
+    void onClearAircraft(QString tn);
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;

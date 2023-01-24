@@ -22,6 +22,7 @@ signals:
 
 public slots:
     void setAircraftInfo(const AircraftInfo& aircraftInof);
+    void deleteAircraftInfo(const QString TN);
     void setStationInfo(const StationInfo& stationInfo);
     void setSystemInfo(const SystemInfo& systemInfo);
 

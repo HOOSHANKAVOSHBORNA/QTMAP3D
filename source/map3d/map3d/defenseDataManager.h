@@ -258,6 +258,7 @@ signals:
     void aircraftInfoChanged(AircraftInfo& aircraftInfo);
     void systemInfoChanged(SystemInfo& systemInfo);
     void stationInfoChanged(StationInfo& stationInfo);
+    void clearAircraft(QString tn);
 public slots:
 };
 

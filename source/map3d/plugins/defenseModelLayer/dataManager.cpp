@@ -104,6 +104,13 @@ void DataManager::setAircraftInfo(const AircraftInfo &aircraftInof)
     }
 }
 
+void DataManager::deleteAircraftInfo(const QString TN)
+{
+    if (mAircraftTableModel) {
+        mAircraftTableModel->deleteItem(TN);
+    }
+}
+
 void DataManager::setStationInfo(const StationInfo &stationInfo)
 {
     if (mStationTableModel) {

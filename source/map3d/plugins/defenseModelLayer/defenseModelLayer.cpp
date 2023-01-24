@@ -200,6 +200,7 @@ void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataMan
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DefenseModelLayer::onAircraftInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DefenseModelLayer::onSystemInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DefenseModelLayer::onStationInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DefenseModelLayer::onClearAircraft);
 }
 
 //void DefenseModelLayer::demo()
@@ -527,12 +528,25 @@ void DefenseModelLayer::onStationInfoChanged(StationInfo &stationInfo)
     addUpdateStation(stationInfo);
 }
 
+void DefenseModelLayer::onClearAircraft(QString tn)
+{
+    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
+    {
+        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn]);
+        aircraftModelNode->onLeftButtonClicked(false);
+        aircraftModelNode->setNodeMask(false);
+//        mMapController->removeNode(aircraftModelNode);
+        //        mModelNodes[AIRCRAFT].remove(tn);
+        mDataManager->deleteAircraftInfo(tn);
+    }
+}
+
 void DefenseModelLayer::frameEvent()
 {
     //    findSceneModels(mMapController->getViewer());
     for(auto modelNodeList: mModelNodes)
         for(auto modelNode: modelNodeList)
-            modelNode->frameEvent();
+                modelNode->frameEvent();
     //    if(mLastSelectedModel)
     //        mLastSelectedModel->frameEvent();
 }

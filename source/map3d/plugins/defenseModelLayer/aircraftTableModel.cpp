@@ -194,3 +194,42 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
 
 }
 
+void AircraftTableModel::deleteItem(const QString TN)
+{
+    beginResetModel();
+
+    const  auto newEnd = std::remove_if(mAircraftInfoList.begin(),
+                                        mAircraftInfoList.end(),
+                                        [&TN](const QPair<int, QSharedPointer<AircraftInfo>>& itemInfo) {
+
+        return itemInfo.second->TN == TN;
+    });
+
+
+    mAircraftInfoList.erase(newEnd, mAircraftInfoList.end());
+
+//    const auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(),
+//                                 [aircraftInfo](const QPair<int, QSharedPointer<AircraftInfo>>& itemInfo){
+//        return itemInfo.second->TN == aircraftInfo.TN;
+//    });
+
+
+//    if (it != mAircraftInfoList.end()) {
+//        *(*it).second = aircraftInfo;
+//    } else {
+//        QPair<int, QSharedPointer<AircraftInfo>> isp;
+//        isp.first = mAircraftInfoList.size();
+//        isp.second.reset(new AircraftInfo);
+//        *(isp.second) = aircraftInfo;
+//        mAircraftInfoList.push_back(isp);
+//    }
+
+    mAircraftInfoListProxy.clear();
+    for (auto& item : mAircraftInfoList) {
+        if (item.second->TN.contains(mFilter))
+            mAircraftInfoListProxy.push_back(item);
+    }
+
+    endResetModel();
+}
+

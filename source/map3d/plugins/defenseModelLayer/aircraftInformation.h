@@ -49,6 +49,7 @@ class AircraftInformation : public QObject
 public:
     explicit AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, AircraftInfo mInformation, QObject *parent = nullptr);
     AircraftInfoModel* getInfo(){return mInfomodel;}
+    void updateAircraft(AircraftInfo& mInformation);
     void show();
 private:
     AircraftInfo mInformation;
