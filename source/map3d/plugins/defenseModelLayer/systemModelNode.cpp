@@ -214,7 +214,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
 
-        static const QBrush backgroundBrush = QBrush(QColor("darkslategray"));
+        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, 255));
 
         static const QFont textFont("SourceSansPro", 12, QFont::Normal);
         static const QPen  textPen(QColor(255, 255, 255));
@@ -277,8 +277,8 @@ void SystemModelNode::updateOrCreateLabelImage()
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(Qt::white);
-        static const QImage missleRedImage(":/resources/missle_red_icon.png");
-        static const QImage missleGreenImage(":/resources/missle_green_icon.png");
+        static const QImage missleRedImage(":/resources/bullet_red.png");
+        static const QImage missleGreenImage(":/resources/bullet_green.png");
         for (int i = 0; i < 6; i++) {
             if(i < mMissleCount) {
                 painter.drawImage(
