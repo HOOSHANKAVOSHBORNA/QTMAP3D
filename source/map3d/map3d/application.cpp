@@ -51,6 +51,7 @@ void Application::initialize()
     QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreated,
                      this, &Application::onQmlObjectCreated,
                      Qt::DirectConnection);
+
     createMainWindow();
     createListWindow();
 
