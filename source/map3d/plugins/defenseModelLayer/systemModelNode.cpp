@@ -116,6 +116,18 @@ void SystemModelNode::setDisplayText(QString displayText)
     updateOrCreateLabelImage();
 }
 
+void SystemModelNode::setBCCStatus(QString bccStatus)
+{
+    mBCCStatus = bccStatus;
+    updateOrCreateLabelImage();
+}
+
+void SystemModelNode::setRadarSearchStatus(QString radarSearchStatus)
+{
+    mRadarSearchStatus = radarSearchStatus;
+    updateOrCreateLabelImage();
+}
+
 int SystemModelNode::getMissleCount() const
 {
     return mMissleCount;
@@ -124,6 +136,16 @@ int SystemModelNode::getMissleCount() const
 QString SystemModelNode::getDisplayText() const
 {
     return mDisplayText;
+}
+
+QString SystemModelNode::getBCCStatus() const
+{
+    return mBCCStatus;
+}
+
+QString SystemModelNode::getRadarSearchStatus() const
+{
+    return mRadarSearchStatus;
 }
 
 void SystemModelNode::collision()
@@ -194,7 +216,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 
         static const QBrush backgroundBrush = QBrush(QColor("darkslategray"));
 
-        static const QFont textFont("SourceSansPro", 14, QFont::Normal);
+        static const QFont textFont("SourceSansPro", 12, QFont::Normal);
         static const QPen  textPen(QColor(255, 255, 255));
 
         painter.setPen(Qt::NoPen);
@@ -255,10 +277,23 @@ void SystemModelNode::updateOrCreateLabelImage()
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(Qt::white);
-        for (int i = 0; i < mMissleCount; i++) {
-            painter.drawRect(
-                        QRect(10 + (i * 15), 145, 10, 25)
-                        );
+        static const QImage missleRedImage(":/resources/missle_red_icon.png");
+        static const QImage missleGreenImage(":/resources/missle_green_icon.png");
+        for (int i = 0; i < 6; i++) {
+            if(i < mMissleCount) {
+                painter.drawImage(
+                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
+                            missleGreenImage,
+                            missleGreenImage.rect()
+                            );
+            } else {
+                painter.drawImage(
+                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
+                            missleRedImage,
+                            missleRedImage.rect()
+                            );
+
+            }
         }
 
     }
