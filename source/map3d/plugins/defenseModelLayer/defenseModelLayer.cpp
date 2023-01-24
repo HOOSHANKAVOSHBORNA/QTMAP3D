@@ -122,52 +122,12 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     }
     if(CATEGORY == category && name == ADD_ROCKET)
     {
-        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM].first());
-        if(systemModelNode)
-            systemModelNode->fire();
-
-//        // fallow racket
-//        if(!mModelNodes[AIRCRAFT].isEmpty())
-//        {
-//            auto truckNames = mModelNodes[TRUCK].keys();
-//            for(auto truckName: truckNames)
-//            {
-//                auto modeltruck = dynamic_cast<Truck*>(mModelNodes[TRUCK][truckName]);
-//                if(modeltruck->hasRocket())
-//                {
-//                    //                        addRocketModel(modeltruck->getPosition().vec3d());
-//                    //                        auto modelRocket = dynamic_cast<Rocket*>(mModels[ROCKET].last());
-//                    auto activeRocket = modeltruck->getActiveRocket();
-//                    auto modelAirplane = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT].last());
-//                    modelAirplane->stop();//
-//                    activeRocket->setFollowModel(modelAirplane);
-//                    //modelRocket->setTruckModel(modeltruck);
-
-//                    //                        modeltruck->aimTarget(modelAirplane->getPosition().vec3d());
-
-//                    modelAirplane->setFollowModel(activeRocket);
-//                    modelAirplane->setTruckModel(modeltruck);
-
-//                    modeltruck->shoot(modelAirplane->getPosition().vec3d(), 2000);//1000 m/s
-//                    //                        activeRocket->setPosition(modeltruck->getPosition());
-//                    //                        mMap3dWidget->addNode(activeRocket);
-//                    //                        activeRocket->shoot(modelAirplane->getPosition().vec3d(), 3000);
-
-//                    mMapController->setTrackNode(activeRocket->getGeoTransform());
-
-//                    //draw line
-//                    //                        osg::Vec3d truckPosition;
-//                    //                        modeltruck->getPosition().toWorld(truckPosition);
-//                    //                        osg::Vec3d wPoint1;
-//                    //                        modelAirplane->getPosition().toWorld(wPoint1);
-//                    //                        osg::Vec3Array* keyPoint = new osg::Vec3Array;
-//                    //                        keyPoint->push_back(truckPosition + osg::Vec3d(5, 0, -2.6));
-//                    //                        keyPoint->push_back(wPoint1);
-//                    //                        mMap3dWidget->mMapRoot->addChild(drawLine(keyPoint, 1.0));
-//                    break;
-//                }
-//            }
-//        }
+        for(auto modelNode:mModelNodes[SYSTEM])
+        {
+            auto systemModelNode = dynamic_cast<SystemModelNode*>(modelNode);
+            if(systemModelNode && systemModelNode->getAssignedModelNode())
+                systemModelNode->fire();
+        }
     }
     else if(CATEGORY == category && name == SYSTEM)
     {
@@ -188,8 +148,8 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
 }
 
 bool DefenseModelLayer::setup(MapController *mapController,
-                  NetworkManager *networkManager,
-                  UIHandle *uiHandle)
+                              NetworkManager *networkManager,
+                              UIHandle *uiHandle)
 {
     mMapController = mapController;
     mUIHandle = uiHandle;
@@ -388,11 +348,11 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 
         //            mModelNodes[AIRCRAFT].remove(QString(modelNode->getName().c_str()));
         //        });
-//        if(mModelNodes.contains(SYSTEM))
-//        {
-//            auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM].first());
-//            systemModelNode->setAssignedModelNode(aircraftModelNode);
-//        }
+        //        if(mModelNodes.contains(SYSTEM))
+        //        {
+        //            auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM].first());
+        //            systemModelNode->setAssignedModelNode(aircraftModelNode);
+        //        }
     }
     //update information------------------------------------------------------------------
     aircraftModelNode->setInformation(aircraftInfo);

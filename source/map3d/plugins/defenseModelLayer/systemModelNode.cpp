@@ -345,6 +345,7 @@ void SystemModelNode::fire()
         mFiredRocket = mTruck->getActiveRocket();
         if(mFiredRocket)
         {
+            mAssignedModelNode->stop();//TODO for test dont use in real vesrion
             mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
             mMapController->setTrackNode(mFiredRocket->getGeoTransform());
         }
