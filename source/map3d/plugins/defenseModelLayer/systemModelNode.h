@@ -51,6 +51,9 @@ private slots:
 public:
     int getMissleCount() const;
     QString getDisplayText() const;
+    QString getBCCStatus() const;
+    QString getRadarSearchStatus() const;
+
 
 private:
     void collision();
@@ -77,7 +80,7 @@ private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;
     static constexpr int LABEL_IMAGE_WIDTH = 160;
-    static constexpr int LABEL_IMAGE_HEIGHT = 180;
+    static constexpr int LABEL_IMAGE_HEIGHT = 190;
 
     int     mMissleCount = 3;
     QString mDisplayText = "System0";
