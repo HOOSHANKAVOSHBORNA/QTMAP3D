@@ -1,6 +1,8 @@
 #ifndef STATIONTABLEMODEL_H
 #define STATIONTABLEMODEL_H
 
+#include "defenseDataManager.h"
+
 #include <QAbstractTableModel>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -9,57 +11,6 @@
 #include <QStringList>
 #include <deque>
 #include <QSharedPointer>
-
-
-struct StationInfo
-{
-    QString Name;
-    QString Type;
-    QString PrimSec;
-    bool Active;
-
-    double Number;
-    double Latitude;
-    double Longitude;
-    double Radius{500000};
-    int CycleTime;
-
-    QJsonDocument toJson()
-    {
-        QJsonObject jsonObject;
-        jsonObject.insert("Name", Name);
-        jsonObject.insert("Type", Type);
-        jsonObject.insert("Primary/Secondary", PrimSec);
-        jsonObject.insert("Active", Active);
-
-        jsonObject.insert("Number", Number);
-        jsonObject.insert("Latitude", Latitude);
-        jsonObject.insert("Longitude", Longitude);
-        jsonObject.insert("Radius", Radius);
-        jsonObject.insert("CycleTime", CycleTime);
-
-        QJsonDocument jsonDoc;
-        jsonDoc.setObject(jsonObject);
-        return jsonDoc;
-    }
-
-    void fromJson(QJsonDocument jsonDoc)
-    {
-        QJsonObject data = jsonDoc.object();
-        Name = data.value("Name").toString();
-        Type = data.value("Type").toString();
-        PrimSec = data.value("Primary/Secondary").toString();
-        Active = data.value("Active").toBool();
-
-        Number = data.value("Number").toDouble();
-        Latitude = data.value("Latitude").toDouble();
-        Longitude = data.value("Longitude").toDouble();
-        Radius = data.value("Radius").toDouble();
-        CycleTime = data.value("CycleTime").toInt();
-
-    }
-
-};
 
 class StationTableModel: public QAbstractTableModel
 {

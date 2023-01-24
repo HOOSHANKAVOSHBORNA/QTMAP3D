@@ -59,7 +59,7 @@ const QString STATION = "Station";
 //----------------------------------------------
 const QString CATEGORY = "Defense Model";
 //const QString ADD_AIRCRAFT = "Add Aircraft";
-const QString ADD_ROCKET = "Add Rocket";
+const QString ADD_ROCKET = "Fire";
 //const QString ADD_TRUCK = "Add Truck";
 //const QString ADD_STATION = "Add Station";
 //const QString ADD_SYSTEM = "Add System";
@@ -238,6 +238,8 @@ bool DefenseModelLayer::setup(MapController *mapController,
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DefenseModelLayer::onAircraftInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DefenseModelLayer::onSystemInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DefenseModelLayer::onStationInfoChanged);
 }
 
 //void DefenseModelLayer::demo()
@@ -495,27 +497,27 @@ void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
 
 }
 
-void DefenseModelLayer::clickedTrackNode(QString type, QString name, bool isClick)
-{
-    if (isClick){
-        //        osg::Node* node =mModels[type][name];
-        mMapController->setTrackNode(mModelNodes[type][name]->getGeoTransform());
-        //qDebug()<<"fgd";
+//void DefenseModelLayer::clickedTrackNode(QString type, QString name, bool isClick)
+//{
+//    if (isClick){
+//        //        osg::Node* node =mModels[type][name];
+//        mMapController->setTrackNode(mModelNodes[type][name]->getGeoTransform());
+//        //qDebug()<<"fgd";
 
-        //        if(type == AIRPLANE) {
-        //            mMap3dWidget->setObjectInfoWidgetVisible(true);
-        //            mMap3dWidget->setSelectedAirplane(mModels[type][name]);
-        //        } else {
-        //            mMap3dWidget->setObjectInfoWidgetVisible(false);
-        //        }
+//        //        if(type == AIRPLANE) {
+//        //            mMap3dWidget->setObjectInfoWidgetVisible(true);
+//        //            mMap3dWidget->setSelectedAirplane(mModels[type][name]);
+//        //        } else {
+//        //            mMap3dWidget->setObjectInfoWidgetVisible(false);
+//        //        }
 
-    } else {
+//    } else {
 
-        mMapController->untrackNode();
-        //        mMap3dWidget->setObjectInfoWidgetVisible(false);
+//        mMapController->untrackNode();
+//        //        mMap3dWidget->setObjectInfoWidgetVisible(false);
 
-    }
-}
+//    }
+//}
 
 void DefenseModelLayer::positionChanged(QString /*type*/, QString /*name*/, osgEarth::GeoPoint /*position*/)
 {
@@ -553,6 +555,16 @@ void DefenseModelLayer::onMessageReceived(const QJsonDocument &message)
 void DefenseModelLayer::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
     addUpdateAircraft(aircraftInfo);
+}
+
+void DefenseModelLayer::onSystemInfoChanged(SystemInfo &systemInfo)
+{
+    addUpdateSystem(systemInfo);
+}
+
+void DefenseModelLayer::onStationInfoChanged(StationInfo &stationInfo)
+{
+    addUpdateStation(stationInfo);
 }
 
 void DefenseModelLayer::frameEvent()

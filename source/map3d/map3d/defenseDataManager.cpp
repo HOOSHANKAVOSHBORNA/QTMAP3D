@@ -13,17 +13,17 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     //run demo ------------------------------------------------
     QTimer *timer = new QTimer();
 
-//    createData.createStationInfo();
-//    createData.createSystemInfo();
-    createAircraftInfo();
+    createStationInfo();
+    createSystemInfo();
+    //createAircraftInfo();
     //----------------------------------------------------------
     QObject::connect(timer, &QTimer::timeout, [&](){
         //---------------------------------------------
-//        for(auto station:createData.stationList)
-//            server.sendMessageToAll(station);
-//        //---------------------------------------------
-//        for(auto system:createData.systemList)
-//            server.sendMessageToAll(system);
+        for(auto station:stationList)
+            emit mDefenseDataManager->stationInfoChanged(station);
+        //---------------------------------------------
+        for(auto system:systemList)
+            emit mDefenseDataManager->systemInfoChanged(system);
         //---------------------------------------------
         updateAircraftInfo();
         createAircraftInfo();
@@ -62,23 +62,15 @@ AircraftInfo Demo::createAircraftInfo()
     aircraftInfo.Heading=30;
     aircraftInfo.Speed=150;//m/s
     //
-//    for(auto system: systemList
-//    {
-//        QJsonObject mainObject = system.object(;
-//        QJsonObject data = mainObject.value("Data".toObject(;
-//        //------------------------
-//        QString name = data.value("Name".toString(;
-//        detectSystems.push_back(name;
-//    }
-    //
-//    for(auto station: stationList
-//    {
-//        QJsonObject mainObject = station.object(;
-//        QJsonObject data = mainObject.value("Data".toObject(;
-//        //------------------------
-//        QString name = data.value("Name".toString(;
-//        sends.push_back(name;
-//    }
+    for(auto system: systemList)
+    {
+        aircraftInfo.DetectionSystems.append(system.Name);
+    }
+
+    for(auto station: stationList)
+    {
+        aircraftInfo.Sends.append(station.Name);
+    }
 
     mAircraftList.append(aircraftInfo);
     return aircraftInfo;
@@ -140,5 +132,71 @@ void Demo::updateAircraftInfo()
         mAircraftList[i].Altitude = altitude;
         mAircraftList[i].Speed = speed;
         mAircraftList[i].Heading = heading;
+    }
+}
+
+void Demo::createStationInfo()
+{
+    for(int i = 0; i < 5; ++i)
+    {
+        StationInfo stationInfo;
+        QString name = "Station" + QString::number(stationList.count());
+        double longitude = 48 + (qrand() % (59 - 48));
+        double latitude = 27 + (qrand() % (38 - 27));
+        double radius = (200000 + (qrand() % (500000 - 200000)));
+
+        stationInfo.Name = name;
+        stationInfo.Active = true;
+        stationInfo.Number = 123456789;
+        stationInfo.Type = "Type1";
+        stationInfo.Latitude = latitude;
+        stationInfo.Longitude = longitude;
+        stationInfo.PrimSec = "secondary";
+        stationInfo.Radius = radius;//meter
+        stationInfo.CycleTime = 123123456;//
+
+        stationList.append(stationInfo);
+    }
+}
+
+void Demo::createSystemInfo()
+{
+    for(int i = 0; i < 10; ++i)
+    {
+        SystemInfo  systemInfo;
+        QString name = "System" + QString::number(systemList.count());
+        double longitude = 48 + (qrand() % (59 - 48));
+        double latitude = 27 + (qrand() % (38 - 27));
+        double viewRange = (100000 + (qrand() % (300000 - 100000)));
+        double mezRange = viewRange - 10000;
+
+        systemInfo.Terminal = "terminal1";
+        systemInfo.Name = name;
+        systemInfo.Number = 123456;
+        systemInfo.Type = "Type1";
+        systemInfo.Active = true;
+        //
+        systemInfo.Latitude = latitude;
+        systemInfo.Longitude = longitude;
+        systemInfo.Altitude = 4000;//meter
+        systemInfo.ViewRange = viewRange;//meter
+        systemInfo.MezRange = mezRange;//meter
+        //status info
+        systemInfo.ReceiveTime = "1392/12/01: 12:10";
+        systemInfo.Simulation = "simulation";
+        systemInfo.BCCStatus = "s";//s, us
+        systemInfo.RadarSearchStatus = "us";//s, us
+        systemInfo.Operational = "operational";
+        systemInfo.MissileCount = 5;
+        systemInfo.RadarMode = "rMode";
+        //combat info
+        systemInfo.TN = 10000;
+        systemInfo.Acceptance = "acceptance1";
+        systemInfo.Phase = "search";//search, lock, ...
+        systemInfo.Antenna = 50;//degree (lock sight
+        systemInfo.ChanelNo = "123014s";
+        systemInfo.Inrange = "inrange";
+
+        systemList.append(systemInfo);
     }
 }

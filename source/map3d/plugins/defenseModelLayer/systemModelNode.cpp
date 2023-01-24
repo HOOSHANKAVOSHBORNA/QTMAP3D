@@ -185,7 +185,7 @@ void SystemModelNode::fire()
         mFiredRocket = mTruck->getActiveRocket();
         if(mFiredRocket)
         {
-            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 2000);//1000 m/s
+            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
             mMapController->setTrackNode(mFiredRocket->getGeoTransform());
         }
     }

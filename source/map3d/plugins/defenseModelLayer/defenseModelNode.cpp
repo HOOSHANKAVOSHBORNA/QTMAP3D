@@ -364,6 +364,15 @@ void DefenseModelNode::collision()
 //    emit hit(collidedWith);
     stop();
 }
+osgEarth::Annotation::ModelNode *DefenseModelNode::getDragModelNode()
+{
+    osgEarth::Symbology::Style  style = getStyle();
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Gray);
+    osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(getMapNode(), style);
+    dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    return dragModelNode.release();
+}
 
 //DefenseModelNode *DefenseModelNode::getFollowModel() const
 //{

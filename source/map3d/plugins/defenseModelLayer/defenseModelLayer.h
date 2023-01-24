@@ -47,11 +47,13 @@ public:
     void addUpdateSystem(SystemInfo systemInfo);
     void addUpdateStation(StationInfo stationInfo);
 public slots:
-    void clickedTrackNode(QString type ,QString name ,bool isClick);
+    //void clickedTrackNode(QString type ,QString name ,bool isClick);
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
     void onMessageReceived(const QJsonDocument &message);
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
+    void onSystemInfoChanged(SystemInfo& systemInfo);
+    void onStationInfoChanged(StationInfo& stationInfo);
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;

@@ -242,12 +242,6 @@ void AircraftModelNode::goOnTrack()
     mMapController->setTrackNode(getGeoTransform());
 }
 
-osgEarth::Annotation::ModelNode *AircraftModelNode::getDragModelNode() const
-{
-    osgEarth::Symbology::Style  style = getStyle();
-    osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(mMapController->getMapNode(), style);
-    return dragModelNode.release();
-}
 void AircraftModelNode::onLeftButtonClicked(bool val)
 {
     select(val);

@@ -56,6 +56,7 @@ public:
 //    void setFollowModel(DefenseModelNode *followModel);
     virtual void stop(){}
     void collision();
+    osgEarth::Annotation::ModelNode* getDragModelNode();
 //    virtual void traverse(osg::NodeVisitor& nv) override;
 
 signals:
