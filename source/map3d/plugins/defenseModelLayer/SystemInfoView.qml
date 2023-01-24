@@ -308,7 +308,7 @@ Item {
                                            }
                             }
 
-                            color: "#1a75ff"
+                            color: "#2F3C7E"
 
                             Text {
                                 text: "Status Information"
@@ -436,7 +436,7 @@ Item {
                                            }
                             }
 
-                            color: "#1a75ff"
+                            color: "#2F3C7E"
 
                             Text {
                                 text: "Combat Information"
