@@ -3,6 +3,7 @@
 #include <QAbstractListModel>
 #include <QQuickItem>
 #include "dataManager.h"
+#include "defenseDataManager.h"
 
 class AircraftInfoModel : public QAbstractListModel
 {

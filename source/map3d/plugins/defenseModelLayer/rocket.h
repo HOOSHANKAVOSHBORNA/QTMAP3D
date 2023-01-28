@@ -6,7 +6,7 @@
 class Rocket: public DefenseModelNode
 {
 public:
-    Rocket(osgEarth::MapNode* mapNode, QObject *parent);
+    Rocket(MapController *mapControler, QObject *parent);
     void shoot(const osg::Vec3d& pos, double speed);
     void stop() override;
 private:

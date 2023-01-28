@@ -30,7 +30,7 @@ const float RANGE3D = std::numeric_limits<float>::max();
 osg::ref_ptr<osg::Node> AircraftModelNode::mNode3DRef;
 
 AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
-    :DefenseModelNode(mapControler->getMapNode(), parent)
+    :DefenseModelNode(mapControler, parent)
 {
     mRouteLine = new Line(mapControler);
     mRouteLine->setLineClamp(false);
@@ -97,7 +97,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
     //    mLableNode->getGeoTransform()->setPosition(osg::Vec3(0, 0, 2));
-    getGeoTransform()->addChild(mLableNode);
+    //getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
     if(mIs3D)
@@ -232,11 +232,13 @@ osgEarth::Annotation::ModelNode *AircraftModelNode::getTruckModel() const
 void AircraftModelNode::setInformation(AircraftInfo info)
 {
     mInformation = info;
-    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
+    setModelColor(mInformation.Identification);
+//    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
 
     if(mAircraftinformation)
         mAircraftinformation->updateAircraft(info);
     //    mUIHandle->iwUpdateData(this, txtInfo);
+    //------------------------------------------------------
 }
 
 void AircraftModelNode::goOnTrack()
@@ -387,6 +389,33 @@ void AircraftModelNode::onModeChanged(bool is3DView)
 void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)
 {
     std::cout << index << ", " << systemName.toStdString() << std::endl;
+}
+
+void AircraftModelNode::setModelColor(AircraftInfo::Identify identify)
+{
+    osgEarth::Color color;
+    switch (identify) {
+    case AircraftInfo::F:
+        color = osgEarth::Color::Green;
+        break;
+    case AircraftInfo::K:
+        color = osgEarth::Color::Yellow;
+        break;
+    case AircraftInfo::Z:
+        color =  osg::Vec4(1.0, 0.5, 0.0, 1.0);
+        break;
+    case AircraftInfo::X:
+        color = osgEarth::Color::Red;
+        break;
+    case AircraftInfo::U:
+        color = osgEarth::Color::White;
+        break;
+    case AircraftInfo::H:
+        color = osgEarth::Color::Red;
+        break;
+    }
+    mModelColor = color;
+    select(mIsSelected);//for change color
 }
 
 void AircraftModelNode::showInfoWidget()

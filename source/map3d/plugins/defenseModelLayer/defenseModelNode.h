@@ -1,6 +1,8 @@
 ﻿#ifndef BASEMODEL_H
 #define BASEMODEL_H
 
+#include "drawshapes.h"
+
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgParticle/FireEffect>
@@ -11,6 +13,7 @@
 #include <osgEarth/Registry>
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/Viewer>
+#include <osgFX/Outline>
 
 #include <QMouseEvent>
 #include <QObject>
@@ -44,7 +47,7 @@ class DefenseModelNode: public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    DefenseModelNode(osgEarth::MapNode* mapNode, QObject* parent = nullptr);
+    DefenseModelNode(MapController* mapControler, QObject* parent = nullptr);
     void setType(const QString &value);
     QString getType() const;
     void setQStringName(QString name);
@@ -81,12 +84,15 @@ protected:
     osg::ref_ptr<osg::Node> mNode3D;
     osg::ref_ptr<osg::Switch> mNode2D;
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLableNode;
+    osgEarth::Color mModelColor{osgEarth::Color::White};
 private:
     friend class ModelAnimationPathCallback;
     friend class PickHandler;
 private:
     //bool mHasHit{false};
     QString mType;
+    osg::ref_ptr<osgFX::Outline> mSelectOutline;
+    MapController *mMapControler;
     //DefenseModelNode* mFollowModel{nullptr};
 };
 

@@ -9,12 +9,21 @@
 
 struct AircraftInfo
 {
+    enum Identify{
+        F,//green
+        K,//yellow
+        Z,//orange
+        X,//red
+        U,//white
+        H//red
+    };
+    //-------------------------------------
     QString TN;
     QString IFFCode;
     QString CallSign;
     QString Type;
     QString MasterRadar;
-    QString Identification;
+    Identify Identification;
     QString IdentificationMethod;
     QString Time;
     QString Pos;
@@ -27,7 +36,33 @@ struct AircraftInfo
 
     QStringList DetectionSystems;
     QStringList Sends;
-
+    //---------------------------------------------
+public:
+    QString identifyToString() const
+    {
+        QString result = "";
+        switch (Identification) {
+        case F:
+            result = "F";
+            break;
+        case K:
+            result = "K";
+            break;
+        case Z:
+            result = "Z";
+            break;
+        case X:
+            result = "X";
+            break;
+        case U:
+            result = "U";
+            break;
+        case H:
+            result = "H";
+            break;
+        }
+        return result;
+    }
     QString detectionSystemsToString()
     {
         QString result = "";
@@ -85,7 +120,7 @@ struct AircraftInfo
         CallSign = data.value("CallSign").toString();
         Type = data.value("Type").toString();
         MasterRadar = data.value("MasterRadar").toString();
-        Identification = data.value("Identification").toString();
+        //Identification = data.value("Identification").toInt();
         IdentificationMethod = data.value("IdentificationMethod").toString();
         Time = data.value("Time").toString();
         Pos = data.value("Pos").toString();

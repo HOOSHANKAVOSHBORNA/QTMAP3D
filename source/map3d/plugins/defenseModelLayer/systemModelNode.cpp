@@ -7,7 +7,7 @@
 const float RANGE3D = std::numeric_limits<float>::max();;
 
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
-    :DefenseModelNode(mapControler->getMapNode(), parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
+    :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
     mIs3D = mMapController->getMode();
     //--create root node--------------------------------------------------------------------------
@@ -37,7 +37,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
     //--create 3D node---------------------------------------------------------------------------
-    mTruck = new Truck(getMapNode(), this);
+    mTruck = new Truck(mMapController, this);
     mNode3D = mTruck;
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
