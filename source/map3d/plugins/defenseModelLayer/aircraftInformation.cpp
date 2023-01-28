@@ -39,14 +39,14 @@ void AircraftInfoModel::setAircraftInfo(AircraftInfo &a)
 QStringList AircraftInfoModel::getMainInfo() const
 {
     return QStringList {mAircraftInfo.TN, mAircraftInfo.IFFCode, mAircraftInfo.CallSign,
-                mAircraftInfo.Type, mAircraftInfo.MasterRadar, mAircraftInfo.Identification,
+                mAircraftInfo.Type, mAircraftInfo.MasterRadar, mAircraftInfo.identifyToString(),
                 mAircraftInfo.IdentificationMethod, mAircraftInfo.Time, mAircraftInfo.Pos};
 }
 
 QStringList AircraftInfoModel::getmainInfoHeaders() const
 {
     return QStringList {"TN", "IFFCode", "CallSign", "Type", "Master", "Identification"
-        , "Identif. Method", "Time", "Pos"};
+        , "IdentificationMethod", "Time", "Pos"};
 }
 
 QStringList AircraftInfoModel::getLocationInfo() const

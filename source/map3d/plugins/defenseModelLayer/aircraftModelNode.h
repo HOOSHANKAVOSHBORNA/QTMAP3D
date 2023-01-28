@@ -50,6 +50,7 @@ private slots:
     void onModeChanged(bool is3DView);
     void onContextmenuItemClicked(int index, QString systemName);
 private:
+    void setModelColor(AircraftInfo::Identify identify);
     void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();

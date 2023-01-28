@@ -48,7 +48,7 @@ AircraftInfo Demo::createAircraftInfo()
     aircraftInfo.CallSign="cls";
     aircraftInfo.Type="type1";
     aircraftInfo.MasterRadar="radar1";
-    aircraftInfo.Identification="F";// F, K, Z, X, U, H
+    aircraftInfo.Identification= AircraftInfo::F;// F, K, Z, X, U, H
     aircraftInfo.IdentificationMethod="mt1";//3 char
     aircraftInfo.Time="12345678954213";//epoch
     aircraftInfo.Pos="pos";

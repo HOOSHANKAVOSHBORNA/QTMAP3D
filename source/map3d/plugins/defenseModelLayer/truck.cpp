@@ -16,8 +16,8 @@ osg::ref_ptr<osg::Node> dualWheelNode;
 osg::ref_ptr<osg::Node> spinerNode;
 osg::ref_ptr<osg::Node> holderNode;
 
-Truck::Truck(osgEarth::MapNode *mapNode, GeoPositionNode *parent):
-    osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
+Truck::Truck(MapController *mapControler, GeoPositionNode *parent):
+    osgEarth::Annotation::ModelNode(mapControler->getMapNode(), osgEarth::Symbology::Style())
 {
     mParent = parent;
     //--read nodes-------------------------------------------------------------------------------------------
@@ -32,19 +32,19 @@ Truck::Truck(osgEarth::MapNode *mapNode, GeoPositionNode *parent):
     if(!holderNode.valid())
         holderNode    = osgDB::readRefNodeFile("../data/models/system/truck/truck-holder.osgt");
     //--create rockets---------------------------------------------------------------------------------------
-    mRocket1 = new Rocket(getMapNode(),nullptr);
+    mRocket1 = new Rocket(mapControler,nullptr);
     mRocket1->setType(ROCKET);
     mRocket1->setQStringName(ROCKET + 1);
     mRocket1->getPositionAttitudeTransform()->setPosition(osg::Vec3d(6.8, -1.3, 0));
     mRocket1->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(-90.0),osg::Z_AXIS));
 
-    mRocket2 = new Rocket(getMapNode(),nullptr);
+    mRocket2 = new Rocket(mapControler,nullptr);
     mRocket2->setType(ROCKET);
     mRocket2->setQStringName(ROCKET + 2);
     mRocket2->getPositionAttitudeTransform()->setPosition(osg::Vec3d(6.8, 0.0, 0));
     mRocket2->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(-90.0),osg::Z_AXIS));
 
-    mRocket3 = new Rocket(getMapNode(),nullptr);
+    mRocket3 = new Rocket(mapControler,nullptr);
     mRocket3->setType(ROCKET);
     mRocket3->setQStringName(ROCKET + 3);
     mRocket3->getPositionAttitudeTransform()->setPosition(osg::Vec3d(6.8, 1.3, 0));
