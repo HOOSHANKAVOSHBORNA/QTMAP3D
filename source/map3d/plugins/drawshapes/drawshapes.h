@@ -36,7 +36,6 @@ public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool setup(MapController *mapController,
-               NetworkManager *networkManager,
                UIHandle *UIHandle) override;
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;

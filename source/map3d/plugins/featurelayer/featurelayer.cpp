@@ -50,7 +50,6 @@ void FeatureLayer::onToolboxItemClicked(const QString &name, const QString &cate
 }
 
 bool FeatureLayer::setup(MapController *mapController,
-                         NetworkManager *networkManager,
                          UIHandle *UIHandle)
 {
     mMapController = mapController;

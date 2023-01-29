@@ -14,7 +14,6 @@ public:
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     void onToolboxItemClicked(const QString &name, const QString &category) override;
     bool setup(MapController *mapController,
-               NetworkManager *networkManager,
                UIHandle *UIHandle) override;
 private:
     void addXYZ();

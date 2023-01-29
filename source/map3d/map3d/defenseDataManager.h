@@ -284,6 +284,7 @@ struct SystemInfo
 
 };
 
+
 class DefenseDataManager: public QObject
 {
     Q_OBJECT
