@@ -47,7 +47,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
     updateOrCreateLabelImage();
     mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
+//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
     getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 void SystemModelNode::setInformation(const SystemInfo& info)
 {
     mInformation = info;
-    setDisplayText(mInformation.Name);
+    updateOrCreateLabelImage();
 }
 
 void SystemModelNode::goOnTrack()
@@ -105,52 +105,52 @@ void SystemModelNode::onModeChanged(bool is3DView)
     select(mIsSelected);
 }
 
-void SystemModelNode::setMissleCount(int numMissles)
-{
-    mMissleCount = numMissles;
-    updateOrCreateLabelImage();
-}
+//void SystemModelNode::setMissleCount(int numMissles)
+//{
+//    mMissleCount = numMissles;
+//    updateOrCreateLabelImage();
+//}
 
-void SystemModelNode::setDisplayText(QString displayText)
-{
-    if(mDisplayText != displayText)
-    {
-        mDisplayText = displayText;
-        updateOrCreateLabelImage();
-    }
-}
+//void SystemModelNode::setDisplayText(QString displayText)
+//{
+//    if(mDisplayText != displayText)
+//    {
+//        mDisplayText = displayText;
+//        updateOrCreateLabelImage();
+//    }
+//}
 
-void SystemModelNode::setBCCStatus(QString bccStatus)
-{
-    mBCCStatus = bccStatus;
-    updateOrCreateLabelImage();
-}
+//void SystemModelNode::setBCCStatus(QString bccStatus)
+//{
+//    mBCCStatus = bccStatus;
+//    updateOrCreateLabelImage();
+//}
 
-void SystemModelNode::setRadarSearchStatus(QString radarSearchStatus)
-{
-    mRadarSearchStatus = radarSearchStatus;
-    updateOrCreateLabelImage();
-}
+//void SystemModelNode::setRadarSearchStatus(QString radarSearchStatus)
+//{
+//    mRadarSearchStatus = radarSearchStatus;
+//    updateOrCreateLabelImage();
+//}
 
-int SystemModelNode::getMissleCount() const
-{
-    return mMissleCount;
-}
+//int SystemModelNode::getMissleCount() const
+//{
+//    return mMissleCount;
+//}
 
-QString SystemModelNode::getDisplayText() const
-{
-    return mDisplayText;
-}
+//QString SystemModelNode::getDisplayText() const
+//{
+//    return mDisplayText;
+//}
 
-QString SystemModelNode::getBCCStatus() const
-{
-    return mBCCStatus;
-}
+//QString SystemModelNode::getBCCStatus() const
+//{
+//    return mBCCStatus;
+//}
 
-QString SystemModelNode::getRadarSearchStatus() const
-{
-    return mRadarSearchStatus;
-}
+//QString SystemModelNode::getRadarSearchStatus() const
+//{
+//    return mRadarSearchStatus;
+//}
 
 void SystemModelNode::collision()
 {
@@ -234,7 +234,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.setFont(textFont);
         painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
                          Qt::AlignCenter,
-                         mDisplayText);
+                         mInformation.Name);
 
 
         static const QPen linePen(QColor(255, 255, 255),
@@ -251,26 +251,26 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.setFont(textFont);
         painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         "MissleNo");
+                         "Number:");
         painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         QString::number(mMissleCount));
+                         QString::number(mInformation.Number));
 
 
         painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         "BCC");
+                         "BCC:");
         painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         mBCCStatus);
+                         mInformation.BCCStatus);
 
 
         painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         "Radar");
+                         "Radar:");
         painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         mRadarSearchStatus);
+                         mInformation.RadarSearchStatus);
 
 
 
@@ -284,7 +284,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         static const QImage missleRedImage(":/resources/bullet_red.png");
         static const QImage missleGreenImage(":/resources/bullet_green.png");
         for (int i = 0; i < 6; i++) {
-            if(i < mMissleCount) {
+            if(i < mInformation.MissileCount) {
                 painter.drawImage(
                             QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
                             missleGreenImage,
@@ -359,7 +359,8 @@ void SystemModelNode::fire()
 void SystemModelNode::frameEvent()
 {
     //--update lable position---------------------------------------------------
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
     //--update assigned line----------------------------------------------------
     if(mAssignedModelNode)
     {

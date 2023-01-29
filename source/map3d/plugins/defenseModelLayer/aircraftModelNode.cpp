@@ -18,6 +18,7 @@
 
 #include <QDebug>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQuickItem>
@@ -101,9 +102,10 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
-    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
+    //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
+    updateOrCreateLabelImage();
+    mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
     //    mLableNode->getGeoTransform()->setPosition(osg::Vec3(0, 0, 2));
     getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
@@ -247,6 +249,7 @@ void AircraftModelNode::setInformation(AircraftInfo info)
         mAircraftinformation->updateAircraft(info);
     //    mUIHandle->iwUpdateData(this, txtInfo);
     //------------------------------------------------------
+    updateOrCreateLabelImage();
 }
 
 void AircraftModelNode::goOnTrack()
@@ -283,7 +286,9 @@ void AircraftModelNode::frameEvent()
         mMapController->worldToScreen(wordPos,x, y);
         mCurrentContextMenu->updatePosition(static_cast<int>(x), static_cast<int>(y));
     }
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    //------------------------------------
+//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 }
 
 void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -529,4 +534,99 @@ void AircraftModelNode::removeEffect()
     //remove smoke--------------------------------------------
     getMapNode()->removeChild(mSmoke->getParticleSystem());
     getPositionAttitudeTransform()->removeChild(mSmoke);
+}
+
+void AircraftModelNode::updateOrCreateLabelImage()
+{
+    if (!mRenderTargetImage) {
+        mRenderTargetImage = new QImage(
+                    LABEL_IMAGE_WIDTH,
+                    LABEL_IMAGE_HEIGHT,
+                    QImage::Format_RGBA8888
+                    );
+    }
+
+    if (!mLabelImage) {
+        mLabelImage = new osg::Image;
+    }
+
+    {
+        mRenderTargetImage->fill(QColor(Qt::transparent));
+        QPainter painter(mRenderTargetImage);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+
+        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+
+        static const QFont textFont("SourceSansPro", 12, QFont::Normal);
+        static const QPen  textPen(QColor(255, 255, 255));
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(backgroundBrush);
+
+        painter.drawRoundedRect(
+                    mRenderTargetImage->rect(),
+                    8,8);
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
+                         Qt::AlignCenter,
+                         mInformation.TN);
+
+
+        static const QPen linePen(QColor(255, 255, 255),
+                                  1,
+                                  Qt::PenStyle::DashLine
+                                  );
+
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
+
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "IFFCode:");
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mInformation.IFFCode);
+
+
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "CallSign:");
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mInformation.CallSign);
+
+
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "M-Radar:");
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mInformation.MasterRadar);
+
+        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "I-Method:");
+        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mInformation.IdentificationMethod);
+
+
+    }
+    *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
+
+    mLabelImage->setImage(LABEL_IMAGE_WIDTH,
+                          LABEL_IMAGE_HEIGHT,
+                          1,
+                          GL_RGBA,
+                          GL_RGBA,
+                          GL_UNSIGNED_BYTE,
+                          mRenderTargetImage->bits(),
+                          osg::Image::AllocationMode::NO_DELETE);
 }

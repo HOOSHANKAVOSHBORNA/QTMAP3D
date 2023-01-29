@@ -34,7 +34,7 @@ void Application::performStartupConfiguration()
 void Application::initialize()
 {
 
-    initializeNetworkManager();
+    //initializeNetworkManager();
     initializeDefenseDataManager();
 
     registerTypes();
@@ -90,10 +90,10 @@ void Application::createListWindow()
 }
 
 
-void Application::initializeNetworkManager()
-{
-    mNetworkManager = new NetworkManager;
-}
+//void Application::initializeNetworkManager()
+//{
+//    mNetworkManager = new NetworkManager;
+//}
 
 void Application::initializeDefenseDataManager()
 {
