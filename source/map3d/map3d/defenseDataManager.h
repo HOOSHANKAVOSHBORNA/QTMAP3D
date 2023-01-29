@@ -148,7 +148,7 @@ struct StationInfo
     QString PrimSec;
     bool Active;
 
-    double Number;
+    int Number;
     double Latitude;
     double Longitude;
     double Radius{500000};
@@ -195,7 +195,7 @@ struct SystemInfo
 {
     QString Terminal;
     QString Name;
-    double Number;
+    int Number;
     QString Type;
     double Latitude;
     double Longitude;
@@ -208,10 +208,10 @@ struct SystemInfo
     QString BCCStatus;
     QString RadarSearchStatus;
     QString Operational;
-    QString MissileCount;
+    int MissileCount;
     QString RadarMode;
     //combat info
-    double TN;
+    int TN;
     QString Acceptance;
     QString Phase;
     double Antenna;
@@ -271,7 +271,7 @@ struct SystemInfo
         BCCStatus = data.value("BCCStatus").toString();
         RadarSearchStatus = data.value("RadarSearchStatus").toString();
         Operational = data.value("Operational").toString();
-        MissileCount = data.value("MissileCount").toString();
+        MissileCount = data.value("MissileCount").toInt();
         RadarMode = data.value("RadarMode").toString();
         TN = data.value("TN").toDouble();
         Acceptance = data.value("Acceptance").toString();

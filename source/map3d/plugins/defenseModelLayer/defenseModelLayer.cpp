@@ -112,7 +112,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         aircraftInfo.Type = "type2";
         aircraftInfo.MasterRadar = "radar2";
         aircraftInfo.Identification = AircraftInfo::X;
-        aircraftInfo.IdentificationMethod = "method1";
+        aircraftInfo.IdentificationMethod = "mtd";
         aircraftInfo.Time = "1401/10/21 10:00 fdfd";
         aircraftInfo.Pos = "pos1";
         addUpdateAircraft(aircraftInfo);
@@ -133,6 +133,10 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         systemInfo.Name = SYSTEM + QString::number(mModelNodes[SYSTEM].count());
         systemInfo.Longitude = 54.2;
         systemInfo.Latitude = 35.3;
+        systemInfo.Number = 1234567;
+        systemInfo.BCCStatus = "s";
+        systemInfo.RadarSearchStatus = "us";
+        systemInfo.MissileCount = 3;
         addUpdateSystem(systemInfo);
     }
     else if(CATEGORY == category && name == STATION)
@@ -141,6 +145,9 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         stationInfo.Name = STATION + QString::number(mModelNodes[STATION].count());
         stationInfo.Longitude = 52;
         stationInfo.Latitude = 35.2;
+        stationInfo.Number = 1234567;
+        stationInfo.PrimSec = "primary";
+        stationInfo.CycleTime = 10000;
         addUpdateStation(stationInfo);
     }
 }

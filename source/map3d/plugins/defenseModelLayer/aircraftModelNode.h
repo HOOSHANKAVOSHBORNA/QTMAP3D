@@ -55,6 +55,7 @@ private:
     void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();
+    void updateOrCreateLabelImage();
 private:
     MapController* mMapController{nullptr};
     ModelAnimationPathCallback* mAnimationPathCallback{nullptr};
@@ -77,6 +78,10 @@ private:
     AircraftInformation *mAircraftinformation{nullptr};
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
+    static constexpr int LABEL_IMAGE_WIDTH = 160;
+    static constexpr int LABEL_IMAGE_HEIGHT = 170;
+    QImage *mRenderTargetImage{nullptr};
+    osg::ref_ptr<osg::Image> mLabelImage{nullptr};
 };
 
 #endif // FLYINGMODEL_H

@@ -42,7 +42,7 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         case 11: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Simulation);
         case 12: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->RadarSearchStatus);
         case 13: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Operational);
-        case 14: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->MissileCount);
+        case 14: return QVariant::fromValue<int>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->MissileCount);
         case 15: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row()    )].second->RadarMode);
         case 16: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->TN);
         case 17: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Acceptance);

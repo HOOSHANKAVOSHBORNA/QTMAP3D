@@ -130,9 +130,9 @@ void DefenseModelNode::setType(const QString &value)
 void DefenseModelNode::setQStringName(QString name)
 {
     setName(name.toStdString());
-    auto systemModel =  dynamic_cast<SystemModelNode*>(this);
-    if(mLableNode && !systemModel)
-        mLableNode->setText(name.toStdString());
+//    auto systemModel =  dynamic_cast<SystemModelNode*>(this);
+//    if(mLableNode && !systemModel)
+//        mLableNode->setText(name.toStdString());
 }
 
 QString DefenseModelNode::getQStringName()
