@@ -51,6 +51,7 @@ private slots:
     void onContextmenuItemClicked(int index, QString systemName);
 private:
     void setModelColor(AircraftInfo::Identify identify);
+    void create2DImageColore(osgEarth::Color color);
     void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();

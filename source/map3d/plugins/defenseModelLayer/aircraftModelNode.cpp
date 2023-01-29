@@ -72,22 +72,30 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
     setStyle(rootStyle);
     //--create icon Nodes---------------------------------------------------------------------------
-    osg::Image* redIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_gray.png");
-    redIcon->scaleImage(25, 32, redIcon->r());
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
-    osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
-    //    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-    //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
-    redGeode->addDrawable(redImageDrawable);
+//    osg::Image* redIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_gray.png");
+//    redIcon->scaleImage(25, 32, redIcon->r());
+////    for(int i = 0; i<redIcon->s(); i++)
+////        for(int j= 0; j< redIcon->t(); j++)
+////        {
+////            qDebug()<< redIcon->getColor(i, j).r()<<","<< redIcon->getColor(i, j).g()<<","<<redIcon->getColor(i, j).b();
+////            if(redIcon->getColor(i, j).r()>0 || redIcon->getColor(i, j).g()>0 ||redIcon->getColor(i, j).b()>0)
+////            redIcon->setColor(osgEarth::Color::Red, i, j);
+////        }
+//    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
+//    osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
+//    //    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+//    //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
+//    redGeode->addDrawable(redImageDrawable);
 
-    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_darkGray.png");
-    yellowIcon->scaleImage(25, 32, yellowIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
-    osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
-    yellowGeode->addDrawable(yellowImageDrawable);
+//    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_darkGray.png");
+//    yellowIcon->scaleImage(25, 32, yellowIcon->r());
+//    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
+//    osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
+//    yellowGeode->addDrawable(yellowImageDrawable);
 
-    mNode2D->addChild(yellowGeode, false);
-    mNode2D->addChild(redGeode, true);
+//    mNode2D->addChild(yellowGeode, false);
+//    mNode2D->addChild(redGeode, true);
+    create2DImageColore(osgEarth::Color::Green);
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
@@ -97,7 +105,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
     //    mLableNode->getGeoTransform()->setPosition(osg::Vec3(0, 0, 2));
-    //getGeoTransform()->addChild(mLableNode);
+    getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
     if(mIs3D)
@@ -415,7 +423,50 @@ void AircraftModelNode::setModelColor(AircraftInfo::Identify identify)
         break;
     }
     mModelColor = color;
+    create2DImageColore(mModelColor);
     select(mIsSelected);//for change color
+}
+
+void AircraftModelNode::create2DImageColore(osgEarth::Color color)
+{
+    //--create icon Nodes---------------------------------------------------------------------------
+    osg::Image* icon = osgDB::readImageFile("../data/models/aircraft/aircraft.png");
+    if(!icon)
+        return;
+    icon->scaleImage(25, 32, icon->r());
+    for(int i = 0; i < icon->s(); i++)
+        for(int j = 0; j < icon->t(); j++)
+        {
+            osg::Vec4 pixColore = icon->getColor(i, j);
+            //qDebug()<< redIcon->getColor(i, j).r()<<","<< redIcon->getColor(i, j).g()<<","<<redIcon->getColor(i, j).b();
+            if(pixColore.r()>0 || pixColore.g()>0 || pixColore.b()>0)
+            icon->setColor(color, i, j);
+        }
+    osg::Geometry* imageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(icon, osg::Vec2s(0,0), 0, 0, 1);
+    osg::ref_ptr<osg::Geode>  geode = new osg::Geode();
+    geode->addDrawable(imageDrawable);
+    //-----------------------------------------------------------------------------------------------
+    osg::Image* selectIcon = new osg::Image() ;
+    selectIcon->copySubImage(0, 0, 0, icon);
+//    selectIcon->scaleImage(25, 32, selectIcon->r());
+    color /= 2;
+    color.a() = 1;
+
+    for(int i = 0; i < selectIcon->s(); i++)
+        for(int j = 0; j < selectIcon->t(); j++)
+        {
+            osg::Vec4 pixColore = selectIcon->getColor(i, j);
+            //qDebug()<< redIcon->getColor(i, j).r()<<","<< redIcon->getColor(i, j).g()<<","<<redIcon->getColor(i, j).b();
+            if(pixColore.r()>0 || pixColore.g()>0 || pixColore.b()>0)
+                selectIcon->setColor(color, i, j);
+        }
+    osg::Geometry* selectImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(selectIcon, osg::Vec2s(0,0), 0, 0, 1);
+    osg::ref_ptr<osg::Geode>  selectGeode = new osg::Geode();
+    selectGeode->addDrawable(selectImageDrawable);
+
+    mNode2D->removeChildren(0, 2);
+    mNode2D->addChild(selectGeode, false);
+    mNode2D->addChild(geode, true);
 }
 
 void AircraftModelNode::showInfoWidget()

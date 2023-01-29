@@ -113,7 +113,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         aircraftInfo.CallSign = "cls";
         aircraftInfo.Type = "type2";
         aircraftInfo.MasterRadar = "radar2";
-        aircraftInfo.Identification = AircraftInfo::Z;
+        aircraftInfo.Identification = AircraftInfo::X;
         aircraftInfo.IdentificationMethod = "method1";
         aircraftInfo.Time = "1401/10/21 10:00 fdfd";
         aircraftInfo.Pos = "pos1";

@@ -218,7 +218,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
 
-        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.6f)));
+        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
 
         static const QFont textFont("SourceSansPro", 12, QFont::Normal);
         static const QPen  textPen(QColor(255, 255, 255));
