@@ -177,6 +177,22 @@ CMainWindow {
             }
         }
 
+        LayersWidget {
+
+            x: parent.width - 300 - widgetsMargins
+            y: menuWidget.height + (widgetsMargins * 2)
+            width: 600 + (widgetsMargins * 2)
+            height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height
+
+            layersModel: wnd.layersModel
+
+            onToggleLayerEnabled: function(layerIndex) {
+                wnd.toggleLayerEnabled(layerIndex);
+            }
+
+        }
+
+
 //        InfoWidget {
 //            id: infoWidget
 //            x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
@@ -258,12 +274,14 @@ CMainWindow {
         font.weight: Font.Bold
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.topMargin: 100
-        anchors.rightMargin: 100
+        anchors.topMargin: 20
+        anchors.rightMargin: 40
     }
     ContextmenuWidget {
         id: contextmenu
     }
+
+
 
 
     function menuWidgetClickCallback(index) {

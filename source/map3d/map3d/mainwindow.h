@@ -8,12 +8,14 @@
 #include <QPoint>
 
 #include "pluginmanager.h"
+#include "layersmodel.h"
 
 class QOpenGLFunctions_2_0;
 class PluginInfo;
 class PluginInterface;
 class UIHandle;
 class ListWindow;
+class LayersModel;
 
 
 class MainWindow : public QQuickWindow
@@ -43,6 +45,8 @@ class MainWindow : public QQuickWindow
     Q_PROPERTY(bool rotateLeftButtonPressed  READ rotateLeftButtonPressed  WRITE setrotateLeftButtonPressed  NOTIFY rotateLeftButtonPressedChanged)
     Q_PROPERTY(bool rotateRightButtonPressed READ rotateRightButtonPressed WRITE setrotateRightButtonPressed NOTIFY rotateRightButtonPressedChanged)
 
+
+    Q_PROPERTY(LayersModel* layersModel READ layersModel WRITE setLayersModel NOTIFY layersModelChanged)
 
     enum class InfoWidgetType {
         Airplane,
@@ -76,6 +80,10 @@ public:
     bool rotateDownButtonPressed() const;
     bool rotateLeftButtonPressed() const;
     bool rotateRightButtonPressed() const;
+
+
+    LayersModel *layersModel() const;
+
 
     UIHandle *uiHandle() const;
 
@@ -123,7 +131,9 @@ signals:
     void rotateLeftButtonPressedChanged();
     void rotateRightButtonPressedChanged();
 
+    void layersModelChanged();
 
+    void toggleLayerEnabled(int layerIndex);
 
 public slots:
     void initializePluginsUI(std::list<PluginInfo>& pluginsInfoList);
@@ -163,6 +173,7 @@ public slots:
 
     void showListWindow();
 
+    void setLayersModel(LayersModel *layersModel);
 
 public:
 
@@ -223,8 +234,6 @@ private:
 protected:
     MapController *mMapController = nullptr;
 
-
-
 private:
     qreal mheadingAngle = 0.0;
     QVector3D mMousePointingLocationWgs84;
@@ -250,8 +259,8 @@ private:
     bool mRotateRightButtonPressed{false};
 
     UIHandle *mUIHandle = nullptr;
-
     ListWindow *mListWindow = nullptr;
+    LayersModel *mLayersModel = nullptr;
 };
 
 #endif // MainWindow_H

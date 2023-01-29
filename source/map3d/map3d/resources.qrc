@@ -41,5 +41,7 @@
         <file>Resources/system.jpg</file>
         <file>Resources/airplane1.jpg</file>
         <file>Resources/airplane2.jpg</file>
+        <file>Resources/eye_close.png</file>
+        <file>Resources/eye_open.png</file>
     </qresource>
 </RCC>

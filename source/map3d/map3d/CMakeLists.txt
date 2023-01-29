@@ -30,7 +30,7 @@ add_executable(Map3d
         networkmanager.cpp
         defenseDataManager.cpp
         listwindow.cpp
-        outlinermodel.cpp
+		layersmodel.cpp
         qml.qrc
         resources.qrc)
 

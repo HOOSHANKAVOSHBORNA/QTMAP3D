@@ -11,6 +11,28 @@
 
 #include "mapcontroller.h"
 
+class MainMapCallback : public osgEarth::MapCallback
+{
+public:
+    MainMapCallback(MapController *mapController) :
+        mMapController(mapController)
+    {
+
+    }
+
+    void onLayerAdded  (osgEarth::Layer* layer, unsigned index) override
+    {
+        mMapController->onLayerAdded(layer, index);
+    }
+    void onLayerRemoved(osgEarth::Layer* layer, unsigned index) override
+    {
+        mMapController->onLayerRemoved(layer, index);
+    }
+
+private:
+    MapController *mMapController = nullptr;
+};
+
 //class MainEventHandler : public osgGA::GUIEventHandler
 //{
 //public:
@@ -113,6 +135,7 @@
 MapController::MapController(QQuickWindow *window) :
     mWindow(window)
 {
+    mLayersModel = new LayersModel;
 }
 
 MapController::~MapController()
@@ -236,6 +259,11 @@ void MapController::addLayer(osgEarth::Layer *layer)
     {
         QMessageBox::warning(nullptr, tr("Error"), tr("Data loading failed!"));
     }
+}
+
+LayersModel *MapController::getLayersModel() const
+{
+    return mLayersModel;
 }
 
 void MapController::zoom(double val)
@@ -416,6 +444,12 @@ void MapController::travelToViewpoint(qreal latitude,
     mEarthManipulator->setViewpoint(vp, 3.0);
 }
 
+void MapController::toggleLayerEnabled(int layerIndex)
+{
+    if (mLayersModel)
+        mLayersModel->toggleLayerEnabled(layerIndex);
+}
+
 
 
 void MapController::cleanup()
@@ -570,7 +604,24 @@ void MapController::wheelEvent(QWheelEvent *event)
         mOsgRenderer->wheelEvent(event);
 //    osg::Vec3d worldPos;
 //    mEarthManipulator->screenToWorld(event->x(),  event->y(),mOsgRenderer, worldPos);
-//    mapMouseEvent(event, worldPos);
+    //    mapMouseEvent(event, worldPos);
+}
+
+void MapController::onLayerAdded(osgEarth::Layer *layer, unsigned index)
+{
+    qDebug() << "Layer added";
+    updateLayersModel();
+}
+
+void MapController::onLayerRemoved(osgEarth::Layer *layer, unsigned index)
+{
+    updateLayersModel();
+}
+
+void MapController::updateLayersModel()
+{
+    if (mLayersModel)
+        mLayersModel->updateLayers(getMapNode()->getMap());
 }
 
 
@@ -607,6 +658,10 @@ void MapController::initializeOsgEarth()
     //create camera after create map node
     createCameraManipulator();
     mOsgRenderer->setCameraManipulator(mEarthManipulator);
+
+
+    mMapNode->getMap()->addMapCallback(new MainMapCallback(this));
+    updateLayersModel();
 }
 
 void MapController::createMapNode(bool bGeocentric)
