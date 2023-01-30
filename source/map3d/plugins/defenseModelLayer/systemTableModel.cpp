@@ -138,15 +138,15 @@ QString SystemTableModel::headerText(int column) const
     }
 }
 
-QString SystemTableModel::getName(int row) const
+int SystemTableModel::getNumber(int row) const
 {
-    if (row < 0) return QString();
+    if (row < 0) return -1;
 
     if (row >= static_cast<int>(mSystemInfoListProxy.size())) {
-        return QString();
+        return -1;
     }
 
-    return mSystemInfoListProxy[std::size_t(row)].second->Name;
+    return mSystemInfoListProxy[std::size_t(row)].second->Number;
 }
 
 void SystemTableModel::setFilterWildcard(const QString &wildcard)
@@ -158,7 +158,7 @@ void SystemTableModel::setFilterWildcard(const QString &wildcard)
 
     mSystemInfoListProxy.clear();
     for (auto& item : mSystemInfoList) {
-        if (item.second->Name.contains(mFilter))
+        if (QString::number(item.second->Number).contains(mFilter))
             mSystemInfoListProxy.push_back(item);
     }
 

@@ -101,15 +101,15 @@ QString StationTableModel::headerText(int column) const
     return QStringLiteral("");
 }
 
-QString StationTableModel::getName(int row) const
+int StationTableModel::getNumber(int row) const
 {
-    if (row < 0) return QString();
+    if (row < 0) return -1;
 
     if (row >= static_cast<int>(mStationInfoListProxy.size())) {
-        return QString();
+        return -1;
     }
 
-    return mStationInfoListProxy[std::size_t(row)].second->Name;
+    return mStationInfoListProxy[std::size_t(row)].second->Number;
 }
 
 void StationTableModel::setFilterWildcard(const QString &wildcard)
@@ -121,7 +121,7 @@ void StationTableModel::setFilterWildcard(const QString &wildcard)
 
     mStationInfoListProxy.clear();
     for (auto& item : mStationInfoList) {
-        if (item.second->Name.contains(mFilter))
+        if (QString::number(item.second->Number).contains(mFilter))
             mStationInfoListProxy.push_back(item);
     }
 
