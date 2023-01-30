@@ -14,6 +14,7 @@ Item {
     property var clickCallback
 
     signal listsButtonClicked()
+    signal layersButtonClicked()
 
     Rectangle {
         id: rect
@@ -113,6 +114,65 @@ Item {
                 Layout.preferredHeight: 64
 
                 ColumnLayout {
+                    id: col2
+                    anchors.centerIn: parent
+                    Image {
+                        id: img2
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 24
+                        Layout.preferredHeight: 24
+                        source: "qrc:/Resources/Layers.png"
+                        width: 24
+                        height: 24
+                    }
+
+                    Label {
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: implicitWidth
+                        Layout.preferredHeight: implicitHeight
+                        text: "Layers"
+                        color: "white"
+                        font.family: _fontFamily
+                        font.pointSize: _fontPointSize
+                    }
+                    visible: false
+                }
+
+                MouseArea {
+                    id: mouseArea2
+                    anchors.fill: col2
+                    hoverEnabled: true
+
+                    property bool isMouseOnItem: false
+
+                    onEntered: function() {
+                        isMouseOnItem = true;
+                    }
+                    onExited: function() {
+                        isMouseOnItem = false;
+                    }
+
+                    onClicked: function() {
+                        rootItem.layersButtonClicked();
+                    }
+                }
+
+                ColorOverlay {
+                    anchors.fill: col2
+                    source: col2
+                    color: mouseArea2.isMouseOnItem ?
+                           (mouseArea2.pressed ? _colorPresed: _colorHover) :
+                           (mouseArea2.pressed ? _colorHover : "#FFFFFF");
+                }
+            }
+
+
+            Item {
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: 64
+                Layout.preferredHeight: 64
+
+                ColumnLayout {
                     id: col1
                     anchors.centerIn: parent
                     Image {
@@ -165,6 +225,9 @@ Item {
                            (mouseArea1.pressed ? _colorHover : "#FFFFFF");
                 }
             }
+
+
+
 
 
 

@@ -43,5 +43,6 @@
         <file>Resources/airplane2.jpg</file>
         <file>Resources/eye_close.png</file>
         <file>Resources/eye_open.png</file>
+        <file>Resources/Layers.png</file>
     </qresource>
 </RCC>
