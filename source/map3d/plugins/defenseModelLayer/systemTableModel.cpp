@@ -38,18 +38,18 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         case  7: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Altitude);
         case  8: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row()    )].second->ViewRange);
         case  9: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->MezRange);
-        case 10: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->ReceiveTime);
-        case 11: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Simulation);
-        case 12: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->RadarSearchStatus);
-        case 13: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Operational);
-        case 14: return QVariant::fromValue<int>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->MissileCount);
-        case 15: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row()    )].second->RadarMode);
-        case 16: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->TN);
-        case 17: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Acceptance);
-        case 18: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->phaseToString());
-        case 19: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Antenna);
-        case 20: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->ChanelNo);
-        case 21: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Inrange);
+        case 10: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row())].second->ReceiveTime);
+        case 11: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row() )].second->Simulation);
+        case 12: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row() )].second->RadarSearchStatus);
+        case 13: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row() )].second->Operational);
+        case 14: return QVariant::fromValue<int>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row() )].second->MissileCount);
+        case 15: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row()    )].second->RadarMode);
+        case 16: return QVariant::fromValue<double>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row())].second->TN);
+        case 17: return QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row())].second->Acceptance);
+        case 18: return QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )].second->phaseToString());
+        case 19: return QVariant::fromValue<double>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )].second->Antenna);
+        case 20: return QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )].second->ChanelNo);
+        case 21: return QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )].second->Inrange);
 
         }
         break;
@@ -189,6 +189,64 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
     for (auto& item : mSystemInfoList) {
         if (item.second->Name.contains(mFilter))
             mSystemInfoListProxy.push_back(item);
+    }
+
+    endResetModel();
+}
+
+void SystemTableModel::updateItemData(const SystemStatusInfo &systemStatusInfo)
+{
+    beginResetModel();
+
+    const auto it = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(),
+                                 [systemStatusInfo](const QPair<int, QSharedPointer<SystemStatusInfo>>& itemInfo){
+        return itemInfo.second->Number == systemStatusInfo.Number;
+    });
+
+
+    if (it != mSystemStatusInfoList.end()) {
+        *(*it).second = systemStatusInfo;
+    } else {
+        QPair<int, QSharedPointer<SystemStatusInfo>> isp;
+        isp.first = mSystemStatusInfoList.size();
+        isp.second.reset(new SystemStatusInfo);
+        *(isp.second) = systemStatusInfo;
+        mSystemStatusInfoList.push_back(isp);
+    }
+
+    mSystemStatusInfoListProxy.clear();
+    for (auto& item : mSystemStatusInfoList) {
+        if (QString::number(item.second->Number).contains(mFilter))
+            mSystemStatusInfoListProxy.push_back(item);
+    }
+
+    endResetModel();
+}
+
+void SystemTableModel::updateItemData(const SystemCambatInfo &systemCambatInfo)
+{
+    beginResetModel();
+
+    const auto it = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(),
+                                 [systemCambatInfo](const QPair<int, QSharedPointer<SystemCambatInfo>>& itemInfo){
+        return itemInfo.second->Number == systemCambatInfo.Number;
+    });
+
+
+    if (it != mSystemCombatInfoList.end()) {
+        *(*it).second = systemCambatInfo;
+    } else {
+        QPair<int, QSharedPointer<SystemCambatInfo>> isp;
+        isp.first = mSystemCombatInfoList.size();
+        isp.second.reset(new SystemCambatInfo);
+        *(isp.second) = systemCambatInfo;
+        mSystemCombatInfoList.push_back(isp);
+    }
+
+    mSystemCombatInfoListProxy.clear();
+    for (auto& item : mSystemCombatInfoList) {
+        if (QString::number(item.second->Number).contains(mFilter))
+            mSystemCombatInfoListProxy.push_back(item);
     }
 
     endResetModel();
