@@ -377,7 +377,7 @@ void SystemModelNode::onMezButtonToggled(bool checked)
 
 void SystemModelNode::onActiveButtonToggled(bool checked)
 {
-    mInformation.Active = checked;
+    mSystemStatusInfo.Active = checked;
 }
 
 void SystemModelNode::collision()
@@ -400,7 +400,7 @@ void SystemModelNode::collision()
 }
 void SystemModelNode::showInfoWidget()
 {
-    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, this);
+    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mSystemStatusInfo, mSystemCambatInfo, this);
     connect(systemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
     connect(systemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
     connect(systemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);

@@ -546,7 +546,7 @@ void DefenseModelLayer::onSystemStatusInfoChanged(SystemStatusInfo &systemStatus
         //add update list view-----------------------------------------------------------------
         if (mDataManager)
         {
-            mDataManager->setSystemInfo(systemInfo);
+            mDataManager->setSystemStatusInfo(systemStatusInfo);
         }
     }
 }
@@ -561,7 +561,7 @@ void DefenseModelLayer::onSystemCambatInfoChanged(SystemCambatInfo &systemCambat
         //add update list view-----------------------------------------------------------------
         if (mDataManager)
         {
-            mDataManager->setSystemInfo(systemInfo);
+            mDataManager->setSystemCombatInfo(systemCambatInfo);
         }
     }
 }
