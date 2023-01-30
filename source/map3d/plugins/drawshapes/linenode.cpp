@@ -1,5 +1,7 @@
 #include "linenode.h"
 
+
+
 LineNode::LineNode(MapController *mapController)
 {
     mMapController = mapController;
@@ -32,6 +34,7 @@ LineNode::LineNode(MapController *mapController)
     setStyle(style);
     //this->setFeature(pathFeature);
     //    this->setStyle(pathStyle);
+
 }
 
 void LineNode::setLineHeight(float hieght)
@@ -99,7 +102,7 @@ void LineNode::setPointClamp(bool clamp)
 void LineNode::addPoint(osgEarth::GeoPoint points)
 {
     mLinePath->push_back(points.vec3d());
-    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, mMapController->getMapSRS());
+    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, osgEarth::SpatialReference::get("wgs84"));
     setFeature(pathFeature);
 }
 
