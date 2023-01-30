@@ -14,8 +14,8 @@ Rectangle {
 
     Button {
         id: btn_right
-        width: 34
-        height: 34
+        width: 28
+        height: 28
         anchors.right: parent.right
         anchors.rightMargin: 0
         anchors.verticalCenter: parent.verticalCenter
@@ -35,8 +35,8 @@ Rectangle {
 
     Button {
         id: btn_up
-        width: 34
-        height: 34
+        width: 28
+        height: 28
         anchors.top: parent.top
         anchors.topMargin: 0
         anchors.horizontalCenter: parent.horizontalCenter
@@ -57,8 +57,8 @@ Rectangle {
 
     Button {
         id: btn_left
-        width: 34
-        height: 34
+        width: 28
+        height: 28
         anchors.left: parent.left
         anchors.leftMargin: 0
         anchors.rightMargin: 0
@@ -77,8 +77,8 @@ Rectangle {
 
     Button {
         id: btn_down
-        width: 34
-        height: 34
+        width: 28
+        height: 28
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
         anchors.horizontalCenter: parent.horizontalCenter
