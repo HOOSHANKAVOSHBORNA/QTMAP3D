@@ -229,15 +229,15 @@ void AircraftModelNode::stop()
     removeEffect();
 }
 
-void AircraftModelNode::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
-{
-    mTruckModel = truckModel;
-}
+//void AircraftModelNode::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
+//{
+//    mTruckModel = truckModel;
+//}
 
-osgEarth::Annotation::ModelNode *AircraftModelNode::getTruckModel() const
-{
-    return mTruckModel;
-}
+//osgEarth::Annotation::ModelNode *AircraftModelNode::getTruckModel() const
+//{
+//    return mTruckModel;
+//}
 
 void AircraftModelNode::setInformation(AircraftInfo info)
 {
