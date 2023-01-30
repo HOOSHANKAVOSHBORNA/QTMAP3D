@@ -22,6 +22,8 @@ class SystemModelNode: public DefenseModelNode
 public:
     SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void setInformation(const SystemInfo &info);
+    void setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo);
+    void setSystemCambatInfo(const SystemCambatInfo &systemCambatInfo);
     void goOnTrack();
     DefenseModelNode *getAssignedModelNode() const;
     void setAssignedModelNode(DefenseModelNode *assignedModelNode);
@@ -31,8 +33,7 @@ public slots:
     void onLeftButtonClicked(bool val);
 public:
     virtual void frameEvent()override;
-    void mousePressEvent(QMouseEvent *event, bool onModel) override;
-
+    void mousePressEvent(QMouseEvent *event, bool onModel) override; 
 protected:
 private slots:
     void onGotoButtonClicked();
@@ -50,6 +51,8 @@ private:
 private:
     MapController* mMapController{nullptr};
     SystemInfo mInformation;
+    SystemStatusInfo mSystemStatusInfo;
+    SystemCambatInfo mSystemCambatInfo;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;

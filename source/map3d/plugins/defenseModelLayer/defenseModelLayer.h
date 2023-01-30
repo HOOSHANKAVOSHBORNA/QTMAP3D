@@ -52,6 +52,8 @@ public slots:
 //    void onMessageReceived(const QJsonDocument &message);
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
+    void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
+    void onSystemCambatInfoChanged(SystemCambatInfo& systemCambatInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
     void onClearAircraft(int tn);
 protected:
