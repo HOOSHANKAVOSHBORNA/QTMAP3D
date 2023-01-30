@@ -12,7 +12,7 @@ public:
     SystemInfoModel(QObject *parent = nullptr);
 
     enum MyRoles {
-        Name = Qt::UserRole + 102,
+        Numberr = Qt::UserRole + 102,
         Active = Qt::UserRole + 123,
         MainInfo = Qt::UserRole + 200,
         MainInfoHeaders = Qt::UserRole + 201,

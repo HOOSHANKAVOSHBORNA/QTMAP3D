@@ -30,7 +30,7 @@ public:
     QHash<int,QByteArray> roleNames() const override;
 
     Q_INVOKABLE QString headerText(int column) const;
-    Q_INVOKABLE QString getName(int row) const;
+    Q_INVOKABLE int getNumber(int row) const;
 
 public slots:
     void setFilterWildcard(const QString& wildcard);

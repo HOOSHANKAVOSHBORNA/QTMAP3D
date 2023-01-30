@@ -31,7 +31,7 @@ public:
 
     Q_INVOKABLE QString headerText(int column) const;
 
-    Q_INVOKABLE QString getTN(int row) const;
+    Q_INVOKABLE int getTN(int row) const;
 
 public slots:
     void setFilterWildcard(const QString& wildcard);

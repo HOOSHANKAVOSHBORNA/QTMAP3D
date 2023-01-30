@@ -15,7 +15,7 @@ int SystemInfoModel::rowCount(const QModelIndex &/*parent*/) const {
 
 QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
-        case Name: return QVariant::fromValue<QString>(mSystemInfo.Name);
+        case Numberr: return QVariant::fromValue<int>(mSystemInfo.Number);
         case Active: return QVariant::fromValue<bool>(mSystemInfo.Active);
         case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
         case MainInfoHeaders: return QVariant::fromValue<QStringList>(getMainInfoHeaders());
@@ -34,7 +34,7 @@ QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
 QHash<int, QByteArray> SystemInfoModel::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractListModel::roleNames();
-    hash[Name] = "Name";
+    hash[Numberr] = "Numberr";
     hash[Active] = "Active";
     hash[MainInfo] = "MainInfo";
     hash[MainInfoHeaders] = "MainInfoHeaders";

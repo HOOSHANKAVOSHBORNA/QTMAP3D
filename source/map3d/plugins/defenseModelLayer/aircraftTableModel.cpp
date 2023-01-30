@@ -132,15 +132,15 @@ QString AircraftTableModel::headerText(int column) const
     return QStringLiteral("");
 }
 
-QString AircraftTableModel::getTN(int row) const
+int AircraftTableModel::getTN(int row) const
 {
-    if (row < 0) return QString();
+    if (row < 0) return -1;
 
     if (row >= static_cast<int>(mAircraftInfoListProxy.size())) {
-        return QString();
+        return -1;
     }
 
-    return QString::number(mAircraftInfoListProxy[std::size_t(row)].second->TN);
+    return mAircraftInfoListProxy[std::size_t(row)].second->TN;
 }
 
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)

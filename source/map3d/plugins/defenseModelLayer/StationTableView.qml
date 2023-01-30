@@ -9,7 +9,7 @@ Item {
 //    anchors.fill: parent
 
     signal filterTextChanged(string txt)
-    signal stationDoubleClicked(string Name)
+    signal stationDoubleClicked(int Number)
 
     property int hoveredIndex: -1
     property int selectedIndex: -1
@@ -140,7 +140,7 @@ Item {
                         anchors.fill: parent
                         onDoubleClicked: function() {
                             if (rootItem.model) {
-                                rootItem.stationDoubleClicked(rootItem.model.getName(row));
+                                rootItem.stationDoubleClicked(rootItem.model.getNumber(row));
                             }
                         }
 
