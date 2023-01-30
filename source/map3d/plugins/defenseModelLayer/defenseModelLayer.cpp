@@ -134,10 +134,15 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         systemInfo.Longitude = 54.2;
         systemInfo.Latitude = 35.3;
         systemInfo.Number = 1234567;
-        systemInfo.BCCStatus = "s";
-        systemInfo.RadarSearchStatus = "us";
-        systemInfo.MissileCount = 3;
         addUpdateSystem(systemInfo);
+
+        SystemStatusInfo systemStatusInfo;
+        systemStatusInfo.Number = systemInfo.Number;
+        systemStatusInfo.BCCStatus = "s";
+        systemStatusInfo.RadarSearchStatus = "us";
+        systemStatusInfo.MissileCount = 3;
+        onSystemStatusInfoChanged(systemStatusInfo);
+
     }
     else if(CATEGORY == category && name == STATION)
     {
@@ -199,10 +204,16 @@ bool DefenseModelLayer::setup(MapController *mapController,
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
+    //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DefenseModelLayer::onAircraftInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DefenseModelLayer::onSystemInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DefenseModelLayer::onStationInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DefenseModelLayer::onClearAircraft);
+    //--system----------------------------------------------------------
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DefenseModelLayer::onSystemInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DefenseModelLayer::onSystemStatusInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemCambatInfoChanged,this ,&DefenseModelLayer::onSystemCambatInfoChanged);
+    //--station---------------------------------------------------------
+    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DefenseModelLayer::onStationInfoChanged);
+
 }
 
 //void DefenseModelLayer::demo()
@@ -523,6 +534,36 @@ void DefenseModelLayer::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 void DefenseModelLayer::onSystemInfoChanged(SystemInfo &systemInfo)
 {
     addUpdateSystem(systemInfo);
+}
+
+void DefenseModelLayer::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
+{
+    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemStatusInfo.Number))
+    {
+        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemStatusInfo.Number]);
+        //update information-----------------------------------------------------
+        systemModelNode->setSystemStatusInfo(systemStatusInfo);
+        //add update list view-----------------------------------------------------------------
+        if (mDataManager)
+        {
+            mDataManager->setSystemStatusInfo(systemStatusInfo);
+        }
+    }
+}
+
+void DefenseModelLayer::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
+{
+    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemCambatInfo.Number))
+    {
+        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemCambatInfo.Number]);
+        //update information-----------------------------------------------------
+        systemModelNode->setSystemCambatInfo(systemCambatInfo);
+        //add update list view-----------------------------------------------------------------
+        if (mDataManager)
+        {
+            mDataManager->setSystemCombatInfo(systemCambatInfo);
+        }
+    }
 }
 
 void DefenseModelLayer::onStationInfoChanged(StationInfo &stationInfo)

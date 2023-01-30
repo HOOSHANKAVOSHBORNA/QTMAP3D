@@ -109,7 +109,7 @@ Item {
                         Binding {
                             target: station
                             property: "text"
-                            value: Name
+                            value: Numberr
                         }
                         Binding {
                             target: control

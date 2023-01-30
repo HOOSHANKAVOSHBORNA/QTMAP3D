@@ -28,9 +28,9 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
                              SLOT(setFilterWildcard(const QString&)));
 
             QObject::connect(aircraftTab,
-                             SIGNAL(aircraftDoubleClicked(const QString&)),
+                             SIGNAL(aircraftDoubleClicked(const int&)),
                              this,
-                             SIGNAL(aircraftDoubleClicked(const QString&)));
+                             SIGNAL(aircraftDoubleClicked(const int&)));
 
 
             aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
@@ -55,9 +55,9 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
                              SLOT(setFilterWildcard(const QString&)));
 
             QObject::connect(stationTab,
-                             SIGNAL(stationDoubleClicked(const QString&)),
+                             SIGNAL(stationDoubleClicked(const int&)),
                              this,
-                             SIGNAL(stationDoubleClicked(const QString&)));
+                             SIGNAL(stationDoubleClicked(const int&)));
 
 
             stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
@@ -82,9 +82,9 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
                              SLOT(setFilterWildcard(const QString&)));
 
             QObject::connect(systemTab,
-                             SIGNAL(systemDoubleClicked(const QString&)),
+                             SIGNAL(systemDoubleClicked(const int&)),
                              this,
-                             SIGNAL(systemDoubleClicked(const QString&)));
+                             SIGNAL(systemDoubleClicked(const int&)));
 
             systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
             mUiHandle->lwAddTab("Systems", systemTab);
@@ -122,6 +122,20 @@ void DataManager::setSystemInfo(const SystemInfo &systemInfo)
 {
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemInfo);
+    }
+}
+
+void DataManager::setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo)
+{
+    if (mSystemTableModel) {
+        mSystemTableModel->updateItemData(systemCombatInfo);
+    }
+}
+
+void DataManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
+{
+    if (mSystemTableModel) {
+        mSystemTableModel->updateItemData(systemStatusInfo);
     }
 }
 

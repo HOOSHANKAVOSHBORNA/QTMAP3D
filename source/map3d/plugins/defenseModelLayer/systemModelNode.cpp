@@ -172,6 +172,17 @@ void SystemModelNode::setInformation(const SystemInfo& info)
     updateOrCreateLabelImage();
 }
 
+void SystemModelNode::setSystemCambatInfo(const SystemCambatInfo &systemCambatInfo)
+{
+    mSystemCambatInfo = systemCambatInfo;
+}
+
+void SystemModelNode::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
+{
+    mSystemStatusInfo = systemStatusInfo;
+    updateOrCreateLabelImage();
+}
+
 void SystemModelNode::goOnTrack()
 {
     mMapController->setTrackNode(getGeoTransform());
@@ -366,7 +377,7 @@ void SystemModelNode::onMezButtonToggled(bool checked)
 
 void SystemModelNode::onActiveButtonToggled(bool checked)
 {
-    mInformation.Active = checked;
+    mSystemStatusInfo.Active = checked;
 }
 
 void SystemModelNode::collision()
@@ -389,7 +400,7 @@ void SystemModelNode::collision()
 }
 void SystemModelNode::showInfoWidget()
 {
-    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, this);
+    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mSystemStatusInfo, mSystemCambatInfo, this);
     connect(systemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
     connect(systemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
     connect(systemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
@@ -462,7 +473,7 @@ void SystemModelNode::updateOrCreateLabelImage()
                          "BCC:");
         painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         mInformation.BCCStatus);
+                         mSystemStatusInfo.BCCStatus);
 
 
         painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
@@ -470,7 +481,7 @@ void SystemModelNode::updateOrCreateLabelImage()
                          "Radar:");
         painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         mInformation.RadarSearchStatus);
+                         mSystemStatusInfo.RadarSearchStatus);
 
 
 
@@ -484,7 +495,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         static const QImage missleRedImage(":/resources/bullet_red.png");
         static const QImage missleGreenImage(":/resources/bullet_green.png");
         for (int i = 0; i < 6; i++) {
-            if(i < mInformation.MissileCount) {
+            if(i < mSystemStatusInfo.MissileCount) {
                 painter.drawImage(
                             QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
                             missleGreenImage,
@@ -512,3 +523,5 @@ void SystemModelNode::updateOrCreateLabelImage()
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
 }
+
+

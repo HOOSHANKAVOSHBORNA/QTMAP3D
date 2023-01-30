@@ -9,7 +9,7 @@ Item {
 //    anchors.fill: parent
 
     signal filterTextChanged(string txt)
-    signal aircraftDoubleClicked(string TN)
+    signal aircraftDoubleClicked(int TN)
 
     property int hoveredIndex: -1
     property int selectedIndex: -1

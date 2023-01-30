@@ -15,8 +15,8 @@ int SystemInfoModel::rowCount(const QModelIndex &/*parent*/) const {
 
 QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
-        case Name: return QVariant::fromValue<QString>(mSystemInfo.Name);
-        case Active: return QVariant::fromValue<bool>(mSystemInfo.Active);
+        case Numberr: return QVariant::fromValue<int>(mSystemInfo.Number);
+        case Active: return QVariant::fromValue<bool>(mSystemStatusInfo.Active);
         case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
         case MainInfoHeaders: return QVariant::fromValue<QStringList>(getMainInfoHeaders());
         case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());
@@ -34,7 +34,7 @@ QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
 QHash<int, QByteArray> SystemInfoModel::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractListModel::roleNames();
-    hash[Name] = "Name";
+    hash[Numberr] = "Numberr";
     hash[Active] = "Active";
     hash[MainInfo] = "MainInfo";
     hash[MainInfoHeaders] = "MainInfoHeaders";
@@ -48,9 +48,11 @@ QHash<int, QByteArray> SystemInfoModel::roleNames() const
 }
 
 
-void SystemInfoModel::setInformtion(const SystemInfo &systemInfo)
+void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCambatInfo &systemCombatInfo)
 {
     mSystemInfo = systemInfo;
+    mSystemStatusInfo = systemStatusInfo;
+    mSystemCombatInfo = systemCombatInfo;
 }
 
 QStringList SystemInfoModel::getMainInfo() const
@@ -80,9 +82,9 @@ QStringList SystemInfoModel::getLocationInfoHeaders() const
 
 QStringList SystemInfoModel::getStatusInfo() const
 {
-    return QStringList {mSystemInfo.ReceiveTime, mSystemInfo.Simulation, mSystemInfo.BCCStatus,
-                        mSystemInfo.RadarSearchStatus, mSystemInfo.Operational,
-                        QString::number(mSystemInfo.MissileCount), mSystemInfo.RadarMode};
+    return QStringList {mSystemStatusInfo.ReceiveTime, mSystemStatusInfo.Simulation, mSystemStatusInfo.BCCStatus,
+                        mSystemStatusInfo.RadarSearchStatus, mSystemStatusInfo.Operational,
+                        QString::number(mSystemStatusInfo.MissileCount), mSystemStatusInfo.RadarMode};
 }
 
 QStringList SystemInfoModel::getStatusInfoHeaders() const
@@ -92,8 +94,8 @@ QStringList SystemInfoModel::getStatusInfoHeaders() const
 
 QStringList SystemInfoModel::getCombatInfo() const
 {
-    return QStringList {QString::number(mSystemInfo.TN), mSystemInfo.Acceptance, mSystemInfo.phaseToString(),
-                        QString::number(mSystemInfo.Antenna), mSystemInfo.ChanelNo, mSystemInfo.Inrange};
+    return QStringList {QString::number(mSystemCombatInfo.TN), mSystemCombatInfo.Acceptance, mSystemCombatInfo.phaseToString(),
+                        QString::number(mSystemCombatInfo.Antenna), mSystemCombatInfo.ChanelNo, mSystemCombatInfo.Inrange};
 }
 
 QStringList SystemInfoModel::getCombatInfoHeaders() const
@@ -102,17 +104,19 @@ QStringList SystemInfoModel::getCombatInfoHeaders() const
 }
 
 
-SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, QObject *parent) :
+SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
+                                     SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo,
+                                     QObject *parent) :
     QObject(parent), mUiHandle(uiHandle), mInformation(systemInfo)
 {
     QQmlComponent *comp = new QQmlComponent(qmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, systemStatusInfo, systemCambatInfo](){
 
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
             mInfoModel = new SystemInfoModel;
 
-            mInfoModel->setInformtion(mInformation);
+            mInfoModel->setInformtion(mInformation, systemStatusInfo, systemCambatInfo);
             mItem->setProperty("model", QVariant::fromValue<SystemInfoModel*>(mInfoModel));
             QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
