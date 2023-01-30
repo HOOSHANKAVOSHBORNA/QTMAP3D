@@ -15,36 +15,11 @@ Item {
 
     }
 
-//    ScrollView {
-//        anchors.fill: parent
-////        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
-//        ScrollBar.horizontal.interactive: true
-//        ListView {
-//        id: items
-//        height: 200
-//        model: root.model
-//        delegate: Button {
-//                Text {
-//                    anchors.centerIn: parent
-//                    text: disp
-//                    color: "white"
-//                }
-//                background: Rectangle {
-//                    color: hovered ? "#606060" : "#404040"
-//                    border.width: 1
-//                    border.color: "#303030"
-//                }
-//                implicitWidth: 200
-//                implicitHeight: 25
-//                onClicked: root.model.itemClicked(index, disp)
-//            }
-
-
-//    }}
     function addMenuItem(listToShow) {
         for (var i = 0; i < listToShow.length; i++){
             pieMenu.addItem(listToShow[i])
             pieMenu.menuItems[i].triggered.connect(itemClicked)
+
         }
 
     }
@@ -56,15 +31,11 @@ Item {
     PieMenu {
         id: pieMenu
         anchors.centerIn: parent
-
         style: PieMenuStyle {
             id: pieStyle
-            shadowRadius: 0
-            endAngle: 360
-            startAngle: 0
-
-
-
+            shadowRadius: 20
+            endAngle: -270
+            startAngle: -90
             menuItem: Item {
                 id: item
                 rotation: -90 + sectionCenterAngle(styleData.index)
@@ -81,13 +52,13 @@ Item {
                         target: rect
                         property: "width"
                         from: 0
-                        to: parent.height * 0.3
+                        to: parent.height * 0.25
                         duration: 300
                         running: true
                     }
 
 
-                    width: parent.height * 0.3
+                    width: styleData.hovered ? parent.height * 0.35 : parent.height * 0.25
                     height: width
                     color:  "#505050"
                     opacity: 0.4
@@ -96,18 +67,14 @@ Item {
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
 
-
-                    Text {
-                        id: textItem
-
-
-                        text: control.menuItems[styleData.index]? control.menuItems[styleData.index].text : ""
-
-                        anchors.centerIn: parent
-                        color: styleData.hovered ? "#FFCC00" : "white"
-                        rotation: -item.rotation
-                        
-                    }
+                }
+                Text {
+                    id: textItem
+                    text: control.menuItems[styleData.index]? control.menuItems[styleData.index].text : ""
+                    opacity: 1
+                    anchors.centerIn: rect
+                    color: styleData.hovered ? "#FFCC00" : "white"
+                    rotation: -item.rotation
 
                 }
 
