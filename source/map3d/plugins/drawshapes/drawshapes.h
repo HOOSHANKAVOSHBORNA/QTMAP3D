@@ -6,6 +6,7 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
+
 #include "line.h"
 #include "sphere.h"
 #include "rect.h"
@@ -18,6 +19,8 @@
 #include "box.h"
 #include "spherenode.h"
 #include "spherenodeeditor.h"
+#include "linenode.h"
+
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
@@ -33,14 +36,12 @@ public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool setup(MapController *mapController,
-               NetworkManager *networkManager,
                UIHandle *UIHandle) override;
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;
     virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 private:
-    bool mIsFinished{true};
     enum class Shape {NONE ,LINE, SPHERE, CONE, CYLINDER, CAPSULE, BOX, POLYGON, IMGOVLY,
                CIRCLE, RECT, ELLIPSE};
     Shape mShape;
@@ -62,7 +63,7 @@ private:
 private slots:
     void onLineBtnClick(QMouseEvent* event);
     void onSphereBtnClick(QMouseEvent* event);
-    void onSphereBtnDoubleClick(QMouseEvent* event);
+    void onNodeBtnDoubleClick(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
     void onConeBtnClick(QMouseEvent* event);
     void onCylinderBtnClick(QMouseEvent* event);
     void onCapsuleBtnClick(QMouseEvent* event);
@@ -78,7 +79,7 @@ private slots:
 
 
 private:
-    Line* mLine{nullptr};
+    LineNode* mLine{nullptr};
 //    Sphere* mSphere;
     Cone* mCone;
     Cylinder* mCylinder;

@@ -7,6 +7,7 @@
 #include <osgEarthUtil/EarthManipulator>
 
 #include <osg/Material>
+#include <osgFX/Outline>
 
 const osg::Node::NodeMask NODE_MASK = 0x00000001;
 
@@ -90,148 +91,9 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
     //        baseModel->curentPosition(geoPoint);
 }
 
-
-//bool PickHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-//{
-
-//    osgViewer::Viewer *view = dynamic_cast<osgViewer::Viewer *>(&aa);
-
-//    switch (ea.getEventType())
-//    {
-//    case osgGA::GUIEventAdapter::FRAME:
-//            findSceneModels(view);
-//        break;
-//    case (osgGA::GUIEventAdapter::PUSH):
-//        if (view)
-//        {
-//            pick(view, ea);
-//            if(mCurrentModel)
-//            {
-//                mCurrentModel->mousePushEvent(true, ea);
-
-//            }
-//            if(mLastPushModel && mLastPushModel != mCurrentModel)
-//                mLastPushModel->mousePushEvent(false, ea);
-//        }
-//        if(mCurrentModel)
-//        {
-//            mLastPushModel = mCurrentModel;
-//            return true;
-//        }
-//        break;
-//    case (osgGA::GUIEventAdapter::MOVE):
-//        if (view)
-//        {
-//            pick(view, ea);
-//            if(mCurrentModel) {mCurrentModel->mouseMoveEvent(true, ea);}
-//            if(mLastMoveModel && mLastMoveModel != mCurrentModel)
-//                mLastMoveModel->mouseMoveEvent(false, ea);
-//        }
-//        if(mCurrentModel)
-//            mLastMoveModel = mCurrentModel;
-//        break;
-//    case (osgGA::GUIEventAdapter::RELEASE):
-//        break;
-//    case (osgGA::GUIEventAdapter::SCROLL):
-//        break;
-//    case (osgGA::GUIEventAdapter::DOUBLECLICK):
-//        break;
-//    default:
-//        break;
-//    }
-//    return false;
-//}
-//void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea)
-//{
-//    osg::Group* root = dynamic_cast<osg::Group*>(viewer->getSceneData());
-//    if (!root) return;
-
-//    osgUtil::LineSegmentIntersector::Intersections intersections;
-//    mCurrentModel = nullptr;
-//    if (viewer->computeIntersections(ea,intersections))
-//    {
-//        for(osgUtil::LineSegmentIntersector::Intersection hit : intersections)
-//        {
-//            const osg::NodePath& nodePath = hit.nodePath;
-//            for(osg::NodePath::const_iterator nitr=nodePath.begin();
-//                nitr!=nodePath.end();
-//                ++nitr)
-//            {
-//                //auto pl = dynamic_cast<osgEarth::Annotation::PlaceNode*>(*nitr);
-////                if (pl)
-////                    qDebug()<<pl;
-//                mCurrentModel = dynamic_cast<BaseModel*>(*nitr);
-//                if (mCurrentModel)
-//                    break;
-//            }
-//            if(mCurrentModel)
-//                break;
-//        }
-//    }
-//}
-
-//void PickHandler::findSceneModels(osgViewer::Viewer *viewer)
-//{
-//    osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
-//    if(!camera)
-//        return;
-//    int range = static_cast<int>(camera->getViewpoint().getRange());
-//    if(range != mPreRange && range < 12000)
-//    {
-//        mPreRange = range;
-//        osg::Viewport* viewport = viewer->getCamera()->getViewport();
-//        osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
-//        intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
-//                                                       viewport->x() + viewport->width(), viewport->y() + viewport->height());
-
-//        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES);
-//        intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
-
-//        osgUtil::IntersectionVisitor iv(intersector);
-////        iv.setTraversalMask(NODE_MASK);
-////        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-////        iv.setTraversalNumber(1000);
-//        viewer->getCamera()->accept(iv);
-
-//        if(intersector->containsIntersections())
-//        {
-//            auto intersections = intersector->getIntersections();
-//            //qDebug() <<"intersections: "<<intersections.size();
-//            for(auto hit : intersections)
-//            {
-
-//                const osg::NodePath& nodePath = hit.nodePath;
-//                //qDebug() <<"nodePath: "<<nodePath.size();
-//                for(osg::NodePath::const_iterator nitr=nodePath.begin();
-//                    nitr!=nodePath.end();
-//                    ++nitr)
-//                {
-//                    BaseModel* model = dynamic_cast<BaseModel*>(*nitr);
-//                    if (model && model->mCameraRangeChangeable)
-//                    {
-//                        //qDebug() <<model->getQStringName();
-//                        //qDebug() <<"range: "<<camera->getViewpoint().getRange();
-//                        //qDebug() <<"z: "<<model->getPosition().z();
-//                        double distance = 0;
-//                        if(camera->getViewpoint().getRange() < model->getPosition().z())///for track node
-//                            distance = camera->getViewpoint().getRange();
-//                        else
-//                            distance = camera->getViewpoint().getRange() - model->getPosition().z();
-//                        model->cameraRangeChanged(distance);
-//                        //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
-//                        //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
-//                    }
-//                }
-//            }
-
-//        }
-//    }
-//}
-
-//static bool mAddedEvent = false;
-DefenseModelNode::DefenseModelNode(osgEarth::MapNode *mapNode, QObject *parent):
+DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent):
     QObject(parent),
-    osgEarth::Annotation::ModelNode(mapNode, osgEarth::Symbology::Style())
+    osgEarth::Annotation::ModelNode(mapControler->getMapNode(), osgEarth::Symbology::Style())
 {
     //--add place node-------------------------------------------------------------------------------------------
     //    osgEarth::Symbology::Style pm;
@@ -247,6 +109,12 @@ DefenseModelNode::DefenseModelNode(osgEarth::MapNode *mapNode, QObject *parent):
     //        mAddedEvent = true;
     //    }
     //    setNodeMask(NODE_MASK);
+    mMapControler = mapControler;
+//    mSelectOutline =  new osgFX::Outline;
+//    mSelectOutline->setWidth( 8 );
+//    mSelectOutline->setColor( osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) );
+//    mSelectOutline->addChild(this);
+//    osg::DisplaySettings::instance()->setMinimumNumStencilBits(1);
 }
 
 QString DefenseModelNode::getType() const
@@ -262,9 +130,9 @@ void DefenseModelNode::setType(const QString &value)
 void DefenseModelNode::setQStringName(QString name)
 {
     setName(name.toStdString());
-    auto systemModel =  dynamic_cast<SystemModelNode*>(this);
-    if(mLableNode && !systemModel)
-        mLableNode->setText(name.toStdString());
+//    auto systemModel =  dynamic_cast<SystemModelNode*>(this);
+//    if(mLableNode && !systemModel)
+//        mLableNode->setText(name.toStdString());
 }
 
 QString DefenseModelNode::getQStringName()
@@ -375,45 +243,6 @@ osgEarth::Annotation::ModelNode *DefenseModelNode::getDragModelNode()
     dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
     return dragModelNode.release();
 }
-
-//DefenseModelNode *DefenseModelNode::getFollowModel() const
-//{
-//    return mFollowModel;
-//}
-
-//void DefenseModelNode::setFollowModel(DefenseModelNode *followModel)
-//{
-//    mFollowModel = followModel;
-//}
-
-//void BaseModel::traverse(osg::NodeVisitor &nv)
-//{
-//    qDebug()<<"traverse:"<<getQStringName();
-//    if (nv.getVisitorType() == osg::NodeVisitor::EVENT_VISITOR)
-//    {
-//        osgGA::EventVisitor* ev = static_cast<osgGA::EventVisitor*>(&nv);
-//        for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
-//            itr != ev->getEvents().end();
-//            ++itr)
-//        {
-//            osgGA::GUIEventAdapter* ea = dynamic_cast<osgGA::GUIEventAdapter*>(itr->get());
-//            if ( ea && handle(*ea, *(ev->getActionAdapter())))
-//                ea->setHandled(true);
-//        }
-//    }
-//    GeoPositionNode::traverse( nv );
-//}
-//bool BaseModel::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
-//{
-//    if (ea.getHandled()) return false;
-//}
-
-
-//bool DefenseModelNode::hasHit() const
-//{
-//    return mHasHit;
-//}
-
 void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
 {
     if(event->button() != Qt::MiddleButton)
@@ -427,33 +256,6 @@ void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
         hover(onModel);
     }
 }
-
-//void BaseModel::cameraRangeChanged(double range)
-//{
-
-////    osgEarth::Symbology::Style  style = getStyle();
-////    if(!mIs3d && range < 300)
-////    {
-//////        qDebug()<<getQStringName();
-////        setCullCallback(nullptr);
-////        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
-////        setStyle(style);
-////        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-////        mIs3d = true;
-////        select(mIsSelected);
-////    }
-////    if(mIs3d && range > 300)
-////    {
-//////        qDebug()<<getQStringName();
-////        setCullCallback(nullptr);
-////        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-////        setStyle(style);
-////        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-////        mIs3d = false;
-////        select(mIsSelected);
-////    }
-//}
-
 void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
 {
     //emit positionChanged(pos);
@@ -461,6 +263,27 @@ void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
 
 void DefenseModelNode::select(bool val)
 {
+//    const osg::BoundingSphere& bound = getBound();
+//    qDebug()<<"radius: "<<bound.radius();
+//    qDebug()<<"center:("<<bound.center().x()<<", "<<bound.center().y()<<", "<<bound.center().z()<<")";
+//    mSelectCircle->setRadius(osgEarth::Distance(bound.radius(), osgEarth::Units::METERS));
+//    mSelectSphere->setRadius(osgEarth::Distance(bound.radius(), osgEarth::Units::METERS));
+//    if(val)
+//    {
+////        mSelectCircle->setPosition(getPosition());
+////        mMapControler->addNode(mSelectCircle);
+//        mSelectSphere->setPosition(getPosition());
+//        mMapControler->addNode(mSelectSphere);
+//    }
+//    else
+//        mMapControler->removeNode(mSelectSphere);
+
+
+//    if(val)
+//        mMapControler->addNode(mSelectOutline);
+//    else
+//        mMapControler->removeNode(mSelectOutline);
+    //--------------------------------------------------------------------------------------------------
     hover(val);
     mIsSelected = val;
     if(mLableNode)
@@ -469,9 +292,6 @@ void DefenseModelNode::select(bool val)
 
 void DefenseModelNode::hover(bool val)
 {
-//    const osg::BoundingSphere& bound = getBound();
-//    qDebug()<<"radius: "<<bound.radius();
-//    qDebug()<<"center:("<<bound.center().x()<<", "<<bound.center().y()<<", "<<bound.center().z()<<")";
     //---------------------------------------------------
     if(mLableNode)
         mLableNode->setNodeMask(val);
@@ -483,13 +303,13 @@ void DefenseModelNode::hover(bool val)
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     if(!val)
     {
-        mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(0.5, 0.5, 0.5f, 1.0));
-        //        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Red;
+        mat->setDiffuse (osg::Material::FRONT_AND_BACK, mModelColor);
     }
     else
     {
-        mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(0.2f, 0.2f, 0.02f, 1.0));
-        //        lbStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Yellow;
+        osgEarth::Color color = mModelColor/2;
+        color.a() = 1;
+        mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
     }
     getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
     //    mLableNode->setStyle(lbStyle);

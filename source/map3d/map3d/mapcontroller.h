@@ -14,6 +14,7 @@
 #include <osgEarthUtil/Sky>
 
 #include "osgrenderer.h"
+#include "layersmodel.h"
 
 
 //class MainEventHandler;
@@ -57,6 +58,9 @@ public:
     void setViewpoint(const osgEarth::Viewpoint& vp, double duration_s = 0.0);
     void addLayer(osgEarth::Layer* layer);
 
+
+    LayersModel *getLayersModel() const;
+
 public slots:
     void zoom(double);
     void goToHome();
@@ -77,6 +81,7 @@ public slots:
                            qreal pitch,
                            qreal heading);
 
+    void toggleLayerEnabled(int layerIndex);
 
 private:
     explicit MapController(QQuickWindow *window);
@@ -101,15 +106,23 @@ public:
     void mouseMoveEvent(QMouseEvent* event);
     void wheelEvent(QWheelEvent* event);
 
+    void onLayerAdded(osgEarth::Layer* layer, unsigned index);
+    void onLayerRemoved(osgEarth::Layer* layer, unsigned index);
+    void updateLayersModel();
+
+
     void createOsgRenderer(int width, int height, QScreen *screen);
     void initializeOsgEarth();
     void createMapNode(bool bGeocentric);
     void createCameraManipulator();
 
+
+
 protected:
     osg::ref_ptr<osgEarth::MapNode> mMapNode;
     osg::ref_ptr<osgEarth::Util::SkyNode> mSkyNode;
     osg::ref_ptr<osg::Group> mMapRoot;
+    LayersModel *mLayersModel = nullptr;
 
 protected:
     OSGRenderer *mOsgRenderer{nullptr};

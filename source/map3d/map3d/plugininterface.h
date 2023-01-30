@@ -13,7 +13,6 @@
 class QQmlEngine;
 class QQmlComponent;
 class MapController;
-class NetworkManager;
 class MainWindow;
 class ListWindow;
 class QQuickItem;
@@ -126,7 +125,6 @@ public:
                                       const QString& category) {}
 
     virtual bool setup(MapController *mapController,
-                       NetworkManager * networkManager,
                        UIHandle *uiHandle) {}
     virtual void setDefenseDataManager(DefenseDataManager* defenseDataManager){}
 

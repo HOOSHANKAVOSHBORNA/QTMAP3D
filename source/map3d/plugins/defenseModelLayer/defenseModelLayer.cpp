@@ -5,8 +5,6 @@
 #include "systemModelNode.h"
 #include "stationModelNode.h"
 #include "mapcontroller.h"
-#include "networkmanager.h"
-#include "websocketclient.h"
 #include "defenseDataManager.h"
 
 #include <QDebug>
@@ -113,8 +111,8 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         aircraftInfo.CallSign = "cls";
         aircraftInfo.Type = "type2";
         aircraftInfo.MasterRadar = "radar2";
-        aircraftInfo.Identification = "F";
-        aircraftInfo.IdentificationMethod = "method1";
+        aircraftInfo.Identification = AircraftInfo::X;
+        aircraftInfo.IdentificationMethod = "mtd";
         aircraftInfo.Time = "1401/10/21 10:00 fdfd";
         aircraftInfo.Pos = "pos1";
         addUpdateAircraft(aircraftInfo);
@@ -135,6 +133,10 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         systemInfo.Name = SYSTEM + QString::number(mModelNodes[SYSTEM].count());
         systemInfo.Longitude = 54.2;
         systemInfo.Latitude = 35.3;
+        systemInfo.Number = 1234567;
+        systemInfo.BCCStatus = "s";
+        systemInfo.RadarSearchStatus = "us";
+        systemInfo.MissileCount = 3;
         addUpdateSystem(systemInfo);
     }
     else if(CATEGORY == category && name == STATION)
@@ -143,12 +145,14 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         stationInfo.Name = STATION + QString::number(mModelNodes[STATION].count());
         stationInfo.Longitude = 52;
         stationInfo.Latitude = 35.2;
+        stationInfo.Number = 1234567;
+        stationInfo.PrimSec = "primary";
+        stationInfo.CycleTime = 10000;
         addUpdateStation(stationInfo);
     }
 }
 
 bool DefenseModelLayer::setup(MapController *mapController,
-                              NetworkManager *networkManager,
                               UIHandle *uiHandle)
 {
     mMapController = mapController;
@@ -191,8 +195,6 @@ bool DefenseModelLayer::setup(MapController *mapController,
             mSelectedModelNode = systemModelNode;
         }
     });
-    ////--websocket data-------------------------------------------------------------------
-    QObject::connect(networkManager->webSocketClient(), &WebSocketClient::messageReceived,this ,&DefenseModelLayer::onMessageReceived);
 }
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
@@ -484,34 +486,34 @@ void DefenseModelLayer::positionChanged(QString /*type*/, QString /*name*/, osgE
 {
 }
 
-void DefenseModelLayer::onMessageReceived(const QJsonDocument &message)
-{
-    if(message.object().value("Name").toString() == "Aircraft")
-    {
-        QJsonObject data = message.object().value("Data").toObject();
-        AircraftInfo aircraftInfo;
-        aircraftInfo.fromJson(QJsonDocument(data));
-        //qDebug()<<"target:"<< data;
-        addUpdateAircraft(aircraftInfo);
-    }
-    if(message.object().value("Name").toString() == "Station")
-    {
-        QJsonObject data = message.object().value("Data").toObject();
-        StationInfo stationInfo;
-        stationInfo.fromJson(QJsonDocument(data));
-        //        qDebug()<<"station:"<< data;
-        addUpdateStation(stationInfo);
-    }
-    if(message.object().value("Name").toString() == "System")
-    {
-        QJsonObject data = message.object().value("Data").toObject();
-        SystemInfo systemInfo;
-        systemInfo.fromJson(QJsonDocument(data));
-        //        qDebug()<<"station:"<< data;
-        addUpdateSystem(systemInfo);
-    }
+//void DefenseModelLayer::onMessageReceived(const QJsonDocument &message)
+//{
+//    if(message.object().value("Name").toString() == "Aircraft")
+//    {
+//        QJsonObject data = message.object().value("Data").toObject();
+//        AircraftInfo aircraftInfo;
+//        aircraftInfo.fromJson(QJsonDocument(data));
+//        //qDebug()<<"target:"<< data;
+//        addUpdateAircraft(aircraftInfo);
+//    }
+//    if(message.object().value("Name").toString() == "Station")
+//    {
+//        QJsonObject data = message.object().value("Data").toObject();
+//        StationInfo stationInfo;
+//        stationInfo.fromJson(QJsonDocument(data));
+//        //        qDebug()<<"station:"<< data;
+//        addUpdateStation(stationInfo);
+//    }
+//    if(message.object().value("Name").toString() == "System")
+//    {
+//        QJsonObject data = message.object().value("Data").toObject();
+//        SystemInfo systemInfo;
+//        systemInfo.fromJson(QJsonDocument(data));
+//        //        qDebug()<<"station:"<< data;
+//        addUpdateSystem(systemInfo);
+//    }
 
-}
+//}
 
 void DefenseModelLayer::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
@@ -535,7 +537,7 @@ void DefenseModelLayer::onClearAircraft(QString tn)
         auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn]);
         aircraftModelNode->onLeftButtonClicked(false);
         aircraftModelNode->setNodeMask(false);
-//        mMapController->removeNode(aircraftModelNode);
+        //        mMapController->removeNode(aircraftModelNode);
         //        mModelNodes[AIRCRAFT].remove(tn);
         mDataManager->deleteAircraftInfo(tn);
     }
@@ -546,7 +548,7 @@ void DefenseModelLayer::frameEvent()
     //    findSceneModels(mMapController->getViewer());
     for(auto modelNodeList: mModelNodes)
         for(auto modelNode: modelNodeList)
-                modelNode->frameEvent();
+            modelNode->frameEvent();
     //    if(mLastSelectedModel)
     //        mLastSelectedModel->frameEvent();
 }
@@ -564,11 +566,14 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
     if(modelNode)
         mSelectedModelNode = modelNode;
     //--drag aircraft---------------------------------------
-    auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
-    if(aircraftModelNode)
+    if(event->button() == Qt::LeftButton)
     {
-        mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
-        mMapController->addNode(mDragAircraftModelNode);
+        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
+        if(aircraftModelNode)
+        {
+            mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
+            mMapController->addNode(mDragAircraftModelNode);
+        }
     }
 
 }
@@ -576,7 +581,7 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
 void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
 {
     //--drag aircraft--------------------------------------------
-    if(mDragAircraftModelNode)
+    if(event->button() == Qt::LeftButton && mDragAircraftModelNode)
     {
         auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
         if(systemModelNode)

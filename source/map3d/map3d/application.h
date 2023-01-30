@@ -7,7 +7,6 @@
 
 #include "plugininterface.h"
 #include "pluginmanager.h"
-#include "networkmanager.h"
 #include "defenseDataManager.h"
 
 
@@ -39,7 +38,7 @@ private:
     void initializeQmlEngine();
     void createMainWindow();
     void createListWindow();
-    void initializeNetworkManager();
+    //void initializeNetworkManager();
     void initializeDefenseDataManager();
 
 private slots:
@@ -50,7 +49,7 @@ private slots:
     void setup();
 
 public:
-    inline NetworkManager * networkManager() const {return mNetworkManager;}
+//    inline NetworkManager * networkManager() const {return mNetworkManager;}
     inline MainWindow *mainWindow() const { return mMainWindow; }
     inline QQmlApplicationEngine *qmlEngine() const { return mQmlEngine; }
     inline PluginManager *pluginManager() const { return mPluginManager; }
@@ -68,7 +67,7 @@ private:
     ListWindow *mListWindow = nullptr;
 
     PluginManager *mPluginManager = nullptr;
-    NetworkManager *mNetworkManager = nullptr;
+//    NetworkManager *mNetworkManager = nullptr;
     DefenseDataManager *mDefenseDataManager{nullptr};
 
 

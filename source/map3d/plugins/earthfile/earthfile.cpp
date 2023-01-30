@@ -71,7 +71,6 @@ void EarthFile::onFileItemClicked(const QString &name, const QString &category)
 }
 
 bool EarthFile::setup(MapController *mapController,
-                      NetworkManager *networkManager,
                       UIHandle *UIHandle)
 {
     mMapController = mapController;

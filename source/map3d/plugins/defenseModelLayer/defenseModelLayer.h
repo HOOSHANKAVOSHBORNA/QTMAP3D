@@ -36,7 +36,6 @@ public:
     virtual void onSideItemCreated(int index, QObject *pSideItem) override;
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
     virtual bool setup(MapController *mapController,
-                       NetworkManager *networkManager,
                        UIHandle *UIHandle) override;
     virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
@@ -50,7 +49,7 @@ public slots:
     //void clickedTrackNode(QString type ,QString name ,bool isClick);
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
-    void onMessageReceived(const QJsonDocument &message);
+//    void onMessageReceived(const QJsonDocument &message);
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
