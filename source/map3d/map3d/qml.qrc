@@ -5,7 +5,7 @@
         <file>NavigationWidget.qml</file>
         <file>File.qml</file>
         <file>Settings.qml</file>
-        <file>Layers.qml</file>
+        <file>LayersWidget.qml</file>
         <file>SideWidget.qml</file>
         <file>ControlCamera.qml</file>
         <file>Compass.qml</file>

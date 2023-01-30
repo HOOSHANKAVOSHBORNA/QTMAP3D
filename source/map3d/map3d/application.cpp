@@ -10,7 +10,7 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "listwindow.h"
-#include "outlinermodel.h"
+#include "layersmodel.h"
 
 Application::Application() :
     mPluginManager(new PluginManager)
@@ -70,7 +70,7 @@ void Application::registerTypes()
 {
     qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
-    qmlRegisterType<ListWindow>("Crystal", 1, 0, "CLayersModel");
+    qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
 }
 
 void Application::initializeQmlEngine()

@@ -28,7 +28,7 @@ add_executable(Map3d
         pluginmanager.cpp
         defenseDataManager.cpp
         listwindow.cpp
-        outlinermodel.cpp
+		layersmodel.cpp
         qml.qrc
         resources.qrc)
 
