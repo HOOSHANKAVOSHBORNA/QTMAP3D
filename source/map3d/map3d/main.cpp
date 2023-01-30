@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
         map3DApp->mainWindow()->show();
     } else {
         QObject::connect(map3DApp, &Application::mainWindowCreated, [map3DApp]() {
-            map3DApp->mainWindow()->show();
+            map3DApp->mainWindow()->showFullScreen();
         });
     }
 

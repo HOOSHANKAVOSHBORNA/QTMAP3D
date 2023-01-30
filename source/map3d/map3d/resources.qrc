@@ -44,5 +44,10 @@
         <file>Resources/eye_close.png</file>
         <file>Resources/eye_open.png</file>
         <file>Resources/Layers.png</file>
+        <file>Resources/close.png</file>
+        <file>Resources/collapse.png</file>
+        <file>Resources/close1.png</file>
+        <file>Resources/mainFrame.png</file>
+        <file>Resources/minimize.png</file>
     </qresource>
 </RCC>

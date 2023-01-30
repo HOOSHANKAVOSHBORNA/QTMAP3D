@@ -75,8 +75,12 @@ void FeatureLayer::addGDAL()
         geomOptions.clustering()     = false;
         geomOptions.mergeGeometry()  = true;
         geomOptions.featureOptions() = opt;
-        //        geomOptions.styles()         = new StyleSheet();
-        //        geomOptions.styles()->addStyle(style);
+        geomOptions.styles()         = new osgEarth::Symbology::StyleSheet();
+        osgEarth::Symbology::Style style;
+        style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color::Blue;
+        style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::Red;
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = osgEarth::Color::Green;
+        geomOptions.styles()->addStyle(style);
         geomOptions.enableLighting()   = false;
         geomOptions.depthTestEnabled() = false;
 

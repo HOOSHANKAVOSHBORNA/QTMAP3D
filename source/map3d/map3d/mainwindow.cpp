@@ -471,7 +471,7 @@ void MainWindow::showListWindow()
 {
     if (mListWindow) {
         if (!mListWindow->isVisible())
-            mListWindow->showNormal();
+            mListWindow->showFullScreen();
         else
             mListWindow->hide();
     }

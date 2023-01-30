@@ -7,7 +7,7 @@ import Crystal 1.0
 
 CMainWindow {
 
-    readonly  property int      _iconSize   : 24
+    readonly  property int      _iconSize   : 16
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
     readonly property color     _colorRec   : "#404040"
@@ -16,13 +16,13 @@ CMainWindow {
     readonly property color     _colorIcon  : "#FFFFFF"
     readonly property color     _colorButton: "#55FFFFFF"
     readonly property string    _fontFamily : "Srouce Sans Pro"
-    readonly property int       _fontPointSize : 11
+    readonly property int       _fontPointSize : 8
     readonly property color     itemColor: "#404040"
     readonly property real      widgetsMargins: 10
 
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
-    property string modeMap: "geocentric"
+    property string modeMap: "projection"
 
 
     zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
@@ -39,11 +39,33 @@ CMainWindow {
 
     id: wnd
     visible: false
+
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("MAP3D")
-
-
+    flags: Qt.FramelessWindowHint
+//    MouseArea{
+//        anchors.fill : parent
+//        property variant clickPos: "1,1"
+//        onPressed: {
+//            clickPos = Qt.point(mouse.x ,mouse.y)
+//        }
+//        onPositionChanged: {
+//            var delta = Qt.point(mouse.x - clickPos.x , mouse.y - clickPos.y)
+//            wnd.x += delta.x
+//            wnd.y += delta.y
+//        }
+//        onDoubleClicked: {
+//            wnd.showFullScreen();
+//        }
+//    }
+    BorderImage {
+        id: borderImage
+        anchors.fill: parent
+        anchors.bottomMargin: -10
+        source: "qrc:/Resources/mainFrame.png"
+        z:1
+}
 
     onClicked: function() {
         toggleWidgetsVisible();
@@ -75,7 +97,7 @@ CMainWindow {
         ListElement {
             title_text:   "Settings"
             icon_url:     "qrc:///Resources/Settings.png"
-            side_itemurl: "qrc:///Settings.qml"
+            side_itemurl: "qrc:/setting/Settings.qml"
         }
 
         //        ListElement {
@@ -123,7 +145,8 @@ CMainWindow {
             id: menuWidget
             anchors.horizontalCenter: parent.horizontalCenter
 
-            y: (-height - widgetsMargins) + (wnd.widgetsPositionFactor * (height + (widgetsMargins * 2.0)))
+            y:25 +  parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/5)+25))
+                //menuWidget.height /*(-height - widgetsMargins)*/ + (wnd.widgetsPositionFactor * (height + (widgetsMargins * 2.0)))
 
             width: implicitWidth
             height: implicitHeight
@@ -137,18 +160,14 @@ CMainWindow {
             onListsButtonClicked: function() {
                 wnd.showListWindow();
             }
-
-            onLayersButtonClicked: function() {
-                layersWidget.menuWidgetLayersButtonClicked();
-            }
         }
 
         SideWidget {
             id: sideWidget
-            x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*2.0)))
-            y: menuWidget.height + (widgetsMargins * 2.0)
+            x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*3)))
+            y: menuWidget.height *2.5 + (widgetsMargins * 2.0)
             width: implicitWidth + (widgetsMargins * 2)
-            height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
+            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
 
             sideItemsModel: wnd.sideItemsModel
 
@@ -181,23 +200,6 @@ CMainWindow {
             }
         }
 
-        LayersWidget {
-            id: layersWidget
-
-            x: parent.width + widgetsMargins - (widgetsPositionFactor * (300 + (widgetsMargins*2)))
-            y: menuWidget.height + (widgetsMargins * 2)
-            width: 600 + (widgetsMargins * 2)
-            height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height
-
-            layersModel: wnd.layersModel
-
-            onToggleLayerEnabled: function(layerIndex) {
-                wnd.toggleLayerEnabled(layerIndex);
-            }
-
-        }
-
-
 //        InfoWidget {
 //            id: infoWidget
 //            x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
@@ -227,16 +229,16 @@ CMainWindow {
             id:compass
             headingAngle: wnd.headingAngle
             anchors.left: parent.left
-            anchors.leftMargin: widgetsMargins
+            anchors.leftMargin: widgetsMargins + 10
             anchors.bottomMargin: widgetsMargins
-            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
+            y: 25 + parent.height - (wnd.widgetsPositionFactor * (height + (widgetsMargins - 10)+ 25) )
         }
 
         NavigationWidget{
             id : navigationWidget
             anchors.right: parent.right
             anchors.rightMargin: _margin
-            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins/2+3)))
+            y:25 + parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/2+3)+25))
             // slot button
             onBtnHomeClicked: function() {
                 wnd.homeButtonClicked();
@@ -256,6 +258,11 @@ CMainWindow {
     StatusBars {
         id: statusBar
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.leftMargin: 30
+        anchors.rightMargin: 0
         width: parent.width
         height: childrenRect.height
         latitude: wnd.mousePointingLocationWgs84.x
@@ -271,22 +278,20 @@ CMainWindow {
     }
 
 
-    Label {
-        id: fpsLabel
-        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
-        color: 'red'
-        font.pointSize: 30
-        font.weight: Font.Bold
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.topMargin: 20
-        anchors.rightMargin: 40
-    }
+//    Label {
+//        id: fpsLabel
+//        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
+//        color: 'red'
+//        font.pointSize: 30
+//        font.weight: Font.Bold
+//        anchors.right: parent.right
+//        anchors.top: parent.top
+//        anchors.topMargin: 100
+//        anchors.rightMargin: 100
+//    }
     ContextmenuWidget {
         id: contextmenu
     }
-
-
 
 
     function menuWidgetClickCallback(index) {
@@ -436,10 +441,10 @@ CMainWindow {
     }
     InformationView {
         id: infoo
-        x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
-        y: menuWidget.height + (widgetsMargins * 2.0)
+        x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*3.0)))
+        y: menuWidget.height *2.5 + (widgetsMargins * 2.0)
         width: 600 + (widgetsMargins * 2)
-        height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
+        height: parent.height - (menuWidget.height *2.5)- navigationWidget.height - (widgetsMargins * 5)
 
     }
 
