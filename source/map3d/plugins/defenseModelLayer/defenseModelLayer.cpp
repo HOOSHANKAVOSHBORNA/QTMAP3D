@@ -537,7 +537,7 @@ void DefenseModelLayer::onClearAircraft(QString tn)
         auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn]);
         aircraftModelNode->onLeftButtonClicked(false);
         aircraftModelNode->setNodeMask(false);
-//        mMapController->removeNode(aircraftModelNode);
+        //        mMapController->removeNode(aircraftModelNode);
         //        mModelNodes[AIRCRAFT].remove(tn);
         mDataManager->deleteAircraftInfo(tn);
     }
@@ -548,7 +548,7 @@ void DefenseModelLayer::frameEvent()
     //    findSceneModels(mMapController->getViewer());
     for(auto modelNodeList: mModelNodes)
         for(auto modelNode: modelNodeList)
-                modelNode->frameEvent();
+            modelNode->frameEvent();
     //    if(mLastSelectedModel)
     //        mLastSelectedModel->frameEvent();
 }
@@ -566,11 +566,14 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
     if(modelNode)
         mSelectedModelNode = modelNode;
     //--drag aircraft---------------------------------------
-    auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
-    if(aircraftModelNode)
+    if(event->button() == Qt::LeftButton)
     {
-        mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
-        mMapController->addNode(mDragAircraftModelNode);
+        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
+        if(aircraftModelNode)
+        {
+            mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
+            mMapController->addNode(mDragAircraftModelNode);
+        }
     }
 
 }
@@ -578,7 +581,7 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
 void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
 {
     //--drag aircraft--------------------------------------------
-    if(mDragAircraftModelNode)
+    if(event->button() == Qt::LeftButton && mDragAircraftModelNode)
     {
         auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
         if(systemModelNode)

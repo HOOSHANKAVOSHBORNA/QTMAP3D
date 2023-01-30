@@ -42,7 +42,7 @@ private:
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<Polygone> mVisiblePolygone;
 
-    static constexpr int LABEL_IMAGE_WIDTH = 160;
+    static constexpr int LABEL_IMAGE_WIDTH = 180;
     static constexpr int LABEL_IMAGE_HEIGHT = 150;
     QImage *mRenderTargetImage{nullptr};
     osg::ref_ptr<osg::Image> mLabelImage{nullptr};
