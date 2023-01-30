@@ -108,7 +108,7 @@ Item {
                         Binding {
                             target: system
                             property: "text"
-                            value: Name
+                            value: Numberr
                         }
 
                         Binding {

@@ -14,7 +14,7 @@ int StationInfoModel::rowCount(const QModelIndex &/*parent*/) const {
 
 QVariant StationInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
-        case Name: return QVariant::fromValue<QString>(mStationInfo.Name);
+        case Numberr: return QVariant::fromValue<int>(mStationInfo.Number);
         case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());
         case LocationInfoHeaders: return QVariant::fromValue<QStringList>(getLocationInfoHeaders());
         case Active: return QVariant::fromValue<bool>(mStationInfo.Active);
@@ -51,7 +51,7 @@ QStringList StationInfoModel::getLocationInfoHeaders() const
 QHash<int, QByteArray> StationInfoModel::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractListModel::roleNames();
-    hash[Name] = "Name";
+    hash[Numberr] = "Numberr";
     hash[Active] = "Active";
     hash[MainInfo] = "MainInfo";
     hash[MainInfoHeaders] = "MainInfoHeaders";

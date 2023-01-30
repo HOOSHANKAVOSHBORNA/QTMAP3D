@@ -29,8 +29,8 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
     {
         switch(index.column()) {
         case  0: return QVariant::fromValue<QString>(QString::number(mSystemInfoListProxy[static_cast<size_t>(index.row())].first));
-        case  1: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Name);
-        case  2: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Number);
+        case  1: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Number);
+        case  2: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Name);
         case  3: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Type);
         case  4: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Terminal);
         case  5: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Latitude);
@@ -70,8 +70,8 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
     {
         switch (index.row()) {
         case  0: return QVariant::fromValue<QString>("Index");
-        case  1: return QVariant::fromValue<QString>("Name");
-        case  2: return QVariant::fromValue<QString>("Number");
+        case  1: return QVariant::fromValue<QString>("Number");
+        case  2: return QVariant::fromValue<QString>("Name");
         case  3: return QVariant::fromValue<QString>("Type");
         case  4: return QVariant::fromValue<QString>("Terminal");
         case  5: return QVariant::fromValue<QString>("Latitude");
@@ -113,8 +113,8 @@ QString SystemTableModel::headerText(int column) const
 {
     switch (column) {
     case  0: return QStringLiteral("Index");
-    case  1: return QStringLiteral("Name");
-    case  2: return QStringLiteral("Number");
+    case  1: return QStringLiteral("Number");
+    case  2: return QStringLiteral("Name");
     case  3: return QStringLiteral("Type");
     case  4: return QStringLiteral("Terminal");
     case  5: return QStringLiteral("Latitude");

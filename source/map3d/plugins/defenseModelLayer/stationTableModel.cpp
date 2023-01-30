@@ -28,10 +28,10 @@ QVariant StationTableModel::data(const QModelIndex &index, int role) const
     {
         switch(index.column()) {
         case  0: return QVariant::fromValue<QString>(QString::number(mStationInfoListProxy[static_cast<size_t>(index.row())].first));
-        case  1: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())].second->Name);
-        case  2: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())].second->Type);
-        case  3: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())].second->PrimSec);
-        case  4: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Number);
+        case  1: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Number);
+        case  2: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())].second->Name);
+        case  3: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())].second->Type);
+        case  4: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())].second->PrimSec);
         case  5: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Latitude);
         case  6: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Longitude);
         case  7: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Radius);
@@ -58,10 +58,10 @@ QVariant StationTableModel::data(const QModelIndex &index, int role) const
     {
         switch(index.row()) {
         case  0: return QVariant::fromValue<QString>("Index");
-        case  1: return QVariant::fromValue<QString>("Name");
-        case  2: return QVariant::fromValue<QString>("TYpe");
-        case  3: return QVariant::fromValue<QString>("Primary/Secondry");
-        case  4: return QVariant::fromValue<QString>("Number");
+        case  1: return QVariant::fromValue<QString>("Number");
+        case  2: return QVariant::fromValue<QString>("Name");
+        case  3: return QVariant::fromValue<QString>("Type");
+        case  4: return QVariant::fromValue<QString>("Primary/Secondry");
         case  5: return QVariant::fromValue<QString>("Latitude");
         case  6: return QVariant::fromValue<QString>("Longitude");
         case  7: return QVariant::fromValue<QString>("Radius");
@@ -88,10 +88,10 @@ QString StationTableModel::headerText(int column) const
 {
     switch(column) {
     case  0: return QStringLiteral("Index");
-    case  1: return QStringLiteral("Name");
-    case  2: return QStringLiteral("Type");
-    case  3: return QStringLiteral("Primary/Secondary");
-    case  4: return QStringLiteral("Number");
+    case  1: return QStringLiteral("Number");
+    case  2: return QStringLiteral("Name");
+    case  3: return QStringLiteral("Type");
+    case  4: return QStringLiteral("Primary/Secondary");
     case  5: return QStringLiteral("Latitude");
     case  6: return QStringLiteral("Longitude");
     case  7: return QStringLiteral("Radius");
