@@ -88,85 +88,45 @@ void SystemModelNode::goOnTrack()
     mMapController->setTrackNode(getGeoTransform());
 }
 
-void SystemModelNode::onModeChanged(bool is3DView)
+DefenseModelNode *SystemModelNode::getAssignedModelNode() const
 {
-    mIs3D = is3DView;
-    if(mIs3D)
-    {
-        mRootNode->setRange(0, 0, RANGE3D);
-        mRootNode->setRange(1, RANGE3D, std::numeric_limits<float>::max());
-    }
-    else
-    {
-        mRootNode->setRange(0, 0, 0);
-        mRootNode->setRange(1,0, std::numeric_limits<float>::max());
-    }
-
-    select(mIsSelected);
+    return mAssignedModelNode;
 }
 
-//void SystemModelNode::setMissleCount(int numMissles)
-//{
-//    mMissleCount = numMissles;
-//    updateOrCreateLabelImage();
-//}
-
-//void SystemModelNode::setDisplayText(QString displayText)
-//{
-//    if(mDisplayText != displayText)
-//    {
-//        mDisplayText = displayText;
-//        updateOrCreateLabelImage();
-//    }
-//}
-
-//void SystemModelNode::setBCCStatus(QString bccStatus)
-//{
-//    mBCCStatus = bccStatus;
-//    updateOrCreateLabelImage();
-//}
-
-//void SystemModelNode::setRadarSearchStatus(QString radarSearchStatus)
-//{
-//    mRadarSearchStatus = radarSearchStatus;
-//    updateOrCreateLabelImage();
-//}
-
-//int SystemModelNode::getMissleCount() const
-//{
-//    return mMissleCount;
-//}
-
-//QString SystemModelNode::getDisplayText() const
-//{
-//    return mDisplayText;
-//}
-
-//QString SystemModelNode::getBCCStatus() const
-//{
-//    return mBCCStatus;
-//}
-
-//QString SystemModelNode::getRadarSearchStatus() const
-//{
-//    return mRadarSearchStatus;
-//}
-
-void SystemModelNode::collision()
+void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
 {
-    if(mAssignedModelNode && mFiredRocket)
+    if(!assignedModelNode)
+        return;
+    unassignedModelNode();
+
+    mAssignedModelNode = assignedModelNode;
+    mAssignedLine = new Line(mMapController);
+    mAssignedLine->setLineClamp(false);
+    mAssignedLine->setLineColor(osgEarth::Color::Green);
+    mAssignedLine->setLineWidth(6);
+    mMapController->addNode(mAssignedLine->getNode());
+
+    mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
+}
+
+void SystemModelNode::unassignedModelNode()
+{
+    if(mAssignedModelNode)
     {
-        osg::Vec3d wAssignedPosition;
-        mAssignedModelNode->getPosition().toWorld(wAssignedPosition);
-        osg::Vec3d wRocketPosition;
-        mFiredRocket->getPosition().toWorld(wRocketPosition);
-        double distance = (wAssignedPosition - wRocketPosition).length();
-        if(distance < 3 && !mHit)
+        mMapController->removeNode(mAssignedLine->getNode());
+    }
+}
+
+void SystemModelNode::fire()
+{
+    if(mAssignedModelNode)
+    {
+        mFiredRocket = mTruck->getActiveRocket();
+        if(mFiredRocket)
         {
-            mAssignedModelNode->collision();
-            mFiredRocket->collision();
-            mMapController->removeNode(mAssignedLine->getNode());
-            mHit = true;
+            mAssignedModelNode->stop();//TODO for test dont use in real vesrion
+            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
+            mMapController->setTrackNode(mFiredRocket->getGeoTransform());
         }
     }
 }
@@ -187,6 +147,157 @@ void SystemModelNode::onLeftButtonClicked(bool val)
     }
 }
 
+void SystemModelNode::frameEvent()
+{
+    //--update lable position---------------------------------------------------
+//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+    //--update assigned line----------------------------------------------------
+    if(mAssignedModelNode)
+    {
+        mAssignedLine->clearPoints();
+        mAssignedLine->addPoint(getPosition().vec3d());
+        mAssignedLine->addPoint(mAssignedModelNode->getPosition().vec3d());
+    }
+    //--check collision--------------------------------------------------------
+    collision();
+}
+
+void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
+{
+    //    qDebug()<<"type:"<<event->type();
+    //    BaseModel::mousePressEvent(event, onModel);
+    if(event->button() == Qt::LeftButton)
+    {
+        onLeftButtonClicked(onModel);
+        if(onModel)
+            event->accept();
+    }
+}
+
+void SystemModelNode::onModeChanged(bool is3DView)
+{
+    mIs3D = is3DView;
+    if(mIs3D)
+    {
+        mRootNode->setRange(0, 0, RANGE3D);
+        mRootNode->setRange(1, RANGE3D, std::numeric_limits<float>::max());
+    }
+    else
+    {
+        mRootNode->setRange(0, 0, 0);
+        mRootNode->setRange(1,0, std::numeric_limits<float>::max());
+    }
+
+    select(mIsSelected);
+}
+
+
+
+void SystemModelNode::onGotoButtonClicked()
+{
+    mMapController->goToPosition(getPosition(), 200);
+}
+
+void SystemModelNode::onRangeButtonToggled(bool check)
+{
+    if(check)
+    {
+        mRangeCircle->setPosition(getPosition());
+        mRangeCircle->setRadius(osgEarth::Distance(mInformation.ViewRange, osgEarth::Units::METERS));
+        mMapController->addNode(mRangeCircle);
+    }
+    else
+    {
+        mMapController->removeNode(mRangeCircle);
+    }
+}
+
+void SystemModelNode::onWezButtonToggled(bool checked)
+{
+    if(checked)
+    {
+        mWezPolygon->clearPoints();
+        osg::Vec3d worldPosition;
+        getPosition().toWorld(worldPosition, mMapController->getMapNode()->getTerrain());
+        osgEarth::GeoPoint geoPoint;
+        double radius = mInformation.MezRange;
+
+        osg::Vec3d v1 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
+        osg::Vec3d v2 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() + radius*2/4, worldPosition.z());
+        osg::Vec3d v3 = osg::Vec3d(worldPosition.x() + radius*2/4, worldPosition.y() + radius*2/4, worldPosition.z());
+        osg::Vec3d v4 = osg::Vec3d(worldPosition.x() + radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
+
+        osgEarth::GeoPoint geoPoint1;
+        geoPoint1.fromWorld(mMapController->getMapSRS(), v1);
+        geoPoint1.z() = 0;
+        geoPoint1.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        osgEarth::GeoPoint geoPoint2;
+        geoPoint2.fromWorld(mMapController->getMapSRS(), v2);
+        geoPoint2.z() = 0;
+        geoPoint2.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        osgEarth::GeoPoint geoPoint3;
+        geoPoint3.fromWorld(mMapController->getMapSRS(), v3);
+        geoPoint3.z() = 0;
+        geoPoint3.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        osgEarth::GeoPoint geoPoint4;
+        geoPoint4.fromWorld(mMapController->getMapSRS(), v4);
+        geoPoint4.z() = 0;
+        geoPoint4.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+
+        mWezPolygon->addPoints(geoPoint1.vec3d());
+        mWezPolygon->addPoints(geoPoint2.vec3d());
+        mWezPolygon->addPoints(geoPoint3.vec3d());
+        mWezPolygon->addPoints(geoPoint4.vec3d());
+
+        float height = static_cast<float>(radius/3);
+        mWezPolygon->setHeight(height);
+
+        //        mMapController->addNode(mWezPolygon);
+        mMapController->getMapNode()->insertChild(0,mWezPolygon);
+
+    }
+    else
+        mMapController->removeNode(mWezPolygon);
+}
+
+void SystemModelNode::onMezButtonToggled(bool checked)
+{
+    if(checked)
+    {
+        mMezSphere->setPosition(getPosition());
+        mMezSphere->setRadius(mInformation.MezRange);
+        mMapController->addNode(mMezSphere);
+    }
+    else
+    {
+        mMapController->removeNode(mMezSphere);
+    }
+}
+
+void SystemModelNode::onActiveButtonToggled(bool checked)
+{
+    mInformation.Active = checked;
+}
+
+void SystemModelNode::collision()
+{
+    if(mAssignedModelNode && mFiredRocket)
+    {
+        osg::Vec3d wAssignedPosition;
+        mAssignedModelNode->getPosition().toWorld(wAssignedPosition);
+        osg::Vec3d wRocketPosition;
+        mFiredRocket->getPosition().toWorld(wRocketPosition);
+        double distance = (wAssignedPosition - wRocketPosition).length();
+        if(distance < 3 && !mHit)
+        {
+            mAssignedModelNode->collision();
+            mFiredRocket->collision();
+            mMapController->removeNode(mAssignedLine->getNode());
+            mHit = true;
+        }
+    }
+}
 void SystemModelNode::showInfoWidget()
 {
     SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, this);
@@ -311,161 +422,4 @@ void SystemModelNode::updateOrCreateLabelImage()
                           GL_UNSIGNED_BYTE,
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
-}
-
-DefenseModelNode *SystemModelNode::getAssignedModelNode() const
-{
-    return mAssignedModelNode;
-}
-
-void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
-{
-    if(!assignedModelNode)
-        return;
-    unassignedModelNode();
-
-    mAssignedModelNode = assignedModelNode;
-    mAssignedLine = new Line(mMapController);
-    mAssignedLine->setLineClamp(false);
-    mAssignedLine->setLineColor(osgEarth::Color::Green);
-    mAssignedLine->setLineWidth(6);
-    mMapController->addNode(mAssignedLine->getNode());
-
-    mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
-}
-
-void SystemModelNode::unassignedModelNode()
-{
-    if(mAssignedModelNode)
-    {
-        mMapController->removeNode(mAssignedLine->getNode());
-    }
-}
-
-void SystemModelNode::fire()
-{
-    if(mAssignedModelNode)
-    {
-        mFiredRocket = mTruck->getActiveRocket();
-        if(mFiredRocket)
-        {
-            mAssignedModelNode->stop();//TODO for test dont use in real vesrion
-            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
-            mMapController->setTrackNode(mFiredRocket->getGeoTransform());
-        }
-    }
-}
-
-void SystemModelNode::frameEvent()
-{
-    //--update lable position---------------------------------------------------
-//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
-    //--update assigned line----------------------------------------------------
-    if(mAssignedModelNode)
-    {
-        mAssignedLine->clearPoints();
-        mAssignedLine->addPoint(getPosition().vec3d());
-        mAssignedLine->addPoint(mAssignedModelNode->getPosition().vec3d());
-    }
-    //--check collision--------------------------------------------------------
-    collision();
-}
-
-void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
-{
-    //    qDebug()<<"type:"<<event->type();
-    //    BaseModel::mousePressEvent(event, onModel);
-    if(event->button() == Qt::LeftButton)
-    {
-        onLeftButtonClicked(onModel);
-        if(onModel)
-            event->accept();
-    }
-}
-
-void SystemModelNode::onGotoButtonClicked()
-{
-    mMapController->goToPosition(getPosition(), 200);
-}
-
-void SystemModelNode::onRangeButtonToggled(bool check)
-{
-    if(check)
-    {
-        mRangeCircle->setPosition(getPosition());
-        mRangeCircle->setRadius(osgEarth::Distance(mInformation.ViewRange, osgEarth::Units::METERS));
-        mMapController->addNode(mRangeCircle);
-    }
-    else
-    {
-        mMapController->removeNode(mRangeCircle);
-    }
-}
-
-void SystemModelNode::onWezButtonToggled(bool checked)
-{
-    if(checked)
-    {
-        mWezPolygon->clearPoints();
-        osg::Vec3d worldPosition;
-        getPosition().toWorld(worldPosition, mMapController->getMapNode()->getTerrain());
-        osgEarth::GeoPoint geoPoint;
-        double radius = mInformation.MezRange;
-
-        osg::Vec3d v1 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
-        osg::Vec3d v2 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() + radius*2/4, worldPosition.z());
-        osg::Vec3d v3 = osg::Vec3d(worldPosition.x() + radius*2/4, worldPosition.y() + radius*2/4, worldPosition.z());
-        osg::Vec3d v4 = osg::Vec3d(worldPosition.x() + radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
-
-        osgEarth::GeoPoint geoPoint1;
-        geoPoint1.fromWorld(mMapController->getMapSRS(), v1);
-        geoPoint1.z() = 0;
-        geoPoint1.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
-        osgEarth::GeoPoint geoPoint2;
-        geoPoint2.fromWorld(mMapController->getMapSRS(), v2);
-        geoPoint2.z() = 0;
-        geoPoint2.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
-        osgEarth::GeoPoint geoPoint3;
-        geoPoint3.fromWorld(mMapController->getMapSRS(), v3);
-        geoPoint3.z() = 0;
-        geoPoint3.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
-        osgEarth::GeoPoint geoPoint4;
-        geoPoint4.fromWorld(mMapController->getMapSRS(), v4);
-        geoPoint4.z() = 0;
-        geoPoint4.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
-
-        mWezPolygon->addPoints(geoPoint1.vec3d());
-        mWezPolygon->addPoints(geoPoint2.vec3d());
-        mWezPolygon->addPoints(geoPoint3.vec3d());
-        mWezPolygon->addPoints(geoPoint4.vec3d());
-
-        float height = static_cast<float>(radius/3);
-        mWezPolygon->setHeight(height);
-
-        //        mMapController->addNode(mWezPolygon);
-        mMapController->getMapNode()->insertChild(0,mWezPolygon);
-
-    }
-    else
-        mMapController->removeNode(mWezPolygon);
-}
-
-void SystemModelNode::onMezButtonToggled(bool checked)
-{
-    if(checked)
-    {
-        mMezSphere->setPosition(getPosition());
-        mMezSphere->setRadius(mInformation.MezRange);
-        mMapController->addNode(mMezSphere);
-    }
-    else
-    {
-        mMapController->removeNode(mMezSphere);
-    }
-}
-
-void SystemModelNode::onActiveButtonToggled(bool checked)
-{
-    mInformation.Active = checked;
 }

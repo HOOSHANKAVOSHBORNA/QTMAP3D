@@ -53,7 +53,7 @@ public slots:
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
-    void onClearAircraft(QString tn);
+    void onClearAircraft(int tn);
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;
@@ -66,7 +66,7 @@ private:
 //    void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
-    QMap<QString,QMap<QString, DefenseModelNode*>>  mModelNodes;
+    QMap<QString,QMap<int, DefenseModelNode*>>  mModelNodes;
 //    DefenseModelNode* mCurrentModel;
     DefenseModelNode* mSelectedModelNode{nullptr};
     DefenseModelNode* mOnMoveModelNode{nullptr};

@@ -22,15 +22,15 @@ signals:
 
 public slots:
     void setAircraftInfo(const AircraftInfo& aircraftInof);
-    void deleteAircraftInfo(const QString TN);
+    void deleteAircraftInfo(int TN);
     void setStationInfo(const StationInfo& stationInfo);
     void setSystemInfo(const SystemInfo& systemInfo);
 
 
 signals:
-    void aircraftDoubleClicked(const QString& NT);
-    void stationDoubleClicked(const QString& Name);
-    void systemDoubleClicked(const QString& Name);
+    void aircraftDoubleClicked(int NT);
+    void stationDoubleClicked(int number);
+    void systemDoubleClicked(int number);
     void systemActiveToggled(bool act);
 
 

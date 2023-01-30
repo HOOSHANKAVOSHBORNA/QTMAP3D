@@ -92,7 +92,7 @@ QStringList SystemInfoModel::getStatusInfoHeaders() const
 
 QStringList SystemInfoModel::getCombatInfo() const
 {
-    return QStringList {QString::number(mSystemInfo.TN), mSystemInfo.Acceptance, mSystemInfo.Phase,
+    return QStringList {QString::number(mSystemInfo.TN), mSystemInfo.Acceptance, mSystemInfo.phaseToString(),
                         QString::number(mSystemInfo.Antenna), mSystemInfo.ChanelNo, mSystemInfo.Inrange};
 }
 

@@ -561,7 +561,7 @@ void AircraftModelNode::updateOrCreateLabelImage()
         painter.setFont(textFont);
         painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
                          Qt::AlignCenter,
-                         mInformation.TN);
+                         QString::number(mInformation.TN));
 
 
         static const QPen linePen(QColor(255, 255, 255),

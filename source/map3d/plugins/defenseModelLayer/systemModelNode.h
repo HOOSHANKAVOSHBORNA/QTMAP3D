@@ -23,16 +23,15 @@ public:
     SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void setInformation(const SystemInfo &info);
     void goOnTrack();
+    DefenseModelNode *getAssignedModelNode() const;
+    void setAssignedModelNode(DefenseModelNode *assignedModelNode);
+    void unassignedModelNode();
+    void fire();
 public slots:
     void onLeftButtonClicked(bool val);
 public:
     virtual void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
-
-    DefenseModelNode *getAssignedModelNode() const;
-    void setAssignedModelNode(DefenseModelNode *assignedModelNode);
-    void unassignedModelNode();
-    void fire();
 
 protected:
 private slots:
@@ -43,22 +42,9 @@ private slots:
     void onActiveButtonToggled(bool checked);
     void onModeChanged(bool is3DView);
 
-//    void setMissleCount(int numMissles);
-//    void setDisplayText(QString displayText);
-//    void setBCCStatus(QString bccStatus);
-//    void setRadarSearchStatus(QString radarSearchStatus);
-
-public:
-//    int getMissleCount() const;
-//    QString getDisplayText() const;
-//    QString getBCCStatus() const;
-//    QString getRadarSearchStatus() const;
-
-
 private:
     void collision();
     void showInfoWidget();
-
     void updateOrCreateLabelImage();
 
 private:

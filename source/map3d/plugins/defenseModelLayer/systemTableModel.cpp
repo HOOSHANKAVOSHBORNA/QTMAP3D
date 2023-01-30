@@ -46,7 +46,7 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         case 15: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row()    )].second->RadarMode);
         case 16: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->TN);
         case 17: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Acceptance);
-        case 18: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Phase);
+        case 18: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->phaseToString());
         case 19: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Antenna);
         case 20: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->ChanelNo);
         case 21: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Inrange);

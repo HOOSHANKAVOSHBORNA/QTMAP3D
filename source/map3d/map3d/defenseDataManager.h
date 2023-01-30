@@ -18,7 +18,7 @@ struct AircraftInfo
         H//red
     };
     //-------------------------------------
-    QString TN;
+    int TN;
     QString IFFCode;
     QString CallSign;
     QString Type;
@@ -115,7 +115,7 @@ public:
     void fromJson(QJsonDocument jsonDoc)
     {
         QJsonObject data = jsonDoc.object();
-        TN = QString::number(data.value("TN").toInt());
+        TN = data.value("TN").toInt();
         IFFCode = data.value("IFFCode").toString();
         CallSign = data.value("CallSign").toString();
         Type = data.value("Type").toString();
@@ -181,7 +181,7 @@ struct StationInfo
         PrimSec = data.value("Primary/Secondary").toString();
         Active = data.value("Active").toBool();
 
-        Number = data.value("Number").toDouble();
+        Number = data.value("Number").toInt();
         Latitude = data.value("Latitude").toDouble();
         Longitude = data.value("Longitude").toDouble();
         Radius = data.value("Radius").toDouble();
@@ -193,6 +193,11 @@ struct StationInfo
 
 struct SystemInfo
 {
+    enum Phases{
+        Search,
+        Lock,
+        Fire
+    };
     QString Terminal;
     QString Name;
     int Number;
@@ -213,11 +218,28 @@ struct SystemInfo
     //combat info
     int TN;
     QString Acceptance;
-    QString Phase;
+    Phases Phase;
     double Antenna;
     QString ChanelNo;
     QString Inrange;
     bool Active;
+
+    QString phaseToString() const
+    {
+        QString result = "";
+        switch (Phase) {
+        case Search:
+            result = "Search";
+            break;
+        case Lock:
+            result = "Lock";
+            break;
+        case Fire:
+            result = "Fire";
+            break;
+        }
+        return result;
+    }
 
     QJsonDocument toJson()
     {
@@ -258,7 +280,7 @@ struct SystemInfo
         QJsonObject data = jsonDoc.object();
         Terminal = data.value("Terminal").toString();
         Name = data.value("Name").toString();
-        Number = data.value("Number").toDouble();
+        Number = data.value("Number").toInt();
         Type = data.value("Type").toString();
         Latitude = data.value("Latitude").toDouble();
         Longitude = data.value("Longitude").toDouble();
@@ -275,7 +297,7 @@ struct SystemInfo
         RadarMode = data.value("RadarMode").toString();
         TN = data.value("TN").toDouble();
         Acceptance = data.value("Acceptance").toString();
-        Phase = data.value("Phase").toString();
+        Phase = static_cast<Phases>(data.value("Phase").toInt());
         Antenna = data.value("Antenna").toDouble();
         ChanelNo = data.value("ChanelNo").toString();
         Inrange = data.value("Inrange").toString();
@@ -294,7 +316,8 @@ signals:
     void aircraftInfoChanged(AircraftInfo& aircraftInfo);
     void systemInfoChanged(SystemInfo& systemInfo);
     void stationInfoChanged(StationInfo& stationInfo);
-    void clearAircraft(QString tn);
+    void clearAircraft(int tn);
+    void aircraftAssigned(int tn, int systemNo);
 public slots:
 };
 

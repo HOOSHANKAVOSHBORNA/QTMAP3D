@@ -43,7 +43,7 @@ AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
     int tn = 10000 + aircraftNumber++;
-    aircraftInfo.TN = QString::number(tn);
+    aircraftInfo.TN = tn;
     aircraftInfo.IFFCode="a12345";
     aircraftInfo.CallSign="cls";
     aircraftInfo.Type="type1";
@@ -152,7 +152,7 @@ void Demo::createStationInfo()
 
         stationInfo.Name = name;
         stationInfo.Active = true;
-        stationInfo.Number = 123456789;
+        stationInfo.Number = stationList.count() + 2000;
         stationInfo.Type = "Type1";
         stationInfo.Latitude = latitude;
         stationInfo.Longitude = longitude;
@@ -177,7 +177,7 @@ void Demo::createSystemInfo()
 
         systemInfo.Terminal = "terminal1";
         systemInfo.Name = name;
-        systemInfo.Number = 123456;
+        systemInfo.Number = systemList.count() + 3000;
         systemInfo.Type = "Type1";
         systemInfo.Active = true;
         //
@@ -197,7 +197,7 @@ void Demo::createSystemInfo()
         //combat info
         systemInfo.TN = 10000;
         systemInfo.Acceptance = "acceptance1";
-        systemInfo.Phase = "search";//search, lock, ...
+        systemInfo.Phase = SystemInfo::Search;//search, lock, ...
         systemInfo.Antenna = 50;//degree (lock sight
         systemInfo.ChanelNo = "123014s";
         systemInfo.Inrange = "inrange";
