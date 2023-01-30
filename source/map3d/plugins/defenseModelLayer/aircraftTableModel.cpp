@@ -33,7 +33,7 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     {
         switch(index.column()) {
         case  0: return QVariant::fromValue<QString>(QString::number(mAircraftInfoListProxy[static_cast<size_t>(index.row())].first));
-        case  1: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->TN);
+        case  1: return QVariant::fromValue<int>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->TN);
         case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->IFFCode);
         case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->CallSign);
         case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->Type);
@@ -132,12 +132,12 @@ QString AircraftTableModel::headerText(int column) const
     return QStringLiteral("");
 }
 
-QString AircraftTableModel::getTN(int row) const
+int AircraftTableModel::getTN(int row) const
 {
-    if (row < 0) return QString();
+    if (row < 0) return -1;
 
     if (row >= static_cast<int>(mAircraftInfoListProxy.size())) {
-        return QString();
+        return -1;
     }
 
     return mAircraftInfoListProxy[std::size_t(row)].second->TN;
@@ -152,7 +152,7 @@ void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 
     mAircraftInfoListProxy.clear();
     for (auto& item : mAircraftInfoList) {
-        if (item.second->TN.contains(mFilter))
+        if (QString::number(item.second->TN).contains(mFilter))
             mAircraftInfoListProxy.push_back(item);
     }
 
@@ -186,7 +186,7 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
 
     mAircraftInfoListProxy.clear();
     for (auto& item : mAircraftInfoList) {
-        if (item.second->TN.contains(mFilter))
+        if (QString::number(item.second->TN).contains(mFilter))
             mAircraftInfoListProxy.push_back(item);
     }
 
@@ -194,7 +194,7 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
 
 }
 
-void AircraftTableModel::deleteItem(const QString TN)
+void AircraftTableModel::deleteItem(int TN)
 {
     beginResetModel();
 
@@ -226,7 +226,7 @@ void AircraftTableModel::deleteItem(const QString TN)
 
     mAircraftInfoListProxy.clear();
     for (auto& item : mAircraftInfoList) {
-        if (item.second->TN.contains(mFilter))
+        if (QString::number(item.second->TN).contains(mFilter))
             mAircraftInfoListProxy.push_back(item);
     }
 

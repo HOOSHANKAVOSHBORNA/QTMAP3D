@@ -64,7 +64,6 @@ void ImageLayer::onToolboxItemClicked(const QString &name, const QString &catego
 }
 
 bool ImageLayer::setup(MapController *mapController,
-                       NetworkManager *networkManager,
                        UIHandle *UIHandle)
 {
     mMapController = mapController;
@@ -73,8 +72,8 @@ bool ImageLayer::setup(MapController *mapController,
 void ImageLayer::addXYZ()
 {
     QMap<QString, QString> examples;
-    examples[tr("Google r")] = "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}";
-    examples[tr("Google s")] = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
+    examples[tr("Google R")] = "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}";
+    examples[tr("Google S")] = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
     examples[tr("Gitanegaran")] = "https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg";
     examples[tr("Open Street Map")] = "http://[abc].tile.openstreetmap.org/{z}/{x}/{y}.png";
     examples[tr("Gaode")] = "http://wprd0[1234].is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}";
@@ -93,13 +92,25 @@ void ImageLayer::addXYZ()
         if (url.isEmpty())
             return;
 
-        std::string nodeName = url.toLocal8Bit().toStdString();
-        osgEarth::Drivers::XYZOptions opt;
-        opt.url() = nodeName;
-        opt.profile() = { "spherical-mercator" };
-        auto imageLayerOptions = osgEarth::ImageLayerOptions(nodeName, opt);
-        osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mMapController->addLayer(layer);
+        auto it = std::find_if(examples.keyBegin(),
+                               examples.keyEnd(),
+                               [&examples, &url](const QString& item){
+
+                return examples[item] == url;
+        });
+
+        if (it != examples.keyEnd()) {
+            std::string nodeName = url.toLocal8Bit().toStdString();
+            osgEarth::Drivers::XYZOptions opt;
+            opt.url() = nodeName;
+            opt.profile() = { "spherical-mercator" };
+            auto imageLayerOptions = osgEarth::ImageLayerOptions(nodeName, opt);
+            osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
+            layer->setName(it->toStdString());
+            mMapController->addLayer(layer);
+
+        }
+
     }
 }
 void ImageLayer::addArcGIS()

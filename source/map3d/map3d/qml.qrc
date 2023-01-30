@@ -4,8 +4,7 @@
         <file>MenuWidget.qml</file>
         <file>NavigationWidget.qml</file>
         <file>File.qml</file>
-        <file>Settings.qml</file>
-        <file>Layers.qml</file>
+        <file>LayersWidget.qml</file>
         <file>SideWidget.qml</file>
         <file>ControlCamera.qml</file>
         <file>Compass.qml</file>
@@ -20,5 +19,7 @@
         <file>ListWindow.qml</file>
         <file>ContextmenuWidget.qml</file>
         <file>InformationView.qml</file>
+        <file>setting/DelegateItem.qml</file>
+        <file>setting/Settings.qml</file>
     </qresource>
 </RCC>

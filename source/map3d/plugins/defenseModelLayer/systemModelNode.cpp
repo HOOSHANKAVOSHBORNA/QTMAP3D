@@ -6,6 +6,84 @@
 
 const float RANGE3D = std::numeric_limits<float>::max();;
 
+class SystemModelNodeAutoScaler : public osg::NodeCallback
+{
+public:
+    SystemModelNodeAutoScaler(const osg::Vec3d& baseScale = osg::Vec3d(1,1,1), double minScale = 0.0, double maxScale = DBL_MAX) :
+        _baseScale( baseScale ),
+        _minScale( minScale ),
+        _maxScale( maxScale )
+    {
+
+    }
+
+public: // osg::NodeCallback
+
+    void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        osgEarth::Annotation::GeoPositionNode* geo = static_cast<osgEarth::Annotation::GeoPositionNode*>(node);
+        osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
+
+        osg::Camera* cam = cs->getCurrentCamera();
+
+        // If this is an RTT camera, we need to use it's "parent"
+        // to calculate the proper scale factor.
+        if (cam->isRenderToTextureCamera() &&
+                cam->getView() &&
+                cam->getView()->getCamera() &&
+                cam->getView()->getCamera() != cam)
+        {
+            cam = cam->getView()->getCamera();
+        }
+
+        if (cam->getViewport())
+        {
+            // Reset the scale so we get a proper bound
+            geo->getPositionAttitudeTransform()->setScale(_baseScale);
+            const osg::BoundingSphere& bs = node->getBound();
+
+            // transform centroid to VIEW space:
+            osg::Vec3d centerView = bs.center() * cam->getViewMatrix();
+
+            // Set X coordinate to the radius so we can use the resulting CLIP
+            // distance to calculate meters per pixel:
+            centerView.x() = bs.radius();
+
+            // transform the CLIP space:
+            osg::Vec3d centerClip = centerView * cam->getProjectionMatrix();
+
+            // caluclate meters per pixel:
+            double mpp = (centerClip.x()*0.5) * cam->getViewport()->width();
+
+            // and the resulting scale we need to auto-scale.
+            double scale = bs.radius() / mpp;
+
+            scale *= 3.5;
+
+            if (scale < _minScale)
+                scale = _minScale;
+            else if (scale>_maxScale)
+                scale = _maxScale;
+
+            geo->getPositionAttitudeTransform()->setScale(
+                        osg::componentMultiply(_baseScale, osg::Vec3d(scale, scale, scale)));
+        }
+
+        if (node->getCullingActive() == false)
+        {
+            node->setCullingActive(true);
+        }
+
+        traverse(node, nv);
+    }
+
+protected:
+    osg::Vec3d _baseScale;
+    double _minScale;
+    double _maxScale;
+};
+
+
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
@@ -15,8 +93,19 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000 * 3.5;
+
+
+    this->setCullingActive(false);
+    this->addCullCallback(
+                new SystemModelNodeAutoScaler( osg::Vec3d(1,1,1),
+                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale().value(),
+                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale().value() ));
+
+
+
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_GPU;
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     setStyle(rootStyle);
@@ -47,7 +136,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
     updateOrCreateLabelImage();
     mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
+//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
     getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
@@ -80,237 +169,23 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 void SystemModelNode::setInformation(const SystemInfo& info)
 {
     mInformation = info;
-    setDisplayText(mInformation.Name);
+    updateOrCreateLabelImage();
+}
+
+void SystemModelNode::setSystemCambatInfo(const SystemCambatInfo &systemCambatInfo)
+{
+    mSystemCambatInfo = systemCambatInfo;
+}
+
+void SystemModelNode::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
+{
+    mSystemStatusInfo = systemStatusInfo;
+    updateOrCreateLabelImage();
 }
 
 void SystemModelNode::goOnTrack()
 {
     mMapController->setTrackNode(getGeoTransform());
-}
-
-void SystemModelNode::onModeChanged(bool is3DView)
-{
-    mIs3D = is3DView;
-    if(mIs3D)
-    {
-        mRootNode->setRange(0, 0, RANGE3D);
-        mRootNode->setRange(1, RANGE3D, std::numeric_limits<float>::max());
-    }
-    else
-    {
-        mRootNode->setRange(0, 0, 0);
-        mRootNode->setRange(1,0, std::numeric_limits<float>::max());
-    }
-
-    select(mIsSelected);
-}
-
-void SystemModelNode::setMissleCount(int numMissles)
-{
-    mMissleCount = numMissles;
-    updateOrCreateLabelImage();
-}
-
-void SystemModelNode::setDisplayText(QString displayText)
-{
-    if(mDisplayText != displayText)
-    {
-        mDisplayText = displayText;
-        updateOrCreateLabelImage();
-    }
-}
-
-void SystemModelNode::setBCCStatus(QString bccStatus)
-{
-    mBCCStatus = bccStatus;
-    updateOrCreateLabelImage();
-}
-
-void SystemModelNode::setRadarSearchStatus(QString radarSearchStatus)
-{
-    mRadarSearchStatus = radarSearchStatus;
-    updateOrCreateLabelImage();
-}
-
-int SystemModelNode::getMissleCount() const
-{
-    return mMissleCount;
-}
-
-QString SystemModelNode::getDisplayText() const
-{
-    return mDisplayText;
-}
-
-QString SystemModelNode::getBCCStatus() const
-{
-    return mBCCStatus;
-}
-
-QString SystemModelNode::getRadarSearchStatus() const
-{
-    return mRadarSearchStatus;
-}
-
-void SystemModelNode::collision()
-{
-    if(mAssignedModelNode && mFiredRocket)
-    {
-        osg::Vec3d wAssignedPosition;
-        mAssignedModelNode->getPosition().toWorld(wAssignedPosition);
-        osg::Vec3d wRocketPosition;
-        mFiredRocket->getPosition().toWorld(wRocketPosition);
-        double distance = (wAssignedPosition - wRocketPosition).length();
-        if(distance < 3 && !mHit)
-        {
-            mAssignedModelNode->collision();
-            mFiredRocket->collision();
-            mMapController->removeNode(mAssignedLine->getNode());
-            mHit = true;
-        }
-    }
-}
-
-void SystemModelNode::onLeftButtonClicked(bool val)
-{
-    select(val);
-    if(val)
-    {
-        showInfoWidget();
-    }
-    else
-    {
-        mMapController->untrackNode();
-        onRangeButtonToggled(val);
-        onWezButtonToggled(val);
-        onMezButtonToggled(val);
-    }
-}
-
-void SystemModelNode::showInfoWidget()
-{
-    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, this);
-    connect(systemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-    connect(systemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-    connect(systemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-    connect(systemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-    connect(systemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
-    systemInformation->show();
-}
-
-void SystemModelNode::updateOrCreateLabelImage()
-{
-    if (!mRenderTargetImage) {
-        mRenderTargetImage = new QImage(
-                    LABEL_IMAGE_WIDTH,
-                    LABEL_IMAGE_HEIGHT,
-                    QImage::Format_RGBA8888
-                    );
-    }
-
-    if (!mLabelImage) {
-        mLabelImage = new osg::Image;
-    }
-
-    {
-        mRenderTargetImage->fill(QColor(Qt::transparent));
-        QPainter painter(mRenderTargetImage);
-        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-
-
-        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.6f)));
-
-        static const QFont textFont("SourceSansPro", 12, QFont::Normal);
-        static const QPen  textPen(QColor(255, 255, 255));
-
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(backgroundBrush);
-
-        painter.drawRoundedRect(
-                    mRenderTargetImage->rect(),
-                    8,8);
-
-        painter.setPen(textPen);
-        painter.setFont(textFont);
-        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
-                         Qt::AlignCenter,
-                         mDisplayText);
-
-
-        static const QPen linePen(QColor(255, 255, 255),
-                                  1,
-                                  Qt::PenStyle::DashLine
-                                  );
-
-        painter.setPen(linePen);
-        painter.setBrush(Qt::NoBrush);
-        painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
-
-
-        painter.setPen(textPen);
-        painter.setFont(textFont);
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignLeft | Qt::AlignVCenter,
-                         "MissleNo");
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
-                         QString::number(mMissleCount));
-
-
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignLeft | Qt::AlignVCenter,
-                         "BCC");
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
-                         mBCCStatus);
-
-
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignLeft | Qt::AlignVCenter,
-                         "Radar");
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
-                         mRadarSearchStatus);
-
-
-
-        painter.setPen(linePen);
-        painter.setBrush(Qt::NoBrush);
-        painter.drawLine(0, 135, LABEL_IMAGE_WIDTH, 135);
-
-
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(Qt::white);
-        static const QImage missleRedImage(":/resources/bullet_red.png");
-        static const QImage missleGreenImage(":/resources/bullet_green.png");
-        for (int i = 0; i < 6; i++) {
-            if(i < mMissleCount) {
-                painter.drawImage(
-                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
-                            missleGreenImage,
-                            missleGreenImage.rect()
-                            );
-            } else {
-                painter.drawImage(
-                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
-                            missleRedImage,
-                            missleRedImage.rect()
-                            );
-
-            }
-        }
-
-    }
-    *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
-
-    mLabelImage->setImage(LABEL_IMAGE_WIDTH,
-                          LABEL_IMAGE_HEIGHT,
-                          1,
-                          GL_RGBA,
-                          GL_RGBA,
-                          GL_UNSIGNED_BYTE,
-                          mRenderTargetImage->bits(),
-                          osg::Image::AllocationMode::NO_DELETE);
 }
 
 DefenseModelNode *SystemModelNode::getAssignedModelNode() const
@@ -356,10 +231,27 @@ void SystemModelNode::fire()
     }
 }
 
+void SystemModelNode::onLeftButtonClicked(bool val)
+{
+    select(val);
+    if(val)
+    {
+        showInfoWidget();
+    }
+    else
+    {
+        mMapController->untrackNode();
+        onRangeButtonToggled(val);
+        onWezButtonToggled(val);
+        onMezButtonToggled(val);
+    }
+}
+
 void SystemModelNode::frameEvent()
 {
     //--update lable position---------------------------------------------------
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
     //--update assigned line----------------------------------------------------
     if(mAssignedModelNode)
     {
@@ -382,6 +274,25 @@ void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
             event->accept();
     }
 }
+
+void SystemModelNode::onModeChanged(bool is3DView)
+{
+    mIs3D = is3DView;
+    if(mIs3D)
+    {
+        mRootNode->setRange(0, 0, RANGE3D);
+        mRootNode->setRange(1, RANGE3D, std::numeric_limits<float>::max());
+    }
+    else
+    {
+        mRootNode->setRange(0, 0, 0);
+        mRootNode->setRange(1,0, std::numeric_limits<float>::max());
+    }
+
+    select(mIsSelected);
+}
+
+
 
 void SystemModelNode::onGotoButtonClicked()
 {
@@ -466,5 +377,151 @@ void SystemModelNode::onMezButtonToggled(bool checked)
 
 void SystemModelNode::onActiveButtonToggled(bool checked)
 {
-    mInformation.Active = checked;
+    mSystemStatusInfo.Active = checked;
 }
+
+void SystemModelNode::collision()
+{
+    if(mAssignedModelNode && mFiredRocket)
+    {
+        osg::Vec3d wAssignedPosition;
+        mAssignedModelNode->getPosition().toWorld(wAssignedPosition);
+        osg::Vec3d wRocketPosition;
+        mFiredRocket->getPosition().toWorld(wRocketPosition);
+        double distance = (wAssignedPosition - wRocketPosition).length();
+        if(distance < 3 && !mHit)
+        {
+            mAssignedModelNode->collision();
+            mFiredRocket->collision();
+            mMapController->removeNode(mAssignedLine->getNode());
+            mHit = true;
+        }
+    }
+}
+void SystemModelNode::showInfoWidget()
+{
+    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mSystemStatusInfo, mSystemCambatInfo, this);
+    connect(systemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+    connect(systemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+    connect(systemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+    connect(systemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+    connect(systemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    systemInformation->show();
+}
+
+void SystemModelNode::updateOrCreateLabelImage()
+{
+    if (!mRenderTargetImage) {
+        mRenderTargetImage = new QImage(
+                    LABEL_IMAGE_WIDTH,
+                    LABEL_IMAGE_HEIGHT,
+                    QImage::Format_RGBA8888
+                    );
+    }
+
+    if (!mLabelImage) {
+        mLabelImage = new osg::Image;
+    }
+
+    {
+        mRenderTargetImage->fill(QColor(Qt::transparent));
+        QPainter painter(mRenderTargetImage);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+
+        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+
+        static const QFont textFont("SourceSansPro", 12, QFont::Normal);
+        static const QPen  textPen(QColor(255, 255, 255));
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(backgroundBrush);
+
+        painter.drawRoundedRect(
+                    mRenderTargetImage->rect(),
+                    8,8);
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
+                         Qt::AlignCenter,
+                         mInformation.Name);
+
+
+        static const QPen linePen(QColor(255, 255, 255),
+                                  1,
+                                  Qt::PenStyle::DashLine
+                                  );
+
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
+
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Number:");
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         QString::number(mInformation.Number));
+
+
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "BCC:");
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mSystemStatusInfo.BCCStatus);
+
+
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Radar:");
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mSystemStatusInfo.RadarSearchStatus);
+
+
+
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, 135, LABEL_IMAGE_WIDTH, 135);
+
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(Qt::white);
+        static const QImage missleRedImage(":/resources/bullet_red.png");
+        static const QImage missleGreenImage(":/resources/bullet_green.png");
+        for (int i = 0; i < 6; i++) {
+            if(i < mSystemStatusInfo.MissileCount) {
+                painter.drawImage(
+                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
+                            missleGreenImage,
+                            missleGreenImage.rect()
+                            );
+            } else {
+                painter.drawImage(
+                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
+                            missleRedImage,
+                            missleRedImage.rect()
+                            );
+
+            }
+        }
+
+    }
+    *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
+
+    mLabelImage->setImage(LABEL_IMAGE_WIDTH,
+                          LABEL_IMAGE_HEIGHT,
+                          1,
+                          GL_RGBA,
+                          GL_RGBA,
+                          GL_UNSIGNED_BYTE,
+                          mRenderTargetImage->bits(),
+                          osg::Image::AllocationMode::NO_DELETE);
+}
+
+

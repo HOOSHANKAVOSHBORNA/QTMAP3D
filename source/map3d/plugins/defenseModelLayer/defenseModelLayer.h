@@ -36,7 +36,6 @@ public:
     virtual void onSideItemCreated(int index, QObject *pSideItem) override;
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
     virtual bool setup(MapController *mapController,
-                       NetworkManager *networkManager,
                        UIHandle *UIHandle) override;
     virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
@@ -50,11 +49,13 @@ public slots:
     //void clickedTrackNode(QString type ,QString name ,bool isClick);
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
-    void onMessageReceived(const QJsonDocument &message);
+//    void onMessageReceived(const QJsonDocument &message);
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
+    void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
+    void onSystemCambatInfoChanged(SystemCambatInfo& systemCambatInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
-    void onClearAircraft(QString tn);
+    void onClearAircraft(int tn);
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;
@@ -67,7 +68,7 @@ private:
 //    void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
-    QMap<QString,QMap<QString, DefenseModelNode*>>  mModelNodes;
+    QMap<QString,QMap<int, DefenseModelNode*>>  mModelNodes;
 //    DefenseModelNode* mCurrentModel;
     DefenseModelNode* mSelectedModelNode{nullptr};
     DefenseModelNode* mOnMoveModelNode{nullptr};

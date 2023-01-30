@@ -22,18 +22,18 @@ class SystemModelNode: public DefenseModelNode
 public:
     SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void setInformation(const SystemInfo &info);
+    void setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo);
+    void setSystemCambatInfo(const SystemCambatInfo &systemCambatInfo);
     void goOnTrack();
-public slots:
-    void onLeftButtonClicked(bool val);
-public:
-    virtual void frameEvent()override;
-    void mousePressEvent(QMouseEvent *event, bool onModel) override;
-
     DefenseModelNode *getAssignedModelNode() const;
     void setAssignedModelNode(DefenseModelNode *assignedModelNode);
     void unassignedModelNode();
     void fire();
-
+public slots:
+    void onLeftButtonClicked(bool val);
+public:
+    virtual void frameEvent()override;
+    void mousePressEvent(QMouseEvent *event, bool onModel) override; 
 protected:
 private slots:
     void onGotoButtonClicked();
@@ -43,27 +43,16 @@ private slots:
     void onActiveButtonToggled(bool checked);
     void onModeChanged(bool is3DView);
 
-    void setMissleCount(int numMissles);
-    void setDisplayText(QString displayText);
-    void setBCCStatus(QString bccStatus);
-    void setRadarSearchStatus(QString radarSearchStatus);
-
-public:
-    int getMissleCount() const;
-    QString getDisplayText() const;
-    QString getBCCStatus() const;
-    QString getRadarSearchStatus() const;
-
-
 private:
     void collision();
     void showInfoWidget();
-
     void updateOrCreateLabelImage();
 
 private:
     MapController* mMapController{nullptr};
     SystemInfo mInformation;
+    SystemStatusInfo mSystemStatusInfo;
+    SystemCambatInfo mSystemCambatInfo;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;
@@ -82,10 +71,10 @@ private:
     static constexpr int LABEL_IMAGE_WIDTH = 160;
     static constexpr int LABEL_IMAGE_HEIGHT = 190;
 
-    int     mMissleCount = 3;
-    QString mDisplayText = "System0";
-    QString mBCCStatus = "us";
-    QString mRadarSearchStatus = "s";
+//    int     mMissleCount = 3;
+//    QString mDisplayText = "System0";
+//    QString mBCCStatus = "us";
+//    QString mRadarSearchStatus = "s";
 
 };
 

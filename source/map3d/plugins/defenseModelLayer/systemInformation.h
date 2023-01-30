@@ -12,7 +12,7 @@ public:
     SystemInfoModel(QObject *parent = nullptr);
 
     enum MyRoles {
-        Name = Qt::UserRole + 102,
+        Numberr = Qt::UserRole + 102,
         Active = Qt::UserRole + 123,
         MainInfo = Qt::UserRole + 200,
         MainInfoHeaders = Qt::UserRole + 201,
@@ -28,7 +28,7 @@ public:
     SystemInfo getStationInfo() {return mSystemInfo;}
     QHash<int, QByteArray> roleNames() const override;
 
-    void setInformtion(const SystemInfo &systemInfo);
+    void setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCambatInfo &systemCombatInfo);
     QStringList getMainInfo() const;
     QStringList getMainInfoHeaders() const;
     QStringList getLocationInfo() const;
@@ -48,6 +48,8 @@ Q_SIGNALS:
 
 private:
     SystemInfo mSystemInfo;
+    SystemStatusInfo mSystemStatusInfo;
+    SystemCambatInfo mSystemCombatInfo;
 };
 
 class SystemInformation : public QObject
@@ -55,7 +57,7 @@ class SystemInformation : public QObject
     Q_OBJECT
 
 public:
-    SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, QObject *parent = nullptr);
+    SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo, QObject *parent = nullptr);
     SystemInfoModel *getInfo() {return mInfoModel;}
     void show();
 private:

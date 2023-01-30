@@ -18,6 +18,7 @@
 
 #include <QDebug>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQuickItem>
@@ -65,39 +66,48 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    //rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 3500;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000;
 
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
 
     setStyle(rootStyle);
     //--create icon Nodes---------------------------------------------------------------------------
-    osg::Image* redIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_gray.png");
-    redIcon->scaleImage(25, 32, redIcon->r());
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
+    m2DIcon = osgDB::readImageFile("../data/models/aircraft/aircraft.png");
+    if(m2DIcon)
+        m2DIcon->scaleImage(25, 32, m2DIcon->r());
+    mSelect2DIcon = new osg::Image;
+    mSelect2DIcon->copySubImage(0, 0, 0, m2DIcon);
+//    create2DImageColore(osgEarth::Color::Red);
+
+//    m2DIcon = osgDB::readImageFile("../data/models/aircraft/aircraft.png");
+    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(m2DIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     //    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
     redGeode->addDrawable(redImageDrawable);
 
-    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/aircraft/aircraft_darkGray.png");
-    yellowIcon->scaleImage(25, 32, yellowIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
+//    mSelect2DIcon->copySubImage(0, 0, 0, m2DIcon);
+    //mSelect2DIcon->scaleImage(25, 32, mSelect2DIcon->r());
+    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mSelect2DIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->addDrawable(yellowImageDrawable);
 
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
+
+    //    setModelColor(mInformation.Identification);
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
-    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
+    //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
+    updateOrCreateLabelImage();
+    mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+    //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
     //    mLableNode->getGeoTransform()->setPosition(osg::Vec3(0, 0, 2));
-    //getGeoTransform()->addChild(mLableNode);
+    getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
     if(mIs3D)
@@ -134,7 +144,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
 void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double speed)
 {
-    speed = 1;
+    //speed = 1;
     if(mIsStop)
         return;
     //    heading = 30;
@@ -146,9 +156,9 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double spee
     osg::Vec3d posW;
     posGeo.toWorld(posW);
     //---------------------------------------
-//    if(mLocationPoints->empty())
-//        mLocationPoints->push_back(currentPosW);
-//    mLocationPoints->push_back(posW);
+    //    if(mLocationPoints->empty())
+    //        mLocationPoints->push_back(currentPosW);
+    //    mLocationPoints->push_back(posW);
     if(mRouteLine->getSize() > 0)
         mRouteLine->addPoint(getPosition().vec3d());
     mRouteLine->addPoint(posGeo.vec3d());
@@ -219,26 +229,28 @@ void AircraftModelNode::stop()
     removeEffect();
 }
 
-void AircraftModelNode::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
-{
-    mTruckModel = truckModel;
-}
+//void AircraftModelNode::setTruckModel(osgEarth::Annotation::ModelNode *truckModel)
+//{
+//    mTruckModel = truckModel;
+//}
 
-osgEarth::Annotation::ModelNode *AircraftModelNode::getTruckModel() const
-{
-    return mTruckModel;
-}
+//osgEarth::Annotation::ModelNode *AircraftModelNode::getTruckModel() const
+//{
+//    return mTruckModel;
+//}
 
 void AircraftModelNode::setInformation(AircraftInfo info)
 {
+    //    if(mInformation.Identification != info.Identification)
     mInformation = info;
-    setModelColor(mInformation.Identification);
-//    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
+    //    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
 
     if(mAircraftinformation)
         mAircraftinformation->updateAircraft(info);
     //    mUIHandle->iwUpdateData(this, txtInfo);
     //------------------------------------------------------
+    updateOrCreateLabelImage();
+    changeModelColor(mInformation.Identification);
 }
 
 void AircraftModelNode::goOnTrack()
@@ -275,7 +287,9 @@ void AircraftModelNode::frameEvent()
         mMapController->worldToScreen(wordPos,x, y);
         mCurrentContextMenu->updatePosition(static_cast<int>(x), static_cast<int>(y));
     }
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    //------------------------------------
+    //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 }
 
 void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -298,6 +312,7 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
         float x, y;
         mMapController->worldToScreen(wordPos,x, y);
         mCurrentContextMenu->show(static_cast<int>(x), static_cast<int>(y));
+        event->accept();
     }
     if(!onModel && mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();
@@ -312,9 +327,9 @@ void AircraftModelNode::curentPosition(osgEarth::GeoPoint pos)
 
     //    if(mIsRoute)
     //    {
-//    osg::Vec3d currentPosW;
-//    pos.toWorld(currentPosW);
-//    mTempLocationPoints->push_back(currentPosW);
+    //    osg::Vec3d currentPosW;
+    //    pos.toWorld(currentPosW);
+    //    mTempLocationPoints->push_back(currentPosW);
     //    }
     mTempRouteLine->addPoint(pos.vec3d());
 }
@@ -341,14 +356,14 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
         mMapController->removeNode(mTempRouteLine->getNode());
     }
 
-//    mMapController->getRoot()->addChild(drawLine(mLocationPoints, 1.0));
-//    std::cout << check << std::endl;
+    //    mMapController->getRoot()->addChild(drawLine(mLocationPoints, 1.0));
+    //    std::cout << check << std::endl;
 
-//    QTimer *timer = new QTimer(this);
-//    connect(timer, &QTimer::timeout, this, [=](){
-//        mMapController->getRoot()->addChild(drawLine(mTempLocationPoints, 1.0));
-//    });
-//    timer->start(200);
+    //    QTimer *timer = new QTimer(this);
+    //    connect(timer, &QTimer::timeout, this, [=](){
+    //        mMapController->getRoot()->addChild(drawLine(mTempLocationPoints, 1.0));
+    //    });
+    //    timer->start(200);
 
 }
 
@@ -383,7 +398,7 @@ void AircraftModelNode::onModeChanged(bool is3DView)
         setStyle(style);
     }
 
-    select(mIsSelected);
+    //    select(mIsSelected);
 }
 
 void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)
@@ -391,7 +406,7 @@ void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)
     std::cout << index << ", " << systemName.toStdString() << std::endl;
 }
 
-void AircraftModelNode::setModelColor(AircraftInfo::Identify identify)
+void AircraftModelNode::changeModelColor(AircraftInfo::Identify identify)
 {
     osgEarth::Color color;
     switch (identify) {
@@ -415,7 +430,38 @@ void AircraftModelNode::setModelColor(AircraftInfo::Identify identify)
         break;
     }
     mModelColor = color;
+    //    if(!mIs3D)
+    change2DImageColore(mModelColor);
     select(mIsSelected);//for change color
+}
+
+void AircraftModelNode::change2DImageColore(osgEarth::Color color)
+{
+    //--create icon Nodes---------------------------------------------------------------------------
+    if(!m2DIcon)
+        return;
+    //m2DIcon->scaleImage(25, 32, m2DIcon->r());
+    for(int i = 0; i < m2DIcon->s(); i++)
+        for(int j = 0; j < m2DIcon->t(); j++)
+        {
+            osg::Vec4 pixColore = m2DIcon->getColor(i, j);
+            //qDebug()<< redIcon->getColor(i, j).r()<<","<< redIcon->getColor(i, j).g()<<","<<redIcon->getColor(i, j).b();
+            if(pixColore.a()>0)
+                m2DIcon->setColor(color, i, j);
+        }
+    //-----------------------------------------------------------------------------------------------
+    //selectIcon->scaleImage(25, 32, selectIcon->r());
+    color /= 2;
+    color.a() = 1;
+
+    for(int i = 0; i < mSelect2DIcon->s(); i++)
+        for(int j = 0; j < mSelect2DIcon->t(); j++)
+        {
+            osg::Vec4 pixColore = mSelect2DIcon->getColor(i, j);
+            //qDebug()<< redIcon->getColor(i, j).r()<<","<< redIcon->getColor(i, j).g()<<","<<redIcon->getColor(i, j).b();
+            if(pixColore.r()>0 || pixColore.g()>0 || pixColore.b()>0)
+                mSelect2DIcon->setColor(color, i, j);
+        }
 }
 
 void AircraftModelNode::showInfoWidget()
@@ -424,27 +470,27 @@ void AircraftModelNode::showInfoWidget()
     //    mUIHandle->iwShow(this, UIHandle::InfoWidgetType::Airplane);
     //    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
     //    mUIHandle->iwUpdateData(this, txtInfo);
-//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-//        qDebug() << comp->errorString();
+    //    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+    //    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+    //        qDebug() << comp->errorString();
 
-//        if (comp->status() == QQmlComponent::Ready) {
-//            QQuickItem *item = static_cast<QQuickItem*>(comp->create(nullptr));
-//            InfoModel *model = new InfoModel;
+    //        if (comp->status() == QQmlComponent::Ready) {
+    //            QQuickItem *item = static_cast<QQuickItem*>(comp->create(nullptr));
+    //            InfoModel *model = new InfoModel;
 
-//            model->setAircraftInfo(mInformation);
-//            item->setProperty("model", QVariant::fromValue<InfoModel*>(model));
-//            QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
+    //            model->setAircraftInfo(mInformation);
+    //            item->setProperty("model", QVariant::fromValue<InfoModel*>(model));
+    //            QQmlEngine::setObjectOwnership(item, QQmlEngine::JavaScriptOwnership);
 
-//            connect(model, &InfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
-//            connect(model, &InfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
-//            connect(model, &InfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
-//            mUIHandle->iwShow(item);
-//        }
+    //            connect(model, &InfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
+    //            connect(model, &InfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
+    //            connect(model, &InfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
+    //            mUIHandle->iwShow(item);
+    //        }
 
-//    });
+    //    });
 
-//    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
+    //    comp->loadUrl(QUrl("qrc:/modelplugin/InfoView.qml"));
     mAircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
     connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
     connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
@@ -478,4 +524,99 @@ void AircraftModelNode::removeEffect()
     //remove smoke--------------------------------------------
     getMapNode()->removeChild(mSmoke->getParticleSystem());
     getPositionAttitudeTransform()->removeChild(mSmoke);
+}
+
+void AircraftModelNode::updateOrCreateLabelImage()
+{
+    if (!mRenderTargetImage) {
+        mRenderTargetImage = new QImage(
+                    LABEL_IMAGE_WIDTH,
+                    LABEL_IMAGE_HEIGHT,
+                    QImage::Format_RGBA8888
+                    );
+    }
+
+    if (!mLabelImage) {
+        mLabelImage = new osg::Image;
+    }
+
+    {
+        mRenderTargetImage->fill(QColor(Qt::transparent));
+        QPainter painter(mRenderTargetImage);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+
+        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+
+        static const QFont textFont("SourceSansPro", 12, QFont::Normal);
+        static const QPen  textPen(QColor(255, 255, 255));
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(backgroundBrush);
+
+        painter.drawRoundedRect(
+                    mRenderTargetImage->rect(),
+                    8,8);
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
+                         Qt::AlignCenter,
+                         QString::number(mInformation.TN));
+
+
+        static const QPen linePen(QColor(255, 255, 255),
+                                  1,
+                                  Qt::PenStyle::DashLine
+                                  );
+
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
+
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "IFFCode:");
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mInformation.IFFCode);
+
+
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "CallSign:");
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mInformation.CallSign);
+
+
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "M-Radar:");
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mInformation.MasterRadar);
+
+        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "I-Method:");
+        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mInformation.IdentificationMethod);
+
+
+    }
+    *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
+
+    mLabelImage->setImage(LABEL_IMAGE_WIDTH,
+                          LABEL_IMAGE_HEIGHT,
+                          1,
+                          GL_RGBA,
+                          GL_RGBA,
+                          GL_UNSIGNED_BYTE,
+                          mRenderTargetImage->bits(),
+                          osg::Image::AllocationMode::NO_DELETE);
 }

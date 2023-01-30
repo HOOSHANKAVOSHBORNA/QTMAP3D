@@ -9,7 +9,7 @@ Item {
 //    anchors.fill: parent
 
     signal filterTextChanged(string txt)
-    signal aircraftDoubleClicked(string TN)
+    signal aircraftDoubleClicked(int TN)
 
     property int hoveredIndex: -1
     property int selectedIndex: -1
@@ -28,7 +28,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: "#303030"
+        color: "#252525"
     }
 
     property AircraftTableModel model
@@ -56,7 +56,7 @@ Item {
 
             Rectangle {
                 color: "transparent"
-                border.color: "white"
+                border.color: "#4568dc"
                 radius: 5
                 Layout.minimumWidth:   320
                 Layout.preferredWidth: 320
@@ -110,9 +110,9 @@ Item {
                         width: 160
                         height: 40
                         radius: 5
-                        color: '#27556c'
+                        color: '#4568dc'
                         Text {
-                            color: 'skyblue'
+                            color: '#FFFFFF'
                             text: rootItem.model ? rootItem.model.headerText(index) : "";
                             anchors.centerIn: parent
                         }

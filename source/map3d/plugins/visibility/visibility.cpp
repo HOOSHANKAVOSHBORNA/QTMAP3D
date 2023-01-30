@@ -45,7 +45,6 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
 }
 
 bool Visibility::setup(MapController *mapController,
-                       NetworkManager *networkManager,
                        UIHandle *UIHandle)
 {
     mMapController = mapController;

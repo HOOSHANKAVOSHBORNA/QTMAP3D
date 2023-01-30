@@ -22,14 +22,14 @@ int main(int argc, char *argv[])
     Application *const map3DApp = Application::instance();
     map3DApp->initialize();
     //--run demo------------------------
-    //Demo demo(Application::instance()->defenseDataManager());
+    Demo demo(Application::instance()->defenseDataManager());
     //---------------------------------
 
     if (map3DApp->isMainWindowReady()) {
-        map3DApp->mainWindow()->show();
+        map3DApp->mainWindow()->showFullScreen();
     } else {
         QObject::connect(map3DApp, &Application::mainWindowCreated, [map3DApp]() {
-            map3DApp->mainWindow()->show();
+            map3DApp->mainWindow()->showFullScreen();
         });
     }
 

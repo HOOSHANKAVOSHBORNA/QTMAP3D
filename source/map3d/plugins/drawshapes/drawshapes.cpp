@@ -229,7 +229,6 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
 }
 
 bool DrawShapes::setup(MapController *mapController,
-                       NetworkManager *networkManager,
                        UIHandle *UIHandle)
 {
     mMapController = mapController;

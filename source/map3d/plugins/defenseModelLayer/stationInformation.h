@@ -10,7 +10,7 @@ class StationInfoModel : public QAbstractListModel
     Q_OBJECT
 public:
     enum MyRoles {
-        Name = Qt::UserRole + 200,
+        Numberr = Qt::UserRole + 200,
         Latitude = Qt::UserRole + 204,
         Longitude = Qt::UserRole + 205,
         Radius = Qt::UserRole + 206,

@@ -2,63 +2,217 @@ import QtQuick 2.13
 import QtQuick.Layouts 1.13
 import QtQuick.Controls 2.13
 import Crystal 1.0
-
+import QtQuick.Window 2.13
 CListWindow {
 
 
     property var buttonsModel : ListModel {
 
     }
-    property var selectColor: "#808080"
-    property var unselectColor: "#606060"
+    property var selectColor: "#03A9F4"
+    property var unselectColor: "#4568dc"
     visible: false
-    x: 800
-    y: 600
-    width: 800
-    height: 600
+
+    id: root
     title: "List Window"
-    color: "#404040"
-    ColumnLayout {
+    color: "#252525"
+    minimumWidth: 800
+    minimumHeight: 600
+    flags: Qt.FramelessWindowHint
+    MouseArea{
+        anchors.fill : parent
+        property variant clickPos: "1,1"
+        onPressed: {
+            clickPos = Qt.point(mouse.x ,mouse.y)
+        }
+        onPositionChanged: {
+            var delta = Qt.point(mouse.x - clickPos.x , mouse.y - clickPos.y)
+            root.x += delta.x
+            root.y += delta.y
+        }
+        onDoubleClicked: {
+            root.showFullScreen();
+        }
+    }
+    BorderImage {
+        id: borderImage
         anchors.fill: parent
-        anchors.margins: 0
-        spacing: 0
-        Row {
-            id: buttons
-            //height: 30
-            Layout.minimumHeight: 30
-            Layout.preferredHeight: 30
-            Layout.fillWidth: true
-            width: parent.width
-            spacing: 3
-            Repeater {
-                id: rep
-                model: buttonsModel
-                Button {
-                    text: buttonText
-                    anchors.leftMargin: 0
-                    background: Rectangle {
-                        radius: 4
-                        color: selectColor
+        source: "qrc:/Resources/mainFrame.png"
+        z:1
+
+        Rectangle{
+            color: "transparent"
+            id:back
+            z:0
+            clip: true
+            anchors{
+                top: parent.top
+                bottom: parent.bottom
+                left: parent.left
+                right: parent.right
+                topMargin: 15
+                bottomMargin: 10
+                rightMargin: 10
+                leftMargin: 10
+
+            }
+            ColumnLayout {
+                clip: true
+                anchors.fill: back
+                id:column
+                spacing: 8
+                Rectangle{
+                    Layout.fillWidth: true
+                    height: 30
+                    color: "transparent"
+                    clip: true
+                    Image {
+                        id: imageclose
+
+                        width: 24
+                        height: 24
+                        anchors.rightMargin: 15
+
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        fillMode: Image.PreserveAspectFit
+                        source: "qrc:/Resources/close1.png"
+                        states: ["mouseIn" , "mouseOut"]
+                        state: "mouseOut"
+                        transitions: [
+                            Transition {
+                                from: "*"
+                                to: "mouseIn"
+                                NumberAnimation {
+                                    target: imageclose
+                                    property: "scale"
+                                    from: 0.85
+                                    to:1
+                                    duration: 400
+                                    easing.type: Easing.OutBounce
+                                }
+                            }
+                        ]
+                        MouseArea{
+                            anchors.fill :parent
+                            onClicked: close()
+                            hoverEnabled: true
+                            onContainsMouseChanged: imageclose.state = containsMouse ? "mouseIn" : " mouseOut"
+
+                        }
                     }
 
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
 
-                    width: buttons.width / 3
-                    onClicked: showTab(index)
+                    Image {
+                        id: imageminimize
+                        width: 24
+                        height: 24
+                        anchors.verticalCenterOffset: 1
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: imageclose.left
+                        anchors.rightMargin: 3
+                        fillMode: Image.PreserveAspectFit
+                        source: "qrc:/Resources/minimize.png"
+                        states: ["mouseIn" , "mouseOut"]
+                        state: "mouseOut"
+                        transitions: [
+                            Transition {
+                                from: "*"
+                                to: "mouseIn"
+
+                                NumberAnimation {
+                                    target: imageminimize
+                                    property: "scale"
+                                    from: 0.85
+                                    to:1
+                                    duration: 400
+                                    easing.type: Easing.OutBounce
+                                }
+                            }
+                        ]
+                        MouseArea{
+                            hoverEnabled: true
+                            anchors.fill : parent
+                            onClicked: showMinimized()
+                            onContainsMouseChanged: imageminimize.state = containsMouse ? "mouseIn" : " mouseOut"
+                        }
+                    }
+                }
+                Row {
+                    id: buttons
+                    Layout.alignment: Qt.AlignCenter
+                    //height: 30
+                    Layout.minimumHeight: 40
+                    Layout.preferredHeight: 40
+                    Layout.fillWidth: true
+                    width: parent.width
+                    Layout.leftMargin: 30
+                    Layout.rightMargin: 10
+                    spacing: 0
+                    Repeater {
+                        id: rep
+                        model: buttonsModel
+                        delegate: Button {
+                            text: buttonText
+
+                            anchors.leftMargin: 0
+                            contentItem :Text {
+                                id: name
+                                text: parent.text
+                                color: "#FFFFFF"
+                                anchors.verticalCenter: parent.verticalCenter
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                elide: Text.ElideRight
+                            }
+                            background: Rectangle {
+                                color: selectColor
+                                radius: 1
+                            }
+
+                            height: 35
+
+                            width: buttons.width / 6
+                            onClicked: showTab(index)
+                        }
+                    }
+                }
+
+
+                Rectangle {
+                    color: "#5f72bd"
+                    Layout.leftMargin: 30
+                    Layout.rightMargin: 8
+                    gradient: Gradient {
+                        orientation: Gradient.Horizontal
+                        GradientStop {
+                            position: 0
+                            color: "#5f72bd"
+                        }
+
+                        GradientStop {
+                            position: 1
+                            color: "#9b23ea"
+                        }
+                    }
+                    Layout.minimumHeight: 1
+                    border.width: 1
+                    border.color: "#4568dc"
+                    Layout.maximumHeight: 1
+                    Layout.fillWidth: true
+                    layer.enabled: true
+                }
+                SwipeView {
+                    id: stacklayout
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+
+
                 }
             }
         }
-
-        StackLayout {
-            id: stacklayout
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-
-        }
     }
-
     function addTab(titleString, item){
         buttonsModel.append({"buttonText": titleString})
         stacklayout.data.push(item)
@@ -69,9 +223,12 @@ CListWindow {
         stacklayout.currentIndex = indx
         for (var i = 0; i < stacklayout.count; i++){
             rep.itemAt(i).background.color = unselectColor
+            rep.itemAt(i).height = 40
+
         }
 
         rep.itemAt(indx).background.color = selectColor
+        rep.itemAt(indx).height = 42
 
     }
 

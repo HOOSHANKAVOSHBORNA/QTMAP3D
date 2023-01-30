@@ -18,7 +18,7 @@ struct AircraftInfo
         H//red
     };
     //-------------------------------------
-    QString TN;
+    int TN;
     QString IFFCode;
     QString CallSign;
     QString Type;
@@ -115,7 +115,7 @@ public:
     void fromJson(QJsonDocument jsonDoc)
     {
         QJsonObject data = jsonDoc.object();
-        TN = QString::number(data.value("TN").toInt());
+        TN = data.value("TN").toInt();
         IFFCode = data.value("IFFCode").toString();
         CallSign = data.value("CallSign").toString();
         Type = data.value("Type").toString();
@@ -148,7 +148,7 @@ struct StationInfo
     QString PrimSec;
     bool Active;
 
-    double Number;
+    int Number;
     double Latitude;
     double Longitude;
     double Radius{500000};
@@ -181,7 +181,7 @@ struct StationInfo
         PrimSec = data.value("Primary/Secondary").toString();
         Active = data.value("Active").toBool();
 
-        Number = data.value("Number").toDouble();
+        Number = data.value("Number").toInt();
         Latitude = data.value("Latitude").toDouble();
         Longitude = data.value("Longitude").toDouble();
         Radius = data.value("Radius").toDouble();
@@ -195,93 +195,68 @@ struct SystemInfo
 {
     QString Terminal;
     QString Name;
-    double Number;
+    int Number;
     QString Type;
     double Latitude;
     double Longitude;
     double Altitude;
     double ViewRange{300000};
     double MezRange{250000};
+};
+
+struct SystemStatusInfo
+{
+    int Number;
     //status info
     QString ReceiveTime;
     QString Simulation;
     QString BCCStatus;
     QString RadarSearchStatus;
     QString Operational;
-    QString MissileCount;
+    int MissileCount;
     QString RadarMode;
+    bool Active;
+};
+struct SystemCambatInfo
+{
+    enum Phases{
+        Search,
+        Lock,
+        Fire,
+        Kill,
+        NoKill
+    };
+    int Number;
     //combat info
-    double TN;
+    int TN;
     QString Acceptance;
-    QString Phase;
+    Phases Phase;
     double Antenna;
     QString ChanelNo;
     QString Inrange;
-    bool Active;
 
-    QJsonDocument toJson()
+    QString phaseToString() const
     {
-        QJsonObject jsonObject;
-        jsonObject.insert("Terminal", Terminal);
-        jsonObject.insert("Name", Name);
-        jsonObject.insert("Number", Number);
-        jsonObject.insert("Type", Type);
-        jsonObject.insert("Latitude", Latitude);
-        jsonObject.insert("Longitude", Longitude);
-        jsonObject.insert("Altitude", Altitude);
-        jsonObject.insert("ViewRange", ViewRange);
-        jsonObject.insert("MezRange", MezRange);
-
-        jsonObject.insert("ReceiveTime", ReceiveTime);
-        jsonObject.insert("Simulation", Simulation);
-        jsonObject.insert("BCCStatus", BCCStatus);
-        jsonObject.insert("RadarSearchStatus", RadarSearchStatus);
-        jsonObject.insert("Operational", Operational);
-        jsonObject.insert("MissileCount", MissileCount);
-        jsonObject.insert("RadarMode", RadarMode);
-
-        jsonObject.insert("TN", TN);
-        jsonObject.insert("Acceptance", Acceptance);
-        jsonObject.insert("Phase", Phase);
-        jsonObject.insert("Antenna", Antenna);
-        jsonObject.insert("ChanelNo", ChanelNo);
-        jsonObject.insert("Inrange", Inrange);
-        jsonObject.insert("Active", Active);
-
-        QJsonDocument jsonDoc;
-        jsonDoc.setObject(jsonObject);
-        return jsonDoc;
+        QString result = "";
+        switch (Phase) {
+        case Search:
+            result = "Search";
+            break;
+        case Lock:
+            result = "Lock";
+            break;
+        case Fire:
+            result = "Fire";
+            break;
+        case Kill:
+            result = "Kill";
+            break;
+        case NoKill:
+            result = "NoKill";
+            break;
+        }
+        return result;
     }
-
-    void fromJson(QJsonDocument jsonDoc)
-    {
-        QJsonObject data = jsonDoc.object();
-        Terminal = data.value("Terminal").toString();
-        Name = data.value("Name").toString();
-        Number = data.value("Number").toDouble();
-        Type = data.value("Type").toString();
-        Latitude = data.value("Latitude").toDouble();
-        Longitude = data.value("Longitude").toDouble();
-        Altitude = data.value("Altitude").toDouble();
-        ViewRange = data.value("ViewRange").toDouble();
-        MezRange = data.value("MezRange").toDouble();
-
-        ReceiveTime = data.value("ReceiveTime").toString();
-        Simulation = data.value("Simulation").toString();
-        BCCStatus = data.value("BCCStatus").toString();
-        RadarSearchStatus = data.value("RadarSearchStatus").toString();
-        Operational = data.value("Operational").toString();
-        MissileCount = data.value("MissileCount").toString();
-        RadarMode = data.value("RadarMode").toString();
-        TN = data.value("TN").toDouble();
-        Acceptance = data.value("Acceptance").toString();
-        Phase = data.value("Phase").toString();
-        Antenna = data.value("Antenna").toDouble();
-        ChanelNo = data.value("ChanelNo").toString();
-        Inrange = data.value("Inrange").toString();
-        Active = data.value("Active").toBool();
-    }
-
 };
 
 class DefenseDataManager: public QObject
@@ -290,10 +265,16 @@ class DefenseDataManager: public QObject
 public:
     DefenseDataManager(QObject* parent = nullptr);
 signals:
+    //--aircraft-----------------------------------------------
     void aircraftInfoChanged(AircraftInfo& aircraftInfo);
+    void clearAircraft(int tn);
+    void aircraftAssigned(int tn, int systemNo);
+    //--system-------------------------------------------------
     void systemInfoChanged(SystemInfo& systemInfo);
+    void systemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
+    void systemCambatInfoChanged(SystemCambatInfo& systemCambatInfo);
+    //--station------------------------------------------------
     void stationInfoChanged(StationInfo& stationInfo);
-    void clearAircraft(QString tn);
 public slots:
 };
 
@@ -309,7 +290,10 @@ public:
     DefenseDataManager* mDefenseDataManager;
     QList<AircraftInfo> mAircraftList;
     QList<StationInfo> stationList;
+
     QList<SystemInfo> systemList;
+    QList<SystemStatusInfo> systemStatusList;
+    QList<SystemCambatInfo> SystemCambatList;
 };
 
 #endif // DEFENSEDATAMANAGER_H

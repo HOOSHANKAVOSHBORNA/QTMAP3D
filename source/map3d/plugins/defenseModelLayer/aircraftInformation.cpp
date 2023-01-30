@@ -18,7 +18,7 @@ int AircraftInfoModel::rowCount(const QModelIndex &/*parent*/) const {
 
 QVariant AircraftInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
-        case TN: return QVariant::fromValue<QString>(mAircraftInfo.TN);
+        case TN: return QVariant::fromValue<int>(mAircraftInfo.TN);
         case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
         case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());
         case LocationInfoHeaders: return QVariant::fromValue<QStringList>(getLocationInfoHeader());
@@ -38,7 +38,7 @@ void AircraftInfoModel::setAircraftInfo(AircraftInfo &a)
 
 QStringList AircraftInfoModel::getMainInfo() const
 {
-    return QStringList {mAircraftInfo.TN, mAircraftInfo.IFFCode, mAircraftInfo.CallSign,
+    return QStringList {QString::number(mAircraftInfo.TN), mAircraftInfo.IFFCode, mAircraftInfo.CallSign,
                 mAircraftInfo.Type, mAircraftInfo.MasterRadar, mAircraftInfo.identifyToString(),
                 mAircraftInfo.IdentificationMethod, mAircraftInfo.Time, mAircraftInfo.Pos};
 }

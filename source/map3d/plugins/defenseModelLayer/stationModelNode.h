@@ -33,6 +33,7 @@ private slots:
     void onModeChanged(bool is3DView);
 private:
     void showInfoWidget();
+    void updateOrCreateLabelImage();
 private:
     MapController* mMapController{nullptr};
     StationInfo mInformation;
@@ -40,6 +41,11 @@ private:
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<Polygone> mVisiblePolygone;
+
+    static constexpr int LABEL_IMAGE_WIDTH = 180;
+    static constexpr int LABEL_IMAGE_HEIGHT = 150;
+    QImage *mRenderTargetImage{nullptr};
+    osg::ref_ptr<osg::Image> mLabelImage{nullptr};
 };
 
 

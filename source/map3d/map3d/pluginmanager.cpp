@@ -10,7 +10,6 @@
 #include "pluginmanager.h"
 #include "plugininterface.h"
 #include "application.h"
-#include "networkmanager.h"
 #include "mainwindow.h"
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
@@ -68,11 +67,10 @@ void PluginManager::performPluginsInitQMLDesc(QQmlEngine *qmlEngine)
 
 void PluginManager::performPluginsSetup(MapController *mapController)
 {
-    const auto networkManager = Application::instance()->networkManager();
     DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
     UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
     for (const auto& item : mPluginsInfoList) {
-        item.interface->setup(mapController, networkManager, uiHandle);
+        item.interface->setup(mapController, uiHandle);
         item.interface->setDefenseDataManager(defenseDataManager);
     }
 }

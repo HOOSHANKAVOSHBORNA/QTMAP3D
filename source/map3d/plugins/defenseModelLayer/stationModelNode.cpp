@@ -7,6 +7,85 @@
 
 const float RANGE3D = std::numeric_limits<float>::max();
 
+
+class StationModelNodeAutoScaler : public osg::NodeCallback
+{
+public:
+    StationModelNodeAutoScaler(const osg::Vec3d& baseScale = osg::Vec3d(1,1,1), double minScale = 0.0, double maxScale = DBL_MAX) :
+        _baseScale( baseScale ),
+        _minScale( minScale ),
+        _maxScale( maxScale )
+    {
+
+    }
+
+public: // osg::NodeCallback
+
+    void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        osgEarth::Annotation::GeoPositionNode* geo = static_cast<osgEarth::Annotation::GeoPositionNode*>(node);
+        osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
+
+        osg::Camera* cam = cs->getCurrentCamera();
+
+        // If this is an RTT camera, we need to use it's "parent"
+        // to calculate the proper scale factor.
+        if (cam->isRenderToTextureCamera() &&
+                cam->getView() &&
+                cam->getView()->getCamera() &&
+                cam->getView()->getCamera() != cam)
+        {
+            cam = cam->getView()->getCamera();
+        }
+
+        if (cam->getViewport())
+        {
+            // Reset the scale so we get a proper bound
+            geo->getPositionAttitudeTransform()->setScale(_baseScale);
+            const osg::BoundingSphere& bs = node->getBound();
+
+            // transform centroid to VIEW space:
+            osg::Vec3d centerView = bs.center() * cam->getViewMatrix();
+
+            // Set X coordinate to the radius so we can use the resulting CLIP
+            // distance to calculate meters per pixel:
+            centerView.x() = bs.radius();
+
+            // transform the CLIP space:
+            osg::Vec3d centerClip = centerView * cam->getProjectionMatrix();
+
+            // caluclate meters per pixel:
+            double mpp = (centerClip.x()*0.5) * cam->getViewport()->width();
+
+            // and the resulting scale we need to auto-scale.
+            double scale = bs.radius() / mpp;
+
+            scale *= 3.5;
+
+            if (scale < _minScale)
+                scale = _minScale;
+            else if (scale>_maxScale)
+                scale = _maxScale;
+
+            geo->getPositionAttitudeTransform()->setScale(
+                        osg::componentMultiply(_baseScale, osg::Vec3d(scale, scale, scale)));
+        }
+
+        if (node->getCullingActive() == false)
+        {
+            node->setCullingActive(true);
+        }
+
+        traverse(node, nv);
+    }
+
+protected:
+    osg::Vec3d _baseScale;
+    double _minScale;
+    double _maxScale;
+};
+
+
 StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
@@ -15,8 +94,21 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     mRootNode = new osg::LOD;
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000 * 3.5;
+
+
+    this->setCullingActive(false);
+    this->addCullCallback(
+                new StationModelNodeAutoScaler( osg::Vec3d(1,1,1),
+                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale().value(),
+                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale().value() ));
+
+
+
+
+
 //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     setStyle(rootStyle);
     //--create 2d node----------------------------------------------------------------------------
@@ -50,9 +142,10 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
-    mLableNode = new osgEarth::Annotation::PlaceNode(getName(),labelStyle, lableImage);
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
+    //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
+    updateOrCreateLabelImage();
+    mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
     getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
@@ -80,6 +173,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 void StationModelNode::setInformation(const StationInfo& info)
 {
     mInformation = info;
+    updateOrCreateLabelImage();
 }
 void StationModelNode::goOnTrack()
 {
@@ -104,7 +198,8 @@ void StationModelNode::onLeftButtonClicked(bool val)
 
 void StationModelNode::frameEvent()
 {
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 }
 
 void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -195,4 +290,99 @@ void StationModelNode::showInfoWidget()
     connect(stationInformation->getInfo(), &StationInfoModel::visibleButtonClicked, this, &StationModelNode::onVisibleButtonToggled);
     connect(stationInformation->getInfo(), &StationInfoModel::activeButtonToggled, this, &StationModelNode::onActivateButtonToggled);
     stationInformation->show();
+}
+
+void StationModelNode::updateOrCreateLabelImage()
+{
+    if (!mRenderTargetImage) {
+        mRenderTargetImage = new QImage(
+                    LABEL_IMAGE_WIDTH,
+                    LABEL_IMAGE_HEIGHT,
+                    QImage::Format_RGBA8888
+                    );
+    }
+
+    if (!mLabelImage) {
+        mLabelImage = new osg::Image;
+    }
+
+    {
+        mRenderTargetImage->fill(QColor(Qt::transparent));
+        QPainter painter(mRenderTargetImage);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+
+        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+
+        static const QFont textFont("SourceSansPro", 12, QFont::Normal);
+        static const QPen  textPen(QColor(255, 255, 255));
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(backgroundBrush);
+
+        painter.drawRoundedRect(
+                    mRenderTargetImage->rect(),
+                    8,8);
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
+                         Qt::AlignCenter,
+                         mInformation.Name);
+
+
+        static const QPen linePen(QColor(255, 255, 255),
+                                  1,
+                                  Qt::PenStyle::DashLine
+                                  );
+
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
+
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Number:");
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         QString::number(mInformation.Number));
+
+
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "CycleTime:");
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         QString::number(mInformation.CycleTime));
+
+
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "PrimSec:");
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mInformation.PrimSec);
+
+//        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+//                         Qt::AlignLeft | Qt::AlignVCenter,
+//                         "I-Method:");
+//        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+//                         Qt::AlignRight | Qt::AlignVCenter,
+//                         mInformation.IdentificationMethod);
+
+
+    }
+    *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
+
+    mLabelImage->setImage(LABEL_IMAGE_WIDTH,
+                          LABEL_IMAGE_HEIGHT,
+                          1,
+                          GL_RGBA,
+                          GL_RGBA,
+                          GL_UNSIGNED_BYTE,
+                          mRenderTargetImage->bits(),
+                          osg::Image::AllocationMode::NO_DELETE);
 }

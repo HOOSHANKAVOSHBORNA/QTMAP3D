@@ -25,6 +25,10 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         //---------------------------------------------
         for(auto system:systemList)
             emit mDefenseDataManager->systemInfoChanged(system);
+        for(auto systemStatus:systemStatusList)
+            emit mDefenseDataManager->systemStatusInfoChanged(systemStatus);
+        for(auto systemCambat:SystemCambatList)
+            emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
         //---------------------------------------------
         updateAircraftInfo();
         createAircraftInfo();
@@ -43,12 +47,13 @@ AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
     int tn = 10000 + aircraftNumber++;
-    aircraftInfo.TN = QString::number(tn);
+    aircraftInfo.TN = tn;
     aircraftInfo.IFFCode="a12345";
     aircraftInfo.CallSign="cls";
     aircraftInfo.Type="type1";
     aircraftInfo.MasterRadar="radar1";
-    aircraftInfo.Identification= AircraftInfo::F;// F, K, Z, X, U, H
+    int identy = (qrand() % (6));
+    aircraftInfo.Identification = (AircraftInfo::Identify)identy;// F, K, Z, X, U, H
     aircraftInfo.IdentificationMethod="mt1";//3 char
     aircraftInfo.Time="12345678954213";//epoch
     aircraftInfo.Pos="pos";
@@ -68,12 +73,12 @@ AircraftInfo Demo::createAircraftInfo()
     //
     for(auto system: systemList)
     {
-        aircraftInfo.DetectionSystems.append(system.Name);
+        aircraftInfo.Sends.append(system.Name);
     }
 
     for(auto station: stationList)
     {
-        aircraftInfo.Sends.append(station.Name);
+        aircraftInfo.DetectionSystems.append(station.Name);
     }
 
     mAircraftList.append(aircraftInfo);
@@ -151,7 +156,7 @@ void Demo::createStationInfo()
 
         stationInfo.Name = name;
         stationInfo.Active = true;
-        stationInfo.Number = 123456789;
+        stationInfo.Number = stationList.count() + 2000;
         stationInfo.Type = "Type1";
         stationInfo.Latitude = latitude;
         stationInfo.Longitude = longitude;
@@ -168,6 +173,9 @@ void Demo::createSystemInfo()
     for(int i = 0; i < 10; ++i)
     {
         SystemInfo  systemInfo;
+        SystemCambatInfo systemCambatInfo;
+        SystemStatusInfo systemStatusInfo;
+
         QString name = "System" + QString::number(systemList.count());
         double longitude = 48 + (qrand() % (59 - 48));
         double latitude = 27 + (qrand() % (38 - 27));
@@ -176,9 +184,8 @@ void Demo::createSystemInfo()
 
         systemInfo.Terminal = "terminal1";
         systemInfo.Name = name;
-        systemInfo.Number = 123456;
+        systemInfo.Number = systemList.count() + 3000;
         systemInfo.Type = "Type1";
-        systemInfo.Active = true;
         //
         systemInfo.Latitude = latitude;
         systemInfo.Longitude = longitude;
@@ -186,21 +193,26 @@ void Demo::createSystemInfo()
         systemInfo.ViewRange = viewRange;//meter
         systemInfo.MezRange = mezRange;//meter
         //status info
-        systemInfo.ReceiveTime = "1392/12/01: 12:10";
-        systemInfo.Simulation = "simulation";
-        systemInfo.BCCStatus = "s";//s, us
-        systemInfo.RadarSearchStatus = "us";//s, us
-        systemInfo.Operational = "operational";
-        systemInfo.MissileCount = 5;
-        systemInfo.RadarMode = "rMode";
+        systemStatusInfo.Number = systemInfo.Number;
+        systemStatusInfo.Active = true;
+        systemStatusInfo.ReceiveTime = "1392/12/01: 12:10";
+        systemStatusInfo.Simulation = "simulation";
+        systemStatusInfo.BCCStatus = "s";//s, us
+        systemStatusInfo.RadarSearchStatus = "us";//s, us
+        systemStatusInfo.Operational = "operational";
+        systemStatusInfo.MissileCount = 5;
+        systemStatusInfo.RadarMode = "rMode";
         //combat info
-        systemInfo.TN = 10000;
-        systemInfo.Acceptance = "acceptance1";
-        systemInfo.Phase = "search";//search, lock, ...
-        systemInfo.Antenna = 50;//degree (lock sight
-        systemInfo.ChanelNo = "123014s";
-        systemInfo.Inrange = "inrange";
+        systemCambatInfo.Number = systemInfo.Number;
+        systemCambatInfo.TN = 10000;
+        systemCambatInfo.Acceptance = "acceptance1";
+        systemCambatInfo.Phase = SystemCambatInfo::Search;//search, lock, ...
+        systemCambatInfo.Antenna = 50;//degree (lock sight
+        systemCambatInfo.ChanelNo = "123014s";
+        systemCambatInfo.Inrange = "inrange";
 
         systemList.append(systemInfo);
+        systemStatusList.append(systemStatusInfo);
+        SystemCambatList.append(systemCambatInfo);
     }
 }

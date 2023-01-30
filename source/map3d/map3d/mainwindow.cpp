@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWindow *parent) :
 {
     mOGLF = new QOpenGLFunctions_2_0;
 
+    setLayersModel(mMapController->getLayersModel());
 
     QObject::connect(this, &MainWindow::sceneGraphInitialized,
                      this, &MainWindow::initializeGL,
@@ -42,6 +43,8 @@ MainWindow::MainWindow(QWindow *parent) :
                      mMapController, &MapController::goToHome);
     QObject::connect(this, &MainWindow::view3DButtonClicked,
                      mMapController, &MapController::toggle3DView);
+    QObject::connect(this, &MainWindow::toggleLayerEnabled,
+                     mMapController, &MapController::toggleLayerEnabled);
 
 
 //    QObject::connect(this, &MainWindow::upButtonClicked,
@@ -218,6 +221,11 @@ bool MainWindow::rotateLeftButtonPressed() const
 bool MainWindow::rotateRightButtonPressed() const
 {
     return mRotateRightButtonPressed;
+}
+
+LayersModel *MainWindow::layersModel() const
+{
+    return mLayersModel;
 }
 
 UIHandle *MainWindow::uiHandle() const
@@ -463,9 +471,17 @@ void MainWindow::showListWindow()
 {
     if (mListWindow) {
         if (!mListWindow->isVisible())
-            mListWindow->showNormal();
+            mListWindow->showFullScreen();
         else
             mListWindow->hide();
+    }
+}
+
+void MainWindow::setLayersModel(LayersModel *layersModel)
+{
+    if (mLayersModel != layersModel) {
+        mLayersModel = layersModel;
+        emit layersModelChanged();
     }
 }
 
