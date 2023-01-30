@@ -125,3 +125,17 @@ void DataManager::setSystemInfo(const SystemInfo &systemInfo)
     }
 }
 
+void DataManager::setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo)
+{
+    if (mSystemTableModel) {
+        mSystemTableModel->updateItemData(systemCombatInfo);
+    }
+}
+
+void DataManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
+{
+    if (mSystemTableModel) {
+        mSystemTableModel->updateItemData(systemStatusInfo);
+    }
+}
+

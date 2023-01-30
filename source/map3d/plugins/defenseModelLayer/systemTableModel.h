@@ -38,10 +38,17 @@ public slots:
 public:
     void updateItemData(const QString& jsonStr);
     void updateItemData(const SystemInfo& systemInfo);
+    void updateItemData(const SystemStatusInfo& systemStatusInfo);
+    void updateItemData(const SystemCambatInfo& systemCambatInfo);
+
 
 private:
     std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemInfoList;
     std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemInfoListProxy;
+    std::deque<QPair<int, QSharedPointer<SystemStatusInfo>>> mSystemStatusInfoList;
+    std::deque<QPair<int, QSharedPointer<SystemStatusInfo>>> mSystemStatusInfoListProxy;
+    std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoList;
+    std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoListProxy;
 
     QString mFilter;
 
