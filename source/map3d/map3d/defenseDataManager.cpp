@@ -48,7 +48,8 @@ AircraftInfo Demo::createAircraftInfo()
     aircraftInfo.CallSign="cls";
     aircraftInfo.Type="type1";
     aircraftInfo.MasterRadar="radar1";
-    aircraftInfo.Identification= AircraftInfo::F;// F, K, Z, X, U, H
+    int identy = (qrand() % (6));
+    aircraftInfo.Identification = (AircraftInfo::Identify)identy;// F, K, Z, X, U, H
     aircraftInfo.IdentificationMethod="mt1";//3 char
     aircraftInfo.Time="12345678954213";//epoch
     aircraftInfo.Pos="pos";
@@ -68,12 +69,12 @@ AircraftInfo Demo::createAircraftInfo()
     //
     for(auto system: systemList)
     {
-        aircraftInfo.DetectionSystems.append(system.Name);
+        aircraftInfo.Sends.append(system.Name);
     }
 
     for(auto station: stationList)
     {
-        aircraftInfo.Sends.append(station.Name);
+        aircraftInfo.DetectionSystems.append(station.Name);
     }
 
     mAircraftList.append(aircraftInfo);

@@ -50,8 +50,8 @@ private slots:
     void onModeChanged(bool is3DView);
     void onContextmenuItemClicked(int index, QString systemName);
 private:
-    void setModelColor(AircraftInfo::Identify identify);
-    void create2DImageColore(osgEarth::Color color);
+    void changeModelColor(AircraftInfo::Identify identify);
+    void change2DImageColore(osgEarth::Color color);
     void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();
@@ -78,10 +78,15 @@ private:
     AircraftInformation *mAircraftinformation{nullptr};
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
+//    static osg::ref_ptr<osg::Image> m2dIcon;
+
     static constexpr int LABEL_IMAGE_WIDTH = 160;
     static constexpr int LABEL_IMAGE_HEIGHT = 170;
     QImage *mRenderTargetImage{nullptr};
     osg::ref_ptr<osg::Image> mLabelImage{nullptr};
+
+    osg::Image* m2DIcon;
+    osg::Image* mSelect2DIcon;
 };
 
 #endif // FLYINGMODEL_H
