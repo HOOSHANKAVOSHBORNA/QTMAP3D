@@ -135,7 +135,7 @@ void StationTableModel::updateItemData(const StationInfo &stationInfo)
 
     const auto it = std::find_if(mStationInfoList.begin(), mStationInfoList.end(),
                                  [stationInfo](const QPair<int, QSharedPointer<StationInfo>>& itemInfo){
-        return itemInfo.second->Name == stationInfo.Name;
+        return itemInfo.second->Number == stationInfo.Number;
     });
 
 
@@ -151,7 +151,7 @@ void StationTableModel::updateItemData(const StationInfo &stationInfo)
 
     mStationInfoListProxy.clear();
     for (auto& item : mStationInfoList) {
-        if (item.second->Name.contains(mFilter))
+        if (QString::number(item.second->Number).contains(mFilter))
             mStationInfoListProxy.push_back(item);
     }
 
