@@ -25,6 +25,10 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         //---------------------------------------------
         for(auto system:systemList)
             emit mDefenseDataManager->systemInfoChanged(system);
+        for(auto systemStatus:systemStatusList)
+            emit mDefenseDataManager->systemStatusInfoChanged(systemStatus);
+        for(auto systemCambat:SystemCambatList)
+            emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
         //---------------------------------------------
         updateAircraftInfo();
         createAircraftInfo();
@@ -169,6 +173,9 @@ void Demo::createSystemInfo()
     for(int i = 0; i < 10; ++i)
     {
         SystemInfo  systemInfo;
+        SystemCambatInfo systemCambatInfo;
+        SystemStatusInfo systemStatusInfo;
+
         QString name = "System" + QString::number(systemList.count());
         double longitude = 48 + (qrand() % (59 - 48));
         double latitude = 27 + (qrand() % (38 - 27));
@@ -179,7 +186,6 @@ void Demo::createSystemInfo()
         systemInfo.Name = name;
         systemInfo.Number = systemList.count() + 3000;
         systemInfo.Type = "Type1";
-        systemInfo.Active = true;
         //
         systemInfo.Latitude = latitude;
         systemInfo.Longitude = longitude;
@@ -187,21 +193,26 @@ void Demo::createSystemInfo()
         systemInfo.ViewRange = viewRange;//meter
         systemInfo.MezRange = mezRange;//meter
         //status info
-        systemInfo.ReceiveTime = "1392/12/01: 12:10";
-        systemInfo.Simulation = "simulation";
-        systemInfo.BCCStatus = "s";//s, us
-        systemInfo.RadarSearchStatus = "us";//s, us
-        systemInfo.Operational = "operational";
-        systemInfo.MissileCount = 5;
-        systemInfo.RadarMode = "rMode";
+        systemStatusInfo.Number = systemInfo.Number;
+        systemStatusInfo.Active = true;
+        systemStatusInfo.ReceiveTime = "1392/12/01: 12:10";
+        systemStatusInfo.Simulation = "simulation";
+        systemStatusInfo.BCCStatus = "s";//s, us
+        systemStatusInfo.RadarSearchStatus = "us";//s, us
+        systemStatusInfo.Operational = "operational";
+        systemStatusInfo.MissileCount = 5;
+        systemStatusInfo.RadarMode = "rMode";
         //combat info
-        systemInfo.TN = 10000;
-        systemInfo.Acceptance = "acceptance1";
-        systemInfo.Phase = SystemInfo::Search;//search, lock, ...
-        systemInfo.Antenna = 50;//degree (lock sight
-        systemInfo.ChanelNo = "123014s";
-        systemInfo.Inrange = "inrange";
+        systemCambatInfo.Number = systemInfo.Number;
+        systemCambatInfo.TN = 10000;
+        systemCambatInfo.Acceptance = "acceptance1";
+        systemCambatInfo.Phase = SystemCambatInfo::Search;//search, lock, ...
+        systemCambatInfo.Antenna = 50;//degree (lock sight
+        systemCambatInfo.ChanelNo = "123014s";
+        systemCambatInfo.Inrange = "inrange";
 
         systemList.append(systemInfo);
+        systemStatusList.append(systemStatusInfo);
+        SystemCambatList.append(systemCambatInfo);
     }
 }
