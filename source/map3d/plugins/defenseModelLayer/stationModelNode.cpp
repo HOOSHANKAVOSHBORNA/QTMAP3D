@@ -86,6 +86,8 @@ protected:
 };
 
 
+osg::ref_ptr<osg::Node> StationModelNode::mNode3DRef;
+
 StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
@@ -134,8 +136,15 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 //    mNode2D->addChild(yellowPlaceNode, false);
 //    mNode2D->addChild(redPlaceNode, true);
     //--create 3D node---------------------------------------------------------------------------
-    osg::ref_ptr<Truck> truck = new Truck(mMapController,this);
-    mNode3D = truck;
+    if (!mNode3DRef.valid()) {
+        mNode3DRef = osgDB::readRefNodeFile("../data/models/station/station.ive");
+    }
+    if (!mNode3DRef)
+    {
+        return;
+    }
+
+    mNode3D = mNode3DRef.get();
 //    truck->setQStringName("truck");
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;

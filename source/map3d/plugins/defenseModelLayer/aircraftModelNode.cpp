@@ -253,6 +253,11 @@ void AircraftModelNode::setInformation(AircraftInfo info)
     changeModelColor(mInformation.Identification);
 }
 
+AircraftInfo AircraftModelNode::getInformation()
+{
+    return mInformation;
+}
+
 void AircraftModelNode::goOnTrack()
 {
     //mMapController->goToPosition(getPosition(), 200, 0);

@@ -192,9 +192,9 @@ void Demo::createSystemInfo()
         systemInfo.Altitude = 4000;//meter
         systemInfo.ViewRange = viewRange;//meter
         systemInfo.MezRange = mezRange;//meter
+        systemInfo.Active = true;
         //status info
         systemStatusInfo.Number = systemInfo.Number;
-        systemStatusInfo.Active = true;
         systemStatusInfo.ReceiveTime = "1392/12/01: 12:10";
         systemStatusInfo.Simulation = "simulation";
         systemStatusInfo.BCCStatus = "s";//s, us

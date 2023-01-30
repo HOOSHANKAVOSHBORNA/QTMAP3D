@@ -81,6 +81,8 @@ private:
     //AircraftTableModel *mAircraftTableModel;
     DataManager *mDataManager = nullptr;
     osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
+
+    DefenseDataManager *mDefenseDataManager;
 };
 
 #endif // MODEL_H

@@ -16,7 +16,7 @@ int SystemInfoModel::rowCount(const QModelIndex &/*parent*/) const {
 QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
         case Numberr: return QVariant::fromValue<int>(mSystemInfo.Number);
-        case Active: return QVariant::fromValue<bool>(mSystemStatusInfo.Active);
+        case Active: return QVariant::fromValue<bool>(mSystemInfo.Active);
         case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
         case MainInfoHeaders: return QVariant::fromValue<QStringList>(getMainInfoHeaders());
         case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());

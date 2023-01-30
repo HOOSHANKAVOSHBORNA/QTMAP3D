@@ -22,6 +22,7 @@ class SystemModelNode: public DefenseModelNode
 public:
     SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void setInformation(const SystemInfo &info);
+    SystemInfo getInformation();
     void setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void setSystemCambatInfo(const SystemCambatInfo &systemCambatInfo);
     void goOnTrack();

@@ -38,12 +38,13 @@ CMainWindow {
 
 
     id: wnd
-    visible: false
-
+    visible: true
+    width: 800
+    height: 600
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("MAP3D")
-    flags: Qt.FramelessWindowHint
+    //flags: Qt.FramelessWindowHint
 //    MouseArea{
 //        anchors.fill : parent
 //        property variant clickPos: "1,1"
@@ -59,13 +60,13 @@ CMainWindow {
 //            wnd.showFullScreen();
 //        }
 //    }
-    BorderImage {
-        id: borderImage
-        anchors.fill: parent
-        anchors.bottomMargin: -10
-        source: "qrc:/Resources/mainFrame.png"
-        z:1
-}
+//    BorderImage {
+//        id: borderImage
+//        anchors.fill: parent
+//        anchors.bottomMargin: -10
+//        source: "qrc:/Resources/mainFrame.png"
+//        z:1
+//}
 
     onClicked: function() {
         toggleWidgetsVisible();

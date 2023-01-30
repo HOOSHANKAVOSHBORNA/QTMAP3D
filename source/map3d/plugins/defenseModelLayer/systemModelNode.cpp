@@ -172,6 +172,11 @@ void SystemModelNode::setInformation(const SystemInfo& info)
     updateOrCreateLabelImage();
 }
 
+SystemInfo SystemModelNode::getInformation()
+{
+    return mInformation;
+}
+
 void SystemModelNode::setSystemCambatInfo(const SystemCambatInfo &systemCambatInfo)
 {
     mSystemCambatInfo = systemCambatInfo;
@@ -202,7 +207,7 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
     mAssignedModelNode = assignedModelNode;
     mAssignedLine = new Line(mMapController);
     mAssignedLine->setLineClamp(false);
-    mAssignedLine->setLineColor(osgEarth::Color::Green);
+    mAssignedLine->setLineColor(osgEarth::Color::White);
     mAssignedLine->setLineWidth(6);
     mMapController->addNode(mAssignedLine->getNode());
 
@@ -214,6 +219,7 @@ void SystemModelNode::unassignedModelNode()
     if(mAssignedModelNode)
     {
         mMapController->removeNode(mAssignedLine->getNode());
+        mAssignedModelNode = nullptr;
     }
 }
 
@@ -377,7 +383,7 @@ void SystemModelNode::onMezButtonToggled(bool checked)
 
 void SystemModelNode::onActiveButtonToggled(bool checked)
 {
-    mSystemStatusInfo.Active = checked;
+    mInformation.Active = checked;
 }
 
 void SystemModelNode::collision()

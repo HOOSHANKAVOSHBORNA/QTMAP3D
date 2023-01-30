@@ -204,6 +204,7 @@ bool DefenseModelLayer::setup(MapController *mapController,
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
+    mDefenseDataManager = defenseDataManager;
     //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DefenseModelLayer::onAircraftInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DefenseModelLayer::onClearAircraft);
@@ -629,6 +630,10 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
         {
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
             systemModelNode->setAssignedModelNode(aircraftModelNode);
+            if(mDefenseDataManager)
+                emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
+                                                      systemModelNode->getInformation().Number);
+
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
