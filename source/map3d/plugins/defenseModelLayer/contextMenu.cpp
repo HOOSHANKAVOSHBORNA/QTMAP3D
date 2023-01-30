@@ -47,6 +47,8 @@ void ContextMenu::show(int x, int y)
     QQmlEngine::setObjectOwnership(mNowContextMenu, QQmlEngine::JavaScriptOwnership);
 
     mUiHandle->cmShowContextMenu(mNowContextMenu, static_cast<int>(x), static_cast<int>(y));
+    QMetaObject::invokeMethod(mNowContextMenu, "addMenuItem",
+                              Q_ARG(QVariant, QVariant::fromValue<QStringList>(mContextMenuModel->getList())));
 }
 
 

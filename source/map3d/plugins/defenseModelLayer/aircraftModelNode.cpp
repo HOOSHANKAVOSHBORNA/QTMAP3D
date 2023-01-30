@@ -312,6 +312,7 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
         float x, y;
         mMapController->worldToScreen(wordPos,x, y);
         mCurrentContextMenu->show(static_cast<int>(x), static_cast<int>(y));
+        event->accept();
     }
     if(!onModel && mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();

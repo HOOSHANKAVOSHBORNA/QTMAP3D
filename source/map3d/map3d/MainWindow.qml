@@ -137,6 +137,10 @@ CMainWindow {
             onListsButtonClicked: function() {
                 wnd.showListWindow();
             }
+
+            onLayersButtonClicked: function() {
+                layersWidget.menuWidgetLayersButtonClicked();
+            }
         }
 
         SideWidget {
@@ -178,8 +182,9 @@ CMainWindow {
         }
 
         LayersWidget {
+            id: layersWidget
 
-            x: parent.width - 300 - widgetsMargins
+            x: parent.width + widgetsMargins - (widgetsPositionFactor * (300 + (widgetsMargins*2)))
             y: menuWidget.height + (widgetsMargins * 2)
             width: 600 + (widgetsMargins * 2)
             height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height

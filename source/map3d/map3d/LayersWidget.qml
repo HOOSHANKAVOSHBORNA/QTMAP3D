@@ -10,7 +10,41 @@ Item {
     implicitWidth: 300
     property CLayersModel layersModel
 
+    property bool layersItemVisible: false
+
+    function menuWidgetLayersButtonClicked() {
+        layersItemHideAnimation.stop();
+        layersItemShowAnimation.stop();
+
+        if (rootItem.layersItemVisible == true) {
+            layersItemHideAnimation.to = 300 + (widgetsMargins * 2.0);
+            layersItemHideAnimation.from = 0;
+            layersItemHideAnimation.duration = 200;
+            rootItem.layersItemVisible = false;
+            layersItemHideAnimation.start();
+        } else {
+            layersItemShowAnimation.from = 300 + (widgetsMargins * 2.0);
+            layersItemShowAnimation.to = 0;
+            layersItemShowAnimation.duration = 200;
+            rootItem.layersItemVisible = true;
+            layersItemShowAnimation.start();
+        }
+    }
+
     signal toggleLayerEnabled(int layerIndex)
+
+    PropertyAnimation {
+        id: layersItemShowAnimation
+        target: layersItem
+        property: 'x'
+        easing.type: Easing.OutQuint
+    }
+    PropertyAnimation {
+        id: layersItemHideAnimation
+        target: layersItem
+        property: 'x'
+        easing.type: Easing.InQuint
+    }
 
     Item {
         id: layersItem
@@ -18,7 +52,7 @@ Item {
         y: 0
         height:parent.height
         width: 300
-        x: 0
+        x: 300 + (widgetsMargins * 2)
 
         Rectangle {
             anchors.fill: parent
