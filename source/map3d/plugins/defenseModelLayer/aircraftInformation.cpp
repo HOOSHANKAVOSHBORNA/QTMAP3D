@@ -31,9 +31,10 @@ QVariant AircraftInfoModel::data(const QModelIndex &/*index*/, int role) const{
 
 void AircraftInfoModel::setAircraftInfo(AircraftInfo &a)
 {
-    beginResetModel();
+//    beginResetModel();
     mAircraftInfo = a;
-    endResetModel();
+//    endResetModel();
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
 QStringList AircraftInfoModel::getMainInfo() const
