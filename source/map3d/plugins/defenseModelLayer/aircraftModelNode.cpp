@@ -198,9 +198,9 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double spee
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 
     path->insert(0, osg::AnimationPath::ControlPoint(currentPosW,getPositionAttitudeTransform()->getAttitude(),getScale()));
-    path->insert(1,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
-    path->insert(2,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
-    path->insert(timeEstimate,osg::AnimationPath::ControlPoint(posEstimateW, headingRotate, getScale()));
+    path->insert(0.1,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
+    path->insert(0.2,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
+    //path->insert(timeEstimate,osg::AnimationPath::ControlPoint(posEstimateW, headingRotate, getScale()));
 
     mAnimationPathCallback = new ModelAnimationPathCallback();
     mAnimationPathCallback->setAnimationPath(path);
