@@ -111,13 +111,13 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     setStyle(rootStyle);
     //--create 2D Nodes---------------------------------------------------------------------------
     osg::Image* redIcon = osgDB::readImageFile("../data/models/system/system_red.png");
-    redIcon->scaleImage(32, 32, redIcon->r());
+    redIcon->scaleImage(16, 16, redIcon->r());
     osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     redGeode->addDrawable(redImageDrawable);
 
     osg::Image* yellowIcon = osgDB::readImageFile("../data/models/system/system_yell.png");
-    yellowIcon->scaleImage(32, 32, yellowIcon->r());
+    yellowIcon->scaleImage(16, 16, yellowIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->addDrawable(yellowImageDrawable);
@@ -136,7 +136,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mNode3D = new Group;
     mNode3D->addChild(mTruck);
     mNode3D->addChild(systemR);
-    //mNode3D->addChild(systemL);
+    mNode3D->addChild(systemL);
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
@@ -219,8 +219,7 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
     mAssignedLine->setClamp(false);
     mAssignedLine->setColor(osgEarth::Color::Green);
     mAssignedLine->setWidth(6);
-    mMapController->addNode(mAssignedLine->getNode());
-
+    mAssignedLine->switchLP(false);
     //mMapController->addNode(mAssignedLine->getNode());
 
     auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
