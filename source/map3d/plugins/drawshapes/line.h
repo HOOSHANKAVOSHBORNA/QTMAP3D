@@ -11,7 +11,11 @@ public:
     void setColor(osgEarth::Color color);
     void setWidth(float width);
     void setClamp(bool clamp);
+    void switchLP(bool lineMode);
 
+    float mWidth{50};
+    osgEarth::Color mColor{osgEarth::Color::Red};
+    bool mClamp{true};
 
     void addPoint(const osg::Vec3d& vec);
     void removePoint();
