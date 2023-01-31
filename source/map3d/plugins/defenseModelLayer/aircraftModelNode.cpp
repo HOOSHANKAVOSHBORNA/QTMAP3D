@@ -538,23 +538,54 @@ void AircraftModelNode::addEffect(double emitterDuration)
     mFire->setEmitterDuration(emitterDuration);
     mFire->setParticleDuration(0.2);
     osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());// for textures or lighting
-    getMapNode()->addChild(mFire->getParticleSystem());
+    // getMapNode()->addChild(mFire->getParticleSystem());
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->addChild(mFire->getParticleSystem());
+        }
+    }
+
+
+
     //add smoke----------------------------------------------------------------------------------------------------
     osgEarth::Registry::shaderGenerator().run(mSmoke);// for textures or lighting
     getPositionAttitudeTransform()->addChild(mSmoke);
     mSmoke->setEmitterDuration(emitterDuration);
     mSmoke->setParticleDuration(5);
     osgEarth::Registry::shaderGenerator().run(mSmoke->getParticleSystem());// for textures or lighting
-    getMapNode()->addChild(mSmoke->getParticleSystem());
+    //getMapNode()->addChild(mSmoke->getParticleSystem());
+
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->addChild(mSmoke->getParticleSystem());
+        }
+    }
 }
 
 void AircraftModelNode::removeEffect()
 {
     //remove fire---------------------------------------------
-    getMapNode()->removeChild(mFire->getParticleSystem());
+    //getMapNode()->removeChild(mFire->getParticleSystem());
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->removeChild(mFire->getParticleSystem());
+        }
+    }
     getPositionAttitudeTransform()->removeChild(mFire);
+
     //remove smoke--------------------------------------------
-    getMapNode()->removeChild(mSmoke->getParticleSystem());
+    //getMapNode()->removeChild(mSmoke->getParticleSystem());
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->removeChild(mSmoke->getParticleSystem());
+        }
+    }
     getPositionAttitudeTransform()->removeChild(mSmoke);
 }
 
