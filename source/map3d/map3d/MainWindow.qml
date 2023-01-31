@@ -312,8 +312,8 @@ CMainWindow {
         font.weight: Font.Bold
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.topMargin: 100
-        anchors.rightMargin: 100
+        anchors.topMargin: 30
+        anchors.rightMargin: 50
     }
     ContextmenuWidget {
         id: contextmenu

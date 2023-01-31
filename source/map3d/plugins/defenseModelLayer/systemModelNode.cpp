@@ -209,7 +209,15 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
     mAssignedLine->setLineClamp(false);
     mAssignedLine->setLineColor(osgEarth::Color::White);
     mAssignedLine->setLineWidth(6);
-    mMapController->addNode(mAssignedLine->getNode());
+    //mMapController->addNode(mAssignedLine->getNode());
+
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->addChild(mAssignedLine->getNode());
+        }
+    }
 
     mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
 }
@@ -218,7 +226,16 @@ void SystemModelNode::unassignedModelNode()
 {
     if(mAssignedModelNode)
     {
-        mMapController->removeNode(mAssignedLine->getNode());
+        //mMapController->removeNode(mAssignedLine->getNode());
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mAssignedLine->getNode());
+            }
+        }
+
         mAssignedModelNode = nullptr;
     }
 }
@@ -311,11 +328,25 @@ void SystemModelNode::onRangeButtonToggled(bool check)
     {
         mRangeCircle->setPosition(getPosition());
         mRangeCircle->setRadius(osgEarth::Distance(mInformation.ViewRange, osgEarth::Units::METERS));
-        mMapController->addNode(mRangeCircle);
+        //mMapController->addNode(mRangeCircle);
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->addChild(mRangeCircle);
+            }
+        }
     }
     else
     {
-        mMapController->removeNode(mRangeCircle);
+        //mMapController->removeNode(mRangeCircle);
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mRangeCircle);
+            }
+        }
     }
 }
 
@@ -360,11 +391,28 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         mWezPolygon->setHeight(height);
 
         //        mMapController->addNode(mWezPolygon);
-        mMapController->getMapNode()->insertChild(0,mWezPolygon);
+        //mMapController->getMapNode()->insertChild(0,mWezPolygon);
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->insertChild(0,mWezPolygon);
+            }
+        }
 
     }
-    else
-        mMapController->removeNode(mWezPolygon);
+    else {
+        //mMapController->removeNode(mWezPolygon);
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mWezPolygon);
+            }
+        }
+    }
 }
 
 void SystemModelNode::onMezButtonToggled(bool checked)
@@ -373,11 +421,27 @@ void SystemModelNode::onMezButtonToggled(bool checked)
     {
         mMezSphere->setPosition(getPosition());
         mMezSphere->setRadius(mInformation.MezRange);
-        mMapController->addNode(mMezSphere);
+        //mMapController->addNode(mMezSphere);
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->addChild(mMezSphere);
+            }
+        }
     }
     else
     {
-        mMapController->removeNode(mMezSphere);
+        //mMapController->removeNode(mMezSphere);
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mMezSphere);
+            }
+        }
     }
 }
 
@@ -399,7 +463,15 @@ void SystemModelNode::collision()
         {
             mAssignedModelNode->collision();
             mFiredRocket->collision();
-            mMapController->removeNode(mAssignedLine->getNode());
+            //mMapController->removeNode(mAssignedLine->getNode());
+
+            auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+            if (layer) {
+                osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+                if (group) {
+                    group->removeChild(mAssignedLine->getNode());
+                }
+            }
             mHit = true;
         }
     }
