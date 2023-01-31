@@ -209,7 +209,8 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
 
     mAssignedLine->setClamp(false);
     mAssignedLine->setColor(osgEarth::Color::Green);
-    mAssignedLine->setWidth(6);
+    mAssignedLine->setWidth(5);
+    mAssignedLine->switchLP(false);
     mMapController->addNode(mAssignedLine->getNode());
 
     //mMapController->addNode(mAssignedLine->getNode());
