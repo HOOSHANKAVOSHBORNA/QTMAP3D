@@ -38,34 +38,35 @@ CMainWindow {
 
 
     id: wnd
-    visible: false
-
+    visible: true
+    width: 800
+    height: 600
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("MAP3D")
-    flags: Qt.FramelessWindowHint
-//    MouseArea{
-//        anchors.fill : parent
-//        property variant clickPos: "1,1"
-//        onPressed: {
-//            clickPos = Qt.point(mouse.x ,mouse.y)
-//        }
-//        onPositionChanged: {
-//            var delta = Qt.point(mouse.x - clickPos.x , mouse.y - clickPos.y)
-//            wnd.x += delta.x
-//            wnd.y += delta.y
-//        }
-//        onDoubleClicked: {
-//            wnd.showFullScreen();
-//        }
-//    }
-    BorderImage {
-        id: borderImage
-        anchors.fill: parent
-        anchors.bottomMargin: -10
-        source: "qrc:/Resources/mainFrame.png"
-        z:1
-}
+    //flags: Qt.FramelessWindowHint
+    //    MouseArea{
+    //        anchors.fill : parent
+    //        property variant clickPos: "1,1"
+    //        onPressed: {
+    //            clickPos = Qt.point(mouse.x ,mouse.y)
+    //        }
+    //        onPositionChanged: {
+    //            var delta = Qt.point(mouse.x - clickPos.x , mouse.y - clickPos.y)
+    //            wnd.x += delta.x
+    //            wnd.y += delta.y
+    //        }
+    //        onDoubleClicked: {
+    //            wnd.showFullScreen();
+    //        }
+    //    }
+    //    BorderImage {
+    //        id: borderImage
+    //        anchors.fill: parent
+    //        anchors.bottomMargin: -10
+    //        source: "qrc:/Resources/mainFrame.png"
+    //        z:1
+    //}
 
     onClicked: function() {
         toggleWidgetsVisible();
@@ -146,7 +147,7 @@ CMainWindow {
             anchors.horizontalCenter: parent.horizontalCenter
 
             y:25 +  parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/5)+25))
-                //menuWidget.height /*(-height - widgetsMargins)*/ + (wnd.widgetsPositionFactor * (height + (widgetsMargins * 2.0)))
+            //menuWidget.height /*(-height - widgetsMargins)*/ + (wnd.widgetsPositionFactor * (height + (widgetsMargins * 2.0)))
 
             width: implicitWidth
             height: implicitHeight
@@ -159,6 +160,10 @@ CMainWindow {
 
             onListsButtonClicked: function() {
                 wnd.showListWindow();
+            }
+
+            onLayersButtonClicked: function() {
+                layersWidget.menuWidgetLayersButtonClicked();
             }
         }
 
@@ -198,32 +203,53 @@ CMainWindow {
 
                 wnd.sideItemCreated(index, item);
             }
+
+
         }
 
-//        InfoWidget {
-//            id: infoWidget
-//            x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
-//            y: menuWidget.height + (widgetsMargins * 2.0)
-//            width: 600 + (widgetsMargins * 2)
-//            height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
+        LayersWidget {
+            id: layersWidget
 
-//            onView2D3DButtonClicked: function() {
-//                wnd.infoWidget2D3DButtonClicked();
-//            }
+            x: parent.width + widgetsMargins - (widgetsPositionFactor * (300 + (widgetsMargins*2)))
+            y: menuWidget.height + (widgetsMargins * 2)
+            width: 600 + (widgetsMargins * 2)
+            height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height
 
-//            onRouteButtonClicked: function() {
-//                wnd.infoWidgetRouteButtonClicked();
-//            }
+            layersModel: wnd.layersModel
 
-//            onFollowButtonClicked: function() {
-//                wnd.infoWidgetFollowButtonClicked();
-//            }
+            onToggleLayerEnabled: function(layerIndex) {
+                wnd.toggleLayerEnabled(layerIndex);
+            }
 
-//            onMoreButtonClicked: function() {
-//                wnd.infoWidgetMoreButtonClicked();
-//            }
+        }
 
-//        }
+
+
+
+        //        InfoWidget {
+        //            id: infoWidget
+        //            x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
+        //            y: menuWidget.height + (widgetsMargins * 2.0)
+        //            width: 600 + (widgetsMargins * 2)
+        //            height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
+
+        //            onView2D3DButtonClicked: function() {
+        //                wnd.infoWidget2D3DButtonClicked();
+        //            }
+
+        //            onRouteButtonClicked: function() {
+        //                wnd.infoWidgetRouteButtonClicked();
+        //            }
+
+        //            onFollowButtonClicked: function() {
+        //                wnd.infoWidgetFollowButtonClicked();
+        //            }
+
+        //            onMoreButtonClicked: function() {
+        //                wnd.infoWidgetMoreButtonClicked();
+        //            }
+
+        //        }
 
         Compass{
             id:compass
@@ -278,17 +304,17 @@ CMainWindow {
     }
 
 
-//    Label {
-//        id: fpsLabel
-//        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
-//        color: 'red'
-//        font.pointSize: 30
-//        font.weight: Font.Bold
-//        anchors.right: parent.right
-//        anchors.top: parent.top
-//        anchors.topMargin: 100
-//        anchors.rightMargin: 100
-//    }
+    Label {
+        id: fpsLabel
+        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
+        color: 'red'
+        font.pointSize: 30
+        font.weight: Font.Bold
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 30
+        anchors.rightMargin: 50
+    }
     ContextmenuWidget {
         id: contextmenu
     }
@@ -303,8 +329,8 @@ CMainWindow {
     function addSideItem(_title_text, _icon_url, _side_itemurl) {
         var new_index = sideItemsModel.count;
         sideItemsModel.append({"title_text": _title_text,
-                          "icon_url": _icon_url,
-                          "side_itemurl": _side_itemurl});
+                                  "icon_url": _icon_url,
+                                  "side_itemurl": _side_itemurl});
         return new_index;
     }
 
@@ -333,20 +359,20 @@ CMainWindow {
             }
             if (itemfound === false) {
                 toolboxModel.get(category_index).categoryModel.append({'itemName': itemDesc.name,
-                                                  'itemIcon' : itemDesc.iconUrl,
-                                                  'itemCheckable' : itemDesc.checkable
-                                              });
+                                                                          'itemIcon' : itemDesc.iconUrl,
+                                                                          'itemCheckable' : itemDesc.checkable
+                                                                      });
                 wnd.toolboxItemCreated(itemDesc);
             } else {
                 return false;
             }
         } else {
             toolboxModel.append({'categoryName': itemDesc.category,
-                            'categoryModel': listModelComponent.createObject(null, {})});
+                                    'categoryModel': listModelComponent.createObject(null, {})});
             toolboxModel.get(toolboxModelCount).categoryModel.append({'itemName': itemDesc.name,
-                                             'itemIcon' : itemDesc.iconUrl,
-                                             'itemCheckable' : itemDesc.checkable
-                                         });
+                                                                         'itemIcon' : itemDesc.iconUrl,
+                                                                         'itemCheckable' : itemDesc.checkable
+                                                                     });
             wnd.toolboxItemCreated(itemDesc);
         }
 
@@ -376,20 +402,20 @@ CMainWindow {
             }
             if (itemfound === false) {
                 fileModel.get(category_index).categoryModel.append({'itemName': itemDesc.name,
-                                               'itemIcon' : itemDesc.iconUrl,
-                                               'itemCheckable' : itemDesc.checkable
-                                           });
+                                                                       'itemIcon' : itemDesc.iconUrl,
+                                                                       'itemCheckable' : itemDesc.checkable
+                                                                   });
                 wnd.fileItemCreated(itemDesc);
             } else {
                 return false;
             }
         } else {
             fileModel.append({'categoryName': itemDesc.category,
-                         'categoryModel': listModelComponent.createObject(null, {})});
+                                 'categoryModel': listModelComponent.createObject(null, {})});
             fileModel.get(fileModelCount).categoryModel.append({'itemName': itemDesc.name,
-                                           'itemIcon' : itemDesc.iconUrl,
-                                           'itemCheckable' : itemDesc.checkable
-                                       });
+                                                                   'itemIcon' : itemDesc.iconUrl,
+                                                                   'itemCheckable' : itemDesc.checkable
+                                                               });
             wnd.fileItemCreated(itemDesc);
         }
 
@@ -397,14 +423,14 @@ CMainWindow {
     }
 
 
-//    function showInfoItem(itemTypeString) {
-//        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
-//        sideWidget.hideAllItems();
-//        infoWidget.showInfoItem(itemTypeString);
-//    }
-//    function updateInfoWidgetData(infoJson) {
-//        infoWidget.updateData(infoJson);
-//    }
+    //    function showInfoItem(itemTypeString) {
+    //        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+    //        sideWidget.hideAllItems();
+    //        infoWidget.showInfoItem(itemTypeString);
+    //    }
+    //    function updateInfoWidgetData(infoJson) {
+    //        infoWidget.updateData(infoJson);
+    //    }
 
 
     function showStatusMessage(message, timer) {
@@ -430,7 +456,7 @@ CMainWindow {
 
 
         } else {
-//            sideWidget.hideAllItems();
+            //            sideWidget.hideAllItems();
             infoo.hideItem()
 
             widgetsHideAnimation.stop();

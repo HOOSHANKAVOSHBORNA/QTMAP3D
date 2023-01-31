@@ -202,6 +202,7 @@ struct SystemInfo
     double Altitude;
     double ViewRange{300000};
     double MezRange{250000};
+    bool Active;
 };
 
 struct SystemStatusInfo
@@ -215,7 +216,6 @@ struct SystemStatusInfo
     QString Operational;
     int MissileCount;
     QString RadarMode;
-    bool Active;
 };
 struct SystemCambatInfo
 {
@@ -268,6 +268,8 @@ signals:
     //--aircraft-----------------------------------------------
     void aircraftInfoChanged(AircraftInfo& aircraftInfo);
     void clearAircraft(int tn);
+    void aircraftAssignedResponse(int tn, int systemNo, bool result);
+    //--send command---------------------------------------------
     void aircraftAssigned(int tn, int systemNo);
     //--system-------------------------------------------------
     void systemInfoChanged(SystemInfo& systemInfo);

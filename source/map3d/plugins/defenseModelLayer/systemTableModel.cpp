@@ -171,7 +171,7 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
 
     const auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(),
                                  [systemInfo](const QPair<int, QSharedPointer<SystemInfo>>& itemInfo){
-        return itemInfo.second->Name == systemInfo.Name;
+        return itemInfo.second->Number == systemInfo.Number;
     });
 
 
@@ -187,7 +187,7 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
 
     mSystemInfoListProxy.clear();
     for (auto& item : mSystemInfoList) {
-        if (item.second->Name.contains(mFilter))
+        if (QString::number(item.second->Number).contains(mFilter))
             mSystemInfoListProxy.push_back(item);
     }
 

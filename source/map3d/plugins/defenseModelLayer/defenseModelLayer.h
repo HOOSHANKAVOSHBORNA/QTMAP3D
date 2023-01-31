@@ -23,6 +23,10 @@ class Vec3d;
 class Node;
 }
 
+#define AIRCRAFTS_LAYER_NAME "Aircrafts"
+#define SYSTEMS_LAYER_NAME "Systems"
+#define STATIONS_LAYER_NAME "Stations"
+
 class DefenseModelLayer :public PluginInterface
 {
     Q_OBJECT
@@ -81,6 +85,8 @@ private:
     //AircraftTableModel *mAircraftTableModel;
     DataManager *mDataManager = nullptr;
     osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
+
+    DefenseDataManager *mDefenseDataManager;
 };
 
 #endif // MODEL_H

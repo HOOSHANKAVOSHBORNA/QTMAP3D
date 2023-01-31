@@ -26,10 +26,10 @@ int main(int argc, char *argv[])
     //---------------------------------
 
     if (map3DApp->isMainWindowReady()) {
-        map3DApp->mainWindow()->showFullScreen();
+        map3DApp->mainWindow()->show();
     } else {
         QObject::connect(map3DApp, &Application::mainWindowCreated, [map3DApp]() {
-            map3DApp->mainWindow()->showFullScreen();
+            map3DApp->mainWindow()->showMaximized();
         });
     }
 

@@ -63,6 +63,7 @@ QHash<int, QByteArray> StationInfoModel::roleNames() const
 void StationInfoModel::setInformtion(const StationInfo &stationInfo)
 {
     mStationInfo = stationInfo;
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
 StationInformtion::StationInformtion(QQmlEngine *qmlEngine, UIHandle *uiHandle, StationInfo stationInfo, QObject *parent) :
