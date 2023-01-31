@@ -39,6 +39,7 @@
 #include <osgViewer/Viewer>
 #include <QQuickItem>
 #include <QSortFilterProxyModel>
+#include <thread>
 
 
 #include "aircraftTableModel.h"
@@ -202,10 +203,6 @@ bool DefenseModelLayer::setup(MapController *mapController,
         }
     });
 
-    osgEarth::ModelLayer *aircraftsModelLayer = new osgEarth::ModelLayer();
-    aircraftsModelLayer->setName(AIRCRAFTS_LAYER_NAME);
-    mMapController->addLayer(aircraftsModelLayer);
-
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);
     mMapController->addLayer(systemsModelLayer);
@@ -213,6 +210,10 @@ bool DefenseModelLayer::setup(MapController *mapController,
     osgEarth::ModelLayer *stationsModelLayer = new osgEarth::ModelLayer();
     stationsModelLayer->setName(STATIONS_LAYER_NAME);
     mMapController->addLayer(stationsModelLayer);
+
+    osgEarth::ModelLayer *aircraftsModelLayer = new osgEarth::ModelLayer();
+    aircraftsModelLayer->setName(AIRCRAFTS_LAYER_NAME);
+    mMapController->addLayer(aircraftsModelLayer);
 }
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
@@ -626,7 +627,20 @@ void DefenseModelLayer::onClearAircraft(int tn)
 
 void DefenseModelLayer::onAircraftAssignedResponse(int tn, int systemNo, bool result)
 {
-    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
+//    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
+    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemNo))
+    {
+        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemNo]);
+        if(systemModelNode)
+            systemModelNode->acceptAssignedModelNode(result);
+    }
+//---if rejected then unassinment from aircraft----------------------------------------------------
+    if(!result && mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
+    {
+        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn]);
+        if(aircraftModelNode)
+            aircraftModelNode->setAssignmentModelNode(nullptr);
+    }
 }
 
 void DefenseModelLayer::frameEvent()
@@ -675,10 +689,12 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
             systemModelNode->setAssignedModelNode(aircraftModelNode);
             aircraftModelNode->setAssignmentModelNode(systemModelNode);
-            if(mDefenseDataManager)
-                emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
-                                                      systemModelNode->getInformation().Number);
-
+            //--TODO manage memory---------------------------------------
+            std::thread* t1 = new std::thread([=](){
+                if(mDefenseDataManager)
+                    emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
+                                                          systemModelNode->getInformation().Number);
+            });
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
