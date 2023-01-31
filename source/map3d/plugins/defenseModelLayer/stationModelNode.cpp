@@ -233,11 +233,26 @@ void StationModelNode::onRangeButtonToggled(bool check)
     {
         mRangeCircle->setPosition(getPosition());
         mRangeCircle->setRadius(osgEarth::Distance(mInformation.Radius, osgEarth::Units::METERS));
-        mMapController->addNode(mRangeCircle);
+        //mMapController->addNode(mRangeCircle);
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->addChild(mRangeCircle);
+            }
+        }
     }
     else
     {
-        mMapController->removeNode(mRangeCircle);
+        //mMapController->removeNode(mRangeCircle);
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mRangeCircle);
+            }
+        }
     }
 }
 
@@ -261,11 +276,25 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         mVisiblePolygone->addPoints(geoPoint.vec3d());
 
         mVisiblePolygone->setHeight(0);
-        mMapController->addNode(mVisiblePolygone);
+        //mMapController->addNode(mVisiblePolygone);
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->addChild(mVisiblePolygone);
+            }
+        }
     }
     else
     {
-        mMapController->removeNode(mVisiblePolygone);
+        //mMapController->removeNode(mVisiblePolygone);
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mVisiblePolygone);
+            }
+        }
     }
 }
 

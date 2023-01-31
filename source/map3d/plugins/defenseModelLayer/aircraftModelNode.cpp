@@ -25,6 +25,7 @@
 #include <QTimer>
 
 
+#include "defenseModelLayer.h"
 
 const float RANGE3D = std::numeric_limits<float>::max();
 
@@ -274,8 +275,17 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode();
-        mMapController->removeNode(mRouteLine->getNode());
-        mMapController->removeNode(mTempRouteLine->getNode());
+//        mMapController->removeNode(mRouteLine->getNode());
+//        mMapController->removeNode(mTempRouteLine->getNode());
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mRouteLine->getNode());
+                group->removeChild(mTempRouteLine->getNode());
+            }
+        }
     }
     if(mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();
@@ -352,13 +362,30 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
     //    qDebug()<<"iwRouteButtonClicked";
     if(check)
     {
-        mMapController->addNode(mRouteLine->getNode());
-        mMapController->addNode(mTempRouteLine->getNode());
+        //mMapController->addNode(mRouteLine->getNode());
+        //mMapController->addNode(mTempRouteLine->getNode());
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->addChild(mRouteLine->getNode());
+                group->addChild(mTempRouteLine->getNode());
+            }
+        }
     }
     else
     {
-        mMapController->removeNode(mRouteLine->getNode());
-        mMapController->removeNode(mTempRouteLine->getNode());
+//        mMapController->removeNode(mRouteLine->getNode());
+//        mMapController->removeNode(mTempRouteLine->getNode());
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mRouteLine->getNode());
+                group->removeChild(mTempRouteLine->getNode());
+            }
+        }
     }
 
     //    mMapController->getRoot()->addChild(drawLine(mLocationPoints, 1.0));
