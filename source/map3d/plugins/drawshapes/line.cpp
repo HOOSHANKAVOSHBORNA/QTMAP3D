@@ -69,6 +69,19 @@ void Line::setWidth(float width)
     mPathNode->setStyle(style);
 }
 
+void Line::setClamp(bool clamp)
+{
+    auto style = mPathNode->getStyle();
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+    if (clamp){
+        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
+    }
+    else{
+        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
+    }
+    mPathNode->setStyle(style);
+}
+
 void Line::addPoint(const osg::Vec3d &vec)
 {
     mLinePath->push_back(vec);
