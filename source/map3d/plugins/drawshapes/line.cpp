@@ -53,11 +53,11 @@ void Line::setColor(osgEarth::Color color)
     mColor = color;
     if (!mIsPoint){
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()
-            ->stroke()->color()= color;
+            ->stroke()->color()= mColor;
     }
     else{
         style.getOrCreate<osgEarth::Symbology::PointSymbol>()
-                ->fill()->color()= color;
+                ->fill()->color()= mColor;
     }
     mPathNode->setStyle(style);
 }
@@ -68,11 +68,11 @@ void Line::setWidth(float width)
     mWidth = width;
     if(!mIsPoint){
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()
-            ->width() = width;
+            ->width() = mWidth;
 }
     else{
         style.getOrCreate<osgEarth::Symbology::PointSymbol>()
-                ->size() = width;
+                ->size() = mWidth;
     }
     mPathNode->setStyle(style);
 }

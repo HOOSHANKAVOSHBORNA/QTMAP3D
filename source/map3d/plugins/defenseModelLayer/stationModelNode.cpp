@@ -175,7 +175,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
 
     mVisiblePolygone = new Polygone(mMapController, true);
-    mVisiblePolygone->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.5f));
+    mVisiblePolygone->setLineColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
     mVisiblePolygone->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.5f));
 }
 
@@ -267,15 +267,19 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         double radius = mInformation.Radius;
 
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
+        geoPoint.z() = 0;
         mVisiblePolygone->addPoints(geoPoint.vec3d());
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() + radius*2/3, worldPosition.z()));
+        geoPoint.z() = 0;
         mVisiblePolygone->addPoints(geoPoint.vec3d());
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() + radius*2/3, worldPosition.y() + radius*2/3, worldPosition.z()));
+        geoPoint.z() = 0;
         mVisiblePolygone->addPoints(geoPoint.vec3d());
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() + radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
+        geoPoint.z() = 0;
         mVisiblePolygone->addPoints(geoPoint.vec3d());
 
-        mVisiblePolygone->setHeight(0);
+        //mVisiblePolygone->setHeight(0);
         //mMapController->addNode(mVisiblePolygone);
         auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
