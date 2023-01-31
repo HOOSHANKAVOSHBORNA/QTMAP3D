@@ -98,7 +98,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000 * 3.5;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700 * 3.5;
 
 
     this->setCullingActive(false);
@@ -115,7 +115,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     setStyle(rootStyle);
     //--create 2d node----------------------------------------------------------------------------
     osg::Image* redIcon = osgDB::readImageFile("../data/models/station/station_ll_red.png");
-    redIcon->scaleImage(32, 32, redIcon->r());
+    redIcon->scaleImage(16, 16, redIcon->r());
     osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     redGeode->addDrawable(redImageDrawable);
@@ -123,7 +123,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 //    redPlaceNode->setIconImage(redIcon);
 
     osg::Image* yellowIcon = osgDB::readImageFile("../data/models/station/station_ll_yell.png");
-    yellowIcon->scaleImage(32, 32, yellowIcon->r());
+    yellowIcon->scaleImage(16, 16, yellowIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->addDrawable(yellowImageDrawable);
@@ -144,7 +144,8 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
         return;
     }
 
-    mNode3D = mNode3DRef.get();
+    mNode3D = new osg::Group;
+    mNode3D->addChild(mNode3DRef.get());
 //    truck->setQStringName("truck");
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;

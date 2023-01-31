@@ -36,6 +36,10 @@ Item {
             shadowRadius: 20
             endAngle: -270
             startAngle: -90
+            title: Item {
+
+            }
+
             menuItem: Item {
                 id: item
                 rotation: -90 + sectionCenterAngle(styleData.index)
@@ -55,13 +59,16 @@ Item {
                         to: parent.height * 0.25
                         duration: 300
                         running: true
+                        easing.type: Easing.InOutCirc
                     }
 
 
                     width: styleData.hovered ? parent.height * 0.35 : parent.height * 0.25
                     height: width
                     color:  "#505050"
-                    opacity: 0.4
+                    border.color: styleData.hovered ? "#FFCC00" : "transparent"
+                    border.width: 4
+                    opacity: styleData.hovered ? 0.6 : 0.4
                     radius: width / 2
 
                     anchors.right: parent.right

@@ -1,6 +1,9 @@
 #include "defenseDataManager.h"
 
 #include <QTimer>
+#include <QDebug>
+#include <chrono>
+#include <thread>
 
 static int aircraftNumber = 0;
 DefenseDataManager::DefenseDataManager(QObject *parent):
@@ -40,6 +43,18 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     });
     timer->start(10000);
     //---------------------------------------------------------
+    QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
+        qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        if(tn % 2 == 0)
+            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
+        else
+            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
+    });
+
+    QObject::connect(mDefenseDataManager, &DefenseDataManager::cancelAircraftAssigned,[=](int tn, int systemNo){
+        qDebug() << "cancelAircraftAssigned: "<<tn<<", "<<systemNo;
+    });
 
 }
 
@@ -206,7 +221,8 @@ void Demo::createSystemInfo()
         systemCambatInfo.Number = systemInfo.Number;
         systemCambatInfo.TN = 10000;
         systemCambatInfo.Acceptance = "acceptance1";
-        systemCambatInfo.Phase = SystemCambatInfo::Search;//search, lock, ...
+        int phase = (qrand() % (5));
+        systemCambatInfo.Phase = (SystemCambatInfo::Phases)phase;//search, lock, ...
         systemCambatInfo.Antenna = 50;//degree (lock sight
         systemCambatInfo.ChanelNo = "123014s";
         systemCambatInfo.Inrange = "inrange";

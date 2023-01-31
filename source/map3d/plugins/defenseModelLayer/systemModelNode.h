@@ -28,6 +28,7 @@ public:
     void goOnTrack();
     DefenseModelNode *getAssignedModelNode() const;
     void setAssignedModelNode(DefenseModelNode *assignedModelNode);
+    void acceptAssignedModelNode(bool value);
     void unassignedModelNode();
     void fire();
 public slots:
