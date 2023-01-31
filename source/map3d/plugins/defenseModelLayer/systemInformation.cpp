@@ -53,6 +53,8 @@ void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemSt
     mSystemInfo = systemInfo;
     mSystemStatusInfo = systemStatusInfo;
     mSystemCombatInfo = systemCombatInfo;
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
+
 }
 
 QStringList SystemInfoModel::getMainInfo() const

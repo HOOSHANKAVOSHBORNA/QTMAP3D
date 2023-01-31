@@ -1,6 +1,7 @@
 
 #include "layersmodel.h"
 #include <osgEarth/Map>
+#include <osgEarth/ModelLayer>
 
 
 LayersModel::LayersModel(QObject *parent) :
@@ -28,7 +29,13 @@ void LayersModel::updateLayers(osgEarth::Map *map)
 void LayersModel::toggleLayerEnabled(int layerIndex)
 {
     if (layerIndex < mLayersList.size()) {
-        mLayersList[layerIndex]->setEnabled(!mLayersList[layerIndex]->getEnabled());
+        auto layer = mLayersList[layerIndex];
+        auto modelLayer = dynamic_cast<osgEarth::ModelLayer*>(layer);
+        if (modelLayer) {
+            modelLayer->setVisible(!modelLayer->getVisible());
+        } else {
+            layer->setEnabled(!layer->getEnabled());
+        }
         emit dataChanged(index(layerIndex),
                          index(layerIndex),
                          {LayerEnabledRole});
@@ -61,7 +68,13 @@ QVariant LayersModel::data(const QModelIndex &index, int role) const
 
     case LayerEnabledRole:
     {
-        return QVariant::fromValue<bool>(mLayersList[index.row()]->getEnabled());
+        auto layer = mLayersList[index.row()];
+        auto modelLayer = dynamic_cast<osgEarth::ModelLayer*>(layer);
+        if (modelLayer) {
+            return QVariant::fromValue<bool>(modelLayer->getVisible());
+        } else {
+            return QVariant::fromValue<bool>(layer->getEnabled());
+        }
         break;
     }
 

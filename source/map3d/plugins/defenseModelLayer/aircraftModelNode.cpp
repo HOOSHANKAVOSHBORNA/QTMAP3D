@@ -26,6 +26,7 @@
 #include <QTimer>
 
 
+#include "defenseModelLayer.h"
 
 const float RANGE3D = std::numeric_limits<float>::max();
 
@@ -35,14 +36,14 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     :DefenseModelNode(mapControler, parent)
 {
     mRouteLine = new Line(mapControler);
-    mRouteLine->setLineClamp(false);
-    mRouteLine->setLineColor(osgEarth::Color::Purple);
-    mRouteLine->setLineWidth(6);
+    mRouteLine->setClamp(false);
+    mRouteLine->setColor(osgEarth::Color::Purple);
+    mRouteLine->setWidth(6);
 
     mTempRouteLine = new Line(mapControler);
-    mTempRouteLine->setLineClamp(false);
-    mTempRouteLine->setLineColor(osgEarth::Color::Purple);
-    mTempRouteLine->setLineWidth(6);
+    mTempRouteLine->setClamp(false);
+    mTempRouteLine->setColor(osgEarth::Color::Purple);
+    mTempRouteLine->setWidth(6);
 
     mQmlEngine = qmlEngine;
     mMapController = mapControler;
@@ -276,8 +277,17 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode();
-        mMapController->removeNode(mRouteLine->getNode());
-        mMapController->removeNode(mTempRouteLine->getNode());
+//        mMapController->removeNode(mRouteLine->getNode());
+//        mMapController->removeNode(mTempRouteLine->getNode());
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mRouteLine->getNode());
+                group->removeChild(mTempRouteLine->getNode());
+            }
+        }
     }
     if(mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();
@@ -363,13 +373,30 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
     //    qDebug()<<"iwRouteButtonClicked";
     if(check)
     {
-        mMapController->addNode(mRouteLine->getNode());
-        mMapController->addNode(mTempRouteLine->getNode());
+        //mMapController->addNode(mRouteLine->getNode());
+        //mMapController->addNode(mTempRouteLine->getNode());
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->addChild(mRouteLine->getNode());
+                group->addChild(mTempRouteLine->getNode());
+            }
+        }
     }
     else
     {
-        mMapController->removeNode(mRouteLine->getNode());
-        mMapController->removeNode(mTempRouteLine->getNode());
+//        mMapController->removeNode(mRouteLine->getNode());
+//        mMapController->removeNode(mTempRouteLine->getNode());
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->removeChild(mRouteLine->getNode());
+                group->removeChild(mTempRouteLine->getNode());
+            }
+        }
     }
 
     //    mMapController->getRoot()->addChild(drawLine(mLocationPoints, 1.0));
@@ -522,23 +549,54 @@ void AircraftModelNode::addEffect(double emitterDuration)
     mFire->setEmitterDuration(emitterDuration);
     mFire->setParticleDuration(0.2);
     osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());// for textures or lighting
-    getMapNode()->addChild(mFire->getParticleSystem());
+    // getMapNode()->addChild(mFire->getParticleSystem());
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->addChild(mFire->getParticleSystem());
+        }
+    }
+
+
+
     //add smoke----------------------------------------------------------------------------------------------------
     osgEarth::Registry::shaderGenerator().run(mSmoke);// for textures or lighting
     getPositionAttitudeTransform()->addChild(mSmoke);
     mSmoke->setEmitterDuration(emitterDuration);
     mSmoke->setParticleDuration(5);
     osgEarth::Registry::shaderGenerator().run(mSmoke->getParticleSystem());// for textures or lighting
-    getMapNode()->addChild(mSmoke->getParticleSystem());
+    //getMapNode()->addChild(mSmoke->getParticleSystem());
+
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->addChild(mSmoke->getParticleSystem());
+        }
+    }
 }
 
 void AircraftModelNode::removeEffect()
 {
     //remove fire---------------------------------------------
-    getMapNode()->removeChild(mFire->getParticleSystem());
+    //getMapNode()->removeChild(mFire->getParticleSystem());
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->removeChild(mFire->getParticleSystem());
+        }
+    }
     getPositionAttitudeTransform()->removeChild(mFire);
+
     //remove smoke--------------------------------------------
-    getMapNode()->removeChild(mSmoke->getParticleSystem());
+    //getMapNode()->removeChild(mSmoke->getParticleSystem());
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->removeChild(mSmoke->getParticleSystem());
+        }
+    }
     getPositionAttitudeTransform()->removeChild(mSmoke);
 }
 

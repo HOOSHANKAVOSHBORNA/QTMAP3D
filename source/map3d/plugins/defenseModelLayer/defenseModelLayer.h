@@ -23,6 +23,10 @@ class Vec3d;
 class Node;
 }
 
+#define AIRCRAFTS_LAYER_NAME "Aircrafts"
+#define SYSTEMS_LAYER_NAME "Systems"
+#define STATIONS_LAYER_NAME "Stations"
+
 class DefenseModelLayer :public PluginInterface
 {
     Q_OBJECT

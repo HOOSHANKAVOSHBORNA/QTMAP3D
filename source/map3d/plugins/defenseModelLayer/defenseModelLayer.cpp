@@ -18,6 +18,7 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QQmlComponent>
+#include <osgEarth/ModelLayer>
 
 #include <osgDB/ReadFile>
 #include <osgEarthSymbology/GeometryFactory>
@@ -200,6 +201,18 @@ bool DefenseModelLayer::setup(MapController *mapController,
             mSelectedModelNode = systemModelNode;
         }
     });
+
+    osgEarth::ModelLayer *aircraftsModelLayer = new osgEarth::ModelLayer();
+    aircraftsModelLayer->setName(AIRCRAFTS_LAYER_NAME);
+    mMapController->addLayer(aircraftsModelLayer);
+
+    osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
+    systemsModelLayer->setName(SYSTEMS_LAYER_NAME);
+    mMapController->addLayer(systemsModelLayer);
+
+    osgEarth::ModelLayer *stationsModelLayer = new osgEarth::ModelLayer();
+    stationsModelLayer->setName(STATIONS_LAYER_NAME);
+    mMapController->addLayer(stationsModelLayer);
 }
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
@@ -358,7 +371,16 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
         //add to container-----------------------------------------------------
         mModelNodes[AIRCRAFT][aircraftInfo.TN] = aircraftModelNode;
         //add to map ---------------------------------------------------------
-        mMapController->addNode(aircraftModelNode);
+        //mMapController->addNode(aircraftModelNode);
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->addChild(aircraftModelNode);
+            }
+        }
+
         //hit------------------------------------------------------------------
         //        QObject::connect(modelNode.get(), &BaseModel::hit, [=](BaseModel */*other*/){
 
@@ -432,7 +454,15 @@ void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
         //add to container---------------------------------------------------
         mModelNodes[SYSTEM][systemInfo.Number] = systemModelNode;
         //add to map --------------------------------------------------------
-        mMapController->addNode(systemModelNode);
+        //mMapController->addNode(systemModelNode);
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->addChild(systemModelNode);
+            }
+        }
     }
     //update information-----------------------------------------------------
     systemModelNode->setInformation(systemInfo);
@@ -461,7 +491,15 @@ void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
         //add to container---------------------------------------------------
         mModelNodes[STATION][stationInfo.Number] = stationModelNode;
         //add to map --------------------------------------------------------
-        mMapController->addNode(stationModelNode);
+        //mMapController->addNode(stationModelNode);
+
+        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+        if (layer) {
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->addChild(stationModelNode);
+            }
+        }
     }
     //update information-----------------------------------------------------
     stationModelNode->setInformation(stationInfo);

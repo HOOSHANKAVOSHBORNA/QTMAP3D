@@ -24,6 +24,7 @@
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
+#include <osgEarthAnnotation/PlaceNode>
 
 class DrawShapes : public PluginInterface
 {
@@ -48,11 +49,13 @@ private:
     enum class DrawingState {NONE, START, FINISH, DELETE};
     DrawingState mDrawingState;
     osgEarth::Annotation::ImageOverlay* mImageOverlay{nullptr};
+    osgEarth::Annotation::ModelNode* mCirclePlaceNode{nullptr};
     osgEarth::Annotation::CircleNodeEditor* mCircleEditor{nullptr};
     osgEarth::Annotation::RectangleNodeEditor* mRectEditor{nullptr};
     osgEarth::Annotation::EllipseNodeEditor* mElpsEditor{nullptr};
     osgEarth::Annotation::ImageOverlayEditor* mImgOvlEditor{nullptr};
     osg::Group* mCircleGr;
+    osg::Group* mLineCircleGr;
     osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
 
     osgEarth::Annotation::SphereDragger* mCircleHdragger;
@@ -94,6 +97,7 @@ private:
 
     osg::ref_ptr<SphereNode> mSphereNode;
     osg::ref_ptr<SphereNodeEditor> mSphereNodeEditor;
+
     double mRadius{200000};
 //    osgEarth::Annotation::ModelNode* mSphere(float radius);
 //    osgEarth::Annotation::ModelNode* mDrawSphere(float radius);

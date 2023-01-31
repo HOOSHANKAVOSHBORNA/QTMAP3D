@@ -6,14 +6,12 @@
 class Line
 {
 public:
-    Line(MapController *mapController);
+    Line(MapController *mapController, bool point=false);
     void setLineHeight(float hieght);
-    void setLineColor(osgEarth::Color color);
-    void setLineWidth(float width);
-    void setLineClamp(bool clamp);
-    void setPointColor(osgEarth::Color color);
-    void setPointSize(float size);
-    void setPointClamp(bool clamp);
+    void setColor(osgEarth::Color color);
+    void setWidth(float width);
+    void setClamp(bool clamp);
+
 
     void addPoint(const osg::Vec3d& vec);
     void removePoint();
@@ -26,6 +24,8 @@ private:
     osgEarth::Symbology::Geometry* mLinePath;
     osg::ref_ptr<osgEarth::Annotation::FeatureNode> mPathNode;
     MapController* mMapController{nullptr};
+    //osgEarth::Symbology::Style pointStyle;
+    bool mIsPoint{false};
     
 };
 
