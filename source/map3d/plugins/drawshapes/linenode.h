@@ -4,6 +4,7 @@
 #include <osgEarthAnnotation/FeatureNode>
 #include "mapcontroller.h"
 #include <osgEarthAnnotation/CircleNode>
+#include <osgEarthAnnotation/ModelNode>
 
 class LineNode : public osgEarth::Annotation::FeatureNode
 {
@@ -16,7 +17,9 @@ public:
     void setPointColor(osgEarth::Color color);
     void setPointSize(float size);
     void setPointClamp(bool clamp);
-    void addCircle();
+    osg::ref_ptr<osg::Node> makeLineSphere();
+
+
 
     osg::Group* mCircleGr;
 
@@ -29,6 +32,7 @@ public:
 private:
     MapController* mMapController{nullptr};
     osgEarth::Symbology::Geometry* mLinePath;
+    osgEarth::Annotation::ModelNode* mCircleModelNode{nullptr};
 
 };
 

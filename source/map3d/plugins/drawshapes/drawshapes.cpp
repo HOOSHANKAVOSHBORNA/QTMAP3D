@@ -331,16 +331,14 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
         osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
 
         mShape = Shape::LINE;
-        osgEarth::Symbology::Style circleStyle;
 
-        circleStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+
         osg::Node* sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
-        circleStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
-        //mCirclePlaceNode->setStyle(circleStyle);
-        //osg::Image* image = osgDB::readImageFile("/home/amir/Downloads/icons8-green-circle-48.png");
-        mCirclePlaceNode = new osgEarth::Annotation::ModelNode(mMapController->getMapNode(),circleStyle);
-        mCirclePlaceNode->setScale(osg::Vec3(1000,1000,1000));
-        //mCirclePlaceNode->setIconImage(image);
+        osgEarth::Symbology::Style LiSphereStyle;
+        LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+        LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
+        mCirclePlaceNode = new osgEarth::Annotation::ModelNode
+                (mMapController->getMapNode(),LiSphereStyle);
         mCirclePlaceNode->setPosition(geoPos);
 
 

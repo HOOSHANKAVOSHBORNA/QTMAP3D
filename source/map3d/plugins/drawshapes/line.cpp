@@ -1,20 +1,34 @@
 #include "line.h"
 
-Line::Line(MapController *mapController)
+Line::Line(MapController *mapController, bool point)
 {
+    mIsPoint = point;
     mMapController = mapController;
     mLinePath = new osgEarth::Symbology::Geometry();
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, mMapController->getMapSRS());
     pathFeature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
     osgEarth::Symbology::Style pathStyle;
-    //pathStyle.getOrCreate<osgEarth::Symbology::StyleSheet().setScript()
-    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::Red;
-    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 2.0;
-    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
-    pathStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    if (point){
+        pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color()
+                = osgEarth::Color::Red;
 
-    pathStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    pathStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+        pathStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique()
+                = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+        pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = 50;
+        pathStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
+        pathStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+    }
+    else {
+        pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::Red;
+        pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 2.0;
+        pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
+        pathStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+
+        pathStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
+        pathStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+    }
+    //pathStyle.getOrCreate<osgEarth::Symbology::StyleSheet().setScript()
+
     mPathNode = new osgEarth::Annotation::FeatureNode(pathFeature, pathStyle);
 
 }
@@ -22,63 +36,36 @@ Line::Line(MapController *mapController)
 void Line::setLineHeight(float hieght)
 {
     auto style = mPathNode->getStyle();
+    if (!mIsPoint){
     style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = hieght;
+    }
     mPathNode->setStyle(style);
 }
 
 
-void Line::setLineColor(osgEarth::Color color)
+void Line::setColor(osgEarth::Color color)
 {
     auto style = mPathNode->getStyle();
-    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = color;
+    if (!mIsPoint){
+    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color()
+            = color;
+    }
+    else{
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color()
+                = color;
+    }
     mPathNode->setStyle(style);
 }
 
-void Line::setLineWidth(float width)
+void Line::setWidth(float width)
 {
     auto style = mPathNode->getStyle();
+    if(!mIsPoint){
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = width;
-
-    mPathNode->setStyle(style);
 }
-
-void Line::setLineClamp(bool clamp)
-{
-    auto style = mPathNode->getStyle();
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-    if (clamp){
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    }
     else{
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = width;
     }
-    mPathNode->setStyle(style);
-}
-
-void Line::setPointColor(osgEarth::Color color)
-{
-    auto style = mPathNode->getStyle();
-    style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = color;
-    mPathNode->setStyle(style);
-}
-
-void Line::setPointSize(float size)
-{
-    auto style = mPathNode->getStyle();
-    style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = size;
-    mPathNode->setStyle(style);
-}
-
-void Line::setPointClamp(bool clamp)
-{
-    auto style = mPathNode->getStyle();
-    if (clamp){
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    }
-    else{
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
-    }
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     mPathNode->setStyle(style);
 }
 

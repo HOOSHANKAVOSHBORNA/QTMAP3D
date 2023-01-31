@@ -99,6 +99,17 @@ void LineNode::setPointClamp(bool clamp)
     this->setStyle(style);
 }
 
+osg::ref_ptr<osg::Node> LineNode::makeLineSphere()
+{
+    osg::Node* sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
+    osgEarth::Symbology::Style LiSphereStyle;
+    LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
+    mCircleModelNode = new osgEarth::Annotation::ModelNode
+            (mMapController->getMapNode(),LiSphereStyle);
+    //mCircleModelNode->setPosition(geoPos);
+}
+
 void LineNode::addPoint(osgEarth::GeoPoint points)
 {
     mLinePath->push_back(points.vec3d());

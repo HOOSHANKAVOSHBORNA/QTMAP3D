@@ -34,14 +34,14 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     :DefenseModelNode(mapControler, parent)
 {
     mRouteLine = new Line(mapControler);
-    mRouteLine->setLineClamp(false);
-    mRouteLine->setLineColor(osgEarth::Color::Purple);
-    mRouteLine->setLineWidth(6);
+    mRouteLine->setClamp(false);
+    mRouteLine->setColor(osgEarth::Color::Purple);
+    mRouteLine->setWidth(6);
 
     mTempRouteLine = new Line(mapControler);
-    mTempRouteLine->setLineClamp(false);
-    mTempRouteLine->setLineColor(osgEarth::Color::Purple);
-    mTempRouteLine->setLineWidth(6);
+    mTempRouteLine->setClamp(false);
+    mTempRouteLine->setColor(osgEarth::Color::Purple);
+    mTempRouteLine->setWidth(6);
 
     mQmlEngine = qmlEngine;
     mMapController = mapControler;

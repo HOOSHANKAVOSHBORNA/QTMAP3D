@@ -201,9 +201,9 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
 
     mAssignedModelNode = assignedModelNode;
     mAssignedLine = new Line(mMapController);
-    mAssignedLine->setLineClamp(false);
-    mAssignedLine->setLineColor(osgEarth::Color::Green);
-    mAssignedLine->setLineWidth(6);
+    mAssignedLine->setClamp(false);
+    mAssignedLine->setColor(osgEarth::Color::Green);
+    mAssignedLine->setWidth(6);
     mMapController->addNode(mAssignedLine->getNode());
 
     mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
