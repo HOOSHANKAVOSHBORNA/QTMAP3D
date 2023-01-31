@@ -208,6 +208,7 @@ void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataMan
     //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DefenseModelLayer::onAircraftInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DefenseModelLayer::onClearAircraft);
+    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DefenseModelLayer::onAircraftAssignedResponse);
     //--system----------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DefenseModelLayer::onSystemInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DefenseModelLayer::onSystemStatusInfoChanged);
@@ -585,6 +586,11 @@ void DefenseModelLayer::onClearAircraft(int tn)
     }
 }
 
+void DefenseModelLayer::onAircraftAssignedResponse(int tn, int systemNo, bool result)
+{
+    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
+}
+
 void DefenseModelLayer::frameEvent()
 {
     //    findSceneModels(mMapController->getViewer());
@@ -630,6 +636,7 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
         {
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
             systemModelNode->setAssignedModelNode(aircraftModelNode);
+            aircraftModelNode->setAssignmentModelNode(systemModelNode);
             if(mDefenseDataManager)
                 emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
                                                       systemModelNode->getInformation().Number);
@@ -637,6 +644,25 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
+    }
+}
+
+void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
+        if(aircraftModelNode)
+        {
+            auto systemModelNode = aircraftModelNode->getAssignmentModelNode();
+            if(systemModelNode)
+            {
+                emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
+                        systemModelNode->getInformation().Number);
+                systemModelNode->unassignedModelNode();
+                event->accept();
+            }
+        }
     }
 }
 

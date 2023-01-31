@@ -127,7 +127,16 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mNode2D->addChild(redGeode, true);
     //--create 3D node---------------------------------------------------------------------------
     mTruck = new Truck(mMapController, this);
-    mNode3D = mTruck;
+    mTruck->getPositionAttitudeTransform()->setPosition(osg::Vec3d(20,0,0));
+    osg::ref_ptr<osg::Node> systemR  = osgDB::readRefNodeFile("../data/models/system/system-r.ive");
+    auto systemLNode = osgDB::readRefNodeFile("../data/models/system/system-l.osgb");
+    osg::ref_ptr<osg::PositionAttitudeTransform> systemL  = new osg::PositionAttitudeTransform;
+    systemL->addChild(systemLNode);
+    systemL->setPosition(osg::Vec3d(-20,0,0));
+    mNode3D = new Group;
+    mNode3D->addChild(mTruck);
+    mNode3D->addChild(systemR);
+    //mNode3D->addChild(systemL);
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
@@ -228,6 +237,11 @@ void SystemModelNode::fire()
     if(mAssignedModelNode)
     {
         mFiredRocket = mTruck->getActiveRocket();
+        auto rocketStyle = mFiredRocket->getStyle();
+        rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+        rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+        rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000*30;
+        mFiredRocket->setStyle(rocketStyle);
         if(mFiredRocket)
         {
             mAssignedModelNode->stop();//TODO for test dont use in real vesrion

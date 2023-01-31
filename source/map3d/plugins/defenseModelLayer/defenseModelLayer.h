@@ -56,11 +56,12 @@ public slots:
     void onSystemCambatInfoChanged(SystemCambatInfo& systemCambatInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
     void onClearAircraft(int tn);
+    void onAircraftAssignedResponse(int tn, int systemNo, bool result);
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent* event)override {}
+    virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 private:
     DefenseModelNode* pick(float x, float y);

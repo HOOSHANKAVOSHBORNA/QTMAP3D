@@ -1,6 +1,9 @@
 #include "defenseDataManager.h"
 
 #include <QTimer>
+#include <QDebug>
+#include <chrono>
+#include <thread>
 
 static int aircraftNumber = 0;
 DefenseDataManager::DefenseDataManager(QObject *parent):
@@ -40,6 +43,15 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     });
     timer->start(10000);
     //---------------------------------------------------------
+    QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
+        qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
+    });
+
+    QObject::connect(mDefenseDataManager, &DefenseDataManager::cancelAircraftAssigned,[=](int tn, int systemNo){
+        qDebug() << "cancelAircraftAssigned: "<<tn<<", "<<systemNo;
+    });
 
 }
 

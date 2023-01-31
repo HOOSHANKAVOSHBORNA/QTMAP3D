@@ -144,7 +144,8 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
         return;
     }
 
-    mNode3D = mNode3DRef.get();
+    mNode3D = new osg::Group;
+    mNode3D->addChild(mNode3DRef.get());
 //    truck->setQStringName("truck");
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;

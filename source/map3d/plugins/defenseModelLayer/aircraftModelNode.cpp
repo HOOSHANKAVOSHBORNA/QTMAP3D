@@ -2,6 +2,7 @@
 #include "contextMenu.h"
 #include "aircraftInformation.h"
 #include "draw.h"
+#include "systemModelNode.h"
 
 #include <osgEarth/Registry>
 #include <osgGA/EventVisitor>
@@ -56,7 +57,8 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
         return;
     }
 
-    mNode3D = mNode3DRef.get();
+    mNode3D = new osg::Group;
+    mNode3D->addChild(mNode3DRef.get());
 
     //create switch node for root--------------------------------------------------------------------
     mRootNode = new osg::LOD;
@@ -337,6 +339,15 @@ void AircraftModelNode::curentPosition(osgEarth::GeoPoint pos)
     //    mTempLocationPoints->push_back(currentPosW);
     //    }
     mTempRouteLine->addPoint(pos.vec3d());
+}
+SystemModelNode *AircraftModelNode::getAssignmentModelNode() const
+{
+    return mAssignmentModelNode;
+}
+
+void AircraftModelNode::setAssignmentModelNode(SystemModelNode *assignmentModelNode)
+{
+    mAssignmentModelNode = assignmentModelNode;
 }
 
 void AircraftModelNode::onGotoButtonClicked()
@@ -625,3 +636,5 @@ void AircraftModelNode::updateOrCreateLabelImage()
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
 }
+
+
