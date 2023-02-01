@@ -37,7 +37,7 @@ Item {
     Rectangle {
         id: statusbar
         anchors.fill: parent
-        color: "transparent"
+        color: "#454545"
         GridLayout {
             anchors.leftMargin: 4
             columnSpacing: 0
