@@ -13,8 +13,8 @@ Item {
     property real coordinate3 : 0.0
 
     property var _font: "Liberation Serif"
-    property var _lat_color: "transparent"
-    property var _map_color: "transparent"
+    property var _lat_color: "#353535"
+    property var _map_color: "#353535"
 
     property var timer: 0
     property var message: ""
@@ -37,7 +37,7 @@ Item {
     Rectangle {
         id: statusbar
         anchors.fill: parent
-        color: "#454545"
+        color: "#404040"
         GridLayout {
             anchors.leftMargin: 4
             columnSpacing: 0
