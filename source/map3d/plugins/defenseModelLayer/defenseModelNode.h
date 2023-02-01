@@ -81,7 +81,7 @@ protected:
     bool mIsSelected{false};
     bool mIs3D{false};
     osg::ref_ptr<osg::LOD> mRootNode;
-    osg::ref_ptr<osg::Node> mNode3D;
+    osg::ref_ptr<osg::Group> mNode3D;
     osg::ref_ptr<osg::Switch> mNode2D;
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLableNode;
     osgEarth::Color mModelColor{osgEarth::Color::White};

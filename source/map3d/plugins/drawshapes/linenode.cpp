@@ -1,5 +1,7 @@
 #include "linenode.h"
 
+
+
 LineNode::LineNode(MapController *mapController)
 {
     mMapController = mapController;
@@ -32,6 +34,7 @@ LineNode::LineNode(MapController *mapController)
     setStyle(style);
     //this->setFeature(pathFeature);
     //    this->setStyle(pathStyle);
+
 }
 
 void LineNode::setLineHeight(float hieght)
@@ -96,10 +99,21 @@ void LineNode::setPointClamp(bool clamp)
     this->setStyle(style);
 }
 
+osg::ref_ptr<osg::Node> LineNode::makeLineSphere()
+{
+    osg::Node* sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
+    osgEarth::Symbology::Style LiSphereStyle;
+    LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
+    mCircleModelNode = new osgEarth::Annotation::ModelNode
+            (mMapController->getMapNode(),LiSphereStyle);
+    //mCircleModelNode->setPosition(geoPos);
+}
+
 void LineNode::addPoint(osgEarth::GeoPoint points)
 {
     mLinePath->push_back(points.vec3d());
-    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, mMapController->getMapSRS());
+    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, osgEarth::SpatialReference::get("wgs84"));
     setFeature(pathFeature);
 }
 

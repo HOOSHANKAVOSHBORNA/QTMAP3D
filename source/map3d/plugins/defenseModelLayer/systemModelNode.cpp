@@ -95,7 +95,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000 * 3.5;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700 * 3.5;
 
 
     this->setCullingActive(false);
@@ -111,13 +111,13 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     setStyle(rootStyle);
     //--create 2D Nodes---------------------------------------------------------------------------
     osg::Image* redIcon = osgDB::readImageFile("../data/models/system/system_red.png");
-    redIcon->scaleImage(32, 32, redIcon->r());
+    redIcon->scaleImage(16, 16, redIcon->r());
     osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     redGeode->addDrawable(redImageDrawable);
 
     osg::Image* yellowIcon = osgDB::readImageFile("../data/models/system/system_yell.png");
-    yellowIcon->scaleImage(32, 32, yellowIcon->r());
+    yellowIcon->scaleImage(16, 16, yellowIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->addDrawable(yellowImageDrawable);
@@ -127,7 +127,16 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mNode2D->addChild(redGeode, true);
     //--create 3D node---------------------------------------------------------------------------
     mTruck = new Truck(mMapController, this);
-    mNode3D = mTruck;
+    mTruck->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,12,0));
+    osg::ref_ptr<osg::Node> systemR  = osgDB::readRefNodeFile("../data/models/system/system-r.ive");
+    auto systemLNode = osgDB::readRefNodeFile("../data/models/system/system-l.osgb");
+    osg::ref_ptr<osg::PositionAttitudeTransform> systemL  = new osg::PositionAttitudeTransform;
+    systemL->addChild(systemLNode);
+    systemL->setPosition(osg::Vec3d(0,-12,0));
+    mNode3D = new Group;
+    mNode3D->addChild(mTruck);
+    mNode3D->addChild(systemR);
+    mNode3D->addChild(systemL);
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
@@ -180,6 +189,27 @@ SystemInfo SystemModelNode::getInformation()
 void SystemModelNode::setSystemCambatInfo(const SystemCambatInfo &systemCambatInfo)
 {
     mSystemCambatInfo = systemCambatInfo;
+    if(!mAssignedModelNode)
+        return;
+    switch (mSystemCambatInfo.Phase) {
+    case SystemCambatInfo::Search:
+        break;
+    case SystemCambatInfo::Lock:
+        if(mAssignedLine)
+            mAssignedLine->setColor(osgEarth::Color::Yellow);
+        break;
+    case SystemCambatInfo::Fire:
+        if(mAssignedLine)
+        {
+            mAssignedLine->setColor(osgEarth::Color::Red);
+            fire();
+        }
+        break;
+    case SystemCambatInfo::Kill:
+        break;
+    case SystemCambatInfo::NoKill:
+        break;
+    }
 }
 
 void SystemModelNode::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
@@ -206,11 +236,12 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
 
     mAssignedModelNode = assignedModelNode;
     mAssignedLine = new Line(mMapController);
-    mAssignedLine->setLineClamp(false);
-    mAssignedLine->setLineColor(osgEarth::Color::White);
-    mAssignedLine->setLineWidth(6);
-    //mMapController->addNode(mAssignedLine->getNode());
 
+    mAssignedLine->setClamp(false);
+    mAssignedLine->setColor(osgEarth::Color::Green);
+    mAssignedLine->setWidth(5);
+    mAssignedLine->switchLP(false);
+//    mMapController->addNode(mAssignedLine->getNode());
     auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
     if (layer) {
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
@@ -219,7 +250,19 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
         }
     }
 
+
     mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
+}
+
+void SystemModelNode::acceptAssignedModelNode(bool value)
+{
+    if(value)
+    {
+        if(mAssignedLine)
+            mAssignedLine->switchLP(true);
+    }
+    else
+        unassignedModelNode();
 }
 
 void SystemModelNode::unassignedModelNode()
@@ -247,6 +290,12 @@ void SystemModelNode::fire()
         mFiredRocket = mTruck->getActiveRocket();
         if(mFiredRocket)
         {
+            auto rocketStyle = mFiredRocket->getStyle();
+            rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+            rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+            rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000*30;
+            mFiredRocket->setStyle(rocketStyle);
+
             mAssignedModelNode->stop();//TODO for test dont use in real vesrion
             mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
             mMapController->setTrackNode(mFiredRocket->getGeoTransform());

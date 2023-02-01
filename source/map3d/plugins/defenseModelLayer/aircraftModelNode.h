@@ -9,6 +9,7 @@
 #include "line.h"
 #include "contextMenu.h"
 
+
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgParticle/FireEffect>
@@ -25,6 +26,8 @@
 
 class MapAnimationPathCallback;
 class EventCallback;
+class SystemModelNode;
+
 class AircraftModelNode: public DefenseModelNode
 {
     Q_OBJECT
@@ -44,6 +47,9 @@ public:
     void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
     void curentPosition(osgEarth::GeoPoint pos) override;
+    SystemModelNode *getAssignmentModelNode() const;
+    void setAssignmentModelNode(SystemModelNode *assignmentModelNode);
+
 private slots:
     void onGotoButtonClicked();
     void onRouteButtonToggled(bool check);
@@ -64,6 +70,8 @@ private:
     //    osg::ref_ptr<osg::Geode> mGeodeParticle;
     osg::ref_ptr<osgParticle::SmokeTrailEffect> mSmoke;
     osg::ref_ptr<osgParticle::FireEffect> mFire;
+
+    SystemModelNode* mAssignmentModelNode{nullptr};
 
     bool mIsStop{false};
     bool mIsRoute{false};

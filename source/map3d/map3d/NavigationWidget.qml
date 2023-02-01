@@ -200,7 +200,7 @@ Item {
             Button {
                 id: project
                 display: AbstractButton.IconOnly
-                icon.source : modeMap === "projection" ? "qrc:///Resources/3d_l.png": "qrc:/Resources/TwoD.png"
+                icon.source : modeMap === "projection" ? "qrc:///Resources/threeD.png": "qrc:/Resources/twoD.png"
                 icon.width : _iconSize
                 icon.height : _iconSize
                 icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :

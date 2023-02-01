@@ -2,6 +2,7 @@
 #include "contextMenu.h"
 #include "aircraftInformation.h"
 #include "draw.h"
+#include "systemModelNode.h"
 
 #include <osgEarth/Registry>
 #include <osgGA/EventVisitor>
@@ -35,14 +36,14 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     :DefenseModelNode(mapControler, parent)
 {
     mRouteLine = new Line(mapControler);
-    mRouteLine->setLineClamp(false);
-    mRouteLine->setLineColor(osgEarth::Color::Purple);
-    mRouteLine->setLineWidth(6);
+    mRouteLine->setClamp(false);
+    mRouteLine->setColor(osgEarth::Color::Purple);
+    mRouteLine->setWidth(6);
 
     mTempRouteLine = new Line(mapControler);
-    mTempRouteLine->setLineClamp(false);
-    mTempRouteLine->setLineColor(osgEarth::Color::Purple);
-    mTempRouteLine->setLineWidth(6);
+    mTempRouteLine->setClamp(false);
+    mTempRouteLine->setColor(osgEarth::Color::Purple);
+    mTempRouteLine->setWidth(6);
 
     mQmlEngine = qmlEngine;
     mMapController = mapControler;
@@ -57,7 +58,8 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
         return;
     }
 
-    mNode3D = mNode3DRef.get();
+    mNode3D = new osg::Group;
+    mNode3D->addChild(mNode3DRef.get());
 
     //create switch node for root--------------------------------------------------------------------
     mRootNode = new osg::LOD;
@@ -196,9 +198,9 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double spee
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 
     path->insert(0, osg::AnimationPath::ControlPoint(currentPosW,getPositionAttitudeTransform()->getAttitude(),getScale()));
-    path->insert(1,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
-    path->insert(2,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
-    path->insert(timeEstimate,osg::AnimationPath::ControlPoint(posEstimateW, headingRotate, getScale()));
+    path->insert(0.1,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
+    path->insert(0.2,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
+    //path->insert(timeEstimate,osg::AnimationPath::ControlPoint(posEstimateW, headingRotate, getScale()));
 
     mAnimationPathCallback = new ModelAnimationPathCallback();
     mAnimationPathCallback->setAnimationPath(path);
@@ -347,6 +349,15 @@ void AircraftModelNode::curentPosition(osgEarth::GeoPoint pos)
     //    mTempLocationPoints->push_back(currentPosW);
     //    }
     mTempRouteLine->addPoint(pos.vec3d());
+}
+SystemModelNode *AircraftModelNode::getAssignmentModelNode() const
+{
+    return mAssignmentModelNode;
+}
+
+void AircraftModelNode::setAssignmentModelNode(SystemModelNode *assignmentModelNode)
+{
+    mAssignmentModelNode = assignmentModelNode;
 }
 
 void AircraftModelNode::onGotoButtonClicked()
@@ -683,3 +694,5 @@ void AircraftModelNode::updateOrCreateLabelImage()
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
 }
+
+

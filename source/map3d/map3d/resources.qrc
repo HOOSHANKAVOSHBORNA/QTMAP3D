@@ -26,14 +26,11 @@
         <file>Resources/airplan.jpg</file>
         <file>Resources/route.png</file>
         <file>Resources/more.png</file>
-        <file>Resources/3D.png</file>
         <file>Resources/tracking.png</file>
         <file>Resources/websocketkey/localhost.cert</file>
         <file>Resources/websocketkey/localhost.key</file>
-        <file>Resources/3d.png</file>
-        <file>Resources/2d.png</file>
-        <file>Resources/3d_l.png</file>
-        <file>Resources/TwoD.png</file>
+        <file>Resources/threeD.png</file>
+        <file>Resources/twoD.png</file>
         <file>Resources/goto.png</file>
         <file>Resources/station.jpg</file>
         <file>Resources/radar.png</file>

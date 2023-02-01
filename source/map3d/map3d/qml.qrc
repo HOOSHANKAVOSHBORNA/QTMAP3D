@@ -15,11 +15,11 @@
         <file>location/SavePointWidget.qml</file>
         <file>toolbox/DelegateItem.qml</file>
         <file>toolbox/Toolbox.qml</file>
-        <file>StatusBars.qml</file>
         <file>ListWindow.qml</file>
         <file>ContextmenuWidget.qml</file>
         <file>InformationView.qml</file>
         <file>setting/DelegateItem.qml</file>
         <file>setting/Settings.qml</file>
+        <file>StatusBar.qml</file>
     </qresource>
 </RCC>

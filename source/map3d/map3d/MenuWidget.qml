@@ -43,7 +43,7 @@ Item {
             anchors.leftMargin: 10
             anchors.rightMargin: 10
             anchors.topMargin: 10
-            spacing: 5
+            spacing: 15
 
             Repeater {
                 model: rootItem.itemsModel
@@ -239,8 +239,8 @@ Item {
                         Layout.preferredWidth: 24
                         Layout.preferredHeight: 24
                         source: "qrc:///Resources/close.png"
-                        width: 16
-                        height: 16
+                        width: 24
+                        height: 24
                     }
 
                     Label {
@@ -250,7 +250,7 @@ Item {
                         text: "Exit"
                         color: "white"
                         font.family: _fontFamily
-                        font.pointSize: 8
+                        font.pointSize: 11
                     }
                     visible: false
                 }
@@ -297,8 +297,8 @@ Item {
                         Layout.preferredWidth: 24
                         Layout.preferredHeight: 24
                         source: "qrc:///Resources/collapse.png"
-                        width: 16
-                        height: 16
+                        width: 24
+                        height: 24
                     }
 
                     Label {
@@ -308,7 +308,7 @@ Item {
                         text: "Mininnize"
                         color: "white"
                         font.family: _fontFamily
-                        font.pointSize: 8
+                        font.pointSize: 11
                     }
                     visible: false
                 }
