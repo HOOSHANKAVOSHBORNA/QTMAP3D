@@ -147,13 +147,8 @@ Item {
                                 }
                                 color: "#474747"
                             }
-                            GridLayout {
-                                rows: 4
-                                columns: 1
-                                Layout.fillWidth: true
+                            ColumnLayout {
                                 Layout.preferredHeight: implicitHeight
-                                columnSpacing: 0
-                                rowSpacing: 0
                                 Repeater {
                                     model: MainInfoHeaders
                                     Label {
@@ -171,13 +166,8 @@ Item {
 
                                 }
                             }
-                            GridLayout {
-                                rows: 4
-                                columns: 1
-                                Layout.fillWidth: true
+                            ColumnLayout {
                                 Layout.preferredHeight: implicitHeight
-                                columnSpacing: 0
-                                rowSpacing: 0
                                 Repeater {
                                     model: MainInfo
                                     Label {
