@@ -14,6 +14,7 @@
 #include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osgEarthAnnotation/ImageOverlay>
+#include <osg/Depth>
 #include <osg/Material>
 #include<osg/Switch>
 
@@ -69,16 +70,19 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
 
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
 
     setStyle(rootStyle);
     //--create icon Nodes---------------------------------------------------------------------------
+    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+
     m2DIcon = osgDB::readImageFile("../data/models/aircraft/aircraft.png");
     if(m2DIcon)
-        m2DIcon->scaleImage(25, 32, m2DIcon->r());
+        m2DIcon->scaleImage(33, 40, m2DIcon->r());
     mSelect2DIcon = new osg::Image;
     mSelect2DIcon->copySubImage(0, 0, 0, m2DIcon);
 //    create2DImageColore(osgEarth::Color::Red);
@@ -88,12 +92,14 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     //    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
+    redGeode->setStateSet(geodeStateSet);
     redGeode->addDrawable(redImageDrawable);
 
 //    mSelect2DIcon->copySubImage(0, 0, 0, m2DIcon);
     //mSelect2DIcon->scaleImage(25, 32, mSelect2DIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mSelect2DIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
+    yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
 
     mNode2D->addChild(yellowGeode, false);
@@ -148,8 +154,8 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double speed)
 {
     //speed = 1;
-    if(mIsStop)
-        return;
+//    if(mIsStop)
+//        return;
     //    heading = 30;
     osgEarth::GeoPoint posGeo(getMapNode()->getMapSRS(), pos);
 

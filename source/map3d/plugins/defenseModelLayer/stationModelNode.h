@@ -12,6 +12,7 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 
+class StationModelNodeAutoScaler;
 
 class StationModelNode: public DefenseModelNode
 {
@@ -47,6 +48,8 @@ private:
     static constexpr int LABEL_IMAGE_HEIGHT = 150;
     QImage *mRenderTargetImage{nullptr};
     osg::ref_ptr<osg::Image> mLabelImage{nullptr};
+
+    osg::ref_ptr<StationModelNodeAutoScaler> mModelNodeAutoScaler;
 };
 
 
