@@ -221,13 +221,13 @@ Item {
                                 anchors.fill: parent
                                 cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: if (firstButton.checked) {
-                                               detectionLayout.Layout.preferredHeight = detectionLayout.implicitHeight
-                                               imgd.rotation = 180
+                                               detectionLayout.Layout.preferredHeight = 0
+                                               imgd.rotation = -90
                                                firstButton.checked = false
                                            }
                                            else {
-                                               detectionLayout.Layout.preferredHeight = 0
-                                               imgd.rotation = -90
+                                               detectionLayout.Layout.preferredHeight = detectionLayout.implicitHeight
+                                               imgd.rotation = 180
                                                firstButton.checked = true
                                            }
                             }
@@ -245,7 +245,7 @@ Item {
                                 source: "qrc:/Resources/chevron.png"
                                 width: 16
                                 height: 16
-                                rotation: -90
+                                rotation: 180
                                 ColorOverlay {
                                     source: imgd
                                     anchors.fill: imgd
@@ -260,7 +260,7 @@ Item {
 
                         RowLayout {
                             id: detectionLayout
-                            Layout.preferredHeight: 0
+                            Layout.preferredHeight: implicitHeight
                             spacing: 2
                             clip: true
                             Layout.preferredWidth: rootItem.width
@@ -314,13 +314,13 @@ Item {
                                 anchors.fill: parent
                                 cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: if (secondButton.checked) {
-                                               sendsLayout.Layout.preferredHeight = sendsLayout.implicitHeight
-                                               imgs.rotation = 180
+                                               sendsLayout.Layout.preferredHeight = 0
+                                               imgs.rotation = -90
                                                secondButton.checked = false
                                            }
                                            else {
-                                               sendsLayout.Layout.preferredHeight = 0
-                                               imgs.rotation = -90
+                                               sendsLayout.Layout.preferredHeight = sendsLayout.implicitHeight
+                                               imgs.rotation = 180
                                                secondButton.checked = true
                                            }
                             }
@@ -338,7 +338,7 @@ Item {
                                 source: "qrc:/Resources/chevron.png"
                                 width: 16
                                 height: 16
-                                rotation: -90
+                                rotation: 180
                                 ColorOverlay {
                                     source: imgs
                                     anchors.fill: imgs
@@ -353,7 +353,7 @@ Item {
 
                         RowLayout {
                             id: sendsLayout
-                            Layout.preferredHeight: 0
+                            Layout.preferredHeight: implicitHeight
                             spacing: 2
                             clip: true
                             Layout.preferredWidth: rootItem.width
