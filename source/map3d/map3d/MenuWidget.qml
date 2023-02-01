@@ -36,6 +36,7 @@ Item {
             anchors.fill: parent
         }
 
+
         RowLayout {
             id: rowLayout
             anchors.fill: parent
@@ -225,122 +226,122 @@ Item {
                                (mouseArea1.pressed ? _colorHover : "#FFFFFF");
                 }
             }
-            Item {
-                Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: 64
-                Layout.preferredHeight: 64
+//            Item {
+//                Layout.alignment: Qt.AlignCenter
+//                Layout.preferredWidth: 64
+//                Layout.preferredHeight: 64
 
-                ColumnLayout {
-                    id: col3
-                    anchors.centerIn: parent
-                    Image {
-                        id: img3
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 24
-                        Layout.preferredHeight: 24
-                        source: "qrc:///Resources/close.png"
-                        width: 24
-                        height: 24
-                    }
+//                ColumnLayout {
+//                    id: col3
+//                    anchors.centerIn: parent
+//                    Image {
+//                        id: img3
+//                      Layout.alignment: Qt.AlignCenter
+//                        Layout.preferredWidth: 24
+//                        Layout.preferredHeight: 24
+//                        source: "qrc:///Resources/close.png"
+//                        width: 24
+//                        height: 24
+//                    }
 
-                    Label {
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: implicitWidth
-                        Layout.preferredHeight: implicitHeight
-                        text: "Exit"
-                        color: "white"
-                        font.family: _fontFamily
-                        font.pointSize: 11
-                    }
-                    visible: false
-                }
+//                    Label {
+//                        Layout.alignment: Qt.AlignCenter
+//                        Layout.preferredWidth: implicitWidth
+//                        Layout.preferredHeight: implicitHeight
+//                        text: "Exit"
+//                        color: "white"
+//                        font.family: _fontFamily
+//                        font.pointSize: 11
+//                    }
+//                    visible: false
+//                }
 
-                MouseArea {
-                    id: mouseArea3
-                    anchors.fill: col3
-                    hoverEnabled: true
+//                MouseArea {
+//                    id: mouseArea3
+//                    anchors.fill: col3
+//                    hoverEnabled: true
 
-                    property bool isMouseOnItem: false
+//                    property bool isMouseOnItem: false
 
-                    onEntered: function() {
-                        isMouseOnItem = true;
-                    }
-                    onExited: function() {
-                        isMouseOnItem = false;
-                    }
+//                    onEntered: function() {
+//                        isMouseOnItem = true;
+//                    }
+//                    onExited: function() {
+//                        isMouseOnItem = false;
+//                    }
 
-                    onClicked: function() {
-                        wnd.close();
-                        //rootItem.clickCallback(index);
-                    }
-                }
+//                    onClicked: function() {
+//                        wnd.close();
+//                        //rootItem.clickCallback(index);
+//                    }
+//                }
 
-                ColorOverlay {
-                    anchors.fill: col3
-                    source: col3
-                    color: mouseArea3.isMouseOnItem ?
-                               (mouseArea3.pressed ? _colorPresed: _colorHover) :
-                               (mouseArea3.pressed ? _colorHover : "#FFFFFF");
-                }
-            }
-            Item {
-                Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: 64
-                Layout.preferredHeight: 64
+//                ColorOverlay {
+//                    anchors.fill: col3
+//                    source: col3
+//                    color: mouseArea3.isMouseOnItem ?
+//                               (mouseArea3.pressed ? _colorPresed: _colorHover) :
+//                               (mouseArea3.pressed ? _colorHover : "#FFFFFF");
+//                }
+//            }
+//            Item {
+//                Layout.alignment: Qt.AlignCenter
+//                Layout.preferredWidth: 64
+//                Layout.preferredHeight: 64
 
-                ColumnLayout {
-                    id: col4
-                    anchors.centerIn: parent
-                    Image {
-                        id: img4
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 24
-                        Layout.preferredHeight: 24
-                        source: "qrc:///Resources/collapse.png"
-                        width: 24
-                        height: 24
-                    }
+//                ColumnLayout {
+//                    id: col4
+//                    anchors.centerIn: parent
+//                    Image {
+//                        id: img4
+//                        Layout.alignment: Qt.AlignCenter
+//                        Layout.preferredWidth: 24
+//                        Layout.preferredHeight: 24
+//                        source: "qrc:///Resources/collapse.png"
+//                        width: 24
+//                        height: 24
+//                    }
 
-                    Label {
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: implicitWidth
-                        Layout.preferredHeight: implicitHeight
-                        text: "Mininnize"
-                        color: "white"
-                        font.family: _fontFamily
-                        font.pointSize: 11
-                    }
-                    visible: false
-                }
+//                    Label {
+//                        Layout.alignment: Qt.AlignCenter
+//                        Layout.preferredWidth: implicitWidth
+//                        Layout.preferredHeight: implicitHeight
+//                        text: "Mininnize"
+//                        color: "white"
+//                        font.family: _fontFamily
+//                        font.pointSize: 11
+//                    }
+//                    visible: false
+//                }
 
-                MouseArea {
-                    id: mouseArea4
-                    anchors.fill: col4
-                    hoverEnabled: true
+//                MouseArea {
+//                    id: mouseArea4
+//                    anchors.fill: col4
+//                    hoverEnabled: true
 
-                    property bool isMouseOnItem: false
+//                    property bool isMouseOnItem: false
 
-                    onEntered: function() {
-                        isMouseOnItem = true;
-                    }
-                    onExited: function() {
-                        isMouseOnItem = false;
-                    }
+//                    onEntered: function() {
+//                        isMouseOnItem = true;
+//                    }
+//                    onExited: function() {
+//                        isMouseOnItem = false;
+//                    }
 
-                    onClicked: function() {
-                        wnd.showMinimized()
-                        //rootItem.clickCallback(index);
-                    }
-                }
+//                    onClicked: function() {
+//                        wnd.showMinimized()
+//                        //rootItem.clickCallback(index);
+//                    }
+//                }
 
-                ColorOverlay {
-                    anchors.fill: col4
-                    source: col4
-                    color: mouseArea4.isMouseOnItem ?
-                               (mouseArea4.pressed ? _colorPresed: _colorHover) :
-                               (mouseArea4.pressed ? _colorHover : "#FFFFFF");
-                }
-            }
+//                ColorOverlay {
+//                    anchors.fill: col4
+//                    source: col4
+//                    color: mouseArea4.isMouseOnItem ?
+//                               (mouseArea4.pressed ? _colorPresed: _colorHover) :
+//                               (mouseArea4.pressed ? _colorHover : "#FFFFFF");
+//                }
+//            }
 
 
 
