@@ -298,12 +298,7 @@ void SystemModelNode::fire()
         mFiredRocket = mTruck->getActiveRocket();
         if(mFiredRocket)
         {
-            auto rocketStyle = mFiredRocket->getStyle();
-            rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-            rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-            rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000*30;
-            mFiredRocket->setStyle(rocketStyle);
-
+            mFiredRocket->setAutoScale();
             mAssignedModelNode->stop();//TODO for test dont use in real vesrion
             mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
             mMapController->setTrackNode(mFiredRocket->getGeoTransform());
@@ -519,7 +514,9 @@ void SystemModelNode::collision()
         if(distance < 3 && !mHit)
         {
             mAssignedModelNode->collision();
-            mFiredRocket->collision();
+            //mFiredRocket->collision();
+//            mFiredRocket->setNodeMask(false);
+            mFiredRocket->stop();
             //mMapController->removeNode(mAssignedLine->getNode());
 
             auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
