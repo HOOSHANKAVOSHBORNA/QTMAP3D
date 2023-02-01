@@ -8,6 +8,7 @@
 #include <QWindow>
 #include <QOpenGLFunctions_2_0>
 #include <chrono>
+#include <QGuiApplication>
 
 #include "mainwindow.h"
 #include "pluginmanager.h"
@@ -580,32 +581,197 @@ void MainWindow::initializeGL()
     mContext = QOpenGLContext::currentContext();
     mSurface = mContext->surface();
 
+    mContext->doneCurrent();
 
-    mMapController->initializeGL(width(), height(), screen(), renderTargetId());
 
-    restoreContext();
+
+
+    QScreen *screen = QGuiApplication::primaryScreen();
+    mOsgContext = new QOpenGLContext();
+    mOsgSurface = new QOffscreenSurface(screen);
+
+    QSurfaceFormat surfaceFormat;
+    surfaceFormat.setProfile(QSurfaceFormat::CompatibilityProfile);
+    surfaceFormat.setVersion(2, 0);
+    surfaceFormat.setSamples(4);
+    surfaceFormat.setDepthBufferSize(24);
+    surfaceFormat.setStencilBufferSize(24);
+
+    mOsgContext->setFormat(surfaceFormat);
+    mOsgContext->setShareContext(mContext);
+    mOsgContext->create();
+
+    mOsgSurface->setFormat(surfaceFormat);
+    mOsgSurface->setScreen(screen);
+    mOsgSurface->create();
+
+
+    mOsgContext->makeCurrent(mOsgSurface);
+    resetOpenGLState();
+
+    mOsgGLFunctions = new QOpenGLFunctions_2_0();
+    mOsgGLFunctions->initializeOpenGLFunctions();
+
+    mOsgGLFunctions->glEnable(GL_DEPTH_TEST);
+    mOsgGLFunctions->glEnable(GL_STENCIL_TEST);
+    mOsgGLFunctions->glDepthFunc(GL_LESS);
+
+    QOpenGLFramebufferObjectFormat fboFormat;
+    fboFormat.setSamples(4);
+    fboFormat.setAttachment(QOpenGLFramebufferObject::Attachment::CombinedDepthStencil);
+
+    int w = qMax(10, width());
+    int h = qMax(10, height());
+
+    mOsgFboMS = new QOpenGLFramebufferObject(QSize(w, h), fboFormat);
+    mOsgFbo = new QOpenGLFramebufferObject(QSize(w, h),
+                                           QOpenGLFramebufferObject::Attachment::CombinedDepthStencil);
+
+
+    mOsgFboMS->bind();
+
+    mOsgGLFunctions->glViewport(0, 0, w, h);
+    mOsgGLFunctions->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    mOsgGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    mMapController->initializeGL(width(), height(), QQuickWindow::screen(), renderTargetId());
     mMapController->initializeOsgEarth();
-    restoreContext();
     emit osgInitialized();
-    restoreContext();
 
+    mOsgFboMS->release();
+    mOsgContext->doneCurrent();
+
+
+    mContext->makeCurrent(mSurface);
     resetOpenGLState();
 
     QObject::connect(this, &MainWindow::beforeRendering,
                      this, &MainWindow::frame,
                      Qt::DirectConnection);
+
+    mGLFunctions = new QOpenGLFunctions_2_0();
+    mGLFunctions->initializeOpenGLFunctions();
 }
 
 void MainWindow::resizeGL()
 {
+
+    mContext->doneCurrent();
+
+    mOsgContext->makeCurrent(mOsgSurface);
+    resetOpenGLState();
+
+    mOsgGLFunctions->glEnable(GL_DEPTH_TEST);
+    mOsgGLFunctions->glEnable(GL_STENCIL_TEST);
+    mOsgGLFunctions->glDepthFunc(GL_LESS);
+
+    if (mOsgFboMS) {
+        mOsgFboMS->release();
+        delete mOsgFboMS;
+        mOsgFboMS = nullptr;
+    }
+    if (mOsgFbo) {
+        mOsgFbo->release();
+        delete mOsgFbo;
+        mOsgFbo = nullptr;
+    }
+
+
+    int w = qMax(10, mViewportWidth);
+    int h = qMax(10, mViewportHeight);
+
+    QOpenGLFramebufferObjectFormat fboFormat;
+    fboFormat.setSamples(4);
+    fboFormat.setAttachment(QOpenGLFramebufferObject::Attachment::CombinedDepthStencil);
+
+    mOsgFboMS = new QOpenGLFramebufferObject(QSize(w, h), fboFormat);
+    mOsgFbo = new QOpenGLFramebufferObject(QSize(w, h),
+                                           QOpenGLFramebufferObject::Attachment::CombinedDepthStencil);
+
+
+
+    mOsgFboMS->bind();
+    mOsgGLFunctions->glViewport(0, 0, w, h);
+    mOsgGLFunctions->glClearColor(0,0,0,1);
+    mOsgGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     mMapController->resizeGL(mViewportWidth, mViewportHeight, screen());
+    mOsgFboMS->release();
+
+    mOsgContext->doneCurrent();
+
+    mContext->makeCurrent(mSurface);
+    resetOpenGLState();
 }
 
 void MainWindow::paintGL()
 {
+    mContext->doneCurrent();
+
+    mOsgContext->makeCurrent(mOsgSurface);
     resetOpenGLState();
+
+    mOsgGLFunctions->glEnable(GL_DEPTH_TEST);
+    mOsgGLFunctions->glEnable(GL_STENCIL_TEST);
+    mOsgGLFunctions->glDepthFunc(GL_LESS);
+
+    int w = qMax(10, mViewportWidth);
+    int h = qMax(10, mViewportHeight);
+
+    mOsgFboMS->bind();
+    mOsgGLFunctions->glViewport(0, 0, w, h);
+    mOsgGLFunctions->glClearColor(0,0,0,1);
+    mOsgGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
     mMapController->paintGL();
-    mOGLF->glClear(GL_DEPTH_BUFFER_BIT);
+    mOsgFboMS->release();
+
+    mOsgFbo->bind();
+    mOsgGLFunctions->glViewport(0, 0, w, h);
+    mOsgGLFunctions->glClearColor(0,0,0,1);
+    mOsgGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    mOsgFbo->release();
+
+    QOpenGLFramebufferObject::blitFramebuffer(mOsgFbo,
+                                              QRect(0, 0, w, h),
+                                              mOsgFboMS,
+                                              QRect(0, 0, w, h),
+                                              GL_COLOR_BUFFER_BIT,
+                                              GL_LINEAR
+                                              );
+
+    const GLuint fboTexture = mOsgFbo->texture();
+
+    mOsgContext->doneCurrent();
+
+    mContext->makeCurrent(mSurface);
+    resetOpenGLState();
+
+    mGLFunctions->glClearColor(0,0,0,1);
+    mGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    mGLFunctions->glDisable(GL_BLEND);
+
+    mGLFunctions->glBindTexture(GL_TEXTURE_2D, fboTexture);
+
+    mGLFunctions->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    mGLFunctions->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    mGLFunctions->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    mGLFunctions->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    mGLFunctions->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    mGLFunctions->glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+    mGLFunctions->glEnable(GL_TEXTURE_2D);
+    mGLFunctions->glBegin(GL_TRIANGLE_STRIP);
+    mGLFunctions->glTexCoord2f(0, 0);
+    mGLFunctions->glVertex3f(-1, -1, 0);
+    mGLFunctions->glTexCoord2f(1, 0);
+    mGLFunctions->glVertex3f(1, -1, 0);
+    mGLFunctions->glTexCoord2f(0, 1);
+    mGLFunctions->glVertex3f(-1, 1, 0);
+    mGLFunctions->glTexCoord2f(1, 1);
+    mGLFunctions->glVertex3f(1, 1, 0);
+    mGLFunctions->glEnd();
+
     resetOpenGLState();
 }
 

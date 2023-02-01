@@ -53,7 +53,7 @@ public: // osg::NodeCallback
             // and the resulting scale we need to auto-scale.
             double scale = bs.radius() / mpp;
 
-            scale *= 3.5;
+            scale *= 15;
 
             if (scale < _minScale)
                 scale = _minScale;
@@ -110,14 +110,14 @@ Rocket::Rocket(MapController *mapControler, QObject *parent):
     mRootNode->addChild(mNode3D, 0, std::numeric_limits<float>::max());
 
     //osg::Vec3d center = getBound().center();
-    float radius = getBound().radius();
-    float scale = 3;
+//    float radius = getBound().radius();
+//    float scale = 3;
 
-    mFire = new osgParticle::FireEffect(osg::Vec3f(0, -2*radius,0),scale,100.0);
-    mFire->setUseLocalParticleSystem(false);
+//    mFire = new osgParticle::FireEffect(osg::Vec3f(0, -2*radius,0),scale,100.0);
+//    mFire->setUseLocalParticleSystem(false);
 
-    mSmoke = new osgParticle::SmokeTrailEffect(osg::Vec3f(0, -2*radius,0),scale/3,100.0);
-    mSmoke->setUseLocalParticleSystem(false);
+//    mSmoke = new osgParticle::SmokeTrailEffect(osg::Vec3f(0, -2*radius,0),scale/3,100.0);
+//    mSmoke->setUseLocalParticleSystem(false);
     mIs3D = true;
 
 //    mRoot->addChild(node, false);
@@ -174,12 +174,34 @@ void Rocket::shoot(const osg::Vec3d &pos, double speed)
 
 void Rocket::stop()
 {
-    //setNodeMask(false);
+    setNodeMask(false);
     removeEffect();
+}
+
+void Rocket::setAutoScale()
+{
+//    auto style = getStyle();
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = value;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 5;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 10000 * 3.5;
+//    setStyle(style);
+    this->setCullingActive(false);
+    this->addCullCallback(
+                new RocketModelNodeAutoScaler( osg::Vec3d(1,1,1),
+                                               1, 60*15));
 }
 
 void Rocket::addEffect(double emitterDuration)
 {
+    float radius = getBound().radius();
+    float scale = 10;
+
+    mFire = new osgParticle::FireEffect(osg::Vec3f(0, -2*radius,0),scale,100.0);
+    mFire->setUseLocalParticleSystem(false);
+
+    mSmoke = new osgParticle::SmokeTrailEffect(osg::Vec3f(0, -2*radius,0),scale/3,100.0);
+    mSmoke->setUseLocalParticleSystem(false);
     //add fire-----------------------------------------------------------------------------------------------------
     osgEarth::Registry::shaderGenerator().run(mFire);// for textures or lighting
     getPositionAttitudeTransform()->addChild(mFire);

@@ -12,7 +12,6 @@
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
-
 #include "osgrenderer.h"
 #include "layersmodel.h"
 
@@ -51,7 +50,7 @@ public:
 
 public:
     void setMap(osgEarth::Map *map);
-    void setTrackNode(osg::Node *node);
+    void setTrackNode(osg::Node *node, double minDistance = 300);
     void untrackNode();
     bool addNode(osg::Node *node);
     bool removeNode(osg::Node *node);
@@ -132,6 +131,7 @@ protected:
     osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
     bool mGeocentric{true};
     bool mIs3DView{true};
+
 
 };
 

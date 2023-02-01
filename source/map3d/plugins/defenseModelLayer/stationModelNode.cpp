@@ -3,10 +3,10 @@
 #include "truck.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
+#include <osg/Depth>
 #include <osg/Material>
 
 const float RANGE3D = std::numeric_limits<float>::max();
-
 
 class StationModelNodeAutoScaler : public osg::NodeCallback
 {
@@ -98,43 +98,49 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700 * 3.5;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1200 * 3.5;
 
-
+    //--auto scaler---------------------------------------------------------------------------------
+    mModelNodeAutoScaler = new StationModelNodeAutoScaler( osg::Vec3d(1,1,1),
+                                                           rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale().value(),
+                                                           rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale().value() );
     this->setCullingActive(false);
-    this->addCullCallback(
-                new StationModelNodeAutoScaler( osg::Vec3d(1,1,1),
-                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale().value(),
-                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale().value() ));
-
-
-
-
-
-//    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+    this->addCullCallback(mModelNodeAutoScaler);
+    //----------------------------------------------------------------------------------------------
+    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     setStyle(rootStyle);
     //--create 2d node----------------------------------------------------------------------------
+    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+
     osg::Image* redIcon = osgDB::readImageFile("../data/models/station/station_ll_red.png");
-    redIcon->scaleImage(16, 16, redIcon->r());
+    if(redIcon)
+        redIcon->scaleImage(20, 20, redIcon->r());
     osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
+
+    redGeode->setStateSet(geodeStateSet);
     redGeode->addDrawable(redImageDrawable);
-//    auto redPlaceNode = new osgEarth::Annotation::PlaceNode();
-//    redPlaceNode->setIconImage(redIcon);
+    //    auto redPlaceNode = new osgEarth::Annotation::PlaceNode();
+    //    redPlaceNode->setIconImage(redIcon);
 
     osg::Image* yellowIcon = osgDB::readImageFile("../data/models/station/station_ll_yell.png");
-    yellowIcon->scaleImage(16, 16, yellowIcon->r());
+    if(yellowIcon)
+        yellowIcon->scaleImage(20, 20, yellowIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
+    yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
-//    auto yellowPlaceNode = new osgEarth::Annotation::PlaceNode();
-//    yellowPlaceNode->setIconImage(yellowIcon);
+    //    auto yellowPlaceNode = new osgEarth::Annotation::PlaceNode();
+    //    yellowPlaceNode->setIconImage(yellowIcon);
 
     mNode2D = new osg::Switch;
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
-//    mNode2D->addChild(yellowPlaceNode, false);
-//    mNode2D->addChild(redPlaceNode, true);
+    //    mNode2D->addChild(yellowPlaceNode->getGeoTransform(), false);
+    //    mNode2D->addChild(redPlaceNode->getGeoTransform(), true);
+    //    getGeoTransform()->addChild(redPlaceNode);
+
     //--create 3D node---------------------------------------------------------------------------
     if (!mNode3DRef.valid()) {
         mNode3DRef = osgDB::readRefNodeFile("../data/models/station/station.ive");
@@ -146,7 +152,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     mNode3D = new osg::Group;
     mNode3D->addChild(mNode3DRef.get());
-//    truck->setQStringName("truck");
+    //    truck->setQStringName("truck");
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
@@ -155,7 +161,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
     updateOrCreateLabelImage();
     mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
-//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
+    //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
     getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
     //--add nods--------------------------------------------------------------------------------
@@ -178,6 +184,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     mVisiblePolygone = new Polygone(mMapController, true);
     mVisiblePolygone->setLineColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
     mVisiblePolygone->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.5f));
+    //    setDefaultLighting( false );
 }
 
 void StationModelNode::setInformation(const StationInfo& info)
@@ -208,7 +215,7 @@ void StationModelNode::onLeftButtonClicked(bool val)
 
 void StationModelNode::frameEvent()
 {
-//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
+    //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 }
 
@@ -409,12 +416,12 @@ void StationModelNode::updateOrCreateLabelImage()
                          Qt::AlignRight | Qt::AlignVCenter,
                          mInformation.PrimSec);
 
-//        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
-//                         Qt::AlignLeft | Qt::AlignVCenter,
-//                         "I-Method:");
-//        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
-//                         Qt::AlignRight | Qt::AlignVCenter,
-//                         mInformation.IdentificationMethod);
+        //        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+        //                         Qt::AlignLeft | Qt::AlignVCenter,
+        //                         "I-Method:");
+        //        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+        //                         Qt::AlignRight | Qt::AlignVCenter,
+        //                         mInformation.IdentificationMethod);
 
 
     }

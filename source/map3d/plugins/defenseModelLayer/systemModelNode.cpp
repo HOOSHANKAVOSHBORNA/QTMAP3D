@@ -2,6 +2,7 @@
 #include "polygone.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
+#include <osg/Depth>
 #include <osg/Material>
 
 const float RANGE3D = std::numeric_limits<float>::max();;
@@ -95,7 +96,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700 * 3.5;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1200 * 3.5;
 
 
     this->setCullingActive(false);
@@ -110,16 +111,23 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     setStyle(rootStyle);
     //--create 2D Nodes---------------------------------------------------------------------------
+    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+
     osg::Image* redIcon = osgDB::readImageFile("../data/models/system/system_red.png");
-    redIcon->scaleImage(16, 16, redIcon->r());
+    if(redIcon)
+        redIcon->scaleImage(20, 20, redIcon->r());
     osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
+    redGeode->setStateSet(geodeStateSet);
     redGeode->addDrawable(redImageDrawable);
 
     osg::Image* yellowIcon = osgDB::readImageFile("../data/models/system/system_yell.png");
-    yellowIcon->scaleImage(16, 16, yellowIcon->r());
+    if(yellowIcon)
+        yellowIcon->scaleImage(20, 20, yellowIcon->r());
     osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
+    yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
 
     mNode2D = new osg::Switch;
@@ -290,12 +298,7 @@ void SystemModelNode::fire()
         mFiredRocket = mTruck->getActiveRocket();
         if(mFiredRocket)
         {
-            auto rocketStyle = mFiredRocket->getStyle();
-            rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-            rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-            rocketStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000*30;
-            mFiredRocket->setStyle(rocketStyle);
-
+            mFiredRocket->setAutoScale();
             mAssignedModelNode->stop();//TODO for test dont use in real vesrion
             mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
             mMapController->setTrackNode(mFiredRocket->getGeoTransform());
@@ -511,7 +514,9 @@ void SystemModelNode::collision()
         if(distance < 3 && !mHit)
         {
             mAssignedModelNode->collision();
-            mFiredRocket->collision();
+            //mFiredRocket->collision();
+//            mFiredRocket->setNodeMask(false);
+            mFiredRocket->stop();
             //mMapController->removeNode(mAssignedLine->getNode());
 
             auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);

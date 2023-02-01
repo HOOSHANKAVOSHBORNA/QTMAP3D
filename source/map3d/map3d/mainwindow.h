@@ -7,6 +7,13 @@
 #include <QTime>
 #include <QPoint>
 
+#include <QOffscreenSurface>
+#include <QOpenGLContext>
+#include <QScreen>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLFunctions_2_0>
+
+
 #include "pluginmanager.h"
 #include "layersmodel.h"
 
@@ -261,6 +268,14 @@ private:
     UIHandle *mUIHandle = nullptr;
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
+
+
+    QOpenGLContext *mOsgContext = nullptr;
+    QOffscreenSurface *mOsgSurface = nullptr;
+    QOpenGLFramebufferObject *mOsgFboMS = nullptr;
+    QOpenGLFramebufferObject *mOsgFbo = nullptr;
+    QOpenGLFunctions_2_0 *mGLFunctions = nullptr;
+    QOpenGLFunctions_2_0 *mOsgGLFunctions = nullptr;
 };
 
 #endif // MainWindow_H
