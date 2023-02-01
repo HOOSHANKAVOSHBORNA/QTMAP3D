@@ -12,7 +12,6 @@
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
-
 #include "osgrenderer.h"
 #include "layersmodel.h"
 
@@ -132,6 +131,7 @@ protected:
     osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
     bool mGeocentric{true};
     bool mIs3DView{true};
+
 
 };
 
