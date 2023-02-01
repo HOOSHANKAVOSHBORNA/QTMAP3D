@@ -30,9 +30,9 @@ void LayersModel::toggleLayerEnabled(int layerIndex)
 {
     if (layerIndex < mLayersList.size()) {
         auto layer = mLayersList[layerIndex];
-        auto modelLayer = dynamic_cast<osgEarth::ModelLayer*>(layer);
-        if (modelLayer) {
-            modelLayer->setVisible(!modelLayer->getVisible());
+        auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+        if (visibleLayer) {
+            visibleLayer->setVisible(!visibleLayer->getVisible());
         } else {
             layer->setEnabled(!layer->getEnabled());
         }
@@ -69,9 +69,9 @@ QVariant LayersModel::data(const QModelIndex &index, int role) const
     case LayerEnabledRole:
     {
         auto layer = mLayersList[index.row()];
-        auto modelLayer = dynamic_cast<osgEarth::ModelLayer*>(layer);
-        if (modelLayer) {
-            return QVariant::fromValue<bool>(modelLayer->getVisible());
+        auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+        if (visibleLayer) {
+            return QVariant::fromValue<bool>(visibleLayer->getVisible());
         } else {
             return QVariant::fromValue<bool>(layer->getEnabled());
         }
