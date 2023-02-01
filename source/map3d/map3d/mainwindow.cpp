@@ -594,8 +594,8 @@ void MainWindow::initializeGL()
     surfaceFormat.setProfile(QSurfaceFormat::CompatibilityProfile);
     surfaceFormat.setVersion(2, 0);
     surfaceFormat.setSamples(4);
-    surfaceFormat.setDepthBufferSize(64);
-    surfaceFormat.setStencilBufferSize(64);
+    surfaceFormat.setDepthBufferSize(24);
+    surfaceFormat.setStencilBufferSize(24);
 
     mOsgContext->setFormat(surfaceFormat);
     mOsgContext->setShareContext(mContext);
