@@ -131,7 +131,7 @@ private:
 
 //}
 //--MapController---------------------------------------------------------------------------------------------------------
-
+const double MAX_CAM_DISTANCE = 30000000.0;
 MapController::MapController(QQuickWindow *window) :
     mWindow(window)
 {
@@ -207,7 +207,7 @@ void MapController::setMap(osgEarth::Map *map)
     goToHome();
 }
 
-void MapController::setTrackNode(osg::Node *node)
+void MapController::setTrackNode(osg::Node *node, double minDistance)
 {
     auto vp = getEarthManipulator()->getViewpoint();
     if(vp.getNode() == node)
@@ -216,6 +216,7 @@ void MapController::setTrackNode(osg::Node *node)
     vp.setNode(node);
     getEarthManipulator()->setViewpoint(vp);
     auto camSet = getEarthManipulator()->getSettings();
+    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
     camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
     getEarthManipulator()->applySettings(camSet);
 }
@@ -695,7 +696,7 @@ void MapController::createCameraManipulator()
     auto  settings = mEarthManipulator->getSettings();
 //    settings->setSingleAxisRotation(true);
 
-    settings->setMinMaxDistance(0.0, 30000000.0);
+    settings->setMinMaxDistance(0.0, MAX_CAM_DISTANCE);
     if(mIs3DView)
         settings->setMinMaxPitch(-90, 0);
     else

@@ -3,11 +3,13 @@ import QtQuick 2.13
 import QtQuick.Window 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
+
+import QtGraphicalEffects 1.13
 import Crystal 1.0
 
 CMainWindow {
 
-    readonly  property int      _iconSize   : 16
+    readonly  property int      _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
     readonly property color     _colorRec   : "#404040"
@@ -16,13 +18,13 @@ CMainWindow {
     readonly property color     _colorIcon  : "#FFFFFF"
     readonly property color     _colorButton: "#55FFFFFF"
     readonly property string    _fontFamily : "Srouce Sans Pro"
-    readonly property int       _fontPointSize : 8
+    readonly property int       _fontPointSize : 11
     readonly property color     itemColor: "#404040"
     readonly property real      widgetsMargins: 10
 
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
-    property string modeMap: "projection"
+    property string modeMap: "geocentric"
 
 
     zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
@@ -146,9 +148,9 @@ CMainWindow {
             id: menuWidget
             anchors.horizontalCenter: parent.horizontalCenter
 
-            y:25 +  parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/5)+25))
+            //y:15 +  parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/5)+25))
             //menuWidget.height /*(-height - widgetsMargins)*/ + (wnd.widgetsPositionFactor * (height + (widgetsMargins * 2.0)))
-
+            y: (-height - widgetsMargins) + (wnd.widgetsPositionFactor * (height + (widgetsMargins * 2.0)))
             width: implicitWidth
             height: implicitHeight
 
@@ -169,11 +171,13 @@ CMainWindow {
 
         SideWidget {
             id: sideWidget
-            x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*3)))
-            y: menuWidget.height *2.5 + (widgetsMargins * 2.0)
+//            x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*3)))
+//            y: menuWidget.height *2.5 + (widgetsMargins * 2.0)
+            x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*2.0)))
+            y: menuWidget.height + (widgetsMargins * 2.0)
             width: implicitWidth + (widgetsMargins * 2)
-            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
-
+//            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
+            height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
             sideItemsModel: wnd.sideItemsModel
 
             onSideItemCreated: function(index, item) {
@@ -255,16 +259,19 @@ CMainWindow {
             id:compass
             headingAngle: wnd.headingAngle
             anchors.left: parent.left
-            anchors.leftMargin: widgetsMargins + 10
+            anchors.leftMargin: widgetsMargins //+ 10
             anchors.bottomMargin: widgetsMargins
-            y: 25 + parent.height - (wnd.widgetsPositionFactor * (height + (widgetsMargins - 10)+ 25) )
+//            y: 25 + parent.height - (wnd.widgetsPositionFactor * (height + (widgetsMargins - 10)+ 25) )
+            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
         }
+
 
         NavigationWidget{
             id : navigationWidget
             anchors.right: parent.right
             anchors.rightMargin: _margin
-            y:25 + parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/2+3)+25))
+//            y:25 + parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/2+3)+25))
+            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins/2+3)))
             // slot button
             onBtnHomeClicked: function() {
                 wnd.homeButtonClicked();
@@ -281,13 +288,13 @@ CMainWindow {
         }
     }
 
-    StatusBars {
+    StatusBar {
         id: statusBar
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
+        anchors.bottomMargin: 0
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.leftMargin: 30
+        anchors.leftMargin: 0
         anchors.rightMargin: 0
         width: parent.width
         height: childrenRect.height
@@ -467,17 +474,163 @@ CMainWindow {
     }
     InformationView {
         id: infoo
-        x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*3.0)))
-        y: menuWidget.height *2.5 + (widgetsMargins * 2.0)
+//        x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*3.0)))
+//        y: menuWidget.height *2.5 + (widgetsMargins * 2.0)
+        x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
+        y: menuWidget.height + (widgetsMargins * 2.0)
         width: 600 + (widgetsMargins * 2)
-        height: parent.height - (menuWidget.height *2.5)- navigationWidget.height - (widgetsMargins * 5)
-
+//        height: parent.height - (menuWidget.height *2.5)- navigationWidget.height - (widgetsMargins * 5)
+        height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
     }
 
     function showInfoView(item) {
         if (wnd.widgetsVisible === false) toggleWidgetsVisible();
         sideWidget.hideAllItems();
         infoo.showInfo(item)
+    }
+
+    Rectangle {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.leftMargin: _margin
+        anchors.topMargin: widgetsMargins
+        height: rowl.implicitHeight + 15
+        width: rowl.implicitWidth + 20
+        visible: false
+        color: "transparent"
+        Rectangle {
+            anchors.fill: parent
+            color: "#404040"
+            opacity: 0.8
+            radius: 10
+        }
+        MouseArea {
+            anchors.fill: parent
+        }
+
+        RowLayout {
+            id: rowl
+            anchors.fill: parent
+            spacing: 0
+            anchors.rightMargin: 20
+            Item {
+                Layout.alignment: Qt.AlignCenter
+
+                Layout.preferredWidth: 64
+                Layout.preferredHeight: 64
+
+                ColumnLayout {
+                    id: col3
+                    anchors.centerIn: parent
+                    Image {
+                        id: img3
+                      Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 24
+                        Layout.preferredHeight: 24
+                        source: "qrc:///Resources/close.png"
+                        width: 24
+                        height: 24
+                    }
+
+                    Label {
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: implicitWidth
+                        Layout.preferredHeight: implicitHeight
+                        text: "Exit"
+                        color: "white"
+                        font.family: _fontFamily
+                        font.pointSize: 11
+                    }
+                    visible: false
+                }
+
+                MouseArea {
+                    id: mouseArea3
+                    anchors.fill: col3
+                    hoverEnabled: true
+
+                    property bool isMouseOnItem: false
+
+                    onEntered: function() {
+                        isMouseOnItem = true;
+                    }
+                    onExited: function() {
+                        isMouseOnItem = false;
+                    }
+
+                    onClicked: function() {
+                        wnd.close();
+                        //rootItem.clickCallback(index);
+                    }
+                }
+
+                ColorOverlay {
+                    anchors.fill: col3
+                    source: col3
+                    color: mouseArea3.isMouseOnItem ?
+                               (mouseArea3.pressed ? _colorPresed: _colorHover) :
+                               (mouseArea3.pressed ? _colorHover : "#FFFFFF");
+                }
+            }
+            Item {
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: 64
+                Layout.preferredHeight: 64
+
+                ColumnLayout {
+                    id: col4
+                    anchors.centerIn: parent
+                    Image {
+                        id: img4
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 24
+                        Layout.preferredHeight: 24
+                        source: "qrc:///Resources/collapse.png"
+                        width: 24
+                        height: 24
+                    }
+
+                    Label {
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: implicitWidth
+                        Layout.preferredHeight: implicitHeight
+                        text: "Mininnize"
+                        color: "white"
+                        font.family: _fontFamily
+                        font.pointSize: 11
+                    }
+                    visible: false
+                }
+
+                MouseArea {
+                    id: mouseArea4
+                    anchors.fill: col4
+                    hoverEnabled: true
+
+                    property bool isMouseOnItem: false
+
+                    onEntered: function() {
+                        isMouseOnItem = true;
+                    }
+                    onExited: function() {
+                        isMouseOnItem = false;
+                    }
+
+                    onClicked: function() {
+                        wnd.showMinimized()
+                        //rootItem.clickCallback(index);
+                    }
+                }
+
+                ColorOverlay {
+                    anchors.fill: col4
+                    source: col4
+                    color: mouseArea4.isMouseOnItem ?
+                               (mouseArea4.pressed ? _colorPresed: _colorHover) :
+                               (mouseArea4.pressed ? _colorHover : "#FFFFFF");
+                }
+            }
+        }
     }
 
 }

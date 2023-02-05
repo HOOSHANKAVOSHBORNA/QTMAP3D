@@ -103,15 +103,9 @@ Item {
                                 }
                                 color: "#474747"
                             }
-                            GridLayout {
+                            ColumnLayout {
                                 id: wid
-                                rows: 9
-                                columns: 1
-                                Layout.fillWidth: true
-                                Layout.preferredWidth: implicitWidth
                                 Layout.preferredHeight: implicitHeight
-                                columnSpacing: 0
-                                rowSpacing: 0
                                 Repeater {
                                     model: MainInfoHeaders
                                     Label {
@@ -126,16 +120,10 @@ Item {
                                             color: boxColor
                                         }
                                     }
-
                                 }
                             }
-                            GridLayout {
-                                rows: 9
-                                columns: 1
-//                                Layout.fillWidth: true
+                            ColumnLayout {
                                 Layout.preferredHeight: implicitHeight
-                                columnSpacing: 0
-                                rowSpacing: 0
                                 Repeater {
                                     model: MainInfo
                                     Label {
@@ -180,68 +168,47 @@ Item {
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height:24
-
                                 }
                                 color: "#474747"
                             }
-                            GridLayout {
-                                rows: 5
-                                columns: 2
-//                                Layout.fillWidth: true
-//                                Layout.preferredWidth: implicitWidth
+                            ColumnLayout {
                                 Layout.preferredHeight: implicitHeight
-                                rowSpacing: 0
-                                columnSpacing: 0
-                                GridLayout {
-                                    rows: 5
-                                    columns: 1
-                                    Layout.preferredHeight: implicitHeight
-                                    Layout.preferredWidth: wid.implicitWidth - 55
-                                    columnSpacing: 0
-                                    rowSpacing: 0
-                                    Repeater {
-                                        model: LocationInfoHeaders
-                                        Label {
-                                            text: LocationInfoHeaders[index]
-                                            color: keyTextColor
-                                            Layout.fillWidth: true
-                                            verticalAlignment: Label.AlignVCenter
-                                            Layout.leftMargin: 5
-                                            leftInset: -5
-                                            Layout.preferredHeight: implicitHeight + spacee
-                                            background: Rectangle {
-                                                color: boxColor
-                                            }
-                                        }
-
-                                    }
-                                }
-                                GridLayout {
-                                    rows: 4
-                                    columns: 1
-//                                    Layout.fillWidth: true
-                                    Layout.preferredHeight: implicitHeight
-                                    columnSpacing: 0
-                                    rowSpacing: 0
-                                    Repeater {
-                                        model: LocationInfo
-                                        Label {
-                                            text: LocationInfo[index]
-                                            color: "white"
-                                            Layout.fillWidth: true
-                                            Layout.leftMargin: 5
-                                            leftInset: -5
-                                            verticalAlignment: Label.AlignVCenter
-                                            Layout.preferredHeight: implicitHeight + spacee
-                                            background: Rectangle {
-                                                color: boxColor
-                                            }
+                                Repeater {
+                                    model: LocationInfoHeaders
+                                    Label {
+                                        text: LocationInfoHeaders[index]
+                                        color: keyTextColor
+                                        Layout.fillWidth: true
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
                                         }
                                     }
                                 }
                             }
-                        }
+                            ColumnLayout {
+                                Layout.preferredHeight: implicitHeight
+                                Repeater {
+                                    model: LocationInfo
+                                    Label {
+                                        text: LocationInfo[index]
+                                        color: "white"
+                                        Layout.fillWidth: true
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
+                                }
+                            }
 
+                        }
 
                         Rectangle {
                             id: firstButton
@@ -254,13 +221,13 @@ Item {
                                 anchors.fill: parent
                                 cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: if (firstButton.checked) {
-                                               detectionLayout.Layout.preferredHeight = detectionLayout.implicitHeight
-                                               imgd.rotation = 180
+                                               detectionLayout.Layout.preferredHeight = 0
+                                               imgd.rotation = -90
                                                firstButton.checked = false
                                            }
                                            else {
-                                               detectionLayout.Layout.preferredHeight = 0
-                                               imgd.rotation = -90
+                                               detectionLayout.Layout.preferredHeight = detectionLayout.implicitHeight
+                                               imgd.rotation = 180
                                                firstButton.checked = true
                                            }
                             }
@@ -278,7 +245,7 @@ Item {
                                 source: "qrc:/Resources/chevron.png"
                                 width: 16
                                 height: 16
-                                rotation: -90
+                                rotation: 180
                                 ColorOverlay {
                                     source: imgd
                                     anchors.fill: imgd
@@ -291,11 +258,9 @@ Item {
 
                         }
 
-
-
                         RowLayout {
                             id: detectionLayout
-                            Layout.preferredHeight: 0
+                            Layout.preferredHeight: implicitHeight
                             spacing: 2
                             clip: true
                             Layout.preferredWidth: rootItem.width
@@ -333,7 +298,6 @@ Item {
                                             color: boxColor
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -350,13 +314,13 @@ Item {
                                 anchors.fill: parent
                                 cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: if (secondButton.checked) {
-                                               sendsLayout.Layout.preferredHeight = sendsLayout.implicitHeight
-                                               imgs.rotation = 180
+                                               sendsLayout.Layout.preferredHeight = 0
+                                               imgs.rotation = -90
                                                secondButton.checked = false
                                            }
                                            else {
-                                               sendsLayout.Layout.preferredHeight = 0
-                                               imgs.rotation = -90
+                                               sendsLayout.Layout.preferredHeight = sendsLayout.implicitHeight
+                                               imgs.rotation = 180
                                                secondButton.checked = true
                                            }
                             }
@@ -374,7 +338,7 @@ Item {
                                 source: "qrc:/Resources/chevron.png"
                                 width: 16
                                 height: 16
-                                rotation: -90
+                                rotation: 180
                                 ColorOverlay {
                                     source: imgs
                                     anchors.fill: imgs
@@ -389,7 +353,7 @@ Item {
 
                         RowLayout {
                             id: sendsLayout
-                            Layout.preferredHeight: 0
+                            Layout.preferredHeight: implicitHeight
                             spacing: 2
                             clip: true
                             Layout.preferredWidth: rootItem.width

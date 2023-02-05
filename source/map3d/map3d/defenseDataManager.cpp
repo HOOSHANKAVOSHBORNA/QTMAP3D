@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <chrono>
 #include <thread>
+#include <QTime>
 
 static int aircraftNumber = 0;
 DefenseDataManager::DefenseDataManager(QObject *parent):
@@ -13,6 +14,8 @@ DefenseDataManager::DefenseDataManager(QObject *parent):
 }
 Demo::Demo(DefenseDataManager *defenseDataManager)
 {
+    qsrand(QDateTime::currentMSecsSinceEpoch() / 1000);
+
     mDefenseDataManager = defenseDataManager;
     //run demo ------------------------------------------------
     QTimer *timer = new QTimer();
@@ -177,7 +180,7 @@ void Demo::createStationInfo()
         stationInfo.Longitude = longitude;
         stationInfo.PrimSec = "secondary";
         stationInfo.Radius = radius;//meter
-        stationInfo.CycleTime = 123123456;//
+        stationInfo.CycleTime = 123;//
 
         stationList.append(stationInfo);
     }
