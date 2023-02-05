@@ -273,7 +273,6 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         getPosition().toWorld(worldPosition, mMapController->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint;
         double radius = mInformation.Radius;
-
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
         geoPoint.z() = 0;
         mVisiblePolygone->addPoints(geoPoint.vec3d());
