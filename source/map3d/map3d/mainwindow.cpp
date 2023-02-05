@@ -748,6 +748,7 @@ void MainWindow::paintGL()
     mGLFunctions->glEnd();
 
     resetOpenGLState();
+    mGLFunctions->glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void MainWindow::OsgPaintGL()
