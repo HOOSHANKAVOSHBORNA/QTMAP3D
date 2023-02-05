@@ -518,43 +518,7 @@ void MainWindow::frame()
 
 
         tickNavigation(deltaTime);
-
-
-        mOsgContext->makeCurrent(mOsgSurface);
-        resetOpenGLState();
-
-        mOsgGLFunctions->glEnable(GL_DEPTH_TEST);
-        mOsgGLFunctions->glEnable(GL_STENCIL_TEST);
-        mOsgGLFunctions->glDepthFunc(GL_LESS);
-
-        int w = qMax(10, mViewportWidth);
-        int h = qMax(10, mViewportHeight);
-
-        mOsgFboMS->bind();
-        mOsgGLFunctions->glViewport(0, 0, w, h);
-        mOsgGLFunctions->glClearColor(0,0,0,1);
-        mOsgGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-        mMapController->paintGL();
-        mOsgFboMS->release();
-
-        mOsgFbo->bind();
-        mOsgGLFunctions->glViewport(0, 0, w, h);
-        mOsgGLFunctions->glClearColor(0,0,0,1);
-        mOsgGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        mOsgFbo->release();
-
-        QOpenGLFramebufferObject::blitFramebuffer(mOsgFbo,
-                                                  QRect(0, 0, w, h),
-                                                  mOsgFboMS,
-                                                  QRect(0, 0, w, h),
-                                                  GL_COLOR_BUFFER_BIT,
-                                                  GL_LINEAR
-                                                  );
-
-        const GLuint fboTexture = mOsgFbo->texture();
-
-        mOsgContext->doneCurrent();
+        OsgPaintGL();
 
 
         const auto pluginManager = Application::instance()->pluginManager();
@@ -689,9 +653,9 @@ void MainWindow::initializeGL()
     mContext->makeCurrent(mSurface);
     resetOpenGLState();
 
-    QObject::connect(this, &MainWindow::frameSwapped,
-                     this, &MainWindow::frame,
-                     Qt::DirectConnection);
+//    QObject::connect(this, &MainWindow::frameSwapped,
+//                     this, &MainWindow::frame,
+//                     Qt::DirectConnection);
     QObject::connect(this, &MainWindow::beforeRendering,
                      this, &MainWindow::paintGL,
                      Qt::DirectConnection);
@@ -785,6 +749,48 @@ void MainWindow::paintGL()
     resetOpenGLState();
 }
 
+void MainWindow::OsgPaintGL()
+{
+
+    mOsgContext->makeCurrent(mOsgSurface);
+    resetOpenGLState();
+
+    mOsgGLFunctions->glEnable(GL_DEPTH_TEST);
+    mOsgGLFunctions->glEnable(GL_STENCIL_TEST);
+    mOsgGLFunctions->glDepthFunc(GL_LESS);
+
+    int w = qMax(10, mViewportWidth);
+    int h = qMax(10, mViewportHeight);
+
+    mOsgFboMS->bind();
+    mOsgGLFunctions->glViewport(0, 0, w, h);
+    mOsgGLFunctions->glClearColor(0,0,0,1);
+    mOsgGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    mMapController->paintGL();
+    mOsgFboMS->release();
+
+    mOsgFbo->bind();
+    mOsgGLFunctions->glViewport(0, 0, w, h);
+    mOsgGLFunctions->glClearColor(0,0,0,1);
+    mOsgGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    mOsgFbo->release();
+
+    QOpenGLFramebufferObject::blitFramebuffer(mOsgFbo,
+                                              QRect(0, 0, w, h),
+                                              mOsgFboMS,
+                                              QRect(0, 0, w, h),
+                                              GL_COLOR_BUFFER_BIT,
+                                              GL_LINEAR
+                                              );
+
+    const GLuint fboTexture = mOsgFbo->texture();
+
+    mOsgContext->doneCurrent();
+
+
+}
+
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     QQuickWindow::resizeEvent(ev);
@@ -794,7 +800,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     mViewportHeight = s.height();
 
     resizeGL();
-    frame();
 
 }
 
@@ -1027,6 +1032,10 @@ bool MainWindow::event(QEvent *ev)
         if (mListWindow) {
             mListWindow->close();
         }
+        break;
+
+    case QEvent::UpdateRequest:
+        frame();
         break;
 
     default: break;

@@ -199,6 +199,7 @@ private:
     void initializeGL();
     void resizeGL();
     void paintGL();
+    void OsgPaintGL();
 
 protected:
     void resizeEvent(QResizeEvent *) override;
