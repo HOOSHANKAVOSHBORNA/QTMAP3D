@@ -220,7 +220,6 @@ signals:
 private:
     QOpenGLFunctions_2_0 *mOGLF = nullptr;
 
-    bool mResized     = false;
 
     int mViewportWidth = 0;
     int mViewportHeight = 0;
@@ -276,6 +275,8 @@ private:
     QOpenGLFramebufferObject *mOsgFbo = nullptr;
     QOpenGLFunctions_2_0 *mGLFunctions = nullptr;
     QOpenGLFunctions_2_0 *mOsgGLFunctions = nullptr;
+
+    GLuint mFboTexture = 0;
 };
 
 #endif // MainWindow_H
