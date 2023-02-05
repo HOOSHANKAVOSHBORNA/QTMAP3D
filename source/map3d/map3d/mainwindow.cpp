@@ -518,6 +518,12 @@ void MainWindow::frame()
 
 
         tickNavigation(deltaTime);
+
+
+        if (mResized) {
+            resizeGL();
+            mResized = false;
+        }
         OsgPaintGL();
 
 
@@ -526,13 +532,7 @@ void MainWindow::frame()
             pluginManager->frameEvent();
         }
 
-
-
-
-
-
         lastFrameTimePoint = now;
-
     }
 }
 
@@ -653,9 +653,9 @@ void MainWindow::initializeGL()
     mContext->makeCurrent(mSurface);
     resetOpenGLState();
 
-//    QObject::connect(this, &MainWindow::frameSwapped,
-//                     this, &MainWindow::frame,
-//                     Qt::DirectConnection);
+    QObject::connect(this, &MainWindow::frameSwapped,
+                     this, &MainWindow::frame,
+                     Qt::DirectConnection);
     QObject::connect(this, &MainWindow::beforeRendering,
                      this, &MainWindow::paintGL,
                      Qt::DirectConnection);
@@ -724,6 +724,7 @@ void MainWindow::paintGL()
     mGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     mGLFunctions->glDisable(GL_BLEND);
+    mGLFunctions->glViewport(0,0, mViewportWidth, mViewportHeight);
 
     mGLFunctions->glBindTexture(GL_TEXTURE_2D, mFboTexture);
 
@@ -799,7 +800,8 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     mViewportWidth  = s.width();
     mViewportHeight = s.height();
 
-    resizeGL();
+    mResized = true;
+
 
 }
 
@@ -1035,7 +1037,6 @@ bool MainWindow::event(QEvent *ev)
         break;
 
     case QEvent::UpdateRequest:
-        frame();
         break;
 
     default: break;

@@ -278,6 +278,8 @@ private:
     QOpenGLFunctions_2_0 *mOsgGLFunctions = nullptr;
 
     GLuint mFboTexture = 0;
+
+    bool mResized = true;
 };
 
 #endif // MainWindow_H
