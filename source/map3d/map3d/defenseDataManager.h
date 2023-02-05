@@ -289,6 +289,7 @@ public:
     void updateAircraftInfo();
     void createStationInfo();
     void createSystemInfo();
+    void updateSystemCambatInfo();
 public:
     DefenseDataManager* mDefenseDataManager;
     QList<AircraftInfo> mAircraftList;

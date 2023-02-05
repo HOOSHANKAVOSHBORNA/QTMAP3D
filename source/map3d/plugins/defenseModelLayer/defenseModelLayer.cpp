@@ -120,15 +120,15 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         addUpdateAircraft(aircraftInfo);
         //demo();
     }
-    if(CATEGORY == category && name == ADD_ROCKET)
-    {
-        for(auto modelNode:mModelNodes[SYSTEM])
-        {
-            auto systemModelNode = dynamic_cast<SystemModelNode*>(modelNode);
-            if(systemModelNode && systemModelNode->getAssignedModelNode())
-                systemModelNode->fire();
-        }
-    }
+//    if(CATEGORY == category && name == ADD_ROCKET)
+//    {
+//        for(auto modelNode:mModelNodes[SYSTEM])
+//        {
+//            auto systemModelNode = dynamic_cast<SystemModelNode*>(modelNode);
+//            if(systemModelNode && systemModelNode->getAssignedModelNode())
+//                systemModelNode->fire();
+//        }
+//    }
     else if(CATEGORY == category && name == SYSTEM)
     {
         SystemInfo systemInfo;
@@ -583,7 +583,7 @@ void DefenseModelLayer::onSystemStatusInfoChanged(SystemStatusInfo &systemStatus
     {
         auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemStatusInfo.Number]);
         //update information-----------------------------------------------------
-        systemModelNode->setSystemStatusInfo(systemStatusInfo);
+        systemModelNode->setStatusInfo(systemStatusInfo);
         //add update list view-----------------------------------------------------------------
         if (mDataManager)
         {
@@ -598,7 +598,7 @@ void DefenseModelLayer::onSystemCambatInfoChanged(SystemCambatInfo &systemCambat
     {
         auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemCambatInfo.Number]);
         //update information-----------------------------------------------------
-        systemModelNode->setSystemCambatInfo(systemCambatInfo);
+        systemModelNode->setCambatInfo(systemCambatInfo);
         //add update list view-----------------------------------------------------------------
         if (mDataManager)
         {
