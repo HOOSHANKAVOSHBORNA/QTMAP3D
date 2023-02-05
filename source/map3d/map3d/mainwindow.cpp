@@ -794,6 +794,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     mViewportHeight = s.height();
 
     resizeGL();
+    frame();
 
 }
 
