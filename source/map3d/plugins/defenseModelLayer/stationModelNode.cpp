@@ -107,7 +107,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     this->setCullingActive(false);
     this->addCullCallback(mModelNodeAutoScaler);
     //----------------------------------------------------------------------------------------------
-    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
+    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     setStyle(rootStyle);
     //--create 2d node----------------------------------------------------------------------------
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();

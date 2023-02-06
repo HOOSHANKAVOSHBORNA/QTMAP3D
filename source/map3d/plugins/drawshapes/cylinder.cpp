@@ -18,7 +18,7 @@ Cylinder::Cylinder(MapController *mapController, float radius, float height, boo
         style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
 
     }
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(pShapeDrawable);
 
 

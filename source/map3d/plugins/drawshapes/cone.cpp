@@ -17,7 +17,7 @@ Cone::Cone(MapController *mapController, float radius, float height, bool clamp)
         style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
 
     }
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(pShapeDrawable);
 
 
