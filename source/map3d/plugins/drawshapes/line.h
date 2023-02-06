@@ -13,10 +13,6 @@ public:
     void setClamp(bool clamp);
     void switchLP(bool lineMode);
 
-    float mWidth{50};
-    osgEarth::Color mColor{osgEarth::Color::Red};
-    bool mClamp{true};
-
     void addPoint(const osg::Vec3d& vec);
     void removePoint();
     void clearPoints();
@@ -30,6 +26,9 @@ private:
     MapController* mMapController{nullptr};
     //osgEarth::Symbology::Style pointStyle;
     bool mIsPoint{false};
+    float mWidth{50};
+    osgEarth::Color mColor{osgEarth::Color::Red};
+    bool mClamp{true};
     
 };
 

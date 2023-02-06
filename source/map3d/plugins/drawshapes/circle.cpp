@@ -38,6 +38,7 @@ Circle::Circle(MapController *mapController, bool clamp)
 
 
 
+
 }
 
 void Circle::setColor(osgEarth::Color color)

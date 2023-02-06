@@ -9,19 +9,19 @@
 class LineNode : public osgEarth::Annotation::FeatureNode
 {
 public:
-    LineNode(MapController *mapController);
+    LineNode(MapController *mapController, bool point=false);
     void setLineHeight(float hieght);
-    void setLineColor(osgEarth::Color color);
-    void setLineWidth(float width);
-    void setLineClamp(bool clamp);
-    void setPointColor(osgEarth::Color color);
-    void setPointSize(float size);
-    void setPointClamp(bool clamp);
+    void setColor(osgEarth::Color color);
+    void setWidth(float width);
+    void setClamp(bool clamp);
+    void switchLP(bool lineMode);
+    osg::ref_ptr<osgEarth::Annotation::ModelNode> mCircleModelNode{nullptr};
+
     osg::ref_ptr<osg::Node> makeLineSphere();
 
 
 
-    osg::Group* mCircleGr;
+    osg::ref_ptr<osg::Group> mCircleGr;
 
     void addPoint(osgEarth::GeoPoint points);
     void removePoint();
@@ -32,8 +32,12 @@ public:
 private:
     MapController* mMapController{nullptr};
     osgEarth::Symbology::Geometry* mLinePath;
-    osgEarth::Annotation::ModelNode* mCircleModelNode{nullptr};
+//    osgEarth::Annotation::ModelNode* mCircleModelNode{nullptr};
 
+    bool mIsPoint{false};
+    float mWidth{50};
+    osgEarth::Color mColor{osgEarth::Color::Red};
+    bool mClamp{true};
 };
 
 #endif // LINENODE_H

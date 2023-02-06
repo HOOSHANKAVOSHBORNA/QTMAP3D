@@ -49,13 +49,12 @@ private:
     enum class DrawingState {NONE, START, FINISH, DELETE};
     DrawingState mDrawingState;
     osgEarth::Annotation::ImageOverlay* mImageOverlay{nullptr};
-    osgEarth::Annotation::ModelNode* mCirclePlaceNode{nullptr};
+    osgEarth::Annotation::ModelNode* mLineSphereNode{nullptr};
     osgEarth::Annotation::CircleNodeEditor* mCircleEditor{nullptr};
     osgEarth::Annotation::RectangleNodeEditor* mRectEditor{nullptr};
     osgEarth::Annotation::EllipseNodeEditor* mElpsEditor{nullptr};
     osgEarth::Annotation::ImageOverlayEditor* mImgOvlEditor{nullptr};
     osg::Group* mCircleGr;
-    osg::Group* mLineCircleGr;
     osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
 
     osgEarth::Annotation::SphereDragger* mCircleHdragger;

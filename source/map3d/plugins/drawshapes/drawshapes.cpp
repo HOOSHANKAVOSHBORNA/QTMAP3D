@@ -82,8 +82,8 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
             {
                 mShape = Shape::LINE;
                 //mLine = new LineNode(mMapController);
-                mLineCircleGr = new osg::Group;
-                mMapController->addNode(mLineCircleGr);
+                //mLineCircleGr = new osg::Group;
+                //mMapController->addNode(mLineCircleGr);
             }
             else
             {
@@ -332,44 +332,13 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
 
         mShape = Shape::LINE;
 
-
-        osg::Node* sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
-        osgEarth::Symbology::Style LiSphereStyle;
-        LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-        LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
-        mCirclePlaceNode = new osgEarth::Annotation::ModelNode
-                (mMapController->getMapNode(),LiSphereStyle);
-        mCirclePlaceNode->setPosition(geoPos);
-
-
-
-
-
-//        mCircle = new Circle(mMapController,false);
-        //mCircle->setRadius(osgEarth::Distance(50, osgEarth::Units::KILOMETERS));
-//        mCircle->setPosition(geoPos);
-//        mLineCircleGr->addChild(mCircle);
-        //mLine->addCircle();
-//        osgEarth::Symbology::Style circleStyle;
-//        circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Red, 0.5);
-//        circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-//        circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-
-
-
-//        osgEarth::Annotation::CircleNode* circle = new osgEarth::Annotation::CircleNode;
-//        circle->set(
-//                    osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y(), 1000, osgEarth::ALTMODE_RELATIVE),
-//                    osgEarth::Distance(50, osgEarth::Units::KILOMETERS),
-//                    circleStyle, osgEarth::Angle(0.0, osgEarth::Units::DEGREES), osgEarth::Angle(360.0, osgEarth::Units::DEGREES), true);
-        mLineCircleGr->addChild(mCirclePlaceNode);
         if(mDrawingState != DrawingState::START)
         {
             mDrawingState = DrawingState::START;
             mLine = new LineNode(mMapController);
-            mLine->setLineColor(osgEarth::Color::Purple);
-            mLine->setLineWidth(7);
-            mLine->setLineClamp(false);
+            mLine->setColor(osgEarth::Color::Purple);
+            mLine->setWidth(7);
+            mLine->setClamp(false);
             mMapController->addNode(mLine);
 
         }
@@ -382,7 +351,11 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
     {
         mDrawingState = DrawingState::DELETE;
         mMapController->removeNode(mLine);
-//        mMapController->removeNode(mLineCircleGr);
+
+        mMapController->removeNode(mLine->mCircleGr);
+
+
+
 
         event->accept();
     }
@@ -396,6 +369,7 @@ void DrawShapes::onLineMouseMove(QMouseEvent *event)
         if (mLine->getSize() >= 2)
         {
             mLine->removePoint();
+//            mMapController->removeNode(mLine->mCircleGr);s
         }
         osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
         mLine->addPoint(geoPos);
