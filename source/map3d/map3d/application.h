@@ -30,6 +30,7 @@ public:
 signals:
     void  mainWindowCreated();
     void  listWindowCreated();
+    void defenseDataManagerInitialized(DefenseDataManager *defenseDataManager);
 
 
 private:

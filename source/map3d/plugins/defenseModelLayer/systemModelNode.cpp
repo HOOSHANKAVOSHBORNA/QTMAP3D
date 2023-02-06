@@ -4,86 +4,9 @@
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
 #include <osg/Material>
+#include "defenseModelNodeAutoScaler.h"
 
 const float RANGE3D = std::numeric_limits<float>::max();;
-
-class SystemModelNodeAutoScaler : public osg::NodeCallback
-{
-public:
-    SystemModelNodeAutoScaler(const osg::Vec3d& baseScale = osg::Vec3d(1,1,1), double minScale = 0.0, double maxScale = DBL_MAX) :
-        _baseScale( baseScale ),
-        _minScale( minScale ),
-        _maxScale( maxScale )
-    {
-
-    }
-
-public: // osg::NodeCallback
-
-    void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        osgEarth::Annotation::GeoPositionNode* geo = static_cast<osgEarth::Annotation::GeoPositionNode*>(node);
-        osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
-
-        osg::Camera* cam = cs->getCurrentCamera();
-
-        // If this is an RTT camera, we need to use it's "parent"
-        // to calculate the proper scale factor.
-        if (cam->isRenderToTextureCamera() &&
-                cam->getView() &&
-                cam->getView()->getCamera() &&
-                cam->getView()->getCamera() != cam)
-        {
-            cam = cam->getView()->getCamera();
-        }
-
-        if (cam->getViewport())
-        {
-            // Reset the scale so we get a proper bound
-            geo->getPositionAttitudeTransform()->setScale(_baseScale);
-            const osg::BoundingSphere& bs = node->getBound();
-
-            // transform centroid to VIEW space:
-            osg::Vec3d centerView = bs.center() * cam->getViewMatrix();
-
-            // Set X coordinate to the radius so we can use the resulting CLIP
-            // distance to calculate meters per pixel:
-            centerView.x() = bs.radius();
-
-            // transform the CLIP space:
-            osg::Vec3d centerClip = centerView * cam->getProjectionMatrix();
-
-            // caluclate meters per pixel:
-            double mpp = (centerClip.x()*0.5) * cam->getViewport()->width();
-
-            // and the resulting scale we need to auto-scale.
-            double scale = bs.radius() / mpp;
-
-            scale *= 3.5;
-
-            if (scale < _minScale)
-                scale = _minScale;
-            else if (scale>_maxScale)
-                scale = _maxScale;
-
-            geo->getPositionAttitudeTransform()->setScale(
-                        osg::componentMultiply(_baseScale, osg::Vec3d(scale, scale, scale)));
-        }
-
-        if (node->getCullingActive() == false)
-        {
-            node->setCullingActive(true);
-        }
-
-        traverse(node, nv);
-    }
-
-protected:
-    osg::Vec3d _baseScale;
-    double _minScale;
-    double _maxScale;
-};
-
 
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
@@ -94,17 +17,9 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1200 * 3.5;
-
 
     this->setCullingActive(false);
-    this->addCullCallback(
-                new SystemModelNodeAutoScaler( osg::Vec3d(1,1,1),
-                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale().value(),
-                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale().value() ));
-
+    this->addCullCallback(new DefenseModelNodeAutoScaler(5.5, 1, 600));
 
 
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;

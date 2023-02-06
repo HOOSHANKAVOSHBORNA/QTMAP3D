@@ -22,7 +22,9 @@ int main(int argc, char *argv[])
     Application *const map3DApp = Application::instance();
     map3DApp->initialize();
     //--run demo------------------------
-    //Demo demo(Application::instance()->defenseDataManager());
+//    QObject::connect(map3DApp, &Application::defenseDataManagerInitialized, [](DefenseDataManager *defenseDataManager) {
+//        Demo* demo = new Demo(defenseDataManager);
+//    });
     //---------------------------------
 
     if (map3DApp->isMainWindowReady()) {
