@@ -76,7 +76,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 600));
 
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
+    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
     setStyle(rootStyle);
     //--create icon Nodes---------------------------------------------------------------------------
