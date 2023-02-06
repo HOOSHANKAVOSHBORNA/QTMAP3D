@@ -46,7 +46,7 @@ private:
     enum class Shape {NONE ,LINE, SPHERE, CONE, CYLINDER, CAPSULE, BOX, POLYGON, IMGOVLY,
                CIRCLE, RECT, ELLIPSE};
     Shape mShape;
-    enum class DrawingState {NONE, START, FINISH, DELETE};
+    enum class DrawingState {NONE, START, FINISH, DELETE, INITIAL};
     DrawingState mDrawingState;
     osgEarth::Annotation::ImageOverlay* mImageOverlay{nullptr};
     osgEarth::Annotation::ModelNode* mLineSphereNode{nullptr};

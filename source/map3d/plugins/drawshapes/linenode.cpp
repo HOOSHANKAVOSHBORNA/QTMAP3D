@@ -122,9 +122,13 @@ void LineNode::addPoint(osgEarth::GeoPoint points)
     setFeature(pathFeature);
 
     osg::Node* sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
+    osg::ref_ptr<osg::Material> sphereMat = new osg::Material;
+    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Black);
     osgEarth::Symbology::Style LiSphereStyle;
     LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 2;
     LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
+    getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
     mCircleModelNode = new osgEarth::Annotation::ModelNode
             (mMapController->getMapNode(),LiSphereStyle);
     mCircleModelNode->setPosition(points);
