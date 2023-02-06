@@ -447,7 +447,7 @@ void SystemModelNode::firePhase()
         {
             mFiredRocket->setAutoScale();
             mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
-            //mMapController->setTrackNode(mFiredRocket->getGeoTransform());
+            mMapController->setTrackNode(mFiredRocket->getGeoTransform());
         }
     }
 }
