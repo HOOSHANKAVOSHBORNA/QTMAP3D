@@ -140,8 +140,8 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
 
         SystemStatusInfo systemStatusInfo;
         systemStatusInfo.Number = systemInfo.Number;
-        systemStatusInfo.BCCStatus = "s";
-        systemStatusInfo.RadarSearchStatus = "us";
+        systemStatusInfo.BCCStatus = SystemStatusInfo::S;
+        systemStatusInfo.RadarSearchStatus = SystemStatusInfo::US;
         systemStatusInfo.MissileCount = 3;
         onSystemStatusInfoChanged(systemStatusInfo);
 

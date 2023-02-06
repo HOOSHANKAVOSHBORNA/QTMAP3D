@@ -538,7 +538,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
 
         static const QFont textFont("SourceSansPro", 12, QFont::Normal);
-        static const QPen  textPen(QColor(255, 255, 255));
+        QPen  textPen(QColor(255, 255, 255));
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(backgroundBrush);
@@ -577,17 +577,29 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "BCC:");
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
-                         mStatusInfo.BCCStatus);
-
-
         painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Radar:");
+
+        if(mStatusInfo.BCCStatus == SystemStatusInfo::S)
+            textPen.setColor(QColor(0, 255, 0));
+        else
+            textPen.setColor(QColor(255, 0, 0));
+        painter.setPen(textPen);
+
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mStatusInfo.radarStatusToString(mStatusInfo.BCCStatus));
+
+        if(mStatusInfo.RadarSearchStatus == SystemStatusInfo::S)
+            textPen.setColor(QColor(0, 255, 0));
+        else
+            textPen.setColor(QColor(255, 0, 0));
+        painter.setPen(textPen);
+
         painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         mStatusInfo.RadarSearchStatus);
+                         mStatusInfo.radarStatusToString(mStatusInfo.RadarSearchStatus));
 
 
 

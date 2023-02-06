@@ -217,8 +217,8 @@ void Demo::createSystemInfo()
         systemStatusInfo.Number = systemInfo.Number;
         systemStatusInfo.ReceiveTime = "1392/12/01: 12:10";
         systemStatusInfo.Simulation = "simulation";
-        systemStatusInfo.BCCStatus = "s";//s, us
-        systemStatusInfo.RadarSearchStatus = "us";//s, us
+        systemStatusInfo.BCCStatus = SystemStatusInfo::S;//s, us
+        systemStatusInfo.RadarSearchStatus = SystemStatusInfo::US;//s, us
         systemStatusInfo.Operational = "operational";
         systemStatusInfo.MissileCount = 5;
         systemStatusInfo.RadarMode = "rMode";
