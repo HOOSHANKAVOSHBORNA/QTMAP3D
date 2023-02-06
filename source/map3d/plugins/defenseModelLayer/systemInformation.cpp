@@ -84,8 +84,8 @@ QStringList SystemInfoModel::getLocationInfoHeaders() const
 
 QStringList SystemInfoModel::getStatusInfo() const
 {
-    return QStringList {mSystemStatusInfo.ReceiveTime, mSystemStatusInfo.Simulation, mSystemStatusInfo.BCCStatus,
-                        mSystemStatusInfo.RadarSearchStatus, mSystemStatusInfo.Operational,
+    return QStringList {mSystemStatusInfo.ReceiveTime, mSystemStatusInfo.Simulation, mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.BCCStatus),
+                        mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.RadarSearchStatus), mSystemStatusInfo.Operational,
                         QString::number(mSystemStatusInfo.MissileCount), mSystemStatusInfo.RadarMode};
 }
 

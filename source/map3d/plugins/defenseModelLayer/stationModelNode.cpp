@@ -241,7 +241,7 @@ void StationModelNode::onRangeButtonToggled(bool check)
     {
         mRangeCircle->setPosition(getPosition());
         mRangeCircle->setRadius(osgEarth::Distance(mInformation.Radius, osgEarth::Units::METERS));
-        //mMapController->addNode(mRangeCircle);
+        mMapController->addNode(mRangeCircle);
 
         auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
