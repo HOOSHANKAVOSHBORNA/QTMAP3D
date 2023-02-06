@@ -310,7 +310,7 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         float height = static_cast<float>(radius/3);
         mWezPolygon->setHeight(height);
 
-        addNodeToLayer(mWezPolygon);
+        addNodeToLayer(mWezPolygon, true);
 
     }
     else {
@@ -398,13 +398,16 @@ bool SystemModelNode::hasAssigned()
     return mAssignedModelNode && mAssignedLine ? true: false;
 }
 
-bool SystemModelNode::addNodeToLayer(osg::Node *node)
+bool SystemModelNode::addNodeToLayer(osg::Node *node, bool insert)
 {
     auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
     if (layer) {
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {
-            group->addChild(node);
+            if(insert)
+                group->insertChild(0,node);
+            else
+                group->addChild(node);
         }
     }
 }

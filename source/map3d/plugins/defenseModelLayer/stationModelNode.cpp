@@ -112,7 +112,7 @@ void StationModelNode::setInformation(const StationInfo& info)
 }
 void StationModelNode::goOnTrack()
 {
-    mMapController->setTrackNode(getGeoTransform());
+    mMapController->setTrackNode(getGeoTransform(), 250);
     //mMapController->goToPosition(getPosition(), 200);
 }
 
@@ -159,7 +159,7 @@ void StationModelNode::onRangeButtonToggled(bool check)
     {
         mRangeCircle->setPosition(getPosition());
         mRangeCircle->setRadius(osgEarth::Distance(mInformation.Radius, osgEarth::Units::METERS));
-        mMapController->addNode(mRangeCircle);
+//        mMapController->addNode(mRangeCircle);
 
         auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
