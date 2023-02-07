@@ -74,7 +74,7 @@ public:
 //    virtual void mouseDoubleClickEvent(QMouseEvent* event, bool onModel);
     virtual void mouseMoveEvent(QMouseEvent* event, bool onModel);
 //    virtual void cameraRangeChanged(double /*range*/);
-    virtual void curentPosition(osgEarth::GeoPoint pos);
+//    virtual void curentPosition(osgEarth::GeoPoint pos);
     void select(bool val);
     void hover(bool val);
 protected:

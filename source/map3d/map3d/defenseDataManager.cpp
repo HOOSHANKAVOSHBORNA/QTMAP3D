@@ -56,7 +56,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         //emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
         //mAircraftList.removeFirst();
     });
-    timerUpdateAircraft->start(1000);
+    timerUpdateAircraft->start(500);
     //---------------------------------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
         qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
