@@ -25,6 +25,7 @@
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QTimer>
+#include "defenseModelNodeAutoScaler.h"
 
 
 #include "defenseModelLayer.h"
@@ -52,7 +53,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
     mUIHandle = uiHandle;
     if (!mNode3DRef.valid()) {
-        mNode3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
+        mNode3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing.osgb");
     }
     if (!mNode3DRef)
     {
@@ -68,12 +69,14 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
+//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
+    this->setCullingActive(false);
+    this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 600));
 
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
+    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
     setStyle(rootStyle);
     //--create icon Nodes---------------------------------------------------------------------------
@@ -169,7 +172,14 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double spee
     //        mLocationPoints->push_back(currentPosW);
     //    mLocationPoints->push_back(posW);
     if(mRouteLine->getSize() > 0)
+    {
+//        osg::Vec3d posTemp = getPosition().vec3d();
+//        posTemp.z() += posTemp.z() + 40;
         mRouteLine->addPoint(getPosition().vec3d());
+    }
+
+//    osg::Vec3d posTemp = posGeo.vec3d();
+//    posTemp.z() = posTemp.z() + 40;
     mRouteLine->addPoint(posGeo.vec3d());
     mTempRouteLine->clearPoints();
     //move---------------------------------------------------------------------------------------------------
@@ -284,7 +294,7 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     {
         mMapController->untrackNode();
 //        mMapController->removeNode(mRouteLine->getNode());
-//        mMapController->removeNode(mTempRouteLine->getNode());
+//        mMapController->removeNode(mTempRouteLine->getNode(3));
 
         auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
         if (layer) {
@@ -369,7 +379,7 @@ void AircraftModelNode::setAssignmentModelNode(SystemModelNode *assignmentModelN
 void AircraftModelNode::onGotoButtonClicked()
 {
     //    goOnTrack();
-    mMapController->goToPosition(getPosition(), 200, 0);
+    mMapController->goToPosition(getPosition(), 400, 0);
     mMapController->setTrackNode(getGeoTransform());
 }
 

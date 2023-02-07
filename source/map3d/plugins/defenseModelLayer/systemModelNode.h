@@ -21,16 +21,18 @@ class SystemModelNode: public DefenseModelNode
 {
 public:
     SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
+
     void setInformation(const SystemInfo &info);
-    SystemInfo getInformation();
-    void setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo);
-    void setSystemCambatInfo(const SystemCambatInfo &systemCambatInfo);
-    void goOnTrack();
-    DefenseModelNode *getAssignedModelNode() const;
+    SystemInfo getInformation()const;
+    void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
+    void setCambatInfo(const SystemCambatInfo &systemCambatInfo);
+
     void setAssignedModelNode(DefenseModelNode *assignedModelNode);
+    DefenseModelNode *getAssignedModelNode() const;
     void acceptAssignedModelNode(bool value);
     void unassignedModelNode();
-    void fire();
+
+    void goOnTrack();
 public slots:
     void onLeftButtonClicked(bool val);
 public:
@@ -46,15 +48,22 @@ private slots:
     void onModeChanged(bool is3DView);
 
 private:
-    void collision();
+    void searchPhase();
+    void lockPhase();
+    void firePhase();
+    void killPhase();
+    void noKillPhase();
+    bool hasAssigned();
+    bool addNodeToLayer(osg::Node *node,  bool insert = false);
+    bool removeNodeFromLayer(osg::Node *node);
     void showInfoWidget();
     void updateOrCreateLabelImage();
 
 private:
     MapController* mMapController{nullptr};
     SystemInfo mInformation;
-    SystemStatusInfo mSystemStatusInfo;
-    SystemCambatInfo mSystemCambatInfo;
+    SystemStatusInfo mStatusInfo;
+    SystemCambatInfo mCambatInfo;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;
@@ -64,8 +73,6 @@ private:
     Line* mAssignedLine;
     osg::ref_ptr<Truck> mTruck;
     Rocket* mFiredRocket{nullptr};
-    bool mHit{false};
-
 
 private:
     QImage                  *mRenderTargetImage = nullptr;

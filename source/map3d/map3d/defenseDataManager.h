@@ -207,15 +207,38 @@ struct SystemInfo
 
 struct SystemStatusInfo
 {
+    enum RadarStatus{
+        US,//disconnect
+        S,//connect
+        NoData
+    };
+
     int Number;
     //status info
     QString ReceiveTime;
     QString Simulation;
-    QString BCCStatus;
-    QString RadarSearchStatus;
+    RadarStatus BCCStatus;
+    RadarStatus RadarSearchStatus;
     QString Operational;
     int MissileCount;
     QString RadarMode;
+
+    QString radarStatusToString(RadarStatus status) const
+    {
+        QString result = "";
+        switch (status) {
+        case US:
+            result = "US";
+            break;
+        case S:
+            result = "S";
+            break;
+        case NoData:
+            result = "NoData";
+            break;
+        }
+        return result;
+    }
 };
 struct SystemCambatInfo
 {
@@ -285,10 +308,12 @@ class Demo
 {
 public:
     Demo(DefenseDataManager* defenseDataManager);
+    ~Demo();
     AircraftInfo createAircraftInfo();
     void updateAircraftInfo();
     void createStationInfo();
     void createSystemInfo();
+    void updateSystemCambatInfo();
 public:
     DefenseDataManager* mDefenseDataManager;
     QList<AircraftInfo> mAircraftList;

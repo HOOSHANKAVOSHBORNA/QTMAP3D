@@ -5,86 +5,9 @@
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
 #include <osg/Material>
+#include "defenseModelNodeAutoScaler.h"
 
 const float RANGE3D = std::numeric_limits<float>::max();
-
-class StationModelNodeAutoScaler : public osg::NodeCallback
-{
-public:
-    StationModelNodeAutoScaler(const osg::Vec3d& baseScale = osg::Vec3d(1,1,1), double minScale = 0.0, double maxScale = DBL_MAX) :
-        _baseScale( baseScale ),
-        _minScale( minScale ),
-        _maxScale( maxScale )
-    {
-
-    }
-
-public: // osg::NodeCallback
-
-    void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        osgEarth::Annotation::GeoPositionNode* geo = static_cast<osgEarth::Annotation::GeoPositionNode*>(node);
-        osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
-
-        osg::Camera* cam = cs->getCurrentCamera();
-
-        // If this is an RTT camera, we need to use it's "parent"
-        // to calculate the proper scale factor.
-        if (cam->isRenderToTextureCamera() &&
-                cam->getView() &&
-                cam->getView()->getCamera() &&
-                cam->getView()->getCamera() != cam)
-        {
-            cam = cam->getView()->getCamera();
-        }
-
-        if (cam->getViewport())
-        {
-            // Reset the scale so we get a proper bound
-            geo->getPositionAttitudeTransform()->setScale(_baseScale);
-            const osg::BoundingSphere& bs = node->getBound();
-
-            // transform centroid to VIEW space:
-            osg::Vec3d centerView = bs.center() * cam->getViewMatrix();
-
-            // Set X coordinate to the radius so we can use the resulting CLIP
-            // distance to calculate meters per pixel:
-            centerView.x() = bs.radius();
-
-            // transform the CLIP space:
-            osg::Vec3d centerClip = centerView * cam->getProjectionMatrix();
-
-            // caluclate meters per pixel:
-            double mpp = (centerClip.x()*0.5) * cam->getViewport()->width();
-
-            // and the resulting scale we need to auto-scale.
-            double scale = bs.radius() / mpp;
-
-            scale *= 3.5;
-
-            if (scale < _minScale)
-                scale = _minScale;
-            else if (scale>_maxScale)
-                scale = _maxScale;
-
-            geo->getPositionAttitudeTransform()->setScale(
-                        osg::componentMultiply(_baseScale, osg::Vec3d(scale, scale, scale)));
-        }
-
-        if (node->getCullingActive() == false)
-        {
-            node->setCullingActive(true);
-        }
-
-        traverse(node, nv);
-    }
-
-protected:
-    osg::Vec3d _baseScale;
-    double _minScale;
-    double _maxScale;
-};
-
 
 osg::ref_ptr<osg::Node> StationModelNode::mNode3DRef;
 
@@ -96,16 +19,11 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     mRootNode = new osg::LOD;
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1200 * 3.5;
-
     //--auto scaler---------------------------------------------------------------------------------
-    mModelNodeAutoScaler = new StationModelNodeAutoScaler( osg::Vec3d(1,1,1),
-                                                           rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale().value(),
-                                                           rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale().value() );
     this->setCullingActive(false);
-    this->addCullCallback(mModelNodeAutoScaler);
+    this->addCullCallback(new DefenseModelNodeAutoScaler(6.5, 1, 600));
+
+
     //----------------------------------------------------------------------------------------------
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     setStyle(rootStyle);
@@ -194,7 +112,7 @@ void StationModelNode::setInformation(const StationInfo& info)
 }
 void StationModelNode::goOnTrack()
 {
-    mMapController->setTrackNode(getGeoTransform());
+    mMapController->setTrackNode(getGeoTransform(), 250);
     //mMapController->goToPosition(getPosition(), 200);
 }
 
@@ -241,7 +159,7 @@ void StationModelNode::onRangeButtonToggled(bool check)
     {
         mRangeCircle->setPosition(getPosition());
         mRangeCircle->setRadius(osgEarth::Distance(mInformation.Radius, osgEarth::Units::METERS));
-        //mMapController->addNode(mRangeCircle);
+//        mMapController->addNode(mRangeCircle);
 
         auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
@@ -273,7 +191,6 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         getPosition().toWorld(worldPosition, mMapController->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint;
         double radius = mInformation.Radius;
-
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
         geoPoint.z() = 0;
         mVisiblePolygone->addPoints(geoPoint.vec3d());

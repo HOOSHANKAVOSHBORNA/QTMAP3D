@@ -1,82 +1,6 @@
 #include "rocket.h"
 #include "draw.h"
-
-class RocketModelNodeAutoScaler : public osg::NodeCallback
-{
-public:
-    RocketModelNodeAutoScaler(const osg::Vec3d& baseScale = osg::Vec3d(1,1,1), double minScale = 0.0, double maxScale = DBL_MAX) :
-        _baseScale( baseScale ),
-        _minScale( minScale ),
-        _maxScale( maxScale )
-    {
-
-    }
-
-public: // osg::NodeCallback
-
-    void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        osgEarth::Annotation::GeoPositionNode* geo = static_cast<osgEarth::Annotation::GeoPositionNode*>(node);
-        osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
-
-        osg::Camera* cam = cs->getCurrentCamera();
-
-        // If this is an RTT camera, we need to use it's "parent"
-        // to calculate the proper scale factor.
-        if (cam->isRenderToTextureCamera() &&
-                cam->getView() &&
-                cam->getView()->getCamera() &&
-                cam->getView()->getCamera() != cam)
-        {
-            cam = cam->getView()->getCamera();
-        }
-
-        if (cam->getViewport())
-        {
-            // Reset the scale so we get a proper bound
-            geo->getPositionAttitudeTransform()->setScale(_baseScale);
-            const osg::BoundingSphere& bs = node->getBound();
-
-            // transform centroid to VIEW space:
-            osg::Vec3d centerView = bs.center() * cam->getViewMatrix();
-
-            // Set X coordinate to the radius so we can use the resulting CLIP
-            // distance to calculate meters per pixel:
-            centerView.x() = bs.radius();
-
-            // transform the CLIP space:
-            osg::Vec3d centerClip = centerView * cam->getProjectionMatrix();
-
-            // caluclate meters per pixel:
-            double mpp = (centerClip.x()*0.5) * cam->getViewport()->width();
-
-            // and the resulting scale we need to auto-scale.
-            double scale = bs.radius() / mpp;
-
-            scale *= 15;
-
-            if (scale < _minScale)
-                scale = _minScale;
-            else if (scale>_maxScale)
-                scale = _maxScale;
-
-            geo->getPositionAttitudeTransform()->setScale(
-                        osg::componentMultiply(_baseScale, osg::Vec3d(scale, scale, scale)));
-        }
-
-        if (node->getCullingActive() == false)
-        {
-            node->setCullingActive(true);
-        }
-
-        traverse(node, nv);
-    }
-
-protected:
-    osg::Vec3d _baseScale;
-    double _minScale;
-    double _maxScale;
-};
+#include "defenseModelNodeAutoScaler.h"
 
 Rocket::Rocket(MapController *mapControler, QObject *parent):
     DefenseModelNode(mapControler, parent)
@@ -187,9 +111,7 @@ void Rocket::setAutoScale()
 //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 10000 * 3.5;
 //    setStyle(style);
     this->setCullingActive(false);
-    this->addCullCallback(
-                new RocketModelNodeAutoScaler( osg::Vec3d(1,1,1),
-                                               1, 60*15));
+    this->addCullCallback(new DefenseModelNodeAutoScaler( 15, 1, 60));
 }
 
 void Rocket::addEffect(double emitterDuration)

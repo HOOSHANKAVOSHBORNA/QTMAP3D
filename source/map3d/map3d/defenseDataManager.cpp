@@ -24,7 +24,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     createSystemInfo();
     createAircraftInfo();
     //----------------------------------------------------------
-    QObject::connect(timer, &QTimer::timeout, [&](){
+    QObject::connect(timer, &QTimer::timeout, [this](){
         //---------------------------------------------
         for(auto station:stationList)
             emit mDefenseDataManager->stationInfoChanged(station);
@@ -33,6 +33,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
             emit mDefenseDataManager->systemInfoChanged(system);
         for(auto systemStatus:systemStatusList)
             emit mDefenseDataManager->systemStatusInfoChanged(systemStatus);
+        updateSystemCambatInfo();
         for(auto systemCambat:SystemCambatList)
             emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
         //---------------------------------------------
@@ -49,10 +50,10 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
         qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        if(tn % 2 == 0)
-            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
-        else
+        if(tn % 4 == 0)
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
+        else
+            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
     });
 
     QObject::connect(mDefenseDataManager, &DefenseDataManager::cancelAircraftAssigned,[=](int tn, int systemNo){
@@ -61,6 +62,12 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 
 }
 
+Demo::~Demo()
+{
+    qDebug()<<"~Demo";
+}
+
+const int systemNum = 10;
 AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
@@ -76,10 +83,8 @@ AircraftInfo Demo::createAircraftInfo()
     aircraftInfo.Time="12345678954213";//epoch
     aircraftInfo.Pos="pos";
     //
-    //    int latitude = ((qrand() % 360) - 180);
-    double longitude = 35 + (qrand() % (75 - 35));
-    //    int longitude = ((qrand() % 180) - 90);
-    double latitude = 25 + (qrand() % (43 - 25));
+    double longitude = 48 + (qrand() % (59 - 48));
+    double latitude = 27 + (qrand() % (38 - 27));
 
     double altitude = (2000 + (qrand() % (9000 - 2000)));
 
@@ -188,7 +193,7 @@ void Demo::createStationInfo()
 
 void Demo::createSystemInfo()
 {
-    for(int i = 0; i < 10; ++i)
+    for(int i = 0; i < systemNum; ++i)
     {
         SystemInfo  systemInfo;
         SystemCambatInfo systemCambatInfo;
@@ -215,8 +220,8 @@ void Demo::createSystemInfo()
         systemStatusInfo.Number = systemInfo.Number;
         systemStatusInfo.ReceiveTime = "1392/12/01: 12:10";
         systemStatusInfo.Simulation = "simulation";
-        systemStatusInfo.BCCStatus = "s";//s, us
-        systemStatusInfo.RadarSearchStatus = "us";//s, us
+        systemStatusInfo.BCCStatus = SystemStatusInfo::S;//s, us
+        systemStatusInfo.RadarSearchStatus = SystemStatusInfo::US;//s, us
         systemStatusInfo.Operational = "operational";
         systemStatusInfo.MissileCount = 5;
         systemStatusInfo.RadarMode = "rMode";
@@ -224,8 +229,7 @@ void Demo::createSystemInfo()
         systemCambatInfo.Number = systemInfo.Number;
         systemCambatInfo.TN = 10000;
         systemCambatInfo.Acceptance = "acceptance1";
-        int phase = (qrand() % (5));
-        systemCambatInfo.Phase = (SystemCambatInfo::Phases)phase;//search, lock, ...
+        systemCambatInfo.Phase = SystemCambatInfo::Search;//search, lock, ...
         systemCambatInfo.Antenna = 50;//degree (lock sight
         systemCambatInfo.ChanelNo = "123014s";
         systemCambatInfo.Inrange = "inrange";
@@ -233,5 +237,28 @@ void Demo::createSystemInfo()
         systemList.append(systemInfo);
         systemStatusList.append(systemStatusInfo);
         SystemCambatList.append(systemCambatInfo);
+    }
+}
+
+void Demo::updateSystemCambatInfo()
+{
+    for(int i = 0; i < systemNum; ++i)
+    {
+        auto phase = SystemCambatList[i].Phase;
+        SystemCambatInfo::Phases newPhase = SystemCambatInfo::Search;
+        switch (phase) {
+        case SystemCambatInfo::Search:
+            newPhase = SystemCambatInfo::Lock;
+            break;
+        case SystemCambatInfo::Lock:
+            newPhase = SystemCambatInfo::Fire;
+            break;
+        case SystemCambatInfo::Fire:
+            if(i % 2 == 0)
+                newPhase = SystemCambatInfo::Kill;
+            else
+                newPhase = SystemCambatInfo::NoKill;
+        }
+        SystemCambatList[i].Phase = newPhase;
     }
 }

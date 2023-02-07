@@ -4,86 +4,9 @@
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
 #include <osg/Material>
+#include "defenseModelNodeAutoScaler.h"
 
 const float RANGE3D = std::numeric_limits<float>::max();;
-
-class SystemModelNodeAutoScaler : public osg::NodeCallback
-{
-public:
-    SystemModelNodeAutoScaler(const osg::Vec3d& baseScale = osg::Vec3d(1,1,1), double minScale = 0.0, double maxScale = DBL_MAX) :
-        _baseScale( baseScale ),
-        _minScale( minScale ),
-        _maxScale( maxScale )
-    {
-
-    }
-
-public: // osg::NodeCallback
-
-    void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        osgEarth::Annotation::GeoPositionNode* geo = static_cast<osgEarth::Annotation::GeoPositionNode*>(node);
-        osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
-
-        osg::Camera* cam = cs->getCurrentCamera();
-
-        // If this is an RTT camera, we need to use it's "parent"
-        // to calculate the proper scale factor.
-        if (cam->isRenderToTextureCamera() &&
-                cam->getView() &&
-                cam->getView()->getCamera() &&
-                cam->getView()->getCamera() != cam)
-        {
-            cam = cam->getView()->getCamera();
-        }
-
-        if (cam->getViewport())
-        {
-            // Reset the scale so we get a proper bound
-            geo->getPositionAttitudeTransform()->setScale(_baseScale);
-            const osg::BoundingSphere& bs = node->getBound();
-
-            // transform centroid to VIEW space:
-            osg::Vec3d centerView = bs.center() * cam->getViewMatrix();
-
-            // Set X coordinate to the radius so we can use the resulting CLIP
-            // distance to calculate meters per pixel:
-            centerView.x() = bs.radius();
-
-            // transform the CLIP space:
-            osg::Vec3d centerClip = centerView * cam->getProjectionMatrix();
-
-            // caluclate meters per pixel:
-            double mpp = (centerClip.x()*0.5) * cam->getViewport()->width();
-
-            // and the resulting scale we need to auto-scale.
-            double scale = bs.radius() / mpp;
-
-            scale *= 3.5;
-
-            if (scale < _minScale)
-                scale = _minScale;
-            else if (scale>_maxScale)
-                scale = _maxScale;
-
-            geo->getPositionAttitudeTransform()->setScale(
-                        osg::componentMultiply(_baseScale, osg::Vec3d(scale, scale, scale)));
-        }
-
-        if (node->getCullingActive() == false)
-        {
-            node->setCullingActive(true);
-        }
-
-        traverse(node, nv);
-    }
-
-protected:
-    osg::Vec3d _baseScale;
-    double _minScale;
-    double _maxScale;
-};
-
 
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
@@ -94,20 +17,12 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1200 * 3.5;
-
 
     this->setCullingActive(false);
-    this->addCullCallback(
-                new SystemModelNodeAutoScaler( osg::Vec3d(1,1,1),
-                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale().value(),
-                                               rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale().value() ));
+    this->addCullCallback(new DefenseModelNodeAutoScaler(5.5, 1, 600));
 
 
-
-    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_GPU;
+    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     setStyle(rootStyle);
     //--create 2D Nodes---------------------------------------------------------------------------
@@ -189,51 +104,39 @@ void SystemModelNode::setInformation(const SystemInfo& info)
     updateOrCreateLabelImage();
 }
 
-SystemInfo SystemModelNode::getInformation()
+SystemInfo SystemModelNode::getInformation() const
 {
     return mInformation;
 }
 
-void SystemModelNode::setSystemCambatInfo(const SystemCambatInfo &systemCambatInfo)
+void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
 {
-    mSystemCambatInfo = systemCambatInfo;
+    mCambatInfo = systemCambatInfo;
     if(!mAssignedModelNode)
         return;
-    switch (mSystemCambatInfo.Phase) {
+    switch (mCambatInfo.Phase) {
     case SystemCambatInfo::Search:
+        searchPhase();
         break;
     case SystemCambatInfo::Lock:
-        if(mAssignedLine)
-            mAssignedLine->setColor(osgEarth::Color::Yellow);
+        lockPhase();
         break;
     case SystemCambatInfo::Fire:
-        if(mAssignedLine)
-        {
-            mAssignedLine->setColor(osgEarth::Color::Red);
-            fire();
-        }
+        firePhase();
         break;
     case SystemCambatInfo::Kill:
+        killPhase();
         break;
     case SystemCambatInfo::NoKill:
+        noKillPhase();
         break;
     }
 }
 
-void SystemModelNode::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
+void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
-    mSystemStatusInfo = systemStatusInfo;
+    mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
-}
-
-void SystemModelNode::goOnTrack()
-{
-    mMapController->setTrackNode(getGeoTransform());
-}
-
-DefenseModelNode *SystemModelNode::getAssignedModelNode() const
-{
-    return mAssignedModelNode;
 }
 
 void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
@@ -249,61 +152,41 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
     mAssignedLine->setColor(osgEarth::Color::Green);
     mAssignedLine->setWidth(5);
     mAssignedLine->switchLP(false);
-//    mMapController->addNode(mAssignedLine->getNode());
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(mAssignedLine->getNode());
-        }
-    }
 
+    addNodeToLayer(mAssignedLine->getNode());
+}
 
-    mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
+DefenseModelNode *SystemModelNode::getAssignedModelNode() const
+{
+    return mAssignedModelNode;
 }
 
 void SystemModelNode::acceptAssignedModelNode(bool value)
 {
-    if(value)
+    if(hasAssigned())
     {
-        if(mAssignedLine)
-            mAssignedLine->switchLP(true);
+        if(value)
+        {
+            if(mAssignedLine)
+                mAssignedLine->switchLP(true);
+        }
+        else
+            unassignedModelNode();
     }
-    else
-        unassignedModelNode();
 }
 
 void SystemModelNode::unassignedModelNode()
 {
-    if(mAssignedModelNode)
+    if(hasAssigned())
     {
-        //mMapController->removeNode(mAssignedLine->getNode());
-
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->removeChild(mAssignedLine->getNode());
-            }
-        }
-
+        removeNodeFromLayer(mAssignedLine->getNode());
         mAssignedModelNode = nullptr;
     }
 }
 
-void SystemModelNode::fire()
+void SystemModelNode::goOnTrack()
 {
-    if(mAssignedModelNode)
-    {
-        mFiredRocket = mTruck->getActiveRocket();
-        if(mFiredRocket)
-        {
-            mFiredRocket->setAutoScale();
-            mAssignedModelNode->stop();//TODO for test dont use in real vesrion
-            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
-            mMapController->setTrackNode(mFiredRocket->getGeoTransform());
-        }
-    }
+    mMapController->setTrackNode(getGeoTransform());
 }
 
 void SystemModelNode::onLeftButtonClicked(bool val)
@@ -328,14 +211,14 @@ void SystemModelNode::frameEvent()
 //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
     //--update assigned line----------------------------------------------------
-    if(mAssignedModelNode)
+    if(hasAssigned())
     {
         mAssignedLine->clearPoints();
         mAssignedLine->addPoint(getPosition().vec3d());
         mAssignedLine->addPoint(mAssignedModelNode->getPosition().vec3d());
     }
     //--check collision--------------------------------------------------------
-    collision();
+//    collision();
 }
 
 void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -367,8 +250,6 @@ void SystemModelNode::onModeChanged(bool is3DView)
     select(mIsSelected);
 }
 
-
-
 void SystemModelNode::onGotoButtonClicked()
 {
     mMapController->goToPosition(getPosition(), 200);
@@ -380,25 +261,12 @@ void SystemModelNode::onRangeButtonToggled(bool check)
     {
         mRangeCircle->setPosition(getPosition());
         mRangeCircle->setRadius(osgEarth::Distance(mInformation.ViewRange, osgEarth::Units::METERS));
-        //mMapController->addNode(mRangeCircle);
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(mRangeCircle);
-            }
-        }
+
+        addNodeToLayer(mRangeCircle);
     }
     else
     {
-        //mMapController->removeNode(mRangeCircle);
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->removeChild(mRangeCircle);
-            }
-        }
+        removeNodeFromLayer(mRangeCircle);
     }
 }
 
@@ -442,28 +310,11 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         float height = static_cast<float>(radius/3);
         mWezPolygon->setHeight(height);
 
-        //        mMapController->addNode(mWezPolygon);
-        //mMapController->getMapNode()->insertChild(0,mWezPolygon);
-
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->insertChild(0,mWezPolygon);
-            }
-        }
+        addNodeToLayer(mWezPolygon, true);
 
     }
     else {
-        //mMapController->removeNode(mWezPolygon);
-
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->removeChild(mWezPolygon);
-            }
-        }
+        removeNodeFromLayer(mWezPolygon);
     }
 }
 
@@ -473,27 +324,11 @@ void SystemModelNode::onMezButtonToggled(bool checked)
     {
         mMezSphere->setPosition(getPosition());
         mMezSphere->setRadius(mInformation.MezRange);
-        //mMapController->addNode(mMezSphere);
-
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(mMezSphere);
-            }
-        }
+        addNodeToLayer(mMezSphere);
     }
     else
     {
-        //mMapController->removeNode(mMezSphere);
-
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->removeChild(mMezSphere);
-            }
-        }
+        removeNodeFromLayer(mMezSphere);
     }
 }
 
@@ -502,37 +337,94 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
     mInformation.Active = checked;
 }
 
-void SystemModelNode::collision()
+void SystemModelNode::searchPhase()
 {
-    if(mAssignedModelNode && mFiredRocket)
-    {
-        osg::Vec3d wAssignedPosition;
-        mAssignedModelNode->getPosition().toWorld(wAssignedPosition);
-        osg::Vec3d wRocketPosition;
-        mFiredRocket->getPosition().toWorld(wRocketPosition);
-        double distance = (wAssignedPosition - wRocketPosition).length();
-        if(distance < 3 && !mHit)
-        {
-            mAssignedModelNode->collision();
-            //mFiredRocket->collision();
-//            mFiredRocket->setNodeMask(false);
-            mFiredRocket->stop();
-            //mMapController->removeNode(mAssignedLine->getNode());
+    if(hasAssigned())
+        mAssignedLine->setColor(osgEarth::Color::Yellow);
+}
 
-            auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-            if (layer) {
-                osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-                if (group) {
-                    group->removeChild(mAssignedLine->getNode());
-                }
-            }
-            mHit = true;
+void SystemModelNode::lockPhase()
+{
+    if(hasAssigned())
+    {
+        mAssignedLine->setColor(osgEarth::Color::Orange);
+        mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
+    }
+}
+
+void SystemModelNode::firePhase()
+{
+    if(hasAssigned())
+    {
+        mAssignedLine->setColor(osgEarth::Color::Red);
+        mFiredRocket = mTruck->getActiveRocket();
+        if(mFiredRocket)
+        {
+            mFiredRocket->setAutoScale();
+            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
+            mMapController->setTrackNode(mFiredRocket->getGeoTransform());
+        }
+    }
+}
+
+void SystemModelNode::killPhase()
+{
+    if(hasAssigned())
+    {
+        mAssignedLine->setColor(osgEarth::Color::Black);
+        mAssignedModelNode->collision();
+        //mFiredRocket->collision();
+//            mFiredRocket->setNodeMask(false);
+        if(mFiredRocket)
+            mFiredRocket->stop();
+
+        unassignedModelNode();
+    }
+}
+
+void SystemModelNode::noKillPhase()
+{
+    if(hasAssigned())
+    {
+        mAssignedLine->setColor(osgEarth::Color::Brown);
+        if(mFiredRocket)
+            mFiredRocket->stop();
+        unassignedModelNode();
+    }
+}
+
+bool SystemModelNode::hasAssigned()
+{
+    return mAssignedModelNode && mAssignedLine ? true: false;
+}
+
+bool SystemModelNode::addNodeToLayer(osg::Node *node, bool insert)
+{
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            if(insert)
+                group->insertChild(0,node);
+            else
+                group->addChild(node);
+        }
+    }
+}
+
+bool SystemModelNode::removeNodeFromLayer(osg::Node *node)
+{
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->removeChild(node);
         }
     }
 }
 void SystemModelNode::showInfoWidget()
 {
-    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mSystemStatusInfo, mSystemCambatInfo, this);
+    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
     connect(systemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
     connect(systemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
     connect(systemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
@@ -564,7 +456,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
 
         static const QFont textFont("SourceSansPro", 12, QFont::Normal);
-        static const QPen  textPen(QColor(255, 255, 255));
+        QPen  textPen(QColor(255, 255, 255));
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(backgroundBrush);
@@ -603,17 +495,29 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "BCC:");
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
-                         mSystemStatusInfo.BCCStatus);
-
-
         painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Radar:");
+
+        if(mStatusInfo.BCCStatus == SystemStatusInfo::S)
+            textPen.setColor(QColor(0, 255, 0));
+        else
+            textPen.setColor(QColor(255, 0, 0));
+        painter.setPen(textPen);
+
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         mStatusInfo.radarStatusToString(mStatusInfo.BCCStatus));
+
+        if(mStatusInfo.RadarSearchStatus == SystemStatusInfo::S)
+            textPen.setColor(QColor(0, 255, 0));
+        else
+            textPen.setColor(QColor(255, 0, 0));
+        painter.setPen(textPen);
+
         painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         mSystemStatusInfo.RadarSearchStatus);
+                         mStatusInfo.radarStatusToString(mStatusInfo.RadarSearchStatus));
 
 
 
@@ -627,7 +531,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         static const QImage missleRedImage(":/resources/bullet_red.png");
         static const QImage missleGreenImage(":/resources/bullet_green.png");
         for (int i = 0; i < 6; i++) {
-            if(i < mSystemStatusInfo.MissileCount) {
+            if(i < mStatusInfo.MissileCount) {
                 painter.drawImage(
                             QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
                             missleGreenImage,

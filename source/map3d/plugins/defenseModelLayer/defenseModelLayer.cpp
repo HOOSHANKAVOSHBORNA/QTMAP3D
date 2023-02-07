@@ -127,8 +127,11 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         for(auto modelNode:mModelNodes[SYSTEM])
         {
             auto systemModelNode = dynamic_cast<SystemModelNode*>(modelNode);
-            if(systemModelNode && systemModelNode->getAssignedModelNode())
-                systemModelNode->fire();
+            if(systemModelNode && systemModelNode->getAssignedModelNode()){
+                SystemCambatInfo cambatInfo;
+                cambatInfo.Phase = SystemCambatInfo::Fire;
+                systemModelNode->setCambatInfo(cambatInfo);
+            }
         }
     }
     else if(CATEGORY == category && name == SYSTEM)
@@ -142,8 +145,8 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
 
         SystemStatusInfo systemStatusInfo;
         systemStatusInfo.Number = systemInfo.Number;
-        systemStatusInfo.BCCStatus = "s";
-        systemStatusInfo.RadarSearchStatus = "us";
+        systemStatusInfo.BCCStatus = SystemStatusInfo::S;
+        systemStatusInfo.RadarSearchStatus = SystemStatusInfo::US;
         systemStatusInfo.MissileCount = 3;
         onSystemStatusInfoChanged(systemStatusInfo);
 
@@ -585,7 +588,7 @@ void DefenseModelLayer::onSystemStatusInfoChanged(SystemStatusInfo &systemStatus
     {
         auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemStatusInfo.Number]);
         //update information-----------------------------------------------------
-        systemModelNode->setSystemStatusInfo(systemStatusInfo);
+        systemModelNode->setStatusInfo(systemStatusInfo);
         //add update list view-----------------------------------------------------------------
         if (mDataManager)
         {
@@ -600,7 +603,7 @@ void DefenseModelLayer::onSystemCambatInfoChanged(SystemCambatInfo &systemCambat
     {
         auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemCambatInfo.Number]);
         //update information-----------------------------------------------------
-        systemModelNode->setSystemCambatInfo(systemCambatInfo);
+        systemModelNode->setCambatInfo(systemCambatInfo);
         //add update list view-----------------------------------------------------------------
         if (mDataManager)
         {

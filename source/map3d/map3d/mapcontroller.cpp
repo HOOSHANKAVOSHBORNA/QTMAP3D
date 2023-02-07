@@ -228,6 +228,9 @@ void MapController::untrackNode()
         return;
     vp.setNode(nullptr);
     getEarthManipulator()->setViewpoint(vp);
+    auto camSet = getEarthManipulator()->getSettings();
+    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
+    getEarthManipulator()->applySettings(camSet);
 }
 
 bool MapController::addNode(osg::Node *node)
@@ -296,6 +299,12 @@ void MapController::goToPosition(osgEarth::GeoPoint mapPoint, double range, doub
     vp.focalPoint() = mapPoint;
     vp.range()= range;
     setViewpoint(vp, duration);
+
+//    auto minDistance = range/2;
+//    getEarthManipulator()->setViewpoint(vp);
+//    auto camSet = getEarthManipulator()->getSettings();
+//    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
+//    getEarthManipulator()->applySettings(camSet);
 }
 
 void MapController::setMode(bool is3DView)
