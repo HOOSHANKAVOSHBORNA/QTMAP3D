@@ -317,7 +317,7 @@ CMainWindow {
         color: 'springgreen'
         style: Text.Outline;
         styleColor: "black"
-        font.pointSize: 30
+        font.pointSize: 20
         font.weight: Font.Bold
         anchors.right: parent.right
         anchors.top: parent.top
