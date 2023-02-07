@@ -26,7 +26,7 @@ public:
     void setPointVisibilty(bool visibility);
     void setPointColor(osgEarth::Color color);
     osg::ref_ptr<osg::Material> sphereMat;
-    osgEarth::Color sphereColor{osgEarth::Color::DarkGray};
+    osgEarth::Color pointColor{osgEarth::Color::DarkGray};
 
 
 

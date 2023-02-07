@@ -149,10 +149,10 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
     mAssignedLine = new LineNode(mMapController);
 
     mAssignedLine->setClamp(false);
-    mAssignedLine->pointVisibilty(false);
+    mAssignedLine->setPointVisibilty(false);
     mAssignedLine->setColor(osgEarth::Color::Green);
     mAssignedLine->setWidth(5);
-    mAssignedLine->dashLine(true);
+    mAssignedLine->setDashLine(true);
 
     addNodeToLayer(mAssignedLine);
 }
@@ -169,7 +169,7 @@ void SystemModelNode::acceptAssignedModelNode(bool value)
         if(value)
         {
             if(mAssignedLine)
-                mAssignedLine->dashLine(false);
+                mAssignedLine->setDashLine(false);
         }
         else
             unassignedModelNode();

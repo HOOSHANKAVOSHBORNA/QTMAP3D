@@ -162,7 +162,7 @@ void LineNode::addPoint(osgEarth::GeoPoint points)
     mLinePath->push_back(points.vec3d());
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, points.getSRS());
     setFeature(pathFeature);
-    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, sphereColor);
+    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, pointColor);
     osgEarth::Symbology::Style LiSphereStyle;
     LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
     mCircleGr->getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
@@ -203,7 +203,7 @@ void LineNode::setPointVisibilty(bool visibility)
 
 void LineNode::setPointColor(osgEarth::Color color)
 {
-    sphereColor = color;
-    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, sphereColor);
+    pointColor = color;
+    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, pointColor);
     mCircleGr->getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 }
