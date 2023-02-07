@@ -6,7 +6,7 @@
 #include "plugininterface.h"
 #include "dataManager.h"
 #include "aircraftInformation.h"
-#include "line.h"
+#include "linenode.h"
 #include "contextMenu.h"
 
 
@@ -46,7 +46,7 @@ public slots:
 public:
     void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
-    void curentPosition(osgEarth::GeoPoint pos) override;
+//    void curentPosition(osgEarth::GeoPoint pos) override;
     SystemModelNode *getAssignmentModelNode() const;
     void setAssignmentModelNode(SystemModelNode *assignmentModelNode);
 
@@ -58,10 +58,12 @@ private slots:
     void onContextmenuItemClicked(int index, QString systemName);
 private:
     void changeModelColor(AircraftInfo::Identify identify);
-    void change2DImageColore(osgEarth::Color color);
     void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();
+    bool addNodeToLayer(osg::Node *node);
+    bool removeNodeFromLayer(osg::Node *node);
+    void change2DImageColore(osgEarth::Color color);
     void updateOrCreateLabelImage();
 private:
     MapController* mMapController{nullptr};
@@ -82,8 +84,8 @@ private:
     QQmlEngine *mQmlEngine;
     ContextMenu *mCurrentContextMenu = nullptr;
 
-    Line *mRouteLine;
-    Line *mTempRouteLine;
+    osg::ref_ptr<LineNode> mRouteLine;
+    //Line *mTempRouteLine;
     AircraftInformation *mAircraftinformation{nullptr};
 
     static osg::ref_ptr<osg::Node> mNode3DRef;

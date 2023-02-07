@@ -42,7 +42,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
         if (!_pause)
         {
             // Only update _firstTime the first time, when its value is still DBL_MAX
-            if (_firstTime == DBL_MAX) _firstTime = time;
+            if (_firstTime >= DBL_MAX) _firstTime = time;
             //------------------------------------------------------------------------------------------------
             osg::AnimationPath::ControlPoint cp;
             double animatTime = getAnimationTime();
@@ -75,7 +75,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 //emit current position----------------------------------------------------------------------
                 positionCanged = true;
                 //if(static_cast<int>(animatTime) % 3 == 0)
-                defenseModelNode->curentPosition(geoPoint);
+//                defenseModelNode->curentPosition(geoPoint);
             }
 
             if(defenseModelNode && (_latestTime - _firstTime) > _animationPath->getPeriod())
@@ -238,10 +238,15 @@ void DefenseModelNode::collision()
 osgEarth::Annotation::ModelNode *DefenseModelNode::getDragModelNode()
 {
     osgEarth::Symbology::Style  style = getStyle();
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Gray);
     osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(getMapNode(), style);
     dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+
+//    dragModelNode->addCullCallback(getCullCallback());
     return dragModelNode.release();
 }
 void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
@@ -257,10 +262,10 @@ void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
         hover(onModel);
     }
 }
-void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
-{
-    //emit positionChanged(pos);
-}
+//void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
+//{
+//    //emit positionChanged(pos);
+//}
 
 void DefenseModelNode::select(bool val)
 {
