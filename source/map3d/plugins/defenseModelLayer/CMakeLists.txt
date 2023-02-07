@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(defenseModelLayer SHARED
+  assignmentModel.cpp
   aircraftTableModel.cpp
   contextMenu.cpp
   aircraftInformation.cpp
