@@ -5,6 +5,7 @@
 #include "aircraftTableModel.h"
 #include "stationTableModel.h"
 #include "systemTableModel.h"
+#include "assignmentModel.h"
 
 class UIHandle;
 class QQmlEngine;
@@ -42,6 +43,7 @@ private:
     AircraftTableModel *mAircraftTableModel = nullptr;
     StationTableModel *mStationTableModel = nullptr;
     SystemTableModel *mSystemTableModel = nullptr;
+    AssignmentModel *mAssignModel = nullptr;
 
 };
 

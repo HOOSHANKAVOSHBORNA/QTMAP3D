@@ -11,6 +11,7 @@
         <file>SystemTableView.qml</file>
         <file>SystemInfoButtonGroup.qml</file>
         <file>ContextMenuView.qml</file>
+        <file>AssignmentView.qml</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>
