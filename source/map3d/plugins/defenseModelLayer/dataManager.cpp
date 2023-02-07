@@ -94,6 +94,32 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
     comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
 
+    QQmlComponent *comp4 = new QQmlComponent(mQmlEngine);
+    QObject::connect(comp4, &QQmlComponent::statusChanged, [this, comp4](){
+//        qDebug() << comp3->errorString();
+
+        if (comp4->status() == QQmlComponent::Ready) {
+            QQuickItem *assignTab = (QQuickItem*) comp4->create(nullptr);
+            mAssignModel = new AssignmentModel;
+
+//            QObject::connect(systemTab,
+//                             SIGNAL(filterTextChanged(const QString&)),
+//                             mSystemTableModel,
+//                             SLOT(setFilterWildcard(const QString&)));
+
+//            QObject::connect(systemTab,
+//                             SIGNAL(systemDoubleClicked(const int&)),
+//                             this,
+//                             SIGNAL(systemDoubleClicked(const int&)));
+
+            assignTab->setProperty("model", QVariant::fromValue<AssignmentModel*>(mAssignModel));
+            mUiHandle->lwAddTab("Assignments", assignTab);
+        }
+
+    });
+
+    comp4->loadUrl(QUrl("qrc:/modelplugin/AssignmentView.qml"));
+
 
 }
 

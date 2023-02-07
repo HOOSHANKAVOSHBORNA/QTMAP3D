@@ -23,5 +23,6 @@
         <file>resources/missle_red_icon.png</file>
         <file>resources/bullet_green.png</file>
         <file>resources/bullet_red.png</file>
+        <file>resources/arrow.png</file>
     </qresource>
 </RCC>
