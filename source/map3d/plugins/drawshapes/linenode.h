@@ -14,7 +14,7 @@ public:
     void setColor(osgEarth::Color color);
     void setWidth(float width);
     void setClamp(bool clamp);
-    void switchLP(bool lineMode);
+    void dashLine(bool dashLine);
 
     osg::ref_ptr<osgEarth::Annotation::ModelNode> mCircleModelNode{nullptr};
     osg::ref_ptr<osg::Group> mCircleGr;
@@ -23,6 +23,7 @@ public:
     void removePoint();
     void clearPath();
     int getSize();
+    void pointVisibilty(bool visibility);
 
 
 private:
