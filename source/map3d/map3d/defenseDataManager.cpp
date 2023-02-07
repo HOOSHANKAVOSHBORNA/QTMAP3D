@@ -24,7 +24,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     createSystemInfo();
     createAircraftInfo();
     //----------------------------------------------------------
-    QObject::connect(timer, &QTimer::timeout, [&](){
+    QObject::connect(timer, &QTimer::timeout, [this](){
         //---------------------------------------------
         for(auto station:stationList)
             emit mDefenseDataManager->stationInfoChanged(station);
@@ -62,6 +62,11 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 
 }
 
+Demo::~Demo()
+{
+    qDebug()<<"~Demo";
+}
+
 const int systemNum = 10;
 AircraftInfo Demo::createAircraftInfo()
 {
@@ -78,10 +83,8 @@ AircraftInfo Demo::createAircraftInfo()
     aircraftInfo.Time="12345678954213";//epoch
     aircraftInfo.Pos="pos";
     //
-    //    int latitude = ((qrand() % 360) - 180);
-    double longitude = 35 + (qrand() % (75 - 35));
-    //    int longitude = ((qrand() % 180) - 90);
-    double latitude = 25 + (qrand() % (43 - 25));
+    double longitude = 48 + (qrand() % (59 - 48));
+    double latitude = 27 + (qrand() % (38 - 27));
 
     double altitude = (2000 + (qrand() % (9000 - 2000)));
 

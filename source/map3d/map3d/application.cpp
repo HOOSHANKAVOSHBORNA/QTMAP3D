@@ -35,8 +35,6 @@ void Application::initialize()
 {
 
     //initializeNetworkManager();
-    initializeDefenseDataManager();
-
     registerTypes();
     initializeQmlEngine();
 
@@ -187,6 +185,8 @@ void Application::onAllWindowsCreated()
 
 void Application::setup()
 {
+    initializeDefenseDataManager();
     mPluginManager->performPluginsSetup(mMainWindow->mapController());
+    emit defenseDataManagerInitialized(mDefenseDataManager);
 }
 

@@ -308,6 +308,7 @@ class Demo
 {
 public:
     Demo(DefenseDataManager* defenseDataManager);
+    ~Demo();
     AircraftInfo createAircraftInfo();
     void updateAircraftInfo();
     void createStationInfo();

@@ -50,7 +50,7 @@ public:
 
 public:
     void setMap(osgEarth::Map *map);
-    void setTrackNode(osg::Node *node, double minDistance = 300);
+    void setTrackNode(osg::Node *node, double minDistance = 400);
     void untrackNode();
     bool addNode(osg::Node *node);
     bool removeNode(osg::Node *node);

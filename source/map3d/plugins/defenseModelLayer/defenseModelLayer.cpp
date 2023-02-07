@@ -120,15 +120,18 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         addUpdateAircraft(aircraftInfo);
         //demo();
     }
-//    if(CATEGORY == category && name == ADD_ROCKET)
-//    {
-//        for(auto modelNode:mModelNodes[SYSTEM])
-//        {
-//            auto systemModelNode = dynamic_cast<SystemModelNode*>(modelNode);
-//            if(systemModelNode && systemModelNode->getAssignedModelNode())
-//                systemModelNode->fire();
-//        }
-//    }
+    if(CATEGORY == category && name == ADD_ROCKET)
+    {
+        for(auto modelNode:mModelNodes[SYSTEM])
+        {
+            auto systemModelNode = dynamic_cast<SystemModelNode*>(modelNode);
+            if(systemModelNode && systemModelNode->getAssignedModelNode()){
+                SystemCambatInfo cambatInfo;
+                cambatInfo.Phase = SystemCambatInfo::Fire;
+                systemModelNode->setCambatInfo(cambatInfo);
+            }
+        }
+    }
     else if(CATEGORY == category && name == SYSTEM)
     {
         SystemInfo systemInfo;
