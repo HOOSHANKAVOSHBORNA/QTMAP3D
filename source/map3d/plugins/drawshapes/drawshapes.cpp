@@ -298,6 +298,7 @@ void DrawShapes::mouseDoubleClickEvent(QMouseEvent *event)
     case Shape::NONE:
         break;
     case Shape::LINE:
+        mLine->setPointColor(osgEarth::Color::Red);
         onNodeBtnDoubleClick(event);
         break;
     case Shape::SPHERE:

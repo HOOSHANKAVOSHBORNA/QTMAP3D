@@ -14,7 +14,7 @@ public:
     void setColor(osgEarth::Color color);
     void setWidth(float width);
     void setClamp(bool clamp);
-    void dashLine(bool dashLine);
+    void setDashLine(bool dashLine);
 
     osg::ref_ptr<osgEarth::Annotation::ModelNode> mCircleModelNode{nullptr};
     osg::ref_ptr<osg::Group> mCircleGr;
@@ -23,7 +23,11 @@ public:
     void removePoint();
     void clearPath();
     int getSize();
-    void pointVisibilty(bool visibility);
+    void setPointVisibilty(bool visibility);
+    void setPointColor(osgEarth::Color color);
+    osg::ref_ptr<osg::Material> sphereMat;
+    osgEarth::Color sphereColor{osgEarth::Color::DarkGray};
+
 
 
 private:
