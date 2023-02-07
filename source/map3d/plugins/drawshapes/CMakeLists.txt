@@ -28,6 +28,7 @@ add_library(drawshapes SHARED
   capsule.cpp
   box.cpp
   linenode.cpp
+  drawshapeautoscaler.cpp
 )
 
 target_include_directories(drawshapes PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

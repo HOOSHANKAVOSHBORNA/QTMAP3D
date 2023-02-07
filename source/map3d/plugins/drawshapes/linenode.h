@@ -15,12 +15,8 @@ public:
     void setWidth(float width);
     void setClamp(bool clamp);
     void switchLP(bool lineMode);
+
     osg::ref_ptr<osgEarth::Annotation::ModelNode> mCircleModelNode{nullptr};
-
-    osg::ref_ptr<osg::Node> makeLineSphere();
-
-
-
     osg::ref_ptr<osg::Group> mCircleGr;
 
     void addPoint(osgEarth::GeoPoint points);
@@ -38,6 +34,7 @@ private:
     float mWidth{50};
     osgEarth::Color mColor{osgEarth::Color::Red};
     bool mClamp{true};
+    osg::ref_ptr<osg::Node> sphere;
 };
 
 #endif // LINENODE_H

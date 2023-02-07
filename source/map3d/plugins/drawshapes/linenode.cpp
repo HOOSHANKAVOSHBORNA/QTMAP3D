@@ -1,9 +1,10 @@
 #include "linenode.h"
-
+#include "drawshapeautoscaler.h"
 
 
 LineNode::LineNode(MapController *mapController, bool point)
 {
+    sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
     mIsPoint = point;
     mMapController = mapController;
     mLinePath = new osgEarth::Symbology::Geometry();
@@ -120,17 +121,17 @@ void LineNode::addPoint(osgEarth::GeoPoint points)
     mLinePath->push_back(points.vec3d());
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, osgEarth::SpatialReference::get("wgs84"));
     setFeature(pathFeature);
-
-    osg::Node* sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
     osg::ref_ptr<osg::Material> sphereMat = new osg::Material;
-    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Black);
+    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::DarkGray);
     osgEarth::Symbology::Style LiSphereStyle;
-    LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-    LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 2;
     LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
     getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
     mCircleModelNode = new osgEarth::Annotation::ModelNode
             (mMapController->getMapNode(),LiSphereStyle);
+
+    mCircleModelNode->setCullingActive(false);
+    mCircleModelNode->addCullCallback(new DrawShapeAutoScaler(1, 0.00001, 3000000));
+
     mCircleModelNode->setPosition(points);
 
     mCircleGr->addChild(mCircleModelNode);
