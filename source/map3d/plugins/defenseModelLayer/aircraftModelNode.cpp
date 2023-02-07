@@ -173,13 +173,9 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double spee
     //    mLocationPoints->push_back(posW);
     if(mRouteLine->getSize() > 0)
     {
-//        osg::Vec3d posTemp = getPosition().vec3d();
-//        posTemp.z() += posTemp.z() + 40;
         mRouteLine->addPoint(getPosition().vec3d());
     }
 
-//    osg::Vec3d posTemp = posGeo.vec3d();
-//    posTemp.z() = posTemp.z() + 40;
     mRouteLine->addPoint(posGeo.vec3d());
     mTempRouteLine->clearPoints();
     //move---------------------------------------------------------------------------------------------------
@@ -200,22 +196,23 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double spee
 
     osg::Matrixd posLocalToWorld;
     posGeo.createLocalToWorld(posLocalToWorld);
-    osg::Vec3d headingVecW = headingVecLocal * osg::Matrixd::rotate(posLocalToWorld.getRotate());
+    //osg::Vec3d headingVecW = headingVecLocal * osg::Matrixd::rotate(posLocalToWorld.getRotate());
 
     osg::Quat headingRotate;
     headingRotate.makeRotate(osg::Vec3d(0, 1, 0), headingVecLocal);
     //-------------------------------------------------------------------------------------------------------
-    osg::Vec3d posEstimateW1 = posW + (headingVecW * 100.0);
-    osg::Vec3d posEstimateW = posW + (headingVecW * 100000.0);
-    //    qDebug()<<"estimatePos"<<estimatePos.z();
-    double timeEstimate = (posEstimateW - posW).length() / speed;
+//    osg::Vec3d posEstimateW1 = posW + (headingVecW * 100.0);
+//    osg::Vec3d posEstimateW = posW + (headingVecW * 100000.0);
+//    //    qDebug()<<"estimatePos"<<estimatePos.z();
+//    double timeEstimate = (posEstimateW - posW).length() / speed;
 
     osg::AnimationPath* path = new osg::AnimationPath();
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 
     path->insert(0, osg::AnimationPath::ControlPoint(currentPosW,getPositionAttitudeTransform()->getAttitude(),getScale()));
-    path->insert(0.1,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
-    path->insert(0.2,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
+    path->insert(0.1,osg::AnimationPath::ControlPoint(posW,headingRotate, getScale()));
+    //path->insert(0.1,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
+    //path->insert(0.2,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
     //path->insert(timeEstimate,osg::AnimationPath::ControlPoint(posEstimateW, headingRotate, getScale()));
 
     mAnimationPathCallback = new ModelAnimationPathCallback();
