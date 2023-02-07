@@ -314,13 +314,15 @@ CMainWindow {
     Label {
         id: fpsLabel
         text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
-        color: 'red'
+        color: 'springgreen'
+        style: Text.Outline;
+        styleColor: "black"
         font.pointSize: 30
         font.weight: Font.Bold
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.topMargin: 30
-        anchors.rightMargin: 50
+        anchors.topMargin: 20
+        anchors.rightMargin: 20
     }
     ContextmenuWidget {
         id: contextmenu
