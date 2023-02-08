@@ -12,6 +12,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(drawshapes SHARED
+  sphereproperties.cpp
+  drawShapesqml.qrc
   drawshapes.cpp
   rect.cpp
   line.cpp

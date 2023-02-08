@@ -29,6 +29,7 @@
 #include "osg/Group"
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
+#include <QQuickItem>
 #include <line.h>
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
@@ -56,8 +57,10 @@ DrawShapes::DrawShapes(QWidget *parent)
 }
 bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
+    qmlRegisterType<SphereProperties>("Crystal", 1, 0, "SphereProperties");
     mAnnoLayer = new osgEarth::Annotation::AnnotationLayer;
-    Q_UNUSED(engine)
+//    Q_UNUSED(engine)
+    mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true});
@@ -95,6 +98,23 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
             mShape = Shape::SPHERE;
+            QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+            QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+
+                if (comp->status() == QQmlComponent::Ready) {
+                    mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+                    SphereProperties *sphereProperties = new SphereProperties;
+
+                    mItem->setProperty("sphereProperties", QVariant::fromValue<SphereProperties*>(sphereProperties));
+
+//                    QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
+                }
+
+            });
+
+            comp->loadUrl(QUrl("qrc:/SphereProperty.qml"));
+            QMetaObject::invokeMethod(mItem, "show");
+
         }
         else
         {
@@ -447,6 +467,10 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
     }
     if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
     {
+        ///////////////////////////////////////////////////////////
+
+
+        //////////////////////////////////////////////////////////
         mDrawingState = DrawingState::START;
         //--compute geo position of mouse-------------------------------------
         osg::Vec3d worldPos;
