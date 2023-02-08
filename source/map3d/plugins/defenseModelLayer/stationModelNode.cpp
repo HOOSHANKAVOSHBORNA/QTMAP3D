@@ -124,7 +124,7 @@ void StationModelNode::onLeftButtonClicked(bool val)
     }
     if(!val)
     {
-        mMapController->untrackNode();
+        mMapController->untrackNode(getGeoTransform());
         onRangeButtonToggled(val);
         onVisibleButtonToggled(val);
     }

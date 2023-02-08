@@ -20,7 +20,6 @@ Cone::Cone(MapController *mapController, float radius, float height, bool clamp)
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(pShapeDrawable);
 
-
     model = new osgEarth::Annotation::ModelNode(mMapController->getMapNode(), style);
 
     osg::ClipPlane* clipplane = new osg::ClipPlane();
@@ -28,4 +27,5 @@ Cone::Cone(MapController *mapController, float radius, float height, bool clamp)
 
     this->addClipPlane(clipplane);
     this->addChild(model);
+
 }

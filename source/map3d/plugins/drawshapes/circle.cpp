@@ -31,13 +31,6 @@ Circle::Circle(MapController *mapController, bool clamp)
     this->setArcEnd(osgEarth::Angle(360, osgEarth::Units::DEGREES));
     this->setPie(true);
 
-
-
-
-
-
-
-
 }
 
 void Circle::setColor(osgEarth::Color color)

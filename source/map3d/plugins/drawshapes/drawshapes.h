@@ -49,16 +49,15 @@ private:
     enum class Shape {NONE ,LINE, SPHERE, CONE, CYLINDER, CAPSULE, BOX, POLYGON, IMGOVLY,
                CIRCLE, RECT, ELLIPSE};
     Shape mShape;
-    enum class DrawingState {NONE, START, FINISH, DELETE};
+    enum class DrawingState {NONE, START, FINISH, DELETE, INITIAL};
     DrawingState mDrawingState;
     osgEarth::Annotation::ImageOverlay* mImageOverlay{nullptr};
-    osgEarth::Annotation::ModelNode* mCirclePlaceNode{nullptr};
+    osgEarth::Annotation::ModelNode* mLineSphereNode{nullptr};
     osgEarth::Annotation::CircleNodeEditor* mCircleEditor{nullptr};
     osgEarth::Annotation::RectangleNodeEditor* mRectEditor{nullptr};
     osgEarth::Annotation::EllipseNodeEditor* mElpsEditor{nullptr};
     osgEarth::Annotation::ImageOverlayEditor* mImgOvlEditor{nullptr};
     osg::Group* mCircleGr;
-    osg::Group* mLineCircleGr;
     osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
 
     osgEarth::Annotation::SphereDragger* mCircleHdragger;

@@ -146,14 +146,15 @@ void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
     unassignedModelNode();
 
     mAssignedModelNode = assignedModelNode;
-    mAssignedLine = new Line(mMapController);
+    mAssignedLine = new LineNode(mMapController);
 
     mAssignedLine->setClamp(false);
+    mAssignedLine->setPointVisibilty(false);
     mAssignedLine->setColor(osgEarth::Color::Green);
     mAssignedLine->setWidth(5);
-    mAssignedLine->switchLP(false);
+    mAssignedLine->setDashLine(true);
 
-    addNodeToLayer(mAssignedLine->getNode());
+    addNodeToLayer(mAssignedLine);
 }
 
 DefenseModelNode *SystemModelNode::getAssignedModelNode() const
@@ -168,7 +169,7 @@ void SystemModelNode::acceptAssignedModelNode(bool value)
         if(value)
         {
             if(mAssignedLine)
-                mAssignedLine->switchLP(true);
+                mAssignedLine->setDashLine(false);
         }
         else
             unassignedModelNode();
@@ -179,7 +180,7 @@ void SystemModelNode::unassignedModelNode()
 {
     if(hasAssigned())
     {
-        removeNodeFromLayer(mAssignedLine->getNode());
+        removeNodeFromLayer(mAssignedLine);
         mAssignedModelNode = nullptr;
     }
 }
@@ -198,7 +199,7 @@ void SystemModelNode::onLeftButtonClicked(bool val)
     }
     else
     {
-        mMapController->untrackNode();
+        mMapController->untrackNode(getGeoTransform());
         onRangeButtonToggled(val);
         onWezButtonToggled(val);
         onMezButtonToggled(val);
@@ -213,9 +214,9 @@ void SystemModelNode::frameEvent()
     //--update assigned line----------------------------------------------------
     if(hasAssigned())
     {
-        mAssignedLine->clearPoints();
-        mAssignedLine->addPoint(getPosition().vec3d());
-        mAssignedLine->addPoint(mAssignedModelNode->getPosition().vec3d());
+        mAssignedLine->clearPath();
+        mAssignedLine->addPoint(getPosition());
+        mAssignedLine->addPoint(mAssignedModelNode->getPosition());
     }
     //--check collision--------------------------------------------------------
 //    collision();

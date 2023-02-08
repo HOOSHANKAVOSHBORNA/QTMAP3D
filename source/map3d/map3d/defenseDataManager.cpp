@@ -6,6 +6,8 @@
 #include <thread>
 #include <QTime>
 
+#include <osg/Math>
+
 static int aircraftNumber = 0;
 DefenseDataManager::DefenseDataManager(QObject *parent):
     QObject(parent)
@@ -14,7 +16,8 @@ DefenseDataManager::DefenseDataManager(QObject *parent):
 }
 Demo::Demo(DefenseDataManager *defenseDataManager)
 {
-    qsrand(QDateTime::currentMSecsSinceEpoch() / 1000);
+    uint seed = static_cast<uint>(QDateTime::currentMSecsSinceEpoch() / 1000);
+    qsrand(seed);
 
     mDefenseDataManager = defenseDataManager;
     //run demo ------------------------------------------------
@@ -36,16 +39,24 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         updateSystemCambatInfo();
         for(auto systemCambat:SystemCambatList)
             emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
+
+        createAircraftInfo();
+//        emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
+//        mAircraftList.removeFirst();
+    });
+    timer->start(10000);
+    //----------------------------------------------------------
+    QTimer *timerUpdateAircraft = new QTimer();
+    QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
         //---------------------------------------------
         updateAircraftInfo();
-        createAircraftInfo();
         for(auto aircraft:mAircraftList)
             emit mDefenseDataManager->aircraftInfoChanged(aircraft);
 
         //emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
         //mAircraftList.removeFirst();
     });
-    timer->start(10000);
+    timerUpdateAircraft->start(500);
     //---------------------------------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
         qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
@@ -71,6 +82,8 @@ const int systemNum = 10;
 AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
+    if(aircraftNumber > 50)
+        return aircraftInfo;
     int tn = 10000 + aircraftNumber++;
     aircraftInfo.TN = tn;
     aircraftInfo.IFFCode="a12345";
@@ -91,7 +104,7 @@ AircraftInfo Demo::createAircraftInfo()
     aircraftInfo.Latitude=latitude;
     aircraftInfo.Longitude=longitude;
     aircraftInfo.Altitude=altitude;//meter
-    aircraftInfo.Heading=30;
+    aircraftInfo.Heading = (0 + (qrand() % 361));
     aircraftInfo.Speed=150;//m/s
     //
     for(auto system: systemList)
@@ -124,34 +137,40 @@ void Demo::updateAircraftInfo()
         //    double longitudeDiff = longitude;
         //    double altitudeDiff = altitude;
 
-        int randomX = (100 + (qrand() % 19));
-        int randomY = (100 + (qrand() % 19));
+//        int randomX = (100 + (qrand() % 19));
+//        int randomY = (100 + (qrand() % 19));
 
         //altitude = (2000 + (qrand() % (9000 - 2000)));
-
+        int rn = (0 + (qrand() % 10000));
+        if(rn < 1)
+            heading = (0 + (qrand() % 361));
         speed = (138 + (qrand() % 137));
-        heading = (0 + (qrand() % 361));
-        int val = qrand() % 4;
-        if(val == 1)
-        {
-            latitude += randomX/10000.0;
-            longitude += randomY/10000.0;
-        }
-        else if(val == 2)
-        {
-            latitude += randomX/10000.0;
-            longitude -= randomY/10000.0;
-        }
-        else if(val == 3)
-        {
-            latitude -= randomX/10000.0;
-            longitude += randomY/10000.0;
-        }
-        else
-        {
-            latitude -= randomX/10000.0;
-            longitude -= randomY/10000.0;
-        }
+        double teta = osg::DegreesToRadians(90 - heading);
+        double step = 10.0/10000.0;
+        longitude += step * std::cos(teta);
+        latitude += step * std::sin(teta);
+//        heading = (0 + (qrand() % 361));
+//        int val = qrand() % 4;
+//        if(val == 1)
+//        {
+//            latitude += randomX/10000.0;
+//            longitude += randomY/10000.0;
+//        }
+//        else if(val == 2)
+//        {
+//            latitude += randomX/10000.0;
+//            longitude -= randomY/10000.0;
+//        }
+//        else if(val == 3)
+//        {
+//            latitude -= randomX/10000.0;
+//            longitude += randomY/10000.0;
+//        }
+//        else
+//        {
+//            latitude -= randomX/10000.0;
+//            longitude -= randomY/10000.0;
+//        }
         //calculat heading----------------------
         //    latitudeDiff = latitude - latitudeDiff;
         //    longitudeDiff = longitude - longitudeDiff;

@@ -8,7 +8,7 @@
 #include "spherenode.h"
 #include "polygone.h"
 #include "aircraftModelNode.h"
-#include "line.h"
+#include "linenode.h"
 #include "truck.h"
 
 #include <osgEarthAnnotation/ModelNode>
@@ -70,7 +70,7 @@ private:
     osg::ref_ptr<SphereNode> mMezSphere;
     osg::ref_ptr<Polygone> mWezPolygon;
     DefenseModelNode* mAssignedModelNode{nullptr};
-    Line* mAssignedLine;
+    osg::ref_ptr<LineNode> mAssignedLine;
     osg::ref_ptr<Truck> mTruck;
     Rocket* mFiredRocket{nullptr};
 
