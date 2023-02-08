@@ -220,7 +220,7 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double /*sp
     setUpdateCallback(mAnimationPathCallback);
 
     //--lines-------------------------------------
-    if(mRouteLine->getSize() >= 0)
+    if(mLatestPointLine->getSize() >= 0)
     {
         mRouteLine->addPoint(getPosition());
         mLatestPointLine->addPoint(getPosition());

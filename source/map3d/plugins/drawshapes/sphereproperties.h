@@ -1,6 +1,8 @@
 #ifndef SPHEREPROPERTIES_H
 #define SPHEREPROPERTIES_H
 
+#include "spherenode.h"
+
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
@@ -32,7 +34,7 @@ public:
 
 
 
-    explicit SphereProperties(QObject *parent = nullptr);
+    SphereProperties(SphereNode* sphereNode = nullptr, QObject *parent = nullptr);
     //set color
     QString color() const;
     void setColor(const QString &color);
@@ -71,6 +73,8 @@ private:
     QString   mTransparency;
     int       mShape;
     bool      mRelative;
+
+    SphereNode* mSphereNode;
 
 
 public slots:
