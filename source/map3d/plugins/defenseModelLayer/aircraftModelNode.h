@@ -87,6 +87,7 @@ private:
 
     osg::ref_ptr<LineNode> mRouteLine;
     osg::ref_ptr<LineNode> mLatestPointLine;
+    osg::ref_ptr<LineNode> mTempLine;
 
     AircraftInformation *mAircraftinformation{nullptr};
 

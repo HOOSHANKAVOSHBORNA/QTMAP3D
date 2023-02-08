@@ -157,6 +157,12 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     mLatestPointLine->setClamp(false);
     mLatestPointLine->setColor(osgEarth::Color::Purple);
     mLatestPointLine->setWidth(6);
+
+    mTempLine = new LineNode(mapControler);
+    mTempLine->setPointVisibilty(false);
+    mTempLine->setClamp(false);
+    mTempLine->setColor(osgEarth::Color::Purple);
+    mTempLine->setWidth(6);
 }
 
 void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double /*speed*/)
@@ -233,6 +239,7 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double /*sp
 
     mCurrentHeading = heading;
     mCurrentFlyPoint = posGeo;
+    mTempLine->clearPath();
 }
 
 void AircraftModelNode::stop()
@@ -280,6 +287,7 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
         mMapController->untrackNode(getGeoTransform());
         removeNodeFromLayer(mRouteLine);
         removeNodeFromLayer(mLatestPointLine);
+        removeNodeFromLayer(mTempLine);
     }
     if(mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();
@@ -299,6 +307,8 @@ void AircraftModelNode::frameEvent()
     //------------------------------------
     //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+    //------------------------------------
+    mTempLine->addPoint(getPosition());
 }
 
 void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -352,19 +362,27 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
     if(check)
     {
         addNodeToLayer(mRouteLine);
+        addNodeToLayer(mTempLine);
     }
     else
     {
         removeNodeFromLayer(mRouteLine);
+        removeNodeFromLayer(mTempLine);
     }
 
 }
 
 void AircraftModelNode::onLatestPointsToggled(bool check) {
     if (check)
+    {
         addNodeToLayer(mLatestPointLine);
+        addNodeToLayer(mTempLine);
+    }
     else
+    {
         removeNodeFromLayer(mLatestPointLine);
+        removeNodeFromLayer(mTempLine);
+    }
 }
 
 void AircraftModelNode::onTrackButtonToggled(bool check)
