@@ -41,8 +41,8 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
             emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
 
         createAircraftInfo();
-        //emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
-        //mAircraftList.removeFirst();
+//        emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
+//        mAircraftList.removeFirst();
     });
     timer->start(10000);
     //----------------------------------------------------------
@@ -82,6 +82,8 @@ const int systemNum = 10;
 AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
+    if(aircraftNumber > 50)
+        return aircraftInfo;
     int tn = 10000 + aircraftNumber++;
     aircraftInfo.TN = tn;
     aircraftInfo.IFFCode="a12345";
@@ -139,7 +141,7 @@ void Demo::updateAircraftInfo()
 //        int randomY = (100 + (qrand() % 19));
 
         //altitude = (2000 + (qrand() % (9000 - 2000)));
-        int rn = (0 + (qrand() % 100));
+        int rn = (0 + (qrand() % 10000));
         if(rn < 1)
             heading = (0 + (qrand() % 361));
         speed = (138 + (qrand() % 137));

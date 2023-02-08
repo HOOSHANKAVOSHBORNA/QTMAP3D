@@ -31,6 +31,7 @@
 #include "defenseModelLayer.h"
 
 const float RANGE3D = std::numeric_limits<float>::max();
+const int NUM_LATEST_POINT = 10;
 
 osg::ref_ptr<osg::Node> AircraftModelNode::mNode3DRef;
 
@@ -145,14 +146,17 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     connect(mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
     //----------------------------
     mRouteLine = new LineNode(mapControler);
+    mRouteLine->pointVisibilty(false);
     mRouteLine->setClamp(false);
     mRouteLine->setColor(osgEarth::Color::Purple);
     mRouteLine->setWidth(6);
 
-//    mTempRouteLine = new Line(mapControler);
-//    mTempRouteLine->setClamp(false);
-//    mTempRouteLine->setColor(osgEarth::Color::Purple);
-//    mTempRouteLine->setWidth(6);
+    mLatestPointLine = new LineNode(mapControler);
+    mLatestPointLine->pointVisibilty(true);
+//    mLatestPointLine->set(osgEarth::Color::Purple);
+    mLatestPointLine->setClamp(false);
+    mLatestPointLine->setColor(osgEarth::Color::Purple);
+    mLatestPointLine->setWidth(6);
 }
 
 void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double /*speed*/)
@@ -209,13 +213,16 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double /*sp
     mAnimationPathCallback->setAnimationPath(path);
     setUpdateCallback(mAnimationPathCallback);
 
-    //---------------------------------------
+    //--lines-------------------------------------
     if(mRouteLine->getSize() > 0)
     {
         mRouteLine->addPoint(getPosition());
+        mLatestPointLine->addPoint(getPosition());
     }
-    mRouteLine->addPoint(posGeo);
-//    mTempRouteLine->clearPoints();
+    mLatestPointLine->addPoint(posGeo);
+    if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
+        mLatestPointLine->removeFirstPoint();
+    //mRouteLine->addPoint(posGeo);
 }
 
 void AircraftModelNode::stop()
@@ -260,9 +267,9 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     }
     else
     {
-        mMapController->untrackNode();
+        mMapController->untrackNode(getGeoTransform());
         removeNodeFromLayer(mRouteLine);
-//        mMapController->removeNode(mTempRouteLine->getNode(3));
+        removeNodeFromLayer(mLatestPointLine);
     }
     if(mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();
@@ -313,18 +320,6 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 }
 
-//void AircraftModelNode::curentPosition(osgEarth::GeoPoint pos)
-//{
-//    DefenseModelNode::curentPosition(pos);
-
-//    //    if(mIsRoute)
-//    //    {
-//    //    osg::Vec3d currentPosW;
-//    //    pos.toWorld(currentPosW);
-//    //    mTempLocationPoints->push_back(currentPosW);
-//    //    }
-//    //mTempRouteLine->addPoint(pos.vec3d());
-//}
 SystemModelNode *AircraftModelNode::getAssignmentModelNode() const
 {
     return mAssignmentModelNode;
@@ -347,24 +342,23 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
     if(check)
     {
         addNodeToLayer(mRouteLine);
-        //mMapController->addNode(mTempRouteLine->getNode());
+        addNodeToLayer(mLatestPointLine);
     }
     else
     {
         removeNodeFromLayer(mRouteLine);
-//        mMapController->removeNode(mTempRouteLine->getNode());
+        removeNodeFromLayer(mLatestPointLine);
     }
 
 }
 
 void AircraftModelNode::onTrackButtonToggled(bool check)
 {
-    //    qDebug()<<"iwFollowButtonClicked";
     std::cout << check << std::endl;
     if(check)
         mMapController->setTrackNode(getGeoTransform());
     else
-        mMapController->untrackNode();
+        mMapController->untrackNode(getGeoTransform());
 }
 
 void AircraftModelNode::onModeChanged(bool is3DView)

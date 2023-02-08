@@ -85,7 +85,8 @@ private:
     ContextMenu *mCurrentContextMenu = nullptr;
 
     osg::ref_ptr<LineNode> mRouteLine;
-    //Line *mTempRouteLine;
+    osg::ref_ptr<LineNode> mLatestPointLine;
+
     AircraftInformation *mAircraftinformation{nullptr};
 
     static osg::ref_ptr<osg::Node> mNode3DRef;

@@ -221,10 +221,10 @@ void MapController::setTrackNode(osg::Node *node, double minDistance)
     getEarthManipulator()->applySettings(camSet);
 }
 
-void MapController::untrackNode()
+void MapController::untrackNode(osg::Node *node)
 {
     auto vp = getEarthManipulator()->getViewpoint();
-    if(vp.getNode() == nullptr)
+    if(vp.getNode() == nullptr || vp.getNode() != node)
         return;
     vp.setNode(nullptr);
     getEarthManipulator()->setViewpoint(vp);

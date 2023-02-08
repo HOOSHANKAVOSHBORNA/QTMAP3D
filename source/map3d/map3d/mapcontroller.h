@@ -51,7 +51,7 @@ public:
 public:
     void setMap(osgEarth::Map *map);
     void setTrackNode(osg::Node *node, double minDistance = 400);
-    void untrackNode();
+    void untrackNode(osg::Node *node);
     bool addNode(osg::Node *node);
     bool removeNode(osg::Node *node);
     void setViewpoint(const osgEarth::Viewpoint& vp, double duration_s = 0.0);
