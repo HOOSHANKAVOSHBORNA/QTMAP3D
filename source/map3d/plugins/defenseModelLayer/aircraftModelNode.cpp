@@ -146,13 +146,13 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     connect(mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
     //----------------------------
     mRouteLine = new LineNode(mapControler);
-    mRouteLine->pointVisibilty(false);
+    mRouteLine->setPointVisibilty(false);
     mRouteLine->setClamp(false);
     mRouteLine->setColor(osgEarth::Color::Purple);
     mRouteLine->setWidth(6);
 
     mLatestPointLine = new LineNode(mapControler);
-    mLatestPointLine->pointVisibilty(true);
+    mLatestPointLine->setPointVisibilty(true);
 //    mLatestPointLine->set(osgEarth::Color::Purple);
     mLatestPointLine->setClamp(false);
     mLatestPointLine->setColor(osgEarth::Color::Purple);

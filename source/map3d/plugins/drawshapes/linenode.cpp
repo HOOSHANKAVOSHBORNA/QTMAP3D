@@ -4,6 +4,7 @@
 
 LineNode::LineNode(MapController *mapController, bool point)
 {
+    sphereMat = new osg::Material;
     sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
     mIsPoint = point;
     mMapController = mapController;
@@ -116,7 +117,7 @@ void LineNode::setClamp(bool clamp)
     this->setStyle(style);
 }
 
-void LineNode::dashLine(bool dashLine)
+void LineNode::setDashLine(bool dashLine)
 {
     if (!dashLine){
         osgEarth::Symbology::Style lineStyle;
@@ -162,10 +163,10 @@ void LineNode::addPoint(osgEarth::GeoPoint points)
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, points.getSRS());
     setFeature(pathFeature);
     osg::ref_ptr<osg::Material> sphereMat = new osg::Material;
-    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Red);
+    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, pointColor);
     osgEarth::Symbology::Style LiSphereStyle;
     LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
-    getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    mCircleGr->getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
     mCircleModelNode = new osgEarth::Annotation::ModelNode
             (mMapController->getMapNode(),LiSphereStyle);
 
@@ -207,7 +208,14 @@ int LineNode::getSize()
     return static_cast<int>(mLinePath->size());
 }
 
-void LineNode::pointVisibilty(bool visibility)
+void LineNode::setPointVisibilty(bool visibility)
 {
-        mCircleGr->setNodeMask(visibility);
+    mCircleGr->setNodeMask(visibility);
+}
+
+void LineNode::setPointColor(osgEarth::Color color)
+{
+    pointColor = color;
+    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, pointColor);
+    mCircleGr->getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 }
