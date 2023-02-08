@@ -53,6 +53,7 @@ public:
 private slots:
     void onGotoButtonClicked();
     void onRouteButtonToggled(bool check);
+    void onLatestPointsToggled(bool check);
     void onTrackButtonToggled(bool check);
     void onModeChanged(bool is3DView);
     void onContextmenuItemClicked(int index, QString systemName);

@@ -37,6 +37,7 @@ Q_SIGNALS:
     void gotoButtonClicked();
     void routeButtonClicked(bool checked);
     void trackButtonClicked(bool checked);
+    void latestPointsClicked(bool checked);
     void moreButtonClicked();
 
 private:

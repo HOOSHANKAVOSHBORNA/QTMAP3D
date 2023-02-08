@@ -347,14 +347,19 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
     if(check)
     {
         addNodeToLayer(mRouteLine);
-        addNodeToLayer(mLatestPointLine);
     }
     else
     {
         removeNodeFromLayer(mRouteLine);
-        removeNodeFromLayer(mLatestPointLine);
     }
 
+}
+
+void AircraftModelNode::onLatestPointsToggled(bool check) {
+    if (check)
+        addNodeToLayer(mLatestPointLine);
+    else
+        removeNodeFromLayer(mLatestPointLine);
 }
 
 void AircraftModelNode::onTrackButtonToggled(bool check)
@@ -430,6 +435,7 @@ void AircraftModelNode::showInfoWidget()
     connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
     connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
     connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
+    connect(mAircraftinformation->getInfo(), &AircraftInfoModel::latestPointsClicked, this, &AircraftModelNode::onLatestPointsToggled);
     mAircraftinformation->show();
 }
 

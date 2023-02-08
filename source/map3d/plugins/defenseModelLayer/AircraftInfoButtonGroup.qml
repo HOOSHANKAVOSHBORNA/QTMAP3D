@@ -9,6 +9,7 @@ Item {
     signal gotoButtonClicked();
     signal routeButtonClicked(bool check);
     signal trackButtonClicked(bool check);
+    signal latestPointsToggled(bool check);
     signal moreButtonClicked();
 
     property var _checked: "#908000"
@@ -30,6 +31,14 @@ Item {
             checkable: true
             checked: false
             clickCallback: function(check) { rootItem.routeButtonClicked(check);}
+        }
+
+        ListElement {
+            buttonText: "Points"
+            iconUrl:"qrc:/resources/points.png"
+            checkable: true
+            checked: false
+            clickCallback: function(check) { rootItem.latestPointsToggled(check);}
         }
 
         ListElement {
