@@ -21,6 +21,7 @@ public:
 
     void addPoint(osgEarth::GeoPoint points);
     void removePoint();
+    void removeFirstPoint();
     void clearPath();
     int getSize();
     void setPointVisibilty(bool visibility);

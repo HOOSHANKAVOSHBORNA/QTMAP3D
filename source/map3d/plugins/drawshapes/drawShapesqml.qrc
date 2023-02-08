@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>SphereProperty.qml</file>
+    </qresource>
+</RCC>

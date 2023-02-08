@@ -199,7 +199,7 @@ void SystemModelNode::onLeftButtonClicked(bool val)
     }
     else
     {
-        mMapController->untrackNode();
+        mMapController->untrackNode(getGeoTransform());
         onRangeButtonToggled(val);
         onWezButtonToggled(val);
         onMezButtonToggled(val);

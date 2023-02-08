@@ -162,6 +162,7 @@ void LineNode::addPoint(osgEarth::GeoPoint points)
     mLinePath->push_back(points.vec3d());
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, points.getSRS());
     setFeature(pathFeature);
+    osg::ref_ptr<osg::Material> sphereMat = new osg::Material;
     sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, pointColor);
     osgEarth::Symbology::Style LiSphereStyle;
     LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
@@ -184,6 +185,17 @@ void LineNode::removePoint()
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, mMapController->getMapSRS());
     this->setFeature(pathFeature);
     mCircleGr->removeChild(mCircleModelNode);
+    addChild(mCircleGr);
+}
+
+void LineNode::removeFirstPoint()
+{
+    mLinePath->erase(mLinePath->begin());
+    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, mMapController->getMapSRS());
+    this->setFeature(pathFeature);
+//    unsigned index = mCircleGr->getNumChildren()-1;
+    mCircleGr->removeChildren(0, 1);
+    addChild(mCircleGr);
 }
 
 void LineNode::clearPath()

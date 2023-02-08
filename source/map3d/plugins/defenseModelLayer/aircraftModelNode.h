@@ -53,6 +53,7 @@ public:
 private slots:
     void onGotoButtonClicked();
     void onRouteButtonToggled(bool check);
+    void onLatestPointsToggled(bool check);
     void onTrackButtonToggled(bool check);
     void onModeChanged(bool is3DView);
     void onContextmenuItemClicked(int index, QString systemName);
@@ -85,7 +86,9 @@ private:
     ContextMenu *mCurrentContextMenu = nullptr;
 
     osg::ref_ptr<LineNode> mRouteLine;
-    //Line *mTempRouteLine;
+    osg::ref_ptr<LineNode> mLatestPointLine;
+    osg::ref_ptr<LineNode> mTempLine;
+
     AircraftInformation *mAircraftinformation{nullptr};
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
@@ -98,6 +101,9 @@ private:
 
     osg::Image* m2DIcon;
     osg::Image* mSelect2DIcon;
+
+    double mCurrentHeading{500};
+    osgEarth::GeoPoint mCurrentFlyPoint;
 };
 
 #endif // FLYINGMODEL_H
