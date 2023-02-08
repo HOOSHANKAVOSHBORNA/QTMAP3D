@@ -57,7 +57,7 @@ LineNode::LineNode(MapController *mapController, bool point)
     //    this->setStyle(pathStyle);
 
     mCircleGr = new osg::Group;
-    addChild(mCircleGr);
+    //addChild(mCircleGr);
 
 }
 

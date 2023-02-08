@@ -236,6 +236,10 @@ bool DrawShapes::setup(MapController *mapController,
 {
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
+
+    osgEarth::ModelLayer *drawShapeLayer = new osgEarth::ModelLayer();
+    drawShapeLayer->setName(DRAW_LAYER_NAME);
+    mMapController->addLayer(drawShapeLayer);
     return true;
 }
 
@@ -301,7 +305,6 @@ void DrawShapes::mouseDoubleClickEvent(QMouseEvent *event)
     case Shape::NONE:
         break;
     case Shape::LINE:
-        mLine->setPointColor(osgEarth::Color::Red);
         onNodeBtnDoubleClick(event);
         break;
     case Shape::SPHERE:
@@ -329,6 +332,28 @@ void DrawShapes::mouseDoubleClickEvent(QMouseEvent *event)
     }
 }
 
+bool DrawShapes::addNodeToLayer(osg::Node *node)
+{
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->addChild(node);
+        }
+    }
+}
+
+void DrawShapes::removeNodeFromLayer(osg::Node *node)
+{
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->removeChild(node);
+        }
+    }
+}
+
 void DrawShapes::onLineBtnClick(QMouseEvent *event)
 {
     if(event->button() == Qt::MouseButton::LeftButton)
@@ -344,7 +369,8 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
             mLine->setColor(osgEarth::Color::Purple);
             mLine->setWidth(7);
             mLine->setClamp(false);
-            mMapController->addNode(mLine);
+            //mMapController->addNode(mLine);
+            addNodeToLayer(mLine);
 
         }
 
@@ -355,14 +381,17 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START)
     {
         mDrawingState = DrawingState::DELETE;
-        mMapController->removeNode(mLine);
+        //mMapController->removeNode(mLine);
+        removeNodeFromLayer(mLine);
+        removeNodeFromLayer(mLine->mCircleGr);
 
-        mMapController->removeNode(mLine->mCircleGr);
-
-
-
-
+        //mMapController->removeNode(mLine->mCircleGr);
         event->accept();
+    }
+
+    if(event->button() == Qt::MouseButton::MidButton)
+    {
+        mLine->setPointColor(osgEarth::Color::Red);
     }
 
 }
@@ -374,7 +403,7 @@ void DrawShapes::onLineMouseMove(QMouseEvent *event)
         if (mLine->getSize() >= 2)
         {
             mLine->removePoint();
-//            mMapController->removeNode(mLine->mCircleGr);s
+//            mMapController->removeNode(mLine->mCircleGr);
         }
         osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
         mLine->addPoint(geoPos);
@@ -420,8 +449,10 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START)
     {
         mDrawingState = DrawingState::DELETE;
-        mMapController->removeNode(mSphereNode);
-        mMapController->removeNode(mSphereNodeEditor);
+        removeNodeFromLayer(mSphereNode);
+        removeNodeFromLayer(mSphereNodeEditor);
+        //mMapController->removeNode(mSphereNode);
+        //mMapController->removeNode(mSphereNodeEditor);
         event->accept();
     }
     if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
@@ -436,11 +467,10 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
         mSphereNode->setColor(osg::Vec4(0.8f, 0.0f, 1.0, 0.5f));
         mSphereNode->setPosition(geoPos);
         mSphereNode->setMapNode(mMapController->getMapNode());
-        mMapController->addNode(mSphereNode);
+        addNodeToLayer(mSphereNode);
+        //mMapController->addNode(mSphereNode);
         //--add node editor---------------------------------------------------
         mSphereNodeEditor = new SphereNodeEditor(mSphereNode);
-        mMapController->addNode(mSphereNodeEditor);
-
         //--show property window---------------------------------------------------------------------------------
         QQmlComponent *comp = new QQmlComponent(mQmlEngine);
         QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
@@ -456,6 +486,7 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
         comp->loadUrl(QUrl("qrc:/SphereProperty.qml"));
         QMetaObject::invokeMethod(mItem, "show");
         //--------------------------------------------------------------------------------------------------
+        addNodeToLayer(mSphereNodeEditor);
         event->accept();
     }
 }
@@ -466,7 +497,8 @@ void DrawShapes::onNodeBtnDoubleClick(QMouseEvent *event, osg::Node *nodeEditor)
     {
         mDrawingState = DrawingState::FINISH;
         if(nodeEditor)
-            mMapController->removeNode(nodeEditor);
+            //mMapController->removeNode(nodeEditor);
+            removeNodeFromLayer(nodeEditor);
             //mMapController->removeNode(mPolyHdragger);
         event->accept();
     }
@@ -482,9 +514,8 @@ void DrawShapes::onConeBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         mCone->model->setPosition(geoPos);
-        mMapController->addNode(mCone);
-        osg::Group* abbas = mAnnoLayer->getGroup();
-        abbas->addChild(mCone);
+        //mMapController->addNode(mCone);
+        addNodeToLayer(mCone);
     }
 }
 
@@ -498,7 +529,8 @@ void DrawShapes::onCylinderBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         mCylinder->model->setPosition(geoPos);
-        mMapController->addNode(mCylinder);
+        addNodeToLayer(mCylinder);
+        //mMapController->addNode(mCylinder);
 
     }
 }
@@ -512,7 +544,8 @@ void DrawShapes::onCapsuleBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
     {
         mCapsule->model->setPosition(geoPos);
-        mMapController->addNode(mCapsule);
+        //mMapController->addNode(mCapsule);
+        addNodeToLayer(mCapsule);
 
     }
 }
@@ -527,7 +560,8 @@ void DrawShapes::onBoxBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton)
     {
         mBox->model->setPosition(geoPos);
-        mMapController->addNode(mBox);
+        //mMapController->addNode(mBox);
+        addNodeToLayer(mBox);
 
     }
 }
@@ -566,11 +600,14 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
         if (mPoly->getSize() >= 3){
             //            mPoly = new Polygone(mMapController,false);
             //            mCircleGr = new osg::Group;
-            mMapController->addNode(mPoly);
-            mMapController->removeNode(mCircleGr);
+            //mMapController->addNode(mPoly);
+            addNodeToLayer(mPoly);
+            removeNodeFromLayer(mCircleGr);
+            //mMapController->removeNode(mCircleGr);
             mPolyHdragger = new osgEarth::Annotation::SphereDragger(mMapController->getMapNode());
             mPolyHdragger->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
-            mMapController->addNode(mPolyHdragger);
+            //mMapController->addNode(mPolyHdragger);
+            addNodeToLayer(mPolyHdragger);
             mPolyHdragger->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
             mPoly->setFillColor(osgEarth::Color::Purple);
             mDrawingState = DrawingState::FINISH;
@@ -601,9 +638,11 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
             mImageOverlay = new osgEarth::Annotation::ImageOverlay(mMapController->getMapNode(), image);
             //imageOverlay->setBounds(osgEarth::Bounds(-100.0, 35.0, -90.0, 40.0));
             mImageOverlay->setCenter(geoPos.x(),geoPos.y());
-            mMapController->addNode(mImageOverlay);
+            addNodeToLayer(mImageOverlay);
+            //mMapController->addNode(mImageOverlay);
             mImgOvlEditor = new osgEarth::Annotation::ImageOverlayEditor(mImageOverlay, false);
-            mMapController->getMapNode()->addChild(mImgOvlEditor);
+            //mMapController->getMapNode()->addChild(mImgOvlEditor);
+            addNodeToLayer(mImgOvlEditor);
 
 
         }
@@ -612,8 +651,10 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::DELETE;
-        mMapController->removeNode(mImageOverlay);
-        mMapController->removeNode(mImgOvlEditor);
+        removeNodeFromLayer(mImageOverlay);
+        //mMapController->removeNode(mImageOverlay);
+        removeNodeFromLayer(mImgOvlEditor);
+        //mMapController->removeNode(mImgOvlEditor);
         mImageOverlay = nullptr;
         mImgOvlEditor = nullptr;
     }
@@ -621,7 +662,8 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::MidButton && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::FINISH;
-        mMapController->removeNode(mImgOvlEditor);
+        removeNodeFromLayer(mImgOvlEditor);
+        //mMapController->removeNode(mImgOvlEditor);
         mImageOverlay = nullptr;
         mImgOvlEditor = nullptr;
     }
@@ -643,9 +685,10 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
         mCircle->setArcEnd(360);
 
 
-        //mMapController->addNode(mCircleEditor);
+
         mCircleHdragger->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
-        mMapController->addNode(mCircleHdragger);
+        //mMapController->addNode(mCircleHdragger);
+        addNodeToLayer(mCircleHdragger);
         mCircleHdragger->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
         mCircle->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
 
@@ -654,7 +697,8 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
         //mCircleEditor->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x()+4000, geoPos.y()));
         //mMapController->addNode(mCircleEditor);
 
-        mMapController->addNode(mCircle);
+        //mMapController->addNode(mCircle);
+        addNodeToLayer(mCircle);
 
         event->accept();
     }
@@ -663,9 +707,11 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
 
 
         mDrawingState = DrawingState::DELETE;
-        mMapController->removeNode(mCircle);
+        removeNodeFromLayer(mCircle);
+        //mMapController->removeNode(mCircle);
         //mMapController->removeNode(mCircleEditor);
-        mMapController->removeNode(mCircleHdragger);
+        removeNodeFromLayer(mCircleHdragger);
+        //mMapController->removeNode(mCircleHdragger);
         mCircle = nullptr;
         mCircleHdragger = nullptr;
         //mCircleEditor = nullptr;
@@ -683,7 +729,8 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
         {
             mDrawingState = DrawingState::FINISH;
             //mMapController->removeNode(mCircleEditor);
-            mMapController->removeNode(mCircleHdragger);
+            removeNodeFromLayer(mCircleHdragger);
+            //mMapController->removeNode(mCircleHdragger);
             mCircleHdragger = nullptr;
             mCircle = nullptr;
             mCircleEditor = nullptr;
@@ -705,8 +752,10 @@ void DrawShapes::onRectBtnClick(QMouseEvent *event)
         mRect = new Rect(true, 600, 300);
         mRect->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
         mRectEditor = new osgEarth::Annotation::RectangleNodeEditor(mRect);
-        mMapController->addNode(mRect);
-        mMapController->addNode(mRectEditor);
+        addNodeToLayer(mRect);
+        addNodeToLayer(mRectEditor);
+        //mMapController->addNode(mRect);
+        //mMapController->addNode(mRectEditor);
         event->accept();
 
 
@@ -714,8 +763,10 @@ void DrawShapes::onRectBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::DELETE;
-        mMapController->removeNode(mRect);
-        mMapController->removeNode(mRectEditor);
+        removeNodeFromLayer(mRect);
+        //mMapController->removeNode(mRect);
+        addNodeToLayer(mRectEditor);
+        //mMapController->removeNode(mRectEditor);
         mRect = nullptr;
         mRectEditor = nullptr;
         event->accept();
@@ -728,7 +779,8 @@ void DrawShapes::onRectBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::FINISH;
-        mMapController->removeNode(mRectEditor);
+        removeNodeFromLayer(mRectEditor);
+        //mMapController->removeNode(mRectEditor);
         mRect = nullptr;
         mRectEditor = nullptr;
         event->accept();
@@ -748,10 +800,12 @@ void DrawShapes::onEllipseBtnClick(QMouseEvent *event)
         event->accept();
         mEllipse = new Ellipse(true);
         mEllipse->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
-        mMapController->addNode(mEllipse);
+        addNodeToLayer(mEllipse);
+        //mMapController->addNode(mEllipse);
         mElpsEditor = new EllipseNodeEditor(mEllipse);
         mElpsEditor->getPositionDragger()->setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
-        mMapController->addNode(mElpsEditor);
+        //mMapController->addNode(mElpsEditor);
+        addNodeToLayer(mElpsEditor);
     }
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
     {
@@ -759,8 +813,10 @@ void DrawShapes::onEllipseBtnClick(QMouseEvent *event)
         //        mEllipse->setColor(osgEarth::Color::Blue);
         //        mEllipse->setHeight(250000);
         mDrawingState = DrawingState::DELETE;
-        mMapController->removeNode(mEllipse);
-        mMapController->removeNode(mElpsEditor);
+        removeNodeFromLayer(mEllipse);
+        //mMapController->removeNode(mEllipse);
+        removeNodeFromLayer(mElpsEditor);
+        //mMapController->removeNode(mElpsEditor);
         mEllipse = nullptr;
         mElpsEditor = nullptr;
     }
@@ -768,7 +824,8 @@ void DrawShapes::onEllipseBtnClick(QMouseEvent *event)
     {
         mDrawingState = DrawingState::FINISH;
         mEllipse->setHeight(250000);
-        mMapController->removeNode(mElpsEditor);
+        removeNodeFromLayer(mElpsEditor);
+        //mMapController->removeNode(mElpsEditor);
         mEllipse = nullptr;
         mElpsEditor = nullptr;
 

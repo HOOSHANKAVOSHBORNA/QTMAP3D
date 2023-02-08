@@ -29,6 +29,8 @@
 #include <QQmlEngine>
 #include <QQmlComponent>
 
+#define DRAW_LAYER_NAME "DrawShapes"
+
 class DrawShapes : public PluginInterface
 {
     Q_OBJECT
@@ -62,6 +64,9 @@ private:
 
     osgEarth::Annotation::SphereDragger* mCircleHdragger;
     osgEarth::Annotation::SphereDragger* mPolyHdragger;
+
+    bool addNodeToLayer(osg::Node *node);
+    void removeNodeFromLayer(osg::Node *node);
 //    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();
 
 
