@@ -101,6 +101,7 @@ private:
     osg::Image* mSelect2DIcon;
 
     double mCurrentHeading{500};
+    osgEarth::GeoPoint mCurrentFlyPoint;
 };
 
 #endif // FLYINGMODEL_H

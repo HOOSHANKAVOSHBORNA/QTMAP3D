@@ -214,20 +214,25 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double /*sp
     setUpdateCallback(mAnimationPathCallback);
 
     //--lines-------------------------------------
-    if(mRouteLine->getSize() > 0)
+    if(mRouteLine->getSize() >= 0)
     {
         mRouteLine->addPoint(getPosition());
         mLatestPointLine->addPoint(getPosition());
     }
-    mLatestPointLine->addPoint(posGeo);
-    if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
+    else
     {
-        mLatestPointLine->removeFirstPoint();
+        mLatestPointLine->addPoint(mCurrentFlyPoint);
+        if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
+        {
+            mLatestPointLine->removeFirstPoint();
+        }
+        mRouteLine->addPoint(mCurrentFlyPoint);
+        if(std::abs(mCurrentHeading - heading) > 5)
+            mRouteLine->removePoint();
     }
-    mRouteLine->addPoint(posGeo);
-    if(std::abs(mCurrentHeading - heading) > 5)
-        mRouteLine->removePoint();
+
     mCurrentHeading = heading;
+    mCurrentFlyPoint = posGeo;
 }
 
 void AircraftModelNode::stop()
