@@ -99,6 +99,8 @@ private:
 
     osg::Image* m2DIcon;
     osg::Image* mSelect2DIcon;
+
+    double mCurrentHeading{500};
 };
 
 #endif // FLYINGMODEL_H

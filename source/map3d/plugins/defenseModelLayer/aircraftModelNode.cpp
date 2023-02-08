@@ -153,7 +153,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
     mLatestPointLine = new LineNode(mapControler);
     mLatestPointLine->setPointVisibilty(true);
-//    mLatestPointLine->set(osgEarth::Color::Purple);
+//    mLatestPointLine->setPointColor(osgEarth::Color::Black);
     mLatestPointLine->setClamp(false);
     mLatestPointLine->setColor(osgEarth::Color::Purple);
     mLatestPointLine->setWidth(6);
@@ -221,8 +221,13 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double /*sp
     }
     mLatestPointLine->addPoint(posGeo);
     if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
+    {
         mLatestPointLine->removeFirstPoint();
-    //mRouteLine->addPoint(posGeo);
+    }
+    mRouteLine->addPoint(posGeo);
+    if(std::abs(mCurrentHeading - heading) > 5)
+        mRouteLine->removePoint();
+    mCurrentHeading = heading;
 }
 
 void AircraftModelNode::stop()
