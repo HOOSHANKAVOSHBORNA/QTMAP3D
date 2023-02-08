@@ -20,11 +20,14 @@
 #include "spherenode.h"
 #include "spherenodeeditor.h"
 #include "linenode.h"
+#include "sphereproperties.h"
 
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
 #include <osgEarthAnnotation/PlaceNode>
+#include <QQmlEngine>
+#include <QQmlComponent>
 
 class DrawShapes : public PluginInterface
 {
@@ -98,6 +101,8 @@ private:
     osg::ref_ptr<SphereNodeEditor> mSphereNodeEditor;
 
     double mRadius{200000};
+    QQmlEngine *mQmlEngine = nullptr;
+    QQuickItem *mItem = nullptr;
 //    osgEarth::Annotation::ModelNode* mSphere(float radius);
 //    osgEarth::Annotation::ModelNode* mDrawSphere(float radius);
 
