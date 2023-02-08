@@ -193,8 +193,8 @@ void LineNode::removeFirstPoint()
     mLinePath->erase(mLinePath->begin());
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, mMapController->getMapSRS());
     this->setFeature(pathFeature);
-    unsigned index = mCircleGr->getNumChildren()-1;
-    mCircleGr->removeChildren(index, 1);
+//    unsigned index = mCircleGr->getNumChildren()-1;
+    mCircleGr->removeChildren(0, 1);
     addChild(mCircleGr);
 }
 
