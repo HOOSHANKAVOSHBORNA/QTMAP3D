@@ -415,6 +415,9 @@ Item {
             onMoreButtonClicked: function() {
                 rootItem.model.moreButtonClicked();
             }
+            onLatestPointsToggled: function (check) {
+                rootItem.model.latestPointsClicked(check);
+            }
         }
     }
 }
