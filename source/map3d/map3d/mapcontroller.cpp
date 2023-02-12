@@ -22,114 +22,19 @@ public:
 
     void onLayerAdded  (osgEarth::Layer* layer, unsigned index) override
     {
-        mMapController->onLayerAdded(layer, index);
+        if(mMapController)
+            mMapController->onLayerAdded(layer, index);
     }
     void onLayerRemoved(osgEarth::Layer* layer, unsigned index) override
     {
-        mMapController->onLayerRemoved(layer, index);
+        if(mMapController)
+            mMapController->onLayerRemoved(layer, index);
     }
 
 private:
-    MapController *mMapController = nullptr;
+    MapController *mMapController{nullptr};
 };
 
-//class MainEventHandler : public osgGA::GUIEventHandler
-//{
-//public:
-//    MainEventHandler(MapController *pMapController);
-//    virtual ~MainEventHandler() override { }
-
-//protected:
-//    bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-
-//private:
-//    void mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType);
-
-//private:
-//    MapController *mpMapController = nullptr;
-//};
-
-
-//bool MainEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-//{
-
-//    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
-
-//    QEvent::Type qEventType;
-//    switch (ea.getEventType())
-//    {
-//    case osgGA::GUIEventAdapter::FRAME:
-//        mpMapController->frame();
-//        break;
-//    case (osgGA::GUIEventAdapter::PUSH):
-//        qEventType = QEvent::Type::MouseButtonPress;
-//        if (view) { mouseEvent(view, ea, qEventType); }
-//        break;
-//    case (osgGA::GUIEventAdapter::RELEASE):
-//        qEventType = QEvent::Type::MouseButtonRelease;
-//        if (view) { mouseEvent(view, ea, qEventType); }
-//        break;
-//    case (osgGA::GUIEventAdapter::MOVE):
-//        qEventType = QEvent::Type::MouseMove;
-//        if (view) { mouseEvent(view, ea, qEventType); }
-//        break;
-//    case (osgGA::GUIEventAdapter::SCROLL):
-//        qEventType = QEvent::Type::Wheel;
-//        if (view) { mouseEvent(view, ea, qEventType); }
-//        break;
-//    case (osgGA::GUIEventAdapter::DOUBLECLICK):
-//        qEventType = QEvent::Type::MouseButtonDblClick;
-//        if (view) { mouseEvent(view, ea, qEventType); }
-//        break;
-//    default:
-//        break;
-//    }
-//    return false;
-
-//}
-
-//void MainEventHandler::mouseEvent(osgViewer::View *view, const osgGA::GUIEventAdapter &ea, QEvent::Type qEventType)
-//{
-
-//    QMouseEvent* event;
-//    Qt::MouseButton mb;
-//    switch (ea.getButtonMask())
-//    {
-//    case osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON:
-//        mb = Qt::MouseButton::LeftButton;
-//        break;
-//    case osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON:
-//        mb = Qt::MouseButton::RightButton;
-//        break;
-//    case osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON:
-//        mb = Qt::MouseButton::MiddleButton;
-//        break;
-//    default:
-//        mb = Qt::MouseButton::NoButton;
-//    }
-
-//    event = new QMouseEvent(qEventType,
-//                            QPointF(static_cast<qreal>(ea.getX()),static_cast<qreal>(ea.getY())),
-//                            mb, mb, Qt::KeyboardModifier::NoModifier);
-
-//    osgUtil::LineSegmentIntersector::Intersections intersections;
-//    if (view->computeIntersections(ea, intersections))
-//    {
-//        for (const auto &intersection : intersections)
-//        {
-//            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
-//            osg::Vec3d currentWorldPos = intersection.getWorldIntersectPoint();
-//            mpMapController->mapMouseEvent(event,currentWorldPos);
-//            return;
-//        }
-//    }
-//}
-
-//MainEventHandler::MainEventHandler(MapController *pMapController) :
-//    mpMapController(pMapController)
-//{
-
-//}
 //--MapController---------------------------------------------------------------------------------------------------------
 const double MAX_CAM_DISTANCE = 30000000.0;
 MapController::MapController(QQuickWindow *window) :
@@ -143,61 +48,7 @@ MapController::~MapController()
 
 }
 
-void MapController::installEventHandler()
-{
-    //getViewer()->addEventHandler(new MainEventHandler(this));
-}
-
-void MapController::mapMouseEvent(QMouseEvent *event, const osg::Vec3d &worldPos)
-{
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(getMapSRS(), worldPos);
-    osgEarth::GeoPoint  geographicPos = geoPos.transform(getMapSRS()->getGeocentricSRS()->getGeographicSRS());
-
-    emit mousePointingLocationChanged(QVector3D(
-                                         static_cast<float>(geoPos.x()),
-                                         static_cast<float>(geoPos.y()),
-                                         static_cast<float>(geoPos.z())));
-    emit mousePointingLocationWgs84Changed(QVector3D(
-                                         static_cast<float>(geographicPos.x()),
-                                         static_cast<float>(geographicPos.y()),
-                                         static_cast<float>(geographicPos.z())));
-
-    emit mouseEvent(event, geoPos, worldPos);
-}
-
-osgViewer::Viewer *MapController::getViewer()
-{
-    return dynamic_cast<osgViewer::Viewer*>(mOsgRenderer);
-}
-
-osgEarth::Util::EarthManipulator *MapController::getEarthManipulator()
-{
-    return mEarthManipulator;
-}
-
-osgEarth::Viewpoint MapController::getViewpoint() const
-{
-    if (mEarthManipulator)
-        return mEarthManipulator->getViewpoint();
-    return osgEarth::Viewpoint();
-}
-
-osgEarth::MapNode *MapController::getMapNode()
-{
-    return mMapNode;
-}
-osg::ref_ptr<osg::Group> MapController::getRoot() const
-{
-    return mMapRoot;
-}
-
-const osgEarth::SpatialReference *MapController::getMapSRS() const
-{
-    return mMapNode->getMapSRS();
-}
-
-void MapController::setMap(osgEarth::Map *map)
+void MapController::setMap(const osgEarth::Map *map)
 {
     setGeocentric(map->isGeocentric());
 
@@ -205,6 +56,75 @@ void MapController::setMap(osgEarth::Map *map)
     mMapNode->getMap()->setLayersFromMap(map);
 
     goToHome();
+}
+
+osgViewer::Viewer *MapController::getViewer() const
+{
+    return dynamic_cast<osgViewer::Viewer*>(mOsgRenderer);
+}
+
+const osg::Group *MapController::getRoot() const
+{
+    return mMapRoot;
+}
+
+osgEarth::MapNode *MapController::getMapNode() const
+{
+    return mMapNode;
+}
+
+const osgEarth::SpatialReference *MapController::getMapSRS() const
+{
+    return mMapNode->getMapSRS();
+}
+
+void MapController::addLayer(osgEarth::Layer *layer)
+{
+
+    mMapNode->getMap()->addLayer(layer);
+    // Check if the layer is added successfully
+    auto added = mMapNode->getMap()->getLayerByName(layer->getName());
+    if (added && added->getEnabled())
+    {
+
+    }
+    else
+    {
+        QMessageBox::warning(nullptr, tr("Error"), tr("Data loading failed!"));
+    }
+}
+
+LayersModel *MapController::getLayersModel() const
+{
+    return mLayersModel;
+}
+
+bool MapController::addNode(osg::Node *node)
+{
+    //osgEarth::Registry::shaderGenerator().run(node);// for textures or lighting
+    return mMapNode->addChild(node);
+}
+
+bool MapController::removeNode(osg::Node *node)
+{
+    return mMapNode->removeChild(node);
+}
+
+osgEarth::Util::EarthManipulator *MapController::getEarthManipulator() const
+{
+    return mEarthManipulator;
+}
+
+void MapController::setViewpoint(const osgEarth::Viewpoint &vp, double duration_s)
+{
+    getEarthManipulator()->setViewpoint(vp,duration_s);
+}
+
+osgEarth::Viewpoint MapController::getViewpoint() const
+{
+    if (mEarthManipulator)
+        return mEarthManipulator->getViewpoint();
+    return osgEarth::Viewpoint();
 }
 
 void MapController::setTrackNode(osg::Node *node, double minDistance)
@@ -233,41 +153,43 @@ void MapController::untrackNode(osg::Node *node)
     getEarthManipulator()->applySettings(camSet);
 }
 
-bool MapController::addNode(osg::Node *node)
+void MapController::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
 {
-    osgEarth::Registry::shaderGenerator().run(node);// for textures or lighting
-    return mMapNode->addChild(node);
+    float height = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->height());
+//    osgUtil::LineSegmentIntersector::Intersections intersections;
+//    if (mOsgRenderer->computeIntersections(x, height - y, intersections))
+//    {
+//        for (const auto &intersection : intersections)
+//        {
+//            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
+//            out_coords = intersection.getWorldIntersectPoint();
+//            return;
+//        }
+//    }
+    mEarthManipulator->screenToWorld(x, height - y,mOsgRenderer, outWorldPoint);
 }
 
-bool MapController::removeNode(osg::Node *node)
+osgEarth::GeoPoint MapController::screenToGeoPoint(float x, float y) const
 {
-    return mMapNode->removeChild(node);
+    osg::Vec3d worldPoint;
+    screenToWorld(x, y, worldPoint);
+    osgEarth::GeoPoint geoPint;
+    geoPint.fromWorld(getMapSRS(), worldPoint);
+    return geoPint;
 }
 
-void MapController::setViewpoint(const osgEarth::Viewpoint &vp, double duration_s)
+void MapController::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) const
 {
-    getEarthManipulator()->setViewpoint(vp,duration_s);
-}
+    float height = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->height());
+    float width = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->width());
 
-void MapController::addLayer(osgEarth::Layer *layer)
-{
+    const osg::Matrixd pMatrix = mOsgRenderer->getCamera()->getProjectionMatrix();
+    const osg::Matrixd vMatrix = mOsgRenderer->getCamera()->getViewMatrix();
+    osg::Vec3f result =   (worldPoint * vMatrix) * pMatrix;
+    outX = result.x() * (width/2.0f) + width/2.0f;
+    outY = result.y() * (height/2.0f) + height/2.0f;
+    outY = height - outY;
 
-    mMapNode->getMap()->addLayer(layer);
-    // Check if the layer is added successfully
-    auto added = mMapNode->getMap()->getLayerByName(layer->getName());
-    if (added && added->getEnabled())
-    {
-
-    }
-    else
-    {
-        QMessageBox::warning(nullptr, tr("Error"), tr("Data loading failed!"));
-    }
-}
-
-LayersModel *MapController::getLayersModel() const
-{
-    return mLayersModel;
 }
 
 void MapController::zoom(double val)
@@ -321,7 +243,7 @@ void MapController::setMode(bool is3DView)
     emit modeChanged(is3DView);
 }
 
-bool MapController::getMode()
+bool MapController::getMode() const
 {
     return mIs3DView;
 }
@@ -353,77 +275,6 @@ void MapController::toggle3DView()
     setMode(!mIs3DView);
 }
 
-void MapController::frame()
-{
-    emit headingAngleChanged(-getViewpoint().getHeading());
-
-    const auto vp = mEarthManipulator->getViewpoint();
-    const auto fp = vp.focalPoint();
-    if (fp.isSet()) {
-        const osgEarth::GeoPoint mapPoint = fp.get();
-//        mapPoint.makeGeographic();
-        osgEarth::GeoPoint  pointLatLong;
-        mapPoint.transform(getMapSRS()->getGeographicSRS(), pointLatLong);
-
-
-        emit focalPointLatChanged(pointLatLong.x());
-        emit focalPointLongChanged(pointLatLong.y());
-        emit focalPointRangeChanged(vp.range().get().getValue());
-        emit focalPointPitchChanged(vp.pitch().get().getValue());
-        emit focalPointHeadChanged(vp.heading().get().getValue());
-
-    }
-
-
-
-    //
-    // Calculate FPS
-    //
-    static std::deque<std::chrono::high_resolution_clock::time_point> timepoint_list;
-    const auto now_timepoint = std::chrono::high_resolution_clock::now();
-
-    timepoint_list.push_back(now_timepoint);
-    while (timepoint_list.size() > 2) {
-        if (std::chrono::duration_cast<std::chrono::milliseconds>
-                (now_timepoint - timepoint_list.front()).count() > 2000) {
-            timepoint_list.pop_front();
-        } else {
-            break;
-        }
-    }
-
-    if (timepoint_list.size() >= 2) {
-        const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timepoint_list.back() - timepoint_list.front()).count());
-        if (duration > 0) {
-            const qreal fps = qreal((timepoint_list.size()-1) * 1000) / duration;
-            emit fpsChanged(fps);
-        }
-    }
-
-
-    //
-    // Set SkyNode sun light rotate with camera
-    //
-    auto sunLight = mSkyNode->getSunLight();
-    sunLight->setAmbient(osg::Vec4(0.01f, 0.01f, 0.01f, 1));
-    sunLight->setDiffuse(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
-    sunLight->setSpecular(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
-
-    float splen = sunLight->getPosition().length();
-    osg::Vec3 spos = mEarthManipulator->getMatrix().getTrans();
-    spos.normalize();
-    spos *= splen;
-
-    mSkyNode->setSunVisible(false);
-    mSkyNode->setAtmosphereVisible(false);
-    sunLight->setPosition(osg::Vec4(spos, 0));
-    spos.normalize();
-    spos *= -1.0f;
-    sunLight->setDirection(spos);
-
-
-}
-
 void MapController::pan(double xVal, double yVal)
 {
     getEarthManipulator()->pan(xVal, yVal);
@@ -433,9 +284,6 @@ void MapController::rotate(double xVal, double yVal)
 {
     getEarthManipulator()->rotate(xVal, yVal);
 }
-
-
-
 
 void MapController::travelToViewpoint(qreal latitude,
                                       qreal longitude,
@@ -460,194 +308,27 @@ void MapController::toggleLayerEnabled(int layerIndex)
         mLayersModel->toggleLayerEnabled(layerIndex);
 }
 
-
-
-void MapController::cleanup()
+void MapController::installEventHandler()
 {
-    if (mOsgRenderer) {
-        mOsgRenderer->deleteLater();
-        mOsgRenderer = nullptr;
-    }
+    //getViewer()->addEventHandler(new MainEventHandler(this));
 }
 
-void MapController::initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId)
+void MapController::mapMouseEvent(QMouseEvent *event, const osg::Vec3d &worldPos)
 {
+    osgEarth::GeoPoint geoPos;
+    geoPos.fromWorld(getMapSRS(), worldPos);
+    osgEarth::GeoPoint  geographicPos = geoPos.transform(getMapSRS()->getGeocentricSRS()->getGeographicSRS());
 
-    mRenderTargetId = renderTargetId;
+    emit mousePointingLocationChanged(QVector3D(
+                                         static_cast<float>(geoPos.x()),
+                                         static_cast<float>(geoPos.y()),
+                                         static_cast<float>(geoPos.z())));
+    emit mousePointingLocationWgs84Changed(QVector3D(
+                                         static_cast<float>(geographicPos.x()),
+                                         static_cast<float>(geographicPos.y()),
+                                         static_cast<float>(geographicPos.z())));
 
-    createOsgRenderer(width, height, screen);
-
-    if(mWindow) {
-        QObject::connect(mOsgRenderer, &OSGRenderer::needsUpdate,
-                         mWindow, &QQuickWindow::update,
-                         Qt::DirectConnection);
-    }
-}
-
-void MapController::resizeGL(int width, int height, QScreen *screen)
-{
-    if (mOsgRenderer) {
-        const float pixelRatio = static_cast<float>(screen->devicePixelRatio());
-        mOsgRenderer->resize(0, 0, width, height, pixelRatio);
-    }
-}
-
-void MapController::paintGL()
-{
-    if (mOsgRenderer) {
-        if (mIsFirstFrame) {
-            mIsFirstFrame = false;
-            mOsgRenderer->getCamera()->getGraphicsContext()->setDefaultFboId(mRenderTargetId);
-        }
-        frame();
-        mOsgRenderer->frame();
-    }
-}
-
-void MapController::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
-{
-    float height = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->height());
-//    osgUtil::LineSegmentIntersector::Intersections intersections;
-//    if (mOsgRenderer->computeIntersections(x, height - y, intersections))
-//    {
-//        for (const auto &intersection : intersections)
-//        {
-//            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
-//            out_coords = intersection.getWorldIntersectPoint();
-//            return;
-//        }
-//    }
-    mEarthManipulator->screenToWorld(x, height - y,mOsgRenderer, outWorldPoint);
-}
-
-osgEarth::GeoPoint MapController::screenToGeoPoint(float x, float y) const
-{
-    osg::Vec3d worldPoint;
-    screenToWorld(x, y, worldPoint);
-    osgEarth::GeoPoint geoPint;
-    geoPint.fromWorld(getMapSRS(), worldPoint);
-    return geoPint;
-}
-
-void MapController::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) const
-{
-    float height = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->height());
-    float width = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->width());
-
-    const osg::Matrixd pMatrix = mOsgRenderer->getCamera()->getProjectionMatrix();
-    const osg::Matrixd vMatrix = mOsgRenderer->getCamera()->getViewMatrix();
-    osg::Vec3f result =   (worldPoint * vMatrix) * pMatrix;
-    outX = result.x() * (width/2.0f) + width/2.0f;
-    outY = result.y() * (height/2.0f) + height/2.0f;
-    outY = height - outY;
-
-}
-
-void MapController::keyPressEvent(QKeyEvent *event)
-{
-    if (mOsgRenderer)
-        mOsgRenderer->keyPressEvent(event);
-}
-
-void MapController::keyReleaseEvent(QKeyEvent *event)
-{
-
-    if (mOsgRenderer)
-        mOsgRenderer->keyReleaseEvent(event);
-}
-
-void MapController::mousePressEvent(QMouseEvent *event)
-{
-    if (mOsgRenderer) {
-        mOsgRenderer->mousePressEvent(event);
-    }
-
-    osg::Vec3d worldPos;
-    screenToWorld(event->x(), event->y(), worldPos);
-//    osgEarth::GeoPoint geoPos;
-//    geoPos.fromWorld(getMapSRS(), worldPos);
-//    qDebug()<<"mpos:"<<QString::fromStdString(geoPos.toString());
-//    qDebug()<<event->x()<<", "<<event->y();
-//    float x;
-//    float y;
-//    worldToScreen(worldPos, x, y);
-//    qDebug()<<x<<", "<<y;
-    mapMouseEvent(event, worldPos);
-}
-
-void MapController::mouseReleaseEvent(QMouseEvent *event)
-{
-
-    if (mOsgRenderer) {
-        mOsgRenderer->mouseReleaseEvent(event);
-    }
-    osg::Vec3d worldPos;
-    screenToWorld(event->x(),  event->y(), worldPos);
-    mapMouseEvent(event, worldPos);
-}
-
-void MapController::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    if (mOsgRenderer)
-        mOsgRenderer->mouseDoubleClickEvent(event);
-    osg::Vec3d worldPos;
-    screenToWorld(event->x(),  event->y(), worldPos);
-    mapMouseEvent(event, worldPos);
-
-}
-
-void MapController::mouseMoveEvent(QMouseEvent *event)
-{
-
-    if (mOsgRenderer) {
-        mOsgRenderer->mouseMoveEvent(event);
-    }
-    osg::Vec3d worldPos;
-    screenToWorld(event->x(),  event->y(), worldPos);
-    mapMouseEvent(event, worldPos);
-}
-
-void MapController::wheelEvent(QWheelEvent *event)
-{
-
-    if (mOsgRenderer)
-        mOsgRenderer->wheelEvent(event);
-//    osg::Vec3d worldPos;
-//    mEarthManipulator->screenToWorld(event->x(),  event->y(),mOsgRenderer, worldPos);
-    //    mapMouseEvent(event, worldPos);
-}
-
-void MapController::onLayerAdded(osgEarth::Layer *layer, unsigned index)
-{
-    qDebug() << "Layer added";
-    updateLayersModel();
-}
-
-void MapController::onLayerRemoved(osgEarth::Layer *layer, unsigned index)
-{
-    updateLayersModel();
-}
-
-void MapController::updateLayersModel()
-{
-    if (mLayersModel)
-        mLayersModel->updateLayers(getMapNode()->getMap());
-}
-
-
-void MapController::createOsgRenderer(int width, int height, QScreen *screen)
-{
-    osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
-    ds->setNvOptimusEnablement(1);
-    ds->setStereo(false);
-
-
-    mOsgRenderer = new OSGRenderer(this);
-    const float pixelRatio = static_cast<float>(screen->devicePixelRatio());
-    mOsgRenderer->setupOSG(0 , 0, width, height, pixelRatio);
-
-    mOsgRenderer->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
-
+    emit mouseEvent(event, geoPos, worldPos);
 }
 
 void MapController::initializeOsgEarth()
@@ -726,3 +407,225 @@ void MapController::createCameraManipulator()
     getEarthManipulator()->setHomeViewpoint(vp, 0);
 
 }
+
+void MapController::onLayerAdded(osgEarth::Layer *layer, unsigned index)
+{
+    qDebug() << "Layer added";
+    updateLayersModel();
+}
+
+void MapController::onLayerRemoved(osgEarth::Layer *layer, unsigned index)
+{
+    updateLayersModel();
+}
+
+void MapController::updateLayersModel()
+{
+    if (mLayersModel)
+        mLayersModel->updateLayers(getMapNode()->getMap());
+}
+
+void MapController::frame()
+{
+    emit headingAngleChanged(-getViewpoint().getHeading());
+
+    const auto vp = mEarthManipulator->getViewpoint();
+    const auto fp = vp.focalPoint();
+    if (fp.isSet()) {
+        const osgEarth::GeoPoint mapPoint = fp.get();
+//        mapPoint.makeGeographic();
+        osgEarth::GeoPoint  pointLatLong;
+        mapPoint.transform(getMapSRS()->getGeographicSRS(), pointLatLong);
+
+
+        emit focalPointLatChanged(pointLatLong.x());
+        emit focalPointLongChanged(pointLatLong.y());
+        emit focalPointRangeChanged(vp.range().get().getValue());
+        emit focalPointPitchChanged(vp.pitch().get().getValue());
+        emit focalPointHeadChanged(vp.heading().get().getValue());
+
+    }
+
+
+
+    //
+    // Calculate FPS
+    //
+    static std::deque<std::chrono::high_resolution_clock::time_point> timepoint_list;
+    const auto now_timepoint = std::chrono::high_resolution_clock::now();
+
+    timepoint_list.push_back(now_timepoint);
+    while (timepoint_list.size() > 2) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>
+                (now_timepoint - timepoint_list.front()).count() > 2000) {
+            timepoint_list.pop_front();
+        } else {
+            break;
+        }
+    }
+
+    if (timepoint_list.size() >= 2) {
+        const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timepoint_list.back() - timepoint_list.front()).count());
+        if (duration > 0) {
+            const qreal fps = qreal((timepoint_list.size()-1) * 1000) / duration;
+            emit fpsChanged(fps);
+        }
+    }
+
+
+    //
+    // Set SkyNode sun light rotate with camera
+    //
+    auto sunLight = mSkyNode->getSunLight();
+    sunLight->setAmbient(osg::Vec4(0.01f, 0.01f, 0.01f, 1));
+    sunLight->setDiffuse(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
+    sunLight->setSpecular(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
+
+    float splen = sunLight->getPosition().length();
+    osg::Vec3 spos = mEarthManipulator->getMatrix().getTrans();
+    spos.normalize();
+    spos *= splen;
+
+    mSkyNode->setSunVisible(false);
+    mSkyNode->setAtmosphereVisible(false);
+    sunLight->setPosition(osg::Vec4(spos, 0));
+    spos.normalize();
+    spos *= -1.0f;
+    sunLight->setDirection(spos);
+
+
+}
+
+//--renderer---------------------------------------------------------------------------------------------------
+void MapController::cleanup()
+{
+    if (mOsgRenderer) {
+        mOsgRenderer->deleteLater();
+        mOsgRenderer = nullptr;
+    }
+}
+
+void MapController::initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId)
+{
+
+    mRenderTargetId = renderTargetId;
+
+    createOsgRenderer(width, height, screen);
+
+    if(mWindow) {
+        QObject::connect(mOsgRenderer, &OSGRenderer::needsUpdate,
+                         mWindow, &QQuickWindow::update,
+                         Qt::DirectConnection);
+    }
+}
+
+void MapController::resizeGL(int width, int height, QScreen *screen)
+{
+    if (mOsgRenderer) {
+        const float pixelRatio = static_cast<float>(screen->devicePixelRatio());
+        mOsgRenderer->resize(0, 0, width, height, pixelRatio);
+    }
+}
+
+void MapController::paintGL()
+{
+    if (mOsgRenderer) {
+        if (mIsFirstFrame) {
+            mIsFirstFrame = false;
+            mOsgRenderer->getCamera()->getGraphicsContext()->setDefaultFboId(mRenderTargetId);
+        }
+        frame();
+        mOsgRenderer->frame();
+    }
+}
+
+void MapController::createOsgRenderer(int width, int height, QScreen *screen)
+{
+    osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+    ds->setNvOptimusEnablement(1);
+    ds->setStereo(false);
+
+
+    mOsgRenderer = new OSGRenderer(this);
+    const float pixelRatio = static_cast<float>(screen->devicePixelRatio());
+    mOsgRenderer->setupOSG(0 , 0, width, height, pixelRatio);
+
+    mOsgRenderer->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
+
+}
+
+void MapController::keyPressEvent(QKeyEvent *event)
+{
+    if (mOsgRenderer)
+        mOsgRenderer->keyPressEvent(event);
+}
+
+void MapController::keyReleaseEvent(QKeyEvent *event)
+{
+
+    if (mOsgRenderer)
+        mOsgRenderer->keyReleaseEvent(event);
+}
+
+void MapController::mousePressEvent(QMouseEvent *event)
+{
+    if (mOsgRenderer) {
+        mOsgRenderer->mousePressEvent(event);
+    }
+
+    osg::Vec3d worldPos;
+    screenToWorld(event->x(), event->y(), worldPos);
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(getMapSRS(), worldPos);
+//    qDebug()<<"mpos:"<<QString::fromStdString(geoPos.toString());
+//    qDebug()<<event->x()<<", "<<event->y();
+//    float x;
+//    float y;
+//    worldToScreen(worldPos, x, y);
+//    qDebug()<<x<<", "<<y;
+    mapMouseEvent(event, worldPos);
+}
+
+void MapController::mouseReleaseEvent(QMouseEvent *event)
+{
+
+    if (mOsgRenderer) {
+        mOsgRenderer->mouseReleaseEvent(event);
+    }
+    osg::Vec3d worldPos;
+    screenToWorld(event->x(),  event->y(), worldPos);
+    mapMouseEvent(event, worldPos);
+}
+
+void MapController::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (mOsgRenderer)
+        mOsgRenderer->mouseDoubleClickEvent(event);
+    osg::Vec3d worldPos;
+    screenToWorld(event->x(),  event->y(), worldPos);
+    mapMouseEvent(event, worldPos);
+
+}
+
+void MapController::mouseMoveEvent(QMouseEvent *event)
+{
+
+    if (mOsgRenderer) {
+        mOsgRenderer->mouseMoveEvent(event);
+    }
+    osg::Vec3d worldPos;
+    screenToWorld(event->x(),  event->y(), worldPos);
+    mapMouseEvent(event, worldPos);
+}
+
+void MapController::wheelEvent(QWheelEvent *event)
+{
+
+    if (mOsgRenderer)
+        mOsgRenderer->wheelEvent(event);
+//    osg::Vec3d worldPos;
+//    mEarthManipulator->screenToWorld(event->x(),  event->y(),mOsgRenderer, worldPos);
+    //    mapMouseEvent(event, worldPos);
+}
+
+

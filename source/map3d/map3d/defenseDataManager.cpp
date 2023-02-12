@@ -41,15 +41,15 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
             emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
 
         createAircraftInfo();
-        emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
-        mAircraftList.removeFirst();
+//        emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
+//        mAircraftList.removeFirst();
     });
     timer->start(10000);
     //----------------------------------------------------------
     QTimer *timerUpdateAircraft = new QTimer();
     QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
         //---------------------------------------------
-        createAircraftInfo();
+//        createAircraftInfo();
         updateAircraftInfo();
         for(auto aircraft:mAircraftList)
             emit mDefenseDataManager->aircraftInfoChanged(aircraft);
