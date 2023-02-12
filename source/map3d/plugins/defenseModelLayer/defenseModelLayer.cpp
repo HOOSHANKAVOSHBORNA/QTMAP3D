@@ -126,7 +126,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     {
         for(auto modelNode:mModelNodes[SYSTEM])
         {
-            auto systemModelNode = dynamic_cast<SystemModelNode*>(modelNode);
+            auto systemModelNode = dynamic_cast<SystemModelNode*>(modelNode.get());
             if(systemModelNode && systemModelNode->getAssignedModelNode()){
                 SystemCambatInfo cambatInfo;
                 cambatInfo.Phase = SystemCambatInfo::Fire;
@@ -175,7 +175,7 @@ bool DefenseModelLayer::setup(MapController *mapController,
 
         if(mModelNodes[AIRCRAFT].contains(TN))
         {
-            AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][TN]);
+            AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][TN].get());
             if(mSelectedModelNode)
                 mSelectedModelNode->select(false);
             aircraftModelNode->onLeftButtonClicked(true);
@@ -187,7 +187,7 @@ bool DefenseModelLayer::setup(MapController *mapController,
 
         if(mModelNodes[STATION].contains(number))
         {
-            StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][number]);
+            StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][number].get());
             if(mSelectedModelNode)
                 mSelectedModelNode->select(false);
             stationModelNode->onLeftButtonClicked(true);
@@ -199,7 +199,7 @@ bool DefenseModelLayer::setup(MapController *mapController,
 
         if(mModelNodes[SYSTEM].contains(number))
         {
-            SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][number]);
+            SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][number].get());
             if(mSelectedModelNode)
                 mSelectedModelNode->select(false);
             systemModelNode->onLeftButtonClicked(true);
@@ -207,6 +207,8 @@ bool DefenseModelLayer::setup(MapController *mapController,
             mSelectedModelNode = systemModelNode;
         }
     });
+
+    connect(mMapController, &MapController::mapSRSChanged, this, &DefenseModelLayer::onClear);
 
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);
@@ -237,109 +239,6 @@ void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataMan
 
 }
 
-//void DefenseModelLayer::demo()
-//{
-//    //    int index = 0;
-//    auto airplaneNames = mModelNodes[AIRCRAFT].keys();
-//    for (auto name: airplaneNames)
-//    {
-//        auto model = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][name]);
-//        auto mapPoint = model->getPosition();
-//        osgEarth::GeoPoint  latLongPoint;
-//        //latLongPoint.altitudeMode() = osgEarth::AltitudeMode::ALTMODE_ABSOLUTE;
-//        //mapPoint.transform(osgEarth::SpatialReference::get("wgs84"), latLongPoint);
-//        osg::Vec3d currentPos;
-//        mapPoint.toWorld(currentPos);
-//        //osg::Vec3d currentPos(latLongPoint.vec3d());
-//        //-- 500 km/h ~ 139 m/s ------------------
-//        //    int randomX = 10*(138 + (qrand() % 139));
-//        //    int randomY = 10*(138 + (qrand() % 139));
-//        //    int val = qrand() % 4;
-//        //    if(val == 1)
-//        //        currentPos += osg::Vec3d(randomX, randomY, 0.0);
-//        //    else if(val == 2)
-//        //        currentPos += osg::Vec3d(randomX, -randomY, 0.0);
-//        //    else if(val == 3)
-//        //        currentPos += osg::Vec3d(-randomX, randomY, 0.0);
-//        //    else
-//        //        currentPos += osg::Vec3d(-randomX, -randomY, 0.0);
-
-//        int randomX = (100 + (qrand() % 19));
-//        int randomY = (100 + (qrand() % 19));
-//        int val = qrand() % 4;
-//        if(val == 1)
-//            mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, randomY/10000.0, 0.0);
-//        else if(val == 2)
-//            mapPoint.vec3d() += osg::Vec3d(randomX/10000.0, -randomY/10000.0, 0.0);
-//        else if(val == 3)
-//            mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, randomY/10000.0, 0.0);
-//        else
-//            mapPoint.vec3d() += osg::Vec3d(-randomX/10000.0, -randomY/10000.0, 0.0);
-
-//        //    setPosition(mCurrentWorldPoint, 138);
-//        latLongPoint.fromWorld(osgEarth::SpatialReference::get("wgs84"), currentPos);
-//        //qDebug()<<QString::fromUtf8(latLongPoint.toString().c_str());
-//        model->flyTo(mapPoint.vec3d(),30, 138);
-
-//        // fallow racket
-//        //        auto truckNames = mModels[TRUCK].keys();
-//        //        for(auto truckName: truckNames)
-//        //        {
-//        //            auto modeltruck = dynamic_cast<Truck*>(mModels[TRUCK][truckName]);
-//        //            if(modeltruck->shoot())
-//        //            {
-//        //                addRocketModel(modeltruck->getPosition().vec3d());
-//        //                auto modelRocket = dynamic_cast<FlyingModel*>(mModels[ROCKET].last());
-//        //                modelRocket->flyTo(mapPoint.vec3d(), 120);
-//        //                model->setFollowingModel(modelRocket);
-//        //                break;
-//        //            }
-//        //        }
-//        //        index += 1;
-//    }
-//}
-
-//void DefenseModelLayer::addTruckModel()
-//{
-//    osgEarth::GeoPoint position(mMapController->getMapSRS()->getGeographicSRS(),52.8603, 35.274, 100, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
-//    //create and setting model--------------------------------------------
-//    osg::ref_ptr<Truck> model = new Truck(mMapController->getMapNode(), nullptr);
-//    QString name = TRUCK + QString::number(mModelNodes[TRUCK].count());
-//    model->setName(name.toStdString());
-//    model->setPosition(position);
-//    //model->setLocalRotation(osg::Quat(osg::inDegrees(-30.0),osg::Z_AXIS));
-//    model->setScale(osg::Vec3(1,1,1));
-
-
-
-//    //    QObject::connect(model.get(), &FlyingModel::positionChanged, [=](osgEarth::GeoPoint position){
-//    //        positionChanged(ROCKET, name, position);
-//    //    });
-
-//    //add to container-----------------------------------------------------
-//    //mModelNodes[TRUCK][name] = model;
-
-//    //add to map ---------------------------------------------------------
-//    mMapController->addNode(model);
-//    mMapController->goToPosition(position.x(), position.y(), position.z() + 600);
-
-//    //create random position ---------------------------------------------
-//    //    double rnd = QRandomGenerator::global()->generateDouble();
-//    double rndRotate = qrand() % 360;
-//    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rndRotate), osg::Z_AXIS));
-
-//    double rndPX = (qrand() % 200)/100000.0;
-//    double rndPY = (qrand() % 200)/100000.0;
-//    osg::Vec3d nPosition(rndPX, rndPY, 0.0);
-
-
-//    //    nPosition += position;
-//    //model->setLatLongPosition(nPosition);
-//    //mMap3dWidget->goPosition(nPosition.x(), nPosition.y(), nPosition.z() + 500);
-//    //move
-//    //model->moveTo(nPosition,10);
-//}
-
 void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 {
     osg::ref_ptr<AircraftModelNode> aircraftModelNode;
@@ -348,8 +247,8 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 
     if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(aircraftInfo.TN))
     {
-        aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][aircraftInfo.TN]);
-        aircraftModelNode->flyTo(geographicPosition.vec3d(), aircraftInfo.Heading, aircraftInfo.Speed);
+        aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][aircraftInfo.TN].get());
+        aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
 
     }
     else
@@ -408,40 +307,6 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 
 }
 
-//void DefenseModelLayer::addRocketModel(osg::Vec3d position)
-//{
-//    osgEarth::GeoPoint geoposition(mMapController->getMapSRS()->getGeographicSRS(),position);
-//    //create and setting model--------------------------------------------
-//    osg::ref_ptr<Rocket> model = new Rocket(mMapController->getMapNode(), parent());
-//    QString name = ROCKET + QString::number(mModelNodes[ROCKET].count());
-//    model->setName(name.toStdString());
-//    model->setGeographicPosition(geoposition, 0.0);
-//    model->setScale(osg::Vec3(1,1,1));
-
-////    QObject::connect(model.get(), &DefenseModelNode::positionChanged, [=](osgEarth::GeoPoint position){
-////        positionChanged(ROCKET, name, position);
-////    });
-
-//    //add to container-----------------------------------------------------
-//    mModelNodes[ROCKET][name] = model;
-
-
-//    //add to map ---------------------------------------------------------
-//    mMapController->addNode(model);
-//    //mMap3dWidget->goPosition(position.x(), position.y(), position.z() + 500);
-//    mMapController->setTrackNode(model->getGeoTransform());
-//    //    mMap3dWidget->setObjectInfoWidgetVisible(false);
-
-//    //    double rnd = QRandomGenerator::global()->generateDouble();
-//    //    double rnd = qrand() % 360;
-//    //    model->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(rnd), osg::Z_AXIS));
-//    //hit------------------------------------------------------------------
-////    QObject::connect(model.get(), &DefenseModelNode::hit, [=](DefenseModelNode */*other*/){
-
-////        mModelNodes[ROCKET].remove(QString(model->getName().c_str()));
-////    });
-//}
-
 void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
 {
     osg::ref_ptr<SystemModelNode> systemModelNode;
@@ -449,7 +314,7 @@ void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
                                           systemInfo.Longitude, systemInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemInfo.Number))
     {
-        systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemInfo.Number]);
+        systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemInfo.Number].get());
     }
     else
     {
@@ -486,7 +351,7 @@ void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
                                           stationInfo.Longitude, stationInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Number))
     {
-        stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][stationInfo.Number]);
+        stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][stationInfo.Number].get());
     }
     else
     {
@@ -517,60 +382,9 @@ void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
 
 }
 
-//void DefenseModelLayer::clickedTrackNode(QString type, QString name, bool isClick)
-//{
-//    if (isClick){
-//        //        osg::Node* node =mModels[type][name];
-//        mMapController->setTrackNode(mModelNodes[type][name]->getGeoTransform());
-//        //qDebug()<<"fgd";
-
-//        //        if(type == AIRPLANE) {
-//        //            mMap3dWidget->setObjectInfoWidgetVisible(true);
-//        //            mMap3dWidget->setSelectedAirplane(mModels[type][name]);
-//        //        } else {
-//        //            mMap3dWidget->setObjectInfoWidgetVisible(false);
-//        //        }
-
-//    } else {
-
-//        mMapController->untrackNode();
-//        //        mMap3dWidget->setObjectInfoWidgetVisible(false);
-
-//    }
-//}
-
 void DefenseModelLayer::positionChanged(QString /*type*/, QString /*name*/, osgEarth::GeoPoint /*position*/)
 {
 }
-
-//void DefenseModelLayer::onMessageReceived(const QJsonDocument &message)
-//{
-//    if(message.object().value("Name").toString() == "Aircraft")
-//    {
-//        QJsonObject data = message.object().value("Data").toObject();
-//        AircraftInfo aircraftInfo;
-//        aircraftInfo.fromJson(QJsonDocument(data));
-//        //qDebug()<<"target:"<< data;
-//        addUpdateAircraft(aircraftInfo);
-//    }
-//    if(message.object().value("Name").toString() == "Station")
-//    {
-//        QJsonObject data = message.object().value("Data").toObject();
-//        StationInfo stationInfo;
-//        stationInfo.fromJson(QJsonDocument(data));
-//        //        qDebug()<<"station:"<< data;
-//        addUpdateStation(stationInfo);
-//    }
-//    if(message.object().value("Name").toString() == "System")
-//    {
-//        QJsonObject data = message.object().value("Data").toObject();
-//        SystemInfo systemInfo;
-//        systemInfo.fromJson(QJsonDocument(data));
-//        //        qDebug()<<"station:"<< data;
-//        addUpdateSystem(systemInfo);
-//    }
-
-//}
 
 void DefenseModelLayer::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
@@ -586,7 +400,7 @@ void DefenseModelLayer::onSystemStatusInfoChanged(SystemStatusInfo &systemStatus
 {
     if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemStatusInfo.Number))
     {
-        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemStatusInfo.Number]);
+        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemStatusInfo.Number].get());
         //update information-----------------------------------------------------
         systemModelNode->setStatusInfo(systemStatusInfo);
         //add update list view-----------------------------------------------------------------
@@ -601,7 +415,7 @@ void DefenseModelLayer::onSystemCambatInfoChanged(SystemCambatInfo &systemCambat
 {
     if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemCambatInfo.Number))
     {
-        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemCambatInfo.Number]);
+        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemCambatInfo.Number].get());
         //update information-----------------------------------------------------
         systemModelNode->setCambatInfo(systemCambatInfo);
         //add update list view-----------------------------------------------------------------
@@ -621,7 +435,7 @@ void DefenseModelLayer::onClearAircraft(int tn)
 {
     if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
     {
-        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn]);
+        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
         aircraftModelNode->onLeftButtonClicked(false);
         aircraftModelNode->setNodeMask(false);
         //        mMapController->removeNode(aircraftModelNode);
@@ -635,17 +449,37 @@ void DefenseModelLayer::onAircraftAssignedResponse(int tn, int systemNo, bool re
 //    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
     if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemNo))
     {
-        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemNo]);
+        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemNo].get());
         if(systemModelNode)
             systemModelNode->acceptAssignedModelNode(result);
     }
 //---if rejected then unassinment from aircraft----------------------------------------------------
     if(!result && mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
     {
-        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn]);
+        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
         if(aircraftModelNode)
             aircraftModelNode->setAssignmentModelNode(nullptr);
     }
+}
+
+void DefenseModelLayer::onClear()
+{
+    mModelNodes.clear();
+    mOnMoveModelNode = nullptr;
+    mSelectedModelNode = nullptr;
+    //--clear list-----------------------------------------
+    //--add layer------------------------------------------
+    osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
+    systemsModelLayer->setName(SYSTEMS_LAYER_NAME);
+    mMapController->addLayer(systemsModelLayer);
+
+    osgEarth::ModelLayer *stationsModelLayer = new osgEarth::ModelLayer();
+    stationsModelLayer->setName(STATIONS_LAYER_NAME);
+    mMapController->addLayer(stationsModelLayer);
+
+    osgEarth::ModelLayer *aircraftsModelLayer = new osgEarth::ModelLayer();
+    aircraftsModelLayer->setName(AIRCRAFTS_LAYER_NAME);
+    mMapController->addLayer(aircraftsModelLayer);
 }
 
 void DefenseModelLayer::frameEvent()

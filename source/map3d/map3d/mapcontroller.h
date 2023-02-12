@@ -52,7 +52,7 @@ public slots:
     void goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration = 3.0);
     void setMode(bool is3DView);
     bool getMode() const;
-    void setGeocentric(bool geocentric);
+    void setGeocentric(bool isGeocentric);
     void toggle3DView();
     void pan(double xVal, double yVal);
     void rotate(double xVal, double yVal);
@@ -65,7 +65,7 @@ public slots:
 
 signals:
     void headingAngleChanged(qreal angle);
-    void mouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos, osg::Vec3d worldPos);
+    //void mouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos, osg::Vec3d worldPos);
     void mousePointingLocationWgs84Changed(QVector3D location);
     void mousePointingLocationChanged(QVector3D location);
 
@@ -77,20 +77,21 @@ signals:
 
     void fpsChanged(qreal fps);
     void modeChanged(bool is3DView);
+    void layerChanged();
+    void mapSRSChanged();
 
 private:
     explicit MapController(QQuickWindow *window);
     ~MapController();
 
-    void installEventHandler();
-    void mapMouseEvent(QMouseEvent *event, const osg::Vec3d& worldPos);
+    void mapMouseLocation(osgEarth::GeoPoint geoPos);
 
     void initializeOsgEarth();
-    void createMapNode(bool bGeocentric);
+    void createMapNode(bool geocentric);
     void createCameraManipulator();
 
-    void onLayerAdded(osgEarth::Layer* layer, unsigned index);
-    void onLayerRemoved(osgEarth::Layer* layer, unsigned index);
+    void layerAdded(osgEarth::Layer* layer, unsigned index);
+    void layerRemoved(osgEarth::Layer* layer, unsigned index);
     void updateLayersModel();
     void frame();
 
@@ -106,7 +107,7 @@ private:
     bool mIsFirstFrame{true};
     GLuint mRenderTargetId{0};
     osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
-    bool mGeocentric{true};
+    bool mIsGeocentric{true};
     bool mIs3DView{true};
 //--renderer------------------------------------------------------------------------------------------------------
 public:

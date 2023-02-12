@@ -26,6 +26,13 @@ void LayersModel::updateLayers(osgEarth::Map *map)
     endResetModel();
 }
 
+void LayersModel::clear()
+{
+    beginResetModel();
+    mLayersList.clear();
+    endResetModel();
+}
+
 void LayersModel::toggleLayerEnabled(int layerIndex)
 {
     if (layerIndex < mLayersList.size()) {

@@ -21,6 +21,7 @@ public:
 
 public:
     void updateLayers(osgEarth::Map *map);
+    void clear();
 
 
 public slots:

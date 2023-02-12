@@ -23,12 +23,12 @@ public:
     void onLayerAdded  (osgEarth::Layer* layer, unsigned index) override
     {
         if(mMapController)
-            mMapController->onLayerAdded(layer, index);
+            mMapController->layerAdded(layer, index);
     }
     void onLayerRemoved(osgEarth::Layer* layer, unsigned index) override
     {
         if(mMapController)
-            mMapController->onLayerRemoved(layer, index);
+            mMapController->layerRemoved(layer, index);
     }
 
 private:
@@ -50,12 +50,20 @@ MapController::~MapController()
 
 void MapController::setMap(const osgEarth::Map *map)
 {
-    setGeocentric(map->isGeocentric());
+    if (mIsGeocentric != map->isGeocentric())
+    {
+        mIsGeocentric = map->isGeocentric();
+        createMapNode(mIsGeocentric);
 
+        createCameraManipulator();
+        getViewer()->setCameraManipulator(getEarthManipulator());
+    }
+    mLayersModel->clear();
     mMapNode->getMap()->clear();
     mMapNode->getMap()->setLayersFromMap(map);
-
     goToHome();
+
+    emit mapSRSChanged();
 }
 
 osgViewer::Viewer *MapController::getViewer() const
@@ -156,16 +164,16 @@ void MapController::untrackNode(osg::Node *node)
 void MapController::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
 {
     float height = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->height());
-//    osgUtil::LineSegmentIntersector::Intersections intersections;
-//    if (mOsgRenderer->computeIntersections(x, height - y, intersections))
-//    {
-//        for (const auto &intersection : intersections)
-//        {
-//            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
-//            out_coords = intersection.getWorldIntersectPoint();
-//            return;
-//        }
-//    }
+    //    osgUtil::LineSegmentIntersector::Intersections intersections;
+    //    if (mOsgRenderer->computeIntersections(x, height - y, intersections))
+    //    {
+    //        for (const auto &intersection : intersections)
+    //        {
+    //            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
+    //            out_coords = intersection.getWorldIntersectPoint();
+    //            return;
+    //        }
+    //    }
     mEarthManipulator->screenToWorld(x, height - y,mOsgRenderer, outWorldPoint);
 }
 
@@ -222,11 +230,11 @@ void MapController::goToPosition(osgEarth::GeoPoint mapPoint, double range, doub
     vp.range()= range;
     setViewpoint(vp, duration);
 
-//    auto minDistance = range/2;
-//    getEarthManipulator()->setViewpoint(vp);
-//    auto camSet = getEarthManipulator()->getSettings();
-//    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
-//    getEarthManipulator()->applySettings(camSet);
+    //    auto minDistance = range/2;
+    //    getEarthManipulator()->setViewpoint(vp);
+    //    auto camSet = getEarthManipulator()->getSettings();
+    //    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
+    //    getEarthManipulator()->applySettings(camSet);
 }
 
 void MapController::setMode(bool is3DView)
@@ -248,30 +256,33 @@ bool MapController::getMode() const
     return mIs3DView;
 }
 
-void MapController::setGeocentric(bool geocentric)
+void MapController::setGeocentric(bool isGeocentric)
 {
-    if (mGeocentric == geocentric)
+    if (mIsGeocentric == isGeocentric)
         return;
 
-    mGeocentric = geocentric;
+    mIsGeocentric = isGeocentric;
+    mLayersModel->clear();
 
     osgEarth::LayerVector layers;
     mMapNode->getMap()->getLayers(layers);
 
-    createMapNode(geocentric);
+    createMapNode(mIsGeocentric);
     for(auto layer: layers)
-       addLayer(layer);
+        addLayer(layer);
 
     osgEarth::Viewpoint vp = getEarthManipulator()->getViewpoint();
 
     createCameraManipulator();
     getViewer()->setCameraManipulator(getEarthManipulator());
     getEarthManipulator()->setViewpoint(vp);
+
+    emit mapSRSChanged();
 }
 
 void MapController::toggle3DView()
 {
-//    setGeocentric(!mGeocentric);
+    //    setGeocentric(!mGeocentric);
     setMode(!mIs3DView);
 }
 
@@ -308,33 +319,26 @@ void MapController::toggleLayerEnabled(int layerIndex)
         mLayersModel->toggleLayerEnabled(layerIndex);
 }
 
-void MapController::installEventHandler()
+void MapController::mapMouseLocation(osgEarth::GeoPoint geoPos)
 {
-    //getViewer()->addEventHandler(new MainEventHandler(this));
-}
-
-void MapController::mapMouseEvent(QMouseEvent *event, const osg::Vec3d &worldPos)
-{
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(getMapSRS(), worldPos);
-    osgEarth::GeoPoint  geographicPos = geoPos.transform(getMapSRS()->getGeocentricSRS()->getGeographicSRS());
+    //    osgEarth::GeoPoint geoPos;
+    //    geoPos.fromWorld(getMapSRS(), worldPos);
+    //    osgEarth::GeoPoint  geographicPos = geoPos.transform(getMapSRS()->getGeocentricSRS()->getGeographicSRS());
 
     emit mousePointingLocationChanged(QVector3D(
-                                         static_cast<float>(geoPos.x()),
-                                         static_cast<float>(geoPos.y()),
-                                         static_cast<float>(geoPos.z())));
-    emit mousePointingLocationWgs84Changed(QVector3D(
-                                         static_cast<float>(geographicPos.x()),
-                                         static_cast<float>(geographicPos.y()),
-                                         static_cast<float>(geographicPos.z())));
+                                          static_cast<float>(geoPos.x()),
+                                          static_cast<float>(geoPos.y()),
+                                          static_cast<float>(geoPos.z())));
 
-    emit mouseEvent(event, geoPos, worldPos);
+    geoPos.makeGeographic();
+    emit mousePointingLocationWgs84Changed(QVector3D(
+                                               static_cast<float>(geoPos.x()),
+                                               static_cast<float>(geoPos.y()),
+                                               static_cast<float>(geoPos.z())));
 }
 
 void MapController::initializeOsgEarth()
 {
-    installEventHandler();
-
     mMapRoot = new osg::Group();
     osgEarth::Util::SkyOptions sopts;
     mSkyNode = osgEarth::Util::SkyNode::create(sopts);
@@ -345,24 +349,22 @@ void MapController::initializeOsgEarth()
     osgEarth::Drivers::GDALOptions gdal;
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
-    mMapNode->getMap()->addLayer(imlayer);
+    addLayer(imlayer);
     //create camera after create map node
     createCameraManipulator();
     mOsgRenderer->setCameraManipulator(mEarthManipulator);
 
-
-    mMapNode->getMap()->addMapCallback(new MainMapCallback(this));
     updateLayersModel();
 }
 
-void MapController::createMapNode(bool bGeocentric)
+void MapController::createMapNode(bool geocentric)
 {
     mSkyNode->removeChild(mMapNode);
     mMapRoot->removeChild(mMapNode);
     mMapRoot->removeChild(mSkyNode);
 
     osgEarth::MapOptions mapOpt;
-    if(bGeocentric)
+    if(geocentric)
     {
         mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_GEOCENTRIC;
         mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
@@ -378,25 +380,27 @@ void MapController::createMapNode(bool bGeocentric)
     mSkyNode->addChild(mMapNode);
     mMapRoot->addChild(mSkyNode);
     //mMapRoot->addChild(mMapNode);
+
+    mMapNode->getMap()->addMapCallback(new MainMapCallback(this));
 }
 
 void MapController::createCameraManipulator()
 {
     mEarthManipulator = new osgEarth::Util::EarthManipulator;
     auto  settings = mEarthManipulator->getSettings();
-//    settings->setSingleAxisRotation(true);
+    //    settings->setSingleAxisRotation(true);
 
     settings->setMinMaxDistance(0.0, MAX_CAM_DISTANCE);
     if(mIs3DView)
         settings->setMinMaxPitch(-90, 0);
     else
         settings->setMinMaxPitch(-90, -90);
-//    settings->setMaxOffset(5000.0, 5000.0);
-//    settings->setMinMaxPitch(-90, 90);
-//    settings->setTerrainAvoidanceEnabled(true);
-//    settings->setThrowingEnabled(false);
+    //    settings->setMaxOffset(5000.0, 5000.0);
+    //    settings->setMinMaxPitch(-90, 90);
+    //    settings->setTerrainAvoidanceEnabled(true);
+    //    settings->setThrowingEnabled(false);
 
-//    // set home to tehran
+    //    // set home to tehran
     osgEarth::GeoPoint  geoPoint(getMapSRS()->getGeographicSRS(), 51.3347, 35.7219,0);
     geoPoint.transformInPlace(getMapSRS());
     osgEarth::Viewpoint vp;
@@ -408,15 +412,16 @@ void MapController::createCameraManipulator()
 
 }
 
-void MapController::onLayerAdded(osgEarth::Layer *layer, unsigned index)
+void MapController::layerAdded(osgEarth::Layer */*layer*/, unsigned /*index*/)
 {
-    qDebug() << "Layer added";
     updateLayersModel();
+    emit layerChanged();
 }
 
-void MapController::onLayerRemoved(osgEarth::Layer *layer, unsigned index)
+void MapController::layerRemoved(osgEarth::Layer */*layer*/, unsigned /*index*/)
 {
     updateLayersModel();
+    emit layerChanged();
 }
 
 void MapController::updateLayersModel()
@@ -433,7 +438,7 @@ void MapController::frame()
     const auto fp = vp.focalPoint();
     if (fp.isSet()) {
         const osgEarth::GeoPoint mapPoint = fp.get();
-//        mapPoint.makeGeographic();
+        //        mapPoint.makeGeographic();
         osgEarth::GeoPoint  pointLatLong;
         mapPoint.transform(getMapSRS()->getGeographicSRS(), pointLatLong);
 
@@ -507,7 +512,6 @@ void MapController::cleanup()
 
 void MapController::initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId)
 {
-
     mRenderTargetId = renderTargetId;
 
     createOsgRenderer(width, height, screen);
@@ -562,7 +566,6 @@ void MapController::keyPressEvent(QKeyEvent *event)
 
 void MapController::keyReleaseEvent(QKeyEvent *event)
 {
-
     if (mOsgRenderer)
         mOsgRenderer->keyReleaseEvent(event);
 }
@@ -572,60 +575,34 @@ void MapController::mousePressEvent(QMouseEvent *event)
     if (mOsgRenderer) {
         mOsgRenderer->mousePressEvent(event);
     }
-
-    osg::Vec3d worldPos;
-    screenToWorld(event->x(), event->y(), worldPos);
-//    osgEarth::GeoPoint geoPos;
-//    geoPos.fromWorld(getMapSRS(), worldPos);
-//    qDebug()<<"mpos:"<<QString::fromStdString(geoPos.toString());
-//    qDebug()<<event->x()<<", "<<event->y();
-//    float x;
-//    float y;
-//    worldToScreen(worldPos, x, y);
-//    qDebug()<<x<<", "<<y;
-    mapMouseEvent(event, worldPos);
 }
 
 void MapController::mouseReleaseEvent(QMouseEvent *event)
 {
-
     if (mOsgRenderer) {
         mOsgRenderer->mouseReleaseEvent(event);
     }
-    osg::Vec3d worldPos;
-    screenToWorld(event->x(),  event->y(), worldPos);
-    mapMouseEvent(event, worldPos);
 }
 
 void MapController::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (mOsgRenderer)
         mOsgRenderer->mouseDoubleClickEvent(event);
-    osg::Vec3d worldPos;
-    screenToWorld(event->x(),  event->y(), worldPos);
-    mapMouseEvent(event, worldPos);
-
 }
 
 void MapController::mouseMoveEvent(QMouseEvent *event)
 {
-
     if (mOsgRenderer) {
         mOsgRenderer->mouseMoveEvent(event);
     }
-    osg::Vec3d worldPos;
-    screenToWorld(event->x(),  event->y(), worldPos);
-    mapMouseEvent(event, worldPos);
+    osgEarth::GeoPoint geoPoint = screenToGeoPoint(event->x(), event->y());
+    mapMouseLocation(geoPoint);
 }
 
 void MapController::wheelEvent(QWheelEvent *event)
 {
-
     if (mOsgRenderer)
         mOsgRenderer->wheelEvent(event);
-//    osg::Vec3d worldPos;
-//    mEarthManipulator->screenToWorld(event->x(),  event->y(),mOsgRenderer, worldPos);
-    //    mapMouseEvent(event, worldPos);
 }
 
 
