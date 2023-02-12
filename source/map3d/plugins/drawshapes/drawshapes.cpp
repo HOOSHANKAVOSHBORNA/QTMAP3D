@@ -99,23 +99,6 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
             mShape = Shape::SPHERE;
-            QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-            QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-
-                if (comp->status() == QQmlComponent::Ready) {
-                    mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-                    SphereProperties *sphereProperties = new SphereProperties;
-
-                    mItem->setProperty("sphereProperties", QVariant::fromValue<SphereProperties*>(sphereProperties));
-
-//                    QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
-                }
-
-            });
-
-            comp->loadUrl(QUrl("qrc:/SphereProperty.qml"));
-            QMetaObject::invokeMethod(mItem, "show");
-
         }
         else
         {
@@ -502,14 +485,9 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
     }
     if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
     {
-        ///////////////////////////////////////////////////////////
-
         mDrawingState = DrawingState::START;
         //--compute geo position of mouse-------------------------------------
-        osg::Vec3d worldPos;
-        mMapController->screenToWorld(event->x(), event->y(), worldPos);
-        osgEarth::GeoPoint geoPos;
-        geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
         //--setting sphere node-----------------------------------------------
         mSphereNode = new SphereNode();
         mSphereNode->setSphereShape(SphereNode::Sphere);
@@ -521,8 +499,22 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
         //mMapController->addNode(mSphereNode);
         //--add node editor---------------------------------------------------
         mSphereNodeEditor = new SphereNodeEditor(mSphereNode);
+        //--show property window---------------------------------------------------------------------------------
+        QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+        QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+
+            if (comp->status() == QQmlComponent::Ready) {
+                mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+                SphereProperties *sphereProperties = new SphereProperties(mSphereNode);
+
+                mItem->setProperty("sphereProperties", QVariant::fromValue<SphereProperties*>(sphereProperties));
+            }
+
+        });
+        comp->loadUrl(QUrl("qrc:/SphereProperty.qml"));
+        QMetaObject::invokeMethod(mItem, "show");
+        //--------------------------------------------------------------------------------------------------
         addNodeToLayer(mSphereNodeEditor);
-        //mMapController->addNode(mSphereNodeEditor);
         event->accept();
     }
 }

@@ -29,12 +29,12 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
     {
         if(checked)
         {
-            QObject::connect(mMapController,&MapController::mouseEvent, this, &Visibility::onMouseEvent);
+            //QObject::connect(mMapController,&MapController::mouseEvent, this, &Visibility::onMouseEvent);
             mMapController->addNode(mIconNode);
         }
         else
         {
-            QObject::disconnect(mMapController,&MapController::mouseEvent, this, &Visibility::onMouseEvent);
+            //QObject::disconnect(mMapController,&MapController::mouseEvent, this, &Visibility::onMouseEvent);
 
             mMapController->removeNode(mBackVisibilityNode);
             mMapController->removeNode(mVisibilityNode);

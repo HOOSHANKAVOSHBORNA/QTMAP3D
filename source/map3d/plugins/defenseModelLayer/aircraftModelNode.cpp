@@ -165,14 +165,14 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     mTempLine->setWidth(6);
 }
 
-void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double /*speed*/)
+void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)
 {
     //speed = 1;
 //    if(mIsStop)
 //        return;
     //    heading = 30;
-    osgEarth::GeoPoint posGeo(getMapNode()->getMapSRS(), pos);
-
+//    osgEarth::GeoPoint posGeo(getMapNode()->getMapSRS(), posGeo);
+    posGeo.transformInPlace(mMapController->getMapSRS());
     osg::Vec3d currentPosW;
     getPosition().toWorld(currentPosW);
 
@@ -220,7 +220,7 @@ void AircraftModelNode::flyTo(const osg::Vec3d &pos, double heading, double /*sp
     setUpdateCallback(mAnimationPathCallback);
 
     //--lines-------------------------------------
-    if(mRouteLine->getSize() >= 0)
+    if(mRouteLine->getSize() <= 0)
     {
         mRouteLine->addPoint(getPosition());
         mLatestPointLine->addPoint(getPosition());

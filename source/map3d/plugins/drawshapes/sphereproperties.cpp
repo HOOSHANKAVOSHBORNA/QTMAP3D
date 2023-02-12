@@ -2,7 +2,9 @@
 #include <QtDebug>
 #include <QVector3D>
 
-SphereProperties::SphereProperties(QObject *parent) : QObject(parent)
+SphereProperties::SphereProperties(SphereNode* sphereNode, QObject *parent) :
+    QObject(parent),
+    mSphereNode(sphereNode)
 {
 
 }
@@ -52,6 +54,8 @@ void SphereProperties::setRadius(const double &value){
         return;
     mRadius = value;
     emit spherePropertiesChanged(Radius, value);
+
+    mSphereNode->setRadius(osgEarth::Distance(value));
 }
 
 QString SphereProperties::transparency() const

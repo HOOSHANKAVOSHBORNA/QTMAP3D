@@ -43,17 +43,12 @@ public:
                        UIHandle *UIHandle) override;
     virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
-    //void flyTo(QString type, QString name, const osg::Vec3d& pos, double speed);
-    //void addTruckModel();
     void addUpdateAircraft(AircraftInfo aircraftInfo);
-    //void addRocketModel(osg::Vec3d position = osg::Vec3d(52.8601, 35.277, 846));
     void addUpdateSystem(SystemInfo systemInfo);
     void addUpdateStation(StationInfo stationInfo);
 public slots:
-    //void clickedTrackNode(QString type ,QString name ,bool isClick);
     void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
     void onClickedWorldPos(double latitude ,double longitude, double altitude);
-//    void onMessageReceived(const QJsonDocument &message);
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
     void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
@@ -61,6 +56,7 @@ public slots:
     void onStationInfoChanged(StationInfo& stationInfo);
     void onClearAircraft(int tn);
     void onAircraftAssignedResponse(int tn, int systemNo, bool result);
+    void onClear();
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;
@@ -70,11 +66,9 @@ protected:
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
-//    void demo();
     void onToolBarWidgetPin(bool isPin);
 private:
-    QMap<QString,QMap<int, DefenseModelNode*>>  mModelNodes;
-//    DefenseModelNode* mCurrentModel;
+    QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
     DefenseModelNode* mSelectedModelNode{nullptr};
     DefenseModelNode* mOnMoveModelNode{nullptr};
 
@@ -83,7 +77,6 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     int mPreCameraRange{0};
 
-    //AircraftTableModel *mAircraftTableModel;
     DataManager *mDataManager = nullptr;
     osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
 
