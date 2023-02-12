@@ -91,6 +91,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
             else
             {
                 mShape = Shape::NONE;
+                mDrawingState = DrawingState::NONE;
             }
         }
     if(name == SPHERE)
@@ -119,6 +120,11 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         else
         {
             mShape = Shape::NONE;
+            if (mSphereNodeEditor && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mSphereNodeEditor);
+                removeNodeFromLayer(mSphereNode);
+            }
+            mDrawingState = DrawingState::NONE;
         }
     }
     if(name == CONE)
@@ -126,12 +132,16 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
             mShape = Shape::CONE;
-            mCone = new Cone(mMapController,111100, 111100,false);
+
+
         }
         else
         {
             mShape = Shape::NONE;
-
+            if (mCone && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mCone);
+            }
+            mDrawingState = DrawingState::NONE;
         }
     }
     if(name == CYLINDER)
@@ -145,6 +155,9 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::NONE;
+            if (mCylinder && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mCylinder);
+            }
         }
     }
     if(name == CAPSULE)
@@ -158,6 +171,9 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::NONE;
+            if (mCapsule && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mCapsule);
+            }
         }
     }
     if( name == BOX)
@@ -171,6 +187,9 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::NONE;
+            if (mBox && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mBox);
+            }
         }
     }
     if( name == POLYGON)
@@ -180,7 +199,8 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
             mShape = Shape::POLYGON;
             mDrawingState = DrawingState::START;
             mCircleGr = new osg::Group;
-            mMapController->addNode(mCircleGr);
+            //mMapController->addNode(mCircleGr);
+            addNodeToLayer(mCircleGr);
             mPoly = new Polygone(mMapController, false);
             mPoly->setFillColor(osgEarth::Color::Green);
         }
@@ -188,6 +208,10 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::NONE;
+            if (mPoly && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mPoly);
+                removeNodeFromLayer(mPolyHdragger);
+            }
         }
     }
 
@@ -201,6 +225,10 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::NONE;
+            if (mImageOverlay && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mImageOverlay);
+                removeNodeFromLayer(mImgOvlEditor);
+            }
         }
     }
     if(name == CIRCLE)
@@ -216,6 +244,10 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::NONE;
+            if (mCircle && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mCircle);
+                removeNodeFromLayer(mCircleHdragger);
+            }
         }
 
     }
@@ -230,6 +262,10 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::NONE;
+            if (mCircle && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mEllipse);
+                removeNodeFromLayer(mElpsEditor);
+            }
         }
     }
     if(name == RECT)
@@ -244,6 +280,10 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::NONE;
+            if (mCircle && mDrawingState != DrawingState::FINISH){
+                removeNodeFromLayer(mRect);
+                removeNodeFromLayer(mRectEditor);
+            }
         }
     }
 }
@@ -328,6 +368,7 @@ void DrawShapes::mouseDoubleClickEvent(QMouseEvent *event)
         onNodeBtnDoubleClick(event, mSphereNodeEditor);
         break;
     case Shape::CONE:
+        onNodeBtnDoubleClick(event);
         break;
     case Shape::CYLINDER:
         break;
@@ -431,24 +472,11 @@ void DrawShapes::onLineMouseMove(QMouseEvent *event)
 
 void DrawShapes::onCircleMouseMove(QMouseEvent *event)
 {
-    //    osg::Vec3d worldPos;
-    //    mMapController->screenToWorld(event->x(), event->y(), worldPos);
-    //    osgEarth::GeoPoint geoPos;
-    //    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+
     if (mCircle){
         mCircle->setCircleHeight(mCircleHdragger->Dragger::getPosition().z());
     }
-    //    //x->setSize(30000);
-    //    x->setColor(osg::Vec4f(0,255,0,1));
-    //    x->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
-    //    mMapController->addNode(x);
-    //    x->addChild(mCircle);
-    //    x->setDynamic(true);
-    //    x->setHorizonCulling(true);
-    //    x->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
-    //    x->enter();
-    //    mCircle->setClamp(false);
-    //    mCircle->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), x->getPosition().x(), x->getPosition().y(),x->getPosition().z()));
+
 }
 
 void DrawShapes::onPolyMouseMove(QMouseEvent *event)
@@ -476,8 +504,6 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
     {
         ///////////////////////////////////////////////////////////
 
-
-        //////////////////////////////////////////////////////////
         mDrawingState = DrawingState::START;
         //--compute geo position of mouse-------------------------------------
         osg::Vec3d worldPos;
@@ -521,11 +547,19 @@ void DrawShapes::onConeBtnClick(QMouseEvent *event)
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+    if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
+
     {
+        mCone = new Cone(mMapController,111100, 111100,false);
+        mDrawingState = DrawingState::START;
         mCone->model->setPosition(geoPos);
         //mMapController->addNode(mCone);
         addNodeToLayer(mCone);
+    }
+    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START){
+
+        mDrawingState = DrawingState::DELETE;
+        removeNodeFromLayer(mCone);
     }
 }
 
@@ -536,7 +570,7 @@ void DrawShapes::onCylinderBtnClick(QMouseEvent *event)
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+    if(event->button() == Qt::MouseButton::RightButton)
     {
         mCylinder->model->setPosition(geoPos);
         addNodeToLayer(mCylinder);
@@ -601,8 +635,6 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
         mCircleGr->addChild(circle);
         geoPos.z() = 0;
         mPoly->addPoints(geoPos.vec3d());
-
-
     }
 
     if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::START)
@@ -714,8 +746,6 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
     }
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
     {
-
-
         mDrawingState = DrawingState::DELETE;
         removeNodeFromLayer(mCircle);
         //mMapController->removeNode(mCircle);
@@ -775,7 +805,7 @@ void DrawShapes::onRectBtnClick(QMouseEvent *event)
         mDrawingState = DrawingState::DELETE;
         removeNodeFromLayer(mRect);
         //mMapController->removeNode(mRect);
-        addNodeToLayer(mRectEditor);
+        removeNodeFromLayer(mRectEditor);
         //mMapController->removeNode(mRectEditor);
         mRect = nullptr;
         mRectEditor = nullptr;
@@ -807,7 +837,7 @@ void DrawShapes::onEllipseBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::LeftButton && !(mDrawingState==DrawingState::START))
     {
         mDrawingState = DrawingState::START;
-        event->accept();
+
         mEllipse = new Ellipse(true);
         mEllipse->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
         addNodeToLayer(mEllipse);
@@ -816,6 +846,7 @@ void DrawShapes::onEllipseBtnClick(QMouseEvent *event)
         mElpsEditor->getPositionDragger()->setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
         //mMapController->addNode(mElpsEditor);
         addNodeToLayer(mElpsEditor);
+        event->accept();
     }
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
     {
