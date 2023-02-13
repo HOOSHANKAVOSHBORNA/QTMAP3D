@@ -252,3 +252,15 @@ void SystemTableModel::updateItemData(const SystemCambatInfo &systemCambatInfo)
     endResetModel();
 }
 
+void SystemTableModel::clear()
+{
+    beginResetModel();
+    mSystemInfoList.clear();
+    mSystemInfoListProxy.clear();
+    mSystemCombatInfoList.clear();
+    mSystemCombatInfoListProxy.clear();
+    mSystemStatusInfoList.clear();
+    mSystemStatusInfoListProxy.clear();
+    endResetModel();
+}
+

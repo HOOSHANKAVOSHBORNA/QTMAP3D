@@ -468,6 +468,7 @@ void DefenseModelLayer::onClear()
     mOnMoveModelNode = nullptr;
     mSelectedModelNode = nullptr;
     //--clear list-----------------------------------------
+    mDataManager->clearAll();
     //--add layer------------------------------------------
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);

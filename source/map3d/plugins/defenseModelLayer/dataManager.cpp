@@ -165,3 +165,15 @@ void DataManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
     }
 }
 
+void DataManager::clearAll()
+{
+    if (mAircraftTableModel)
+        mAircraftTableModel->clear();
+    if (mSystemTableModel)
+        mSystemTableModel->clear();
+    if (mStationTableModel)
+        mStationTableModel->clear();
+    if (mAssignModel)
+        mAssignModel->clear();
+}
+

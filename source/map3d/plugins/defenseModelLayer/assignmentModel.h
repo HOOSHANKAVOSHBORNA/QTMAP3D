@@ -37,12 +37,21 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int,QByteArray> roleNames() const override;
 
+    void onAircraftClicked(int row);
+    void onSystemClicked(int row);
+    void updateItemData(const AircraftAssign &aircraft);
+    void updateData(const SystemAssign &system);
+    void clear();
 public:
-    Q_INVOKABLE int getNumber(int row) const;
+    Q_INVOKABLE int getAircraftNumber(int row) const;
+    Q_INVOKABLE int getSystemNumber(int row) const;
     Q_INVOKABLE QString headerText(int column) const;
 private:
     std::deque<QPair<int, QSharedPointer<AircraftAssign>>> mAircraftList;
     std::deque<QPair<int, QSharedPointer<SystemAssign>>> mSystemList;
+    std::deque<QPair<int, QSharedPointer<AircraftAssign>>> mAircraftListProxy;
+    std::deque<QPair<int, QSharedPointer<SystemAssign>>> mSystemListProxy;
+
 };
 
 #endif

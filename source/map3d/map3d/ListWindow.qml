@@ -202,7 +202,7 @@ CListWindow {
                     Layout.fillWidth: true
                     layer.enabled: true
                 }
-                SwipeView {
+                StackLayout {
                     id: stacklayout
                     Layout.fillWidth: true
                     Layout.fillHeight: true

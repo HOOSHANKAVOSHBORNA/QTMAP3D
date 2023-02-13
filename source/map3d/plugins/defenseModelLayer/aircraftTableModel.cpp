@@ -233,3 +233,11 @@ void AircraftTableModel::deleteItem(int TN)
     endResetModel();
 }
 
+void AircraftTableModel::clear()
+{
+    beginResetModel();
+    mAircraftInfoList.clear();
+    mAircraftInfoListProxy.clear();
+    endResetModel();
+}
+
