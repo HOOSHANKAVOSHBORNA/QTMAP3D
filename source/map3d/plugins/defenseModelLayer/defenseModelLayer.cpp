@@ -452,6 +452,8 @@ void DefenseModelLayer::onAircraftAssignedResponse(int tn, int systemNo, bool re
         auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemNo].get());
         if(systemModelNode)
             systemModelNode->acceptAssignedModelNode(result);
+        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
+        mDataManager->assignAirToSystem(aircraftModelNode->getInformation(), systemModelNode->getInformation());
     }
 //---if rejected then unassinment from aircraft----------------------------------------------------
     if(!result && mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))

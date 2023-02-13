@@ -161,6 +161,7 @@ Item {
                         implicitWidth: 164
                         implicitHeight:  txt.implicitHeight + 10
                         color: "transparent"
+                        clip: true
                         Rectangle {
                             opacity: 0.2
                             color: (rootItem.hoveredIndex == row) ? "lightskyblue" : "transparent"
