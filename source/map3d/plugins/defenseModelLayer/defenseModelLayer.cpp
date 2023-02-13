@@ -208,7 +208,7 @@ bool DefenseModelLayer::setup(MapController *mapController,
         }
     });
 
-    connect(mMapController, &MapController::mapSRSChanged, this, &DefenseModelLayer::onClear);
+    connect(mMapController, &MapController::mapCleared, this, &DefenseModelLayer::onClear);
 
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);

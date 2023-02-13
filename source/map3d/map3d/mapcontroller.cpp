@@ -40,7 +40,6 @@ const double MAX_CAM_DISTANCE = 30000000.0;
 MapController::MapController(QQuickWindow *window) :
     mWindow(window)
 {
-    mLayersModel = new LayersModel;
 }
 
 MapController::~MapController()
@@ -48,22 +47,17 @@ MapController::~MapController()
 
 }
 
-void MapController::setMap(const osgEarth::Map *map)
+void MapController::setMap(osgEarth::Map *map)
 {
-    if (mIsGeocentric != map->isGeocentric())
-    {
-        mIsGeocentric = map->isGeocentric();
-        createMapNode(mIsGeocentric);
+    mIsGeocentric = map->isGeocentric();
+    createMapNode(mIsGeocentric, map);
 
-        createCameraManipulator();
-        getViewer()->setCameraManipulator(getEarthManipulator());
-    }
-    mLayersModel->clear();
-    mMapNode->getMap()->clear();
-    mMapNode->getMap()->setLayersFromMap(map);
+    createCameraManipulator();
+    getViewer()->setCameraManipulator(getEarthManipulator());
+//    mMapNode->getMap()->clear();
+    emit mapCleared();
+//    mMapNode->getMap()->setLayersFromMap(map);
     goToHome();
-
-    emit mapSRSChanged();
 }
 
 osgViewer::Viewer *MapController::getViewer() const
@@ -100,11 +94,6 @@ void MapController::addLayer(osgEarth::Layer *layer)
     {
         QMessageBox::warning(nullptr, tr("Error"), tr("Data loading failed!"));
     }
-}
-
-LayersModel *MapController::getLayersModel() const
-{
-    return mLayersModel;
 }
 
 bool MapController::addNode(osg::Node *node)
@@ -262,12 +251,11 @@ void MapController::setGeocentric(bool isGeocentric)
         return;
 
     mIsGeocentric = isGeocentric;
-    mLayersModel->clear();
-
     osgEarth::LayerVector layers;
     mMapNode->getMap()->getLayers(layers);
 
     createMapNode(mIsGeocentric);
+    emit mapCleared();
     for(auto layer: layers)
         addLayer(layer);
 
@@ -276,8 +264,6 @@ void MapController::setGeocentric(bool isGeocentric)
     createCameraManipulator();
     getViewer()->setCameraManipulator(getEarthManipulator());
     getEarthManipulator()->setViewpoint(vp);
-
-    emit mapSRSChanged();
 }
 
 void MapController::toggle3DView()
@@ -311,12 +297,6 @@ void MapController::travelToViewpoint(qreal latitude,
     vp.pitch() = pitch;
     vp.heading() = heading;
     mEarthManipulator->setViewpoint(vp, 3.0);
-}
-
-void MapController::toggleLayerEnabled(int layerIndex)
-{
-    if (mLayersModel)
-        mLayersModel->toggleLayerEnabled(layerIndex);
 }
 
 void MapController::mapMouseLocation(osgEarth::GeoPoint geoPos)
@@ -353,29 +333,32 @@ void MapController::initializeOsgEarth()
     //create camera after create map node
     createCameraManipulator();
     mOsgRenderer->setCameraManipulator(mEarthManipulator);
-
-    updateLayersModel();
 }
 
-void MapController::createMapNode(bool geocentric)
+void MapController::createMapNode(bool geocentric, osgEarth::Map *map)
 {
     mSkyNode->removeChild(mMapNode);
     mMapRoot->removeChild(mMapNode);
     mMapRoot->removeChild(mSkyNode);
 
-    osgEarth::MapOptions mapOpt;
-    if(geocentric)
+    if(!map)
     {
-        mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_GEOCENTRIC;
-        mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
-        mMapNode = new osgEarth::MapNode(new osgEarth::Map(mapOpt));
+        osgEarth::MapOptions mapOpt;
+        if(geocentric)
+        {
+            mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_GEOCENTRIC;
+            mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
+            mMapNode = new osgEarth::MapNode(new osgEarth::Map(mapOpt));
+        }
+        else
+        {
+            mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_PROJECTED;
+            mapOpt.profile() = osgEarth::ProfileOptions();
+            mMapNode = new osgEarth::MapNode(new osgEarth::Map(mapOpt));
+        }
     }
     else
-    {
-        mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_PROJECTED;
-        mapOpt.profile() = osgEarth::ProfileOptions();
-        mMapNode = new osgEarth::MapNode(new osgEarth::Map(mapOpt));
-    }
+        mMapNode = new osgEarth::MapNode(map);
 
     mSkyNode->addChild(mMapNode);
     mMapRoot->addChild(mSkyNode);
@@ -414,20 +397,12 @@ void MapController::createCameraManipulator()
 
 void MapController::layerAdded(osgEarth::Layer */*layer*/, unsigned /*index*/)
 {
-    updateLayersModel();
     emit layerChanged();
 }
 
 void MapController::layerRemoved(osgEarth::Layer */*layer*/, unsigned /*index*/)
 {
-    updateLayersModel();
     emit layerChanged();
-}
-
-void MapController::updateLayersModel()
-{
-    if (mLayersModel)
-        mLayersModel->updateLayers(getMapNode()->getMap());
 }
 
 void MapController::frame()
