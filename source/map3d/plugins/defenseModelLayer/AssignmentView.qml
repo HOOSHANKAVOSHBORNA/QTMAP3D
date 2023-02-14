@@ -47,7 +47,7 @@ Item {
                             color: '#4568dc'
                             Text {
                                 color: '#FFFFFF'
-                                text: rootItem.model ? rootItem.model.headerText(index) : "";
+                                text: rootItem.model ? rootItem.model.aircraftHeaderText(index) : "";
                                 anchors.centerIn: parent
                             }
                         }
@@ -114,6 +114,21 @@ Item {
             Layout.fillWidth: true
             color: "transparent"
             Layout.preferredWidth: 40
+            Item {
+                MouseArea {
+                    anchors.fill: img
+                    onClicked: rootItem.model.refresh()
+                }
+                Image {
+                    id: img
+                    source: "qrc:/resources/refresh.png"
+                    width: 40
+                    height: 40
+                    anchors.top: parent.top
+                }
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
             Image {
                 source: "qrc:/resources/arrow.png"
                 width: 40
@@ -149,7 +164,7 @@ Item {
                             color: '#4568dc'
                             Text {
                                 color: '#FFFFFF'
-                                text: rootItem.model ? rootItem.model.headerText(index) : "";
+                                text: rootItem.model ? rootItem.model.systemHeaderText(index) : "";
                                 anchors.centerIn: parent
                             }
                         }
@@ -172,7 +187,7 @@ Item {
                             anchors.fill: parent
                             onClicked: function() {
                                 if (rootItem.model) {
-
+                                    rootItem.model.onSystemClicked(row)
                                 }
                             }
 

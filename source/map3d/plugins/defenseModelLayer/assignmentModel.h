@@ -25,7 +25,6 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int,QByteArray> roleNames() const override;
 
-    void onSystemClicked(int row);
 //    void updateData(int TN, int Number);
     void assignAirToSystem(AircraftInfo &aircraft, SystemInfo &system);
     void addAircraft(AircraftInfo aircraft);
@@ -34,15 +33,21 @@ public:
 
 public slots:
     void onAircraftClicked(int row);
+    void onSystemClicked(int row);
+    void refresh();
 public:
     Q_INVOKABLE int getAircraftNumber(int row) const;
     Q_INVOKABLE int getSystemNumber(int row) const;
-    Q_INVOKABLE QString headerText(int column) const;
+    Q_INVOKABLE QString aircraftHeaderText(int column) const;
+    Q_INVOKABLE QString systemHeaderText(int column) const;
 private:
     std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftList;
     std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemList;
     std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftListProxy;
     std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemListProxy;
+
+    bool showSystyemAssigned = false;
+    bool showAircraftAssign = false;
 
 };
 

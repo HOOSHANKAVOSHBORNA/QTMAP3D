@@ -23,14 +23,14 @@ QVariant AssignmentModel::data(const QModelIndex &index, int role) const
 {
     switch (role) {
     case AirDisp: {
-        if (index.row() >= int(mAircraftList.size()))
+        if (index.row() >= int(mAircraftListProxy.size()))
             return QVariant::fromValue<QString>("");
         else {
             switch (index.column()) {
-            case 0: return QVariant::fromValue<QString>(QString::number(mAircraftList[static_cast<size_t>(index.row())].first));
-            case 1: return QVariant::fromValue<int>(mAircraftList[static_cast<size_t>(index.row())].second->TN);
-            case 2: return QVariant::fromValue<QString>("test");
-            case 3: return QVariant::fromValue<QString>("trest2");
+            case 0: return QVariant::fromValue<QString>(QString::number(mAircraftListProxy[static_cast<size_t>(index.row())].first));
+            case 1: return QVariant::fromValue<int>(mAircraftListProxy[static_cast<size_t>(index.row())].second->TN);
+            case 2: return QVariant::fromValue<QString>(mAircraftListProxy[static_cast<size_t>(index.row())].second->IFFCode);
+            case 3: return QVariant::fromValue<QString>(mAircraftListProxy[static_cast<size_t>(index.row())].second->CallSign);
             default: return QVariant::fromValue<QString>("");
             }
         }
@@ -72,10 +72,10 @@ QHash<int, QByteArray> AssignmentModel::roleNames() const
 
 void AssignmentModel::onAircraftClicked(int row)
 {
-    qDebug() << "--------";
+    showSystyemAssigned = true;
     beginResetModel();
     mSystemListProxy.clear();
-    for (auto system : mAircraftList[std::size_t(row)].second->assignedSystems) {
+    for (auto system : mAircraftListProxy[std::size_t(row)].second->assignedSystems) {
         beginResetModel();
         QPair<int, QSharedPointer<SystemInfo>> isp;
         isp.first = static_cast<int>(mSystemListProxy.size());
@@ -87,15 +87,28 @@ void AssignmentModel::onAircraftClicked(int row)
     endResetModel();
 }
 
-void AssignmentModel::onSystemClicked(int row)
+void AssignmentModel::refresh()
 {
     beginResetModel();
+    showSystyemAssigned = false;
+    mSystemListProxy.assign(mSystemList.begin(), mSystemList.end());
+    mAircraftListProxy.assign(mAircraftList.begin(), mAircraftList.end());
+    endResetModel();
+}
+
+void AssignmentModel::onSystemClicked(int row)
+{
+    showAircraftAssign = true;
+    beginResetModel();
     mAircraftListProxy.clear();
-    for (auto aircraft : mSystemList[std::size_t(row)].second->assignedAircrafts) {
-       for (auto &item : mAircraftList) {
-           if (aircraft.TN == item.second->TN)
-               mAircraftListProxy.push_back(item);
-       }
+    for (auto aircraft : mSystemListProxy[std::size_t(row)].second->assignedAircrafts) {
+        beginResetModel();
+        QPair<int, QSharedPointer<AircraftInfo>> isp;
+        isp.first = static_cast<int>(mAircraftListProxy.size());
+        isp.second.reset(new AircraftInfo);
+        *(isp.second) = aircraft;
+        mAircraftListProxy.push_back(isp);
+        endResetModel();
     }
     endResetModel();
 }
@@ -134,6 +147,9 @@ void AssignmentModel::addAircraft(AircraftInfo aircraft)
         mAircraftList.push_back(isp);
         endResetModel();
     }
+    if (!showAircraftAssign) {
+        mAircraftListProxy.assign(mAircraftList.begin(), mAircraftList.end());
+    }
 }
 
 void AssignmentModel::addSystem(SystemInfo system)
@@ -150,7 +166,8 @@ void AssignmentModel::addSystem(SystemInfo system)
         mSystemList.push_back(isp);
         endResetModel();
     }
-//    mSystemListProxy.assign(mSystemList.begin(), mSystemList.end());
+    if (!showSystyemAssigned)
+        mSystemListProxy.assign(mSystemList.begin(), mSystemList.end());
 }
 
 
@@ -186,13 +203,24 @@ int AssignmentModel::getSystemNumber(int row) const
     return mSystemList[std::size_t(row)].second->Number;
 }
 
-QString AssignmentModel::headerText(int column) const
+QString AssignmentModel::aircraftHeaderText(int column) const
 {
     switch (column) {
     case 0: return QStringLiteral("Index");
     case 1: return QStringLiteral("Number");
-    case 2: return QStringLiteral("Name");
-    case 3: return QStringLiteral("other");
+    case 2: return QStringLiteral("IFFCode");
+    case 3: return QStringLiteral("CallSign");
+    default: return QStringLiteral("");
+    }
+}
+
+QString AssignmentModel::systemHeaderText(int column) const
+{
+    switch (column) {
+    case 0: return QStringLiteral("Index");
+    case 1: return QStringLiteral("Number");
+    case 2: return QStringLiteral("BCC");
+    case 3: return QStringLiteral("radar");
     default: return QStringLiteral("");
     }
 }
