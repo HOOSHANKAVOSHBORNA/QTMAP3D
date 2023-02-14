@@ -25,13 +25,15 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int,QByteArray> roleNames() const override;
 
-    void onAircraftClicked(int row);
     void onSystemClicked(int row);
 //    void updateData(int TN, int Number);
     void assignAirToSystem(AircraftInfo &aircraft, SystemInfo &system);
     void addAircraft(AircraftInfo aircraft);
     void addSystem(SystemInfo system);
     void clear();
+
+public slots:
+    void onAircraftClicked(int row);
 public:
     Q_INVOKABLE int getAircraftNumber(int row) const;
     Q_INVOKABLE int getSystemNumber(int row) const;

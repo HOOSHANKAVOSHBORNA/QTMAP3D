@@ -36,7 +36,7 @@ QVariant AssignmentModel::data(const QModelIndex &index, int role) const
         }
     }
     case SysDisp: {
-        if (index.row() >= int(mSystemList.size()))
+        if (index.row() >= int(mSystemListProxy.size()))
             return QVariant::fromValue<QString>("");
         else {
             switch (index.column()) {
@@ -72,13 +72,17 @@ QHash<int, QByteArray> AssignmentModel::roleNames() const
 
 void AssignmentModel::onAircraftClicked(int row)
 {
+    qDebug() << "--------";
     beginResetModel();
     mSystemListProxy.clear();
     for (auto system : mAircraftList[std::size_t(row)].second->assignedSystems) {
-       for (auto &item : mSystemList) {
-           if (system.Number == item.second->Number)
-               mSystemListProxy.push_back(item);
-       }
+        beginResetModel();
+        QPair<int, QSharedPointer<SystemInfo>> isp;
+        isp.first = static_cast<int>(mSystemListProxy.size());
+        isp.second.reset(new SystemInfo);
+        *(isp.second) = system;
+        mSystemListProxy.push_back(isp);
+        endResetModel();
     }
     endResetModel();
 }
@@ -146,7 +150,7 @@ void AssignmentModel::addSystem(SystemInfo system)
         mSystemList.push_back(isp);
         endResetModel();
     }
-    mSystemListProxy.assign(mSystemList.begin(), mSystemList.end());
+//    mSystemListProxy.assign(mSystemList.begin(), mSystemList.end());
 }
 
 

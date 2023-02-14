@@ -71,7 +71,7 @@ Item {
                             anchors.fill: parent
                             onClicked: function() {
                                 if (rootItem.model) {
-
+                                    rootItem.model.onAircraftClicked(row)
                                 }
                             }
 
