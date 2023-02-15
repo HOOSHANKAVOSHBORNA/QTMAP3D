@@ -49,6 +49,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     QTimer *timerUpdateAircraft = new QTimer();
     QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
         //---------------------------------------------
+//        createAircraftInfo();
         updateAircraftInfo();
         for(auto aircraft:mAircraftList)
             emit mDefenseDataManager->aircraftInfoChanged(aircraft);

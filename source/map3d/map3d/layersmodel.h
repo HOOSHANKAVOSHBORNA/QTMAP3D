@@ -2,6 +2,8 @@
 #ifndef LAYERSMODEL_H
 #define LAYERSMODEL_H
 
+#include "mapcontroller.h"
+
 #include <QAbstractListModel>
 #include <QHash>
 #include <QByteArray>
@@ -12,7 +14,7 @@ class LayersModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-	LayersModel(QObject *parent = nullptr);
+    LayersModel(MapController *mapController = nullptr, QObject *parent = nullptr);
 
     enum {
         LayerIndexRole = Qt::UserRole + 300,
@@ -21,6 +23,7 @@ public:
 
 public:
     void updateLayers(osgEarth::Map *map);
+    void clear();
 
 
 public slots:

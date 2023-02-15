@@ -40,6 +40,7 @@ public:
     void updateItemData(const SystemInfo& systemInfo);
     void updateItemData(const SystemStatusInfo& systemStatusInfo);
     void updateItemData(const SystemCambatInfo& systemCambatInfo);
+    void clear();
 
 
 private:

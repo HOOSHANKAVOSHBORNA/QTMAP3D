@@ -4,10 +4,17 @@
 #include <osgEarth/ModelLayer>
 
 
-LayersModel::LayersModel(QObject *parent) :
+LayersModel::LayersModel(MapController *mapController, QObject *parent) :
     QAbstractListModel(parent)
 {
-
+    updateLayers(mapController->getMapNode()->getMap());
+    connect(mapController, &MapController::layerChanged,[this, mapController](){
+        updateLayers(mapController->getMapNode()->getMap());
+    });
+    connect(mapController, &MapController::mapCleared,[this, mapController](){
+        clear();
+        updateLayers(mapController->getMapNode()->getMap());
+    });
 }
 
 void LayersModel::updateLayers(osgEarth::Map *map)
@@ -23,6 +30,13 @@ void LayersModel::updateLayers(osgEarth::Map *map)
         mLayersList.push_back(layer);
     }
 
+    endResetModel();
+}
+
+void LayersModel::clear()
+{
+    beginResetModel();
+    mLayersList.clear();
     endResetModel();
 }
 

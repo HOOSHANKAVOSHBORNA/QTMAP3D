@@ -128,6 +128,9 @@ void DataManager::setAircraftInfo(const AircraftInfo &aircraftInof)
     if (mAircraftTableModel) {
         mAircraftTableModel->updateItemData(aircraftInof);
     }
+    if (mAssignModel) {
+        mAssignModel->addAircraft(aircraftInof);
+    }
 }
 
 void DataManager::deleteAircraftInfo(int TN)
@@ -149,6 +152,9 @@ void DataManager::setSystemInfo(const SystemInfo &systemInfo)
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemInfo);
     }
+    if (mAssignModel) {
+        mAssignModel->addSystem(systemInfo);
+    }
 }
 
 void DataManager::setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo)
@@ -163,5 +169,22 @@ void DataManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemStatusInfo);
     }
+}
+
+void DataManager::assignAirToSystem(AircraftInfo aircraft, SystemInfo system)
+{
+    mAssignModel->assignAirToSystem(aircraft, system);
+}
+
+void DataManager::clearAll()
+{
+    if (mAircraftTableModel)
+        mAircraftTableModel->clear();
+    if (mSystemTableModel)
+        mSystemTableModel->clear();
+    if (mStationTableModel)
+        mStationTableModel->clear();
+    if (mAssignModel)
+        mAssignModel->clear();
 }
 

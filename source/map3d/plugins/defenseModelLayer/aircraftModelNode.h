@@ -33,7 +33,7 @@ class AircraftModelNode: public DefenseModelNode
     Q_OBJECT
 public:
     AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
-    void flyTo(const osg::Vec3d& pos, double heading, double speed);
+    void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
 //    void setTruckModel(osgEarth::Annotation::ModelNode* truckModel);
 //    osgEarth::Annotation::ModelNode *getTruckModel() const;

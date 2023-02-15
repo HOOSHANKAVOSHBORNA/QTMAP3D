@@ -6,60 +6,50 @@
 AssignmentModel::AssignmentModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-//    0for (int i = 0; i < 15; ++i) {
-        AircraftAssign a;
-        a.Number = 6;
-        QPair<int, QSharedPointer<AircraftAssign>> isp;
-        isp.first = 1;
-        isp.second.reset(new AircraftAssign);
-        *(isp.second) = a;
-        mAircraftList.push_back(isp);
 
-//    }
-    AircraftAssign a2;
-    a2.Number = 5;
-    QPair<int, QSharedPointer<AircraftAssign>> isp2;
-    isp2.first = 2;
-    isp2.second.reset(new AircraftAssign);
-    *(isp2.second) = a2;
-    mAircraftList.push_back(isp2);
 }
 
-int AssignmentModel::columnCount(const QModelIndex &parent) const
+int AssignmentModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return 4;
 }
 
-int AssignmentModel::rowCount(const QModelIndex &parent) const
+int AssignmentModel::rowCount(const QModelIndex &/*parent*/) const
 {
-    return mAircraftList.size();
+    return static_cast<int>(std::max(mAircraftList.size(), mSystemList.size()));
 }
 
 QVariant AssignmentModel::data(const QModelIndex &index, int role) const
 {
-    if (index.row() > int(mAircraftList.size()))
-        return QVariant();
     switch (role) {
-    case SysDisp: {
-        switch (index.column()) {
-        case 0: return QVariant::fromValue<QString>(QString::number(mAircraftList[static_cast<size_t>(index.row())].first));
-        case 1: return QVariant::fromValue<int>(mAircraftList[static_cast<size_t>(index.row())].second->Number);
-        case 2: return QVariant::fromValue<QString>("test");
-        case 3: return QVariant::fromValue<QString>("trest2");
-        default: return QVariant();
+    case AirDisp: {
+        if (index.row() >= int(mAircraftListProxy.size()))
+            return QVariant::fromValue<QString>("");
+        else {
+            switch (index.column()) {
+            case 0: return QVariant::fromValue<QString>(QString::number(mAircraftListProxy[static_cast<size_t>(index.row())].first));
+            case 1: return QVariant::fromValue<int>(mAircraftListProxy[static_cast<size_t>(index.row())].second->TN);
+            case 2: return QVariant::fromValue<QString>(mAircraftListProxy[static_cast<size_t>(index.row())].second->IFFCode);
+            case 3: return QVariant::fromValue<QString>(mAircraftListProxy[static_cast<size_t>(index.row())].second->CallSign);
+            default: return QVariant::fromValue<QString>("");
+            }
         }
     }
-    case AirDisp: {
-        switch (index.column()) {
-        case 0: return QVariant::fromValue<QString>(QString::number(mSystemList[static_cast<size_t>(index.row())].first));
-        case 1: return QVariant::fromValue<int>(mSystemList[static_cast<size_t>(index.row())].second->Number);
-        case 2: return QVariant::fromValue<QString>("test");
-        case 3: return QVariant::fromValue<QString>("trest2");
-        default: return QVariant();
+    case SysDisp: {
+        if (index.row() >= int(mSystemListProxy.size()))
+            return QVariant::fromValue<QString>("");
+        else {
+            switch (index.column()) {
+            case 0: return QVariant::fromValue<QString>(QString::number(mSystemList[static_cast<size_t>(index.row())].first));
+            case 1: return QVariant::fromValue<int>(mSystemListProxy[static_cast<size_t>(index.row())].second->Number);
+            case 2: return QVariant::fromValue<QString>("test");
+            case 3: return QVariant::fromValue<QString>("trest2");
+            default: return QVariant::fromValue<QString>("");
+            }
         }
     }
     case HeaderText: {
-        switch (index.row()) {
+        switch (index.column()) {
         case 0: return QVariant::fromValue<QString>("Index");
         case 1: return QVariant::fromValue<QString>("Number");
         case 2: return QVariant::fromValue<QString>("Name");
@@ -80,13 +70,157 @@ QHash<int, QByteArray> AssignmentModel::roleNames() const
     return hash;
 }
 
-QString AssignmentModel::headerText(int column) const
+void AssignmentModel::onAircraftClicked(int row)
+{
+    showSystyemAssigned = true;
+    beginResetModel();
+    mSystemListProxy.clear();
+    for (auto system : mAircraftListProxy[std::size_t(row)].second->assignedSystems) {
+        beginResetModel();
+        QPair<int, QSharedPointer<SystemInfo>> isp;
+        isp.first = static_cast<int>(mSystemListProxy.size());
+        isp.second.reset(new SystemInfo);
+        *(isp.second) = system;
+        mSystemListProxy.push_back(isp);
+        endResetModel();
+    }
+    endResetModel();
+}
+
+void AssignmentModel::refresh()
+{
+    beginResetModel();
+    showSystyemAssigned = false;
+    mSystemListProxy.assign(mSystemList.begin(), mSystemList.end());
+    mAircraftListProxy.assign(mAircraftList.begin(), mAircraftList.end());
+    endResetModel();
+}
+
+void AssignmentModel::onSystemClicked(int row)
+{
+    showAircraftAssign = true;
+    beginResetModel();
+    mAircraftListProxy.clear();
+    for (auto aircraft : mSystemListProxy[std::size_t(row)].second->assignedAircrafts) {
+        beginResetModel();
+        QPair<int, QSharedPointer<AircraftInfo>> isp;
+        isp.first = static_cast<int>(mAircraftListProxy.size());
+        isp.second.reset(new AircraftInfo);
+        *(isp.second) = aircraft;
+        mAircraftListProxy.push_back(isp);
+        endResetModel();
+    }
+    endResetModel();
+}
+
+void AssignmentModel::assignAirToSystem(AircraftInfo &aircraft, SystemInfo &system)
+{
+    auto it = std::find_if(mAircraftList.begin(), mAircraftList.end(), [aircraft](QPair<int, QSharedPointer<AircraftInfo>> &a) {
+        return aircraft.TN == a.second->TN;
+    });
+    auto it2 = std::find_if(it->second->assignedSystems.begin(), it->second->assignedSystems.end(), [system] (SystemInfo &s){
+        return system.Number == s.Number;
+    });
+    if (it2 == it->second->assignedSystems.end())
+        it->second->assignedSystems.push_back(system);
+    auto it3 = std::find_if(mSystemList.begin(), mSystemList.end(), [system](QPair<int, QSharedPointer<SystemInfo>> &s) {
+        return system.Number == s.second->Number;
+    });
+    auto it4 = std::find_if(it3->second->assignedAircrafts.begin(), it3->second->assignedAircrafts.end(), [aircraft] (AircraftInfo &a){
+        return aircraft.TN == a.TN;
+    });
+    if (it4 == it3->second->assignedAircrafts.end())
+        it3->second->assignedAircrafts.push_back(aircraft);
+}
+
+void AssignmentModel::addAircraft(AircraftInfo aircraft)
+{
+    auto it = std::find_if(mAircraftList.begin(), mAircraftList.end(), [aircraft](QPair<int, QSharedPointer<AircraftInfo>> &a) {
+        return aircraft.TN == a.second->TN;
+    });
+    if (it == mAircraftList.end()) {
+        beginResetModel();
+        QPair<int, QSharedPointer<AircraftInfo>> isp;
+        isp.first = static_cast<int>(mAircraftList.size());
+        isp.second.reset(new AircraftInfo);
+        *(isp.second) = aircraft;
+        mAircraftList.push_back(isp);
+        endResetModel();
+    }
+    if (!showAircraftAssign) {
+        mAircraftListProxy.assign(mAircraftList.begin(), mAircraftList.end());
+    }
+}
+
+void AssignmentModel::addSystem(SystemInfo system)
+{
+    auto it = std::find_if(mSystemList.begin(), mSystemList.end(), [system](QPair<int, QSharedPointer<SystemInfo>> &s) {
+        return system.Number == s.second->Number;
+    });
+    if (it == mSystemList.end()) {
+        beginResetModel();
+        QPair<int, QSharedPointer<SystemInfo>> isp;
+        isp.first = static_cast<int>(mSystemList.size());
+        isp.second.reset(new SystemInfo);
+        *(isp.second) = system;
+        mSystemList.push_back(isp);
+        endResetModel();
+    }
+    if (!showSystyemAssigned)
+        mSystemListProxy.assign(mSystemList.begin(), mSystemList.end());
+}
+
+
+void AssignmentModel::clear()
+{
+    beginResetModel();
+    mSystemList.clear();
+    mSystemListProxy.clear();
+    mAircraftList.clear();
+    mAircraftListProxy.clear();
+    endResetModel();
+}
+
+int AssignmentModel::getAircraftNumber(int row) const
+{
+    if (row < 0) return -1;
+
+    if (row >= static_cast<int>(mAircraftList.size())) {
+        return -1;
+    }
+
+    return mAircraftList[std::size_t(row)].second->TN;
+}
+
+int AssignmentModel::getSystemNumber(int row) const
+{
+    if (row < 0) return -1;
+
+    if (row >= static_cast<int>(mSystemList.size())) {
+        return -1;
+    }
+
+    return mSystemList[std::size_t(row)].second->Number;
+}
+
+QString AssignmentModel::aircraftHeaderText(int column) const
 {
     switch (column) {
     case 0: return QStringLiteral("Index");
     case 1: return QStringLiteral("Number");
-    case 2: return QStringLiteral("Name");
-    case 3: return QStringLiteral("other");
+    case 2: return QStringLiteral("IFFCode");
+    case 3: return QStringLiteral("CallSign");
+    default: return QStringLiteral("");
+    }
+}
+
+QString AssignmentModel::systemHeaderText(int column) const
+{
+    switch (column) {
+    case 0: return QStringLiteral("Index");
+    case 1: return QStringLiteral("Number");
+    case 2: return QStringLiteral("BCC");
+    case 3: return QStringLiteral("radar");
     default: return QStringLiteral("");
     }
 }
