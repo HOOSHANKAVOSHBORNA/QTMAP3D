@@ -11,24 +11,28 @@ Item {
         dialog.open()
     }
 
+    function hide() {
+        dialog.close();
+    }
+
+
     property SphereProperties sphereProperties
 
     Dialog {
         id: dialog
-        //    visible: true
-        //    flags: Qt.FramelessWindowHint | Qt.Window
         width: 250
         height: 300
         title: qsTr("Sphere Properties")
-        //    color: "transparent"
 
-        //    x:400
-        //    y:400
+
+
+
+
 
         ///////////////////properties////////////////////////////
-        property color myColor: "#004C05"
-        property int previousX
-        property int previousY
+        //        property color myColor: "#004C05"
+        //property int previousX
+        //property int previousY
 
         ///////////////////Main Holder///////////////////////////
         //    Rectangle{
@@ -141,7 +145,7 @@ Item {
                                 Rectangle{
                                     height: 20
                                     width: 20
-                                    color: dialog.myColor
+                                    color: sphereProperties.color
                                     border.width: 2
                                     border.color: "#c9c9c9"
                                     x: 5
@@ -165,7 +169,7 @@ Item {
 
                                     Text {
                                         id: colorField
-                                        text: dialog.myColor
+                                        text: sphereProperties.color
                                         anchors.centerIn: parent
                                         font.pointSize: 10
 
@@ -176,7 +180,7 @@ Item {
                                     id: colorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
-                                        dialog.myColor = colorDialog.color
+//                                        dialog.myColor = colorDialog.color
                                         sphereProperties.color = colorDialog.color
                                     }
 
@@ -228,12 +232,13 @@ Item {
 
                                             TextInput {
                                                 id: mlocationX
+                                                text: sphereProperties.location.x
                                                 anchors.fill: parent
                                                 font.pointSize: 10
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
-                                                    decimals: 8;
+                                                    decimals: 5;
                                                     notation: DoubleValidator.StandardNotation
                                                     locale: "insert x"
                                                 }
@@ -263,12 +268,13 @@ Item {
 
                                             TextInput {
                                                 id: mlocationY
+                                                text: sphereProperties.location.y
                                                 anchors.fill: parent
                                                 font.pointSize: 10
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
-                                                    decimals: 8;
+                                                    decimals: 5;
                                                     notation: DoubleValidator.StandardNotation
                                                     locale: "insert y"
                                                 }
@@ -298,12 +304,13 @@ Item {
 
                                             TextInput {
                                                 id: mlocationZ
+                                                text: sphereProperties.location.z
                                                 anchors.fill: parent
                                                 font.pointSize: 10
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
-                                                    decimals: 8;
+                                                    decimals: 5;
                                                     notation: DoubleValidator.StandardNotation
                                                     locale: "insert z"
                                                 }
@@ -334,7 +341,7 @@ Item {
                                 CheckBox {
                                     id: relative
                                     text: qsTr("Relative")
-                                    checked: false
+                                    checked: sphereProperties.relative
                                     anchors.bottom: locationTitle.bottom
                                     onCheckStateChanged: if(checked === true){
                                                              sphereProperties.relative = true
@@ -400,6 +407,7 @@ Item {
 
                                             TextInput {
                                                 id: mcenterX
+                                                text: sphereProperties.center.x
                                                 anchors.fill: parent
                                                 font.pointSize: 10
                                                 selectByMouse: true
@@ -435,6 +443,7 @@ Item {
 
                                             TextInput {
                                                 id: mcenterY
+                                                text: sphereProperties.center.y
                                                 anchors.fill: parent
                                                 font.pointSize: 10
                                                 selectByMouse: true
@@ -470,6 +479,7 @@ Item {
 
                                             TextInput {
                                                 id: mcenterZ
+                                                text: sphereProperties.center.z
                                                 anchors.fill: parent
                                                 font.pointSize: 10
                                                 selectByMouse: true
@@ -511,6 +521,7 @@ Item {
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
+
                                 Rectangle{
                                     height: 20
                                     width: 75
@@ -522,6 +533,7 @@ Item {
 
                                     TextInput {
                                         id: radiusValue
+                                        text: sphereProperties.radius
                                         anchors.fill: parent
                                         font.pointSize: 10
                                         selectByMouse: true
@@ -554,6 +566,7 @@ Item {
                                 }
                             }
                             ///////////////////////////////////Transparency/////////////////////////////////////
+
                             Rectangle{
                                 id: transContainer
                                 Layout.fillWidth: true
@@ -564,13 +577,17 @@ Item {
 
                                 SpinBox {
                                     id: transValue
-                                    from: 0
-                                    to: 100
-                                    value: 70
+                                    stepSize: 5
+                                    value: 50
+                                    to : 100
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  100
+                                    }
                                     editable: true
                                     anchors.centerIn: parent
                                     height: 20
-
 
                                     contentItem: TextInput {
                                         z: 2
@@ -586,7 +603,9 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-//                                            rootItem.sphereProperties.transparency = text
+                                            if(transValue && transValue.value){
+                                           sphereProperties.transparency = transValue.value
+                                            }
                                         }
                                     }
                                     up.indicator: Rectangle {
@@ -675,7 +694,7 @@ Item {
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
-                                                sphereProperties.shape = 1
+                                                sphereProperties.shape = 0
                                             }
                                         }
                                     }
@@ -695,7 +714,7 @@ Item {
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
-                                                sphereProperties.shape = 2
+                                                sphereProperties.shape = 1
                                             }
                                         }
                                     }
@@ -715,7 +734,7 @@ Item {
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
-                                                sphereProperties.shape = 3
+                                                sphereProperties.shape = 2
                                             }
                                         }
                                     }

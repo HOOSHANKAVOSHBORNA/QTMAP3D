@@ -454,6 +454,7 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
         //mMapController->removeNode(mSphereNode);
         //mMapController->removeNode(mSphereNodeEditor);
         event->accept();
+        QMetaObject::invokeMethod(mItem, "hide");
     }
     if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
     {
@@ -477,7 +478,7 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
 
             if (comp->status() == QQmlComponent::Ready) {
                 mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-                SphereProperties *sphereProperties = new SphereProperties(mSphereNode);
+                SphereProperties *sphereProperties = new SphereProperties(mSphereNode, mMapController);
 
                 mItem->setProperty("sphereProperties", QVariant::fromValue<SphereProperties*>(sphereProperties));
             }
@@ -502,6 +503,8 @@ void DrawShapes::onNodeBtnDoubleClick(QMouseEvent *event, osg::Node *nodeEditor)
             //mMapController->removeNode(mPolyHdragger);
         event->accept();
     }
+
+    QMetaObject::invokeMethod(mItem, "hide");
 }
 
 void DrawShapes::onConeBtnClick(QMouseEvent *event)

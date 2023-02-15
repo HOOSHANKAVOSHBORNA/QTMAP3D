@@ -2,6 +2,7 @@
 #define SPHEREPROPERTIES_H
 
 #include "spherenode.h"
+#include "mapcontroller.h"
 
 #include <QObject>
 #include <QVariant>
@@ -10,13 +11,13 @@
 class SphereProperties : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString   color          READ color         WRITE setColor        )
-    Q_PROPERTY(QVector3D location       READ location      WRITE setLocation     )
-    Q_PROPERTY(QVector3D center         READ center        WRITE setCenter       )
-    Q_PROPERTY(double    radius         READ radius        WRITE setRadius       )
-    Q_PROPERTY(QString   transparency   READ transparency  WRITE setTransparency )
-    Q_PROPERTY(int       shape          READ shape         WRITE setShape        )
-    Q_PROPERTY(bool      relative       READ relative      WRITE setRelative     )
+    Q_PROPERTY(QString   color          READ color         WRITE setColor        NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(QVector3D location       READ location      WRITE setLocation     NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(QVector3D center         READ center        WRITE setCenter       NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(double    radius         READ radius        WRITE setRadius       NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(int       transparency   READ transparency  WRITE setTransparency NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(int       shape          READ shape         WRITE setShape        NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(bool      relative       READ relative      WRITE setRelative     NOTIFY spherePropertiesChangedToQML)
 
 
 public:
@@ -34,7 +35,8 @@ public:
 
 
 
-    SphereProperties(SphereNode* sphereNode = nullptr, QObject *parent = nullptr);
+
+    SphereProperties(SphereNode* sphereNode = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
     //set color
     QString color() const;
     void setColor(const QString &color);
@@ -48,8 +50,8 @@ public:
     double radius() const;
     void setRadius(const double &radius);
     // set transparency
-    QString transparency() const;
-    void setTransparency(const QString &transparency);
+    int transparency() const;
+    void setTransparency(const int &transparency);
     // set Type
     int shape() const;
     void setShape(const int &type);
@@ -59,26 +61,28 @@ public:
 
 
 
+
 signals:
 
     void spherePropertiesChanged( PropertyTypes  , QVariant );
- //   void sphereLocationChanged  ( PropertyTypes  , QVector3D);
+    void spherePropertiesChangedToQML();
 
 
 private:
-    QString   mColor;
-    QVector3D mLocation;
-    QVector3D mCenter;
-    double    mRadius;
-    QString   mTransparency;
-    int       mShape;
-    bool      mRelative;
+    QString     mSphereColor;
+    QVector3D   mLocation;
+    QVector3D   mCenter;
+    double      mRadius;
+    int         mTransparency;
+    int         mShape;
+    bool        mRelative;
+
 
     SphereNode* mSphereNode;
+    MapController* mMapController{nullptr};
 
 
 public slots:
-
 };
 
 #endif // SPHEREPROPERTIES_H
