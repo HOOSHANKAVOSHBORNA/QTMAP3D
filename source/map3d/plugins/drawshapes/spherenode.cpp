@@ -82,7 +82,7 @@ void SphereNode::compile()
     case Sphere:
     {
   //      osg::Vec3 eye(0.f,0.f,radius);
-        mCenter.z() = radius;
+        //mCenter.z() = radius;
         osg::ref_ptr<osg::Sphere> sphereShape = new osg::Sphere(mCenter, radius);
         compositeShape->addChild(sphereShape);
         break;
@@ -90,7 +90,7 @@ void SphereNode::compile()
     case SphereTopHalf:
     {
  //       osg::Vec3 eye(0.f,0.f,0.f);
-         mCenter.z() = 0;
+         //mCenter.z() = 0;
         osg::ref_ptr<osg::Capsule> capsuleShape = new osg::Capsule(mCenter, radius, 0);
         tessellationHints->setCreateBottom(false);
         tessellationHints->setCreateBody(false);
@@ -104,7 +104,7 @@ void SphereNode::compile()
     case SphereBottomHalf:
     {
 //        osg::Vec3 eye(0.f,0.f,radius);
-         mCenter.z() = radius;
+         //mCenter.z() = radius;
         osg::ref_ptr<osg::Capsule> capsuleShape = new osg::Capsule(mCenter, radius, 0);
         tessellationHints->setCreateTop(false);
         tessellationHints->setCreateBody(false);

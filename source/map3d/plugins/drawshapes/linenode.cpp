@@ -4,8 +4,8 @@
 
 LineNode::LineNode(MapController *mapController, bool point)
 {
-    sphereMat = new osg::Material;
-    sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
+//    sphereMat = new osg::Material;
+//    sphere = osgDB::readNodeFile("../data/models/sphere.osgb");
     mIsPoint = point;
     mMapController = mapController;
     mLinePath = new osgEarth::Symbology::Geometry();
@@ -34,7 +34,8 @@ LineNode::LineNode(MapController *mapController, bool point)
                 = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
     }
     //pathStyle.getOrCreate<osgEarth::Symbology::StyleSheet().setScript()
-    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
+    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 0;
+//    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = 1;
     pathStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique()
             = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
@@ -57,6 +58,7 @@ LineNode::LineNode(MapController *mapController, bool point)
     //    this->setStyle(pathStyle);
 
     mCircleGr = new osg::Group;
+    mSphereNode = new SphereNode();
     //addChild(mCircleGr);
 
 }
@@ -157,26 +159,35 @@ void LineNode::setDashLine(bool dashLine)
     }
 }
 
-void LineNode::addPoint(osgEarth::GeoPoint points)
+void LineNode::addPoint(osgEarth::GeoPoint point)
 {
-    mLinePath->push_back(points.vec3d());
-    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, points.getSRS());
+    mLinePath->push_back(point.vec3d());
+    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, point.getSRS());
     setFeature(pathFeature);
-    osg::ref_ptr<osg::Material> sphereMat = new osg::Material;
-    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, pointColor);
-    osgEarth::Symbology::Style LiSphereStyle;
-    LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
-    mCircleGr->getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-    mCircleModelNode = new osgEarth::Annotation::ModelNode
-            (mMapController->getMapNode(),LiSphereStyle);
+    if(mIsPointVisible)
+    {
+//        osg::ref_ptr<osg::Material> sphereMat = new osg::Material;
+//        sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, pointColor);
+//        osgEarth::Symbology::Style LiSphereStyle;
+//        LiSphereStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(sphere);
+//        mCircleGr->getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+//        mCircleModelNode = new osgEarth::Annotation::ModelNode
+//                (mMapController->getMapNode(),LiSphereStyle);
 
-    mCircleModelNode->setCullingActive(false);
-    mCircleModelNode->addCullCallback(new DrawShapeAutoScaler(1, 0.00001, 3000000));
+//        mCircleModelNode->setCullingActive(false);
+//        mCircleModelNode->addCullCallback(new DrawShapeAutoScaler(1, 0.00001, 3000000));
 
-    mCircleModelNode->setPosition(points);
+//        mCircleModelNode->setPosition(points);
+        mSphereNode = new SphereNode();
+        mSphereNode->setCullingActive(false);
+        mSphereNode->addCullCallback(new DrawShapeAutoScaler(1, 0.00001, 3000000));
 
-    mCircleGr->addChild(mCircleModelNode);
-    addChild(mCircleGr);
+        mSphereNode->setPosition(point);
+        mSphereNode->setRadius(osgEarth::Distance(mWidth, osgEarth::Units::METERS));
+        mSphereNode->setColor(mPointColor);
+        mCircleGr->addChild(mSphereNode);
+        addChild(mCircleGr);
+    }
 }
 
 void LineNode::removePoint()
@@ -184,7 +195,7 @@ void LineNode::removePoint()
     mLinePath->pop_back();
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, mMapController->getMapSRS());
     this->setFeature(pathFeature);
-    mCircleGr->removeChild(mCircleModelNode);
+    mCircleGr->removeChild(mSphereNode);
     addChild(mCircleGr);
 }
 
@@ -210,12 +221,14 @@ int LineNode::getSize()
 
 void LineNode::setPointVisibilty(bool visibility)
 {
+    mIsPointVisible = visibility;
     mCircleGr->setNodeMask(visibility);
 }
 
 void LineNode::setPointColor(osgEarth::Color color)
 {
-    pointColor = color;
-    sphereMat->setDiffuse (osg::Material::FRONT_AND_BACK, pointColor);
-    mCircleGr->getOrCreateStateSet()->setAttributeAndModes(sphereMat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    mPointColor = color;
+    auto material = new osg::Material;
+    material->setDiffuse (osg::Material::FRONT_AND_BACK, color);
+    mCircleGr->getOrCreateStateSet()->setAttributeAndModes(material, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 }

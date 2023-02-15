@@ -424,7 +424,7 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
         mDrawingState = DrawingState::DELETE;
         //mMapController->removeNode(mLine);
         removeNodeFromLayer(mLine);
-        removeNodeFromLayer(mLine->mCircleGr);
+//        removeNodeFromLayer(mLine->mCircleGr);
 
         //mMapController->removeNode(mLine->mCircleGr);
         event->accept();
