@@ -21,6 +21,7 @@
 #include "spherenodeeditor.h"
 #include "linenode.h"
 #include "sphereproperties.h"
+#include "circleproperties.h"
 
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>

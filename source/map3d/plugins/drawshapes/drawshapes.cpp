@@ -58,6 +58,7 @@ DrawShapes::DrawShapes(QWidget *parent)
 bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     qmlRegisterType<SphereProperties>("Crystal", 1, 0, "SphereProperties");
+    qmlRegisterType<CircleProperties>("Crystal", 1, 0, "CircleProperties");
     mAnnoLayer = new osgEarth::Annotation::AnnotationLayer;
 //    Q_UNUSED(engine)
     mQmlEngine = engine;
@@ -735,6 +736,22 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
         //mMapController->addNode(mCircleEditor);
 
         //mMapController->addNode(mCircle);
+
+        //--show property window---------------------------------------------------------------------------------
+        QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+        QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+
+            if (comp->status() == QQmlComponent::Ready) {
+                mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+                CircleProperties *circleProperties = new CircleProperties(mCircle, mMapController);
+
+                mItem->setProperty("circleProperties", QVariant::fromValue<CircleProperties*>(circleProperties));
+            }
+
+        });
+        comp->loadUrl(QUrl("qrc:/CircleProperty.qml"));
+        QMetaObject::invokeMethod(mItem, "show");
+        //--------------------------------------------------------------------------------------------------
         addNodeToLayer(mCircle);
 
         event->accept();
@@ -758,6 +775,8 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
         ////        mCircle->setArcEnd(60);
         ////        mCircle->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y(),geoPos.z()+1000000));
         ////        mCircle->setCircleHeight(25000);
+        ///
+        QMetaObject::invokeMethod(mItem, "hide");
         event->accept();
     }
         if(event->button() == Qt::MouseButton::MidButton && mDrawingState==DrawingState::START)
@@ -771,6 +790,8 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
             mCircleEditor = nullptr;
             event->accept();
             mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapController->getMapNode());
+
+            QMetaObject::invokeMethod(mItem, "hide");
         }
 }
 
