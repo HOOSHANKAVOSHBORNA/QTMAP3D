@@ -19,7 +19,7 @@ class CircleProperties : public QObject
     Q_PROPERTY(int       transparency   READ transparency  WRITE setTransparency NOTIFY circlePropertiesChangedToQML)
     Q_PROPERTY(double    arcstart       READ arcstart      WRITE setArcstart     NOTIFY circlePropertiesChangedToQML)
     Q_PROPERTY(double    arcend         READ arcend        WRITE setArcend       NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(int       clamp          READ clamp         WRITE setClamp        NOTIFY circlePropertiesChangedToQML)
+    Q_PROPERTY(osgEarth::Symbology::AltitudeSymbol::Clamping       clamp          READ clamp         WRITE setClamp        NOTIFY circlePropertiesChangedToQML)
     Q_PROPERTY(bool      relative       READ relative      WRITE setRelative     NOTIFY circlePropertiesChangedToQML)
 
 
@@ -67,8 +67,8 @@ public:
     double arcend() const;
     void setArcend(const double &arcend);
     // set Type
-    int clamp() const;
-    void setClamp(const int &clamp);
+    osgEarth::Symbology::AltitudeSymbol::Clamping clamp() const;
+    void setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping &clamp);
     // set relative
     bool relative() const;
     void setRelative(const bool &relative);
@@ -90,7 +90,7 @@ private:
     int       mTransparency;
     double    mArcstart ;
     double    mArcend ;
-    int       mClamp  ;
+    osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp  ;
     bool      mRelative ;
 
     Circle*   mCircle;

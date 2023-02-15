@@ -41,27 +41,17 @@ void Circle::setColor(osgEarth::Color color)
     this->setStyle(style);
 }
 
-
-
-void Circle::setClamp(int clamp)
+osgEarth::Color Circle::getColor()
 {
     auto style = this->getStyle();
-    switch (clamp){
-        case 0:
-            style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
-        break;
+    return style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color();
+}
 
-        case 1:
-            style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-        break;
 
-        case 2:
-            style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
-        break;
 
-        case 3:
-            style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-        break;
-    }
+void Circle::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)
+{
+    auto style = this->getStyle();
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = clamp;
     this->setStyle(style);
 }

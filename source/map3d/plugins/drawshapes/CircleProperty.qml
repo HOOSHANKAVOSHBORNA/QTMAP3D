@@ -150,7 +150,7 @@ Item {
                                 Rectangle{
                                     height: 20
                                     width: 20
-                                    color: fillColor
+                                    color: circleProperties.fillcolor
                                     border.width: 2
                                     border.color: "#c9c9c9"
                                     x: 5
@@ -174,7 +174,7 @@ Item {
 
                                     Text {
                                         id: fillColorField
-                                        text: "fillColor"
+                                        text: circleProperties.fillcolor
                                         anchors.centerIn: parent
                                         font.pointSize: 10
 
@@ -185,7 +185,6 @@ Item {
                                     id: fillColorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
-//                                        fillColor = fillColorDialog.color
                                         circleProperties.fillcolor = fillColorDialog.color
                                     }
 
@@ -671,9 +670,14 @@ Item {
 
                                 SpinBox {
                                     id: transValue
-                                    from: 0
-                                    to: 100
-                                    value: 70
+                                    stepSize: 5
+                                    value: 50
+                                    to : 100
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  100
+                                    }
                                     editable: true
                                     anchors.centerIn: parent
                                     height: 20
@@ -693,7 +697,9 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-   //                                         circleProperties.transparency = text
+                                            if(transValue && transValue.value){
+                                           circleProperties.transparency = transValue.value
+                                            }
                                         }
                                     }
                                     up.indicator: Rectangle {
@@ -766,7 +772,7 @@ Item {
 
                                 ComboBox {
                                     id: control
-                                    model: ["None", "Terrain", "Absolute","Relative"]
+                                    model: ["None", "Terrain", "Relative","Absolute"]
                                     anchors.centerIn: parent
                                     onCurrentIndexChanged:   {
                                         circleProperties.clamp = currentIndex

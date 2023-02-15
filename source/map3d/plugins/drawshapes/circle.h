@@ -9,7 +9,8 @@ public:
     void setCircleHeight(float hieght);
     Circle(MapController *mapController, bool clamp);
     void setColor(osgEarth::Color color);
-    void setClamp(int clamp);
+    osgEarth::Color getColor();
+    void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
 
 private:
     osgEarth::Symbology::Style circleStyle;

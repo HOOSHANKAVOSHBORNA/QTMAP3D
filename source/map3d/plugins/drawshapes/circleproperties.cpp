@@ -12,8 +12,8 @@ CircleProperties::CircleProperties(Circle* circle, MapController *mapController,
     mMapController = mapController;
 
 
-//    mFillcolor = QString::fromStdString(circle->getColor().toHTML());
-//    mFillcolor.remove(7,2);
+    mFillcolor = QString::fromStdString(circle->getColor().toHTML());
+    mFillcolor.remove(7,2);
 //    mCircleHeight = circle->getCircleHeight();
     mLocation.setX(circle->getPosition().x());
     mLocation.setY(circle->getPosition().y());
@@ -37,11 +37,11 @@ void CircleProperties:: setFillColor(const QString &value){
     mFillcolor = value;
     emit circlePropertiesChanged(FillColor , value);
 
-//    osgEarth::Color tmpColor = mCircle->getStyle();
-//    float A = tmpColor.a();
-//    tmpColor  = value.toStdString();
-//    tmpColor.a() = A;
-//    mCircle->setColor(tmpColor);
+    osgEarth::Color tmpColor = mCircle->getColor();
+    float A = tmpColor.a();
+    tmpColor  = value.toStdString();
+    tmpColor.a() = A;
+    mCircle->setColor(tmpColor);
 
 
 
@@ -114,10 +114,10 @@ void CircleProperties::setTransparency(const int &value){
         return;
     mTransparency = value;
     emit circlePropertiesChanged(Transparency, value);
-//    float tempValue = value;
-//    osg::Vec4f tempColor = mCircle->getColor();
-//    tempColor.a() = tempValue /100;
-//    mCircle->setColor(osg::Vec4f(tempColor));
+    float tempValue = value;
+    osg::Vec4f tempColor = mCircle->getColor();
+    tempColor.a() = tempValue /100;
+    mCircle->setColor(osg::Vec4f(tempColor));
 
 }
 
@@ -149,11 +149,11 @@ void CircleProperties::setArcend(const double &value){
 }
 
 
-int CircleProperties::clamp() const
+osgEarth::Symbology::AltitudeSymbol::Clamping CircleProperties::clamp() const
 {
     return mClamp;
 }
-void CircleProperties::setClamp(const int &value){
+void CircleProperties::setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping &value){
     if(value == mClamp)
         return;
     mClamp = value;
