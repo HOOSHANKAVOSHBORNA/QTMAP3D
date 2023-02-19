@@ -99,7 +99,6 @@ void AssignmentModel::refresh()
 void AssignmentModel::onSystemClicked(int row)
 {
     showAircraftAssign = true;
-    beginResetModel();
     mAircraftListProxy.clear();
     for (auto aircraft : mSystemListProxy[std::size_t(row)].second->assignedAircrafts) {
         beginResetModel();
@@ -110,7 +109,6 @@ void AssignmentModel::onSystemClicked(int row)
         mAircraftListProxy.push_back(isp);
         endResetModel();
     }
-    endResetModel();
 }
 
 void AssignmentModel::assignAirToSystem(AircraftInfo &aircraft, SystemInfo &system)
