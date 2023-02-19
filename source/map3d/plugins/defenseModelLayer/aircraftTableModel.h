@@ -36,17 +36,23 @@ public:
 public slots:
     void setFilterWildcard(const QString& wildcard);
 
+    void onUpdateTimerTriggered();
 
 public:
     void updateItemData(const QString& jsonStr);
     void updateItemData(const AircraftInfo& aircraftInfo);
     void deleteItem(int TN);
+    void clear();
 
 private:
     std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoList;
     std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoListProxy;
 
     QString mFilter;
+
+    bool mNeedUpdateOnTimerTrigger = false;
+    int mMinRowUpdate = -1;
+    int mMaxRowUpdate = -1;
 };
 
 #endif // AIRCRAFTTABLEMODEL_H

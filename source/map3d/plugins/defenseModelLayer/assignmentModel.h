@@ -7,19 +7,7 @@
 #include <deque>
 #include <QSharedPointer>
 #include <QPair>
-
-
-struct AircraftAssign;
-
-struct SystemAssign {
-    int Number;
-    QList<AircraftAssign> Aircrafts;
-};
-
-struct AircraftAssign {
-    int Number;
-    QList<SystemAssign> Systems;
-};
+#include <defenseDataManager.h>
 
 class AssignmentModel : public QAbstractTableModel
 {
@@ -37,12 +25,30 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int,QByteArray> roleNames() const override;
 
+//    void updateData(int TN, int Number);
+    void assignAirToSystem(AircraftInfo &aircraft, SystemInfo &system);
+    void addAircraft(AircraftInfo aircraft);
+    void addSystem(SystemInfo system);
+    void clear();
+
+public slots:
+    void onAircraftClicked(int row);
+    void onSystemClicked(int row);
+    void refresh();
 public:
-    Q_INVOKABLE int getNumber(int row) const;
-    Q_INVOKABLE QString headerText(int column) const;
+    Q_INVOKABLE int getAircraftNumber(int row) const;
+    Q_INVOKABLE int getSystemNumber(int row) const;
+    Q_INVOKABLE QString aircraftHeaderText(int column) const;
+    Q_INVOKABLE QString systemHeaderText(int column) const;
 private:
-    std::deque<QPair<int, QSharedPointer<AircraftAssign>>> mAircraftList;
-    std::deque<QPair<int, QSharedPointer<SystemAssign>>> mSystemList;
+    std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftList;
+    std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemList;
+    std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftListProxy;
+    std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemListProxy;
+
+    bool showSystyemAssigned = false;
+    bool showAircraftAssign = false;
+
 };
 
 #endif

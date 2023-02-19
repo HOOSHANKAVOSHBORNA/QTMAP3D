@@ -158,3 +158,11 @@ void StationTableModel::updateItemData(const StationInfo &stationInfo)
     endResetModel();
 
 }
+
+void StationTableModel::clear()
+{
+    beginResetModel();
+    mStationInfoList.clear();
+    mStationInfoListProxy.clear();
+    endResetModel();
+}

@@ -146,20 +146,20 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     connect(mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
     //----------------------------
     mRouteLine = new LineNode(mapControler);
-    mRouteLine->setPointVisibilty(false);
+    //mRouteLine->setPointVisibilty(false);
     mRouteLine->setClamp(false);
     mRouteLine->setColor(osgEarth::Color::Purple);
     mRouteLine->setWidth(6);
 
     mLatestPointLine = new LineNode(mapControler);
-    mLatestPointLine->setPointVisibilty(true);
-//    mLatestPointLine->setPointColor(osgEarth::Color::Black);
+    //mLatestPointLine->setPointVisibilty(true);
+    mLatestPointLine->setPointColor(osgEarth::Color::Blue);
     mLatestPointLine->setClamp(false);
     mLatestPointLine->setColor(osgEarth::Color::Purple);
     mLatestPointLine->setWidth(6);
 
     mTempLine = new LineNode(mapControler);
-    mTempLine->setPointVisibilty(false);
+    //mTempLine->setPointVisibilty(false);
     mTempLine->setClamp(false);
     mTempLine->setColor(osgEarth::Color::Purple);
     mTempLine->setWidth(6);
@@ -210,7 +210,7 @@ void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double 
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 
     path->insert(0, osg::AnimationPath::ControlPoint(currentPosW,getPositionAttitudeTransform()->getAttitude(),getScale()));
-    path->insert(0.3,osg::AnimationPath::ControlPoint(posW,headingRotate, getScale()));
+    path->insert(0.001,osg::AnimationPath::ControlPoint(posW,headingRotate, getScale()));
     //path->insert(0.1,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
     //path->insert(0.2,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
     //path->insert(timeEstimate,osg::AnimationPath::ControlPoint(posEstimateW, headingRotate, getScale()));
@@ -220,26 +220,23 @@ void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double 
     setUpdateCallback(mAnimationPathCallback);
 
     //--lines-------------------------------------
-    if(mRouteLine->getSize() <= 0)
-    {
-        mRouteLine->addPoint(getPosition());
-        mLatestPointLine->addPoint(getPosition());
-    }
-    else
-    {
-        mLatestPointLine->addPoint(mCurrentFlyPoint);
-        if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
-        {
-            mLatestPointLine->removeFirstPoint();
-        }
-        mRouteLine->addPoint(mCurrentFlyPoint);
-        if(std::abs(mCurrentHeading - heading) > 5)
-            mRouteLine->removePoint();
-    }
+//    if(mRouteLine->getSize() <= 0)
+//    {
+//        mRouteLine->addPoint(getPosition());
+////        mLatestPointLine->addPoint(getPosition());
+//    }
+////    mLatestPointLine->addPoint(mCurrentFlyPoint);
+////    if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
+////    {
+////        mLatestPointLine->removeFirstPoint();
+////    }
+//    if(std::abs(mCurrentHeading - heading) < 5)
+//        mRouteLine->removePoint();
+//    mRouteLine->addPoint(mCurrentFlyPoint);
 
     mCurrentHeading = heading;
     mCurrentFlyPoint = posGeo;
-    mTempLine->clearPath();
+    //mTempLine->clearPath();
 }
 
 void AircraftModelNode::stop()
@@ -308,7 +305,7 @@ void AircraftModelNode::frameEvent()
     //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
     //------------------------------------
-    mTempLine->addPoint(getPosition());
+    //mTempLine->addPoint(getPosition());
 }
 
 void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -375,11 +372,13 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 void AircraftModelNode::onLatestPointsToggled(bool check) {
     if (check)
     {
+//        mLatestPointLine->setPointVisibilty(true);
         addNodeToLayer(mLatestPointLine);
         addNodeToLayer(mTempLine);
     }
     else
     {
+//        mLatestPointLine->setPointVisibilty(false);
         removeNodeFromLayer(mLatestPointLine);
         removeNodeFromLayer(mTempLine);
     }

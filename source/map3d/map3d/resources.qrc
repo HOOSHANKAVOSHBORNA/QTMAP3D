@@ -46,5 +46,6 @@
         <file>Resources/close1.png</file>
         <file>Resources/mainFrame.png</file>
         <file>Resources/minimize.png</file>
+        <file>Resources/collapse2.png</file>
     </qresource>
 </RCC>

@@ -5,7 +5,11 @@ import Crystal 1.0
 Item {
 
     id: rootItem
+    property int sHoveredIndex: -1
+    property int sSelectedIndex: -1
 
+    property int aHoveredIndex: -1
+    property int aSelectedIndex: -1
     property AssignmentModel model
     Rectangle {
         anchors.fill: parent
@@ -43,7 +47,7 @@ Item {
                             color: '#4568dc'
                             Text {
                                 color: '#FFFFFF'
-                                text: rootItem.model ? rootItem.model.headerText(index) : "";
+                                text: rootItem.model ? rootItem.model.aircraftHeaderText(index) : "";
                                 anchors.centerIn: parent
                             }
                         }
@@ -61,7 +65,26 @@ Item {
                     delegate: Item {
                         implicitWidth:   rct.implicitWidth
                         implicitHeight:  rct.implicitHeight + 4
+                        MouseArea {
+                            id: mouseArea
+                            hoverEnabled: true
+                            anchors.fill: parent
+                            onClicked: function() {
+                                if (rootItem.model) {
+                                    rootItem.model.onAircraftClicked(row)
+                                }
+                            }
 
+                            onContainsMouseChanged: function() {
+                                if (mouseArea.containsMouse) {
+                                    rootItem.aHoveredIndex = row;
+                                } else {
+                                    if (rootItem.aHoveredIndex == row) {
+                                        rootItem.aHoveredIndex = -1;
+                                    }
+                                }
+                            }
+                        }
 
                         Rectangle {
                             id: rct
@@ -71,13 +94,13 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (rootItem.hoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: AirDisp == "" ? "transparent" : (rootItem.aHoveredIndex == row) ? "lightskyblue" : "transparent"
                                 anchors.fill: parent
                             }
                             Text {
                                 id: txt
                                 anchors.centerIn: parent
-                                text: SysDisp
+                                text: AirDisp
                                 color: "white"
                             }
                         }
@@ -91,6 +114,21 @@ Item {
             Layout.fillWidth: true
             color: "transparent"
             Layout.preferredWidth: 40
+            Item {
+                MouseArea {
+                    anchors.fill: img
+                    onClicked: rootItem.model.refresh()
+                }
+                Image {
+                    id: img
+                    source: "qrc:/resources/refresh.png"
+                    width: 40
+                    height: 40
+                    anchors.top: parent.top
+                }
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
             Image {
                 source: "qrc:/resources/arrow.png"
                 width: 40
@@ -126,7 +164,7 @@ Item {
                             color: '#4568dc'
                             Text {
                                 color: '#FFFFFF'
-                                text: rootItem.model ? rootItem.model.headerText(index) : "";
+                                text: rootItem.model ? rootItem.model.systemHeaderText(index) : "";
                                 anchors.centerIn: parent
                             }
                         }
@@ -143,7 +181,26 @@ Item {
                     delegate: Item {
                         implicitWidth:   rct1.implicitWidth
                         implicitHeight:  rct1.implicitHeight + 4
+                        MouseArea {
+                            id: mouseArea2
+                            hoverEnabled: true
+                            anchors.fill: parent
+                            onClicked: function() {
+                                if (rootItem.model) {
+                                    rootItem.model.onSystemClicked(row)
+                                }
+                            }
 
+                            onContainsMouseChanged: function() {
+                                if (mouseArea2.containsMouse) {
+                                    rootItem.sHoveredIndex = row;
+                                } else {
+                                    if (rootItem.sHoveredIndex == row) {
+                                        rootItem.sHoveredIndex = -1;
+                                    }
+                                }
+                            }
+                        }
                         Rectangle {
                             id: rct1
                             anchors.centerIn: parent
@@ -152,7 +209,7 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (rootItem.hoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: SysDisp == "" ? "transparent" : (rootItem.sHoveredIndex == row) ? "lightskyblue" : "transparent"
                                 anchors.fill: parent
                             }
                             Text {
@@ -167,5 +224,4 @@ Item {
             }
         }
     }
-
 }

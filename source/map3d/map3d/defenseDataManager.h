@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QObject>
 
+struct SystemInfo;
 struct AircraftInfo
 {
     enum Identify{
@@ -36,6 +37,8 @@ struct AircraftInfo
 
     QStringList DetectionSystems;
     QStringList Sends;
+
+    QList<SystemInfo> assignedSystems;
     //---------------------------------------------
 public:
     QString identifyToString() const
@@ -203,6 +206,8 @@ struct SystemInfo
     double ViewRange{300000};
     double MezRange{250000};
     bool Active;
+
+    QList<AircraftInfo> assignedAircrafts;
 };
 
 struct SystemStatusInfo

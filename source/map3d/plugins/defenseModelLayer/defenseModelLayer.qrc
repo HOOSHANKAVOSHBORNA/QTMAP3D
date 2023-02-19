@@ -25,5 +25,6 @@
         <file>resources/bullet_red.png</file>
         <file>resources/arrow.png</file>
         <file>resources/points.png</file>
+        <file>resources/refresh.png</file>
     </qresource>
 </RCC>

@@ -2,6 +2,8 @@
 #include <QHash>
 #include <QColor>
 #include <QRegularExpression>
+#include <QDebug>
+#include <QTimer>
 
 AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
@@ -11,6 +13,12 @@ AircraftTableModel::AircraftTableModel(QObject *parent) :
     //        ai.TN = QStringLiteral("OOPS") + QString::number(i);
     //        updateItemData(ai);
     //    }
+
+    QTimer *timer = new QTimer;
+    QObject::connect(timer , &QTimer::timeout,
+                     this, &AircraftTableModel::onUpdateTimerTriggered,
+                     Qt::DirectConnection);
+    timer->start(500);
 }
 
 int AircraftTableModel::columnCount(const QModelIndex &/*parent*/) const
@@ -28,27 +36,30 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     if (index.row() > int(mAircraftInfoListProxy.size()))
         return QVariant();
 
+    const int _row = index.row();
+
     switch (role) {
     case Qt::DisplayRole:
     {
+
         switch(index.column()) {
-        case  0: return QVariant::fromValue<QString>(QString::number(mAircraftInfoListProxy[static_cast<size_t>(index.row())].first));
-        case  1: return QVariant::fromValue<int>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->TN);
-        case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->IFFCode);
-        case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->CallSign);
-        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->Type);
-        case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->MasterRadar);
-        case  6: return QVariant::fromValue<QString>( mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->identifyToString());
-        case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->IdentificationMethod);
-        case  8: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->Time);
-        case  9: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->Pos);
-        case 10: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Latitude);
-        case 11: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Longitude);
-        case 12: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Altitude);
-        case 13: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Heading);
-        case 14: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(index.row() )].second->Speed);
-        case 15: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->detectionSystemsToString());
-        case 16: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(index.row())].second->sendsToString());
+        case  0: return QVariant::fromValue<QString>(QString::number(mAircraftInfoListProxy[static_cast<size_t>(_row)].first));
+        case  1: return QVariant::fromValue<int>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->TN);
+        case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->IFFCode);
+        case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->CallSign);
+        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->Type);
+        case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->MasterRadar);
+        case  6: return QVariant::fromValue<QString>( mAircraftInfoListProxy[static_cast<size_t>(_row)].second->identifyToString());
+        case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->IdentificationMethod);
+        case  8: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->Time);
+        case  9: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->Pos);
+        case 10: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Latitude);
+        case 11: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Longitude);
+        case 12: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Altitude);
+        case 13: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Heading);
+        case 14: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Speed);
+        case 15: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->detectionSystemsToString());
+        case 16: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->sendsToString());
         }
 
         break;
@@ -56,14 +67,18 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
 
     case BackColorRole:
     {
-        return QVariant::fromValue<QColor>(QColor("transparent"));
+        const static auto backColorRole = QVariant::fromValue<QColor>(QColor("transparent"));
+
+        return backColorRole;
 
         break;
     }
 
     case TextColorRole:
     {
-        return QVariant::fromValue<QColor>(QColor("white"));
+        const static auto textColorRole = QVariant::fromValue<QColor>(QColor("white"));
+
+        return textColorRole;
         break;
     }
 
@@ -145,6 +160,10 @@ int AircraftTableModel::getTN(int row) const
 
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 {
+    mMinRowUpdate = -1;
+    mMaxRowUpdate = -1;
+    mNeedUpdateOnTimerTrigger = false;
+
     beginResetModel();
 
     mFilter = wildcard;
@@ -159,6 +178,25 @@ void AircraftTableModel::setFilterWildcard(const QString &wildcard)
     endResetModel();
 }
 
+void AircraftTableModel::onUpdateTimerTriggered()
+{
+    if (mNeedUpdateOnTimerTrigger) {
+
+        mAircraftInfoListProxy.clear();
+        for (auto& item : mAircraftInfoList) {
+            if (QString::number(item.second->TN).contains(mFilter))
+                mAircraftInfoListProxy.push_back(item);
+        }
+
+
+        emit dataChanged(createIndex(mMinRowUpdate, 0), createIndex(mMaxRowUpdate, columnCount()-1));
+
+        mMinRowUpdate = -1;
+        mMaxRowUpdate = -1;
+        mNeedUpdateOnTimerTrigger = false;
+    }
+}
+
 void AircraftTableModel::updateItemData(const QString &/*jsonStr*/)
 {
 
@@ -166,7 +204,7 @@ void AircraftTableModel::updateItemData(const QString &/*jsonStr*/)
 
 void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
 {
-    beginResetModel();
+//    beginResetModel();
 
     const auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(),
                                  [aircraftInfo](const QPair<int, QSharedPointer<AircraftInfo>>& itemInfo){
@@ -176,26 +214,67 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
 
     if (it != mAircraftInfoList.end()) {
         *(*it).second = aircraftInfo;
+
+        int index = static_cast<int>(std::distance(mAircraftInfoList.begin(), it));
+
+        if (mMinRowUpdate == -1) {
+            mMinRowUpdate = index;
+        } else {
+            mMinRowUpdate = qMin(index, mMinRowUpdate);
+
+        }
+
+        if (mMaxRowUpdate == -1) {
+            mMaxRowUpdate = index;
+        } else {
+            mMaxRowUpdate = qMax(index, mMaxRowUpdate);
+        }
+
+
+
+        mNeedUpdateOnTimerTrigger = true;
+
+
     } else {
+
+
         QPair<int, QSharedPointer<AircraftInfo>> isp;
         isp.first = mAircraftInfoList.size();
         isp.second.reset(new AircraftInfo);
         *(isp.second) = aircraftInfo;
         mAircraftInfoList.push_back(isp);
+
+        mMinRowUpdate = -1;
+        mMaxRowUpdate = -1;
+        mNeedUpdateOnTimerTrigger = false;
+
+
+        beginInsertRows(QModelIndex(), mAircraftInfoList.size() - 1, mAircraftInfoList.size() - 1);
+
+        mAircraftInfoListProxy.clear();
+        for (auto& item : mAircraftInfoList) {
+            if (QString::number(item.second->TN).contains(mFilter))
+                mAircraftInfoListProxy.push_back(item);
+        }
+
+        endInsertRows();
+
+
+
     }
 
-    mAircraftInfoListProxy.clear();
-    for (auto& item : mAircraftInfoList) {
-        if (QString::number(item.second->TN).contains(mFilter))
-            mAircraftInfoListProxy.push_back(item);
-    }
 
-    endResetModel();
+
+//    endResetModel();
 
 }
 
 void AircraftTableModel::deleteItem(int TN)
 {
+    mMinRowUpdate = -1;
+    mMaxRowUpdate = -1;
+    mNeedUpdateOnTimerTrigger = false;
+
     beginResetModel();
 
     const  auto newEnd = std::remove_if(mAircraftInfoList.begin(),
@@ -230,6 +309,18 @@ void AircraftTableModel::deleteItem(int TN)
             mAircraftInfoListProxy.push_back(item);
     }
 
+    endResetModel();
+}
+
+void AircraftTableModel::clear()
+{
+    mMinRowUpdate = -1;
+    mMaxRowUpdate = -1;
+    mNeedUpdateOnTimerTrigger = false;
+
+    beginResetModel();
+    mAircraftInfoList.clear();
+    mAircraftInfoListProxy.clear();
     endResetModel();
 }
 

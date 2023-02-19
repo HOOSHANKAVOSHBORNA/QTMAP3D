@@ -40,6 +40,7 @@ public slots:
 public:
     void updateItemData(const QString& jsonStr);
     void updateItemData(const StationInfo& stationInfo);
+    void clear();
 
 private:
     std::deque<QPair<int, QSharedPointer<StationInfo>>> mStationInfoList;

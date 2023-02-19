@@ -208,7 +208,7 @@ bool DefenseModelLayer::setup(MapController *mapController,
         }
     });
 
-    connect(mMapController, &MapController::mapSRSChanged, this, &DefenseModelLayer::onClear);
+    connect(mMapController, &MapController::mapCleared, this, &DefenseModelLayer::onClear);
 
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);
@@ -452,6 +452,8 @@ void DefenseModelLayer::onAircraftAssignedResponse(int tn, int systemNo, bool re
         auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemNo].get());
         if(systemModelNode)
             systemModelNode->acceptAssignedModelNode(result);
+        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
+        mDataManager->assignAirToSystem(aircraftModelNode->getInformation(), systemModelNode->getInformation());
     }
 //---if rejected then unassinment from aircraft----------------------------------------------------
     if(!result && mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
@@ -468,6 +470,7 @@ void DefenseModelLayer::onClear()
     mOnMoveModelNode = nullptr;
     mSelectedModelNode = nullptr;
     //--clear list-----------------------------------------
+    mDataManager->clearAll();
     //--add layer------------------------------------------
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);

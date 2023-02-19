@@ -22,8 +22,6 @@ MainWindow::MainWindow(QWindow *parent) :
 {
     mOGLF = new QOpenGLFunctions_2_0;
 
-    setLayersModel(mMapController->getLayersModel());
-
     QObject::connect(this, &MainWindow::sceneGraphInitialized,
                      this, &MainWindow::initializeGL,
                      Qt::DirectConnection);
@@ -43,8 +41,6 @@ MainWindow::MainWindow(QWindow *parent) :
                      mMapController, &MapController::goToHome);
     QObject::connect(this, &MainWindow::view3DButtonClicked,
                      mMapController, &MapController::toggle3DView);
-    QObject::connect(this, &MainWindow::toggleLayerEnabled,
-                     mMapController, &MapController::toggleLayerEnabled);
 
 
 //    QObject::connect(this, &MainWindow::upButtonClicked,
@@ -588,6 +584,12 @@ void MainWindow::initializeGL()
     mMapController->initializeOsgEarth();
     restoreContext();
     emit osgInitialized();
+    //----------------------------------------------------------
+    LayersModel *layersModel = new LayersModel(mMapController);
+    setLayersModel(layersModel);
+    QObject::connect(this, &MainWindow::toggleLayerEnabled,
+                     layersModel, &LayersModel::toggleLayerEnabled);
+    //----------------------------------------------------------
     restoreContext();
 
     resetOpenGLState();

@@ -137,6 +137,40 @@ CListWindow {
                             onContainsMouseChanged: imageminimize.state = containsMouse ? "mouseIn" : " mouseOut"
                         }
                     }
+                    Image {
+                        id: imageCollapse
+                        width: 24
+                        height: 24
+                        anchors.verticalCenterOffset: 1
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: imageminimize.left
+                        anchors.rightMargin: 3
+                        fillMode: Image.PreserveAspectFit
+                        source: "qrc:/Resources/collapse2.png"
+                        states: ["mouseIn" , "mouseOut"]
+                        state: "mouseOut"
+                        transitions: [
+                            Transition {
+                                from: "*"
+                                to: "mouseIn"
+
+                                NumberAnimation {
+                                    target: imageCollapse
+                                    property: "scale"
+                                    from: 0.85
+                                    to:1
+                                    duration: 400
+                                    easing.type: Easing.OutBounce
+                                }
+                            }
+                        ]
+                        MouseArea{
+                            hoverEnabled: true
+                            anchors.fill : parent
+                            onClicked: root.showMaximized()
+                            onContainsMouseChanged: imageCollapse.state = containsMouse ? "mouseIn" : " mouseOut"
+                        }
+                    }
                 }
                 Row {
                     id: buttons
@@ -202,7 +236,7 @@ CListWindow {
                     Layout.fillWidth: true
                     layer.enabled: true
                 }
-                SwipeView {
+                StackLayout {
                     id: stacklayout
                     Layout.fillWidth: true
                     Layout.fillHeight: true

@@ -2,7 +2,7 @@
 #define MapController_H
 
 #include "osgrenderer.h"
-#include "layersmodel.h"
+//#include "layersmodel.h"
 
 #include <QQuickWindow>
 #include <QObject>
@@ -23,13 +23,13 @@ class MapController : public QObject
 {
     Q_OBJECT
 public:
-    void setMap(const osgEarth::Map *map);
+    void setMap(osgEarth::Map *map);
     osgViewer::Viewer *getViewer()const;
     const osg::Group *getRoot() const;
     osgEarth::MapNode *getMapNode() const;
     const osgEarth::SpatialReference* getMapSRS() const;
     void addLayer(osgEarth::Layer* layer);
-    LayersModel *getLayersModel() const;
+//    LayersModel *getLayersModel() const;
     bool addNode(osg::Node *node);
     bool removeNode(osg::Node *node);
 
@@ -61,7 +61,6 @@ public slots:
                            qreal range,
                            qreal pitch,
                            qreal heading);
-    void toggleLayerEnabled(int layerIndex);
 
 signals:
     void headingAngleChanged(qreal angle);
@@ -78,7 +77,8 @@ signals:
     void fpsChanged(qreal fps);
     void modeChanged(bool is3DView);
     void layerChanged();
-    void mapSRSChanged();
+    void mapCleared();
+//    void mapSRSChanged();
 
 private:
     explicit MapController(QQuickWindow *window);
@@ -87,12 +87,11 @@ private:
     void mapMouseLocation(osgEarth::GeoPoint geoPos);
 
     void initializeOsgEarth();
-    void createMapNode(bool geocentric);
+    void createMapNode(bool geocentric, osgEarth::Map *map = nullptr);
     void createCameraManipulator();
 
     void layerAdded(osgEarth::Layer* layer, unsigned index);
     void layerRemoved(osgEarth::Layer* layer, unsigned index);
-    void updateLayersModel();
     void frame();
 
     friend class MainWindow;
@@ -101,7 +100,6 @@ private:
     osg::ref_ptr<osgEarth::MapNode> mMapNode{nullptr};
     osg::ref_ptr<osgEarth::Util::SkyNode> mSkyNode{nullptr};
     osg::ref_ptr<osg::Group> mMapRoot{nullptr};
-    LayersModel *mLayersModel{nullptr};
 
 private:
     bool mIsFirstFrame{true};
