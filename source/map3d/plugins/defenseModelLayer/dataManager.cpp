@@ -100,7 +100,7 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
         if (comp4->status() == QQmlComponent::Ready) {
             QQuickItem *assignTab = (QQuickItem*) comp4->create(nullptr);
-            mAssignModel = new AssignmentModel;
+//            mAssignModel = new AssignmentModel;
 
 //            QObject::connect(systemTab,
 //                             SIGNAL(filterTextChanged(const QString&)),
@@ -112,7 +112,8 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 //                             this,
 //                             SIGNAL(systemDoubleClicked(const int&)));
 
-            assignTab->setProperty("model", QVariant::fromValue<AssignmentModel*>(mAssignModel));
+            assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
+            assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
             mUiHandle->lwAddTab("Assignments", assignTab);
         }
 
@@ -120,7 +121,8 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
     comp4->loadUrl(QUrl("qrc:/modelplugin/AssignmentView.qml"));
 
-
+    connect(mSystemTableModel, &SystemTableModel::systemClicked, mAircraftTableModel, &AircraftTableModel::onSystemClicked);
+    connect(mAircraftTableModel, &AircraftTableModel::aircraftClicked, mSystemTableModel, &SystemTableModel::onAircraftClicked);
 }
 
 void DataManager::setAircraftInfo(const AircraftInfo &aircraftInof)
@@ -171,9 +173,11 @@ void DataManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
     }
 }
 
-void DataManager::assignAirToSystem(AircraftInfo aircraft, SystemInfo system)
+void DataManager::assignAirToSystem(int TN, int Number)
 {
-    mAssignModel->assignAirToSystem(aircraft, system);
+//    mAssignModel->assignAirToSystem(aircraft, system);
+    mAircraftTableModel->assign(TN, Number);
+    mSystemTableModel->assign(Number, TN);
 }
 
 void DataManager::clearAll()

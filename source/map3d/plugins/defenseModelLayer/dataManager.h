@@ -29,7 +29,7 @@ public slots:
     void setSystemInfo(const SystemInfo& systemInfo);
     void setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo);
     void setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo);
-    void assignAirToSystem(AircraftInfo aircraft, SystemInfo system);
+    void assignAirToSystem(int TN, int Number);
     void cancelAssign(int TN, int Number);
     void clearAll();
 

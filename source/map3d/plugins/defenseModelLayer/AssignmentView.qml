@@ -11,6 +11,8 @@ Item {
     property int aHoveredIndex: -1
     property int aSelectedIndex: -1
     property AssignmentModel model
+    property AircraftTableModel aircraftModel
+    property SystemTableModel systemModel
 //    Rectangle {
 //        anchors.fill: parent
 //        color: "#252525"
@@ -31,7 +33,10 @@ Item {
             anchors.centerIn: parent
             MouseArea {
                 anchors.fill: parent
-                onClicked: rootItem.model.refresh()
+                onClicked: {
+                    rootItem.aircraftModel.refresh();
+                    rootItem.systemModel.refresh();
+                }
             }
         }
         color: "#252525"
@@ -90,7 +95,7 @@ Item {
                             color: '#4568dc'
                             Text {
                                 color: '#FFFFFF'
-                                text: rootItem.model ? rootItem.model.aircraftHeaderText(index) : "";
+                                text: rootItem.aircraftModel ? rootItem.aircraftModel.headerText(index) : "";
                                 anchors.centerIn: parent
                             }
                         }
@@ -104,8 +109,14 @@ Item {
                 Layout.fillHeight: true
                 TableView {
                     id: aircrafts
-                    model: rootItem.model
-                    contentWidth: 120
+                    model: rootItem.aircraftModel
+//                    contentWidth: 120
+                    columnWidthProvider: function (column) {
+                        if (column > 3)
+                            return 0
+                        return 120
+                    }
+
                     delegate: Item {
                         implicitWidth:   rct.implicitWidth
                         implicitHeight:  rct.implicitHeight + 4
@@ -114,8 +125,8 @@ Item {
                             hoverEnabled: true
                             anchors.fill: parent
                             onClicked: function() {
-                                if (rootItem.model) {
-                                    rootItem.model.onAircraftClicked(row)
+                                if (rootItem.aircraftModel) {
+                                    rootItem.aircraftModel.onAircraftClicked(rootItem.aircraftModel.getTN(row))
                                 }
                             }
 
@@ -138,13 +149,13 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: AirDisp == "" ? "transparent" : (rootItem.aHoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: (rootItem.aHoveredIndex == row) ? "lightskyblue" : "transparent"
                                 anchors.fill: parent
                             }
                             Text {
                                 id: txt
                                 anchors.centerIn: parent
-                                text: AirDisp
+                                text: display
                                 color: "white"
                             }
                         }
@@ -181,7 +192,7 @@ Item {
                             color: '#4568dc'
                             Text {
                                 color: '#FFFFFF'
-                                text: rootItem.model ? rootItem.model.systemHeaderText(index) : "";
+                                text: rootItem.systemModel ? rootItem.systemModel.headerText(index) : "";
                                 anchors.centerIn: parent
                             }
                         }
@@ -193,7 +204,7 @@ Item {
                 Layout.fillHeight: true
                 TableView {
                     id: systems
-                    model: rootItem.model
+                    model: rootItem.systemModel
                     contentWidth: 120
                     delegate: Item {
                         implicitWidth:   rct1.implicitWidth
@@ -203,8 +214,8 @@ Item {
                             hoverEnabled: true
                             anchors.fill: parent
                             onClicked: function() {
-                                if (rootItem.model) {
-                                    rootItem.model.onSystemClicked(row)
+                                if (rootItem.systemModel) {
+                                    rootItem.systemModel.onSystemClicked(rootItem.systemModel.getNumber(row));
                                 }
                             }
 
@@ -226,13 +237,13 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: SysDisp == "" ? "transparent" : (rootItem.sHoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: (rootItem.sHoveredIndex == row) ? "lightskyblue" : "transparent"
                                 anchors.fill: parent
                             }
                             Text {
                                 id: txt1
                                 anchors.centerIn: parent
-                                text: SysDisp
+                                text: display
                                 color: "white"
                             }
                         }

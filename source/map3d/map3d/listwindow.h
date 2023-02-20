@@ -9,6 +9,7 @@ class ListWindow : public QQuickWindow
 
 public:
     ListWindow(QQuickWindow *parent = nullptr);
+
 };
 
 #endif // LISTWINDOW_H

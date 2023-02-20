@@ -65,6 +65,7 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
         break;
     }
 
+
     case BackColorRole:
     {
         const static auto backColorRole = QVariant::fromValue<QColor>(QColor("transparent"));
@@ -178,14 +179,54 @@ void AircraftTableModel::setFilterWildcard(const QString &wildcard)
     endResetModel();
 }
 
+void AircraftTableModel::onAircraftClicked(int TN)
+{
+    emit aircraftClicked(TN);
+}
+
+void AircraftTableModel::onSystemClicked(int Number) {
+    mNumber = Number;
+    mShowAssigned = true;
+    beginResetModel();
+    mAircraftInfoListProxy.clear();
+    if (mAircraftsAssigned.contains(Number)) {
+        for (int aircraft : mAircraftsAssigned[Number]) {
+            auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(), [aircraft](QPair<int, QSharedPointer<AircraftInfo>> &item){
+                return item.second->TN == aircraft;
+            });
+//            (*it).first = mAircraftInfoListProxy.size();
+            mAircraftInfoListProxy.push_back(*it);
+
+        }
+    }
+    endResetModel();
+}
+
+
 void AircraftTableModel::onUpdateTimerTriggered()
 {
     if (mNeedUpdateOnTimerTrigger) {
+        if (!mShowAssigned) {
+            mAircraftInfoListProxy.clear();
+            for (auto& item : mAircraftInfoList) {
+                if (QString::number(item.second->TN).contains(mFilter))
+                    mAircraftInfoListProxy.push_back(item);
+            }
+        }
+        else {
+            for (int i = 0; i < mAircraftInfoListProxy.size(); i++) {
+                mAircraftInfoListProxy.clear();
+                if (mAircraftsAssigned.contains(mNumber)) {
+                    for (int aircraft : mAircraftsAssigned[mNumber]) {
+                        auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(), [aircraft](QPair<int, QSharedPointer<AircraftInfo>> &item){
+                            return item.second->TN == aircraft;
+                        });
+//                        (*it).first = mAircraftInfoListProxy.size();
+                        mAircraftInfoListProxy.push_back(*it);
 
-        mAircraftInfoListProxy.clear();
-        for (auto& item : mAircraftInfoList) {
-            if (QString::number(item.second->TN).contains(mFilter))
-                mAircraftInfoListProxy.push_back(item);
+                    }
+                }
+            }
         }
 
 
@@ -309,6 +350,29 @@ void AircraftTableModel::deleteItem(int TN)
             mAircraftInfoListProxy.push_back(item);
     }
 
+    endResetModel();
+}
+
+void AircraftTableModel::assign(int TN, int Number)
+{
+    if (mAircraftsAssigned.contains(Number)) {
+        mAircraftsAssigned[Number].push_back(TN);
+    }
+    else {
+        mAircraftsAssigned[Number] = QList<int> {TN};
+    }
+    beginResetModel();
+    if (mNumber == Number) {
+        onSystemClicked(Number);
+    }
+    endResetModel();
+}
+
+void AircraftTableModel::refresh()
+{
+    beginResetModel();
+    mShowAssigned = false;
+    mAircraftInfoListProxy.assign(mAircraftInfoList.begin(), mAircraftInfoList.end());
     endResetModel();
 }
 
