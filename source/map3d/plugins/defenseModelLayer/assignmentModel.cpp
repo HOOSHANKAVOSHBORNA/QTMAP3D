@@ -76,13 +76,11 @@ void AssignmentModel::onAircraftClicked(int row)
     beginResetModel();
     mSystemListProxy.clear();
     for (auto system : mAircraftListProxy[std::size_t(row)].second->assignedSystems) {
-        beginResetModel();
         QPair<int, QSharedPointer<SystemInfo>> isp;
         isp.first = static_cast<int>(mSystemListProxy.size());
         isp.second.reset(new SystemInfo);
         *(isp.second) = system;
         mSystemListProxy.push_back(isp);
-        endResetModel();
     }
     endResetModel();
 }
@@ -99,16 +97,17 @@ void AssignmentModel::refresh()
 void AssignmentModel::onSystemClicked(int row)
 {
     showAircraftAssign = true;
+    beginResetModel();
     mAircraftListProxy.clear();
     for (auto aircraft : mSystemListProxy[std::size_t(row)].second->assignedAircrafts) {
-        beginResetModel();
+
         QPair<int, QSharedPointer<AircraftInfo>> isp;
         isp.first = static_cast<int>(mAircraftListProxy.size());
         isp.second.reset(new AircraftInfo);
         *(isp.second) = aircraft;
         mAircraftListProxy.push_back(isp);
-        endResetModel();
     }
+    endResetModel();
 }
 
 void AssignmentModel::assignAirToSystem(AircraftInfo &aircraft, SystemInfo &system)
@@ -129,6 +128,37 @@ void AssignmentModel::assignAirToSystem(AircraftInfo &aircraft, SystemInfo &syst
     });
     if (it4 == it3->second->assignedAircrafts.end())
         it3->second->assignedAircrafts.push_back(aircraft);
+}
+
+void AssignmentModel::cancelAssign(int TN, int Number)
+{
+    auto it = std::find_if(mAircraftList.begin(), mAircraftList.end(), [TN](QPair<int, QSharedPointer<AircraftInfo>> &a) {
+        return TN == a.second->TN;
+    });
+    const  auto newEnd = std::remove_if(it->second->assignedSystems.begin(),
+                                        it->second->assignedSystems.end(),
+                                        [Number](SystemInfo& itemInfo) {
+
+        return itemInfo.Number == Number;
+    });
+
+
+    it->second->assignedSystems.erase(newEnd, it->second->assignedSystems.end());
+
+    auto it2 = std::find_if(mSystemList.begin(), mSystemList.end(), [Number](QPair<int, QSharedPointer<SystemInfo>> &a) {
+       return Number == a.second->Number;
+    });
+    const  auto newEnd2 = std::remove_if(it2->second->assignedAircrafts.begin(),
+                                       it2->second->assignedAircrafts.end(),
+                                       [&TN](AircraftInfo& itemInfo) {
+
+       return itemInfo.TN == TN;
+    });
+
+    it2->second->assignedAircrafts.erase(newEnd2, it2->second->assignedAircrafts.end());
+    QAbstractTableModel::dataChanged(createIndex(0, 0), createIndex(it->first, 0));
+    QAbstractTableModel::dataChanged(createIndex(0, 0), createIndex(it2->first, 0));
+
 }
 
 void AssignmentModel::addAircraft(AircraftInfo aircraft)
