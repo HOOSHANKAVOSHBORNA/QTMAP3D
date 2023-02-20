@@ -11,25 +11,68 @@ Item {
     property int aHoveredIndex: -1
     property int aSelectedIndex: -1
     property AssignmentModel model
-    Rectangle {
-        anchors.fill: parent
+//    Rectangle {
+//        anchors.fill: parent
+//        color: "#252525"
+//    }
+
+
+    Rectangle{
+        parent: splitView
+        width: 40
+        height: 40
+        x: rootItem.width / 2 - 30
+//        y: 35
+        Image {
+            id: img
+            source: "qrc:/resources/refresh.png"
+            width: 35
+            height: 35
+            anchors.centerIn: parent
+            MouseArea {
+                anchors.fill: parent
+                onClicked: rootItem.model.refresh()
+            }
+        }
         color: "#252525"
     }
 
 
-    RowLayout {
+
+    SplitView {
+        y: 400
+        id: splitView
         anchors.fill: parent
+        anchors.leftMargin: 20
+        anchors.topMargin: 35
         anchors.centerIn: parent
+        handle: Rectangle {
+                    id: handleDelegate
+                    implicitWidth: 4
+                    implicitHeight: 4
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: SplitHandle.pressed ? "#81e889"
+                        : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+
+                    containmentMask: Item {
+                        x: (handleDelegate.width - width) / 2
+                        width: 64
+                        y: 350
+                        height: splitView.height
+                    }
+
+                }
+
         ColumnLayout {
             Layout.fillWidth: true
-            Layout.leftMargin: 50
+            SplitView.minimumWidth: 500
+            SplitView.fillWidth: true
             Item {
-                Layout.fillWidth: true;
                 Layout.preferredHeight: 40
                 Layout.minimumHeight: 40
 
 
-                Row {
+                RowLayout {
                     anchors.top: parent.top
                     height: 40
                     width: 4 * (120 + 4)
@@ -52,7 +95,8 @@ Item {
                             }
                         }
                     }
-                }
+
+                    }
             }
 
             ScrollView {
@@ -109,37 +153,10 @@ Item {
             }
         }
 
-        Rectangle {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            color: "transparent"
-            Layout.preferredWidth: 40
-            Item {
-                MouseArea {
-                    anchors.fill: img
-                    onClicked: rootItem.model.refresh()
-                }
-                Image {
-                    id: img
-                    source: "qrc:/resources/refresh.png"
-                    width: 40
-                    height: 40
-                    anchors.top: parent.top
-                }
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
 
-            Image {
-                source: "qrc:/resources/arrow.png"
-                width: 40
-                height: 40
-                anchors.centerIn: parent
-                rotation: 180
-            }
-        }
         ColumnLayout {
-            Layout.fillWidth: true
-            Layout.leftMargin: 50
+            SplitView.fillWidth: true
+            SplitView.minimumWidth: 500
             Item {
                 Layout.fillWidth: true;
                 Layout.preferredHeight: 40

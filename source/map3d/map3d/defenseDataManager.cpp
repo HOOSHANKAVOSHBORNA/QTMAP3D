@@ -49,7 +49,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     QTimer *timerUpdateAircraft = new QTimer();
     QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
         //---------------------------------------------
-//        createAircraftInfo();
+        createAircraftInfo();
         updateAircraftInfo();
         for(auto aircraft:mAircraftList)
             emit mDefenseDataManager->aircraftInfoChanged(aircraft);
@@ -57,7 +57,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         //emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
         //mAircraftList.removeFirst();
     });
-    timerUpdateAircraft->start(500);
+    timerUpdateAircraft->start(50);
     //---------------------------------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
         qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
@@ -80,10 +80,11 @@ Demo::~Demo()
 }
 
 const int systemNum = 10;
+const int stationNum = 0;
 AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
-    if(aircraftNumber > 50)
+    if(aircraftNumber > 100)
         return aircraftInfo;
     int tn = 10000 + aircraftNumber++;
     aircraftInfo.TN = tn;
@@ -189,7 +190,7 @@ void Demo::updateAircraftInfo()
 
 void Demo::createStationInfo()
 {
-    for(int i = 0; i < 5; ++i)
+    for(int i = 0; i < stationNum; ++i)
     {
         StationInfo stationInfo;
         QString name = "Station" + QString::number(stationList.count());

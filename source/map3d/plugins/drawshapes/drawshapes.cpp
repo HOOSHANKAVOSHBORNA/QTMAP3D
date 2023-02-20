@@ -58,6 +58,7 @@ DrawShapes::DrawShapes(QWidget *parent)
 bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     qmlRegisterType<SphereProperties>("Crystal", 1, 0, "SphereProperties");
+    qmlRegisterType<CircleProperties>("Crystal", 1, 0, "CircleProperties");
     mAnnoLayer = new osgEarth::Annotation::AnnotationLayer;
 //    Q_UNUSED(engine)
     mQmlEngine = engine;
@@ -424,7 +425,7 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
         mDrawingState = DrawingState::DELETE;
         //mMapController->removeNode(mLine);
         removeNodeFromLayer(mLine);
-        removeNodeFromLayer(mLine->mCircleGr);
+//        removeNodeFromLayer(mLine->mCircleGr);
 
         //mMapController->removeNode(mLine->mCircleGr);
         event->accept();
@@ -482,6 +483,7 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
         //mMapController->removeNode(mSphereNode);
         //mMapController->removeNode(mSphereNodeEditor);
         event->accept();
+        QMetaObject::invokeMethod(mItem, "hide");
     }
     if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
     {
@@ -505,7 +507,7 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
 
             if (comp->status() == QQmlComponent::Ready) {
                 mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-                SphereProperties *sphereProperties = new SphereProperties(mSphereNode);
+                SphereProperties *sphereProperties = new SphereProperties(mSphereNode, mMapController);
 
                 mItem->setProperty("sphereProperties", QVariant::fromValue<SphereProperties*>(sphereProperties));
             }
@@ -530,6 +532,8 @@ void DrawShapes::onNodeBtnDoubleClick(QMouseEvent *event, osg::Node *nodeEditor)
             //mMapController->removeNode(mPolyHdragger);
         event->accept();
     }
+
+    QMetaObject::invokeMethod(mItem, "hide");
 }
 
 void DrawShapes::onConeBtnClick(QMouseEvent *event)
@@ -732,6 +736,22 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
         //mMapController->addNode(mCircleEditor);
 
         //mMapController->addNode(mCircle);
+
+        //--show property window---------------------------------------------------------------------------------
+        QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+        QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+
+            if (comp->status() == QQmlComponent::Ready) {
+                mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+                CircleProperties *circleProperties = new CircleProperties(mCircle, mMapController);
+
+                mItem->setProperty("circleProperties", QVariant::fromValue<CircleProperties*>(circleProperties));
+            }
+
+        });
+        comp->loadUrl(QUrl("qrc:/CircleProperty.qml"));
+        QMetaObject::invokeMethod(mItem, "show");
+        //--------------------------------------------------------------------------------------------------
         addNodeToLayer(mCircle);
 
         event->accept();
@@ -755,6 +775,8 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
         ////        mCircle->setArcEnd(60);
         ////        mCircle->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y(),geoPos.z()+1000000));
         ////        mCircle->setCircleHeight(25000);
+        ///
+        QMetaObject::invokeMethod(mItem, "hide");
         event->accept();
     }
         if(event->button() == Qt::MouseButton::MidButton && mDrawingState==DrawingState::START)
@@ -768,6 +790,8 @@ void DrawShapes::onCircleBtnClick(QMouseEvent *event)
             mCircleEditor = nullptr;
             event->accept();
             mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapController->getMapNode());
+
+            QMetaObject::invokeMethod(mItem, "hide");
         }
 }
 

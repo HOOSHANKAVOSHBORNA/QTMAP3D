@@ -27,6 +27,7 @@ public:
 
 //    void updateData(int TN, int Number);
     void assignAirToSystem(AircraftInfo &aircraft, SystemInfo &system);
+    void cancelAssign(int TN, int Number);
     void addAircraft(AircraftInfo aircraft);
     void addSystem(SystemInfo system);
     void clear();

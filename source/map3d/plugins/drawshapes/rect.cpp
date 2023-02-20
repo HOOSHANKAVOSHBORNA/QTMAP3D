@@ -23,6 +23,7 @@ void Rect::setColor(osgEarth::Color color)
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color, 0.5);
     this->setStyle(style);
+
 }
 
 void Rect::setClamp(bool clamp)

@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>SphereProperty.qml</file>
+        <file>CircleProperty.qml</file>
     </qresource>
 </RCC>

@@ -1,7 +1,7 @@
 import QtQuick 2.13
-import QtQuick.Window 2.12
+import QtQuick.Window 2.13
 import QtQuick.Controls 2.13
-import QtQuick.Layouts 1.12
+import QtQuick.Layouts 1.13
 import QtQuick.Dialogs 1.2
 import Crystal 1.0
 
@@ -16,23 +16,27 @@ Item {
     }
 
 
-    property SphereProperties sphereProperties
+    property CircleProperties circleProperties
+
 
     Dialog {
-        id: dialog
+        id:dialog
+        //   flags: Qt.FramelessWindowHint | Qt.Window
         width: 250
-        height: 300
-        title: qsTr("Sphere Properties")
+        height: 350
+        title: qsTr("Circle Properties")
 
 
 
-
+        //    x:0
+        //    y:0
 
 
         ///////////////////properties////////////////////////////
-        //        property color myColor: "#004C05"
-        //property int previousX
-        //property int previousY
+        property color fillColor: "#004C05"
+        property color lineColor: "black"
+//        property int previousX
+//        property int previousY
 
         ///////////////////Main Holder///////////////////////////
         //    Rectangle{
@@ -62,7 +66,7 @@ Item {
         //            }
         //        }
 
-        /////////////////////////////Header//////////////////////////////
+        ///////////////////////////Header//////////////////////////////
         //        Rectangle{
         //            width: parent.width -2
         //            anchors.horizontalCenter: parent.horizontalCenter
@@ -75,7 +79,7 @@ Item {
         //            }
         //            Text {
         //                id: headerTitle
-        //                text: qsTr("Sphere Properties")
+        //                text: qsTr("Circle Properties")
         //                anchors.centerIn: parent
         //                font.bold: true
         //                font.pointSize: 10
@@ -102,8 +106,8 @@ Item {
         contentItem:  Rectangle {
             id: item
             visible: true
-            width: 240
-            height: 300
+            width: parent.width
+            //            height: 350
             //            anchors.horizontalCenter: parent.horizontalCenter
             anchors.fill: parent
             color: "#3e3e3e"
@@ -114,8 +118,8 @@ Item {
                 anchors.fill: parent
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
-                    contentHeight: 300
-                    width: 240
+                    contentHeight: 320
+                    width: 250
                     Rectangle {
                         id : innerContainer
                         color: "#4b4b4b"
@@ -132,8 +136,9 @@ Item {
                             columns:2
                             rows: 6
                             layoutDirection: Qt.RightToLeft
+                            anchors.fill: parent
 
-                            ///////////////////////////////////Color Property//////////////////////////////////
+                            ///////////////////////////////////Fill Color Property//////////////////////////////////
                             Rectangle{
                                 Layout.fillWidth: true
                                 color: "#313131"
@@ -145,7 +150,7 @@ Item {
                                 Rectangle{
                                     height: 20
                                     width: 20
-                                    color: sphereProperties.color
+                                    color: circleProperties.fillcolor
                                     border.width: 2
                                     border.color: "#c9c9c9"
                                     x: 5
@@ -155,7 +160,7 @@ Item {
                                     MouseArea{
                                         anchors.fill: parent
                                         cursorShape: Qt.PointingHandCursor
-                                        onClicked: colorDialog.visible = true
+                                        onClicked: fillColorDialog.visible = true
 
                                     }
                                 }
@@ -168,8 +173,8 @@ Item {
                                     radius: 5
 
                                     Text {
-                                        id: colorField
-                                        text: sphereProperties.color
+                                        id: fillColorField
+                                        text: circleProperties.fillcolor
                                         anchors.centerIn: parent
                                         font.pointSize: 10
 
@@ -177,11 +182,10 @@ Item {
                                 }
                                 ColorDialog {
                                     visible: false
-                                    id: colorDialog
+                                    id: fillColorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
-//                                        dialog.myColor = colorDialog.color
-                                        sphereProperties.color = colorDialog.color
+                                        circleProperties.fillcolor = fillColorDialog.color
                                     }
 
                                 }
@@ -194,8 +198,78 @@ Item {
                                 border.width: 1
 
                                 Text {
-                                    id: colorSphere
-                                    text: qsTr("Color:")
+                                    id: fillColorCircle
+                                    text: qsTr("FillColor :")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+                            ///////////////////////////////////Line Color Property//////////////////////////////////
+                            Rectangle{
+                                Layout.fillWidth: true
+                                color: "#313131"
+                                height: 35
+                                border.color: "#5f5f5f"
+                                border.width: 1
+
+
+                                Rectangle{
+                                    height: 20
+                                    width: 20
+                                    color: lineColor
+                                    border.width: 2
+                                    border.color: "#c9c9c9"
+                                    x: 5
+                                    radius: 5
+                                    anchors.verticalCenter: parent.verticalCenter
+
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: lineColorDialog.visible = true
+
+                                    }
+                                }
+                                Rectangle{
+                                    height: 20
+                                    width: 75
+                                    color: "#c9c9c9"
+                                    x: 30
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    radius: 5
+
+                                    Text {
+                                        id: lineColorField
+                                        text: lineColor
+                                        anchors.centerIn: parent
+                                        font.pointSize: 10
+
+                                    }
+                                }
+                                ColorDialog {
+                                    visible: false
+                                    id: lineColorDialog
+                                    title: "Please choose a color"
+                                    onAccepted: {
+                                        lineColor = lineColorDialog.color
+                                        circleProperties.linecolor = lineColorDialog.color
+                                    }
+
+                                }
+                            }
+                            Rectangle{
+                                Layout.fillWidth: true
+                                color: "#313131"
+                                height: 35
+                                border.color: "#5f5f5f"
+                                border.width: 1
+
+                                Text {
+                                    id: lineColorCircle
+                                    text: qsTr("LineColor :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -229,21 +303,21 @@ Item {
                                             color: "#c9c9c9"
                                             clip:  true
                                             radius: 5
-
+                                            Layout.fillWidth: true
                                             TextInput {
                                                 id: mlocationX
-                                                text: sphereProperties.location.x
                                                 anchors.fill: parent
+                                                text: circleProperties.location.x
                                                 font.pointSize: 10
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
-                                                    decimals: 5;
+                                                    decimals: 8;
                                                     notation: DoubleValidator.StandardNotation
                                                     locale: "insert x"
                                                 }
                                                 onTextChanged: {
-                                                    sphereProperties.location.x = text
+                                                    circleProperties.location.x = text
                                                 }
                                             }
                                         }
@@ -268,18 +342,18 @@ Item {
 
                                             TextInput {
                                                 id: mlocationY
-                                                text: sphereProperties.location.y
                                                 anchors.fill: parent
                                                 font.pointSize: 10
+                                                text: circleProperties.location.y
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
-                                                    decimals: 5;
+                                                    decimals: 8;
                                                     notation: DoubleValidator.StandardNotation
                                                     locale: "insert y"
                                                 }
                                                 onTextChanged: {
-                                                    sphereProperties.location.y = text
+                                                    circleProperties.location.y = text
                                                 }
                                             }
                                         }
@@ -304,18 +378,18 @@ Item {
 
                                             TextInput {
                                                 id: mlocationZ
-                                                text: sphereProperties.location.z
                                                 anchors.fill: parent
                                                 font.pointSize: 10
+                                                text: circleProperties.location.z
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
-                                                    decimals: 5;
+                                                    decimals: 8;
                                                     notation: DoubleValidator.StandardNotation
                                                     locale: "insert z"
                                                 }
                                                 onTextChanged: {
-                                                    sphereProperties.location.z = text
+                                                    circleProperties.location.z = text
                                                 }
                                             }
                                         }
@@ -331,8 +405,8 @@ Item {
                                 border.width: 1
 
                                 Text {
-                                    id: locationSphere
-                                    text: qsTr("Location:")
+                                    id: locationCircle
+                                    text: qsTr("Location :")
                                     font.pointSize: 10
                                     color: "white"
                                     y: 10
@@ -341,13 +415,13 @@ Item {
                                 CheckBox {
                                     id: relative
                                     text: qsTr("Relative")
-                                    checked: sphereProperties.relative
+                                    checked: circleProperties.relative
                                     anchors.bottom: locationTitle.bottom
                                     onCheckStateChanged: if(checked === true){
-                                                             sphereProperties.relative = true
+                                                             circleProperties.relative = true
                                                          }
                                                          else{
-                                                             sphereProperties.relative = false
+                                                             circleProperties.relative = false
                                                          }
 
                                     indicator: Rectangle {
@@ -378,119 +452,87 @@ Item {
                                     }
                                 }
                             }
-                            ///////////////////////////////////Center Propertiess///////////////////////////////
+
+                            ///////////////////////////////////ARC Property///////////////////////////////
                             Rectangle{
+                                id:arcContainer
                                 Layout.fillWidth: true
                                 color: "#313131"
-                                height: 80
+                                height: 55
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
                                 Column{
                                     Row{
-                                        spacing: 13
-                                        leftPadding: 5
+                                        spacing: 3
+                                        leftPadding: 2
                                         topPadding: 5
-                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        //                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        x:1
 
                                         Text {
                                             color: "#e5e5e5"
-                                            text: qsTr("X:")
+                                            text: qsTr("Start:")
                                             font.pointSize: 10
                                         }
                                         Rectangle{
                                             height: 20
-                                            width: 75
+                                            width: 67
                                             color: "#c9c9c9"
                                             clip:  true
                                             radius: 5
 
                                             TextInput {
-                                                id: mcenterX
-                                                text: sphereProperties.center.x
+                                                id: startArc
                                                 anchors.fill: parent
                                                 font.pointSize: 10
+                                                text: circleProperties.arcstart
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
                                                     decimals: 8;
                                                     notation: DoubleValidator.StandardNotation
-                                                    locale: "insert x"
+                                                    locale: "insert start"
                                                 }
                                                 onTextChanged: {
-                                                    sphereProperties.center.x = text
+                                                    circleProperties.arcstart = text
                                                 }
                                             }
                                         }
                                     }
                                     Row{
-                                        spacing: 13
-                                        leftPadding: 5
+                                        spacing: 9
+                                        leftPadding: 2
                                         topPadding: 5
-                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        //                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        x: 1
 
                                         Text {
                                             color: "#e5e5e5"
-                                            text: qsTr("Y:")
+                                            text: qsTr("End:")
                                             font.pointSize: 10
                                         }
                                         Rectangle{
                                             height: 20
-                                            width: 75
+                                            width: 67
                                             color: "#c9c9c9"
                                             clip:  true
                                             radius: 5
 
                                             TextInput {
-                                                id: mcenterY
-                                                text: sphereProperties.center.y
+                                                id: endArc
                                                 anchors.fill: parent
                                                 font.pointSize: 10
+                                                text: circleProperties.arcend
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
                                                     decimals: 8;
                                                     notation: DoubleValidator.StandardNotation
-                                                    locale: "insert y"
+                                                    locale: "insert end"
                                                 }
                                                 onTextChanged: {
-                                                    sphereProperties.center.y = text
-                                                }
-                                            }
-                                        }
-                                    }
-                                    Row{
-                                        spacing: 13
-                                        leftPadding: 5
-                                        topPadding: 5
-                                        anchors.horizontalCenter: parent.horizontalCenter
-
-                                        Text {
-                                            color: "#e5e5e5"
-                                            text: qsTr("Z:")
-                                            font.pointSize: 10
-                                        }
-                                        Rectangle{
-                                            height: 20
-                                            width: 75
-                                            color: "#c9c9c9"
-                                            clip:  true
-                                            radius: 5
-
-                                            TextInput {
-                                                id: mcenterZ
-                                                text: sphereProperties.center.z
-                                                anchors.fill: parent
-                                                font.pointSize: 10
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 8;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert z"
-                                                }
-                                                onTextChanged: {
-                                                    sphereProperties.center.z = text
+                                                    circleProperties.arcend = text
                                                 }
                                             }
                                         }
@@ -498,21 +540,23 @@ Item {
                                 }
                             }
                             Rectangle{
+                                id: arcTitle
                                 Layout.fillWidth: true
                                 color: "#313131"
-                                height: 80
+                                height: 55
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
                                 Text {
-                                    id: centerSphere
-                                    text: qsTr("Center:")
+                                    id: arcCircle
+                                    text: qsTr("Arc :")
                                     font.pointSize: 10
                                     color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
+                                    y: 10
                                     x:7
                                 }
                             }
+
                             ///////////////////////////////////Radius///////////////////////////////////////////
                             Rectangle{
                                 Layout.fillWidth: true
@@ -520,7 +564,6 @@ Item {
                                 height: 30
                                 border.color: "#5f5f5f"
                                 border.width: 1
-
 
                                 Rectangle{
                                     height: 20
@@ -533,9 +576,9 @@ Item {
 
                                     TextInput {
                                         id: radiusValue
-                                        text: sphereProperties.radius
                                         anchors.fill: parent
                                         font.pointSize: 10
+                                        text: circleProperties.radius
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         validator: DoubleValidator {
@@ -544,7 +587,7 @@ Item {
                                             locale: "insert radius"
                                         }
                                         onTextChanged: {
-                                            sphereProperties.radius = text
+                                            circleProperties.radius = text
                                         }
                                     }
                                 }
@@ -557,8 +600,59 @@ Item {
                                 border.width: 1
 
                                 Text {
-                                    id: radiusSphere
-                                    text: qsTr("Radius:")
+                                    id: radiusCircle
+                                    text: qsTr("Radius :")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+                            /////////////////////////////////// Height ///////////////////////////////////////////
+                            Rectangle{
+                                Layout.fillWidth: true
+                                color: "#313131"
+                                height: 30
+                                border.color: "#5f5f5f"
+                                border.width: 1
+
+                                Rectangle{
+                                    height: 20
+                                    width: 75
+                                    color: "#c9c9c9"
+                                    clip:  true
+                                    radius: 5
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x: 28
+
+                                    TextInput {
+                                        id: heightValue
+                                        anchors.fill: parent
+                                        font.pointSize: 10
+                                        text: circleProperties.circleheight
+                                        selectByMouse: true
+                                        selectionColor: "dark green"
+                                        validator: DoubleValidator {
+                                            decimals: 8;
+                                            notation: DoubleValidator.StandardNotation
+                                            locale: "insert height"
+                                        }
+                                        onTextChanged: {
+                                            circleProperties.circleheight = text
+                                        }
+                                    }
+                                }
+                            }
+                            Rectangle{
+                                Layout.fillWidth: true
+                                color: "#313131"
+                                height: 30
+                                border.color: "#5f5f5f"
+                                border.width: 1
+
+                                Text {
+                                    id: heightCircle
+                                    text: qsTr("Height :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -566,7 +660,6 @@ Item {
                                 }
                             }
                             ///////////////////////////////////Transparency/////////////////////////////////////
-
                             Rectangle{
                                 id: transContainer
                                 Layout.fillWidth: true
@@ -589,6 +682,7 @@ Item {
                                     anchors.centerIn: parent
                                     height: 20
 
+
                                     contentItem: TextInput {
                                         z: 2
                                         text: transValue.textFromValue(transValue.value, transValue.locale)
@@ -604,7 +698,7 @@ Item {
                                         selectionColor: "dark green"
                                         onTextChanged: {
                                             if(transValue && transValue.value){
-                                           sphereProperties.transparency = transValue.value
+                                           circleProperties.transparency = transValue.value
                                             }
                                         }
                                     }
@@ -659,87 +753,113 @@ Item {
                                 border.width: 1
 
                                 Text {
-                                    id: transSphere
-                                    text: qsTr("Transparency:")
+                                    id: transCircle
+                                    text: qsTr("Transparency :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
                                     x:7
                                 }
                             }
-                            ///////////////////////////////////Type Icons ///////////////////////////////////////
+                            /////////////////////////////////// Clamp ///////////////////////////////////////////
                             Rectangle{
+                                id: clampContainer
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
-                                Row{
-                                    spacing: 5
+                                ComboBox {
+                                    id: control
+                                    model: ["None", "Terrain", "Relative","Absolute"]
                                     anchors.centerIn: parent
-                                    Rectangle{
-                                        width: 20
-                                        height: 20
-                                        color: "#5f5f5f"
-                                        radius: 4
+                                    onCurrentIndexChanged:   {
+                                        circleProperties.clamp = currentIndex
+                                    }
 
-                                        Image {
-                                            id: globe
-                                            source: "qrc:/resources/globe.png"
-                                            sourceSize: "20 x 20"
-                                            anchors.centerIn: parent
+                                    delegate: ItemDelegate {
+                                        width: control.width
+                                        contentItem: Text {
+                                            text: control.textRole
+                                                  ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole])
+                                                  : modelData
+                                            color: "#5f5f5f"
+                                            font: control.font
+                                            elide: Text.ElideRight
+                                            verticalAlignment: Text.AlignVCenter
                                         }
-                                        MouseArea{
-                                            anchors.fill: parent
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: {
-                                                sphereProperties.shape = 0
-                                            }
+                                        highlighted: control.highlightedIndex === index
+                                    }
+
+                                    indicator: Canvas {
+                                        id: canvas
+                                        x: control.width - width - control.rightPadding
+                                        y: control.topPadding + (control.availableHeight - height) / 2
+                                        width: 12
+                                        height: 8
+                                        contextType: "2d"
+
+                                        Connections {
+                                            target: control
+                                            function onPressedChanged() { canvas.requestPaint(); }
+                                        }
+
+                                        onPaint: {
+                                            context.reset();
+                                            context.moveTo(0, 0);
+                                            context.lineTo(width, 0);
+                                            context.lineTo(width / 2, height);
+                                            context.closePath();
+                                            context.fillStyle = control.pressed ? "#5f5f5f" : "#313131";
+                                            context.fill();
                                         }
                                     }
-                                    Rectangle{
-                                        width: 20
-                                        height: 20
-                                        color: "#5f5f5f"
-                                        radius: 4
 
-                                        Image {
-                                            id: tophalf
-                                            source: "qrc:/resources/topHalf.png"
-                                            sourceSize: "20 x 20"
-                                            anchors.centerIn: parent
-                                        }
-                                        MouseArea{
-                                            anchors.fill: parent
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: {
-                                                sphereProperties.shape = 1
-                                            }
-                                        }
+                                    contentItem: Text {
+                                        leftPadding: 5
+                                        rightPadding: control.indicator.width + control.spacing
+
+                                        text: control.displayText
+                                        font: control.font
+                                        color: control.pressed ? "#5f5f5f" : "#313131"
+                                        verticalAlignment: Text.AlignVCenter
+                                        elide: Text.ElideRight
                                     }
-                                    Rectangle{
-                                        width: 20
-                                        height: 20
-                                        color: "#5f5f5f"
-                                        radius: 4
 
-                                        Image {
-                                            id: bothalf
-                                            source: "qrc:/resources/botHalf.png"
-                                            sourceSize: "20 x 20"
-                                            anchors.centerIn: parent
+                                    background: Rectangle {
+                                        implicitWidth: 100
+                                        implicitHeight: 20
+                                        border.color: control.pressed ? "#5f5f5f" : "#313131"
+                                        border.width: control.visualFocus ? 2 : 1
+                                        radius: 5
+                                        color: "#c9c9c9"
+
+                                    }
+
+                                    popup: Popup {
+                                        y: control.height - 1
+                                        width: control.width
+                                        implicitHeight: contentItem.implicitHeight
+                                        padding: 1
+
+                                        contentItem: ListView {
+                                            clip: true
+                                            implicitHeight: contentHeight
+                                            model: control.popup.visible ? control.delegateModel : null
+                                            currentIndex: control.highlightedIndex
+
+                                            ScrollIndicator.vertical: ScrollIndicator { }
                                         }
-                                        MouseArea{
-                                            anchors.fill: parent
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: {
-                                                sphereProperties.shape = 2
-                                            }
+
+                                        background: Rectangle {
+                                            border.color: "#313131"
+                                            radius: 5
                                         }
                                     }
                                 }
                             }
+
                             Rectangle{
                                 Layout.fillWidth: true
                                 color: "#313131"
@@ -748,8 +868,7 @@ Item {
                                 border.width: 1
 
                                 Text {
-                                    id: shapeSphere
-                                    text: qsTr("Shape:")
+                                    text: qsTr("Clamp :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -763,3 +882,4 @@ Item {
         }
     }
 }
+

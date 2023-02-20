@@ -13,8 +13,13 @@ public:
    const osgEarth::Distance& getRadius() const;
    void setRadius(const osgEarth::Distance& radius);
    void setColor(osgEarth::Color color);
+   osgEarth::Color getColor();
    void setSphereShape(SphereShape sphereShape);
    SphereNode::SphereShape getSphereShape() const;
+   void setCenter(osg::Vec3f center);
+   osg::Vec3f getCenter();
+
+
 
 private:
    void construct();
@@ -25,6 +30,8 @@ private:
     osgEarth::Distance mRadius;
     osg::ref_ptr<osg::ShapeDrawable> mShapeDrawable{nullptr};
     osgEarth::Color mColor;
+    osg::Vec3d mCenter {osg::Vec3d(0, 0, 0)};
+
     SphereShape mSphereShape;
 };
 
