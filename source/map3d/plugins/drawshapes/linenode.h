@@ -24,6 +24,8 @@ public:
     void setPointVisibilty(bool visibility);
     void setPointColor(osgEarth::Color color);
 private:
+    osg::ref_ptr<osg::Geometry>  createPointGeode(const osg::Vec3 &pos);
+private:
     MapController* mMapController{nullptr};
     osgEarth::Symbology::Geometry* mLinePath;
 //    osgEarth::Annotation::ModelNode* mCircleModelNode{nullptr};
@@ -33,7 +35,7 @@ private:
     osgEarth::Color mColor{osgEarth::Color::Red};
     bool mClamp{true};
     bool mIsPointVisible{false};
-    SphereNode* mSphereNode{nullptr};
+//    SphereNode* mSphereNode{nullptr};
     osg::ref_ptr<osg::Group> mCircleGr;
     osgEarth::Color mPointColor{osgEarth::Color::DarkGray};
 };

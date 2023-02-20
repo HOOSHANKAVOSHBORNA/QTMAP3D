@@ -409,6 +409,7 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
             mDrawingState = DrawingState::START;
             mLine = new LineNode(mMapController);
             mLine->setColor(osgEarth::Color::Purple);
+            mLine->setPointVisibilty(true);
             mLine->setWidth(7);
             mLine->setClamp(false);
             //mMapController->addNode(mLine);

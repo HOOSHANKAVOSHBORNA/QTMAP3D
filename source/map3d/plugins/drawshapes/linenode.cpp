@@ -1,6 +1,7 @@
 #include "linenode.h"
 #include "drawshapeautoscaler.h"
 
+#include <osg/Point>
 
 LineNode::LineNode(MapController *mapController, bool point)
 {
@@ -58,8 +59,8 @@ LineNode::LineNode(MapController *mapController, bool point)
     //    this->setStyle(pathStyle);
 
     mCircleGr = new osg::Group;
-    mSphereNode = new SphereNode();
-    //addChild(mCircleGr);
+//    mSphereNode = new SphereNode();
+    addChild(mCircleGr);
 
 }
 
@@ -178,14 +179,18 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
 //        mCircleModelNode->addCullCallback(new DrawShapeAutoScaler(1, 0.00001, 3000000));
 
 //        mCircleModelNode->setPosition(points);
-        mSphereNode = new SphereNode();
-        mSphereNode->setCullingActive(false);
-        mSphereNode->addCullCallback(new DrawShapeAutoScaler(1, 0.00001, 3000000));
+//        mSphereNode = new SphereNode();
+//        mSphereNode->setCullingActive(false);
+//        mSphereNode->addCullCallback(new DrawShapeAutoScaler(1, 0.00001, 3000000));
 
-        mSphereNode->setPosition(point);
-        mSphereNode->setRadius(osgEarth::Distance(mWidth, osgEarth::Units::METERS));
-        mSphereNode->setColor(mPointColor);
-        mCircleGr->addChild(mSphereNode);
+//        mSphereNode->setPosition(point);
+//        mSphereNode->setRadius(osgEarth::Distance(mWidth, osgEarth::Units::METERS));
+//        mSphereNode->setColor(mPointColor);
+//        mCircleGr->addChild(mSphereNode);
+//        addChild(mCircleGr);
+        osg::Vec3d wPoint;
+        point.toWorld(wPoint);
+        mCircleGr->addChild(createPointGeode(wPoint));
         addChild(mCircleGr);
     }
 }
@@ -195,7 +200,7 @@ void LineNode::removePoint()
     mLinePath->pop_back();
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLinePath, mMapController->getMapSRS());
     this->setFeature(pathFeature);
-    mCircleGr->removeChild(mSphereNode);
+    mCircleGr->removeChildren(mCircleGr->getNumChildren()-1, 1);
     addChild(mCircleGr);
 }
 
@@ -231,4 +236,29 @@ void LineNode::setPointColor(osgEarth::Color color)
     auto material = new osg::Material;
     material->setDiffuse (osg::Material::FRONT_AND_BACK, color);
     mCircleGr->getOrCreateStateSet()->setAttributeAndModes(material, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+}
+
+osg::ref_ptr<osg::Geometry>  LineNode::createPointGeode(const osg::Vec3 &pos)
+{
+    osg::Geometry *geom = new osg::Geometry();
+
+    osg::ref_ptr<osg::Vec3Array>  vertex = new osg::Vec3Array();
+    vertex->push_back(pos);
+    geom->setVertexArray(vertex.get());
+
+    osg::ref_ptr<osg::Vec4Array>  color = new osg::Vec4Array();
+    color->push_back(mPointColor);
+    geom->setColorArray(color, osg::Array::BIND_OVERALL);
+
+//    osg::ref_ptr<osg::Vec3Array>  norms = new osg::Vec3Array();
+//    norms->push_back(norm);
+//    geom->setNormalArray(norms, osg::Array::BIND_OVERALL);
+
+    geom->getOrCreateStateSet()->setAttribute(new osg::Point(mWidth*2), osg::StateAttribute::ON);
+    geom->getOrCreateStateSet()->setMode(GL_POINT_SMOOTH, osg::StateAttribute::ON);
+    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, 1));
+
+    geom->setName("point");
+
+    return geom;
 }
