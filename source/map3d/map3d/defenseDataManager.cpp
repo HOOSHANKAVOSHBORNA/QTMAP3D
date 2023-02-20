@@ -79,7 +79,7 @@ Demo::~Demo()
     qDebug()<<"~Demo";
 }
 
-const int systemNum = 0;
+const int systemNum = 10;
 const int stationNum = 0;
 AircraftInfo Demo::createAircraftInfo()
 {
