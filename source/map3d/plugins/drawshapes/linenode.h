@@ -10,32 +10,44 @@
 class LineNode : public osgEarth::Annotation::FeatureNode
 {
 public:
-    LineNode(MapController *mapController, bool point=false);
-    void setLineHeight(float hieght);
-    void setColor(osgEarth::Color color);
-    void setWidth(float width);
-    void setClamp(bool clamp);
-    void setDashLine(bool dashLine);
+    LineNode(MapController *mapController);
     void addPoint(osgEarth::GeoPoint point);
     void removePoint();
     void removeFirstPoint();
-    void clearPath();
+    void clear();
     int getSize();
-    void setPointVisibilty(bool visibility);
-    void setPointColor(osgEarth::Color color);
+
+    osgEarth::Color getColor() const;
+    void setColor(const osgEarth::Color &color);
+
+    osgEarth::Color getPointColor() const;
+    void setPointColor(const osgEarth::Color &pointColor);
+
+    float getWidth() const;
+    void setWidth(float width);
+
+    float getHeight() const;
+    void setHeight(float height);
+
+    bool getPointVisible() const;
+    void setPointVisible(bool value);
+    osgEarth::Symbology::AltitudeSymbol::Clamping getClamp() const;
+    void setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping &clamp);
+
+    unsigned getTessellation() const;
+    void setTessellation(const unsigned &tessellation);
+
 private:
     MapController* mMapController{nullptr};
-    osgEarth::Symbology::Geometry* mLinePath;
-//    osgEarth::Annotation::ModelNode* mCircleModelNode{nullptr};
+    osgEarth::Symbology::Geometry* mLineGeometry;
+    osgEarth::Color mColor{osgEarth::Color::Green};
+    osgEarth::Color mPointColor{osgEarth::Color::Blue};
+    float mWidth{5};
+    float mHeight;
+    bool mPointVisible{true};
+    osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
+    unsigned mTessellation{1};
 
-    bool mIsPoint{false};
-    float mWidth{50};
-    osgEarth::Color mColor{osgEarth::Color::Red};
-    bool mClamp{true};
-    bool mIsPointVisible{false};
-    SphereNode* mSphereNode{nullptr};
-    osg::ref_ptr<osg::Group> mCircleGr;
-    osgEarth::Color mPointColor{osgEarth::Color::DarkGray};
 };
 
 #endif // LINENODE_H
