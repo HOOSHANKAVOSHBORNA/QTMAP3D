@@ -409,10 +409,9 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
             mDrawingState = DrawingState::START;
             mLine = new LineNode(mMapController);
             mLine->setColor(osgEarth::Color::Purple);
-            mLine->setPointVisibilty(true);
-            mLine->setWidth(7);
-            mLine->setClamp(false);
-            //mMapController->addNode(mLine);
+            mLine->setPointColor(osgEarth::Color::Yellow);
+            mLine->setWidth(10);
+            mLine->setPointVisible(true);
             addNodeToLayer(mLine);
 
         }
@@ -431,10 +430,11 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
         //mMapController->removeNode(mLine->mCircleGr);
         event->accept();
     }
-
-    if(event->button() == Qt::MouseButton::MidButton)
+    if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::START)
     {
-        mLine->setPointColor(osgEarth::Color::Red);
+        mLine->setPointVisible(false);
+//        mLine->setHeight(1000000);
+        mLine->setTessellation(100);
     }
 
 }

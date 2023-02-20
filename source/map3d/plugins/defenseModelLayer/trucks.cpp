@@ -2,6 +2,12 @@
 #include "trucks.h"
 #include "mapcontroller.h"
 
+osg::ref_ptr<osg::Node> TruckS::mMeshNodeP1;
+osg::ref_ptr<osg::Node> TruckS::mMeshNodeP2;
+osg::ref_ptr<osg::Node> TruckS::mMeshNodeP3;
+osg::ref_ptr<osg::Node> TruckS::mMeshNodeP4;
+bool TruckS::mMeshNodesLoaded = false;
+
 TruckS::TruckS(MapController *mapController) :
     osgEarth::Annotation::ModelNode(mapController->getMapNode(), osgEarth::Symbology::Style())
 {

@@ -146,21 +146,18 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     connect(mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
     //----------------------------
     mRouteLine = new LineNode(mapControler);
-    //mRouteLine->setPointVisibilty(false);
-    mRouteLine->setClamp(false);
+    mRouteLine->setPointVisible(false);
     mRouteLine->setColor(osgEarth::Color::Purple);
     mRouteLine->setWidth(6);
 
     mLatestPointLine = new LineNode(mapControler);
-    mLatestPointLine->setPointVisibilty(true);
+    mLatestPointLine->setPointVisible(true);
     mLatestPointLine->setPointColor(osgEarth::Color::Blue);
-    mLatestPointLine->setClamp(false);
     mLatestPointLine->setColor(osgEarth::Color::Purple);
     mLatestPointLine->setWidth(6);
 
     mTempLine = new LineNode(mapControler);
     //mTempLine->setPointVisibilty(false);
-    mTempLine->setClamp(false);
     mTempLine->setColor(osgEarth::Color::Purple);
     mTempLine->setWidth(6);
 }
@@ -220,19 +217,19 @@ void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double 
     setUpdateCallback(mAnimationPathCallback);
 
     //--lines-------------------------------------
-//    if(mRouteLine->getSize() <= 0)
+    if(mRouteLine->getSize() <= 0)
+    {
+        mRouteLine->addPoint(getPosition());
+        //mLatestPointLine->addPoint(getPosition());
+    }
+//    mLatestPointLine->addPoint(mCurrentFlyPoint);
+//    if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
 //    {
-//        mRouteLine->addPoint(getPosition());
-//        //mLatestPointLine->addPoint(getPosition());
+//        mLatestPointLine->removeFirstPoint();
 //    }
-////    mLatestPointLine->addPoint(mCurrentFlyPoint);
-////    if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
-////    {
-////        mLatestPointLine->removeFirstPoint();
-////    }
-//    if(std::abs(mCurrentHeading - heading) < 5)
-//        mRouteLine->removePoint();
-//    mRouteLine->addPoint(mCurrentFlyPoint);
+    if(std::abs(mCurrentHeading - heading) < 5)
+        mRouteLine->removePoint();
+    mRouteLine->addPoint(mCurrentFlyPoint);
 
     mCurrentHeading = heading;
     mCurrentFlyPoint = posGeo;
