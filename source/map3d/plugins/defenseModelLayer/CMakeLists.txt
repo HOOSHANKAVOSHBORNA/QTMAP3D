@@ -32,6 +32,9 @@ add_library(defenseModelLayer SHARED
   defenseModelLayer.qrc
   defenseModelLayerqml.qrc
   dataManager.cpp
+  truckf.cpp
+  truckl.cpp
+  trucks.cpp
 )
 
 target_include_directories(defenseModelLayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
