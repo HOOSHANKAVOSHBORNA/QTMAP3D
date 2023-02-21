@@ -168,6 +168,7 @@ void SystemTableModel::setFilterWildcard(const QString &wildcard)
 
 void SystemTableModel::onAircraftClicked(int TN)
 {
+    mTN = TN;
     mshowAssigned = true;
     beginResetModel();
     mSystemInfoListProxy.clear();
@@ -193,6 +194,11 @@ void SystemTableModel::onAircraftClicked(int TN)
 void SystemTableModel::onSystemClicked(int Number)
 {
     emit systemClicked(Number);
+}
+
+bool SystemTableModel::getShowAssigned()
+{
+    return mshowAssigned;
 }
 
 void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
@@ -290,11 +296,17 @@ void SystemTableModel::updateItemData(const SystemCambatInfo &systemCambatInfo)
 void SystemTableModel::assign(int Number, int TN)
 {
     if (mSystemsAssigned.contains(TN)) {
-        mSystemsAssigned[Number].push_back(Number);
+        mSystemsAssigned[TN].push_back(Number);
     }
     else {
         mSystemsAssigned[TN] = QList<int> {Number};
     }
+    if (mTN == TN) {
+        beginResetModel();
+        onAircraftClicked(TN);
+        endResetModel();
+    }
+
 }
 
 void SystemTableModel::refresh()

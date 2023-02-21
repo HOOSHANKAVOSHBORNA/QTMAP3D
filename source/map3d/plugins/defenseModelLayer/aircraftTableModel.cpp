@@ -238,6 +238,11 @@ void AircraftTableModel::onUpdateTimerTriggered()
     }
 }
 
+bool AircraftTableModel::getShowAssigned()
+{
+    return mShowAssigned;
+}
+
 void AircraftTableModel::updateItemData(const QString &/*jsonStr*/)
 {
 
@@ -361,11 +366,11 @@ void AircraftTableModel::assign(int TN, int Number)
     else {
         mAircraftsAssigned[Number] = QList<int> {TN};
     }
-    beginResetModel();
     if (mNumber == Number) {
+        beginResetModel();
         onSystemClicked(Number);
+        endResetModel();
     }
-    endResetModel();
 }
 
 void AircraftTableModel::refresh()

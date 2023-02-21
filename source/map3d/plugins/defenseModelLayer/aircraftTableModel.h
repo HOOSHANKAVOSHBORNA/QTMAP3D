@@ -38,6 +38,7 @@ public slots:
     void onAircraftClicked(int TN);
     void onSystemClicked(int Number);
     void onUpdateTimerTriggered();
+    bool getShowAssigned();
     void refresh();
 signals:
     void aircraftClicked(int TN);
@@ -61,7 +62,7 @@ private:
     bool mShowAssigned = false;
     int mMinRowUpdate = -1;
     int mMaxRowUpdate = -1;
-    int mNumber = 0;
+    int mNumber = -1;
 };
 
 #endif // AIRCRAFTTABLEMODEL_H

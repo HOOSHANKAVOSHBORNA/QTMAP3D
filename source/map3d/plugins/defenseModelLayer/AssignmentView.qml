@@ -10,6 +10,8 @@ Item {
 
     property int aHoveredIndex: -1
     property int aSelectedIndex: -1
+    property int aClicked: -1
+    property int sClicked: -1
     property AssignmentModel model
     property AircraftTableModel aircraftModel
     property SystemTableModel systemModel
@@ -130,6 +132,11 @@ Item {
                                 }
                             }
 
+                            onContainsPressChanged: function () {
+                                if (rootItem.aircraftModel)
+                                    rootItem.aClicked = row
+                            }
+
                             onContainsMouseChanged: function() {
                                 if (mouseArea.containsMouse) {
                                     rootItem.aHoveredIndex = row;
@@ -149,7 +156,7 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (rootItem.aHoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: (aClicked == row && rootItem.systemModel.getShowAssigned()) ? "#1010FF" : (rootItem.aHoveredIndex == row) ? "lightskyblue" : "transparent"
                                 anchors.fill: parent
                             }
                             Text {
@@ -219,6 +226,11 @@ Item {
                                 }
                             }
 
+                            onContainsPressChanged: function () {
+                                if (rootItem.systemModel)
+                                    rootItem.sClicked = row
+                            }
+
                             onContainsMouseChanged: function() {
                                 if (mouseArea2.containsMouse) {
                                     rootItem.sHoveredIndex = row;
@@ -237,7 +249,7 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (rootItem.sHoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: (sClicked == row && rootItem.aircraftModel.getShowAssigned()) ? "#1010FF" : (rootItem.sHoveredIndex == row) ? "lightskyblue" : "transparent"
                                 anchors.fill: parent
                             }
                             Text {
