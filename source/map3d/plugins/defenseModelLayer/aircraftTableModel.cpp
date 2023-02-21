@@ -161,22 +161,24 @@ int AircraftTableModel::getTN(int row) const
 
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 {
-    mMinRowUpdate = -1;
-    mMaxRowUpdate = -1;
-    mNeedUpdateOnTimerTrigger = false;
+    if (!mShowAssigned) {
+        mMinRowUpdate = -1;
+        mMaxRowUpdate = -1;
+        mNeedUpdateOnTimerTrigger = false;
 
-    beginResetModel();
+        beginResetModel();
 
-    mFilter = wildcard;
-    mFilter.remove(QRegularExpression("\\s"));
+        mFilter = wildcard;
+        mFilter.remove(QRegularExpression("\\s"));
 
-    mAircraftInfoListProxy.clear();
-    for (auto& item : mAircraftInfoList) {
-        if (QString::number(item.second->TN).contains(mFilter))
-            mAircraftInfoListProxy.push_back(item);
+        mAircraftInfoListProxy.clear();
+        for (auto& item : mAircraftInfoList) {
+            if (QString::number(item.second->TN).contains(mFilter))
+                mAircraftInfoListProxy.push_back(item);
+        }
+
+        endResetModel();
     }
-
-    endResetModel();
 }
 
 void AircraftTableModel::onAircraftClicked(int TN)
@@ -373,11 +375,18 @@ void AircraftTableModel::assign(int TN, int Number)
     }
 }
 
-void AircraftTableModel::refresh()
+void AircraftTableModel::refresh(int indx)
 {
-    beginResetModel();
     mShowAssigned = false;
-    mAircraftInfoListProxy.assign(mAircraftInfoList.begin(), mAircraftInfoList.end());
+    mNumber = -1;
+    mFilter = "";
+    beginResetModel();
+    mAircraftInfoListProxy.clear();
+    for (auto& item : mAircraftInfoList) {
+        if (QString::number(item.second->TN).contains(mFilter))
+            mAircraftInfoListProxy.push_back(item);
+    }
+//    mAircraftInfoListProxy.assign(mAircraftInfoList.begin(), mAircraftInfoList.end());
     endResetModel();
 }
 

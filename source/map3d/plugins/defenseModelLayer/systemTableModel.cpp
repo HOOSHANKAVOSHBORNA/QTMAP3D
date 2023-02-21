@@ -152,18 +152,20 @@ int SystemTableModel::getNumber(int row) const
 
 void SystemTableModel::setFilterWildcard(const QString &wildcard)
 {
-    beginResetModel();
+    if (!mshowAssigned) {
+        beginResetModel();
 
-    mFilter = wildcard;
-    mFilter.remove(QRegularExpression("\\s"));
+        mFilter = wildcard;
+        mFilter.remove(QRegularExpression("\\s"));
 
-    mSystemInfoListProxy.clear();
-    for (auto& item : mSystemInfoList) {
-        if (QString::number(item.second->Number).contains(mFilter))
-            mSystemInfoListProxy.push_back(item);
+        mSystemInfoListProxy.clear();
+        for (auto& item : mSystemInfoList) {
+            if (QString::number(item.second->Number).contains(mFilter))
+                mSystemInfoListProxy.push_back(item);
+        }
+
+        endResetModel();
     }
-
-    endResetModel();
 }
 
 void SystemTableModel::onAircraftClicked(int TN)
@@ -309,12 +311,28 @@ void SystemTableModel::assign(int Number, int TN)
 
 }
 
-void SystemTableModel::refresh()
+void SystemTableModel::refresh(int indx)
 {
-    beginResetModel();
     mshowAssigned = false;
-    mSystemInfoListProxy.assign(mSystemInfoList.begin(), mSystemInfoList.end());
-    mSystemCombatInfoListProxy.assign(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end());
+    mTN = -1;
+//    QString tmp = "";
+//    if (indx == 2)
+//        tmp = mFilter;
+    beginResetModel();
+    mSystemInfoListProxy.clear();
+    mSystemCombatInfoListProxy.clear();
+//    mSystemInfoListProxy.assign(mSystemInfoList.begin(), mSystemInfoList.end());
+//    mSystemCombatInfoListProxy.assign(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end());
+
+    for (auto& item : mSystemCombatInfoList) {
+        if (QString::number(item.second->Number).contains(mFilter))
+            mSystemCombatInfoListProxy.push_back(item);
+    }
+    for (auto& item : mSystemInfoList){
+        if (QString::number(item.second->Number).contains(mFilter))
+            mSystemInfoListProxy.push_back(item);
+    }
+
     endResetModel();
 }
 

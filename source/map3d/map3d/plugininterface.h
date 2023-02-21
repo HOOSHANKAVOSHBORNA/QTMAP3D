@@ -22,11 +22,12 @@ namespace osgViewer {
     class Viewer;
 };
 
-class UIHandle
+class UIHandle : public QObject
 {
+    Q_OBJECT
     friend class MainWindow;
 public:
-    UIHandle(MainWindow *mainWindow);
+    UIHandle(MainWindow *mainWindow, QObject *parent = nullptr);
     virtual ~UIHandle() { }
 
 public:
@@ -50,7 +51,8 @@ public:
 
 public:
     void lwAddTab(const QString& tabTitle, QQuickItem *tabItem);
-
+signals:
+    void listwindowTabChanged(int indx);
 private:
     void onInfoWidget2D3DButtonClicked();
     void onInfoWidgetRouteButtonClicked();

@@ -39,7 +39,7 @@ public slots:
     void onSystemClicked(int Number);
     void onUpdateTimerTriggered();
     bool getShowAssigned();
-    void refresh();
+    void refresh(int indx);
 signals:
     void aircraftClicked(int TN);
 

@@ -120,7 +120,8 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
     });
 
     comp4->loadUrl(QUrl("qrc:/modelplugin/AssignmentView.qml"));
-
+    connect(mUiHandle, &UIHandle::listwindowTabChanged, mAircraftTableModel, &AircraftTableModel::refresh);
+    connect(mUiHandle, &UIHandle::listwindowTabChanged, mSystemTableModel, &SystemTableModel::refresh);
     connect(mSystemTableModel, &SystemTableModel::systemClicked, mAircraftTableModel, &AircraftTableModel::onSystemClicked);
     connect(mAircraftTableModel, &AircraftTableModel::aircraftClicked, mSystemTableModel, &SystemTableModel::onAircraftClicked);
 }

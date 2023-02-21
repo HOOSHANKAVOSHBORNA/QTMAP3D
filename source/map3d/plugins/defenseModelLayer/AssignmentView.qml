@@ -36,8 +36,8 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    rootItem.aircraftModel.refresh();
-                    rootItem.systemModel.refresh();
+                    rootItem.aircraftModel.refresh(3);
+                    rootItem.systemModel.refresh(3);
                 }
             }
         }
@@ -129,6 +129,10 @@ Item {
                             onClicked: function() {
                                 if (rootItem.aircraftModel) {
                                     rootItem.aircraftModel.onAircraftClicked(rootItem.aircraftModel.getTN(row))
+                                    if (rootItem.systemModel) {
+                                        systems.contentX = 0;
+                                        systems.contentY = 0;
+                                    }
                                 }
                             }
 
@@ -223,6 +227,10 @@ Item {
                             onClicked: function() {
                                 if (rootItem.systemModel) {
                                     rootItem.systemModel.onSystemClicked(rootItem.systemModel.getNumber(row));
+                                    if (rootItem.aircraftModel) {
+                                        aircrafts.contentX = 0;
+                                        aircrafts.contentY = 0;
+                                    }
                                 }
                             }
 

@@ -263,6 +263,7 @@ CListWindow {
 
         rep.itemAt(indx).background.color = selectColor
         rep.itemAt(indx).height = 42
+        root.tabChanged(indx);
 
     }
 

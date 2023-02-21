@@ -10,6 +10,8 @@ class ListWindow : public QQuickWindow
 public:
     ListWindow(QQuickWindow *parent = nullptr);
 
+signals:
+    void tabChanged(int indx);
 };
 
 #endif // LISTWINDOW_H
