@@ -12,7 +12,8 @@ LineNode::LineNode(MapController *mapController)
 
     osgEarth::Symbology::Style pathStyle;
     pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
-    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mWidth;
+    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
+    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = true;
 
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = mColor;
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
@@ -100,8 +101,6 @@ void LineNode::setWidth(float width)
     mWidth = width;
     auto style = getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
-    if(mPointVisible)
-        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mWidth;
     setStyle(style);
 }
 
@@ -133,7 +132,7 @@ void LineNode::setPointVisible(bool value)
     if(mPointVisible)
     {
         style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
-        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mWidth;
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
     }
     else
         style.remove<osgEarth::Symbology::PointSymbol>();
@@ -169,5 +168,19 @@ void LineNode::setTessellation(const unsigned &tessellation)
     mTessellation = tessellation;
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = tessellation;
+    setStyle(style);
+}
+
+float LineNode::getPointWidth() const
+{
+    return mPointWidth;
+}
+
+void LineNode::setPointWidth(float pointWidth)
+{
+    mPointWidth = pointWidth;
+    auto style = getStyle();
+    if(mPointVisible)
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
     setStyle(style);
 }

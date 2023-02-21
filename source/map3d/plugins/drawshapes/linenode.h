@@ -37,12 +37,16 @@ public:
     unsigned getTessellation() const;
     void setTessellation(const unsigned &tessellation);
 
+    float getPointWidth() const;
+    void setPointWidth(float pointWidth);
+
 private:
     MapController* mMapController{nullptr};
     osgEarth::Symbology::Geometry* mLineGeometry;
     osgEarth::Color mColor{osgEarth::Color::Green};
     osgEarth::Color mPointColor{osgEarth::Color::Blue};
     float mWidth{5};
+    float mPointWidth{5};
     float mHeight;
     bool mPointVisible{true};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
