@@ -49,7 +49,7 @@ private slots:
     void onModeChanged(bool is3DView);
 
 private:
-    void searchPhase(int tn);
+    void searchPhase();
     void lockPhase(int tn);
     void firePhase(int tn);
     void killPhase(int tn);
@@ -85,6 +85,8 @@ private:
 
     QMap<int, AssignmentModel*> mAssignmentModels;
     SystemInformation *mSystemInformation{nullptr};
+
+    DefenseModelNode* mTargetModelNode{nullptr};
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;
