@@ -34,12 +34,19 @@ public:
 
 public slots:
     void setFilterWildcard(const QString& wildcard);
+    void onAircraftClicked(int TN);
+    void onSystemClicked(int Number);
+    bool getShowAssigned();
+    void refresh(int indx);
 
+signals:
+    void systemClicked(int Number);
 public:
     void updateItemData(const QString& jsonStr);
     void updateItemData(const SystemInfo& systemInfo);
     void updateItemData(const SystemStatusInfo& systemStatusInfo);
     void updateItemData(const SystemCambatInfo& systemCambatInfo);
+    void assign(int Number, int TN);
     void clear();
 
 
@@ -51,6 +58,10 @@ private:
     std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoList;
     std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoListProxy;
 
+    QMap<int, QList<int>> mSystemsAssigned;
+
+    bool mshowAssigned = false;
+    int mTN = -1;
     QString mFilter;
 
 };

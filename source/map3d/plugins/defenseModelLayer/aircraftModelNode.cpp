@@ -146,23 +146,22 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     connect(mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
     //----------------------------
     mRouteLine = new LineNode(mapControler);
-    //mRouteLine->setPointVisibilty(false);
-    mRouteLine->setClamp(false);
+    mRouteLine->setPointVisible(false);
+    mRouteLine->setTessellation(10);
     mRouteLine->setColor(osgEarth::Color::Purple);
-    mRouteLine->setWidth(6);
+    mRouteLine->setWidth(5);
 
     mLatestPointLine = new LineNode(mapControler);
-    //mLatestPointLine->setPointVisibilty(true);
+    mLatestPointLine->setPointVisible(true);
     mLatestPointLine->setPointColor(osgEarth::Color::Blue);
-    mLatestPointLine->setClamp(false);
     mLatestPointLine->setColor(osgEarth::Color::Purple);
-    mLatestPointLine->setWidth(6);
+    mLatestPointLine->setWidth(5);
+    mLatestPointLine->setPointWidth(15);
 
     mTempLine = new LineNode(mapControler);
-    //mTempLine->setPointVisibilty(false);
-    mTempLine->setClamp(false);
+    mTempLine->setPointVisible(false);
     mTempLine->setColor(osgEarth::Color::Purple);
-    mTempLine->setWidth(6);
+    mTempLine->setWidth(5);
 }
 
 void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)
@@ -220,23 +219,23 @@ void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double 
     setUpdateCallback(mAnimationPathCallback);
 
     //--lines-------------------------------------
-//    if(mRouteLine->getSize() <= 0)
-//    {
-//        mRouteLine->addPoint(getPosition());
-////        mLatestPointLine->addPoint(getPosition());
-//    }
-////    mLatestPointLine->addPoint(mCurrentFlyPoint);
-////    if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
-////    {
-////        mLatestPointLine->removeFirstPoint();
-////    }
-//    if(std::abs(mCurrentHeading - heading) < 5)
-//        mRouteLine->removePoint();
-//    mRouteLine->addPoint(mCurrentFlyPoint);
+    if(mRouteLine->getSize() <= 0)
+    {
+        mRouteLine->addPoint(getPosition());
+        mLatestPointLine->addPoint(getPosition());
+    }
+    mLatestPointLine->addPoint(mCurrentFlyPoint);
+    if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
+    {
+        mLatestPointLine->removeFirstPoint();
+    }
+    if(std::abs(mCurrentHeading - heading) < 5)
+        mRouteLine->removePoint();
+    mRouteLine->addPoint(mCurrentFlyPoint);
 
     mCurrentHeading = heading;
     mCurrentFlyPoint = posGeo;
-    //mTempLine->clearPath();
+    mTempLine->clear();
 }
 
 void AircraftModelNode::stop()
@@ -305,7 +304,9 @@ void AircraftModelNode::frameEvent()
     //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
     //------------------------------------
-    //mTempLine->addPoint(getPosition());
+    if(mTempLine->getSize() > 1)
+        mTempLine->removePoint();
+    mTempLine->addPoint(getPosition());
 }
 
 void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)

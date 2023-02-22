@@ -10,7 +10,7 @@
 
 
 
-UIHandle::UIHandle(MainWindow *mainWindow)
+UIHandle::UIHandle(MainWindow *mainWindow, QObject *parent) : QObject(parent)
 {
     mMainWindow = mainWindow;
 }
@@ -179,4 +179,5 @@ void UIHandle::onInfoWidgetMoreButtonClicked()
 void UIHandle::setListWindow(ListWindow *listWindow)
 {
     mListWindow = listWindow;
+    QObject::connect(mListWindow, &ListWindow::tabChanged, this, &UIHandle::listwindowTabChanged);
 }

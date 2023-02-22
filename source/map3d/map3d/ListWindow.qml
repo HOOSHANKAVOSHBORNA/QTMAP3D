@@ -16,28 +16,28 @@ CListWindow {
     id: root
     title: "List Window"
     color: "#252525"
-    minimumWidth: 800
+    minimumWidth: 1100
     minimumHeight: 600
-    flags: Qt.FramelessWindowHint
-    MouseArea{
-        anchors.fill : parent
-        property variant clickPos: "1,1"
-        onPressed: {
-            clickPos = Qt.point(mouse.x ,mouse.y)
-        }
-        onPositionChanged: {
-            var delta = Qt.point(mouse.x - clickPos.x , mouse.y - clickPos.y)
-            root.x += delta.x
-            root.y += delta.y
-        }
-        onDoubleClicked: {
-            root.showFullScreen();
-        }
-    }
+//    flags: Qt.FramelessWindowHint
+//    MouseArea{
+//        anchors.fill : parent
+//        property variant clickPos: "1,1"
+//        onPressed: {
+//            clickPos = Qt.point(mouse.x ,mouse.y)
+//        }
+//        onPositionChanged: {
+//            var delta = Qt.point(mouse.x - clickPos.x , mouse.y - clickPos.y)
+//            root.x += delta.x
+//            root.y += delta.y
+//        }
+//        onDoubleClicked: {
+//            root.showFullScreen();
+//        }
+//    }
     BorderImage {
         id: borderImage
         anchors.fill: parent
-        source: "qrc:/Resources/mainFrame.png"
+//        source: "qrc:/Resources/mainFrame.png"
         z:1
 
         Rectangle{
@@ -61,117 +61,117 @@ CListWindow {
                 anchors.fill: back
                 id:column
                 spacing: 8
-                Rectangle{
-                    Layout.fillWidth: true
-                    height: 30
-                    color: "transparent"
-                    clip: true
-                    Image {
-                        id: imageclose
+//                Rectangle{
+//                    Layout.fillWidth: true
+//                    height: 30
+//                    color: "transparent"
+//                    clip: true
+//                    Image {
+//                        id: imageclose
 
-                        width: 24
-                        height: 24
-                        anchors.rightMargin: 15
+//                        width: 24
+//                        height: 24
+//                        anchors.rightMargin: 15
 
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-                        fillMode: Image.PreserveAspectFit
-                        source: "qrc:/Resources/close1.png"
-                        states: ["mouseIn" , "mouseOut"]
-                        state: "mouseOut"
-                        transitions: [
-                            Transition {
-                                from: "*"
-                                to: "mouseIn"
-                                NumberAnimation {
-                                    target: imageclose
-                                    property: "scale"
-                                    from: 0.85
-                                    to:1
-                                    duration: 400
-                                    easing.type: Easing.OutBounce
-                                }
-                            }
-                        ]
-                        MouseArea{
-                            anchors.fill :parent
-                            onClicked: close()
-                            hoverEnabled: true
-                            onContainsMouseChanged: imageclose.state = containsMouse ? "mouseIn" : " mouseOut"
+//                        anchors.verticalCenter: parent.verticalCenter
+//                        anchors.right: parent.right
+//                        fillMode: Image.PreserveAspectFit
+//                        source: "qrc:/Resources/close1.png"
+//                        states: ["mouseIn" , "mouseOut"]
+//                        state: "mouseOut"
+//                        transitions: [
+//                            Transition {
+//                                from: "*"
+//                                to: "mouseIn"
+//                                NumberAnimation {
+//                                    target: imageclose
+//                                    property: "scale"
+//                                    from: 0.85
+//                                    to:1
+//                                    duration: 400
+//                                    easing.type: Easing.OutBounce
+//                                }
+//                            }
+//                        ]
+//                        MouseArea{
+//                            anchors.fill :parent
+//                            onClicked: close()
+//                            hoverEnabled: true
+//                            onContainsMouseChanged: imageclose.state = containsMouse ? "mouseIn" : " mouseOut"
 
-                        }
-                    }
+//                        }
+//                    }
 
 
-                    Image {
-                        id: imageminimize
-                        width: 24
-                        height: 24
-                        anchors.verticalCenterOffset: 1
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: imageclose.left
-                        anchors.rightMargin: 3
-                        fillMode: Image.PreserveAspectFit
-                        source: "qrc:/Resources/minimize.png"
-                        states: ["mouseIn" , "mouseOut"]
-                        state: "mouseOut"
-                        transitions: [
-                            Transition {
-                                from: "*"
-                                to: "mouseIn"
+//                    Image {
+//                        id: imageminimize
+//                        width: 24
+//                        height: 24
+//                        anchors.verticalCenterOffset: 1
+//                        anchors.verticalCenter: parent.verticalCenter
+//                        anchors.right: imageclose.left
+//                        anchors.rightMargin: 3
+//                        fillMode: Image.PreserveAspectFit
+//                        source: "qrc:/Resources/minimize.png"
+//                        states: ["mouseIn" , "mouseOut"]
+//                        state: "mouseOut"
+//                        transitions: [
+//                            Transition {
+//                                from: "*"
+//                                to: "mouseIn"
 
-                                NumberAnimation {
-                                    target: imageminimize
-                                    property: "scale"
-                                    from: 0.85
-                                    to:1
-                                    duration: 400
-                                    easing.type: Easing.OutBounce
-                                }
-                            }
-                        ]
-                        MouseArea{
-                            hoverEnabled: true
-                            anchors.fill : parent
-                            onClicked: showMinimized()
-                            onContainsMouseChanged: imageminimize.state = containsMouse ? "mouseIn" : " mouseOut"
-                        }
-                    }
-                    Image {
-                        id: imageCollapse
-                        width: 24
-                        height: 24
-                        anchors.verticalCenterOffset: 1
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: imageminimize.left
-                        anchors.rightMargin: 3
-                        fillMode: Image.PreserveAspectFit
-                        source: "qrc:/Resources/collapse2.png"
-                        states: ["mouseIn" , "mouseOut"]
-                        state: "mouseOut"
-                        transitions: [
-                            Transition {
-                                from: "*"
-                                to: "mouseIn"
+//                                NumberAnimation {
+//                                    target: imageminimize
+//                                    property: "scale"
+//                                    from: 0.85
+//                                    to:1
+//                                    duration: 400
+//                                    easing.type: Easing.OutBounce
+//                                }
+//                            }
+//                        ]
+//                        MouseArea{
+//                            hoverEnabled: true
+//                            anchors.fill : parent
+//                            onClicked: showMinimized()
+//                            onContainsMouseChanged: imageminimize.state = containsMouse ? "mouseIn" : " mouseOut"
+//                        }
+//                    }
+//                    Image {
+//                        id: imageCollapse
+//                        width: 24
+//                        height: 24
+//                        anchors.verticalCenterOffset: 1
+//                        anchors.verticalCenter: parent.verticalCenter
+//                        anchors.right: imageminimize.left
+//                        anchors.rightMargin: 3
+//                        fillMode: Image.PreserveAspectFit
+//                        source: "qrc:/Resources/collapse2.png"
+//                        states: ["mouseIn" , "mouseOut"]
+//                        state: "mouseOut"
+//                        transitions: [
+//                            Transition {
+//                                from: "*"
+//                                to: "mouseIn"
 
-                                NumberAnimation {
-                                    target: imageCollapse
-                                    property: "scale"
-                                    from: 0.85
-                                    to:1
-                                    duration: 400
-                                    easing.type: Easing.OutBounce
-                                }
-                            }
-                        ]
-                        MouseArea{
-                            hoverEnabled: true
-                            anchors.fill : parent
-                            onClicked: root.showMaximized()
-                            onContainsMouseChanged: imageCollapse.state = containsMouse ? "mouseIn" : " mouseOut"
-                        }
-                    }
-                }
+//                                NumberAnimation {
+//                                    target: imageCollapse
+//                                    property: "scale"
+//                                    from: 0.85
+//                                    to:1
+//                                    duration: 400
+//                                    easing.type: Easing.OutBounce
+//                                }
+//                            }
+//                        ]
+//                        MouseArea{
+//                            hoverEnabled: true
+//                            anchors.fill : parent
+//                            onClicked: root.showMaximized()
+//                            onContainsMouseChanged: imageCollapse.state = containsMouse ? "mouseIn" : " mouseOut"
+//                        }
+//                    }
+//                }
                 Row {
                     id: buttons
                     Layout.alignment: Qt.AlignCenter
@@ -263,6 +263,7 @@ CListWindow {
 
         rep.itemAt(indx).background.color = selectColor
         rep.itemAt(indx).height = 42
+        root.tabChanged(indx);
 
     }
 
