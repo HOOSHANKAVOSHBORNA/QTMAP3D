@@ -27,10 +27,11 @@ public:
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void setCambatInfo(const SystemCambatInfo &systemCambatInfo);
 
-    void setAssignedModelNode(DefenseModelNode *assignedModelNode);
-    DefenseModelNode *getAssignedModelNode() const;
-    void acceptAssignedModelNode(bool value);
-    void unassignedModelNode();
+    void addAssignedModelNode(int tn, DefenseModelNode *assignedModelNode);
+    DefenseModelNode *getAssignedModelNode(int tn) const;
+    void acceptAssignedModelNode(int tn, bool value);
+    void removeAssignedModelNode(int tn);
+    void clearAssignedModelNodes();
 
     void goOnTrack();
 public slots:
@@ -48,17 +49,24 @@ private slots:
     void onModeChanged(bool is3DView);
 
 private:
-    void searchPhase();
-    void lockPhase();
-    void firePhase();
-    void killPhase();
-    void noKillPhase();
-    bool hasAssigned();
+    void searchPhase(int tn);
+    void lockPhase(int tn);
+    void firePhase(int tn);
+    void killPhase(int tn);
+    void noKillPhase(int tn);
+//    bool hasAssigned();
     bool addNodeToLayer(osg::Node *node,  bool insert = false);
     bool removeNodeFromLayer(osg::Node *node);
     void showInfoWidget();
     void updateOrCreateLabelImage();
-
+private:
+    struct AssignmentModel{
+        DefenseModelNode* mModelNode{nullptr};
+        osg::ref_ptr<LineNode> mLine;
+        AssignmentModel(MapController *mapControler);
+        void accept();
+        void updateLine(const osgEarth::GeoPoint &position);
+    };
 private:
     MapController* mMapController{nullptr};
     SystemInfo mInformation;
@@ -69,21 +77,16 @@ private:
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
     osg::ref_ptr<Polygone> mWezPolygon;
-    DefenseModelNode* mAssignedModelNode{nullptr};
-    osg::ref_ptr<LineNode> mAssignedLine;
+
     osg::ref_ptr<Truck> mTruck;
     Rocket* mFiredRocket{nullptr};
 
+    QMap<int, AssignmentModel*> mAssignmentModels;
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;
     static constexpr int LABEL_IMAGE_WIDTH = 160;
     static constexpr int LABEL_IMAGE_HEIGHT = 190;
-
-//    int     mMissleCount = 3;
-//    QString mDisplayText = "System0";
-//    QString mBCCStatus = "us";
-//    QString mRadarSearchStatus = "s";
 
 };
 

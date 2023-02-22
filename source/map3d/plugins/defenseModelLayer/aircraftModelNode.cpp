@@ -338,14 +338,31 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 }
 
-SystemModelNode *AircraftModelNode::getAssignmentModelNode() const
+SystemModelNode *AircraftModelNode::getAssignmentModelNode(int number) const
 {
-    return mAssignmentModelNode;
+    if(mAssignmentModelNondes.contains(number))
+        return mAssignmentModelNondes[number];
+    return nullptr;
 }
 
-void AircraftModelNode::setAssignmentModelNode(SystemModelNode *assignmentModelNode)
+void AircraftModelNode::addAssignmentModelNode(int number, SystemModelNode *assignmentModelNode)
 {
-    mAssignmentModelNode = assignmentModelNode;
+    mAssignmentModelNondes[number] = assignmentModelNode;
+}
+
+void AircraftModelNode::removeAssignmentModelNode(int number)
+{
+    mAssignmentModelNondes.remove(number);
+}
+
+void AircraftModelNode::clearAssignmentModelNodes()
+{
+    mAssignmentModelNondes.clear();
+}
+
+bool AircraftModelNode::hasAssignmentModelNode()
+{
+    return mAssignmentModelNondes.count() > 0;
 }
 
 void AircraftModelNode::onGotoButtonClicked()
@@ -640,6 +657,11 @@ void AircraftModelNode::updateOrCreateLabelImage()
                           GL_UNSIGNED_BYTE,
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
+}
+
+QMap<int, SystemModelNode *> AircraftModelNode::getAssignmentModelNondes() const
+{
+    return mAssignmentModelNondes;
 }
 
 

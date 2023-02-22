@@ -112,23 +112,21 @@ SystemInfo SystemModelNode::getInformation() const
 void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
 {
     mCambatInfo = systemCambatInfo;
-    if(!mAssignedModelNode)
-        return;
     switch (mCambatInfo.Phase) {
     case SystemCambatInfo::Search:
-        searchPhase();
+        searchPhase(mCambatInfo.TN);
         break;
     case SystemCambatInfo::Lock:
-        lockPhase();
+        lockPhase(mCambatInfo.TN);
         break;
     case SystemCambatInfo::Fire:
-        firePhase();
+        firePhase(mCambatInfo.TN);
         break;
     case SystemCambatInfo::Kill:
-        killPhase();
+        killPhase(mCambatInfo.TN);
         break;
     case SystemCambatInfo::NoKill:
-        noKillPhase();
+        noKillPhase(mCambatInfo.TN);
         break;
     }
 }
@@ -139,48 +137,55 @@ void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
     updateOrCreateLabelImage();
 }
 
-void SystemModelNode::setAssignedModelNode(DefenseModelNode *assignedModelNode)
+void SystemModelNode::addAssignedModelNode(int tn, DefenseModelNode *assignedModelNode)
 {
     if(!assignedModelNode)
         return;
-    unassignedModelNode();
-
-    mAssignedModelNode = assignedModelNode;
-    mAssignedLine = new LineNode(mMapController);
-
-    mAssignedLine->setPointVisible(false);
-    mAssignedLine->setColor(osgEarth::Color::Green);
-    mAssignedLine->setWidth(5);
-    mAssignedLine->setTessellation(3000);
-
-    addNodeToLayer(mAssignedLine);
-}
-
-DefenseModelNode *SystemModelNode::getAssignedModelNode() const
-{
-    return mAssignedModelNode;
-}
-
-void SystemModelNode::acceptAssignedModelNode(bool value)
-{
-    if(hasAssigned())
+    if(!mAssignmentModels.contains(tn))
     {
-        if(value)
-        {
-            if(mAssignedLine)
-                mAssignedLine->setTessellation(1);
-        }
-        else
-            unassignedModelNode();
+        AssignmentModel* assignmentModel = new  AssignmentModel(mMapController);
+        assignmentModel->mModelNode = assignedModelNode;
+        mAssignmentModels[tn] = assignmentModel;
+        addNodeToLayer(assignmentModel->mLine);
     }
 }
 
-void SystemModelNode::unassignedModelNode()
+DefenseModelNode *SystemModelNode::getAssignedModelNode(int tn) const
 {
-    if(hasAssigned())
+    if(!mAssignmentModels.contains(tn))
+        return mAssignmentModels[tn]->mModelNode;
+    return nullptr;
+}
+
+void SystemModelNode::acceptAssignedModelNode(int tn, bool value)
+{
+    if(mAssignmentModels.contains(tn))
     {
-        removeNodeFromLayer(mAssignedLine);
-        mAssignedModelNode = nullptr;
+        if(value)
+        {
+            mAssignmentModels[tn]->accept();
+        }
+        else
+            removeAssignedModelNode(tn);
+    }
+}
+
+void SystemModelNode::removeAssignedModelNode(int tn)
+{
+    if(mAssignmentModels.contains(tn))
+    {
+        removeNodeFromLayer(mAssignmentModels[tn]->mLine);
+        mAssignmentModels.remove(tn);
+    }
+}
+
+void SystemModelNode::clearAssignedModelNodes()
+{
+    for(auto assignModel:mAssignmentModels)
+    {
+        auto aircraftModelNode = static_cast<AircraftModelNode*>(assignModel->mModelNode);
+        if(aircraftModelNode)
+            removeAssignedModelNode(aircraftModelNode->getInformation().TN);
     }
 }
 
@@ -211,12 +216,8 @@ void SystemModelNode::frameEvent()
 //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
     //--update assigned line----------------------------------------------------
-    if(hasAssigned())
-    {
-        mAssignedLine->clear();
-        mAssignedLine->addPoint(getPosition());
-        mAssignedLine->addPoint(mAssignedModelNode->getPosition());
-    }
+    for(auto assinmentModel:mAssignmentModels)
+        assinmentModel->updateLine(getPosition());
     //--check collision--------------------------------------------------------
 //    collision();
 }
@@ -337,66 +338,66 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
     mInformation.Active = checked;
 }
 
-void SystemModelNode::searchPhase()
+void SystemModelNode::searchPhase(int tn)
 {
-    if(hasAssigned())
-        mAssignedLine->setColor(osgEarth::Color::Yellow);
+    if(mAssignmentModels.contains(tn))
+        mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Yellow);
 }
 
-void SystemModelNode::lockPhase()
+void SystemModelNode::lockPhase(int tn)
 {
-    if(hasAssigned())
+    if(mAssignmentModels.contains(tn))
     {
-        mAssignedLine->setColor(osgEarth::Color::Orange);
-        mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
+        mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Orange);
+        mTruck->aimTarget(mAssignmentModels[tn]->mModelNode->getPosition().vec3d());
     }
 }
 
-void SystemModelNode::firePhase()
+void SystemModelNode::firePhase(int tn)
 {
-    if(hasAssigned())
+    if(mAssignmentModels.contains(tn))
     {
-        mAssignedLine->setColor(osgEarth::Color::Red);
+        mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Red);
         mFiredRocket = mTruck->getActiveRocket();
         if(mFiredRocket)
         {
             mFiredRocket->setAutoScale();
-            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
+            mTruck->shoot(mAssignmentModels[tn]->mModelNode->getPosition().vec3d(), 20000);//1000 m/s
             mMapController->setTrackNode(mFiredRocket->getGeoTransform());
         }
     }
 }
 
-void SystemModelNode::killPhase()
+void SystemModelNode::killPhase(int tn)
 {
-    if(hasAssigned())
+    if(mAssignmentModels.contains(tn))
     {
-        mAssignedLine->setColor(osgEarth::Color::Black);
-        mAssignedModelNode->collision();
+        mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Black);
+        mAssignmentModels[tn]->mModelNode->collision();
         //mFiredRocket->collision();
 //            mFiredRocket->setNodeMask(false);
         if(mFiredRocket)
             mFiredRocket->stop();
 
-        unassignedModelNode();
+        removeAssignedModelNode(tn);
     }
 }
 
-void SystemModelNode::noKillPhase()
+void SystemModelNode::noKillPhase(int tn)
 {
-    if(hasAssigned())
+    if(mAssignmentModels.contains(tn))
     {
-        mAssignedLine->setColor(osgEarth::Color::Brown);
+        mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Brown);
         if(mFiredRocket)
             mFiredRocket->stop();
-        unassignedModelNode();
+        removeAssignedModelNode(tn);
     }
 }
 
-bool SystemModelNode::hasAssigned()
-{
-    return mAssignedModelNode && mAssignedLine ? true: false;
-}
+//bool SystemModelNode::hasAssigned()
+//{
+//    return mAssignedModelNode && mAssignedLine ? true: false;
+//}
 
 bool SystemModelNode::addNodeToLayer(osg::Node *node, bool insert)
 {
@@ -561,3 +562,29 @@ void SystemModelNode::updateOrCreateLabelImage()
 }
 
 
+
+SystemModelNode::AssignmentModel::AssignmentModel(MapController *mapControler)
+{
+    mLine = new LineNode(mapControler);
+    mLine->setPointVisible(true);
+    mLine->setColor(osgEarth::Color::White);
+    mLine->setPointColor(osgEarth::Color::Olive);
+    mLine->setWidth(1);
+    mLine->setPointWidth(5);
+    mLine->setTessellation(15);
+}
+
+void SystemModelNode::AssignmentModel::accept()
+{
+//    mLine->setTessellation(1);
+    mLine->setColor(osgEarth::Color::Olive);
+    mLine->setPointVisible(false);
+    mLine->setWidth(5);
+}
+
+void SystemModelNode::AssignmentModel::updateLine(const osgEarth::GeoPoint& position)
+{
+    mLine->clear();
+    mLine->addPoint(position);
+    mLine->addPoint(mModelNode->getPosition());
+}
