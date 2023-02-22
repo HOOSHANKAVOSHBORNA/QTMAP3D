@@ -119,7 +119,7 @@ void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
 
     switch (mCambatInfo.Phase) {
     case SystemCambatInfo::Search:
-        searchPhase(mCambatInfo.TN);
+        searchPhase();
         break;
     case SystemCambatInfo::Lock:
         lockPhase(mCambatInfo.TN);
@@ -304,7 +304,7 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         osgEarth::GeoPoint geoPoint3;
         geoPoint3.fromWorld(mMapController->getMapSRS(), v3);
         geoPoint3.z() = 0;
-        geoPoint3.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        geoPoint3.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());mAssignmentModels[tn]
         osgEarth::GeoPoint geoPoint4;
         geoPoint4.fromWorld(mMapController->getMapSRS(), v4);
         geoPoint4.z() = 0;
@@ -345,10 +345,10 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
     mInformation.Active = checked;
 }
 
-void SystemModelNode::searchPhase(int tn)
+void SystemModelNode::searchPhase()
 {
-    if(mAssignmentModels.contains(tn))
-        mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Yellow);
+    for(auto assignmentModel: mAssignmentModels)
+        assignmentModel->mLine->setColor(osgEarth::Color::Yellow);
 }
 
 void SystemModelNode::lockPhase(int tn)

@@ -447,21 +447,22 @@ void DefenseModelLayer::onClearAircraft(int tn)
 
 void DefenseModelLayer::onAircraftAssignedResponse(int tn, int systemNo, bool result)
 {
-//    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
+    //    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
+    SystemModelNode *systemModelNode;
+    AircraftModelNode *aircraftModelNode;
     if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemNo))
-    {
-        auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemNo].get());
-        if(systemModelNode)
-            systemModelNode->acceptAssignedModelNode(tn, result);
-//        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
-//        mDataManager->assignAirToSystem(tn, systemNo);
-    }
+        systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemNo].get());
+    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
+        aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
+
+    if(systemModelNode)
+        systemModelNode->acceptAssignedModelNode(tn, result);
 //---if rejected then unassinment from aircraft----------------------------------------------------
-    if(!result && mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
+    if(!result)
     {
-        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
         if(aircraftModelNode)
             aircraftModelNode->removeAssignmentModelNode(systemNo);
+       mDataManager->cancelAssign(tn, systemNo);
     }
 }
 
