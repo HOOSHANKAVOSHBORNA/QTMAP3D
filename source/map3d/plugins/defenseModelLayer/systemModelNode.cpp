@@ -100,6 +100,8 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 
 void SystemModelNode::setInformation(const SystemInfo& info)
 {
+    if (mSystemInformation)
+        mSystemInformation->setInfo(info);
     mInformation = info;
     updateOrCreateLabelImage();
 }
@@ -112,6 +114,8 @@ SystemInfo SystemModelNode::getInformation() const
 void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
 {
     mCambatInfo = systemCambatInfo;
+    if (mSystemInformation)
+        mSystemInformation->setCombatInfo(systemCambatInfo);
     if(!mAssignedModelNode)
         return;
     switch (mCambatInfo.Phase) {
@@ -135,6 +139,8 @@ void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
 
 void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
+    if (mSystemInformation)
+        mSystemInformation->setStatusInfo(systemStatusInfo);
     mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
 }
@@ -424,13 +430,13 @@ bool SystemModelNode::removeNodeFromLayer(osg::Node *node)
 }
 void SystemModelNode::showInfoWidget()
 {
-    SystemInformation *systemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
-    connect(systemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-    connect(systemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-    connect(systemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-    connect(systemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-    connect(systemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
-    systemInformation->show();
+    mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
+    connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+    connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+    connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+    connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+    connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    mSystemInformation->show();
 }
 
 void SystemModelNode::updateOrCreateLabelImage()

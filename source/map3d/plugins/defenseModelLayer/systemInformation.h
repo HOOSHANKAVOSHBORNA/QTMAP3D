@@ -29,6 +29,9 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     void setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCambatInfo &systemCombatInfo);
+    void setCombatInfo(const SystemCambatInfo &combatInfo);
+    void setInfo(const SystemInfo &Info);
+    void setStatusInfo(const SystemStatusInfo &statusInfo);
     QStringList getMainInfo() const;
     QStringList getMainInfoHeaders() const;
     QStringList getLocationInfo() const;
@@ -59,6 +62,9 @@ class SystemInformation : public QObject
 public:
     SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo, QObject *parent = nullptr);
     SystemInfoModel *getInfo() {return mInfoModel;}
+    void setInfo(const SystemInfo &systemInfo);
+    void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
+    void setCombatInfo(const SystemCambatInfo &systemCombatInfo);
     void show();
 private:
     SystemInfoModel *mInfoModel;

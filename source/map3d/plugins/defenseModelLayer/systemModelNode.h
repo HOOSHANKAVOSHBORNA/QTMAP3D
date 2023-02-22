@@ -74,6 +74,8 @@ private:
     osg::ref_ptr<Truck> mTruck;
     Rocket* mFiredRocket{nullptr};
 
+    SystemInformation *mSystemInformation{nullptr};
+
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;
