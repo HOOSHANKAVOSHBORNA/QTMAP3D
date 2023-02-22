@@ -661,3 +661,17 @@ void DefenseModelLayer::findSceneModels(osgViewer::Viewer *viewer)
         }
     }
 }
+
+osgEarth::Symbology::Style &DefenseModelLayer::getDefaultStyle()
+{
+    static osgEarth::Symbology::Style _style;
+    static bool bFirst = true;
+    if (bFirst) {
+        static osg::Node *node = new osg::Node;
+        _style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+        bFirst = false;
+    }
+
+    return _style;
+}
+

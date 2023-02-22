@@ -5,6 +5,10 @@
 #include <osg/Depth>
 #include <osg/Material>
 #include "defenseModelNodeAutoScaler.h"
+#include "truckf.h"
+#include "trucks.h"
+#include "truckl.h"
+#include <QtMath>
 
 const float RANGE3D = std::numeric_limits<float>::max();;
 
@@ -49,17 +53,29 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
     //--create 3D node---------------------------------------------------------------------------
-    mTruck = new Truck(mMapController, this);
-    mTruck->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,12,0));
-    osg::ref_ptr<osg::Node> systemR  = osgDB::readRefNodeFile("../data/models/system/system-r.ive");
-    auto systemLNode = osgDB::readRefNodeFile("../data/models/system/system-l.osgb");
-    osg::ref_ptr<osg::PositionAttitudeTransform> systemL  = new osg::PositionAttitudeTransform;
-    systemL->addChild(systemLNode);
-    systemL->setPosition(osg::Vec3d(0,-12,0));
+//    mTruck = new Truck(mMapController, this);
+//    mTruck->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,12,0));
+    mTruckF = new TruckF(mMapController);
+    mTruckF->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,5.0,0));
+    mTruckS = new TruckS(mMapController);
+    mTruckS->getPositionAttitudeTransform()->setPosition(osg::Vec3d(-5.0 * std::sin(qDegreesToRadians(60.0)), -5.0 * std::cos(qDegreesToRadians(60.0)),0));
+    mTruckS->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(120.0), osg::Z_AXIS));
+    mTruckL = new TruckL(mMapController);
+    mTruckL->getPositionAttitudeTransform()->setPosition(osg::Vec3d(5.0 * std::sin(qDegreesToRadians(60.0)), -5.0 * std::cos(qDegreesToRadians(60.0)),0));
+    mTruckL->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(-120.0), osg::Z_AXIS));
+//    osg::ref_ptr<osg::Node> systemR  = osgDB::readRefNodeFile("../data/models/system/system-r.ive");
+//    auto systemLNode = osgDB::readRefNodeFile("../data/models/system/system-l.osgb");
+//    osg::ref_ptr<osg::PositionAttitudeTransform> systemL  = new osg::PositionAttitudeTransform;
+//    systemL->addChild(systemLNode);
+//    systemL->setPosition(osg::Vec3d(0,-12,0));
     mNode3D = new Group;
-    mNode3D->addChild(mTruck);
-    mNode3D->addChild(systemR);
-    mNode3D->addChild(systemL);
+//    mNode3D->addChild(mTruck);
+    mNode3D->addChild(mTruckL);
+    mNode3D->addChild(mTruckS);
+    mNode3D->addChild(mTruckF);
+//    mNode3D->addChild(systemR);
+//    mNode3D->addChild(systemR);
+//    mNode3D->addChild(systemL);
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
@@ -220,6 +236,12 @@ void SystemModelNode::frameEvent()
     }
     //--check collision--------------------------------------------------------
 //    collision();
+
+
+    if (mAssignedModelNode) {
+        mTruckF->aimTarget(mAssignedModelNode->getPosition());
+        mTruckL->lockOnTarget(mAssignedModelNode->getPosition());
+    }
 }
 
 void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -349,7 +371,8 @@ void SystemModelNode::lockPhase()
     if(hasAssigned())
     {
         mAssignedLine->setColor(osgEarth::Color::Orange);
-        mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
+//        mTruck->aimTarget(mAssignedModelNode->getPosition().vec3d());
+        mTruckF->aimTarget(mAssignedModelNode->getPosition());
     }
 }
 
@@ -358,11 +381,12 @@ void SystemModelNode::firePhase()
     if(hasAssigned())
     {
         mAssignedLine->setColor(osgEarth::Color::Red);
-        mFiredRocket = mTruck->getActiveRocket();
+        mFiredRocket = mTruckF->getActiveRocket();
         if(mFiredRocket)
         {
             mFiredRocket->setAutoScale();
-            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
+//            mTruck->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
+            mTruckF->shoot(mAssignedModelNode->getPosition().vec3d(), 20000);//1000 m/s
             mMapController->setTrackNode(mFiredRocket->getGeoTransform());
         }
     }

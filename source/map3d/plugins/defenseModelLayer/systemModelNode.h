@@ -71,7 +71,10 @@ private:
     osg::ref_ptr<Polygone> mWezPolygon;
     DefenseModelNode* mAssignedModelNode{nullptr};
     osg::ref_ptr<LineNode> mAssignedLine;
-    osg::ref_ptr<Truck> mTruck;
+//    osg::ref_ptr<Truck> mTruck;
+    osg::ref_ptr<class TruckS> mTruckS;
+    osg::ref_ptr<class TruckF> mTruckF;
+    osg::ref_ptr<class TruckL> mTruckL;
     Rocket* mFiredRocket{nullptr};
 
 private:
