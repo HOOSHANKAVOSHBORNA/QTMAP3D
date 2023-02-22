@@ -8,7 +8,6 @@
 
 #include <osg/Math>
 
-static int aircraftNumber = 0;
 DefenseDataManager::DefenseDataManager(QObject *parent):
     QObject(parent)
 {
@@ -36,15 +35,15 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
             emit mDefenseDataManager->systemInfoChanged(system);
         for(auto systemStatus:systemStatusList)
             emit mDefenseDataManager->systemStatusInfoChanged(systemStatus);
-        updateSystemCambatInfo();
-        for(auto systemCambat:SystemCambatList)
-            emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
+//        updateSystemCambatInfo();
+//        for(auto systemCambat:SystemCambatList)
+//            emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
 
         createAircraftInfo();
 //        emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
 //        mAircraftList.removeFirst();
     });
-    timer->start(10000);
+    timer->start(1000);
     //----------------------------------------------------------
     QTimer *timerUpdateAircraft = new QTimer();
     QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
@@ -57,14 +56,14 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         //emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
         //mAircraftList.removeFirst();
     });
-    timerUpdateAircraft->start(100);
+    timerUpdateAircraft->start(1000);
     //---------------------------------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
         qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
-        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        if(tn % 4 == 0)
-            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
-        else
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+//        if(tn % 4 == 0)
+//            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
+//        else
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
     });
 
@@ -79,12 +78,13 @@ Demo::~Demo()
     qDebug()<<"~Demo";
 }
 
+static int aircraftNumber = 0;
 const int systemNum = 5;
 const int stationNum = 0;
 AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
-    if(aircraftNumber > 100)
+    if(aircraftNumber > 5)
         return aircraftInfo;
     int tn = 10000 + aircraftNumber++;
     aircraftInfo.TN = tn;

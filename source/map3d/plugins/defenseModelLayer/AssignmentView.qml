@@ -38,6 +38,8 @@ Item {
                 onClicked: {
                     rootItem.aircraftModel.refresh(3);
                     rootItem.systemModel.refresh(3);
+                    rootItem.aClicked = -1
+                    rootItem.sClicked = -1
                 }
             }
         }
@@ -109,6 +111,7 @@ Item {
             ScrollView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.topMargin: 15
                 TableView {
                     id: aircrafts
                     model: rootItem.aircraftModel
@@ -213,6 +216,7 @@ Item {
             ScrollView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.topMargin: 15
                 TableView {
                     id: systems
                     model: rootItem.systemModel
@@ -231,6 +235,12 @@ Item {
                                         aircrafts.contentX = 0;
                                         aircrafts.contentY = 0;
                                     }
+                                }
+                            }
+
+                            onDoubleClicked: function() {
+                                if (rootItem.model) {
+                                    rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
                                 }
                             }
 

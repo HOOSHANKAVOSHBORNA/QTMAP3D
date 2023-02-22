@@ -124,13 +124,18 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     }
     if(CATEGORY == category && name == ADD_ROCKET)
     {
-        for(auto modelNode:mModelNodes[SYSTEM])
+        for(auto modelNode:mModelNodes[AIRCRAFT])
         {
-            auto systemModelNode = dynamic_cast<SystemModelNode*>(modelNode.get());
-            if(systemModelNode && systemModelNode->getAssignedModelNode()){
-                SystemCambatInfo cambatInfo;
-                cambatInfo.Phase = SystemCambatInfo::Fire;
-                systemModelNode->setCambatInfo(cambatInfo);
+            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+            if(aircrafModelNode)
+            {
+                auto systemModelNode = aircrafModelNode->getAssignmentModelNondes().first();
+                if(systemModelNode){
+                    SystemCambatInfo cambatInfo;
+                    cambatInfo.Phase = SystemCambatInfo::Fire;
+                    cambatInfo.TN = aircrafModelNode->getInformation().TN;
+                    systemModelNode->setCambatInfo(cambatInfo);
+                }
             }
         }
     }
@@ -382,10 +387,6 @@ void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
 
 }
 
-void DefenseModelLayer::positionChanged(QString /*type*/, QString /*name*/, osgEarth::GeoPoint /*position*/)
-{
-}
-
 void DefenseModelLayer::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
     addUpdateAircraft(aircraftInfo);
@@ -451,16 +452,16 @@ void DefenseModelLayer::onAircraftAssignedResponse(int tn, int systemNo, bool re
     {
         auto systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemNo].get());
         if(systemModelNode)
-            systemModelNode->acceptAssignedModelNode(result);
-        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
-        mDataManager->assignAirToSystem(tn, systemNo);
+            systemModelNode->acceptAssignedModelNode(tn, result);
+//        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
+//        mDataManager->assignAirToSystem(tn, systemNo);
     }
 //---if rejected then unassinment from aircraft----------------------------------------------------
     if(!result && mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
     {
         auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
         if(aircraftModelNode)
-            aircraftModelNode->setAssignmentModelNode(nullptr);
+            aircraftModelNode->removeAssignmentModelNode(systemNo);
     }
 }
 
@@ -529,14 +530,7 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
         if(systemModelNode)
         {
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
-            systemModelNode->setAssignedModelNode(aircraftModelNode);
-            aircraftModelNode->setAssignmentModelNode(systemModelNode);
-            //--TODO manage memory---------------------------------------
-            std::thread* t1 = new std::thread([=](){
-                if(mDefenseDataManager)
-                    emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
-                                                          systemModelNode->getInformation().Number);
-            });
+            aircraftAssign(aircraftModelNode, systemModelNode);
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
@@ -548,16 +542,10 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
     if(event->button() == Qt::LeftButton)
     {
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
-        if(aircraftModelNode)
+        if(aircraftModelNode && aircraftModelNode->hasAssignmentModelNode())
         {
-            auto systemModelNode = aircraftModelNode->getAssignmentModelNode();
-            if(systemModelNode)
-            {
-                emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
-                        systemModelNode->getInformation().Number);
-                systemModelNode->unassignedModelNode();
-                event->accept();
-            }
+            cancelAircraftAssign(aircraftModelNode);
+            event->accept();
         }
     }
 }
@@ -578,6 +566,41 @@ void DefenseModelLayer::mouseMoveEvent(QMouseEvent *event)
     {
         osgEarth::GeoPoint mouseGeoPoint = mMapController->screenToGeoPoint(event->x(), event->y());
         mDragAircraftModelNode->setPosition(mouseGeoPoint);
+    }
+}
+
+void DefenseModelLayer::aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode)
+{
+    if(!aircraftModelNode || !systemModelNode)
+        return;
+    systemModelNode->addAssignedModelNode(aircraftModelNode->getInformation().TN, aircraftModelNode);
+    aircraftModelNode->addAssignmentModelNode(systemModelNode->getInformation().Number, systemModelNode);
+    //--TODO manage memory---------------------------------------
+    std::thread* t1 = new std::thread([=](){
+        if(mDefenseDataManager)
+            emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
+                                                  systemModelNode->getInformation().Number);
+    });
+
+    mDataManager->assignAirToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
+}
+
+void DefenseModelLayer::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
+{
+    if(aircraftModelNode)
+    {
+        auto systemModelNodes = aircraftModelNode->getAssignmentModelNondes();
+        for(auto systemModelNode: systemModelNodes)
+        {
+            if(systemModelNode)
+            {
+                emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
+                        systemModelNode->getInformation().Number);
+                systemModelNode->removeAssignedModelNode(aircraftModelNode->getInformation().TN);
+            }
+        }
+        aircraftModelNode->clearAssignmentModelNodes();
+        mDataManager->cancelAssign(aircraftModelNode->getInformation().TN, -1);
     }
 }
 
