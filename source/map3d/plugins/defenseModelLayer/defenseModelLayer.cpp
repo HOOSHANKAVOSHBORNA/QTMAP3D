@@ -454,7 +454,7 @@ void DefenseModelLayer::onAircraftAssignedResponse(int tn, int systemNo, bool re
         if(systemModelNode)
             systemModelNode->acceptAssignedModelNode(tn, result);
 //        auto aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
-        mDataManager->assignAirToSystem(tn, systemNo);
+//        mDataManager->assignAirToSystem(tn, systemNo);
     }
 //---if rejected then unassinment from aircraft----------------------------------------------------
     if(!result && mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
@@ -581,6 +581,8 @@ void DefenseModelLayer::aircraftAssign(AircraftModelNode *aircraftModelNode, Sys
             emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
                                                   systemModelNode->getInformation().Number);
     });
+
+    mDataManager->assignAirToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
 }
 
 void DefenseModelLayer::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
@@ -598,6 +600,7 @@ void DefenseModelLayer::cancelAircraftAssign(AircraftModelNode *aircraftModelNod
             }
         }
         aircraftModelNode->clearAssignmentModelNodes();
+        mDataManager->cancelAssign(aircraftModelNode->getInformation().TN, -1);
     }
 }
 

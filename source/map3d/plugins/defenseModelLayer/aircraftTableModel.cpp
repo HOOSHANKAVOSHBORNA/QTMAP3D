@@ -207,11 +207,13 @@ void AircraftTableModel::onSystemClicked(int Number) {
 
 void AircraftTableModel::onUpdateTimerTriggered()
 {
+    if (mIndex != 3)
+        mFilterProxy = mFilter;
     if (mNeedUpdateOnTimerTrigger) {
         if (!mShowAssigned) {
             mAircraftInfoListProxy.clear();
             for (auto& item : mAircraftInfoList) {
-                if (QString::number(item.second->TN).contains(mFilter))
+                if (QString::number(item.second->TN).contains(mFilterProxy))
                     mAircraftInfoListProxy.push_back(item);
             }
         }
@@ -375,16 +377,48 @@ void AircraftTableModel::assign(int TN, int Number)
     }
 }
 
+void AircraftTableModel::cancelAssign(int TN, int Number)
+{
+    if (TN == -1){
+        if (mAircraftsAssigned.contains(Number)){
+            mAircraftsAssigned.remove(Number);
+        }
+    }
+    else if (Number == -1) {
+        for (auto i : mAircraftsAssigned) {
+            auto toDelete = std::remove_if(i.begin(), i.end(), [TN](int &aircraft){
+                return TN == aircraft;
+            });
+            i.erase(toDelete, i.end());
+        }
+    }
+    else {
+
+        auto toDelete = std::remove_if(mAircraftsAssigned[Number].begin(), mAircraftsAssigned[Number].end(), [TN](int &aircraft){
+            return TN == aircraft;
+        });
+        mAircraftsAssigned[Number].erase(toDelete, mAircraftsAssigned[Number].end());
+    }
+    if (mShowAssigned) {
+        mNeedUpdateOnTimerTrigger = true;
+        onUpdateTimerTriggered();
+    }
+
+}
+
 void AircraftTableModel::refresh(int indx)
 {
     mShowAssigned = false;
     mNumber = -1;
-    mFilter = "";
     beginResetModel();
-    mAircraftInfoListProxy.clear();
-    for (auto& item : mAircraftInfoList) {
-        if (QString::number(item.second->TN).contains(mFilter))
-            mAircraftInfoListProxy.push_back(item);
+    mIndex = indx;
+    if (indx == 3) {
+        mFilterProxy = "";
+        mNeedUpdateOnTimerTrigger = true;
+        onUpdateTimerTriggered();
+    }
+    else {
+        setFilterWildcard(mFilter);
     }
 //    mAircraftInfoListProxy.assign(mAircraftInfoList.begin(), mAircraftInfoList.end());
     endResetModel();

@@ -82,6 +82,7 @@ private:
     Rocket* mFiredRocket{nullptr};
 
     QMap<int, AssignmentModel*> mAssignmentModels;
+    SystemInformation *mSystemInformation{nullptr};
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;

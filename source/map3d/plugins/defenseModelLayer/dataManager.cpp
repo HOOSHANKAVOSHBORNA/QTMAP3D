@@ -181,6 +181,12 @@ void DataManager::assignAirToSystem(int TN, int Number)
     mSystemTableModel->assign(Number, TN);
 }
 
+void DataManager::cancelAssign(int TN, int Number)
+{
+    mAircraftTableModel->cancelAssign(TN, Number);
+    mSystemTableModel->cancelAssign(Number, TN);
+}
+
 void DataManager::clearAll()
 {
     if (mAircraftTableModel)
