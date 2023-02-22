@@ -1,0 +1,62 @@
+#ifndef LINE_H
+#define LINE_H
+
+#include <QMouseEvent>
+#include <osgEarthAnnotation/FeatureNode>
+#include <osgEarthAnnotation/ModelNode>
+#include <osgEarthSymbology/GeometryFactory>
+#include "plugininterface.h"
+
+#include "osgEarthAnnotation/AnnotationEditing"
+#include <osgEarthAnnotation/AnnotationLayer>
+#include <osgEarthAnnotation/ImageOverlayEditor>
+#include <osgEarthAnnotation/PlaceNode>
+#include <QQmlEngine>
+#include <QQmlComponent>
+#include <linenode.h>
+
+#define DRAW_LAYER_NAME "Line"
+
+
+
+class drawLine: public PluginInterface, Type
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawline.json")
+    Q_INTERFACES(PluginInterface)
+
+public:
+    explicit drawLine(QWidget *parent = nullptr);
+    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+    bool setup(MapController *mapController,
+               UIHandle *UIHandle) override;
+
+protected:
+    virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+
+private:
+    MapController* mMapController{nullptr};
+    osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
+    QQmlEngine *mQmlEngine = nullptr;
+
+    enum class DrawingState {NONE, START, FINISH, DELETE, INITIAL};
+    DrawingState mDrawingState;
+    enum class Shape {NONE, LINESTRIP, LINE};
+    Shape mShape;
+
+    LineNode* mLine{nullptr};
+
+    bool addNodeToLayer(osg::Node *node);
+    void removeNodeFromLayer(osg::Node *node);
+
+private slots:
+    void onLineStripBtnClick(QMouseEvent* event);
+    void onLineBtnClick(QMouseEvent* event);
+    void onLineMouseMove(QMouseEvent* event);
+    void onNodeBtnDoubleClick(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
+};
+
+#endif // LINE_H
