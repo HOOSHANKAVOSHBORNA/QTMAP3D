@@ -48,6 +48,7 @@ public:
     void updateItemData(const AircraftInfo& aircraftInfo);
     void deleteItem(int TN);
     void assign(int TN, int Number);
+    void cancelAssign(int TN, int Number);
     void clear();
 
 private:
@@ -57,12 +58,14 @@ private:
 
 
     QString mFilter;
+    QString mFilterProxy = "";
 
     bool mNeedUpdateOnTimerTrigger = false;
     bool mShowAssigned = false;
     int mMinRowUpdate = -1;
     int mMaxRowUpdate = -1;
     int mNumber = -1;
+    int mIndex = -1;
 };
 
 #endif // AIRCRAFTTABLEMODEL_H

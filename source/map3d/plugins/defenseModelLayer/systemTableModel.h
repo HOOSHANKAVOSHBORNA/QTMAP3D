@@ -47,6 +47,7 @@ public:
     void updateItemData(const SystemStatusInfo& systemStatusInfo);
     void updateItemData(const SystemCambatInfo& systemCambatInfo);
     void assign(int Number, int TN);
+    void cancelAssign(int Number, int TN);
     void clear();
 
 
@@ -63,6 +64,7 @@ private:
     bool mshowAssigned = false;
     int mTN = -1;
     QString mFilter;
+    int mIndex = -1;
 
 };
 
