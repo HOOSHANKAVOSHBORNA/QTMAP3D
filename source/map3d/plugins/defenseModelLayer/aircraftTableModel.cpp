@@ -385,10 +385,11 @@ void AircraftTableModel::cancelAssign(int TN, int Number)
         }
     }
     else if (Number == -1) {
-        for (auto i : mAircraftsAssigned) {
+        for (auto &i : mAircraftsAssigned) {
             auto toDelete = std::remove_if(i.begin(), i.end(), [TN](int &aircraft){
                 return TN == aircraft;
             });
+
             i.erase(toDelete, i.end());
         }
     }

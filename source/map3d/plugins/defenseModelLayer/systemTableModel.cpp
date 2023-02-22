@@ -319,7 +319,7 @@ void SystemTableModel::cancelAssign(int Number, int TN)
         }
     }
     else if (TN == -1) {
-        for (auto i : mSystemsAssigned) {
+        for (auto &i : mSystemsAssigned) {
             auto toDelete = std::remove_if(i.begin(), i.end(), [Number](int &system){
                 return Number == system;
             });
