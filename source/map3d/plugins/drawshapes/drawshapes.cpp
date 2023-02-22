@@ -62,7 +62,7 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     mAnnoLayer = new osgEarth::Annotation::AnnotationLayer;
 //    Q_UNUSED(engine)
     mQmlEngine = engine;
-    desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
+    //desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true});

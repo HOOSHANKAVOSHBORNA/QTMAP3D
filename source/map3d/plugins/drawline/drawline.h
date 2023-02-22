@@ -13,19 +13,20 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include <QQmlEngine>
 #include <QQmlComponent>
+#include <linenode.h>
 
 #define DRAW_LAYER_NAME "Line"
 
 
 
-class Line: public PluginInterface
+class drawLine: public PluginInterface, Type
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "line.json")
+    Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawline.json")
     Q_INTERFACES(PluginInterface)
 
 public:
-    explicit Line(QWidget *parent = nullptr);
+    explicit drawLine(QWidget *parent = nullptr);
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool setup(MapController *mapController,
@@ -33,8 +34,8 @@ public:
 
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
-//    virtual void mouseMoveEvent(QMouseEvent* event) override;
-//    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 private:
     MapController* mMapController{nullptr};
@@ -43,12 +44,19 @@ private:
 
     enum class DrawingState {NONE, START, FINISH, DELETE, INITIAL};
     DrawingState mDrawingState;
-    enum class Shape {NONE, LINE, LINE_II};
+    enum class Shape {NONE, LINESTRIP, LINE};
     Shape mShape;
 
+    LineNode* mLine{nullptr};
+
+    bool addNodeToLayer(osg::Node *node);
+    void removeNodeFromLayer(osg::Node *node);
+
 private slots:
+    void onLineStripBtnClick(QMouseEvent* event);
     void onLineBtnClick(QMouseEvent* event);
-    void onLineIIBtnClick(QMouseEvent* event);
+    void onLineMouseMove(QMouseEvent* event);
+    void onNodeBtnDoubleClick(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
 };
 
 #endif // LINE_H
