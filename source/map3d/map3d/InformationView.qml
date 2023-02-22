@@ -19,11 +19,12 @@ Item {
         infoItemShowAnimation.to = 300 + (widgetsMargins * 2.0);
         infoItemShowAnimation.duration = 200;
         infoItemShowAnimation.start();
-        sidePush.visible=true
+        maxmove.running = true
+        sidePush.visible = true
     }
 
     Item {
-            anchors.left: parent.right
+            anchors.left: root.right
             id: sidePush
             visible: false
     //        Rectangle{
@@ -41,13 +42,12 @@ Item {
                 Image {
                     id: minimize
                     source: "/Resources/sideTab.png"
-                    sourceSize: ("100 x 25")
+                    sourceSize: ("25 x 100")
     //                anchors.top: parent.top
     //                anchors.top: parent.top
     //                anchors.horizontalCenter: parent.horizontalCenter
-                    y:50
-                    x:-45
-                    rotation: -90
+                    y:8
+//                    x:-45
                     MouseArea{
                         anchors.fill: parent
                         onClicked: if(root.x !== -620){
@@ -61,13 +61,14 @@ Item {
                     Text {
                         id: sideInfoTxt
                         anchors.centerIn: parent
-                        text: "item.text"
-                        color:"black"
+                        text: "10001"
+                        color:"white"
                         font.pointSize: 12
                         visible: false
+                        rotation: -90
                     }
                 }
-
+            PropertyAnimation {id:maxmove ; target: minimize ; property: "x" ; from :-300 ; to :0; duration: 200 ; easing.type: Easing.OutQuint ;running: false}
             PropertyAnimation {id:minix ;target:root ; property:"x";  to: -620 ; duration: 200 ; running: false}
             PropertyAnimation {id:maxix ;target:root ; property:"x";  to: -300 ; duration: 200 ; running: false}
             PropertyAnimation {id:mintxt; target: sideInfoTxt ; property: "visible" ;  to: true  ; duration: 200 ; running: false}
@@ -93,7 +94,7 @@ Item {
         if (nowItem){
             nowItem.parent = null
             nowItem.destroy()
-            sidePush.visible=true
+            sidePush.visible = false
         }
     }
 }

@@ -93,7 +93,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
 
 DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent):
     QObject(parent),
-    osgEarth::Annotation::ModelNode(mapControler->getMapNode(), osgEarth::Symbology::Style())
+    osgEarth::Annotation::ModelNode(mapControler->getMapNode(), DefenseModelLayer::getDefaultStyle())
 {
     //--add place node-------------------------------------------------------------------------------------------
     //    osgEarth::Symbology::Style pm;

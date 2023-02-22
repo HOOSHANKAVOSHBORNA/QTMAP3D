@@ -47,8 +47,13 @@ public:
     void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
 //    void curentPosition(osgEarth::GeoPoint pos) override;
-    SystemModelNode *getAssignmentModelNode() const;
-    void setAssignmentModelNode(SystemModelNode *assignmentModelNode);
+    SystemModelNode *getAssignmentModelNode(int number) const;
+    void addAssignmentModelNode(int number, SystemModelNode *assignmentModelNode);
+    void removeAssignmentModelNode(int number);
+    void clearAssignmentModelNodes();
+    bool hasAssignmentModelNode();
+
+    QMap<int, SystemModelNode *> getAssignmentModelNondes() const;
 
 private slots:
     void onGotoButtonClicked();
@@ -74,7 +79,7 @@ private:
     osg::ref_ptr<osgParticle::SmokeTrailEffect> mSmoke;
     osg::ref_ptr<osgParticle::FireEffect> mFire;
 
-    SystemModelNode* mAssignmentModelNode{nullptr};
+    QMap<int, SystemModelNode*> mAssignmentModelNondes;
 
     bool mIsStop{false};
     bool mIsRoute{false};

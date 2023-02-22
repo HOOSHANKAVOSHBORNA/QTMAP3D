@@ -47,8 +47,6 @@ public:
     void addUpdateSystem(SystemInfo systemInfo);
     void addUpdateStation(StationInfo stationInfo);
 public slots:
-    void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
-    void onClickedWorldPos(double latitude ,double longitude, double altitude);
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
     void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
@@ -57,6 +55,8 @@ public slots:
     void onClearAircraft(int tn);
     void onAircraftAssignedResponse(int tn, int systemNo, bool result);
     void onClear();
+
+    static osgEarth::Symbology::Style& getDefaultStyle();
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;
@@ -64,9 +64,10 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 private:
+    void aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode);
+    void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
-    void onToolBarWidgetPin(bool isPin);
 private:
     QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
     DefenseModelNode* mSelectedModelNode{nullptr};
@@ -81,6 +82,7 @@ private:
     osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
 
     DefenseDataManager *mDefenseDataManager;
+
 };
 
 #endif // MODEL_H
