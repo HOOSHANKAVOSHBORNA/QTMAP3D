@@ -74,7 +74,6 @@ signals:
     void focalPointPitchChanged(qreal focalPointPitch);
     void focalPointHeadChanged(qreal focalPointHead);
 
-    void fpsChanged(qreal fps);
     void modeChanged(bool is3DView);
     void layerChanged();
     void mapCleared();

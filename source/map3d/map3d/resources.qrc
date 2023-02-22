@@ -47,5 +47,6 @@
         <file>Resources/mainFrame.png</file>
         <file>Resources/minimize.png</file>
         <file>Resources/collapse2.png</file>
+        <file>Resources/sideTab.png</file>
     </qresource>
 </RCC>

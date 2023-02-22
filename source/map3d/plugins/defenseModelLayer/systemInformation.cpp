@@ -57,6 +57,24 @@ void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemSt
 
 }
 
+void SystemInfoModel::setCombatInfo(const SystemCambatInfo &combatInfo)
+{
+    mSystemCombatInfo = combatInfo;
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
+}
+
+void SystemInfoModel::setInfo(const SystemInfo &Info)
+{
+    mSystemInfo = Info;
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
+}
+
+void SystemInfoModel::setStatusInfo(const SystemStatusInfo &statusInfo)
+{
+    mSystemStatusInfo = statusInfo;
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
+}
+
 QStringList SystemInfoModel::getMainInfo() const
 {
     return QStringList {mSystemInfo.Name, QString::number(mSystemInfo.Number),
@@ -126,6 +144,21 @@ SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
     });
 
     comp->loadUrl(QUrl("qrc:/modelplugin/SystemInfoView.qml"));
+}
+
+void SystemInformation::setInfo(const SystemInfo &systemInfo)
+{
+    mInfoModel->setInfo(systemInfo);
+}
+
+void SystemInformation::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
+{
+    mInfoModel->setStatusInfo(systemStatusInfo);
+}
+
+void SystemInformation::setCombatInfo(const SystemCambatInfo &systemCombatInfo)
+{
+    mInfoModel->setCombatInfo(systemCombatInfo);
 }
 
 void SystemInformation::show()

@@ -9,7 +9,6 @@ osg::ref_ptr<osg::Node> TruckS::mMeshNodeP3;
 osg::ref_ptr<osg::Node> TruckS::mMeshNodeP4;
 bool TruckS::mMeshNodesLoaded = false;
 
-
 TruckS::TruckS(MapController *mapController) :
     osgEarth::Annotation::ModelNode(mapController->getMapNode(), DefenseModelLayer::getDefaultStyle())
 {

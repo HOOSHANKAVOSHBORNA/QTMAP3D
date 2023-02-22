@@ -1,5 +1,6 @@
 #include "systemTableModel.h"
 
+#include <QDebug>
 #include <QColor>
 #include <QRegularExpression>
 
@@ -151,18 +152,55 @@ int SystemTableModel::getNumber(int row) const
 
 void SystemTableModel::setFilterWildcard(const QString &wildcard)
 {
-    beginResetModel();
+    if (!mshowAssigned) {
+        beginResetModel();
 
-    mFilter = wildcard;
-    mFilter.remove(QRegularExpression("\\s"));
+        mFilter = wildcard;
+        mFilter.remove(QRegularExpression("\\s"));
 
-    mSystemInfoListProxy.clear();
-    for (auto& item : mSystemInfoList) {
-        if (QString::number(item.second->Number).contains(mFilter))
-            mSystemInfoListProxy.push_back(item);
+        mSystemInfoListProxy.clear();
+        for (auto& item : mSystemInfoList) {
+            if (QString::number(item.second->Number).contains(mFilter))
+                mSystemInfoListProxy.push_back(item);
+        }
+
+        endResetModel();
     }
+}
 
+void SystemTableModel::onAircraftClicked(int TN)
+{
+    mTN = TN;
+    mshowAssigned = true;
+    beginResetModel();
+    mSystemInfoListProxy.clear();
+    mSystemCombatInfoListProxy.clear();
+    if (mSystemsAssigned.contains(TN)) {
+        for (int system : mSystemsAssigned[TN]) {
+            auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(), [system](QPair<int, QSharedPointer<SystemInfo>> &item){
+                return item.second->Number == system;
+            });
+//            (*it).first = mSystemInfoListProxy.size();
+            mSystemInfoListProxy.push_back(*it);
+
+            auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [system](QPair<int, QSharedPointer<SystemCambatInfo>> &item){
+                return item.second->Number == system;
+            });
+//            (*it2).first = mSystemCombatInfoListProxy.size();
+            mSystemCombatInfoListProxy.push_back(*it2);
+        }
+    }
     endResetModel();
+}
+
+void SystemTableModel::onSystemClicked(int Number)
+{
+    emit systemClicked(Number);
+}
+
+bool SystemTableModel::getShowAssigned()
+{
+    return mshowAssigned;
 }
 
 void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
@@ -185,10 +223,12 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
         mSystemInfoList.push_back(isp);
     }
 
-    mSystemInfoListProxy.clear();
-    for (auto& item : mSystemInfoList) {
-        if (QString::number(item.second->Number).contains(mFilter))
-            mSystemInfoListProxy.push_back(item);
+    if (!mshowAssigned) {
+        mSystemInfoListProxy.clear();
+        for (auto& item : mSystemInfoList) {
+            if (QString::number(item.second->Number).contains(mFilter))
+                mSystemInfoListProxy.push_back(item);
+        }
     }
 
     endResetModel();
@@ -220,6 +260,7 @@ void SystemTableModel::updateItemData(const SystemStatusInfo &systemStatusInfo)
             mSystemStatusInfoListProxy.push_back(item);
     }
 
+
     endResetModel();
 }
 
@@ -243,10 +284,79 @@ void SystemTableModel::updateItemData(const SystemCambatInfo &systemCambatInfo)
         mSystemCombatInfoList.push_back(isp);
     }
 
+    if (!mshowAssigned) {
+        mSystemCombatInfoListProxy.clear();
+        for (auto& item : mSystemCombatInfoList) {
+            if (QString::number(item.second->Number).contains(mFilter))
+                mSystemCombatInfoListProxy.push_back(item);
+        }
+
+    }
+    endResetModel();
+}
+
+void SystemTableModel::assign(int Number, int TN)
+{
+    if (mSystemsAssigned.contains(TN)) {
+        mSystemsAssigned[TN].push_back(Number);
+    }
+    else {
+        mSystemsAssigned[TN] = QList<int> {Number};
+    }
+    if (mTN == TN) {
+        beginResetModel();
+        onAircraftClicked(TN);
+        endResetModel();
+    }
+
+}
+
+void SystemTableModel::cancelAssign(int Number, int TN)
+{
+    if (Number == -1){
+        if (mSystemsAssigned.contains(TN)){
+            mSystemsAssigned.remove(TN);
+        }
+    }
+    else if (TN == -1) {
+        for (auto &i : mSystemsAssigned) {
+            auto toDelete = std::remove_if(i.begin(), i.end(), [Number](int &system){
+                return Number == system;
+            });
+            i.erase(toDelete, i.end());
+        }
+    }
+    else {
+
+        auto toDelete = std::remove_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](int &system){
+            return Number == system;
+        });
+        mSystemsAssigned[TN].erase(toDelete, mSystemsAssigned[TN].end());
+    }
+    if (mshowAssigned) {
+        onAircraftClicked(mTN);
+    }
+}
+
+void SystemTableModel::refresh(int indx)
+{
+    mshowAssigned = false;
+    beginResetModel();
+    mTN = -1;
+    QString tmp = mFilter;
+    if (indx == 3)
+        tmp = "";
+    mSystemInfoListProxy.clear();
     mSystemCombatInfoListProxy.clear();
+
+
     for (auto& item : mSystemCombatInfoList) {
-        if (QString::number(item.second->Number).contains(mFilter))
+        if (QString::number(item.second->Number).contains(tmp))
             mSystemCombatInfoListProxy.push_back(item);
+    }
+    for (auto& item : mSystemInfoList){
+        if (QString::number(item.second->Number).contains(tmp))
+            mSystemInfoListProxy.push_back(item);
     }
 
     endResetModel();

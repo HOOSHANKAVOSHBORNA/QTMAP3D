@@ -175,6 +175,8 @@ public slots:
 
     void setLayersModel(LayersModel *layersModel);
 
+    void onFrameSwapped();
+
 public:
 
     MapController* mapController() const;

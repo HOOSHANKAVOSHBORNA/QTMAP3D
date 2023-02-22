@@ -47,8 +47,6 @@ public:
     void addUpdateSystem(SystemInfo systemInfo);
     void addUpdateStation(StationInfo stationInfo);
 public slots:
-    void positionChanged(QString type, QString name, osgEarth::GeoPoint position);
-    void onClickedWorldPos(double latitude ,double longitude, double altitude);
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
     void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
@@ -66,9 +64,10 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 private:
+    void aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode);
+    void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
-    void onToolBarWidgetPin(bool isPin);
 private:
     QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
     DefenseModelNode* mSelectedModelNode{nullptr};
