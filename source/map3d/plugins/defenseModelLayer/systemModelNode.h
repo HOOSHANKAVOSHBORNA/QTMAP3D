@@ -78,7 +78,9 @@ private:
     osg::ref_ptr<SphereNode> mMezSphere;
     osg::ref_ptr<Polygone> mWezPolygon;
 
-    osg::ref_ptr<Truck> mTruck;
+    osg::ref_ptr<class TruckS> mTruckS;
+    osg::ref_ptr<class TruckF> mTruckF;
+    osg::ref_ptr<class TruckL> mTruckL;
     Rocket* mFiredRocket{nullptr};
 
     QMap<int, AssignmentModel*> mAssignmentModels;

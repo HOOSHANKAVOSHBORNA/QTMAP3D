@@ -1,6 +1,7 @@
 
 #include "trucks.h"
 #include "mapcontroller.h"
+#include "defenseModelLayer.h"
 
 osg::ref_ptr<osg::Node> TruckS::mMeshNodeP1;
 osg::ref_ptr<osg::Node> TruckS::mMeshNodeP2;
@@ -9,13 +10,13 @@ osg::ref_ptr<osg::Node> TruckS::mMeshNodeP4;
 bool TruckS::mMeshNodesLoaded = false;
 
 TruckS::TruckS(MapController *mapController) :
-    osgEarth::Annotation::ModelNode(mapController->getMapNode(), osgEarth::Symbology::Style())
+    osgEarth::Annotation::ModelNode(mapController->getMapNode(), DefenseModelLayer::getDefaultStyle())
 {
     if (!mMeshNodesLoaded) {
-        mMeshNodeP1 = osgDB::readNodeFile("/home/client1/Hooshan/Models/TruckS/TruckS_P1.osgb");
-        mMeshNodeP2 = osgDB::readNodeFile("/home/client1/Hooshan/Models/TruckS/TruckS_P2.osgb");
-        mMeshNodeP3 = osgDB::readNodeFile("/home/client1/Hooshan/Models/TruckS/TruckS_P3.osgb");
-        mMeshNodeP4 = osgDB::readNodeFile("/home/client1/Hooshan/Models/TruckS/TruckS_P4.osgb");
+        mMeshNodeP1 = osgDB::readNodeFile("../data/models/system/truck_s/TruckS_P1.osgb");
+        mMeshNodeP2 = osgDB::readNodeFile("../data/models/system/truck_s/TruckS_P2.osgb");
+        mMeshNodeP3 = osgDB::readNodeFile("../data/models/system/truck_s/TruckS_P3.osgb");
+        mMeshNodeP4 = osgDB::readNodeFile("../data/models/system/truck_s/TruckS_P4.osgb");
         mMeshNodesLoaded = true;
     }
 
@@ -36,11 +37,13 @@ TruckS::TruckS(MapController *mapController) :
     mWheelAxis2PAT->setPosition(osg::Vec3d(0, 1.2703, 0.5288));
     mWheelAxis3PAT->setPosition(osg::Vec3d(0,-0.8238, 0.5288));
     mWheelAxis4PAT->setPosition(osg::Vec3d(0,-1.9342, 0.5288));
-    mHolderPAT->setPosition(osg::Vec3d(0, -0.8222, 1.9093));
-    mSpinnerPAT->setPosition(osg::Vec3d(0,-1.2712, 0.8134));
-    mHolderAimingPAT->setPosition(osg::Vec3d(0, -0.8222, 1.9093));
-    mSpinnerAimingPAT->setPosition(osg::Vec3d(0,-1.2712, 0.8134));
+    mHolderPAT->setPosition(osg::Vec3d(0, -1.0125, 2.0572));
+    mSpinnerPAT->setPosition(osg::Vec3d(0, -1.0136 + 1.0125, 3.6984 - 2.0572));
+    mHolderAimingPAT->setPosition(osg::Vec3d(0, -1.0125, 2.0572));
+    mSpinnerAimingPAT->setPosition(osg::Vec3d(0, -1.0136 - 1.0125, 3.6984 - 2.0572));
 
+
+    mSpinnerPAT->setAttitude(osg::Quat(osg::inDegrees(30.0), osg::X_AXIS));
 
     mBodyPAT->addChild(mMeshNodeP1);
     mWheelAxis1PAT->addChild(mMeshNodeP2);
@@ -66,4 +69,42 @@ TruckS::TruckS(MapController *mapController) :
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(rootGroup);
     setStyle(style);
 
+
+
+    osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath;
+    path->insert(0,
+                 osg::AnimationPath::ControlPoint(
+                     osg::Vec3d(0, -1.0125, 2.0572),
+                     osg::Quat(osg::inDegrees(0.0), osg::Z_AXIS))
+                 );
+    path->insert(1,
+                 osg::AnimationPath::ControlPoint(
+                     osg::Vec3d(0, -1.0125, 2.0572),
+                     osg::Quat(osg::inDegrees(180.0), osg::Z_AXIS))
+                 );
+    path->insert(2,
+                 osg::AnimationPath::ControlPoint(
+                     osg::Vec3d(0, -1.0125, 2.0572),
+                     osg::Quat(osg::inDegrees(360.0), osg::Z_AXIS))
+                 );
+    path->setLoopMode(osg::AnimationPath::LOOP);
+
+    mAnimPathCallback = new osg::AnimationPathCallback;
+    mAnimPathCallback->setAnimationPath(path);
+
+    mHolderPAT->setUpdateCallback(mAnimPathCallback);
+
+    mAnimPathCallback->reset();
+    mAnimPathCallback->setPause(false);
+
+}
+
+void TruckS::startSearch()
+{
+    mAnimPathCallback->setPause(false);
+}
+
+void TruckS::stopSearch()
+{
+    mAnimPathCallback->setPause(true);
 }
