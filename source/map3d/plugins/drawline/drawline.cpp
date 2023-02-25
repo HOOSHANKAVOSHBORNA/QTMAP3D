@@ -45,7 +45,6 @@ drawLine::drawLine(QWidget *parent)
 
 bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-    mAnnoLayer = new osgEarth::Annotation::AnnotationLayer;
     mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{LINESTRIP, CATEGORY, "qrc:/resources/line_string.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
@@ -60,11 +59,12 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             if(checked)
             {
                 mShape = Shape::LINESTRIP;
+                mDrawingState = DrawingState::START;
             }
             else
             {
                 mShape = Shape::NONE;
-                mDrawingState = DrawingState::NONE;
+                mDrawingState = DrawingState::FINISH;
             }
         }
 
@@ -73,17 +73,17 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
         if(checked)
         {
             mShape = Shape::LINE;
-
+            mDrawingState = DrawingState::START;
         }
         else
         {
             mShape = Shape::NONE;
-            mDrawingState = DrawingState::NONE;
+            mDrawingState = DrawingState::FINISH;
         }
     }
 }
 
-bool drawLine::setup(MapController *mapController, UIHandle *UIHandle)
+bool drawLine::setup(MapController *mapController, UIHandle */*UIHandle*/)
 {
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
@@ -96,29 +96,87 @@ bool drawLine::setup(MapController *mapController, UIHandle *UIHandle)
 
 void drawLine::mousePressEvent(QMouseEvent *event)
 {
-    switch (mShape) {
-    case Shape::NONE:
-        break;
-    case Shape::LINESTRIP:
-        onLineStripBtnClick(event);
-        break;
-    case Shape::LINE:
-        onLineBtnClick(event);
-        break;
+    if(event->button() == Qt::MouseButton::LeftButton)
+    {
+        if(mDrawingState == DrawingState::START)
+        {
+            startDrawLine();
+        }
+        if(mDrawingState == DrawingState::DRAWING)
+        {
+            drawingLine(event);
+        }
+        event->accept();
+
+    }
+    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
+    {
+        cancelDrawingLine(event);
     }
 }
 
 void drawLine::mouseMoveEvent(QMouseEvent *event)
 {
-    if(mShape == Shape::LINESTRIP || mShape == Shape::LINE){
-        onLineMouseMove(event);
-    }
+    if (mDrawingState == DrawingState::DRAWING)
+        mouseMoveDrawing(event);
 }
 
 void drawLine::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if(mShape == Shape::LINESTRIP){
-        onNodeBtnDoubleClick(event);
+    finishDrawing(event);
+}
+
+void drawLine::startDrawLine()
+{
+    mLine = new LineNode(mMapController);
+    mLine->setColor(osgEarth::Color::Orange);
+    mLine->setPointColor(osgEarth::Color::Black);
+    mLine->setWidth(7);
+    mLine->setPointVisible(false);
+    mLine->setPointWidth(8);
+    mLine->setTessellation(20);
+    addNodeToLayer(mLine);
+
+    mDrawingState = DrawingState::DRAWING;
+}
+
+void drawLine::drawingLine(QMouseEvent *event)
+{
+    osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+    mLine->addPoint(geoPos);
+    if (mShape == Shape::LINE && mLine->getSize()>= 2){
+        finishDrawing(event);
+    }
+}
+
+void drawLine::cancelDrawingLine(QMouseEvent *event)
+{
+    removeNodeFromLayer(mLine);
+    event->accept();
+
+    mDrawingState = DrawingState::START;
+}
+
+void drawLine::mouseMoveDrawing(QMouseEvent *event)
+{
+    if (mLine->getSize() >= 2)
+    {
+        mLine->removePoint();
+    }
+    osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+    mLine->addPoint(geoPos);
+}
+
+void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
+{
+    if(mDrawingState == DrawingState::DRAWING)
+    {
+        mDrawingState = DrawingState::START;
+        if(nodeEditor)
+            //mMapController->removeNode(nodeEditor);
+            removeNodeFromLayer(nodeEditor);
+        //mMapController->removeNode(mPolyHdragger);
+        event->accept();
     }
 }
 
@@ -141,117 +199,5 @@ void drawLine::removeNodeFromLayer(osg::Node *node)
         if (group) {
             group->removeChild(node);
         }
-    }
-}
-
-void drawLine::onLineStripBtnClick(QMouseEvent *event)
-{
-
-    if(event->button() == Qt::MouseButton::LeftButton)
-    {
-        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
-
-        mShape = Shape::LINESTRIP;
-
-        if(mDrawingState != DrawingState::START)
-        {
-            mDrawingState = DrawingState::START;
-            mLine = new LineNode(mMapController);
-            mLine->setColor(osgEarth::Color::Purple);
-            mLine->setPointColor(osgEarth::Color::Yellow);
-            mLine->setWidth(7);
-            mLine->setPointVisible(true);
-            mLine->setPointWidth(8);
-            addNodeToLayer(mLine);
-
-        }
-
-        mLine->addPoint(geoPos);
-        event->accept();
-
-    }
-    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START)
-    {
-        mDrawingState = DrawingState::DELETE;
-        removeNodeFromLayer(mLine);
-        event->accept();
-    }
-    if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::START)
-    {
-        mLine->setPointVisible(false);
-        mLine->setHeight(1000000);
-        mLine->setTessellation(100);
-    }
-
-}
-
-void drawLine::onLineBtnClick(QMouseEvent *event)
-{
-    if(event->button() == Qt::MouseButton::LeftButton)
-    {
-        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
-
-        mShape = Shape::LINE;
-
-        if(mDrawingState != DrawingState::START)
-        {
-            mDrawingState = DrawingState::START;
-            mLine = new LineNode(mMapController);
-            mLine->setColor(osgEarth::Color::Orange);
-            mLine->setPointColor(osgEarth::Color::Black);
-            mLine->setWidth(7);
-            mLine->setPointVisible(true);
-            mLine->setPointWidth(8);
-            addNodeToLayer(mLine);
-
-        }
-        if (mLine->getSize()<2){
-            mLine->addPoint(geoPos);
-        }
-
-        if (mLine->getSize()==2){mLine->addPoint(geoPos);
-            mDrawingState = DrawingState::FINISH;
-            mLine->clear();
-
-        }
-        event->accept();
-
-    }
-    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START)
-    {
-        mDrawingState = DrawingState::DELETE;
-        removeNodeFromLayer(mLine);
-        event->accept();
-    }
-
-}
-
-void drawLine::onLineMouseMove(QMouseEvent *event)
-{
-    if (mDrawingState == DrawingState::START)
-    {
-
-        if (mLine->getSize() >= 2)
-        {
-            mLine->removePoint();
-        }
-        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
-
-            mLine->addPoint(geoPos);
-
-
-    }
-}
-
-void drawLine::onNodeBtnDoubleClick(QMouseEvent *event, osg::Node *nodeEditor)
-{
-    if(mDrawingState == DrawingState::START)
-    {
-        mDrawingState = DrawingState::FINISH;
-        if(nodeEditor)
-            //mMapController->removeNode(nodeEditor);
-            removeNodeFromLayer(nodeEditor);
-            //mMapController->removeNode(mPolyHdragger);
-        event->accept();
     }
 }
