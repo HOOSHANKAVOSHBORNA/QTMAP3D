@@ -55,6 +55,8 @@ public slots:
     void onClearAircraft(int tn);
     void onAircraftAssignedResponse(int tn, int systemNo, bool result);
     void onClear();
+
+    static osgEarth::Symbology::Style& getDefaultStyle();
 protected:
     virtual void frameEvent() override;
     virtual void mousePressEvent(QMouseEvent* event)override;
@@ -80,6 +82,7 @@ private:
     osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
 
     DefenseDataManager *mDefenseDataManager;
+
 };
 
 #endif // MODEL_H

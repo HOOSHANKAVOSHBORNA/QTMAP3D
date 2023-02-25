@@ -11,6 +11,11 @@ public:
     TruckF(class MapController *mapController);
     void aimTarget(const osgEarth::GeoPoint &gpt);
     bool shoot(const osg::Vec3d &pos, double speed);
+    Rocket* getActiveRocket()const;
+
+    void setRocketsCapacity(int capacity);
+    void setAvailableRocketsCount();
+
 
 protected:
     static osg::ref_ptr<osg::Node> mMeshNodeP1;
@@ -25,27 +30,25 @@ protected:
     osg::ref_ptr<osg::Node> mMeshNodeP4Instance;
 
 
-    osg::ref_ptr<Rocket> mRocketModelNode1;
-    osg::ref_ptr<Rocket> mRocketModelNode2;
-    osg::ref_ptr<Rocket> mRocketModelNode3;
+    QList<osg::ref_ptr<Rocket>> mRocketModelNodeList;
 
 
-    osg::PositionAttitudeTransform* mBodyPAT       = nullptr;
-    osg::PositionAttitudeTransform* mWheelAxis1PAT = nullptr;
-    osg::PositionAttitudeTransform* mWheelAxis2PAT = nullptr;
-    osg::PositionAttitudeTransform* mWheelAxis3PAT = nullptr;
-    osg::PositionAttitudeTransform* mWheelAxis4PAT = nullptr;
-    osg::PositionAttitudeTransform* mHolderPAT     = nullptr;
-    osg::PositionAttitudeTransform* mSpinnerPAT    = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mBodyPAT       = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mWheelAxis1PAT = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mWheelAxis2PAT = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mWheelAxis3PAT = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mWheelAxis4PAT = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mHolderPAT     = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mSpinnerPAT    = nullptr;
 
-    osg::PositionAttitudeTransform* mHolderAimingPAT     = nullptr;
-    osg::PositionAttitudeTransform* mSpinnerAimingPAT    = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mHolderAimingPAT     = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mSpinnerAimingPAT    = nullptr;
+
+    QList<osg::ref_ptr<osg::PositionAttitudeTransform>> mRocketModelNodePatList;
 
 
-    osg::PositionAttitudeTransform* mRocketModelNode1PAT     = nullptr;
-    osg::PositionAttitudeTransform* mRocketModelNode2PAT     = nullptr;
-    osg::PositionAttitudeTransform* mRocketModelNode3PAT     = nullptr;
-
+    int mAvailableRockets = 3;
+    int mNextRocketIndex = 0;
 
 };
 

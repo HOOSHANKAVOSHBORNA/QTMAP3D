@@ -6,6 +6,10 @@ Rocket::Rocket(MapController *mapControler, QObject *parent):
     DefenseModelNode(mapControler, parent)
 {
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/system/truck/rocket.osgb");
+    osg::ref_ptr<osg::PositionAttitudeTransform> pat = new osg::PositionAttitudeTransform;
+    pat->setScale(osg::Vec3d(0.7, 0.7, 0.7));
+
+    pat->addChild(node);
 
     if (!node)
     {
@@ -13,7 +17,7 @@ Rocket::Rocket(MapController *mapControler, QObject *parent):
         return;
     }
     mNode3D = new osg::Group;
-    mNode3D->addChild(node.get());
+    mNode3D->addChild(pat);
 //    //create style-------------------------------------------------------------------------------------------------
     mRootNode = new osg::LOD;
     mNode2D = new osg::Switch;
@@ -21,7 +25,7 @@ Rocket::Rocket(MapController *mapControler, QObject *parent):
     osgEarth::Symbology::Style  style;
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = false;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 2000 * 3.5;
 
 //    this->setCullingActive(false);
@@ -54,6 +58,10 @@ void Rocket::shoot(const osg::Vec3d &pos, double speed)
     if(mIsShoot)
         return;
 
+
+    this->setCullingActive(false);
+    this->addCullCallback(new DefenseModelNodeAutoScaler(10.5, 1, 600));
+
     mIsShoot = true;
 
     osg::Vec3d currentWPoint;
@@ -80,12 +88,13 @@ void Rocket::shoot(const osg::Vec3d &pos, double speed)
 
     path->insert(0, osg::AnimationPath::ControlPoint(currentWPoint, rotate, getScale()));
     //create first pause
-    path->insert(2, osg::AnimationPath::ControlPoint(currentWPoint, rotate, getScale()));
-    path->insert(t + 2,osg::AnimationPath::ControlPoint(wPos,rotate, getScale()));
+//    path->insert(2, osg::AnimationPath::ControlPoint(currentWPoint, rotate, getScale()));
+    path->insert(t + 0,osg::AnimationPath::ControlPoint(wPos,rotate, getScale()));
 
     mAnimationPathCallback = new ModelAnimationPathCallback();
     mAnimationPathCallback->setAnimationPath(path);
     setUpdateCallback(mAnimationPathCallback);
+
     addEffect(path->getPeriod());
     //draw line for debuge------------------------------------------------
 //        osg::Vec3Array* keyPoint = new osg::Vec3Array;

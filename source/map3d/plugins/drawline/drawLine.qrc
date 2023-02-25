@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/line.png</file>
+        <file>resources/line_string.png</file>
+    </qresource>
+</RCC>

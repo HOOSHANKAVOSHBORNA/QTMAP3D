@@ -39,6 +39,7 @@ struct AircraftInfo
     QStringList Sends;
 
     QList<SystemInfo> assignedSystems;
+    friend bool operator==(const AircraftInfo& lhs, const AircraftInfo& rhs) { return lhs.TN == rhs.TN; }
     //---------------------------------------------
 public:
     QString identifyToString() const
@@ -208,6 +209,8 @@ struct SystemInfo
     bool Active;
 
     QList<AircraftInfo> assignedAircrafts;
+
+    friend bool operator==(const SystemInfo& lhs, const SystemInfo& rhs) { return lhs.Number == rhs.Number; }
 };
 
 struct SystemStatusInfo

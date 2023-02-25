@@ -3,6 +3,8 @@
 #include "mapcontroller.h"
 #include <osgDB/ReadFile>
 #include <QDebug>
+#include <QTimer>
+#include "defenseModelLayer.h"
 
 osg::ref_ptr<osg::Node> TruckF::mMeshNodeP1;
 osg::ref_ptr<osg::Node> TruckF::mMeshNodeP2;
@@ -11,19 +13,20 @@ osg::ref_ptr<osg::Node> TruckF::mMeshNodeP4;
 bool TruckF::mMeshNodesLoaded = false;
 
 TruckF::TruckF(class MapController *mapController) :
-    osgEarth::Annotation::ModelNode(mapController->getMapNode(), osgEarth::Symbology::Style())
+    osgEarth::Annotation::ModelNode(mapController->getMapNode(), DefenseModelLayer::getDefaultStyle())
 {
+
     if (!mMeshNodesLoaded) {
-        mMeshNodeP1 = osgDB::readNodeFile("/home/client1/Hooshan/Models/TruckF/TruckF_P1.osgb");
-        mMeshNodeP2 = osgDB::readNodeFile("/home/client1/Hooshan/Models/TruckF/TruckF_P2.osgb");
-        mMeshNodeP3 = osgDB::readNodeFile("/home/client1/Hooshan/Models/TruckF/TruckF_P3.osgb");
-        mMeshNodeP4 = osgDB::readNodeFile("/home/client1/Hooshan/Models/TruckF/TruckF_P4.osgb");
+        mMeshNodeP1 = osgDB::readNodeFile("../data/models/system/truck_f/TruckF_P1.osgb");
+        mMeshNodeP2 = osgDB::readNodeFile("../data/models/system/truck_f/TruckF_P2.osgb");
+        mMeshNodeP3 = osgDB::readNodeFile("../data/models/system/truck_f/TruckF_P3.osgb");
+        mMeshNodeP4 = osgDB::readNodeFile("../data/models/system/truck_f/TruckF_P4.osgb");
         mMeshNodesLoaded = true;
     }
 
-    mRocketModelNode1 = new Rocket(mapController, nullptr);
-    mRocketModelNode2 = new Rocket(mapController, nullptr);
-    mRocketModelNode3 = new Rocket(mapController, nullptr);
+    for (int i = 0; i < 6; i++) {
+        mRocketModelNodeList.push_back(new Rocket(mapController, nullptr));
+    }
 
 
     osg::Group *rootGroup = new osg::Group;
@@ -36,9 +39,9 @@ TruckF::TruckF(class MapController *mapController) :
     mHolderPAT     = new osg::PositionAttitudeTransform;
     mSpinnerPAT    = new osg::PositionAttitudeTransform;
 
-    mRocketModelNode1PAT = new osg::PositionAttitudeTransform;
-    mRocketModelNode2PAT = new osg::PositionAttitudeTransform;
-    mRocketModelNode3PAT = new osg::PositionAttitudeTransform;
+    for (int i = 0; i < 6; i++) {
+        mRocketModelNodePatList.push_back(new osg::PositionAttitudeTransform);
+    }
 
     mHolderAimingPAT     = new osg::PositionAttitudeTransform;
     mSpinnerAimingPAT    = new osg::PositionAttitudeTransform;
@@ -52,13 +55,13 @@ TruckF::TruckF(class MapController *mapController) :
     mHolderAimingPAT->setPosition(osg::Vec3d(0, -0.8222, 1.9093));
     mSpinnerAimingPAT->setPosition(osg::Vec3d(0,-1.2712, 0.8134));
 
-    mRocketModelNode1PAT->setPosition(osg::Vec3d(-0.82, 5.0, 0.0));
-    mRocketModelNode2PAT->setPosition(osg::Vec3d( 0.0, 5.0, 0.0));
-    mRocketModelNode3PAT->setPosition(osg::Vec3d( 0.82, 5.0, 0.0));
+    mRocketModelNodePatList[0]->setPosition(osg::Vec3d(-0.82, 5.0, 0.0));
+    mRocketModelNodePatList[1]->setPosition(osg::Vec3d( 0.0, 5.0, 0.0));
+    mRocketModelNodePatList[2]->setPosition(osg::Vec3d( 0.82, 5.0, 0.0));
 
-    mRocketModelNode1PAT->setScale(osg::Vec3d(0.8, 0.7, 0.7));
-    mRocketModelNode2PAT->setScale(osg::Vec3d(0.8, 0.7, 0.7));
-    mRocketModelNode3PAT->setScale(osg::Vec3d(0.8, 0.7, 0.7));
+//    mRocketModelNode1->setScale(osg::Vec3d(0.7, 0.7, 0.7));
+//    mRocketModelNode2->setScale(osg::Vec3d(0.7, 0.7, 0.7));
+//    mRocketModelNode3->setScale(osg::Vec3d(0.7, 0.7, 0.7));
 
 
     mBodyPAT->addChild(mMeshNodeP1);
@@ -69,9 +72,9 @@ TruckF::TruckF(class MapController *mapController) :
     mHolderPAT->addChild(mMeshNodeP3);
     mSpinnerPAT->addChild(mMeshNodeP4);
 
-    mRocketModelNode1PAT->addChild(mRocketModelNode1);
-    mRocketModelNode2PAT->addChild(mRocketModelNode2);
-    mRocketModelNode3PAT->addChild(mRocketModelNode3);
+    for (int i = 0; i < 6; i++) {
+        mRocketModelNodePatList[i]->addChild(mRocketModelNodeList[i]);
+    }
 
 
     mBodyPAT->addChild(mWheelAxis1PAT);
@@ -81,9 +84,9 @@ TruckF::TruckF(class MapController *mapController) :
     mBodyPAT->addChild(mHolderPAT);
     mHolderPAT->addChild(mSpinnerPAT);
 
-    mSpinnerPAT->addChild(mRocketModelNode1PAT);
-    mSpinnerPAT->addChild(mRocketModelNode2PAT);
-    mSpinnerPAT->addChild(mRocketModelNode3PAT);
+    mSpinnerPAT->addChild(mRocketModelNodePatList[0]);
+    mSpinnerPAT->addChild(mRocketModelNodePatList[1]);
+    mSpinnerPAT->addChild(mRocketModelNodePatList[2]);
 
     mBodyPAT->addChild(mHolderAimingPAT);
     mHolderAimingPAT->addChild(mSpinnerAimingPAT);
@@ -139,7 +142,6 @@ void TruckF::aimTarget(const osgEarth::GeoPoint &gpt)
             gptInTruckLocal.z() = 0;
         }
 
-
         osg::Quat rot;
         rot.makeRotate(osg::Vec3d(osg::Y_AXIS), gptInTruckLocal);
 
@@ -150,6 +152,37 @@ void TruckF::aimTarget(const osgEarth::GeoPoint &gpt)
 
 bool TruckF::shoot(const osg::Vec3d &pos, double speed)
 {
+    if (mNextRocketIndex < mAvailableRockets) {
 
+        osg::Matrix matLocalToWorld = osg::Matrix::identity();
+        for (const auto& item : mRocketModelNodeList[mNextRocketIndex]->getWorldMatrices()) {
+            matLocalToWorld *= item;
+        }
+        const osg::Matrix matWorldToLocal = osg::Matrix::inverse(matLocalToWorld);
+
+        mRocketModelNodePatList[mNextRocketIndex]->removeChild(mRocketModelNodeList[mNextRocketIndex]);
+
+        osgEarth::GeoPoint rocketPosition;
+        rocketPosition.fromWorld(getMapNode()->getMapSRS(), osg::Vec3d() * matLocalToWorld);
+        mRocketModelNodeList[mNextRocketIndex]->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0, 0, 0));
+        mRocketModelNodeList[mNextRocketIndex]->setPosition(rocketPosition);
+
+        getMapNode()->addChild(mRocketModelNodeList[mNextRocketIndex]);
+
+        mRocketModelNodeList[mNextRocketIndex]->shoot(pos, speed);
+
+        mNextRocketIndex++;
+        return true;
+    }
+
+
+    return false;
 }
 
+Rocket *TruckF::getActiveRocket() const
+{
+    if (mNextRocketIndex < mAvailableRockets)
+        return mRocketModelNodeList[mNextRocketIndex].get();
+
+    return nullptr;
+}
