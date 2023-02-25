@@ -401,8 +401,7 @@ void AircraftTableModel::cancelAssign(int TN, int Number)
         mAircraftsAssigned[Number].erase(toDelete, mAircraftsAssigned[Number].end());
     }
     if (mShowAssigned) {
-        mNeedUpdateOnTimerTrigger = true;
-        onUpdateTimerTriggered();
+        refresh(mIndex);
     }
 
 }

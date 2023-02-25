@@ -58,6 +58,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mTruckF = new TruckF(mMapController);
     mTruckF->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,5.0,0));
     mTruckS = new TruckS(mMapController);
+    mTruckS->stopSearch();
     mTruckS->getPositionAttitudeTransform()->setPosition(osg::Vec3d(-5.0 * std::sin(qDegreesToRadians(60.0)), -5.0 * std::cos(qDegreesToRadians(60.0)),0));
     mTruckS->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(120.0), osg::Z_AXIS));
     mTruckL = new TruckL(mMapController);
@@ -135,7 +136,7 @@ void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
 
     switch (mCambatInfo.Phase) {
     case SystemCambatInfo::Search:
-        searchPhase(mCambatInfo.TN);
+        searchPhase();
         break;
     case SystemCambatInfo::Lock:
         lockPhase(mCambatInfo.TN);
@@ -243,12 +244,10 @@ void SystemModelNode::frameEvent()
         assinmentModel->updateLine(getPosition());
     //--check collision--------------------------------------------------------
 //    collision();
-
-
-//    if (mAssignedModelNode) {
-//        mTruckF->aimTarget(mAssignedModelNode->getPosition());
-//        mTruckL->lockOnTarget(mAssignedModelNode->getPosition());
-//    }
+    if (mTargetModelNode) {
+        mTruckF->aimTarget(mTargetModelNode->getPosition());
+        mTruckL->lockOnTarget(mTargetModelNode->getPosition());
+    }
 }
 
 void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
@@ -367,18 +366,25 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
     mInformation.Active = checked;
 }
 
-void SystemModelNode::searchPhase(int tn)
+void SystemModelNode::searchPhase()
 {
-    if(mAssignmentModels.contains(tn))
-        mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Yellow);
+    for(auto assignmentModel: mAssignmentModels)
+        assignmentModel->mLine->setColor(osgEarth::Color::Yellow);
+
+    mTruckS->startSearch();
 }
 
 void SystemModelNode::lockPhase(int tn)
 {
     if(mAssignmentModels.contains(tn))
     {
+        mTargetModelNode = mAssignmentModels[tn]->mModelNode;
         mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Orange);
-        mTruckF->aimTarget(mAssignmentModels[tn]->mModelNode->getPosition());
+
+        mTruckL->lockOnTarget(mTargetModelNode->getPosition());
+        mTruckF->aimTarget(mTargetModelNode->getPosition());
+
+        //remove other assigned models
     }
 }
 
@@ -386,6 +392,7 @@ void SystemModelNode::firePhase(int tn)
 {
     if(mAssignmentModels.contains(tn))
     {
+        mTargetModelNode = mAssignmentModels[tn]->mModelNode;
         mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Red);
         mFiredRocket = mTruckF->getActiveRocket();
         if(mFiredRocket)
