@@ -32,6 +32,7 @@ LineNode::LineNode(MapController *mapController, LineType lineType)
 void LineNode::addPoint(osgEarth::GeoPoint point)
 {
     mLineGeometry->push_back(point.vec3d());
+
     dirty();
 }
 

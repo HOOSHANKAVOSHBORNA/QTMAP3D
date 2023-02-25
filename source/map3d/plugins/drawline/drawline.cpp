@@ -29,6 +29,7 @@
 #include <QQuickItem>
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
+#include <osgEarth/GeoMath>
 
 using namespace osgEarth::Annotation;
 
@@ -167,6 +168,7 @@ void drawLine::onLineStripBtnClick(QMouseEvent *event)
         }
 
         mLine->addPoint(geoPos);
+
         event->accept();
 
     }
@@ -209,7 +211,11 @@ void drawLine::onLineBtnClick(QMouseEvent *event)
             mLine->addPoint(geoPos);
         }
 
-        if (mLine->getSize()==2){mLine->addPoint(geoPos);
+        if (mLine->getSize()==2){
+            mLine->addPoint(geoPos);
+
+            std::cout<< mLine->mLineGeometry->getLength()<<&endl;
+
             mDrawingState = DrawingState::FINISH;
             mLine->clear();
 
