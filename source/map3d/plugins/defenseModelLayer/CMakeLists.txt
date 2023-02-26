@@ -22,6 +22,7 @@ add_library(defenseModelLayer SHARED
   defenseModelLayer.cpp
   defenseModelNode.cpp
   defenseModelNodeAutoScaler.cpp
+  dataManager.cpp
   aircraftModelNode.cpp
   rocket.cpp
   stationModelNode.cpp
