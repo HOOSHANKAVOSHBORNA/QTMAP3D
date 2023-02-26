@@ -30,7 +30,7 @@ add_library(defenseModelLayer SHARED
   defenseModelLayer.json
   defenseModelLayer.qrc
   defenseModelLayerqml.qrc
-  dataManager.cpp
+  listManager.cpp
   truckf.cpp
   truckl.cpp
   trucks.cpp

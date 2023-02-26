@@ -4,7 +4,7 @@
 #include "defenseModelNode.h"
 #include "mapcontroller.h"
 #include "plugininterface.h"
-#include "dataManager.h"
+#include "listManager.h"
 #include "aircraftInformation.h"
 #include "linenode.h"
 #include "contextMenu.h"

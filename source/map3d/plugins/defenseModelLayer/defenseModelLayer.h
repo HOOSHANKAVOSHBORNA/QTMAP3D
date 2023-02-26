@@ -3,7 +3,7 @@
 
 #include "plugininterface.h"
 #include "aircraftModelNode.h"
-#include "dataManager.h"
+#include "listManager.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
