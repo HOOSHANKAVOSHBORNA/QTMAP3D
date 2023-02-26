@@ -102,12 +102,13 @@ void drawLine::mousePressEvent(QMouseEvent *event)
         if(mDrawingState == DrawingState::START)
         {
             startDrawLine();
+            event->accept();
         }
         if(mDrawingState == DrawingState::DRAWING)
         {
             drawingLine(event);
+            event->accept();
         }
-        event->accept();
 
     }
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
