@@ -1,6 +1,8 @@
 #include "dataManager.h"
 #include "systemModelNode.h"
 
+#include <thread>
+
 DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *listManager, DefenseModelLayer *defenseModelLayer):
     mDefenseDataManager(defenseDataManager),
     mListManager(listManager),
@@ -100,5 +102,40 @@ void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool result)
             aircraftModelNode->removeAssignmentModelNode(systemNo);
         if (mListManager)
             mListManager->cancelAssign(tn, systemNo);
+    }
+}
+
+void DataManager::aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode)
+{
+    if(!aircraftModelNode || !systemModelNode)
+        return;
+    systemModelNode->addAssignedModelNode(aircraftModelNode->getInformation().TN, aircraftModelNode);
+    aircraftModelNode->addAssignmentModelNode(systemModelNode->getInformation().Number, systemModelNode);
+    //--TODO manage memory---------------------------------------
+    std::thread* t1 = new std::thread([=](){
+        if(mDefenseDataManager)
+            emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
+                                                  systemModelNode->getInformation().Number);
+    });
+
+    mListManager->assignAirToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
+}
+
+void DataManager::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
+{
+    if(aircraftModelNode)
+    {
+        auto systemModelNodes = aircraftModelNode->getAssignmentModelNondes();
+        for(auto systemModelNode: systemModelNodes)
+        {
+            if(systemModelNode)
+            {
+                emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
+                        systemModelNode->getInformation().Number);
+                systemModelNode->removeAssignedModelNode(aircraftModelNode->getInformation().TN);
+            }
+        }
+        aircraftModelNode->clearAssignmentModelNodes();
+        mListManager->cancelAssign(aircraftModelNode->getInformation().TN, -1);
     }
 }
