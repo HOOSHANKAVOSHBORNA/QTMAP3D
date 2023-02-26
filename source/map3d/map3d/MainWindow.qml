@@ -214,9 +214,9 @@ CMainWindow {
         LayersWidget {
             id: layersWidget
 
-            x: parent.width + widgetsMargins - (widgetsPositionFactor * (300 + (widgetsMargins*2)))
+            x: parent.width + 2*widgetsMargins - (widgetsPositionFactor * (300 + (widgetsMargins*3)))
             y: menuWidget.height + (widgetsMargins * 2)
-            width: 600 + (widgetsMargins * 2)
+            width: 600 + (widgetsMargins * 4)
             height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height
 
             layersModel: wnd.layersModel
@@ -478,7 +478,7 @@ CMainWindow {
         id: infoo
 //        x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*3.0)))
 //        y: menuWidget.height *2.5 + (widgetsMargins * 2.0)
-        x:  -(600 + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*2.0)))
+        x:  -(600 + (widgetsMargins*4)) + (wnd.widgetsPositionFactor * (300 + (widgetsMargins*3.0)))
         y: menuWidget.height + (widgetsMargins * 2.0)
         width: 600 + (widgetsMargins * 2)
 //        height: parent.height - (menuWidget.height *2.5)- navigationWidget.height - (widgetsMargins * 5)
