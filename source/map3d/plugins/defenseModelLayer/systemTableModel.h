@@ -12,6 +12,12 @@
 #include <deque>
 #include <QSharedPointer>
 
+struct SystemAssignInfo {
+    int Number;
+    QString Phase;
+    bool assign = false;
+};
+
 class SystemTableModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -20,7 +26,9 @@ public:
     enum CustomRoles {
         BackColorRole = Qt::UserRole + 100,
         TextColorRole = Qt::UserRole + 101,
-        HeaderTextRole = Qt::UserRole + 102
+        HeaderTextRole = Qt::UserRole + 102,
+        AssignColor = Qt::UserRole + 103,
+        SystemColor = Qt::UserRole + 104
     };
 
 public:
@@ -48,6 +56,7 @@ public:
     void updateItemData(const SystemCambatInfo& systemCambatInfo);
     void assign(int Number, int TN);
     void cancelAssign(int Number, int TN);
+    void accept(int TN, int Number, bool result);
     void clear();
 
 
@@ -59,7 +68,7 @@ private:
     std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoList;
     std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoListProxy;
 
-    QMap<int, QList<int>> mSystemsAssigned;
+    QMap<int, QList<SystemAssignInfo>> mSystemsAssigned;
 
     bool mshowAssigned = false;
     int mTN = -1;

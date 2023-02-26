@@ -97,6 +97,42 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         break;
     }
 
+    case AssignColor:
+    {
+        const int _row = index.row();
+        if (mSystemsAssigned[mTN][_row].Phase == "Search")
+            return QVariant::fromValue<QColor>(QColor("yellow"));
+        else if (mSystemsAssigned[mTN][_row].Phase == "Lock")
+            return QVariant::fromValue<QColor>(QColor("orange"));
+        else if (mSystemsAssigned[mTN][_row].Phase == "Fire")
+            return QVariant::fromValue<QColor>(QColor("red"));
+        else if (mSystemsAssigned[mTN][_row].Phase == "Kill")
+            return QVariant::fromValue<QColor>(QColor("black"));
+        else if (mSystemsAssigned[mTN][_row].Phase == "NoKill")
+            return QVariant::fromValue<QColor>(QColor("brown"));
+        else
+            return QVariant::fromValue<QColor>(QColor("white"));
+        break;
+    }
+
+    case SystemColor:
+    {
+        const int _row = index.row();
+        if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "Search")
+            return QVariant::fromValue<QColor>(QColor("yellow"));
+        else if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "Lock")
+            return QVariant::fromValue<QColor>(QColor("orange"));
+        else if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "Fire")
+            return QVariant::fromValue<QColor>(QColor("red"));
+        else if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "Kill")
+            return QVariant::fromValue<QColor>(QColor("black"));
+        else if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "NoKill")
+            return QVariant::fromValue<QColor>(QColor("brown"));
+        else
+            return QVariant::fromValue<QColor>(QColor("white"));
+        break;
+    }
+
     }
     return QVariant();
 }
@@ -107,6 +143,8 @@ QHash<int, QByteArray> SystemTableModel::roleNames() const
     hash[BackColorRole] = "d_bkcolor";
     hash[TextColorRole] = "d_txtcolor";
     hash[HeaderTextRole] = "d_headerTxt";
+    hash[AssignColor] = "AssignColor";
+    hash[SystemColor] = "SystemColor";
     return hash;
 }
 
@@ -176,15 +214,15 @@ void SystemTableModel::onAircraftClicked(int TN)
     mSystemInfoListProxy.clear();
     mSystemCombatInfoListProxy.clear();
     if (mSystemsAssigned.contains(TN)) {
-        for (int system : mSystemsAssigned[TN]) {
+        for (SystemAssignInfo system : mSystemsAssigned[TN]) {
             auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(), [system](QPair<int, QSharedPointer<SystemInfo>> &item){
-                return item.second->Number == system;
+                return item.second->Number == system.Number;
             });
 //            (*it).first = mSystemInfoListProxy.size();
             mSystemInfoListProxy.push_back(*it);
 
             auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [system](QPair<int, QSharedPointer<SystemCambatInfo>> &item){
-                return item.second->Number == system;
+                return item.second->Number == system.Number;
             });
 //            (*it2).first = mSystemCombatInfoListProxy.size();
             mSystemCombatInfoListProxy.push_back(*it2);
@@ -297,11 +335,14 @@ void SystemTableModel::updateItemData(const SystemCambatInfo &systemCambatInfo)
 
 void SystemTableModel::assign(int Number, int TN)
 {
+    SystemAssignInfo tmp;
+    tmp.Number = Number;
+    tmp.Phase = "";
     if (mSystemsAssigned.contains(TN)) {
-        mSystemsAssigned[TN].push_back(Number);
+        mSystemsAssigned[TN].push_back(tmp);
     }
     else {
-        mSystemsAssigned[TN] = QList<int> {Number};
+        mSystemsAssigned[TN] = QList<SystemAssignInfo> {tmp};
     }
     if (mTN == TN) {
         beginResetModel();
@@ -320,21 +361,34 @@ void SystemTableModel::cancelAssign(int Number, int TN)
     }
     else if (TN == -1) {
         for (auto &i : mSystemsAssigned) {
-            auto toDelete = std::remove_if(i.begin(), i.end(), [Number](int &system){
-                return Number == system;
+            auto toDelete = std::remove_if(i.begin(), i.end(), [Number](SystemAssignInfo &system){
+                return Number == system.Number;
             });
             i.erase(toDelete, i.end());
         }
     }
     else {
 
-        auto toDelete = std::remove_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](int &system){
-            return Number == system;
+        auto toDelete = std::remove_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &system){
+            return Number == system.Number;
         });
         mSystemsAssigned[TN].erase(toDelete, mSystemsAssigned[TN].end());
     }
     if (mshowAssigned) {
         onAircraftClicked(mTN);
+    }
+}
+
+void SystemTableModel::accept(int TN, int Number, bool result)
+{
+    if (result) {
+        auto it = std::find_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &item) {
+            return Number == item.Number;
+        });
+        it->assign = true;
+    }
+    else {
+        cancelAssign(Number, TN);
     }
 }
 

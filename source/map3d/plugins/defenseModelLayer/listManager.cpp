@@ -181,6 +181,12 @@ void ListManager::cancelAssign(int TN, int Number)
     mSystemTableModel->cancelAssign(Number, TN);
 }
 
+void ListManager::accept(int TN, int Number, bool result)
+{
+    mAircraftTableModel->accept(TN, Number, result);
+    mSystemTableModel->accept(TN, Number, result);
+}
+
 void ListManager::clearAll()
 {
     if (mAircraftTableModel)

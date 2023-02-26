@@ -187,7 +187,9 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (aClicked == row && rootItem.systemModel.getShowAssigned()) ? "#1010FF" : (rootItem.aHoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: (aClicked == row && rootItem.systemModel.getShowAssigned())
+                                       ? "#1010FF" : rootItem.aircraftModel.getShowAssigned() ? AssignColor : (rootItem.aHoveredIndex == row)
+                                         ? "lightskyblue" : AircraftColor;
                                 anchors.fill: parent
                             }
                             Text {
@@ -308,7 +310,9 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (sClicked == row && rootItem.aircraftModel.getShowAssigned()) ? "#1010FF" : (rootItem.sHoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: (sClicked == row && rootItem.aircraftModel.getShowAssigned())
+                                       ? "#1010FF" : rootItem.systemModel.getShowAssigned() ? AssignColor : (rootItem.sHoveredIndex == row)
+                                         ? "lightskyblue" : SystemColor;
                                 anchors.fill: parent
                             }
                             Text {
