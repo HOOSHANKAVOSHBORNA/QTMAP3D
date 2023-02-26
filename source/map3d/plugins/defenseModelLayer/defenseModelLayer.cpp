@@ -49,7 +49,6 @@
 #include "stationInformation.h"
 #include "systemInformation.h"
 #include "systemTableModel.h"
-#include "assignmentModel.h"
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
@@ -87,7 +86,6 @@ bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDe
     qmlRegisterType<StationInfoModel>("Crystal", 1, 0, "StationInfoModel");
     qmlRegisterType<SystemInfoModel>("Crystal", 1, 0, "SystemInfoModel");
     qmlRegisterType<SystemTableModel>("Crystal", 1, 0, "SystemTableModel");
-    qmlRegisterType<AssignmentModel>("Crystal", 1, 0, "AssignmentModel");
     mQmlEngine = engine;
 
     pDesc->toolboxItemsList.push_back(new ItemDesc{AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});

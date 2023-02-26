@@ -12,7 +12,6 @@ Item {
     property int aSelectedIndex: -1
     property int aClicked: -1
     property int sClicked: -1
-    property AssignmentModel model
     property AircraftTableModel aircraftModel
     property SystemTableModel systemModel
 
