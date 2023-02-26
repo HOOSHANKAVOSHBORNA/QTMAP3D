@@ -19,6 +19,11 @@ Rectangle{
     height:columnGo.implicitHeight * 1.2
     width: parent.width / 2
 
+
+
+
+
+
     Column{
         id :columnGo
         spacing: 3
