@@ -3,7 +3,7 @@
 
 #include "plugininterface.h"
 #include "aircraftModelNode.h"
-#include "dataManager.h"
+#include "listManager.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
@@ -78,7 +78,7 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     int mPreCameraRange{0};
 
-    DataManager *mDataManager = nullptr;
+    ListManager *mListManager = nullptr;
     osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
 
     DefenseDataManager *mDefenseDataManager;

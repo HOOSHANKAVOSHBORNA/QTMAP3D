@@ -1,21 +1,20 @@
-#ifndef DATAMANAGER_H
-#define DATAMANAGER_H
+#ifndef LISTMANAGER_H
+#define LISTMANAGER_H
 
 #include <QObject>
 #include "aircraftTableModel.h"
 #include "stationTableModel.h"
 #include "systemTableModel.h"
-#include "assignmentModel.h"
 
 class UIHandle;
 class QQmlEngine;
 class AircraftTableModel;
 
-class DataManager : public QObject
+class ListManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent = nullptr);
+    explicit ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent = nullptr);
 
 signals:
     void aircraftItemClicked(const QString& TN);
@@ -47,8 +46,7 @@ private:
     AircraftTableModel *mAircraftTableModel = nullptr;
     StationTableModel *mStationTableModel = nullptr;
     SystemTableModel *mSystemTableModel = nullptr;
-    AssignmentModel *mAssignModel = nullptr;
 
 };
 
-#endif // DATAMANAGER_H
+#endif // LISTMANAGER_H

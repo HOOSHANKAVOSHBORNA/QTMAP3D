@@ -49,7 +49,6 @@
 #include "stationInformation.h"
 #include "systemInformation.h"
 #include "systemTableModel.h"
-#include "assignmentModel.h"
 
 //const QString FLYING = "Flying";
 const QString AIRCRAFT = "Aircraft";
@@ -87,7 +86,6 @@ bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDe
     qmlRegisterType<StationInfoModel>("Crystal", 1, 0, "StationInfoModel");
     qmlRegisterType<SystemInfoModel>("Crystal", 1, 0, "SystemInfoModel");
     qmlRegisterType<SystemTableModel>("Crystal", 1, 0, "SystemTableModel");
-    qmlRegisterType<AssignmentModel>("Crystal", 1, 0, "AssignmentModel");
     mQmlEngine = engine;
 
     pDesc->toolboxItemsList.push_back(new ItemDesc{AIRCRAFT, CATEGORY, "qrc:/resources/airplan.png", false, false, ""});
@@ -178,8 +176,8 @@ bool DefenseModelLayer::setup(MapController *mapController,
     mMapController = mapController;
     mUIHandle = uiHandle;
 
-    mDataManager = new DataManager(mQmlEngine, mUIHandle, this);
-    connect(mDataManager, &DataManager::aircraftDoubleClicked,[=](int TN){
+    mListManager = new ListManager(mQmlEngine, mUIHandle, this);
+    connect(mListManager, &ListManager::aircraftDoubleClicked,[=](int TN){
 
         if(mModelNodes[AIRCRAFT].contains(TN))
         {
@@ -191,7 +189,7 @@ bool DefenseModelLayer::setup(MapController *mapController,
             mSelectedModelNode = aircraftModelNode;
         }
     });
-    connect(mDataManager, &DataManager::stationDoubleClicked,[=](int number){
+    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
 
         if(mModelNodes[STATION].contains(number))
         {
@@ -203,7 +201,7 @@ bool DefenseModelLayer::setup(MapController *mapController,
             mSelectedModelNode = stationModelNode;
         }
     });
-    connect(mDataManager, &DataManager::systemDoubleClicked,[=](int number){
+    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
 
         if(mModelNodes[SYSTEM].contains(number))
         {
@@ -308,9 +306,9 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
     //update information------------------------------------------------------------------
     aircraftModelNode->setInformation(aircraftInfo);
     //add update list view-----------------------------------------------------------------
-    if (mDataManager)
+    if (mListManager)
     {
-        mDataManager->setAircraftInfo(aircraftInfo);
+        mListManager->setAircraftInfo(aircraftInfo);
     }
 
 }
@@ -346,9 +344,9 @@ void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
     //update information-----------------------------------------------------
     systemModelNode->setInformation(systemInfo);
     //add update list view-----------------------------------------------------------------
-    if (mDataManager)
+    if (mListManager)
     {
-        mDataManager->setSystemInfo(systemInfo);
+        mListManager->setSystemInfo(systemInfo);
     }
 }
 
@@ -383,9 +381,9 @@ void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
     //update information-----------------------------------------------------
     stationModelNode->setInformation(stationInfo);
     //add update list view-----------------------------------------------------------------
-    if (mDataManager)
+    if (mListManager)
     {
-        mDataManager->setStationInfo(stationInfo);
+        mListManager->setStationInfo(stationInfo);
     }
 
 }
@@ -408,9 +406,9 @@ void DefenseModelLayer::onSystemStatusInfoChanged(SystemStatusInfo &systemStatus
         //update information-----------------------------------------------------
         systemModelNode->setStatusInfo(systemStatusInfo);
         //add update list view-----------------------------------------------------------------
-        if (mDataManager)
+        if (mListManager)
         {
-            mDataManager->setSystemStatusInfo(systemStatusInfo);
+            mListManager->setSystemStatusInfo(systemStatusInfo);
         }
     }
 }
@@ -423,9 +421,9 @@ void DefenseModelLayer::onSystemCambatInfoChanged(SystemCambatInfo &systemCambat
         //update information-----------------------------------------------------
         systemModelNode->setCambatInfo(systemCambatInfo);
         //add update list view-----------------------------------------------------------------
-        if (mDataManager)
+        if (mListManager)
         {
-            mDataManager->setSystemCombatInfo(systemCambatInfo);
+            mListManager->setSystemCombatInfo(systemCambatInfo);
         }
     }
 }
@@ -444,7 +442,7 @@ void DefenseModelLayer::onClearAircraft(int tn)
         aircraftModelNode->setNodeMask(false);
         //        mMapController->removeNode(aircraftModelNode);
         //        mModelNodes[AIRCRAFT].remove(tn);
-        mDataManager->deleteAircraftInfo(tn);
+        mListManager->deleteAircraftInfo(tn);
     }
 }
 
@@ -465,7 +463,7 @@ void DefenseModelLayer::onAircraftAssignedResponse(int tn, int systemNo, bool re
     {
         if(aircraftModelNode)
             aircraftModelNode->removeAssignmentModelNode(systemNo);
-       mDataManager->cancelAssign(tn, systemNo);
+       mListManager->cancelAssign(tn, systemNo);
     }
 }
 
@@ -475,7 +473,7 @@ void DefenseModelLayer::onClear()
     mOnMoveModelNode = nullptr;
     mSelectedModelNode = nullptr;
     //--clear list-----------------------------------------
-    mDataManager->clearAll();
+    mListManager->clearAll();
     //--add layer------------------------------------------
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);
@@ -586,7 +584,7 @@ void DefenseModelLayer::aircraftAssign(AircraftModelNode *aircraftModelNode, Sys
                                                   systemModelNode->getInformation().Number);
     });
 
-    mDataManager->assignAirToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
+    mListManager->assignAirToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
 }
 
 void DefenseModelLayer::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
@@ -604,7 +602,7 @@ void DefenseModelLayer::cancelAircraftAssign(AircraftModelNode *aircraftModelNod
             }
         }
         aircraftModelNode->clearAssignmentModelNodes();
-        mDataManager->cancelAssign(aircraftModelNode->getInformation().TN, -1);
+        mListManager->cancelAssign(aircraftModelNode->getInformation().TN, -1);
     }
 }
 

@@ -1,5 +1,5 @@
 
-#include "dataManager.h"
+#include "listManager.h"
 #include "plugininterface.h"
 #include "aircraftTableModel.h"
 #include "stationTableModel.h"
@@ -9,7 +9,7 @@
 #include <QDebug>
 
 
-DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent) : QObject(parent),
+ListManager::ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent) : QObject(parent),
     mQmlEngine(qmlEngine),
     mUiHandle(uiHandle)
 {
@@ -102,15 +102,15 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
             QQuickItem *assignTab = (QQuickItem*) comp4->create(nullptr);
 //            mAssignModel = new AssignmentModel;
 
-//            QObject::connect(systemTab,
-//                             SIGNAL(filterTextChanged(const QString&)),
-//                             mSystemTableModel,
-//                             SLOT(setFilterWildcard(const QString&)));
+            QObject::connect(assignTab,
+                             SIGNAL(systemDoubleClicked(const int&)),
+                             this,
+                             SIGNAL(systemDoubleClicked(const int&)));
 
-//            QObject::connect(systemTab,
-//                             SIGNAL(systemDoubleClicked(const int&)),
-//                             this,
-//                             SIGNAL(systemDoubleClicked(const int&)));
+            QObject::connect(assignTab,
+                             SIGNAL(aircraftDoubleClicked(const int&)),
+                             this,
+                             SIGNAL(aircraftDoubleClicked(const int&)));
 
             assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
             assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
@@ -126,68 +126,62 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
     connect(mAircraftTableModel, &AircraftTableModel::aircraftClicked, mSystemTableModel, &SystemTableModel::onAircraftClicked);
 }
 
-void DataManager::setAircraftInfo(const AircraftInfo &aircraftInof)
+void ListManager::setAircraftInfo(const AircraftInfo &aircraftInof)
 {
     if (mAircraftTableModel) {
         mAircraftTableModel->updateItemData(aircraftInof);
     }
-    if (mAssignModel) {
-        mAssignModel->addAircraft(aircraftInof);
-    }
 }
 
-void DataManager::deleteAircraftInfo(int TN)
+void ListManager::deleteAircraftInfo(int TN)
 {
     if (mAircraftTableModel) {
         mAircraftTableModel->deleteItem(TN);
     }
 }
 
-void DataManager::setStationInfo(const StationInfo &stationInfo)
+void ListManager::setStationInfo(const StationInfo &stationInfo)
 {
     if (mStationTableModel) {
         mStationTableModel->updateItemData(stationInfo);
     }
 }
 
-void DataManager::setSystemInfo(const SystemInfo &systemInfo)
+void ListManager::setSystemInfo(const SystemInfo &systemInfo)
 {
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemInfo);
     }
-    if (mAssignModel) {
-        mAssignModel->addSystem(systemInfo);
-    }
 }
 
-void DataManager::setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo)
+void ListManager::setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo)
 {
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemCombatInfo);
     }
 }
 
-void DataManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
+void ListManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemStatusInfo);
     }
 }
 
-void DataManager::assignAirToSystem(int TN, int Number)
+void ListManager::assignAirToSystem(int TN, int Number)
 {
 //    mAssignModel->assignAirToSystem(aircraft, system);
     mAircraftTableModel->assign(TN, Number);
     mSystemTableModel->assign(Number, TN);
 }
 
-void DataManager::cancelAssign(int TN, int Number)
+void ListManager::cancelAssign(int TN, int Number)
 {
     mAircraftTableModel->cancelAssign(TN, Number);
     mSystemTableModel->cancelAssign(Number, TN);
 }
 
-void DataManager::clearAll()
+void ListManager::clearAll()
 {
     if (mAircraftTableModel)
         mAircraftTableModel->clear();
@@ -195,7 +189,5 @@ void DataManager::clearAll()
         mSystemTableModel->clear();
     if (mStationTableModel)
         mStationTableModel->clear();
-    if (mAssignModel)
-        mAssignModel->clear();
 }
 

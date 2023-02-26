@@ -218,7 +218,8 @@ void AircraftTableModel::onUpdateTimerTriggered()
             }
         }
         else {
-            for (int i = 0; i < mAircraftInfoListProxy.size(); i++) {
+//            for (int i = 0; i < mAircraftInfoList.size(); i++) {
+                beginResetModel();
                 mAircraftInfoListProxy.clear();
                 if (mAircraftsAssigned.contains(mNumber)) {
                     for (int aircraft : mAircraftsAssigned[mNumber]) {
@@ -230,11 +231,12 @@ void AircraftTableModel::onUpdateTimerTriggered()
 
                     }
                 }
-            }
+                endResetModel();
+//            }
         }
 
 
-        emit dataChanged(createIndex(mMinRowUpdate, 0), createIndex(mMaxRowUpdate, columnCount()-1));
+//        emit dataChanged(createIndex(mMinRowUpdate, 0), createIndex(mMaxRowUpdate, columnCount()-1));
 
         mMinRowUpdate = -1;
         mMaxRowUpdate = -1;
@@ -401,7 +403,9 @@ void AircraftTableModel::cancelAssign(int TN, int Number)
         mAircraftsAssigned[Number].erase(toDelete, mAircraftsAssigned[Number].end());
     }
     if (mShowAssigned) {
-        refresh(mIndex);
+//        refresh(mIndex);
+        mNeedUpdateOnTimerTrigger = true;
+        onUpdateTimerTriggered();
     }
 
 }
