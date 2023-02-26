@@ -15,6 +15,10 @@ Item {
     property AssignmentModel model
     property AircraftTableModel aircraftModel
     property SystemTableModel systemModel
+
+
+    signal aircraftDoubleClicked(int TN)
+    signal systemDoubleClicked(int Number)
 //    Rectangle {
 //        anchors.fill: parent
 //        color: "#252525"
@@ -129,20 +133,41 @@ Item {
                             id: mouseArea
                             hoverEnabled: true
                             anchors.fill: parent
-                            onClicked: function() {
-                                if (rootItem.aircraftModel) {
-                                    rootItem.aircraftModel.onAircraftClicked(rootItem.aircraftModel.getTN(row))
-                                    if (rootItem.systemModel) {
-                                        systems.contentX = 0;
-                                        systems.contentY = 0;
+                            Timer{
+                                id:timer
+                                interval: 200
+                                onTriggered: function () {
+                                    if (rootItem.aircraftModel) {
+                                        rootItem.aircraftModel.onAircraftClicked(rootItem.aircraftModel.getTN(row))
+                                        if (rootItem.systemModel) {
+                                            systems.contentX = 0;
+                                            systems.contentY = 0;
+                                        }
+                                        if (rootItem.aircraftModel)
+                                            rootItem.aClicked = row
                                     }
                                 }
                             }
+                            onClicked: function() {
+                                if (timer.running){
+                                    timer.stop();
+                                } else{
+                                    timer.restart();
 
-                            onContainsPressChanged: function () {
-                                if (rootItem.aircraftModel)
-                                    rootItem.aClicked = row
+                                }
                             }
+
+                            onDoubleClicked: function() {
+                                timer.stop();
+                                if (rootItem.aircraftModel) {
+                                    rootItem.aircraftDoubleClicked(rootItem.aircraftModel.getTN(row));
+                                }
+                            }
+
+//                            onContainsPressChanged: function () {
+//                                if (rootItem.aircraftModel)
+//                                    rootItem.aClicked = row
+//                            }
 
                             onContainsMouseChanged: function() {
                                 if (mouseArea.containsMouse) {
@@ -229,25 +254,42 @@ Item {
                             hoverEnabled: true
                             anchors.fill: parent
                             onClicked: function() {
-                                if (rootItem.systemModel) {
-                                    rootItem.systemModel.onSystemClicked(rootItem.systemModel.getNumber(row));
-                                    if (rootItem.aircraftModel) {
-                                        aircrafts.contentX = 0;
-                                        aircrafts.contentY = 0;
+                                if (timer2.running){
+                                    timer2.stop();
+                                } else{
+                                    timer2.running = false;
+                                    timer2.restart();
+                                }
+                            }
+
+
+                            Timer{
+                                id:timer2
+                                interval: 200
+                                onTriggered: function () {
+                                    if (rootItem.systemModel) {
+                                        rootItem.systemModel.onSystemClicked(rootItem.systemModel.getNumber(row));
+                                        if (rootItem.aircraftModel) {
+                                            aircrafts.contentX = 0;
+                                            aircrafts.contentY = 0;
+                                        }
+                                        if (rootItem.systemModel)
+                                            rootItem.sClicked = row
                                     }
                                 }
                             }
 
                             onDoubleClicked: function() {
-                                if (rootItem.model) {
-                                    rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
+                                timer2.stop()
+                                if (rootItem.systemModel) {
+                                    rootItem.systemDoubleClicked(rootItem.systemModel.getNumber(row));
                                 }
                             }
 
-                            onContainsPressChanged: function () {
-                                if (rootItem.systemModel)
-                                    rootItem.sClicked = row
-                            }
+//                            onContainsPressChanged: function () {
+//                                if (rootItem.systemModel)
+//                                    rootItem.sClicked = row
+//                            }
 
                             onContainsMouseChanged: function() {
                                 if (mouseArea2.containsMouse) {

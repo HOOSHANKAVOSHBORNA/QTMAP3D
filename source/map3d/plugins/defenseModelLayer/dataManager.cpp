@@ -102,15 +102,15 @@ DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
             QQuickItem *assignTab = (QQuickItem*) comp4->create(nullptr);
 //            mAssignModel = new AssignmentModel;
 
-//            QObject::connect(systemTab,
-//                             SIGNAL(filterTextChanged(const QString&)),
-//                             mSystemTableModel,
-//                             SLOT(setFilterWildcard(const QString&)));
+            QObject::connect(assignTab,
+                             SIGNAL(systemDoubleClicked(const int&)),
+                             this,
+                             SIGNAL(systemDoubleClicked(const int&)));
 
-//            QObject::connect(systemTab,
-//                             SIGNAL(systemDoubleClicked(const int&)),
-//                             this,
-//                             SIGNAL(systemDoubleClicked(const int&)));
+            QObject::connect(assignTab,
+                             SIGNAL(aircraftDoubleClicked(const int&)),
+                             this,
+                             SIGNAL(aircraftDoubleClicked(const int&)));
 
             assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
             assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
