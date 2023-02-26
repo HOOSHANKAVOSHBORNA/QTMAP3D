@@ -3,7 +3,7 @@
 
 #include <osg/Point>
 
-LineNode::LineNode(MapController *mapController, LineType lineType)
+LineNode::LineNode(MapController *mapController)
 {
     mMapController = mapController;
     mLineGeometry = new osgEarth::Symbology::Geometry();
@@ -45,6 +45,7 @@ void LineNode::removePoint()
 void LineNode::removeFirstPoint()
 {
     mLineGeometry->erase(mLineGeometry->begin());
+
     dirty();
 }
 

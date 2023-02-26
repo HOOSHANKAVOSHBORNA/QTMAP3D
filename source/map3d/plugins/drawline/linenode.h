@@ -8,19 +8,11 @@
 #include <osgEarthAnnotation/CircleNode>
 #include <osgEarthAnnotation/ModelNode>
 
-class Type {
-public:
-    enum LineType {
-        LineStrip,
-        Line
-    };
 
-};
-
-class LineNode : public osgEarth::Annotation::FeatureNode, Type
+class LineNode : public osgEarth::Annotation::FeatureNode
 {
 public:
-    LineNode(MapController *mapController, LineType lineType = LineType::LineStrip);
+    LineNode(MapController *mapController);
     void addPoint(osgEarth::GeoPoint point);
     void removePoint();
     void removeFirstPoint();

@@ -137,7 +137,6 @@ void drawLine::startDrawLine()
     mLine->setPointWidth(8);
     mLine->setTessellation(20);
     addNodeToLayer(mLine);
-
     mDrawingState = DrawingState::DRAWING;
 }
 
@@ -173,10 +172,20 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
     if(mDrawingState == DrawingState::DRAWING)
     {
         mDrawingState = DrawingState::START;
+
+        std::vector<osg::Vec3d> abbas;
+        abbas.push_back(mLine->mLineGeometry->at(mLine->mLineGeometry->size()-2));
+        abbas.push_back(mLine->mLineGeometry->at(mLine->mLineGeometry->size()-3));
+
+
+        std::cout<< GeoMath().distance(abbas) << "\n";
+        //std::cout<< mLine->mLineGeometry->at(mLine->mLineGeometry->size()-1).length()<< "\n";
+        //std::cout<< mLine->mLineGeometry->at(mLine->mLineGeometry->size()-2).length()<< "\n";
+        //std::cout<< mLine->mLineGeometry->at(mLine->mLineGeometry->size()-3).length()<< "\n";
+
+
         if(nodeEditor)
-            //mMapController->removeNode(nodeEditor);
             removeNodeFromLayer(nodeEditor);
-        //mMapController->removeNode(mPolyHdragger);
         event->accept();
     }
 }

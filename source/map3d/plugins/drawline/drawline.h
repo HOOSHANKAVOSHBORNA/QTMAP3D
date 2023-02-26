@@ -19,7 +19,7 @@
 
 
 
-class drawLine: public PluginInterface, Type
+class drawLine: public PluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawline.json")
