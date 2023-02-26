@@ -173,9 +173,9 @@ void SystemTableModel::onAircraftClicked(int TN)
     mTN = TN;
     mshowAssigned = true;
     beginResetModel();
+    mSystemInfoListProxy.clear();
+    mSystemCombatInfoListProxy.clear();
     if (mSystemsAssigned.contains(TN)) {
-        mSystemInfoListProxy.clear();
-        mSystemCombatInfoListProxy.clear();
         for (int system : mSystemsAssigned[TN]) {
             auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(), [system](QPair<int, QSharedPointer<SystemInfo>> &item){
                 return item.second->Number == system;

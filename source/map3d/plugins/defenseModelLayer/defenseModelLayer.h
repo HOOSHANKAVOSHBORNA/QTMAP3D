@@ -78,7 +78,7 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     int mPreCameraRange{0};
 
-    DataManager *mDataManager = nullptr;
+    ListManager *mListManager = nullptr;
     osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
 
     DefenseDataManager *mDefenseDataManager;
