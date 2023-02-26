@@ -26,6 +26,7 @@ public:
     void removeFirstPoint();
     void clear();
     int getSize();
+    osgEarth::Symbology::Geometry* mLineGeometry;
 
     osgEarth::Color getColor() const;
     void setColor(const osgEarth::Color &color);
@@ -52,7 +53,7 @@ public:
 
 private:
     MapController* mMapController{nullptr};
-    osgEarth::Symbology::Geometry* mLineGeometry;
+
     osgEarth::Color mColor{osgEarth::Color::Green};
     osgEarth::Color mPointColor{osgEarth::Color::Blue};
     float mWidth{5};

@@ -10,6 +10,7 @@ Item {
     width: 300
     clip: true
 
+    signal titleChanged (string title);
     property AircraftInfoModel model
     property var boxColor: "#363739"
     property var valueColor: "#363739"
@@ -42,6 +43,10 @@ Item {
                 text: "Airplane"
                 color:"yellow"
                 font.pointSize: 20
+//                onTextChanged: function(){
+//                    rootItem.titleChanged(airplane.text);
+//                }
+
 
             }
 

@@ -499,7 +499,7 @@ void DrawShapes::onSphereBtnClick(QMouseEvent *event)
         mSphereNode->setPosition(geoPos);
         mSphereNode->setMapNode(mMapController->getMapNode());
         addNodeToLayer(mSphereNode);
-        //mMapController->addNode(mSphereNode);
+
         //--add node editor---------------------------------------------------
         mSphereNodeEditor = new SphereNodeEditor(mSphereNode);
         //--show property window---------------------------------------------------------------------------------

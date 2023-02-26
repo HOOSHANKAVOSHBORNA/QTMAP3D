@@ -3,6 +3,7 @@ import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import Crystal 1.0
+import QtGraphicalEffects 1.12
 
 Item {
     id: rootItem
@@ -17,13 +18,13 @@ Item {
         layersItemShowAnimation.stop();
 
         if (rootItem.layersItemVisible == true) {
-            layersItemHideAnimation.to = 300 + (widgetsMargins * 2.0);
-            layersItemHideAnimation.from = 0;
+            layersItemHideAnimation.to = 310 + (widgetsMargins * 2.0);
+//            layersItemHideAnimation.from = 0;
             layersItemHideAnimation.duration = 200;
             rootItem.layersItemVisible = false;
             layersItemHideAnimation.start();
         } else {
-            layersItemShowAnimation.from = 300 + (widgetsMargins * 2.0);
+            layersItemShowAnimation.from = 310 + (widgetsMargins * 2.0);
             layersItemShowAnimation.to = 0;
             layersItemShowAnimation.duration = 200;
             rootItem.layersItemVisible = true;
@@ -48,16 +49,95 @@ Item {
 
     Item {
         id: layersItem
-        clip: true
+        clip: false
 
         y: 0
         height:parent.height
         width: 300
-        x: 300 + (widgetsMargins * 2)
+        x: 310 + (widgetsMargins * 2)
 
         MouseArea {
             anchors.fill: parent
         }
+
+
+        Item {
+                anchors.right: parent.left
+                id: sidePush
+                visible: true
+
+
+                    Image {
+                        id: minimize
+                        source: "/Resources/sideTab.png"
+                        sourceSize: ("25 x 100")
+                        y:8
+                        anchors.right:  parent.left
+                        rotation: 180
+                        MouseArea{
+                            anchors.fill: parent
+//                            onHoveredChanged: Glow{
+//                                source: minimize
+//                                anchors.fill: minimize
+//                                radius: 8
+//                                samples: 17
+//                                color: "orange"
+//                            }
+
+                            onClicked: if(layersItem.x !== 0){
+                                           miniLayer.running = true
+                                           maxiarrow.running = true
+                                           maxiTXT.running = true
+
+                                       } else{
+                                           maxiLayer.running = true
+                                           miniarrow.running = true
+                                           miniTXT.running = true
+
+                                       }
+
+                            hoverEnabled: true
+                            onEntered:   if(layersItem.x === 0){
+                                            glowimg.visible=true
+                                         }
+                            onExited:    glowimg.visible=false
+
+                        }
+                        Text {
+                            id: sideInfoTxt
+                            anchors.centerIn: parent
+                            text: "Layers"
+                            color:"white"
+                            font.pointSize: 8
+                            visible: false
+                            rotation: 90
+                        }
+
+                        Image {
+                            id: arrow
+                            source: "/Resources/sidearrow.png"
+                            sourceSize: ("25 x 25")
+                            anchors.centerIn: parent
+                            rotation: 0
+
+                        }
+
+                        ColorOverlay {
+                            id: glowimg
+                            anchors.fill: arrow
+                            color: "orange"
+                            source: arrow
+                            visible: false
+                            }
+                    }
+            PropertyAnimation{id:miniLayer ; target: layersItem ; property: "x" ; to: 0 ; duration:150;  running: false }
+            PropertyAnimation{id:maxiLayer ; target: layersItem ; property: "x" ; to: 290 + (widgetsMargins * 2) ; duration: 150; running: false }
+            PropertyAnimation{id:miniarrow ; target: arrow ; property: "opacity" ; to: 0 ; duration:150;  running: false }
+            PropertyAnimation{id:maxiarrow ; target: arrow ; property: "opacity" ; to: 1 ; duration:150;  running: false }
+            PropertyAnimation{id:miniTXT ; target: sideInfoTxt ; property: "visible" ; to: true ; duration:150;  running: false }
+            PropertyAnimation{id:maxiTXT ; target: sideInfoTxt ; property: "visible" ; to: false ; duration:150;  running: false }
+
+              }
 
         Rectangle {
             anchors.fill: parent
@@ -150,11 +230,7 @@ Item {
                                 }
                             }
                         }
-
                     }
-
-
-
                 }
             }
         }

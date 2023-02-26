@@ -38,25 +38,25 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 private:
+    void startDrawLine();
+    void drawingLine(QMouseEvent* event);
+    void cancelDrawingLine(QMouseEvent* event);
+    void mouseMoveDrawing(QMouseEvent* event);
+    void finishDrawing(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
+
+    bool addNodeToLayer(osg::Node *node);
+    void removeNodeFromLayer(osg::Node *node);
+
+private:
     MapController* mMapController{nullptr};
-    osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
     QQmlEngine *mQmlEngine = nullptr;
 
-    enum class DrawingState {NONE, START, FINISH, DELETE, INITIAL};
+    enum class DrawingState {START, DRAWING, FINISH};
     DrawingState mDrawingState;
     enum class Shape {NONE, LINESTRIP, LINE};
     Shape mShape;
 
     LineNode* mLine{nullptr};
-
-    bool addNodeToLayer(osg::Node *node);
-    void removeNodeFromLayer(osg::Node *node);
-
-private slots:
-    void onLineStripBtnClick(QMouseEvent* event);
-    void onLineBtnClick(QMouseEvent* event);
-    void onLineMouseMove(QMouseEvent* event);
-    void onNodeBtnDoubleClick(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
 };
 
 #endif // LINE_H

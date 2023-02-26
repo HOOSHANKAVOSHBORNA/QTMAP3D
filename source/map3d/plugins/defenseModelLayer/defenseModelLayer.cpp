@@ -129,12 +129,15 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
             auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
             if(aircrafModelNode)
             {
+                if(aircrafModelNode->getAssignmentModelNondes().size() > 0)
+                {
                 auto systemModelNode = aircrafModelNode->getAssignmentModelNondes().first();
                 if(systemModelNode){
                     SystemCambatInfo cambatInfo;
                     cambatInfo.Phase = SystemCambatInfo::Fire;
                     cambatInfo.TN = aircrafModelNode->getInformation().TN;
                     systemModelNode->setCambatInfo(cambatInfo);
+                }
                 }
             }
         }
