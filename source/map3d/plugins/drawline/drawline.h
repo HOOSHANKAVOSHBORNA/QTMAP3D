@@ -14,6 +14,7 @@
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <linenode.h>
+#include <lineproperties.h>
 
 #define DRAW_LAYER_NAME "Line"
 
@@ -57,6 +58,7 @@ private:
     Shape mShape;
 
     LineNode* mLine{nullptr};
+    QQuickItem *mItem = nullptr;
 };
 
 #endif // LINE_H
