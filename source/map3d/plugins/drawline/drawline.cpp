@@ -83,6 +83,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::FINISH;
+
         }
     }
 }
@@ -129,6 +130,7 @@ void drawLine::mousePressEvent(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
     {
         cancelDrawingLine(event);
+        QMetaObject::invokeMethod(mItem, "hide");
     }
 }
 
@@ -141,6 +143,7 @@ void drawLine::mouseMoveEvent(QMouseEvent *event)
 void drawLine::mouseDoubleClickEvent(QMouseEvent *event)
 {
     finishDrawing(event);
+    QMetaObject::invokeMethod(mItem, "hide");
 }
 
 void drawLine::startDrawLine()
@@ -153,6 +156,7 @@ void drawLine::startDrawLine()
     mLine->setPointWidth(8);
     mLine->setTessellation(20);
     addNodeToLayer(mLine);
+    QMetaObject::invokeMethod(mItem, "hide");
 
     mDrawingState = DrawingState::DRAWING;
 }
@@ -163,12 +167,14 @@ void drawLine::drawingLine(QMouseEvent *event)
     mLine->addPoint(geoPos);
     if (mShape == Shape::LINE && mLine->getSize()>= 2){
         finishDrawing(event);
+        QMetaObject::invokeMethod(mItem, "hide");
     }
 }
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
     removeNodeFromLayer(mLine);
+    QMetaObject::invokeMethod(mItem, "hide");
     event->accept();
 
     mDrawingState = DrawingState::START;
@@ -194,6 +200,7 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
             removeNodeFromLayer(nodeEditor);
         //mMapController->removeNode(mPolyHdragger);
         event->accept();
+        QMetaObject::invokeMethod(mItem, "hide");
     }
 }
 

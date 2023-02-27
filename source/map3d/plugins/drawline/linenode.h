@@ -51,6 +51,9 @@ public:
     float getPointWidth() const;
     void setPointWidth(float pointWidth);
 
+    bool getSmooth() const;
+    void setSmooth(bool Smooth);
+
 private:
     MapController* mMapController{nullptr};
 
@@ -62,6 +65,7 @@ private:
     bool mPointVisible{true};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
+    bool mSmooth;
 
 };
 

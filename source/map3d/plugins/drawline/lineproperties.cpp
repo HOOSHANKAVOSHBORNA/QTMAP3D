@@ -4,26 +4,18 @@
 
 
 
-LineProperties::LineProperties(LineNode* lineNode/*,MapController *mapController*/, QObject *parent) :
+LineProperties::LineProperties(LineNode* lineNode, QObject *parent) :
     QObject(parent),
     mLineNode(lineNode)
 {
        QObject::connect(this,&LineProperties::linePropertiesChanged,this,&LineProperties::linePropertiesChangedToQML);
-//       mMapController = mapController;
+
 
 //       mRadius = lineNode->getRadius().as(osgEarth::Units::METERS);
          mColor = QString::fromStdString(lineNode->getColor().toHTML());
          mColor.remove(7,2);
          mPointColor = QString::fromStdString(lineNode->getPointColor().toHTML());
          mPointColor.remove(7,2);
-//       mLocation.setX(lineNode->getPosition().x());
-//       mLocation.setY(lineNode->getPosition().y());
-//       mLocation.setZ(lineNode->getPosition().z());
-         mTesselation = (lineNode->getTessellation());
-//       mCenter.setY(lineNode->getCenter().y());
-//       mCenter.setZ(lineNode->getCenter().z());
-//       mRelative = lineNode->getPosition().isRelative();
-//       QObject::connect(this,&LineProperties::linePropertiesChanged,this,&LineProperties::linePropertiesChangedToQML);
 
 }
 
@@ -65,6 +57,17 @@ void LineProperties:: setWidth(const float &value){
     mLineNode->setWidth(value);
 }
 
+float LineProperties::height() const
+{
+    return mHeight;
+}
+void LineProperties:: setHeight(const float &value){
+    if(value == mHeight)
+        return;
+    mHeight = value;
+    emit linePropertiesChanged(Height , value);
+    mLineNode->setHeight(value);
+}
 
 float LineProperties::pointwidth() const
 {
@@ -107,23 +110,28 @@ void LineProperties::setClamp(const osgEarth::Symbology::AltitudeSymbol::Clampin
     mLineNode->setClamp(value);
 }
 
-int LineProperties::visible() const
+bool LineProperties::visible() const
 {
     return mVisible;
 }
-void LineProperties::setVisible(const int &value){
+void LineProperties::setVisible(const bool &value){
     if(value == mVisible)
         return;
     mVisible = value;
     emit linePropertiesChanged(Visible, value);
 
-    bool tmpValue;
-    if(value == 0){
-        tmpValue = true;
-    }
-    else if(value == 1){
-        tmpValue = false;
-    }
+    mLineNode->setPointVisible(value);
+}
 
-    mLineNode->setPointVisible(tmpValue);
+bool LineProperties::smooth() const
+{
+    return mSmooth;
+}
+void LineProperties::setSmooth(const bool &value){
+    if(value == mSmooth)
+        return;
+    mSmooth = value;
+    emit linePropertiesChanged(Smooth, value);
+
+    mLineNode->setSmooth(value);
 }
