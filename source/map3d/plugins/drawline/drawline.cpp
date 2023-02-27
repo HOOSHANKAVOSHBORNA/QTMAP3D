@@ -42,10 +42,13 @@ drawLine::drawLine(QWidget *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(drawLine);
+//    Q_INIT_RESOURCE(LineProperties);
+
 }
 
 bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
+    qmlRegisterType<LineProperties>("Crystal", 1, 0, "LineProperties");
     mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{LINESTRIP, CATEGORY, "qrc:/resources/line_string.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
@@ -102,6 +105,18 @@ void drawLine::mousePressEvent(QMouseEvent *event)
         if(mDrawingState == DrawingState::START)
         {
             startDrawLine();
+            //--show property window---------------------------------------------------------------------------------
+            QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+            QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+                if (comp->status() == QQmlComponent::Ready) {
+                    mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+                    LineProperties *lineProperties = new LineProperties(mLine, mMapController);
+                    mItem->setProperty("lineProperties", QVariant::fromValue<LineProperties*>(lineProperties));
+                }
+            });
+            comp->loadUrl(QUrl("qrc:/resources/LineProperty.qml"));
+            QMetaObject::invokeMethod(mItem, "show");
+            //--------------------------------------------------------------------------------------------------
             event->accept();
         }
         if(mDrawingState == DrawingState::DRAWING)
