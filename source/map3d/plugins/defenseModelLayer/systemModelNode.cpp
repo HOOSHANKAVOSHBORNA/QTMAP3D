@@ -385,6 +385,12 @@ void SystemModelNode::lockPhase(int tn)
         mTruckF->aimTarget(mTargetModelNode->getPosition());
 
         //remove other assigned models
+        for(auto assignModel:mAssignmentModels)
+        {
+            auto aircraftModelNode = static_cast<AircraftModelNode*>(assignModel->mModelNode);
+            if(aircraftModelNode && aircraftModelNode->getInformation().TN != tn)
+                removeAssignedModelNode(aircraftModelNode->getInformation().TN);
+        }
     }
 }
 
