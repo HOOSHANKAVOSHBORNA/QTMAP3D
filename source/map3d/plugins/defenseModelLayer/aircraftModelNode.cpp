@@ -355,9 +355,19 @@ void AircraftModelNode::removeAssignmentModelNode(int number)
     mAssignmentModelNondes.remove(number);
 }
 
-void AircraftModelNode::clearAssignmentModelNodes()
+void AircraftModelNode::acceptAssignedModelNode(int number, bool value)
 {
-    mAssignmentModelNondes.clear();
+    if(!value)
+        removeAssignmentModelNode(number);
+}
+
+void AircraftModelNode::clearAssignmentModelNodes(int exceptNumber)
+{
+    for(auto number: mAssignmentModelNondes.keys())
+    {
+        if(exceptNumber != number)
+            removeAssignmentModelNode(number);
+    }
 }
 
 bool AircraftModelNode::hasAssignmentModelNode()

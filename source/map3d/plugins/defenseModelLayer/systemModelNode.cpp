@@ -203,13 +203,12 @@ void SystemModelNode::removeAssignedModelNode(int tn)
     }
 }
 
-void SystemModelNode::clearAssignedModelNodes()
+void SystemModelNode::clearAssignedModelNodes(int exceptTN)
 {
-    for(auto assignModel:mAssignmentModels)
+    for(auto tn: mAssignmentModels.keys())
     {
-        auto aircraftModelNode = static_cast<AircraftModelNode*>(assignModel->mModelNode);
-        if(aircraftModelNode)
-            removeAssignedModelNode(aircraftModelNode->getInformation().TN);
+        if(tn != exceptTN)
+            removeAssignedModelNode(tn);
     }
 }
 
@@ -384,13 +383,13 @@ void SystemModelNode::lockPhase(int tn)
         mTruckL->lockOnTarget(mTargetModelNode->getPosition());
         mTruckF->aimTarget(mTargetModelNode->getPosition());
 
-        //remove other assigned models
-        for(auto assignModel:mAssignmentModels)
-        {
-            auto aircraftModelNode = static_cast<AircraftModelNode*>(assignModel->mModelNode);
-            if(aircraftModelNode && aircraftModelNode->getInformation().TN != tn)
-                removeAssignedModelNode(aircraftModelNode->getInformation().TN);
-        }
+//        //remove other assigned models
+//        for(auto assignModel:mAssignmentModels)
+//        {
+//            auto aircraftModelNode = static_cast<AircraftModelNode*>(assignModel->mModelNode);
+//            if(aircraftModelNode && aircraftModelNode->getInformation().TN != tn)
+//                removeAssignedModelNode(aircraftModelNode->getInformation().TN);
+//        }
     }
 }
 
