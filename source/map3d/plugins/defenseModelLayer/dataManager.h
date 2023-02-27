@@ -21,6 +21,7 @@ public slots:
 public:
     void aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode);
     void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
+    void clear();
 private:
     DefenseDataManager *mDefenseDataManager{nullptr};
     ListManager *mListManager{nullptr};

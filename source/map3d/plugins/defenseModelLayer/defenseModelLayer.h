@@ -4,6 +4,7 @@
 #include "plugininterface.h"
 #include "aircraftModelNode.h"
 #include "listManager.h"
+#include "stationModelNode.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
@@ -50,6 +51,8 @@ public:
     void addUpdateStation(StationInfo stationInfo);
     SystemModelNode *getSystemModelNode(int number)const;
     AircraftModelNode *getAircraftModelNode(int tn) const;
+    StationModelNode *getStationModelNode(int number) const;
+    void selectModelNode(DefenseModelNode* defenseModelNode);
 public slots:
 //    void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
 //    void onSystemInfoChanged(SystemInfo& systemInfo);
@@ -82,10 +85,10 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     int mPreCameraRange{0};
 
-    ListManager *mListManager = nullptr;
+//    ListManager *mListManager = nullptr;
     osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
 
-    DefenseDataManager *mDefenseDataManager;
+    //DefenseDataManager *mDefenseDataManager;
     DataManager *mDataManager;
 
 };
