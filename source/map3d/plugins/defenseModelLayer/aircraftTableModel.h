@@ -28,7 +28,7 @@ public:
         TextColorRole = Qt::UserRole + 101,
         HeaderTextRole = Qt::UserRole + 102,
         AircraftColor = Qt::UserRole + 103,
-        AssignColor = Qt::UserRole + 104
+        AircraftHoverColor = Qt::UserRole + 104
     };
 
 public:

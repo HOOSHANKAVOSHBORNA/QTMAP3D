@@ -187,8 +187,7 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: rootItem.systemModel ? (rootItem.aircraftModel.getShowAssigned() ? AircraftColor : (rootItem.aHoveredIndex == row)
-                                         ? "lightskyblue" : AircraftColor) : "transparent";
+                                color: rootItem.systemModel ? (rootItem.aClicked == row ? AircraftHoverColor : (rootItem.aHoveredIndex == row ? AircraftHoverColor : AircraftColor)) : "transparent";
                                 anchors.fill: parent
                             }
                             Rectangle {

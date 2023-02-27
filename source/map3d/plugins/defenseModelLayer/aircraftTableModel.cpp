@@ -110,22 +110,14 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     case AircraftColor:
     {
         const int _row = index.row();
-        if (mAircraftInfoListProxy[static_cast<size_t>(_row)].second->identifyToString() == "F")
-            return QVariant::fromValue<QColor>(QColor("green"));
-        else if (mAircraftInfoListProxy[static_cast<size_t>(_row)].second->identifyToString() == "K")
-            return QVariant::fromValue<QColor>(QColor("yellow"));
-        else if (mAircraftInfoListProxy[static_cast<size_t>(_row)].second->identifyToString() == "Z")
-            return QVariant::fromValue<QColor>(QColor("orange"));
-        else if (mAircraftInfoListProxy[static_cast<size_t>(_row)].second->identifyToString() == "X")
-            return QVariant::fromValue<QColor>(QColor("red"));
-        else if (mAircraftInfoListProxy[static_cast<size_t>(_row)].second->identifyToString() == "U")
-            return QVariant::fromValue<QColor>(QColor("white"));
-        else
-            return QVariant::fromValue<QColor>(QColor("red"));
-
-        break;
+        return QVariant::fromValue<QColor>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->aircraftColor());
     }
 
+    case AircraftHoverColor:
+    {
+        const int _row = index.row();
+        return QVariant::fromValue<QColor>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->aircraftHoverColor());
+    }
 
 
     }
@@ -140,7 +132,7 @@ QHash<int, QByteArray> AircraftTableModel::roleNames() const
     hash[TextColorRole] = "d_txtcolor";
     hash[HeaderTextRole] = "d_headerTxt";
     hash[AircraftColor] = "AircraftColor";
-    hash[AssignColor] = "AssignColor";
+    hash[AircraftHoverColor] = "AircraftHoverColor";
     return hash;
 }
 

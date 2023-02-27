@@ -6,6 +6,7 @@
 #include <QJsonObject>
 #include <QStringList>
 #include <QObject>
+#include <QColor>
 
 struct SystemInfo;
 struct AircraftInfo
@@ -67,6 +68,57 @@ public:
         }
         return result;
     }
+
+    QColor aircraftColor() {
+        QColor color = QColor(Qt::transparent);
+        switch (Identification) {
+        case F:
+            color = QColor("green");
+            break;
+        case K:
+            color = QColor("yellow");
+            break;
+        case Z:
+            color = QColor("orange");
+            break;
+        case X:
+            color = QColor("red");
+            break;
+        case U:
+            color = QColor("white");
+            break;
+        case H:
+            color = QColor("red");
+            break;
+        }
+        return color;
+    }
+
+    QColor aircraftHoverColor() {
+        QColor color = QColor(Qt::transparent);
+        switch (Identification) {
+        case F:
+            color = QColor("darkgreen");
+            break;
+        case K:
+            color = QColor("darkyellow");
+            break;
+        case Z:
+            color = QColor("darkorange");
+            break;
+        case X:
+            color = QColor("darkred");
+            break;
+        case U:
+            color = QColor("gray");
+            break;
+        case H:
+            color = QColor("darkred");
+            break;
+        }
+        return color;
+    }
+
     QString detectionSystemsToString()
     {
         QString result = "";
