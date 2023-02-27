@@ -100,7 +100,7 @@ Demo::~Demo()
 
 static int aircraftNumber = 0;
 const int systemNum = 5;
-const int stationNum = 0;
+const int stationNum = 5;
 AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;

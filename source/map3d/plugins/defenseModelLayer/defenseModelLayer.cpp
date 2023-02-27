@@ -170,43 +170,42 @@ bool DefenseModelLayer::setup(MapController *mapController,
     mMapController = mapController;
     mUIHandle = uiHandle;
 
-    mListManager = new ListManager(mQmlEngine, mUIHandle, this);
-    connect(mListManager, &ListManager::aircraftDoubleClicked,[=](int TN){
+//    connect(mListManager, &ListManager::aircraftDoubleClicked,[=](int TN){
 
-        if(mModelNodes[AIRCRAFT].contains(TN))
-        {
-            AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][TN].get());
-            if(mSelectedModelNode)
-                mSelectedModelNode->select(false);
-            aircraftModelNode->onLeftButtonClicked(true);
-            aircraftModelNode->goOnTrack();
-            mSelectedModelNode = aircraftModelNode;
-        }
-    });
-    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
+//        if(mModelNodes[AIRCRAFT].contains(TN))
+//        {
+//            AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][TN].get());
+//            if(mSelectedModelNode)
+//                mSelectedModelNode->select(false);
+//            aircraftModelNode->onLeftButtonClicked(true);
+//            aircraftModelNode->goOnTrack();
+//            mSelectedModelNode = aircraftModelNode;
+//        }
+//    });
+//    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
 
-        if(mModelNodes[STATION].contains(number))
-        {
-            StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][number].get());
-            if(mSelectedModelNode)
-                mSelectedModelNode->select(false);
-            stationModelNode->onLeftButtonClicked(true);
-            stationModelNode->goOnTrack();
-            mSelectedModelNode = stationModelNode;
-        }
-    });
-    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
+//        if(mModelNodes[STATION].contains(number))
+//        {
+//            StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][number].get());
+//            if(mSelectedModelNode)
+//                mSelectedModelNode->select(false);
+//            stationModelNode->onLeftButtonClicked(true);
+//            stationModelNode->goOnTrack();
+//            mSelectedModelNode = stationModelNode;
+//        }
+//    });
+//    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
 
-        if(mModelNodes[SYSTEM].contains(number))
-        {
-            SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][number].get());
-            if(mSelectedModelNode)
-                mSelectedModelNode->select(false);
-            systemModelNode->onLeftButtonClicked(true);
-            systemModelNode->goOnTrack();
-            mSelectedModelNode = systemModelNode;
-        }
-    });
+//        if(mModelNodes[SYSTEM].contains(number))
+//        {
+//            SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][number].get());
+//            if(mSelectedModelNode)
+//                mSelectedModelNode->select(false);
+//            systemModelNode->onLeftButtonClicked(true);
+//            systemModelNode->goOnTrack();
+//            mSelectedModelNode = systemModelNode;
+//        }
+//    });
 
     connect(mMapController, &MapController::mapCleared, this, &DefenseModelLayer::onMapClear);
 
@@ -225,8 +224,8 @@ bool DefenseModelLayer::setup(MapController *mapController,
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
-    mDefenseDataManager = defenseDataManager;
-    mDataManager = new DataManager(defenseDataManager, mListManager, this);
+    auto listManager = new ListManager(mQmlEngine, mUIHandle, this);
+    mDataManager = new DataManager(defenseDataManager, listManager, this);
 }
 
 void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
@@ -343,13 +342,52 @@ AircraftModelNode *DefenseModelLayer::getAircraftModelNode(int tn) const
     return nullptr;
 }
 
+StationModelNode *DefenseModelLayer::getStationModelNode(int number) const
+{
+    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(number))
+    {
+        return  dynamic_cast<StationModelNode*>(mModelNodes[STATION][number].get());
+    }
+    return nullptr;
+}
+
+void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
+{
+    AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(defenseModelNode);
+    if(aircraftModelNode){
+        if(mSelectedModelNode)
+            mSelectedModelNode->select(false);
+        aircraftModelNode->onLeftButtonClicked(true);
+        aircraftModelNode->goOnTrack();
+        mSelectedModelNode = aircraftModelNode;
+    }
+
+    StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(defenseModelNode);
+    if(stationModelNode){
+        if(mSelectedModelNode)
+            mSelectedModelNode->select(false);
+        stationModelNode->onLeftButtonClicked(true);
+        stationModelNode->goOnTrack();
+        mSelectedModelNode = stationModelNode;
+    }
+
+    SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(defenseModelNode);
+    if(systemModelNode){
+        if(mSelectedModelNode)
+            mSelectedModelNode->select(false);
+        systemModelNode->onLeftButtonClicked(true);
+        systemModelNode->goOnTrack();
+        mSelectedModelNode = systemModelNode;
+    }
+}
+
 void DefenseModelLayer::onMapClear()
 {
     mModelNodes.clear();
     mOnMoveModelNode = nullptr;
     mSelectedModelNode = nullptr;
     //--clear list-----------------------------------------
-    mListManager->clearAll();
+    mDataManager->clear();
     //--add layer------------------------------------------
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);

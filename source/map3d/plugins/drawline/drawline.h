@@ -58,7 +58,7 @@ private:
     Shape mShape;
 
     LineNode* mLine{nullptr};
-    QQuickItem *mItem = nullptr;
+    LineProperties *mLineProperties = nullptr;
 };
 
 #endif // LINE_H

@@ -186,3 +186,17 @@ void LineNode::setPointWidth(float pointWidth)
         style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
     setStyle(style);
 }
+
+bool LineNode::getSmooth() const
+{
+    return mSmooth;
+}
+
+void LineNode::setSmooth(bool smooth)
+{
+    mSmooth = smooth;
+    auto style = getStyle();
+    if(mSmooth)
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+    setStyle(style);
+}
