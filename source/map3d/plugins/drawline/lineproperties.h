@@ -7,8 +7,10 @@
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
+#include <QQuickItem>
+#include <QQmlEngine>
 
-class LineProperties : public QObject
+class LinePropertiesModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString   color          READ color         WRITE setColor        NOTIFY linePropertiesChangedToQML)
@@ -40,7 +42,7 @@ public:
 
 
 
-    LineProperties(LineNode* lineNode = nullptr, QObject *parent = nullptr);
+    LinePropertiesModel(LineNode* lineNode = nullptr, QObject *parent = nullptr);
     //set color
     QString color() const;
     void setColor(const QString &color);
@@ -95,7 +97,24 @@ private:
 
 
 
+
 public slots:
+};
+
+class LineProperties :public QObject
+{
+    Q_OBJECT
+public:
+    LineProperties(QQmlEngine *engine, LineNode *line, QObject *parent = nullptr);
+    void show();
+    void hide();
+
+private:
+    QQmlEngine* mQmlEngine;
+    QQuickItem* mItem;
+    LinePropertiesModel *mLineProperties;
+    LineNode *mLine;
+
 };
 
 #endif // LINEPROPERTIES_H

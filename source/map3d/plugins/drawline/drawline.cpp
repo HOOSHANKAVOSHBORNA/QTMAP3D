@@ -48,7 +48,7 @@ drawLine::drawLine(QWidget *parent)
 
 bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-    qmlRegisterType<LineProperties>("Crystal", 1, 0, "LineProperties");
+    qmlRegisterType<LinePropertiesModel>("Crystal", 1, 0, "LineProperties");
     mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{LINESTRIP, CATEGORY, "qrc:/resources/line_string.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
@@ -106,18 +106,6 @@ void drawLine::mousePressEvent(QMouseEvent *event)
         if(mDrawingState == DrawingState::START)
         {
             startDrawLine();
-            //--show property window---------------------------------------------------------------------------------
-            QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-            QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-                if (comp->status() == QQmlComponent::Ready) {
-                    mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-                    LineProperties *lineProperties = new LineProperties(mLine, mMapController);
-                    mItem->setProperty("lineProperties", QVariant::fromValue<LineProperties*>(lineProperties));
-                }
-            });
-            comp->loadUrl(QUrl("qrc:/resources/LineProperty.qml"));
-            QMetaObject::invokeMethod(mItem, "show");
-            //--------------------------------------------------------------------------------------------------
             event->accept();
         }
         if(mDrawingState == DrawingState::DRAWING)
@@ -130,7 +118,8 @@ void drawLine::mousePressEvent(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
     {
         cancelDrawingLine(event);
-        QMetaObject::invokeMethod(mItem, "hide");
+        if (mLineProperties)
+            mLineProperties->hide();
     }
 }
 
@@ -143,7 +132,10 @@ void drawLine::mouseMoveEvent(QMouseEvent *event)
 void drawLine::mouseDoubleClickEvent(QMouseEvent *event)
 {
     finishDrawing(event);
-    QMetaObject::invokeMethod(mItem, "hide");
+//    if (mLineProperties)
+//        mLineProperties->hide();
+//    mLineProperties = new LineProperties(mQmlEngine, mLine);
+//    mLineProperties->show();
 }
 
 void drawLine::startDrawLine()
@@ -156,8 +148,12 @@ void drawLine::startDrawLine()
     mLine->setPointWidth(8);
     mLine->setTessellation(20);
     addNodeToLayer(mLine);
-    QMetaObject::invokeMethod(mItem, "hide");
 
+
+            if (mLineProperties)
+                mLineProperties->hide();
+    mLineProperties = new LineProperties(mQmlEngine, mLine);
+    mLineProperties->show();
     mDrawingState = DrawingState::DRAWING;
 }
 
@@ -167,14 +163,16 @@ void drawLine::drawingLine(QMouseEvent *event)
     mLine->addPoint(geoPos);
     if (mShape == Shape::LINE && mLine->getSize()>= 2){
         finishDrawing(event);
-        QMetaObject::invokeMethod(mItem, "hide");
+//        if (mLineProperties)
+//            mLineProperties->hide();
     }
 }
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
     removeNodeFromLayer(mLine);
-    QMetaObject::invokeMethod(mItem, "hide");
+    if (mLineProperties)
+        mLineProperties->hide();
     event->accept();
 
     mDrawingState = DrawingState::START;
@@ -200,7 +198,8 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
             removeNodeFromLayer(nodeEditor);
         //mMapController->removeNode(mPolyHdragger);
         event->accept();
-        QMetaObject::invokeMethod(mItem, "hide");
+//        if (mLineProperties)
+//            mLineProperties->hide();
     }
 }
 
