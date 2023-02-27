@@ -18,6 +18,20 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *li
     QObject::connect(defenseDataManager, &DefenseDataManager::systemCambatInfoChanged,this ,&DataManager::onSystemCambatInfoChanged);
     //--station---------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
+
+    //list view---------------------------------------------------------
+    connect(mListManager, &ListManager::aircraftDoubleClicked,[=](int TN){
+        AircraftModelNode* aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(TN);
+        mDefenseModelLayer->selectModelNode(aircraftModelNode);
+    });
+    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
+        StationModelNode* stationModelNode = mDefenseModelLayer->getStationModelNode(number);
+        mDefenseModelLayer->selectModelNode(stationModelNode);
+    });
+    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
+        SystemModelNode* systemModelNode = mDefenseModelLayer->getSystemModelNode(number);
+        mDefenseModelLayer->selectModelNode(systemModelNode);
+    });
 }
 
 void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
@@ -138,4 +152,9 @@ void DataManager::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
         aircraftModelNode->clearAssignmentModelNodes();
         mListManager->cancelAssign(aircraftModelNode->getInformation().TN, -1);
     }
+}
+
+void DataManager::clear()
+{
+    mListManager->clearAll();
 }
