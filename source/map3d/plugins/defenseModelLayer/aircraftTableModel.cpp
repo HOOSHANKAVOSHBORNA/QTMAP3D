@@ -126,25 +126,6 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
         break;
     }
 
-    case AssignColor:
-    {
-        const int _row = index.row();
-        if (mAircraftsAssigned[mNumber][_row].Phase == "Search")
-            return QVariant::fromValue<QColor>(QColor("yellow"));
-        else if (mAircraftsAssigned[mNumber][_row].Phase == "Lock")
-            return QVariant::fromValue<QColor>(QColor("orange"));
-        else if (mAircraftsAssigned[mNumber][_row].Phase == "Fire")
-            return QVariant::fromValue<QColor>(QColor("red"));
-        else if (mAircraftsAssigned[mNumber][_row].Phase == "Kill")
-            return QVariant::fromValue<QColor>(QColor("black"));
-        else if (mAircraftsAssigned[mNumber][_row].Phase == "NoKill")
-            return QVariant::fromValue<QColor>(QColor("brown"));
-        else
-            return QVariant::fromValue<QColor>(QColor("white"));
-
-        break;
-    }
-
 
 
     }
@@ -257,9 +238,14 @@ void AircraftTableModel::onUpdateTimerTriggered()
                 if (QString::number(item.second->TN).contains(mFilterProxy))
                     mAircraftInfoListProxy.push_back(item);
             }
+            if (mAircraftInfoListProxy.size() > 0)
+                emit dataChanged(createIndex(mMinRowUpdate, 0), createIndex(mMaxRowUpdate, columnCount()-1));
+
         }
         else {
 //            for (int i = 0; i < mAircraftInfoList.size(); i++) {
+
+            if (mAircraftInfoListProxy.size() < 1)
                 beginResetModel();
                 mAircraftInfoListProxy.clear();
                 if (mAircraftsAssigned.contains(mNumber)) {
@@ -272,12 +258,13 @@ void AircraftTableModel::onUpdateTimerTriggered()
 
                     }
                 }
-                endResetModel();
+                if (mAircraftInfoListProxy.size() < 1)
+                    endResetModel();
+                if (mAircraftInfoListProxy.size() > 0)
+                    emit dataChanged(createIndex(mMinRowUpdate, 0), createIndex(mMaxRowUpdate, columnCount()-1));
+
 //            }
         }
-
-        if (mAircraftInfoListProxy.size() > 0)
-            emit dataChanged(createIndex(mMinRowUpdate, 0), createIndex(mMaxRowUpdate, columnCount()-1));
 
         mMinRowUpdate = -1;
         mMaxRowUpdate = -1;

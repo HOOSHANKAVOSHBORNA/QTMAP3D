@@ -187,11 +187,20 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (aClicked == row && rootItem.systemModel.getShowAssigned())
-                                       ? "#1010FF" : rootItem.aircraftModel.getShowAssigned() ? AssignColor : (rootItem.aHoveredIndex == row)
-                                         ? "lightskyblue" : AircraftColor;
+                                color: rootItem.systemModel ? (rootItem.aircraftModel.getShowAssigned() ? AircraftColor : (rootItem.aHoveredIndex == row)
+                                         ? "lightskyblue" : AircraftColor) : "transparent";
                                 anchors.fill: parent
                             }
+                            Rectangle {
+                                width: 20
+                                height: 20
+                                x: -20
+                                radius: 10
+                                anchors.verticalCenter: parent.verticalCenter
+//                                anchors.leftMargin: -30
+                                color: (aClicked == row && column == 0) ? "red" : "transparent"
+                            }
+
                             Text {
                                 id: txt
                                 anchors.centerIn: parent
@@ -310,10 +319,18 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (sClicked == row && rootItem.aircraftModel.getShowAssigned())
-                                       ? "#1010FF" : rootItem.systemModel.getShowAssigned() ? AssignColor : (rootItem.sHoveredIndex == row)
-                                         ? "lightskyblue" : SystemColor;
+                                color: rootItem.aircraftModel ? (rootItem.systemModel.getShowAssigned() ? SystemColor : (rootItem.sHoveredIndex == row)
+                                         ? "lightskyblue" : SystemColor) : "transparent";
                                 anchors.fill: parent
+                            }
+                            Rectangle {
+                                width: 20
+                                height: 20
+                                x: -20
+                                radius: 10
+                                anchors.verticalCenter: parent.verticalCenter
+//                                anchors.leftMargin: -30
+                                color: (sClicked == row && column == 0) ? "red" : "transparent"
                             }
                             Text {
                                 id: txt1

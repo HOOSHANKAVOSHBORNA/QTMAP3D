@@ -97,23 +97,6 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         break;
     }
 
-    case AssignColor:
-    {
-        const int _row = index.row();
-        if (mSystemsAssigned[mTN][_row].Phase == "Search")
-            return QVariant::fromValue<QColor>(QColor("yellow"));
-        else if (mSystemsAssigned[mTN][_row].Phase == "Lock")
-            return QVariant::fromValue<QColor>(QColor("orange"));
-        else if (mSystemsAssigned[mTN][_row].Phase == "Fire")
-            return QVariant::fromValue<QColor>(QColor("red"));
-        else if (mSystemsAssigned[mTN][_row].Phase == "Kill")
-            return QVariant::fromValue<QColor>(QColor("black"));
-        else if (mSystemsAssigned[mTN][_row].Phase == "NoKill")
-            return QVariant::fromValue<QColor>(QColor("brown"));
-        else
-            return QVariant::fromValue<QColor>(QColor("white"));
-        break;
-    }
 
     case SystemColor:
     {
