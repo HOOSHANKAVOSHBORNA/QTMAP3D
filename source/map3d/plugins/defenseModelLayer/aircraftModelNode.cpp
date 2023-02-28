@@ -338,41 +338,46 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 }
 
-SystemModelNode *AircraftModelNode::getAssignmentModelNode(int number) const
+SystemModelNode *AircraftModelNode::getAssignment(int number) const
 {
-    if(mAssignmentModelNondes.contains(number))
-        return mAssignmentModelNondes[number];
+    if(mAssignmentMap.contains(number))
+        return mAssignmentMap[number];
     return nullptr;
 }
 
-void AircraftModelNode::addAssignmentModelNode(int number, SystemModelNode *assignmentModelNode)
+void AircraftModelNode::addAssignment(int number, SystemModelNode *assignmentModelNode)
 {
-    mAssignmentModelNondes[number] = assignmentModelNode;
+    mAssignmentMap[number] = assignmentModelNode;
 }
 
-void AircraftModelNode::removeAssignmentModelNode(int number)
+void AircraftModelNode::removeAssignment(int number)
 {
-    mAssignmentModelNondes.remove(number);
+    mAssignmentMap.remove(number);
 }
 
-void AircraftModelNode::acceptAssignedModelNode(int number, bool value)
+void AircraftModelNode::acceptAssignment(int number, bool value)
 {
     if(!value)
-        removeAssignmentModelNode(number);
+        removeAssignment(number);
 }
 
-void AircraftModelNode::clearAssignmentModelNodes(int exceptNumber)
+void AircraftModelNode::clearAssignments(int exceptNumber)
 {
-    for(auto number: mAssignmentModelNondes.keys())
+    for(auto number: mAssignmentMap.keys())
     {
         if(exceptNumber != number)
-            removeAssignmentModelNode(number);
+            removeAssignment(number);
     }
 }
 
-bool AircraftModelNode::hasAssignmentModelNode()
+bool AircraftModelNode::hasAssignment()
 {
-    return mAssignmentModelNondes.count() > 0;
+    return mAssignmentMap.count() > 0;
+}
+
+QMap<int, SystemModelNode *> AircraftModelNode::getAssignments() const
+{
+    return mAssignmentMap;
 }
 
 void AircraftModelNode::onGotoButtonClicked()
@@ -667,11 +672,6 @@ void AircraftModelNode::updateOrCreateLabelImage()
                           GL_UNSIGNED_BYTE,
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
-}
-
-QMap<int, SystemModelNode *> AircraftModelNode::getAssignmentModelNondes() const
-{
-    return mAssignmentModelNondes;
 }
 
 
