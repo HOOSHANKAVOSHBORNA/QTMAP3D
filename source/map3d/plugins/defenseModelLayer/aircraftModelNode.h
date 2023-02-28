@@ -4,7 +4,7 @@
 #include "defenseModelNode.h"
 #include "mapcontroller.h"
 #include "plugininterface.h"
-#include "dataManager.h"
+#include "listManager.h"
 #include "aircraftInformation.h"
 #include "linenode.h"
 #include "contextMenu.h"
@@ -50,7 +50,8 @@ public:
     SystemModelNode *getAssignmentModelNode(int number) const;
     void addAssignmentModelNode(int number, SystemModelNode *assignmentModelNode);
     void removeAssignmentModelNode(int number);
-    void clearAssignmentModelNodes();
+    void acceptAssignedModelNode(int number, bool value);
+    void clearAssignmentModelNodes(int exceptNumber = -1);
     bool hasAssignmentModelNode();
 
     QMap<int, SystemModelNode *> getAssignmentModelNondes() const;

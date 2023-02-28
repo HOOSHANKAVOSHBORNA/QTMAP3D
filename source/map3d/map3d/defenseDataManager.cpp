@@ -61,7 +61,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
         qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-        if(tn % 4 == 0)
+        if(tn % 40 == 0)
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
         else
         {
@@ -100,7 +100,7 @@ Demo::~Demo()
 
 static int aircraftNumber = 0;
 const int systemNum = 5;
-const int stationNum = 0;
+const int stationNum = 5;
 AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;

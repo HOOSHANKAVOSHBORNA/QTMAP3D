@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>resources/line.png</file>
         <file>resources/line_string.png</file>
+        <file>resources/LineProperty.qml</file>
     </qresource>
 </RCC>

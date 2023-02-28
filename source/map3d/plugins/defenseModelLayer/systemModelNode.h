@@ -31,7 +31,7 @@ public:
     DefenseModelNode *getAssignedModelNode(int tn) const;
     void acceptAssignedModelNode(int tn, bool value);
     void removeAssignedModelNode(int tn);
-    void clearAssignedModelNodes();
+    void clearAssignedModelNodes(int exceptTN = -1);
 
     void goOnTrack();
 public slots:

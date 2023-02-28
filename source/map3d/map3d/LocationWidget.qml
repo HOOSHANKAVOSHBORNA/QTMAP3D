@@ -8,6 +8,10 @@ Item {
     property real longitude : 0.0
     property real latitude : 0.0
     property real altitude : 0.0
+
+
+
+
     Label {
         id: location
         text: "Lon Lat : ["+Number(longitude).toLocaleString(Qt.locale(), 'f', 3)+" , "+Number(latitude).toLocaleString(Qt.locale(), 'f', 3)+ " , "+Number(altitude).toLocaleString(Qt.locale(), 'f', 3)+"]"

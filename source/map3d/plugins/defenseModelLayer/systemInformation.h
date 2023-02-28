@@ -2,7 +2,7 @@
 #define SYSTEMINFORMATION_H
 #include <QAbstractTableModel>
 #include <QQuickItem>
-#include "dataManager.h"
+#include "listManager.h"
 
 
 class SystemInfoModel : public QAbstractListModel

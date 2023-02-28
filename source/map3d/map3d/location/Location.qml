@@ -39,6 +39,61 @@ Item {
     }
 
 
+
+
+//    Item {
+//            anchors.left: listpoint.right
+//            id: sidePush
+//            visible: true
+
+
+//                Image {
+//                    id: minimize
+//                    source: "/Resources/sideTab.png"
+//                    sourceSize: ("25 x 100")
+//                    y:8
+//                    MouseArea{
+//                        anchors.fill: parent
+////                        onClicked: if(root.x !== -620){
+////                                       minix.running = true
+////                                       mintxt.running = true
+////                                       minarrow.running = true
+////                                   } else{
+////                                       maxix.running = true
+////                                       maxtxt.running = true
+////                                       maxarrow.running = true
+////                                   }
+//                    }
+//                    Text {
+//                        id: sideInfoTxt
+//                        anchors.centerIn: parent
+//                        text: "root.titleText"
+//                        color:"white"
+//                        font.pointSize: 8
+//                        visible: false
+//                        rotation: -90
+//                    }
+
+//                    Image {
+//                        id: arrow
+//                        source: "/Resources/sidearrow.png"
+//                        sourceSize: ("25 x 25")
+//                        anchors.centerIn: parent
+
+//                    }
+//                }
+////            PropertyAnimation {id:maxmove ; target: minimize ; property: "x" ; from :-300 ; to :0; duration: 200 ; easing.type: Easing.OutQuint ;running: false}
+////            PropertyAnimation {id:minix ;target:root ; property:"x";  to: -620 ; duration: 200 ; running: false}
+////            PropertyAnimation {id:maxix ;target:root ; property:"x";  to: -300 ; duration: 200 ; running: false}
+////            PropertyAnimation {id:mintxt; target: sideInfoTxt ; property: "visible" ;  to: true  ; duration: 200 ; running: false}
+////            PropertyAnimation {id:maxtxt; target: sideInfoTxt ; property: "visible" ;  to: false ; duration: 200 ; running: false}
+////            PropertyAnimation {id:minarrow; target: arrow ; property: "opacity" ; to:0 ; duration: 200 ; running: false}
+////            PropertyAnimation {id:maxarrow; target: arrow ; property: "opacity" ; to:1 ; duration: 200 ; running: false}
+
+//        }
+
+
+
     GoPointWidget{
         id:gPointWidget
         anchors.left: parent.left
@@ -49,7 +104,7 @@ Item {
         }
     }
     ListPointWidget{
-
+        id: listpoint
         width: parent.width / 2
         height: gPointWidget.height + sPointWidget.height  - 50
         anchors.left: sPointWidget.right

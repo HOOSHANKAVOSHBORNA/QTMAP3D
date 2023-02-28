@@ -11,6 +11,12 @@
 #include <QJsonObject>
 #include <QPair>
 
+struct AircraftAssignInfo {
+    int TN;
+    QString Phase;
+    bool assign;
+};
+
 class AircraftTableModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -20,7 +26,9 @@ public:
     enum CustomRoles {
         BackColorRole = Qt::UserRole + 100,
         TextColorRole = Qt::UserRole + 101,
-        HeaderTextRole = Qt::UserRole + 102
+        HeaderTextRole = Qt::UserRole + 102,
+        AircraftColor = Qt::UserRole + 103,
+        AircraftHoverColor = Qt::UserRole + 104
     };
 
 public:
@@ -49,12 +57,13 @@ public:
     void deleteItem(int TN);
     void assign(int TN, int Number);
     void cancelAssign(int TN, int Number);
+    void accept(int TN, int Number, bool result);
     void clear();
 
 private:
     std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoList;
     std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoListProxy;
-    QMap<int, QList<int>> mAircraftsAssigned;
+    QMap<int, QList<AircraftAssignInfo>> mAircraftsAssigned;
 
 
     QString mFilter;

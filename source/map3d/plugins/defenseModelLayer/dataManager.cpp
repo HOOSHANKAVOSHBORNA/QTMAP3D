@@ -1,201 +1,171 @@
-
 #include "dataManager.h"
-#include "plugininterface.h"
-#include "aircraftTableModel.h"
-#include "stationTableModel.h"
-#include <QQmlEngine>
-#include <QQmlComponent>
-#include <QQuickItem>
-#include <QDebug>
+#include "systemModelNode.h"
 
+#include <thread>
 
-DataManager::DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent) : QObject(parent),
-    mQmlEngine(qmlEngine),
-    mUiHandle(uiHandle)
+DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *listManager, DefenseModelLayer *defenseModelLayer):
+    mDefenseDataManager(defenseDataManager),
+    mListManager(listManager),
+    mDefenseModelLayer(defenseModelLayer)
 {
+    //--aircraft--------------------------------------------------------
+    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
+    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
+    //--system----------------------------------------------------------
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemCambatInfoChanged,this ,&DataManager::onSystemCambatInfoChanged);
+    //--station---------------------------------------------------------
+    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
 
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-//        qDebug() << comp->errorString();
+    //list view---------------------------------------------------------
+    connect(mListManager, &ListManager::aircraftDoubleClicked,[=](int TN){
+        AircraftModelNode* aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(TN);
+        mDefenseModelLayer->selectModelNode(aircraftModelNode);
+    });
+    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
+        StationModelNode* stationModelNode = mDefenseModelLayer->getStationModelNode(number);
+        mDefenseModelLayer->selectModelNode(stationModelNode);
+    });
+    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
+        SystemModelNode* systemModelNode = mDefenseModelLayer->getSystemModelNode(number);
+        mDefenseModelLayer->selectModelNode(systemModelNode);
+    });
+}
 
-        if (comp->status() == QQmlComponent::Ready) {
-            QQuickItem *aircraftTab = (QQuickItem*) comp->create(nullptr);
-            mAircraftTableModel = new AircraftTableModel;
+void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
+{
+    if(mDefenseModelLayer)
+        mDefenseModelLayer->addUpdateAircraft(aircraftInfo);
+    //add update list view-----------------------------------------------------------------
+    if (mListManager)
+        mListManager->setAircraftInfo(aircraftInfo);
+}
 
-            QObject::connect(aircraftTab,
-                             SIGNAL(filterTextChanged(const QString&)),
-                             mAircraftTableModel,
-                             SLOT(setFilterWildcard(const QString&)));
+void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
+{
+    if(mDefenseModelLayer)
+        mDefenseModelLayer->addUpdateSystem(systemInfo);
+    //add update list view-----------------------------------------------------------------
+    if (mListManager)
+        mListManager->setSystemInfo(systemInfo);
+}
 
-            QObject::connect(aircraftTab,
-                             SIGNAL(aircraftDoubleClicked(const int&)),
-                             this,
-                             SIGNAL(aircraftDoubleClicked(const int&)));
+void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
+{
+    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemStatusInfo.Number);
+    //update information-----------------------------------------------------
+    if(systemModelNode)
+        systemModelNode->setStatusInfo(systemStatusInfo);
+    //add update list view-----------------------------------------------------------------
+    if (mListManager)
+        mListManager->setSystemStatusInfo(systemStatusInfo);
+}
 
+void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
+{
+    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemCambatInfo.Number);
+    if(systemModelNode && (systemCambatInfo.Phase == SystemCambatInfo::Lock || systemCambatInfo.Phase == SystemCambatInfo::Fire))
+    {
+        auto aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCambatInfo.TN);
+        if(aircraftModelNode && aircraftModelNode->hasAssignmentModelNode()){
+            aircraftModelNode->clearAssignmentModelNodes(systemCambatInfo.Number);
+            systemModelNode->clearAssignedModelNodes(systemCambatInfo.TN);
 
-            aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
-            mUiHandle->lwAddTab("Aircrafts", aircraftTab);
+            mListManager->cancelAssign(systemCambatInfo.TN, -1);
+            mListManager->cancelAssign(-1, systemCambatInfo.Number);
+            mListManager->assignAirToSystem(systemCambatInfo.TN, systemCambatInfo.Number);
+            //---------
+
         }
+    }
+    //update information-----------------------------------------------------
+    if(systemModelNode)
+        systemModelNode->setCambatInfo(systemCambatInfo);
+    //add update list view-----------------------------------------------------------------
+    if (mListManager)
+        mListManager->setSystemCombatInfo(systemCambatInfo);
 
+    if(systemModelNode && (systemCambatInfo.Phase == SystemCambatInfo::Kill || systemCambatInfo.Phase == SystemCambatInfo::NoKill))
+    {
+        auto aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCambatInfo.TN);
+        if(aircraftModelNode){
+            aircraftModelNode->removeAssignmentModelNode(systemCambatInfo.Number);
+            systemModelNode->removeAssignedModelNode(systemCambatInfo.TN);
+            mListManager->cancelAssign(systemCambatInfo.TN, systemCambatInfo.Number);
+        }
+    }
+}
+
+void DataManager::onStationInfoChanged(StationInfo &stationInfo)
+{
+    if(mDefenseModelLayer)
+        mDefenseModelLayer->addUpdateStation(stationInfo);
+    //add update list view-----------------------------------------------------------------
+    if (mListManager)
+        mListManager->setStationInfo(stationInfo);
+}
+
+void DataManager::onClearAircraft(int tn)
+{
+    if(mDefenseModelLayer)
+        mDefenseModelLayer->clearAircraft(tn);
+    if (mListManager)
+        mListManager->deleteAircraftInfo(tn);
+}
+
+void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool result)
+{
+    //    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
+    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemNo);
+    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(tn);
+
+    if(systemModelNode)
+        systemModelNode->acceptAssignedModelNode(tn, result);
+    if(aircraftModelNode)
+        aircraftModelNode->acceptAssignedModelNode(systemNo, result);
+
+    if (mListManager)
+        mListManager->accept(tn, systemNo, result);
+}
+
+void DataManager::aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode)
+{
+    if(!aircraftModelNode || !systemModelNode)
+        return;
+    systemModelNode->addAssignedModelNode(aircraftModelNode->getInformation().TN, aircraftModelNode);
+    aircraftModelNode->addAssignmentModelNode(systemModelNode->getInformation().Number, systemModelNode);
+    //--TODO manage memory---------------------------------------
+    std::thread* t1 = new std::thread([=](){
+        if(mDefenseDataManager)
+            emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
+                                                       systemModelNode->getInformation().Number);
     });
 
-    comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
+    mListManager->assignAirToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
+}
 
-    QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
-//        qDebug() << comp2->errorString();
-
-        if (comp2->status() == QQmlComponent::Ready) {
-            QQuickItem *stationTab = (QQuickItem*) comp2->create(nullptr);
-            mStationTableModel = new StationTableModel;
-
-            QObject::connect(stationTab,
-                             SIGNAL(filterTextChanged(const QString&)),
-                             mStationTableModel,
-                             SLOT(setFilterWildcard(const QString&)));
-
-            QObject::connect(stationTab,
-                             SIGNAL(stationDoubleClicked(const int&)),
-                             this,
-                             SIGNAL(stationDoubleClicked(const int&)));
-
-
-            stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
-            mUiHandle->lwAddTab("Stations", stationTab);
+void DataManager::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
+{
+    if(aircraftModelNode)
+    {
+        auto systemModelNodes = aircraftModelNode->getAssignmentModelNondes();
+        for(auto systemModelNode: systemModelNodes)
+        {
+            if(systemModelNode)
+            {
+                emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
+                                                                 systemModelNode->getInformation().Number);
+                systemModelNode->removeAssignedModelNode(aircraftModelNode->getInformation().TN);
+            }
         }
-
-    });
-
-    comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
-
-    QQmlComponent *comp3 = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
-//        qDebug() << comp3->errorString();
-
-        if (comp3->status() == QQmlComponent::Ready) {
-            QQuickItem *systemTab = (QQuickItem*) comp3->create(nullptr);
-            mSystemTableModel = new SystemTableModel;
-
-            QObject::connect(systemTab,
-                             SIGNAL(filterTextChanged(const QString&)),
-                             mSystemTableModel,
-                             SLOT(setFilterWildcard(const QString&)));
-
-            QObject::connect(systemTab,
-                             SIGNAL(systemDoubleClicked(const int&)),
-                             this,
-                             SIGNAL(systemDoubleClicked(const int&)));
-
-            systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
-            mUiHandle->lwAddTab("Systems", systemTab);
-        }
-
-    });
-
-    comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
-
-    QQmlComponent *comp4 = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp4, &QQmlComponent::statusChanged, [this, comp4](){
-//        qDebug() << comp3->errorString();
-
-        if (comp4->status() == QQmlComponent::Ready) {
-            QQuickItem *assignTab = (QQuickItem*) comp4->create(nullptr);
-//            mAssignModel = new AssignmentModel;
-
-//            QObject::connect(systemTab,
-//                             SIGNAL(filterTextChanged(const QString&)),
-//                             mSystemTableModel,
-//                             SLOT(setFilterWildcard(const QString&)));
-
-//            QObject::connect(systemTab,
-//                             SIGNAL(systemDoubleClicked(const int&)),
-//                             this,
-//                             SIGNAL(systemDoubleClicked(const int&)));
-
-            assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
-            assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
-            mUiHandle->lwAddTab("Assignments", assignTab);
-        }
-
-    });
-
-    comp4->loadUrl(QUrl("qrc:/modelplugin/AssignmentView.qml"));
-    connect(mUiHandle, &UIHandle::listwindowTabChanged, mAircraftTableModel, &AircraftTableModel::refresh);
-    connect(mUiHandle, &UIHandle::listwindowTabChanged, mSystemTableModel, &SystemTableModel::refresh);
-    connect(mSystemTableModel, &SystemTableModel::systemClicked, mAircraftTableModel, &AircraftTableModel::onSystemClicked);
-    connect(mAircraftTableModel, &AircraftTableModel::aircraftClicked, mSystemTableModel, &SystemTableModel::onAircraftClicked);
-}
-
-void DataManager::setAircraftInfo(const AircraftInfo &aircraftInof)
-{
-    if (mAircraftTableModel) {
-        mAircraftTableModel->updateItemData(aircraftInof);
-    }
-    if (mAssignModel) {
-        mAssignModel->addAircraft(aircraftInof);
+        aircraftModelNode->clearAssignmentModelNodes();
+        mListManager->cancelAssign(aircraftModelNode->getInformation().TN, -1);
     }
 }
 
-void DataManager::deleteAircraftInfo(int TN)
+void DataManager::clear()
 {
-    if (mAircraftTableModel) {
-        mAircraftTableModel->deleteItem(TN);
-    }
+    mListManager->clearAll();
 }
-
-void DataManager::setStationInfo(const StationInfo &stationInfo)
-{
-    if (mStationTableModel) {
-        mStationTableModel->updateItemData(stationInfo);
-    }
-}
-
-void DataManager::setSystemInfo(const SystemInfo &systemInfo)
-{
-    if (mSystemTableModel) {
-        mSystemTableModel->updateItemData(systemInfo);
-    }
-    if (mAssignModel) {
-        mAssignModel->addSystem(systemInfo);
-    }
-}
-
-void DataManager::setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo)
-{
-    if (mSystemTableModel) {
-        mSystemTableModel->updateItemData(systemCombatInfo);
-    }
-}
-
-void DataManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
-{
-    if (mSystemTableModel) {
-        mSystemTableModel->updateItemData(systemStatusInfo);
-    }
-}
-
-void DataManager::assignAirToSystem(int TN, int Number)
-{
-//    mAssignModel->assignAirToSystem(aircraft, system);
-    mAircraftTableModel->assign(TN, Number);
-    mSystemTableModel->assign(Number, TN);
-}
-
-void DataManager::cancelAssign(int TN, int Number)
-{
-    mAircraftTableModel->cancelAssign(TN, Number);
-    mSystemTableModel->cancelAssign(Number, TN);
-}
-
-void DataManager::clearAll()
-{
-    if (mAircraftTableModel)
-        mAircraftTableModel->clear();
-    if (mSystemTableModel)
-        mSystemTableModel->clear();
-    if (mStationTableModel)
-        mStationTableModel->clear();
-    if (mAssignModel)
-        mAssignModel->clear();
-}
-
