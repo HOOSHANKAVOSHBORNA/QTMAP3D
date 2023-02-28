@@ -27,11 +27,11 @@ public:
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void setCambatInfo(const SystemCambatInfo &systemCambatInfo);
 
-    void addAssignedModelNode(int tn, DefenseModelNode *assignedModelNode);
-    DefenseModelNode *getAssignedModelNode(int tn) const;
-    void acceptAssignedModelNode(int tn, bool value);
-    void removeAssignedModelNode(int tn);
-    void clearAssignedModelNodes(int exceptTN = -1);
+    void addAssignment(int tn, DefenseModelNode *assignModelNode);
+    DefenseModelNode *getAssignment(int tn) const;
+    void acceptAssignment(int tn, bool value);
+    void removeAssignment(int tn);
+    void clearAssignments(int exceptTN = -1);
 
     void goOnTrack();
 public slots:
@@ -60,10 +60,10 @@ private:
     void showInfoWidget();
     void updateOrCreateLabelImage();
 private:
-    struct AssignmentModel{
+    struct Assignment{
         DefenseModelNode* mModelNode{nullptr};
         osg::ref_ptr<LineNode> mLine;
-        AssignmentModel(MapController *mapControler);
+        Assignment(MapController *mapControler);
         void accept();
         void updateLine(const osgEarth::GeoPoint &position);
     };
@@ -83,7 +83,7 @@ private:
     osg::ref_ptr<class TruckL> mTruckL;
     Rocket* mFiredRocket{nullptr};
 
-    QMap<int, AssignmentModel*> mAssignmentModels;
+    QMap<int, Assignment*> mAssignmentMap;
     SystemInformation *mSystemInformation{nullptr};
 
     DefenseModelNode* mTargetModelNode{nullptr};
@@ -93,6 +93,7 @@ private:
     static constexpr int LABEL_IMAGE_WIDTH = 160;
     static constexpr int LABEL_IMAGE_HEIGHT = 190;
 
+    osg::ref_ptr<osg::LOD> mLOD = nullptr;
 };
 
 #endif // SYSTEM_H

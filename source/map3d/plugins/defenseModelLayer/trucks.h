@@ -12,10 +12,16 @@ public:
     void stopSearch();
 
 protected:
-    static osg::ref_ptr<osg::Node> mMeshNodeP1;
-    static osg::ref_ptr<osg::Node> mMeshNodeP2;
-    static osg::ref_ptr<osg::Node> mMeshNodeP3;
-    static osg::ref_ptr<osg::Node> mMeshNodeP4;
+    static osg::ref_ptr<osg::Node> mMeshNodeP1LOD0;
+    static osg::ref_ptr<osg::Node> mMeshNodeP2LOD0;
+    static osg::ref_ptr<osg::Node> mMeshNodeP3LOD0;
+    static osg::ref_ptr<osg::Node> mMeshNodeP4LOD0;
+
+    static osg::ref_ptr<osg::Node> mMeshNodeP1LOD1;
+    static osg::ref_ptr<osg::Node> mMeshNodeP2LOD1;
+    static osg::ref_ptr<osg::Node> mMeshNodeP3LOD1;
+    static osg::ref_ptr<osg::Node> mMeshNodeP4LOD1;
+
     static bool mMeshNodesLoaded;
 
     osg::ref_ptr<osg::Node> mMeshNodeP1Instance;

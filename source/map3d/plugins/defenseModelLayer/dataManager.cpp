@@ -69,9 +69,9 @@ void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
     if(systemModelNode && (systemCambatInfo.Phase == SystemCambatInfo::Lock || systemCambatInfo.Phase == SystemCambatInfo::Fire))
     {
         auto aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCambatInfo.TN);
-        if(aircraftModelNode && aircraftModelNode->hasAssignmentModelNode()){
-            aircraftModelNode->clearAssignmentModelNodes(systemCambatInfo.Number);
-            systemModelNode->clearAssignedModelNodes(systemCambatInfo.TN);
+        if(aircraftModelNode && aircraftModelNode->hasAssignment()){
+            aircraftModelNode->clearAssignments(systemCambatInfo.Number);
+            systemModelNode->clearAssignments(systemCambatInfo.TN);
 
 
             mListManager->cnacelAssignedExcept(systemCambatInfo.TN, systemCambatInfo.Number);
@@ -90,8 +90,8 @@ void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
     {
         auto aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCambatInfo.TN);
         if(aircraftModelNode){
-            aircraftModelNode->removeAssignmentModelNode(systemCambatInfo.Number);
-            systemModelNode->removeAssignedModelNode(systemCambatInfo.TN);
+            aircraftModelNode->removeAssignment(systemCambatInfo.Number);
+            systemModelNode->removeAssignment(systemCambatInfo.TN);
             mListManager->cancelAssign(systemCambatInfo.TN, systemCambatInfo.Number);
         }
     }
@@ -121,9 +121,9 @@ void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool result)
     AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(tn);
 
     if(systemModelNode)
-        systemModelNode->acceptAssignedModelNode(tn, result);
+        systemModelNode->acceptAssignment(tn, result);
     if(aircraftModelNode)
-        aircraftModelNode->acceptAssignedModelNode(systemNo, result);
+        aircraftModelNode->acceptAssignment(systemNo, result);
 
     if (mListManager)
         mListManager->acceptAssign(tn, systemNo, result);
@@ -133,8 +133,8 @@ void DataManager::aircraftAssign(AircraftModelNode *aircraftModelNode, SystemMod
 {
     if(!aircraftModelNode || !systemModelNode)
         return;
-    systemModelNode->addAssignedModelNode(aircraftModelNode->getInformation().TN, aircraftModelNode);
-    aircraftModelNode->addAssignmentModelNode(systemModelNode->getInformation().Number, systemModelNode);
+    systemModelNode->addAssignment(aircraftModelNode->getInformation().TN, aircraftModelNode);
+    aircraftModelNode->addAssignment(systemModelNode->getInformation().Number, systemModelNode);
     //--TODO manage memory---------------------------------------
     std::thread* t1 = new std::thread([=](){
         if(mDefenseDataManager)
@@ -149,17 +149,18 @@ void DataManager::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
 {
     if(aircraftModelNode)
     {
-        auto systemModelNodes = aircraftModelNode->getAssignmentModelNondes();
+        auto systemModelNodes = aircraftModelNode->getAssignments();
         for(auto systemModelNode: systemModelNodes)
         {
             if(systemModelNode)
             {
                 emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
                                                                  systemModelNode->getInformation().Number);
-                systemModelNode->removeAssignedModelNode(aircraftModelNode->getInformation().TN);
+                systemModelNode->removeAssignment(aircraftModelNode->getInformation().TN);
             }
         }
-        aircraftModelNode->clearAssignmentModelNodes();
+
+        aircraftModelNode->clearAssignments();
         mListManager->cnacelAssignedExcept(aircraftModelNode->getInformation().TN, -1);
     }
 }
