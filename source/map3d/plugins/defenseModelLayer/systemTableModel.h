@@ -54,10 +54,12 @@ public:
     void updateItemData(const SystemInfo& systemInfo);
     void updateItemData(const SystemStatusInfo& systemStatusInfo);
     void updateItemData(const SystemCambatInfo& systemCambatInfo);
-    void assign(int Number, int TN);
-    void cancelAssign(int Number, int TN);
-    void accept(int TN, int Number, bool result);
-    void clear();
+    void assign(int TN, int Number);
+    void cancelSystemsAssigned(int TN, int ExceptNum);
+    void cancelAllAssigns();
+    void cancelAssign(int TN, int Number);
+    void acceptAssign(int TN, int Number, bool result);
+    void clearList();
 
 
 private:

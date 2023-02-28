@@ -30,7 +30,9 @@ public slots:
     void setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void assignAirToSystem(int TN, int Number);
     void cancelAssign(int TN, int Number);
-    void accept(int TN, int Number, bool result);
+    void acceptAssign(int TN, int Number, bool result);
+    void cnacelAssignedExcept(int ExceptTN, int ExceptNum);
+    void clearAllAssigns();
     void clearAll();
 
 

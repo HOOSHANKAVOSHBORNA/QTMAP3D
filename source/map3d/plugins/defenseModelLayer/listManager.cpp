@@ -32,7 +32,10 @@ ListManager::ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
                              this,
                              SIGNAL(aircraftDoubleClicked(const int&)));
 
-
+            QObject::connect(aircraftTab,
+                             SIGNAL(sortWithHeader(int)),
+                             mAircraftTableModel,
+                             SLOT(sortWithHeader(int)));
             aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
             mUiHandle->lwAddTab("Aircrafts", aircraftTab);
         }
@@ -178,21 +181,34 @@ void ListManager::assignAirToSystem(int TN, int Number)
 void ListManager::cancelAssign(int TN, int Number)
 {
     mAircraftTableModel->cancelAssign(TN, Number);
-    mSystemTableModel->cancelAssign(Number, TN);
+    mSystemTableModel->cancelAssign(TN, Number);
 }
 
-void ListManager::accept(int TN, int Number, bool result)
+void ListManager::acceptAssign(int TN, int Number, bool result)
 {
-    mAircraftTableModel->accept(TN, Number, result);
-    mSystemTableModel->accept(TN, Number, result);
+    mAircraftTableModel->acceptAssign(TN, Number, result);
+    mSystemTableModel->acceptAssign(TN, Number, result);
+}
+
+void ListManager::cnacelAssignedExcept(int ExceptTN, int ExceptNum)
+{
+    mSystemTableModel->cancelSystemsAssigned(ExceptTN, ExceptNum);
+    mAircraftTableModel->cancelAircraftsAssigned(ExceptTN, ExceptNum);
+}
+
+
+void ListManager::clearAllAssigns()
+{
+    mAircraftTableModel->cancelAllAssigns();
+    mSystemTableModel->cancelAllAssigns();
 }
 
 void ListManager::clearAll()
 {
     if (mAircraftTableModel)
-        mAircraftTableModel->clear();
+        mAircraftTableModel->clearList();
     if (mSystemTableModel)
-        mSystemTableModel->clear();
+        mSystemTableModel->clearList();
     if (mStationTableModel)
         mStationTableModel->clear();
 }

@@ -335,7 +335,29 @@ void SystemTableModel::assign(int Number, int TN)
 
 }
 
-void SystemTableModel::cancelAssign(int Number, int TN)
+void SystemTableModel::cancelSystemsAssigned(int TN, int Number)
+{
+    if (mSystemsAssigned.contains(TN)) {
+        QList<SystemAssignInfo>::iterator i;
+        i = mSystemsAssigned[TN].begin();
+        while (i != mSystemsAssigned[TN].end()){
+            if (i->Number != Number)
+                mSystemsAssigned[TN].erase(i);
+        }
+    }
+    if (mTN == TN) {
+        beginResetModel();
+        onAircraftClicked(TN);
+        endResetModel();
+    }
+}
+
+void SystemTableModel::cancelAllAssigns()
+{
+    mSystemsAssigned.clear();
+}
+
+void SystemTableModel::cancelAssign(int TN, int Number)
 {
     if (Number == -1){
         if (mSystemsAssigned.contains(TN)){
@@ -362,7 +384,7 @@ void SystemTableModel::cancelAssign(int Number, int TN)
     }
 }
 
-void SystemTableModel::accept(int TN, int Number, bool result)
+void SystemTableModel::acceptAssign(int TN, int Number, bool result)
 {
     if (result) {
         auto it = std::find_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &item) {
@@ -399,7 +421,7 @@ void SystemTableModel::refresh(int indx)
     endResetModel();
 }
 
-void SystemTableModel::clear()
+void SystemTableModel::clearList()
 {
     beginResetModel();
     mSystemInfoList.clear();
@@ -408,6 +430,7 @@ void SystemTableModel::clear()
     mSystemCombatInfoListProxy.clear();
     mSystemStatusInfoList.clear();
     mSystemStatusInfoListProxy.clear();
+    cancelAllAssigns();
     endResetModel();
 }
 

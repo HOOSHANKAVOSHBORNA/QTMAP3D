@@ -127,7 +127,7 @@ void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool result)
         aircraftModelNode->acceptAssignedModelNode(systemNo, result);
 
     if (mListManager)
-        mListManager->accept(tn, systemNo, result);
+        mListManager->acceptAssign(tn, systemNo, result);
 }
 
 void DataManager::aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode)

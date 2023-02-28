@@ -36,13 +36,13 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int,QByteArray> roleNames() const override;
-
     Q_INVOKABLE QString headerText(int column) const;
 
     Q_INVOKABLE int getTN(int row) const;
 
 public slots:
     void setFilterWildcard(const QString& wildcard);
+    void sortWithHeader(int column);
     void onAircraftClicked(int TN);
     void onSystemClicked(int Number);
     void onUpdateTimerTriggered();
@@ -57,8 +57,11 @@ public:
     void deleteItem(int TN);
     void assign(int TN, int Number);
     void cancelAssign(int TN, int Number);
-    void accept(int TN, int Number, bool result);
-    void clear();
+    void cancelAllAssigns();
+    void cancelAircraftsAssigned(int TN, int Number);
+    void acceptAssign(int TN, int Number, bool result);
+    void clearList();
+
 
 private:
     std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoList;
