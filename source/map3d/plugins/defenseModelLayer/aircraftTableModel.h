@@ -58,9 +58,11 @@ public:
     void assign(int TN, int Number);
     void cancelAssign(int TN, int Number);
     void cancelAllAssigns();
-    void cancelAircraftsAssigned(int TN, int Number);
+    void cancelAircraftsAssigned(int ExceptTN, int Number);
     void acceptAssign(int TN, int Number, bool result);
     void clearList();
+
+    QMap<int, QList<AircraftAssignInfo>> getAssignmentMap();
 
 
 private:

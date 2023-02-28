@@ -61,6 +61,8 @@ public:
     void acceptAssign(int TN, int Number, bool result);
     void clearList();
 
+    QMap<int, QList<SystemAssignInfo>> getAssignmentMap();
+
 
 private:
     std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemInfoList;

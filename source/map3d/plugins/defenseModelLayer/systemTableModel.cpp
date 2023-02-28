@@ -335,16 +335,25 @@ void SystemTableModel::assign(int Number, int TN)
 
 }
 
-void SystemTableModel::cancelSystemsAssigned(int TN, int Number)
+void SystemTableModel::cancelSystemsAssigned(int TN, int ExceptNum)
 {
-    if (mSystemsAssigned.contains(TN)) {
-        QList<SystemAssignInfo>::iterator i;
-        i = mSystemsAssigned[TN].begin();
-        while (i != mSystemsAssigned[TN].end()){
-            if (i->Number != Number)
-                mSystemsAssigned[TN].erase(i);
+
+    if (mSystemsAssigned.contains(TN)){
+        for (auto &system : mSystemsAssigned[TN]){
+            if (system.Number != ExceptNum) {
+                cancelAssign(system.Number, ExceptNum);
+            }
         }
     }
+//    if (mSystemsAssigned.contains(TN)) {
+//        QList<SystemAssignInfo>::iterator i;
+//        i = mSystemsAssigned[TN].begin();
+//        while (i != mSystemsAssigned[TN].end()){
+//            if (i->Number != ExceptNum)
+//                mSystemsAssigned[TN].erase(i);
+//            i++;
+//        }
+//    }
     if (mTN == TN) {
         beginResetModel();
         onAircraftClicked(TN);
@@ -359,25 +368,12 @@ void SystemTableModel::cancelAllAssigns()
 
 void SystemTableModel::cancelAssign(int TN, int Number)
 {
-    if (Number == -1){
-        if (mSystemsAssigned.contains(TN)){
-            mSystemsAssigned.remove(TN);
-        }
-    }
-    else if (TN == -1) {
-        for (auto &i : mSystemsAssigned) {
-            auto toDelete = std::remove_if(i.begin(), i.end(), [Number](SystemAssignInfo &system){
-                return Number == system.Number;
-            });
-            i.erase(toDelete, i.end());
-        }
-    }
-    else {
-
-        auto toDelete = std::remove_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &system){
-            return Number == system.Number;
-        });
-        mSystemsAssigned[TN].erase(toDelete, mSystemsAssigned[TN].end());
+    if (mSystemsAssigned.contains(TN)) {
+        auto it = std::remove_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &system){
+            return system.Number == Number;
+    });
+        if (it != mSystemsAssigned[TN].end())
+            mSystemsAssigned[TN].erase(it);
     }
     if (mshowAssigned) {
         onAircraftClicked(mTN);
@@ -390,7 +386,8 @@ void SystemTableModel::acceptAssign(int TN, int Number, bool result)
         auto it = std::find_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &item) {
             return Number == item.Number;
         });
-        it->assign = true;
+        if (it != mSystemsAssigned[TN].end())
+            it->assign = true;
     }
     else {
         cancelAssign(Number, TN);
@@ -432,5 +429,10 @@ void SystemTableModel::clearList()
     mSystemStatusInfoListProxy.clear();
     cancelAllAssigns();
     endResetModel();
+}
+
+QMap<int, QList<SystemAssignInfo> > SystemTableModel::getAssignmentMap()
+{
+    return mSystemsAssigned;
 }
 

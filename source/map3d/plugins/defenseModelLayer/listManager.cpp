@@ -193,9 +193,18 @@ void ListManager::acceptAssign(int TN, int Number, bool result)
 void ListManager::cnacelAssignedExcept(int ExceptTN, int ExceptNum)
 {
     mSystemTableModel->cancelSystemsAssigned(ExceptTN, ExceptNum);
+    for (auto iter : mAircraftTableModel->getAssignmentMap().keys()) {
+        if (iter != ExceptNum) {
+            mAircraftTableModel->cancelAssign(iter, ExceptNum);
+        }
+    }
     mAircraftTableModel->cancelAircraftsAssigned(ExceptTN, ExceptNum);
+    for (auto iter : mSystemTableModel->getAssignmentMap().keys()) {
+        if (iter != ExceptTN) {
+            mSystemTableModel->cancelAssign(iter, ExceptNum);
+        }
+    }
 }
-
 
 void ListManager::clearAllAssigns()
 {
