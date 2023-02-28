@@ -390,7 +390,7 @@ void SystemTableModel::acceptAssign(int TN, int Number, bool result)
             it->assign = true;
     }
     else {
-        cancelAssign(Number, TN);
+        cancelAssign(TN, Number);
     }
 }
 
