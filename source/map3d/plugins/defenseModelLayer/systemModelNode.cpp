@@ -9,8 +9,9 @@
 #include "trucks.h"
 #include "truckl.h"
 #include <QtMath>
+#include <osgEarthAnnotation/CircleNode>
 
-const float RANGE3D = std::numeric_limits<float>::max();;
+const float RANGE3D = 400;//std::numeric_limits<float>::max();;
 
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
@@ -26,25 +27,23 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     this->addCullCallback(new DefenseModelNodeAutoScaler(5.5, 1, 600));
 
 
-    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     setStyle(rootStyle);
-    //--create 2D Nodes---------------------------------------------------------------------------
+
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
-    osg::Image* redIcon = osgDB::readImageFile("../data/models/system/system_red.png");
+    osg::ref_ptr<osg::Image> redIcon = createColoredImage(osgDB::readImageFile("../data/models/system/images/truck.png"), osg::Vec4(1.0, 0.0, 0.0, 1.0));
     if(redIcon)
-        redIcon->scaleImage(20, 20, redIcon->r());
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
+        redIcon->scaleImage(100, 100, redIcon->r());
+    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 0.4);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     redGeode->setStateSet(geodeStateSet);
     redGeode->addDrawable(redImageDrawable);
 
-    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/system/system_yell.png");
+    osg::ref_ptr<osg::Image> yellowIcon = createColoredImage(osgDB::readImageFile("../data/models/system/images/truck.png"), osg::Vec4(1.0, 1.0, 0.0, 1.0));
     if(yellowIcon)
-        yellowIcon->scaleImage(20, 20, yellowIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
+        yellowIcon->scaleImage(100, 100, yellowIcon->r());
+    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 0.4);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
@@ -52,43 +51,33 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mNode2D = new osg::Switch;
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
-    //--create 3D node---------------------------------------------------------------------------
-//    mTruck = new Truck(mMapController, this);
-//    mTruck->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,12,0));
+
     mTruckF = new TruckF(mMapController);
     mTruckF->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,5.0,0));
     mTruckS = new TruckS(mMapController);
     mTruckS->stopSearch();
     mTruckS->getPositionAttitudeTransform()->setPosition(osg::Vec3d(-5.0 * std::sin(qDegreesToRadians(60.0)), -5.0 * std::cos(qDegreesToRadians(60.0)),0));
-    mTruckS->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(120.0), osg::Z_AXIS));
+
     mTruckL = new TruckL(mMapController);
     mTruckL->getPositionAttitudeTransform()->setPosition(osg::Vec3d(5.0 * std::sin(qDegreesToRadians(60.0)), -5.0 * std::cos(qDegreesToRadians(60.0)),0));
-    mTruckL->getPositionAttitudeTransform()->setAttitude(osg::Quat(osg::inDegrees(-120.0), osg::Z_AXIS));
-//    osg::ref_ptr<osg::Node> systemR  = osgDB::readRefNodeFile("../data/models/system/system-r.ive");
-//    auto systemLNode = osgDB::readRefNodeFile("../data/models/system/system-l.osgb");
-//    osg::ref_ptr<osg::PositionAttitudeTransform> systemL  = new osg::PositionAttitudeTransform;
-//    systemL->addChild(systemLNode);
-//    systemL->setPosition(osg::Vec3d(0,-12,0));
+
     mNode3D = new Group;
-//    mNode3D->addChild(mTruck);
     mNode3D->addChild(mTruckL);
     mNode3D->addChild(mTruckS);
     mNode3D->addChild(mTruckF);
-//    mNode3D->addChild(systemR);
-//    mNode3D->addChild(systemR);
-//    mNode3D->addChild(systemL);
-    //--create lable-----------------------------------------------------------------------------
+
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
+
     updateOrCreateLabelImage();
     mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
-//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
+
     getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
-    //--add nods--------------------------------------------------------------------------------
+
+
     if(mIs3D)
     {
         mRootNode->addChild(mNode3D, 0, RANGE3D);
@@ -99,6 +88,23 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
         mRootNode->addChild(mNode3D, 0, 0);
         mRootNode->addChild(mNode2D, 0, std::numeric_limits<float>::max());
     }
+
+    auto circleNode = new osgEarth::Annotation::CircleNode();
+    circleNode->setRadius(10);
+
+    osgEarth::Symbology::Style style;
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(1.0f, 0.5f, 0.1f, 1.0f);
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+
+    circleNode->setStyle(style);
+    circleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
+    circleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
+
+    mNode3D->addChild(circleNode);
+
+
     //map mode changed-----------------------------------------------------------------------
     connect(mapControler, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------
@@ -236,14 +242,11 @@ void SystemModelNode::onLeftButtonClicked(bool val)
 
 void SystemModelNode::frameEvent()
 {
-    //--update lable position---------------------------------------------------
-//    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
-    //--update assigned line----------------------------------------------------
+
     for(auto assinmentModel:mAssignmentModels)
         assinmentModel->updateLine(getPosition());
-    //--check collision--------------------------------------------------------
-//    collision();
+
     if (mTargetModelNode) {
         mTruckF->aimTarget(mTargetModelNode->getPosition());
         mTruckL->lockOnTarget(mTargetModelNode->getPosition());
@@ -252,8 +255,6 @@ void SystemModelNode::frameEvent()
 
 void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
-    //    qDebug()<<"type:"<<event->type();
-    //    BaseModel::mousePressEvent(event, onModel);
     if(event->button() == Qt::LeftButton)
     {
         onLeftButtonClicked(onModel);
@@ -384,7 +385,6 @@ void SystemModelNode::lockPhase(int tn)
         mTruckL->lockOnTarget(mTargetModelNode->getPosition());
         mTruckF->aimTarget(mTargetModelNode->getPosition());
 
-        //remove other assigned models
     }
 }
 
@@ -410,8 +410,7 @@ void SystemModelNode::killPhase(int tn)
     {
         mAssignmentModels[tn]->mLine->setColor(osgEarth::Color::Black);
         mAssignmentModels[tn]->mModelNode->collision();
-        //mFiredRocket->collision();
-//            mFiredRocket->setNodeMask(false);
+
         if(mFiredRocket)
             mFiredRocket->stop();
 
@@ -429,11 +428,6 @@ void SystemModelNode::noKillPhase(int tn)
         removeAssignedModelNode(tn);
     }
 }
-
-//bool SystemModelNode::hasAssigned()
-//{
-//    return mAssignedModelNode && mAssignedLine ? true: false;
-//}
 
 bool SystemModelNode::addNodeToLayer(osg::Node *node, bool insert)
 {
@@ -612,7 +606,6 @@ SystemModelNode::AssignmentModel::AssignmentModel(MapController *mapControler)
 
 void SystemModelNode::AssignmentModel::accept()
 {
-//    mLine->setTessellation(1);
     mLine->setColor(osgEarth::Color::Olive);
     mLine->setPointVisible(false);
     mLine->setWidth(5);

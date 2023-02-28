@@ -4,22 +4,57 @@
 #include "defenseModelLayer.h"
 
 
-osg::ref_ptr<osg::Node> TruckL::mMeshNodeP1;
-osg::ref_ptr<osg::Node> TruckL::mMeshNodeP2;
-osg::ref_ptr<osg::Node> TruckL::mMeshNodeP3;
-//osg::ref_ptr<osg::Node> TruckL::mMeshNodeP4;
+osg::ref_ptr<osg::Node> TruckL::mMeshNodeP1LOD0;
+osg::ref_ptr<osg::Node> TruckL::mMeshNodeP2LOD0;
+osg::ref_ptr<osg::Node> TruckL::mMeshNodeP3LOD0;
+
+osg::ref_ptr<osg::Node> TruckL::mMeshNodeP1LOD1;
+osg::ref_ptr<osg::Node> TruckL::mMeshNodeP2LOD1;
+osg::ref_ptr<osg::Node> TruckL::mMeshNodeP3LOD1;
+
 bool TruckL::mMeshNodesLoaded = false;
 
 TruckL::TruckL(class MapController *mapController) :
     osgEarth::Annotation::ModelNode(mapController->getMapNode(), DefenseModelLayer::getDefaultStyle())
 {
     if (!mMeshNodesLoaded) {
-        mMeshNodeP1 = osgDB::readNodeFile("../data/models/system/truck_l/TruckL_P1.osgb");
-        mMeshNodeP2 = osgDB::readNodeFile("../data/models/system/truck_l/TruckL_P2.osgb");
-        mMeshNodeP3 = osgDB::readNodeFile("../data/models/system/truck_l/TruckL_P3.osgb");
+        mMeshNodeP1LOD0 = osgDB::readNodeFile("../data/models/system/truck_l/LOD0/TruckL_P1.osgb");
+        mMeshNodeP2LOD0 = osgDB::readNodeFile("../data/models/system/truck_l/LOD0/TruckL_P2.osgb");
+        mMeshNodeP3LOD0 = osgDB::readNodeFile("../data/models/system/truck_l/LOD0/TruckL_P3.osgb");
+
+        mMeshNodeP1LOD1 = osgDB::readNodeFile("../data/models/system/truck_l/LOD1/TruckL_P1.osgb");
+        mMeshNodeP2LOD1 = osgDB::readNodeFile("../data/models/system/truck_l/LOD1/TruckL_P2.osgb");
+        mMeshNodeP3LOD1 = osgDB::readNodeFile("../data/models/system/truck_l/LOD1/TruckL_P3.osgb");
+
+
         mMeshNodesLoaded = true;
     }
 
+    osg::ref_ptr<osg::LOD> lodP1 = new osg::LOD;
+    lodP1->addChild(mMeshNodeP1LOD0);
+    lodP1->addChild(mMeshNodeP1LOD1);
+    lodP1->setChild(0, mMeshNodeP1LOD0);
+    lodP1->setChild(1, mMeshNodeP1LOD1);
+
+    osg::ref_ptr<osg::LOD> lodP2 = new osg::LOD;
+    lodP2->addChild(mMeshNodeP2LOD0);
+    lodP2->addChild(mMeshNodeP2LOD1);
+    lodP2->setChild(0, mMeshNodeP2LOD0);
+    lodP2->setChild(1, mMeshNodeP2LOD1);
+
+    osg::ref_ptr<osg::LOD> lodP3 = new osg::LOD;
+    lodP3->addChild(mMeshNodeP3LOD0);
+    lodP3->addChild(mMeshNodeP3LOD1);
+    lodP3->setChild(0, mMeshNodeP3LOD0);
+    lodP3->setChild(1, mMeshNodeP3LOD1);
+
+
+    lodP1->setRange(0, 0, 50);
+    lodP1->setRange(1, 50, std::numeric_limits<float>::max());
+    lodP2->setRange(0, 0, 50);
+    lodP2->setRange(1, 50, std::numeric_limits<float>::max());
+    lodP3->setRange(0, 0, 50);
+    lodP3->setRange(1, 50, std::numeric_limits<float>::max());
 
 
     osg::Group *rootGroup = new osg::Group;
@@ -41,12 +76,12 @@ TruckL::TruckL(class MapController *mapController) :
     mSpinnerPAT->setPosition(osg::Vec3d(0,-1.135, 1.6578));
     mSpinnerAimingPAT->setPosition(osg::Vec3d(0,-1.135, 1.6578));
 
-    mBodyPAT->addChild(mMeshNodeP1);
-    mWheelAxis1PAT->addChild(mMeshNodeP2);
-    mWheelAxis2PAT->addChild(mMeshNodeP2);
-    mWheelAxis3PAT->addChild(mMeshNodeP2);
-    mWheelAxis4PAT->addChild(mMeshNodeP2);
-    mSpinnerPAT->addChild(mMeshNodeP3);
+    mBodyPAT->addChild(lodP1);
+    mWheelAxis1PAT->addChild(lodP2);
+    mWheelAxis2PAT->addChild(lodP2);
+    mWheelAxis3PAT->addChild(lodP2);
+    mWheelAxis4PAT->addChild(lodP2);
+    mSpinnerPAT->addChild(lodP3);
 
     mBodyPAT->addChild(mWheelAxis1PAT);
     mBodyPAT->addChild(mWheelAxis2PAT);
