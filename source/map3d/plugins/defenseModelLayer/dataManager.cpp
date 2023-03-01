@@ -74,7 +74,7 @@ void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
             systemModelNode->clearAssignments(systemCambatInfo.TN);
 
 
-            mListManager->cnacelAssignedExcept(systemCambatInfo.TN, systemCambatInfo.Number);
+            mListManager->cancelSystemAssignmentsExcept(systemCambatInfo.TN, systemCambatInfo.Number);
             //---------
 
         }
