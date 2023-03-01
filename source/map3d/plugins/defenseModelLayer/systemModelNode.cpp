@@ -167,7 +167,7 @@ void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
     updateOrCreateLabelImage();
 }
 
-void SystemModelNode::addAssignment(int tn, DefenseModelNode *assignModelNode)
+void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
 {
     if(!assignModelNode)
         return;
@@ -180,7 +180,7 @@ void SystemModelNode::addAssignment(int tn, DefenseModelNode *assignModelNode)
     }
 }
 
-DefenseModelNode *SystemModelNode::getAssignment(int tn) const
+AircraftModelNode *SystemModelNode::getAssignment(int tn) const
 {
     if(!mAssignmentMap.contains(tn))
         return mAssignmentMap[tn]->mModelNode;
@@ -192,9 +192,7 @@ void SystemModelNode::acceptAssignment(int tn, bool value)
     if(mAssignmentMap.contains(tn))
     {
         if(value)
-        {
             mAssignmentMap[tn]->accept();
-        }
         else
             removeAssignment(tn);
     }
@@ -214,8 +212,19 @@ void SystemModelNode::clearAssignments(int exceptTN)
     for(auto tn: mAssignmentMap.keys())
     {
         if(tn != exceptTN)
+        {
+            mAssignmentMap[tn]->mModelNode->removeAssignment(getInformation().Number);
             removeAssignment(tn);
+        }
     }
+}
+
+QMap<int, AircraftModelNode *> SystemModelNode::getAssignments() const
+{
+    QMap<int, AircraftModelNode *> assignModelNods;
+    for(auto key: mAssignmentMap.keys())
+        assignModelNods[key] = mAssignmentMap[key]->mModelNode;
+    return assignModelNods;
 }
 
 void SystemModelNode::goOnTrack()
@@ -421,7 +430,7 @@ void SystemModelNode::killPhase(int tn)
         if(mFiredRocket)
             mFiredRocket->stop();
 
-        removeAssignment(tn);
+//        removeAssignment(tn);
     }
 }
 
@@ -433,7 +442,7 @@ void SystemModelNode::noKillPhase(int tn)
         mAssignmentMap[tn]->mLine->setColor(osgEarth::Color::Brown);
         if(mFiredRocket)
             mFiredRocket->stop();
-        removeAssignment(tn);
+//        removeAssignment(tn);
     }
 }
 

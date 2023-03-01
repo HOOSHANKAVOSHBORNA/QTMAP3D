@@ -27,11 +27,12 @@ public:
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void setCambatInfo(const SystemCambatInfo &systemCambatInfo);
 
-    void addAssignment(int tn, DefenseModelNode *assignModelNode);
-    DefenseModelNode *getAssignment(int tn) const;
+    void addAssignment(int tn, AircraftModelNode *assignModelNode);
+    AircraftModelNode *getAssignment(int tn) const;
     void acceptAssignment(int tn, bool value);
     void removeAssignment(int tn);
     void clearAssignments(int exceptTN = -1);
+    QMap<int, AircraftModelNode *> getAssignments() const;
 
     void goOnTrack();
 public slots:
@@ -61,7 +62,7 @@ private:
     void updateOrCreateLabelImage();
 private:
     struct Assignment{
-        DefenseModelNode* mModelNode{nullptr};
+        AircraftModelNode *mModelNode{nullptr};
         osg::ref_ptr<LineNode> mLine;
         Assignment(MapController *mapControler);
         void accept();
@@ -86,7 +87,7 @@ private:
     QMap<int, Assignment*> mAssignmentMap;
     SystemInformation *mSystemInformation{nullptr};
 
-    DefenseModelNode* mTargetModelNode{nullptr};
+    AircraftModelNode* mTargetModelNode{nullptr};
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;

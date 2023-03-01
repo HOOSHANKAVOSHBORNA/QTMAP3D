@@ -66,32 +66,27 @@ void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
 {
     SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemCambatInfo.Number);
-    if(systemModelNode && (systemCambatInfo.Phase == SystemCambatInfo::Lock || systemCambatInfo.Phase == SystemCambatInfo::Fire))
+    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCambatInfo.TN);
+    if(systemModelNode && aircraftModelNode)
     {
-        auto aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCambatInfo.TN);
-        if(aircraftModelNode && aircraftModelNode->hasAssignment()){
-            aircraftModelNode->clearAssignments(systemCambatInfo.Number);
+        if(systemCambatInfo.Phase == SystemCambatInfo::Lock || systemCambatInfo.Phase == SystemCambatInfo::Fire)
+        {
+            //--remove other system assignment------------------------------------------------------
             systemModelNode->clearAssignments(systemCambatInfo.TN);
-
-
+            //----------------------------------------------------------------------------------------
             mListManager->cnacelAssignedExcept(systemCambatInfo.TN, systemCambatInfo.Number);
             //---------
-
         }
-    }
-    //update information-----------------------------------------------------
-    if(systemModelNode)
+        //update information-----------------------------------------------------
         systemModelNode->setCambatInfo(systemCambatInfo);
-    //add update list view-----------------------------------------------------------------
-    if (mListManager)
-        mListManager->setSystemCombatInfo(systemCambatInfo);
+        //add update list view-----------------------------------------------------------------
+        if (mListManager)
+            mListManager->setSystemCombatInfo(systemCambatInfo);
 
-    if(systemModelNode && (systemCambatInfo.Phase == SystemCambatInfo::Kill || systemCambatInfo.Phase == SystemCambatInfo::NoKill))
-    {
-        auto aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCambatInfo.TN);
-        if(aircraftModelNode){
-            aircraftModelNode->removeAssignment(systemCambatInfo.Number);
-            systemModelNode->removeAssignment(systemCambatInfo.TN);
+        if(systemCambatInfo.Phase == SystemCambatInfo::Kill)
+        {
+            aircraftModelNode->clearAssignments();
+//            systemModelNode->removeAssignment(systemCambatInfo.TN);
             mListManager->cancelAssign(systemCambatInfo.TN, systemCambatInfo.Number);
         }
     }
