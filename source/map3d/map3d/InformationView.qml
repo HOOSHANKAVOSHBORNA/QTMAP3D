@@ -63,7 +63,7 @@ Item {
                     Text {
                         id: sideInfoTxt
                         anchors.centerIn: parent
-                        text: "Information"
+                        text: root.titleText
                         color:"white"
                         font.pointSize: 7
                         visible: false
