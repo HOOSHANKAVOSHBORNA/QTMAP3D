@@ -21,6 +21,7 @@ ListManager::ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
         if (comp->status() == QQmlComponent::Ready) {
             QQuickItem *aircraftTab = (QQuickItem*) comp->create(nullptr);
             mAircraftTableModel = new AircraftTableModel;
+            mAircraftTableModel->setMode("TableModel");
 
             QObject::connect(aircraftTab,
                              SIGNAL(filterTextChanged(const QString&)),
@@ -78,6 +79,7 @@ ListManager::ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
         if (comp3->status() == QQmlComponent::Ready) {
             QQuickItem *systemTab = (QQuickItem*) comp3->create(nullptr);
             mSystemTableModel = new SystemTableModel;
+            mSystemTableModel->setMode("TableModel");
 
             QObject::connect(systemTab,
                              SIGNAL(filterTextChanged(const QString&)),
@@ -104,7 +106,10 @@ ListManager::ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
         if (comp4->status() == QQmlComponent::Ready) {
             QQuickItem *assignTab = (QQuickItem*) comp4->create(nullptr);
 //            mAssignModel = new AssignmentModel;
-
+            mAircraftAssignmentTableModel = new AircraftTableModel;
+            mAircraftAssignmentTableModel->setMode("Assignment");
+            mSystemAssignmentTableModel = new SystemTableModel;
+            mSystemAssignmentTableModel->setMode("Assignment");
             QObject::connect(assignTab,
                              SIGNAL(systemDoubleClicked(const int&)),
                              this,
@@ -115,24 +120,27 @@ ListManager::ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
                              this,
                              SIGNAL(aircraftDoubleClicked(const int&)));
 
-            assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
-            assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
+            assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftAssignmentTableModel));
+            assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemAssignmentTableModel));
             mUiHandle->lwAddTab("Assignments", assignTab);
         }
 
     });
 
     comp4->loadUrl(QUrl("qrc:/modelplugin/AssignmentView.qml"));
-    connect(mUiHandle, &UIHandle::listwindowTabChanged, mAircraftTableModel, &AircraftTableModel::refresh);
-    connect(mUiHandle, &UIHandle::listwindowTabChanged, mSystemTableModel, &SystemTableModel::refresh);
-    connect(mSystemTableModel, &SystemTableModel::systemClicked, mAircraftTableModel, &AircraftTableModel::onSystemClicked);
-    connect(mAircraftTableModel, &AircraftTableModel::aircraftClicked, mSystemTableModel, &SystemTableModel::onAircraftClicked);
+//    connect(mUiHandle, &UIHandle::listwindowTabChanged, mAircraftAssignmentTableModel, &AircraftTableModel::refresh);
+//    connect(mUiHandle, &UIHandle::listwindowTabChanged, mSystemAssignmentTableModel, &SystemTableModel::refresh);
+    connect(mSystemAssignmentTableModel, &SystemTableModel::systemClicked, mAircraftAssignmentTableModel, &AircraftTableModel::onSystemClicked);
+    connect(mAircraftAssignmentTableModel, &AircraftTableModel::aircraftClicked, mSystemAssignmentTableModel, &SystemTableModel::onAircraftClicked);
 }
 
 void ListManager::setAircraftInfo(const AircraftInfo &aircraftInof)
 {
     if (mAircraftTableModel) {
         mAircraftTableModel->updateItemData(aircraftInof);
+    }
+    if (mAircraftAssignmentTableModel) {
+        mAircraftAssignmentTableModel->updateItemData(aircraftInof);
     }
 }
 
@@ -141,6 +149,8 @@ void ListManager::deleteAircraftInfo(int TN)
     if (mAircraftTableModel) {
         mAircraftTableModel->deleteItem(TN);
     }
+    if (mAircraftAssignmentTableModel)
+        mAircraftAssignmentTableModel->deleteItem(TN);
 }
 
 void ListManager::setStationInfo(const StationInfo &stationInfo)
@@ -155,6 +165,9 @@ void ListManager::setSystemInfo(const SystemInfo &systemInfo)
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemInfo);
     }
+    if (mSystemAssignmentTableModel) {
+        mSystemAssignmentTableModel->updateItemData(systemInfo);
+    }
 }
 
 void ListManager::setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo)
@@ -162,6 +175,8 @@ void ListManager::setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo)
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemCombatInfo);
     }
+    if (mSystemAssignmentTableModel)
+        mSystemAssignmentTableModel->updateItemData(systemCombatInfo);
 }
 
 void ListManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
@@ -169,47 +184,53 @@ void ListManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemStatusInfo);
     }
+    if (mSystemAssignmentTableModel)
+        mSystemAssignmentTableModel->updateItemData(systemStatusInfo);
 }
 
 void ListManager::assignAirToSystem(int TN, int Number)
 {
 //    mAssignModel->assignAirToSystem(aircraft, system);
-    mAircraftTableModel->assign(TN, Number);
-    mSystemTableModel->assign(Number, TN);
+    mAircraftAssignmentTableModel->assign(TN, Number);
+    mSystemAssignmentTableModel->assign(Number, TN);
 }
 
 void ListManager::cancelAssign(int TN, int Number)
 {
-    mAircraftTableModel->cancelAssign(TN, Number);
-    mSystemTableModel->cancelAssign(TN, Number);
+    mAircraftAssignmentTableModel->cancelAssign(TN, Number);
+    mSystemAssignmentTableModel->cancelAssign(TN, Number);
 }
 
 void ListManager::acceptAssign(int TN, int Number, bool result)
 {
-    mAircraftTableModel->acceptAssign(TN, Number, result);
-    mSystemTableModel->acceptAssign(TN, Number, result);
+    mAircraftAssignmentTableModel->acceptAssign(TN, Number, result);
+    mSystemAssignmentTableModel->acceptAssign(TN, Number, result);
 }
 
-void ListManager::cnacelAssignedExcept(int ExceptTN, int ExceptNum)
+void ListManager::cancelSystemAssignmentsExcept(int ExceptTN, int Number)
 {
-    mSystemTableModel->cancelSystemsAssigned(ExceptTN, ExceptNum);
-    for (auto iter : mAircraftTableModel->getAssignmentMap().keys()) {
-        if (iter != ExceptNum) {
-            mAircraftTableModel->cancelAssign(iter, ExceptNum);
+    mSystemAssignmentTableModel->cancelSystemsAssigned(ExceptTN, Number);
+    for (auto iter : mAircraftAssignmentTableModel->getAssignmentMap().keys()) {
+        if (iter != Number) {
+            mAircraftAssignmentTableModel->cancelAssign(iter, Number);
         }
     }
-    mAircraftTableModel->cancelAircraftsAssigned(ExceptTN, ExceptNum);
-    for (auto iter : mSystemTableModel->getAssignmentMap().keys()) {
-        if (iter != ExceptTN) {
-            mSystemTableModel->cancelAssign(iter, ExceptNum);
+}
+
+void ListManager::cancelAircraftAssignmentsExcept(int TN, int ExceptNum)
+{
+    mAircraftAssignmentTableModel->cancelAircraftsAssigned(TN, ExceptNum);
+    for (auto iter : mSystemAssignmentTableModel->getAssignmentMap().keys()) {
+        if (iter != TN) {
+            mSystemAssignmentTableModel->cancelAssign(iter, ExceptNum);
         }
     }
 }
 
 void ListManager::clearAllAssigns()
 {
-    mAircraftTableModel->cancelAllAssigns();
-    mSystemTableModel->cancelAllAssigns();
+    mAircraftAssignmentTableModel->cancelAllAssigns();
+    mSystemAssignmentTableModel->cancelAllAssigns();
 }
 
 void ListManager::clearAll()
@@ -220,5 +241,9 @@ void ListManager::clearAll()
         mSystemTableModel->clearList();
     if (mStationTableModel)
         mStationTableModel->clear();
+    if (mSystemAssignmentTableModel)
+        mSystemAssignmentTableModel->clearList();
+    if (mAircraftAssignmentTableModel)
+        mAircraftAssignmentTableModel->clearList();
 }
 

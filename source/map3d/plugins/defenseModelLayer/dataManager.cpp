@@ -73,9 +73,9 @@ void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
         {
             //--remove other system assignment------------------------------------------------------
             systemModelNode->clearAssignments(systemCambatInfo.TN);
-            //----------------------------------------------------------------------------------------
-            mListManager->cnacelAssignedExcept(systemCambatInfo.TN, systemCambatInfo.Number);
-            //---------
+            //---------------------------------------------------------------------------------------
+            mListManager->cancelSystemAssignmentsExcept(systemCambatInfo.TN, systemCambatInfo.Number);
+            //-------------
         }
         //update information-----------------------------------------------------
         systemModelNode->setCambatInfo(systemCambatInfo);
@@ -152,11 +152,12 @@ void DataManager::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
                 emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
                                                                  systemModelNode->getInformation().Number);
                 systemModelNode->removeAssignment(aircraftModelNode->getInformation().TN);
+                mListManager->cancelSystemAssignmentsExcept(-1, systemModelNode->getInformation().Number);
             }
         }
 
         aircraftModelNode->clearAssignments();
-        mListManager->cnacelAssignedExcept(aircraftModelNode->getInformation().TN, -1);
+        mListManager->cancelAircraftAssignmentsExcept(aircraftModelNode->getInformation().TN, -1);
     }
 }
 
