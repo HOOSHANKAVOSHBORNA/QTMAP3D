@@ -47,7 +47,7 @@ public slots:
     void onSystemClicked(int Number);
     void onUpdateTimerTriggered();
     bool getShowAssigned();
-    void refresh(int indx);
+    void refresh();
 signals:
     void aircraftClicked(int TN);
 
@@ -61,6 +61,7 @@ public:
     void cancelAircraftsAssigned(int ExceptTN, int Number);
     void acceptAssign(int TN, int Number, bool result);
     void clearList();
+    void setMode(QString mode);
 
     QMap<int, QList<AircraftAssignInfo>> getAssignmentMap();
 
@@ -71,15 +72,13 @@ private:
     QMap<int, QList<AircraftAssignInfo>> mAircraftsAssigned;
 
 
-    QString mFilter;
-    QString mFilterProxy = "";
+    QString mFilter = "";
 
     bool mNeedUpdateOnTimerTrigger = false;
-    bool mShowAssigned = false;
     int mMinRowUpdate = -1;
     int mMaxRowUpdate = -1;
     int mNumber = -1;
-    int mIndex = -1;
+    QString mMode;
 };
 
 #endif // AIRCRAFTTABLEMODEL_H

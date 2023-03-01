@@ -142,8 +142,10 @@ Item {
                                             systems.contentX = 0;
                                             systems.contentY = 0;
                                         }
-                                        if (rootItem.aircraftModel)
-                                            rootItem.aClicked = row
+                                        if (rootItem.aircraftModel){
+                                            rootItem.aClicked = row;
+                                            rootItem.sClicked = -1;
+                                        }
                                     }
                                 }
                             }
@@ -187,7 +189,7 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: rootItem.systemModel ? (rootItem.aClicked == row ? AircraftHoverColor : (rootItem.aHoveredIndex == row ? AircraftHoverColor : AircraftColor)) : "transparent";
+                                color: rootItem.aircraftModel ? (rootItem.aClicked == row ? AircraftHoverColor : (rootItem.aHoveredIndex == row ? AircraftHoverColor : AircraftColor)) : "transparent";
                                 anchors.fill: parent
                             }
                             Rectangle {
@@ -203,7 +205,7 @@ Item {
                             Text {
                                 id: txt
                                 anchors.centerIn: parent
-                                text: display
+                                text: rootItem.aircraftModel ? display : "";
                                 color: "white"
                             }
                         }
@@ -282,8 +284,10 @@ Item {
                                             aircrafts.contentX = 0;
                                             aircrafts.contentY = 0;
                                         }
-                                        if (rootItem.systemModel)
+                                        if (rootItem.systemModel) {
                                             rootItem.sClicked = row
+                                            rootItem.aClicked = -1;
+                                        }
                                     }
                                 }
                             }
@@ -318,7 +322,7 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: rootItem.aircraftModel ? (rootItem.systemModel.getShowAssigned() ? SystemColor : (rootItem.sHoveredIndex == row)
+                                color: rootItem.systemModel ? ((rootItem.sHoveredIndex == row)
                                          ? "lightskyblue" : SystemColor) : "transparent";
                                 anchors.fill: parent
                             }

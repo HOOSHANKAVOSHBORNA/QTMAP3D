@@ -50,6 +50,9 @@ private:
     StationTableModel *mStationTableModel = nullptr;
     SystemTableModel *mSystemTableModel = nullptr;
 
+    AircraftTableModel *mAircraftAssignmentTableModel;
+    SystemTableModel *mSystemAssignmentTableModel;
+
 };
 
 #endif // LISTMANAGER_H
