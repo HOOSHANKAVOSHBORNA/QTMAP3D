@@ -71,9 +71,20 @@ void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
     {
         if(systemCambatInfo.Phase == SystemCambatInfo::Lock || systemCambatInfo.Phase == SystemCambatInfo::Fire)
         {
-            //--remove other system assignment------------------------------------------------------
+            //--remove system assignment except lock or fire TN----------------------------------
+            auto aircrafts = systemModelNode->getAssignments();
+            for(auto aircraft: aircrafts)
+            {
+                if(systemCambatInfo.TN != aircraft->getInformation().TN)
+                {
+                    emit mDefenseDataManager->cancelAircraftAssigned(aircraft->getInformation().TN,
+                                                                     systemModelNode->getInformation().Number);
+
+                    aircraft->removeAssignment(systemModelNode->getInformation().Number);
+                    mListManager->cancelAssign(aircraft->getInformation().TN, systemModelNode->getInformation().Number);
+                }
+            }
             systemModelNode->clearAssignments(systemCambatInfo.TN);
-            //---------------------------------------------------------------------------------------
             mListManager->cancelSystemAssignmentsExcept(systemCambatInfo.TN, systemCambatInfo.Number);
             //-------------
         }
@@ -85,9 +96,18 @@ void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
 
         if(systemCambatInfo.Phase == SystemCambatInfo::Kill)
         {
+            //--remove aircraft assignment---------------------------------------
+            auto systems = aircraftModelNode->getAssignments();
+            for(auto system: systems)
+            {
+                emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
+                                                                 system->getInformation().Number);
+
+                system->removeAssignment(aircraftModelNode->getInformation().TN);
+                mListManager->cancelAssign(aircraftModelNode->getInformation().TN, system->getInformation().Number);
+            }
             aircraftModelNode->clearAssignments();
-//            systemModelNode->removeAssignment(systemCambatInfo.TN);
-            mListManager->cancelAssign(systemCambatInfo.TN, systemCambatInfo.Number);
+            mListManager->cancelAircraftAssignmentsExcept(aircraftModelNode->getInformation().TN, -1);
         }
     }
 }

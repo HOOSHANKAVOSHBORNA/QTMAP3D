@@ -213,7 +213,6 @@ void SystemModelNode::clearAssignments(int exceptTN)
     {
         if(tn != exceptTN)
         {
-            mAssignmentMap[tn]->mModelNode->removeAssignment(getInformation().Number);
             removeAssignment(tn);
         }
     }
