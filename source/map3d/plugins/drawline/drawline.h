@@ -6,7 +6,6 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
-
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
@@ -15,7 +14,6 @@
 #include <linenode.h>
 #include <QPainter>
 #include <lineproperties.h>
-
 
 #define DRAW_LAYER_NAME "Line"
 

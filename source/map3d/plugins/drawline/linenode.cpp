@@ -52,25 +52,26 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
         mLableGroup->addChild(labelNode);
         addChild(mLableGroup);
     }
-
 }
 
 void LineNode::removePoint()
 {
     mLineGeometry->pop_back();
     dirty();
-    mLableGroup->removeChild(getSize()-1,1);
+    mLableGroup->removeChild(getSize()-1);
 }
 
 void LineNode::removeFirstPoint()
 {
     mLineGeometry->erase(mLineGeometry->begin());
     dirty();
+    mLableGroup->removeChild(0, 1);
 }
 
 void LineNode::clear()
 {
     mLineGeometry->clear();
+    mLableGroup->removeChildren(0,mLableGroup->getNumChildren());
 }
 
 int LineNode::getSize()
@@ -220,26 +221,34 @@ osg::Image* LineNode::updateLenghtLable(double lenght)
     }
     osg::Image* image = new osg::Image;
     {
-        mRenderImage->fill(QColor(Qt::yellow));
+        mRenderImage->fill(QColor(Qt::red));
         QPainter painter(mRenderImage);
         painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
-        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+        static const QBrush backgroundBrush = QBrush(QColor(0, 0, 0, int(255 * 0.3f)));
         static const QFont textFont("SourceSansPro", 12, QFont::Normal);
         static const QPen  textPen(QColor(255, 255, 255));
 
-        painter.setPen(Qt::NoPen);
         painter.setBrush(backgroundBrush);
-
         painter.drawRoundedRect(
                     mRenderImage->rect(),
-                    8,2);
+                    10,2);
 
         painter.setPen(textPen);
         painter.setFont(textFont);
-        painter.drawText(mRenderImage->rect(),
-                         Qt::AlignCenter,
-                         QString::number(lenght));
+        if (lenght >= 1000){
+            lenght/=1000;
+            QString str = QObject::tr("%1 km").arg(lenght,0,'f',2);
+            painter.drawText(mRenderImage->rect(),
+                             Qt::AlignCenter,
+                             str);
+        }
+        else{
+            QString str = QObject::tr("%1 m").arg(lenght);
+            painter.drawText(mRenderImage->rect(),
+                             Qt::AlignCenter,
+                             str);
+        }
 
     }
     *mRenderImage = mRenderImage->mirrored(false, true);

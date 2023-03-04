@@ -8,8 +8,6 @@
 #include <QPainter>
 #include <osgEarthAnnotation/PlaceNode>
 
-
-
 class LineNode : public osgEarth::Annotation::FeatureNode
 {
 public:
@@ -48,7 +46,6 @@ public:
     void setSmooth(bool Smooth);
 private:
     osg::Image *updateLenghtLable(double lenght);
-
 private:
     MapController* mMapController{nullptr};
     osgEarth::Symbology::Geometry* mLineGeometry;
@@ -61,7 +58,6 @@ private:
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
     bool mSmooth;
-
     //Lenght part
     osg::ref_ptr<osg::Group> mLableGroup;
     QImage *mRenderImage{nullptr};
