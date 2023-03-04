@@ -367,7 +367,6 @@ void AircraftModelNode::clearAssignments(int exceptNumber)
     {
         if(exceptNumber != number)
         {
-            mAssignmentMap[number]->removeAssignment(getInformation().TN);
             removeAssignment(number);
         }
     }
