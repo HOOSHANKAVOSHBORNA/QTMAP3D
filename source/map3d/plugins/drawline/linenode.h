@@ -1,12 +1,13 @@
 #ifndef LINENODE_H
 #define LINENODE_H
-
-
 #include <osgEarth/Color>
 #include <osgEarthAnnotation/FeatureNode>
 #include "mapcontroller.h"
 #include <osgEarthAnnotation/CircleNode>
 #include <osgEarthAnnotation/ModelNode>
+#include <QPainter>
+#include <osgEarthAnnotation/PlaceNode>
+
 
 
 class LineNode : public osgEarth::Annotation::FeatureNode
@@ -19,6 +20,7 @@ public:
     void clear();
     int getSize();
     osgEarth::Symbology::Geometry* mLineGeometry;
+    void showLenght(bool show);
 
     osgEarth::Color getColor() const;
     void setColor(const osgEarth::Color &color);
@@ -43,6 +45,9 @@ public:
     float getPointWidth() const;
     void setPointWidth(float pointWidth);
 
+
+protected:
+    osg::ref_ptr<osg::Group> mLableGroup;
 private:
     MapController* mMapController{nullptr};
 
@@ -55,6 +60,12 @@ private:
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
 
+    //Lenght part
+    osg::Image *updateLenghtLable(double lenght);
+    osgEarth::Symbology::Style labelStyle;
+    QImage *mRenderImage{nullptr};
+    static constexpr int LABEL_IMAGE_WIDTH = 100;
+    static constexpr int LABEL_IMAGE_HEIGHT = 20;
 };
 
 #endif // LINENODE_H

@@ -39,14 +39,13 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
     mLineGeometry->push_back(point.vec3d());
     qDebug()<< getSize();
     dirty();
-    if(getSize() >= 2 && mLineGeometry->at(getSize()-2)!= mLineGeometry->at(getSize()-1))
+    if(getSize() >= 2)
     {
         std::vector<osg::Vec3d> distanceVectorPoint;
         distanceVectorPoint.push_back(mLineGeometry->at(getSize()-2));
         distanceVectorPoint.push_back(mLineGeometry->at(getSize()-1));
 
         auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
-
         auto imageLabel = updateLenghtLable(lenght);
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, imageLabel);
         labelNode->setPosition(

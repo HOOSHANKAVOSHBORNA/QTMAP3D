@@ -14,10 +14,6 @@
 #include <osgEarth/GLUtils>
 #include <osg/ShapeDrawable>
 #include <osg/LineWidth>
-#include <osgEarthAnnotation/ImageOverlay>
-#include <osgEarthAnnotation/CircleNode>
-#include <osgEarthAnnotation/RectangleNode>
-#include <osgEarthAnnotation/EllipseNode>
 #include <osgEarthAnnotation/LabelNode>
 #include <osgEarthAnnotation/LocalGeometryNode>
 #include <osgEarthAnnotation/FeatureNode>
@@ -34,7 +30,7 @@
 using namespace osgEarth::Annotation;
 
 const QString CATEGORY = "Draw";
-const QString LINESTRIP = "Line Strip";
+const QString LINESTRING = "Line String";
 const QString LINE = "Line";
 
 
@@ -47,7 +43,7 @@ drawLine::drawLine(QWidget *parent)
 bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     mQmlEngine = engine;
-    desc->toolboxItemsList.push_back(new ItemDesc{LINESTRIP, CATEGORY, "qrc:/resources/line_string.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{LINESTRING, CATEGORY, "qrc:/resources/line_string.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
     return true;
 }
@@ -55,11 +51,11 @@ bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 {
     if(CATEGORY == category)
-        if(name == LINESTRIP)
+        if(name == LINESTRING)
         {
             if(checked)
             {
-                mShape = Shape::LINESTRIP;
+                mShape = Shape::LINESTRING;
                 mDrawingState = DrawingState::START;
             }
             else
@@ -68,7 +64,6 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mDrawingState = DrawingState::FINISH;
             }
         }
-
     if(name == LINE)
     {
         if(checked)
@@ -109,7 +104,6 @@ void drawLine::mousePressEvent(QMouseEvent *event)
             drawingLine(event);
             event->accept();
         }
-
     }
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
     {
@@ -126,6 +120,7 @@ void drawLine::mouseMoveEvent(QMouseEvent *event)
 void drawLine::mouseDoubleClickEvent(QMouseEvent *event)
 {
     finishDrawing(event);
+    event->accept();
 }
 
 void drawLine::startDrawLine()
@@ -137,6 +132,7 @@ void drawLine::startDrawLine()
     mLine->setPointVisible(false);
     mLine->setPointWidth(8);
     mLine->setTessellation(20);
+    mLine->showLenght(true);
     addNodeToLayer(mLine);
     mDrawingState = DrawingState::DRAWING;
 }
@@ -145,6 +141,7 @@ void drawLine::drawingLine(QMouseEvent *event)
 {
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
+
     if (mShape == Shape::LINE && mLine->getSize()>= 2){
         finishDrawing(event);
     }
@@ -154,7 +151,6 @@ void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
     removeNodeFromLayer(mLine);
     event->accept();
-
     mDrawingState = DrawingState::START;
 }
 
@@ -166,6 +162,8 @@ void drawLine::mouseMoveDrawing(QMouseEvent *event)
     }
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
+
+
 }
 
 void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
@@ -173,18 +171,6 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
     if(mDrawingState == DrawingState::DRAWING)
     {
         mDrawingState = DrawingState::START;
-
-        std::vector<osg::Vec3d> abbas;
-        abbas.push_back(mLine->mLineGeometry->at(mLine->mLineGeometry->size()-2));
-        abbas.push_back(mLine->mLineGeometry->at(mLine->mLineGeometry->size()-3));
-
-
-        std::cout<< GeoMath().distance(abbas) << "\n";
-        //std::cout<< mLine->mLineGeometry->at(mLine->mLineGeometry->size()-1).length()<< "\n";
-        //std::cout<< mLine->mLineGeometry->at(mLine->mLineGeometry->size()-2).length()<< "\n";
-        //std::cout<< mLine->mLineGeometry->at(mLine->mLineGeometry->size()-3).length()<< "\n";
-
-
         if(nodeEditor)
             removeNodeFromLayer(nodeEditor);
         event->accept();
