@@ -38,7 +38,7 @@ public:
     };
 
     void iwSetReceiverObject(QObject *receiverObject);
-    void iwShow(QQuickItem* item);
+    void iwShow(QQuickItem* item, QString title);
     void iwUpdateData(QObject *receiverObject, const QString& infoJSON);
 
 

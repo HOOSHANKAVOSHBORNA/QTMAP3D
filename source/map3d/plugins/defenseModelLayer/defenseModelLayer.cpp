@@ -121,9 +121,9 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
             auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
             if(aircrafModelNode)
             {
-                if(aircrafModelNode->getAssignmentModelNondes().size() > 0)
+                if(aircrafModelNode->getAssignments().size() > 0)
                 {
-                    auto systemModelNode = aircrafModelNode->getAssignmentModelNondes().first();
+                    auto systemModelNode = aircrafModelNode->getAssignments().first();
                     if(systemModelNode){
                         SystemCambatInfo cambatInfo;
                         cambatInfo.Phase = SystemCambatInfo::Fire;
@@ -169,43 +169,6 @@ bool DefenseModelLayer::setup(MapController *mapController,
 {
     mMapController = mapController;
     mUIHandle = uiHandle;
-
-//    connect(mListManager, &ListManager::aircraftDoubleClicked,[=](int TN){
-
-//        if(mModelNodes[AIRCRAFT].contains(TN))
-//        {
-//            AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][TN].get());
-//            if(mSelectedModelNode)
-//                mSelectedModelNode->select(false);
-//            aircraftModelNode->onLeftButtonClicked(true);
-//            aircraftModelNode->goOnTrack();
-//            mSelectedModelNode = aircraftModelNode;
-//        }
-//    });
-//    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
-
-//        if(mModelNodes[STATION].contains(number))
-//        {
-//            StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][number].get());
-//            if(mSelectedModelNode)
-//                mSelectedModelNode->select(false);
-//            stationModelNode->onLeftButtonClicked(true);
-//            stationModelNode->goOnTrack();
-//            mSelectedModelNode = stationModelNode;
-//        }
-//    });
-//    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
-
-//        if(mModelNodes[SYSTEM].contains(number))
-//        {
-//            SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][number].get());
-//            if(mSelectedModelNode)
-//                mSelectedModelNode->select(false);
-//            systemModelNode->onLeftButtonClicked(true);
-//            systemModelNode->goOnTrack();
-//            mSelectedModelNode = systemModelNode;
-//        }
-//    });
 
     connect(mMapController, &MapController::mapCleared, this, &DefenseModelLayer::onMapClear);
 
@@ -381,6 +344,15 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
     }
 }
 
+void DefenseModelLayer::clearAircraft(int tn)
+{
+    auto aircraftModelNode = getAircraftModelNode(tn);
+    if(aircraftModelNode){
+        aircraftModelNode->onLeftButtonClicked(false);
+        aircraftModelNode->setNodeMask(false);
+    }
+}
+
 void DefenseModelLayer::onMapClear()
 {
     mModelNodes.clear();
@@ -458,7 +430,7 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
     if(event->button() == Qt::LeftButton)
     {
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
-        if(aircraftModelNode && aircraftModelNode->hasAssignmentModelNode())
+        if(aircraftModelNode && aircraftModelNode->hasAssignment())
         {
             mDataManager->cancelAircraftAssign(aircraftModelNode);
             event->accept();

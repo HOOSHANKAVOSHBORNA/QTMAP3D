@@ -30,7 +30,10 @@ public slots:
     void setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void assignAirToSystem(int TN, int Number);
     void cancelAssign(int TN, int Number);
-    void accept(int TN, int Number, bool result);
+    void acceptAssign(int TN, int Number, bool result);
+    void cancelSystemAssignmentsExcept(int ExceptTN, int Number);
+    void cancelAircraftAssignmentsExcept(int TN, int ExceptNum);
+    void clearAllAssigns();
     void clearAll();
 
 
@@ -47,6 +50,9 @@ private:
     AircraftTableModel *mAircraftTableModel = nullptr;
     StationTableModel *mStationTableModel = nullptr;
     SystemTableModel *mSystemTableModel = nullptr;
+
+    AircraftTableModel *mAircraftAssignmentTableModel;
+    SystemTableModel *mSystemAssignmentTableModel;
 
 };
 

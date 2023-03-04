@@ -88,5 +88,5 @@ StationInformtion::StationInformtion(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
 
 void StationInformtion::show()
 {
-    mUiHandle->iwShow(mItem);
+    mUiHandle->iwShow(mItem, QString::number(mInformation.Number));
 }

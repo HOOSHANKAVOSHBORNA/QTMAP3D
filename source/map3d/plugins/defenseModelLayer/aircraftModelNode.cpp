@@ -30,7 +30,7 @@
 
 #include "defenseModelLayer.h"
 
-const float RANGE3D = std::numeric_limits<float>::max();
+const float RANGE3D = 800;// std::numeric_limits<float>::max();
 const int NUM_LATEST_POINT = 100;
 
 osg::ref_ptr<osg::Node> AircraftModelNode::mNode3DRef;
@@ -338,31 +338,48 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 }
 
-SystemModelNode *AircraftModelNode::getAssignmentModelNode(int number) const
+SystemModelNode *AircraftModelNode::getAssignment(int number) const
 {
-    if(mAssignmentModelNondes.contains(number))
-        return mAssignmentModelNondes[number];
+    if(mAssignmentMap.contains(number))
+        return mAssignmentMap[number];
     return nullptr;
 }
 
-void AircraftModelNode::addAssignmentModelNode(int number, SystemModelNode *assignmentModelNode)
+void AircraftModelNode::addAssignment(int number, SystemModelNode *assignmentModelNode)
 {
-    mAssignmentModelNondes[number] = assignmentModelNode;
+    mAssignmentMap[number] = assignmentModelNode;
 }
 
-void AircraftModelNode::removeAssignmentModelNode(int number)
+void AircraftModelNode::removeAssignment(int number)
 {
-    mAssignmentModelNondes.remove(number);
+    mAssignmentMap.remove(number);
 }
 
-void AircraftModelNode::clearAssignmentModelNodes()
+void AircraftModelNode::acceptAssignment(int number, bool value)
 {
-    mAssignmentModelNondes.clear();
+    if(!value)
+        removeAssignment(number);
 }
 
-bool AircraftModelNode::hasAssignmentModelNode()
+void AircraftModelNode::clearAssignments(int exceptNumber)
 {
-    return mAssignmentModelNondes.count() > 0;
+    for(auto number: mAssignmentMap.keys())
+    {
+        if(exceptNumber != number)
+        {
+            removeAssignment(number);
+        }
+    }
+}
+
+bool AircraftModelNode::hasAssignment()
+{
+    return mAssignmentMap.count() > 0;
+}
+
+QMap<int, SystemModelNode *> AircraftModelNode::getAssignments() const
+{
+    return mAssignmentMap;
 }
 
 void AircraftModelNode::onGotoButtonClicked()
@@ -657,11 +674,6 @@ void AircraftModelNode::updateOrCreateLabelImage()
                           GL_UNSIGNED_BYTE,
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
-}
-
-QMap<int, SystemModelNode *> AircraftModelNode::getAssignmentModelNondes() const
-{
-    return mAssignmentModelNondes;
 }
 
 

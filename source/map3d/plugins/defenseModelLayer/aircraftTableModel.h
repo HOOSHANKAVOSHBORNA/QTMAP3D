@@ -28,7 +28,7 @@ public:
         TextColorRole = Qt::UserRole + 101,
         HeaderTextRole = Qt::UserRole + 102,
         AircraftColor = Qt::UserRole + 103,
-        AssignColor = Qt::UserRole + 104
+        AircraftHoverColor = Qt::UserRole + 104
     };
 
 public:
@@ -36,18 +36,18 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int,QByteArray> roleNames() const override;
-
     Q_INVOKABLE QString headerText(int column) const;
 
     Q_INVOKABLE int getTN(int row) const;
 
 public slots:
     void setFilterWildcard(const QString& wildcard);
+    void sortWithHeader(int column);
     void onAircraftClicked(int TN);
     void onSystemClicked(int Number);
     void onUpdateTimerTriggered();
     bool getShowAssigned();
-    void refresh(int indx);
+    void refresh();
 signals:
     void aircraftClicked(int TN);
 
@@ -57,8 +57,14 @@ public:
     void deleteItem(int TN);
     void assign(int TN, int Number);
     void cancelAssign(int TN, int Number);
-    void accept(int TN, int Number, bool result);
-    void clear();
+    void cancelAllAssigns();
+    void cancelAircraftsAssigned(int ExceptTN, int Number);
+    void acceptAssign(int TN, int Number, bool result);
+    void clearList();
+    void setMode(QString mode);
+
+    QMap<int, QList<AircraftAssignInfo>> getAssignmentMap();
+
 
 private:
     std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoList;
@@ -66,15 +72,13 @@ private:
     QMap<int, QList<AircraftAssignInfo>> mAircraftsAssigned;
 
 
-    QString mFilter;
-    QString mFilterProxy = "";
+    QString mFilter = "";
 
     bool mNeedUpdateOnTimerTrigger = false;
-    bool mShowAssigned = false;
     int mMinRowUpdate = -1;
     int mMaxRowUpdate = -1;
     int mNumber = -1;
-    int mIndex = -1;
+    QString mMode;
 };
 
 #endif // AIRCRAFTTABLEMODEL_H

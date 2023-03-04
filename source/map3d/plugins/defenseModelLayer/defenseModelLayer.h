@@ -53,14 +53,8 @@ public:
     AircraftModelNode *getAircraftModelNode(int tn) const;
     StationModelNode *getStationModelNode(int number) const;
     void selectModelNode(DefenseModelNode* defenseModelNode);
+    void clearAircraft(int tn);
 public slots:
-//    void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
-//    void onSystemInfoChanged(SystemInfo& systemInfo);
-//    void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
-//    void onSystemCambatInfoChanged(SystemCambatInfo& systemCambatInfo);
-//    void onStationInfoChanged(StationInfo& stationInfo);
-//    void onClearAircraft(int tn);
-//    void onAircraftAssignedResponse(int tn, int systemNo, bool result);
     void onMapClear();
 
     static osgEarth::Symbology::Style& getDefaultStyle();
@@ -71,8 +65,6 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 private:
-//    void aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode);
-//    void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
 private:

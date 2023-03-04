@@ -21,7 +21,7 @@ void UIHandle::iwSetReceiverObject(QObject *receiverObject)
     mReceiverObject = receiverObject;
 }
 
-void UIHandle::iwShow(QQuickItem* item)
+void UIHandle::iwShow(QQuickItem* item, QString title)
 {
 
 //    if (!mReceiverObject) return;
@@ -54,7 +54,8 @@ void UIHandle::iwShow(QQuickItem* item)
 //    }
     QMetaObject::invokeMethod(mMainWindow,
                               "showInfoView",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
+                              Q_ARG(QVariant, QVariant::fromValue<QString>(title))
                               );
 }
 

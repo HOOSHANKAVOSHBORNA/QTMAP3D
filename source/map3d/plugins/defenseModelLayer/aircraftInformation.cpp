@@ -103,5 +103,5 @@ void AircraftInformation::updateAircraft(AircraftInfo &mInformation)
     mInfomodel->setAircraftInfo(mInformation);
 }
 void AircraftInformation::show() {
-    mUiHandle->iwShow(mItem);
+    mUiHandle->iwShow(mItem, QString::number(mInformation.TN));
 }

@@ -528,10 +528,11 @@ CMainWindow {
         height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
     }
 
-    function showInfoView(item) {
+    function showInfoView(item, title) {
         if (wnd.widgetsVisible === false) toggleWidgetsVisible();
         sideWidget.hideAllItems();
         infoo.showInfo(item)
+        infoo.titleText = title;
     }
 
 
