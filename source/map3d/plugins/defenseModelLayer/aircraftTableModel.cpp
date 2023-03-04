@@ -272,7 +272,7 @@ void AircraftTableModel::sortWithHeader(int column)
 void AircraftTableModel::onAircraftClicked(int TN)
 {
     emit aircraftClicked(TN);
-    refresh();
+//    refresh();
 }
 
 void AircraftTableModel::onSystemClicked(int Number) {

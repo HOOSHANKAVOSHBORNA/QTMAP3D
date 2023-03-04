@@ -212,7 +212,7 @@ void SystemTableModel::onAircraftClicked(int TN)
 void SystemTableModel::onSystemClicked(int Number)
 {
     emit systemClicked(Number);
-    refresh();
+//    refresh();
 }
 
 void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
