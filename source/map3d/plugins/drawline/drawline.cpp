@@ -14,10 +14,6 @@
 #include <osgEarth/GLUtils>
 #include <osg/ShapeDrawable>
 #include <osg/LineWidth>
-#include <osgEarthAnnotation/ImageOverlay>
-#include <osgEarthAnnotation/CircleNode>
-#include <osgEarthAnnotation/RectangleNode>
-#include <osgEarthAnnotation/EllipseNode>
 #include <osgEarthAnnotation/LabelNode>
 #include <osgEarthAnnotation/LocalGeometryNode>
 #include <osgEarthAnnotation/FeatureNode>
@@ -34,7 +30,7 @@
 using namespace osgEarth::Annotation;
 
 const QString CATEGORY = "Draw";
-const QString LINESTRIP = "Line Strip";
+const QString LINESTRING = "Line String";
 const QString LINE = "Line";
 
 
@@ -50,7 +46,7 @@ bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     qmlRegisterType<LinePropertiesModel>("Crystal", 1, 0, "LineProperties");
     mQmlEngine = engine;
-    desc->toolboxItemsList.push_back(new ItemDesc{LINESTRIP, CATEGORY, "qrc:/resources/line_string.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{LINESTRING, CATEGORY, "qrc:/resources/line_string.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
     return true;
 }
@@ -58,20 +54,22 @@ bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 {
     if(CATEGORY == category)
-        if(name == LINESTRIP)
+        if(name == LINESTRING)
         {
             if(checked)
             {
-                mShape = Shape::LINESTRIP;
+                mShape = Shape::LINESTRING;
                 mDrawingState = DrawingState::START;
+                    mLineProperties = new LineProperties(mQmlEngine,muiHandle );
+                    mLineProperties->show();
             }
             else
             {
                 mShape = Shape::NONE;
                 mDrawingState = DrawingState::FINISH;
+                mLineProperties->hide();
             }
         }
-
     if(name == LINE)
     {
         if(checked)
@@ -88,8 +86,9 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
     }
 }
 
-bool drawLine::setup(MapController *mapController, UIHandle */*UIHandle*/)
+bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
 {
+    muiHandle = uIHandle;
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -110,16 +109,23 @@ void drawLine::mousePressEvent(QMouseEvent *event)
         }
         if(mDrawingState == DrawingState::DRAWING)
         {
-            drawingLine(event);
+            if (mShape == Shape::LINE && mLine->getSize()>= 2){
+                finishDrawing(event);
+            }
+            else
+                drawingLine(event);
             event->accept();
         }
-
     }
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
     {
         cancelDrawingLine(event);
-        if (mLineProperties)
-            mLineProperties->hide();
+
+    }
+    if(event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING)
+    {
+        finishDrawing(event);
+        event->accept();
     }
 }
 
@@ -127,15 +133,14 @@ void drawLine::mouseMoveEvent(QMouseEvent *event)
 {
     if (mDrawingState == DrawingState::DRAWING)
         mouseMoveDrawing(event);
+
 }
 
-void drawLine::mouseDoubleClickEvent(QMouseEvent *event)
+void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 {
-    finishDrawing(event);
-//    if (mLineProperties)
-//        mLineProperties->hide();
-//    mLineProperties = new LineProperties(mQmlEngine, mLine);
-//    mLineProperties->show();
+
+//    finishDrawing(event);
+
 }
 
 void drawLine::startDrawLine()
@@ -147,13 +152,20 @@ void drawLine::startDrawLine()
     mLine->setPointVisible(false);
     mLine->setPointWidth(8);
     mLine->setTessellation(20);
+    mLine->showLenght(true);
     addNodeToLayer(mLine);
 
+//<<<<<<< HEAD
+    mLineProperties->setLine(mLine);
 
-            if (mLineProperties)
-                mLineProperties->hide();
-    mLineProperties = new LineProperties(mQmlEngine, mLine);
-    mLineProperties->show();
+
+//=======
+//    if (mLineProperties)
+//        mLineProperties->hide();
+//    mLineProperties = new LineProperties(mQmlEngine, mLine);
+//    mLineProperties->show();
+//>>>>>>> cfc87b0b4426eb406d1f3cb4a860c295f64f776d
+
     mDrawingState = DrawingState::DRAWING;
 }
 
@@ -161,20 +173,20 @@ void drawLine::drawingLine(QMouseEvent *event)
 {
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
-    if (mShape == Shape::LINE && mLine->getSize()>= 2){
-        finishDrawing(event);
-//        if (mLineProperties)
-//            mLineProperties->hide();
-    }
+//<<<<<<< HEAD
+//    if (mShape == Shape::LINE && mLine->getSize()>= 2){
+//        finishDrawing(event);
+
+//    }
+//=======
+//>>>>>>> cfc87b0b4426eb406d1f3cb4a860c295f64f776d
 }
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
     removeNodeFromLayer(mLine);
-    if (mLineProperties)
-        mLineProperties->hide();
-    event->accept();
 
+    event->accept();
     mDrawingState = DrawingState::START;
 }
 
@@ -186,6 +198,8 @@ void drawLine::mouseMoveDrawing(QMouseEvent *event)
     }
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
+
+
 }
 
 void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
@@ -194,12 +208,9 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
     {
         mDrawingState = DrawingState::START;
         if(nodeEditor)
-            //mMapController->removeNode(nodeEditor);
             removeNodeFromLayer(nodeEditor);
-        //mMapController->removeNode(mPolyHdragger);
         event->accept();
-//        if (mLineProperties)
-//            mLineProperties->hide();
+
     }
 }
 

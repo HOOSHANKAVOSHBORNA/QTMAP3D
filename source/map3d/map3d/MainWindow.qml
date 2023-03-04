@@ -165,7 +165,7 @@ CMainWindow {
             }
 
             onLayersButtonClicked: function() {
-                layersWidget.menuWidgetLayersButtonClicked();
+                leftContainerHolder.menuLayersButtonClicked();
             }
         }
 
@@ -211,21 +211,64 @@ CMainWindow {
 
         }
 
-        LayersWidget {
-            id: layersWidget
 
-            x: parent.width + 2*widgetsMargins - (widgetsPositionFactor * (300 + (widgetsMargins*3)))
-            y: menuWidget.height + (widgetsMargins * 2)
-            width: 600 + (widgetsMargins * 4)
-            height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height
 
-            layersModel: wnd.layersModel
 
-            onToggleLayerEnabled: function(layerIndex) {
-                wnd.toggleLayerEnabled(layerIndex);
-            }
 
-        }
+//        LeftContainer{
+//            id: leftHolder
+////            x: parent.width + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *2)))
+//            y: menuWidget.height + (widgetsMargins * 2)
+//            x:500
+//            width: 250 + (widgetsMargins)
+//            height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height
+//        }
+
+//        function showLeftContainer(item) {
+//            if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+////            leftHolder.;
+//            leftHolder.showLeftItems(item);
+
+
+//        }
+
+
+
+
+
+
+//        LeftContainer{
+//            id: leftContainer
+//            x: parent.width + widgetsMargins - (widgetsPositionFactor * (300 + (widgetsMargins*3)))
+//            y: menuWidget.height + (widgetsMargins * 2)
+//            width: 300 + (widgetsMargins)
+//            height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height
+////            x:400
+////            y:100
+////            width: 200
+////            height: 200
+
+////            LayersWidget{
+////                    layersModel: wnd.layersModel
+////            }
+
+//        }
+
+////        LayersWidget {
+////            id: layersWidget
+
+////            x: parent.width + 2*widgetsMargins - (widgetsPositionFactor * (300 + (widgetsMargins*3)))
+////            y: menuWidget.height + (widgetsMargins * 2)
+////            width: 600 + (widgetsMargins * 4)
+////            height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height
+
+////            layersModel: wnd.layersModel
+
+////            onToggleLayerEnabled: function(layerIndex) {
+////                wnd.toggleLayerEnabled(layerIndex);
+////            }
+
+////        }
 
 
 
@@ -490,6 +533,24 @@ CMainWindow {
         sideWidget.hideAllItems();
         infoo.showInfo(item)
         infoo.titleText = title;
+    }
+
+
+    LeftContainer {
+        id: leftContainerHolder
+        x: parent.width + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3))) +300
+        y: menuWidget.height + (widgetsMargins*2 )
+        width: 250
+        height: parent.height - menuWidget.height - (widgetsMargins * 6) - navigationWidget.height
+        }
+
+    function showLeftContainer(item) {
+        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+        leftContainerHolder.showProp(item);
+    }
+
+    function hideLeftContainer(item) {
+        leftContainerHolder.hideProp(item);
     }
 
     Rectangle {

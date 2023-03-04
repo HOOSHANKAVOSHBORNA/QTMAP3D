@@ -181,7 +181,7 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         if(checked)
         {
             mShape = Shape::POLYGON;
-            mDrawingState = DrawingState::START;
+            //mDrawingState = DrawingState::START;
             mCircleGr = new osg::Group;
             //mMapController->addNode(mCircleGr);
             addNodeToLayer(mCircleGr);
@@ -614,21 +614,20 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::RightButton )//&& mDrawingState != DrawingState::START)
+    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::FINISH)
     {
-        mDrawingState = DrawingState::START;
+        //mDrawingState = DrawingState::START;
         osgEarth::Symbology::Style circleStyle;
         circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Red, 0.5);
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-
-
 
         osgEarth::Annotation::CircleNode* circle = new osgEarth::Annotation::CircleNode;
         circle->set(
                     osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y(), 1000, osgEarth::ALTMODE_RELATIVE),
                     osgEarth::Distance(50, osgEarth::Units::KILOMETERS),
                     circleStyle, osgEarth::Angle(0.0, osgEarth::Units::DEGREES), osgEarth::Angle(360.0, osgEarth::Units::DEGREES), true);
+
         mCircleGr->addChild(circle);
         geoPos.z() = 0;
         mPoly->addPoints(geoPos.vec3d());
@@ -650,6 +649,7 @@ void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
             mPolyHdragger->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
             mPoly->setFillColor(osgEarth::Color::Purple);
             mDrawingState = DrawingState::FINISH;
+            mCircleGr = new osg::Group;
         }
     }
 
