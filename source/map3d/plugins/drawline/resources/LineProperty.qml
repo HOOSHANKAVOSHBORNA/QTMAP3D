@@ -7,27 +7,27 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    function show() {
-        dialog.open()
-    }
+    //    function show() {
+    //        dialog.open()
+    //    }
 
-    function hide() {
-        dialog.close();
-    }
+    //    function hide() {
+    //        dialog.close();
+    //    }
 
 
     property LineProperties lineProperties
 
-    Dialog {
+    Item {
         id: dialog
         width: 250
         height: 300
-        title: qsTr("Line Properties")
+//        title: qsTr("Line Properties")
 
 
 
         //////////////////////////Main Content////////////////////////
-        contentItem:  Rectangle {
+        /*contentItem:*/  Rectangle {
             id: item
             visible: true
             width: 240

@@ -3,7 +3,9 @@
 
 #include "linenode.h"
 #include "mapcontroller.h"
+#include "plugininterface.h"
 
+#include <QAbstractListModel>
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
@@ -42,7 +44,7 @@ public:
 
 
 
-    LinePropertiesModel(LineNode* lineNode = nullptr, QObject *parent = nullptr);
+    LinePropertiesModel( QObject *parent = nullptr);
     //set color
     QString color() const;
     void setColor(const QString &color);
@@ -70,6 +72,8 @@ public:
     //set smooth
     bool smooth() const;
     void setSmooth(const bool &smooth);
+
+    void setLine(LineNode *linNode) ;
 
 
 
@@ -105,15 +109,18 @@ class LineProperties :public QObject
 {
     Q_OBJECT
 public:
-    LineProperties(QQmlEngine *engine, LineNode *line, QObject *parent = nullptr);
+    LineProperties(QQmlEngine *engine, UIHandle *muiHandle, QObject *parent = nullptr);
     void show();
     void hide();
+
+    void setLine(LineNode *line);
 
 private:
     QQmlEngine* mQmlEngine;
     QQuickItem* mItem;
     LinePropertiesModel *mLineProperties;
     LineNode *mLine;
+    UIHandle *mUiHandle = nullptr;
 
 };
 

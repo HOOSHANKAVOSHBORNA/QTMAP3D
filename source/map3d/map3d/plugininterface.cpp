@@ -58,6 +58,22 @@ void UIHandle::iwShow(QQuickItem* item)
                               );
 }
 
+void UIHandle::propertiesShow(QQuickItem *item)
+{
+    QMetaObject::invokeMethod(mMainWindow,
+                              "showLeftContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              );
+}
+
+void UIHandle::propertiesHide(QQuickItem *item)
+{
+    QMetaObject::invokeMethod(mMainWindow,
+                              "hideLeftContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              );
+}
+
 
 //void UIHandle::iwUpdateData(QObject *receiverObject, const QString &infoJSON)
 //{

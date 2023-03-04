@@ -1,25 +1,17 @@
 #include "lineproperties.h"
 #include <QtDebug>
-#include <QVector3D>
 #include <QQmlComponent>
+#include <QQmlEngine>
+#include <QQuickItem>
+#include "plugininterface.h"
 
 
 
-LinePropertiesModel::LinePropertiesModel(LineNode* lineNode, QObject *parent) :
+LinePropertiesModel::LinePropertiesModel(QObject *parent) :
 
-    QObject(parent),
-    mLineNode(lineNode)
+    QObject(parent)
 {
        QObject::connect(this,&LinePropertiesModel::linePropertiesChanged,this,&LinePropertiesModel::linePropertiesChangedToQML);
-
-
-//       mRadius = lineNode->getRadius().as(osgEarth::Units::METERS);
-         mColor = QString::fromStdString(lineNode->getColor().toHTML());
-         mColor.remove(7,2);
-         mPointColor = QString::fromStdString(lineNode->getPointColor().toHTML());
-         mPointColor.remove(7,2);
-
-
 }
 
 QString LinePropertiesModel::color() const
@@ -139,18 +131,29 @@ void LinePropertiesModel::setSmooth(const bool &value){
     mLineNode->setSmooth(value);
 }
 
-LineProperties::LineProperties(QQmlEngine *engine, LineNode *line, QObject *parent):
+void LinePropertiesModel::setLine(LineNode* linNode)
+{
+    mLineNode = linNode;
+    mLineNode->setColor(mColor.toStdString());
+    mLineNode->setPointColor(mPointColor.toStdString());
+    mLineNode->setWidth(mWidth);
+    mLineNode->setHeight(mHeight);
+    mLineNode->setTessellation(mTesselation);
+    mLineNode->setPointWidth(mPointwidth);
+}
+
+LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):
     QObject(parent),
     mQmlEngine(engine),
-    mLine(line)
+    mUiHandle(muiHandle)
 {
     //--show property window---------------------------------------------------------------------------------
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            LinePropertiesModel *lineProperties = new LinePropertiesModel(mLine);
-            mItem->setProperty("lineProperties", QVariant::fromValue<LinePropertiesModel*>(lineProperties));
+            mLineProperties = new LinePropertiesModel();
+            mItem->setProperty("lineProperties", QVariant::fromValue<LinePropertiesModel*>(mLineProperties));
         }
     });
     comp->loadUrl(QUrl("qrc:/resources/LineProperty.qml"));
@@ -158,12 +161,19 @@ LineProperties::LineProperties(QQmlEngine *engine, LineNode *line, QObject *pare
 
 }
 
-void LineProperties::show()
+Q_INVOKABLE void LineProperties::show()
 {
-    QMetaObject::invokeMethod(mItem, "show");
+    mUiHandle->propertiesShow(mItem);
 }
 
 void LineProperties::hide()
 {
-    QMetaObject::invokeMethod(mItem, "hide");
+
+    mUiHandle->propertiesHide(mItem);
+}
+
+void LineProperties::setLine(LineNode *line)
+{
+    mLine = line;
+    mLineProperties->setLine(line);
 }
