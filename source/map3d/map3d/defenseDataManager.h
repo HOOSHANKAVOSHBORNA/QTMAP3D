@@ -340,6 +340,29 @@ struct SystemCambatInfo
         }
         return result;
     }
+
+    QString phaseToColor() const
+    {
+        QString result = "white";
+        switch (Phase) {
+        case Search:
+            result = "yellow";
+            break;
+        case Lock:
+            result = "orange";
+            break;
+        case Fire:
+            result = "red";
+            break;
+        case Kill:
+            result = "black";
+            break;
+        case NoKill:
+            result = "brown";
+            break;
+        }
+        return result;
+    }
 };
 
 class DefenseDataManager: public QObject

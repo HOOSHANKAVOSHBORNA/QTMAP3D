@@ -52,6 +52,7 @@ private:
     Shape mShape;
     LineNode* mLine{nullptr};
     LineProperties *mLineProperties = nullptr;
+    UIHandle *muiHandle;
 };
 
 #endif // LINE_H

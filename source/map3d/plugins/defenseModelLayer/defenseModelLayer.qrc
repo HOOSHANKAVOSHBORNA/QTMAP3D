@@ -26,5 +26,7 @@
         <file>resources/arrow.png</file>
         <file>resources/points.png</file>
         <file>resources/refresh.png</file>
+        <file>resources/select.gif</file>
+        <file>resources/select.png</file>
     </qresource>
 </RCC>

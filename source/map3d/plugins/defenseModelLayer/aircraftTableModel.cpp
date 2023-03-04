@@ -18,7 +18,7 @@ AircraftTableModel::AircraftTableModel(QObject *parent) :
 
 int AircraftTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
-    return 17;
+    return 16;
 }
 
 int AircraftTableModel::rowCount(const QModelIndex &/*parent*/) const
@@ -38,23 +38,22 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     {
 
         switch(index.column()) {
-        case  0: return QVariant::fromValue<QString>(QString::number(mAircraftInfoListProxy[static_cast<size_t>(_row)].first));
-        case  1: return QVariant::fromValue<int>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->TN);
-        case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->IFFCode);
-        case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->CallSign);
-        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->Type);
-        case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->MasterRadar);
-        case  6: return QVariant::fromValue<QString>( mAircraftInfoListProxy[static_cast<size_t>(_row)].second->identifyToString());
-        case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->IdentificationMethod);
-        case  8: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->Time);
-        case  9: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->Pos);
-        case 10: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Latitude);
-        case 11: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Longitude);
-        case 12: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Altitude);
-        case 13: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Heading);
-        case 14: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )].second->Speed);
-        case 15: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->detectionSystemsToString());
-        case 16: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->sendsToString());
+        case  0: return QVariant::fromValue<QString>( mAircraftInfoListProxy[static_cast<size_t>(_row)]->identifyToString());
+        case  1: return QVariant::fromValue<int>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->TN);
+        case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->IFFCode);
+        case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->CallSign);
+        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->Type);
+        case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->MasterRadar);
+        case  6: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->IdentificationMethod);
+        case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->Time);
+        case  8: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->Pos);
+        case  9: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Latitude);
+        case 10: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Longitude);
+        case 11: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Altitude);
+        case 12: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Heading);
+        case 13: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Speed);
+        case 14: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->detectionSystemsToString());
+        case 15: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->sendsToString());
         }
 
         break;
@@ -81,23 +80,22 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     case HeaderTextRole:
     {
         switch(index.row()) {
-        case  0: return QVariant::fromValue<QString>("Index");
+        case  0: return QVariant::fromValue<QString>("Identification");
         case  1: return QVariant::fromValue<QString>("TN");
         case  2: return QVariant::fromValue<QString>("IFFCode");
         case  3: return QVariant::fromValue<QString>("CallSign");
         case  4: return QVariant::fromValue<QString>("Type");
         case  5: return QVariant::fromValue<QString>("Master Radar");
-        case  6: return QVariant::fromValue<QString>("Identification");
-        case  7: return QVariant::fromValue<QString>("Identify Method");
-        case  8: return QVariant::fromValue<QString>("Time");
-        case  9: return QVariant::fromValue<QString>("Pos");
-        case 10: return QVariant::fromValue<QString>("Latitude");
-        case 11: return QVariant::fromValue<QString>("Longitude");
-        case 12: return QVariant::fromValue<QString>("Altitude");
-        case 13: return QVariant::fromValue<QString>("Heading");
-        case 14: return QVariant::fromValue<QString>("Speed");
-        case 15: return QVariant::fromValue<QString>("Detection Systems");
-        case 16: return QVariant::fromValue<QString>("Sends");
+        case  6: return QVariant::fromValue<QString>("Identify Method");
+        case  7: return QVariant::fromValue<QString>("Time");
+        case  8: return QVariant::fromValue<QString>("Pos");
+        case  9: return QVariant::fromValue<QString>("Latitude");
+        case 10: return QVariant::fromValue<QString>("Longitude");
+        case 11: return QVariant::fromValue<QString>("Altitude");
+        case 12: return QVariant::fromValue<QString>("Heading");
+        case 13: return QVariant::fromValue<QString>("Speed");
+        case 14: return QVariant::fromValue<QString>("Detection Systems");
+        case 15: return QVariant::fromValue<QString>("Sends");
         }
 
         break;
@@ -105,13 +103,13 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     case AircraftColor:
     {
         const int _row = index.row();
-        return QVariant::fromValue<QColor>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->aircraftColor());
+        return QVariant::fromValue<QColor>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->aircraftColor());
     }
 
     case AircraftHoverColor:
     {
         const int _row = index.row();
-        return QVariant::fromValue<QColor>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->aircraftHoverColor());
+        return QVariant::fromValue<QColor>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->aircraftHoverColor());
     }
 
 
@@ -134,23 +132,22 @@ QHash<int, QByteArray> AircraftTableModel::roleNames() const
 QString AircraftTableModel::headerText(int column) const
 {
     switch(column) {
-    case  0: return QStringLiteral("Index");
+    case  0: return QStringLiteral("Identification");
     case  1: return QStringLiteral("TN");
     case  2: return QStringLiteral("IFFCode");
     case  3: return QStringLiteral("CallSign");
     case  4: return QStringLiteral("Type");
     case  5: return QStringLiteral("Master Radar");
-    case  6: return QStringLiteral("Identification");
-    case  7: return QStringLiteral("Identification Method");
-    case  8: return QStringLiteral("Time");
-    case  9: return QStringLiteral("Pos");
-    case 10: return QStringLiteral("Latitude");
-    case 11: return QStringLiteral("Longitude");
-    case 12: return QStringLiteral("Altitude");
-    case 13: return QStringLiteral("Heading");
-    case 14: return QStringLiteral("Speed");
-    case 15: return QStringLiteral("Detection Systems");
-    case 16: return QStringLiteral("Sends");
+    case  6: return QStringLiteral("Identification Method");
+    case  7: return QStringLiteral("Time");
+    case  8: return QStringLiteral("Pos");
+    case  9: return QStringLiteral("Latitude");
+    case 10: return QStringLiteral("Longitude");
+    case 11: return QStringLiteral("Altitude");
+    case 12: return QStringLiteral("Heading");
+    case 13: return QStringLiteral("Speed");
+    case 14: return QStringLiteral("Detection Systems");
+    case 15: return QStringLiteral("Sends");
     }
 
     return QStringLiteral("");
@@ -164,7 +161,7 @@ int AircraftTableModel::getTN(int row) const
         return -1;
     }
 
-    return mAircraftInfoListProxy[std::size_t(row)].second->TN;
+    return mAircraftInfoListProxy[std::size_t(row)]->TN;
 }
 
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)
@@ -181,7 +178,7 @@ void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 
     mAircraftInfoListProxy.clear();
     for (auto& item : mAircraftInfoList) {
-        if (QString::number(item.second->TN).contains(mFilter))
+        if (QString::number(item->TN).contains(mFilter))
             mAircraftInfoListProxy.push_back(item);
     }
 
@@ -192,76 +189,10 @@ void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 void AircraftTableModel::sortWithHeader(int column)
 {
     switch (column) {
-    case 0: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
+    case 0: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QSharedPointer<AircraftInfo> &item1, const QSharedPointer<AircraftInfo> &item2) {
+            return item1->identifyToString() < item2->identifyToString();
         });
         break;
-    case 1:std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.second->Altitude < item2.second->Altitude;
-        });
-        break;
-    case 2: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 3: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 4: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 5: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 6: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 7: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 8: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 9: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 10: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 11: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 12: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 13: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 14: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 15: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-    case 16: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
-            return item1.first < item2.first;
-        });
-        break;
-
-
     }
     mNeedUpdateOnTimerTrigger = true;
     onUpdateTimerTriggered();
@@ -281,8 +212,8 @@ void AircraftTableModel::onSystemClicked(int Number) {
     mAircraftInfoListProxy.clear();
     if (mAircraftsAssigned.contains(Number)) {
         for (AircraftAssignInfo aircraft : mAircraftsAssigned[Number]) {
-            auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(), [aircraft](QPair<int, QSharedPointer<AircraftInfo>> &item){
-                    return item.second->TN == aircraft.TN;
+            auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(), [aircraft](QSharedPointer<AircraftInfo> &item){
+                    return item->TN == aircraft.TN;
         });
             mAircraftInfoListProxy.push_back(*it);
         }
@@ -298,7 +229,7 @@ void AircraftTableModel::onUpdateTimerTriggered()
         if (mMode == "TableModel") {
             mAircraftInfoListProxy.clear();
             for (auto& item : mAircraftInfoList) {
-                if (QString::number(item.second->TN).contains(mFilter))
+                if (QString::number(item->TN).contains(mFilter))
                     mAircraftInfoListProxy.push_back(item);
             }
 //            if (mAircraftInfoListProxy.size() > 0)
@@ -328,12 +259,12 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
     //    beginResetModel();
 
     const auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(),
-                                 [aircraftInfo](const QPair<int, QSharedPointer<AircraftInfo>>& itemInfo){
-        return itemInfo.second->TN == aircraftInfo.TN;
+                                 [aircraftInfo](const QSharedPointer<AircraftInfo>& itemInfo){
+        return itemInfo->TN == aircraftInfo.TN;
     });
 
     if (it != mAircraftInfoList.end()) {
-        *(*it).second = aircraftInfo;
+        *(*it) = aircraftInfo;
 
         int index = static_cast<int>(std::distance(mAircraftInfoList.begin(), it));
 
@@ -354,10 +285,9 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
 
     }
     else {
-        QPair<int, QSharedPointer<AircraftInfo>> isp;
-        isp.first = mAircraftInfoList.size();
-        isp.second.reset(new AircraftInfo);
-        *(isp.second) = aircraftInfo;
+        QSharedPointer<AircraftInfo> isp;
+        isp.reset(new AircraftInfo);
+        *(isp) = aircraftInfo;
         mAircraftInfoList.push_back(isp);
 
         mMinRowUpdate = -1;
@@ -369,7 +299,7 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
 
         mAircraftInfoListProxy.clear();
         for (auto& item : mAircraftInfoList) {
-            if (QString::number(item.second->TN).contains(mFilter))
+            if (QString::number(item->TN).contains(mFilter))
                 mAircraftInfoListProxy.push_back(item);
         }
 
@@ -388,9 +318,9 @@ void AircraftTableModel::deleteItem(int TN)
 
     const  auto newEnd = std::remove_if(mAircraftInfoList.begin(),
                                         mAircraftInfoList.end(),
-                                        [&TN](const QPair<int, QSharedPointer<AircraftInfo>>& itemInfo) {
+                                        [&TN](const QSharedPointer<AircraftInfo>& itemInfo) {
 
-        return itemInfo.second->TN == TN;
+        return itemInfo->TN == TN;
     });
 
     mAircraftInfoList.erase(newEnd, mAircraftInfoList.end());
@@ -413,7 +343,7 @@ void AircraftTableModel::deleteItem(int TN)
 
     mAircraftInfoListProxy.clear();
     for (auto& item : mAircraftInfoList) {
-        if (QString::number(item.second->TN).contains(mFilter))
+        if (QString::number(item->TN).contains(mFilter))
             mAircraftInfoListProxy.push_back(item);
     }
 

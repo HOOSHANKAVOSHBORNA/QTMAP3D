@@ -60,11 +60,14 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             {
                 mShape = Shape::LINESTRING;
                 mDrawingState = DrawingState::START;
+                    mLineProperties = new LineProperties(mQmlEngine,muiHandle );
+                    mLineProperties->show();
             }
             else
             {
                 mShape = Shape::NONE;
                 mDrawingState = DrawingState::FINISH;
+                mLineProperties->hide();
             }
         }
     if(name == LINE)
@@ -83,8 +86,9 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
     }
 }
 
-bool drawLine::setup(MapController *mapController, UIHandle */*UIHandle*/)
+bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
 {
+    muiHandle = uIHandle;
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -116,8 +120,7 @@ void drawLine::mousePressEvent(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
     {
         cancelDrawingLine(event);
-        if (mLineProperties)
-            mLineProperties->hide();
+
     }
     if(event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING)
     {
@@ -134,8 +137,9 @@ void drawLine::mouseMoveEvent(QMouseEvent *event)
 
 void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 {
+
 //    finishDrawing(event);
-//    event->accept();
+
 }
 
 void drawLine::startDrawLine()
@@ -150,10 +154,16 @@ void drawLine::startDrawLine()
     mLine->showLenght(true);
     addNodeToLayer(mLine);
 
-    if (mLineProperties)
-        mLineProperties->hide();
-    mLineProperties = new LineProperties(mQmlEngine, mLine);
-    mLineProperties->show();
+//<<<<<<< HEAD
+    mLineProperties->setLine(mLine);
+
+
+//=======
+//    if (mLineProperties)
+//        mLineProperties->hide();
+//    mLineProperties = new LineProperties(mQmlEngine, mLine);
+//    mLineProperties->show();
+//>>>>>>> cfc87b0b4426eb406d1f3cb4a860c295f64f776d
 
     mDrawingState = DrawingState::DRAWING;
 }
@@ -162,13 +172,19 @@ void drawLine::drawingLine(QMouseEvent *event)
 {
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
+//<<<<<<< HEAD
+//    if (mShape == Shape::LINE && mLine->getSize()>= 2){
+//        finishDrawing(event);
+
+//    }
+//=======
+//>>>>>>> cfc87b0b4426eb406d1f3cb4a860c295f64f776d
 }
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
     removeNodeFromLayer(mLine);
-    if (mLineProperties)
-        mLineProperties->hide();
+
     event->accept();
     mDrawingState = DrawingState::START;
 }
@@ -193,8 +209,7 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
         if(nodeEditor)
             removeNodeFromLayer(nodeEditor);
         event->accept();
-//        if (mLineProperties)
-//            mLineProperties->hide();
+
     }
 }
 
