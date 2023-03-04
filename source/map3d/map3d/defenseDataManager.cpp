@@ -35,11 +35,8 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
             emit mDefenseDataManager->systemInfoChanged(system);
         for(auto systemStatus:systemStatusList)
             emit mDefenseDataManager->systemStatusInfoChanged(systemStatus);
-        updateSystemCambatInfo();
-        for(auto systemCambat:SystemCambatList)
-            emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
 
-        createAircraftInfo();
+//        createAircraftInfo();
 //        emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
 //        mAircraftList.removeFirst();
     });
@@ -57,22 +54,35 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         //mAircraftList.removeFirst();
     });
     timerUpdateAircraft->start(1000);
+    //--update cambat------------------------------------------
+    QTimer *timerUpdateCambat = new QTimer();
+    QObject::connect(timerUpdateCambat, &QTimer::timeout, [this](){
+        updateSystemCambatInfo();
+        for(auto systemCambat:SystemCambatList)
+            emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
+    });
+    timerUpdateCambat->start(20000);
     //---------------------------------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
-        qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
-        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-        if(tn % 40 == 0)
+//        qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
+        auto aircraftInfo = std::find_if(mAircraftList.begin(), mAircraftList.end(), [tn](AircraftInfo& item){
+            return item.TN == tn;
+        });
+        auto systemInfo = std::find_if(systemList.begin(), systemList.end(), [systemNo](SystemInfo& item){
+            return item.Number == systemNo;
+        });
+
+        auto systemCambatInfo = std::find_if(SystemCambatList.begin(), SystemCambatList.end(), [systemNo](SystemCambatInfo& item){
+            return item.Number == systemNo;
+        });
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        if(systemCambatInfo->Phase != SystemCambatInfo::Search)
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
         else
         {
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
             //-----------------------------------
-            auto aircraftInfo = std::find_if(mAircraftList.begin(), mAircraftList.end(), [tn](AircraftInfo& item){
-                return item.TN == tn;
-            });
-            auto systemInfo = std::find_if(systemList.begin(), systemList.end(), [systemNo](SystemInfo& item){
-                return item.Number == systemNo;
-            });
 
             aircraftInfo->assignedSystems.append(*systemInfo);
             systemInfo->assignedAircrafts.append(*aircraftInfo);
@@ -104,7 +114,7 @@ const int stationNum = 5;
 AircraftInfo Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
-    if(aircraftNumber > 5)
+    if(aircraftNumber > 20)
         return aircraftInfo;
     int tn = 10000 + aircraftNumber++;
     aircraftInfo.TN = tn;
@@ -299,7 +309,7 @@ void Demo::updateSystemCambatInfo()
                 newPhase = SystemCambatInfo::Fire;
                 break;
             case SystemCambatInfo::Fire:
-                if(i % 2 == 0)
+                if(rn % 2 == 0)
                     newPhase = SystemCambatInfo::Kill;
                 else
                     newPhase = SystemCambatInfo::NoKill;
