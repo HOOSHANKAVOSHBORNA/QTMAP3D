@@ -100,19 +100,9 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
 
     case SystemColor:
     {
-        const int _row = index.row();
-        if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "Search")
-            return QVariant::fromValue<QColor>(QColor("yellow"));
-        else if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "Lock")
-            return QVariant::fromValue<QColor>(QColor("orange"));
-        else if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "Fire")
-            return QVariant::fromValue<QColor>(QColor("red"));
-        else if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "Kill")
-            return QVariant::fromValue<QColor>(QColor("black"));
-        else if (mSystemCombatInfoListProxy[static_cast<size_t>(_row)].second->phaseToString() == "NoKill")
-            return QVariant::fromValue<QColor>(QColor("brown"));
-        else
-            return QVariant::fromValue<QColor>(QColor("white"));
+        if (index.row() >= mSystemCombatInfoListProxy.size())
+            return QVariant::fromValue<QColor>("white");
+        return QVariant::fromValue<QColor>(QColor(mSystemCombatInfoListProxy[static_cast<size_t>(index.row())].second->phaseToColor()));
         break;
     }
 
@@ -233,6 +223,25 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
         isp.second.reset(new SystemInfo);
         *(isp.second) = systemInfo;
         mSystemInfoList.push_back(isp);
+
+        //------------------ add combatinfo if doesn't exist
+        const auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [systemInfo](QPair<int, QSharedPointer<SystemCambatInfo>> &item){
+            return item.second->Number == systemInfo.Number;
+        });
+        const auto it3 = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(), [systemInfo](QPair<int, QSharedPointer<SystemStatusInfo>> &item){
+            return item.second->Number == systemInfo.Number;
+        });
+        if (it2 == mSystemCombatInfoList.end()) {
+            SystemCambatInfo tmp1;
+            tmp1.Number = systemInfo.Number;
+            tmp1.Phase = SystemCambatInfo::Search;
+            updateItemData(tmp1);
+        }
+        if (it3 == mSystemStatusInfoList.end()) {
+            SystemStatusInfo tmp2;
+            tmp2.Number = systemInfo.Number;
+            updateItemData(tmp2);
+        }
     }
     mSystemInfoListProxy.clear();
     for (auto& item : mSystemInfoList) {
@@ -248,33 +257,40 @@ void SystemTableModel::updateItemData(const SystemStatusInfo &systemStatusInfo)
 {
 //    beginResetModel();
 
-    const auto it = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(),
-                                 [systemStatusInfo](const QPair<int, QSharedPointer<SystemStatusInfo>>& itemInfo){
-        return itemInfo.second->Number == systemStatusInfo.Number;
-    });
-
-
-    if (it != mSystemStatusInfoList.end()) {
-        *(*it).second = systemStatusInfo;
-    } else {
-        QPair<int, QSharedPointer<SystemStatusInfo>> isp;
-        isp.first = mSystemStatusInfoList.size();
-        isp.second.reset(new SystemStatusInfo);
-        *(isp.second) = systemStatusInfo;
-        mSystemStatusInfoList.push_back(isp);
+    bool update = false;
+    for (auto system : mSystemInfoList) {
+        if (system.second->Number == systemStatusInfo.Number)
+            update = true;
     }
+    if (update) {
+        const auto it = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(),
+                                     [systemStatusInfo](const QPair<int, QSharedPointer<SystemStatusInfo>>& itemInfo){
+            return itemInfo.second->Number == systemStatusInfo.Number;
+        });
 
-    if (mMode == "TableModel") {
-        mSystemStatusInfoListProxy.clear();
-        for (auto& item : mSystemStatusInfoList) {
-            if (QString::number(item.second->Number).contains(mFilter))
-                mSystemStatusInfoListProxy.push_back(item);
+
+        if (it != mSystemStatusInfoList.end()) {
+            *(*it).second = systemStatusInfo;
+        } else {
+            QPair<int, QSharedPointer<SystemStatusInfo>> isp;
+            isp.first = mSystemStatusInfoList.size();
+            isp.second.reset(new SystemStatusInfo);
+            *(isp.second) = systemStatusInfo;
+            mSystemStatusInfoList.push_back(isp);
         }
-        emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount()-1));
-    }
-    else {
-        if (mTN > 0)
-            onAircraftClicked(mTN);
+
+        if (mMode == "TableModel") {
+            mSystemStatusInfoListProxy.clear();
+            for (auto& item : mSystemStatusInfoList) {
+                if (QString::number(item.second->Number).contains(mFilter))
+                    mSystemStatusInfoListProxy.push_back(item);
+            }
+            emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount()-1));
+        }
+        else {
+            if (mTN > 0)
+                onAircraftClicked(mTN);
+        }
     }
 
 //    endResetModel();
@@ -282,30 +298,37 @@ void SystemTableModel::updateItemData(const SystemStatusInfo &systemStatusInfo)
 
 void SystemTableModel::updateItemData(const SystemCambatInfo &systemCambatInfo)
 {
-    beginResetModel();
-
-    const auto it = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(),
-                                 [systemCambatInfo](const QPair<int, QSharedPointer<SystemCambatInfo>>& itemInfo){
-        return itemInfo.second->Number == systemCambatInfo.Number;
-    });
-
-
-    if (it != mSystemCombatInfoList.end()) {
-        *(*it).second = systemCambatInfo;
-    } else {
-        QPair<int, QSharedPointer<SystemCambatInfo>> isp;
-        isp.first = mSystemCombatInfoList.size();
-        isp.second.reset(new SystemCambatInfo);
-        *(isp.second) = systemCambatInfo;
-        mSystemCombatInfoList.push_back(isp);
+    bool update = false;
+    for (auto system : mSystemInfoList) {
+        if (system.second->Number == systemCambatInfo.Number)
+            update = true;
     }
-    mSystemCombatInfoListProxy.clear();
-    for (auto& item : mSystemCombatInfoList) {
-        if (QString::number(item.second->Number).contains(mFilter))
-            mSystemCombatInfoListProxy.push_back(item);
-    }
+    if (update) {
+        beginResetModel();
 
-    endResetModel();
+        const auto it = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(),
+                                     [systemCambatInfo](const QPair<int, QSharedPointer<SystemCambatInfo>>& itemInfo){
+            return itemInfo.second->Number == systemCambatInfo.Number;
+        });
+
+
+        if (it != mSystemCombatInfoList.end()) {
+            *(*it).second = systemCambatInfo;
+        } else {
+            QPair<int, QSharedPointer<SystemCambatInfo>> isp;
+            isp.first = mSystemCombatInfoList.size();
+            isp.second.reset(new SystemCambatInfo);
+            *(isp.second) = systemCambatInfo;
+            mSystemCombatInfoList.push_back(isp);
+        }
+        mSystemCombatInfoListProxy.clear();
+        for (auto& item : mSystemCombatInfoList) {
+            if (QString::number(item.second->Number).contains(mFilter))
+                mSystemCombatInfoListProxy.push_back(item);
+        }
+
+        endResetModel();
+    }
 }
 
 void SystemTableModel::assign(int Number, int TN)
