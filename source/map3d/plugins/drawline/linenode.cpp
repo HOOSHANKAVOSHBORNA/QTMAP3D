@@ -5,10 +5,6 @@
 
 LineNode::LineNode(MapController *mapController)
 {
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::Purple;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-
     mMapController = mapController;
     mLineGeometry = new osgEarth::Symbology::Geometry();
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLineGeometry, mMapController->getMapSRS());
@@ -37,21 +33,22 @@ LineNode::LineNode(MapController *mapController)
 void LineNode::addPoint(osgEarth::GeoPoint point)
 {
     mLineGeometry->push_back(point.vec3d());
-    qDebug()<< getSize();
+//    qDebug()<< getSize();
     dirty();
-    if(getSize() >= 2 && mLineGeometry->at(getSize()-2)!= mLineGeometry->at(getSize()-1))
+    if(getSize() >= 2)
     {
         std::vector<osg::Vec3d> distanceVectorPoint;
-        distanceVectorPoint.push_back(mLineGeometry->at(getSize()-2));
-        distanceVectorPoint.push_back(mLineGeometry->at(getSize()-1));
+        distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 2));
+        distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 1));
 
         auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
 
         auto imageLabel = updateLenghtLable(lenght);
-        osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, imageLabel);
-        labelNode->setPosition(
-                    osgEarth::GeoPoint(mMapController->getMapSRS(),
-                                       (mLineGeometry->at(getSize()-2)+mLineGeometry->at(getSize()-1))/2));
+        osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
+        labelNode->setIconImage(imageLabel);
+        osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+                                    (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
+        labelNode->setPosition(midPoint);
         mLableGroup->addChild(labelNode);
         addChild(mLableGroup);
     }

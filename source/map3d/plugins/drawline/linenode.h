@@ -19,7 +19,6 @@ public:
     void removeFirstPoint();
     void clear();
     int getSize();
-    osgEarth::Symbology::Geometry* mLineGeometry;
     void showLenght(bool show);
 
     osgEarth::Color getColor() const;
@@ -47,13 +46,12 @@ public:
 
     bool getSmooth() const;
     void setSmooth(bool Smooth);
-
-
-protected:
+private:
+    osg::Image *updateLenghtLable(double lenght);
 
 private:
     MapController* mMapController{nullptr};
-    osg::ref_ptr<osg::Group> mLableGroup;
+    osgEarth::Symbology::Geometry* mLineGeometry;
     osgEarth::Color mColor{osgEarth::Color::Green};
     osgEarth::Color mPointColor{osgEarth::Color::Blue};
     float mWidth{5};
@@ -65,8 +63,7 @@ private:
     bool mSmooth;
 
     //Lenght part
-    osg::Image *updateLenghtLable(double lenght);
-    osgEarth::Symbology::Style labelStyle;
+    osg::ref_ptr<osg::Group> mLableGroup;
     QImage *mRenderImage{nullptr};
     static constexpr int LABEL_IMAGE_WIDTH = 100;
     static constexpr int LABEL_IMAGE_HEIGHT = 20;

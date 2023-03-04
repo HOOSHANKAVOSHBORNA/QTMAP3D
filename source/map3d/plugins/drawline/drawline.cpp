@@ -105,7 +105,11 @@ void drawLine::mousePressEvent(QMouseEvent *event)
         }
         if(mDrawingState == DrawingState::DRAWING)
         {
-            drawingLine(event);
+            if (mShape == Shape::LINE && mLine->getSize()>= 2){
+                finishDrawing(event);
+            }
+            else
+                drawingLine(event);
             event->accept();
         }
     }
@@ -115,18 +119,24 @@ void drawLine::mousePressEvent(QMouseEvent *event)
         if (mLineProperties)
             mLineProperties->hide();
     }
+    if(event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING)
+    {
+        finishDrawing(event);
+        event->accept();
+    }
 }
 
 void drawLine::mouseMoveEvent(QMouseEvent *event)
 {
     if (mDrawingState == DrawingState::DRAWING)
         mouseMoveDrawing(event);
+
 }
 
-void drawLine::mouseDoubleClickEvent(QMouseEvent *event)
+void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 {
-    finishDrawing(event);
-    event->accept();
+//    finishDrawing(event);
+//    event->accept();
 }
 
 void drawLine::startDrawLine()
@@ -153,10 +163,6 @@ void drawLine::drawingLine(QMouseEvent *event)
 {
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
-
-    if (mShape == Shape::LINE && mLine->getSize()>= 2){
-        finishDrawing(event);
-    }
 }
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)
