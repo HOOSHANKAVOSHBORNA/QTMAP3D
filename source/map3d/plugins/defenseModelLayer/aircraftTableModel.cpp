@@ -41,8 +41,10 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
         case  0: return QVariant::fromValue<QString>(QString::number(mAircraftInfoListProxy[static_cast<size_t>(_row)].first));
         case  1: return QVariant::fromValue<int>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->TN);
         case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->IFFCode);
-        case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->CallSign);
-        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->Type);
+        case  3: return mMode == "Assignment" ? QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->Type) :
+                                                QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->CallSign);
+        case  4: return mMode == "Assignment" ? QVariant::fromValue<QString>( mAircraftInfoListProxy[static_cast<size_t>(_row)].second->identifyToString()) :
+                                               QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->Type);
         case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->MasterRadar);
         case  6: return QVariant::fromValue<QString>( mAircraftInfoListProxy[static_cast<size_t>(_row)].second->identifyToString());
         case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->IdentificationMethod);
@@ -137,8 +139,8 @@ QString AircraftTableModel::headerText(int column) const
     case  0: return QStringLiteral("Index");
     case  1: return QStringLiteral("TN");
     case  2: return QStringLiteral("IFFCode");
-    case  3: return QStringLiteral("CallSign");
-    case  4: return QStringLiteral("Type");
+    case  3: return mMode == "Assignment" ? "Type" : QStringLiteral("CallSign");
+    case  4: return mMode == "Assignment" ? "Identification" : QStringLiteral("Type");
     case  5: return QStringLiteral("Master Radar");
     case  6: return QStringLiteral("Identification");
     case  7: return QStringLiteral("Identification Method");

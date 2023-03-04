@@ -87,16 +87,16 @@ Item {
                 RowLayout {
                     anchors.top: parent.top
                     height: 40
-                    width: 4 * (120 + 4)
+                    width: 5 * (93 + 2)
                     spacing: 2
                     anchors.leftMargin: 2
                     anchors.rightMargin: 2
                     anchors.left: parent.left
 
                     Repeater {
-                        model: 4
+                        model: 5
                         Rectangle {
-                            width: 120
+                            width: 93
                             height: 40
 //                            radius: 5
                             color: '#4568dc'
@@ -107,8 +107,7 @@ Item {
                             }
                         }
                     }
-
-                    }
+                }
             }
 
             ScrollView {
@@ -120,9 +119,9 @@ Item {
                     model: rootItem.aircraftModel
 //                    contentWidth: 120
                     columnWidthProvider: function (column) {
-                        if (column > 3)
+                        if (column > 4)
                             return 0
-                        return 120
+                        return 95
                     }
 
                     delegate: Item {
@@ -184,12 +183,15 @@ Item {
                         Rectangle {
                             id: rct
                             anchors.centerIn: parent
-                            implicitWidth: 120
+                            implicitWidth: 95
                             implicitHeight:  txt.implicitHeight + 10
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: rootItem.aircraftModel ? (rootItem.aClicked == row ? AircraftHoverColor : (rootItem.aHoveredIndex == row ? AircraftHoverColor : AircraftColor)) : "transparent";
+                                color: rootItem.aircraftModel ? (rootItem.aClicked == row ? AircraftHoverColor :
+                                                                (rootItem.aHoveredIndex == row ? AircraftHoverColor :
+                                                                (column == 4 ? AircraftColor : "transparent"))) :
+                                                                "transparent";
                                 anchors.fill: parent
                             }
                             Rectangle {
@@ -199,7 +201,12 @@ Item {
                                 radius: 10
                                 anchors.verticalCenter: parent.verticalCenter
 //                                anchors.leftMargin: -30
-                                color: (aClicked == row && column == 0) ? "red" : "transparent"
+                                color: (column == 0) ? "white" : "transparent"
+                                Image {
+                                    anchors.fill: parent
+                                    source: "qrc:/resources/select.gif"
+                                    visible: aClicked == row && column == 0
+                                }
                             }
 
                             Text {
@@ -227,16 +234,16 @@ Item {
                 Row {
                     anchors.top: parent.top
                     height: 40
-                    width: 4 * (120 + 4)
+                    width: 5 * (93 + 2)
                     spacing: 2
                     anchors.leftMargin: 2
                     anchors.rightMargin: 2
                     anchors.left: parent.left
 
                     Repeater {
-                        model: 4
+                        model: 5
                         Rectangle {
-                            width: 120
+                            width: 93
                             height: 40
 //                            radius: 5
                             color: '#4568dc'
@@ -256,7 +263,11 @@ Item {
                 TableView {
                     id: systems
                     model: rootItem.systemModel
-                    contentWidth: 120
+                    columnWidthProvider: function (column) {
+                        if (column > 4)
+                            return 0
+                        return 95
+                    }
                     delegate: Item {
                         implicitWidth:   rct1.implicitWidth
                         implicitHeight:  rct1.implicitHeight + 4
@@ -317,13 +328,15 @@ Item {
                         Rectangle {
                             id: rct1
                             anchors.centerIn: parent
-                            implicitWidth: 120
+                            implicitWidth: 95
                             implicitHeight:  txt1.implicitHeight + 10
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: rootItem.systemModel ? ((rootItem.sHoveredIndex == row)
-                                         ? "lightskyblue" : SystemColor) : "transparent";
+                                color: rootItem.systemModel ? (column == 4 ? SystemColor :
+                                                            rootItem.sClicked == row ? "darkyellow" :
+                                                            rootItem.sHoveredIndex == row ? "white" :
+                                                            "transparent") : "transparent";
                                 anchors.fill: parent
                             }
                             Rectangle {
@@ -333,7 +346,13 @@ Item {
                                 radius: 10
                                 anchors.verticalCenter: parent.verticalCenter
 //                                anchors.leftMargin: -30
-                                color: (sClicked == row && column == 0) ? "red" : "transparent"
+//                                color: (sClicked == row && column == 0) ? "red" : "transparent"
+                                color: (column == 0) ? "white" : "transparent"
+                                Image {
+                                    anchors.fill: parent
+                                    source: "qrc:/resources/select.gif"
+                                    visible: sClicked == row && column == 0
+                                }
                             }
                             Text {
                                 id: txt1

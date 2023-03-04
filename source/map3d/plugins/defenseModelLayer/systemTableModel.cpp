@@ -33,7 +33,8 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         case  1: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Number);
         case  2: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Name);
         case  3: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())].second->Type);
-        case  4: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Terminal);
+        case  4: return mMode == "Assignment" ? QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )].second->phaseToString()):
+                                                QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Terminal);
         case  5: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Latitude);
         case  6: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Longitude);
         case  7: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )].second->Altitude);
@@ -128,7 +129,7 @@ QString SystemTableModel::headerText(int column) const
     case  1: return QStringLiteral("Number");
     case  2: return QStringLiteral("Name");
     case  3: return QStringLiteral("Type");
-    case  4: return QStringLiteral("Terminal");
+    case  4: return mMode == "Assignment" ? "Phase" : QStringLiteral("Terminal");
     case  5: return QStringLiteral("Latitude");
     case  6: return QStringLiteral("Longitude");
     case  7: return QStringLiteral("Altitude");
