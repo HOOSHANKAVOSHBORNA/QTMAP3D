@@ -7,6 +7,7 @@ import Crystal 1.0
 
 Item {
     id: rootItem
+    implicitHeight: parent.height
     //    function show() {
     //        dialog.open()
     //    }
@@ -21,8 +22,12 @@ Item {
     Item {
         id: dialog
         width: 250
-        height: 300
-//        title: qsTr("Line Properties")
+        height: rootItem.height
+        //        title: qsTr("Line Properties")
+
+
+
+
 
 
 
@@ -31,22 +36,47 @@ Item {
             id: item
             visible: true
             width: 240
-            height: 300
+            height: rootItem.height
             //            anchors.horizontalCenter: parent.horizontalCenter
             anchors.fill: parent
-            color: "#3e3e3e"
+            color: "transparent"
             //            y:43
+
+            Rectangle{
+                id:header
+                width: parent.width -2
+                anchors.horizontalCenter: parent.horizontalCenter
+                y: 2
+                height: 35
+                radius: 10
+                gradient:Gradient{
+                    GradientStop{position:1.0 ; color: "#313131"}
+                    GradientStop{position:0.0 ; color: "#5f5f5f"}
+                }
+                Text {
+                    id: headerTitle
+                    text: qsTr("Sphere Properties")
+                    anchors.centerIn: parent
+                    font.bold: true
+                    font.pointSize: 10
+                    color: "white"
+                }
+
+            }
+
             ScrollView {
                 id: frame
                 clip: true
-                anchors.fill: parent
+                anchors.top: header.bottom
+                width: parent.width
+                height: parent.height - header.height
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
-                    contentHeight: 300
+                    contentHeight: 400
                     width: 240
                     Rectangle {
                         id : innerContainer
-                        color: "#4b4b4b"
+                        color: "transparent"
                         anchors.fill: parent
 
                         /////////////////////// components Grid ////////////////////////////
@@ -444,7 +474,7 @@ Item {
                                         selectionColor: "dark green"
                                         onTextChanged: {
                                             if(transValue && transValue.value){
-                                           lineProperties.height = transValue.value
+                                                lineProperties.height = transValue.value
                                             }
                                         }
                                     }
