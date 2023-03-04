@@ -106,7 +106,7 @@ Item {
                 anchors.left: parent.left
 
                 Repeater {
-                    model: 17
+                    model: 16
                     Rectangle {
                         width: 160
                         height: 40
@@ -133,7 +133,7 @@ Item {
             TableView {
                 id: tableView
                 model: rootItem.model
-                contentWidth: 17 * (164)
+                contentWidth: 16 * (164)
                 clip:true
 
                 delegate: Item {
@@ -168,12 +168,14 @@ Item {
                         color: "transparent"
                         clip: true
                         Rectangle {
-                            opacity: 0.2
-                            color: (rootItem.hoveredIndex == row) ? AircraftHoverColor : AircraftColor
+                            opacity: 0.3
+                            color: (rootItem.hoveredIndex == row) ? AircraftHoverColor : (column == 0 ? AircraftColor : "transparent")
                             anchors.fill: parent
                         }
                         Text {
                             id: txt
+                            anchors.leftMargin: 5
+                            anchors.rightMargin: 5
                             anchors.centerIn: parent
                             text: display
                             color: d_txtcolor

@@ -187,11 +187,11 @@ Item {
                             implicitHeight:  txt.implicitHeight + 10
                             color: "transparent"
                             Rectangle {
-                                opacity: 0.2
-                                color: rootItem.aircraftModel ? (rootItem.aClicked == row ? AircraftHoverColor :
-                                                                (rootItem.aHoveredIndex == row ? AircraftHoverColor :
-                                                                (column == 4 ? AircraftColor : "transparent"))) :
-                                                                "transparent";
+                                opacity: 0.4
+                                color: rootItem.aircraftModel ? (column == 0 ? AircraftColor :
+                                                            rootItem.aClicked == row ? "darkyellow" :
+                                                            rootItem.aHoveredIndex == row ? "darkyellow" :
+                                                            "transparent") : "transparent";
                                 anchors.fill: parent
                             }
                             Rectangle {
@@ -332,7 +332,7 @@ Item {
                             implicitHeight:  txt1.implicitHeight + 10
                             color: "transparent"
                             Rectangle {
-                                opacity: 0.2
+                                opacity: 0.5
                                 color: rootItem.systemModel ? (column == 4 ? SystemColor :
                                                             rootItem.sClicked == row ? "darkyellow" :
                                                             rootItem.sHoveredIndex == row ? "white" :
