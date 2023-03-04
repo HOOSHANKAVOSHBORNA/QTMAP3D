@@ -168,8 +168,18 @@ Item {
                         color: "transparent"
                         clip: true
                         Rectangle {
-                            opacity: 0.3
-                            color: (rootItem.hoveredIndex == row) ? AircraftHoverColor : (column == 0 ? AircraftColor : "transparent")
+                            opacity: 0.4
+                            color: rootItem.model ? (column == 0 ? AircraftColor:
+                                                        "transparent") : "transparent";
+                            anchors.centerIn: parent
+                            width: 25
+                            height: 23
+                            radius: 7
+                        }
+                        Rectangle {
+                            opacity: 0.4
+                            color: rootItem.model ? (rootItem.hoveredIndex == row ? "lightskyblue" :
+                                                        "transparent") : "transparent";
                             anchors.fill: parent
                         }
                         Text {

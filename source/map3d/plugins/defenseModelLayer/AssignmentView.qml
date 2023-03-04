@@ -1,6 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
+import QtGraphicalEffects 1.13
 import Crystal 1.0
 Item {
 
@@ -188,12 +189,21 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.4
-                                color: rootItem.aircraftModel ? (column == 0 ? AircraftColor :
-                                                            rootItem.aClicked == row ? "darkyellow" :
-                                                            rootItem.aHoveredIndex == row ? "darkyellow" :
+                                color: rootItem.aircraftModel ? (column == 0 ? AircraftColor:
+                                                            "transparent") : "transparent";
+                                anchors.centerIn: parent
+                                width: 25
+                                height: 23
+                                radius: 7
+                            }
+                            Rectangle {
+                                opacity: 0.4
+                                color: rootItem.aircraftModel ? (rootItem.aClicked == row ? "lightskyblue" :
+                                                            rootItem.aHoveredIndex == row ? "darkYellow" :
                                                             "transparent") : "transparent";
                                 anchors.fill: parent
                             }
+
                             Rectangle {
                                 width: 20
                                 height: 20
@@ -201,11 +211,21 @@ Item {
                                 radius: 10
                                 anchors.verticalCenter: parent.verticalCenter
 //                                anchors.leftMargin: -30
-                                color: (column == 0) ? "white" : "transparent"
+                                color: "transparent"
                                 Image {
+                                    id: img6
                                     anchors.fill: parent
-                                    source: "qrc:/resources/select.gif"
-                                    visible: aClicked == row && column == 0
+                                    source: "qrc:/resources/select.png"
+                                    rotation: 90
+                                    visible: false
+
+                                }
+                                ColorOverlay {
+                                    anchors.fill: img6
+                                    color: (row == rootItem.aClicked && column == 0) ? "#FFFFFF" : (rootItem.aHoveredIndex == row ? "#404040" : "transparent")
+                                    source: img6
+                                    rotation: 90
+                                    visible: column == 0 && (row == aHoveredIndex || row == aClicked)
                                 }
                             }
 
@@ -332,13 +352,22 @@ Item {
                             implicitHeight:  txt1.implicitHeight + 10
                             color: "transparent"
                             Rectangle {
-                                opacity: 0.5
-                                color: rootItem.systemModel ? (column == 4 ? SystemColor :
-                                                            rootItem.sClicked == row ? "darkyellow" :
-                                                            rootItem.sHoveredIndex == row ? "white" :
+                                opacity: 0.4
+                                color: rootItem.systemModel ? (column == 4 ? SystemColor:
+                                                            "transparent") : "transparent";
+                                anchors.centerIn: parent
+                                width: 70
+                                height: 23
+                                radius: 7
+                            }
+                            Rectangle {
+                                opacity: 0.4
+                                color: rootItem.systemModel ? (rootItem.sClicked == row ? "lightskyblue" :
+                                                            rootItem.sHoveredIndex == row ? "darkYellow" :
                                                             "transparent") : "transparent";
                                 anchors.fill: parent
                             }
+
                             Rectangle {
                                 width: 20
                                 height: 20
@@ -346,12 +375,21 @@ Item {
                                 radius: 10
                                 anchors.verticalCenter: parent.verticalCenter
 //                                anchors.leftMargin: -30
-//                                color: (sClicked == row && column == 0) ? "red" : "transparent"
-                                color: (column == 0) ? "white" : "transparent"
+                                color: "transparent"
                                 Image {
+                                    id: img7
                                     anchors.fill: parent
-                                    source: "qrc:/resources/select.gif"
-                                    visible: sClicked == row && column == 0
+                                    source: "qrc:/resources/select.png"
+                                    rotation: 90
+                                    visible: false
+
+                                }
+                                ColorOverlay {
+                                    anchors.fill: img7
+                                    color: (row == rootItem.sClicked && column == 0) ? "#FFFFFF" : (rootItem.sHoveredIndex == row ? "#404040" : "transparent")
+                                    source: img7
+                                    rotation: 90
+                                    visible: column == 0 && (row == sHoveredIndex || row == sClicked)
                                 }
                             }
                             Text {

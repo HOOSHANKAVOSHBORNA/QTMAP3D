@@ -66,12 +66,12 @@ public:
 
 
 private:
-    std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemInfoList;
-    std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemInfoListProxy;
-    std::deque<QPair<int, QSharedPointer<SystemStatusInfo>>> mSystemStatusInfoList;
-    std::deque<QPair<int, QSharedPointer<SystemStatusInfo>>> mSystemStatusInfoListProxy;
-    std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoList;
-    std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoListProxy;
+    std::deque<QSharedPointer<SystemInfo>> mSystemInfoList;
+    std::deque<QSharedPointer<SystemInfo>> mSystemInfoListProxy;
+    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoList;
+    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoListProxy;
+    std::deque<QSharedPointer<SystemCambatInfo>> mSystemCombatInfoList;
+    std::deque<QSharedPointer<SystemCambatInfo>> mSystemCombatInfoListProxy;
 
     QMap<int, QList<SystemAssignInfo>> mSystemsAssigned;
 
