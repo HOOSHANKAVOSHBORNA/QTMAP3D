@@ -3,7 +3,8 @@
 
 #include "plugininterface.h"
 #include "aircraftModelNode.h"
-#include "dataManager.h"
+#include "listManager.h"
+#include "stationModelNode.h"
 
 #include<osg/Array>
 #include <osg/AnimationPath>
@@ -22,6 +23,8 @@ class PositionAttitudeTransform;
 class Vec3d;
 class Node;
 }
+
+class DataManager;
 
 #define AIRCRAFTS_LAYER_NAME "Aircrafts"
 #define SYSTEMS_LAYER_NAME "Systems"
@@ -46,15 +49,13 @@ public:
     void addUpdateAircraft(AircraftInfo aircraftInfo);
     void addUpdateSystem(SystemInfo systemInfo);
     void addUpdateStation(StationInfo stationInfo);
+    SystemModelNode *getSystemModelNode(int number)const;
+    AircraftModelNode *getAircraftModelNode(int tn) const;
+    StationModelNode *getStationModelNode(int number) const;
+    void selectModelNode(DefenseModelNode* defenseModelNode);
+    void clearAircraft(int tn);
 public slots:
-    void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
-    void onSystemInfoChanged(SystemInfo& systemInfo);
-    void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
-    void onSystemCambatInfoChanged(SystemCambatInfo& systemCambatInfo);
-    void onStationInfoChanged(StationInfo& stationInfo);
-    void onClearAircraft(int tn);
-    void onAircraftAssignedResponse(int tn, int systemNo, bool result);
-    void onClear();
+    void onMapClear();
 
     static osgEarth::Symbology::Style& getDefaultStyle();
 protected:
@@ -64,8 +65,6 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 private:
-    void aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode);
-    void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
 private:
@@ -78,10 +77,11 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     int mPreCameraRange{0};
 
-    DataManager *mDataManager = nullptr;
+//    ListManager *mListManager = nullptr;
     osgEarth::Annotation::ModelNode* mDragAircraftModelNode{nullptr};
 
-    DefenseDataManager *mDefenseDataManager;
+    //DefenseDataManager *mDefenseDataManager;
+    DataManager *mDataManager;
 
 };
 

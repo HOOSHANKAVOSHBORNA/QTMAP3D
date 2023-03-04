@@ -12,9 +12,12 @@ Item {
     property int aSelectedIndex: -1
     property int aClicked: -1
     property int sClicked: -1
-    property AssignmentModel model
     property AircraftTableModel aircraftModel
     property SystemTableModel systemModel
+
+
+    signal aircraftDoubleClicked(int TN)
+    signal systemDoubleClicked(int Number)
 //    Rectangle {
 //        anchors.fill: parent
 //        color: "#252525"
@@ -129,20 +132,43 @@ Item {
                             id: mouseArea
                             hoverEnabled: true
                             anchors.fill: parent
-                            onClicked: function() {
-                                if (rootItem.aircraftModel) {
-                                    rootItem.aircraftModel.onAircraftClicked(rootItem.aircraftModel.getTN(row))
-                                    if (rootItem.systemModel) {
-                                        systems.contentX = 0;
-                                        systems.contentY = 0;
+                            Timer{
+                                id:timer
+                                interval: 200
+                                onTriggered: function () {
+                                    if (rootItem.aircraftModel) {
+                                        rootItem.aircraftModel.onAircraftClicked(rootItem.aircraftModel.getTN(row))
+                                        if (rootItem.systemModel) {
+                                            systems.contentX = 0;
+                                            systems.contentY = 0;
+                                        }
+                                        if (rootItem.aircraftModel){
+                                            rootItem.aClicked = row;
+                                            rootItem.sClicked = -1;
+                                        }
                                     }
                                 }
                             }
+                            onClicked: function() {
+                                if (timer.running){
+                                    timer.stop();
+                                } else{
+                                    timer.restart();
 
-                            onContainsPressChanged: function () {
-                                if (rootItem.aircraftModel)
-                                    rootItem.aClicked = row
+                                }
                             }
+
+                            onDoubleClicked: function() {
+                                timer.stop();
+                                if (rootItem.aircraftModel) {
+                                    rootItem.aircraftDoubleClicked(rootItem.aircraftModel.getTN(row));
+                                }
+                            }
+
+//                            onContainsPressChanged: function () {
+//                                if (rootItem.aircraftModel)
+//                                    rootItem.aClicked = row
+//                            }
 
                             onContainsMouseChanged: function() {
                                 if (mouseArea.containsMouse) {
@@ -163,13 +189,23 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (aClicked == row && rootItem.systemModel.getShowAssigned()) ? "#1010FF" : (rootItem.aHoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: rootItem.aircraftModel ? (rootItem.aClicked == row ? AircraftHoverColor : (rootItem.aHoveredIndex == row ? AircraftHoverColor : AircraftColor)) : "transparent";
                                 anchors.fill: parent
                             }
+                            Rectangle {
+                                width: 20
+                                height: 20
+                                x: -20
+                                radius: 10
+                                anchors.verticalCenter: parent.verticalCenter
+//                                anchors.leftMargin: -30
+                                color: (aClicked == row && column == 0) ? "red" : "transparent"
+                            }
+
                             Text {
                                 id: txt
                                 anchors.centerIn: parent
-                                text: display
+                                text: rootItem.aircraftModel ? display : "";
                                 color: "white"
                             }
                         }
@@ -229,25 +265,44 @@ Item {
                             hoverEnabled: true
                             anchors.fill: parent
                             onClicked: function() {
-                                if (rootItem.systemModel) {
-                                    rootItem.systemModel.onSystemClicked(rootItem.systemModel.getNumber(row));
-                                    if (rootItem.aircraftModel) {
-                                        aircrafts.contentX = 0;
-                                        aircrafts.contentY = 0;
+                                if (timer2.running){
+                                    timer2.stop();
+                                } else{
+                                    timer2.running = false;
+                                    timer2.restart();
+                                }
+                            }
+
+
+                            Timer{
+                                id:timer2
+                                interval: 200
+                                onTriggered: function () {
+                                    if (rootItem.systemModel) {
+                                        rootItem.systemModel.onSystemClicked(rootItem.systemModel.getNumber(row));
+                                        if (rootItem.aircraftModel) {
+                                            aircrafts.contentX = 0;
+                                            aircrafts.contentY = 0;
+                                        }
+                                        if (rootItem.systemModel) {
+                                            rootItem.sClicked = row
+                                            rootItem.aClicked = -1;
+                                        }
                                     }
                                 }
                             }
 
                             onDoubleClicked: function() {
-                                if (rootItem.model) {
-                                    rootItem.aircraftDoubleClicked(rootItem.model.getTN(row));
+                                timer2.stop()
+                                if (rootItem.systemModel) {
+                                    rootItem.systemDoubleClicked(rootItem.systemModel.getNumber(row));
                                 }
                             }
 
-                            onContainsPressChanged: function () {
-                                if (rootItem.systemModel)
-                                    rootItem.sClicked = row
-                            }
+//                            onContainsPressChanged: function () {
+//                                if (rootItem.systemModel)
+//                                    rootItem.sClicked = row
+//                            }
 
                             onContainsMouseChanged: function() {
                                 if (mouseArea2.containsMouse) {
@@ -267,8 +322,18 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 0.2
-                                color: (sClicked == row && rootItem.aircraftModel.getShowAssigned()) ? "#1010FF" : (rootItem.sHoveredIndex == row) ? "lightskyblue" : "transparent"
+                                color: rootItem.systemModel ? ((rootItem.sHoveredIndex == row)
+                                         ? "lightskyblue" : SystemColor) : "transparent";
                                 anchors.fill: parent
+                            }
+                            Rectangle {
+                                width: 20
+                                height: 20
+                                x: -20
+                                radius: 10
+                                anchors.verticalCenter: parent.verticalCenter
+//                                anchors.leftMargin: -30
+                                color: (sClicked == row && column == 0) ? "red" : "transparent"
                             }
                             Text {
                                 id: txt1

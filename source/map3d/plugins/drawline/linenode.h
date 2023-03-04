@@ -45,12 +45,15 @@ public:
     float getPointWidth() const;
     void setPointWidth(float pointWidth);
 
+    bool getSmooth() const;
+    void setSmooth(bool Smooth);
+
 
 protected:
-    osg::ref_ptr<osg::Group> mLableGroup;
+
 private:
     MapController* mMapController{nullptr};
-
+    osg::ref_ptr<osg::Group> mLableGroup;
     osgEarth::Color mColor{osgEarth::Color::Green};
     osgEarth::Color mPointColor{osgEarth::Color::Blue};
     float mWidth{5};
@@ -59,6 +62,7 @@ private:
     bool mPointVisible{true};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
+    bool mSmooth;
 
     //Lenght part
     osg::Image *updateLenghtLable(double lenght);

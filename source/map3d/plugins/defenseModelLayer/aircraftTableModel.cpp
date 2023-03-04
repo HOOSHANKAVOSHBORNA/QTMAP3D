@@ -4,16 +4,11 @@
 #include <QRegularExpression>
 #include <QDebug>
 #include <QTimer>
+#include <algorithm>
 
 AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-    //    for (int i = 0; i < 100; i++) {
-    //        AircraftInfo ai;
-    //        ai.TN = QStringLiteral("OOPS") + QString::number(i);
-    //        updateItemData(ai);
-    //    }
-
     QTimer *timer = new QTimer;
     QObject::connect(timer , &QTimer::timeout,
                      this, &AircraftTableModel::onUpdateTimerTriggered,
@@ -107,6 +102,17 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
 
         break;
     }
+    case AircraftColor:
+    {
+        const int _row = index.row();
+        return QVariant::fromValue<QColor>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->aircraftColor());
+    }
+
+    case AircraftHoverColor:
+    {
+        const int _row = index.row();
+        return QVariant::fromValue<QColor>(mAircraftInfoListProxy[static_cast<size_t>(_row)].second->aircraftHoverColor());
+    }
 
 
     }
@@ -120,6 +126,8 @@ QHash<int, QByteArray> AircraftTableModel::roleNames() const
     hash[BackColorRole] = "d_bkcolor";
     hash[TextColorRole] = "d_txtcolor";
     hash[HeaderTextRole] = "d_headerTxt";
+    hash[AircraftColor] = "AircraftColor";
+    hash[AircraftHoverColor] = "AircraftHoverColor";
     return hash;
 }
 
@@ -161,90 +169,153 @@ int AircraftTableModel::getTN(int row) const
 
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 {
-    if (!mShowAssigned) {
-        mMinRowUpdate = -1;
-        mMaxRowUpdate = -1;
-        mNeedUpdateOnTimerTrigger = false;
+    //    if (!mShowAssigned) {
+    mMinRowUpdate = -1;
+    mMaxRowUpdate = -1;
+    mNeedUpdateOnTimerTrigger = false;
 
-        beginResetModel();
+    beginResetModel();
 
-        mFilter = wildcard;
-        mFilter.remove(QRegularExpression("\\s"));
+    mFilter = wildcard;
+    mFilter.remove(QRegularExpression("\\s"));
 
-        mAircraftInfoListProxy.clear();
-        for (auto& item : mAircraftInfoList) {
-            if (QString::number(item.second->TN).contains(mFilter))
-                mAircraftInfoListProxy.push_back(item);
-        }
-
-        endResetModel();
+    mAircraftInfoListProxy.clear();
+    for (auto& item : mAircraftInfoList) {
+        if (QString::number(item.second->TN).contains(mFilter))
+            mAircraftInfoListProxy.push_back(item);
     }
+
+    endResetModel();
+    //    }
+}
+
+void AircraftTableModel::sortWithHeader(int column)
+{
+    switch (column) {
+    case 0: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 1:std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.second->Altitude < item2.second->Altitude;
+        });
+        break;
+    case 2: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 3: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 4: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 5: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 6: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 7: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 8: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 9: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 10: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 11: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 12: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 13: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 14: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 15: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+    case 16: std::sort(mAircraftInfoList.begin(), mAircraftInfoList.end(), [=](const QPair<int, QSharedPointer<AircraftInfo>> &item1, const QPair<int, QSharedPointer<AircraftInfo>> &item2) {
+            return item1.first < item2.first;
+        });
+        break;
+
+
+    }
+    mNeedUpdateOnTimerTrigger = true;
+    onUpdateTimerTriggered();
+
+
 }
 
 void AircraftTableModel::onAircraftClicked(int TN)
 {
     emit aircraftClicked(TN);
+//    refresh();
 }
 
 void AircraftTableModel::onSystemClicked(int Number) {
     mNumber = Number;
-    mShowAssigned = true;
     beginResetModel();
     mAircraftInfoListProxy.clear();
     if (mAircraftsAssigned.contains(Number)) {
-        for (int aircraft : mAircraftsAssigned[Number]) {
+        for (AircraftAssignInfo aircraft : mAircraftsAssigned[Number]) {
             auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(), [aircraft](QPair<int, QSharedPointer<AircraftInfo>> &item){
-                return item.second->TN == aircraft;
-            });
-//            (*it).first = mAircraftInfoListProxy.size();
+                    return item.second->TN == aircraft.TN;
+        });
             mAircraftInfoListProxy.push_back(*it);
-
         }
     }
     endResetModel();
+
 }
 
 
 void AircraftTableModel::onUpdateTimerTriggered()
 {
-    if (mIndex != 3)
-        mFilterProxy = mFilter;
     if (mNeedUpdateOnTimerTrigger) {
-        if (!mShowAssigned) {
+        if (mMode == "TableModel") {
             mAircraftInfoListProxy.clear();
             for (auto& item : mAircraftInfoList) {
-                if (QString::number(item.second->TN).contains(mFilterProxy))
+                if (QString::number(item.second->TN).contains(mFilter))
                     mAircraftInfoListProxy.push_back(item);
             }
+//            if (mAircraftInfoListProxy.size() > 0)
+                emit dataChanged(createIndex(mMinRowUpdate, 0), createIndex(mMaxRowUpdate, columnCount()-1));
+
         }
         else {
-            for (int i = 0; i < mAircraftInfoListProxy.size(); i++) {
-                mAircraftInfoListProxy.clear();
-                if (mAircraftsAssigned.contains(mNumber)) {
-                    for (int aircraft : mAircraftsAssigned[mNumber]) {
-                        auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(), [aircraft](QPair<int, QSharedPointer<AircraftInfo>> &item){
-                            return item.second->TN == aircraft;
-                        });
-//                        (*it).first = mAircraftInfoListProxy.size();
-                        mAircraftInfoListProxy.push_back(*it);
-
-                    }
-                }
+            if (mNumber > 0) {
+                onSystemClicked(mNumber);
             }
+
         }
-
-
-        emit dataChanged(createIndex(mMinRowUpdate, 0), createIndex(mMaxRowUpdate, columnCount()-1));
 
         mMinRowUpdate = -1;
         mMaxRowUpdate = -1;
         mNeedUpdateOnTimerTrigger = false;
     }
-}
-
-bool AircraftTableModel::getShowAssigned()
-{
-    return mShowAssigned;
 }
 
 void AircraftTableModel::updateItemData(const QString &/*jsonStr*/)
@@ -254,13 +325,12 @@ void AircraftTableModel::updateItemData(const QString &/*jsonStr*/)
 
 void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
 {
-//    beginResetModel();
+    //    beginResetModel();
 
     const auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(),
                                  [aircraftInfo](const QPair<int, QSharedPointer<AircraftInfo>>& itemInfo){
         return itemInfo.second->TN == aircraftInfo.TN;
     });
-
 
     if (it != mAircraftInfoList.end()) {
         *(*it).second = aircraftInfo;
@@ -279,15 +349,11 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
         } else {
             mMaxRowUpdate = qMax(index, mMaxRowUpdate);
         }
-
-
-
         mNeedUpdateOnTimerTrigger = true;
+        onUpdateTimerTriggered();
 
-
-    } else {
-
-
+    }
+    else {
         QPair<int, QSharedPointer<AircraftInfo>> isp;
         isp.first = mAircraftInfoList.size();
         isp.second.reset(new AircraftInfo);
@@ -308,15 +374,8 @@ void AircraftTableModel::updateItemData(const AircraftInfo &aircraftInfo)
         }
 
         endInsertRows();
-
-
-
     }
-
-
-
-//    endResetModel();
-
+    //    endResetModel();
 }
 
 void AircraftTableModel::deleteItem(int TN)
@@ -334,24 +393,23 @@ void AircraftTableModel::deleteItem(int TN)
         return itemInfo.second->TN == TN;
     });
 
-
     mAircraftInfoList.erase(newEnd, mAircraftInfoList.end());
 
-//    const auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(),
-//                                 [aircraftInfo](const QPair<int, QSharedPointer<AircraftInfo>>& itemInfo){
-//        return itemInfo.second->TN == aircraftInfo.TN;
-//    });
+    //    const auto it = std::find_if(mAircraftInfoList.begin(), mAircraftInfoList.end(),
+    //                                 [aircraftInfo](const QPair<int, QSharedPointer<AircraftInfo>>& itemInfo){
+    //        return itemInfo.second->TN == aircraftInfo.TN;
+    //    });
 
 
-//    if (it != mAircraftInfoList.end()) {
-//        *(*it).second = aircraftInfo;
-//    } else {
-//        QPair<int, QSharedPointer<AircraftInfo>> isp;
-//        isp.first = mAircraftInfoList.size();
-//        isp.second.reset(new AircraftInfo);
-//        *(isp.second) = aircraftInfo;
-//        mAircraftInfoList.push_back(isp);
-//    }
+    //    if (it != mAircraftInfoList.end()) {
+    //        *(*it).second = aircraftInfo;
+    //    } else {
+    //        QPair<int, QSharedPointer<AircraftInfo>> isp;
+    //        isp.first = mAircraftInfoList.size();
+    //        isp.second.reset(new AircraftInfo);
+    //        *(isp.second) = aircraftInfo;
+    //        mAircraftInfoList.push_back(isp);
+    //    }
 
     mAircraftInfoListProxy.clear();
     for (auto& item : mAircraftInfoList) {
@@ -364,67 +422,82 @@ void AircraftTableModel::deleteItem(int TN)
 
 void AircraftTableModel::assign(int TN, int Number)
 {
+    AircraftAssignInfo tmp;
+    tmp.TN = TN;
     if (mAircraftsAssigned.contains(Number)) {
-        mAircraftsAssigned[Number].push_back(TN);
+        mAircraftsAssigned[Number].push_back(tmp);
     }
     else {
-        mAircraftsAssigned[Number] = QList<int> {TN};
+        mAircraftsAssigned[Number] = QList<AircraftAssignInfo> {tmp};
     }
-    if (mNumber == Number) {
-        beginResetModel();
-        onSystemClicked(Number);
-        endResetModel();
+    if (mMode == "Assignment") {
+        if (mNumber > 0)
+            onSystemClicked(mNumber);
     }
 }
 
 void AircraftTableModel::cancelAssign(int TN, int Number)
 {
-    if (TN == -1){
-        if (mAircraftsAssigned.contains(Number)){
-            mAircraftsAssigned.remove(Number);
+    if (mAircraftsAssigned.contains(Number)) {
+        const auto it = std::remove_if(mAircraftsAssigned[Number].begin(), mAircraftsAssigned[Number].end(), [TN](AircraftAssignInfo &aircraft){
+                return aircraft.TN == TN;
+    });
+        mAircraftsAssigned[Number].erase(it, mAircraftsAssigned[Number].end());
+    }
+    if (mMode == "Assignment") {
+        if (mNumber > 0)
+            onSystemClicked(mNumber);
+    }
+}
+
+void AircraftTableModel::cancelAllAssigns()
+{
+    mAircraftsAssigned.clear();
+    refresh();
+}
+
+void AircraftTableModel::cancelAircraftsAssigned(int ExceptTN, int Number)
+{
+    if (mAircraftsAssigned.contains(Number)){
+        for (auto &aircraft : mAircraftsAssigned[Number]){
+            if (aircraft.TN != ExceptTN) {
+                cancelAssign(aircraft.TN, Number);
+            }
         }
     }
-    else if (Number == -1) {
-        for (auto &i : mAircraftsAssigned) {
-            auto toDelete = std::remove_if(i.begin(), i.end(), [TN](int &aircraft){
-                return TN == aircraft;
-            });
-
-            i.erase(toDelete, i.end());
-        }
-    }
-    else {
-
-        auto toDelete = std::remove_if(mAircraftsAssigned[Number].begin(), mAircraftsAssigned[Number].end(), [TN](int &aircraft){
-            return TN == aircraft;
-        });
-        mAircraftsAssigned[Number].erase(toDelete, mAircraftsAssigned[Number].end());
-    }
-    if (mShowAssigned) {
-        refresh(mIndex);
+    if (mMode == "Assignment") {
+        if (mNumber > 0)
+            onSystemClicked(mNumber);
     }
 
 }
 
-void AircraftTableModel::refresh(int indx)
+void AircraftTableModel::acceptAssign(int TN, int Number, bool result)
 {
-    mShowAssigned = false;
-    mNumber = -1;
-    beginResetModel();
-    mIndex = indx;
-    if (indx == 3) {
-        mFilterProxy = "";
-        mNeedUpdateOnTimerTrigger = true;
-        onUpdateTimerTriggered();
+    if (result) {
+        auto it = std::find_if(mAircraftsAssigned[Number].begin(), mAircraftsAssigned[Number].end(), [TN] (AircraftAssignInfo &item) {
+                return item.TN == TN;
+    });
+        if (it != mAircraftsAssigned[Number].end())
+            it->assign = true;
     }
     else {
-        setFilterWildcard(mFilter);
+        cancelAssign(TN, Number);
     }
-//    mAircraftInfoListProxy.assign(mAircraftInfoList.begin(), mAircraftInfoList.end());
+
+}
+
+
+void AircraftTableModel::refresh()
+{
+    beginResetModel();
+    mNumber = -1;
+    mAircraftInfoListProxy.clear();
+    mAircraftInfoListProxy.assign(mAircraftInfoList.begin(), mAircraftInfoList.end());
     endResetModel();
 }
 
-void AircraftTableModel::clear()
+void AircraftTableModel::clearList()
 {
     mMinRowUpdate = -1;
     mMaxRowUpdate = -1;
@@ -433,6 +506,17 @@ void AircraftTableModel::clear()
     beginResetModel();
     mAircraftInfoList.clear();
     mAircraftInfoListProxy.clear();
+    cancelAllAssigns();
     endResetModel();
+}
+
+void AircraftTableModel::setMode(QString mode)
+{
+    mMode = mode;
+}
+
+QMap<int, QList<AircraftAssignInfo>> AircraftTableModel::getAssignmentMap()
+{
+    return mAircraftsAssigned;
 }
 

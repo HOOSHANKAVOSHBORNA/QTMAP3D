@@ -95,6 +95,13 @@ Item {
                                            miniTXT.running = true
 
                                        }
+
+                            hoverEnabled: true
+                            onEntered:   if(layersItem.x === 0){
+                                            glowimg.visible=true
+                                         }
+                            onExited:    glowimg.visible=false
+
                         }
                         Text {
                             id: sideInfoTxt
@@ -114,6 +121,14 @@ Item {
                             rotation: 0
 
                         }
+
+                        ColorOverlay {
+                            id: glowimg
+                            anchors.fill: arrow
+                            color: "orange"
+                            source: arrow
+                            visible: false
+                            }
                     }
             PropertyAnimation{id:miniLayer ; target: layersItem ; property: "x" ; to: 0 ; duration:150;  running: false }
             PropertyAnimation{id:maxiLayer ; target: layersItem ; property: "x" ; to: 290 + (widgetsMargins * 2) ; duration: 150; running: false }

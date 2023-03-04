@@ -257,3 +257,16 @@ osg::Image* LineNode::updateLenghtLable(double lenght)
                           osg::Image::AllocationMode::NO_DELETE);
     return image;
 }
+bool LineNode::getSmooth() const
+{
+    return mSmooth;
+}
+
+void LineNode::setSmooth(bool smooth)
+{
+    mSmooth = smooth;
+    auto style = getStyle();
+    if(mSmooth)
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+    setStyle(style);
+}

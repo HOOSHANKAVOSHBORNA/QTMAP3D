@@ -12,29 +12,32 @@ public:
     void lockOnTarget(const osgEarth::GeoPoint &gpt);
 
 protected:
-    static osg::ref_ptr<osg::Node> mMeshNodeP1;
-    static osg::ref_ptr<osg::Node> mMeshNodeP2;
-    static osg::ref_ptr<osg::Node> mMeshNodeP3;
-//    static osg::ref_ptr<osg::Node> mMeshNodeP4;
+    static osg::ref_ptr<osg::Node> mMeshNodeP1LOD0;
+    static osg::ref_ptr<osg::Node> mMeshNodeP2LOD0;
+    static osg::ref_ptr<osg::Node> mMeshNodeP3LOD0;
     static bool mMeshNodesLoaded;
 
-    osg::ref_ptr<osg::Node> mMeshNodeP1Instance;
-    osg::ref_ptr<osg::Node> mMeshNodeP2Instance;
-    osg::ref_ptr<osg::Node> mMeshNodeP3Instance;
-//    osg::ref_ptr<osg::Node> mMeshNodeP4Instance;
+    static osg::ref_ptr<osg::Node> mMeshNodeP1LOD1;
+    static osg::ref_ptr<osg::Node> mMeshNodeP2LOD1;
+    static osg::ref_ptr<osg::Node> mMeshNodeP3LOD1;
+
+//    osg::ref_ptr<osg::Node> mMeshNodeP1InstanceLOD0;
+//    osg::ref_ptr<osg::Node> mMeshNodeP2InstanceLOD0;
+//    osg::ref_ptr<osg::Node> mMeshNodeP3InstanceLOD0;
+
+//    osg::ref_ptr<osg::Node> mMeshNodeP1InstanceLOD1;
+//    osg::ref_ptr<osg::Node> mMeshNodeP2InstanceLOD1;
+//    osg::ref_ptr<osg::Node> mMeshNodeP3InstanceLOD1;
 
 
-    osg::PositionAttitudeTransform* mBodyPAT       = nullptr;
-    osg::PositionAttitudeTransform* mWheelAxis1PAT = nullptr;
-    osg::PositionAttitudeTransform* mWheelAxis2PAT = nullptr;
-    osg::PositionAttitudeTransform* mWheelAxis3PAT = nullptr;
-    osg::PositionAttitudeTransform* mWheelAxis4PAT = nullptr;
-//    osg::PositionAttitudeTransform* mHolderPAT     = nullptr;
-    osg::PositionAttitudeTransform* mSpinnerPAT    = nullptr;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mBodyPAT;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mWheelAxis1PAT;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mWheelAxis2PAT;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mWheelAxis3PAT;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mWheelAxis4PAT;
+    osg::ref_ptr<osg::PositionAttitudeTransform> mSpinnerPAT;
 
-//    osg::PositionAttitudeTransform* mHolderAimingPAT     = nullptr;
-    osg::PositionAttitudeTransform* mSpinnerAimingPAT    = nullptr;
-
+    osg::ref_ptr<osg::PositionAttitudeTransform> mSpinnerAimingPAT;
 
 
 };

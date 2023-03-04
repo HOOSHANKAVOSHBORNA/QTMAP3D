@@ -7,6 +7,8 @@ Item {
     signal goToView(string name, real latitude, real longitude,
                     real range, real pitch ,real head);
 
+
+
     Rectangle{
         anchors.fill: parent
         color: _colorRec

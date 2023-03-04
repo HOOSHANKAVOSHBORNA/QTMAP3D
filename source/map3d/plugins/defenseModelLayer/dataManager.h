@@ -1,54 +1,31 @@
 #ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
-#include <QObject>
-#include "aircraftTableModel.h"
-#include "stationTableModel.h"
-#include "systemTableModel.h"
-#include "assignmentModel.h"
+#include "defenseModelLayer.h"
+#include "listManager.h"
+#include "defenseDataManager.h"
 
-class UIHandle;
-class QQmlEngine;
-class AircraftTableModel;
-
-class DataManager : public QObject
+class DataManager: public QObject
 {
     Q_OBJECT
 public:
-    explicit DataManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent = nullptr);
-
-signals:
-    void aircraftItemClicked(const QString& TN);
-    void stationItemClicked(const QString& Name);
-
-
+    DataManager(DefenseDataManager *defenseDataManager, ListManager *listManager, DefenseModelLayer *defenseModelLayer);
 public slots:
-    void setAircraftInfo(const AircraftInfo& aircraftInof);
-    void deleteAircraftInfo(int TN);
-    void setStationInfo(const StationInfo& stationInfo);
-    void setSystemInfo(const SystemInfo& systemInfo);
-    void setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo);
-    void setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo);
-    void assignAirToSystem(int TN, int Number);
-    void cancelAssign(int TN, int Number);
-    void clearAll();
-
-
-signals:
-    void aircraftDoubleClicked(int NT);
-    void stationDoubleClicked(int number);
-    void systemDoubleClicked(int number);
-    void systemActiveToggled(bool act);
-
-
+    void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
+    void onSystemInfoChanged(SystemInfo& systemInfo);
+    void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
+    void onSystemCambatInfoChanged(SystemCambatInfo& systemCambatInfo);
+    void onStationInfoChanged(StationInfo& stationInfo);
+    void onClearAircraft(int tn);
+    void onAircraftAssignedResponse(int tn, int systemNo, bool result);
+public:
+    void aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode);
+    void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
+    void clear();
 private:
-    QQmlEngine *mQmlEngine = nullptr;
-    UIHandle *mUiHandle = nullptr;
-    AircraftTableModel *mAircraftTableModel = nullptr;
-    StationTableModel *mStationTableModel = nullptr;
-    SystemTableModel *mSystemTableModel = nullptr;
-    AssignmentModel *mAssignModel = nullptr;
-
+    DefenseDataManager *mDefenseDataManager{nullptr};
+    ListManager *mListManager{nullptr};
+    DefenseModelLayer *mDefenseModelLayer{nullptr};
 };
 
 #endif // DATAMANAGER_H

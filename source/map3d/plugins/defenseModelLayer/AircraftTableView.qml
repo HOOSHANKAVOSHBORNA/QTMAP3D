@@ -10,6 +10,7 @@ Item {
 
     signal filterTextChanged(string txt)
     signal aircraftDoubleClicked(int TN)
+    signal sortWithHeader(int column)
 
     property int hoveredIndex: -1
     property int selectedIndex: -1
@@ -116,6 +117,10 @@ Item {
                             text: rootItem.model ? rootItem.model.headerText(index) : "";
                             anchors.centerIn: parent
                         }
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: rootItem.sortWithHeader(index)
+                        }
                     }
                 }
             }
@@ -164,7 +169,7 @@ Item {
                         clip: true
                         Rectangle {
                             opacity: 0.2
-                            color: (rootItem.hoveredIndex == row) ? "lightskyblue" : "transparent"
+                            color: (rootItem.hoveredIndex == row) ? AircraftHoverColor : AircraftColor
                             anchors.fill: parent
                         }
                         Text {
@@ -175,7 +180,6 @@ Item {
                         }
                     }
                 }
-
             }
         }
     }

@@ -249,6 +249,28 @@ osgEarth::Annotation::ModelNode *DefenseModelNode::getDragModelNode()
 //    dragModelNode->addCullCallback(getCullCallback());
     return dragModelNode.release();
 }
+
+osg::ref_ptr<osg::Image> DefenseModelNode::createColoredImage(osg::ref_ptr<osg::Image> sourceImage, osgEarth::Color color)
+{
+    osg::ref_ptr<osg::Image> newImage = new osg::Image(*sourceImage, osg::CopyOp::DEEP_COPY_ALL);
+
+    unsigned int width = static_cast<unsigned int>(sourceImage->s());
+    unsigned int height = static_cast<unsigned int>(sourceImage->t());
+
+    for(unsigned int i = 0; i < width; i++) {
+        for(unsigned int j = 0; j < height; j++)
+        {
+            const osg::Vec4 pixColore = sourceImage->getColor(i, j);
+            if(pixColore.a() > 0)
+                newImage->setColor(color, i, j);
+            else
+                newImage->setColor(osg::Vec4(0,0,0,0), i, j);
+        }
+    }
+
+    return newImage;
+}
+
 void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
 {
     if(event->button() != Qt::MiddleButton)

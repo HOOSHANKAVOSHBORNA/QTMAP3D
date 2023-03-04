@@ -14,6 +14,8 @@
 #include <QQmlComponent>
 #include <linenode.h>
 #include <QPainter>
+#include <lineproperties.h>
+
 
 #define DRAW_LAYER_NAME "Line"
 
@@ -51,6 +53,7 @@ private:
     enum class Shape {NONE, LINESTRING, LINE};
     Shape mShape;
     LineNode* mLine{nullptr};
+    LineProperties *mLineProperties = nullptr;
 };
 
 #endif // LINE_H

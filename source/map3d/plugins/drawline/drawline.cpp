@@ -38,10 +38,13 @@ drawLine::drawLine(QWidget *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(drawLine);
+//    Q_INIT_RESOURCE(LineProperties);
+
 }
 
 bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
+    qmlRegisterType<LinePropertiesModel>("Crystal", 1, 0, "LineProperties");
     mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{LINESTRING, CATEGORY, "qrc:/resources/line_string.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
@@ -75,6 +78,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
         {
             mShape = Shape::NONE;
             mDrawingState = DrawingState::FINISH;
+
         }
     }
 }
@@ -108,6 +112,8 @@ void drawLine::mousePressEvent(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
     {
         cancelDrawingLine(event);
+        if (mLineProperties)
+            mLineProperties->hide();
     }
 }
 
@@ -134,6 +140,12 @@ void drawLine::startDrawLine()
     mLine->setTessellation(20);
     mLine->showLenght(true);
     addNodeToLayer(mLine);
+
+    if (mLineProperties)
+        mLineProperties->hide();
+    mLineProperties = new LineProperties(mQmlEngine, mLine);
+    mLineProperties->show();
+
     mDrawingState = DrawingState::DRAWING;
 }
 
@@ -150,6 +162,8 @@ void drawLine::drawingLine(QMouseEvent *event)
 void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
     removeNodeFromLayer(mLine);
+    if (mLineProperties)
+        mLineProperties->hide();
     event->accept();
     mDrawingState = DrawingState::START;
 }
@@ -174,6 +188,8 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
         if(nodeEditor)
             removeNodeFromLayer(nodeEditor);
         event->accept();
+//        if (mLineProperties)
+//            mLineProperties->hide();
     }
 }
 
