@@ -41,10 +41,11 @@ Item {
             height: rootItem.height
             //            anchors.horizontalCenter: parent.horizontalCenter
             anchors.fill: parent
-            color: "#3f3f3f"
+            color: "#404040"
             opacity: 0.9
             anchors.margins: 6
             //            y:43
+            radius: 10
 
             Rectangle{
                 id:header
@@ -53,14 +54,14 @@ Item {
                 y: 2
                 height: 30
                 radius: 0
-                color: "#313131"
+                color: "#404040"
 
                 Text {
                     id: headerTitle
                     text: qsTr("Sphere Properties")
                     anchors.centerIn: parent
-                    font.bold: true
-                    font.pointSize: 10
+                    font.family: "SourceSansPro"
+                    font.pointSize: 14
                     color: "white"
                 }
 
@@ -98,7 +99,7 @@ Item {
                             ////////////////////////////////////line Color Property//////////////////////////////////
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -150,14 +151,14 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
 
                                 Text {
                                     id: lineColorCircle
-                                    text: qsTr("LineColor :")
+                                    text: qsTr("Line Color :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -168,7 +169,7 @@ Item {
                             ///////////////////////////////////point Color Property//////////////////////////////////
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -221,14 +222,14 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
 
                                 Text {
                                     id: pointColor
-                                    text: qsTr("pointColor :")
+                                    text: qsTr("point Color:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -241,7 +242,7 @@ Item {
                             Rectangle{
                                 id: widthContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -264,7 +265,7 @@ Item {
                                         z: 2
                                         text: widthValue.textFromValue(widthValue.value, widthValue.locale)
                                         font: widthValue.font
-                                        color: "#313131"
+                                        color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
                                         readOnly: !widthValue.editable
@@ -284,8 +285,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: widthValue.up.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: widthValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "+"
@@ -302,8 +303,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: widthValue.down.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: widthValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
@@ -324,7 +325,7 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -344,7 +345,7 @@ Item {
                             Rectangle{
                                 id: pointwidthContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -368,7 +369,7 @@ Item {
                                         z: 2
                                         text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
                                         font: pointwidthValue.font
-                                        color: "#313131"
+                                        color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
                                         readOnly: !pointwidthValue.editable
@@ -388,8 +389,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: pointwidthValue.up.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: pointwidthValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "+"
@@ -406,8 +407,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: pointwidthValue.down.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: pointwidthValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
@@ -428,7 +429,7 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -447,7 +448,7 @@ Item {
                             Rectangle{
                                 id: transContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -470,7 +471,7 @@ Item {
                                         z: 2
                                         text: transValue.textFromValue(transValue.value, transValue.locale)
                                         font: transValue.font
-                                        color: "#313131"
+                                        color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
                                         readOnly: !transValue.editable
@@ -490,8 +491,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: transValue.up.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: transValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "+"
@@ -508,8 +509,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: transValue.down.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: transValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
@@ -530,7 +531,7 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -549,7 +550,7 @@ Item {
                             Rectangle{
                                 id: tesselationContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -572,7 +573,7 @@ Item {
                                         z: 2
                                         text: tesselationValue.textFromValue(tesselationValue.value, tesselationValue.locale)
                                         font: tesselationValue.font
-                                        color: "#313131"
+                                        color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
                                         readOnly: !tesselationValue.editable
@@ -592,8 +593,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: tesselationValue.up.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: tesselationValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "+"
@@ -610,8 +611,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: tesselationValue.down.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: tesselationValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
@@ -632,7 +633,7 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -651,7 +652,7 @@ Item {
                             Rectangle{
                                 id: clampContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -697,7 +698,7 @@ Item {
                                             context.lineTo(width, 0);
                                             context.lineTo(width / 2, height);
                                             context.closePath();
-                                            context.fillStyle = control.pressed ? "#5f5f5f" : "#313131";
+                                            context.fillStyle = control.pressed ? "#5f5f5f" : "#404040";
                                             context.fill();
                                         }
                                     }
@@ -708,7 +709,7 @@ Item {
 
                                         text: control.displayText
                                         font: control.font
-                                        color: control.pressed ? "#5f5f5f" : "#313131"
+                                        color: control.pressed ? "#5f5f5f" : "#404040"
                                         verticalAlignment: Text.AlignVCenter
                                         elide: Text.ElideRight
                                     }
@@ -716,7 +717,7 @@ Item {
                                     background: Rectangle {
                                         implicitWidth: 100
                                         implicitHeight: 20
-                                        border.color: control.pressed ? "#5f5f5f" : "#313131"
+                                        border.color: control.pressed ? "#5f5f5f" : "#404040"
                                         border.width: control.visualFocus ? 2 : 1
                                         radius: 5
                                         color: "#c9c9c9"
@@ -739,7 +740,7 @@ Item {
                                         }
 
                                         background: Rectangle {
-                                            border.color: "#313131"
+                                            border.color: "#404040"
                                             radius: 5
                                         }
                                     }
@@ -748,7 +749,7 @@ Item {
 
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -765,7 +766,7 @@ Item {
                             Rectangle{
                                 id: pointContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -825,7 +826,7 @@ Item {
 
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -843,7 +844,7 @@ Item {
                             Rectangle{
                                 id: smoothContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1
@@ -896,7 +897,7 @@ Item {
 
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
 //                                border.color: "#5f5f5f"
 //                                border.width: 1

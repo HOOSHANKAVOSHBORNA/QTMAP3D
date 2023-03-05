@@ -10,10 +10,14 @@ Item {
     clip: false
 
     function adjustLeftContainer(screenwidth){ if(nowItem || layers.visible){
-                        root.x = screenwidth + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3)))
+            if(isMinimized === true){
+                root.x = screenwidth
+            }else{
+                root.x = screenwidth + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3)))
+            }
                     }
     }
-
+    property bool isMinimized: false
     property var nowItem: null
     function showProp(item){
         item.parent = leftObjects
@@ -120,10 +124,12 @@ Item {
                 onClicked: if(root.x !== wnd.width){
                                miniLayer.running = true
                                miniarrow.running = true
+                               isMinimized = true
                                //                               maxiTXT.running = true
                            } else{
                                maxiLayer.running = true
                                maxiarrow.running = true
+                               isMinimized = false
                                //                               miniTXT.running = true
                            }
                 hoverEnabled: true

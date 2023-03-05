@@ -59,6 +59,7 @@ Item {
         width: 300
         x: 310 + (widgetsMargins * 2)
 
+
         MouseArea {
             anchors.fill: parent
         }
@@ -73,6 +74,7 @@ Item {
             radius: 10
             color: "#404040"
             opacity: 0.8
+            anchors.margins: 6
         }
 
         ColumnLayout {
