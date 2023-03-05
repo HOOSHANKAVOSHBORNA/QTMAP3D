@@ -51,13 +51,14 @@ private:
     osgEarth::Symbology::Geometry* mLineGeometry;
     osgEarth::Color mColor{osgEarth::Color::Green};
     osgEarth::Color mPointColor{osgEarth::Color::Blue};
-    float mWidth{5};
-    float mPointWidth{5};
+    float mWidth;
+    float mPointWidth;
     float mHeight;
-    bool mPointVisible{true};
+    bool mPointVisible;
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
-    unsigned mTessellation{1};
+    unsigned mTessellation;
     bool mSmooth;
+
     //Lenght part
     osg::ref_ptr<osg::Group> mLableGroup;
     QImage *mRenderImage{nullptr};

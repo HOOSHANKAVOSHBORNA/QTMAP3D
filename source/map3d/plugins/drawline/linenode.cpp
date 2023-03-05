@@ -13,7 +13,7 @@ LineNode::LineNode(MapController *mapController)
     osgEarth::Symbology::Style pathStyle;
     pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
     pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
-    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = true;
+    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
 
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = mColor;
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
@@ -271,8 +271,8 @@ bool LineNode::getSmooth() const
 void LineNode::setSmooth(bool smooth)
 {
     mSmooth = smooth;
-    auto style = getStyle();
+    auto sStyle = getStyle();
     if(mSmooth)
-        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
-    setStyle(style);
+        sStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+    setStyle(sStyle);
 }
