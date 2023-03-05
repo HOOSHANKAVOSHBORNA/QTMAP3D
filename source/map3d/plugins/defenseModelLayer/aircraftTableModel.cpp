@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QTimer>
 #include <algorithm>
+#include <time.h>
+#include <iomanip>
 
 AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
@@ -36,7 +38,10 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
     {
-
+        time_t datetime = mAircraftInfoListProxy[static_cast<size_t>(_row)]->Time;
+        char buffer[256];
+        std::tm* currTm = localtime(&datetime);
+        strftime(buffer, sizeof(buffer), "%Y/%m/%d %H:%M", currTm);
         switch(index.column()) {
         case  0: return QVariant::fromValue<QString>( mAircraftInfoListProxy[static_cast<size_t>(_row)]->identifyToString());
         case  1: return QVariant::fromValue<int>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->TN);
@@ -45,11 +50,11 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
         case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->Type);
         case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->MasterRadar);
         case  6: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->IdentificationMethod);
-        case  7: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->Time);
+        case  7: return QVariant::fromValue<QString>(buffer);
         case  8: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->Pos);
-        case  9: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Latitude);
-        case 10: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Longitude);
-        case 11: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Altitude);
+        case  9: return QVariant::fromValue<QString>(QString::number(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Latitude, 'f', 6));
+        case 10: return QVariant::fromValue<QString>(QString::number(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Longitude, 'f', 6));
+        case 11: return QVariant::fromValue<QString>(QString::number(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Altitude, 'f', 6));
         case 12: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Heading);
         case 13: return QVariant::fromValue<double>(mAircraftInfoListProxy[static_cast<size_t>(_row )]->Speed);
         case 14: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->detectionSystemsToString());

@@ -134,14 +134,17 @@ Item {
                                     Label {
                                         id: txt
                                         text: MainInfo[index]
-                                        color: "white"
+                                        color: index == 5 ? rootItem.model.getAircraftColor() : "white"
+                                        clip: true
+                                        font.bold: index == 5
                                         Layout.fillWidth: true
                                         Layout.leftMargin: 5
                                         leftInset: -5
                                         verticalAlignment: Label.AlignVCenter
-                                        Layout.preferredHeight: implicitHeight + spacee
+                                        Layout.preferredHeight: 20 + spacee
                                         background: Rectangle {
                                             color: boxColor
+                                            clip: true
                                         }
                                     }
                                 }

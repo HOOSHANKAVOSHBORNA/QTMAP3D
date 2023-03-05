@@ -125,7 +125,7 @@ AircraftInfo Demo::createAircraftInfo()
     int identy = (qrand() % (6));
     aircraftInfo.Identification = (AircraftInfo::Identify)identy;// F, K, Z, X, U, H
     aircraftInfo.IdentificationMethod="mt1";//3 char
-    aircraftInfo.Time="12345678954213";//epoch
+    aircraftInfo.Time=1678005787;//epoch
     aircraftInfo.Pos="pos";
     //
     double longitude = 48 + (qrand() % (59 - 48));

@@ -26,13 +26,15 @@ public:
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    AircraftInfo getAircraftInfo() {return mAircraftInfo;}
     void setAircraftInfo(AircraftInfo &a);
     QStringList getMainInfo() const;
     QStringList getmainInfoHeaders() const;
     QStringList getLocationInfo() const;
     QStringList getLocationInfoHeader() const;
 
+public slots:
+    AircraftInfo getAircraftInfo() {return mAircraftInfo;}
+    QColor getAircraftColor();
 Q_SIGNALS:
     void gotoButtonClicked();
     void routeButtonClicked(bool checked);
