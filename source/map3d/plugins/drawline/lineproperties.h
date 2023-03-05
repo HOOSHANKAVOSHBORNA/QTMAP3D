@@ -15,62 +15,46 @@
 class LinePropertiesModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString   color          READ color         WRITE setColor        NOTIFY linePropertiesChangedToQML)
-    Q_PROPERTY(QString   pointColor     READ pointColor    WRITE setPointColor   NOTIFY linePropertiesChangedToQML)
-    Q_PROPERTY(float     width          READ width         WRITE setWidth        NOTIFY linePropertiesChangedToQML)
-    Q_PROPERTY(float     pointwidth     READ pointwidth    WRITE setPointwidth   NOTIFY linePropertiesChangedToQML)
-    Q_PROPERTY(float     height         READ height        WRITE setHeight       NOTIFY linePropertiesChangedToQML)
-    Q_PROPERTY(unsigned  tesselation    READ tesselation   WRITE setTesselation  NOTIFY linePropertiesChangedToQML)
-    Q_PROPERTY(int       clamp          READ clamp         WRITE setClamp        NOTIFY linePropertiesChangedToQML)
-    Q_PROPERTY(bool       visible        READ visible       WRITE setVisible      NOTIFY linePropertiesChangedToQML)
-    Q_PROPERTY(bool       smooth         READ smooth        WRITE setSmooth       NOTIFY linePropertiesChangedToQML)
+    Q_PROPERTY(QString   color          READ getColor         WRITE setColor        )
+    Q_PROPERTY(QString   pointColor     READ getPointColor    WRITE setPointColor   )
+    Q_PROPERTY(float     width          READ getWidth         WRITE setWidth        )
+    Q_PROPERTY(float     pointwidth     READ getPointwidth    WRITE setPointwidth   )
+    Q_PROPERTY(float     height         READ getHeight        WRITE setHeight       )
+    Q_PROPERTY(unsigned  tesselation    READ getTesselation   WRITE setTesselation  )
+    Q_PROPERTY(int       clamp          READ getClamp         WRITE setClamp        )
+    Q_PROPERTY(bool      visible        READ getVisible       WRITE setVisible      )
+    Q_PROPERTY(bool      smooth         READ getSmooth        WRITE setSmooth       )
 
 
 public:
 
-    enum PropertyTypes {
-        Color,
-        PointColor,
-        Width   ,
-        Pointwidth ,
-        Height,
-        Tesselation,
-        Clamp      ,
-        Visible,
-        Smooth
-    };
-    Q_ENUM(PropertyTypes)
-
-
-
-
     LinePropertiesModel( QObject *parent = nullptr);
     //set color
-    QString color() const;
+    QString getColor() const;
     void setColor(const QString &color);
     //set color
-    QString pointColor() const;
+    QString getPointColor() const;
     void setPointColor(const QString &pointColor);
     // set width
-    float width() const;
+    float getWidth() const;
     void setWidth(const float &width);
     // set pointwidth
-    float pointwidth() const;
+    float getPointwidth() const;
     void setPointwidth(const float &pointwidth);
     // set height
-    float height() const;
+    float getHeight() const;
     void setHeight(const float &height);
     // set tesselation
-    unsigned tesselation() const;
+    unsigned getTesselation() const;
     void setTesselation(const unsigned &tesselation);
     // set clamp
-    int  clamp() const;
+    int  getClamp() const;
     void setClamp(int clamp);
     //set Type
-    bool visible() const;
+    bool getVisible() const;
     void setVisible(const bool &visible);
     //set smooth
-    bool smooth() const;
+    bool getSmooth() const;
     void setSmooth(const bool &smooth);
 
     void setLine(LineNode *linNode) ;
@@ -81,8 +65,7 @@ public:
 
 signals:
 
-    void linePropertiesChanged( PropertyTypes  , QVariant );
-    void linePropertiesChangedToQML();
+    void linePropertiesChanged( QVariant );
 
 
 private:

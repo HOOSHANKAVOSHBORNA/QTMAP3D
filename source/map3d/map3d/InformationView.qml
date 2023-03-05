@@ -114,7 +114,7 @@ Item {
 
     function hideItem(){
         if (nowItem){
-            sidePush.visible = false
+            infoItemShowAnimation.stop();
             nowItem.parent = null
             nowItem.destroy()
             sidePush.visible = false

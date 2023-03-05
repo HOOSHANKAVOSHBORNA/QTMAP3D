@@ -43,8 +43,8 @@ public:
     void clear();
 
 private:
-    std::deque<QPair<int, QSharedPointer<StationInfo>>> mStationInfoList;
-    std::deque<QPair<int, QSharedPointer<StationInfo>>> mStationInfoListProxy;
+    std::deque<QSharedPointer<StationInfo>> mStationInfoList;
+    std::deque<QSharedPointer<StationInfo>> mStationInfoListProxy;
 
     QString mFilter;
 
