@@ -184,6 +184,7 @@ void LineNode::setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping &cla
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = clamp;
     setStyle(style);
+    addChild(mLableGroup);
 }
 
 unsigned LineNode::getTessellation() const
