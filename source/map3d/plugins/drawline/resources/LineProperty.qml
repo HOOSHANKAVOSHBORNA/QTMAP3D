@@ -453,7 +453,7 @@ Item {
                                     id: transValue
                                     stepSize: 1
                                     value: 0
-                                    to : 10000
+                                    to : 1000000
                                     from : 0
                                     validator: DoubleValidator {
                                         bottom: 0

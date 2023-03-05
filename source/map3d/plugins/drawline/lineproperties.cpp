@@ -135,7 +135,11 @@ void LinePropertiesModel::setSmooth(const bool &value){
 
 void LinePropertiesModel::setLine(LineNode* linNode)
 {
+
     mLineNode = linNode;
+    if(!linNode){
+        return;
+    }
     mLineNode->setColor(mColor.toStdString());
     mLineNode->setPointColor(mPointColor.toStdString());
     mLineNode->setWidth(mWidth);

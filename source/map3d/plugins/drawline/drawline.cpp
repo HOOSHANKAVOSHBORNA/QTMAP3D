@@ -171,7 +171,7 @@ void drawLine::drawingLine(QMouseEvent *event)
 void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
     removeNodeFromLayer(mLine);
-
+    mLineProperties->setLine(nullptr);
     event->accept();
     mDrawingState = DrawingState::START;
 }

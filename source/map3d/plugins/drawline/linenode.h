@@ -56,7 +56,7 @@ private:
     float mHeight;
     bool mPointVisible;
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
-    unsigned mTessellation{1};
+    unsigned mTessellation;
     bool mSmooth;
 
     //Lenght part
