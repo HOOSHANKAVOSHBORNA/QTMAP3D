@@ -21,7 +21,7 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(float     pointwidth     READ pointwidth    WRITE setPointwidth   NOTIFY linePropertiesChangedToQML)
     Q_PROPERTY(float     height         READ height        WRITE setHeight       NOTIFY linePropertiesChangedToQML)
     Q_PROPERTY(unsigned  tesselation    READ tesselation   WRITE setTesselation  NOTIFY linePropertiesChangedToQML)
-    Q_PROPERTY(osgEarth::Symbology::AltitudeSymbol::Clamping       clamp          READ clamp         WRITE setClamp        NOTIFY linePropertiesChangedToQML)
+    Q_PROPERTY(int       clamp          READ clamp         WRITE setClamp        NOTIFY linePropertiesChangedToQML)
     Q_PROPERTY(bool       visible        READ visible       WRITE setVisible      NOTIFY linePropertiesChangedToQML)
     Q_PROPERTY(bool       smooth         READ smooth        WRITE setSmooth       NOTIFY linePropertiesChangedToQML)
 
@@ -64,8 +64,8 @@ public:
     unsigned tesselation() const;
     void setTesselation(const unsigned &tesselation);
     // set clamp
-    osgEarth::Symbology::AltitudeSymbol::Clamping  clamp() const;
-    void setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping  &clamp);
+    int  clamp() const;
+    void setClamp(int clamp);
     //set Type
     bool visible() const;
     void setVisible(const bool &visible);

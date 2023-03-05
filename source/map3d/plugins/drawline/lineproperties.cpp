@@ -94,16 +94,16 @@ void LinePropertiesModel::setTesselation(const unsigned &value){
     }
 }
 
-osgEarth::Symbology::AltitudeSymbol::Clamping  LinePropertiesModel::clamp() const
+int LinePropertiesModel::clamp() const
 {
     return mClamp;
 }
-void LinePropertiesModel::setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping  &value){
+void LinePropertiesModel::setClamp(int value){
     if(value == mClamp)
         return;
-    mClamp = value;
+    mClamp = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(value);
     if(mLineNode){
-        mLineNode->setClamp(value);
+        mLineNode->setClamp(mClamp);
     }
 }
 
