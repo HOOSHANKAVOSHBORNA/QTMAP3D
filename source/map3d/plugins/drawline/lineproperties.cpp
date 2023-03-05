@@ -147,6 +147,8 @@ void LinePropertiesModel::setLine(LineNode* linNode)
     mLineNode->setPointWidth(mPointwidth);
     mLineNode->setSmooth(mSmooth);
     mLineNode->setPointVisible(mVisible);
+    mLineNode->setClamp(mClamp);
+    mLineNode->setHeight(mHeight);
 }
 
 LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):
@@ -181,9 +183,5 @@ void LineProperties::hide()
 
 void LineProperties::setLine(LineNode *line)
 {
-    if(line){
-        mLine = line;
-        mLineProperties->setLine(line);
-    }
-
+    mLineProperties->setLine(line);
 }
