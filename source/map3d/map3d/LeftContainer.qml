@@ -13,10 +13,12 @@ Item {
             if(isMinimized === true){
                 root.x = screenwidth
             }else{
-                root.x = screenwidth + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3)))
+                root.x = screenwidth + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3)))
             }
-                    }
+        }
     }
+
+
     property bool isMinimized: false
     property var nowItem: null
     function showProp(item){
@@ -40,13 +42,13 @@ Item {
 
 
     function menuLeftContainerLoad() {
-        layersItemShowAnimation.to =  wnd.width + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3)))
+        layersItemShowAnimation.to =  wnd.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3)))
         layersItemShowAnimation.duration = 200;
         layersItemShowAnimation.start();
     }
 
     function menuLeftContainerHide(){
-        layersItemHideAnimation.to = wnd.width + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3))) + 300
+        layersItemHideAnimation.to = wnd.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3))) + 300
         layersItemHideAnimation.duration = 200;
         layersItemHideAnimation.start();
     }
@@ -62,6 +64,20 @@ Item {
         else {
             layers.visible = false;
             menuLeftContainerHide();
+        }
+    }
+
+    function minimizeBtn(){
+        if(root.x !== wnd.width){
+            miniLayer.running = true
+            miniarrow.running = true
+            isMinimized = true
+            //                               maxiTXT.running = true
+        } else{
+            maxiLayer.running = true
+            maxiarrow.running = true
+            isMinimized = false
+            //                               miniTXT.running = true
         }
     }
 
@@ -83,7 +99,7 @@ Item {
         LayersWidget{
             id:layers
             layersModel: wnd.layersModel
-            SplitView.minimumHeight: root.height/3
+            SplitView.minimumHeight: root.height/4
             onToggleLayerEnabled: function(layerIndex) {
                 wnd.toggleLayerEnabled(layerIndex);
             }
@@ -93,7 +109,7 @@ Item {
         Item {
             id: leftObjects
             width: parent.width
-            SplitView.minimumHeight: 200
+            SplitView.minimumHeight: root.height/4
             visible: false
 
         }
@@ -121,17 +137,7 @@ Item {
             rotation: 180
             MouseArea{
                 anchors.fill: parent
-                onClicked: if(root.x !== wnd.width){
-                               miniLayer.running = true
-                               miniarrow.running = true
-                               isMinimized = true
-                               //                               maxiTXT.running = true
-                           } else{
-                               maxiLayer.running = true
-                               maxiarrow.running = true
-                               isMinimized = false
-                               //                               miniTXT.running = true
-                           }
+                onClicked: minimizeBtn();
                 hoverEnabled: true
                 onEntered:  if(root.x !== wnd.width){
                                 glowimg.visible=true
@@ -165,7 +171,7 @@ Item {
             }
         }
         PropertyAnimation{id:miniLayer ; target: root ; property: "x" ; to: wnd.width ; duration:150;  running: false }
-        PropertyAnimation{id:maxiLayer ; target: root ; property: "x" ; to: (wnd.width + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3)))) ; duration: 150; running: false }
+        PropertyAnimation{id:maxiLayer ; target: root ; property: "x" ; to: (wnd.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3)))) ; duration: 150; running: false }
         PropertyAnimation{id:miniarrow ; target: arrow ; property: "rotation" ; to: 180 ; duration:300;  running: false ;easing.type: Easing.InQuint}
         PropertyAnimation{id:maxiarrow ; target: arrow ; property: "rotation" ; to: 0 ; duration:300;  running: false  ; easing.type: Easing.InQuint}
         PropertyAnimation{id: layersItemShowAnimation ; target: root;property: 'x';easing.type: Easing.OutQuint;}
