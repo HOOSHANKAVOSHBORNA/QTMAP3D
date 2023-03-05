@@ -64,8 +64,8 @@ Item {
                         id: sideInfoTxt
                         anchors.centerIn: parent
                         text: root.titleText
-                        color:"white"
-                        font.pointSize: 7
+                        color:"#ffc75e"
+                        font.pointSize: 10
                         visible: false
                         rotation: -90
                     }

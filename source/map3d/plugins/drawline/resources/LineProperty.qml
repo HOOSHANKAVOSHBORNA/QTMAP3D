@@ -19,6 +19,8 @@ Item {
 
     property LineProperties lineProperties
 
+    property string lColor: "#91001d"
+    property string pColor: "#001191"
     Item {
         id: dialog
         width: 250
@@ -51,7 +53,7 @@ Item {
                 radius: 10
                 gradient:Gradient{
                     GradientStop{position:1.0 ; color: "#313131"}
-                    GradientStop{position:0.0 ; color: "#5f5f5f"}
+                    GradientStop{position:0.0 ; color: "#3f3f3f"}
                 }
                 Text {
                     id: headerTitle
@@ -103,7 +105,7 @@ Item {
                                 Rectangle{
                                     height: 20
                                     width: 20
-                                    color: lineProperties.color
+                                    color: lColor
                                     border.width: 2
                                     border.color: "#c9c9c9"
                                     x: 5
@@ -127,7 +129,7 @@ Item {
 
                                     Text {
                                         id: lineColorField
-                                        text: lineProperties.color
+                                        text: lColor
                                         anchors.centerIn: parent
                                         font.pointSize: 10
 
@@ -138,7 +140,8 @@ Item {
                                     id:  lineColorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
-                                        lineProperties.color = lineColorDialog.color
+                                        lColor = lineColorDialog.color
+                                        lineProperties.color = lColor.toString()
                                     }
 
                                 }
@@ -172,7 +175,7 @@ Item {
                                 Rectangle{
                                     height: 20
                                     width: 20
-                                    color: lineProperties.pointColor
+                                    color: pColor
                                     border.width: 2
                                     border.color: "#c9c9c9"
                                     x: 5
@@ -196,7 +199,7 @@ Item {
 
                                     Text {
                                         id: pointColorField
-                                        text: lineProperties.pointColor
+                                        text: pColor
                                         anchors.centerIn: parent
                                         font.pointSize: 10
 
@@ -208,7 +211,8 @@ Item {
                                     title: "Please choose a color"
                                     onAccepted: {
                                         //                                    lineColor = lineColorDialog.color
-                                        lineProperties.pointColor = pointColorDialog.color
+                                        pColor = pointColorDialog.color
+                                        lineProperties.pointColor = pColor
                                     }
 
                                 }
@@ -448,7 +452,7 @@ Item {
                                 SpinBox {
                                     id: transValue
                                     stepSize: 1
-                                    value: 1
+                                    value: 0
                                     to : 10000
                                     from : 0
                                     validator: DoubleValidator {
@@ -766,6 +770,8 @@ Item {
                                 Switch {
                                     id: visibleSwitch
                                     anchors.centerIn: parent
+                                    checked: true
+
                                     ToolTip {
                                         parent: visibleSwitch
                                         y: visibleSwitch.y + visibleSwitch.height
@@ -774,7 +780,7 @@ Item {
                                             color: "white"
                                         }
 
-                                        background: Rectangle {
+                                            background: Rectangle {
                                             color: "#404040"
                                             radius: 4
                                         }
@@ -835,6 +841,7 @@ Item {
                                 Switch {
                                     id: smooth
                                     anchors.centerIn: parent
+                                    checked: true
                                     ToolTip {
                                         parent: smooth
                                         y: smooth.y + smooth.height

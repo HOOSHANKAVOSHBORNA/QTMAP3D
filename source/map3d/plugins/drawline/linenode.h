@@ -57,10 +57,10 @@ private:
     float mWidth{5};
     float mPointWidth{5};
     float mHeight;
-    bool mPointVisible{true};
+    bool mPointVisible{false};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
-    bool mSmooth;
+    bool mSmooth{false};
 
     //Lenght part
     osg::ref_ptr<osg::Group> mLableGroup;

@@ -146,25 +146,18 @@ void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 void drawLine::startDrawLine()
 {
     mLine = new LineNode(mMapController);
-    mLine->setColor(osgEarth::Color::Orange);
-    mLine->setPointColor(osgEarth::Color::Black);
-    mLine->setWidth(7);
-    mLine->setPointVisible(false);
-    mLine->setPointWidth(8);
-    mLine->setTessellation(20);
+//    mLine->setColor(osgEarth::Color::Orange);
+//    mLine->setPointColor(osgEarth::Color::Black);
+//    mLine->setWidth(7);
+//    mLine->setPointVisible(false);
+//    mLine->setPointWidth(8);
+//    mLine->setTessellation(20);
     mLine->showLenght(true);
     addNodeToLayer(mLine);
 
-//<<<<<<< HEAD
     mLineProperties->setLine(mLine);
 
 
-//=======
-//    if (mLineProperties)
-//        mLineProperties->hide();
-//    mLineProperties = new LineProperties(mQmlEngine, mLine);
-//    mLineProperties->show();
-//>>>>>>> cfc87b0b4426eb406d1f3cb4a860c295f64f776d
 
     mDrawingState = DrawingState::DRAWING;
 }
@@ -173,13 +166,7 @@ void drawLine::drawingLine(QMouseEvent *event)
 {
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
-//<<<<<<< HEAD
-//    if (mShape == Shape::LINE && mLine->getSize()>= 2){
-//        finishDrawing(event);
 
-//    }
-//=======
-//>>>>>>> cfc87b0b4426eb406d1f3cb4a860c295f64f776d
 }
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)

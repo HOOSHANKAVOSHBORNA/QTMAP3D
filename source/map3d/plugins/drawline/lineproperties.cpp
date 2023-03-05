@@ -11,7 +11,7 @@ LinePropertiesModel::LinePropertiesModel(QObject *parent) :
 
     QObject(parent)
 {
-       QObject::connect(this,&LinePropertiesModel::linePropertiesChanged,this,&LinePropertiesModel::linePropertiesChangedToQML);
+    QObject::connect(this,&LinePropertiesModel::linePropertiesChanged,this,&LinePropertiesModel::linePropertiesChangedToQML);
 }
 
 QString LinePropertiesModel::color() const
@@ -22,8 +22,9 @@ void LinePropertiesModel:: setColor(const QString &value){
     if(value == mColor)
         return;
     mColor = value;
-    emit linePropertiesChanged(Color , value);
-    mLineNode->setColor(value.toStdString());
+    if(mLineNode){
+        mLineNode->setColor(value.toStdString());
+    }
 
 }
 
@@ -35,8 +36,9 @@ void LinePropertiesModel:: setPointColor(const QString &value){
     if(value == mPointColor)
         return;
     mPointColor = value;
-    emit linePropertiesChanged(PointColor , value);
-    mLineNode->setPointColor(value.toStdString());
+    if(mLineNode){
+        mLineNode->setPointColor(value.toStdString());
+    }
 
 }
 
@@ -48,8 +50,9 @@ void LinePropertiesModel:: setWidth(const float &value){
     if(value == mWidth)
         return;
     mWidth = value;
-    emit linePropertiesChanged(Width , value);
-    mLineNode->setWidth(value);
+    if(mLineNode){
+        mLineNode->setWidth(value);
+    }
 }
 
 float LinePropertiesModel::height() const
@@ -60,8 +63,9 @@ void LinePropertiesModel:: setHeight(const float &value){
     if(value == mHeight)
         return;
     mHeight = value;
-    emit linePropertiesChanged(Height , value);
-    mLineNode->setHeight(value);
+    if(mLineNode){
+        mLineNode->setHeight(value);
+    }
 }
 
 float LinePropertiesModel::pointwidth() const
@@ -72,9 +76,9 @@ void LinePropertiesModel::setPointwidth(const float &value){
     if(value == mPointwidth)
         return;
     mPointwidth = value;
-    emit linePropertiesChanged(Pointwidth, value);
-
-    mLineNode->setPointWidth(value);
+    if(mLineNode){
+        mLineNode->setPointWidth(value);
+    }
 }
 
 unsigned LinePropertiesModel::tesselation() const
@@ -85,11 +89,9 @@ void LinePropertiesModel::setTesselation(const unsigned &value){
     if(value == mTesselation)
         return;
     mTesselation = value;
-    emit linePropertiesChanged(Tesselation, value);
-
-
-    mLineNode->setTessellation(value);
-
+    if(mLineNode){
+        mLineNode->setTessellation(value);
+    }
 }
 
 osgEarth::Symbology::AltitudeSymbol::Clamping  LinePropertiesModel::clamp() const
@@ -100,9 +102,9 @@ void LinePropertiesModel::setClamp(const osgEarth::Symbology::AltitudeSymbol::Cl
     if(value == mClamp)
         return;
     mClamp = value;
-    emit linePropertiesChanged(Clamp, value);
-
-    mLineNode->setClamp(value);
+    if(mLineNode){
+        mLineNode->setClamp(value);
+    }
 }
 
 bool LinePropertiesModel::visible() const
@@ -113,9 +115,9 @@ void LinePropertiesModel::setVisible(const bool &value){
     if(value == mVisible)
         return;
     mVisible = value;
-    emit linePropertiesChanged(Visible, value);
-
-    mLineNode->setPointVisible(value);
+    if(mLineNode){
+        mLineNode->setPointVisible(value);
+    }
 }
 
 bool LinePropertiesModel::smooth() const
@@ -126,9 +128,9 @@ void LinePropertiesModel::setSmooth(const bool &value){
     if(value == mSmooth)
         return;
     mSmooth = value;
-    emit linePropertiesChanged(Smooth, value);
-
-    mLineNode->setSmooth(value);
+    if(mLineNode){
+        mLineNode->setSmooth(value);
+    }
 }
 
 void LinePropertiesModel::setLine(LineNode* linNode)
@@ -137,9 +139,10 @@ void LinePropertiesModel::setLine(LineNode* linNode)
     mLineNode->setColor(mColor.toStdString());
     mLineNode->setPointColor(mPointColor.toStdString());
     mLineNode->setWidth(mWidth);
-    mLineNode->setHeight(mHeight);
     mLineNode->setTessellation(mTesselation);
     mLineNode->setPointWidth(mPointwidth);
+    mLineNode->setSmooth(mSmooth);
+    mLineNode->setPointVisible(mVisible);
 }
 
 LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):

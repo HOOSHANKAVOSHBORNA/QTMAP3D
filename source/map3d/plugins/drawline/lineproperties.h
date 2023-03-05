@@ -86,15 +86,15 @@ signals:
 
 
 private:
-    QString        mColor     ;
-    QString        mPointColor ;
-    float          mWidth      ;
-    float          mHeight      ;
-    float          mPointwidth ;
-    unsigned       mTesselation;
+    QString                                           mColor      ="#91001d" ;
+    QString                                           mPointColor ="#001191";
+    float                                             mWidth      =10.00;
+    float                                             mHeight     ;
+    float                                             mPointwidth =10.00;
+    unsigned                                          mTesselation=10.00;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp      ;
-    bool            mVisible    ;
-    bool            mSmooth;
+    bool                                              mVisible    =true;
+    bool                                              mSmooth     =true;
 
 
     LineNode* mLineNode;
@@ -119,7 +119,7 @@ private:
     QQmlEngine* mQmlEngine;
     QQuickItem* mItem;
     LinePropertiesModel *mLineProperties;
-    LineNode *mLine;
+    LineNode *mLine = nullptr;
     UIHandle *mUiHandle = nullptr;
 
 };
