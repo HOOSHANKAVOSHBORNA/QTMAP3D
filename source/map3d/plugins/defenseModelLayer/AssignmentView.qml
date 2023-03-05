@@ -80,6 +80,7 @@ Item {
             Layout.fillWidth: true
             SplitView.minimumWidth: 500
             SplitView.fillWidth: true
+            SplitView.maximumWidth: 600
             Item {
                 Layout.preferredHeight: 40
                 Layout.minimumHeight: 40
@@ -207,7 +208,7 @@ Item {
                             Rectangle {
                                 width: 20
                                 height: 20
-                                x: -20
+                                x: -23
                                 radius: 10
                                 anchors.verticalCenter: parent.verticalCenter
 //                                anchors.leftMargin: -30
@@ -371,7 +372,7 @@ Item {
                             Rectangle {
                                 width: 20
                                 height: 20
-                                x: -20
+                                x: -23
                                 radius: 10
                                 anchors.verticalCenter: parent.verticalCenter
 //                                anchors.leftMargin: -30

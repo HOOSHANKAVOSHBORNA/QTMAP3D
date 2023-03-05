@@ -109,7 +109,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         aircraftInfo.MasterRadar = "radar2";
         aircraftInfo.Identification = AircraftInfo::X;
         aircraftInfo.IdentificationMethod = "mtd";
-        aircraftInfo.Time = "1401/10/21 10:00 fdfd";
+        aircraftInfo.Time = 16675478754;
         aircraftInfo.Pos = "pos1";
         addUpdateAircraft(aircraftInfo);
         //demo();
