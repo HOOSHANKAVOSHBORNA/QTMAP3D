@@ -41,7 +41,9 @@ Item {
             height: rootItem.height
             //            anchors.horizontalCenter: parent.horizontalCenter
             anchors.fill: parent
-            color: "transparent"
+            color: "#3f3f3f"
+            opacity: 0.9
+            anchors.margins: 6
             //            y:43
 
             Rectangle{
@@ -49,12 +51,10 @@ Item {
                 width: parent.width -2
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: 2
-                height: 35
-                radius: 10
-                gradient:Gradient{
-                    GradientStop{position:1.0 ; color: "#313131"}
-                    GradientStop{position:0.0 ; color: "#3f3f3f"}
-                }
+                height: 30
+                radius: 0
+                color: "#313131"
+
                 Text {
                     id: headerTitle
                     text: qsTr("Sphere Properties")
@@ -70,12 +70,14 @@ Item {
                 id: frame
                 clip: true
                 anchors.top: header.bottom
+                padding: 5
                 width: parent.width
                 height: parent.height - header.height
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
-                    contentHeight: 400
+                    contentHeight: 350
                     width: 240
+
                     Rectangle {
                         id : innerContainer
                         color: "transparent"
@@ -88,7 +90,7 @@ Item {
                             y: innerContainer.y +3
                             anchors.horizontalCenter: parent.horizontalCenter
                             columnSpacing: 0
-                            rowSpacing: 2
+                            rowSpacing: 1
                             columns:2
                             rows: 6
                             layoutDirection: Qt.RightToLeft
@@ -98,8 +100,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
 
                                 Rectangle{
@@ -150,8 +152,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: lineColorCircle
@@ -168,16 +170,16 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
 
                                 Rectangle{
                                     height: 20
                                     width: 20
                                     color: pColor
-                                    border.width: 2
-                                    border.color: "#c9c9c9"
+//                                    border.width: 2
+//                                    border.color: "#c9c9c9"
                                     x: 5
                                     radius: 5
                                     anchors.verticalCenter: parent.verticalCenter
@@ -221,8 +223,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: pointColor
@@ -241,8 +243,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 SpinBox {
                                     id: widthValue
@@ -324,8 +326,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: widthSphere
@@ -344,8 +346,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 SpinBox {
                                     id: pointwidthValue
@@ -360,6 +362,7 @@ Item {
                                     editable: true
                                     anchors.centerIn: parent
                                     height: 20
+
 
                                     contentItem: TextInput {
                                         z: 2
@@ -427,8 +430,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: pointwidth
@@ -446,8 +449,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 SpinBox {
                                     id: transValue
@@ -529,8 +532,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: transSphere
@@ -548,8 +551,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 SpinBox {
                                     id: tesselationValue
@@ -631,8 +634,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: tesselationSphere
@@ -650,8 +653,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 ComboBox {
                                     id: control
@@ -747,8 +750,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     text: qsTr("Clamp :")
@@ -764,8 +767,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Switch {
                                     id: visibleSwitch
@@ -773,6 +776,10 @@ Item {
                                     checked: true
                                     onCheckedChanged:      if(visibleSwitch.checked === false){
                                                                smooth.checkable = false;
+                                                               pointwidthValue.enabled = false;
+                                                           }else{
+                                                               smooth.checkable = true;
+                                                               pointwidthValue.enabled = true;
                                                            }
 
                                     ToolTip {
@@ -820,8 +827,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     text: qsTr("Points :")
@@ -838,8 +845,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Switch {
                                     id: smooth
@@ -891,8 +898,8 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#313131"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     text: qsTr("Smooth :")

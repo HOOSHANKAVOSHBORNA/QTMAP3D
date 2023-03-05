@@ -9,9 +9,10 @@ Item {
     x: parent.x
     clip: false
 
-//    onWidthChanged: if(nowItem || layers.visible){
-//                        root.x = wnd.width + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3)))
-//                    }
+    function adjustLeftContainer(screenwidth){ if(nowItem || layers.visible){
+                        root.x = screenwidth + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3)))
+                    }
+    }
 
     property var nowItem: null
     function showProp(item){
