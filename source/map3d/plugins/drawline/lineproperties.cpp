@@ -11,10 +11,10 @@ LinePropertiesModel::LinePropertiesModel(QObject *parent) :
 
     QObject(parent)
 {
-    QObject::connect(this,&LinePropertiesModel::linePropertiesChanged,this,&LinePropertiesModel::linePropertiesChangedToQML);
+
 }
 
-QString LinePropertiesModel::color() const
+QString LinePropertiesModel::getColor() const
 {
     return mColor;
 }
@@ -28,7 +28,7 @@ void LinePropertiesModel:: setColor(const QString &value){
 
 }
 
-QString LinePropertiesModel::pointColor() const
+QString LinePropertiesModel::getPointColor() const
 {
     return mPointColor;
 }
@@ -42,7 +42,7 @@ void LinePropertiesModel:: setPointColor(const QString &value){
 
 }
 
-float LinePropertiesModel::width() const
+float LinePropertiesModel::getWidth() const
 {
     return mWidth;
 }
@@ -55,7 +55,7 @@ void LinePropertiesModel:: setWidth(const float &value){
     }
 }
 
-float LinePropertiesModel::height() const
+float LinePropertiesModel::getHeight() const
 {
     return mHeight;
 }
@@ -68,7 +68,7 @@ void LinePropertiesModel:: setHeight(const float &value){
     }
 }
 
-float LinePropertiesModel::pointwidth() const
+float LinePropertiesModel::getPointwidth() const
 {
     return mPointwidth;
 }
@@ -81,7 +81,7 @@ void LinePropertiesModel::setPointwidth(const float &value){
     }
 }
 
-unsigned LinePropertiesModel::tesselation() const
+unsigned LinePropertiesModel::getTesselation() const
 {
     return mTesselation;
 }
@@ -94,7 +94,7 @@ void LinePropertiesModel::setTesselation(const unsigned &value){
     }
 }
 
-int LinePropertiesModel::clamp() const
+int LinePropertiesModel::getClamp() const
 {
     return mClamp;
 }
@@ -107,7 +107,7 @@ void LinePropertiesModel::setClamp(int value){
     }
 }
 
-bool LinePropertiesModel::visible() const
+bool LinePropertiesModel::getVisible() const
 {
     return mVisible;
 }
@@ -120,7 +120,7 @@ void LinePropertiesModel::setVisible(const bool &value){
     }
 }
 
-bool LinePropertiesModel::smooth() const
+bool LinePropertiesModel::getSmooth() const
 {
     return mSmooth;
 }
@@ -181,6 +181,9 @@ void LineProperties::hide()
 
 void LineProperties::setLine(LineNode *line)
 {
-    mLine = line;
-    mLineProperties->setLine(line);
+    if(line){
+        mLine = line;
+        mLineProperties->setLine(line);
+    }
+
 }

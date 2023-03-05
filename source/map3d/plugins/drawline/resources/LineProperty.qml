@@ -771,6 +771,9 @@ Item {
                                     id: visibleSwitch
                                     anchors.centerIn: parent
                                     checked: true
+                                    onCheckedChanged:      if(visibleSwitch.checked === false){
+                                                               smooth.checkable = false;
+                                                           }
 
                                     ToolTip {
                                         parent: visibleSwitch
@@ -842,6 +845,7 @@ Item {
                                     id: smooth
                                     anchors.centerIn: parent
                                     checked: true
+
                                     ToolTip {
                                         parent: smooth
                                         y: smooth.y + smooth.height
