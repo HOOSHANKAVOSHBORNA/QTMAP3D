@@ -1,7 +1,5 @@
 #include "drawshapeautoscaler.h"
 
-
-
 void DrawShapeAutoScaler::operator()(osg::Node *node, osg::NodeVisitor *nv)
 
 {

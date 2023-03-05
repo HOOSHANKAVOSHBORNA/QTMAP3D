@@ -67,8 +67,8 @@ public:
 
 
 private:
-    std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoList;
-    std::deque<QPair<int, QSharedPointer<AircraftInfo>>> mAircraftInfoListProxy;
+    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoList;
+    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoListProxy;
     QMap<int, QList<AircraftAssignInfo>> mAircraftsAssigned;
 
 

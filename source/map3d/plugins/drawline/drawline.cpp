@@ -133,7 +133,6 @@ void drawLine::mouseMoveEvent(QMouseEvent *event)
 {
     if (mDrawingState == DrawingState::DRAWING)
         mouseMoveDrawing(event);
-
 }
 
 void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
