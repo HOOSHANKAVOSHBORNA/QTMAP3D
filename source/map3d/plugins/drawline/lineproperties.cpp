@@ -177,7 +177,6 @@ Q_INVOKABLE void LineProperties::show()
 
 void LineProperties::hide()
 {
-
     mUiHandle->propertiesHide(mItem);
 }
 
