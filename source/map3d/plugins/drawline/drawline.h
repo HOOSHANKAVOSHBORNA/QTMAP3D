@@ -53,6 +53,7 @@ private:
     LineNode* mLine{nullptr};
     LineProperties *mLineProperties = nullptr;
     UIHandle *muiHandle;
+    bool lineZone;
 };
 
 #endif // LINE_H

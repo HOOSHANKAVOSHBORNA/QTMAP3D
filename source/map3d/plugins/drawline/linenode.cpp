@@ -140,7 +140,11 @@ void LineNode::setHeight(float height)
     mHeight = height;
     auto style = getStyle();
     style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = mHeight;
+    if (height<=0){
+        style.remove<osgEarth::Symbology::ExtrusionSymbol>();
+    }
     setStyle(style);
+    addChild(mLableGroup);
 }
 
 bool LineNode::getPointVisible() const
@@ -163,6 +167,7 @@ void LineNode::setPointVisible(bool value)
     else
         style.remove<osgEarth::Symbology::PointSymbol>();
     setStyle(style);
+    addChild(mLableGroup);
 }
 
 osgEarth::Symbology::AltitudeSymbol::Clamping LineNode::getClamp() const
@@ -275,4 +280,5 @@ void LineNode::setSmooth(bool smooth)
     if(mSmooth)
         sStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
     setStyle(sStyle);
+    addChild(mLableGroup);
 }

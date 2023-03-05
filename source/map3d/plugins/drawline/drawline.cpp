@@ -58,6 +58,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
         {
             if(checked)
             {
+                lineZone = true;
                 mShape = Shape::LINESTRING;
                 mDrawingState = DrawingState::START;
                     mLineProperties = new LineProperties(mQmlEngine,muiHandle );
@@ -65,6 +66,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             }
             else
             {
+                lineZone = false;
                 mShape = Shape::NONE;
                 mDrawingState = DrawingState::FINISH;
                 mLineProperties->hide();
@@ -74,18 +76,18 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
     {
         if(checked)
         {
+            lineZone = true;
             mShape = Shape::LINE;
             mDrawingState = DrawingState::START;
         }
         else
         {
+            lineZone = false;
             mShape = Shape::NONE;
             mDrawingState = DrawingState::FINISH;
-
         }
     }
 }
-
 bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
 {
     muiHandle = uIHandle;
@@ -97,42 +99,45 @@ bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
     mMapController->addLayer(lineLayer);
     return true;
 }
-
 void drawLine::mousePressEvent(QMouseEvent *event)
 {
-    if(event->button() == Qt::MouseButton::LeftButton)
-    {
-        if(mDrawingState == DrawingState::START)
+    if (lineZone){
+        if(event->button() == Qt::MouseButton::LeftButton)
         {
-            startDrawLine();
-            event->accept();
-        }
-        if(mDrawingState == DrawingState::DRAWING)
-        {
-            if (mShape == Shape::LINE && mLine->getSize()>= 2){
-                finishDrawing(event);
+            if(mDrawingState == DrawingState::START)
+            {
+                startDrawLine();
+                event->accept();
             }
-            else
-                drawingLine(event);
+            if(mDrawingState == DrawingState::DRAWING)
+            {
+                if (mShape == Shape::LINE && mLine->getSize()>= 2){
+                    finishDrawing(event);
+                }
+                else
+                    drawingLine(event);
+                event->accept();
+            }
+        }
+        if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
+        {
+            cancelDrawingLine(event);
+
+        }
+        if(event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING)
+        {
+            finishDrawing(event);
+            mLine->setHeight(0);
             event->accept();
         }
-    }
-    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
-    {
-        cancelDrawingLine(event);
-
-    }
-    if(event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING)
-    {
-        finishDrawing(event);
-        event->accept();
     }
 }
-
 void drawLine::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mDrawingState == DrawingState::DRAWING)
-        mouseMoveDrawing(event);
+    if (lineZone){
+        if (mDrawingState == DrawingState::DRAWING)
+            mouseMoveDrawing(event);
+    }
 }
 
 void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
@@ -151,13 +156,10 @@ void drawLine::startDrawLine()
 //    mLine->setPointVisible(false);
 //    mLine->setPointWidth(8);
 //    mLine->setTessellation(20);
+//    mLine->setHeight(10000);
     mLine->showLenght(true);
     addNodeToLayer(mLine);
-
     mLineProperties->setLine(mLine);
-
-
-
     mDrawingState = DrawingState::DRAWING;
 }
 
@@ -165,7 +167,6 @@ void drawLine::drawingLine(QMouseEvent *event)
 {
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
-
 }
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)
@@ -184,8 +185,6 @@ void drawLine::mouseMoveDrawing(QMouseEvent *event)
     }
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
-
-
 }
 
 void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
@@ -196,7 +195,6 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
         if(nodeEditor)
             removeNodeFromLayer(nodeEditor);
         event->accept();
-
     }
 }
 
