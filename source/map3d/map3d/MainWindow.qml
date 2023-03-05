@@ -452,6 +452,7 @@ CMainWindow {
             widgetsHideAnimation.start();
             wnd.widgetsVisible = false;
             infoo.hideItem()
+//            leftContainerHolder.positionFactorSyncClose();
 
 
         } else {
@@ -461,6 +462,7 @@ CMainWindow {
             widgetsHideAnimation.stop();
             widgetsShowAnimation.start();
             wnd.widgetsVisible = true;
+//            leftContainerHolder.positionFactorSyncOpen();
         }
 
     }
@@ -485,7 +487,7 @@ CMainWindow {
 
     LeftContainer {
         id: leftContainerHolder
-        x: parent.width + widgetsMargins - (widgetsPositionFactor * (250 + (widgetsMargins *3))) +300
+        x: parent.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3.0))) +300
         y: menuWidget.height + (widgetsMargins*2 )
         width: 250
         height: parent.height - menuWidget.height - (widgetsMargins * 6) - navigationWidget.height

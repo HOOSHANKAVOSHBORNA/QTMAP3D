@@ -122,20 +122,20 @@ Item {
 
                                     Item {
                                         id: img
-                                        Layout.preferredWidth: 24
-                                        Layout.preferredHeight: 24
+                                        Layout.preferredWidth: 20
+                                        Layout.preferredHeight: 20
                                         Layout.alignment: Qt.AlignCenter
 
                                         Image {
                                             anchors.fill: parent
                                             source: "qrc:/Resources/eye_open.png"
-                                            sourceSize: Qt.size(24,24)
+                                            sourceSize: Qt.size(20,20)
                                             visible: layer_enabled
                                         }
                                         Image {
                                             anchors.fill: parent
                                             source: "qrc:/Resources/eye_close.png"
-                                            sourceSize: Qt.size(24,24)
+                                            sourceSize: Qt.size(20,20)
                                             visible: layer_enabled == false
                                         }
                                     }
@@ -144,6 +144,7 @@ Item {
                                     Label {
                                         id: label
                                         text: display
+                                        font.pointSize: 10
                                         color: "white"
 
                                         Layout.alignment: Qt.AlignCenter

@@ -58,7 +58,7 @@ Item {
 
                 Text {
                     id: headerTitle
-                    text: qsTr("Sphere Properties")
+                    text: qsTr("Line Properties")
                     anchors.centerIn: parent
                     font.family: "SourceSansPro"
                     font.pointSize: 14
