@@ -97,6 +97,7 @@ void LineNode::setColor(const osgEarth::Color &color)
     auto style = getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color()= mColor;
     setStyle(style);
+    addChild(mLableGroup);
 }
 
 osgEarth::Color LineNode::getPointColor() const
@@ -114,6 +115,7 @@ void LineNode::setPointColor(const osgEarth::Color &pointColor)
         auto style = getStyle();
         style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
         setStyle(style);
+        addChild(mLableGroup);
     }
 }
 
@@ -128,6 +130,7 @@ void LineNode::setWidth(float width)
     auto style = getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
     setStyle(style);
+    addChild(mLableGroup);
 }
 
 float LineNode::getHeight() const
@@ -200,6 +203,7 @@ void LineNode::setTessellation(const unsigned &tessellation)
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = tessellation;
     setStyle(style);
+    addChild(mLableGroup);
 }
 
 float LineNode::getPointWidth() const
@@ -214,6 +218,7 @@ void LineNode::setPointWidth(float pointWidth)
     if(mPointVisible)
         style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
     setStyle(style);
+    addChild(mLableGroup);
 }
 
 osg::Image* LineNode::updateLenghtLable(double lenght)

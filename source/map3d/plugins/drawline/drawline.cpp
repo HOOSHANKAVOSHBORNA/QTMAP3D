@@ -30,15 +30,18 @@
 using namespace osgEarth::Annotation;
 
 const QString CATEGORY = "Draw";
-const QString LINESTRING = "Line String";
 const QString LINE = "Line";
+
+const QString M_CATEGORY = "Measurement";
+const QString RULER = "Ruler";
+const QString HEIGHT = "Height";
 
 
 drawLine::drawLine(QWidget *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(drawLine);
-//    Q_INIT_RESOURCE(LineProperties);
+    //    Q_INIT_RESOURCE(LineProperties);
 
 }
 
@@ -46,45 +49,47 @@ bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     qmlRegisterType<LinePropertiesModel>("Crystal", 1, 0, "LineProperties");
     mQmlEngine = engine;
-    desc->toolboxItemsList.push_back(new ItemDesc{LINESTRING, CATEGORY, "qrc:/resources/line_string.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{RULER, M_CATEGORY, "qrc:/resources/ruler.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{HEIGHT, M_CATEGORY, "qrc:/resources/height.png", true});
     return true;
 }
 
 void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 {
     if(CATEGORY == category)
-        if(name == LINESTRING)
+        if(name == LINE)
         {
             if(checked)
             {
-                lineZone = true;
-                mShape = Shape::LINESTRING;
+                mEnterLineZone = true;
+                mType = Type::LINE;
                 mDrawingState = DrawingState::START;
-                    mLineProperties = new LineProperties(mQmlEngine,muiHandle );
-                    mLineProperties->show();
+                mLineProperties->show();
             }
             else
             {
-                lineZone = false;
-                mShape = Shape::NONE;
+                mEnterLineZone = false;
+                mType = Type::NONE;
                 mDrawingState = DrawingState::FINISH;
                 mLineProperties->hide();
             }
         }
-    if(name == LINE)
+    if(name == RULER)
     {
         if(checked)
         {
-            lineZone = true;
-            mShape = Shape::LINE;
+            mEnterLineZone = true;
+            mType = Type::RULER;
             mDrawingState = DrawingState::START;
+            mLineProperties->show();
         }
         else
         {
-            lineZone = false;
-            mShape = Shape::NONE;
+            mEnterLineZone = false;
+            mType = Type::NONE;
             mDrawingState = DrawingState::FINISH;
+            mLineProperties->hide();
         }
     }
 }
@@ -97,11 +102,13 @@ bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
     osgEarth::ModelLayer *lineLayer = new osgEarth::ModelLayer();
     lineLayer->setName(DRAW_LAYER_NAME);
     mMapController->addLayer(lineLayer);
+
+    mLineProperties = new LineProperties(mQmlEngine,muiHandle );
     return true;
 }
 void drawLine::mousePressEvent(QMouseEvent *event)
 {
-    if (lineZone){
+    if (mEnterLineZone){
         if(event->button() == Qt::MouseButton::LeftButton)
         {
             if(mDrawingState == DrawingState::START)
@@ -111,7 +118,7 @@ void drawLine::mousePressEvent(QMouseEvent *event)
             }
             if(mDrawingState == DrawingState::DRAWING)
             {
-                if (mShape == Shape::LINE && mLine->getSize()>= 2){
+                if (mType == Type::RULER && mLine->getSize()>= 2){
                     finishDrawing(event);
                 }
                 else
@@ -134,7 +141,7 @@ void drawLine::mousePressEvent(QMouseEvent *event)
 }
 void drawLine::mouseMoveEvent(QMouseEvent *event)
 {
-    if (lineZone){
+    if (mEnterLineZone){
         if (mDrawingState == DrawingState::DRAWING)
             mouseMoveDrawing(event);
     }
@@ -143,20 +150,20 @@ void drawLine::mouseMoveEvent(QMouseEvent *event)
 void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 {
 
-//    finishDrawing(event);
+    //    finishDrawing(event);
 
 }
 
 void drawLine::startDrawLine()
 {
     mLine = new LineNode(mMapController);
-//    mLine->setColor(osgEarth::Color::Orange);
-//    mLine->setPointColor(osgEarth::Color::Black);
-//    mLine->setWidth(7);
-//    mLine->setPointVisible(false);
-//    mLine->setPointWidth(8);
-//    mLine->setTessellation(20);
-//    mLine->setHeight(10000);
+    //    mLine->setColor(osgEarth::Color::Orange);
+    //    mLine->setPointColor(osgEarth::Color::Black);
+    //    mLine->setWidth(7);
+    //    mLine->setPointVisible(false);
+    //    mLine->setPointWidth(8);
+    //    mLine->setTessellation(20);
+    //    mLine->setHeight(10000);
     mLine->showLenght(true);
     addNodeToLayer(mLine);
     mLineProperties->setLine(mLine);

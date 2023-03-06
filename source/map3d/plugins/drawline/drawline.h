@@ -48,12 +48,12 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     enum class DrawingState {START, DRAWING, FINISH};
     DrawingState mDrawingState;
-    enum class Shape {NONE, LINESTRING, LINE};
-    Shape mShape;
+    enum class Type {NONE, LINE, RULER};
+    Type mType;
     LineNode* mLine{nullptr};
     LineProperties *mLineProperties = nullptr;
     UIHandle *muiHandle;
-    bool lineZone;
+    bool mEnterLineZone;
 };
 
 #endif // LINE_H
