@@ -9,7 +9,7 @@ Item {
     x: parent.x
     clip: false
 
-    function adjustLeftContainer(screenwidth){ if(nowItem || layers.visible){
+    function adjustRightContainer(screenwidth){ if(nowItem || layers.visible){
             if(isMinimized === true){
                 root.x = screenwidth
             }else{
@@ -24,7 +24,7 @@ Item {
     function showProp(item){
         item.parent = leftObjects
         nowItem = item
-        menuLeftContainerLoad();
+        menuRightContainerLoad();
         leftObjects.visible = true;
     }
 
@@ -34,20 +34,20 @@ Item {
             nowItem.parent = null
             nowItem = null
             if(layers.visible === false){
-                menuLeftContainerHide();
+                menuRightContainerHide();
             }
             leftObjects.visible = false
         }
     }
 
 
-    function menuLeftContainerLoad() {
+    function menuRightContainerLoad() {
         layersItemShowAnimation.to =  wnd.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3)))
         layersItemShowAnimation.duration = 200;
         layersItemShowAnimation.start();
     }
 
-    function menuLeftContainerHide(){
+    function menuRightContainerHide(){
         layersItemHideAnimation.to = wnd.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3))) + 300
         layersItemHideAnimation.duration = 200;
         layersItemHideAnimation.start();
@@ -55,7 +55,7 @@ Item {
 
     function menuLayersButtonClicked(){
         if(layers.visible !== true){
-            menuLeftContainerLoad();
+            menuRightContainerLoad();
             layers.visible = true;
         }
         else if(nowItem !== null){
@@ -63,7 +63,7 @@ Item {
         }
         else {
             layers.visible = false;
-            menuLeftContainerHide();
+            menuRightContainerHide();
         }
     }
 

@@ -21,6 +21,6 @@
         <file>setting/DelegateItem.qml</file>
         <file>setting/Settings.qml</file>
         <file>StatusBar.qml</file>
-        <file>LeftContainer.qml</file>
+        <file>RightContainer.qml</file>
     </qresource>
 </RCC>

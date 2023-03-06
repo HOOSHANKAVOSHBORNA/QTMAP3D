@@ -74,7 +74,7 @@ CMainWindow {
         toggleWidgetsVisible();
     }
 
-    onWidthChanged: leftContainerHolder.adjustLeftContainer(wnd.width);
+    onWidthChanged: leftContainerHolder.adjustRightContainer(wnd.width);
 
     property var sideItemsModel: ListModel {
 
@@ -485,7 +485,7 @@ CMainWindow {
     }
 
 
-    LeftContainer {
+    RightContainer {
         id: leftContainerHolder
         x: parent.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3.0))) +300
         y: menuWidget.height + (widgetsMargins*2 )
@@ -493,12 +493,12 @@ CMainWindow {
         height: parent.height - menuWidget.height - (widgetsMargins * 6) - navigationWidget.height
         }
 
-    function showLeftContainer(item) {
+    function showRightContainer(item) {
         if (wnd.widgetsVisible === false) toggleWidgetsVisible();
         leftContainerHolder.showProp(item);
     }
 
-    function hideLeftContainer(item) {
+    function hideRightContainer(item) {
         leftContainerHolder.hideProp(item);
     }
 
