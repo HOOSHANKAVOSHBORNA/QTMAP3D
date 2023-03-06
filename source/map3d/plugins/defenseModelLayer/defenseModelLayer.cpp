@@ -109,7 +109,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         aircraftInfo.MasterRadar = "radar2";
         aircraftInfo.Identification = AircraftInfo::X;
         aircraftInfo.IdentificationMethod = "mtd";
-        aircraftInfo.Time = "1401/10/21 10:00 fdfd";
+        aircraftInfo.Time = 16675478754;
         aircraftInfo.Pos = "pos1";
         addUpdateAircraft(aircraftInfo);
         //demo();
@@ -121,9 +121,9 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
             auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
             if(aircrafModelNode)
             {
-                if(aircrafModelNode->getAssignmentModelNondes().size() > 0)
+                if(aircrafModelNode->getAssignments().size() > 0)
                 {
-                    auto systemModelNode = aircrafModelNode->getAssignmentModelNondes().first();
+                    auto systemModelNode = aircrafModelNode->getAssignments().first();
                     if(systemModelNode){
                         SystemCambatInfo cambatInfo;
                         cambatInfo.Phase = SystemCambatInfo::Fire;
@@ -430,7 +430,7 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
     if(event->button() == Qt::LeftButton)
     {
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
-        if(aircraftModelNode && aircraftModelNode->hasAssignmentModelNode())
+        if(aircraftModelNode && aircraftModelNode->hasAssignment())
         {
             mDataManager->cancelAircraftAssign(aircraftModelNode);
             event->accept();

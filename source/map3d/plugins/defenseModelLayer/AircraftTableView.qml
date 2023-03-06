@@ -10,6 +10,7 @@ Item {
 
     signal filterTextChanged(string txt)
     signal aircraftDoubleClicked(int TN)
+    signal sortWithHeader(int column)
 
     property int hoveredIndex: -1
     property int selectedIndex: -1
@@ -105,7 +106,7 @@ Item {
                 anchors.left: parent.left
 
                 Repeater {
-                    model: 17
+                    model: 16
                     Rectangle {
                         width: 160
                         height: 40
@@ -115,6 +116,10 @@ Item {
                             color: '#FFFFFF'
                             text: rootItem.model ? rootItem.model.headerText(index) : "";
                             anchors.centerIn: parent
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: rootItem.sortWithHeader(index)
                         }
                     }
                 }
@@ -128,7 +133,7 @@ Item {
             TableView {
                 id: tableView
                 model: rootItem.model
-                contentWidth: 17 * (164)
+                contentWidth: 16 * (164)
                 clip:true
 
                 delegate: Item {
@@ -163,19 +168,30 @@ Item {
                         color: "transparent"
                         clip: true
                         Rectangle {
-                            opacity: 0.2
-                            color: (rootItem.hoveredIndex == row) ? "lightskyblue" : "transparent"
+                            opacity: 0.4
+                            color: rootItem.model ? (column == 0 ? AircraftColor:
+                                                        "transparent") : "transparent";
+                            anchors.centerIn: parent
+                            width: 25
+                            height: 23
+                            radius: 7
+                        }
+                        Rectangle {
+                            opacity: 0.4
+                            color: rootItem.model ? (rootItem.hoveredIndex == row ? "lightskyblue" :
+                                                        "transparent") : "transparent";
                             anchors.fill: parent
                         }
                         Text {
                             id: txt
+                            anchors.leftMargin: 5
+                            anchors.rightMargin: 5
                             anchors.centerIn: parent
                             text: display
                             color: d_txtcolor
                         }
                     }
                 }
-
             }
         }
     }

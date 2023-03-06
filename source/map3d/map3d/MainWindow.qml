@@ -74,6 +74,8 @@ CMainWindow {
         toggleWidgetsVisible();
     }
 
+    onWidthChanged: leftContainerHolder.adjustRightContainer(wnd.width);
+
     property var sideItemsModel: ListModel {
 
 
@@ -165,7 +167,7 @@ CMainWindow {
             }
 
             onLayersButtonClicked: function() {
-                layersWidget.menuWidgetLayersButtonClicked();
+                leftContainerHolder.menuLayersButtonClicked();
             }
         }
 
@@ -211,21 +213,8 @@ CMainWindow {
 
         }
 
-        LayersWidget {
-            id: layersWidget
 
-            x: parent.width + 2*widgetsMargins - (widgetsPositionFactor * (300 + (widgetsMargins*3)))
-            y: menuWidget.height + (widgetsMargins * 2)
-            width: 600 + (widgetsMargins * 4)
-            height: parent.height - menuWidget.height - (widgetsMargins * 4) - navigationWidget.height
 
-            layersModel: wnd.layersModel
-
-            onToggleLayerEnabled: function(layerIndex) {
-                wnd.toggleLayerEnabled(layerIndex);
-            }
-
-        }
 
 
 
@@ -462,11 +451,10 @@ CMainWindow {
             widgetsShowAnimation.stop();
             widgetsHideAnimation.start();
             wnd.widgetsVisible = false;
+            infoo.hideItem()
 
 
         } else {
-            //            sideWidget.hideAllItems();
-            infoo.hideItem()
 
             widgetsHideAnimation.stop();
             widgetsShowAnimation.start();
@@ -485,10 +473,29 @@ CMainWindow {
         height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
     }
 
-    function showInfoView(item) {
+    function showInfoView(item, title) {
         if (wnd.widgetsVisible === false) toggleWidgetsVisible();
         sideWidget.hideAllItems();
         infoo.showInfo(item)
+        infoo.titleText = title;
+    }
+
+
+    RightContainer {
+        id: leftContainerHolder
+        x: parent.width + widgetsMargins*2 - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3.0))) +300
+        y: menuWidget.height + (widgetsMargins*2 )
+        width: 250
+        height: parent.height - menuWidget.height - (widgetsMargins * 6) - navigationWidget.height
+        }
+
+    function showRightContainer(item) {
+        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+        leftContainerHolder.showProp(item);
+    }
+
+    function hideRightContainer(item) {
+        leftContainerHolder.hideProp(item);
     }
 
     Rectangle {

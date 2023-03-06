@@ -27,15 +27,14 @@ QVariant StationTableModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
     {
         switch(index.column()) {
-        case  0: return QVariant::fromValue<QString>(QString::number(mStationInfoListProxy[static_cast<size_t>(index.row())].first));
-        case  1: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Number);
-        case  2: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())].second->Name);
-        case  3: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())].second->Type);
-        case  4: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())].second->PrimSec);
-        case  5: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Latitude);
-        case  6: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Longitude);
-        case  7: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )].second->Radius);
-        case  8: return QVariant::fromValue<int>(mStationInfoListProxy[static_cast<size_t>(index.row()    )].second->CycleTime);
+        case  0: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )]->Number);
+        case  1: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())]->Name);
+        case  2: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())]->Type);
+        case  3: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())]->PrimSec);
+        case  4: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )]->Latitude);
+        case  5: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )]->Longitude);
+        case  6: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )]->Radius);
+        case  7: return QVariant::fromValue<int>(mStationInfoListProxy[static_cast<size_t>(index.row()    )]->CycleTime);
         }
 
         break;
@@ -57,15 +56,14 @@ QVariant StationTableModel::data(const QModelIndex &index, int role) const
     case HeaderTextRole:
     {
         switch(index.row()) {
-        case  0: return QVariant::fromValue<QString>("Index");
-        case  1: return QVariant::fromValue<QString>("Number");
-        case  2: return QVariant::fromValue<QString>("Name");
-        case  3: return QVariant::fromValue<QString>("Type");
-        case  4: return QVariant::fromValue<QString>("Primary/Secondry");
-        case  5: return QVariant::fromValue<QString>("Latitude");
-        case  6: return QVariant::fromValue<QString>("Longitude");
-        case  7: return QVariant::fromValue<QString>("Radius");
-        case  8: return QVariant::fromValue<QString>("CycleTime");
+        case  0: return QVariant::fromValue<QString>("Number");
+        case  1: return QVariant::fromValue<QString>("Name");
+        case  2: return QVariant::fromValue<QString>("Type");
+        case  3: return QVariant::fromValue<QString>("Primary/Secondry");
+        case  4: return QVariant::fromValue<QString>("Latitude");
+        case  5: return QVariant::fromValue<QString>("Longitude");
+        case  6: return QVariant::fromValue<QString>("Radius");
+        case  7: return QVariant::fromValue<QString>("CycleTime");
         }
         break;
     }
@@ -87,15 +85,14 @@ QHash<int, QByteArray> StationTableModel::roleNames() const
 QString StationTableModel::headerText(int column) const
 {
     switch(column) {
-    case  0: return QStringLiteral("Index");
-    case  1: return QStringLiteral("Number");
-    case  2: return QStringLiteral("Name");
-    case  3: return QStringLiteral("Type");
-    case  4: return QStringLiteral("Primary/Secondary");
-    case  5: return QStringLiteral("Latitude");
-    case  6: return QStringLiteral("Longitude");
-    case  7: return QStringLiteral("Radius");
-    case  8: return QStringLiteral("CycleTime");
+    case  0: return QStringLiteral("Number");
+    case  1: return QStringLiteral("Name");
+    case  2: return QStringLiteral("Type");
+    case  3: return QStringLiteral("Primary/Secondary");
+    case  4: return QStringLiteral("Latitude");
+    case  5: return QStringLiteral("Longitude");
+    case  6: return QStringLiteral("Radius");
+    case  7: return QStringLiteral("CycleTime");
     }
 
     return QStringLiteral("");
@@ -109,7 +106,7 @@ int StationTableModel::getNumber(int row) const
         return -1;
     }
 
-    return mStationInfoListProxy[std::size_t(row)].second->Number;
+    return mStationInfoListProxy[std::size_t(row)]->Number;
 }
 
 void StationTableModel::setFilterWildcard(const QString &wildcard)
@@ -121,7 +118,7 @@ void StationTableModel::setFilterWildcard(const QString &wildcard)
 
     mStationInfoListProxy.clear();
     for (auto& item : mStationInfoList) {
-        if (QString::number(item.second->Number).contains(mFilter))
+        if (QString::number(item->Number).contains(mFilter))
             mStationInfoListProxy.push_back(item);
     }
 
@@ -134,24 +131,23 @@ void StationTableModel::updateItemData(const StationInfo &stationInfo)
     beginResetModel();
 
     const auto it = std::find_if(mStationInfoList.begin(), mStationInfoList.end(),
-                                 [stationInfo](const QPair<int, QSharedPointer<StationInfo>>& itemInfo){
-        return itemInfo.second->Number == stationInfo.Number;
+                                 [stationInfo](const QSharedPointer<StationInfo>& itemInfo){
+        return itemInfo->Number == stationInfo.Number;
     });
 
 
     if (it != mStationInfoList.end()) {
-        *(*it).second = stationInfo;
+        *(*it) = stationInfo;
     } else {
-        QPair<int, QSharedPointer<StationInfo>> isp;
-        isp.first = mStationInfoList.size();
-        isp.second.reset(new StationInfo);
-        *(isp.second) = stationInfo;
+        QSharedPointer<StationInfo> isp;
+        isp.reset(new StationInfo);
+        *(isp) = stationInfo;
         mStationInfoList.push_back(isp);
     }
 
     mStationInfoListProxy.clear();
     for (auto& item : mStationInfoList) {
-        if (QString::number(item.second->Number).contains(mFilter))
+        if (QString::number(item->Number).contains(mFilter))
             mStationInfoListProxy.push_back(item);
     }
 

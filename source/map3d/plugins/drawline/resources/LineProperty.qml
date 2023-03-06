@@ -7,46 +7,81 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    function show() {
-        dialog.open()
-    }
+    implicitHeight: parent.height
+    //    function show() {
+    //        dialog.open()
+    //    }
 
-    function hide() {
-        dialog.close();
-    }
+    //    function hide() {
+    //        dialog.close();
+    //    }
 
 
     property LineProperties lineProperties
 
-    Dialog {
+    property string lColor: "#91001d"
+    property string pColor: "#001191"
+    Item {
         id: dialog
         width: 250
-        height: 300
-        title: qsTr("Line Properties")
+        height: rootItem.height
+        //        title: qsTr("Line Properties")
+
+
+
+
 
 
 
         //////////////////////////Main Content////////////////////////
-        contentItem:  Rectangle {
+        /*contentItem:*/  Rectangle {
             id: item
             visible: true
             width: 240
-            height: 300
+            height: rootItem.height
             //            anchors.horizontalCenter: parent.horizontalCenter
             anchors.fill: parent
-            color: "#3e3e3e"
+            color: "#404040"
+            opacity: 0.9
+            anchors.margins: 6
             //            y:43
+            radius: 10
+
+            Rectangle{
+                id:header
+                width: parent.width -2
+                anchors.horizontalCenter: parent.horizontalCenter
+                y: 2
+                height: 30
+                radius: 0
+                color: "#404040"
+
+                Text {
+                    id: headerTitle
+                    text: qsTr("Line Properties")
+                    anchors.centerIn: parent
+                    font.family: "SourceSansPro"
+                    font.pointSize: 14
+                    color: "white"
+                }
+
+            }
+
             ScrollView {
                 id: frame
                 clip: true
-                anchors.fill: parent
+                anchors.top: header.bottom
+                padding: 5
+                width: parent.width
+                height: parent.height - header.height
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
-                    contentHeight: 300
+                    contentHeight: 350
                     width: 240
+
                     Rectangle {
                         id : innerContainer
-                        color: "#4b4b4b"
+                        color: "transparent"
                         anchors.fill: parent
 
                         /////////////////////// components Grid ////////////////////////////
@@ -56,7 +91,7 @@ Item {
                             y: innerContainer.y +3
                             anchors.horizontalCenter: parent.horizontalCenter
                             columnSpacing: 0
-                            rowSpacing: 2
+                            rowSpacing: 1
                             columns:2
                             rows: 6
                             layoutDirection: Qt.RightToLeft
@@ -64,16 +99,16 @@ Item {
                             ////////////////////////////////////line Color Property//////////////////////////////////
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
 
                                 Rectangle{
                                     height: 20
                                     width: 20
-                                    color: lineProperties.color
+                                    color: lColor
                                     border.width: 2
                                     border.color: "#c9c9c9"
                                     x: 5
@@ -97,7 +132,7 @@ Item {
 
                                     Text {
                                         id: lineColorField
-                                        text: lineProperties.color
+                                        text: lColor
                                         anchors.centerIn: parent
                                         font.pointSize: 10
 
@@ -108,21 +143,22 @@ Item {
                                     id:  lineColorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
-                                        lineProperties.color = lineColorDialog.color
+                                        lColor = lineColorDialog.color
+                                        lineProperties.color = lColor.toString()
                                     }
 
                                 }
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: lineColorCircle
-                                    text: qsTr("LineColor :")
+                                    text: qsTr("Line Color :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -133,18 +169,18 @@ Item {
                             ///////////////////////////////////point Color Property//////////////////////////////////
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
 
                                 Rectangle{
                                     height: 20
                                     width: 20
-                                    color: lineProperties.pointColor
-                                    border.width: 2
-                                    border.color: "#c9c9c9"
+                                    color: pColor
+//                                    border.width: 2
+//                                    border.color: "#c9c9c9"
                                     x: 5
                                     radius: 5
                                     anchors.verticalCenter: parent.verticalCenter
@@ -166,7 +202,7 @@ Item {
 
                                     Text {
                                         id: pointColorField
-                                        text: lineProperties.pointColor
+                                        text: pColor
                                         anchors.centerIn: parent
                                         font.pointSize: 10
 
@@ -178,21 +214,22 @@ Item {
                                     title: "Please choose a color"
                                     onAccepted: {
                                         //                                    lineColor = lineColorDialog.color
-                                        lineProperties.pointColor = pointColorDialog.color
+                                        pColor = pointColorDialog.color
+                                        lineProperties.pointColor = pColor
                                     }
 
                                 }
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: pointColor
-                                    text: qsTr("pointColor :")
+                                    text: qsTr("point Color:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -205,10 +242,10 @@ Item {
                             Rectangle{
                                 id: widthContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 SpinBox {
                                     id: widthValue
@@ -228,7 +265,7 @@ Item {
                                         z: 2
                                         text: widthValue.textFromValue(widthValue.value, widthValue.locale)
                                         font: widthValue.font
-                                        color: "#313131"
+                                        color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
                                         readOnly: !widthValue.editable
@@ -238,7 +275,7 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(widthValue && widthValue.value){
+                                            if(lineProperties){
                                                 lineProperties.width = widthValue.value
                                             }
                                         }
@@ -248,8 +285,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: widthValue.up.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: widthValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "+"
@@ -266,8 +303,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: widthValue.down.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: widthValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
@@ -288,10 +325,10 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: widthSphere
@@ -308,10 +345,10 @@ Item {
                             Rectangle{
                                 id: pointwidthContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 SpinBox {
                                     id: pointwidthValue
@@ -327,11 +364,12 @@ Item {
                                     anchors.centerIn: parent
                                     height: 20
 
+
                                     contentItem: TextInput {
                                         z: 2
                                         text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
                                         font: pointwidthValue.font
-                                        color: "#313131"
+                                        color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
                                         readOnly: !pointwidthValue.editable
@@ -341,7 +379,7 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(pointwidthValue && pointwidthValue.value){
+                                            if(lineProperties){
                                                 lineProperties.pointwidth = pointwidthValue.value
                                             }
                                         }
@@ -351,8 +389,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: pointwidthValue.up.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: pointwidthValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "+"
@@ -369,8 +407,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: pointwidthValue.down.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: pointwidthValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
@@ -391,10 +429,10 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: pointwidth
@@ -410,16 +448,16 @@ Item {
                             Rectangle{
                                 id: transContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 SpinBox {
                                     id: transValue
                                     stepSize: 1
-                                    value: 1
-                                    to : 10000
+                                    value: 0
+                                    to : 1000000
                                     from : 0
                                     validator: DoubleValidator {
                                         bottom: 0
@@ -433,7 +471,7 @@ Item {
                                         z: 2
                                         text: transValue.textFromValue(transValue.value, transValue.locale)
                                         font: transValue.font
-                                        color: "#313131"
+                                        color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
                                         readOnly: !transValue.editable
@@ -444,7 +482,7 @@ Item {
                                         selectionColor: "dark green"
                                         onTextChanged: {
                                             if(transValue && transValue.value){
-                                           lineProperties.height = transValue.value
+                                                lineProperties.height = transValue.value
                                             }
                                         }
                                     }
@@ -453,8 +491,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: transValue.up.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: transValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "+"
@@ -471,8 +509,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: transValue.down.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: transValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
@@ -493,10 +531,10 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: transSphere
@@ -512,10 +550,10 @@ Item {
                             Rectangle{
                                 id: tesselationContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 SpinBox {
                                     id: tesselationValue
@@ -535,7 +573,7 @@ Item {
                                         z: 2
                                         text: tesselationValue.textFromValue(tesselationValue.value, tesselationValue.locale)
                                         font: tesselationValue.font
-                                        color: "#313131"
+                                        color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
                                         readOnly: !tesselationValue.editable
@@ -545,7 +583,7 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(tesselationValue && tesselationValue.value){
+                                            if(lineProperties){
                                                 lineProperties.tesselation = tesselationValue.value
                                             }
                                         }
@@ -555,8 +593,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: tesselationValue.up.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: tesselationValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "+"
@@ -573,8 +611,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: tesselationValue.down.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: tesselationValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
@@ -595,10 +633,10 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     id: tesselationSphere
@@ -614,17 +652,18 @@ Item {
                             Rectangle{
                                 id: clampContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 ComboBox {
                                     id: control
                                     model: ["None", "Terrain", "Relative","Absolute"]
                                     anchors.centerIn: parent
                                     onCurrentIndexChanged:   {
-                                        lineProperties.clamp = currentIndex
+                                        if (lineProperties)
+                                            lineProperties.clamp = currentIndex
                                     }
 
                                     delegate: ItemDelegate {
@@ -660,7 +699,7 @@ Item {
                                             context.lineTo(width, 0);
                                             context.lineTo(width / 2, height);
                                             context.closePath();
-                                            context.fillStyle = control.pressed ? "#5f5f5f" : "#313131";
+                                            context.fillStyle = control.pressed ? "#5f5f5f" : "#404040";
                                             context.fill();
                                         }
                                     }
@@ -671,7 +710,7 @@ Item {
 
                                         text: control.displayText
                                         font: control.font
-                                        color: control.pressed ? "#5f5f5f" : "#313131"
+                                        color: control.pressed ? "#5f5f5f" : "#404040"
                                         verticalAlignment: Text.AlignVCenter
                                         elide: Text.ElideRight
                                     }
@@ -679,7 +718,7 @@ Item {
                                     background: Rectangle {
                                         implicitWidth: 100
                                         implicitHeight: 20
-                                        border.color: control.pressed ? "#5f5f5f" : "#313131"
+                                        border.color: control.pressed ? "#5f5f5f" : "#404040"
                                         border.width: control.visualFocus ? 2 : 1
                                         radius: 5
                                         color: "#c9c9c9"
@@ -702,7 +741,7 @@ Item {
                                         }
 
                                         background: Rectangle {
-                                            border.color: "#313131"
+                                            border.color: "#404040"
                                             radius: 5
                                         }
                                     }
@@ -711,10 +750,10 @@ Item {
 
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     text: qsTr("Clamp :")
@@ -728,14 +767,23 @@ Item {
                             Rectangle{
                                 id: pointContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Switch {
                                     id: visibleSwitch
                                     anchors.centerIn: parent
+                                    checked: true
+                                    onCheckedChanged:      if(visibleSwitch.checked === false){
+                                                               smooth.checkable = false;
+                                                               pointwidthValue.enabled = false;
+                                                           }else{
+                                                               smooth.checkable = true;
+                                                               pointwidthValue.enabled = true;
+                                                           }
+
                                     ToolTip {
                                         parent: visibleSwitch
                                         y: visibleSwitch.y + visibleSwitch.height
@@ -744,7 +792,7 @@ Item {
                                             color: "white"
                                         }
 
-                                        background: Rectangle {
+                                            background: Rectangle {
                                             color: "#404040"
                                             radius: 4
                                         }
@@ -779,10 +827,10 @@ Item {
 
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     text: qsTr("Points :")
@@ -797,14 +845,16 @@ Item {
                             Rectangle{
                                 id: smoothContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Switch {
                                     id: smooth
                                     anchors.centerIn: parent
+                                    checked: true
+
                                     ToolTip {
                                         parent: smooth
                                         y: smooth.y + smooth.height
@@ -848,13 +898,84 @@ Item {
 
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
 
                                 Text {
                                     text: qsTr("Smooth :")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+                            /////////////////////////////////////////////////////showlen//////////////////////////////////////////////////
+                            Rectangle{
+                                id: lenContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Switch {
+                                    id: len
+                                    anchors.centerIn: parent
+                                    checked: false
+
+                                    ToolTip {
+                                        parent: len
+                                        y: len.y + len.height
+                                        Text{
+                                            text: len.checked ? "Click to deactive" : "Click to active"
+                                            color: "white"
+                                        }
+
+                                        background: Rectangle {
+                                            color: "#404040"
+                                            radius: 4
+                                        }
+
+                                        visible:  len.hovered
+                                    }
+                                    onToggled: function() {
+                                        lineProperties.showLen = len.checked
+                                    }
+
+                                    Layout.alignment: Qt.AlignRight
+                                    indicator: Rectangle {
+                                        implicitWidth: 70
+                                        implicitHeight: 20
+                                        x: len.leftPadding
+                                        y: parent.height / 2 - height / 2
+                                        radius: 13
+                                        color: len.checked ? "#3f9173" : "#383838"
+                                        border.color: len.checked ? "#17a81a" : "#a8171a"
+
+                                        Rectangle {
+                                            x: len.checked ? parent.width - width : 0
+                                            width: 20
+                                            height: 20
+                                            radius: 13
+                                            color: len.down ? "#cccccc" : "#ffffff"
+                                            border.color: len.checked ? (len.down ? "#17a81a" : "#21be2b") : "#999999"
+                                        }
+                                    }
+                                }
+                            }
+
+                            Rectangle{
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Text {
+                                    text: qsTr("Show Length:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter

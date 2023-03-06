@@ -27,7 +27,7 @@ struct AircraftInfo
     QString MasterRadar;
     Identify Identification;
     QString IdentificationMethod;
-    QString Time;
+    long long int Time;
     QString Pos;
 
     double Latitude;
@@ -168,33 +168,7 @@ public:
         return jsonDoc;
     }
 
-    void fromJson(QJsonDocument jsonDoc)
-    {
-        QJsonObject data = jsonDoc.object();
-        TN = data.value("TN").toInt();
-        IFFCode = data.value("IFFCode").toString();
-        CallSign = data.value("CallSign").toString();
-        Type = data.value("Type").toString();
-        MasterRadar = data.value("MasterRadar").toString();
-        //Identification = data.value("Identification").toInt();
-        IdentificationMethod = data.value("IdentificationMethod").toString();
-        Time = data.value("Time").toString();
-        Pos = data.value("Pos").toString();
 
-        Latitude = data.value("Latitude").toDouble();
-        Longitude = data.value("Longitude").toDouble();
-        Altitude = data.value("Altitude").toDouble();
-        Heading = data.value("Heading").toDouble();
-        Speed = data.value("Speed").toDouble();
-
-        QJsonArray detectSystems = data.value("DetectionSystem").toArray();
-        for(auto detectSystem: detectSystems)
-            DetectionSystems.append(detectSystem.toString());
-
-        QJsonArray sends = data.value("Send").toArray();
-        for(auto send: sends)
-            Sends.append(send.toString());
-    }
 };
 
 struct StationInfo
@@ -336,6 +310,29 @@ struct SystemCambatInfo
             break;
         case NoKill:
             result = "NoKill";
+            break;
+        }
+        return result;
+    }
+
+    QString phaseToColor() const
+    {
+        QString result = "white";
+        switch (Phase) {
+        case Search:
+            result = "yellow";
+            break;
+        case Lock:
+            result = "orange";
+            break;
+        case Fire:
+            result = "red";
+            break;
+        case Kill:
+            result = "black";
+            break;
+        case NoKill:
+            result = "brown";
             break;
         }
         return result;

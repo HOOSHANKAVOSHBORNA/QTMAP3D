@@ -1,32 +1,23 @@
 #ifndef LINENODE_H
 #define LINENODE_H
-
-
 #include <osgEarth/Color>
 #include <osgEarthAnnotation/FeatureNode>
 #include "mapcontroller.h"
 #include <osgEarthAnnotation/CircleNode>
 #include <osgEarthAnnotation/ModelNode>
+#include <QPainter>
+#include <osgEarthAnnotation/PlaceNode>
 
-class Type {
-public:
-    enum LineType {
-        LineStrip,
-        Line
-    };
-
-};
-
-class LineNode : public osgEarth::Annotation::FeatureNode, Type
+class LineNode : public osgEarth::Annotation::FeatureNode
 {
 public:
-    LineNode(MapController *mapController, LineType lineType = LineType::LineStrip);
+    LineNode(MapController *mapController);
     void addPoint(osgEarth::GeoPoint point);
     void removePoint();
     void removeFirstPoint();
     void clear();
     int getSize();
-    osgEarth::Symbology::Geometry* mLineGeometry;
+    void showLenght(bool show);
 
     osgEarth::Color getColor() const;
     void setColor(const osgEarth::Color &color);
@@ -53,20 +44,26 @@ public:
 
     bool getSmooth() const;
     void setSmooth(bool Smooth);
-
+private:
+    osg::Image *updateLenghtLable(double lenght);
 private:
     MapController* mMapController{nullptr};
-
+    osgEarth::Symbology::Geometry* mLineGeometry;
     osgEarth::Color mColor{osgEarth::Color::Green};
     osgEarth::Color mPointColor{osgEarth::Color::Blue};
-    float mWidth{5};
-    float mPointWidth{5};
+    float mWidth;
+    float mPointWidth;
     float mHeight;
-    bool mPointVisible{true};
+    bool mPointVisible;
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
-    unsigned mTessellation{1};
+    unsigned mTessellation;
     bool mSmooth;
 
+    //Lenght part
+    osg::ref_ptr<osg::Group> mLableGroup;
+    QImage *mRenderImage{nullptr};
+    static constexpr int LABEL_IMAGE_WIDTH = 100;
+    static constexpr int LABEL_IMAGE_HEIGHT = 20;
 };
 
 #endif // LINENODE_H

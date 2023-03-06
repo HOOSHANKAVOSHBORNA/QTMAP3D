@@ -35,26 +35,22 @@ public:
     AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
-//    void setTruckModel(osgEarth::Annotation::ModelNode* truckModel);
-//    osgEarth::Annotation::ModelNode *getTruckModel() const;
     void setInformation(AircraftInfo info);
     AircraftInfo getInformation();
     void goOnTrack();
 public slots:
-
     void onLeftButtonClicked(bool val);
 public:
     void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
-//    void curentPosition(osgEarth::GeoPoint pos) override;
-    SystemModelNode *getAssignmentModelNode(int number) const;
-    void addAssignmentModelNode(int number, SystemModelNode *assignmentModelNode);
-    void removeAssignmentModelNode(int number);
-    void acceptAssignedModelNode(int number, bool value);
-    void clearAssignmentModelNodes(int exceptNumber = -1);
-    bool hasAssignmentModelNode();
 
-    QMap<int, SystemModelNode *> getAssignmentModelNondes() const;
+    SystemModelNode *getAssignment(int number) const;
+    void addAssignment(int number, SystemModelNode *assignmentModelNode);
+    void removeAssignment(int number);
+    void acceptAssignment(int number, bool value);
+    void clearAssignments(int exceptNumber = -1);
+    bool hasAssignment();
+    QMap<int, SystemModelNode *> getAssignments() const;
 
 private slots:
     void onGotoButtonClicked();
@@ -80,7 +76,7 @@ private:
     osg::ref_ptr<osgParticle::SmokeTrailEffect> mSmoke;
     osg::ref_ptr<osgParticle::FireEffect> mFire;
 
-    QMap<int, SystemModelNode*> mAssignmentModelNondes;
+    QMap<int, SystemModelNode*> mAssignmentMap;
 
     bool mIsStop{false};
     bool mIsRoute{false};

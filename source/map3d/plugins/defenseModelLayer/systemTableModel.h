@@ -45,7 +45,7 @@ public slots:
     void onAircraftClicked(int TN);
     void onSystemClicked(int Number);
     bool getShowAssigned();
-    void refresh(int indx);
+    void refresh();
 
 signals:
     void systemClicked(int Number);
@@ -54,26 +54,30 @@ public:
     void updateItemData(const SystemInfo& systemInfo);
     void updateItemData(const SystemStatusInfo& systemStatusInfo);
     void updateItemData(const SystemCambatInfo& systemCambatInfo);
-    void assign(int Number, int TN);
-    void cancelAssign(int Number, int TN);
-    void accept(int TN, int Number, bool result);
-    void clear();
+    void assign(int TN, int Number);
+    void cancelSystemsAssigned(int TN, int ExceptNum);
+    void cancelAllAssigns();
+    void cancelAssign(int TN, int Number);
+    void acceptAssign(int TN, int Number, bool result);
+    void clearList();
+    void setMode(QString mode);
+
+    QMap<int, QList<SystemAssignInfo>> getAssignmentMap();
 
 
 private:
-    std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemInfoList;
-    std::deque<QPair<int, QSharedPointer<SystemInfo>>> mSystemInfoListProxy;
-    std::deque<QPair<int, QSharedPointer<SystemStatusInfo>>> mSystemStatusInfoList;
-    std::deque<QPair<int, QSharedPointer<SystemStatusInfo>>> mSystemStatusInfoListProxy;
-    std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoList;
-    std::deque<QPair<int, QSharedPointer<SystemCambatInfo>>> mSystemCombatInfoListProxy;
+    std::deque<QSharedPointer<SystemInfo>> mSystemInfoList;
+    std::deque<QSharedPointer<SystemInfo>> mSystemInfoListProxy;
+    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoList;
+    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoListProxy;
+    std::deque<QSharedPointer<SystemCambatInfo>> mSystemCombatInfoList;
+    std::deque<QSharedPointer<SystemCambatInfo>> mSystemCombatInfoListProxy;
 
     QMap<int, QList<SystemAssignInfo>> mSystemsAssigned;
 
-    bool mshowAssigned = false;
+    QString mMode;
     int mTN = -1;
     QString mFilter;
-    int mIndex = -1;
 
 };
 

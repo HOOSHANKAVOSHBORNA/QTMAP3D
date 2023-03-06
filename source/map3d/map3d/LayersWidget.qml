@@ -1,12 +1,15 @@
-
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import Crystal 1.0
 import QtGraphicalEffects 1.12
 
+
+
+
 Item {
     id: rootItem
+
 
     implicitWidth: 300
     property CLayersModel layersModel
@@ -56,86 +59,13 @@ Item {
         width: 300
         x: 310 + (widgetsMargins * 2)
 
+
         MouseArea {
             anchors.fill: parent
         }
 
 
-        Item {
-                anchors.right: parent.left
-                id: sidePush
-                visible: true
 
-
-                    Image {
-                        id: minimize
-                        source: "/Resources/sideTab.png"
-                        sourceSize: ("25 x 100")
-                        y:8
-                        anchors.right:  parent.left
-                        rotation: 180
-                        MouseArea{
-                            anchors.fill: parent
-//                            onHoveredChanged: Glow{
-//                                source: minimize
-//                                anchors.fill: minimize
-//                                radius: 8
-//                                samples: 17
-//                                color: "orange"
-//                            }
-
-                            onClicked: if(layersItem.x !== 0){
-                                           miniLayer.running = true
-                                           maxiarrow.running = true
-                                           maxiTXT.running = true
-
-                                       } else{
-                                           maxiLayer.running = true
-                                           miniarrow.running = true
-                                           miniTXT.running = true
-
-                                       }
-
-                            hoverEnabled: true
-                            onEntered:   if(layersItem.x === 0){
-                                            glowimg.visible=true
-                                         }
-                            onExited:    glowimg.visible=false
-
-                        }
-                        Text {
-                            id: sideInfoTxt
-                            anchors.centerIn: parent
-                            text: "Layers"
-                            color:"white"
-                            font.pointSize: 8
-                            visible: false
-                            rotation: 90
-                        }
-
-                        Image {
-                            id: arrow
-                            source: "/Resources/sidearrow.png"
-                            sourceSize: ("25 x 25")
-                            anchors.centerIn: parent
-                            rotation: 0
-
-                        }
-
-                        ColorOverlay {
-                            id: glowimg
-                            anchors.fill: arrow
-                            color: "orange"
-                            source: arrow
-                            visible: false
-                            }
-                    }
-            PropertyAnimation{id:miniLayer ; target: layersItem ; property: "x" ; to: 0 ; duration:150;  running: false }
-            PropertyAnimation{id:maxiLayer ; target: layersItem ; property: "x" ; to: 290 + (widgetsMargins * 2) ; duration: 150; running: false }
-            PropertyAnimation{id:miniarrow ; target: arrow ; property: "opacity" ; to: 0 ; duration:150;  running: false }
-            PropertyAnimation{id:maxiarrow ; target: arrow ; property: "opacity" ; to: 1 ; duration:150;  running: false }
-            PropertyAnimation{id:miniTXT ; target: sideInfoTxt ; property: "visible" ; to: true ; duration:150;  running: false }
-            PropertyAnimation{id:maxiTXT ; target: sideInfoTxt ; property: "visible" ; to: false ; duration:150;  running: false }
 
               }
 
@@ -144,6 +74,7 @@ Item {
             radius: 10
             color: "#404040"
             opacity: 0.8
+            anchors.margins: 6
         }
 
         ColumnLayout {
@@ -191,20 +122,20 @@ Item {
 
                                     Item {
                                         id: img
-                                        Layout.preferredWidth: 24
-                                        Layout.preferredHeight: 24
+                                        Layout.preferredWidth: 20
+                                        Layout.preferredHeight: 20
                                         Layout.alignment: Qt.AlignCenter
 
                                         Image {
                                             anchors.fill: parent
                                             source: "qrc:/Resources/eye_open.png"
-                                            sourceSize: Qt.size(24,24)
+                                            sourceSize: Qt.size(20,20)
                                             visible: layer_enabled
                                         }
                                         Image {
                                             anchors.fill: parent
                                             source: "qrc:/Resources/eye_close.png"
-                                            sourceSize: Qt.size(24,24)
+                                            sourceSize: Qt.size(20,20)
                                             visible: layer_enabled == false
                                         }
                                     }
@@ -213,6 +144,7 @@ Item {
                                     Label {
                                         id: label
                                         text: display
+                                        font.pointSize: 10
                                         color: "white"
 
                                         Layout.alignment: Qt.AlignCenter
@@ -234,67 +166,5 @@ Item {
                 }
             }
         }
-
-        //        ColumnLayout {
-        //            anchors.margins: 10
-        //            anchors.fill: parent
-        //
-        //            Repeater {
-        //                model: rootItem.layersModel
-        //
-        //                Item {
-        //                    id: row
-        //                    Layout.fillWidth: true
-        //                    Layout.minimumHeight: lay.implicitHeight
-        //                    RowLayout {
-        //                        id:lay
-        //                        anchors.fill: parent
-        //
-        //                        Item {
-        //                            id: img
-        //                            Layout.preferredWidth: 24
-        //                            Layout.preferredHeight: 24
-        //                            Layout.alignment: Qt.AlignCenter
-        //
-        //                            Image {
-        //                                anchors.fill: parent
-        //                                source: "qrc:/Resources/eye_open.png"
-        //                                sourceSize: Qt.size(24,24)
-        //                                visible: layer_enabled
-        //                            }
-        //                            Image {
-        //                                anchors.fill: parent
-        //                                source: "qrc:/Resources/eye_close.png"
-        //                                sourceSize: Qt.size(24,24)
-        //                                visible: layer_enabled == false
-        //                            }
-        //                        }
-        //
-        //
-        //                        Label {
-        //                            id: label
-        //                            text: display
-        //                            color: "white"
-        //
-        //                            Layout.alignment: Qt.AlignCenter
-        //                            Layout.fillWidth: true
-        //
-        //                        }
-        //
-        //                    }
-        //
-        //                    MouseArea {
-        //                        anchors.fill: parent
-        //                        onClicked: function() {
-        //                            rootItem.toggleLayerEnabled(layer_index);
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //
-        //            Item {
-        //                Layout.fillHeight: true
-        //            }
-        //        }
     }
-}
+//}

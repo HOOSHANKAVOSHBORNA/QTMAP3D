@@ -163,7 +163,7 @@ void SystemInformation::setCombatInfo(const SystemCambatInfo &systemCombatInfo)
 
 void SystemInformation::show()
 {
-    mUiHandle->iwShow(mItem);
+    mUiHandle->iwShow(mItem, QString::number(mInformation.Number));
 }
 
 

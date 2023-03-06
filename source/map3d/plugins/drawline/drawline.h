@@ -6,21 +6,18 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
-
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
-#include <osgEarthAnnotation/PlaceNode>
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <linenode.h>
+#include <QPainter>
 #include <lineproperties.h>
 
 #define DRAW_LAYER_NAME "Line"
 
-
-
-class drawLine: public PluginInterface, Type
+class drawLine: public PluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawline.json")
@@ -32,7 +29,6 @@ public:
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool setup(MapController *mapController,
                UIHandle *UIHandle) override;
-
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;
@@ -47,18 +43,17 @@ private:
 
     bool addNodeToLayer(osg::Node *node);
     void removeNodeFromLayer(osg::Node *node);
-
 private:
     MapController* mMapController{nullptr};
     QQmlEngine *mQmlEngine = nullptr;
-
     enum class DrawingState {START, DRAWING, FINISH};
     DrawingState mDrawingState;
-    enum class Shape {NONE, LINESTRIP, LINE};
-    Shape mShape;
-
+    enum class Type {NONE, LINE, RULER};
+    Type mType;
     LineNode* mLine{nullptr};
     LineProperties *mLineProperties = nullptr;
+    UIHandle *muiHandle;
+    bool mEnterLineZone;
 };
 
 #endif // LINE_H

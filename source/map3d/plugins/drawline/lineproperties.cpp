@@ -1,28 +1,20 @@
 #include "lineproperties.h"
 #include <QtDebug>
-#include <QVector3D>
 #include <QQmlComponent>
+#include <QQmlEngine>
+#include <QQuickItem>
+#include "plugininterface.h"
 
 
 
-LinePropertiesModel::LinePropertiesModel(LineNode* lineNode, QObject *parent) :
+LinePropertiesModel::LinePropertiesModel(QObject *parent) :
 
-    QObject(parent),
-    mLineNode(lineNode)
+    QObject(parent)
 {
-       QObject::connect(this,&LinePropertiesModel::linePropertiesChanged,this,&LinePropertiesModel::linePropertiesChangedToQML);
-
-
-//       mRadius = lineNode->getRadius().as(osgEarth::Units::METERS);
-         mColor = QString::fromStdString(lineNode->getColor().toHTML());
-         mColor.remove(7,2);
-         mPointColor = QString::fromStdString(lineNode->getPointColor().toHTML());
-         mPointColor.remove(7,2);
-
 
 }
 
-QString LinePropertiesModel::color() const
+QString LinePropertiesModel::getColor() const
 {
     return mColor;
 }
@@ -30,12 +22,13 @@ void LinePropertiesModel:: setColor(const QString &value){
     if(value == mColor)
         return;
     mColor = value;
-    emit linePropertiesChanged(Color , value);
-    mLineNode->setColor(value.toStdString());
+    if(mLineNode){
+        mLineNode->setColor(value.toStdString());
+    }
 
 }
 
-QString LinePropertiesModel::pointColor() const
+QString LinePropertiesModel::getPointColor() const
 {
     return mPointColor;
 }
@@ -43,12 +36,13 @@ void LinePropertiesModel:: setPointColor(const QString &value){
     if(value == mPointColor)
         return;
     mPointColor = value;
-    emit linePropertiesChanged(PointColor , value);
-    mLineNode->setPointColor(value.toStdString());
+    if(mLineNode){
+        mLineNode->setPointColor(value.toStdString());
+    }
 
 }
 
-float LinePropertiesModel::width() const
+float LinePropertiesModel::getWidth() const
 {
     return mWidth;
 }
@@ -56,11 +50,12 @@ void LinePropertiesModel:: setWidth(const float &value){
     if(value == mWidth)
         return;
     mWidth = value;
-    emit linePropertiesChanged(Width , value);
-    mLineNode->setWidth(value);
+    if(mLineNode){
+        mLineNode->setWidth(value);
+    }
 }
 
-float LinePropertiesModel::height() const
+float LinePropertiesModel::getHeight() const
 {
     return mHeight;
 }
@@ -68,11 +63,12 @@ void LinePropertiesModel:: setHeight(const float &value){
     if(value == mHeight)
         return;
     mHeight = value;
-    emit linePropertiesChanged(Height , value);
-    mLineNode->setHeight(value);
+    if(mLineNode){
+        mLineNode->setHeight(value);
+    }
 }
 
-float LinePropertiesModel::pointwidth() const
+float LinePropertiesModel::getPointwidth() const
 {
     return mPointwidth;
 }
@@ -80,12 +76,12 @@ void LinePropertiesModel::setPointwidth(const float &value){
     if(value == mPointwidth)
         return;
     mPointwidth = value;
-    emit linePropertiesChanged(Pointwidth, value);
-
-    mLineNode->setPointWidth(value);
+    if(mLineNode){
+        mLineNode->setPointWidth(value);
+    }
 }
 
-unsigned LinePropertiesModel::tesselation() const
+unsigned LinePropertiesModel::getTesselation() const
 {
     return mTesselation;
 }
@@ -93,27 +89,25 @@ void LinePropertiesModel::setTesselation(const unsigned &value){
     if(value == mTesselation)
         return;
     mTesselation = value;
-    emit linePropertiesChanged(Tesselation, value);
-
-
-    mLineNode->setTessellation(value);
-
+    if(mLineNode){
+        mLineNode->setTessellation(value);
+    }
 }
 
-osgEarth::Symbology::AltitudeSymbol::Clamping  LinePropertiesModel::clamp() const
+int LinePropertiesModel::getClamp() const
 {
     return mClamp;
 }
-void LinePropertiesModel::setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping  &value){
+void LinePropertiesModel::setClamp(int value){
     if(value == mClamp)
         return;
-    mClamp = value;
-    emit linePropertiesChanged(Clamp, value);
-
-    mLineNode->setClamp(value);
+    mClamp = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(value);
+    if(mLineNode){
+        mLineNode->setClamp(mClamp);
+    }
 }
 
-bool LinePropertiesModel::visible() const
+bool LinePropertiesModel::getVisible() const
 {
     return mVisible;
 }
@@ -121,12 +115,12 @@ void LinePropertiesModel::setVisible(const bool &value){
     if(value == mVisible)
         return;
     mVisible = value;
-    emit linePropertiesChanged(Visible, value);
-
-    mLineNode->setPointVisible(value);
+    if(mLineNode){
+        mLineNode->setPointVisible(value);
+    }
 }
 
-bool LinePropertiesModel::smooth() const
+bool LinePropertiesModel::getSmooth() const
 {
     return mSmooth;
 }
@@ -134,23 +128,55 @@ void LinePropertiesModel::setSmooth(const bool &value){
     if(value == mSmooth)
         return;
     mSmooth = value;
-    emit linePropertiesChanged(Smooth, value);
-
-    mLineNode->setSmooth(value);
+    if(mLineNode){
+        mLineNode->setSmooth(value);
+    }
 }
 
-LineProperties::LineProperties(QQmlEngine *engine, LineNode *line, QObject *parent):
+bool LinePropertiesModel::getShowLen() const
+{
+    return mShowLen;
+}
+void LinePropertiesModel::setShowLen(const bool &value){
+    if(value == mShowLen)
+        return;
+    mShowLen = value;
+    if(mLineNode){
+        mLineNode->showLenght(value);
+    }
+}
+
+void LinePropertiesModel::setLine(LineNode* linNode)
+{
+
+    mLineNode = linNode;
+    if(!linNode){
+        return;
+    }
+    mLineNode->setColor(mColor.toStdString());
+    mLineNode->setPointColor(mPointColor.toStdString());
+    mLineNode->setWidth(mWidth);
+    mLineNode->setTessellation(mTesselation);
+    mLineNode->setPointWidth(mPointwidth);
+    mLineNode->setSmooth(mSmooth);
+    mLineNode->setPointVisible(mVisible);
+    mLineNode->setClamp(mClamp);
+    mLineNode->setHeight(mHeight);
+    mLineNode->showLenght(mShowLen);
+}
+
+LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):
     QObject(parent),
     mQmlEngine(engine),
-    mLine(line)
+    mUiHandle(muiHandle)
 {
     //--show property window---------------------------------------------------------------------------------
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            LinePropertiesModel *lineProperties = new LinePropertiesModel(mLine);
-            mItem->setProperty("lineProperties", QVariant::fromValue<LinePropertiesModel*>(lineProperties));
+            mLineProperties = new LinePropertiesModel();
+            mItem->setProperty("lineProperties", QVariant::fromValue<LinePropertiesModel*>(mLineProperties));
         }
     });
     comp->loadUrl(QUrl("qrc:/resources/LineProperty.qml"));
@@ -158,12 +184,17 @@ LineProperties::LineProperties(QQmlEngine *engine, LineNode *line, QObject *pare
 
 }
 
-void LineProperties::show()
+Q_INVOKABLE void LineProperties::show()
 {
-    QMetaObject::invokeMethod(mItem, "show");
+    mUiHandle->propertiesShow(mItem);
 }
 
 void LineProperties::hide()
 {
-    QMetaObject::invokeMethod(mItem, "hide");
+    mUiHandle->propertiesHide(mItem);
+}
+
+void LineProperties::setLine(LineNode *line)
+{
+    mLineProperties->setLine(line);
 }

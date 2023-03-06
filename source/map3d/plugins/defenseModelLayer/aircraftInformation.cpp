@@ -5,6 +5,7 @@
 #include <QQuickItem>
 #include "aircraftModelNode.h"
 #include "plugininterface.h"
+#include <time.h>
 
 
 AircraftInfoModel::AircraftInfoModel(QObject* parent): QAbstractListModel(parent)
@@ -39,9 +40,13 @@ void AircraftInfoModel::setAircraftInfo(AircraftInfo &a)
 
 QStringList AircraftInfoModel::getMainInfo() const
 {
+    time_t datetime = mAircraftInfo.Time;
+    char buffer[256];
+    std::tm* currTm = localtime(&datetime);
+    strftime(buffer, sizeof(buffer), "%Y/%m/%d %H:%M", currTm);
     return QStringList {QString::number(mAircraftInfo.TN), mAircraftInfo.IFFCode, mAircraftInfo.CallSign,
                 mAircraftInfo.Type, mAircraftInfo.MasterRadar, mAircraftInfo.identifyToString(),
-                mAircraftInfo.IdentificationMethod, mAircraftInfo.Time, mAircraftInfo.Pos};
+                mAircraftInfo.IdentificationMethod, buffer, mAircraftInfo.Pos};
 }
 
 QStringList AircraftInfoModel::getmainInfoHeaders() const
@@ -62,6 +67,11 @@ QStringList AircraftInfoModel::getLocationInfo() const
 QStringList AircraftInfoModel::getLocationInfoHeader() const
 {
     return QStringList {"Latitude", "Longitude", "Altitude", "Heading", "Speed"};
+}
+
+QColor AircraftInfoModel::getAircraftColor()
+{
+    return mAircraftInfo.aircraftColor();
 }
 
 QHash<int, QByteArray> AircraftInfoModel::roleNames() const
@@ -103,5 +113,5 @@ void AircraftInformation::updateAircraft(AircraftInfo &mInformation)
     mInfomodel->setAircraftInfo(mInformation);
 }
 void AircraftInformation::show() {
-    mUiHandle->iwShow(mItem);
+    mUiHandle->iwShow(mItem, QString::number(mInformation.TN));
 }

@@ -38,8 +38,13 @@ public:
     };
 
     void iwSetReceiverObject(QObject *receiverObject);
-    void iwShow(QQuickItem* item);
+    void iwShow(QQuickItem* item, QString title);
     void iwUpdateData(QObject *receiverObject, const QString& infoJSON);
+
+
+public:
+    void propertiesShow(QQuickItem* item);
+    void propertiesHide(QQuickItem* item);
 
 public:
     void sbShowMessage(const QString& message, qreal duration);
@@ -66,6 +71,7 @@ private:
     ListWindow *mListWindow = nullptr;
     QObject *mReceiverObject = nullptr;
     QQuickItem *mCurrentContextMenuItem = nullptr;
+
 };
 
 struct ItemDesc

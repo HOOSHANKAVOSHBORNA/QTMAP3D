@@ -1,7 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/line.png</file>
-        <file>resources/line_string.png</file>
         <file>resources/LineProperty.qml</file>
+        <file>resources/ruler.png</file>
+        <file>resources/height.png</file>
     </qresource>
 </RCC>

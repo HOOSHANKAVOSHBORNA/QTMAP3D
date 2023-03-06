@@ -63,9 +63,9 @@ Item {
                     Text {
                         id: sideInfoTxt
                         anchors.centerIn: parent
-                        text: "Information"
-                        color:"white"
-                        font.pointSize: 7
+                        text: root.titleText
+                        color:"#ffc75e"
+                        font.pointSize: 10
                         visible: false
                         rotation: -90
                     }
@@ -114,7 +114,7 @@ Item {
 
     function hideItem(){
         if (nowItem){
-            sidePush.visible = false
+            infoItemShowAnimation.stop();
             nowItem.parent = null
             nowItem.destroy()
             sidePush.visible = false

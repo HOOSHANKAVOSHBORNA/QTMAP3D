@@ -27,11 +27,12 @@ public:
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void setCambatInfo(const SystemCambatInfo &systemCambatInfo);
 
-    void addAssignedModelNode(int tn, DefenseModelNode *assignedModelNode);
-    DefenseModelNode *getAssignedModelNode(int tn) const;
-    void acceptAssignedModelNode(int tn, bool value);
-    void removeAssignedModelNode(int tn);
-    void clearAssignedModelNodes(int exceptTN = -1);
+    void addAssignment(int tn, AircraftModelNode *assignModelNode);
+    AircraftModelNode *getAssignment(int tn) const;
+    void acceptAssignment(int tn, bool value);
+    void removeAssignment(int tn);
+    void clearAssignments(int exceptTN = -1);
+    QMap<int, AircraftModelNode *> getAssignments() const;
 
     void goOnTrack();
 public slots:
@@ -60,10 +61,10 @@ private:
     void showInfoWidget();
     void updateOrCreateLabelImage();
 private:
-    struct AssignmentModel{
-        DefenseModelNode* mModelNode{nullptr};
+    struct Assignment{
+        AircraftModelNode *mModelNode{nullptr};
         osg::ref_ptr<LineNode> mLine;
-        AssignmentModel(MapController *mapControler);
+        Assignment(MapController *mapControler);
         void accept();
         void updateLine(const osgEarth::GeoPoint &position);
     };
@@ -83,10 +84,10 @@ private:
     osg::ref_ptr<class TruckL> mTruckL;
     Rocket* mFiredRocket{nullptr};
 
-    QMap<int, AssignmentModel*> mAssignmentModels;
+    QMap<int, Assignment*> mAssignmentMap;
     SystemInformation *mSystemInformation{nullptr};
 
-    DefenseModelNode* mTargetModelNode{nullptr};
+    AircraftModelNode* mTargetModelNode{nullptr};
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;
