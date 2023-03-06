@@ -275,7 +275,7 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(widthValue && widthValue.value){
+                                            if(lineProperties){
                                                 lineProperties.width = widthValue.value
                                             }
                                         }
@@ -379,7 +379,7 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(pointwidthValue && pointwidthValue.value){
+                                            if(lineProperties){
                                                 lineProperties.pointwidth = pointwidthValue.value
                                             }
                                         }
@@ -583,7 +583,7 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(tesselationValue && tesselationValue.value){
+                                            if(lineProperties){
                                                 lineProperties.tesselation = tesselationValue.value
                                             }
                                         }
@@ -662,7 +662,8 @@ Item {
                                     model: ["None", "Terrain", "Relative","Absolute"]
                                     anchors.centerIn: parent
                                     onCurrentIndexChanged:   {
-                                        lineProperties.clamp = currentIndex
+                                        if (lineProperties)
+                                            lineProperties.clamp = currentIndex
                                     }
 
                                     delegate: ItemDelegate {
