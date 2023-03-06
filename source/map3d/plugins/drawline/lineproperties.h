@@ -25,6 +25,8 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(bool      visible        READ getVisible       WRITE setVisible      )
     Q_PROPERTY(bool      smooth         READ getSmooth        WRITE setSmooth       )
     Q_PROPERTY(bool      showLen        READ getShowLen       WRITE setShowLen      )
+    Q_PROPERTY(bool      ruler          READ getRuler         )
+
 
 
 
@@ -63,6 +65,8 @@ public:
     bool getShowLen() const;
     void setShowLen(const bool &smooth);
 
+    bool getRuler() const;
+
     void setLine(LineNode *linNode) ;
 
 
@@ -85,6 +89,7 @@ private:
     bool                                              mVisible    =true;
     bool                                              mSmooth     =true;
     bool                                              mShowLen    =false;
+    bool                                              mRuler      =false;
 
 
     LineNode* mLineNode;

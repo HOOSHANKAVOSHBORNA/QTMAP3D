@@ -146,6 +146,11 @@ void LinePropertiesModel::setShowLen(const bool &value){
     }
 }
 
+bool LinePropertiesModel::getRuler() const
+{
+//    mRuler = mLineNode->
+}
+
 void LinePropertiesModel::setLine(LineNode* linNode)
 {
 
