@@ -42,16 +42,16 @@ void LinePropertiesModel:: setPointColor(const QString &value){
 
 }
 
-float LinePropertiesModel::getWidth() const
+int LinePropertiesModel::getWidth() const
 {
     return mWidth;
 }
-void LinePropertiesModel:: setWidth(const float &value){
-    if(value == mWidth)
+void LinePropertiesModel:: setWidth(const QString &value){
+    if(value.toInt() == mWidth)
         return;
-    mWidth = value;
+    mWidth =  value.toInt() ;
     if(mLineNode){
-        mLineNode->setWidth(value);
+        mLineNode->setWidth(value.toInt());
     }
 }
 
