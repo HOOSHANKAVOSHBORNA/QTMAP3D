@@ -452,7 +452,6 @@ CMainWindow {
             widgetsHideAnimation.start();
             wnd.widgetsVisible = false;
             infoo.hideItem()
-            leftContainerHolder.menuLayersButtonClicked();
 
 
         } else {
@@ -484,7 +483,7 @@ CMainWindow {
 
     RightContainer {
         id: leftContainerHolder
-        x: parent.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3.0))) +300
+        x: parent.width + widgetsMargins*2 - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3.0))) +300
         y: menuWidget.height + (widgetsMargins*2 )
         width: 250
         height: parent.height - menuWidget.height - (widgetsMargins * 6) - navigationWidget.height
