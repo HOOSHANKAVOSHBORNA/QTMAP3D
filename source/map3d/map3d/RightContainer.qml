@@ -15,6 +15,8 @@ Item {
             }else{
                 root.x = screenwidth + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3)))
             }
+        } else {
+            root.visible = false
         }
     }
 
@@ -24,6 +26,7 @@ Item {
     function showProp(item){
         item.parent = leftObjects
         nowItem = item
+        root.visible = true
         menuRightContainerLoad();
         leftObjects.visible = true;
     }
@@ -35,6 +38,7 @@ Item {
             nowItem = null
             if(layers.visible === false){
                 menuRightContainerHide();
+                root.visible = false
             }
             leftObjects.visible = false
         }
@@ -57,6 +61,7 @@ Item {
         if(layers.visible !== true){
             menuRightContainerLoad();
             layers.visible = true;
+            root.visible = true
         }
         else if(nowItem !== null){
             layers.visible = false;
@@ -64,6 +69,7 @@ Item {
         else {
             layers.visible = false;
             menuRightContainerHide();
+            root.visible = false
         }
     }
 

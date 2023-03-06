@@ -133,6 +133,19 @@ void LinePropertiesModel::setSmooth(const bool &value){
     }
 }
 
+bool LinePropertiesModel::getShowLen() const
+{
+    return mShowLen;
+}
+void LinePropertiesModel::setShowLen(const bool &value){
+    if(value == mShowLen)
+        return;
+    mShowLen = value;
+    if(mLineNode){
+        mLineNode->showLenght(value);
+    }
+}
+
 void LinePropertiesModel::setLine(LineNode* linNode)
 {
 
@@ -149,6 +162,7 @@ void LinePropertiesModel::setLine(LineNode* linNode)
     mLineNode->setPointVisible(mVisible);
     mLineNode->setClamp(mClamp);
     mLineNode->setHeight(mHeight);
+    mLineNode->showLenght(mShowLen);
 }
 
 LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):

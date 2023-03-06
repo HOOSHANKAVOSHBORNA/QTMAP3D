@@ -911,6 +911,77 @@ Item {
                                     x:7
                                 }
                             }
+
+                            /////////////////////////////////////////////////////showlen//////////////////////////////////////////////////
+                            Rectangle{
+                                id: lenContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Switch {
+                                    id: len
+                                    anchors.centerIn: parent
+                                    checked: false
+
+                                    ToolTip {
+                                        parent: len
+                                        y: len.y + len.height
+                                        Text{
+                                            text: len.checked ? "Click to deactive" : "Click to active"
+                                            color: "white"
+                                        }
+
+                                        background: Rectangle {
+                                            color: "#404040"
+                                            radius: 4
+                                        }
+
+                                        visible:  len.hovered
+                                    }
+                                    onToggled: function() {
+                                        lineProperties.showLen = len.checked
+                                    }
+
+                                    Layout.alignment: Qt.AlignRight
+                                    indicator: Rectangle {
+                                        implicitWidth: 70
+                                        implicitHeight: 20
+                                        x: len.leftPadding
+                                        y: parent.height / 2 - height / 2
+                                        radius: 13
+                                        color: len.checked ? "#3f9173" : "#383838"
+                                        border.color: len.checked ? "#17a81a" : "#a8171a"
+
+                                        Rectangle {
+                                            x: len.checked ? parent.width - width : 0
+                                            width: 20
+                                            height: 20
+                                            radius: 13
+                                            color: len.down ? "#cccccc" : "#ffffff"
+                                            border.color: len.checked ? (len.down ? "#17a81a" : "#21be2b") : "#999999"
+                                        }
+                                    }
+                                }
+                            }
+
+                            Rectangle{
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Text {
+                                    text: qsTr("Show Length:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
                         }
                     }
                 }

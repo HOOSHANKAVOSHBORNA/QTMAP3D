@@ -452,17 +452,14 @@ CMainWindow {
             widgetsHideAnimation.start();
             wnd.widgetsVisible = false;
             infoo.hideItem()
-//            leftContainerHolder.positionFactorSyncClose();
+            leftContainerHolder.menuLayersButtonClicked();
 
 
         } else {
-            //            sideWidget.hideAllItems();
-
 
             widgetsHideAnimation.stop();
             widgetsShowAnimation.start();
             wnd.widgetsVisible = true;
-//            leftContainerHolder.positionFactorSyncOpen();
         }
 
     }

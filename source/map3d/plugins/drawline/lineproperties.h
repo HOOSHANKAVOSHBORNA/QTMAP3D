@@ -24,6 +24,9 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(int       clamp          READ getClamp         WRITE setClamp        )
     Q_PROPERTY(bool      visible        READ getVisible       WRITE setVisible      )
     Q_PROPERTY(bool      smooth         READ getSmooth        WRITE setSmooth       )
+    Q_PROPERTY(bool      showLen        READ getShowLen       WRITE setShowLen      )
+
+
 
 
 public:
@@ -56,6 +59,9 @@ public:
     //set smooth
     bool getSmooth() const;
     void setSmooth(const bool &smooth);
+    //set smooth
+    bool getShowLen() const;
+    void setShowLen(const bool &smooth);
 
     void setLine(LineNode *linNode) ;
 
@@ -78,6 +84,7 @@ private:
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp =   osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
     bool                                              mVisible    =true;
     bool                                              mSmooth     =true;
+    bool                                              mShowLen    =false;
 
 
     LineNode* mLineNode;
