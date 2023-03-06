@@ -24,7 +24,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
 
     this->setCullingActive(false);
-    this->addCullCallback(new DefenseModelNodeAutoScaler(5.5, 1, 600));
+    this->addCullCallback(new DefenseModelNodeAutoScaler(3.5, 1, 600));
 
 
     setStyle(rootStyle);

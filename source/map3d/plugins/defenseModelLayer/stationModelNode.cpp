@@ -21,7 +21,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
     //--auto scaler---------------------------------------------------------------------------------
     this->setCullingActive(false);
-    this->addCullCallback(new DefenseModelNodeAutoScaler(6.5, 1, 600));
+    this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 1000));
 
 
     //----------------------------------------------------------------------------------------------
