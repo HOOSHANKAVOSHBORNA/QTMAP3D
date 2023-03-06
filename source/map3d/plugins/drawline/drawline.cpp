@@ -42,7 +42,6 @@ drawLine::drawLine(QWidget *parent)
 {
     Q_INIT_RESOURCE(drawLine);
     //    Q_INIT_RESOURCE(LineProperties);
-
 }
 
 bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
@@ -62,6 +61,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
         {
             if(checked)
             {
+                mLenghtShow = true;
                 mEnterLineZone = true;
                 mType = Type::LINE;
                 mDrawingState = DrawingState::START;
@@ -79,6 +79,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
     {
         if(checked)
         {
+            mLenghtShow = false;
             mEnterLineZone = true;
             mType = Type::RULER;
             mDrawingState = DrawingState::START;

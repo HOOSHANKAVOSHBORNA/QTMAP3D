@@ -11,7 +11,7 @@
 #include <QtMath>
 #include <osgEarthAnnotation/CircleNode>
 
-const float RANGE3D = 400;//std::numeric_limits<float>::max();;
+const float RANGE3D = std::numeric_limits<float>::max();;
 
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
@@ -24,7 +24,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
 
     this->setCullingActive(false);
-    this->addCullCallback(new DefenseModelNodeAutoScaler(5.5, 1, 600));
+    this->addCullCallback(new DefenseModelNodeAutoScaler(3.5, 1, 600));
 
 
     setStyle(rootStyle);
@@ -35,7 +35,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     osg::ref_ptr<osg::Image> redIcon = createColoredImage(osgDB::readImageFile("../data/models/system/images/truck.png"), osg::Vec4(1.0, 0.0, 0.0, 1.0));
     if(redIcon)
         redIcon->scaleImage(100, 100, redIcon->r());
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 0.4);
+    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 0.3);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     redGeode->setStateSet(geodeStateSet);
     redGeode->addDrawable(redImageDrawable);
@@ -43,7 +43,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     osg::ref_ptr<osg::Image> yellowIcon = createColoredImage(osgDB::readImageFile("../data/models/system/images/truck.png"), osg::Vec4(1.0, 1.0, 0.0, 1.0));
     if(yellowIcon)
         yellowIcon->scaleImage(100, 100, yellowIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 0.4);
+    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 0.3);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
@@ -93,7 +93,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     circleNode->setRadius(10);
 
     osgEarth::Symbology::Style style;
-    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(1.0f, 0.5f, 0.1f, 1.0f);
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.1f, 1.0f, 0.1f, 1.0f);
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;

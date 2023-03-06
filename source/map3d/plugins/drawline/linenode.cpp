@@ -50,6 +50,7 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
                                     (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
         labelNode->setPosition(midPoint);
         mLableGroup->addChild(labelNode);
+        mLableGroup->dirtyBound();
         addChild(mLableGroup);
     }
 }
@@ -260,7 +261,6 @@ osg::Image* LineNode::updateLenghtLable(double lenght)
                              Qt::AlignCenter,
                              str);
         }
-
     }
     *mRenderImage = mRenderImage->mirrored(false, true);
 

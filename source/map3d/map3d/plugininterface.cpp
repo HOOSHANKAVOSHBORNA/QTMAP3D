@@ -62,7 +62,7 @@ void UIHandle::iwShow(QQuickItem* item, QString title)
 void UIHandle::propertiesShow(QQuickItem *item)
 {
     QMetaObject::invokeMethod(mMainWindow,
-                              "showLeftContainer",
+                              "showRightContainer",
                               Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
                               );
 }
@@ -70,7 +70,7 @@ void UIHandle::propertiesShow(QQuickItem *item)
 void UIHandle::propertiesHide(QQuickItem *item)
 {
     QMetaObject::invokeMethod(mMainWindow,
-                              "hideLeftContainer",
+                              "hideRightContainer",
                               Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
                               );
 }

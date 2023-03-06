@@ -17,13 +17,16 @@ class LinePropertiesModel : public QObject
     Q_OBJECT
     Q_PROPERTY(QString   color          READ getColor         WRITE setColor        )
     Q_PROPERTY(QString   pointColor     READ getPointColor    WRITE setPointColor   )
-    Q_PROPERTY(float     width          READ getWidth         WRITE setWidth        )
+    Q_PROPERTY(QString   width          READ getWidth         WRITE setWidth        )
     Q_PROPERTY(float     pointwidth     READ getPointwidth    WRITE setPointwidth   )
     Q_PROPERTY(float     height         READ getHeight        WRITE setHeight       )
     Q_PROPERTY(unsigned  tesselation    READ getTesselation   WRITE setTesselation  )
     Q_PROPERTY(int       clamp          READ getClamp         WRITE setClamp        )
     Q_PROPERTY(bool      visible        READ getVisible       WRITE setVisible      )
     Q_PROPERTY(bool      smooth         READ getSmooth        WRITE setSmooth       )
+    Q_PROPERTY(bool      showLen        READ getShowLen       WRITE setShowLen      )
+
+
 
 
 public:
@@ -36,8 +39,8 @@ public:
     QString getPointColor() const;
     void setPointColor(const QString &pointColor);
     // set width
-    float getWidth() const;
-    void setWidth(const float &width);
+    int getWidth() const;
+    void setWidth(const QString &width);
     // set pointwidth
     float getPointwidth() const;
     void setPointwidth(const float &pointwidth);
@@ -56,6 +59,9 @@ public:
     //set smooth
     bool getSmooth() const;
     void setSmooth(const bool &smooth);
+    //set smooth
+    bool getShowLen() const;
+    void setShowLen(const bool &smooth);
 
     void setLine(LineNode *linNode) ;
 
@@ -71,13 +77,14 @@ signals:
 private:
     QString                                           mColor      ="#91001d" ;
     QString                                           mPointColor ="#001191";
-    float                                             mWidth      =10.00;
+    int                                               mWidth      =10.00;
     float                                             mHeight     ;
     float                                             mPointwidth =10.00;
     unsigned                                          mTesselation=10.00;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp =   osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
     bool                                              mVisible    =true;
     bool                                              mSmooth     =true;
+    bool                                              mShowLen    =false;
 
 
     LineNode* mLineNode;

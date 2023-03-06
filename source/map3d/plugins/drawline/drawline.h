@@ -46,14 +46,15 @@ private:
 private:
     MapController* mMapController{nullptr};
     QQmlEngine *mQmlEngine = nullptr;
-    enum class DrawingState {START, DRAWING, FINISH};
+    enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
-    enum class Type {NONE, LINE, RULER};
+    enum class Type{NONE, LINE, RULER};
     Type mType;
     LineNode* mLine{nullptr};
     LineProperties *mLineProperties = nullptr;
     UIHandle *muiHandle;
     bool mEnterLineZone;
+    bool mLenghtShow;
 };
 
 #endif // LINE_H

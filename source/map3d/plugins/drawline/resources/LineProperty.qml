@@ -260,10 +260,13 @@ Item {
                                     editable: true
                                     anchors.centerIn: parent
                                     height: 20
+//                                    onDataChanged: lineProperties.width = widthValue.valueFromText
 
                                     contentItem: TextInput {
+                                        id:valueInput
                                         z: 2
-                                        text: widthValue.textFromValue(widthValue.value, widthValue.locale)
+//                                        text: widthValue.textFromValue(widthValue.value, widthValue.locale)
+                                        text: widthValue.value
                                         font: widthValue.font
                                         color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
@@ -276,6 +279,7 @@ Item {
                                         selectionColor: "dark green"
                                         onTextChanged: {
                                             if(lineProperties){
+                                                widthValue.value = valueInput.text
                                                 lineProperties.width = widthValue.value
                                             }
                                         }
@@ -366,8 +370,10 @@ Item {
 
 
                                     contentItem: TextInput {
+                                        id:pointValueInput
                                         z: 2
-                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
+//                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
+                                        text: pointwidthValue.value
                                         font: pointwidthValue.font
                                         color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
@@ -380,6 +386,7 @@ Item {
                                         selectionColor: "dark green"
                                         onTextChanged: {
                                             if(lineProperties){
+                                                pointwidthValue.value = pointValueInput.text
                                                 lineProperties.pointwidth = pointwidthValue.value
                                             }
                                         }
@@ -468,8 +475,10 @@ Item {
                                     height: 20
 
                                     contentItem: TextInput {
+                                        id: heightInput
                                         z: 2
-                                        text: transValue.textFromValue(transValue.value, transValue.locale)
+//                                        text: transValue.textFromValue(transValue.value, transValue.locale)
+                                        text: transValue.value
                                         font: transValue.font
                                         color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
@@ -482,6 +491,7 @@ Item {
                                         selectionColor: "dark green"
                                         onTextChanged: {
                                             if(transValue && transValue.value){
+                                                transValue.value = heightInput.text
                                                 lineProperties.height = transValue.value
                                             }
                                         }
@@ -570,8 +580,10 @@ Item {
                                     height: 20
 
                                     contentItem: TextInput {
+                                        id:tesselInput
                                         z: 2
-                                        text: tesselationValue.textFromValue(tesselationValue.value, tesselationValue.locale)
+//                                        text: tesselationValue.textFromValue(tesselationValue.value, tesselationValue.locale)
+                                        text: tesselationValue.value
                                         font: tesselationValue.font
                                         color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
@@ -584,6 +596,7 @@ Item {
                                         selectionColor: "dark green"
                                         onTextChanged: {
                                             if(lineProperties){
+                                                tesselationValue.value = tesselInput.text
                                                 lineProperties.tesselation = tesselationValue.value
                                             }
                                         }
@@ -693,15 +706,15 @@ Item {
                                             function onPressedChanged() { canvas.requestPaint(); }
                                         }
 
-                                        onPaint: {
-                                            context.reset();
-                                            context.moveTo(0, 0);
-                                            context.lineTo(width, 0);
-                                            context.lineTo(width / 2, height);
-                                            context.closePath();
-                                            context.fillStyle = control.pressed ? "#5f5f5f" : "#404040";
-                                            context.fill();
-                                        }
+//                                        onPaint: {
+//                                            context.reset();
+//                                            context.moveTo(0, 0);
+//                                            context.lineTo(width, 0);
+//                                            context.lineTo(width / 2, height);
+//                                            context.closePath();
+//                                            context.fillStyle = control.pressed ? "#5f5f5f" : "#404040";
+//                                            context.fill();
+//                                        }
                                     }
 
                                     contentItem: Text {
@@ -905,6 +918,77 @@ Item {
 
                                 Text {
                                     text: qsTr("Smooth :")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+                            /////////////////////////////////////////////////////showlen//////////////////////////////////////////////////
+                            Rectangle{
+                                id: lenContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Switch {
+                                    id: len
+                                    anchors.centerIn: parent
+                                    checked: false
+
+                                    ToolTip {
+                                        parent: len
+                                        y: len.y + len.height
+                                        Text{
+                                            text: len.checked ? "Click to deactive" : "Click to active"
+                                            color: "white"
+                                        }
+
+                                        background: Rectangle {
+                                            color: "#404040"
+                                            radius: 4
+                                        }
+
+                                        visible:  len.hovered
+                                    }
+                                    onToggled: function() {
+                                        lineProperties.showLen = len.checked
+                                    }
+
+                                    Layout.alignment: Qt.AlignRight
+                                    indicator: Rectangle {
+                                        implicitWidth: 70
+                                        implicitHeight: 20
+                                        x: len.leftPadding
+                                        y: parent.height / 2 - height / 2
+                                        radius: 13
+                                        color: len.checked ? "#3f9173" : "#383838"
+                                        border.color: len.checked ? "#17a81a" : "#a8171a"
+
+                                        Rectangle {
+                                            x: len.checked ? parent.width - width : 0
+                                            width: 20
+                                            height: 20
+                                            radius: 13
+                                            color: len.down ? "#cccccc" : "#ffffff"
+                                            border.color: len.checked ? (len.down ? "#17a81a" : "#21be2b") : "#999999"
+                                        }
+                                    }
+                                }
+                            }
+
+                            Rectangle{
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Text {
+                                    text: qsTr("Show Length:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
