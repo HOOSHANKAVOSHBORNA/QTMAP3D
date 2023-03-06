@@ -9,16 +9,14 @@ Item {
     x: parent.x
     clip: false
 
-    function adjustRightContainer(screenwidth){ if(nowItem || layers.visible){
-            if(isMinimized === true){
-                root.x = screenwidth
-            }else{
-                root.x = screenwidth + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3)))
-            }
-        } else {
-            root.visible = false
-        }
-    }
+//    function adjustRightContainer(screenwidth){ if(nowItem || layers.visible){
+//            if(isMinimized === true){
+//                root.x = screenwidth
+//            }else{
+//                root.x = screenwidth + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3)))
+//            }
+//        }
+//    }
 
 
     property bool isMinimized: false
@@ -38,7 +36,6 @@ Item {
             nowItem = null
             if(layers.visible === false){
                 menuRightContainerHide();
-                root.visible = false
             }
             leftObjects.visible = false
         }
@@ -46,13 +43,13 @@ Item {
 
 
     function menuRightContainerLoad() {
-        layersItemShowAnimation.to =  wnd.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3)))
+        layersItemShowAnimation.to =  -300
         layersItemShowAnimation.duration = 200;
         layersItemShowAnimation.start();
     }
 
     function menuRightContainerHide(){
-        layersItemHideAnimation.to = wnd.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3))) + 300
+        layersItemHideAnimation.to = 0
         layersItemHideAnimation.duration = 200;
         layersItemHideAnimation.start();
     }
@@ -69,12 +66,11 @@ Item {
         else {
             layers.visible = false;
             menuRightContainerHide();
-            root.visible = false
         }
     }
 
     function minimizeBtn(){
-        if(root.x !== wnd.width){
+        if(containerHolder.x === -300){
             miniLayer.running = true
             miniarrow.running = true
             isMinimized = true
@@ -92,14 +88,15 @@ Item {
         id: containerHolder
         color: "black"
         opacity: 0.5
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height
         radius: 10
         visible: true
-        clip: true
+        clip: false
     }
 
     SplitView{
-        anchors.fill:parent
+        anchors.fill:containerHolder
         orientation: Qt.Vertical
 
         LayersWidget{
@@ -131,7 +128,7 @@ Item {
 
     //        ////////////////////////minimize//////////////////////////////////
     Item {
-        anchors.right: root.left
+        anchors.right: containerHolder.left
         id: sidePush
         visible: true
         Image {
@@ -145,7 +142,7 @@ Item {
                 anchors.fill: parent
                 onClicked: minimizeBtn();
                 hoverEnabled: true
-                onEntered:  if(root.x !== wnd.width){
+                onEntered:  if(containerHolder.x === -300){
                                 glowimg.visible=true
                             }
                 onExited:   glowimg.visible=false
@@ -176,12 +173,12 @@ Item {
                 visible: false
             }
         }
-        PropertyAnimation{id:miniLayer ; target: root ; property: "x" ; to: wnd.width ; duration:150;  running: false }
-        PropertyAnimation{id:maxiLayer ; target: root ; property: "x" ; to: (wnd.width + widgetsMargins - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3)))) ; duration: 150; running: false }
+        PropertyAnimation{id:miniLayer ; target: containerHolder ; property: "x" ; to: -40 ; duration:150;  running: false }
+        PropertyAnimation{id:maxiLayer ; target: containerHolder ; property: "x" ; to: -300 ; duration: 150; running: false }
         PropertyAnimation{id:miniarrow ; target: arrow ; property: "rotation" ; to: 180 ; duration:300;  running: false ;easing.type: Easing.InQuint}
         PropertyAnimation{id:maxiarrow ; target: arrow ; property: "rotation" ; to: 0 ; duration:300;  running: false  ; easing.type: Easing.InQuint}
-        PropertyAnimation{id: layersItemShowAnimation ; target: root;property: 'x';easing.type: Easing.OutQuint;}
-        PropertyAnimation{id: layersItemHideAnimation ; target: root;property: 'x';easing.type: Easing.InQuint}
+        PropertyAnimation{id: layersItemShowAnimation ; target: containerHolder;property: 'x';easing.type: Easing.OutQuint;}
+        PropertyAnimation{id: layersItemHideAnimation ; target: containerHolder;property: 'x';easing.type: Easing.InQuint}
     }
 }
 
