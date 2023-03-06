@@ -31,10 +31,10 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
-    osg::Image* redIcon = osgDB::readImageFile("../data/models/station/station_ll_red.png");
+    osg::Image* redIcon = osgDB::readImageFile("../data/models/station/station.png");
     if(redIcon)
-        redIcon->scaleImage(20, 20, redIcon->r());
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 1);
+        redIcon->scaleImage(100, 100, redIcon->r());
+    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 0.2);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
 
     redGeode->setStateSet(geodeStateSet);
@@ -42,15 +42,35 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     //    auto redPlaceNode = new osgEarth::Annotation::PlaceNode();
     //    redPlaceNode->setIconImage(redIcon);
 
-    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/station/station_ll_yell.png");
+    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/station/station.png");
     if(yellowIcon)
-        yellowIcon->scaleImage(20, 20, yellowIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 1);
+        yellowIcon->scaleImage(100, 100, yellowIcon->r());
+    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 0.2);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
     //    auto yellowPlaceNode = new osgEarth::Annotation::PlaceNode();
     //    yellowPlaceNode->setIconImage(yellowIcon);
+
+    for(unsigned  int i = 0; i < static_cast<unsigned int>(yellowIcon->s()); i++) {
+        for(unsigned int j = 0; j < static_cast<unsigned int>(yellowIcon->t()); j++)
+        {
+            osg::Vec4 pixColore = yellowIcon->getColor(i, j);
+            if(pixColore.a() > 0)
+                yellowIcon->setColor(osg::Vec4(1.0, 1.0, 0.0, 1.0), i, j);
+        }
+    }
+
+    for(unsigned  int i = 0; i < static_cast<unsigned int>(redIcon->s()); i++) {
+        for(unsigned int j = 0; j < static_cast<unsigned int>(redIcon->t()); j++)
+        {
+            osg::Vec4 pixColore = redIcon->getColor(i, j);
+            if(pixColore.a() > 0)
+                redIcon->setColor(osg::Vec4(1.0, 0.0, 0.0, 1.0), i, j);
+        }
+    }
+
+
 
     mNode2D = new osg::Switch;
     mNode2D->addChild(yellowGeode, false);

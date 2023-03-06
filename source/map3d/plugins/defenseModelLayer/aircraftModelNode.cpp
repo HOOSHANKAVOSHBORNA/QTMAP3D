@@ -75,15 +75,15 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
-    m2DIcon = osgDB::readImageFile("../data/models/aircraft/aircraft.png");
+    m2DIcon = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
     if(m2DIcon)
-        m2DIcon->scaleImage(33, 40, m2DIcon->r());
+        m2DIcon->scaleImage(100, 100, m2DIcon->r());
     mSelect2DIcon = new osg::Image;
     mSelect2DIcon->copySubImage(0, 0, 0, m2DIcon);
 //    create2DImageColore(osgEarth::Color::Red);
 
 //    m2DIcon = osgDB::readImageFile("../data/models/aircraft/aircraft.png");
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(m2DIcon, osg::Vec2s(0,0), 0, 0, 1);
+    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(m2DIcon, osg::Vec2s(0,0), 0, 0, 0.4);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     //    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
@@ -92,7 +92,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
 //    mSelect2DIcon->copySubImage(0, 0, 0, m2DIcon);
     //mSelect2DIcon->scaleImage(25, 32, mSelect2DIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mSelect2DIcon, osg::Vec2s(0,0), 0, 0, 1);
+    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mSelect2DIcon, osg::Vec2s(0,0), 0, 0, 0.4);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
