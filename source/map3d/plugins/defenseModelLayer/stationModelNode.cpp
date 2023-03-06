@@ -61,7 +61,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     //--create 3D node---------------------------------------------------------------------------
     if (!mNode3DRef.valid()) {
-        mNode3DRef = osgDB::readRefNodeFile("../data/models/station/station.ive");
+        mNode3DRef = osgDB::readRefNodeFile("../data/models/station/Station.osgb");
     }
     if (!mNode3DRef)
     {
@@ -93,6 +93,22 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
         mRootNode->addChild(mNode3D, 0, 0);
         mRootNode->addChild(mNode2D, 0, std::numeric_limits<float>::max());
     }
+
+    auto circleNode = new osgEarth::Annotation::CircleNode();
+    circleNode->setRadius(10);
+
+    osgEarth::Symbology::Style style;
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.1f, 1.0f, 0.1f, 1.0f);
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+
+    circleNode->setStyle(style);
+    circleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
+    circleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
+
+    mNode3D->addChild(circleNode);
+
     //map mode changed-----------------------------------------------------------------------
     connect(mapControler, &MapController::modeChanged, this, &StationModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------

@@ -11,7 +11,7 @@
 #include <QtMath>
 #include <osgEarthAnnotation/CircleNode>
 
-const float RANGE3D = 400;//std::numeric_limits<float>::max();;
+const float RANGE3D = std::numeric_limits<float>::max();;
 
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
@@ -93,7 +93,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     circleNode->setRadius(10);
 
     osgEarth::Symbology::Style style;
-    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(1.0f, 0.5f, 0.1f, 1.0f);
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.1f, 1.0f, 0.1f, 1.0f);
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
