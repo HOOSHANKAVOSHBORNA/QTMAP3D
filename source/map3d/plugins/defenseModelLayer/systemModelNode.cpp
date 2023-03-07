@@ -10,6 +10,7 @@
 #include "truckl.h"
 #include <QtMath>
 #include <osgEarthAnnotation/CircleNode>
+#include <osg/AutoTransform>
 
 const float RANGE3D = std::numeric_limits<float>::max();;
 
@@ -48,9 +49,15 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
 
+    osg::AutoTransform *at = new osg::AutoTransform;
+
+
     mNode2D = new osg::Switch;
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
+
+    at->addChild(mNode2D);
+    at->setAutoRotateMode(osg::AutoTransform::AutoRotateMode::ROTATE_TO_CAMERA);
 
     mTruckF = new TruckF(mMapController);
     mTruckF->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,5.0,0));
@@ -81,12 +88,12 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     if(mIs3D)
     {
         mRootNode->addChild(mNode3D, 0, RANGE3D);
-        mRootNode->addChild(mNode2D, RANGE3D, std::numeric_limits<float>::max());
+        mRootNode->addChild(at, RANGE3D, std::numeric_limits<float>::max());
     }
     else
     {
         mRootNode->addChild(mNode3D, 0, 0);
-        mRootNode->addChild(mNode2D, 0, std::numeric_limits<float>::max());
+        mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
 
     auto circleNode = new osgEarth::Annotation::CircleNode();

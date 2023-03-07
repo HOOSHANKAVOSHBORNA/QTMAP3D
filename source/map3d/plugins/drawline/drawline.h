@@ -29,6 +29,7 @@ public:
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool setup(MapController *mapController,
                UIHandle *UIHandle) override;
+
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;
@@ -43,6 +44,8 @@ private:
 
     bool addNodeToLayer(osg::Node *node);
     void removeNodeFromLayer(osg::Node *node);
+
+
 private:
     MapController* mMapController{nullptr};
     QQmlEngine *mQmlEngine = nullptr;
