@@ -109,7 +109,7 @@ Demo::~Demo()
 }
 
 static int aircraftNumber = 0;
-const int systemNum = 5;
+const int systemNum = 20;
 const int stationNum = 5;
 AircraftInfo Demo::createAircraftInfo()
 {
@@ -269,7 +269,7 @@ void Demo::createSystemInfo()
         systemInfo.Active = true;
         //status info
         systemStatusInfo.Number = systemInfo.Number;
-        systemStatusInfo.ReceiveTime = "1392/12/01: 12:10";
+        systemStatusInfo.ReceiveTime = "1392/12/01 12:10";
         systemStatusInfo.Simulation = "simulation";
         systemStatusInfo.BCCStatus = SystemStatusInfo::S;//s, us
         systemStatusInfo.RadarSearchStatus = SystemStatusInfo::US;//s, us

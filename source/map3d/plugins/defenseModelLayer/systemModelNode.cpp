@@ -35,7 +35,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     osg::ref_ptr<osg::Image> redIcon = createColoredImage(osgDB::readImageFile("../data/models/system/images/truck.png"), osg::Vec4(1.0, 0.0, 0.0, 1.0));
     if(redIcon)
         redIcon->scaleImage(100, 100, redIcon->r());
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 0.4);
+    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 0.3);
     osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
     redGeode->setStateSet(geodeStateSet);
     redGeode->addDrawable(redImageDrawable);
@@ -43,7 +43,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     osg::ref_ptr<osg::Image> yellowIcon = createColoredImage(osgDB::readImageFile("../data/models/system/images/truck.png"), osg::Vec4(1.0, 1.0, 0.0, 1.0));
     if(yellowIcon)
         yellowIcon->scaleImage(100, 100, yellowIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 0.4);
+    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 0.3);
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);

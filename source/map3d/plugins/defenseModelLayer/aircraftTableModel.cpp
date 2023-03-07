@@ -143,7 +143,7 @@ QString AircraftTableModel::headerText(int column) const
     case  3: return QStringLiteral("CallSign");
     case  4: return QStringLiteral("Type");
     case  5: return QStringLiteral("Master Radar");
-    case  6: return QStringLiteral("Identification Method");
+    case  6: return QStringLiteral("Identif. Method");
     case  7: return QStringLiteral("Time");
     case  8: return QStringLiteral("Pos");
     case  9: return QStringLiteral("Latitude");
