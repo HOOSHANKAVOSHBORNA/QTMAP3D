@@ -12,6 +12,9 @@ LinePropertiesModel::LinePropertiesModel(QObject *parent) :
     QObject(parent)
 {
 
+//    QObject::connect(this,&LinePropertiesModel::linePropertiesChanged,this,&LinePropertiesModel::rulerChanged);
+
+//    mRuler = mRuler ;
 }
 
 QString LinePropertiesModel::getColor() const
@@ -148,8 +151,21 @@ void LinePropertiesModel::setShowLen(const bool &value){
 
 bool LinePropertiesModel::getRuler() const
 {
-//    mRuler = mLineNode->
+    return mRuler;
 }
+
+void LinePropertiesModel::setRuler(const bool value)
+{
+    if(value != mRuler){
+        mRuler = value;
+//        emit linePropertiesChanged (value);
+            emit rulerChanged();
+            qDebug() << mRuler << endl;
+    }
+}
+
+
+
 
 void LinePropertiesModel::setLine(LineNode* linNode)
 {
@@ -168,6 +184,7 @@ void LinePropertiesModel::setLine(LineNode* linNode)
     mLineNode->setClamp(mClamp);
     mLineNode->setHeight(mHeight);
     mLineNode->showLenght(mShowLen);
+
 }
 
 LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):
@@ -192,6 +209,7 @@ LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *
 Q_INVOKABLE void LineProperties::show()
 {
     mUiHandle->propertiesShow(mItem);
+    mLineProperties->setRuler(isRuler);
 }
 
 void LineProperties::hide()
@@ -199,7 +217,9 @@ void LineProperties::hide()
     mUiHandle->propertiesHide(mItem);
 }
 
-void LineProperties::setLine(LineNode *line)
+void LineProperties::setLine(LineNode *line )
 {
+
     mLineProperties->setLine(line);
+
 }

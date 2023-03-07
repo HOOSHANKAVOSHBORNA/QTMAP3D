@@ -8,29 +8,21 @@ import Crystal 1.0
 Item {
     id: rootItem
     implicitHeight: parent.height
-    //    function show() {
-    //        dialog.open()
-    //    }
 
-    //    function hide() {
-    //        dialog.close();
-    //    }
 
 
     property LineProperties lineProperties
-
+    property bool rulerCondition : lineProperties.ruler
+    property string headerTitleSTR: "Line Properties"
     property string lColor: "#91001d"
     property string pColor: "#001191"
+
+
+
     Item {
         id: dialog
         width: 250
         height: rootItem.height
-        //        title: qsTr("Line Properties")
-
-
-
-
-
 
 
         //////////////////////////Main Content////////////////////////
@@ -58,7 +50,8 @@ Item {
 
                 Text {
                     id: headerTitle
-                    text: qsTr("Line Properties")
+//                    text: qsTr("Line Properties")
+                    text: headerTitleSTR
                     anchors.centerIn: parent
                     font.family: "SourceSansPro"
                     font.pointSize: 14
@@ -168,6 +161,7 @@ Item {
 
                             ///////////////////////////////////point Color Property//////////////////////////////////
                             Rectangle{
+                                id: pointColorSecR
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 35
@@ -221,6 +215,7 @@ Item {
                                 }
                             }
                             Rectangle{
+                                id: pointColorSecL
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 35
@@ -435,6 +430,7 @@ Item {
                                 }
                             }
                             Rectangle{
+                                id: pointWtitle
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
@@ -540,6 +536,7 @@ Item {
                                 }
                             }
                             Rectangle{
+                                id:heightContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
@@ -839,6 +836,7 @@ Item {
                             }
 
                             Rectangle{
+                                id: pointContainerTitle
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
@@ -910,6 +908,7 @@ Item {
                             }
 
                             Rectangle{
+                                id: smoothContainerTitle
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
@@ -981,6 +980,7 @@ Item {
                             }
 
                             Rectangle{
+                                id:lenContainerTitle
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
@@ -1001,4 +1001,45 @@ Item {
             }
         }
     }
+
+    onRulerConditionChanged:   {
+        if(rulerCondition === true){
+            pointColorSecR.visible = false
+            pointColorSecL.visible = false
+            pointwidthContainer.visible = false
+            pointWtitle.visible = false
+            pointContainer.visible = false
+            pointContainerTitle.visible = false
+            smoothContainer.visible = false
+            smoothContainerTitle.visible = false
+            lenContainer.visible = false
+            lenContainerTitle.visible = false
+            transContainer.visible = false
+            heightContainer.visible = false
+            lineProperties.showLen = true
+            lineProperties.visible = false
+            headerTitleSTR = "Ruler Properties"
+
+
+        }
+        else if(rulerCondition === false){
+            pointColorSecR.visible = true
+            pointColorSecL.visible = true
+            pointwidthContainer.visible = true
+            pointWtitle.visible = true
+            pointContainer.visible = true
+            pointContainerTitle.visible = true
+            smoothContainer.visible = true
+            smoothContainerTitle.visible = true
+            lenContainer.visible = true
+            lenContainerTitle.visible = true
+            transContainer.visible = true
+            heightContainer.visible = true
+            lineProperties.showLen = false
+//            lineProperties.visible = true
+            headerTitleSTR = "Line Properties"
+        }
+    }
+
+
 }
