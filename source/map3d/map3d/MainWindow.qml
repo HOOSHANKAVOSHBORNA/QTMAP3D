@@ -74,7 +74,7 @@ CMainWindow {
         toggleWidgetsVisible();
     }
 
-    onWidthChanged: leftContainerHolder.adjustRightContainer(wnd.width);
+//    onWidthChanged: leftContainerHolder.adjustRightContainer(wnd.width);
 
     property var sideItemsModel: ListModel {
 
@@ -641,5 +641,4 @@ CMainWindow {
             }
         }
     }
-
 }

@@ -65,6 +65,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mEnterLineZone = true;
                 mType = Type::LINE;
                 mDrawingState = DrawingState::START;
+                mLineProperties->isRuler = false;
                 mLineProperties->show();
             }
             else
@@ -83,7 +84,9 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mEnterLineZone = true;
             mType = Type::RULER;
             mDrawingState = DrawingState::START;
+            mLineProperties->isRuler = true;
             mLineProperties->show();
+
         }
         else
         {
@@ -227,4 +230,6 @@ void drawLine::removeNodeFromLayer(osg::Node *node)
         }
     }
 }
+
+
 

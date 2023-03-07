@@ -256,7 +256,12 @@ struct SystemStatusInfo
     QString Operational;
     int MissileCount;
     QString RadarMode;
-
+    QString BCCStatusToString() {
+        return radarStatusToString(BCCStatus);
+    }
+    QString radarSearchStatusToString() {
+        return radarStatusToString(RadarSearchStatus);
+    }
     QString radarStatusToString(RadarStatus status) const
     {
         QString result = "";
