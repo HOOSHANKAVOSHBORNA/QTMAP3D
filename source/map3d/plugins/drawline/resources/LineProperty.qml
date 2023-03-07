@@ -1036,7 +1036,7 @@ Item {
             transContainer.visible = true
             heightContainer.visible = true
             lineProperties.showLen = false
-//            lineProperties.visible = true
+            lineProperties.visible = true
             headerTitleSTR = "Line Properties"
         }
     }
