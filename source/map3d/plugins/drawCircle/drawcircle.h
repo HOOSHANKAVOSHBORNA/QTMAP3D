@@ -2,6 +2,7 @@
 #define DRAWCIRCLE_H
 
 #include <osgEarthAnnotation/ModelNode>
+#include "osgEarthAnnotation/AnnotationEditing"
 #include "mapcontroller.h"
 #include "plugininterface.h"
 #include "circlenode.h"
@@ -33,6 +34,7 @@ private:
 
     bool addNodeToLayer(osg::Node *node);
     void removeNodeFromLayer(osg::Node *node);
+    void onCircleMouseMove(QMouseEvent *event);
 
 private:
     MapController* mMapcontroller {nullptr};
@@ -41,6 +43,8 @@ private:
     DrawingState mDrawingState;
     CircleNode* mCircle{nullptr};
     UIHandle* mUiHandle{nullptr};
+
+    osgEarth::Annotation::SphereDragger* mCircleHdragger;
 
     bool mEnterCircleZone;
 };

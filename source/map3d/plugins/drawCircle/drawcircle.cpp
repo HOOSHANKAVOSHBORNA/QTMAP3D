@@ -70,17 +70,22 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
 void DrawCircle::startDraw(QMouseEvent *event)
 {
     mCircle = new CircleNode(mMapcontroller, true);
+    mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
     mCircle->setArcStart(0);
     mCircle->setArcEnd(360);
 
-    mCircle->setColor(osgEarth::Color("red"));
-    mCircle->setRadius(100000);
+    mCircle->setColor(osgEarth::Color(1, 0, 1, 0.7f));
+    mCircle->setRadius(500000);
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
 
     mCircle->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    mCircleHdragger->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    addNodeToLayer(mCircleHdragger);
+//    mCircleHdragger->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
+    
     addNodeToLayer(mCircle);
     event->accept();
 }
@@ -96,6 +101,15 @@ void DrawCircle::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
     if (mDrawingState == DrawingState::START) {
         event->accept();
     }
+}
+
+void DrawCircle::onCircleMouseMove(QMouseEvent *event)
+{
+
+    if (mCircle){
+        mCircle->setCircleHeight(mCircleHdragger->Dragger::getPosition().z());
+    }
+
 }
 
 bool DrawCircle::addNodeToLayer(osg::Node *node)
