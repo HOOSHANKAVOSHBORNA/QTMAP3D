@@ -100,6 +100,11 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
 
+    osg::AutoTransform *at = new osg::AutoTransform;
+
+    at->addChild(mNode2D);
+    at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
+
     //    setModelColor(mInformation.Identification);
     //--create lable-----------------------------------------------------------------------------
     osgEarth::Symbology::Style labelStyle;
@@ -117,12 +122,12 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     if(mIs3D)
     {
         mRootNode->addChild(mNode3D, 0, RANGE3D);
-        mRootNode->addChild(mNode2D, RANGE3D, std::numeric_limits<float>::max());
+        mRootNode->addChild(at, RANGE3D, std::numeric_limits<float>::max());
     }
     else
     {
         mRootNode->addChild(mNode3D, 0, 0);
-        mRootNode->addChild(mNode2D, 0, std::numeric_limits<float>::max());
+        mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
     //------------------------------------------------------------------------------------------
     //osg::Vec3d center = getBound().center();

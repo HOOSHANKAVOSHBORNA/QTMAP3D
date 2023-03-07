@@ -209,7 +209,7 @@ LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *
 Q_INVOKABLE void LineProperties::show()
 {
     mUiHandle->propertiesShow(mItem);
-    mLineProperties->setRuler(isRuler);
+    mLineProperties->setRuler(mIsRuler);
 }
 
 void LineProperties::hide()
@@ -222,4 +222,9 @@ void LineProperties::setLine(LineNode *line )
 
     mLineProperties->setLine(line);
 
+}
+
+void LineProperties::setIsRuler(bool value)
+{
+    mIsRuler = value;
 }

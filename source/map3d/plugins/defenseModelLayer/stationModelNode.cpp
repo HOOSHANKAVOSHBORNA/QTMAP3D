@@ -70,11 +70,15 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
         }
     }
 
+    osg::AutoTransform *at = new osg::AutoTransform;
 
 
     mNode2D = new osg::Switch;
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
+
+    at->addChild(mNode2D);
+    at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
     //    mNode2D->addChild(yellowPlaceNode->getGeoTransform(), false);
     //    mNode2D->addChild(redPlaceNode->getGeoTransform(), true);
     //    getGeoTransform()->addChild(redPlaceNode);
@@ -106,12 +110,12 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     if(mIs3D)
     {
         mRootNode->addChild(mNode3D, 0, RANGE3D);
-        mRootNode->addChild(mNode2D, RANGE3D, std::numeric_limits<float>::max());
+        mRootNode->addChild(at, RANGE3D, std::numeric_limits<float>::max());
     }
     else
     {
         mRootNode->addChild(mNode3D, 0, 0);
-        mRootNode->addChild(mNode2D, 0, std::numeric_limits<float>::max());
+        mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
 
     auto circleNode = new osgEarth::Annotation::CircleNode();
