@@ -15,19 +15,18 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
     mIs3D = mMapController->getMode();
-    //--create root node---------------------------------------------------------------------------
+
     mRootNode = new osg::LOD;
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
-    //--auto scaler---------------------------------------------------------------------------------
+
     this->setCullingActive(false);
     this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 1000));
 
 
-    //----------------------------------------------------------------------------------------------
-    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+
     setStyle(rootStyle);
-    //--create 2d node----------------------------------------------------------------------------
+
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
@@ -39,8 +38,6 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     redGeode->setStateSet(geodeStateSet);
     redGeode->addDrawable(redImageDrawable);
-    //    auto redPlaceNode = new osgEarth::Annotation::PlaceNode();
-    //    redPlaceNode->setIconImage(redIcon);
 
     osg::Image* yellowIcon = osgDB::readImageFile("../data/models/station/station.png");
     if(yellowIcon)
@@ -49,8 +46,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
     yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
-    //    auto yellowPlaceNode = new osgEarth::Annotation::PlaceNode();
-    //    yellowPlaceNode->setIconImage(yellowIcon);
+
 
     for(unsigned  int i = 0; i < static_cast<unsigned int>(yellowIcon->s()); i++) {
         for(unsigned int j = 0; j < static_cast<unsigned int>(yellowIcon->t()); j++)
@@ -79,11 +75,8 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     at->addChild(mNode2D);
     at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
-    //    mNode2D->addChild(yellowPlaceNode->getGeoTransform(), false);
-    //    mNode2D->addChild(redPlaceNode->getGeoTransform(), true);
-    //    getGeoTransform()->addChild(redPlaceNode);
 
-    //--create 3D node---------------------------------------------------------------------------
+
     if (!mNode3DRef.valid()) {
         mNode3DRef = osgDB::readRefNodeFile("../data/models/station/Station.osgb");
     }
@@ -94,19 +87,19 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     mNode3D = new osg::Group;
     mNode3D->addChild(mNode3DRef.get());
-    //    truck->setQStringName("truck");
-    //--create lable-----------------------------------------------------------------------------
+
+
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
+
     updateOrCreateLabelImage();
     mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
-    //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0.5, 1));
+
     getGeoTransform()->addChild(mLableNode);
     mLableNode->setNodeMask(false);
-    //--add nods--------------------------------------------------------------------------------
+
     if(mIs3D)
     {
         mRootNode->addChild(mNode3D, 0, RANGE3D);
@@ -133,16 +126,15 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     mNode3D->addChild(circleNode);
 
-    //map mode changed-----------------------------------------------------------------------
+
     connect(mapControler, &MapController::modeChanged, this, &StationModelNode::onModeChanged);
-    //--create shapes-----------------------------------------------------------------------------
+
     mRangeCircle = new Circle(mMapController, true);
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
 
     mVisiblePolygone = new Polygone(mMapController, true);
     mVisiblePolygone->setLineColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
     mVisiblePolygone->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.5f));
-    //    setDefaultLighting( false );
 }
 
 void StationModelNode::setInformation(const StationInfo& info)
@@ -153,7 +145,6 @@ void StationModelNode::setInformation(const StationInfo& info)
 void StationModelNode::goOnTrack()
 {
     mMapController->setTrackNode(getGeoTransform(), 250);
-    //mMapController->goToPosition(getPosition(), 200);
 }
 
 void StationModelNode::onLeftButtonClicked(bool val)
@@ -173,7 +164,6 @@ void StationModelNode::onLeftButtonClicked(bool val)
 
 void StationModelNode::frameEvent()
 {
-    //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
     mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 }
 
@@ -185,7 +175,6 @@ void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
         if(onModel)
             event->accept();
     }
-    //BaseModel::mousePressEvent(event, onModel);
 }
 
 void StationModelNode::onGotoButtonClicked()
@@ -199,7 +188,6 @@ void StationModelNode::onRangeButtonToggled(bool check)
     {
         mRangeCircle->setPosition(getPosition());
         mRangeCircle->setRadius(osgEarth::Distance(mInformation.Radius, osgEarth::Units::METERS));
-//        mMapController->addNode(mRangeCircle);
 
         auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
@@ -211,7 +199,6 @@ void StationModelNode::onRangeButtonToggled(bool check)
     }
     else
     {
-        //mMapController->removeNode(mRangeCircle);
         auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
@@ -244,8 +231,6 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         geoPoint.z() = 0;
         mVisiblePolygone->addPoints(geoPoint.vec3d());
 
-        //mVisiblePolygone->setHeight(0);
-        //mMapController->addNode(mVisiblePolygone);
         auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
@@ -256,7 +241,6 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
     }
     else
     {
-        //mMapController->removeNode(mVisiblePolygone);
         auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
@@ -373,12 +357,6 @@ void StationModelNode::updateOrCreateLabelImage()
                          Qt::AlignRight | Qt::AlignVCenter,
                          mInformation.PrimSec);
 
-        //        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
-        //                         Qt::AlignLeft | Qt::AlignVCenter,
-        //                         "I-Method:");
-        //        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
-        //                         Qt::AlignRight | Qt::AlignVCenter,
-        //                         mInformation.IdentificationMethod);
 
 
     }

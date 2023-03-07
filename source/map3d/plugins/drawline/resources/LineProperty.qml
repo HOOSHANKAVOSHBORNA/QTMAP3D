@@ -1020,7 +1020,6 @@ Item {
             lineProperties.visible = false
             headerTitleSTR = "Ruler Properties"
 
-
         }
         else if(rulerCondition === false){
             pointColorSecR.visible = true
@@ -1036,7 +1035,7 @@ Item {
             transContainer.visible = true
             heightContainer.visible = true
             lineProperties.showLen = false
-//            lineProperties.visible = true
+            lineProperties.visible = true
             headerTitleSTR = "Line Properties"
         }
     }
