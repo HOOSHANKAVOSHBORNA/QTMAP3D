@@ -25,31 +25,31 @@ Item {
 //    }
 
 
-    Rectangle{
-        parent: splitView
-        width: 40
-        height: 40
-//        x: rootItem.width / 2 - 30
-//        y: 35
-        x: systemsLayout.x - 20
-        Image {
-            id: img
-            source: "qrc:/resources/refresh.png"
-            width: 35
-            height: 35
-            anchors.centerIn: parent
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    rootItem.aircraftModel.refresh(3);
-                    rootItem.systemModel.refresh(3);
-                    rootItem.aClicked = -1
-                    rootItem.sClicked = -1
-                }
-            }
-        }
-        color: "#252525"
-    }
+//    Rectangle{
+//        parent: splitView
+//        width: 40
+//        height: 40
+////        x: rootItem.width / 2 - 30
+////        y: 35
+//        x: systemsLayout.x - 20
+//        Image {
+//            id: img
+//            source: "qrc:/resources/refresh.png"
+//            width: 35
+//            height: 35
+//            anchors.centerIn: parent
+//            MouseArea {
+//                anchors.fill: parent
+//                onClicked: {
+//                    rootItem.aircraftModel.refresh(3);
+//                    rootItem.systemModel.refresh(3);
+//                    rootItem.aClicked = -1
+//                    rootItem.sClicked = -1
+//                }
+//            }
+//        }
+//        color: "#252525"
+//    }
 
 
 
@@ -61,19 +61,69 @@ Item {
         anchors.centerIn: parent
         handle: Rectangle {
                     id: handleDelegate
-                    implicitWidth: 4
-                    implicitHeight: 4
-//                    anchors.horizontalCenter: parent.horizontalCenter
-                    color: SplitHandle.pressed ? "#81e889"
-                        : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                    implicitWidth: 5
+                    color: "red"
 
-                    containmentMask: Item {
-                        x: (handleDelegate.width - width) / 2
-                        width: 64
-                        y: 350
-                        height: splitView.height
+                    Rectangle {
+                        anchors.left: handleDelegate.right
+                        color: SplitHandle.pressed ? "#81e889"
+                            : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                        width: 15
+                        height: parent.height
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: refreshimg.clicked(
+                                           Qt.LeftButton)
+                        }
+                    }
+                    Rectangle {
+                        id: leftRect
+                        anchors.right: handleDelegate.left
+                        color: SplitHandle.pressed ? "#81e889"
+                            : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                        width: 15
+                        height: parent.height
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: refreshimg.clicked(
+                                           Qt.LeftButton)
+                        }
+                    }
+                    Rectangle {
+                        anchors.right: leftRect.left
+                        color: "#252525"
+                        width: 30
+                        height: parent.height
+                        MouseArea {
+                            anchors.fill: parent
+                        }
                     }
 
+                    Rectangle {
+                        width: 5
+                        height: 32
+                        y: img.y
+                        color: "#c2f4c6"
+                    }
+                    Image {
+                        id: img
+                        source: "qrc:/resources/refresh.png"
+                        width: 32
+                        height: 32
+
+
+                        anchors.centerIn: parent
+                        MouseArea {
+                            id: refreshimg
+                            anchors.fill: parent
+                            onClicked: {
+                                rootItem.aircraftModel.refresh(3);
+                                rootItem.systemModel.refresh(3);
+                                rootItem.aClicked = -1
+                                rootItem.sClicked = -1
+                            }
+                        }
+                    }
                 }
 
         ColumnLayout {
@@ -262,7 +312,7 @@ Item {
                 Layout.fillWidth: true;
                 Layout.preferredHeight: 40
                 Layout.minimumHeight: 40
-                Layout.leftMargin: 30
+                Layout.leftMargin: 43
 
 
                 Row {
@@ -294,7 +344,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.topMargin: 15
-                Layout.leftMargin: 30
+                Layout.leftMargin: 43
                 TableView {
                     id: systems
                     model: rootItem.systemModel
