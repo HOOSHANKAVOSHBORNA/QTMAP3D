@@ -79,10 +79,10 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
 
     updateOrCreateLabelImage();
-    mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+    mLabelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
 
-    getGeoTransform()->addChild(mLableNode);
-    mLableNode->setNodeMask(false);
+    getGeoTransform()->addChild(mLabelNode);
+    mLabelNode->setNodeMask(false);
 
 
     if(mIs3D)
@@ -256,7 +256,7 @@ void SystemModelNode::onLeftButtonClicked(bool val)
 
 void SystemModelNode::frameEvent()
 {
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+    mLabelNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 
     for(auto assinmentModel:mAssignmentMap)
         assinmentModel->updateLine(getPosition());
