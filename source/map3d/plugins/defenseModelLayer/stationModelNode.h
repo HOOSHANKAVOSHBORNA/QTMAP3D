@@ -6,7 +6,7 @@
 #include "defenseModelNode.h"
 #include "listManager.h"
 #include "stationInformation.h"
-#include "circle.h"
+#include "circlenode.h"
 #include "polygone.h"
 
 #include <osgEarthAnnotation/ModelNode>
@@ -38,7 +38,7 @@ private:
     StationInfo mInformation;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
-    osg::ref_ptr<Circle> mRangeCircle;
+    osg::ref_ptr<CircleNode> mRangeCircle;
     osg::ref_ptr<Polygone> mVisiblePolygone;
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
