@@ -7,24 +7,16 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    function show() {
-        dialog.open()
-    }
-
-    function hide() {
-        dialog.close();
-    }
-
 
     property CircleProperties circleProperties
 
 
-    Dialog {
+    Item {
         id:dialog
         //   flags: Qt.FramelessWindowHint | Qt.Window
         width: 250
         height: 350
-        title: qsTr("Circle Properties")
+//        title: qsTr("Circle Properties")
 
 
 
@@ -103,7 +95,7 @@ Item {
         //            }
         //        }
         //////////////////////////Main Content////////////////////////
-        contentItem:  Rectangle {
+        /*contentItem: */ Rectangle {
             id: item
             visible: true
             width: parent.width
