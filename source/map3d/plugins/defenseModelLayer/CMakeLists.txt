@@ -39,7 +39,9 @@ add_library(defenseModelLayer SHARED
 
 target_include_directories(defenseModelLayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
 target_include_directories(defenseModelLayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawshapes")
+target_include_directories(defenseModelLayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCircle")
 target_link_libraries(defenseModelLayer PRIVATE drawshapes)
+target_link_libraries(defenseModelLayer PRIVATE drawCircle)
 target_link_libraries(defenseModelLayer PRIVATE Qt5::Gui Qt5::Quick Qt5::Widgets)
 
 target_compile_definitions(defenseModelLayer PRIVATE CPTEST_LIBRARY)
