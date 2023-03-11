@@ -160,7 +160,6 @@ void LinePropertiesModel::setRuler(const bool value)
         mRuler = value;
 //        emit linePropertiesChanged (value);
             emit rulerChanged();
-            qDebug() << mRuler << endl;
     }
 }
 
