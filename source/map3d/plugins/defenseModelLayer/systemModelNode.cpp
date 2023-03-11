@@ -115,7 +115,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     //map mode changed-----------------------------------------------------------------------
     connect(mapControler, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------
-    mRangeCircle = new CircleNode(mMapController, true);
+    mRangeCircle = new Circle(mMapController, true);
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
 
     mMezSphere = new SphereNode();

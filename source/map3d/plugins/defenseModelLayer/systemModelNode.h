@@ -4,7 +4,7 @@
 #include "mapcontroller.h"
 #include "defenseModelNode.h"
 #include "systemInformation.h"
-#include "circlenode.h"
+#include "circle.h"
 #include "spherenode.h"
 #include "polygone.h"
 #include "aircraftModelNode.h"
@@ -75,7 +75,7 @@ private:
     SystemCambatInfo mCambatInfo;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
-    osg::ref_ptr<CircleNode> mRangeCircle;
+    osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
     osg::ref_ptr<Polygone> mWezPolygon;
 

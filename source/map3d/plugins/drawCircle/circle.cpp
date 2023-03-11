@@ -1,8 +1,8 @@
-#include "circlenode.h"
+#include "circle.h"
 
 
 
-void CircleNode::setCircleHeight(float hieght)
+void Circle::setCircleHeight(float hieght)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = hieght;
@@ -10,7 +10,7 @@ void CircleNode::setCircleHeight(float hieght)
 
 }
 
-CircleNode::CircleNode(MapController *mapController, bool clamp)
+Circle::Circle(MapController *mapController, bool clamp)
 {
     mMapController = mapController;
     mColor = osgEarth::Color(osgEarth::Color::Cyan, 0.5);
@@ -32,7 +32,7 @@ CircleNode::CircleNode(MapController *mapController, bool clamp)
 
 }
 
-void CircleNode::setColor(osgEarth::Color color)
+void Circle::setColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     mColor = color;
@@ -41,14 +41,14 @@ void CircleNode::setColor(osgEarth::Color color)
     this->setStyle(style);
 }
 
-osgEarth::Color CircleNode::getColor()
+osgEarth::Color Circle::getColor()
 {
     return mColor;
 }
 
 
 
-void CircleNode::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)
+void Circle::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = clamp;

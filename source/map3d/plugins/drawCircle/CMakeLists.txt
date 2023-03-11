@@ -15,8 +15,9 @@ find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 add_library(drawCircle SHARED
     drawcircle.cpp
     drawCircle.json
-    circlenode.cpp
+    circle.cpp
     drawCircle.qrc
+    circleproperties.cpp
 )
 
 target_include_directories(drawCircle PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

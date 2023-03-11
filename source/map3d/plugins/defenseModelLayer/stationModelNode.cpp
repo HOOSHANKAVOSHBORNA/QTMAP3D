@@ -129,7 +129,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     connect(mapControler, &MapController::modeChanged, this, &StationModelNode::onModeChanged);
 
-    mRangeCircle = new CircleNode(mMapController, true);
+    mRangeCircle = new Circle(mMapController, true);
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
 
     mVisiblePolygone = new Polygone(mMapController, true);

@@ -5,7 +5,8 @@
 #include "osgEarthAnnotation/AnnotationEditing"
 #include "mapcontroller.h"
 #include "plugininterface.h"
-#include "circlenode.h"
+#include "circle.h"
+#include "circleproperties.h"
 
 #define DRAW_LAYER_NAME "Circle"
 
@@ -23,7 +24,7 @@ public:
                UIHandle *UIHandle) override;
 
     virtual void mousePressEvent(QMouseEvent* event) override;
-    virtual void mouseMoveEvent(QMouseEvent* event) override;
+//    virtual void mouseMoveEvent(QMouseEvent* event) override;
 //    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 
@@ -41,8 +42,10 @@ private:
     QQmlEngine* mQmlEngine {nullptr};
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
-    CircleNode* mCircle{nullptr};
+    Circle* mCircle{nullptr};
     UIHandle* mUiHandle{nullptr};
+    CircleProperties* mCircleProperties{nullptr};
+
 
     osgEarth::Annotation::SphereDragger* mCircleHdragger;
 
