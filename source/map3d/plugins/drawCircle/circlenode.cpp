@@ -13,7 +13,8 @@ void CircleNode::setCircleHeight(float hieght)
 CircleNode::CircleNode(MapController *mapController, bool clamp)
 {
     mMapController = mapController;
-    circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Cyan, 0.5);
+    mColor = osgEarth::Color(osgEarth::Color::Cyan, 0.5);
+    circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = mColor;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = false;
     if (clamp){
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
@@ -34,15 +35,15 @@ CircleNode::CircleNode(MapController *mapController, bool clamp)
 void CircleNode::setColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
-    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color);
+    mColor = color;
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = mColor;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = false;
     this->setStyle(style);
 }
 
 osgEarth::Color CircleNode::getColor()
 {
-    auto style = this->getStyle();
-    return style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color();
+    return mColor;
 }
 
 

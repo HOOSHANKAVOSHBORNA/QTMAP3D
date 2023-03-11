@@ -16,6 +16,7 @@ public:
 private:
     osgEarth::Symbology::Style circleStyle;
     MapController* mMapController{nullptr};
+    osgEarth::Color mColor;
 };
 
 #endif // CIRCLENODE_H

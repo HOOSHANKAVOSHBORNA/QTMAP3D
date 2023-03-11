@@ -23,13 +23,13 @@ public:
                UIHandle *UIHandle) override;
 
     virtual void mousePressEvent(QMouseEvent* event) override;
-//    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
 //    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 
 private:
     void startDraw(QMouseEvent* event);
-    void finishDrawing(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
+    void finishDrawing(QMouseEvent* event);
     void cancelDrawing(QMouseEvent* event);
 
     bool addNodeToLayer(osg::Node *node);
@@ -39,7 +39,7 @@ private:
 private:
     MapController* mMapcontroller {nullptr};
     QQmlEngine* mQmlEngine {nullptr};
-    enum class DrawingState{START, FINISH};
+    enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     CircleNode* mCircle{nullptr};
     UIHandle* mUiHandle{nullptr};

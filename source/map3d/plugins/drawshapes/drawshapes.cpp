@@ -457,11 +457,9 @@ void DrawShapes::onLineMouseMove(QMouseEvent *event)
 
 void DrawShapes::onCircleMouseMove(QMouseEvent *event)
 {
-
     if (mCircle){
         mCircle->setCircleHeight(mCircleHdragger->Dragger::getPosition().z());
     }
-
 }
 
 void DrawShapes::onPolyMouseMove(QMouseEvent *event)
