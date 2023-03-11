@@ -106,6 +106,8 @@ private:
 
     double mCurrentHeading{500};
     osgEarth::GeoPoint mCurrentFlyPoint;
+
+    osg::ref_ptr<osg::PositionAttitudeTransform> mPat2D;
 };
 
 #endif // FLYINGMODEL_H

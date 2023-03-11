@@ -91,12 +91,19 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     yellowGeode->setStateSet(geodeStateSet);
     yellowGeode->addDrawable(yellowImageDrawable);
 
+
+
     mNode2D->addChild(yellowGeode, false);
     mNode2D->addChild(redGeode, true);
 
+    mPat2D = new osg::PositionAttitudeTransform;
+    mPat2D->setAttitude(osg::Quat(osg::inDegrees(45.0), -osg::Z_AXIS));
+
+    mPat2D->addChild(mNode2D);
+
     osg::AutoTransform *at = new osg::AutoTransform;
 
-    at->addChild(mNode2D);
+    at->addChild(mPat2D);
     at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
 
     osgEarth::Symbology::Style labelStyle;
@@ -274,6 +281,11 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
 
 void AircraftModelNode::frameEvent()
 {
+    mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mMapController->getViewpoint().getHeading())
+                                                 + mInformation.Heading),
+                                  -osg::Z_AXIS));
+
+
     if (mCurrentContextMenu) {
         osg::Vec3d wordPos;
         getPosition().toWorld(wordPos);
