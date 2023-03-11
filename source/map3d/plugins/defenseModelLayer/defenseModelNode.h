@@ -64,7 +64,7 @@ protected:
     osg::ref_ptr<osg::LOD> mRootNode;
     osg::ref_ptr<osg::Group> mNode3D;
     osg::ref_ptr<osg::Switch> mNode2D;
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLableNode;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLabelNode;
     osgEarth::Color mModelColor{osgEarth::Color::White};
 
 private:

@@ -131,8 +131,8 @@ void DefenseModelNode::setQStringName(QString name)
 {
     setName(name.toStdString());
 //    auto systemModel =  dynamic_cast<SystemModelNode*>(this);
-//    if(mLableNode && !systemModel)
-//        mLableNode->setText(name.toStdString());
+//    if(mLabelNode && !systemModel)
+//        mLabelNode->setText(name.toStdString());
 }
 
 QString DefenseModelNode::getQStringName()
@@ -314,19 +314,19 @@ void DefenseModelNode::select(bool val)
     //--------------------------------------------------------------------------------------------------
     hover(val);
     mIsSelected = val;
-    if(mLableNode)
-        mLableNode->setNodeMask(val);
+    if(mLabelNode)
+        mLabelNode->setNodeMask(val);
 }
 
 void DefenseModelNode::hover(bool val)
 {
     //---------------------------------------------------
-    if(mLableNode)
-        mLableNode->setNodeMask(val);
+    if(mLabelNode)
+        mLabelNode->setNodeMask(val);
     mNode2D->setValue(0, val);
     mNode2D->setValue(1, !val);
 
-    //    auto lbStyle = mLableNode->getStyle();
+    //    auto lbStyle = mLabelNode->getStyle();
 
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     if(!val)
@@ -340,5 +340,5 @@ void DefenseModelNode::hover(bool val)
         mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
     }
     getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-    //    mLableNode->setStyle(lbStyle);
+    //    mLabelNode->setStyle(lbStyle);
 }

@@ -45,7 +45,7 @@ public:
     bool getSmooth() const;
     void setSmooth(bool Smooth);
 private:
-    osg::Image *updateLenghtLable(double lenght);
+    osg::Image *updateLenghtLabel(double lenght);
 private:
     MapController* mMapController{nullptr};
     osgEarth::Symbology::Geometry* mLineGeometry;
@@ -60,7 +60,7 @@ private:
     bool mSmooth;
 
     //Lenght part
-    osg::ref_ptr<osg::Group> mLableGroup;
+    osg::ref_ptr<osg::Group> mLabelGroup;
     QImage *mRenderImage{nullptr};
     static constexpr int LABEL_IMAGE_WIDTH = 100;
     static constexpr int LABEL_IMAGE_HEIGHT = 20;
