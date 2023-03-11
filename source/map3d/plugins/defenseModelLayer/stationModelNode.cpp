@@ -95,10 +95,10 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
 
     updateOrCreateLabelImage();
-    mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+    mLabelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
 
-    getGeoTransform()->addChild(mLableNode);
-    mLableNode->setNodeMask(false);
+    getGeoTransform()->addChild(mLabelNode);
+    mLabelNode->setNodeMask(false);
 
     if(mIs3D)
     {
@@ -164,7 +164,7 @@ void StationModelNode::onLeftButtonClicked(bool val)
 
 void StationModelNode::frameEvent()
 {
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+    mLabelNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 }
 
 void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
