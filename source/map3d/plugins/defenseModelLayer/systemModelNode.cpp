@@ -33,28 +33,77 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
-    osg::ref_ptr<osg::Image> redIcon = createColoredImage(osgDB::readImageFile("../data/models/system/images/truck.png"), osg::Vec4(1.0, 0.0, 0.0, 1.0));
-    if(redIcon)
-        redIcon->scaleImage(100, 100, redIcon->r());
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 0.3);
-    osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
-    redGeode->setStateSet(geodeStateSet);
-    redGeode->addDrawable(redImageDrawable);
+    const osg::ref_ptr<osg::Image> mainImage = osgDB::readImageFile("../data/models/system/images/truck.png");
 
-    osg::ref_ptr<osg::Image> yellowIcon = createColoredImage(osgDB::readImageFile("../data/models/system/images/truck.png"), osg::Vec4(1.0, 1.0, 0.0, 1.0));
-    if(yellowIcon)
-        yellowIcon->scaleImage(100, 100, yellowIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 0.3);
-    osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
-    yellowGeode->setStateSet(geodeStateSet);
-    yellowGeode->addDrawable(yellowImageDrawable);
+//    osg::ref_ptr<osg::Image> systemImage = createColoredImage(mainImage, osg::Vec4(0.9f, 0.9f, 0.9f, 1.0));
+//    if(systemImage)
+//        systemImage->scaleImage(100, 100, systemImage->r());
+//    osg::Geometry* systemImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImage, osg::Vec2s(0,0), 0, 0, 0.3);
+//    osg::ref_ptr<osg::Geode>  systemGeode = new osg::Geode();
+//    systemGeode->setStateSet(geodeStateSet);
+//    systemGeode->addDrawable(systemImageDrawable);
+//
+//    osg::ref_ptr<osg::Image> systemImageHovered = createDarkerImage(systemImage, 0.5f);
+//    if(systemImageHovered)
+//        systemImageHovered->scaleImage(100, 100, systemImageHovered->r());
+//    osg::Geometry* systemImageDrawableHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageHovered, osg::Vec2s(0,0), 0, 0, 0.3);
+//    osg::ref_ptr<osg::Geode>  systemGeodeHovered = new osg::Geode();
+//    systemGeodeHovered->setStateSet(geodeStateSet);
+//    systemGeodeHovered->addDrawable(systemImageDrawableHovered);
+
+
+    osg::ref_ptr<osg::Image> systemImageActive = createColoredImage(mainImage, osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f));
+    if(systemImageActive)
+        systemImageActive->scaleImage(100, 100, systemImageActive->r());
+    osg::ref_ptr<osg::Geometry> systemImageDrawableActive = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageActive, osg::Vec2s(0,0), 0, 0, 0.3);
+    osg::ref_ptr<osg::Geode>  systemGeodeActive = new osg::Geode();
+    systemGeodeActive->setStateSet(geodeStateSet);
+    systemGeodeActive->addDrawable(systemImageDrawableActive);
+
+
+    osg::ref_ptr<osg::Image> systemImageActiveHovered = createDarkerImage(systemImageActive, 0.4f);
+    if(systemImageActiveHovered)
+        systemImageActiveHovered->scaleImage(100, 100, systemImageActiveHovered->r());
+    osg::ref_ptr<osg::Geometry> systemImageDrawableActiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageActiveHovered, osg::Vec2s(0,0), 0, 0, 0.3);
+    osg::ref_ptr<osg::Geode>  systemGeodeActiveHovered = new osg::Geode();
+    systemGeodeActiveHovered->setStateSet(geodeStateSet);
+    systemGeodeActiveHovered->addDrawable(systemImageDrawableActiveHovered);
+
+    osg::ref_ptr<osg::Image> systemImageDeactive = createColoredImage(mainImage, osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f));
+    if(systemImageDeactive)
+        systemImageDeactive->scaleImage(100, 100, systemImageDeactive->r());
+    osg::ref_ptr<osg::Geometry> systemImageDrawableDeactive = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageDeactive, osg::Vec2s(0,0), 0, 0, 0.3);
+    osg::ref_ptr<osg::Geode>  systemGeodeDeactive = new osg::Geode();
+    systemGeodeDeactive->setStateSet(geodeStateSet);
+    systemGeodeDeactive->addDrawable(systemImageDrawableDeactive);
+
+
+    osg::ref_ptr<osg::Image> systemImageDeactiveHovered = createDarkerImage(systemImageDeactive, 0.4f);
+    if(systemImageDeactiveHovered)
+        systemImageDeactiveHovered->scaleImage(100, 100, systemImageDeactiveHovered->r());
+    osg::ref_ptr<osg::Geometry> systemImageDrawableDeactiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageDeactiveHovered, osg::Vec2s(0,0), 0, 0, 0.3);
+    osg::ref_ptr<osg::Geode>  systemGeodeDeactiveHovered = new osg::Geode();
+    systemGeodeDeactiveHovered->setStateSet(geodeStateSet);
+    systemGeodeDeactiveHovered->addDrawable(systemImageDrawableDeactiveHovered);
+
+
 
     osg::AutoTransform *at = new osg::AutoTransform;
 
+    mNode2DActive = new osg::Switch;
+    mNode2DActive->addChild(systemGeodeActive, true);
+    mNode2DActive->addChild(systemGeodeActiveHovered, false);
+
+    mNode2DDeactive = new osg::Switch;
+    mNode2DDeactive->addChild(systemGeodeDeactive, true);
+    mNode2DDeactive->addChild(systemGeodeDeactiveHovered, false);
+
+
+
 
     mNode2D = new osg::Switch;
-    mNode2D->addChild(yellowGeode, false);
-    mNode2D->addChild(redGeode, true);
+    mNode2D->addChild(mNode2DActive, true);
+    mNode2D->addChild(mNode2DDeactive, false);
 
     at->addChild(mNode2D);
     at->setAutoRotateMode(osg::AutoTransform::AutoRotateMode::ROTATE_TO_CAMERA);
@@ -134,6 +183,10 @@ void SystemModelNode::setInformation(const SystemInfo& info)
         mSystemInformation->setInfo(info);
     mInformation = info;
     updateOrCreateLabelImage();
+
+
+    mNode2D->setValue(0, info.Active);
+    mNode2D->setValue(1, !info.Active);
 }
 
 SystemInfo SystemModelNode::getInformation() const
@@ -275,6 +328,18 @@ void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
         if(onModel)
             event->accept();
     }
+}
+
+void SystemModelNode::hover(bool val)
+{
+    DefenseModelNode::hover(val);
+
+    mNode2DActive->setValue(0, !val);
+    mNode2DActive->setValue(1, val);
+
+    mNode2DDeactive->setValue(0, !val);
+    mNode2DDeactive->setValue(1, val);
+
 }
 
 void SystemModelNode::onModeChanged(bool is3DView)

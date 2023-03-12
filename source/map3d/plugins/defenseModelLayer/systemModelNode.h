@@ -40,6 +40,8 @@ public slots:
 public:
     virtual void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override; 
+    virtual void hover(bool val) override;
+
 protected:
 private slots:
     void onGotoButtonClicked();
@@ -95,6 +97,9 @@ private:
     static constexpr int LABEL_IMAGE_HEIGHT = 190;
 
     osg::ref_ptr<osg::LOD> mLOD = nullptr;
+
+    osg::ref_ptr<osg::Switch> mNode2DActive;
+    osg::ref_ptr<osg::Switch> mNode2DDeactive;
 };
 
 #endif // SYSTEM_H

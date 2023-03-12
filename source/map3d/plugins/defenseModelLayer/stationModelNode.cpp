@@ -27,51 +27,63 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     setStyle(rootStyle);
 
+
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
-    osg::Image* redIcon = osgDB::readImageFile("../data/models/station/station.png");
-    if(redIcon)
-        redIcon->scaleImage(100, 100, redIcon->r());
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(redIcon, osg::Vec2s(0,0), 0, 0, 0.2);
-    osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
 
-    redGeode->setStateSet(geodeStateSet);
-    redGeode->addDrawable(redImageDrawable);
-
-    osg::Image* yellowIcon = osgDB::readImageFile("../data/models/station/station.png");
-    if(yellowIcon)
-        yellowIcon->scaleImage(100, 100, yellowIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(yellowIcon, osg::Vec2s(0,0), 0, 0, 0.2);
-    osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
-    yellowGeode->setStateSet(geodeStateSet);
-    yellowGeode->addDrawable(yellowImageDrawable);
+    osg::ref_ptr<osg::Image> mainImage = osgDB::readImageFile("../data/models/station/station.png");
 
 
-    for(unsigned  int i = 0; i < static_cast<unsigned int>(yellowIcon->s()); i++) {
-        for(unsigned int j = 0; j < static_cast<unsigned int>(yellowIcon->t()); j++)
-        {
-            osg::Vec4 pixColore = yellowIcon->getColor(i, j);
-            if(pixColore.a() > 0)
-                yellowIcon->setColor(osg::Vec4(1.0, 1.0, 0.0, 1.0), i, j);
-        }
-    }
+    osg::ref_ptr<osg::Image> stationImageActive = createColoredImage(mainImage, osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f));
+    if(stationImageActive)
+        stationImageActive->scaleImage(100, 100, stationImageActive->r());
+    osg::ref_ptr<osg::Geometry> stationImageDrawableActive = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageActive, osg::Vec2s(0,0), 0, 0, 0.2);
+    osg::ref_ptr<osg::Geode>  stationGeodeActive = new osg::Geode();
+    stationGeodeActive->setStateSet(geodeStateSet);
+    stationGeodeActive->addDrawable(stationImageDrawableActive);
 
-    for(unsigned  int i = 0; i < static_cast<unsigned int>(redIcon->s()); i++) {
-        for(unsigned int j = 0; j < static_cast<unsigned int>(redIcon->t()); j++)
-        {
-            osg::Vec4 pixColore = redIcon->getColor(i, j);
-            if(pixColore.a() > 0)
-                redIcon->setColor(osg::Vec4(1.0, 0.0, 0.0, 1.0), i, j);
-        }
-    }
+
+    osg::ref_ptr<osg::Image> stationImageActiveHovered = createDarkerImage(stationImageActive, 0.4f);
+    if(stationImageActiveHovered)
+        stationImageActiveHovered->scaleImage(100, 100, stationImageActiveHovered->r());
+    osg::ref_ptr<osg::Geometry> stationImageDrawableActiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageActiveHovered, osg::Vec2s(0,0), 0, 0, 0.2);
+    osg::ref_ptr<osg::Geode>  stationGeodeActiveHovered = new osg::Geode();
+    stationGeodeActiveHovered->setStateSet(geodeStateSet);
+    stationGeodeActiveHovered->addDrawable(stationImageDrawableActiveHovered);
+
+    osg::ref_ptr<osg::Image> stationImageDeactive = createColoredImage(mainImage, osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f));
+    if(stationImageDeactive)
+        stationImageDeactive->scaleImage(100, 100, stationImageDeactive->r());
+    osg::ref_ptr<osg::Geometry> stationImageDrawableDeactive = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageDeactive, osg::Vec2s(0,0), 0, 0, 0.2);
+    osg::ref_ptr<osg::Geode>  stationGeodeDeactive = new osg::Geode();
+    stationGeodeDeactive->setStateSet(geodeStateSet);
+    stationGeodeDeactive->addDrawable(stationImageDrawableDeactive);
+
+
+    osg::ref_ptr<osg::Image> stationImageDeactiveHovered = createDarkerImage(stationImageDeactive, 0.4f);
+    if(stationImageDeactiveHovered)
+        stationImageDeactiveHovered->scaleImage(100, 100, stationImageDeactiveHovered->r());
+    osg::ref_ptr<osg::Geometry> stationImageDrawableDeactiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageDeactiveHovered, osg::Vec2s(0,0), 0, 0, 0.2);
+    osg::ref_ptr<osg::Geode>  stationGeodeDeactiveHovered = new osg::Geode();
+    stationGeodeDeactiveHovered->setStateSet(geodeStateSet);
+    stationGeodeDeactiveHovered->addDrawable(stationImageDrawableDeactiveHovered);
+
 
     osg::AutoTransform *at = new osg::AutoTransform;
 
 
+    mNode2DActive = new osg::Switch;
+    mNode2DActive->addChild(stationGeodeActive, true);
+    mNode2DActive->addChild(stationGeodeActiveHovered, false);
+
+    mNode2DDeactive = new osg::Switch;
+    mNode2DDeactive->addChild(stationGeodeDeactive, true);
+    mNode2DDeactive->addChild(stationGeodeDeactiveHovered, false);
+
     mNode2D = new osg::Switch;
-    mNode2D->addChild(yellowGeode, false);
-    mNode2D->addChild(redGeode, true);
+    mNode2D->addChild(mNode2DActive, true);
+    mNode2D->addChild(mNode2DDeactive, false);
 
     at->addChild(mNode2D);
     at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
@@ -141,6 +153,10 @@ void StationModelNode::setInformation(const StationInfo& info)
 {
     mInformation = info;
     updateOrCreateLabelImage();
+
+    mNode2D->setValue(0, info.Active);
+    mNode2D->setValue(1, !info.Active);
+
 }
 void StationModelNode::goOnTrack()
 {
@@ -175,6 +191,17 @@ void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
         if(onModel)
             event->accept();
     }
+}
+
+void StationModelNode::hover(bool val)
+{
+    DefenseModelNode::hover(val);
+
+    mNode2DActive->setValue(0, !val);
+    mNode2DActive->setValue(1, val);
+
+    mNode2DDeactive->setValue(0, !val);
+    mNode2DDeactive->setValue(1, val);
 }
 
 void StationModelNode::onGotoButtonClicked()

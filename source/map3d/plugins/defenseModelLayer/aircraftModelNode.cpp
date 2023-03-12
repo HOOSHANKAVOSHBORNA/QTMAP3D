@@ -285,6 +285,7 @@ void AircraftModelNode::frameEvent()
                                                  + mInformation.Heading),
                                   -osg::Z_AXIS));
 
+    mPat2D->setPosition(osg::Vec3d(0, 0, 0));
 
     if (mCurrentContextMenu) {
         osg::Vec3d wordPos;

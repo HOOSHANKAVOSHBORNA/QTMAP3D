@@ -271,6 +271,34 @@ osg::ref_ptr<osg::Image> DefenseModelNode::createColoredImage(osg::ref_ptr<osg::
     return newImage;
 }
 
+osg::ref_ptr<osg::Image> DefenseModelNode::createDarkerImage(osg::ref_ptr<osg::Image> sourceImage, float factor)
+{
+    osg::ref_ptr<osg::Image> newImage = new osg::Image(*sourceImage, osg::CopyOp::DEEP_COPY_ALL);
+
+    unsigned int width = static_cast<unsigned int>(sourceImage->s());
+    unsigned int height = static_cast<unsigned int>(sourceImage->t());
+
+    for(unsigned int i = 0; i < width; i++) {
+        for(unsigned int j = 0; j < height; j++)
+        {
+            const osg::Vec4 pixColore = sourceImage->getColor(i, j);
+            if(pixColore.a() > 0) {
+                const osg::Vec4 newColor(pixColore.r() * factor,
+                                         pixColore.g() * factor,
+                                         pixColore.b() * factor,
+                                         pixColore.a());
+                newImage->setColor(newColor, i, j);
+            }
+            else {
+                newImage->setColor(osg::Vec4(0,0,0,0), i, j);
+            }
+        }
+    }
+
+    return newImage;
+
+}
+
 void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
 {
     if(event->button() != Qt::MiddleButton)
@@ -323,8 +351,6 @@ void DefenseModelNode::hover(bool val)
     //---------------------------------------------------
     if(mLabelNode)
         mLabelNode->setNodeMask(val);
-    mNode2D->setValue(0, val);
-    mNode2D->setValue(1, !val);
 
     //    auto lbStyle = mLabelNode->getStyle();
 
