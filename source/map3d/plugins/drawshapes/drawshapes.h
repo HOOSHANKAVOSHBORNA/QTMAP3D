@@ -11,7 +11,6 @@
 #include "sphere.h"
 #include "rect.h"
 #include "polygone.h"
-#include "circle.h"
 #include "ellipse.h"
 #include "cone.h"
 #include "cylinder.h"
@@ -21,7 +20,6 @@
 #include "spherenodeeditor.h"
 #include "linenode.h"
 #include "sphereproperties.h"
-#include "circleproperties.h"
 
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
@@ -97,7 +95,6 @@ private:
     Box* mBox;
     Rect* mRect{nullptr};
     Polygone* mPoly;
-    Circle* mCircle{nullptr};
     Ellipse* mEllipse{nullptr};
     Capsule* mCapsule;
     MapController* mMapController{nullptr};

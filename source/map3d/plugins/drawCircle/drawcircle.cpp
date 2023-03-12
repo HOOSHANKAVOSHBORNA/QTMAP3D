@@ -9,11 +9,12 @@ const QString CIRCLE = "Circletest";
 DrawCircle::DrawCircle(QObject *parent)
     : PluginInterface(parent)
 {
-    //    Q_INIT_RESOURCE(DrawCircle);
+
 }
 
 bool DrawCircle::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
+    qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
     mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true});
     return true;
@@ -26,10 +27,12 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
             if (checked) {
                 mEnterCircleZone = true;
                 mDrawingState = DrawingState::START;
+
             }
             else {
                 mEnterCircleZone = false;
                 mDrawingState = DrawingState::FINISH;
+                mCircleProperties->hide();
             }
         }
     }
@@ -53,24 +56,34 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
     if (mEnterCircleZone) {
         if (event->button() == Qt::MouseButton::LeftButton) {
             if (mDrawingState == DrawingState::START) {
+                mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
                 event->accept();
             }
         }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
+        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
             cancelDrawing(event);
         }
-        else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::START) {
+        else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
             finishDrawing(event);
-            event->accept();
         }
     }
 }
 
+//void DrawCircle::mouseMoveEvent(QMouseEvent */*event*/)
+//{
+//    if (mCircle)
+//        mCircle->setCircleHeight(static_cast<float>(mCircleHdragger->Dragger::getPosition().z()));
+//}
+
 void DrawCircle::startDraw(QMouseEvent *event)
 {
-    mCircle = new CircleNode(mMapcontroller, true);
-    mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
+    mCircle = new Circle(mMapcontroller, true);
+    mCircleProperties = new CircleProperties(mQmlEngine, mUiHandle);
+    mCircleProperties->setCircle(mCircle);
+
+    mCircleProperties->show();
+//    mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
     mCircle->setArcStart(0);
     mCircle->setArcEnd(360);
 
@@ -82,10 +95,10 @@ void DrawCircle::startDraw(QMouseEvent *event)
     geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
 
     mCircle->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mCircleHdragger->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    addNodeToLayer(mCircleHdragger);
-//    mCircleHdragger->Dragger::setDefaultDragMode(Dragger::DragMode::DRAGMODE_VERTICAL);
-    
+//    mCircleHdragger->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+//    addNodeToLayer(mCircleHdragger);
+//    mCircleHdragger->Dragger::setDefaultDragMode(osgEarth::Annotation::Dragger::DragMode::DRAGMODE_VERTICAL);
+
     addNodeToLayer(mCircle);
     event->accept();
 }
@@ -93,21 +106,33 @@ void DrawCircle::startDraw(QMouseEvent *event)
 void DrawCircle::cancelDrawing(QMouseEvent *event)
 {
     removeNodeFromLayer(mCircle);
+    mCircle = nullptr;
+    mCircleProperties->hide();
+    mDrawingState = DrawingState::START;
+//    removeNodeFromLayer(mCircleHdragger);
+//    mCircleHdragger = nullptr;
+//    mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
+
     event->accept();
 }
 
-void DrawCircle::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
+void DrawCircle::finishDrawing(QMouseEvent *event)
 {
-    if (mDrawingState == DrawingState::START) {
+    if (mDrawingState == DrawingState::DRAWING) {
+        mCircle = nullptr;
+//        removeNodeFromLayer(mCircleHdragger);
+//        mCircleHdragger = nullptr;
+//        mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
+        mDrawingState = DrawingState::START;
         event->accept();
     }
 }
 
-void DrawCircle::onCircleMouseMove(QMouseEvent *event)
+void DrawCircle::onCircleMouseMove(QMouseEvent */*event*/)
 {
 
     if (mCircle){
-        mCircle->setCircleHeight(mCircleHdragger->Dragger::getPosition().z());
+        mCircle->setCircleHeight(static_cast<float>(mCircleHdragger->Dragger::getPosition().z()));
     }
 
 }

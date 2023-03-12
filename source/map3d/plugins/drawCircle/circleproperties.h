@@ -3,12 +3,13 @@
 
 #include "circle.h"
 #include "mapcontroller.h"
+#include "plugininterface.h"
 
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
 
-class CircleProperties : public QObject
+class CirclePropertiesModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString   fillcolor      READ fillcolor     WRITE setFillColor    NOTIFY circlePropertiesChangedToQML)
@@ -41,7 +42,7 @@ public:
 
 
 
-    CircleProperties(Circle* Circle = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
+    CirclePropertiesModel(QObject *parent = nullptr);
     //set fillcolor
     QString fillcolor() const;
     void setFillColor(const QString &fillcolor);
@@ -72,6 +73,7 @@ public:
     // set relative
     bool relative() const;
     void setRelative(const bool &relative);
+    void setCircle(Circle* circle);
 
 
 
@@ -99,6 +101,23 @@ private:
 
 
 public slots:
+};
+
+class CircleProperties : public QObject
+{
+    Q_OBJECT
+public:
+    CircleProperties(QQmlEngine *engine, UIHandle *uiHandle, QObject *parent = nullptr);
+    void show();
+    void hide();
+    void setCircle(Circle* circle);
+
+private:
+    QQmlEngine* mQmlEngine;
+    QQuickItem* mItem;
+    CirclePropertiesModel* mCircleProperties;
+    UIHandle* mUiHandle;
+
 };
 
 #endif // CIRCLEPROPERTIES_H

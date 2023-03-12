@@ -1,128 +1,77 @@
 import QtQuick 2.13
-import QtQuick.Window 2.13
+import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
-import QtQuick.Layouts 1.13
+import QtQuick.Layouts 1.12
 import QtQuick.Dialogs 1.2
 import Crystal 1.0
 
 Item {
     id: rootItem
-    function show() {
-        dialog.open()
-    }
+    implicitHeight: parent.height
 
-    function hide() {
-        dialog.close();
-    }
 
 
     property CircleProperties circleProperties
+    property bool rulerCondition : lineProperties.ruler
+    property string headerTitleSTR: "circle Properties"
+    property string fillColor: "#91001d"
+    property string lineColor: "#001191"
 
 
-    Dialog {
-        id:dialog
-        //   flags: Qt.FramelessWindowHint | Qt.Window
+
+    Item {
+        id: dialog
         width: 250
-        height: 350
-        title: qsTr("Circle Properties")
+        height: rootItem.height
 
 
-
-        //    x:0
-        //    y:0
-
-
-        ///////////////////properties////////////////////////////
-        property color fillColor: "#004C05"
-        property color lineColor: "black"
-//        property int previousX
-//        property int previousY
-
-        ///////////////////Main Holder///////////////////////////
-        //    Rectangle{
-        //        id: background
-        //        color: "#313131"
-        //        anchors.fill: parent
-        //        radius: 10
-        //        border.width: 1
-        //        border.color: "gray"
-
-        //        MouseArea {
-        //            anchors.fill: parent
-
-        //            onPressed: {
-        //                previousX = mouseX
-        //                previousY = mouseY
-        //            }
-
-        //            onMouseXChanged: {
-        //                var dx = mouseX - previousX
-        //                root.setX(root.x + dx)
-        //            }
-
-        //            onMouseYChanged: {
-        //                var dy = mouseY - previousY
-        //                root.setY(root.y + dy)
-        //            }
-        //        }
-
-        ///////////////////////////Header//////////////////////////////
-        //        Rectangle{
-        //            width: parent.width -2
-        //            anchors.horizontalCenter: parent.horizontalCenter
-        //            y: 2
-        //            height: 35
-        //            radius: 10
-        //            gradient:Gradient{
-        //                GradientStop{position:1.0 ; color: "#313131"}
-        //                GradientStop{position:0.0 ; color: "#5f5f5f"}
-        //            }
-        //            Text {
-        //                id: headerTitle
-        //                text: qsTr("Circle Properties")
-        //                anchors.centerIn: parent
-        //                font.bold: true
-        //                font.pointSize: 10
-        //                color: "white"
-        //            }
-
-        //            Image {
-        //                id: closeBtn
-        //                source: "close.png"
-        //                sourceSize: "15x15"
-        //                x: parent.width -27
-        //                y: 10
-
-        //                MouseArea{
-        //                    anchors.fill: parent
-        //                    cursorShape: Qt.PointingHandCursor
-        //                    onClicked: {
-        //                        Qt.quit()
-        //                    }
-        //                }
-        //            }
-        //        }
         //////////////////////////Main Content////////////////////////
-        contentItem:  Rectangle {
+        Rectangle {
             id: item
             visible: true
-            width: parent.width
-            //            height: 350
-            //            anchors.horizontalCenter: parent.horizontalCenter
+            width: 240
+            height: rootItem.height
             anchors.fill: parent
-            color: "#3e3e3e"
-            //            y:43
+            color: "#404040"
+            opacity: 0.9
+            anchors.margins: 6
+            radius: 10
+
+            Rectangle{
+                id:header
+                width: parent.width -2
+                anchors.horizontalCenter: parent.horizontalCenter
+                y: 2
+                height: 30
+                radius: 0
+                color: "#404040"
+
+                Text {
+                    id: headerTitle
+                    text: headerTitleSTR
+                    anchors.centerIn: parent
+                    font.family: "SourceSansPro"
+                    font.pointSize: 14
+                    color: "white"
+                }
+
+            }
+
             ScrollView {
                 id: frame
                 clip: true
-                anchors.fill: parent
+                anchors.top: header.bottom
+                padding: 5
+                width: parent.width
+                height: parent.height - header.height
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
-                    contentHeight: 320
-                    width: 250
+                    contentHeight: 350
+                    width: 240
+
                     Rectangle {
                         id : innerContainer
-                        color: "#4b4b4b"
+                        color: "transparent"
                         anchors.fill: parent
 
                         /////////////////////// components Grid ////////////////////////////
@@ -132,25 +81,22 @@ Item {
                             y: innerContainer.y +3
                             anchors.horizontalCenter: parent.horizontalCenter
                             columnSpacing: 0
-                            rowSpacing: 2
+                            rowSpacing: 1
                             columns:2
                             rows: 6
                             layoutDirection: Qt.RightToLeft
-                            anchors.fill: parent
 
-                            ///////////////////////////////////Fill Color Property//////////////////////////////////
+                            ////////////////////////////////////fill Color Property//////////////////////////////////
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
 
 
                                 Rectangle{
                                     height: 20
                                     width: 20
-                                    color: circleProperties.fillcolor
+                                    color: fillColor
                                     border.width: 2
                                     border.color: "#c9c9c9"
                                     x: 5
@@ -173,8 +119,8 @@ Item {
                                     radius: 5
 
                                     Text {
-                                        id: fillColorField
-                                        text: circleProperties.fillcolor
+                                        id: fillolorField
+                                        text: fillColor
                                         anchors.centerIn: parent
                                         font.pointSize: 10
 
@@ -182,24 +128,24 @@ Item {
                                 }
                                 ColorDialog {
                                     visible: false
-                                    id: fillColorDialog
+                                    id:  fillColorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
-                                        circleProperties.fillcolor = fillColorDialog.color
+                                        fillColor = fillColorDialog.color
+                                        circleProperties.color = fillColor.toString()
                                     }
 
                                 }
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+
 
                                 Text {
                                     id: fillColorCircle
-                                    text: qsTr("FillColor :")
+                                    text: qsTr("Fill Color :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -207,21 +153,22 @@ Item {
                                 }
                             }
 
-                            ///////////////////////////////////Line Color Property//////////////////////////////////
+                            ///////////////////////////////////line Color Property//////////////////////////////////
                             Rectangle{
+                                id: lineColorSecR
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
 
 
                                 Rectangle{
                                     height: 20
                                     width: 20
                                     color: lineColor
-                                    border.width: 2
-                                    border.color: "#c9c9c9"
+                                    //                                    border.width: 2
+                                    //                                    border.color: "#c9c9c9"
                                     x: 5
                                     radius: 5
                                     anchors.verticalCenter: parent.verticalCenter
@@ -254,33 +201,37 @@ Item {
                                     id: lineColorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
+                                        //                                    lineColor = lineColorDialog.color
                                         lineColor = lineColorDialog.color
-                                        circleProperties.linecolor = lineColorDialog.color
+                                        circleProperties.pointColor = lineColor
                                     }
 
                                 }
                             }
+
                             Rectangle{
+                                id: lineColorSecL
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 35
-                                border.color: "#5f5f5f"
-                                border.width: 1
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
 
                                 Text {
-                                    id: lineColorCircle
-                                    text: qsTr("LineColor :")
+                                    id: lineColors
+                                    text: qsTr("Line Color:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
                                     x:7
                                 }
                             }
+
                             ///////////////////////////////////Location Property///////////////////////////////
                             Rectangle{
                                 id:locationContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 80
                                 border.color: "#5f5f5f"
                                 border.width: 1
@@ -307,7 +258,7 @@ Item {
                                             TextInput {
                                                 id: mlocationX
                                                 anchors.fill: parent
-                                                text: circleProperties.location.x
+                                                //                                                text: circleProperties.location.x
                                                 font.pointSize: 10
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
@@ -344,7 +295,7 @@ Item {
                                                 id: mlocationY
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                text: circleProperties.location.y
+                                                //                                                text: circleProperties.location.y
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
@@ -380,7 +331,7 @@ Item {
                                                 id: mlocationZ
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                text: circleProperties.location.z
+                                                //                                                text: circleProperties.location.z
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
@@ -399,7 +350,7 @@ Item {
                             Rectangle{
                                 id: locationTitle
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 80
                                 border.color: "#5f5f5f"
                                 border.width: 1
@@ -457,7 +408,7 @@ Item {
                             Rectangle{
                                 id:arcContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 55
                                 border.color: "#5f5f5f"
                                 border.width: 1
@@ -467,7 +418,6 @@ Item {
                                         spacing: 3
                                         leftPadding: 2
                                         topPadding: 5
-                                        //                                        anchors.horizontalCenter: parent.horizontalCenter
                                         x:1
 
                                         Text {
@@ -486,7 +436,7 @@ Item {
                                                 id: startArc
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                text: circleProperties.arcstart
+                                                //                                                text: circleProperties.arcstart
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
@@ -523,7 +473,7 @@ Item {
                                                 id: endArc
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                text: circleProperties.arcend
+                                                //                                                text: circleProperties.arcend
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
@@ -542,7 +492,7 @@ Item {
                             Rectangle{
                                 id: arcTitle
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 55
                                 border.color: "#5f5f5f"
                                 border.width: 1
@@ -557,122 +507,130 @@ Item {
                                 }
                             }
 
-                            ///////////////////////////////////Radius///////////////////////////////////////////
+
+                            ///////////////////////////////////radius/////////////////////////////////////
+
                             Rectangle{
+                                id: radiusContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
 
-                                Rectangle{
+                                SpinBox {
+                                    id: radiusValue
+                                    stepSize: 1
+                                    value: 10
+                                    to : 10000
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  100
+                                    }
+                                    editable: true
+                                    anchors.centerIn: parent
                                     height: 20
-                                    width: 75
-                                    color: "#c9c9c9"
-                                    clip:  true
-                                    radius: 5
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x: 28
+                                    //                                    onDataChanged: lineProperties.width = widthValue.valueFromText
 
-                                    TextInput {
-                                        id: radiusValue
-                                        anchors.fill: parent
-                                        font.pointSize: 10
-                                        text: circleProperties.radius
+                                    contentItem: TextInput {
+                                        id:valueInput
+                                        z: 2
+                                        //                                        text: widthValue.textFromValue(widthValue.value, widthValue.locale)
+                                        text: radiusValue.value
+                                        font: radiusValue.font
+                                        color: "#404040"
+                                        horizontalAlignment: Qt.AlignHCenter
+                                        verticalAlignment: Qt.AlignVCenter +10
+                                        readOnly: !radiusValue.editable
+                                        validator: radiusValue.validator
+                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                        topPadding: 13
                                         selectByMouse: true
                                         selectionColor: "dark green"
-                                        validator: DoubleValidator {
-                                            decimals: 8;
-                                            notation: DoubleValidator.StandardNotation
-                                            locale: "insert radius"
-                                        }
                                         onTextChanged: {
-                                            circleProperties.radius = text
+                                            if(lineProperties){
+                                                radiusValue.value = valueInput.text
+                                                circleProperties.radius = radiusValue.value
+                                            }
                                         }
+                                    }
+                                    up.indicator: Rectangle {
+                                        x: radiusValue.mirrored ? 0 : parent.width - width
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: radiusValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "+"
+                                            font.pixelSize: radiusValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    down.indicator: Rectangle {
+                                        x: radiusValue.mirrored ? parent.width - width : 0
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: radiusValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "-"
+                                            font.pixelSize: radiusValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    background: Rectangle {
+                                        implicitWidth: radiusContainer.width -10
+                                        color: "#c9c9c9"
+                                        border.color: "#bdbebf"
                                     }
                                 }
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
 
                                 Text {
-                                    id: radiusCircle
-                                    text: qsTr("Radius :")
+                                    id: radiuscircle
+                                    text: qsTr("Radius:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
                                     x:7
                                 }
                             }
-                            /////////////////////////////////// Height ///////////////////////////////////////////
-                            Rectangle{
-                                Layout.fillWidth: true
-                                color: "#313131"
-                                height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
 
-                                Rectangle{
-                                    height: 20
-                                    width: 75
-                                    color: "#c9c9c9"
-                                    clip:  true
-                                    radius: 5
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x: 28
 
-                                    TextInput {
-                                        id: heightValue
-                                        anchors.fill: parent
-                                        font.pointSize: 10
-                                        text: circleProperties.circleheight
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        validator: DoubleValidator {
-                                            decimals: 8;
-                                            notation: DoubleValidator.StandardNotation
-                                            locale: "insert height"
-                                        }
-                                        onTextChanged: {
-                                            circleProperties.circleheight = text
-                                        }
-                                    }
-                                }
-                            }
-                            Rectangle{
-                                Layout.fillWidth: true
-                                color: "#313131"
-                                height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
 
-                                Text {
-                                    id: heightCircle
-                                    text: qsTr("Height :")
-                                    font.pointSize: 10
-                                    color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
-                                }
-                            }
-                            ///////////////////////////////////Transparency/////////////////////////////////////
+                            ///////////////////////////////////height/////////////////////////////////////
                             Rectangle{
                                 id: transContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
 
                                 SpinBox {
                                     id: transValue
-                                    stepSize: 5
-                                    value: 50
-                                    to : 100
+                                    stepSize: 1
+                                    value: 0
+                                    to : 1000000
                                     from : 0
                                     validator: DoubleValidator {
                                         bottom: 0
@@ -682,12 +640,13 @@ Item {
                                     anchors.centerIn: parent
                                     height: 20
 
-
                                     contentItem: TextInput {
+                                        id: heightInput
                                         z: 2
-                                        text: transValue.textFromValue(transValue.value, transValue.locale)
+                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
+                                        text: transValue.value
                                         font: transValue.font
-                                        color: "#313131"
+                                        color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
                                         readOnly: !transValue.editable
@@ -698,7 +657,8 @@ Item {
                                         selectionColor: "dark green"
                                         onTextChanged: {
                                             if(transValue && transValue.value){
-                                           circleProperties.transparency = transValue.value
+                                                transValue.value = heightInput.text
+                                                circleProperties.height = transValue.value
                                             }
                                         }
                                     }
@@ -707,8 +667,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: transValue.up.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: transValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "+"
@@ -725,8 +685,8 @@ Item {
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: transValue.down.pressed ? "#5f5f5f" : "#313131"
-                                        border.color: enabled ? "#313131" : "#5f5f5f"
+                                        color: transValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
@@ -746,36 +706,147 @@ Item {
                                 }
                             }
                             Rectangle{
+                                id:heightContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
 
                                 Text {
-                                    id: transCircle
-                                    text: qsTr("Transparency :")
+                                    id: transSphere
+                                    text: qsTr("Height:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
                                     x:7
                                 }
                             }
+
+                            ///////////////////////////////////opacity/////////////////////////////////////
+
+                            Rectangle{
+                                id: opacityContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                SpinBox {
+                                    id: opacityValue
+                                    stepSize: 5
+                                    value: 10
+                                    to : 10000
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  100
+                                    }
+                                    editable: true
+                                    anchors.centerIn: parent
+                                    height: 20
+
+
+                                    contentItem: TextInput {
+                                        id:opacityValueInput
+                                        z: 2
+                                        //                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
+                                        text: opacityValue.value
+                                        font: opacityValue.font
+                                        color: "#404040"
+                                        horizontalAlignment: Qt.AlignHCenter
+                                        verticalAlignment: Qt.AlignVCenter +10
+                                        readOnly: !opacityValue.editable
+                                        validator: opacityValue.validator
+                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                        topPadding: 13
+                                        selectByMouse: true
+                                        selectionColor: "dark green"
+                                        onTextChanged: {
+                                            if(circleProperties){
+                                                opacityValue.value = opacityValueInput.text
+                                                circleProperties.transparency = opacityValue.value
+                                            }
+                                        }
+                                    }
+                                    up.indicator: Rectangle {
+                                        x: opacityValue.mirrored ? 0 : parent.width - width
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: opacityValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "+"
+                                            font.pixelSize: opacityValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    down.indicator: Rectangle {
+                                        x: opacityValue.mirrored ? parent.width - width : 0
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: opacityValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "-"
+                                            font.pixelSize: opacityValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    background: Rectangle {
+                                        implicitWidth: opacityContainer.width -10
+                                        color: "#c9c9c9"
+                                        border.color: "#bdbebf"
+                                    }
+                                }
+                            }
+                            Rectangle{
+                                id: opacityTitle
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                Text {
+                                    id: opacityCircle
+                                    text: qsTr("Opacity:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+
                             /////////////////////////////////// Clamp ///////////////////////////////////////////
                             Rectangle{
                                 id: clampContainer
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+
 
                                 ComboBox {
                                     id: control
                                     model: ["None", "Terrain", "Relative","Absolute"]
                                     anchors.centerIn: parent
                                     onCurrentIndexChanged:   {
-                                        circleProperties.clamp = currentIndex
+                                        if (circleProperties)
+                                            circleProperties.clamp = currentIndex
                                     }
 
                                     delegate: ItemDelegate {
@@ -805,15 +876,6 @@ Item {
                                             function onPressedChanged() { canvas.requestPaint(); }
                                         }
 
-                                        onPaint: {
-                                            context.reset();
-                                            context.moveTo(0, 0);
-                                            context.lineTo(width, 0);
-                                            context.lineTo(width / 2, height);
-                                            context.closePath();
-                                            context.fillStyle = control.pressed ? "#5f5f5f" : "#313131";
-                                            context.fill();
-                                        }
                                     }
 
                                     contentItem: Text {
@@ -822,7 +884,7 @@ Item {
 
                                         text: control.displayText
                                         font: control.font
-                                        color: control.pressed ? "#5f5f5f" : "#313131"
+                                        color: control.pressed ? "#5f5f5f" : "#404040"
                                         verticalAlignment: Text.AlignVCenter
                                         elide: Text.ElideRight
                                     }
@@ -830,7 +892,7 @@ Item {
                                     background: Rectangle {
                                         implicitWidth: 100
                                         implicitHeight: 20
-                                        border.color: control.pressed ? "#5f5f5f" : "#313131"
+                                        border.color: control.pressed ? "#5f5f5f" : "#404040"
                                         border.width: control.visualFocus ? 2 : 1
                                         radius: 5
                                         color: "#c9c9c9"
@@ -853,7 +915,7 @@ Item {
                                         }
 
                                         background: Rectangle {
-                                            border.color: "#313131"
+                                            border.color: "#404040"
                                             radius: 5
                                         }
                                     }
@@ -862,10 +924,10 @@ Item {
 
                             Rectangle{
                                 Layout.fillWidth: true
-                                color: "#313131"
+                                color: "#404040"
                                 height: 30
-                                border.color: "#5f5f5f"
-                                border.width: 1
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
 
                                 Text {
                                     text: qsTr("Clamp :")
@@ -875,6 +937,7 @@ Item {
                                     x:7
                                 }
                             }
+
                         }
                     }
                 }
@@ -882,4 +945,3 @@ Item {
         }
     }
 }
-
