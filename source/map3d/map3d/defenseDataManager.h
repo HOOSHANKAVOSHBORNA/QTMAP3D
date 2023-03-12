@@ -25,7 +25,7 @@ struct AircraftInfo
     QString CallSign;
     QString Type;
     QString MasterRadar;
-    Identify Identification;
+	Identify Identification;
     QString IdentificationMethod;
     long long int Time;
     QString Pos;
@@ -176,7 +176,7 @@ struct StationInfo
     QString Name;
     QString Type;
     QString PrimSec;
-	bool Active = true;
+	bool Active = false;
 
     int Number;
     double Latitude;

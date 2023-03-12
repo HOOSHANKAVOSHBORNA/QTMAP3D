@@ -44,7 +44,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     stationGeodeActive->addDrawable(stationImageDrawableActive);
 
 
-    osg::ref_ptr<osg::Image> stationImageActiveHovered = createDarkerImage(stationImageActive, 0.4f);
+    osg::ref_ptr<osg::Image> stationImageActiveHovered = createDarkerImage(stationImageActive, 0.5f);
     if(stationImageActiveHovered)
         stationImageActiveHovered->scaleImage(100, 100, stationImageActiveHovered->r());
     osg::ref_ptr<osg::Geometry> stationImageDrawableActiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageActiveHovered, osg::Vec2s(0,0), 0, 0, 0.2);
@@ -61,7 +61,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     stationGeodeDeactive->addDrawable(stationImageDrawableDeactive);
 
 
-    osg::ref_ptr<osg::Image> stationImageDeactiveHovered = createDarkerImage(stationImageDeactive, 0.4f);
+    osg::ref_ptr<osg::Image> stationImageDeactiveHovered = createDarkerImage(stationImageDeactive, 0.5f);
     if(stationImageDeactiveHovered)
         stationImageDeactiveHovered->scaleImage(100, 100, stationImageDeactiveHovered->r());
     osg::ref_ptr<osg::Geometry> stationImageDrawableDeactiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageDeactiveHovered, osg::Vec2s(0,0), 0, 0, 0.2);
@@ -281,6 +281,11 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
 void StationModelNode::onActivateButtonToggled(bool checked)
 {
     mInformation.Active = checked;
+
+    mNode2D->setValue(0, checked);
+    mNode2D->setValue(1, !checked);
+
+
 }
 
 void StationModelNode::onModeChanged(bool is3DView)

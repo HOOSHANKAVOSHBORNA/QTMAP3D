@@ -5,8 +5,6 @@
 #include <osgEarthDrivers/feature_ogr/OGRFeatureOptions>
 #include <osgEarthDrivers/feature_wfs/WFSFeatureOptions>
 #include <osgEarthDrivers/model_feature_geom/FeatureGeomModelOptions>
-#include <QFileDialog>
-#include <QInputDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <osgEarth/GLUtils>
@@ -27,6 +25,7 @@
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarth/GeoMath>
 
+
 using namespace osgEarth::Annotation;
 
 const QString CATEGORY = "Draw";
@@ -34,7 +33,7 @@ const QString LINE = "Line";
 
 const QString M_CATEGORY = "Measurement";
 const QString RULER = "Ruler";
-const QString HEIGHT = "Height";
+const QString MEASUREHEIGHT = "Measure Height";
 
 
 drawLine::drawLine(QWidget *parent)
@@ -50,7 +49,7 @@ bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{RULER, M_CATEGORY, "qrc:/resources/ruler.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{HEIGHT, M_CATEGORY, "qrc:/resources/height.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{MEASUREHEIGHT, M_CATEGORY, "qrc:/resources/height.png", true});
     return true;
 }
 
@@ -98,6 +97,22 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mLineProperties->hide();
         }
     }
+
+    if(name == MEASUREHEIGHT)
+    {
+        if(checked)
+        {
+            mEnterLineZone = true;
+            mType = Type::HEIGHT;
+            mDrawingState = DrawingState::START;
+        }
+        else
+        {
+            mEnterLineZone = false;
+            mType = Type::NONE;
+            mDrawingState = DrawingState::FINISH;
+        }
+    }
 }
 bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
 {
@@ -116,12 +131,12 @@ void drawLine::mousePressEvent(QMouseEvent *event)
     if (mEnterLineZone){
         if(event->button() == Qt::MouseButton::LeftButton)
         {
-            if(mDrawingState == DrawingState::START)
+            if(mDrawingState == DrawingState::START && mType != Type::HEIGHT)
             {
                 startDrawLine();
                 event->accept();
             }
-            if(mDrawingState == DrawingState::DRAWING)
+            if(mDrawingState == DrawingState::DRAWING && mType != Type::HEIGHT)
             {
                 if (mType == Type::RULER && mLine->getSize()>= 2){
                     finishDrawing(event);
@@ -130,16 +145,29 @@ void drawLine::mousePressEvent(QMouseEvent *event)
                     drawingLine(event);
                 event->accept();
             }
+
+            //height part
+            if(mDrawingState == DrawingState::START && mType == Type::HEIGHT){
+                startDrawMeasureHeight();
+                event->accept();
+            }
+            if(mDrawingState == DrawingState::DRAWING && mType == Type::HEIGHT)
+            {
+                if (mType == Type::HEIGHT && mMeasureHeight->started() ){
+                    finishDrawing(event);
+                }
+                else
+                    drawingMeasureHeight(event);
+                event->accept();
+            }
         }
-        if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
+        else if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
         {
             cancelDrawingLine(event);
-
         }
-        if(event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING)
+        else if(event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING)
         {
             finishDrawing(event);
-            mLine->setHeight(0);
             event->accept();
         }
     }
@@ -147,32 +175,45 @@ void drawLine::mousePressEvent(QMouseEvent *event)
 void drawLine::mouseMoveEvent(QMouseEvent *event)
 {
     if (mEnterLineZone){
-        if (mDrawingState == DrawingState::DRAWING)
+        if (mDrawingState == DrawingState::DRAWING && mType!=Type::HEIGHT){
             mouseMoveDrawing(event);
+        }
+        else if (mDrawingState == DrawingState::DRAWING && mType==Type::HEIGHT){
+            mouseMoveMeasureHeightDrawing(event);
+        }
     }
 }
 
 void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 {
-
     //    finishDrawing(event);
-
 }
 
 void drawLine::startDrawLine()
 {
     mLine = new LineNode(mMapController);
-    //    mLine->setColor(osgEarth::Color::Orange);
-    //    mLine->setPointColor(osgEarth::Color::Black);
-    //    mLine->setWidth(7);
-    //    mLine->setPointVisible(false);
-    //    mLine->setPointWidth(8);
-    //    mLine->setTessellation(20);
-    //    mLine->setHeight(10000);
     mLine->showLenght(true);
     addNodeToLayer(mLine);
     mLineProperties->setLine(mLine);
     mDrawingState = DrawingState::DRAWING;
+}
+
+void drawLine::startDrawMeasureHeight()
+{
+    mMeasureHeight = new MeasureHeight(mMapController);
+    addNodeToLayer(mMeasureHeight);
+    mDrawingState = DrawingState::DRAWING;
+}
+
+void drawLine::drawingMeasureHeight(QMouseEvent *event)
+{
+    mMeasureHeight->setFirstPoint(mMapController->screenToGeoPoint(event->x(), event->y()));
+}
+
+void drawLine::mouseMoveMeasureHeightDrawing(QMouseEvent *event)
+{
+    mMeasureHeight->clear();
+    mMeasureHeight->setSecondPoint(mMapController->screenToGeoPoint(event->x(), event->y()));
 }
 
 void drawLine::drawingLine(QMouseEvent *event)
@@ -184,6 +225,7 @@ void drawLine::drawingLine(QMouseEvent *event)
 void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
     removeNodeFromLayer(mLine);
+    removeNodeFromLayer(mMeasureHeight);
     mLineProperties->setLine(nullptr);
     event->accept();
     mDrawingState = DrawingState::START;

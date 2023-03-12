@@ -23,6 +23,8 @@ drawshapeautoscaler.h
 drawLine.qrc
 lineproperties.cpp
 lineproperties.h
+measureHeight.cpp
+measureHeight.h
 )
 
 target_include_directories(drawline PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

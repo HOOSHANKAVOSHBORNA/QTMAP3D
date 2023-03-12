@@ -61,7 +61,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     systemGeodeActive->addDrawable(systemImageDrawableActive);
 
 
-    osg::ref_ptr<osg::Image> systemImageActiveHovered = createDarkerImage(systemImageActive, 0.4f);
+    osg::ref_ptr<osg::Image> systemImageActiveHovered = createDarkerImage(systemImageActive, 0.5f);
     if(systemImageActiveHovered)
         systemImageActiveHovered->scaleImage(100, 100, systemImageActiveHovered->r());
     osg::ref_ptr<osg::Geometry> systemImageDrawableActiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageActiveHovered, osg::Vec2s(0,0), 0, 0, 0.3);
@@ -78,7 +78,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     systemGeodeDeactive->addDrawable(systemImageDrawableDeactive);
 
 
-    osg::ref_ptr<osg::Image> systemImageDeactiveHovered = createDarkerImage(systemImageDeactive, 0.4f);
+    osg::ref_ptr<osg::Image> systemImageDeactiveHovered = createDarkerImage(systemImageDeactive, 0.5f);
     if(systemImageDeactiveHovered)
         systemImageDeactiveHovered->scaleImage(100, 100, systemImageDeactiveHovered->r());
     osg::ref_ptr<osg::Geometry> systemImageDrawableDeactiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageDeactiveHovered, osg::Vec2s(0,0), 0, 0, 0.3);
