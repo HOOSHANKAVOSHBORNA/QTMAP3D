@@ -12,66 +12,51 @@
 class CirclePropertiesModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString   fillcolor      READ fillcolor     WRITE setFillColor    NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(QString   linecolor      READ linecolor     WRITE setLineColor    NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(QVector3D location       READ location      WRITE setLocation     NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(double    radius         READ radius        WRITE setRadius       NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(double    circleheight   READ circleheight  WRITE setCircleHeight NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(int       transparency   READ transparency  WRITE setTransparency NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(double    arcstart       READ arcstart      WRITE setArcstart     NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(double    arcend         READ arcend        WRITE setArcend       NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(osgEarth::Symbology::AltitudeSymbol::Clamping       clamp          READ clamp         WRITE setClamp        NOTIFY circlePropertiesChangedToQML)
-    Q_PROPERTY(bool      relative       READ relative      WRITE setRelative     NOTIFY circlePropertiesChangedToQML)
+    Q_PROPERTY(QString   fillcolor      READ getFillcolor     WRITE setFillColor    )
+    Q_PROPERTY(QString   linecolor      READ getLinecolor     WRITE setLineColor    )
+    Q_PROPERTY(QVector3D location       READ getLocation      WRITE setLocation     )
+    Q_PROPERTY(double    radius         READ getRadius        WRITE setRadius       )
+    Q_PROPERTY(double    circleheight   READ getCircleheight  WRITE setCircleHeight )
+    Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency )
+    Q_PROPERTY(double    arcstart       READ getArcstart      WRITE setArcstart     )
+    Q_PROPERTY(double    arcend         READ getArcend        WRITE setArcend       )
+    Q_PROPERTY(int       clamp          READ getClamp         WRITE setClamp        )
+    Q_PROPERTY(bool      relative       READ getRelative      WRITE setRelative     )
+
 
 
 public:
 
-    enum PropertyTypes {
-        FillColor,
-        LineColor,
-        Location,
-        Radius,
-        CircleHeight,
-        Transparency,
-        ArcStart,
-        ArcEnd,
-        Clamp,
-        Relative
-    };
-    Q_ENUM(PropertyTypes)
-
-
-
     CirclePropertiesModel(QObject *parent = nullptr);
     //set fillcolor
-    QString fillcolor() const;
+    QString getFillcolor() const;
     void setFillColor(const QString &fillcolor);
     //set linecolor
-    QString linecolor() const;
+    QString getLinecolor() const;
     void setLineColor(const QString &linecolor);
     //set location
-    QVector3D location() const;
+    QVector3D getLocation() const;
     void setLocation(const QVector3D &location);
     // set radius
-    double radius() const;
+    double getRadius() const;
     void setRadius(const double &radius);
     //set height
-    double circleheight() const;
+    double getCircleheight() const;
     void setCircleHeight(const double &circleheight);
     // set transparency
-    int transparency() const;
+    int getTransparency() const;
     void setTransparency(const int &transparency);
     //set Arc start
-    double arcstart() const;
+    double getArcstart() const;
     void setArcstart(const double &arcstart);
     //set Arc end
-    double arcend() const;
+    double getArcend() const;
     void setArcend(const double &arcend);
     // set Type
-    osgEarth::Symbology::AltitudeSymbol::Clamping clamp() const;
-    void setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping &clamp);
+    int getClamp() const;
+    void setClamp( int clamp);
     // set relative
-    bool relative() const;
+    bool getRelative() const;
     void setRelative(const bool &relative);
     void setCircle(Circle* circle);
 
@@ -79,21 +64,21 @@ public:
 
 signals:
 
-    void circlePropertiesChanged( PropertyTypes  , QVariant );
-    void circlePropertiesChangedToQML();
+    void circlePropertiesChanged( QVariant );
+
 
 
 private:
-    QString   mFillcolor;
-    QString   mLinecolor;
+    QString   mFillcolor = "#91001d";
+    QString   mLinecolor = "#001191";
     QVector3D mLocation ;
-    double    mRadius ;
-    double    mCircleHeight ;
-    int       mTransparency;
-    double    mArcstart ;
-    double    mArcend ;
-    osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp  ;
-    bool      mRelative ;
+    double    mRadius  = 200000  ;
+    double    mCircleHeight = 0  ;
+    int       mTransparency = 50 ;
+    double    mArcstart  = 0     ;
+    double    mArcend    = 360   ;
+    osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp  = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
+    bool      mRelative  = false ;
 
     Circle*   mCircle;
     MapController* mMapController{nullptr};

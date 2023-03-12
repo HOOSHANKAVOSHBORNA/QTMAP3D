@@ -9,11 +9,11 @@
 CirclePropertiesModel::CirclePropertiesModel(QObject *parent) :
     QObject(parent)
 {
-    QObject::connect(this,&CirclePropertiesModel::circlePropertiesChanged,this,&CirclePropertiesModel::circlePropertiesChangedToQML);
+    //    QObject::connect(this,&CirclePropertiesModel::circlePropertiesChanged,this,&CirclePropertiesModel::circlePropertiesChangedToQML);
 
 }
 
-QString CirclePropertiesModel::fillcolor() const
+QString CirclePropertiesModel::getFillcolor() const
 {
     return mFillcolor;
 }
@@ -21,19 +21,17 @@ void CirclePropertiesModel:: setFillColor(const QString &value){
     if(value == mFillcolor)
         return;
     mFillcolor = value;
-    emit circlePropertiesChanged(FillColor , value);
-
-    osgEarth::Color tmpColor = mCircle->getColor();
-    float A = tmpColor.a();
-    tmpColor  = value.toStdString();
-    tmpColor.a() = A;
-    mCircle->setColor(tmpColor);
-
-
-
+    if(mCircle){
+        osgEarth::Color tmpColor = mCircle->getColor();
+        float A = tmpColor.a();
+        tmpColor  = value.toStdString();
+        tmpColor.a() = A;
+        mCircle->setColor(tmpColor);
+    }
 }
 
-QString CirclePropertiesModel::linecolor() const
+
+QString CirclePropertiesModel::getLinecolor() const
 {
     return mLinecolor;
 }
@@ -41,11 +39,13 @@ void CirclePropertiesModel:: setLineColor(const QString &value){
     if(value == mLinecolor)
         return;
     mLinecolor = value;
-    emit circlePropertiesChanged(LineColor , value);
+    //    if(mCircle){
+    //        mCircle->set
+    //    }
 }
 
 
-QVector3D CirclePropertiesModel::location() const
+QVector3D CirclePropertiesModel::getLocation() const
 {
     return mLocation;
 }
@@ -53,17 +53,17 @@ void CirclePropertiesModel:: setLocation(const QVector3D &value){
     if(value == mLocation)
         return;
     mLocation = value;
-    emit circlePropertiesChanged(Location , value);
-
-    osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
-    tempLocation.x() = value.x();
-    tempLocation.y() = value.y();
-    tempLocation.z() = value.z();
-    mCircle->setPosition(tempLocation);
+    if(mCircle){
+        osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
+        tempLocation.x() = value.x();
+        tempLocation.y() = value.y();
+        tempLocation.z() = value.z();
+        mCircle->setPosition(tempLocation);
+    }
 }
 
 
-double CirclePropertiesModel::radius() const
+double CirclePropertiesModel::getRadius() const
 {
     return mRadius;
 }
@@ -71,13 +71,14 @@ void CirclePropertiesModel::setRadius(const double &value){
     if(value == mRadius)
         return;
     mRadius = value;
-    emit circlePropertiesChanged(Radius, value);
 
-    mCircle->setRadius(osgEarth::Distance(value));
+    if(mCircle){
+        mCircle->setRadius(osgEarth::Distance(value));
+    }
 }
 
 
-double CirclePropertiesModel::circleheight() const
+double CirclePropertiesModel::getCircleheight() const
 {
     return mCircleHeight;
 }
@@ -85,13 +86,13 @@ void CirclePropertiesModel::setCircleHeight(const double &value){
     if(value == mCircleHeight)
         return;
     mCircleHeight = value;
-    emit circlePropertiesChanged(CircleHeight, value);
-
-//    mCircle->setCircleHeight(value);
+    if(mCircle){
+        mCircle->setCircleHeight(value);
+    }
 }
 
 
-int CirclePropertiesModel::transparency() const
+int CirclePropertiesModel::getTransparency() const
 {
     return mTransparency;
 }
@@ -99,16 +100,16 @@ void CirclePropertiesModel::setTransparency(const int &value){
     if(value == mTransparency)
         return;
     mTransparency = value;
-    emit circlePropertiesChanged(Transparency, value);
-    float tempValue = value;
-    osg::Vec4f tempColor = mCircle->getColor();
-    tempColor.a() = tempValue /100;
-    mCircle->setColor(osg::Vec4f(tempColor));
-
+    if(mCircle){
+        float tempValue = value;
+        osg::Vec4f tempColor = mCircle->getColor();
+        tempColor.a() = tempValue /100;
+        mCircle->setColor(osg::Vec4f(tempColor));
+    }
 }
 
 
-double CirclePropertiesModel::arcstart() const
+double CirclePropertiesModel::getArcstart() const
 {
     return mArcstart;
 }
@@ -116,12 +117,12 @@ void CirclePropertiesModel::setArcstart(const double &value){
     if(value == mArcstart)
         return;
     mArcstart = value;
-    emit circlePropertiesChanged(ArcStart, value);
-
-    mCircle->setArcStart(value);
+    if(mCircle){
+        mCircle->setArcStart(value);
+    }
 }
 
-double CirclePropertiesModel::arcend() const
+double CirclePropertiesModel::getArcend() const
 {
     return mArcend;
 }
@@ -129,27 +130,27 @@ void CirclePropertiesModel::setArcend(const double &value){
     if(value == mArcend)
         return;
     mArcend = value;
-    emit circlePropertiesChanged(ArcEnd, value);
-
-    mCircle->setArcEnd(value);
+    if(mCircle){
+        mCircle->setArcEnd(value);
+    }
 }
 
 
-osgEarth::Symbology::AltitudeSymbol::Clamping CirclePropertiesModel::clamp() const
+int CirclePropertiesModel::getClamp() const
 {
     return mClamp;
 }
-void CirclePropertiesModel::setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping &value){
+void CirclePropertiesModel::setClamp(int value){
     if(value == mClamp)
         return;
-    mClamp = value;
-    emit circlePropertiesChanged(Clamp, value);
-
-    mCircle->setClamp(value);
+    mClamp = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(value);
+    if(mCircle){
+        mCircle->setClamp(mClamp);
+    }
 }
 
 
-bool CirclePropertiesModel::relative() const
+bool CirclePropertiesModel::getRelative() const
 {
     return mRelative;
 }
@@ -157,35 +158,37 @@ void CirclePropertiesModel::setRelative(const bool &value){
     if(value == mRelative)
         return;
     mRelative = value;
-    emit circlePropertiesChanged(Relative, value);
-//    osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
+    if(mCircle){
+        osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
 
-//    if(value == true)
-//    {
-//        tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
-//        mCircle->setPosition(tempLocation);
-//    }
-//    else if(value == false)
-//    {
-//        tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
-//        mCircle->setPosition(tempLocation);
-//    }
+        if(value == true)
+        {
+            tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+            mCircle->setPosition(tempLocation);
+        }
+        else if(value == false)
+        {
+            tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+            mCircle->setPosition(tempLocation);
+        }
+    }
 }
 
 void CirclePropertiesModel::setCircle(Circle *circle)
 {
     mCircle = circle;
-    mFillcolor = QString::fromStdString(mCircle->getColor().toHTML());
-    mFillcolor.remove(7,2);
-//    mCircleHeight = circle->getCircleHeight();
-    mLocation.setX(mCircle->getPosition().x());
-    mLocation.setY(mCircle->getPosition().y());
-    mLocation.setZ(mCircle->getPosition().z());
-    mRelative = mCircle->getPosition().isRelative();
-    mRadius = mCircle->getRadius().as(osgEarth::Units::METERS);
-    mArcstart = mCircle->getArcStart().getValue();
-    mArcend = mCircle->getArcEnd().getValue();
-//    mClamp = circle->getClamp();
+    if(!circle){
+        return;
+    }
+    osgEarth::Color tmpColor = mCircle->getColor();
+    tmpColor  = mFillcolor.toStdString();
+    tmpColor.a() = mTransparency/100;
+    mCircle->setColor(tmpColor);
+    mCircle->setCircleHeight(mCircleHeight);
+    mCircle->setClamp(mClamp);
+    mCircle->setArcStart(mArcstart);
+    mCircle->setArcEnd(mArcend);
+    mCircle->setRadius(mRadius);
 }
 
 
