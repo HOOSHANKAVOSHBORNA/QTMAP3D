@@ -1,5 +1,6 @@
 #ifndef LINENODE_H
 #define LINENODE_H
+
 #include <osgEarth/Color>
 #include <osgEarthAnnotation/FeatureNode>
 #include "mapcontroller.h"
@@ -56,7 +57,7 @@ private:
     float mHeight;
     bool mPointVisible;
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
-    unsigned mTessellation;
+    unsigned mTessellation{1};
     bool mSmooth;
 
     //Lenght part

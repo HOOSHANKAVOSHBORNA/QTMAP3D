@@ -42,15 +42,15 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
         distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 1));
 
         auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
+        auto lenght2 = (mLineGeometry->at(mLineGeometry->size() - 2)-mLineGeometry->at(mLineGeometry->size() - 1)).length();
 
-        auto imageLabel = updateLenghtLable(lenght);
+        auto imageLabel = updateLenghtLable(lenght2);
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
         labelNode->setIconImage(imageLabel);
         osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
                                     (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
         labelNode->setPosition(midPoint);
         mLableGroup->addChild(labelNode);
-        mLableGroup->dirtyBound();
         addChild(mLableGroup);
     }
 }
@@ -72,6 +72,7 @@ void LineNode::removeFirstPoint()
 void LineNode::clear()
 {
     mLineGeometry->clear();
+    dirty();
     mLableGroup->removeChildren(0,mLableGroup->getNumChildren());
 }
 

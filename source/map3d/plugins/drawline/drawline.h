@@ -14,6 +14,7 @@
 #include <linenode.h>
 #include <QPainter>
 #include <lineproperties.h>
+#include <measureHeight.h>
 
 #define DRAW_LAYER_NAME "Line"
 
@@ -36,6 +37,9 @@ protected:
 
 private:
     void startDrawLine();
+    void startDrawMeasureHeight();
+    void drawingMeasureHeight(QMouseEvent* event);
+    void mouseMoveMeasureHeightDrawing(QMouseEvent* event);
     void drawingLine(QMouseEvent* event);
     void cancelDrawingLine(QMouseEvent* event);
     void mouseMoveDrawing(QMouseEvent* event);
@@ -48,10 +52,12 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
-    enum class Type{NONE, LINE, RULER};
+    enum class Type{NONE, LINE, RULER, HEIGHT};
     Type mType;
     LineNode* mLine{nullptr};
+    MeasureHeight* mMeasureHeight{nullptr};
     LineProperties *mLineProperties = nullptr;
+    osgEarth::GeoPoint P1;
     UIHandle *muiHandle;
     bool mEnterLineZone;
     bool mLenghtShow;
