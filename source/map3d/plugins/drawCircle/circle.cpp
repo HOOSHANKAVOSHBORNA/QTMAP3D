@@ -1,5 +1,7 @@
 #include "circle.h"
-
+#include "osgEarth/ModelLayer"
+#include "osgEarth/Layer"
+#include "osgEarthAnnotation/AnnotationEditing"
 
 
 void Circle::setCircleHeight(float hieght)
@@ -13,8 +15,7 @@ void Circle::setCircleHeight(float hieght)
 Circle::Circle(MapController *mapController, bool clamp)
 {
     mMapController = mapController;
-    mColor = osgEarth::Color(osgEarth::Color::Cyan, 0.5);
-    circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = mColor;
+    circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Cyan, 0.5);
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = false;
     if (clamp){
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
@@ -35,15 +36,15 @@ Circle::Circle(MapController *mapController, bool clamp)
 void Circle::setColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
-    mColor = color;
-    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = mColor;
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color);
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = false;
     this->setStyle(style);
 }
 
 osgEarth::Color Circle::getColor()
 {
-    return mColor;
+    auto style = this->getStyle();
+    return style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color();
 }
 
 

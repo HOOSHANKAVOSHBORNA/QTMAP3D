@@ -87,7 +87,7 @@ void CirclePropertiesModel::setCircleHeight(const double &value){
     mCircleHeight = value;
     emit circlePropertiesChanged(CircleHeight, value);
 
-    mCircle->setCircleHeight(value);
+//    mCircle->setCircleHeight(value);
 }
 
 
@@ -158,18 +158,18 @@ void CirclePropertiesModel::setRelative(const bool &value){
         return;
     mRelative = value;
     emit circlePropertiesChanged(Relative, value);
-    osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
+//    osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
 
-    if(value == true)
-    {
-        tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
-        mCircle->setPosition(tempLocation);
-    }
-    else if(value == false)
-    {
-        tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
-        mCircle->setPosition(tempLocation);
-    }
+//    if(value == true)
+//    {
+//        tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+//        mCircle->setPosition(tempLocation);
+//    }
+//    else if(value == false)
+//    {
+//        tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+//        mCircle->setPosition(tempLocation);
+//    }
 }
 
 void CirclePropertiesModel::setCircle(Circle *circle)
