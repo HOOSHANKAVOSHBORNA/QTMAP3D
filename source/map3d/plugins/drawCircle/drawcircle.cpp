@@ -26,6 +26,8 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
         if (name == CIRCLE) {
             if (checked) {
                 mEnterCircleZone = true;
+                mCircleProperties = new CircleProperties(mQmlEngine, mUiHandle);
+                mCircleProperties->show();
                 mDrawingState = DrawingState::START;
 
             }
@@ -79,16 +81,13 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
 void DrawCircle::startDraw(QMouseEvent *event)
 {
     mCircle = new Circle(mMapcontroller, true);
-    mCircleProperties = new CircleProperties(mQmlEngine, mUiHandle);
     mCircleProperties->setCircle(mCircle);
-
-    mCircleProperties->show();
 //    mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
-    mCircle->setArcStart(0);
-    mCircle->setArcEnd(360);
+//    mCircle->setArcStart(0);
+//    mCircle->setArcEnd(360);
 
-    mCircle->setColor(osgEarth::Color(1, 0, 1, 0.7f));
-    mCircle->setRadius(500000);
+//    mCircle->setColor(osgEarth::Color(1, 0, 1, 0.7f));
+//    mCircle->setRadius(500000);
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
@@ -107,7 +106,6 @@ void DrawCircle::cancelDrawing(QMouseEvent *event)
 {
     removeNodeFromLayer(mCircle);
     mCircle = nullptr;
-    mCircleProperties->hide();
     mDrawingState = DrawingState::START;
 //    removeNodeFromLayer(mCircleHdragger);
 //    mCircleHdragger = nullptr;
@@ -120,6 +118,7 @@ void DrawCircle::finishDrawing(QMouseEvent *event)
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mCircle = nullptr;
+
 //        removeNodeFromLayer(mCircleHdragger);
 //        mCircleHdragger = nullptr;
 //        mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());

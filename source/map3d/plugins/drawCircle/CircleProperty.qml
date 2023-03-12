@@ -132,7 +132,7 @@ Item {
                                     title: "Please choose a color"
                                     onAccepted: {
                                         fillColor = fillColorDialog.color
-                                        circleProperties.color = fillColor.toString()
+                                        circleProperties.fillcolor= fillColor.toString()
                                     }
 
                                 }
@@ -203,7 +203,7 @@ Item {
                                     onAccepted: {
                                         //                                    lineColor = lineColorDialog.color
                                         lineColor = lineColorDialog.color
-                                        circleProperties.pointColor = lineColor
+                                        circleProperties.linecolor = lineColor
                                     }
 
                                 }
@@ -366,7 +366,7 @@ Item {
                                 CheckBox {
                                     id: relative
                                     text: qsTr("Relative")
-                                    checked: circleProperties.relative
+                                    checked: flase
                                     anchors.bottom: locationTitle.bottom
                                     onCheckStateChanged: if(checked === true){
                                                              circleProperties.relative = true
@@ -436,7 +436,7 @@ Item {
                                                 id: startArc
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                //                                                text: circleProperties.arcstart
+//                                                text: "0"
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
@@ -473,7 +473,7 @@ Item {
                                                 id: endArc
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                //                                                text: circleProperties.arcend
+//                                                text: "360"
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
@@ -520,9 +520,9 @@ Item {
 
                                 SpinBox {
                                     id: radiusValue
-                                    stepSize: 1
-                                    value: 10
-                                    to : 10000
+                                    stepSize: 500
+                                    value: 200000
+                                    to : 10000000
                                     from : 0
                                     validator: DoubleValidator {
                                         bottom: 0
@@ -536,20 +536,21 @@ Item {
                                     contentItem: TextInput {
                                         id:valueInput
                                         z: 2
-                                        //                                        text: widthValue.textFromValue(widthValue.value, widthValue.locale)
                                         text: radiusValue.value
                                         font: radiusValue.font
                                         color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
+                                        verticalAlignment: Qt.AlignVCenter
                                         readOnly: !radiusValue.editable
                                         validator: radiusValue.validator
                                         inputMethodHints: Qt.ImhFormattedNumbersOnly
                                         topPadding: 13
+//                                        leftPadding: 30
+                                        rightPadding: -25
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(lineProperties){
+                                            if(circleProperties){
                                                 radiusValue.value = valueInput.text
                                                 circleProperties.radius = radiusValue.value
                                             }
@@ -592,7 +593,8 @@ Item {
                                         }
                                     }
                                     background: Rectangle {
-                                        implicitWidth: radiusContainer.width -10
+                                        id:radiusHolder
+                                        implicitWidth: radiusContainer.width - 10
                                         color: "#c9c9c9"
                                         border.color: "#bdbebf"
                                     }
@@ -628,7 +630,7 @@ Item {
 
                                 SpinBox {
                                     id: transValue
-                                    stepSize: 1
+                                    stepSize: 100
                                     value: 0
                                     to : 1000000
                                     from : 0
@@ -658,7 +660,7 @@ Item {
                                         onTextChanged: {
                                             if(transValue && transValue.value){
                                                 transValue.value = heightInput.text
-                                                circleProperties.height = transValue.value
+                                                circleProperties.circleheight = transValue.value
                                             }
                                         }
                                     }
@@ -736,8 +738,8 @@ Item {
                                 SpinBox {
                                     id: opacityValue
                                     stepSize: 5
-                                    value: 10
-                                    to : 10000
+                                    value: 50
+                                    to : 100
                                     from : 0
                                     validator: DoubleValidator {
                                         bottom: 0
