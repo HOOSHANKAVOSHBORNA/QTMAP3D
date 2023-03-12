@@ -23,7 +23,6 @@ add_library(drawshapes SHARED
   spherenodeeditor.cpp
   drawshapes.json
   polygone.cpp
-  circle.cpp
   ellipse.cpp
   cone.cpp
   cylinder.cpp
@@ -31,7 +30,6 @@ add_library(drawshapes SHARED
   box.cpp
   linenode.cpp
   drawshapeautoscaler.cpp
-  circleproperties.cpp
 )
 
 target_include_directories(drawshapes PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

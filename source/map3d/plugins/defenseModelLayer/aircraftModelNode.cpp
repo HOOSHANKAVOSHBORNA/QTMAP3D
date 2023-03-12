@@ -55,77 +55,122 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     mNode3D = new osg::Group;
     mNode3D->addChild(mNode3DRef.get());
 
-    //create switch node for root--------------------------------------------------------------------
     mRootNode = new osg::LOD;
     mNode2D = new osg::Switch;
 
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
-//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-//    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
+
     this->setCullingActive(false);
     this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
 
-    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    //    rootStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+
 
     setStyle(rootStyle);
-    //--create icon Nodes---------------------------------------------------------------------------
+
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
-    m2DIcon = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
-    if(m2DIcon)
-        m2DIcon->scaleImage(100, 100, m2DIcon->r());
-    mSelect2DIcon = new osg::Image;
-    mSelect2DIcon->copySubImage(0, 0, 0, m2DIcon);
-//    create2DImageColore(osgEarth::Color::Red);
+    osg::ref_ptr<osg::Image> mainImage = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
 
-//    m2DIcon = osgDB::readImageFile("../data/models/aircraft/aircraft.png");
-    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(m2DIcon, osg::Vec2s(0,0), 0, 0, 0.4);
-    osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
-    //    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
-    //    geode->getOrCreateStateSet()->setAttribute(new osg::LineWidth(1.0), osg::StateAttribute::ON);
-    redGeode->setStateSet(geodeStateSet);
-    redGeode->addDrawable(redImageDrawable);
+    mNode2DNormal = new osg::Switch;
+    mNode2DHovered = new osg::Switch;
 
+    const osgEarth::Color colorList[6]= {
+        osg::Vec4(0.2f, 0.8f, 0.2f, 1.0f),
+        osg::Vec4(0.8f, 0.8f, 0.2f, 1.0f),
+        osg::Vec4(0.8f, 0.5f, 0.2f, 1.0f),
+        osg::Vec4(0.8f, 0.2f, 0.2f, 1.0f),
+        osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f),
+        osg::Vec4(0.8f, 0.2f, 0.2f, 1.0f),
+
+    };
+
+    for (int i = 0; i < 6; i++) {
+
+        osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImage, colorList[i]);
+        if(aircraftImage)
+            aircraftImage->scaleImage(100, 100, aircraftImage->r());
+        osg::ref_ptr<osg::Geometry> aircraftImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(aircraftImage, osg::Vec2s(0,0), 0, 0, 0.4);
+        osg::ref_ptr<osg::Geode>  aircraftGeode = new osg::Geode();
+        aircraftGeode->setStateSet(geodeStateSet);
+        aircraftGeode->addDrawable(aircraftImageDrawable);
+
+
+        osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+        if(aircraftImageHovered)
+            aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+        osg::ref_ptr<osg::Geometry> aircraftImageDrawableHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(aircraftImageHovered, osg::Vec2s(0,0), 0, 0, 0.4);
+        osg::ref_ptr<osg::Geode>  aircraftGeodeHovered = new osg::Geode();
+        aircraftGeodeHovered->setStateSet(geodeStateSet);
+        aircraftGeodeHovered->addDrawable(aircraftImageDrawableHovered);
+
+        mNode2DNormal->addChild(aircraftGeode, false);
+        mNode2DHovered->addChild(aircraftGeodeHovered, false);
+
+    }
+
+    mNode2DNormal->setValue(0, true);
+    mNode2DHovered->setValue(0, true);
+
+
+//    if(m2DIcon)
+//        m2DIcon->scaleImage(100, 100, m2DIcon->r());
+//    mSelect2DIcon = new osg::Image;
 //    mSelect2DIcon->copySubImage(0, 0, 0, m2DIcon);
-    //mSelect2DIcon->scaleImage(25, 32, mSelect2DIcon->r());
-    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mSelect2DIcon, osg::Vec2s(0,0), 0, 0, 0.4);
-    osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
-    yellowGeode->setStateSet(geodeStateSet);
-    yellowGeode->addDrawable(yellowImageDrawable);
+//
 
-    mNode2D->addChild(yellowGeode, false);
-    mNode2D->addChild(redGeode, true);
 
-    //    setModelColor(mInformation.Identification);
-    //--create lable-----------------------------------------------------------------------------
+//    osg::Geometry* redImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(m2DIcon, osg::Vec2s(0,0), 0, 0, 0.4);
+//    osg::ref_ptr<osg::Geode>  redGeode = new osg::Geode();
+//
+//
+//    redGeode->setStateSet(geodeStateSet);
+//    redGeode->addDrawable(redImageDrawable);
+//
+//    osg::Geometry* yellowImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mSelect2DIcon, osg::Vec2s(0,0), 0, 0, 0.4);
+//    osg::ref_ptr<osg::Geode>  yellowGeode = new osg::Geode();
+//    yellowGeode->setStateSet(geodeStateSet);
+//    yellowGeode->addDrawable(yellowImageDrawable);
+
+
+    mNode2D->addChild(mNode2DNormal, true);
+    mNode2D->addChild(mNode2DHovered, false);
+
+    mPat2D = new osg::PositionAttitudeTransform;
+    mPat2D->setAttitude(osg::Quat(osg::inDegrees(45.0), -osg::Z_AXIS));
+
+    mPat2D->addChild(mNode2D);
+
+    osg::AutoTransform *at = new osg::AutoTransform;
+
+    at->addChild(mPat2D);
+    at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
+
     osgEarth::Symbology::Style labelStyle;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-    //osg::Image* lableImage = osgDB::readImageFile("../data/models/text-background.png");
+
     updateOrCreateLabelImage();
-    mLableNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
-    //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
-    //    mLableNode->getGeoTransform()->setPosition(osg::Vec3(0, 0, 2));
-    getGeoTransform()->addChild(mLableNode);
-    mLableNode->setNodeMask(false);
-    //--add nods--------------------------------------------------------------------------------
+    mLabelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+
+
+    getGeoTransform()->addChild(mLabelNode);
+    mLabelNode->setNodeMask(false);
+
     if(mIs3D)
     {
         mRootNode->addChild(mNode3D, 0, RANGE3D);
-        mRootNode->addChild(mNode2D, RANGE3D, std::numeric_limits<float>::max());
+        mRootNode->addChild(at, RANGE3D, std::numeric_limits<float>::max());
     }
     else
     {
         mRootNode->addChild(mNode3D, 0, 0);
-        mRootNode->addChild(mNode2D, 0, std::numeric_limits<float>::max());
+        mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
-    //------------------------------------------------------------------------------------------
-    //osg::Vec3d center = getBound().center();
+
+
     float radius = getBound().radius();
     float scale = 3;
 
@@ -134,17 +179,13 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
     mSmoke = new osgParticle::SmokeTrailEffect(osg::Vec3f(0, 2*radius,0),scale/3,100.0);
     mSmoke->setUseLocalParticleSystem(false);
-    //    mGeodeParticle = new osg::Geode;
-    //    mGeodeParticle->addDrawable(mFire->getParticleSystem());
-    //    mGeodeParticle->addDrawable(mSmoke->getParticleSystem());
-    //    osgEarth::Registry::shaderGenerator().run(mGeodeParticle);// for textures or lighting
-    //    getMapNode()->addChild(mGeodeParticle);
+
     mLocationPoints = new osg::Vec3Array();
     mTempLocationPoints = new osg::Vec3Array();
 
-    //map mode changed-----------------------------------------------------------------------
+
     connect(mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
-    //----------------------------
+
     mRouteLine = new LineNode(mapControler);
     mRouteLine->setPointVisible(false);
     mRouteLine->setTessellation(10);
@@ -166,18 +207,14 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
 
 void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)
 {
-    //speed = 1;
-//    if(mIsStop)
-//        return;
-    //    heading = 30;
-//    osgEarth::GeoPoint posGeo(getMapNode()->getMapSRS(), posGeo);
+
     posGeo.transformInPlace(mMapController->getMapSRS());
     osg::Vec3d currentPosW;
     getPosition().toWorld(currentPosW);
 
     osg::Vec3d posW;
     posGeo.toWorld(posW);
-    //move---------------------------------------------------------------------------------------------------
+
     osg::Vec3d diffW = posW - currentPosW;
     osg::Matrixd currentPoslocalTransfer;
     getPosition().createWorldToLocal(currentPoslocalTransfer);
@@ -186,7 +223,7 @@ void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double 
 
     osg::Quat diffRotate;
     diffRotate.makeRotate(osg::Vec3d(0, 1, 0), diffLocal);
-    //heading----------------------------------------------------------------------------------------------
+
     osg::Vec3d northVec(0, 1, 0);//in local
     osg::Vec3d headingVecLocal = northVec * osg::Matrixd::rotate(osg::inDegrees(-heading), osg::Z_AXIS);
     headingVecLocal.normalize();
@@ -195,30 +232,26 @@ void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double 
 
     osg::Matrixd posLocalToWorld;
     posGeo.createLocalToWorld(posLocalToWorld);
-    //osg::Vec3d headingVecW = headingVecLocal * osg::Matrixd::rotate(posLocalToWorld.getRotate());
+
 
     osg::Quat headingRotate;
     headingRotate.makeRotate(osg::Vec3d(0, 1, 0), headingVecLocal);
-    //-------------------------------------------------------------------------------------------------------
-//    osg::Vec3d posEstimateW1 = posW + (headingVecW * 100.0);
-//    osg::Vec3d posEstimateW = posW + (headingVecW * 100000.0);
-//    //    qDebug()<<"estimatePos"<<estimatePos.z();
-//    double timeEstimate = (posEstimateW - posW).length() / speed;
+
 
     osg::AnimationPath* path = new osg::AnimationPath();
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
 
     path->insert(0, osg::AnimationPath::ControlPoint(currentPosW,getPositionAttitudeTransform()->getAttitude(),getScale()));
     path->insert(0.001,osg::AnimationPath::ControlPoint(posW,headingRotate, getScale()));
-    //path->insert(0.1,osg::AnimationPath::ControlPoint(posW,diffRotate, getScale()));
-    //path->insert(0.2,osg::AnimationPath::ControlPoint(posEstimateW1, headingRotate, getScale()));
-    //path->insert(timeEstimate,osg::AnimationPath::ControlPoint(posEstimateW, headingRotate, getScale()));
+
+
+
 
     mAnimationPathCallback = new ModelAnimationPathCallback();
     mAnimationPathCallback->setAnimationPath(path);
     setUpdateCallback(mAnimationPathCallback);
 
-    //--lines-------------------------------------
+
     if(mRouteLine->getSize() <= 0)
     {
         mRouteLine->addPoint(getPosition());
@@ -248,14 +281,11 @@ void AircraftModelNode::stop()
 
 void AircraftModelNode::setInformation(AircraftInfo info)
 {
-    //    if(mInformation.Identification != info.Identification)
     mInformation = info;
-    //    QString txtInfo = QString::fromUtf8(mInformation.toJson().toJson(QJsonDocument::Compact));
 
     if(mAircraftinformation)
         mAircraftinformation->updateAircraft(info);
-    //    mUIHandle->iwUpdateData(this, txtInfo);
-    //------------------------------------------------------
+
     updateOrCreateLabelImage();
     changeModelColor(mInformation.Identification);
 }
@@ -267,7 +297,6 @@ AircraftInfo AircraftModelNode::getInformation()
 
 void AircraftModelNode::goOnTrack()
 {
-    //mMapController->goToPosition(getPosition(), 200, 0);
     mMapController->setTrackNode(getGeoTransform());
 }
 
@@ -293,6 +322,12 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
 
 void AircraftModelNode::frameEvent()
 {
+    mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mMapController->getViewpoint().getHeading())
+                                                 + mInformation.Heading),
+                                  -osg::Z_AXIS));
+
+    mPat2D->setPosition(osg::Vec3d(0, 0, 0));
+
     if (mCurrentContextMenu) {
         osg::Vec3d wordPos;
         getPosition().toWorld(wordPos);
@@ -300,10 +335,10 @@ void AircraftModelNode::frameEvent()
         mMapController->worldToScreen(wordPos,x, y);
         mCurrentContextMenu->updatePosition(static_cast<int>(x), static_cast<int>(y));
     }
-    //------------------------------------
-    //    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( getPositionAttitudeTransform()->getBound().radius()/2, getPositionAttitudeTransform()->getBound().radius(), 2));
-    mLableNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
-    //------------------------------------
+
+
+    mLabelNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+
     if(mTempLine->getSize() > 1)
         mTempLine->removePoint();
     mTempLine->addPoint(getPosition());
@@ -336,6 +371,14 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
         mCurrentContextMenu = nullptr;
     }
 
+}
+
+void AircraftModelNode::hover(bool val)
+{
+    DefenseModelNode::hover(val);
+
+    mNode2D->setValue(0, !val);
+    mNode2D->setValue(1, val);
 }
 
 SystemModelNode *AircraftModelNode::getAssignment(int number) const
@@ -407,13 +450,11 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 void AircraftModelNode::onLatestPointsToggled(bool check) {
     if (check)
     {
-//        mLatestPointLine->setPointVisibilty(true);
         addNodeToLayer(mLatestPointLine);
         addNodeToLayer(mTempLine);
     }
     else
     {
-//        mLatestPointLine->setPointVisibilty(false);
         removeNodeFromLayer(mLatestPointLine);
         removeNodeFromLayer(mTempLine);
     }
@@ -448,8 +489,6 @@ void AircraftModelNode::onModeChanged(bool is3DView)
         style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 0;
         setStyle(style);
     }
-
-    //    select(mIsSelected);
 }
 
 void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)
@@ -459,31 +498,56 @@ void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)
 
 void AircraftModelNode::changeModelColor(AircraftInfo::Identify identify)
 {
+
+    for (unsigned int i = 0; i < 6; i++) {
+        mNode2DNormal->setValue(i, false);
+        mNode2DHovered->setValue(i, false);
+    }
+
     osgEarth::Color color;
     switch (identify) {
     case AircraftInfo::F:
         color = osgEarth::Color::Green;
+        mNode2DNormal->setValue(0, true);
+        mNode2DHovered->setValue(0, true);
         break;
     case AircraftInfo::K:
         color = osgEarth::Color::Yellow;
+        mNode2DNormal->setValue(1, true);
+        mNode2DHovered->setValue(1, true);
         break;
     case AircraftInfo::Z:
         color =  osg::Vec4(1.0, 0.5, 0.0, 1.0);
+        mNode2DNormal->setValue(2, true);
+        mNode2DHovered->setValue(2, true);
         break;
     case AircraftInfo::X:
         color = osgEarth::Color::Red;
+        mNode2DNormal->setValue(3, true);
+        mNode2DHovered->setValue(3, true);
         break;
     case AircraftInfo::U:
         color = osgEarth::Color::White;
+        mNode2DNormal->setValue(4, true);
+        mNode2DHovered->setValue(4, true);
         break;
     case AircraftInfo::H:
         color = osgEarth::Color::Red;
+        mNode2DNormal->setValue(5, true);
+        mNode2DHovered->setValue(5, true);
+        break;
+
+    default:
+        color = osgEarth::Color::Green;
+        mNode2DNormal->setValue(0, true);
+        mNode2DHovered->setValue(0, true);
         break;
     }
     mModelColor = color;
-    //    if(!mIs3D)
-    change2DImageColore(mModelColor);
-    select(mIsSelected);//for change color
+
+    //change2DImageColore(mModelColor);
+
+    select(mIsSelected);
 }
 
 void AircraftModelNode::showInfoWidget()
@@ -498,7 +562,7 @@ void AircraftModelNode::showInfoWidget()
 
 void AircraftModelNode::addEffect(double emitterDuration)
 {
-    //add fire-----------------------------------------------------------------------------------------------------
+
     osgEarth::Registry::shaderGenerator().run(mFire);// for textures or lighting
     getPositionAttitudeTransform()->addChild(mFire);
     mFire->setEmitterDuration(emitterDuration);
@@ -548,36 +612,35 @@ bool AircraftModelNode::removeNodeFromLayer(osg::Node *node)
 
 void AircraftModelNode::change2DImageColore(osgEarth::Color color)
 {
-    //--create icon Nodes---------------------------------------------------------------------------
-    if(!m2DIcon)
-        return;
-    //m2DIcon->scaleImage(25, 32, m2DIcon->r());
-    unsigned width = static_cast<unsigned>(m2DIcon->s());
-    unsigned height = static_cast<unsigned>(m2DIcon->t());
-    for(unsigned i = 0; i < width; i++)
-        for(unsigned j = 0; j < height; j++)
-        {
-            osg::Vec4 pixColore = m2DIcon->getColor(i, j);
-            //qDebug()<< redIcon->getColor(i, j).r()<<","<< redIcon->getColor(i, j).g()<<","<<redIcon->getColor(i, j).b();
-            if(pixColore.a()>0)
-                m2DIcon->setColor(color, i, j);
-        }
-    //-----------------------------------------------------------------------------------------------
-    //selectIcon->scaleImage(25, 32, selectIcon->r());
-    color /= 2;
-    color.a() = 1;
-
-    width = static_cast<unsigned>(m2DIcon->s());
-    height = static_cast<unsigned>(m2DIcon->t());
-
-    for(unsigned i = 0; i < width; i++)
-        for(unsigned j = 0; j < height; j++)
-        {
-            osg::Vec4 pixColore = mSelect2DIcon->getColor(i, j);
-            //qDebug()<< redIcon->getColor(i, j).r()<<","<< redIcon->getColor(i, j).g()<<","<<redIcon->getColor(i, j).b();
-            if(pixColore.r()>0 || pixColore.g()>0 || pixColore.b()>0)
-                mSelect2DIcon->setColor(color, i, j);
-        }
+//    if(!m2DIcon)
+//        return;
+//
+//    unsigned width = static_cast<unsigned>(m2DIcon->s());
+//    unsigned height = static_cast<unsigned>(m2DIcon->t());
+//    for(unsigned i = 0; i < width; i++)
+//        for(unsigned j = 0; j < height; j++)
+//        {
+//            osg::Vec4 pixColore = m2DIcon->getColor(i, j);
+//
+//            if(pixColore.a()>0)
+//                m2DIcon->setColor(color, i, j);
+//        }
+//
+//    color /= 2;
+//    color.a() = 1;
+//
+//    width = static_cast<unsigned>(m2DIcon->s());
+//    height = static_cast<unsigned>(m2DIcon->t());
+//
+//    for(unsigned i = 0; i < width; i++) {
+//        for(unsigned j = 0; j < height; j++)
+//        {
+//            osg::Vec4 pixColore = mSelect2DIcon->getColor(i, j);
+//
+//            if(pixColore.r()>0 || pixColore.g()>0 || pixColore.b()>0)
+//                mSelect2DIcon->setColor(color, i, j);
+//        }
+//    }
 }
 
 

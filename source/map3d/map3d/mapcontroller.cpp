@@ -230,11 +230,12 @@ void MapController::setMode(bool is3DView)
 {
     mIs3DView = is3DView;
     auto  settings = mEarthManipulator->getSettings();
-    if(is3DView)
-        settings->setMinMaxPitch(-90, 0);
+    if(is3DView) {
+        //settings->setMinMaxPitch(-90, 0);
+    }
     else
     {
-        settings->setMinMaxPitch(-90, -90);
+        //settings->setMinMaxPitch(-90, 90);
         mEarthManipulator->setRotation(osg::Quat());
     }
     emit modeChanged(is3DView);
@@ -393,6 +394,7 @@ void MapController::createCameraManipulator()
     vp.heading() = 0;
     getEarthManipulator()->setHomeViewpoint(vp, 0);
 
+    settings->setMinMaxPitch(-90, 0);
 }
 
 void MapController::layerAdded(osgEarth::Layer */*layer*/, unsigned /*index*/)

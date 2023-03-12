@@ -46,6 +46,7 @@ public:
 
 
     static osg::ref_ptr<osg::Image> createColoredImage(osg::ref_ptr<osg::Image> sourceImage, osgEarth::Color color);
+    static osg::ref_ptr<osg::Image> createDarkerImage(osg::ref_ptr<osg::Image> sourceImage, float factor);
 
 
 signals:
@@ -56,7 +57,7 @@ public:
     virtual void mousePressEvent(QMouseEvent* event, bool onModel);
     virtual void mouseMoveEvent(QMouseEvent* event, bool onModel);
     void select(bool val);
-    void hover(bool val);
+    virtual void hover(bool val);
 
 protected:
     bool mIsSelected{false};
@@ -64,7 +65,7 @@ protected:
     osg::ref_ptr<osg::LOD> mRootNode;
     osg::ref_ptr<osg::Group> mNode3D;
     osg::ref_ptr<osg::Switch> mNode2D;
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLableNode;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLabelNode;
     osgEarth::Color mModelColor{osgEarth::Color::White};
 
 private:

@@ -64,6 +64,8 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mEnterLineZone = true;
                 mType = Type::LINE;
                 mDrawingState = DrawingState::START;
+                mLineProperties = new LineProperties(mQmlEngine,muiHandle );
+                mLineProperties->setIsRuler(false);
                 mLineProperties->show();
             }
             else
@@ -82,7 +84,10 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mEnterLineZone = true;
             mType = Type::RULER;
             mDrawingState = DrawingState::START;
+            mLineProperties = new LineProperties(mQmlEngine,muiHandle );
+            mLineProperties->setIsRuler(true);
             mLineProperties->show();
+
         }
         else
         {
@@ -119,7 +124,6 @@ bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
     lineLayer->setName(DRAW_LAYER_NAME);
     mMapController->addLayer(lineLayer);
 
-    mLineProperties = new LineProperties(mQmlEngine,muiHandle );
     return true;
 }
 void drawLine::mousePressEvent(QMouseEvent *event)
@@ -269,4 +273,6 @@ void drawLine::removeNodeFromLayer(osg::Node *node)
         }
     }
 }
+
+
 

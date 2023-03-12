@@ -27,7 +27,7 @@ LineNode::LineNode(MapController *mapController)
 
     setFeature(pathFeature);
     setStyle(pathStyle);
-    mLableGroup = new osg::Group;
+    mLabelGroup = new osg::Group;
 }
 
 void LineNode::addPoint(osgEarth::GeoPoint point)
@@ -44,14 +44,20 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
         auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
         auto lenght2 = (mLineGeometry->at(mLineGeometry->size() - 2)-mLineGeometry->at(mLineGeometry->size() - 1)).length();
 
-        auto imageLabel = updateLenghtLable(lenght2);
+
+        auto imageLabel = updateLenghtLabel(lenght2);
+
+        //auto imageLabel = updateLenghtLabel(lenght);
+
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
         labelNode->setIconImage(imageLabel);
         osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
                                     (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
         labelNode->setPosition(midPoint);
-        mLableGroup->addChild(labelNode);
-        addChild(mLableGroup);
+
+        mLabelGroup->addChild(labelNode);
+        addChild(mLabelGroup);
+
     }
 }
 
@@ -59,21 +65,21 @@ void LineNode::removePoint()
 {
     mLineGeometry->pop_back();
     dirty();
-    mLableGroup->removeChild(getSize()-1);
+    mLabelGroup->removeChild(getSize()-1);
 }
 
 void LineNode::removeFirstPoint()
 {
     mLineGeometry->erase(mLineGeometry->begin());
     dirty();
-    mLableGroup->removeChild(0, 1);
+    mLabelGroup->removeChild(0, 1);
 }
 
 void LineNode::clear()
 {
     mLineGeometry->clear();
     dirty();
-    mLableGroup->removeChildren(0,mLableGroup->getNumChildren());
+    mLabelGroup->removeChildren(0,mLabelGroup->getNumChildren());
 }
 
 int LineNode::getSize()
@@ -83,7 +89,7 @@ int LineNode::getSize()
 
 void LineNode::showLenght(bool show)
 {
-    mLableGroup->setNodeMask(show);
+    mLabelGroup->setNodeMask(show);
 }
 
 osgEarth::Color LineNode::getColor() const
@@ -99,7 +105,7 @@ void LineNode::setColor(const osgEarth::Color &color)
     auto style = getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color()= mColor;
     setStyle(style);
-    addChild(mLableGroup);
+    addChild(mLabelGroup);
 }
 
 osgEarth::Color LineNode::getPointColor() const
@@ -117,7 +123,7 @@ void LineNode::setPointColor(const osgEarth::Color &pointColor)
         auto style = getStyle();
         style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
         setStyle(style);
-        addChild(mLableGroup);
+        addChild(mLabelGroup);
     }
 }
 
@@ -132,7 +138,7 @@ void LineNode::setWidth(float width)
     auto style = getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
     setStyle(style);
-    addChild(mLableGroup);
+    addChild(mLabelGroup);
 }
 
 float LineNode::getHeight() const
@@ -149,7 +155,7 @@ void LineNode::setHeight(float height)
         style.remove<osgEarth::Symbology::ExtrusionSymbol>();
     }
     setStyle(style);
-    addChild(mLableGroup);
+    addChild(mLabelGroup);
 }
 
 bool LineNode::getPointVisible() const
@@ -172,7 +178,7 @@ void LineNode::setPointVisible(bool value)
     else
         style.remove<osgEarth::Symbology::PointSymbol>();
     setStyle(style);
-    addChild(mLableGroup);
+    addChild(mLabelGroup);
 }
 
 osgEarth::Symbology::AltitudeSymbol::Clamping LineNode::getClamp() const
@@ -189,7 +195,7 @@ void LineNode::setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping &cla
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = clamp;
     setStyle(style);
-    addChild(mLableGroup);
+    addChild(mLabelGroup);
 }
 
 unsigned LineNode::getTessellation() const
@@ -205,7 +211,7 @@ void LineNode::setTessellation(const unsigned &tessellation)
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = tessellation;
     setStyle(style);
-    addChild(mLableGroup);
+    addChild(mLabelGroup);
 }
 
 float LineNode::getPointWidth() const
@@ -220,10 +226,10 @@ void LineNode::setPointWidth(float pointWidth)
     if(mPointVisible)
         style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
     setStyle(style);
-    addChild(mLableGroup);
+    addChild(mLabelGroup);
 }
 
-osg::Image* LineNode::updateLenghtLable(double lenght)
+osg::Image* LineNode::updateLenghtLabel(double lenght)
 {
     if (!mRenderImage) {
         mRenderImage = new QImage(
@@ -287,5 +293,5 @@ void LineNode::setSmooth(bool smooth)
     if(mSmooth)
         sStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
     setStyle(sStyle);
-    addChild(mLableGroup);
+    addChild(mLabelGroup);
 }

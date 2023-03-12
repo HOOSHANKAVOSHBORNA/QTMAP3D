@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/circle.png</file>
+        <file>CircleProperty.qml</file>
+    </qresource>
+</RCC>

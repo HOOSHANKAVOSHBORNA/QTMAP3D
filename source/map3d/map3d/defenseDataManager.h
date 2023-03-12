@@ -25,7 +25,7 @@ struct AircraftInfo
     QString CallSign;
     QString Type;
     QString MasterRadar;
-    Identify Identification;
+	Identify Identification;
     QString IdentificationMethod;
     long long int Time;
     QString Pos;
@@ -176,7 +176,7 @@ struct StationInfo
     QString Name;
     QString Type;
     QString PrimSec;
-    bool Active;
+	bool Active = false;
 
     int Number;
     double Latitude;
@@ -232,7 +232,7 @@ struct SystemInfo
     double Altitude;
     double ViewRange{300000};
     double MezRange{250000};
-    bool Active;
+	bool Active = true;
 
     QList<AircraftInfo> assignedAircrafts;
 
@@ -256,7 +256,12 @@ struct SystemStatusInfo
     QString Operational;
     int MissileCount;
     QString RadarMode;
-
+    QString BCCStatusToString() {
+        return radarStatusToString(BCCStatus);
+    }
+    QString radarSearchStatusToString() {
+        return radarStatusToString(RadarSearchStatus);
+    }
     QString radarStatusToString(RadarStatus status) const
     {
         QString result = "";

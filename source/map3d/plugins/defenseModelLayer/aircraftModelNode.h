@@ -43,6 +43,7 @@ public slots:
 public:
     void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
+    virtual void hover(bool val) override;
 
     SystemModelNode *getAssignment(int number) const;
     void addAssignment(int number, SystemModelNode *assignmentModelNode);
@@ -101,11 +102,16 @@ private:
     QImage *mRenderTargetImage{nullptr};
     osg::ref_ptr<osg::Image> mLabelImage{nullptr};
 
-    osg::Image* m2DIcon;
-    osg::Image* mSelect2DIcon;
+    //osg::Image* m2DIcon;
+    //osg::Image* mSelect2DIcon;
 
     double mCurrentHeading{500};
     osgEarth::GeoPoint mCurrentFlyPoint;
+
+    osg::ref_ptr<osg::PositionAttitudeTransform> mPat2D;
+
+    osg::ref_ptr<osg::Switch> mNode2DNormal;
+    osg::ref_ptr<osg::Switch> mNode2DHovered;
 };
 
 #endif // FLYINGMODEL_H

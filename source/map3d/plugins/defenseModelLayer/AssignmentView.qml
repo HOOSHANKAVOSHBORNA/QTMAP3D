@@ -16,7 +16,7 @@ Item {
     property AircraftTableModel aircraftModel
     property SystemTableModel systemModel
 
-
+    property var refreshx: 0
     signal aircraftDoubleClicked(int TN)
     signal systemDoubleClicked(int Number)
 //    Rectangle {
@@ -25,30 +25,31 @@ Item {
 //    }
 
 
-    Rectangle{
-        parent: splitView
-        width: 40
-        height: 40
-        x: rootItem.width / 2 - 30
-//        y: 35
-        Image {
-            id: img
-            source: "qrc:/resources/refresh.png"
-            width: 35
-            height: 35
-            anchors.centerIn: parent
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    rootItem.aircraftModel.refresh(3);
-                    rootItem.systemModel.refresh(3);
-                    rootItem.aClicked = -1
-                    rootItem.sClicked = -1
-                }
-            }
-        }
-        color: "#252525"
-    }
+//    Rectangle{
+//        parent: splitView
+//        width: 40
+//        height: 40
+////        x: rootItem.width / 2 - 30
+////        y: 35
+//        x: systemsLayout.x - 20
+//        Image {
+//            id: img
+//            source: "qrc:/resources/refresh.png"
+//            width: 35
+//            height: 35
+//            anchors.centerIn: parent
+//            MouseArea {
+//                anchors.fill: parent
+//                onClicked: {
+//                    rootItem.aircraftModel.refresh(3);
+//                    rootItem.systemModel.refresh(3);
+//                    rootItem.aClicked = -1
+//                    rootItem.sClicked = -1
+//                }
+//            }
+//        }
+//        color: "#252525"
+//    }
 
 
 
@@ -56,49 +57,99 @@ Item {
         y: 400
         id: splitView
         anchors.fill: parent
-        anchors.leftMargin: 20
         anchors.topMargin: 35
         anchors.centerIn: parent
         handle: Rectangle {
                     id: handleDelegate
-                    implicitWidth: 4
-                    implicitHeight: 4
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    color: SplitHandle.pressed ? "#81e889"
-                        : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                    implicitWidth: 5
+                    color: "red"
 
-                    containmentMask: Item {
-                        x: (handleDelegate.width - width) / 2
-                        width: 64
-                        y: 350
-                        height: splitView.height
+                    Rectangle {
+                        anchors.left: handleDelegate.right
+                        color: SplitHandle.pressed ? "#81e889"
+                            : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                        width: 15
+                        height: parent.height
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: refreshimg.clicked(
+                                           Qt.LeftButton)
+                        }
+                    }
+                    Rectangle {
+                        id: leftRect
+                        anchors.right: handleDelegate.left
+                        color: SplitHandle.pressed ? "#81e889"
+                            : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                        width: 15
+                        height: parent.height
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: refreshimg.clicked(
+                                           Qt.LeftButton)
+                        }
+                    }
+                    Rectangle {
+                        anchors.right: leftRect.left
+                        color: "#252525"
+                        width: 30
+                        height: parent.height
+                        MouseArea {
+                            anchors.fill: parent
+                        }
                     }
 
+                    Rectangle {
+                        width: 5
+                        height: 32
+                        y: img.y
+                        color: "#c2f4c6"
+                    }
+                    Image {
+                        id: img
+                        source: "qrc:/resources/refresh.png"
+                        width: 32
+                        height: 32
+
+
+                        anchors.centerIn: parent
+                        MouseArea {
+                            id: refreshimg
+                            anchors.fill: parent
+                            onClicked: {
+                                rootItem.aircraftModel.refresh(3);
+                                rootItem.systemModel.refresh(3);
+                                rootItem.aClicked = -1
+                                rootItem.sClicked = -1
+                            }
+                        }
+                    }
                 }
 
         ColumnLayout {
             Layout.fillWidth: true
-            SplitView.minimumWidth: 500
+            SplitView.preferredWidth: 500
             SplitView.fillWidth: true
-            SplitView.maximumWidth: 600
+            SplitView.minimumWidth: 300
+            clip: true
             Item {
                 Layout.preferredHeight: 40
                 Layout.minimumHeight: 40
-
+                Layout.leftMargin: 32
 
                 RowLayout {
                     anchors.top: parent.top
                     height: 40
-                    width: 5 * (93 + 2)
+                    width: 14 * (113 + 2)
                     spacing: 2
-                    anchors.leftMargin: 2
+                    anchors.leftMargin: 2 - aircrafts.contentX
                     anchors.rightMargin: 2
                     anchors.left: parent.left
 
                     Repeater {
-                        model: 5
+                        model: 14
                         Rectangle {
-                            width: 93
+                            width: 113
                             height: 40
 //                            radius: 5
                             color: '#4568dc'
@@ -116,14 +167,23 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.topMargin: 15
+                Layout.leftMargin: 32
+                ScrollBar.vertical: ScrollBar {
+                    active: true
+                    Component.onCompleted: x = -33
+                    anchors {
+                        top: parent.top
+                        bottom: parent.bottom
+                    }
+                }
                 TableView {
                     id: aircrafts
                     model: rootItem.aircraftModel
 //                    contentWidth: 120
                     columnWidthProvider: function (column) {
-                        if (column > 4)
+                        if (column >= 14)
                             return 0
-                        return 95
+                        return 115
                     }
 
                     delegate: Item {
@@ -185,11 +245,11 @@ Item {
                         Rectangle {
                             id: rct
                             anchors.centerIn: parent
-                            implicitWidth: 95
+                            implicitWidth: 115
                             implicitHeight:  txt.implicitHeight + 10
                             color: "transparent"
                             Rectangle {
-                                opacity: 0.4
+                                opacity: 0.6
                                 color: rootItem.aircraftModel ? (column == 0 ? AircraftColor:
                                                             "transparent") : "transparent";
                                 anchors.centerIn: parent
@@ -244,27 +304,30 @@ Item {
 
 
         ColumnLayout {
+            id: systemsLayout
             SplitView.fillWidth: true
-            SplitView.minimumWidth: 500
+            SplitView.preferredWidth: 500
+            clip: true
             Item {
                 Layout.fillWidth: true;
                 Layout.preferredHeight: 40
                 Layout.minimumHeight: 40
+                Layout.leftMargin: 43
 
 
                 Row {
                     anchors.top: parent.top
                     height: 40
-                    width: 5 * (93 + 2)
+                    width: 22 * (113 + 2)
                     spacing: 2
-                    anchors.leftMargin: 2
+                    anchors.leftMargin: 2 - systems.contentX
                     anchors.rightMargin: 2
                     anchors.left: parent.left
 
                     Repeater {
-                        model: 5
+                        model: 22
                         Rectangle {
-                            width: 93
+                            width: 113
                             height: 40
 //                            radius: 5
                             color: '#4568dc'
@@ -281,13 +344,14 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.topMargin: 15
+                Layout.leftMargin: 43
                 TableView {
                     id: systems
                     model: rootItem.systemModel
                     columnWidthProvider: function (column) {
-                        if (column > 4)
+                        if (column > 22)
                             return 0
-                        return 95
+                        return 115
                     }
                     delegate: Item {
                         implicitWidth:   rct1.implicitWidth
@@ -349,7 +413,7 @@ Item {
                         Rectangle {
                             id: rct1
                             anchors.centerIn: parent
-                            implicitWidth: 95
+                            implicitWidth: 115
                             implicitHeight:  txt1.implicitHeight + 10
                             color: "transparent"
                             Rectangle {
@@ -362,7 +426,7 @@ Item {
                                 radius: 7
                             }
                             Rectangle {
-                                opacity: 0.4
+                                opacity: 0.6
                                 color: rootItem.systemModel ? (rootItem.sClicked == row ? "lightskyblue" :
                                                             rootItem.sHoveredIndex == row ? "darkYellow" :
                                                             "transparent") : "transparent";

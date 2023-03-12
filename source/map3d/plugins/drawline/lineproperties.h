@@ -25,6 +25,9 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(bool      visible        READ getVisible       WRITE setVisible      )
     Q_PROPERTY(bool      smooth         READ getSmooth        WRITE setSmooth       )
     Q_PROPERTY(bool      showLen        READ getShowLen       WRITE setShowLen      )
+    Q_PROPERTY(bool      ruler          READ getRuler         WRITE setRuler        NOTIFY rulerChanged )
+
+
 
 
 
@@ -63,31 +66,32 @@ public:
     bool getShowLen() const;
     void setShowLen(const bool &smooth);
 
+    bool getRuler() const;
+    void setRuler(const bool ruler);
+
     void setLine(LineNode *linNode) ;
-
-
-
-
-
 signals:
 
-    void linePropertiesChanged( QVariant );
+    void linePropertiesChanged(  QVariant );
+    void rulerChanged();
 
 
 private:
-    QString                                           mColor      ="#91001d" ;
-    QString                                           mPointColor ="#001191";
-    int                                               mWidth      =10.00;
-    float                                             mHeight     ;
-    float                                             mPointwidth =10.00;
-    unsigned                                          mTesselation=10.00;
-    osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp =   osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
-    bool                                              mVisible    =true;
-    bool                                              mSmooth     =true;
-    bool                                              mShowLen    =false;
+    QString                                           mColor       = "#91001d";
+    QString                                           mPointColor  = "#001191";
+    int                                               mWidth       = 10.00;
+    float                                             mHeight;
+    float                                             mPointwidth  = 10.00;
+    unsigned                                          mTesselation =10.00;
+    osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp       = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
+    bool                                              mVisible     = true;
+    bool                                              mSmooth      = true;
+    bool                                              mShowLen     = false;
+
+    bool                                              mRuler;
 
 
-    LineNode* mLineNode;
+    LineNode* mLineNode{nullptr};
 
 
 
@@ -104,12 +108,14 @@ public:
     void hide();
 
     void setLine(LineNode *line);
+    void setIsRuler(bool value);
 
 private:
     QQmlEngine* mQmlEngine;
     QQuickItem* mItem;
     LinePropertiesModel *mLineProperties;
     UIHandle *mUiHandle = nullptr;
+    bool mIsRuler;
 
 };
 
