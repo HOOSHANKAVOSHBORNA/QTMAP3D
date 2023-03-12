@@ -39,9 +39,9 @@ void CirclePropertiesModel:: setLineColor(const QString &value){
     if(value == mLinecolor)
         return;
     mLinecolor = value;
-    //    if(mCircle){
-    //        mCircle->set
-    //    }
+    if(mCircle){
+        mCircle->setLineColor(mLinecolor.toStdString());
+    }
 }
 
 
@@ -181,8 +181,9 @@ void CirclePropertiesModel::setCircle(Circle *circle)
         return;
     }
     osgEarth::Color tmpColor = mCircle->getColor();
+    float opacity = tmpColor.a();
     tmpColor  = mFillcolor.toStdString();
-    tmpColor.a() = mTransparency/100;
+    tmpColor.a() = opacity;
     mCircle->setColor(tmpColor);
     mCircle->setCircleHeight(mCircleHeight);
     mCircle->setClamp(mClamp);

@@ -13,6 +13,7 @@ public:
     osgEarth::Color getColor();
     void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
 
+    void setLineColor(osgEarth::Color color);
 private:
     osgEarth::Symbology::Style circleStyle;
     MapController* mMapController{nullptr};
