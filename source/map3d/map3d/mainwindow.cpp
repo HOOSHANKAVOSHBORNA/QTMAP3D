@@ -295,6 +295,7 @@ void MainWindow::setMousePointingLocationWgs84(const QVector3D &pointedLoc)
         emit mousePointingLocationWgs84Changed();
     }
 }
+
 void MainWindow::setMousePointingLocation(const QVector3D &pointedLoc)
 {
     if (mMousePointingLocation != pointedLoc) {

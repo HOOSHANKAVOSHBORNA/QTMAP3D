@@ -176,7 +176,7 @@ struct StationInfo
     QString Name;
     QString Type;
     QString PrimSec;
-    bool Active;
+	bool Active = true;
 
     int Number;
     double Latitude;
@@ -232,7 +232,7 @@ struct SystemInfo
     double Altitude;
     double ViewRange{300000};
     double MezRange{250000};
-    bool Active;
+	bool Active = true;
 
     QList<AircraftInfo> assignedAircrafts;
 
