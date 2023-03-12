@@ -27,8 +27,6 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
             if (checked) {
                 mEnterCircleZone = true;
                 mDrawingState = DrawingState::START;
-                mCircleProperties = new CircleProperties(mQmlEngine, mUiHandle);
-                mCircleProperties->show();
 
             }
             else {
@@ -81,6 +79,10 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
 void DrawCircle::startDraw(QMouseEvent *event)
 {
     mCircle = new Circle(mMapcontroller, true);
+    mCircleProperties = new CircleProperties(mQmlEngine, mUiHandle);
+    mCircleProperties->setCircle(mCircle);
+
+    mCircleProperties->show();
 //    mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
     mCircle->setArcStart(0);
     mCircle->setArcEnd(360);
@@ -96,7 +98,7 @@ void DrawCircle::startDraw(QMouseEvent *event)
 //    mCircleHdragger->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
 //    addNodeToLayer(mCircleHdragger);
 //    mCircleHdragger->Dragger::setDefaultDragMode(osgEarth::Annotation::Dragger::DragMode::DRAGMODE_VERTICAL);
-    
+
     addNodeToLayer(mCircle);
     event->accept();
 }
@@ -105,6 +107,7 @@ void DrawCircle::cancelDrawing(QMouseEvent *event)
 {
     removeNodeFromLayer(mCircle);
     mCircle = nullptr;
+    mCircleProperties->hide();
     mDrawingState = DrawingState::START;
 //    removeNodeFromLayer(mCircleHdragger);
 //    mCircleHdragger = nullptr;
