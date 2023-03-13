@@ -30,7 +30,7 @@
 
 #include "defenseModelLayer.h"
 
-const float RANGE3D = std::numeric_limits<float>::max();
+const float RANGE3D = 700;//std::numeric_limits<float>::max();
 const int NUM_LATEST_POINT = 100;
 
 osg::ref_ptr<osg::Node> AircraftModelNode::mNode3DRef;
