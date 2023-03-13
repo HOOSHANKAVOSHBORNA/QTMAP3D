@@ -6,8 +6,9 @@
 
 
 
-CirclePropertiesModel::CirclePropertiesModel(QObject *parent) :
-    QObject(parent)
+CirclePropertiesModel::CirclePropertiesModel(MapController *mapController, QObject *parent) :
+    QObject(parent),
+    mMapController(mapController)
 {
     //    QObject::connect(this,&CirclePropertiesModel::circlePropertiesChanged,this,&CirclePropertiesModel::circlePropertiesChangedToQML);
 
@@ -39,9 +40,9 @@ void CirclePropertiesModel:: setLineColor(const QString &value){
     if(value == mLinecolor)
         return;
     mLinecolor = value;
-    //    if(mCircle){
-    //        mCircle->set
-    //    }
+    if(mCircle){
+        mCircle->setLineColor(mLinecolor.toStdString());
+    }
 }
 
 
@@ -55,9 +56,9 @@ void CirclePropertiesModel:: setLocation(const QVector3D &value){
     mLocation = value;
     if(mCircle){
         osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
-        tempLocation.x() = value.x();
-        tempLocation.y() = value.y();
-        tempLocation.z() = value.z();
+        tempLocation.x() = static_cast<double>(value.x());
+        tempLocation.y() = static_cast<double>(value.y());
+        tempLocation.z() =static_cast<double>( value.z());
         mCircle->setPosition(tempLocation);
     }
 }
@@ -68,7 +69,7 @@ double CirclePropertiesModel::getRadius() const
     return mRadius;
 }
 void CirclePropertiesModel::setRadius(const double &value){
-    if(value == mRadius)
+    if(std::abs(value - mRadius) < 1)
         return;
     mRadius = value;
 
@@ -83,11 +84,11 @@ double CirclePropertiesModel::getCircleheight() const
     return mCircleHeight;
 }
 void CirclePropertiesModel::setCircleHeight(const double &value){
-    if(value == mCircleHeight)
+    if(std::abs(value - mCircleHeight) < 1)
         return;
     mCircleHeight = value;
     if(mCircle){
-        mCircle->setCircleHeight(value);
+        mCircle->setCircleHeight(static_cast<float>(value));
     }
 }
 
@@ -114,7 +115,7 @@ double CirclePropertiesModel::getArcstart() const
     return mArcstart;
 }
 void CirclePropertiesModel::setArcstart(const double &value){
-    if(value == mArcstart)
+    if(std::abs(value - mArcstart) < 0.5)
         return;
     mArcstart = value;
     if(mCircle){
@@ -127,7 +128,7 @@ double CirclePropertiesModel::getArcend() const
     return mArcend;
 }
 void CirclePropertiesModel::setArcend(const double &value){
-    if(value == mArcend)
+    if(std::abs(value - mArcend) < 0.5)
         return;
     mArcend = value;
     if(mCircle){
@@ -181,10 +182,11 @@ void CirclePropertiesModel::setCircle(Circle *circle)
         return;
     }
     osgEarth::Color tmpColor = mCircle->getColor();
+    float opacity = tmpColor.a();
     tmpColor  = mFillcolor.toStdString();
-    tmpColor.a() = mTransparency/100;
+    tmpColor.a() = opacity;
     mCircle->setColor(tmpColor);
-    mCircle->setCircleHeight(mCircleHeight);
+    mCircle->setCircleHeight(static_cast<float>(mCircleHeight));
     mCircle->setClamp(mClamp);
     mCircle->setArcStart(mArcstart);
     mCircle->setArcEnd(mArcend);
@@ -192,16 +194,16 @@ void CirclePropertiesModel::setCircle(Circle *circle)
 }
 
 
-CircleProperties::CircleProperties(QQmlEngine *engine, UIHandle *uiHandle, QObject *parent) :
+CircleProperties::CircleProperties(QQmlEngine *engine, UIHandle *uiHandle, MapController *mapController, QObject *parent) :
     QObject(parent),
     mQmlEngine(engine),
     mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapController](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mCircleProperties = new CirclePropertiesModel();
+            mCircleProperties = new CirclePropertiesModel(mapController);
             mItem->setProperty("circleProperties", QVariant::fromValue<CirclePropertiesModel*>(mCircleProperties));
         }
     });
