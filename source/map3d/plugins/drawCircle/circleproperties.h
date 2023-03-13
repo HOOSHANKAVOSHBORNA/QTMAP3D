@@ -14,7 +14,7 @@ class CirclePropertiesModel : public QObject
     Q_OBJECT
     Q_PROPERTY(QString   fillcolor      READ getFillcolor     WRITE setFillColor    )
     Q_PROPERTY(QString   linecolor      READ getLinecolor     WRITE setLineColor    )
-    Q_PROPERTY(QVector3D location       READ getLocation      WRITE setLocation     )
+    Q_PROPERTY(QVector3D location       READ getLocation      WRITE setLocation     NOTIFY positionToQmlChanged)
     Q_PROPERTY(double    radius         READ getRadius        WRITE setRadius       )
     Q_PROPERTY(double    circleheight   READ getCircleheight  WRITE setCircleHeight )
     Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency )
@@ -65,6 +65,7 @@ public:
 signals:
 
     void circlePropertiesChanged( QVariant );
+    void positionToQmlChanged();
 
 
 
