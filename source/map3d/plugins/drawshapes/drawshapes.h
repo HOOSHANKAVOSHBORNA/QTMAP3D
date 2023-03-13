@@ -48,20 +48,18 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 private:
     enum class Shape {NONE ,LINE, SPHERE, CONE, CYLINDER, CAPSULE, BOX, POLYGON, IMGOVLY,
-               CIRCLE, RECT, ELLIPSE};
+               RECT, ELLIPSE};
     Shape mShape;
     enum class DrawingState {NONE, START, FINISH, DELETE, INITIAL};
     DrawingState mDrawingState;
     osgEarth::Annotation::ImageOverlay* mImageOverlay{nullptr};
     osgEarth::Annotation::ModelNode* mLineSphereNode{nullptr};
-    osgEarth::Annotation::CircleNodeEditor* mCircleEditor{nullptr};
     osgEarth::Annotation::RectangleNodeEditor* mRectEditor{nullptr};
     osgEarth::Annotation::EllipseNodeEditor* mElpsEditor{nullptr};
     osgEarth::Annotation::ImageOverlayEditor* mImgOvlEditor{nullptr};
     osg::Group* mCircleGr;
     osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
 
-    osgEarth::Annotation::SphereDragger* mCircleHdragger;
     osgEarth::Annotation::SphereDragger* mPolyHdragger;
 
     bool addNodeToLayer(osg::Node *node);
@@ -79,11 +77,9 @@ private slots:
     void onBoxBtnClick(QMouseEvent* event);
     void onPolygoneBtnClick(QMouseEvent* event);
     void onImgOvlyBtnClick(QMouseEvent* event);
-    void onCircleBtnClick(QMouseEvent* event);
     void onRectBtnClick(QMouseEvent* event);
     void onEllipseBtnClick(QMouseEvent* event);
     void onLineMouseMove(QMouseEvent* event);
-    void onCircleMouseMove(QMouseEvent* event);
     void onPolyMouseMove(QMouseEvent* event);
 
 

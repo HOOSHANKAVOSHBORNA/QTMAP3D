@@ -4,10 +4,13 @@
 #include "osgEarthAnnotation/AnnotationEditing"
 
 
-void Circle::setCircleHeight(float hieght)
+void Circle::setCircleHeight(float height)
 {
     auto style = this->getStyle();
-    style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = hieght;
+    style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = height;
+    if (height<=0){
+        style.remove<osgEarth::Symbology::ExtrusionSymbol>();
+    }
     this->setStyle(style);
 
 }
