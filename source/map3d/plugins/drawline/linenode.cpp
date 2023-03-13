@@ -41,13 +41,22 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
         distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 2));
         distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 1));
 
+
+        if(isHeight){
+            auto lenghtHeight = (mLineGeometry->at(mLineGeometry->size() - 2)-mLineGeometry->at(mLineGeometry->size() - 1)).length();
+            auto imageLabel = updateLenghtLabel(lenghtHeight);
+            osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
+            labelNode->setIconImage(imageLabel);
+            osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+                                        (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
+            labelNode->setPosition(midPoint);
+
+            mLabelGroup->addChild(labelNode);
+            addChild(mLabelGroup);
+        }
+        else{
         auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
-        auto lenght2 = (mLineGeometry->at(mLineGeometry->size() - 2)-mLineGeometry->at(mLineGeometry->size() - 1)).length();
-
-
-        auto imageLabel = updateLenghtLabel(lenght2);
-
-        //auto imageLabel = updateLenghtLabel(lenght);
+        auto imageLabel = updateLenghtLabel(lenght);
 
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
         labelNode->setIconImage(imageLabel);
@@ -57,7 +66,7 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
 
         mLabelGroup->addChild(labelNode);
         addChild(mLabelGroup);
-
+}
     }
 }
 
@@ -281,6 +290,17 @@ osg::Image* LineNode::updateLenghtLabel(double lenght)
                           osg::Image::AllocationMode::NO_DELETE);
     return image;
 }
+
+bool LineNode::getIsHeight() const
+{
+    return isHeight;
+}
+
+void LineNode::setIsHeight(bool value)
+{
+    isHeight = value;
+}
+
 bool LineNode::getSmooth() const
 {
     return mSmooth;

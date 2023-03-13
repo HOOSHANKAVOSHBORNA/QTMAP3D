@@ -62,7 +62,7 @@ private:
     LineProperties *mLineProperties = nullptr;
     osgEarth::GeoPoint P1;
     UIHandle *muiHandle;
-    bool mEnterLineZone;
+    bool mEnterLineZone{false};
     bool mLenghtShow;
 };
 

@@ -8,6 +8,7 @@ MeasureHeight::MeasureHeight(MapController *mapController)
     mVLine->setWidth(5);
     mHLine->setWidth(5);
     mHLine->showLenght(true);
+    mHLine->setIsHeight(true);
     mVLine->showLenght(false);
     addChild(mVLine);
     addChild(mHLine);
@@ -57,6 +58,30 @@ void MeasureHeight::draw()
 double MeasureHeight::height()
 {
     return  mSecondPoint.z() - mFirstPoint.z();
+}
+
+float MeasureHeight::getWidth() const
+{
+    return mWidth;
+}
+
+void MeasureHeight::setWidth(float width)
+{
+    mWidth = width;
+    mVLine->setWidth(mWidth);
+    mHLine->setWidth(mWidth);
+}
+
+osgEarth::Color MeasureHeight::getColor() const
+{
+    return color;
+}
+
+void MeasureHeight::setColor(const osgEarth::Color &value)
+{
+    color = value;
+    mVLine->setColor(color);
+    mHLine->setColor(color);
 }
 
 bool MeasureHeight::started() const

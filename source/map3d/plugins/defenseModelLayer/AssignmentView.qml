@@ -19,39 +19,6 @@ Item {
     property var refreshx: 0
     signal aircraftDoubleClicked(int TN)
     signal systemDoubleClicked(int Number)
-//    Rectangle {
-//        anchors.fill: parent
-//        color: "#252525"
-//    }
-
-
-//    Rectangle{
-//        parent: splitView
-//        width: 40
-//        height: 40
-////        x: rootItem.width / 2 - 30
-////        y: 35
-//        x: systemsLayout.x - 20
-//        Image {
-//            id: img
-//            source: "qrc:/resources/refresh.png"
-//            width: 35
-//            height: 35
-//            anchors.centerIn: parent
-//            MouseArea {
-//                anchors.fill: parent
-//                onClicked: {
-//                    rootItem.aircraftModel.refresh(3);
-//                    rootItem.systemModel.refresh(3);
-//                    rootItem.aClicked = -1
-//                    rootItem.sClicked = -1
-//                }
-//            }
-//        }
-//        color: "#252525"
-//    }
-
-
 
     SplitView {
         y: 400
@@ -60,71 +27,75 @@ Item {
         anchors.topMargin: 35
         anchors.centerIn: parent
         handle: Rectangle {
-                    id: handleDelegate
-                    implicitWidth: 5
-                    color: "red"
+            id: handleDelegate
+            implicitWidth: 5
+            color: "red"
 
-                    Rectangle {
-                        anchors.left: handleDelegate.right
-                        color: SplitHandle.pressed ? "#81e889"
-                            : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
-                        width: 15
-                        height: parent.height
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: refreshimg.clicked(
-                                           Qt.LeftButton)
-                        }
-                    }
-                    Rectangle {
-                        id: leftRect
-                        anchors.right: handleDelegate.left
-                        color: SplitHandle.pressed ? "#81e889"
-                            : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
-                        width: 15
-                        height: parent.height
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: refreshimg.clicked(
-                                           Qt.LeftButton)
-                        }
-                    }
-                    Rectangle {
-                        anchors.right: leftRect.left
-                        color: "#252525"
-                        width: 30
-                        height: parent.height
-                        MouseArea {
-                            anchors.fill: parent
-                        }
-                    }
+            Rectangle {
+                anchors.left: handleDelegate.right
+                color: (leftRectArea.containsMouse || rightRect.containsMouse) ? "#81e889"
+                                           : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                width: 15
+                height: parent.height
+                MouseArea {
+                    id: rightRect
+                    hoverEnabled: true
+                    anchors.fill: parent
+                    onClicked: refreshimg.clicked(
+                                   Qt.LeftButton)
+                }
+            }
+            Rectangle {
+                id: leftRect
+                anchors.right: handleDelegate.left
+                color: (leftRectArea.containsMouse || rightRect.containsMouse)? "#81e889"
+                                           : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                width: 15
+                height: parent.height
+                MouseArea {
+                    id: leftRectArea
+                    hoverEnabled: true
+                    anchors.fill: parent
+                    onClicked: refreshimg.clicked(
+                                   Qt.LeftButton)
+                }
+            }
+            Rectangle {
+                anchors.right: leftRect.left
+                color: "#252525"
+                width: 30
+                height: parent.height
+                MouseArea {
+                    anchors.fill: parent
+                }
+            }
 
-                    Rectangle {
-                        width: 5
-                        height: 32
-                        y: img.y
-                        color: "#c2f4c6"
-                    }
-                    Image {
-                        id: img
-                        source: "qrc:/resources/refresh.png"
-                        width: 32
-                        height: 32
+            Rectangle {
+                width: 5
+                height: 32
+                y: img.y
+                color: "#c2f4c6"
+            }
+            Image {
+                id: img
+                source: "qrc:/resources/refresh.png"
+                width: 32
+                height: 32
 
 
-                        anchors.centerIn: parent
-                        MouseArea {
-                            id: refreshimg
-                            anchors.fill: parent
-                            onClicked: {
-                                rootItem.aircraftModel.refresh(3);
-                                rootItem.systemModel.refresh(3);
-                                rootItem.aClicked = -1
-                                rootItem.sClicked = -1
-                            }
-                        }
+                anchors.centerIn: parent
+                MouseArea {
+                    id: refreshimg
+                    anchors.fill: parent
+                    onClicked: {
+                        rootItem.aircraftModel.refresh(3);
+                        rootItem.systemModel.refresh(3);
+                        rootItem.aClicked = -1
+                        rootItem.sClicked = -1
                     }
                 }
+            }
+        }
 
         ColumnLayout {
             Layout.fillWidth: true
@@ -151,7 +122,6 @@ Item {
                         Rectangle {
                             width: 113
                             height: 40
-//                            radius: 5
                             color: '#4568dc'
                             Text {
                                 color: '#FFFFFF'
@@ -179,7 +149,6 @@ Item {
                 TableView {
                     id: aircrafts
                     model: rootItem.aircraftModel
-//                    contentWidth: 120
                     columnWidthProvider: function (column) {
                         if (column >= 14)
                             return 0
@@ -226,11 +195,6 @@ Item {
                                 }
                             }
 
-//                            onContainsPressChanged: function () {
-//                                if (rootItem.aircraftModel)
-//                                    rootItem.aClicked = row
-//                            }
-
                             onContainsMouseChanged: function() {
                                 if (mouseArea.containsMouse) {
                                     rootItem.aHoveredIndex = row;
@@ -251,7 +215,7 @@ Item {
                             Rectangle {
                                 opacity: 0.6
                                 color: rootItem.aircraftModel ? (column == 0 ? AircraftColor:
-                                                            "transparent") : "transparent";
+                                                                               "transparent") : "transparent";
                                 anchors.centerIn: parent
                                 width: 25
                                 height: 23
@@ -260,8 +224,8 @@ Item {
                             Rectangle {
                                 opacity: 0.4
                                 color: rootItem.aircraftModel ? (rootItem.aClicked == row ? "lightskyblue" :
-                                                            rootItem.aHoveredIndex == row ? "darkYellow" :
-                                                            "transparent") : "transparent";
+                                                                                            rootItem.aHoveredIndex == row ? "darkYellow" :
+                                                                                                                            "transparent") : "transparent";
                                 anchors.fill: parent
                             }
 
@@ -271,7 +235,6 @@ Item {
                                 x: -23
                                 radius: 10
                                 anchors.verticalCenter: parent.verticalCenter
-//                                anchors.leftMargin: -30
                                 color: "transparent"
                                 Image {
                                     id: img6
@@ -314,7 +277,6 @@ Item {
                 Layout.minimumHeight: 40
                 Layout.leftMargin: 43
 
-
                 Row {
                     anchors.top: parent.top
                     height: 40
@@ -329,7 +291,6 @@ Item {
                         Rectangle {
                             width: 113
                             height: 40
-//                            radius: 5
                             color: '#4568dc'
                             Text {
                                 color: '#FFFFFF'
@@ -369,7 +330,6 @@ Item {
                                 }
                             }
 
-
                             Timer{
                                 id:timer2
                                 interval: 200
@@ -395,11 +355,6 @@ Item {
                                 }
                             }
 
-//                            onContainsPressChanged: function () {
-//                                if (rootItem.systemModel)
-//                                    rootItem.sClicked = row
-//                            }
-
                             onContainsMouseChanged: function() {
                                 if (mouseArea2.containsMouse) {
                                     rootItem.sHoveredIndex = row;
@@ -416,20 +371,22 @@ Item {
                             implicitWidth: 115
                             implicitHeight:  txt1.implicitHeight + 10
                             color: "transparent"
+
                             Rectangle {
                                 opacity: 0.4
                                 color: rootItem.systemModel ? (column == 4 ? SystemColor:
-                                                            "transparent") : "transparent";
+                                                                             "transparent") : "transparent";
                                 anchors.centerIn: parent
                                 width: 70
                                 height: 23
                                 radius: 7
                             }
+
                             Rectangle {
                                 opacity: 0.6
                                 color: rootItem.systemModel ? (rootItem.sClicked == row ? "lightskyblue" :
-                                                            rootItem.sHoveredIndex == row ? "darkYellow" :
-                                                            "transparent") : "transparent";
+                                                                                          rootItem.sHoveredIndex == row ? "darkYellow" :
+                                                                                                                          "transparent") : "transparent";
                                 anchors.fill: parent
                             }
 
@@ -439,8 +396,8 @@ Item {
                                 x: -23
                                 radius: 10
                                 anchors.verticalCenter: parent.verticalCenter
-//                                anchors.leftMargin: -30
                                 color: "transparent"
+
                                 Image {
                                     id: img7
                                     anchors.fill: parent
@@ -457,6 +414,7 @@ Item {
                                     visible: column == 0 && (row == sHoveredIndex || row == sClicked)
                                 }
                             }
+
                             Text {
                                 id: txt1
                                 anchors.centerIn: parent
