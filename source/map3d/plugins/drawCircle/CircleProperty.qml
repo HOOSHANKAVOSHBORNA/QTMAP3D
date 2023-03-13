@@ -12,7 +12,6 @@ Item {
 
 
     property CircleProperties circleProperties
-    property bool rulerCondition : lineProperties.ruler
     property string headerTitleSTR: "circle Properties"
     property string fillColor: "#91001d"
     property string lineColor: "#001191"
@@ -258,7 +257,7 @@ Item {
                                             TextInput {
                                                 id: mlocationX
                                                 anchors.fill: parent
-                                                //                                                text: circleProperties.location.x
+                                                text: circleProperties.location.x
                                                 font.pointSize: 10
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
@@ -295,7 +294,7 @@ Item {
                                                 id: mlocationY
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                //                                                text: circleProperties.location.y
+                                                text: circleProperties.location.y
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
@@ -331,7 +330,7 @@ Item {
                                                 id: mlocationZ
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                //                                                text: circleProperties.location.z
+                                                text: circleProperties.location.z
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {

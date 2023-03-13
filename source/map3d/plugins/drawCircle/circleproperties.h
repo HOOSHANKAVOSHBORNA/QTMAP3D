@@ -14,7 +14,7 @@ class CirclePropertiesModel : public QObject
     Q_OBJECT
     Q_PROPERTY(QString   fillcolor      READ getFillcolor     WRITE setFillColor    )
     Q_PROPERTY(QString   linecolor      READ getLinecolor     WRITE setLineColor    )
-    Q_PROPERTY(QVector3D location       READ getLocation      WRITE setLocation     )
+    Q_PROPERTY(QVector3D location       READ getLocation      WRITE setLocation     NOTIFY positionToQmlChanged)
     Q_PROPERTY(double    radius         READ getRadius        WRITE setRadius       )
     Q_PROPERTY(double    circleheight   READ getCircleheight  WRITE setCircleHeight )
     Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency )
@@ -27,7 +27,7 @@ class CirclePropertiesModel : public QObject
 
 public:
 
-    CirclePropertiesModel(MapController *mapController = nullptr, QObject *parent = nullptr);
+    CirclePropertiesModel(Circle* circle = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
     //set fillcolor
     QString getFillcolor() const;
     void setFillColor(const QString &fillcolor);
@@ -35,8 +35,8 @@ public:
     QString getLinecolor() const;
     void setLineColor(const QString &linecolor);
     //set location
-    QVector3D getLocation() const;
-    void setLocation(const QVector3D &location);
+    QVector3D  getLocation() const;
+    void setLocation(const QVector3D  &location);
     // set radius
     double getRadius() const;
     void setRadius(const double &radius);
@@ -65,13 +65,14 @@ public:
 signals:
 
     void circlePropertiesChanged( QVariant );
+    void positionToQmlChanged();
 
 
 
 private:
     QString   mFillcolor = "#91001d";
     QString   mLinecolor = "#001191";
-    QVector3D mLocation ;
+    QVector3D  mLocation ;
     double    mRadius  = 200000  ;
     double    mCircleHeight = 0  ;
     int       mTransparency = 50 ;
@@ -92,10 +93,11 @@ class CircleProperties : public QObject
 {
     Q_OBJECT
 public:
-    CircleProperties(QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    CircleProperties(Circle *circle, QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
     void show();
     void hide();
     void setCircle(Circle* circle);
+    void setLocation(osgEarth::GeoPoint location);
 
 private:
     QQmlEngine* mQmlEngine;

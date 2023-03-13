@@ -6,14 +6,18 @@
 
 
 
-CirclePropertiesModel::CirclePropertiesModel(MapController *mapController, QObject *parent) :
+CirclePropertiesModel::CirclePropertiesModel(Circle *circle, MapController *mapController, QObject *parent) :
     QObject(parent),
+    mCircle(circle),
     mMapController(mapController)
 {
-    //    QObject::connect(this,&CirclePropertiesModel::circlePropertiesChanged,this,&CirclePropertiesModel::circlePropertiesChangedToQML);
-
+//       QObject::connect(this,&CirclePropertiesModel::circlePropertiesChanged,this,&CirclePropertiesModel::circlePropertiesChangedToQML);
+    if (mCircle) {
+        mLocation.setX(mCircle->getPosition().x());
+        mLocation.setY(mCircle->getPosition().y());
+        mLocation.setZ(mCircle->getPosition().z());
+    }
 }
-
 QString CirclePropertiesModel::getFillcolor() const
 {
     return mFillcolor;
@@ -50,16 +54,18 @@ QVector3D CirclePropertiesModel::getLocation() const
 {
     return mLocation;
 }
-void CirclePropertiesModel:: setLocation(const QVector3D &value){
+void CirclePropertiesModel:: setLocation(const QVector3D  &value){
     if(value == mLocation)
         return;
     mLocation = value;
+
     if(mCircle){
         osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
-        tempLocation.x() = static_cast<double>(value.x());
-        tempLocation.y() = static_cast<double>(value.y());
-        tempLocation.z() =static_cast<double>( value.z());
+        tempLocation.x() = value.x();
+        tempLocation.y() = value.y();
+        tempLocation.z() = value.z();
         mCircle->setPosition(tempLocation);
+        emit positionToQmlChanged();
     }
 }
 
@@ -194,16 +200,16 @@ void CirclePropertiesModel::setCircle(Circle *circle)
 }
 
 
-CircleProperties::CircleProperties(QQmlEngine *engine, UIHandle *uiHandle, MapController *mapController, QObject *parent) :
+CircleProperties::CircleProperties(Circle* circle, QQmlEngine *engine, UIHandle *uiHandle, MapController *mapController, QObject *parent) :
     QObject(parent),
     mQmlEngine(engine),
     mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapController](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapController, circle](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mCircleProperties = new CirclePropertiesModel(mapController);
+            mCircleProperties = new CirclePropertiesModel(circle, mapController);
             mItem->setProperty("circleProperties", QVariant::fromValue<CirclePropertiesModel*>(mCircleProperties));
         }
     });
@@ -214,6 +220,7 @@ CircleProperties::CircleProperties(QQmlEngine *engine, UIHandle *uiHandle, MapCo
 void CircleProperties::show()
 {
     mUiHandle->propertiesShow(mItem);
+
 }
 
 void CircleProperties::hide()
@@ -225,3 +232,15 @@ void CircleProperties::setCircle(Circle *circle)
 {
     mCircleProperties->setCircle(circle);
 }
+
+void CircleProperties::setLocation(osgEarth::GeoPoint location)
+{
+    QVector3D tmp;
+    tmp.setX(location.x());
+    tmp.setY(location.y());
+    tmp.setZ(location.z());
+
+    mCircleProperties->setLocation(tmp);
+}
+
+

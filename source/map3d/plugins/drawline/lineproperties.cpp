@@ -12,9 +12,7 @@ LinePropertiesModel::LinePropertiesModel(QObject *parent) :
     QObject(parent)
 {
 
-//    QObject::connect(this,&LinePropertiesModel::linePropertiesChanged,this,&LinePropertiesModel::rulerChanged);
 
-//    mRuler = mRuler ;
 }
 
 QString LinePropertiesModel::getColor() const
