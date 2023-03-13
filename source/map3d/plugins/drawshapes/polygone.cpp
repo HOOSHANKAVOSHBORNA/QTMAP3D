@@ -14,7 +14,7 @@ Polygone::Polygone(MapController *mapController, bool clamp)
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::White;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 2.0f;
     //geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
-    qDebug()<<"h:"<< geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
+//    qDebug()<<"h:"<< geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
     geomStyle.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
 //    geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 250000.0;
 //    geomStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
