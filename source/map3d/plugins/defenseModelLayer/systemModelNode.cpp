@@ -12,7 +12,7 @@
 #include <osgEarthAnnotation/CircleNode>
 #include <osg/AutoTransform>
 
-const float RANGE3D = 490;//std::numeric_limits<float>::max();;
+const float RANGE3D = 600;//std::numeric_limits<float>::max();;
 
 SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
@@ -495,7 +495,7 @@ void SystemModelNode::firePhase(int tn)
         if(mFiredRocket)
         {
             mFiredRocket->setAutoScale();
-            mTruckF->shoot(mAssignmentMap[tn]->mModelNode->getPosition().vec3d(), 20000);//1000 m/s
+            mTruckF->shoot(mAssignmentMap[tn]->mModelNode->getPosition().vec3d(), 2000);//1000 m/s
             mMapController->setTrackNode(mFiredRocket->getGeoTransform());
         }
     }

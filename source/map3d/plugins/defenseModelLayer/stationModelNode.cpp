@@ -7,7 +7,7 @@
 #include <osg/Material>
 #include "defenseModelNodeAutoScaler.h"
 
-const float RANGE3D = 800;// std::numeric_limits<float>::max();
+const float RANGE3D = 835;// std::numeric_limits<float>::max();
 
 osg::ref_ptr<osg::Node> StationModelNode::mNode3DRef;
 
