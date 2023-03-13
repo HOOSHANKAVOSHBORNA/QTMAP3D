@@ -8,6 +8,7 @@ MeasureHeight::MeasureHeight(MapController *mapController)
     mVLine->setWidth(5);
     mHLine->setWidth(5);
     mHLine->showLenght(true);
+    mHLine->setIsHeight(true);
     mVLine->showLenght(false);
     addChild(mVLine);
     addChild(mHLine);
