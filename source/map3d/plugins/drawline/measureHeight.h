@@ -17,6 +17,12 @@ public:
     void draw();
     bool started() const;
 
+    osgEarth::Color getColor() const;
+    void setColor(const osgEarth::Color &value);
+
+    float getWidth() const;
+    void setWidth(float width);
+
 private:
     double height();
 private:
@@ -27,6 +33,8 @@ private:
     osgEarth::GeoPoint mSecondPoint;
     osgEarth::GeoPoint mJointPoint;
     bool mStarted{false};
+    osgEarth::Color color{osgEarth::Color::Green};
+    float mWidth;
 
 };
 
