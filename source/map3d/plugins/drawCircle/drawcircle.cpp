@@ -26,7 +26,7 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
         if (name == CIRCLE) {
             if (checked) {
                 mEnterCircleZone = true;
-                mCircleProperties = new CircleProperties(mQmlEngine, mUiHandle);
+                mCircleProperties = new CircleProperties(mQmlEngine, mUiHandle, mMapcontroller);
                 mCircleProperties->show();
                 mDrawingState = DrawingState::START;
 
@@ -72,11 +72,6 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
     }
 }
 
-//void DrawCircle::mouseMoveEvent(QMouseEvent */*event*/)
-//{
-//    if (mCircle)
-//        mCircle->setCircleHeight(static_cast<float>(mCircleHdragger->Dragger::getPosition().z()));
-//}
 
 void DrawCircle::startDraw(QMouseEvent *event)
 {
@@ -106,6 +101,7 @@ void DrawCircle::cancelDrawing(QMouseEvent *event)
 {
     removeNodeFromLayer(mCircle);
     mCircle = nullptr;
+    mCircleProperties->setCircle(mCircle);
     mDrawingState = DrawingState::START;
 //    removeNodeFromLayer(mCircleHdragger);
 //    mCircleHdragger = nullptr;
@@ -118,6 +114,7 @@ void DrawCircle::finishDrawing(QMouseEvent *event)
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mCircle = nullptr;
+        mCircleProperties->setCircle(mCircle);
 
 //        removeNodeFromLayer(mCircleHdragger);
 //        mCircleHdragger = nullptr;
