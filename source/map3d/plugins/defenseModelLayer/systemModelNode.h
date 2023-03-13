@@ -100,6 +100,10 @@ private:
 
     osg::ref_ptr<osg::Switch> mNode2DActive;
     osg::ref_ptr<osg::Switch> mNode2DDeactive;
+
+    osg::ref_ptr<osgEarth::Annotation::CircleNode> mCircleNode = nullptr;
+    osgEarth::Symbology::Style mCircleStyleActive;
+    osgEarth::Symbology::Style mCircleStyleDeactive;
 };
 
 #endif // SYSTEM_H

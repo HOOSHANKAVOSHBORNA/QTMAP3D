@@ -7,7 +7,7 @@
 #include <osg/Material>
 #include "defenseModelNodeAutoScaler.h"
 
-const float RANGE3D = std::numeric_limits<float>::max();
+const float RANGE3D = 800;// std::numeric_limits<float>::max();
 
 osg::ref_ptr<osg::Node> StationModelNode::mNode3DRef;
 
@@ -123,20 +123,25 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
 
-    auto circleNode = new osgEarth::Annotation::CircleNode();
-    circleNode->setRadius(10);
+    mCircleNode = new osgEarth::Annotation::CircleNode();
+    mCircleNode->setRadius(10);
 
-    osgEarth::Symbology::Style style;
-    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.1f, 1.0f, 0.1f, 1.0f);
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+    mCircleStyleActive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    circleNode->setStyle(style);
-    circleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
-    circleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
+    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
+    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mNode3D->addChild(circleNode);
+
+    mCircleNode->setStyle(mCircleStyleActive);
+    mCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
+    mCircleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
+
+    mNode3D->addChild(mCircleNode);
 
 
     connect(mapControler, &MapController::modeChanged, this, &StationModelNode::onModeChanged);
@@ -156,6 +161,8 @@ void StationModelNode::setInformation(const StationInfo& info)
 
     mNode2D->setValue(0, info.Active);
     mNode2D->setValue(1, !info.Active);
+
+    mCircleNode->setStyle(info.Active ? mCircleStyleActive : mCircleStyleDeactive);
 
 }
 void StationModelNode::goOnTrack()
@@ -286,6 +293,7 @@ void StationModelNode::onActivateButtonToggled(bool checked)
     mNode2D->setValue(1, !checked);
 
 
+    mCircleNode->setStyle(checked ? mCircleStyleActive : mCircleStyleDeactive);
 }
 
 void StationModelNode::onModeChanged(bool is3DView)
