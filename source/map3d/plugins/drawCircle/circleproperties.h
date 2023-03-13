@@ -27,7 +27,7 @@ class CirclePropertiesModel : public QObject
 
 public:
 
-    CirclePropertiesModel(QObject *parent = nullptr);
+    CirclePropertiesModel(MapController *mapController = nullptr, QObject *parent = nullptr);
     //set fillcolor
     QString getFillcolor() const;
     void setFillColor(const QString &fillcolor);
@@ -93,7 +93,7 @@ class CircleProperties : public QObject
 {
     Q_OBJECT
 public:
-    CircleProperties(QQmlEngine *engine, UIHandle *uiHandle, QObject *parent = nullptr);
+    CircleProperties(QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
     void show();
     void hide();
     void setCircle(Circle* circle);

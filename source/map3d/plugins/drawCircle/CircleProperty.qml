@@ -657,7 +657,7 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(transValue && transValue.value){
+                                            if(circleProperties && transValue && (transValue.value == 0 || transValue.value)){
                                                 transValue.value = heightInput.text
                                                 circleProperties.circleheight = transValue.value
                                             }
