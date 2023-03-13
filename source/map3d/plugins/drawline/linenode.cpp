@@ -33,7 +33,7 @@ LineNode::LineNode(MapController *mapController)
 void LineNode::addPoint(osgEarth::GeoPoint point)
 {
     mLineGeometry->push_back(point.vec3d());
-//    qDebug()<< getSize();
+    //    qDebug()<< getSize();
     dirty();
     if(getSize() >= 2)
     {
@@ -42,7 +42,7 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
         distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 1));
 
 
-        if(isHeight){
+        if(mIsHeight){
             auto lenghtHeight = (mLineGeometry->at(mLineGeometry->size() - 2)-mLineGeometry->at(mLineGeometry->size() - 1)).length();
             auto imageLabel = updateLenghtLabel(lenghtHeight);
             osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
@@ -55,18 +55,18 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
             addChild(mLabelGroup);
         }
         else{
-        auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
-        auto imageLabel = updateLenghtLabel(lenght);
+            auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
+            auto imageLabel = updateLenghtLabel(lenght);
 
-        osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
-        labelNode->setIconImage(imageLabel);
-        osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
-                                    (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
-        labelNode->setPosition(midPoint);
+            osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
+            labelNode->setIconImage(imageLabel);
+            osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+                                        (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
+            labelNode->setPosition(midPoint);
 
-        mLabelGroup->addChild(labelNode);
-        addChild(mLabelGroup);
-}
+            mLabelGroup->addChild(labelNode);
+            addChild(mLabelGroup);
+        }
     }
 }
 
@@ -281,24 +281,24 @@ osg::Image* LineNode::updateLenghtLabel(double lenght)
     *mRenderImage = mRenderImage->mirrored(false, true);
 
     image->setImage(LABEL_IMAGE_WIDTH,
-                          LABEL_IMAGE_HEIGHT,
-                          1,
-                          GL_RGBA,
-                          GL_RGBA,
-                          GL_UNSIGNED_BYTE,
-                          mRenderImage->bits(),
-                          osg::Image::AllocationMode::NO_DELETE);
+                    LABEL_IMAGE_HEIGHT,
+                    1,
+                    GL_RGBA,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    mRenderImage->bits(),
+                    osg::Image::AllocationMode::NO_DELETE);
     return image;
 }
 
 bool LineNode::getIsHeight() const
 {
-    return isHeight;
+    return mIsHeight;
 }
 
 void LineNode::setIsHeight(bool value)
 {
-    isHeight = value;
+    mIsHeight = value;
 }
 
 bool LineNode::getSmooth() const

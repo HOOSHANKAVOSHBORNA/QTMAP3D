@@ -141,7 +141,9 @@ void MapController::setTrackNode(osg::Node *node, double minDistance)
 void MapController::untrackNode(osg::Node *node)
 {
     auto vp = getEarthManipulator()->getViewpoint();
-    if(vp.getNode() == nullptr || vp.getNode() != node)
+    if(vp.getNode() == nullptr)
+        return;
+    if(vp.getNode() != node)
         return;
     vp.setNode(nullptr);
     getEarthManipulator()->setViewpoint(vp);
@@ -153,17 +155,17 @@ void MapController::untrackNode(osg::Node *node)
 void MapController::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
 {
     float height = static_cast<float>(mOsgRenderer->getCamera()->getViewport()->height());
-    //    osgUtil::LineSegmentIntersector::Intersections intersections;
-    //    if (mOsgRenderer->computeIntersections(x, height - y, intersections))
-    //    {
-    //        for (const auto &intersection : intersections)
-    //        {
-    //            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
-    //            out_coords = intersection.getWorldIntersectPoint();
-    //            return;
-    //        }
-    //    }
-    mEarthManipulator->screenToWorld(x, height - y,mOsgRenderer, outWorldPoint);
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    if (mOsgRenderer->computeIntersections(x, height - y, intersections))
+    {
+        for (const auto &intersection : intersections)
+        {
+            //            mCurrentLocalPos    = intersection.getLocalIntersectPoint();
+            outWorldPoint = intersection.getWorldIntersectPoint();
+            return;
+        }
+    }
+//    mEarthManipulator->screenToWorld(x, height - y,mOsgRenderer, outWorldPoint);
 }
 
 osgEarth::GeoPoint MapController::screenToGeoPoint(float x, float y) const
@@ -197,6 +199,9 @@ void MapController::zoom(double val)
 void MapController::goToHome()
 {
     getEarthManipulator()->home(0);
+    auto camSet = getEarthManipulator()->getSettings();
+    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
+    getEarthManipulator()->applySettings(camSet);
 }
 
 void MapController::goToPosition(double latitude, double longitude, double range)

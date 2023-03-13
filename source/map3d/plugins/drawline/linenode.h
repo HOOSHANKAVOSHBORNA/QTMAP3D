@@ -46,6 +46,9 @@ public:
     bool getSmooth() const;
     void setSmooth(bool Smooth);
 
+    bool getIsHeight() const;
+    void setIsHeight(bool value);
+
 private:
     osg::Image *updateLenghtLabel(double lenght);
 private:
@@ -66,11 +69,8 @@ private:
     QImage *mRenderImage{nullptr};
     static constexpr int LABEL_IMAGE_WIDTH = 100;
     static constexpr int LABEL_IMAGE_HEIGHT = 20;
-    bool isHeight{false};
+    bool mIsHeight{false};
 
-public:
-    bool getIsHeight() const;
-    void setIsHeight(bool value);
 };
 
 #endif // LINENODE_H

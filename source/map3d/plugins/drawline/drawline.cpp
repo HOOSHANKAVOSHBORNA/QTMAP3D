@@ -41,6 +41,7 @@ drawLine::drawLine(QWidget *parent)
 {
     Q_INIT_RESOURCE(drawLine);
     //    Q_INIT_RESOURCE(LineProperties);
+    mEnterLineZone = false;
 }
 
 bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
@@ -55,6 +56,13 @@ bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 
 void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 {
+    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
+    if (!layer) {
+        osgEarth::ModelLayer *lineLayer = new osgEarth::ModelLayer();
+        lineLayer->setName(DRAW_LAYER_NAME);
+        mMapController->addLayer(lineLayer);
+    }
+
     if(CATEGORY == category)
         if(name == LINE)
         {
@@ -74,6 +82,8 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mType = Type::NONE;
                 mDrawingState = DrawingState::FINISH;
                 mLineProperties->hide();
+                mLineProperties->deleteLater();
+                mLineProperties = nullptr;
             }
         }
     if(name == RULER)
@@ -95,6 +105,8 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mType = Type::NONE;
             mDrawingState = DrawingState::FINISH;
             mLineProperties->hide();
+            mLineProperties->deleteLater();
+            mLineProperties = nullptr;
         }
     }
 
@@ -119,10 +131,6 @@ bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
     muiHandle = uIHandle;
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
-
-    osgEarth::ModelLayer *lineLayer = new osgEarth::ModelLayer();
-    lineLayer->setName(DRAW_LAYER_NAME);
-    mMapController->addLayer(lineLayer);
 
     return true;
 }
@@ -226,7 +234,8 @@ void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
     removeNodeFromLayer(mLine);
     removeNodeFromLayer(mMeasureHeight);
-    mLineProperties->setLine(nullptr);
+    if(mLineProperties)
+        mLineProperties->setLine(nullptr);
     event->accept();
     mDrawingState = DrawingState::START;
 }

@@ -10,6 +10,8 @@ MeasureHeight::MeasureHeight(MapController *mapController)
     mHLine->showLenght(true);
     mHLine->setIsHeight(true);
     mVLine->showLenght(false);
+    mVLine->setPointVisible(false);
+    mHLine->setPointVisible(false);
     addChild(mVLine);
     addChild(mHLine);
     mStarted = false;
