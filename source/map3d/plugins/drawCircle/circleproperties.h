@@ -27,7 +27,7 @@ class CirclePropertiesModel : public QObject
 
 public:
 
-    CirclePropertiesModel(MapController *mapController = nullptr, QObject *parent = nullptr);
+    CirclePropertiesModel(Circle* circle = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
     //set fillcolor
     QString getFillcolor() const;
     void setFillColor(const QString &fillcolor);
@@ -35,8 +35,8 @@ public:
     QString getLinecolor() const;
     void setLineColor(const QString &linecolor);
     //set location
-    QVector3D getLocation() const;
-    void setLocation(const QVector3D &location);
+    QVector3D  getLocation() const;
+    void setLocation(const QVector3D  &location);
     // set radius
     double getRadius() const;
     void setRadius(const double &radius);
@@ -72,7 +72,7 @@ signals:
 private:
     QString   mFillcolor = "#91001d";
     QString   mLinecolor = "#001191";
-    QVector3D mLocation ;
+    QVector3D  mLocation ;
     double    mRadius  = 200000  ;
     double    mCircleHeight = 0  ;
     int       mTransparency = 50 ;
@@ -93,10 +93,11 @@ class CircleProperties : public QObject
 {
     Q_OBJECT
 public:
-    CircleProperties(QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    CircleProperties(Circle *circle, QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
     void show();
     void hide();
     void setCircle(Circle* circle);
+    void setLocation(osgEarth::GeoPoint location);
 
 private:
     QQmlEngine* mQmlEngine;

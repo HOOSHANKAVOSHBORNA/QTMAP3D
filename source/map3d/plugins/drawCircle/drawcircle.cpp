@@ -4,7 +4,7 @@
 #include "osgEarth/ModelLayer"
 
 const QString CATEGORY = "Draw";
-const QString CIRCLE = "Circletest";
+const QString CIRCLE = "Circle";
 
 DrawCircle::DrawCircle(QObject *parent)
     : PluginInterface(parent)
@@ -26,7 +26,7 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
         if (name == CIRCLE) {
             if (checked) {
                 mEnterCircleZone = true;
-                mCircleProperties = new CircleProperties(mQmlEngine, mUiHandle, mMapcontroller);
+                mCircleProperties = new CircleProperties(mCircle, mQmlEngine, mUiHandle, mMapcontroller);
                 mCircleProperties->show();
                 mDrawingState = DrawingState::START;
 
@@ -93,6 +93,7 @@ void DrawCircle::startDraw(QMouseEvent *event)
 //    addNodeToLayer(mCircleHdragger);
 //    mCircleHdragger->Dragger::setDefaultDragMode(osgEarth::Annotation::Dragger::DragMode::DRAGMODE_VERTICAL);
 
+    mCircleProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
     addNodeToLayer(mCircle);
     event->accept();
 }
