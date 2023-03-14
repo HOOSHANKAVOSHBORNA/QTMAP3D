@@ -58,7 +58,7 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     qmlRegisterType<SphereProperties>("Crystal", 1, 0, "SphereProperties");
     mAnnoLayer = new osgEarth::Annotation::AnnotationLayer;
-//    Q_UNUSED(engine)
+    //    Q_UNUSED(engine)
     mQmlEngine = engine;
     //desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true});
@@ -69,7 +69,7 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true});
     //desc->toolboxItemsList.push_back(new ItemDesc{EXTRPOLY, CATEGORY, "qrc:/res/extroPolygon.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true});
-//    desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true});
+    //    desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/resources/rectangle.png", true});
     return true;
@@ -78,193 +78,197 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 {
     if(CATEGORY == category)
-        if(name == LINE)
+    {
+//        if(name == LINE)
+//        {
+//            if(checked)
+//            {
+//                mShape = Shape::LINE;
+//                //mLine = new LineNode(mMapController);
+//                //mLineCircleGr = new osg::Group;
+//                //mMapController->addNode(mLineCircleGr);
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                mDrawingState = DrawingState::NONE;
+//            }
+//        }
+        mEnterShapeZone = checked;
+
+        if(name == SPHERE)
         {
             if(checked)
             {
-                mShape = Shape::LINE;
-                //mLine = new LineNode(mMapController);
-                //mLineCircleGr = new osg::Group;
-                //mMapController->addNode(mLineCircleGr);
+                mShape = Shape::SPHERE;
+            }
+            else
+            {
+                mShape = Shape::NONE;
+                if (mSphereNodeEditor && mDrawingState != DrawingState::FINISH){
+                    removeNodeFromLayer(mSphereNodeEditor);
+                    removeNodeFromLayer(mSphereNode);
+                }
+                mDrawingState = DrawingState::NONE;
+            }
+        }
+        if(name == CONE)
+        {
+            if(checked)
+            {
+                mShape = Shape::CONE;
+
+
+            }
+            else
+            {
+                mShape = Shape::NONE;
+                if (mCone && mDrawingState != DrawingState::FINISH){
+                    removeNodeFromLayer(mCone);
+                }
+                mDrawingState = DrawingState::NONE;
+            }
+        }
+        if(name == CYLINDER)
+        {
+            if(checked)
+            {
+                mShape = Shape::CYLINDER;
+                mCylinder = new Cylinder(mMapController,mRadius, 111111,false);
             }
             else
             {
                 mShape = Shape::NONE;
                 mDrawingState = DrawingState::NONE;
+                if (mCylinder && mDrawingState != DrawingState::FINISH){
+                    removeNodeFromLayer(mCylinder);
+                }
             }
         }
-    if(name == SPHERE)
-    {
-        if(checked)
+        if(name == CAPSULE)
         {
-            mShape = Shape::SPHERE;
-        }
-        else
-        {
-            mShape = Shape::NONE;
-            if (mSphereNodeEditor && mDrawingState != DrawingState::FINISH){
-                removeNodeFromLayer(mSphereNodeEditor);
-                removeNodeFromLayer(mSphereNode);
+            if(checked)
+            {
+                mCapsule = new Capsule(mMapController,mRadius, 0,false);
+                mShape = Shape::CAPSULE;
             }
-            mDrawingState = DrawingState::NONE;
-        }
-    }
-    if(name == CONE)
-    {
-        if(checked)
-        {
-            mShape = Shape::CONE;
-
-
-        }
-        else
-        {
-            mShape = Shape::NONE;
-            if (mCone && mDrawingState != DrawingState::FINISH){
-                removeNodeFromLayer(mCone);
-            }
-            mDrawingState = DrawingState::NONE;
-        }
-    }
-    if(name == CYLINDER)
-    {
-        if(checked)
-        {
-            mShape = Shape::CYLINDER;
-            mCylinder = new Cylinder(mMapController,mRadius, 111111,false);
-        }
-        else
-        {
-            mShape = Shape::NONE;
-            mDrawingState = DrawingState::NONE;
-            if (mCylinder && mDrawingState != DrawingState::FINISH){
-                removeNodeFromLayer(mCylinder);
+            else
+            {
+                mShape = Shape::NONE;
+                mDrawingState = DrawingState::NONE;
+                if (mCapsule && mDrawingState != DrawingState::FINISH){
+                    removeNodeFromLayer(mCapsule);
+                }
             }
         }
-    }
-    if(name == CAPSULE)
-    {
-        if(checked)
+        if( name == BOX)
         {
-            mCapsule = new Capsule(mMapController,mRadius, 0,false);
-            mShape = Shape::CAPSULE;
-        }
-        else
-        {
-            mShape = Shape::NONE;
-            mDrawingState = DrawingState::NONE;
-            if (mCapsule && mDrawingState != DrawingState::FINISH){
-                removeNodeFromLayer(mCapsule);
+            if(checked)
+            {
+                mBox = new Box(mMapController,500000, 600000, 400000, false);
+                mShape = Shape::BOX;
+            }
+            else
+            {
+                mShape = Shape::NONE;
+                mDrawingState = DrawingState::NONE;
+                if (mBox && mDrawingState != DrawingState::FINISH){
+                    removeNodeFromLayer(mBox);
+                }
             }
         }
-    }
-    if( name == BOX)
-    {
-        if(checked)
+        if( name == POLYGON)
         {
-            mBox = new Box(mMapController,500000, 600000, 400000, false);
-            mShape = Shape::BOX;
-        }
-        else
-        {
-            mShape = Shape::NONE;
-            mDrawingState = DrawingState::NONE;
-            if (mBox && mDrawingState != DrawingState::FINISH){
-                removeNodeFromLayer(mBox);
+            if(checked)
+            {
+                mShape = Shape::POLYGON;
+                //mDrawingState = DrawingState::START;
+                mCircleGr = new osg::Group;
+                //mMapController->addNode(mCircleGr);
+                addNodeToLayer(mCircleGr);
+                mPoly = new Polygone(mMapController, false);
+                mPoly->setFillColor(osgEarth::Color::Green);
+            }
+            else
+            {
+                mShape = Shape::NONE;
+                mDrawingState = DrawingState::NONE;
+                if (mPoly && mDrawingState != DrawingState::FINISH){
+                    removeNodeFromLayer(mPoly);
+                    removeNodeFromLayer(mPolyHdragger);
+                }
             }
         }
-    }
-    if( name == POLYGON)
-    {
-        if(checked)
+
+        if(name == IMAGE_OVERLAY)
         {
-            mShape = Shape::POLYGON;
-            //mDrawingState = DrawingState::START;
-            mCircleGr = new osg::Group;
-            //mMapController->addNode(mCircleGr);
-            addNodeToLayer(mCircleGr);
-            mPoly = new Polygone(mMapController, false);
-            mPoly->setFillColor(osgEarth::Color::Green);
-        }
-        else
-        {
-            mShape = Shape::NONE;
-            mDrawingState = DrawingState::NONE;
-            if (mPoly && mDrawingState != DrawingState::FINISH){
-                removeNodeFromLayer(mPoly);
-                removeNodeFromLayer(mPolyHdragger);
+            if(checked)
+            {
+                mShape = Shape::IMGOVLY;
+            }
+            else
+            {
+                mShape = Shape::NONE;
+                mDrawingState = DrawingState::NONE;
+                if (mImageOverlay && mDrawingState != DrawingState::FINISH){
+                    removeNodeFromLayer(mImageOverlay);
+                    removeNodeFromLayer(mImgOvlEditor);
+                }
             }
         }
-    }
+        //    if(name == CIRCLE)
+        //    {
+        //        if(checked)
+        //        {
 
-    if(name == IMAGE_OVERLAY)
-    {
-        if(checked)
+        //            mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapController->getMapNode());
+        //            mShape = Shape::CIRCLE;
+
+        //        }
+        //        else
+        //        {
+        //            mShape = Shape::NONE;
+        //            mDrawingState = DrawingState::NONE;
+        //            if (mCircle && mDrawingState != DrawingState::FINISH){
+        //                removeNodeFromLayer(mCircle);
+        //                removeNodeFromLayer(mCircleHdragger);
+        //            }
+        //        }
+
+        //    }
+        if(name == ELLIPSE)
         {
-            mShape = Shape::IMGOVLY;
-        }
-        else
-        {
-            mShape = Shape::NONE;
-            mDrawingState = DrawingState::NONE;
-            if (mImageOverlay && mDrawingState != DrawingState::FINISH){
-                removeNodeFromLayer(mImageOverlay);
-                removeNodeFromLayer(mImgOvlEditor);
+            if(checked)
+            {
+                mShape = Shape::ELLIPSE;
+
+            }
+            else
+            {
+                mShape = Shape::NONE;
+                mDrawingState = DrawingState::NONE;
+                if (mEllipse && mDrawingState != DrawingState::FINISH){
+                    removeNodeFromLayer(mEllipse);
+                    removeNodeFromLayer(mElpsEditor);
+                }
             }
         }
-    }
-//    if(name == CIRCLE)
-//    {
-//        if(checked)
-//        {
-
-//            mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapController->getMapNode());
-//            mShape = Shape::CIRCLE;
-
-//        }
-//        else
-//        {
-//            mShape = Shape::NONE;
-//            mDrawingState = DrawingState::NONE;
-//            if (mCircle && mDrawingState != DrawingState::FINISH){
-//                removeNodeFromLayer(mCircle);
-//                removeNodeFromLayer(mCircleHdragger);
-//            }
-//        }
-
-//    }
-    if(name == ELLIPSE)
-    {
-        if(checked)
+        if(name == RECT)
         {
-            mShape = Shape::ELLIPSE;
+            if(checked)
+            {
+                mShape = Shape::RECT;
 
-        }
-        else
-        {
-            mShape = Shape::NONE;
-            mDrawingState = DrawingState::NONE;
-            if (mEllipse && mDrawingState != DrawingState::FINISH){
-                removeNodeFromLayer(mEllipse);
-                removeNodeFromLayer(mElpsEditor);
+
             }
-        }
-    }
-    if(name == RECT)
-    {
-        if(checked)
-        {
-            mShape = Shape::RECT;
-
-
-        }
-        else
-        {
-            mShape = Shape::NONE;
-            mDrawingState = DrawingState::NONE;
-            if (mRect && mDrawingState != DrawingState::FINISH){
-                removeNodeFromLayer(mRect);
-                removeNodeFromLayer(mRectEditor);
+            else
+            {
+                mShape = Shape::NONE;
+                mDrawingState = DrawingState::NONE;
+                if (mRect && mDrawingState != DrawingState::FINISH){
+                    removeNodeFromLayer(mRect);
+                    removeNodeFromLayer(mRectEditor);
+                }
             }
         }
     }
@@ -284,6 +288,9 @@ bool DrawShapes::setup(MapController *mapController,
 
 void DrawShapes::mousePressEvent(QMouseEvent *event)
 {
+    if(!mEnterShapeZone)
+        return;
+
     switch (mShape) {
     case Shape::NONE:
         break;
@@ -324,6 +331,8 @@ void DrawShapes::mousePressEvent(QMouseEvent *event)
 
 void DrawShapes::mouseMoveEvent(QMouseEvent *event)
 {
+    if(!mEnterShapeZone)
+        return;
     if(mShape == Shape::LINE){
         onLineMouseMove(event);
     }
@@ -334,6 +343,8 @@ void DrawShapes::mouseMoveEvent(QMouseEvent *event)
 
 void DrawShapes::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    if(!mEnterShapeZone)
+        return;
     switch (mShape) {
     case Shape::NONE:
         break;
@@ -415,7 +426,7 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
         mDrawingState = DrawingState::DELETE;
         //mMapController->removeNode(mLine);
         removeNodeFromLayer(mLine);
-//        removeNodeFromLayer(mLine->mCircleGr);
+        //        removeNodeFromLayer(mLine->mCircleGr);
 
         //mMapController->removeNode(mLine->mCircleGr);
         event->accept();
@@ -423,7 +434,7 @@ void DrawShapes::onLineBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::START)
     {
         mLine->setPointVisible(false);
-//        mLine->setHeight(1000000);
+        //        mLine->setHeight(1000000);
         mLine->setTessellation(100);
     }
 
@@ -436,7 +447,7 @@ void DrawShapes::onLineMouseMove(QMouseEvent *event)
         if (mLine->getSize() >= 2)
         {
             mLine->removePoint();
-//            mMapController->removeNode(mLine->mCircleGr);
+            //            mMapController->removeNode(mLine->mCircleGr);
         }
         osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
         mLine->addPoint(geoPos);
@@ -511,7 +522,7 @@ void DrawShapes::onNodeBtnDoubleClick(QMouseEvent *event, osg::Node *nodeEditor)
         if(nodeEditor)
             //mMapController->removeNode(nodeEditor);
             removeNodeFromLayer(nodeEditor);
-            //mMapController->removeNode(mPolyHdragger);
+        //mMapController->removeNode(mPolyHdragger);
         event->accept();
     }
 

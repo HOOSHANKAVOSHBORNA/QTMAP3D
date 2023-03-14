@@ -49,7 +49,7 @@ private:
 
     osgEarth::Annotation::SphereDragger* mCircleHdragger;
 
-    bool mEnterCircleZone;
+    bool mEnterCircleZone{false};
 };
 
 #endif // DRAWCIRCLE_H
