@@ -25,6 +25,7 @@
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QTimer>
+#include <array>
 #include "defenseModelNodeAutoScaler.h"
 
 
@@ -71,36 +72,55 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
-    osg::ref_ptr<osg::Image> mainImage = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
-
     mNode2DNormal = new osg::Switch;
     mNode2DHovered = new osg::Switch;
 
-    const osgEarth::Color colorList[6]= {
+    static bool bFirst = true;
+    static osg::ref_ptr<osg::Image> mainImage;
+    static const osgEarth::Color colorList[6]= {
         osg::Vec4(0.2f, 0.8f, 0.2f, 1.0f),
         osg::Vec4(0.8f, 0.8f, 0.2f, 1.0f),
         osg::Vec4(0.8f, 0.5f, 0.2f, 1.0f),
         osg::Vec4(0.8f, 0.2f, 0.2f, 1.0f),
         osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f),
         osg::Vec4(0.8f, 0.2f, 0.2f, 1.0f),
-
     };
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageList;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHovered;
 
-    for (int i = 0; i < 6; i++) {
 
-        osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImage, colorList[i]);
-        if(aircraftImage)
-            aircraftImage->scaleImage(100, 100, aircraftImage->r());
-        osg::ref_ptr<osg::Geometry> aircraftImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(aircraftImage, osg::Vec2s(0,0), 0, 0, 0.4);
+    if (bFirst) {
+        mainImage = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
+
+
+        for (unsigned int i = 0; i < 6; i++) {
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImage, colorList[i]);
+            if(aircraftImage)
+                aircraftImage->scaleImage(100, 100, aircraftImage->r());
+
+
+            osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+            if(aircraftImageHovered)
+                aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+
+            imageList[i] = aircraftImage;
+            imageListHovered[i] = aircraftImageHovered;
+        }
+
+        bFirst = false;
+    }
+
+    for (unsigned int i = 0; i < 6; i++) {
+
+        osg::ref_ptr<osg::Geometry> aircraftImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry
+                (imageList[i], osg::Vec2s(0,0), 0, 0, 0.4);
         osg::ref_ptr<osg::Geode>  aircraftGeode = new osg::Geode();
         aircraftGeode->setStateSet(geodeStateSet);
         aircraftGeode->addDrawable(aircraftImageDrawable);
 
 
-        osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
-        if(aircraftImageHovered)
-            aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
-        osg::ref_ptr<osg::Geometry> aircraftImageDrawableHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(aircraftImageHovered, osg::Vec2s(0,0), 0, 0, 0.4);
+        osg::ref_ptr<osg::Geometry> aircraftImageDrawableHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry
+                (imageListHovered[i], osg::Vec2s(0,0), 0, 0, 0.4);
         osg::ref_ptr<osg::Geode>  aircraftGeodeHovered = new osg::Geode();
         aircraftGeodeHovered->setStateSet(geodeStateSet);
         aircraftGeodeHovered->addDrawable(aircraftImageDrawableHovered);

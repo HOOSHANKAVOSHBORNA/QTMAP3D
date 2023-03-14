@@ -33,54 +33,54 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
-    const osg::ref_ptr<osg::Image> mainImage = osgDB::readImageFile("../data/models/system/images/truck.png");
+    static bool bFirst = true;
+    static osg::ref_ptr<osg::Image> mainImage;
+    static osg::ref_ptr<osg::Image> systemImageActive;
+    static osg::ref_ptr<osg::Image> systemImageActiveHovered;
+    static osg::ref_ptr<osg::Image> systemImageDeactive;
+    static osg::ref_ptr<osg::Image> systemImageDeactiveHovered;
 
-//    osg::ref_ptr<osg::Image> systemImage = createColoredImage(mainImage, osg::Vec4(0.9f, 0.9f, 0.9f, 1.0));
-//    if(systemImage)
-//        systemImage->scaleImage(100, 100, systemImage->r());
-//    osg::Geometry* systemImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImage, osg::Vec2s(0,0), 0, 0, 0.3);
-//    osg::ref_ptr<osg::Geode>  systemGeode = new osg::Geode();
-//    systemGeode->setStateSet(geodeStateSet);
-//    systemGeode->addDrawable(systemImageDrawable);
-//
-//    osg::ref_ptr<osg::Image> systemImageHovered = createDarkerImage(systemImage, 0.5f);
-//    if(systemImageHovered)
-//        systemImageHovered->scaleImage(100, 100, systemImageHovered->r());
-//    osg::Geometry* systemImageDrawableHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageHovered, osg::Vec2s(0,0), 0, 0, 0.3);
-//    osg::ref_ptr<osg::Geode>  systemGeodeHovered = new osg::Geode();
-//    systemGeodeHovered->setStateSet(geodeStateSet);
-//    systemGeodeHovered->addDrawable(systemImageDrawableHovered);
+    if (bFirst) {
+        mainImage = osgDB::readImageFile("../data/models/system/images/truck.png");
+
+        systemImageActive = createColoredImage(mainImage, osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f));
+        systemImageActiveHovered = createDarkerImage(systemImageActive, 0.5f);
+        systemImageDeactive = createColoredImage(mainImage, osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f));
+        systemImageDeactiveHovered = createDarkerImage(systemImageDeactive, 0.5f);
 
 
-    osg::ref_ptr<osg::Image> systemImageActive = createColoredImage(mainImage, osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f));
-    if(systemImageActive)
-        systemImageActive->scaleImage(100, 100, systemImageActive->r());
+        if(systemImageActive)
+            systemImageActive->scaleImage(100, 100, systemImageActive->r());
+        if(systemImageActiveHovered)
+            systemImageActiveHovered->scaleImage(100, 100, systemImageActiveHovered->r());
+        if(systemImageDeactive)
+            systemImageDeactive->scaleImage(100, 100, systemImageDeactive->r());
+        if(systemImageDeactiveHovered)
+            systemImageDeactiveHovered->scaleImage(100, 100, systemImageDeactiveHovered->r());
+
+
+        bFirst = false;
+    }
+
+
+
     osg::ref_ptr<osg::Geometry> systemImageDrawableActive = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageActive, osg::Vec2s(0,0), 0, 0, 0.3);
     osg::ref_ptr<osg::Geode>  systemGeodeActive = new osg::Geode();
     systemGeodeActive->setStateSet(geodeStateSet);
     systemGeodeActive->addDrawable(systemImageDrawableActive);
 
 
-    osg::ref_ptr<osg::Image> systemImageActiveHovered = createDarkerImage(systemImageActive, 0.5f);
-    if(systemImageActiveHovered)
-        systemImageActiveHovered->scaleImage(100, 100, systemImageActiveHovered->r());
     osg::ref_ptr<osg::Geometry> systemImageDrawableActiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageActiveHovered, osg::Vec2s(0,0), 0, 0, 0.3);
     osg::ref_ptr<osg::Geode>  systemGeodeActiveHovered = new osg::Geode();
     systemGeodeActiveHovered->setStateSet(geodeStateSet);
     systemGeodeActiveHovered->addDrawable(systemImageDrawableActiveHovered);
 
-    osg::ref_ptr<osg::Image> systemImageDeactive = createColoredImage(mainImage, osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f));
-    if(systemImageDeactive)
-        systemImageDeactive->scaleImage(100, 100, systemImageDeactive->r());
     osg::ref_ptr<osg::Geometry> systemImageDrawableDeactive = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageDeactive, osg::Vec2s(0,0), 0, 0, 0.3);
     osg::ref_ptr<osg::Geode>  systemGeodeDeactive = new osg::Geode();
     systemGeodeDeactive->setStateSet(geodeStateSet);
     systemGeodeDeactive->addDrawable(systemImageDrawableDeactive);
 
 
-    osg::ref_ptr<osg::Image> systemImageDeactiveHovered = createDarkerImage(systemImageDeactive, 0.5f);
-    if(systemImageDeactiveHovered)
-        systemImageDeactiveHovered->scaleImage(100, 100, systemImageDeactiveHovered->r());
     osg::ref_ptr<osg::Geometry> systemImageDrawableDeactiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(systemImageDeactiveHovered, osg::Vec2s(0,0), 0, 0, 0.3);
     osg::ref_ptr<osg::Geode>  systemGeodeDeactiveHovered = new osg::Geode();
     systemGeodeDeactiveHovered->setStateSet(geodeStateSet);
