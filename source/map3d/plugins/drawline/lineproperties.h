@@ -71,6 +71,8 @@ public:
     void setRuler(const int ruler);
 
     void setLine(LineNode *linNode) ;
+    void setMeasureHeight(MeasureHeight *measureHeight);
+
 signals:
 
     void linePropertiesChanged(  QVariant );
@@ -81,7 +83,7 @@ private:
     QString                                           mColor       = "#91001d";
     QString                                           mPointColor  = "#001191";
     int                                               mWidth       = 10.00;
-    float                                             mHeight;
+    float                                             mHeight      = 0;
     float                                             mPointwidth  = 10.00;
     unsigned                                          mTesselation =10.00;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp       = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
@@ -111,6 +113,7 @@ public:
     void hide();
 
     void setLine(LineNode *line);
+    void setMeasureHeight(MeasureHeight *measureHeight);
     void setIsRuler(int value);
 
 private:

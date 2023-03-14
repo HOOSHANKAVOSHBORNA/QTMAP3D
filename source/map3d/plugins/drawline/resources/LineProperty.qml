@@ -486,7 +486,7 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(transValue && transValue.value){
+                                            if(lineProperties && transValue && (transValue.value == 0 || transValue.value)){
                                                 transValue.value = heightInput.text
                                                 lineProperties.height = transValue.value
                                             }

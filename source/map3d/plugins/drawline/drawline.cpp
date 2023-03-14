@@ -206,7 +206,6 @@ void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 void drawLine::startDrawLine()
 {
     mLine = new LineNode(mMapController);
-    mLine->showLenght(true);
     addNodeToLayer(mLine);
     mLineProperties->setLine(mLine);
     mDrawingState = DrawingState::DRAWING;
@@ -216,6 +215,7 @@ void drawLine::startDrawMeasureHeight()
 {
     mMeasureHeight = new MeasureHeight(mMapController);
     addNodeToLayer(mMeasureHeight);
+    mLineProperties->setMeasureHeight(mMeasureHeight);
     mDrawingState = DrawingState::DRAWING;
 }
 

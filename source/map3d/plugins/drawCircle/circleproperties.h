@@ -73,7 +73,7 @@ private:
     QString   mFillcolor = "#91001d";
     QString   mLinecolor = "#ffffff";
     QVector3D  mLocation ;
-    double    mRadius  = 200000  ;
+    double    mRadius  = 20000  ;
     double    mCircleHeight = 0  ;
     int       mTransparency = 50 ;
     double    mArcstart  = 0     ;

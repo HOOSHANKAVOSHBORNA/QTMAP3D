@@ -527,7 +527,7 @@ Item {
                                 SpinBox {
                                     id: radiusValue
                                     stepSize: 500
-                                    value: 200000
+                                    value: 20000
                                     to : 10000000
                                     from : 0
                                     validator: DoubleValidator {
