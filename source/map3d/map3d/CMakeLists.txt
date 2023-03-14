@@ -49,3 +49,6 @@ target_compile_definitions(Map3d PUBLIC PLUGINS_OUTPUT_DIR="${PLUGINS_OUTPUT_DIR
 add_custom_command(TARGET Map3d POST_BUILD
     COMMAND mkdir ARGS "-p" "${CMAKE_CURRENT_BINARY_DIR}/../data"
     COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/../data/*" "${CMAKE_CURRENT_BINARY_DIR}/../data/")
+
+add_custom_command(TARGET Map3d POST_BUILD
+	COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/moon_1024x512.jpg" "${CMAKE_CURRENT_BINARY_DIR}/")
