@@ -71,7 +71,7 @@ signals:
 
 private:
     QString   mFillcolor = "#91001d";
-    QString   mLinecolor = "#001191";
+    QString   mLinecolor = "#ffffff";
     QVector3D  mLocation ;
     double    mRadius  = 200000  ;
     double    mCircleHeight = 0  ;
