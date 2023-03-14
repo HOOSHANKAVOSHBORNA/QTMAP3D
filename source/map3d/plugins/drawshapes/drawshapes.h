@@ -104,6 +104,7 @@ private:
     QQuickItem *mItem = nullptr;
 //    osgEarth::Annotation::ModelNode* mSphere(float radius);
 //    osgEarth::Annotation::ModelNode* mDrawSphere(float radius);
+    bool mEnterShapeZone{false};
 
 };
 
