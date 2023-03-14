@@ -11,37 +11,43 @@ Item {
     signal changeCheckable(string itemname, string category_name, bool check)
 
     property var listModel
-        ScrollView {
-            id: scroller
+    ScrollView {
+        id: scroller
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        height: columnLayout.implicitHeight
+
+        //width: parent.width
+        //anchors.fill: parent
+        contentHeight: columnLayout.implicitHeight
+        //ScrollBar.vertical.interactive: true
+        ScrollBar.vertical.interactive : false
+        clip : true
+        Item {
+            id: tmp
             anchors.fill: parent
-            contentHeight: columnLayout.implicitHeight
-            //ScrollBar.vertical.interactive: true
-            ScrollBar.vertical.interactive : false
-            clip : true
-            Item {
-                id: tmp
-                anchors.fill: parent
-            }
-            Column {
-                id :columnLayout
-                anchors.fill: parent
-                spacing: 2
-                Repeater {
-                    id: repeater
-                    model: rootItem.listModel
-                    delegate: DelegateItem{
-                        Layout.fillWidth: true
-                        width: tmp.width
-                        height: 30
-                        onItemClicked: function(itemname, category_name) {
-                            rootItem.itemClicked(itemname, category_name)
-                        }
-                        onChangeCheckable: {
-                            rootItem.changeCheckable(itemname, category_name, check)
-                        }
+        }
+        Column {
+            id :columnLayout
+            anchors.fill: parent
+            spacing: 2
+            Repeater {
+                id: repeater
+                model: rootItem.listModel
+                delegate: DelegateItem{
+                    Layout.fillWidth: true
+                    width: tmp.width
+                    height: 30
+                    onItemClicked: function(itemname, category_name) {
+                        rootItem.itemClicked(itemname, category_name)
+                    }
+                    onChangeCheckable: {
+                        rootItem.changeCheckable(itemname, category_name, check)
                     }
                 }
             }
         }
+    }
 }
 
