@@ -73,7 +73,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mType = Type::LINE;
                 mDrawingState = DrawingState::START;
                 mLineProperties = new LineProperties(mQmlEngine,muiHandle );
-                mLineProperties->setIsRuler(false);
+                mLineProperties->setIsRuler(0);
                 mLineProperties->show();
             }
             else
@@ -95,7 +95,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mType = Type::RULER;
             mDrawingState = DrawingState::START;
             mLineProperties = new LineProperties(mQmlEngine,muiHandle );
-            mLineProperties->setIsRuler(true);
+            mLineProperties->setIsRuler(1);
             mLineProperties->show();
 
         }
@@ -117,12 +117,18 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mEnterLineZone = true;
             mType = Type::HEIGHT;
             mDrawingState = DrawingState::START;
+            mLineProperties = new LineProperties(mQmlEngine,muiHandle );
+            mLineProperties->setIsRuler(2);
+            mLineProperties->show();
         }
         else
         {
             mEnterLineZone = false;
             mType = Type::NONE;
             mDrawingState = DrawingState::FINISH;
+            mLineProperties->hide();
+            mLineProperties->deleteLater();
+            mLineProperties = nullptr;
         }
     }
 }
