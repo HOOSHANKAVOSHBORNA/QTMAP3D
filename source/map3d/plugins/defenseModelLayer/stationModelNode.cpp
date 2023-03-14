@@ -32,38 +32,52 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
 
 
-    osg::ref_ptr<osg::Image> mainImage = osgDB::readImageFile("../data/models/station/station.png");
+    static bool bFirst = true;
+    static osg::ref_ptr<osg::Image> mainImage;
+    static osg::ref_ptr<osg::Image> stationImageActive;
+    static osg::ref_ptr<osg::Image> stationImageActiveHovered;
+    static osg::ref_ptr<osg::Image> stationImageDeactive;
+    static osg::ref_ptr<osg::Image> stationImageDeactiveHovered;
 
 
-    osg::ref_ptr<osg::Image> stationImageActive = createColoredImage(mainImage, osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f));
-    if(stationImageActive)
-        stationImageActive->scaleImage(100, 100, stationImageActive->r());
+    if (bFirst) {
+        mainImage = osgDB::readImageFile("../data/models/station/station.png");
+
+        stationImageActive = createColoredImage(mainImage, osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f));
+        stationImageActiveHovered = createDarkerImage(stationImageActive, 0.5f);
+        stationImageDeactive = createColoredImage(mainImage, osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f));
+        stationImageDeactiveHovered = createDarkerImage(stationImageDeactive, 0.5f);
+
+
+        if(stationImageActive)
+            stationImageActive->scaleImage(100, 100, stationImageActive->r());
+        if(stationImageActiveHovered)
+            stationImageActiveHovered->scaleImage(100, 100, stationImageActiveHovered->r());
+        if(stationImageDeactive)
+            stationImageDeactive->scaleImage(100, 100, stationImageDeactive->r());
+        if(stationImageDeactiveHovered)
+            stationImageDeactiveHovered->scaleImage(100, 100, stationImageDeactiveHovered->r());
+
+        bFirst = false;
+    }
+
     osg::ref_ptr<osg::Geometry> stationImageDrawableActive = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageActive, osg::Vec2s(0,0), 0, 0, 0.2);
     osg::ref_ptr<osg::Geode>  stationGeodeActive = new osg::Geode();
     stationGeodeActive->setStateSet(geodeStateSet);
     stationGeodeActive->addDrawable(stationImageDrawableActive);
 
 
-    osg::ref_ptr<osg::Image> stationImageActiveHovered = createDarkerImage(stationImageActive, 0.5f);
-    if(stationImageActiveHovered)
-        stationImageActiveHovered->scaleImage(100, 100, stationImageActiveHovered->r());
     osg::ref_ptr<osg::Geometry> stationImageDrawableActiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageActiveHovered, osg::Vec2s(0,0), 0, 0, 0.2);
     osg::ref_ptr<osg::Geode>  stationGeodeActiveHovered = new osg::Geode();
     stationGeodeActiveHovered->setStateSet(geodeStateSet);
     stationGeodeActiveHovered->addDrawable(stationImageDrawableActiveHovered);
 
-    osg::ref_ptr<osg::Image> stationImageDeactive = createColoredImage(mainImage, osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f));
-    if(stationImageDeactive)
-        stationImageDeactive->scaleImage(100, 100, stationImageDeactive->r());
     osg::ref_ptr<osg::Geometry> stationImageDrawableDeactive = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageDeactive, osg::Vec2s(0,0), 0, 0, 0.2);
     osg::ref_ptr<osg::Geode>  stationGeodeDeactive = new osg::Geode();
     stationGeodeDeactive->setStateSet(geodeStateSet);
     stationGeodeDeactive->addDrawable(stationImageDrawableDeactive);
 
 
-    osg::ref_ptr<osg::Image> stationImageDeactiveHovered = createDarkerImage(stationImageDeactive, 0.5f);
-    if(stationImageDeactiveHovered)
-        stationImageDeactiveHovered->scaleImage(100, 100, stationImageDeactiveHovered->r());
     osg::ref_ptr<osg::Geometry> stationImageDrawableDeactiveHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry(stationImageDeactiveHovered, osg::Vec2s(0,0), 0, 0, 0.2);
     osg::ref_ptr<osg::Geode>  stationGeodeDeactiveHovered = new osg::Geode();
     stationGeodeDeactiveHovered->setStateSet(geodeStateSet);
