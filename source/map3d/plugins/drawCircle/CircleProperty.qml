@@ -14,7 +14,7 @@ Item {
     property CircleProperties circleProperties
     property string headerTitleSTR: "circle Properties"
     property string fillColor: "#91001d"
-    property string lineColor: "#001191"
+    property string lineColor: "#ffffff"
 
 
 
@@ -87,7 +87,8 @@ Item {
 
                             ////////////////////////////////////fill Color Property//////////////////////////////////
                             Rectangle{
-                                Layout.fillWidth: true
+//                                Layout.fillWidth: true
+                                width: parent.width/1.5
                                 color: "#404040"
                                 height: 35
 
@@ -111,7 +112,7 @@ Item {
                                 }
                                 Rectangle{
                                     height: 20
-                                    width: 75
+                                    width: 115
                                     color: "#c9c9c9"
                                     x: 30
                                     anchors.verticalCenter: parent.verticalCenter
@@ -137,7 +138,8 @@ Item {
                                 }
                             }
                             Rectangle{
-                                Layout.fillWidth: true
+//                                Layout.fillWidth: true
+                                width: parent.width/3
                                 color: "#404040"
                                 height: 35
 
@@ -166,8 +168,8 @@ Item {
                                     height: 20
                                     width: 20
                                     color: lineColor
-                                    //                                    border.width: 2
-                                    //                                    border.color: "#c9c9c9"
+                                    border.width: 2
+                                    border.color: "#c9c9c9"
                                     x: 5
                                     radius: 5
                                     anchors.verticalCenter: parent.verticalCenter
@@ -181,7 +183,7 @@ Item {
                                 }
                                 Rectangle{
                                     height: 20
-                                    width: 75
+                                    width: 115
                                     color: "#c9c9c9"
                                     x: 30
                                     anchors.verticalCenter: parent.verticalCenter
@@ -237,7 +239,7 @@ Item {
 
                                 Column{
                                     Row{
-                                        spacing: 13
+                                        spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
                                         anchors.horizontalCenter: parent.horizontalCenter
@@ -249,20 +251,21 @@ Item {
                                         }
                                         Rectangle{
                                             height: 20
-                                            width: 75
+                                            width: 120
                                             color: "#c9c9c9"
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
                                             TextInput {
                                                 id: mlocationX
+                                                padding: 2
                                                 anchors.fill: parent
-                                                text: circleProperties.location.x
+                                                text: circleProperties.location.x.toFixed(9)
                                                 font.pointSize: 10
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
-                                                    decimals: 8;
+                                                    decimals: 13;
                                                     notation: DoubleValidator.StandardNotation
                                                     locale: "insert x"
                                                 }
@@ -273,7 +276,7 @@ Item {
                                         }
                                     }
                                     Row{
-                                        spacing: 13
+                                        spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
                                         anchors.horizontalCenter: parent.horizontalCenter
@@ -285,20 +288,21 @@ Item {
                                         }
                                         Rectangle{
                                             height: 20
-                                            width: 75
+                                            width: 120
                                             color: "#c9c9c9"
                                             clip:  true
                                             radius: 5
 
                                             TextInput {
                                                 id: mlocationY
+                                                padding: 2
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                text: circleProperties.location.y
+                                                text: circleProperties.location.y.toFixed(9)
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
-                                                    decimals: 8;
+                                                    decimals: 13;
                                                     notation: DoubleValidator.StandardNotation
                                                     locale: "insert y"
                                                 }
@@ -309,7 +313,7 @@ Item {
                                         }
                                     }
                                     Row{
-                                        spacing: 13
+                                        spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
                                         anchors.horizontalCenter: parent.horizontalCenter
@@ -321,20 +325,21 @@ Item {
                                         }
                                         Rectangle{
                                             height: 20
-                                            width: 75
+                                            width: 120
                                             color: "#c9c9c9"
                                             clip:  true
                                             radius: 5
 
                                             TextInput {
                                                 id: mlocationZ
+                                                padding: 2
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-                                                text: circleProperties.location.z
+                                                text: circleProperties.location.z.toFixed(5)
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
-                                                    decimals: 8;
+                                                    decimals: 13;
                                                     notation: DoubleValidator.StandardNotation
                                                     locale: "insert z"
                                                 }
@@ -365,6 +370,7 @@ Item {
                                 CheckBox {
                                     id: relative
                                     text: qsTr("Relative")
+                                    font.pointSize: 10
                                     checked: flase
                                     anchors.bottom: locationTitle.bottom
                                     onCheckStateChanged: if(checked === true){
@@ -414,28 +420,29 @@ Item {
 
                                 Column{
                                     Row{
-                                        spacing: 3
-                                        leftPadding: 2
+                                        spacing: 8
+                                        leftPadding: 5
                                         topPadding: 5
-                                        x:1
+                                        anchors.horizontalCenter: parent.horizontalCenter
 
                                         Text {
                                             color: "#e5e5e5"
-                                            text: qsTr("Start:")
+                                            text: qsTr("A:")
                                             font.pointSize: 10
                                         }
                                         Rectangle{
                                             height: 20
-                                            width: 67
+                                            width: 120
                                             color: "#c9c9c9"
                                             clip:  true
                                             radius: 5
 
                                             TextInput {
                                                 id: startArc
+                                                padding: 2
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-//                                                text: "0"
+                                                text: "0"
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
@@ -450,29 +457,29 @@ Item {
                                         }
                                     }
                                     Row{
-                                        spacing: 9
-                                        leftPadding: 2
+                                        spacing: 8
+                                        leftPadding: 5
                                         topPadding: 5
-                                        //                                        anchors.horizontalCenter: parent.horizontalCenter
-                                        x: 1
+                                        anchors.horizontalCenter: parent.horizontalCenter
 
                                         Text {
                                             color: "#e5e5e5"
-                                            text: qsTr("End:")
+                                            text: qsTr("B:")
                                             font.pointSize: 10
                                         }
                                         Rectangle{
                                             height: 20
-                                            width: 67
+                                            width: 120
                                             color: "#c9c9c9"
                                             clip:  true
                                             radius: 5
 
                                             TextInput {
                                                 id: endArc
+                                                padding: 2
                                                 anchors.fill: parent
                                                 font.pointSize: 10
-//                                                text: "360"
+                                                text: "360"
                                                 selectByMouse: true
                                                 selectionColor: "dark green"
                                                 validator: DoubleValidator {
@@ -545,7 +552,7 @@ Item {
                                         inputMethodHints: Qt.ImhFormattedNumbersOnly
                                         topPadding: 13
 //                                        leftPadding: 30
-                                        rightPadding: -25
+                                        rightPadding: -10
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
@@ -891,8 +898,8 @@ Item {
                                     }
 
                                     background: Rectangle {
-                                        implicitWidth: 100
-                                        implicitHeight: 20
+                                        implicitWidth: 120
+                                        implicitHeight: 22
                                         border.color: control.pressed ? "#5f5f5f" : "#404040"
                                         border.width: control.visualFocus ? 2 : 1
                                         radius: 5
