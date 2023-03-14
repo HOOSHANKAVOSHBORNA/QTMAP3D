@@ -12,7 +12,7 @@ Item {
 
 
     property LineProperties lineProperties
-    property bool rulerCondition : lineProperties.ruler
+    property int rulerCondition : lineProperties.ruler
     property string headerTitleSTR: "Line Properties"
     property string lColor: "#91001d"
     property string pColor: "#001191"
@@ -642,6 +642,7 @@ Item {
                                 }
                             }
                             Rectangle{
+                                id:tesselationContainerTitle
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
@@ -759,6 +760,7 @@ Item {
                             }
 
                             Rectangle{
+                                id:clampContainerTitle
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
@@ -1003,7 +1005,7 @@ Item {
     }
 
     onRulerConditionChanged:   {
-        if(rulerCondition === true){
+        if(rulerCondition === 1){
             pointColorSecR.visible = false
             pointColorSecL.visible = false
             pointwidthContainer.visible = false
@@ -1016,12 +1018,16 @@ Item {
             lenContainerTitle.visible = false
             transContainer.visible = false
             heightContainer.visible = false
+            clampContainer.visible = true
+            clampContainerTitle.visible = true
+            tesselationContainer.visible = true
+            tesselationContainerTitle.visible = true
             lineProperties.showLen = true
             lineProperties.visible = false
             headerTitleSTR = "Ruler Properties"
 
         }
-        else if(rulerCondition === false){
+        else if(rulerCondition === 0){
             pointColorSecR.visible = true
             pointColorSecL.visible = true
             pointwidthContainer.visible = true
@@ -1034,9 +1040,34 @@ Item {
             lenContainerTitle.visible = true
             transContainer.visible = true
             heightContainer.visible = true
+            clampContainer.visible = true
+            clampContainerTitle.visible = true
+            tesselationContainer.visible = true
+            tesselationContainerTitle.visible = true
             lineProperties.showLen = false
             lineProperties.visible = true
             headerTitleSTR = "Line Properties"
+        }
+        else if(rulerCondition === 2){
+            pointColorSecR.visible = false
+            pointColorSecL.visible = false
+            pointwidthContainer.visible = false
+            pointWtitle.visible = false
+            pointContainer.visible = false
+            pointContainerTitle.visible = false
+            smoothContainer.visible = false
+            smoothContainerTitle.visible = false
+            lenContainer.visible = false
+            lenContainerTitle.visible = false
+            transContainer.visible = false
+            heightContainer.visible = false
+            clampContainer.visible = false
+            clampContainerTitle.visible = false
+            tesselationContainer.visible = false
+            tesselationContainerTitle.visible = false
+            lineProperties.showLen = true
+            lineProperties.visible = false
+            headerTitleSTR = "Height Measure"
         }
     }
 

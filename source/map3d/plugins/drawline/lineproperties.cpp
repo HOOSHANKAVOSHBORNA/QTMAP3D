@@ -25,6 +25,8 @@ void LinePropertiesModel:: setColor(const QString &value){
     mColor = value;
     if(mLineNode){
         mLineNode->setColor(value.toStdString());
+    }else if(mMeasureHeight){
+        mMeasureHeight->setColor(value.toStdString());
     }
 
 }
@@ -53,6 +55,8 @@ void LinePropertiesModel:: setWidth(const QString &value){
     mWidth =  value.toInt() ;
     if(mLineNode){
         mLineNode->setWidth(value.toInt());
+    }else if(mMeasureHeight){
+        mMeasureHeight->setWidth(value.toInt());
     }
 }
 
@@ -147,12 +151,12 @@ void LinePropertiesModel::setShowLen(const bool &value){
     }
 }
 
-bool LinePropertiesModel::getRuler() const
+int LinePropertiesModel::getRuler() const
 {
     return mRuler;
 }
 
-void LinePropertiesModel::setRuler(const bool value)
+void LinePropertiesModel::setRuler(const int value)
 {
     if(value != mRuler){
         mRuler = value;
@@ -221,7 +225,7 @@ void LineProperties::setLine(LineNode *line )
 
 }
 
-void LineProperties::setIsRuler(bool value)
+void LineProperties::setIsRuler(int value)
 {
     mIsRuler = value;
 }

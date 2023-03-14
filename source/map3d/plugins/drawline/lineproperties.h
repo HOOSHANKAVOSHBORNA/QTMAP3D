@@ -2,6 +2,7 @@
 #define LINEPROPERTIES_H
 
 #include "linenode.h"
+#include "measureHeight.h"
 #include "mapcontroller.h"
 #include "plugininterface.h"
 
@@ -25,7 +26,7 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(bool      visible        READ getVisible       WRITE setVisible      )
     Q_PROPERTY(bool      smooth         READ getSmooth        WRITE setSmooth       )
     Q_PROPERTY(bool      showLen        READ getShowLen       WRITE setShowLen      )
-    Q_PROPERTY(bool      ruler          READ getRuler         WRITE setRuler        NOTIFY rulerChanged )
+    Q_PROPERTY(int       ruler          READ getRuler         WRITE setRuler        NOTIFY rulerChanged )
 
 
 
@@ -66,8 +67,8 @@ public:
     bool getShowLen() const;
     void setShowLen(const bool &smooth);
 
-    bool getRuler() const;
-    void setRuler(const bool ruler);
+    int  getRuler() const;
+    void setRuler(const int ruler);
 
     void setLine(LineNode *linNode) ;
 signals:
@@ -88,10 +89,12 @@ private:
     bool                                              mSmooth      = true;
     bool                                              mShowLen     = false;
 
-    bool                                              mRuler;
+    int                                              mRuler;
 
 
     LineNode* mLineNode{nullptr};
+    MeasureHeight* mMeasureHeight{nullptr};
+
 
 
 
@@ -108,14 +111,14 @@ public:
     void hide();
 
     void setLine(LineNode *line);
-    void setIsRuler(bool value);
+    void setIsRuler(int value);
 
 private:
     QQmlEngine* mQmlEngine;
     QQuickItem* mItem;
     LinePropertiesModel *mLineProperties;
     UIHandle *mUiHandle = nullptr;
-    bool mIsRuler;
+    int mIsRuler;
 
 };
 
