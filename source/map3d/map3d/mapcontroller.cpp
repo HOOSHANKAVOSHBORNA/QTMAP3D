@@ -235,14 +235,14 @@ void MapController::setMode(bool is3DView)
 {
     mIs3DView = is3DView;
     auto  settings = mEarthManipulator->getSettings();
-//    if(is3DView) {
-//        //settings->setMinMaxPitch(-90, 0);
-//    }
-//    else
-//    {
-//        //settings->setMinMaxPitch(-90, 90);
-//        //mEarthManipulator->setRotation(osg::Quat());
-//    }
+    if(is3DView) {
+        settings->setMinMaxPitch(-90, 0);
+    }
+    else
+    {
+        settings->setMinMaxPitch(-90, -90);
+        mEarthManipulator->setRotation(osg::Quat());
+    }
     emit modeChanged(is3DView);
 }
 
@@ -380,10 +380,10 @@ void MapController::createCameraManipulator()
     //    settings->setSingleAxisRotation(true);
 
     settings->setMinMaxDistance(0.0, MAX_CAM_DISTANCE);
-//    if(mIs3DView)
-//        settings->setMinMaxPitch(-90, 0);
-//    else
-//        settings->setMinMaxPitch(-90, -90);
+    if(mIs3DView)
+        settings->setMinMaxPitch(-90, 0);
+    else
+        settings->setMinMaxPitch(-90, -90);
     //    settings->setMaxOffset(5000.0, 5000.0);
     //    settings->setMinMaxPitch(-90, 90);
     //    settings->setTerrainAvoidanceEnabled(true);
