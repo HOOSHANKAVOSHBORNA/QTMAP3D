@@ -182,13 +182,33 @@ Item {
                                                         "transparent") : "transparent";
                             anchors.fill: parent
                         }
+
                         Text {
                             id: txt
                             anchors.leftMargin: 5
                             anchors.rightMargin: 5
                             anchors.centerIn: parent
-                            text: display
+                            text: (column == 14 || column == 15) ? display.substring(0, Math.min(15, display.length))
+                                                                   + (display.length > 15 ? " ..." : "") : display
                             color: d_txtcolor
+                            ToolTip {
+                                width: 300
+                                height: tooltip.height + 10
+                                Text {
+                                    id: tooltip
+                                    text: (column == 14 || column == 15) ? display : ""
+                                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                                    color: "white"
+                                    width: 300
+                                }
+
+                                background: Rectangle {
+                                    color: "#404040"
+                                    radius: 8
+                                }
+
+                                visible: mouseArea.containsMouse && (column == 14 || column == 15)
+                            }
                         }
                     }
                 }
