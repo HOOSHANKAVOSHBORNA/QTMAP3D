@@ -194,6 +194,8 @@ Item {
                             ToolTip {
                                 width: 300
                                 height: tooltip.height + 10
+                                delay: 500
+                                x: 0
                                 Text {
                                     id: tooltip
                                     text: (column == 14 || column == 15) ? display : ""
