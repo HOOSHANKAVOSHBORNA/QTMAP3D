@@ -72,7 +72,7 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
                 event->accept();
             }
         }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
+        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
             cancelDrawing(event);
         }
         else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
