@@ -52,3 +52,15 @@ add_custom_command(TARGET Map3d POST_BUILD
 
 add_custom_command(TARGET Map3d POST_BUILD
 	COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/moon_1024x512.jpg" "${CMAKE_CURRENT_BINARY_DIR}/")
+
+add_custom_command(TARGET Map3d POST_BUILD
+	COMMAND mkdir ARGS "-p" "${CMAKE_CURRENT_BINARY_DIR}/Images")
+add_custom_command(TARGET Map3d POST_BUILD
+	COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/Images/smoke.rgb" "${CMAKE_CURRENT_BINARY_DIR}/Images/")
+add_custom_command(TARGET Map3d POST_BUILD
+	COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/Images/continous_smoke.rgb" "${CMAKE_CURRENT_BINARY_DIR}/Images/")
+
+
+
+
+
