@@ -15,6 +15,12 @@ void Circle::setCircleHeight(float height)
 
 }
 
+float Circle::getCircleHeight()
+{
+    auto style = this->getStyle();
+    return style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
+}
+
 Circle::Circle(MapController *mapController, bool clamp)
 {
     mMapController = mapController;
@@ -56,11 +62,30 @@ osgEarth::Color Circle::getColor()
     return style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color();
 }
 
+osgEarth::Color Circle::getLineColor()
+{
+    auto style = this->getStyle();
+    return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color();
+}
+
+float Circle::getLineWidth()
+{
+    auto style = this->getStyle();
+    return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width().get();
+}
+
 
 
 void Circle::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = clamp;
+    this->setStyle(style);
+}
+
+void Circle::setLineWidth(float width)
+{
+    auto style = this->getStyle();
+    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = width;
     this->setStyle(style);
 }

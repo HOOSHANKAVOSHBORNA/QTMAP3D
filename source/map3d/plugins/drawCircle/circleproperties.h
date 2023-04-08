@@ -22,6 +22,7 @@ class CirclePropertiesModel : public QObject
     Q_PROPERTY(double    arcend         READ getArcend        WRITE setArcend       )
     Q_PROPERTY(int       clamp          READ getClamp         WRITE setClamp        )
     Q_PROPERTY(bool      relative       READ getRelative      WRITE setRelative     )
+    Q_PROPERTY(double    lineWidth      READ getLineWidth     WRITE setLineWidth    )
 
 
 
@@ -58,6 +59,10 @@ public:
     // set relative
     bool getRelative() const;
     void setRelative(const bool &relative);
+    // set lineWidth
+    double getLineWidth() const;
+    void setLineWidth(double line);
+
     void setCircle(Circle* circle);
 
 
@@ -80,6 +85,7 @@ private:
     double    mArcend    = 360   ;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp  = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
     bool      mRelative  = false ;
+    double    mLineWidth = 1;
 
     Circle*   mCircle;
     MapController* mMapController{nullptr};
