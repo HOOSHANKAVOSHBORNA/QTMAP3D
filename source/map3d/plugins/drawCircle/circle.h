@@ -6,14 +6,20 @@
 class Circle: public osgEarth::Annotation::CircleNode
 {
 public:
-    void setCircleHeight(float hieght);
-
     Circle(MapController *mapController, bool clamp);
+
+    void setCircleHeight(float hieght);
     void setColor(osgEarth::Color color);
-    osgEarth::Color getColor();
-    void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
-    osgEarth::Color getLineColor();
     void setLineColor(osgEarth::Color color);
+    void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
+
+    void setLineWidth(float width);
+
+    float getCircleHeight();
+    osgEarth::Color getColor();
+    osgEarth::Color getLineColor();
+    float getLineWidth();
+
 private:
     osgEarth::Symbology::Style circleStyle;
     MapController* mMapController{nullptr};

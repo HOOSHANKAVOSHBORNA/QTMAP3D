@@ -107,6 +107,7 @@ Item {
                 Layout.preferredHeight: 40
                 Layout.minimumHeight: 40
                 Layout.leftMargin: 32
+                Layout.rightMargin: 62
 
                 RowLayout {
                     anchors.top: parent.top

@@ -946,6 +946,115 @@ Item {
                             }
 
 
+
+                            //////////////////////////////////linewidth////////////////////////////////////
+                            Rectangle{
+                                id: lineContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                SpinBox {
+                                    id: lineValue
+                                    stepSize: 1
+                                    value: 0
+                                    to : 100000
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  10000
+                                    }
+                                    editable: true
+                                    anchors.centerIn: parent
+                                    height: 20
+
+                                    contentItem: TextInput {
+                                        id: widthInput
+                                        z: 2
+                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
+                                        text: lineValue.value
+                                        font: lineValue.font
+                                        color: "#404040"
+                                        horizontalAlignment: Qt.AlignHCenter
+                                        verticalAlignment: Qt.AlignVCenter +10
+                                        readOnly: !lineValue.editable
+                                        validator: lineValue.validator
+                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                        topPadding: 13
+                                        selectByMouse: true
+                                        selectionColor: "dark green"
+                                        onTextChanged: {
+                                            if(circleProperties && lineValue && (lineValue.value == 0 || lineValue.value)){
+                                                lineValue.value = widthInput.text
+                                                circleProperties.lineWidth = lineValue.value/10
+                                            }
+                                        }
+                                    }
+                                    up.indicator: Rectangle {
+                                        x: lineValue.mirrored ? 0 : parent.width - width
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: lineValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "+"
+                                            font.pixelSize: lineValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    down.indicator: Rectangle {
+                                        x: lineValue.mirrored ? parent.width - width : 0
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: lineValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "-"
+                                            font.pixelSize: lineValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    background: Rectangle {
+                                        implicitWidth: lineContainer.width -10
+                                        color: "#c9c9c9"
+                                        border.color: "#bdbebf"
+                                    }
+                                }
+                            }
+                            Rectangle{
+                                id:weightContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                Text {
+//                                    id: transSphere
+                                    text: qsTr("LineWidth:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+
+
                             /////////////////////////////////// Clamp ///////////////////////////////////////////
                             Rectangle{
                                 id: clampContainer
