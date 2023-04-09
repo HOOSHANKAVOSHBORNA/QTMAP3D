@@ -266,189 +266,6 @@ Item {
                                 }
                             }
 
-
-                            ///////////////////////////////////point Color Property//////////////////////////////////
-                            Rectangle{
-                                id: pointColorSecR
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 35
-//                                border.color: "#5f5f5f"
-//                                border.width: 1
-
-
-                                Rectangle{
-                                    height: 20
-                                    width: 20
-                                    color: pColor
-//                                    border.width: 2
-//                                    border.color: "#c9c9c9"
-                                    x: 5
-                                    radius: 5
-                                    anchors.verticalCenter: parent.verticalCenter
-
-                                    MouseArea{
-                                        anchors.fill: parent
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: pointColorDialog.visible = true
-
-                                    }
-                                }
-                                Rectangle{
-                                    height: 20
-                                    width: 75
-                                    color: "#c9c9c9"
-                                    x: 30
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    radius: 5
-
-                                    Text {
-                                        id: pointColorField
-                                        text: pColor
-                                        anchors.centerIn: parent
-                                        font.pointSize: 10
-
-                                    }
-                                }
-                                ColorDialog {
-                                    visible: false
-                                    id: pointColorDialog
-                                    title: "Please choose a color"
-                                    onAccepted: {
-                                        //                                    lineColor = lineColorDialog.color
-                                        pColor = pointColorDialog.color
-                                        lineProperties.pointColor = pColor
-                                    }
-
-                                }
-                            }
-                            Rectangle{
-                                id: pointColorSecL
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 35
-//                                border.color: "#5f5f5f"
-//                                border.width: 1
-
-                                Text {
-                                    id: pointColor
-                                    text: qsTr("point Color:")
-                                    font.pointSize: 10
-                                    color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
-                                }
-                            }
-
-
-                            ///////////////////////////////////pointopacity/////////////////////////////////////
-
-                            Rectangle{
-                                id: pointopacityContainer
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 30
-                                //                                border.color: "#5f5f5f"
-                                //                                border.width: 1
-
-                                SpinBox {
-                                    id: pointopacityValue
-                                    stepSize: 5
-                                    value: 100
-                                    to : 100
-                                    from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-
-                                    contentItem: TextInput {
-                                        id:pointopacityValueInput
-                                        z: 2
-                                        //                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
-                                        text: pointopacityValue.value
-                                        font: pointopacityValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !pointopacityValue.editable
-                                        validator: pointopacityValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
-                                            if(lineProperties){
-                                                pointopacityValue.value = pointopacityValueInput.text
-                                                lineProperties.pointOpacity = pointopacityValue.value
-                                            }
-                                        }
-                                    }
-                                    up.indicator: Rectangle {
-                                        x: pointopacityValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: pointopacityValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: pointopacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: pointopacityValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: pointopacityValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: pointopacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: pointopacityContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
-                                    }
-                                }
-                            }
-                            Rectangle{
-                                id: pointopacityTitle
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 30
-                                //                                border.color: "#5f5f5f"
-                                //                                border.width: 1
-
-                                Text {
-                                    id: pointopacityCircle
-                                    text: qsTr("Point Opacity:")
-                                    font.pointSize: 10
-                                    color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
-                                }
-                            }
-
                             ///////////////////////////////////width/////////////////////////////////////
 
                             Rectangle{
@@ -556,113 +373,6 @@ Item {
                                 }
                             }
 
-                            ///////////////////////////////////pointwidth/////////////////////////////////////
-
-                            Rectangle{
-                                id: pointwidthContainer
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 30
-//                                border.color: "#5f5f5f"
-//                                border.width: 1
-
-                                SpinBox {
-                                    id: pointwidthValue
-                                    stepSize: 1
-                                    value: 10
-                                    to : 10000
-                                    from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-
-                                    contentItem: TextInput {
-                                        id:pointValueInput
-                                        z: 2
-//                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
-                                        text: pointwidthValue.value
-                                        font: pointwidthValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !pointwidthValue.editable
-                                        validator: pointwidthValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
-                                            if(lineProperties){
-                                                pointwidthValue.value = pointValueInput.text
-                                                lineProperties.pointwidth = pointwidthValue.value
-                                            }
-                                        }
-                                    }
-                                    up.indicator: Rectangle {
-                                        x: pointwidthValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: pointwidthValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: pointwidthValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: pointwidthValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: pointwidthValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: pointwidthValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: pointwidthContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
-                                    }
-                                }
-                            }
-                            Rectangle{
-                                id: pointWtitle
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 30
-//                                border.color: "#5f5f5f"
-//                                border.width: 1
-
-                                Text {
-                                    id: pointwidth
-                                    text: qsTr("Point Width:")
-                                    font.pointSize: 10
-                                    color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
-                                }
-                            }
 
                             ///////////////////////////////////height/////////////////////////////////////
                             Rectangle{
@@ -992,6 +702,80 @@ Item {
                                     x:7
                                 }
                             }
+
+
+                            /////////////////////////////////////////////////////showlen//////////////////////////////////////////////////
+                            Rectangle{
+                                id: lenContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Switch {
+                                    id: len
+                                    anchors.centerIn: parent
+                                    checked: false
+
+                                    ToolTip {
+                                        parent: len
+                                        y: len.y + len.height
+                                        Text{
+                                            text: len.checked ? "Click to deactive" : "Click to active"
+                                            color: "white"
+                                        }
+
+                                        background: Rectangle {
+                                            color: "#404040"
+                                            radius: 4
+                                        }
+
+                                        visible:  len.hovered
+                                    }
+                                    onToggled: function() {
+                                        lineProperties.showLen = len.checked
+                                    }
+
+                                    Layout.alignment: Qt.AlignRight
+                                    indicator: Rectangle {
+                                        implicitWidth: 70
+                                        implicitHeight: 20
+                                        x: len.leftPadding
+                                        y: parent.height / 2 - height / 2
+                                        radius: 13
+                                        color: len.checked ? "#3f9173" : "#383838"
+                                        border.color: len.checked ? "#17a81a" : "#a8171a"
+
+                                        Rectangle {
+                                            x: len.checked ? parent.width - width : 0
+                                            width: 20
+                                            height: 20
+                                            radius: 13
+                                            color: len.down ? "#cccccc" : "#ffffff"
+                                            border.color: len.checked ? (len.down ? "#17a81a" : "#21be2b") : "#999999"
+                                        }
+                                    }
+                                }
+                            }
+
+                            Rectangle{
+                                id:lenContainerTitle
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Text {
+                                    text: qsTr("Show Length:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
                             /////////////////////////////////////////////////////point//////////////////////////////////////////////////
                             Rectangle{
                                 id: pointContainer
@@ -1006,11 +790,19 @@ Item {
                                     anchors.centerIn: parent
                                     checked: true
                                     onCheckedChanged:      if(visibleSwitch.checked === false){
-                                                               smooth.checkable = false;
+                                                               smooth.opacity = 0.2;
+                                                               smooth.enabled = false
                                                                pointwidthValue.enabled = false;
+                                                               pointwidthContainer.opacity = 0.2
+                                                               pointcolorbtn.enabled = false
+                                                               pointColorSecR.opacity = 0.2
                                                            }else{
-                                                               smooth.checkable = true;
+                                                               smooth.enabled = true;
+                                                               smooth.opacity = 1
                                                                pointwidthValue.enabled = true;
+                                                               pointwidthContainer.opacity = 1
+                                                               pointcolorbtn.enabled = true
+                                                               pointColorSecR.opacity = 1
                                                            }
 
                                     ToolTip {
@@ -1070,6 +862,193 @@ Item {
                                     x:7
                                 }
                             }
+
+
+                            ///////////////////////////////////point Color Property//////////////////////////////////
+                            Rectangle{
+                                id: pointColorSecR
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 35
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+
+                                Rectangle{
+                                    height: 20
+                                    width: 20
+                                    color: pColor
+//                                    border.width: 2
+//                                    border.color: "#c9c9c9"
+                                    x: 5
+                                    radius: 5
+                                    anchors.verticalCenter: parent.verticalCenter
+
+                                    MouseArea{
+                                        id:pointcolorbtn
+                                        anchors.fill: parent
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: pointColorDialog.visible = true
+
+                                    }
+                                }
+                                Rectangle{
+                                    height: 20
+                                    width: 75
+                                    color: "#c9c9c9"
+                                    x: 30
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    radius: 5
+
+                                    Text {
+                                        id: pointColorField
+                                        text: pColor
+                                        anchors.centerIn: parent
+                                        font.pointSize: 10
+
+                                    }
+                                }
+                                ColorDialog {
+                                    visible: false
+                                    id: pointColorDialog
+                                    title: "Please choose a color"
+                                    onAccepted: {
+                                        //                                    lineColor = lineColorDialog.color
+                                        pColor = pointColorDialog.color
+                                        lineProperties.pointColor = pColor
+                                    }
+
+                                }
+                            }
+                            Rectangle{
+                                id: pointColorSecL
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 35
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Text {
+                                    id: pointColor
+                                    text: qsTr("point Color:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+
+                            ///////////////////////////////////pointwidth/////////////////////////////////////
+
+                            Rectangle{
+                                id: pointwidthContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                SpinBox {
+                                    id: pointwidthValue
+                                    stepSize: 1
+                                    value: 10
+                                    to : 10000
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  100
+                                    }
+                                    editable: true
+                                    anchors.centerIn: parent
+                                    height: 20
+
+
+                                    contentItem: TextInput {
+                                        id:pointValueInput
+                                        z: 2
+//                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
+                                        text: pointwidthValue.value
+                                        font: pointwidthValue.font
+                                        color: "#404040"
+                                        horizontalAlignment: Qt.AlignHCenter
+                                        verticalAlignment: Qt.AlignVCenter +10
+                                        readOnly: !pointwidthValue.editable
+                                        validator: pointwidthValue.validator
+                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                        topPadding: 13
+                                        selectByMouse: true
+                                        selectionColor: "dark green"
+                                        onTextChanged: {
+                                            if(lineProperties){
+                                                pointwidthValue.value = pointValueInput.text
+                                                lineProperties.pointwidth = pointwidthValue.value
+                                            }
+                                        }
+                                    }
+                                    up.indicator: Rectangle {
+                                        x: pointwidthValue.mirrored ? 0 : parent.width - width
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: pointwidthValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "+"
+                                            font.pixelSize: pointwidthValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    down.indicator: Rectangle {
+                                        x: pointwidthValue.mirrored ? parent.width - width : 0
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: pointwidthValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "-"
+                                            font.pixelSize: pointwidthValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    background: Rectangle {
+                                        implicitWidth: pointwidthContainer.width -10
+                                        color: "#c9c9c9"
+                                        border.color: "#bdbebf"
+                                    }
+                                }
+                            }
+                            Rectangle{
+                                id: pointWtitle
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+//                                border.color: "#5f5f5f"
+//                                border.width: 1
+
+                                Text {
+                                    id: pointwidth
+                                    text: qsTr("Point Width:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+
+
 
                             /////////////////////////////////////////////////////smooth//////////////////////////////////////////////////
                             Rectangle{
@@ -1143,77 +1122,7 @@ Item {
                                 }
                             }
 
-                            /////////////////////////////////////////////////////showlen//////////////////////////////////////////////////
-                            Rectangle{
-                                id: lenContainer
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 30
-//                                border.color: "#5f5f5f"
-//                                border.width: 1
 
-                                Switch {
-                                    id: len
-                                    anchors.centerIn: parent
-                                    checked: false
-
-                                    ToolTip {
-                                        parent: len
-                                        y: len.y + len.height
-                                        Text{
-                                            text: len.checked ? "Click to deactive" : "Click to active"
-                                            color: "white"
-                                        }
-
-                                        background: Rectangle {
-                                            color: "#404040"
-                                            radius: 4
-                                        }
-
-                                        visible:  len.hovered
-                                    }
-                                    onToggled: function() {
-                                        lineProperties.showLen = len.checked
-                                    }
-
-                                    Layout.alignment: Qt.AlignRight
-                                    indicator: Rectangle {
-                                        implicitWidth: 70
-                                        implicitHeight: 20
-                                        x: len.leftPadding
-                                        y: parent.height / 2 - height / 2
-                                        radius: 13
-                                        color: len.checked ? "#3f9173" : "#383838"
-                                        border.color: len.checked ? "#17a81a" : "#a8171a"
-
-                                        Rectangle {
-                                            x: len.checked ? parent.width - width : 0
-                                            width: 20
-                                            height: 20
-                                            radius: 13
-                                            color: len.down ? "#cccccc" : "#ffffff"
-                                            border.color: len.checked ? (len.down ? "#17a81a" : "#21be2b") : "#999999"
-                                        }
-                                    }
-                                }
-                            }
-
-                            Rectangle{
-                                id:lenContainerTitle
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 30
-//                                border.color: "#5f5f5f"
-//                                border.width: 1
-
-                                Text {
-                                    text: qsTr("Show Length:")
-                                    font.pointSize: 10
-                                    color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
-                                }
-                            }
                         }
                     }
                 }
