@@ -67,7 +67,7 @@ Item {
                 padding: 5
                 width: parent.width
                 height: parent.height - header.height
-                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+//                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
                     contentHeight: 400
                     width: 240
@@ -1114,7 +1114,7 @@ Item {
 //                                border.width: 1
 
                                 Text {
-                                    text: qsTr("Smooth :")
+                                    text: qsTr("Point Smooth :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
