@@ -783,38 +783,27 @@ Item {
                             anchors.topMargin: 20
                             anchors.top: props.bottom
                             label: Rectangle{
-                                color: "gray"
+                                id: labelContainer
+                                color: "#404040"
                                 opacity: 1
                                 border.color: "white"
                                 border.width: 1
-                                radius: 10
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                height: 20
-                                width: 130
-                                y: -10
+                                radius: 15
+                                x: 10
+                                height: 25
+                                width: 105
+                                y: -13
                                 Text {
                                     id: pointLale
-                                    text: qsTr("points options")
+                                    text: qsTr("points:")
                                     color: "white"
-                                    anchors.centerIn: parent
+                                    x:5
 
                                 }
-                            }
-
-                            GridLayout{
-                                id: pointprops
-                                width: parent.width
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.topMargin: 20
-                                columnSpacing: 0
-                                rowSpacing: 1
-                                columns:2
-                                rows: 6
-                                layoutDirection: Qt.RightToLeft
-                                /////////////////////////////////////////////////////point//////////////////////////////////////////////////
                                 Rectangle{
                                     id: pointContainer
-                                    Layout.fillWidth: true
+                                    x: 80
+                                    anchors.verticalCenter: parent.verticalCenter
                                     color: "#404040"
                                     height: 30
                                     //                                border.color: "#5f5f5f"
@@ -861,7 +850,7 @@ Item {
 
                                         Layout.alignment: Qt.AlignRight
                                         indicator: Rectangle {
-                                            implicitWidth: 70
+                                            implicitWidth: 50
                                             implicitHeight: 20
                                             x: visibleSwitch.leftPadding
                                             y: parent.height / 2 - height / 2
@@ -880,23 +869,104 @@ Item {
                                         }
                                     }
                                 }
+                            }
 
-                                Rectangle{
-                                    id: pointContainerTitle
-                                    Layout.fillWidth: true
-                                    color: "#404040"
-                                    height: 30
-                                    //                                border.color: "#5f5f5f"
-                                    //                                border.width: 1
+                            GridLayout{
+                                id: pointprops
+                                width: parent.width
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.topMargin: 20
+                                columnSpacing: 0
+                                rowSpacing: 1
+                                columns:2
+                                rows: 6
+                                layoutDirection: Qt.RightToLeft
+                                /////////////////////////////////////////////////////point//////////////////////////////////////////////////
+                                //                                Rectangle{
+                                //                                    id: pointContainer
+                                //                                    Layout.fillWidth: true
+                                //                                    color: "#404040"
+                                //                                    height: 30
+                                //                                    //                                border.color: "#5f5f5f"
+                                //                                    //                                border.width: 1
 
-                                    Text {
-                                        text: qsTr("Points :")
-                                        font.pointSize: 10
-                                        color: "white"
-                                        anchors.verticalCenter:  parent.verticalCenter
-                                        x:7
-                                    }
-                                }
+                                //                                    Switch {
+                                //                                        id: visibleSwitch
+                                //                                        anchors.centerIn: parent
+                                //                                        checked: true
+                                //                                        onCheckedChanged:      if(visibleSwitch.checked === false){
+                                //                                                                   smooth.opacity = 0.2;
+                                //                                                                   smooth.enabled = false
+                                //                                                                   pointwidthValue.enabled = false;
+                                //                                                                   pointwidthContainer.opacity = 0.2
+                                //                                                                   pointcolorbtn.enabled = false
+                                //                                                                   pointColorSecR.opacity = 0.2
+                                //                                                               }else{
+                                //                                                                   smooth.enabled = true;
+                                //                                                                   smooth.opacity = 1
+                                //                                                                   pointwidthValue.enabled = true;
+                                //                                                                   pointwidthContainer.opacity = 1
+                                //                                                                   pointcolorbtn.enabled = true
+                                //                                                                   pointColorSecR.opacity = 1
+                                //                                                               }
+
+                                //                                        ToolTip {
+                                //                                            parent: visibleSwitch
+                                //                                            y: visibleSwitch.y + visibleSwitch.height
+                                //                                            Text{
+                                //                                                text: visibleSwitch.checked ? "Click to deactive" : "Click to active"
+                                //                                                color: "white"
+                                //                                            }
+
+                                //                                            background: Rectangle {
+                                //                                                color: "#404040"
+                                //                                                radius: 4
+                                //                                            }
+
+                                //                                            visible:  visibleSwitch.hovered
+                                //                                        }
+                                //                                        onToggled: function() {
+                                //                                            lineProperties.visible = visibleSwitch.checked
+                                //                                        }
+
+                                //                                        Layout.alignment: Qt.AlignRight
+                                //                                        indicator: Rectangle {
+                                //                                            implicitWidth: 70
+                                //                                            implicitHeight: 20
+                                //                                            x: visibleSwitch.leftPadding
+                                //                                            y: parent.height / 2 - height / 2
+                                //                                            radius: 13
+                                //                                            color: visibleSwitch.checked ? "#3f9173" : "#383838"
+                                //                                            border.color: visibleSwitch.checked ? "#17a81a" : "#a8171a"
+
+                                //                                            Rectangle {
+                                //                                                x: visibleSwitch.checked ? parent.width - width : 0
+                                //                                                width: 20
+                                //                                                height: 20
+                                //                                                radius: 13
+                                //                                                color: visibleSwitch.down ? "#cccccc" : "#ffffff"
+                                //                                                border.color: visibleSwitch.checked ? (visibleSwitch.down ? "#17a81a" : "#21be2b") : "#999999"
+                                //                                            }
+                                //                                        }
+                                //                                    }
+                                //                                }
+
+                                //                                Rectangle{
+                                //                                    id: pointContainerTitle
+                                //                                    Layout.fillWidth: true
+                                //                                    color: "#404040"
+                                //                                    height: 30
+                                //                                    //                                border.color: "#5f5f5f"
+                                //                                    //                                border.width: 1
+
+                                //                                    Text {
+                                //                                        text: qsTr("Points :")
+                                //                                        font.pointSize: 10
+                                //                                        color: "white"
+                                //                                        anchors.verticalCenter:  parent.verticalCenter
+                                //                                        x:7
+                                //                                    }
+                                //                                }
 
 
                                 ///////////////////////////////////point Color Property//////////////////////////////////
