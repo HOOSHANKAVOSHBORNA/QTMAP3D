@@ -68,11 +68,13 @@ osgEarth::Color Circle::getLineColor()
     return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color();
 }
 
+
 float Circle::getLineWidth()
 {
     auto style = this->getStyle();
     return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width().get();
 }
+
 
 
 

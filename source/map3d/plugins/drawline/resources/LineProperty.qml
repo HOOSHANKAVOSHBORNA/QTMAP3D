@@ -69,7 +69,7 @@ Item {
                 height: parent.height - header.height
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
-                    contentHeight: 350
+                    contentHeight: 400
                     width: 240
 
                     Rectangle {
@@ -158,6 +158,114 @@ Item {
                                     x:7
                                 }
                             }
+                            ///////////////////////////////////opacity/////////////////////////////////////
+
+                            Rectangle{
+                                id: lineopacityContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                SpinBox {
+                                    id: lineopacityValue
+                                    stepSize: 5
+                                    value: 100
+                                    to : 100
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  100
+                                    }
+                                    editable: true
+                                    anchors.centerIn: parent
+                                    height: 20
+
+
+                                    contentItem: TextInput {
+                                        id:lineopacityValueInput
+                                        z: 2
+                                        //                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
+                                        text: lineopacityValue.value
+                                        font: lineopacityValue.font
+                                        color: "#404040"
+                                        horizontalAlignment: Qt.AlignHCenter
+                                        verticalAlignment: Qt.AlignVCenter +10
+                                        readOnly: !lineopacityValue.editable
+                                        validator: lineopacityValue.validator
+                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                        topPadding: 13
+                                        selectByMouse: true
+                                        selectionColor: "dark green"
+                                        onTextChanged: {
+                                            if(lineProperties){
+                                                lineopacityValue.value = lineopacityValueInput.text
+                                                lineProperties.lineOpacity = lineopacityValue.value
+                                            }
+                                        }
+                                    }
+                                    up.indicator: Rectangle {
+                                        x: lineopacityValue.mirrored ? 0 : parent.width - width
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: lineopacityValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "+"
+                                            font.pixelSize: lineopacityValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    down.indicator: Rectangle {
+                                        x: lineopacityValue.mirrored ? parent.width - width : 0
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: lineopacityValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "-"
+                                            font.pixelSize: lineopacityValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    background: Rectangle {
+                                        implicitWidth: lineopacityContainer.width -10
+                                        color: "#c9c9c9"
+                                        border.color: "#bdbebf"
+                                    }
+                                }
+                            }
+                            Rectangle{
+                                id: lineopacityTitle
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                Text {
+                                    id: lineopacityCircle
+                                    text: qsTr("Line Opacity:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
 
                             ///////////////////////////////////point Color Property//////////////////////////////////
                             Rectangle{
@@ -225,6 +333,115 @@ Item {
                                 Text {
                                     id: pointColor
                                     text: qsTr("point Color:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+
+                            ///////////////////////////////////pointopacity/////////////////////////////////////
+
+                            Rectangle{
+                                id: pointopacityContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                SpinBox {
+                                    id: pointopacityValue
+                                    stepSize: 5
+                                    value: 100
+                                    to : 100
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  100
+                                    }
+                                    editable: true
+                                    anchors.centerIn: parent
+                                    height: 20
+
+
+                                    contentItem: TextInput {
+                                        id:pointopacityValueInput
+                                        z: 2
+                                        //                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
+                                        text: pointopacityValue.value
+                                        font: pointopacityValue.font
+                                        color: "#404040"
+                                        horizontalAlignment: Qt.AlignHCenter
+                                        verticalAlignment: Qt.AlignVCenter +10
+                                        readOnly: !pointopacityValue.editable
+                                        validator: pointopacityValue.validator
+                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                        topPadding: 13
+                                        selectByMouse: true
+                                        selectionColor: "dark green"
+                                        onTextChanged: {
+                                            if(lineProperties){
+                                                pointopacityValue.value = pointopacityValueInput.text
+                                                lineProperties.pointOpacity = pointopacityValue.value
+                                            }
+                                        }
+                                    }
+                                    up.indicator: Rectangle {
+                                        x: pointopacityValue.mirrored ? 0 : parent.width - width
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: pointopacityValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "+"
+                                            font.pixelSize: pointopacityValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    down.indicator: Rectangle {
+                                        x: pointopacityValue.mirrored ? parent.width - width : 0
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: pointopacityValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "-"
+                                            font.pixelSize: pointopacityValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    background: Rectangle {
+                                        implicitWidth: pointopacityContainer.width -10
+                                        color: "#c9c9c9"
+                                        border.color: "#bdbebf"
+                                    }
+                                }
+                            }
+                            Rectangle{
+                                id: pointopacityTitle
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                Text {
+                                    id: pointopacityCircle
+                                    text: qsTr("Point Opacity:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -1018,8 +1235,8 @@ Item {
             lenContainerTitle.visible = false
             transContainer.visible = false
             heightContainer.visible = false
-            clampContainer.visible = true
-            clampContainerTitle.visible = true
+            clampContainer.visible = false
+            clampContainerTitle.visible = false
             tesselationContainer.visible = true
             tesselationContainerTitle.visible = true
             lineProperties.showLen = true

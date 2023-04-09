@@ -42,7 +42,7 @@ Item {
                     TabButton {
                         id :btn
                         text: modelData
-                        width: Math.max(100, bar.width / 3)
+                        width: Math.max(90, bar.width / 3.1)
                         property int roundEdge: 0
                         contentItem: Text {
                             text: btn.text

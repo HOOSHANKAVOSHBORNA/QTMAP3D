@@ -31,6 +31,23 @@ void LinePropertiesModel:: setColor(const QString &value){
 
 }
 
+int LinePropertiesModel::getLineOpacity() const
+{
+    return mLineOpacity;
+}
+void LinePropertiesModel::setLineOpacity(const int &value){
+    if(value == mLineOpacity)
+        return;
+    mLineOpacity = value;
+    if(mLineNode){
+        float tempValue = value;
+        osg::Vec4f tempColor = mLineNode->getColor();
+        tempColor.a() = tempValue /100;
+        mLineNode->setColor(osg::Vec4f(tempColor));
+    }
+}
+
+
 QString LinePropertiesModel::getPointColor() const
 {
     return mPointColor;
@@ -43,6 +60,23 @@ void LinePropertiesModel:: setPointColor(const QString &value){
         mLineNode->setPointColor(value.toStdString());
     }
 
+}
+
+
+int LinePropertiesModel::getPointOpacity() const
+{
+    return mPointOpacity;
+}
+void LinePropertiesModel::setPointOpacity(const int &value){
+    if(value == mPointOpacity)
+        return;
+    mPointOpacity = value;
+    if(mLineNode){
+        float tempValue = value;
+        osg::Vec4f tempColor = mLineNode->getPointColor();
+        tempColor.a() = tempValue /100;
+        mLineNode->setPointColor(osg::Vec4f(tempColor));
+    }
 }
 
 int LinePropertiesModel::getWidth() const
@@ -235,7 +269,9 @@ Q_INVOKABLE void LineProperties::show()
 
 void LineProperties::hide()
 {
-    mUiHandle->propertiesHide(mItem);
+
+        mUiHandle->propertiesHide(mItem);
+
 }
 
 void LineProperties::setLine(LineNode *line )

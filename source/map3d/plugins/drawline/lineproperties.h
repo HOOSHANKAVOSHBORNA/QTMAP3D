@@ -17,7 +17,9 @@ class LinePropertiesModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString   color          READ getColor         WRITE setColor        )
+    Q_PROPERTY(int       lineOpacity    READ getLineOpacity   WRITE setLineOpacity  )
     Q_PROPERTY(QString   pointColor     READ getPointColor    WRITE setPointColor   )
+    Q_PROPERTY(int       pointOpacity   READ getPointOpacity  WRITE setPointOpacity )
     Q_PROPERTY(QString   width          READ getWidth         WRITE setWidth        )
     Q_PROPERTY(float     pointwidth     READ getPointwidth    WRITE setPointwidth   )
     Q_PROPERTY(float     height         READ getHeight        WRITE setHeight       )
@@ -28,11 +30,6 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(bool      showLen        READ getShowLen       WRITE setShowLen      )
     Q_PROPERTY(int       ruler          READ getRuler         WRITE setRuler        NOTIFY rulerChanged )
 
-
-
-
-
-
 public:
 
     LinePropertiesModel( QObject *parent = nullptr);
@@ -40,8 +37,14 @@ public:
     QString getColor() const;
     void setColor(const QString &color);
     //set color
+    int getLineOpacity() const;
+    void setLineOpacity(const int &lineOpacity);
+    //set color
     QString getPointColor() const;
     void setPointColor(const QString &pointColor);
+    //set color
+    int getPointOpacity() const;
+    void setPointOpacity(const int &pointOpacity);
     // set width
     int getWidth() const;
     void setWidth(const QString &width);
@@ -81,6 +84,8 @@ signals:
 
 private:
     QString                                           mColor       = "#91001d";
+    int                                               mLineOpacity = 100 ;
+    int                                               mPointOpacity= 100 ;
     QString                                           mPointColor  = "#001191";
     int                                               mWidth       = 10.00;
     float                                             mHeight      = 0;

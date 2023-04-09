@@ -118,6 +118,24 @@ void CirclePropertiesModel::setTransparency(const int &value){
     }
 }
 
+
+int CirclePropertiesModel::getLineOpacity() const
+{
+    return mLineOpacity;
+}
+void CirclePropertiesModel::setLineOpacity(const int &value){
+    if(value == mLineOpacity)
+        return;
+    mLineOpacity = value;
+    if(mCircle){
+        float tempValue = value;
+        osg::Vec4f tempColor = mCircle->getLineColor();
+        tempColor.a() = tempValue /100;
+        mCircle->setLineColor(osg::Vec4f(tempColor));
+    }
+}
+
+
 double CirclePropertiesModel::getArcstart() const
 {
     return mArcstart;

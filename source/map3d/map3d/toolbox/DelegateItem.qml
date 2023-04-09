@@ -103,7 +103,6 @@ Item {
                         radius: _radius
                         opacity: 1
                     }
-
                 }
             }
         }
@@ -179,12 +178,9 @@ Item {
                                                     (rectangle.pressed ? _colorHover : "#FFFFFF");
                     }
                 }
-
             }
         }
-
     }
-
 }
 
 

@@ -45,6 +45,8 @@ private:
     void cancelDrawingLine(QMouseEvent* event);
     void mouseMoveDrawing(QMouseEvent* event);
     void finishDrawing(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
+    osgEarth::Annotation::PlaceNode *makeIconNode();
+
 
     bool addNodeToLayer(osg::Node *node);
     void removeNodeFromLayer(osg::Node *node);
@@ -64,6 +66,8 @@ private:
     UIHandle *muiHandle;
     bool mEnterLineZone{false};
     bool mLenghtShow;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
+    osg::ref_ptr<osg::Image> mIcon;
 };
 
 #endif // LINE_H
