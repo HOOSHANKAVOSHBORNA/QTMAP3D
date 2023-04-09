@@ -28,11 +28,6 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(bool      showLen        READ getShowLen       WRITE setShowLen      )
     Q_PROPERTY(int       ruler          READ getRuler         WRITE setRuler        NOTIFY rulerChanged )
 
-
-
-
-
-
 public:
 
     LinePropertiesModel( QObject *parent = nullptr);

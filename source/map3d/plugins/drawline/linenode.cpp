@@ -41,7 +41,6 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
         distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 2));
         distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 1));
 
-
         if(mIsHeight){
             auto lenghtHeight = (mLineGeometry->at(mLineGeometry->size() - 2)-mLineGeometry->at(mLineGeometry->size() - 1)).length();
             auto imageLabel = updateLenghtLabel(lenghtHeight);
@@ -57,6 +56,12 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
         else{
             auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
             auto imageLabel = updateLenghtLabel(lenght);
+            double lat;
+            double lon;
+            double dis = osgEarth::GeoMath().distance(0.6236764436, 0.8974078097, 0.6380068359, 0.926157676);
+            double bea = osgEarth::GeoMath().bearing(0.6236764436, 0.8974078097, 0.6380068359, 0.926157676);
+            osgEarth::GeoMath().destination(0.6236764436, 0.8974078097, bea, dis, lat, lon);
+            qDebug()<<dis;
 
             osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
             labelNode->setIconImage(imageLabel);
