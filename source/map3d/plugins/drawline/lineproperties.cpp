@@ -269,7 +269,9 @@ Q_INVOKABLE void LineProperties::show()
 
 void LineProperties::hide()
 {
-    mUiHandle->propertiesHide(mItem);
+
+        mUiHandle->propertiesHide(mItem);
+
 }
 
 void LineProperties::setLine(LineNode *line )

@@ -84,7 +84,10 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mEnterLineZone = false;
                 mType = Type::NONE;
                 mDrawingState = DrawingState::FINISH;
-                mLineProperties->hide();
+                if(mLineProperties){
+                        mLineProperties->hide();
+             }
+
                 mLineProperties->deleteLater();
                 mLineProperties = nullptr;
                 removeNodeFromLayer(mIconNode);
@@ -110,7 +113,9 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mEnterLineZone = false;
             mType = Type::NONE;
             mDrawingState = DrawingState::FINISH;
-            mLineProperties->hide();
+            if(mLineProperties){
+                    mLineProperties->hide();
+         }
             mLineProperties->deleteLater();
             mLineProperties = nullptr;
             removeNodeFromLayer(mIconNode);
@@ -135,7 +140,9 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mEnterLineZone = false;
             mType = Type::NONE;
             mDrawingState = DrawingState::FINISH;
-            mLineProperties->hide();
+            if(mLineProperties){
+                    mLineProperties->hide();
+         }
             mLineProperties->deleteLater();
             mLineProperties = nullptr;
             removeNodeFromLayer(mIconNode);
