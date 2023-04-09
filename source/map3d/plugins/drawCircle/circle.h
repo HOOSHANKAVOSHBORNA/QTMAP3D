@@ -12,7 +12,7 @@ public:
     void setColor(osgEarth::Color color);
     osgEarth::Color getColor();
     void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
-
+    osgEarth::Color getLineColor();
     void setLineColor(osgEarth::Color color);
 private:
     osgEarth::Symbology::Style circleStyle;

@@ -56,6 +56,12 @@ osgEarth::Color Circle::getColor()
     return style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color();
 }
 
+osgEarth::Color Circle::getLineColor()
+{
+    auto style = this->getStyle();
+    return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color();
+}
+
 
 
 void Circle::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)
