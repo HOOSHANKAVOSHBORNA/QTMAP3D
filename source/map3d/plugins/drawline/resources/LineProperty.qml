@@ -69,7 +69,7 @@ Item {
                 height: parent.height - header.height
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
-                    contentHeight: 350
+                    contentHeight: 400
                     width: 240
 
                     Rectangle {
@@ -1235,8 +1235,8 @@ Item {
             lenContainerTitle.visible = false
             transContainer.visible = false
             heightContainer.visible = false
-            clampContainer.visible = true
-            clampContainerTitle.visible = true
+            clampContainer.visible = false
+            clampContainerTitle.visible = false
             tesselationContainer.visible = true
             tesselationContainerTitle.visible = true
             lineProperties.showLen = true

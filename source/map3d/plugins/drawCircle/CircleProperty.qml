@@ -65,7 +65,7 @@ Item {
                 height: parent.height - header.height
                 ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
-                    contentHeight: 350
+                    contentHeight: 400
                     width: 240
 
                     Rectangle {
