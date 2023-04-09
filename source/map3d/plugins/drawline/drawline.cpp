@@ -61,6 +61,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
         osgEarth::ModelLayer *lineLayer = new osgEarth::ModelLayer();
         lineLayer->setName(DRAW_LAYER_NAME);
         mMapController->addLayer(lineLayer);
+
     }
 
     if(CATEGORY == category)
@@ -75,6 +76,8 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mLineProperties = new LineProperties(mQmlEngine,muiHandle );
                 mLineProperties->setIsRuler(0);
                 mLineProperties->show();
+                mIconNode = makeIconNode();
+                addNodeToLayer(mIconNode);
             }
             else
             {
@@ -87,6 +90,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
 
                 mLineProperties->deleteLater();
                 mLineProperties = nullptr;
+                removeNodeFromLayer(mIconNode);
             }
         }
     if(name == RULER)
@@ -100,6 +104,8 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mLineProperties = new LineProperties(mQmlEngine,muiHandle );
             mLineProperties->setIsRuler(1);
             mLineProperties->show();
+            mIconNode = makeIconNode();
+            addNodeToLayer(mIconNode);
 
         }
         else
@@ -112,6 +118,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
          }
             mLineProperties->deleteLater();
             mLineProperties = nullptr;
+            removeNodeFromLayer(mIconNode);
         }
     }
 
@@ -125,6 +132,8 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mLineProperties = new LineProperties(mQmlEngine,muiHandle );
             mLineProperties->setIsRuler(2);
             mLineProperties->show();
+            mIconNode = makeIconNode();
+            addNodeToLayer(mIconNode);
         }
         else
         {
@@ -136,6 +145,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
          }
             mLineProperties->deleteLater();
             mLineProperties = nullptr;
+            removeNodeFromLayer(mIconNode);
         }
     }
 }
@@ -144,6 +154,7 @@ bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
     muiHandle = uIHandle;
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
+    //mIconNode = makeIconNode();
 
     return true;
 }
@@ -196,6 +207,9 @@ void drawLine::mousePressEvent(QMouseEvent *event)
 void drawLine::mouseMoveEvent(QMouseEvent *event)
 {
     if (mEnterLineZone){
+        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+        mIconNode->setPosition(geoPos);
+
         if (mDrawingState == DrawingState::DRAWING && mType!=Type::HEIGHT){
             mouseMoveDrawing(event);
         }
@@ -272,6 +286,31 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
             removeNodeFromLayer(nodeEditor);
         event->accept();
     }
+}
+
+PlaceNode *drawLine::makeIconNode()
+{
+    switch(mType) {
+      case Type::LINE:
+        mIcon = osgDB::readImageFile("../data/images/draw/line.png");
+        break;
+      case Type::RULER:
+        mIcon = osgDB::readImageFile("../data/images/draw/ruler.png");
+        break;
+      case Type::HEIGHT:
+        mIcon = osgDB::readImageFile("../data/images/draw/height.png");
+        break;
+      case Type::NONE:
+        mIcon = nullptr;
+        break;
+    //default:
+        //mIcon = osgDB::readImageFile("../data/images/draw/line.png");
+    }
+
+    mIcon->scaleImage(24, 24, mIcon->r());
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode>  model = new osgEarth::Annotation::PlaceNode();
+    model->setIconImage(mIcon);
+    return model.release();
 }
 
 bool drawLine::addNodeToLayer(osg::Node *node)

@@ -72,7 +72,7 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
                 event->accept();
             }
         }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
+        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
             cancelDrawing(event);
         }
         else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
@@ -102,21 +102,13 @@ void DrawCircle::startDraw(QMouseEvent *event)
 {
     mCircle = new Circle(mMapcontroller, true);
     mCircleProperties->setCircle(mCircle);
-//    mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
-//    mCircle->setArcStart(0);
-//    mCircle->setArcEnd(360);
 
-//    mCircle->setColor(osgEarth::Color(1, 0, 1, 0.7f));
-//    mCircle->setRadius(500000);
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
 
     mCircle->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-//    mCircleHdragger->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-//    addNodeToLayer(mCircleHdragger);
-//    mCircleHdragger->Dragger::setDefaultDragMode(osgEarth::Annotation::Dragger::DragMode::DRAGMODE_VERTICAL);
 
     mCircleProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
     addNodeToLayer(mCircle);
@@ -129,9 +121,6 @@ void DrawCircle::cancelDrawing(QMouseEvent *event)
     mCircle = nullptr;
     mCircleProperties->setCircle(mCircle);
     mDrawingState = DrawingState::START;
-//    removeNodeFromLayer(mCircleHdragger);
-//    mCircleHdragger = nullptr;
-//    mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
 
     event->accept();
 }
@@ -139,21 +128,8 @@ void DrawCircle::cancelDrawing(QMouseEvent *event)
 void DrawCircle::finishDrawing(QMouseEvent *event)
 {
     if (mDrawingState == DrawingState::DRAWING) {
-//        mCircle = nullptr;
-//        mCircleProperties->setCircle(mCircle);
-
-//        removeNodeFromLayer(mCircleHdragger);
-//        mCircleHdragger = nullptr;
-//        mCircleHdragger = new osgEarth::Annotation::SphereDragger(mMapcontroller->getMapNode());
         mDrawingState = DrawingState::START;
         event->accept();
-    }
-}
-
-void DrawCircle::onCircleMouseMove(QMouseEvent */*event*/)
-{
-    if (mCircle){
-        mCircle->setCircleHeight(static_cast<float>(mCircleHdragger->Dragger::getPosition().z()));
     }
 }
 
