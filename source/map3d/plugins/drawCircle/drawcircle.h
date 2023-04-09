@@ -25,11 +25,9 @@ public:
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool setup(MapController *mapController,
                UIHandle *UIHandle) override;
-    osgEarth::Annotation::PlaceNode* makeIconNode();
 
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;
-//    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 
 private:
@@ -39,7 +37,7 @@ private:
 
     bool addNodeToLayer(osg::Node *node);
     void removeNodeFromLayer(osg::Node *node);
-    void onCircleMouseMove(QMouseEvent *event);
+    osgEarth::Annotation::PlaceNode* makeIconNode();
 
 private:
     MapController* mMapcontroller {nullptr};
