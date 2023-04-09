@@ -18,10 +18,12 @@ class CirclePropertiesModel : public QObject
     Q_PROPERTY(double    radius         READ getRadius        WRITE setRadius       )
     Q_PROPERTY(double    circleheight   READ getCircleheight  WRITE setCircleHeight )
     Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency )
+    Q_PROPERTY(int       lineopacity    READ getLineOpacity   WRITE setLineOpacity  )
     Q_PROPERTY(double    arcstart       READ getArcstart      WRITE setArcstart     )
     Q_PROPERTY(double    arcend         READ getArcend        WRITE setArcend       )
     Q_PROPERTY(int       clamp          READ getClamp         WRITE setClamp        )
     Q_PROPERTY(bool      relative       READ getRelative      WRITE setRelative     )
+    Q_PROPERTY(double    lineWidth      READ getLineWidth     WRITE setLineWidth    )
 
 
 
@@ -46,6 +48,9 @@ public:
     // set transparency
     int getTransparency() const;
     void setTransparency(const int &transparency);
+    // set lineopacity
+    int getLineOpacity() const;
+    void setLineOpacity(const int &lineopacity);
     //set Arc start
     double getArcstart() const;
     void setArcstart(const double &arcstart);
@@ -58,6 +63,10 @@ public:
     // set relative
     bool getRelative() const;
     void setRelative(const bool &relative);
+    // set lineWidth
+    double getLineWidth() const;
+    void setLineWidth(double line);
+
     void setCircle(Circle* circle);
 
 
@@ -73,13 +82,15 @@ private:
     QString   mFillcolor = "#91001d";
     QString   mLinecolor = "#ffffff";
     QVector3D  mLocation ;
-    double    mRadius  = 200000  ;
+    double    mRadius  = 20000  ;
     double    mCircleHeight = 0  ;
     int       mTransparency = 50 ;
+    int       mLineOpacity  = 50 ;
     double    mArcstart  = 0     ;
     double    mArcend    = 360   ;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp  = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
     bool      mRelative  = false ;
+    double    mLineWidth = 1;
 
     Circle*   mCircle;
     MapController* mMapController{nullptr};

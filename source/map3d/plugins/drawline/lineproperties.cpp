@@ -31,6 +31,23 @@ void LinePropertiesModel:: setColor(const QString &value){
 
 }
 
+int LinePropertiesModel::getLineOpacity() const
+{
+    return mLineOpacity;
+}
+void LinePropertiesModel::setLineOpacity(const int &value){
+    if(value == mLineOpacity)
+        return;
+    mLineOpacity = value;
+    if(mLineNode){
+        float tempValue = value;
+        osg::Vec4f tempColor = mLineNode->getColor();
+        tempColor.a() = tempValue /100;
+        mLineNode->setColor(osg::Vec4f(tempColor));
+    }
+}
+
+
 QString LinePropertiesModel::getPointColor() const
 {
     return mPointColor;
@@ -43,6 +60,23 @@ void LinePropertiesModel:: setPointColor(const QString &value){
         mLineNode->setPointColor(value.toStdString());
     }
 
+}
+
+
+int LinePropertiesModel::getPointOpacity() const
+{
+    return mPointOpacity;
+}
+void LinePropertiesModel::setPointOpacity(const int &value){
+    if(value == mPointOpacity)
+        return;
+    mPointOpacity = value;
+    if(mLineNode){
+        float tempValue = value;
+        osg::Vec4f tempColor = mLineNode->getPointColor();
+        tempColor.a() = tempValue /100;
+        mLineNode->setPointColor(osg::Vec4f(tempColor));
+    }
 }
 
 int LinePropertiesModel::getWidth() const
@@ -170,22 +204,42 @@ void LinePropertiesModel::setRuler(const int value)
 
 void LinePropertiesModel::setLine(LineNode* linNode)
 {
-
+    mMeasureHeight = nullptr;
     mLineNode = linNode;
     if(!linNode){
         return;
     }
     mLineNode->setColor(mColor.toStdString());
-    mLineNode->setPointColor(mPointColor.toStdString());
     mLineNode->setWidth(mWidth);
     mLineNode->setTessellation(mTesselation);
-    mLineNode->setPointWidth(mPointwidth);
-    mLineNode->setSmooth(mSmooth);
-    mLineNode->setPointVisible(mVisible);
     mLineNode->setClamp(mClamp);
-    mLineNode->setHeight(mHeight);
-    mLineNode->showLenght(mShowLen);
+    if(mRuler == 0)
+    {
+        mLineNode->setPointColor(mPointColor.toStdString());
+        mLineNode->setPointWidth(mPointwidth);
+        mLineNode->setSmooth(mSmooth);
+        mLineNode->setPointVisible(mVisible);
+        mLineNode->setHeight(mHeight);
+        mLineNode->showLenght(mShowLen);
+    }
+    else if(mRuler == 1)
+    {
+        mLineNode->setPointVisible(false);
+        mLineNode->setHeight(0);
+        mLineNode->showLenght(true);
+    }
 
+}
+
+void LinePropertiesModel::setMeasureHeight(MeasureHeight *measureHeight)
+{
+    mLineNode = nullptr;
+    mMeasureHeight = measureHeight;
+    if(!measureHeight){
+        return;
+    }
+    mMeasureHeight->setColor(mColor.toStdString());
+    mMeasureHeight->setWidth(mWidth);
 }
 
 LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):
@@ -223,6 +277,11 @@ void LineProperties::setLine(LineNode *line )
 
     mLineProperties->setLine(line);
 
+}
+
+void LineProperties::setMeasureHeight(MeasureHeight *measureHeight)
+{
+    mLineProperties->setMeasureHeight(measureHeight);
 }
 
 void LineProperties::setIsRuler(int value)

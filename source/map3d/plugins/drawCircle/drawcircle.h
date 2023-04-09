@@ -3,6 +3,9 @@
 
 #include <osgEarthAnnotation/ModelNode>
 #include "osgEarthAnnotation/AnnotationEditing"
+#include <osgEarthAnnotation/PlaceNode>
+#include <osgEarthAnnotation/ImageOverlay>
+#include <osgEarthAnnotation/ImageOverlayEditor>
 #include "mapcontroller.h"
 #include "plugininterface.h"
 #include "circle.h"
@@ -22,9 +25,10 @@ public:
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool setup(MapController *mapController,
                UIHandle *UIHandle) override;
+    osgEarth::Annotation::PlaceNode* makeIconNode();
 
     virtual void mousePressEvent(QMouseEvent* event) override;
-//    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
 //    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 
@@ -50,6 +54,7 @@ private:
     osgEarth::Annotation::SphereDragger* mCircleHdragger;
 
     bool mEnterCircleZone{false};
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
 };
 
 #endif // DRAWCIRCLE_H

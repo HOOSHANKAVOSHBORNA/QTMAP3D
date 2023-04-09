@@ -1,5 +1,8 @@
 #include "drawcircle.h"
 
+#include <osgEarthAnnotation/GeoPositionNode>
+#include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
+
 #include <osgEarth/GLUtils>
 #include "osgEarth/ModelLayer"
 
@@ -16,7 +19,8 @@ bool DrawCircle::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
     mQmlEngine = engine;
-    desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true,  false, ""});
+
     return true;
 }
 
@@ -28,12 +32,15 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mEnterCircleZone = true;
                 mCircleProperties = new CircleProperties(mCircle, mQmlEngine, mUiHandle, mMapcontroller);
                 mCircleProperties->show();
+                addNodeToLayer(mIconNode);
                 mDrawingState = DrawingState::START;
 
             }
             else {
                 mEnterCircleZone = false;
                 mDrawingState = DrawingState::FINISH;
+                mCircle = nullptr;
+                removeNodeFromLayer(mIconNode);
                 mCircleProperties->hide();
             }
         }
@@ -44,6 +51,7 @@ bool DrawCircle::setup(MapController *mapController, UIHandle *uIHandle)
 {
     mUiHandle = uIHandle;
     mMapcontroller = mapController;
+    mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *circleLayer = new osgEarth::ModelLayer();
@@ -60,6 +68,7 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
             if (mDrawingState == DrawingState::START) {
                 mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
+                finishDrawing(event);
                 event->accept();
             }
         }
@@ -72,6 +81,22 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
     }
 }
 
+void DrawCircle::mouseMoveEvent(QMouseEvent *event)
+{
+    if (mEnterCircleZone) {
+        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+        mIconNode->setPosition(geoPos);
+    }
+}
+
+osgEarth::Annotation::PlaceNode *DrawCircle::makeIconNode()
+{
+    osg::ref_ptr<osg::Image> icon = osgDB::readImageFile("../data/images/draw/circle.png");
+    icon->scaleImage(24, 24, icon->r());
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode>  model = new osgEarth::Annotation::PlaceNode();
+    model->setIconImage(icon);
+    return model.release();
+}
 
 void DrawCircle::startDraw(QMouseEvent *event)
 {
@@ -114,8 +139,8 @@ void DrawCircle::cancelDrawing(QMouseEvent *event)
 void DrawCircle::finishDrawing(QMouseEvent *event)
 {
     if (mDrawingState == DrawingState::DRAWING) {
-        mCircle = nullptr;
-        mCircleProperties->setCircle(mCircle);
+//        mCircle = nullptr;
+//        mCircleProperties->setCircle(mCircle);
 
 //        removeNodeFromLayer(mCircleHdragger);
 //        mCircleHdragger = nullptr;
@@ -127,11 +152,9 @@ void DrawCircle::finishDrawing(QMouseEvent *event)
 
 void DrawCircle::onCircleMouseMove(QMouseEvent */*event*/)
 {
-
     if (mCircle){
         mCircle->setCircleHeight(static_cast<float>(mCircleHdragger->Dragger::getPosition().z()));
     }
-
 }
 
 bool DrawCircle::addNodeToLayer(osg::Node *node)

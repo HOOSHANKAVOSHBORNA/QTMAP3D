@@ -46,6 +46,8 @@ CMainWindow {
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("MAP3D")
+
+
     //flags: Qt.FramelessWindowHint
     //    MouseArea{
     //        anchors.fill : parent
@@ -269,13 +271,15 @@ CMainWindow {
                 wnd.view3DButtonClicked();
             }
         }
-
     }
+
+
     Component {
         id: listModelComponent
         ListModel {
         }
     }
+
 
     StatusBar {
         id: statusBar
@@ -290,7 +294,6 @@ CMainWindow {
         latitude: wnd.mousePointingLocationWgs84.x
         longitude: wnd.mousePointingLocationWgs84.y
         altitude: wnd.mousePointingLocationWgs84.z
-
         coordinate1: wnd.mousePointingLocation.x
         coordinate2: wnd.mousePointingLocation.y
         coordinate3: wnd.mousePointingLocation.z
@@ -334,7 +337,6 @@ CMainWindow {
 
 
     function addToolboxItem(itemDesc) {
-
 
         const toolboxModelCount = toolboxModel.count;
         var category_found = false;
@@ -460,7 +462,6 @@ CMainWindow {
             widgetsShowAnimation.start();
             wnd.widgetsVisible = true;
         }
-
     }
     InformationView {
         id: infoo

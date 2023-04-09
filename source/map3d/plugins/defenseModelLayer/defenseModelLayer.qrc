@@ -28,5 +28,8 @@
         <file>resources/refresh.png</file>
         <file>resources/select.gif</file>
         <file>resources/select.png</file>
+        <file>resources/systems.png</file>
+        <file>resources/stations.png</file>
+        <file>resources/plane.png</file>
     </qresource>
 </RCC>
