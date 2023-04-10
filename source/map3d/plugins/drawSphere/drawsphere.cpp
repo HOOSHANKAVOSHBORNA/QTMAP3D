@@ -82,6 +82,7 @@ void drawSphere::startDraw(QMouseEvent *event)
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
     mSphere->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    mSphereProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
 
     addNodeToLayer(mSphere);
     event->accept();
@@ -99,6 +100,7 @@ void drawSphere::cancelDrawing(QMouseEvent *event)
 {
     removeNodeFromLayer(mSphere);
     mSphere = nullptr;
+    mSphereProperties->setSphere(mSphere);
     mDrawingState = DrawingState::START;
 
     event->accept();

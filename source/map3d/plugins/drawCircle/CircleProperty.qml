@@ -17,6 +17,10 @@ Item {
     property string lineColor: "#ffffff"
 
 
+    onVisibleChanged: {
+        circleProperties.fillcolor = fillColor
+        circleProperties.transparency = opacityValue.value
+    }
 
     Item {
         id: dialog

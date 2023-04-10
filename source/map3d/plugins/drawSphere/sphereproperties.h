@@ -11,68 +11,56 @@
 class SpherePropertiesModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString   color          READ color         WRITE setColor        NOTIFY spherePropertiesChangedToQML)
-    Q_PROPERTY(QVector3D location       READ location      WRITE setLocation     NOTIFY spherePropertiesChangedToQML)
-    Q_PROPERTY(QVector3D center         READ center        WRITE setCenter       NOTIFY spherePropertiesChangedToQML)
-    Q_PROPERTY(double    radius         READ radius        WRITE setRadius       NOTIFY spherePropertiesChangedToQML)
-    Q_PROPERTY(int       transparency   READ transparency  WRITE setTransparency NOTIFY spherePropertiesChangedToQML)
-    Q_PROPERTY(int       shape          READ shape         WRITE setShape        NOTIFY spherePropertiesChangedToQML)
-    Q_PROPERTY(bool      relative       READ relative      WRITE setRelative     NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(QString   color          READ getColor         WRITE setColor        NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(QVector3D location       READ getLocation      WRITE setLocation     NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(QVector3D center         READ getCenter        WRITE setCenter       NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(double    radius         READ getRadius        WRITE setRadius       NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(int       shape          READ getShape         WRITE setShape        NOTIFY spherePropertiesChangedToQML)
+    Q_PROPERTY(bool      relative       READ getRelative      WRITE setRelative     NOTIFY spherePropertiesChangedToQML)
 
 
 public:
-
-    enum PropertyTypes {
-        Color,
-        Location,
-        Center,
-        Radius,
-        Transparency,
-        Shape,
-        Relative
-    };
-    Q_ENUM(PropertyTypes)
-
 
 
 
     SpherePropertiesModel(SphereNode* sphereNode = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
     //set color
-    QString color() const;
+    QString getColor() const;
     void setColor(const QString &color);
     //set location
-    QVector3D location() const;
+    QVector3D getLocation() const;
     void setLocation(const QVector3D &location);
     //set center
-    QVector3D center() const;
+    QVector3D getCenter() const;
     void setCenter(const QVector3D &center);
     // set radius
-    double radius() const;
+    double getRadius() const;
     void setRadius(const double &radius);
     // set transparency
-    int transparency() const;
+    int getTransparency() const;
     void setTransparency(const int &transparency);
     // set Type
-    int shape() const;
+    int getShape() const;
     void setShape(const int &type);
     // set relative
-    bool relative() const;
+    bool getRelative() const;
     void setRelative(const bool &relative);
 
     void setSphere(SphereNode *sphere);
 
 signals:
 
-    void spherePropertiesChanged( PropertyTypes  , QVariant );
+    void spherePropertiesChanged( QVariant );
     void spherePropertiesChangedToQML();
 
 
 private:
-    QString     mSphereColor;
+    QString     mColor = "#91001d";
     QVector3D   mLocation;
     QVector3D   mCenter;
     double      mRadius = 20000;
-    int         mTransparency;
+    int         mTransparency = 50;
     int         mShape;
     bool        mRelative;
 

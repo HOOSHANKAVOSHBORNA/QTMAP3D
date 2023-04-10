@@ -8,43 +8,50 @@
 
 SpherePropertiesModel::SpherePropertiesModel(SphereNode* sphereNode,MapController *mapController, QObject *parent) :
     QObject(parent),
-    mSphereNode(sphereNode)
+    mSphereNode(sphereNode),
+    mMapController(mapController)
 {
-       mMapController = mapController;
 
-//       mRadius = sphereNode->getRadius().as(osgEarth::Units::METERS);
-//       mSphereColor = QString::fromStdString(sphereNode->getColor().toHTML());
-//       mSphereColor.remove(7,2);
-//       mLocation.setX(sphereNode->getPosition().x());
-//       mLocation.setY(sphereNode->getPosition().y());
-//       mLocation.setZ(sphereNode->getPosition().z());
-//       mCenter.setX(sphereNode->getCenter().x());
-//       mCenter.setY(sphereNode->getCenter().y());
-//       mCenter.setZ(sphereNode->getCenter().z());
-//       mRelative = sphereNode->getPosition().isRelative();
-       QObject::connect(this,&SpherePropertiesModel::spherePropertiesChanged,this,&SpherePropertiesModel::spherePropertiesChangedToQML);
+       if (mSphereNode) {
+           mLocation.setX(static_cast<float>(mSphereNode->getPosition().x()));
+           mLocation.setY(static_cast<float>(mSphereNode->getPosition().y()));
+           mLocation.setZ(static_cast<float>(mSphereNode->getPosition().z()));
+//           mCenter.setX(static_cast<float>(mSphereNode->getCenter().x()));
+//           mCenter.setY(static_cast<float>(mSphereNode->getCenter().y()));
+//           mCenter.setZ(static_cast<float>(mSphereNode->getCenter().z()));
+       }
+
+//       QObject::connect(this,&SpherePropertiesModel::spherePropertiesChanged,this,&SpherePropertiesModel::spherePropertiesChangedToQML);
 
 }
 
-QString SpherePropertiesModel::color() const
+QString SpherePropertiesModel::getColor() const
 {
-    return mSphereColor;
+    return mColor;
 }
 void SpherePropertiesModel:: setColor(const QString &value){
-    if(value == mSphereColor)
+//    if(value == mColor)
+//        return;
+//    mColor = value;
+//    osgEarth::Color tmpColor = mSphereNode->getColor();
+//    float A = tmpColor.a();
+//    tmpColor  = value.toStdString();
+//    tmpColor.a() = A;
+//    mSphereNode->setColor(tmpColor);
+    if(value == mColor)
         return;
-    mSphereColor = value;
+    mColor = value;
+    if(mSphereNode){
+        osgEarth::Color tmpColor = mSphereNode->getColor();
+        float A = tmpColor.a();
+        tmpColor  = value.toStdString();
+        tmpColor.a() = A;
+        mSphereNode->setColor(tmpColor);
 
-    osgEarth::Color tmpColor = mSphereNode->getColor();
-    float A = tmpColor.a();
-    tmpColor  = value.toStdString();
-    tmpColor.a() = A;
-    mSphereNode->setColor(tmpColor);
-    emit spherePropertiesChangedToQML();
-
+    }
 }
 
-QVector3D SpherePropertiesModel::location() const
+QVector3D SpherePropertiesModel::getLocation() const
 {
     return mLocation;
 }
@@ -52,20 +59,17 @@ void SpherePropertiesModel:: setLocation(const QVector3D &value){
     if(value == mLocation)
         return;
     mLocation = value;
-    //emit spherePropertiesChanged(Location, QVariant::fromValue<QVector3D>(value));
 
     osgEarth::GeoPoint tempLocation =  mSphereNode->getPosition();
-    tempLocation.x() = value.x();
-    tempLocation.y() = value.y();
-    tempLocation.z() = value.z();
-
-
+    tempLocation.x() = static_cast<double>(value.x());
+    tempLocation.y() = static_cast<double>(value.y());
+    tempLocation.z() = static_cast<double>(value.z());
     mSphereNode->setPosition(tempLocation);
-    emit spherePropertiesChanged(Location , value);
+    emit spherePropertiesChangedToQML();
 }
 
 
-QVector3D SpherePropertiesModel::center() const
+QVector3D SpherePropertiesModel::getCenter() const
 {
     return mCenter;
 }
@@ -74,7 +78,6 @@ void SpherePropertiesModel:: setCenter(const QVector3D &value){
         return;
     mCenter = value;
 //    emit spherePropertiesChanged(Center, QVariant::fromValue<QVector3D>(value));
-    emit spherePropertiesChanged(Center , value);
     osg::Vec3f tempcenter = mSphereNode->getCenter();
     tempcenter.x() = value.x();
     tempcenter.y() = value.y();
@@ -83,20 +86,18 @@ void SpherePropertiesModel:: setCenter(const QVector3D &value){
 
 }
 
-double SpherePropertiesModel::radius() const
+double SpherePropertiesModel::getRadius() const
 {
     return mRadius;
 }
 void SpherePropertiesModel::setRadius(const double &value){
-    if(value == mRadius)
+    if(std::abs(value - mRadius) < 1)
         return;
     mRadius = value;
-    emit spherePropertiesChanged(Radius, value);
-
     mSphereNode->setRadius(osgEarth::Distance(value));
 }
 
-int SpherePropertiesModel::transparency() const
+int SpherePropertiesModel::getTransparency() const
 {
     return mTransparency;
 }
@@ -104,17 +105,14 @@ void SpherePropertiesModel::setTransparency(const int &value){
     if(value == mTransparency)
         return;
     mTransparency = value;
-    emit spherePropertiesChanged(Transparency, value);
-
     float tempValue = value;
     osg::Vec4f tempColor = mSphereNode->getColor();
     tempColor.a() = tempValue /100;
-
     mSphereNode->setColor(osg::Vec4f(tempColor));
 
 }
 
-int SpherePropertiesModel::shape() const
+int SpherePropertiesModel::getShape() const
 {
     return mShape;
 }
@@ -122,12 +120,10 @@ void SpherePropertiesModel::setShape(const int &value){
     if(value == mShape)
         return;
     mShape = value;
-    emit spherePropertiesChanged(Shape, value);
-
     mSphereNode->setSphereShape(SphereNode::SphereShape(value));
 }
 
-bool SpherePropertiesModel::relative() const
+bool SpherePropertiesModel::getRelative() const
 {
     return mRelative;
 }
@@ -135,7 +131,6 @@ void SpherePropertiesModel::setRelative(const bool &value){
     if(value == mRelative)
         return;
     mRelative = value;
-    emit spherePropertiesChanged(Relative, value);
     osgEarth::GeoPoint tempLocation =  mSphereNode->getPosition();
 
     if(value == true)
@@ -159,21 +154,21 @@ void SpherePropertiesModel::setSphere(SphereNode *sphere)
     }
     osgEarth::Color tmpColor = mSphereNode->getColor();
     float opacity = tmpColor.a();
-    tmpColor  = mSphereColor.toStdString();
+    tmpColor  = mColor.toStdString();
     tmpColor.a() = opacity;
     mSphereNode->setColor(tmpColor);
     mSphereNode->setRadius(mRadius);
     setTransparency(mTransparency);
-    mSphereNode->setRadius(mRadius);
 
-    mRadius = sphere->getRadius().as(osgEarth::Units::METERS);
-    mSphereColor = QString::fromStdString(sphere->getColor().toHTML());
-    mSphereColor.remove(7,2);
-    mCenter.setX(sphere->getCenter().x());
-    mCenter.setY(sphere->getCenter().y());
-    mCenter.setZ(sphere->getCenter().z());
-    mRelative = sphere->getPosition().isRelative();
-    emit spherePropertiesChangedToQML();
+
+//    mRadius = sphere->getRadius().as(osgEarth::Units::METERS);
+//    mSphereColor = QString::fromStdString(sphere->getColor().toHTML());
+//    mSphereColor.remove(7,2);
+//    mCenter.setX(sphere->getCenter().x());
+//    mCenter.setY(sphere->getCenter().y());
+//    mCenter.setZ(sphere->getCenter().z());
+//    mRelative = sphere->getPosition().isRelative();
+//    emit spherePropertiesChangedToQML();
 }
 
 SphereProperties::SphereProperties(SphereNode *sphere, QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent):
