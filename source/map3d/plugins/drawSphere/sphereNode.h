@@ -20,11 +20,11 @@ public:
    osg::Vec3f getCenter();
 
 
-
 private:
    void construct();
    void compile();
     osg::Node* installTwoPassAlpha(osg::Node* node);
+
 private:
     osgEarth::Symbology::Style  mStyle;
     osgEarth::Distance mRadius;
@@ -35,4 +35,4 @@ private:
     SphereShape mSphereShape;
 };
 
-#endif // SPHERENODE_H
+#endif

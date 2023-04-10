@@ -5,7 +5,7 @@
 #include "mapcontroller.h"
 #include <osgEarthAnnotation/CircleNode>
 #include <osgEarthAnnotation/ModelNode>
-#include "spherenode.h"
+//#include "spherenode.h"
 
 class LineNode : public osgEarth::Annotation::FeatureNode
 {

@@ -302,7 +302,7 @@ Item {
                                 CheckBox {
                                     id: relative
                                     text: qsTr("Relative")
-                                    checked: sphereProperties.relative
+                                    checked: false
                                     anchors.bottom: locationTitle.bottom
                                     onCheckStateChanged: if(checked === true){
                                                              sphereProperties.relative = true
@@ -564,7 +564,7 @@ Item {
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(transValue && transValue.value){
+                                            if(transValue && transValue.value && sphereProperties){
                                                 sphereProperties.transparency = transValue.value
                                             }
                                         }
