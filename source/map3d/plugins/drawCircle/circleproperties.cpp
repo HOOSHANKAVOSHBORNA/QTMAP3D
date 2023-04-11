@@ -226,6 +226,7 @@ void CirclePropertiesModel::setCircle(Circle *circle)
     tmpColor  = mFillcolor.toStdString();
     tmpColor.a() = opacity;
     mCircle->setColor(tmpColor);
+    mCircle->setLineWidth(static_cast<float>(mLineWidth));
     setTransparency(mTransparency);
     mCircle->setCircleHeight(static_cast<float>(mCircleHeight));
     mCircle->setClamp(mClamp);
@@ -254,7 +255,6 @@ CircleProperties::CircleProperties(Circle* circle, QQmlEngine *engine, UIHandle 
 void CircleProperties::show()
 {
     mUiHandle->propertiesShow(mItem);
-
 }
 
 void CircleProperties::hide()

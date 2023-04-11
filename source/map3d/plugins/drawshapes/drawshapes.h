@@ -16,10 +16,8 @@
 #include "cylinder.h"
 #include "capsule.h"
 #include "box.h"
-#include "spherenode.h"
 #include "spherenodeeditor.h"
 #include "linenode.h"
-#include "sphereproperties.h"
 
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
@@ -96,8 +94,8 @@ private:
     MapController* mMapController{nullptr};
     osgEarth::Annotation::FeatureNode* mPathNode;
 
-    osg::ref_ptr<SphereNode> mSphereNode;
-    osg::ref_ptr<SphereNodeEditor> mSphereNodeEditor;
+//    osg::ref_ptr<SphereNode> mSphereNode;
+//    osg::ref_ptr<SphereNodeEditor> mSphereNodeEditor;
 
     double mRadius{200000};
     QQmlEngine *mQmlEngine = nullptr;

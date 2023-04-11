@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/sphere.png</file>
+        <file>SphereProperty.qml</file>
+    </qresource>
+</RCC>

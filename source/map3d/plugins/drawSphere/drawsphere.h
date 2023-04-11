@@ -1,34 +1,29 @@
 #ifndef DRAWCIRCLE_H
 #define DRAWCIRCLE_H
 
-#include <osgEarthAnnotation/ModelNode>
-#include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/PlaceNode>
-#include <osgEarthAnnotation/ImageOverlay>
-#include <osgEarthAnnotation/ImageOverlayEditor>
-#include "mapcontroller.h"
+#include "osgEarth/ModelLayer"
+#include <osgEarth/GLUtils>
+
 #include "plugininterface.h"
-#include "circle.h"
-#include "circleproperties.h"
+#include "sphereproperties.h"
+#include "mapcontroller.h"
+#include "sphereNode.h"
 
-#define DRAW_LAYER_NAME "Circle"
-
-class DrawCircle : public PluginInterface
+#define DRAW_LAYER_NAME "Sphere"
+class drawSphere : public PluginInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawCircle.json")
+    Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawSphere.json")
     Q_INTERFACES(PluginInterface)
-
 public:
-    explicit DrawCircle(QObject *parent = nullptr);
+    drawSphere(QObject *parent = nullptr);
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    bool setup(MapController *mapController,
-               UIHandle *UIHandle) override;
+    virtual bool setup(MapController *mapController, UIHandle *uiHandle) override;
 
-    virtual void mousePressEvent(QMouseEvent* event) override;
-    virtual void mouseMoveEvent(QMouseEvent* event) override;
-
+    virtual void mousePressEvent(QMouseEvent *event) override;
+//    virtual void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     void startDraw(QMouseEvent* event);
@@ -44,14 +39,12 @@ private:
     QQmlEngine* mQmlEngine {nullptr};
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
-    Circle* mCircle{nullptr};
+    SphereNode* mSphere{nullptr};
     UIHandle* mUiHandle{nullptr};
-    CircleProperties* mCircleProperties{nullptr};
+    SphereProperties* mSphereProperties{nullptr};
 
 
-    osgEarth::Annotation::SphereDragger* mCircleHdragger;
-
-    bool mEnterCircleZone{false};
+    bool mEnterSphereZone{false};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
 };
 

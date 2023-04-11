@@ -1,4 +1,5 @@
-#include "spherenode.h"
+#include "sphereNode.h"
+
 
 #include <osg/LineWidth>
 #include <osg/ShapeDrawable>

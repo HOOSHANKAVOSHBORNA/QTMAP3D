@@ -5,7 +5,7 @@
 #include "defenseModelNode.h"
 #include "systemInformation.h"
 #include "circle.h"
-#include "spherenode.h"
+#include "sphereNode.h"
 #include "polygone.h"
 #include "aircraftModelNode.h"
 #include "linenode.h"

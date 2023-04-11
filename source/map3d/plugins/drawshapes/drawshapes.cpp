@@ -1,5 +1,4 @@
 #include "drawshapes.h"
-#include "spherenode.h"
 #include "spherenodeeditor.h"
 
 #include <osgEarthSymbology/Style>
@@ -56,12 +55,12 @@ DrawShapes::DrawShapes(QWidget *parent)
 }
 bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-    qmlRegisterType<SphereProperties>("Crystal", 1, 0, "SphereProperties");
+//    qmlRegisterType<SphereProperties>("Crystal", 1, 0, "SphereProperties");
     mAnnoLayer = new osgEarth::Annotation::AnnotationLayer;
     //    Q_UNUSED(engine)
     mQmlEngine = engine;
     //desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true});
+//    desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/resources/capsule.png", true});
@@ -96,22 +95,22 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
 //        }
         mEnterShapeZone = checked;
 
-        if(name == SPHERE)
-        {
-            if(checked)
-            {
-                mShape = Shape::SPHERE;
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                if (mSphereNodeEditor && mDrawingState != DrawingState::FINISH){
-                    removeNodeFromLayer(mSphereNodeEditor);
-                    removeNodeFromLayer(mSphereNode);
-                }
-                mDrawingState = DrawingState::NONE;
-            }
-        }
+//        if(name == SPHERE)
+//        {
+//            if(checked)
+//            {
+//                mShape = Shape::SPHERE;
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                if (mSphereNodeEditor && mDrawingState != DrawingState::FINISH){
+//                    removeNodeFromLayer(mSphereNodeEditor);
+//                    removeNodeFromLayer(mSphereNode);
+//                }
+//                mDrawingState = DrawingState::NONE;
+//            }
+//        }
         if(name == CONE)
         {
             if(checked)
@@ -298,7 +297,7 @@ void DrawShapes::mousePressEvent(QMouseEvent *event)
         onLineBtnClick(event);
         break;
     case Shape::SPHERE:
-        onSphereBtnClick(event);
+//        onSphereBtnClick(event);
         break;
     case Shape::CONE:
         onConeBtnClick(event);
@@ -352,7 +351,6 @@ void DrawShapes::mouseDoubleClickEvent(QMouseEvent *event)
         onNodeBtnDoubleClick(event);
         break;
     case Shape::SPHERE:
-        onNodeBtnDoubleClick(event, mSphereNodeEditor);
         break;
     case Shape::CONE:
         onNodeBtnDoubleClick(event);
@@ -466,53 +464,53 @@ void DrawShapes::onPolyMouseMove(QMouseEvent *event)
     }
 }
 
-void DrawShapes::onSphereBtnClick(QMouseEvent *event)
-{
-    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START)
-    {
-        mDrawingState = DrawingState::DELETE;
-        removeNodeFromLayer(mSphereNode);
-        removeNodeFromLayer(mSphereNodeEditor);
-        //mMapController->removeNode(mSphereNode);
-        //mMapController->removeNode(mSphereNodeEditor);
-        event->accept();
-        QMetaObject::invokeMethod(mItem, "hide");
-    }
-    if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
-    {
-        mDrawingState = DrawingState::START;
-        //--compute geo position of mouse-------------------------------------
-        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
-        //--setting sphere node-----------------------------------------------
-        mSphereNode = new SphereNode();
-        mSphereNode->setSphereShape(SphereNode::Sphere);
-        mSphereNode->setRadius(osgEarth::Distance(mRadius, osgEarth::Units::METERS));
-        mSphereNode->setColor(osg::Vec4(0.8f, 0.0f, 1.0, 0.5f));
-        mSphereNode->setPosition(geoPos);
-        mSphereNode->setMapNode(mMapController->getMapNode());
-        addNodeToLayer(mSphereNode);
+//void DrawShapes::onSphereBtnClick(QMouseEvent *event)
+//{
+//    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START)
+//    {
+//        mDrawingState = DrawingState::DELETE;
+//        removeNodeFromLayer(mSphereNode);
+//        removeNodeFromLayer(mSphereNodeEditor);
+//        //mMapController->removeNode(mSphereNode);
+//        //mMapController->removeNode(mSphereNodeEditor);
+//        event->accept();
+//        QMetaObject::invokeMethod(mItem, "hide");
+//    }
+//    if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
+//    {
+//        mDrawingState = DrawingState::START;
+//        //--compute geo position of mouse-------------------------------------
+//        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+//        //--setting sphere node-----------------------------------------------
+//        mSphereNode = new SphereNode();
+//        mSphereNode->setSphereShape(SphereNode::Sphere);
+//        mSphereNode->setRadius(osgEarth::Distance(mRadius, osgEarth::Units::METERS));
+//        mSphereNode->setColor(osg::Vec4(0.8f, 0.0f, 1.0, 0.5f));
+//        mSphereNode->setPosition(geoPos);
+//        mSphereNode->setMapNode(mMapController->getMapNode());
+//        addNodeToLayer(mSphereNode);
 
-        //--add node editor---------------------------------------------------
-        mSphereNodeEditor = new SphereNodeEditor(mSphereNode);
-        //--show property window---------------------------------------------------------------------------------
-        QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-        QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+//        //--add node editor---------------------------------------------------
+//        mSphereNodeEditor = new SphereNodeEditor(mSphereNode);
+//        //--show property window---------------------------------------------------------------------------------
+//        QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//        QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
 
-            if (comp->status() == QQmlComponent::Ready) {
-                mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-                SphereProperties *sphereProperties = new SphereProperties(mSphereNode, mMapController);
+//            if (comp->status() == QQmlComponent::Ready) {
+//                mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//                SphereProperties *sphereProperties = new SphereProperties(mSphereNode, mMapController);
 
-                mItem->setProperty("sphereProperties", QVariant::fromValue<SphereProperties*>(sphereProperties));
-            }
+//                mItem->setProperty("sphereProperties", QVariant::fromValue<SphereProperties*>(sphereProperties));
+//            }
 
-        });
-        comp->loadUrl(QUrl("qrc:/SphereProperty.qml"));
-        QMetaObject::invokeMethod(mItem, "show");
-        //--------------------------------------------------------------------------------------------------
-        addNodeToLayer(mSphereNodeEditor);
-        event->accept();
-    }
-}
+//        });
+//        comp->loadUrl(QUrl("qrc:/SphereProperty.qml"));
+//        QMetaObject::invokeMethod(mItem, "show");
+//        //--------------------------------------------------------------------------------------------------
+//        addNodeToLayer(mSphereNodeEditor);
+//        event->accept();
+//    }
+//}
 
 void DrawShapes::onNodeBtnDoubleClick(QMouseEvent *event, osg::Node *nodeEditor)
 {
