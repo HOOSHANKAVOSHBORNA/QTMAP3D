@@ -17,11 +17,11 @@ Item {
     property string fillColor: "#91001d"
 
 
-//    onVisibleChanged: {
-////        sphereProperties.color = fillColor
-////        sphereProperties.transparency = opacityValue.value
-////        sphereProperties.radius = radiusValue.value
-//    }
+    onVisibleChanged: {
+        sphereProperties.color = fillColor
+        sphereProperties.transparency = opacityValue.value
+        sphereProperties.radius = radiusValue.value
+    }
 
     Item {
         id: dialog
@@ -145,7 +145,7 @@ Item {
                                 }
                             }
                             Rectangle{
-                                //                                Layout.fillWidth: true
+                                Layout.fillWidth: true
                                 width: parent.width/3
                                 color: "#404040"
                                 height: 35
@@ -157,7 +157,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
-                                    x:0
+                                    x:7
                                 }
                             }
 
