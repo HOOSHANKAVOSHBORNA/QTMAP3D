@@ -10,3 +10,6 @@ add_subdirectory(drawshapes)
 add_subdirectory(earthfile)
 add_subdirectory(drawline)
 add_subdirectory(drawCircle)
+add_subdirectory(drawPolygon)
+
+
