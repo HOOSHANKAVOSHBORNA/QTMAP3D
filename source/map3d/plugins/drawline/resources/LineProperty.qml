@@ -1158,8 +1158,8 @@ Item {
             heightContainer.visible = false
             clampContainer.visible = false
             clampContainerTitle.visible = false
-            tesselationContainer.visible = true
-            tesselationContainerTitle.visible = true
+            tesselationContainer.visible = false
+            tesselationContainerTitle.visible = false
             lineProperties.showLen = true
             lineProperties.visible = false
             headerTitleSTR = "Ruler Properties"
