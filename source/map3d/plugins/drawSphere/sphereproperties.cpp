@@ -103,7 +103,10 @@ void SpherePropertiesModel::setShape(const int &value){
     if(value == mShape)
         return;
     mShape = value;
-    mSphereNode->setSphereShape(SphereNode::SphereShape(value));
+    if(mSphereNode){
+
+        mSphereNode->setSphereShape(SphereNode::SphereShape(value));
+    }
 }
 
 bool SpherePropertiesModel::getRelative() const
