@@ -16,7 +16,7 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        height: parent.height
+        height: Math.min(parent.height, columnLayout.implicitHeight)
 
         //width: parent.width
         //anchors.fill: parent
