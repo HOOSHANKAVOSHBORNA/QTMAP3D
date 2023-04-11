@@ -154,8 +154,6 @@ bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
     muiHandle = uIHandle;
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
-    //mIconNode = makeIconNode();
-
     return true;
 }
 void drawLine::mousePressEvent(QMouseEvent *event)
