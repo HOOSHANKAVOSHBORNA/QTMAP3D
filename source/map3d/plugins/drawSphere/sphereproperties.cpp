@@ -19,8 +19,8 @@ QString SpherePropertiesModel::getColor() const
 }
 void SpherePropertiesModel:: setColor(const QString &value){
 
-//    if(value == mColor)
-//        return;
+    //    if(value == mColor)
+    //        return;
     mColor = value;
     if(mSphereNode){
         osgEarth::Color tmpColor = mSphereNode->getColor();
@@ -41,11 +41,12 @@ void SpherePropertiesModel:: setLocation(const QVector3D &value){
         return;
     mLocation = value;
 
-    osgEarth::GeoPoint tempLocation =  mSphereNode->getPosition();
-    tempLocation.x() = static_cast<double>(value.x());
-    tempLocation.y() = static_cast<double>(value.y());
-    tempLocation.z() = static_cast<double>(value.z());
-    mSphereNode->setPosition(tempLocation);
+    if(mSphereNode){
+        osgEarth::GeoPoint tempLocation =  mSphereNode->getPosition();
+        tempLocation.x() = static_cast<double>(value.x());
+        tempLocation.y() = static_cast<double>(value.y());
+        tempLocation.z() = static_cast<double>(value.z());
+        mSphereNode->setPosition(tempLocation);}
     emit spherePropertiesChangedToQML();
 }
 
@@ -58,11 +59,12 @@ void SpherePropertiesModel:: setCenter(const QVector3D &value){
     if(value == mCenter)
         return;
     mCenter = value;
-    osg::Vec3f tempcenter = mSphereNode->getCenter();
-    tempcenter.x() = value.x();
-    tempcenter.y() = value.y();
-    tempcenter.z() = value.z();
-    mSphereNode->setCenter(tempcenter);
+    if(mSphereNode){
+        osg::Vec3f tempcenter = mSphereNode->getCenter();
+        tempcenter.x() = value.x();
+        tempcenter.y() = value.y();
+        tempcenter.z() = value.z();
+        mSphereNode->setCenter(tempcenter);}
 
 }
 
@@ -71,8 +73,8 @@ double SpherePropertiesModel::getRadius() const
     return mRadius;
 }
 void SpherePropertiesModel::setRadius(const double &value){
-//    if(std::abs(value - mRadius) < 1)
-//        return;
+    //    if(std::abs(value - mRadius) < 1)
+    //        return;
     mRadius = value;
     if(mSphereNode){ mSphereNode->setRadius(osgEarth::Distance(value));
     }
@@ -83,8 +85,8 @@ int SpherePropertiesModel::getTransparency() const
     return mTransparency;
 }
 void SpherePropertiesModel::setTransparency(const int &value){
-//    if(value == mTransparency)
-//        return;
+    //    if(value == mTransparency)
+    //        return;
     mTransparency = value;
     float tempValue = value;
     if(mSphereNode){
@@ -114,22 +116,22 @@ bool SpherePropertiesModel::getRelative() const
     return mRelative;
 }
 void SpherePropertiesModel::setRelative(const bool &value){
-//    if(value == mRelative)
-//        return;
+    //    if(value == mRelative)
+    //        return;
     mRelative = value;
-    osgEarth::GeoPoint tempLocation =  mSphereNode->getPosition();
-
-    if(value == true)
-    {
-        tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
-        mSphereNode->setPosition(tempLocation);
+    if(mSphereNode){
+        osgEarth::GeoPoint tempLocation =  mSphereNode->getPosition();
+        if(value == true )
+        {
+            tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+            mSphereNode->setPosition(tempLocation);
+        }
+        else if(value == false )
+        {
+            tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+            mSphereNode->setPosition(tempLocation);
+        }
     }
-    else if(value == false)
-    {
-        tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
-        mSphereNode->setPosition(tempLocation);
-    }
-
 }
 
 void SpherePropertiesModel::setSphere(SphereNode *sphere)
