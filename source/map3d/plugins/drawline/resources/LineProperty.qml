@@ -151,7 +151,7 @@ Item {
 
                                 Text {
                                     id: lineColorCircle
-                                    text: qsTr("Line Color :")
+                                    text: qsTr("Color :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -258,7 +258,7 @@ Item {
 
                                 Text {
                                     id: lineopacityCircle
-                                    text: qsTr("Line Opacity:")
+                                    text: qsTr("Opacity:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -786,23 +786,23 @@ Item {
                                 id: labelContainer
                                 color: "#404040"
                                 opacity: 1
-                                border.color: "white"
-                                border.width: 1
-                                radius: 15
+//                                border.color: "white"
+//                                border.width: 1
+//                                radius: 0
                                 x: 10
                                 height: 25
-                                width: 105
+                                width: 125
                                 y: -13
                                 Text {
                                     id: pointLale
                                     text: qsTr("points:")
                                     color: "white"
-                                    x:5
+                                    x:10
 
                                 }
                                 Rectangle{
                                     id: pointContainer
-                                    x: 80
+                                    x: 90
                                     anchors.verticalCenter: parent.verticalCenter
                                     color: "#404040"
                                     height: 30
@@ -851,7 +851,7 @@ Item {
                                         Layout.alignment: Qt.AlignRight
                                         indicator: Rectangle {
                                             implicitWidth: 50
-                                            implicitHeight: 20
+                                            implicitHeight: 15
                                             x: visibleSwitch.leftPadding
                                             y: parent.height / 2 - height / 2
                                             radius: 13
@@ -860,8 +860,8 @@ Item {
 
                                             Rectangle {
                                                 x: visibleSwitch.checked ? parent.width - width : 0
-                                                width: 20
-                                                height: 20
+                                                width: 15
+                                                height: 15
                                                 radius: 13
                                                 color: visibleSwitch.down ? "#cccccc" : "#ffffff"
                                                 border.color: visibleSwitch.checked ? (visibleSwitch.down ? "#17a81a" : "#21be2b") : "#999999"
@@ -1158,8 +1158,8 @@ Item {
             heightContainer.visible = false
             clampContainer.visible = false
             clampContainerTitle.visible = false
-            tesselationContainer.visible = true
-            tesselationContainerTitle.visible = true
+            tesselationContainer.visible = false
+            tesselationContainerTitle.visible = false
             lineProperties.showLen = true
             lineProperties.visible = false
             headerTitleSTR = "Ruler Properties"

@@ -24,7 +24,7 @@ public:
 
 
 
-    SpherePropertiesModel(SphereNode* sphereNode = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
+    SpherePropertiesModel(MapController *mapController = nullptr, QObject *parent = nullptr);
     //set color
     QString getColor() const;
     void setColor(const QString &color);
@@ -56,16 +56,16 @@ signals:
 
 
 private:
-    QString     mColor = "#91001d";
+    QString     mColor  ;
     QVector3D   mLocation;
     QVector3D   mCenter;
-    double      mRadius = 20000;
-    int         mTransparency = 50;
+    double      mRadius ;
+    int         mTransparency ;
     int         mShape;
     bool        mRelative;
 
 
-    SphereNode* mSphereNode;
+    SphereNode* mSphereNode{nullptr};
     MapController* mMapController{nullptr};
 
 
@@ -76,11 +76,10 @@ class SphereProperties: public QObject
 {
     Q_OBJECT
 public:
-    SphereProperties(SphereNode *sphere, QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    SphereProperties(QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
     void show();
     void hide();
     void setSphere(SphereNode* sphere);
-    void setLocation(osgEarth::GeoPoint location);
 private:
     QQmlEngine* mQmlEngine;
     QQuickItem* mItem;

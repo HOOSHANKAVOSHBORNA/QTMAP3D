@@ -26,7 +26,7 @@ void drawSphere::onToolboxItemCheckedChanged(const QString &name, const QString 
             if (checked) {
                 mEnterSphereZone = true;
                 mDrawingState = DrawingState::START;
-                mSphereProperties = new SphereProperties(mSphere, mQmlEngine, mUiHandle, mMapcontroller);
+                mSphereProperties = new SphereProperties(mQmlEngine, mUiHandle, mMapcontroller);
                 mSphereProperties->show();
 
             }
@@ -76,13 +76,13 @@ void drawSphere::mousePressEvent(QMouseEvent *event)
 void drawSphere::startDraw(QMouseEvent *event)
 {
     mSphere = new SphereNode();
-    mSphereProperties->setSphere(mSphere);
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
     mSphere->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mSphereProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    //mSphereProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    mSphereProperties->setSphere(mSphere);
 
     addNodeToLayer(mSphere);
     event->accept();

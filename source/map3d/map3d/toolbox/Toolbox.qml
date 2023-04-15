@@ -16,13 +16,13 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        height: columnLayout.implicitHeight
+        height: Math.min(parent.height, columnLayout.implicitHeight)
 
         //width: parent.width
         //anchors.fill: parent
         contentHeight: columnLayout.implicitHeight
         //ScrollBar.vertical.interactive: true
-        ScrollBar.vertical.interactive : false
+        ScrollBar.vertical.interactive : true
         clip : true
         Item {
             id: tmp

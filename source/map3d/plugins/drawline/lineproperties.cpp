@@ -199,9 +199,6 @@ void LinePropertiesModel::setRuler(const int value)
     }
 }
 
-
-
-
 void LinePropertiesModel::setLine(LineNode* linNode)
 {
     mMeasureHeight = nullptr;

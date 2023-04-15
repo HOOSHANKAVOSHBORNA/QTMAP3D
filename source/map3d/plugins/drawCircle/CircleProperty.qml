@@ -142,7 +142,7 @@ Item {
                                 }
                             }
                             Rectangle{
-                                //                                Layout.fillWidth: true
+                                Layout.fillWidth: true
                                 width: parent.width/3
                                 color: "#404040"
                                 height: 35
@@ -1167,7 +1167,6 @@ Item {
                                     x:7
                                 }
                             }
-
                         }
                     }
                 }

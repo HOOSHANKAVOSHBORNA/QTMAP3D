@@ -17,11 +17,11 @@ Item {
     property string fillColor: "#91001d"
 
 
-//    onVisibleChanged: {
-////        sphereProperties.color = fillColor
-////        sphereProperties.transparency = opacityValue.value
-////        sphereProperties.radius = radiusValue.value
-//    }
+    onVisibleChanged: {
+        sphereProperties.color = fillColor
+        sphereProperties.transparency = opacityValue.value
+        sphereProperties.radius = radiusValue.value
+    }
 
     Item {
         id: dialog
@@ -145,7 +145,7 @@ Item {
                                 }
                             }
                             Rectangle{
-                                //                                Layout.fillWidth: true
+                                Layout.fillWidth: true
                                 width: parent.width/3
                                 color: "#404040"
                                 height: 35
@@ -157,7 +157,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
-                                    x:0
+                                    x:7
                                 }
                             }
 
@@ -713,10 +713,13 @@ Item {
                                     spacing: 5
                                     anchors.centerIn: parent
                                     Rectangle{
+                                        id: fullglobebtn
                                         width: 20
                                         height: 20
                                         color: "#5f5f5f"
                                         radius: 4
+                                        border.width: 1
+                                        border.color: "red"
 
                                         Image {
                                             id: globe
@@ -729,14 +732,20 @@ Item {
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
                                                 sphereProperties.shape = 0
+                                                fullglobebtn.border.color = "red"
+                                                tophalfbtn.border.color = "gray"
+                                                bothalfbtn.border.color = "gray"
                                             }
                                         }
                                     }
                                     Rectangle{
+                                        id: tophalfbtn
                                         width: 20
                                         height: 20
                                         color: "#5f5f5f"
                                         radius: 4
+                                        border.width: 1
+                                        border.color: "gray"
 
                                         Image {
                                             id: tophalf
@@ -749,14 +758,20 @@ Item {
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
                                                 sphereProperties.shape = 1
+                                                fullglobebtn.border.color = "gray"
+                                                tophalfbtn.border.color = "red"
+                                                bothalfbtn.border.color = "gray"
                                             }
                                         }
                                     }
                                     Rectangle{
+                                        id: bothalfbtn
                                         width: 20
                                         height: 20
                                         color: "#5f5f5f"
                                         radius: 4
+                                        border.width: 1
+                                        border.color: "gray"
 
                                         Image {
                                             id: bothalf
@@ -769,6 +784,9 @@ Item {
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
                                                 sphereProperties.shape = 2
+                                                fullglobebtn.border.color = "gray"
+                                                tophalfbtn.border.color = "gray"
+                                                bothalfbtn.border.color = "red"
                                             }
                                         }
                                     }
