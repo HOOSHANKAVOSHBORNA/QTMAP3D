@@ -136,10 +136,10 @@ void DrawPolygon::mouseMoveDrawing(QMouseEvent *event)
     if (mPolygon->getSize() >= 2)
     {
         mPolygon->removePoint();
+        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+        mPolygon->addPoints(geoPos);
     }
-    qDebug()<< mPolygon->getSize();
-    osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
-    mPolygon->addPoints(geoPos);
+
 }
 
 

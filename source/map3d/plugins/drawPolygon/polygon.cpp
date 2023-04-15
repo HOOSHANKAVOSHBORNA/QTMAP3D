@@ -110,16 +110,5 @@ void Polygon::setHeight(float height)
     this->setStyle(style);
 }
 
-float Polygon::printHeight()
-{
-    auto style = this->getStyle();
-    float x = style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
-    return x;
-}
-
-unsigned long Polygon::getSize() const
-{
-    return mPolygonGeom->size();
-}
 
 

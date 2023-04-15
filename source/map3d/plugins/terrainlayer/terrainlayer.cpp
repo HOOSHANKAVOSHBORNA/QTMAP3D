@@ -70,7 +70,7 @@ void TerrainLayer::addGDAL()
 
         osgEarth::Drivers::GDALOptions  opt;
         opt.url() = nodeName;
-        osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
+        osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
         mMapController->addLayer(layer);
     }
 }
