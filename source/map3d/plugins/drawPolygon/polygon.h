@@ -21,6 +21,9 @@ public:
     void removePoint();
     void setHeight(float height);
     float getHeight();
+
+
+
 private:
     MapController* mMapController{nullptr};
     osg::ref_ptr<osgEarth::Features::Geometry> mPolygonGeom;
