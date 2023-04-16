@@ -14,8 +14,6 @@ Rect::Rect(bool clamp, double width, double height)
     this->setHeight(osgEarth::Distance(height, osgEarth::Units::KILOMETERS));
     this->setStyle(rectStyle);
     this->setDynamic(true);
-
-
 }
 
 void Rect::setColor(osgEarth::Color color)
@@ -23,7 +21,6 @@ void Rect::setColor(osgEarth::Color color)
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color, 0.5);
     this->setStyle(style);
-
 }
 
 void Rect::setClamp(bool clamp)
@@ -37,4 +34,3 @@ void Rect::setClamp(bool clamp)
     }
     this->setStyle(style);
 }
-

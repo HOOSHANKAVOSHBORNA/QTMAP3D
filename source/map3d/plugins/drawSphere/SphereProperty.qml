@@ -719,7 +719,7 @@ Item {
                                         color: "#5f5f5f"
                                         radius: 4
                                         border.width: 1
-                                        border.color: "red"
+                                        border.color: "dark green"
 
                                         Image {
                                             id: globe
@@ -732,7 +732,7 @@ Item {
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
                                                 sphereProperties.shape = 0
-                                                fullglobebtn.border.color = "red"
+                                                fullglobebtn.border.color = "dark green"
                                                 tophalfbtn.border.color = "gray"
                                                 bothalfbtn.border.color = "gray"
                                             }
@@ -759,7 +759,7 @@ Item {
                                             onClicked: {
                                                 sphereProperties.shape = 1
                                                 fullglobebtn.border.color = "gray"
-                                                tophalfbtn.border.color = "red"
+                                                tophalfbtn.border.color = "dark green"
                                                 bothalfbtn.border.color = "gray"
                                             }
                                         }
@@ -786,7 +786,7 @@ Item {
                                                 sphereProperties.shape = 2
                                                 fullglobebtn.border.color = "gray"
                                                 tophalfbtn.border.color = "gray"
-                                                bothalfbtn.border.color = "red"
+                                                bothalfbtn.border.color = "dark green"
                                             }
                                         }
                                     }

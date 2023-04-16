@@ -17,6 +17,8 @@ DrawPolygon::DrawPolygon(QObject *parent)
 
 bool DrawPolygon::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
+    qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
+    mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true,  false, ""});
     return true;
 }
@@ -27,13 +29,28 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
         if (name == POLYGON) {
             if (checked) {
                 mEnterPolygonZone = true;
+                mPolygonProperties = new PolygonProperties(mQmlEngine, mUiHandle);
+                if(mUiHandle && mPolygonProperties){
+                    mPolygonProperties->show();
+                }
                 mDrawingState = DrawingState::START;
+                addNodeToLayer(mIconNode);
+
+
 
             }
             else {
                 mEnterPolygonZone = false;
                 mDrawingState = DrawingState::FINISH;
+                mDrawingState = DrawingState::FINISH;
+                if(mPolygonProperties){
+                        mPolygonProperties->hide();
+                    }
+
+                mPolygonProperties->deleteLater();
+                mPolygonProperties = nullptr;
                 mPolygon = nullptr;
+                removeNodeFromLayer(mIconNode);
             }
         }
     }
@@ -41,9 +58,10 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
 
 bool DrawPolygon::setup(MapController *mapController, UIHandle *uIHandle)
 {
+    mUiHandle = uIHandle;
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
-
+    mIconNode = makeIconNode();
     osgEarth::ModelLayer *polygonLayer = new osgEarth::ModelLayer();
     polygonLayer->setName(DRAW_LAYER_NAME);
     mMapController->addLayer(polygonLayer);
@@ -67,7 +85,6 @@ void DrawPolygon::mousePressEvent(QMouseEvent *event)
                 event->accept();
             }
         }
-
         //cancel
         if(event->button() == Qt::MouseButton::RightButton)
         {
@@ -86,18 +103,27 @@ void DrawPolygon::mousePressEvent(QMouseEvent *event)
                 event->accept();
             }
         }
-
     }
 }
 
 void DrawPolygon::mouseMoveEvent(QMouseEvent *event)
 {
     if (mEnterPolygonZone){
-
+        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+        mIconNode->setPosition(geoPos);
         if (mDrawingState == DrawingState::DRAWING){
             mouseMoveDrawing(event);
         }
     }
+}
+
+osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
+{
+    osg::ref_ptr<osg::Image> icon = osgDB::readImageFile("../data/images/draw/polygon.png");
+    icon->scaleImage(24, 24, icon->r());
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode>  model = new osgEarth::Annotation::PlaceNode();
+    model->setIconImage(icon);
+    return model.release();
 }
 
 void DrawPolygon::mouseDoubleClickEvent(QMouseEvent *event)
@@ -110,6 +136,7 @@ void DrawPolygon::startDraw(QMouseEvent *event)
     mPolygon = new Polygon(mMapController, true);
     addNodeToLayer(mPolygon);
     mDrawingState = DrawingState::DRAWING;
+    mPolygonProperties->setPolygon(mPolygon);
 }
 void DrawPolygon::drawing(QMouseEvent *event)
 {
@@ -121,6 +148,8 @@ void DrawPolygon::cancelDraw()
 {
     removeNodeFromLayer(mPolygon);
     mDrawingState = DrawingState::START;
+    if(mPolygonProperties)
+        mPolygonProperties->setPolygon(nullptr);
 }
 
 void DrawPolygon::finishDraw(QMouseEvent *event)
@@ -130,19 +159,16 @@ void DrawPolygon::finishDraw(QMouseEvent *event)
         mDrawingState = DrawingState::START;
     }
 }
-
 void DrawPolygon::mouseMoveDrawing(QMouseEvent *event)
 {
     if (mPolygon->getSize() >= 2)
     {
         mPolygon->removePoint();
+
     }
-    qDebug()<< mPolygon->getSize();
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mPolygon->addPoints(geoPos);
 }
-
-
 bool DrawPolygon::addNodeToLayer(osg::Node *node)
 {
     auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
@@ -153,7 +179,6 @@ bool DrawPolygon::addNodeToLayer(osg::Node *node)
         }
     }
 }
-
 void DrawPolygon::removeNodeFromLayer(osg::Node *node)
 {
     auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
@@ -164,8 +189,4 @@ void DrawPolygon::removeNodeFromLayer(osg::Node *node)
         }
     }
 }
-
-
-
-
 
