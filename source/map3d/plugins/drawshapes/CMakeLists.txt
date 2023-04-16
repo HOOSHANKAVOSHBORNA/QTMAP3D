@@ -22,7 +22,6 @@ add_library(drawshapes SHARED
   drawshapes.json
   polygone.cpp
   ellipse.cpp
-  cone.cpp
   cylinder.cpp
   capsule.cpp
   box.cpp

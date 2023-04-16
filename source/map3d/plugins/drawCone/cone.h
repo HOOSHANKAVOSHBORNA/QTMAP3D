@@ -9,21 +9,36 @@
 #include <osg/ClipNode>
 #include <osg/ClipPlane>
 
-class Cone : public osg::ClipNode
+class Cone : public osgEarth::Annotation::GeoPositionNode
 {
 
 public:
-    Cone(MapController *mapController,float radius, float height, bool clamp);
-    osg::ref_ptr<osgEarth::Annotation::ModelNode> model;
-    void setColor(osg::Vec4 color);
-    void setCenter(osg::Vec3 center);
-    void setRadius(float radius);
+    Cone(bool clamp);
+
+    void compile();
+
+    void setColor(osgEarth::Color color);
+    void setCenter(osg::Vec3f center);
+    void setRadius(const osgEarth::Linear &radius);
+    void setHeight(const osgEarth::Linear &height);
     void setClamp(bool clamp);
+
+    osgEarth::Color getColor();
+    osgEarth::GeoPoint getPosition();
+    osg::Vec3f getCenter();
+    const osgEarth::Linear &getRadius() const;
+    const osgEarth::Linear &getHeight() const;
+
 private:
-    MapController* mMapController{nullptr};
-    osg::ref_ptr<osg::ShapeDrawable> pShapeDrawable;
-    osgEarth::Symbology::Style style;
-    osg::ref_ptr<osg::Cone> pConeShape;
+    osg::Node *installTwoPassAlpha(osg::Node *node);
+
+private:
+    osg::ref_ptr<osg::ShapeDrawable> mShapeDrawable;
+    osgEarth::Symbology::Style mStyle;
+    osgEarth::Distance mRadius;
+    osgEarth::Distance mHeight;
+    osgEarth::Color mColor;
+    osg::Vec3 mCenter {osg::Vec3(0, 0, 0)};
 };
 
 #endif // CONE_H

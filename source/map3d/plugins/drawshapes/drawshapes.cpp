@@ -43,7 +43,7 @@ const QString EXTRPOLY = "ExtrPoly";
 const QString IMAGE_OVERLAY = "ImageOverlay";
 const QString ELLIPSE = "Ellipse";
 const QString RECT = "Rect";
-const QString CONE = "Cone";
+//const QString CONE = "Cone";
 const QString CYLINDER = "Cylinder";
 const QString CAPSULE = "Capsule";
 const QString BOX = "Box";
@@ -61,7 +61,7 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     mQmlEngine = engine;
     //desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
 //    desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true});
+//    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/resources/capsule.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true});
@@ -111,23 +111,23 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
 //                mDrawingState = DrawingState::NONE;
 //            }
 //        }
-        if(name == CONE)
-        {
-            if(checked)
-            {
-                mShape = Shape::CONE;
+//        if(name == CONE)
+//        {
+//            if(checked)
+//            {
+//                mShape = Shape::CONE;
 
 
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                if (mCone && mDrawingState != DrawingState::FINISH){
-                    removeNodeFromLayer(mCone);
-                }
-                mDrawingState = DrawingState::NONE;
-            }
-        }
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                if (mCone && mDrawingState != DrawingState::FINISH){
+//                    removeNodeFromLayer(mCone);
+//                }
+//                mDrawingState = DrawingState::NONE;
+//            }
+//        }
         if(name == CYLINDER)
         {
             if(checked)
@@ -527,28 +527,28 @@ void DrawShapes::onNodeBtnDoubleClick(QMouseEvent *event, osg::Node *nodeEditor)
     QMetaObject::invokeMethod(mItem, "hide");
 }
 
-void DrawShapes::onConeBtnClick(QMouseEvent *event)
-{
-    osg::Vec3d worldPos;
-    mMapController->screenToWorld(event->x(), event->y(), worldPos);
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+//void DrawShapes::onConeBtnClick(QMouseEvent *event)
+//{
+//    osg::Vec3d worldPos;
+//    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
+//    if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
 
-    {
-        mCone = new Cone(mMapController,111100, 111100,false);
-        mDrawingState = DrawingState::START;
-        mCone->model->setPosition(geoPos);
-        //mMapController->addNode(mCone);
-        addNodeToLayer(mCone);
-    }
-    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START){
+//    {
+//        mCone = new Cone(mMapController,111100, 111100,false);
+//        mDrawingState = DrawingState::START;
+//        mCone->model->setPosition(geoPos);
+//        //mMapController->addNode(mCone);
+//        addNodeToLayer(mCone);
+//    }
+//    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START){
 
-        mDrawingState = DrawingState::DELETE;
-        removeNodeFromLayer(mCone);
-    }
-}
+//        mDrawingState = DrawingState::DELETE;
+//        removeNodeFromLayer(mCone);
+//    }
+//}
 
 void DrawShapes::onCylinderBtnClick(QMouseEvent *event)
 {

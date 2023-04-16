@@ -12,7 +12,6 @@
 #include "rect.h"
 #include "polygone.h"
 #include "ellipse.h"
-#include "cone.h"
 #include "cylinder.h"
 #include "capsule.h"
 #include "box.h"
@@ -84,7 +83,6 @@ private slots:
 private:
     LineNode* mLine{nullptr};
 //    Sphere* mSphere;
-    Cone* mCone;
     Cylinder* mCylinder;
     Box* mBox;
     Rect* mRect{nullptr};
