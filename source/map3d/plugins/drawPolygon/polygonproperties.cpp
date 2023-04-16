@@ -53,6 +53,8 @@ double PolygonPropertiesModel::getHeight() const
 }
 
 void PolygonPropertiesModel::setHeight(const double &value){
+//    qDebug() << mHeight <<endl;
+//    qDebug() << mPolygon->getHeight();
     if(std::abs(value - mHeight) < 1)
         return;
     mHeight = value;

@@ -20,7 +20,7 @@ Item {
     onVisibleChanged: {
         polygonProperties.fillcolor = fillColor
         polygonProperties.linecolor = lineColor
-//        polygonProperties.height = transValue.value
+        polygonProperties.height = transValue.value
         polygonProperties .lineWidth = lineValue.value
         polygonProperties.lineopacity = lineopacityValue.value
         polygonProperties.transparency = opacityValue.value
