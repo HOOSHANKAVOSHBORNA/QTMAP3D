@@ -17,6 +17,8 @@ DrawPolygon::DrawPolygon(QObject *parent)
 
 bool DrawPolygon::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
+    qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
+    mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true,  false, ""});
     return true;
 }
@@ -27,12 +29,25 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
         if (name == POLYGON) {
             if (checked) {
                 mEnterPolygonZone = true;
+                mPolygonProperties = new PolygonProperties(mQmlEngine, mUiHandle);
+                if(mUiHandle && mPolygonProperties){
+                    mPolygonProperties->show();
+                }
                 mDrawingState = DrawingState::START;
+
+
 
             }
             else {
                 mEnterPolygonZone = false;
                 mDrawingState = DrawingState::FINISH;
+                mDrawingState = DrawingState::FINISH;
+                if(mPolygonProperties){
+                        mPolygonProperties->hide();
+                    }
+
+                mPolygonProperties->deleteLater();
+                mPolygonProperties = nullptr;
                 mPolygon = nullptr;
             }
         }
@@ -41,6 +56,7 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
 
 bool DrawPolygon::setup(MapController *mapController, UIHandle *uIHandle)
 {
+    mUiHandle = uIHandle;
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -110,6 +126,7 @@ void DrawPolygon::startDraw(QMouseEvent *event)
     mPolygon = new Polygon(mMapController, true);
     addNodeToLayer(mPolygon);
     mDrawingState = DrawingState::DRAWING;
+    mPolygonProperties->setPolygon(mPolygon);
 }
 void DrawPolygon::drawing(QMouseEvent *event)
 {
@@ -121,6 +138,8 @@ void DrawPolygon::cancelDraw()
 {
     removeNodeFromLayer(mPolygon);
     mDrawingState = DrawingState::START;
+    if(mPolygonProperties)
+        mPolygonProperties->setPolygon(nullptr);
 }
 
 void DrawPolygon::finishDraw(QMouseEvent *event)

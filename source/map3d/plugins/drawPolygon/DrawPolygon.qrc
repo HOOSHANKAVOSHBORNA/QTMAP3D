@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/polygon.png</file>
+        <file>resources/PolygonProperties.qml</file>
     </qresource>
 </RCC>

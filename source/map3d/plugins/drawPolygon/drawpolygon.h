@@ -6,6 +6,7 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include "mapcontroller.h"
 #include "plugininterface.h"
+#include "polygonproperties.h"
 #include "polygon.h"
 
 #define DRAW_LAYER_NAME "Polygon"
@@ -44,6 +45,9 @@ private:
     DrawingState mDrawingState;
     Polygon* mPolygon{nullptr};
     bool mEnterPolygonZone{false};
+
+    UIHandle* mUiHandle{nullptr};
+    PolygonProperties* mPolygonProperties{nullptr};
 };
 
 #endif // DRAWPOLYGON_H

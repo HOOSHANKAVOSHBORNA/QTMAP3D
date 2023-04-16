@@ -17,6 +17,8 @@ public:
     void clearPoints();
     void removePoint();
     void setHeight(float height);
+    osgEarth::Color getFillColor();
+    osgEarth::Color getLineColor();
 private:
     MapController* mMapController{nullptr};
     osg::ref_ptr<osgEarth::Features::Geometry> mPolygonGeom;
