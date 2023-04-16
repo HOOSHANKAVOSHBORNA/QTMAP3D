@@ -85,20 +85,16 @@ void DrawCone::mouseMoveEvent(QMouseEvent *event)
 
 void DrawCone::startDraw(QMouseEvent *event)
 {
-    mCone = new Cone(false);
+    mCone = new Cone();
     mConeProperties->setCone(mCone);
 
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
-
-    mCone->setRadius(100000);
-    mCone->setHeight(100000);
-    mCone->setColor(osgEarth::Color::Red);
     mCone->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
 
-
+    mConeProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
     addNodeToLayer(mCone);
     event->accept();
 }

@@ -23,7 +23,7 @@ public:
     virtual bool setup(MapController *mapController, UIHandle *uiHandle) override;
 
     virtual void mousePressEvent(QMouseEvent *event) override;
-//    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     void startDraw(QMouseEvent* event);

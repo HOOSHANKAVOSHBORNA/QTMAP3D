@@ -20,6 +20,8 @@ Item {
     onVisibleChanged: {
         coneProperties.fillcolor = fillColor
         coneProperties.transparency = opacityValue.value
+        coneProperties.radius = radiusValue.value
+        coneProperties.height = heightValue.value
     }
 
     Item {
@@ -67,7 +69,7 @@ Item {
                 padding: 5
                 width: parent.width
                 height: parent.height - header.height
-//                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+                //                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
                     contentHeight: 400
                     width: 240
@@ -91,7 +93,7 @@ Item {
 
                             ////////////////////////////////////fill Color Property//////////////////////////////////
                             Rectangle{
-                                                                Layout.fillWidth: true
+                                Layout.fillWidth: true
                                 width: parent.width/1.9
                                 color: "#404040"
                                 height: 35
@@ -388,6 +390,7 @@ Item {
                                     }
                                 }
                             }
+
                             Rectangle{
                                 id: locationTitle
                                 Layout.fillWidth: true
@@ -559,7 +562,7 @@ Item {
 
                             ///////////////////////////////////height/////////////////////////////////////
                             Rectangle{
-                                id: transContainer
+                                id: heightContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
@@ -567,10 +570,10 @@ Item {
                                 //                                border.width: 1
 
                                 SpinBox {
-                                    id: transValue
+                                    id: heightValue
                                     stepSize: 100
-                                    value: 0
-                                    to : 1000000
+                                    value: 10000
+                                    to : 10000000
                                     from : 0
                                     validator: DoubleValidator {
                                         bottom: 0
@@ -584,30 +587,30 @@ Item {
                                         id: heightInput
                                         z: 2
                                         //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
-                                        text: transValue.value
-                                        font: transValue.font
+                                        text: heightValue.value
+                                        font: heightValue.font
                                         color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !transValue.editable
-                                        validator: transValue.validator
+                                        readOnly: !heightValue.editable
+                                        validator: heightValue.validator
                                         inputMethodHints: Qt.ImhFormattedNumbersOnly
                                         topPadding: 13
                                         selectByMouse: true
                                         selectionColor: "dark green"
                                         onTextChanged: {
-                                            if(coneProperties && transValue && (transValue.value == 0 || transValue.value)){
-                                                transValue.value = heightInput.text
-                                                coneProperties.height = transValue.value
+                                            if(coneProperties && heightValue && (heightValue.value == 0 || heightValue.value)){
+                                                heightValue.value = heightInput.text
+                                                coneProperties.height = heightValue.value
                                             }
                                         }
                                     }
                                     up.indicator: Rectangle {
-                                        x: transValue.mirrored ? 0 : parent.width - width
+                                        x: heightValue.mirrored ? 0 : parent.width - width
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: transValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        color: heightValue.up.pressed ? "#5f5f5f" : "#404040"
                                         border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
@@ -621,16 +624,16 @@ Item {
                                         }
                                     }
                                     down.indicator: Rectangle {
-                                        x: transValue.mirrored ? parent.width - width : 0
+                                        x: heightValue.mirrored ? parent.width - width : 0
                                         height: parent.height
                                         implicitWidth: 20
                                         implicitHeight: 20
-                                        color: transValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        color: heightValue.down.pressed ? "#5f5f5f" : "#404040"
                                         border.color: enabled ? "#404040" : "#5f5f5f"
 
                                         Text {
                                             text: "-"
-                                            font.pixelSize: transValue.font.pixelSize * 2
+                                            font.pixelSize: heightValue.font.pixelSize * 2
                                             color: "white"
                                             anchors.fill: parent
                                             fontSizeMode: Text.Fit
@@ -639,14 +642,13 @@ Item {
                                         }
                                     }
                                     background: Rectangle {
-                                        implicitWidth: transContainer.width -10
+                                        implicitWidth: heightContainer.width -10
                                         color: "#c9c9c9"
                                         border.color: "#bdbebf"
                                     }
                                 }
                             }
                             Rectangle{
-                                id:heightContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
@@ -654,118 +656,7 @@ Item {
                                 //                                border.width: 1
 
                                 Text {
-                                    id: transSphere
                                     text: qsTr("Height:")
-                                    font.pointSize: 10
-                                    color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
-                                }
-                            }
-
-
-
-
-
-                            /////////////////////////////////// Clamp ///////////////////////////////////////////
-                            Rectangle{
-                                id: clampContainer
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 30
-
-
-                                ComboBox {
-                                    id: control
-                                    model: ["None", "Terrain", "Relative","Absolute"]
-                                    anchors.centerIn: parent
-                                    onCurrentIndexChanged:   {
-                                        if (coneProperties)
-                                            coneProperties.clamp = currentIndex
-                                    }
-
-                                    delegate: ItemDelegate {
-                                        width: control.width
-                                        contentItem: Text {
-                                            text: control.textRole
-                                                  ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole])
-                                                  : modelData
-                                            color: "#5f5f5f"
-                                            font: control.font
-                                            elide: Text.ElideRight
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                        highlighted: control.highlightedIndex === index
-                                    }
-
-                                    indicator: Canvas {
-                                        id: canvas
-                                        x: control.width - width - control.rightPadding
-                                        y: control.topPadding + (control.availableHeight - height) / 2
-                                        width: 12
-                                        height: 8
-                                        contextType: "2d"
-
-                                        Connections {
-                                            target: control
-                                            function onPressedChanged() { canvas.requestPaint(); }
-                                        }
-
-                                    }
-
-                                    contentItem: Text {
-                                        leftPadding: 5
-                                        rightPadding: control.indicator.width + control.spacing
-
-                                        text: control.displayText
-                                        font: control.font
-                                        color: control.pressed ? "#5f5f5f" : "#404040"
-                                        verticalAlignment: Text.AlignVCenter
-                                        elide: Text.ElideRight
-                                    }
-
-                                    background: Rectangle {
-                                        implicitWidth: 100
-                                        implicitHeight: 22
-                                        border.color: control.pressed ? "#5f5f5f" : "#404040"
-                                        border.width: control.visualFocus ? 2 : 1
-                                        radius: 5
-                                        color: "#c9c9c9"
-
-                                    }
-
-                                    popup: Popup {
-                                        y: control.height - 1
-                                        width: control.width
-                                        implicitHeight: contentItem.implicitHeight
-                                        padding: 1
-
-                                        contentItem: ListView {
-                                            clip: true
-                                            implicitHeight: contentHeight
-                                            model: control.popup.visible ? control.delegateModel : null
-                                            currentIndex: control.highlightedIndex
-
-                                            ScrollIndicator.vertical: ScrollIndicator { }
-                                        }
-
-                                        background: Rectangle {
-                                            border.color: "#404040"
-                                            radius: 5
-                                        }
-                                    }
-                                }
-                            }
-
-                            Rectangle{
-                                Layout.fillWidth: true
-                                color: "#404040"
-                                height: 30
-                                //                                border.color: "#5f5f5f"
-                                //                                border.width: 1
-
-                                Text {
-                                    text: qsTr("Clamp :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter

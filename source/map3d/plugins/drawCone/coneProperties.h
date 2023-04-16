@@ -15,7 +15,6 @@ class ConePropertiesModel: public QObject
     Q_PROPERTY(double    radius         READ getRadius        WRITE setRadius       )
     Q_PROPERTY(double    height         READ getHeight        WRITE setHeight       )
     Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency )
-    Q_PROPERTY(int       clamp          READ getClamp         WRITE setClamp        )
 
 public:
     ConePropertiesModel(Cone *cone = nullptr, MapController *mapcontroller = nullptr, QObject *parent = nullptr);
@@ -35,9 +34,9 @@ public:
     // set transparency
     int getTransparency() const;
     void setTransparency(const int &transparency);
-    // set Type
-    int getClamp() const;
-    void setClamp( int clamp);
+    // set relative
+    bool getRelative() const;
+    void setRelative(const bool &value);
 
     void setCone(Cone *cone);
 
@@ -49,10 +48,10 @@ signals:
 private:
     QString   mFillcolor ;
     QVector3D  mLocation ;
-    double    mRadius  = 20000  ;
-    double    mHeight = 0  ;
-    int       mTransparency ;
-    osgEarth::Symbology::AltitudeSymbol::Clamping mClamp = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
+    double    mRadius  = 0;
+    double    mHeight = 0;
+    int       mTransparency = 0;
+    bool      mRelative = false;
 
     Cone *mCone;
     MapController *mMapController {nullptr};
@@ -69,6 +68,7 @@ public:
     void show();
     void hide();
     void setCone(Cone *cone);
+    void setLocation(osgEarth::GeoPoint location);
 
 private:
     QQmlEngine* mQmlEngine;

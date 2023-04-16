@@ -13,7 +13,7 @@ class Cone : public osgEarth::Annotation::GeoPositionNode
 {
 
 public:
-    Cone(bool clamp);
+    Cone();
 
     void compile();
 
@@ -21,10 +21,8 @@ public:
     void setCenter(osg::Vec3f center);
     void setRadius(const osgEarth::Linear &radius);
     void setHeight(const osgEarth::Linear &height);
-    void setClamp(bool clamp);
 
     osgEarth::Color getColor();
-    osgEarth::GeoPoint getPosition();
     osg::Vec3f getCenter();
     const osgEarth::Linear &getRadius() const;
     const osgEarth::Linear &getHeight() const;

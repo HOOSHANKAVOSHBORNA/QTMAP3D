@@ -45,6 +45,7 @@ void ConePropertiesModel::setLocation(const QVector3D &location)
         tmpLocation.y() = static_cast<double>(location.y());
         tmpLocation.z() = static_cast<double>(location.z());
         mCone->setPosition(tmpLocation);
+        emit positionToQmlChanged();
     }
 }
 
@@ -93,30 +94,37 @@ void ConePropertiesModel::setTransparency(const int &transparency)
     }
 }
 
-int ConePropertiesModel::getClamp() const
-{
-    return mClamp;
-}
-
-void ConePropertiesModel::setClamp(int clamp)
-{
-
-}
-
 void ConePropertiesModel::setCone(Cone *cone)
 {
     mCone = cone;
     if (!mCone)
         return;
     osgEarth::Color tmpColor = mCone->getColor();
-    float opacity = tmpColor.a();
+    float opacity = mTransparency;
     tmpColor  = mFillcolor.toStdString();
-    tmpColor.a() = opacity;
+    tmpColor.a() = opacity / 100;
     mCone->setColor(tmpColor);
-    setTransparency(mTransparency);
     mCone->setHeight(mHeight);
-//    mCone->setClamp(mClamp);
     mCone->setRadius(mRadius);
+}
+
+void ConePropertiesModel::setRelative(const bool &value){
+        if(value == mRelative)
+            return;
+    mRelative = value;
+    if(mCone){
+        osgEarth::GeoPoint tempLocation =  mCone->getPosition();
+        if(value == true )
+        {
+            tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+            mCone->setPosition(tempLocation);
+        }
+        else if(value == false )
+        {
+            tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+            mCone->setPosition(tempLocation);
+        }
+    }
 }
 
 
@@ -150,3 +158,14 @@ void ConeProperties::setCone(Cone *cone)
 {
     mConeProperties->setCone(cone);
 }
+
+void ConeProperties::setLocation(osgEarth::GeoPoint location)
+{
+    QVector3D tmp;
+    tmp.setX(static_cast<float>(location.x()));
+    tmp.setY(static_cast<float>(location.y()));
+    tmp.setZ(static_cast<float>(location.z()));
+
+    mConeProperties->setLocation(tmp);
+}
+

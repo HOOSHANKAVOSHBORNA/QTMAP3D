@@ -7,7 +7,7 @@
 #include "mapcontroller.h"
 #include <QDebug>
 
-Cone::Cone(bool clamp)
+Cone::Cone()
 {
     setName("Cone");
     mRadius.set(1.0, osgEarth::Units::KILOMETERS);

@@ -115,6 +115,7 @@ bool SpherePropertiesModel::getRelative() const
 {
     return mRelative;
 }
+
 void SpherePropertiesModel::setRelative(const bool &value){
     //    if(value == mRelative)
     //        return;

@@ -2,7 +2,7 @@
 
 
 const QString CATEGORY = "Draw";
-const QString SPHERE = "SphereTest";
+const QString SPHERE = "Sphere";
 
 drawSphere::drawSphere(QObject *parent)
     : PluginInterface(parent)
@@ -28,6 +28,7 @@ void drawSphere::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mDrawingState = DrawingState::START;
                 mSphereProperties = new SphereProperties(mQmlEngine, mUiHandle, mMapcontroller);
                 mSphereProperties->show();
+                addNodeToLayer(mIconNode);
 
             }
             else {
@@ -35,6 +36,7 @@ void drawSphere::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mDrawingState = DrawingState::FINISH;
                 mSphere = nullptr;
                 mSphereProperties->hide();
+                removeNodeFromLayer(mIconNode);
             }
         }
     }
@@ -44,6 +46,7 @@ bool drawSphere::setup(MapController *mapController, UIHandle *uiHandle)
 {
     mUiHandle = uiHandle;
     mMapcontroller = mapController;
+    mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *sphereLayer = new osgEarth::ModelLayer();
@@ -70,6 +73,14 @@ void drawSphere::mousePressEvent(QMouseEvent *event)
         else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
             finishDrawing(event);
         }
+    }
+}
+
+void drawSphere::mouseMoveEvent(QMouseEvent *event)
+{
+    if (mEnterSphereZone) {
+        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+        mIconNode->setPosition(geoPos);
     }
 }
 
@@ -126,4 +137,13 @@ void drawSphere::removeNodeFromLayer(osg::Node *node)
             group->removeChild(node);
         }
     }
+}
+
+osgEarth::Annotation::PlaceNode *drawSphere::makeIconNode()
+{
+    osg::ref_ptr<osg::Image> icon = osgDB::readImageFile("../data/images/draw/sphere.png");
+    icon->scaleImage(24, 24, icon->r());
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode>  model = new osgEarth::Annotation::PlaceNode();
+    model->setIconImage(icon);
+    return model.release();
 }
