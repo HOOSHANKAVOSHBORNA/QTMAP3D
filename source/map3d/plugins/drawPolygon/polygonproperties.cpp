@@ -136,6 +136,11 @@ void PolygonPropertiesModel::setPolygon(Polygon *polygon)
     tmpColor  = mFillcolor.toStdString();
     tmpColor.a() = opacity;
     mPolygon->setFillColor(tmpColor);
+    osgEarth::Color tmplineColor = mPolygon->getLineColor();
+    float lineopacity = tmplineColor.a();
+    tmplineColor  = mLinecolor.toStdString();
+    tmplineColor.a() = lineopacity;
+    mPolygon->setLineColor(tmpColor);
     mPolygon->setLineWidth(static_cast<float>(mLineWidth));
     setTransparency(mTransparency);
     mPolygon->setHeight(static_cast<float>(mHeight));
