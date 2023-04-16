@@ -5,6 +5,7 @@ MeasureHeight::MeasureHeight(MapController *mapController)
     mMapController = mapController;
     mHLine = new LineNode(mMapController);
     mVLine = new LineNode(mMapController);
+    mHLine->setColor(osgEarth::Color::White);
     mVLine->setWidth(5);
     mHLine->setWidth(5);
     mHLine->showLenght(true);

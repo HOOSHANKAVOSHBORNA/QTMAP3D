@@ -18,7 +18,7 @@ Polygon::Polygon(MapController *mapController, bool clamp)
     geomStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osg::Vec4f(1,1,1,1);
     geomStyle.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
     //geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 0;
-//    geomStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    //geomStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 
     if (clamp){
         geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
@@ -48,7 +48,7 @@ Polygon::Polygon(MapController *mapController, bool clamp)
 
 double Polygon::getSize()
 {
-    return mPolygonGeom->getLength();
+    return mPolygonGeom->size();
 }
 
 void Polygon::setLineColor(osgEarth::Color color)
@@ -58,11 +58,23 @@ void Polygon::setLineColor(osgEarth::Color color)
     this->setStyle(style);
 }
 
+osgEarth::Color Polygon::getLineColor()
+{
+    auto style = this->getStyle();
+    return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color();
+}
+
 void Polygon::setFillColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = color;
     this->setStyle(style);
+}
+
+osgEarth::Color Polygon::getFillColor()
+{
+    auto style = this->getStyle();
+    return style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color();
 }
 
 void Polygon::setLineWidth(float width)
@@ -72,15 +84,22 @@ void Polygon::setLineWidth(float width)
     this->setStyle(style);
 }
 
-void Polygon::setClamp(bool clamp)
+float Polygon::getLineWidth()
 {
     auto style = this->getStyle();
-    if (clamp){
-        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    }
-    else{
-        style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
-    }
+    return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width().get();
+}
+
+float Polygon::getHeight()
+{
+    auto style = this->getStyle();
+    return style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
+}
+
+void Polygon::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)
+{
+    auto style = this->getStyle();
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping()= clamp;
     this->setStyle(style);
 }
 
@@ -91,7 +110,6 @@ void Polygon::addPoints(osgEarth::GeoPoint point)
     dirty();
     fea->setGeometry(mPolygonGeom);
 }
-
 void Polygon::clearPoints()
 {
     mPolygonGeom->clear();
@@ -109,6 +127,3 @@ void Polygon::setHeight(float height)
     style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = height;
     this->setStyle(style);
 }
-
-
-
