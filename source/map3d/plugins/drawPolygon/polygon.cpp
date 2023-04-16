@@ -33,7 +33,7 @@ Polygon::Polygon(MapController *mapController, bool clamp)
     _options = osgEarth::Features::GeometryCompilerOptions();
     _needsRebuild = true;
     _styleSheet = nullptr;
-    _clampDirty = true;
+    _clampDirty = false;
     _index = nullptr;
 
     _features.push_back( feature );
