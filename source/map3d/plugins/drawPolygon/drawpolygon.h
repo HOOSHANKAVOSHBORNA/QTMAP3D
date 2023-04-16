@@ -33,10 +33,12 @@ private:
     void drawing(QMouseEvent* event);
     void cancelDraw();
     void finishDraw(QMouseEvent* event);
+    void mouseMoveDrawing(QMouseEvent *event);
 
     bool addNodeToLayer(osg::Node *node);
     void removeNodeFromLayer(osg::Node *node);
-    void mouseMoveDrawing(QMouseEvent *event);
+
+    osgEarth::Annotation::PlaceNode* makeIconNode();
 
 private:
     MapController* mMapController {nullptr};
@@ -44,10 +46,13 @@ private:
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     Polygon* mPolygon{nullptr};
-    bool mEnterPolygonZone{false};
 
     UIHandle* mUiHandle{nullptr};
     PolygonProperties* mPolygonProperties{nullptr};
+
+    bool mEnterPolygonZone{false};    
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
+
 };
 
 #endif // DRAWPOLYGON_H

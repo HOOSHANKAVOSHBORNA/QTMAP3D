@@ -10,15 +10,20 @@ public:
     Polygon(MapController *mapController, bool clamp);
     double getSize();
     void setLineColor(osgEarth::Color color);
+    osgEarth::Color getLineColor();
     void setFillColor(osgEarth::Color color);
+    osgEarth::Color getFillColor();
     void setLineWidth(float width);
-    void setClamp(bool clamp);
+    float getLineWidth();
+    void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
     void addPoints(osgEarth::GeoPoint point);
     void clearPoints();
     void removePoint();
     void setHeight(float height);
-    osgEarth::Color getFillColor();
-    osgEarth::Color getLineColor();
+    float getHeight();
+
+
+
 private:
     MapController* mMapController{nullptr};
     osg::ref_ptr<osgEarth::Features::Geometry> mPolygonGeom;

@@ -35,7 +35,6 @@ private:
     bool mStarted{false};
     osgEarth::Color color{osgEarth::Color::Green};
     float mWidth;
-
 };
 
 #endif // MEASUREHEIGHT_H
