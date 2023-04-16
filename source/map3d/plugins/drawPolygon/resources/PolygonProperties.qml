@@ -599,7 +599,7 @@ Item {
                                         onTextChanged: {
                                             if(polygonProperties && transValue && (transValue.value == 0 || transValue.value)){
                                                 transValue.value = heightInput.text
-                                                polygonProperties.polygonheight = transValue.value
+                                                polygonProperties.height = transValue.value
                                             }
                                         }
                                     }
