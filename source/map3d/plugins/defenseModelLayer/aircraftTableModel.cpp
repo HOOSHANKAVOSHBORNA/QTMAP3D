@@ -47,7 +47,7 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
         case  1: return QVariant::fromValue<int>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->TN);
         case  2: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->IFFCode);
         case  3: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->CallSign);
-        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->Type);
+        case  4: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->aircraftTypeToString());
         case  5: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->MasterRadar);
         case  6: return QVariant::fromValue<QString>(mAircraftInfoListProxy[static_cast<size_t>(_row)]->IdentificationMethod);
         case  7: return QVariant::fromValue<QString>(buffer);

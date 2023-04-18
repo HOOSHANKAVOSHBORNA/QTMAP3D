@@ -19,11 +19,19 @@ struct AircraftInfo
         U,//white
         H//red
     };
+    enum AircraftType{
+        Fighter = 1,
+        Missile = 2,
+        Helicopter = 3,
+        Drone = 4,
+        Aircraft = 5
+    };
+
     //-------------------------------------
     int TN;
     QString IFFCode;
     QString CallSign;
-    QString Type;
+    AircraftType Type;
     QString MasterRadar;
 	Identify Identification;
     QString IdentificationMethod;
@@ -43,6 +51,29 @@ struct AircraftInfo
     friend bool operator==(const AircraftInfo& lhs, const AircraftInfo& rhs) { return lhs.TN == rhs.TN; }
     //---------------------------------------------
 public:
+    QString aircraftTypeToString() const
+    {
+        QString result = "";
+        switch (Type) {
+        case Fighter:
+            result = "Fighter";
+            break;
+        case Missile:
+            result = "Missile";
+            break;
+        case Helicopter:
+            result = "Helicopter";
+            break;
+        case Drone:
+            result = "Drone";
+            break;
+        case Aircraft:
+            result = "Aircraft";
+            break;
+        }
+        return result;
+    }
+
     QString identifyToString() const
     {
         QString result = "";

@@ -45,7 +45,7 @@ QStringList AircraftInfoModel::getMainInfo() const
     std::tm* currTm = localtime(&datetime);
     strftime(buffer, sizeof(buffer), "%Y/%m/%d %H:%M", currTm);
     return QStringList {QString::number(mAircraftInfo.TN), mAircraftInfo.IFFCode, mAircraftInfo.CallSign,
-                mAircraftInfo.Type, mAircraftInfo.MasterRadar, mAircraftInfo.identifyToString(),
+                mAircraftInfo.aircraftTypeToString(), mAircraftInfo.MasterRadar, mAircraftInfo.identifyToString(),
                 mAircraftInfo.IdentificationMethod, buffer, mAircraftInfo.Pos};
 }
 
