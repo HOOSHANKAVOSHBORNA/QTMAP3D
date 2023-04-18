@@ -147,7 +147,7 @@ osg::Node* SphereNode::installTwoPassAlpha(osg::Node* node)
 
     // next start a traversal order bin so we draw in the proper order:
     osg::Group* g2 = new osg::Group();
-    g2->getOrCreateStateSet()->setRenderBinDetails(0, "TraversalOrderBin");
+//    g2->getOrCreateStateSet()->setRenderBinDetails(0, "TraversalOrderBin");
     g1->addChild( g2 );
 
     // next, create a group for the first pass (backfaces only):
@@ -159,6 +159,7 @@ osg::Node* SphereNode::installTwoPassAlpha(osg::Node* node)
     // and a group for the front-face pass:
     osg::Group* frontPass = new osg::Group();
     frontPass->getOrCreateStateSet()->setAttributeAndModes( new osg::CullFace(osg::CullFace::BACK), 1 );
+    frontPass->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
     g2->addChild( frontPass );
 
     // finally, attach the geometry to both passes.

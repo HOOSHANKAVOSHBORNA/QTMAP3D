@@ -13,7 +13,6 @@
 #include "polygone.h"
 #include "ellipse.h"
 #include "cylinder.h"
-#include "capsule.h"
 #include "box.h"
 #include "spherenodeeditor.h"
 #include "linenode.h"
@@ -70,7 +69,7 @@ private slots:
     void onNodeBtnDoubleClick(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
     void onConeBtnClick(QMouseEvent* event);
     void onCylinderBtnClick(QMouseEvent* event);
-    void onCapsuleBtnClick(QMouseEvent* event);
+//    void onCapsuleBtnClick(QMouseEvent* event);
     void onBoxBtnClick(QMouseEvent* event);
     void onPolygoneBtnClick(QMouseEvent* event);
     void onImgOvlyBtnClick(QMouseEvent* event);
@@ -88,7 +87,6 @@ private:
     Rect* mRect{nullptr};
     Polygone* mPoly;
     Ellipse* mEllipse{nullptr};
-    Capsule* mCapsule;
     MapController* mMapController{nullptr};
     osgEarth::Annotation::FeatureNode* mPathNode;
 
