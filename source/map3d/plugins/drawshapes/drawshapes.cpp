@@ -128,22 +128,22 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
 //                mDrawingState = DrawingState::NONE;
 //            }
 //        }
-        if(name == CYLINDER)
-        {
-            if(checked)
-            {
-                mShape = Shape::CYLINDER;
-                mCylinder = new Cylinder(mMapController,mRadius, 111111,false);
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                mDrawingState = DrawingState::NONE;
-                if (mCylinder && mDrawingState != DrawingState::FINISH){
-                    removeNodeFromLayer(mCylinder);
-                }
-            }
-        }
+//        if(name == CYLINDER)
+//        {
+//            if(checked)
+//            {
+//                mShape = Shape::CYLINDER;
+//                mCylinder = new Cylinder(mMapController,mRadius, 111111,false);
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                mDrawingState = DrawingState::NONE;
+//                if (mCylinder && mDrawingState != DrawingState::FINISH){
+//                    removeNodeFromLayer(mCylinder);
+//                }
+//            }
+//        }
 //        if(name == CAPSULE)
 //        {
 //            if(checked)
@@ -300,10 +300,10 @@ void DrawShapes::mousePressEvent(QMouseEvent *event)
 //        onSphereBtnClick(event);
         break;
     case Shape::CONE:
-        onConeBtnClick(event);
+//        onConeBtnClick(event);
         break;
     case Shape::CYLINDER:
-        onCylinderBtnClick(event);
+//        onCylinderBtnClick(event);
         break;
     case Shape::CAPSULE:
 //        onCapsuleBtnClick(event);
@@ -550,21 +550,21 @@ void DrawShapes::onNodeBtnDoubleClick(QMouseEvent *event, osg::Node *nodeEditor)
 //    }
 //}
 
-void DrawShapes::onCylinderBtnClick(QMouseEvent *event)
-{
-    osg::Vec3d worldPos;
-    mMapController->screenToWorld(event->x(), event->y(), worldPos);
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+//void DrawShapes::onCylinderBtnClick(QMouseEvent *event)
+//{
+//    osg::Vec3d worldPos;
+//    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::RightButton)
-    {
-        mCylinder->model->setPosition(geoPos);
-        addNodeToLayer(mCylinder);
-        //mMapController->addNode(mCylinder);
+//    if(event->button() == Qt::MouseButton::RightButton)
+//    {
+//        mCylinder->model->setPosition(geoPos);
+//        addNodeToLayer(mCylinder);
+//        //mMapController->addNode(mCylinder);
 
-    }
-}
+//    }
+//}
 
 //void DrawShapes::onCapsuleBtnClick(QMouseEvent *event)
 //{

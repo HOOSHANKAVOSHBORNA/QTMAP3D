@@ -32,9 +32,8 @@ osgEarth::Color SphereNode::getColor()
     if(mShapeDrawable)
     {
        return  mShapeDrawable->getColor();
-
-
     }
+    return osgEarth::Color(0, 0, 0);
 }
 
 void SphereNode::setSphereShape(SphereNode::SphereShape sphereShape)

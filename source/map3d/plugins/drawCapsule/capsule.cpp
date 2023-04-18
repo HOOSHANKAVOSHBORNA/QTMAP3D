@@ -93,9 +93,8 @@ osgEarth::Color Capsule::getColor()
     if(mShapeDrawable)
     {
        return  mShapeDrawable->getColor();
-
-
     }
+    return osgEarth::Color(0, 0, 0);
 }
 
 void Capsule::setCenter(osg::Vec3f center)
