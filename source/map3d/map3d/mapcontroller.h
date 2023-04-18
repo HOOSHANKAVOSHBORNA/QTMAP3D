@@ -62,6 +62,8 @@ public slots:
                            qreal pitch,
                            qreal heading);
 
+    void orientCameraToNorth();
+
 signals:
     void headingAngleChanged(qreal angle);
     //void mouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos, osg::Vec3d worldPos);

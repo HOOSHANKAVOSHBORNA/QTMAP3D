@@ -254,6 +254,10 @@ CMainWindow {
             anchors.bottomMargin: widgetsMargins
 //            y: 25 + parent.height - (wnd.widgetsPositionFactor * (height + (widgetsMargins - 10)+ 25) )
             y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
+
+            onCompassDoubleClicked: function() {
+                wnd.orientCameraToNorth();
+            }
         }
 
 

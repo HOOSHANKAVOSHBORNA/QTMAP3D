@@ -305,6 +305,13 @@ void MapController::travelToViewpoint(qreal latitude,
     mEarthManipulator->setViewpoint(vp, 3.0);
 }
 
+void MapController::orientCameraToNorth()
+{
+    osgEarth::Viewpoint vp = mEarthManipulator->getViewpoint();
+    vp.heading() = 0;
+    mEarthManipulator->setViewpoint(vp, 0.3);
+}
+
 void MapController::mapMouseLocation(osgEarth::GeoPoint geoPos)
 {
     //    osgEarth::GeoPoint geoPos;
