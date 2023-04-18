@@ -33,7 +33,7 @@ Polygon::Polygon(MapController *mapController, bool clamp)
     _options = osgEarth::Features::GeometryCompilerOptions();
     _needsRebuild = true;
     _styleSheet = nullptr;
-    _clampDirty = false;
+    _clampDirty = true;
     _index = nullptr;
 
     _features.push_back( feature );
@@ -128,5 +128,8 @@ void Polygon::setHeight(float height)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = height;
+    if (height<=0){
+        style.remove<osgEarth::Symbology::ExtrusionSymbol>();
+    }
     this->setStyle(style);
 }
