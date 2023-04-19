@@ -44,29 +44,30 @@ QStringList AircraftInfoModel::getMainInfo() const
     char buffer[256];
     std::tm* currTm = localtime(&datetime);
     strftime(buffer, sizeof(buffer), "%Y/%m/%d %H:%M", currTm);
-    return QStringList {QString::number(mAircraftInfo.TN), mAircraftInfo.IFFCode, mAircraftInfo.CallSign,
-                mAircraftInfo.Type, mAircraftInfo.MasterRadar, mAircraftInfo.identifyToString(),
-                mAircraftInfo.IdentificationMethod, buffer, mAircraftInfo.Pos};
+    return QStringList {QString::number(mAircraftInfo.TN), mAircraftInfo.identifyToString(), mAircraftInfo.CallSign,
+                mAircraftInfo.IFFCode, mAircraftInfo.aircraftTypeToString(), mAircraftInfo.MasterRadar,
+                mAircraftInfo.IdentificationMethod, buffer};
 }
 
 QStringList AircraftInfoModel::getmainInfoHeaders() const
 {
-    return QStringList {"TN", "IFFCode", "CallSign", "Type", "Master", "Identification"
-        , "IdentificationMethod", "Time", "Pos"};
+    return QStringList {"TN", "Identification", "CallSign", "IFFCode", "Type", "Master"
+        , "IdentificationMethod", "Time"};
 }
 
 QStringList AircraftInfoModel::getLocationInfo() const
 {
-    return QStringList {QString::number(mAircraftInfo.Latitude),
-                        QString::number(mAircraftInfo.Longitude),
-                        QString::number(mAircraftInfo.Altitude),
+    return QStringList {QString("%L1").arg(mAircraftInfo.Latitude),
+                        QString("%L1").arg(mAircraftInfo.Longitude),
+                        QString("%L1").arg(mAircraftInfo.Altitude),
+                        mAircraftInfo.Pos,
                         QString::number(mAircraftInfo.Heading),
-                        QString::number(mAircraftInfo.Speed)};
+                        QString("%L1").arg(mAircraftInfo.Speed) + " m/s"};
 }
 
 QStringList AircraftInfoModel::getLocationInfoHeader() const
 {
-    return QStringList {"Latitude", "Longitude", "Altitude", "Heading", "Speed"};
+    return QStringList {"Latitude", "Longitude", "Altitude", "Pos", "Heading", "Speed"};
 }
 
 QColor AircraftInfoModel::getAircraftColor()
@@ -100,7 +101,7 @@ AircraftInformation::AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *muiHa
 
             mInfomodel->setAircraftInfo(mInformation);
             mItem->setProperty("model", QVariant::fromValue<AircraftInfoModel*>(mInfomodel));
-            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
+//            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
 
     });

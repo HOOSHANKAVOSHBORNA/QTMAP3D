@@ -513,6 +513,12 @@ void MainWindow::onFrameSwapped()
 
 }
 
+void MainWindow::orientCameraToNorth()
+{
+    if (mMapController)
+        mMapController->orientCameraToNorth();
+}
+
 
 
 

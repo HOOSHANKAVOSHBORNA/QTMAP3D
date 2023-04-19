@@ -120,10 +120,11 @@ AircraftInfo Demo::createAircraftInfo()
     aircraftInfo.TN = tn;
     aircraftInfo.IFFCode="a12345";
     aircraftInfo.CallSign="cls";
-    aircraftInfo.Type="type1";
+    int type =  (qrand() % (5)) + 1;
+    aircraftInfo.Type= static_cast<AircraftInfo::AircraftType>(type);
     aircraftInfo.MasterRadar="radar1";
     int identy = (qrand() % (6));
-    aircraftInfo.Identification = (AircraftInfo::Identify)identy;// F, K, Z, X, U, H
+    aircraftInfo.Identification = static_cast<AircraftInfo::Identify>(identy);// F, K, Z, X, U, H
     aircraftInfo.IdentificationMethod="mt1";//3 char
     aircraftInfo.Time=1678005787;//epoch
     aircraftInfo.Pos="pos";

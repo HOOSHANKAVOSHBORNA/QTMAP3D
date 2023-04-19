@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resource/cone.png</file>
+        <file>ConeProperty.qml</file>
+    </qresource>
+</RCC>

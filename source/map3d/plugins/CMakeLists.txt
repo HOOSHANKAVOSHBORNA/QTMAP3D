@@ -12,4 +12,8 @@ add_subdirectory(drawCircle)
 add_subdirectory(drawPolygon)
 add_subdirectory(drawSphere)
 add_subdirectory(drawEllipse)
+add_subdirectory(drawCone)
+add_subdirectory(drawBox)
+add_subdirectory(drawCapsule)
+add_subdirectory(drawCylinder)
 

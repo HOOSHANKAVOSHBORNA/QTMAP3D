@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resource/cylinder.png</file>
+        <file>CylinderProperty.qml</file>
+    </qresource>
+</RCC>

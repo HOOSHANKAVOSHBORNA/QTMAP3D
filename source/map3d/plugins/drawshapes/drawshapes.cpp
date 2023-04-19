@@ -43,7 +43,7 @@ const QString EXTRPOLY = "ExtrPoly";
 const QString IMAGE_OVERLAY = "ImageOverlay";
 const QString ELLIPSE = "Ellipse";
 const QString RECT = "Rect";
-const QString CONE = "Cone";
+//const QString CONE = "Cone";
 const QString CYLINDER = "Cylinder";
 const QString CAPSULE = "Capsule";
 const QString BOX = "Box";
@@ -61,10 +61,10 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     mQmlEngine = engine;
     //desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
 //    desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true});
+//    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/resources/capsule.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true});
+//    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true});
     //desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true});
     //desc->toolboxItemsList.push_back(new ItemDesc{EXTRPOLY, CATEGORY, "qrc:/res/extroPolygon.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true});
@@ -111,71 +111,71 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
 //                mDrawingState = DrawingState::NONE;
 //            }
 //        }
-        if(name == CONE)
-        {
-            if(checked)
-            {
-                mShape = Shape::CONE;
+//        if(name == CONE)
+//        {
+//            if(checked)
+//            {
+//                mShape = Shape::CONE;
 
 
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                if (mCone && mDrawingState != DrawingState::FINISH){
-                    removeNodeFromLayer(mCone);
-                }
-                mDrawingState = DrawingState::NONE;
-            }
-        }
-        if(name == CYLINDER)
-        {
-            if(checked)
-            {
-                mShape = Shape::CYLINDER;
-                mCylinder = new Cylinder(mMapController,mRadius, 111111,false);
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                mDrawingState = DrawingState::NONE;
-                if (mCylinder && mDrawingState != DrawingState::FINISH){
-                    removeNodeFromLayer(mCylinder);
-                }
-            }
-        }
-        if(name == CAPSULE)
-        {
-            if(checked)
-            {
-                mCapsule = new Capsule(mMapController,mRadius, 0,false);
-                mShape = Shape::CAPSULE;
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                mDrawingState = DrawingState::NONE;
-                if (mCapsule && mDrawingState != DrawingState::FINISH){
-                    removeNodeFromLayer(mCapsule);
-                }
-            }
-        }
-        if( name == BOX)
-        {
-            if(checked)
-            {
-                mBox = new Box(mMapController,500000, 600000, 400000, false);
-                mShape = Shape::BOX;
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                mDrawingState = DrawingState::NONE;
-                if (mBox && mDrawingState != DrawingState::FINISH){
-                    removeNodeFromLayer(mBox);
-                }
-            }
-        }
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                if (mCone && mDrawingState != DrawingState::FINISH){
+//                    removeNodeFromLayer(mCone);
+//                }
+//                mDrawingState = DrawingState::NONE;
+//            }
+//        }
+//        if(name == CYLINDER)
+//        {
+//            if(checked)
+//            {
+//                mShape = Shape::CYLINDER;
+//                mCylinder = new Cylinder(mMapController,mRadius, 111111,false);
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                mDrawingState = DrawingState::NONE;
+//                if (mCylinder && mDrawingState != DrawingState::FINISH){
+//                    removeNodeFromLayer(mCylinder);
+//                }
+//            }
+//        }
+//        if(name == CAPSULE)
+//        {
+//            if(checked)
+//            {
+//                mCapsule = new Capsule(mMapController,mRadius, 0,false);
+//                mShape = Shape::CAPSULE;
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                mDrawingState = DrawingState::NONE;
+//                if (mCapsule && mDrawingState != DrawingState::FINISH){
+//                    removeNodeFromLayer(mCapsule);
+//                }
+//            }
+//        }
+//        if( name == BOX)
+//        {
+//            if(checked)
+//            {
+//                mBox = new Box(mMapController,500000, 600000, 400000, false);
+//                mShape = Shape::BOX;
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                mDrawingState = DrawingState::NONE;
+//                if (mBox && mDrawingState != DrawingState::FINISH){
+//                    removeNodeFromLayer(mBox);
+//                }
+//            }
+//        }
         //if( name == POLYGON)
 //        {
 //            if(checked)
@@ -300,16 +300,16 @@ void DrawShapes::mousePressEvent(QMouseEvent *event)
 //        onSphereBtnClick(event);
         break;
     case Shape::CONE:
-        onConeBtnClick(event);
+//        onConeBtnClick(event);
         break;
     case Shape::CYLINDER:
-        onCylinderBtnClick(event);
+//        onCylinderBtnClick(event);
         break;
     case Shape::CAPSULE:
-        onCapsuleBtnClick(event);
+//        onCapsuleBtnClick(event);
         break;
     case Shape::BOX:
-        onBoxBtnClick(event);
+//        onBoxBtnClick(event);
         break;
     case Shape::POLYGON:
         onPolygoneBtnClick(event);
@@ -527,75 +527,75 @@ void DrawShapes::onNodeBtnDoubleClick(QMouseEvent *event, osg::Node *nodeEditor)
     QMetaObject::invokeMethod(mItem, "hide");
 }
 
-void DrawShapes::onConeBtnClick(QMouseEvent *event)
-{
-    osg::Vec3d worldPos;
-    mMapController->screenToWorld(event->x(), event->y(), worldPos);
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+//void DrawShapes::onConeBtnClick(QMouseEvent *event)
+//{
+//    osg::Vec3d worldPos;
+//    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
+//    if(event->button() == Qt::MouseButton::LeftButton && mDrawingState != DrawingState::START)
 
-    {
-        mCone = new Cone(mMapController,111100, 111100,false);
-        mDrawingState = DrawingState::START;
-        mCone->model->setPosition(geoPos);
-        //mMapController->addNode(mCone);
-        addNodeToLayer(mCone);
-    }
-    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START){
+//    {
+//        mCone = new Cone(mMapController,111100, 111100,false);
+//        mDrawingState = DrawingState::START;
+//        mCone->model->setPosition(geoPos);
+//        //mMapController->addNode(mCone);
+//        addNodeToLayer(mCone);
+//    }
+//    if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START){
 
-        mDrawingState = DrawingState::DELETE;
-        removeNodeFromLayer(mCone);
-    }
-}
+//        mDrawingState = DrawingState::DELETE;
+//        removeNodeFromLayer(mCone);
+//    }
+//}
 
-void DrawShapes::onCylinderBtnClick(QMouseEvent *event)
-{
-    osg::Vec3d worldPos;
-    mMapController->screenToWorld(event->x(), event->y(), worldPos);
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+//void DrawShapes::onCylinderBtnClick(QMouseEvent *event)
+//{
+//    osg::Vec3d worldPos;
+//    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::RightButton)
-    {
-        mCylinder->model->setPosition(geoPos);
-        addNodeToLayer(mCylinder);
-        //mMapController->addNode(mCylinder);
+//    if(event->button() == Qt::MouseButton::RightButton)
+//    {
+//        mCylinder->model->setPosition(geoPos);
+//        addNodeToLayer(mCylinder);
+//        //mMapController->addNode(mCylinder);
 
-    }
-}
+//    }
+//}
 
-void DrawShapes::onCapsuleBtnClick(QMouseEvent *event)
-{
-    osg::Vec3d worldPos;
-    mMapController->screenToWorld(event->x(), event->y(), worldPos);
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
-    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
-    {
-        mCapsule->model->setPosition(geoPos);
-        //mMapController->addNode(mCapsule);
-        addNodeToLayer(mCapsule);
+//void DrawShapes::onCapsuleBtnClick(QMouseEvent *event)
+//{
+//    osg::Vec3d worldPos;
+//    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+//    if(event->button() == Qt::MouseButton::RightButton && event->type() == QEvent::Type::MouseButtonPress)
+//    {
+//        mCapsule->model->setPosition(geoPos);
+//        //mMapController->addNode(mCapsule);
+//        addNodeToLayer(mCapsule);
 
-    }
-}
+//    }
+//}
 
-void DrawShapes::onBoxBtnClick(QMouseEvent *event)
-{
-    osg::Vec3d worldPos;
-    mMapController->screenToWorld(event->x(), event->y(), worldPos);
-    osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+//void DrawShapes::onBoxBtnClick(QMouseEvent *event)
+//{
+//    osg::Vec3d worldPos;
+//    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+//    osgEarth::GeoPoint geoPos;
+//    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::RightButton)
-    {
-        mBox->model->setPosition(geoPos);
-        //mMapController->addNode(mBox);
-        addNodeToLayer(mBox);
+//    if(event->button() == Qt::MouseButton::RightButton)
+//    {
+//        mBox->model->setPosition(geoPos);
+//        //mMapController->addNode(mBox);
+//        addNodeToLayer(mBox);
 
-    }
-}
+//    }
+//}
 
 void DrawShapes::onPolygoneBtnClick(QMouseEvent *event)
 {

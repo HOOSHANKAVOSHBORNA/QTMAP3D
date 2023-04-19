@@ -32,7 +32,7 @@ class AircraftModelNode: public DefenseModelNode
 {
     Q_OBJECT
 public:
-    AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
+    AircraftModelNode(MapController *mapControler, AircraftInfo::AircraftType aircraftType, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
     void setInformation(AircraftInfo info);
@@ -94,7 +94,11 @@ private:
 
     AircraftInformation *mAircraftinformation{nullptr};
 
-    static osg::ref_ptr<osg::Node> mNode3DRef;
+    static osg::ref_ptr<osg::Node> mAircraft3DRef;
+    static osg::ref_ptr<osg::Node> mFighter3DRef;
+    static osg::ref_ptr<osg::Node> mMissile3DRef;
+    static osg::ref_ptr<osg::Node> mHelicopter3DRef;
+    static osg::ref_ptr<osg::Node> mDrone3DRef;
 //    static osg::ref_ptr<osg::Image> m2dIcon;
 
     static constexpr int LABEL_IMAGE_WIDTH = 160;

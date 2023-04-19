@@ -307,9 +307,9 @@ void SystemModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode(getGeoTransform());
-        onRangeButtonToggled(val);
-        onWezButtonToggled(val);
-        onMezButtonToggled(val);
+//        onRangeButtonToggled(val);
+//        onWezButtonToggled(val);
+//        onMezButtonToggled(val);
     }
 }
 
@@ -340,11 +340,23 @@ void SystemModelNode::hover(bool val)
 {
     DefenseModelNode::hover(val);
 
-    mNode2DActive->setValue(0, !val);
-    mNode2DActive->setValue(1, val);
+    if (val || mIsSelected) {
 
-    mNode2DDeactive->setValue(0, !val);
-    mNode2DDeactive->setValue(1, val);
+        mNode2DActive->setValue(0, false);
+        mNode2DActive->setValue(1, true);
+        mNode2DDeactive->setValue(0, false);
+        mNode2DDeactive->setValue(1, true);
+
+    } else {
+
+        mNode2DActive->setValue(0, true);
+        mNode2DActive->setValue(1, false);
+        mNode2DDeactive->setValue(0, true);
+        mNode2DDeactive->setValue(1, false);
+
+    }
+
+
 
 }
 
@@ -554,12 +566,14 @@ bool SystemModelNode::removeNodeFromLayer(osg::Node *node)
 }
 void SystemModelNode::showInfoWidget()
 {
-    mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    if (!mSystemInformation) {
+        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    }
     mSystemInformation->show();
 }
 

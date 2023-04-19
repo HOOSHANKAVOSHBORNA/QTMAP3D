@@ -32,6 +32,22 @@ Item {
             RowLayout {
                 anchors.fill: parent
                 anchors.leftMargin: 35
+
+                Text {
+                    Layout.alignment: Qt.AlignCenter
+                    id: headerName
+                    text: "-------"
+                    color:"yellow"
+                    font.pointSize: 20
+                }
+
+                Rectangle {
+                    width: 1
+                    opacity: 0.5
+                    height: 30
+                    color: "white"
+                }
+
                 Text {
                     id: system
                     Layout.alignment: Qt.AlignCenter
@@ -109,6 +125,12 @@ Item {
                             target: system
                             property: "text"
                             value: Numberr
+                        }
+
+                        Binding {
+                            target: headerName
+                            property: "text"
+                            value: MainInfo[0]
                         }
 
                         Binding {

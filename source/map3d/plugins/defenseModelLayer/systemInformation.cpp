@@ -77,8 +77,10 @@ void SystemInfoModel::setStatusInfo(const SystemStatusInfo &statusInfo)
 
 QStringList SystemInfoModel::getMainInfo() const
 {
-    return QStringList {mSystemInfo.Name, QString::number(mSystemInfo.Number),
-                        mSystemInfo.Type, mSystemInfo.Terminal};
+    return QStringList {mSystemInfo.Name,
+                        QString::number(mSystemInfo.Number),
+                        mSystemInfo.Type,
+                        mSystemInfo.Terminal};
 }
 
 QStringList SystemInfoModel::getMainInfoHeaders() const
@@ -88,11 +90,11 @@ QStringList SystemInfoModel::getMainInfoHeaders() const
 
 QStringList SystemInfoModel::getLocationInfo() const
 {
-    return QStringList {QString::number(mSystemInfo.Latitude),
-                        QString::number(mSystemInfo.Longitude),
-                        QString::number(mSystemInfo.Altitude),
-                        QString::number(mSystemInfo.ViewRange),
-                        QString::number(mSystemInfo.MezRange)};
+    return QStringList {std::abs(mSystemInfo.Latitude + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo.Latitude),
+                        std::abs(mSystemInfo.Longitude + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo.Longitude),
+                        std::abs(mSystemInfo.Altitude + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo.Altitude),
+                        std::abs(mSystemInfo.ViewRange + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo.ViewRange) + " m",
+                        std::abs(mSystemInfo.MezRange + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo.MezRange) + " m"};
 }
 
 QStringList SystemInfoModel::getLocationInfoHeaders() const
@@ -102,9 +104,13 @@ QStringList SystemInfoModel::getLocationInfoHeaders() const
 
 QStringList SystemInfoModel::getStatusInfo() const
 {
-    return QStringList {mSystemStatusInfo.ReceiveTime, mSystemStatusInfo.Simulation, mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.BCCStatus),
-                        mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.RadarSearchStatus), mSystemStatusInfo.Operational,
-                        QString::number(mSystemStatusInfo.MissileCount), mSystemStatusInfo.RadarMode};
+    return QStringList {mSystemStatusInfo.ReceiveTime,
+                        mSystemStatusInfo.Simulation,
+                        mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.BCCStatus),
+                        mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.RadarSearchStatus),
+                        mSystemStatusInfo.Operational,
+                        mSystemStatusInfo.MissileCount == -1 ? "------" : QString::number(mSystemStatusInfo.MissileCount),
+                        mSystemStatusInfo.RadarMode};
 }
 
 QStringList SystemInfoModel::getStatusInfoHeaders() const
@@ -114,8 +120,12 @@ QStringList SystemInfoModel::getStatusInfoHeaders() const
 
 QStringList SystemInfoModel::getCombatInfo() const
 {
-    return QStringList {QString::number(mSystemCombatInfo.TN), mSystemCombatInfo.Acceptance, mSystemCombatInfo.phaseToString(),
-                        QString::number(mSystemCombatInfo.Antenna), mSystemCombatInfo.ChanelNo, mSystemCombatInfo.Inrange};
+    return QStringList {mSystemCombatInfo.TN == -1 ? "------" : QString::number(mSystemCombatInfo.TN),
+                        mSystemCombatInfo.Acceptance,
+                        mSystemCombatInfo.phaseToString(),
+                        std::abs(mSystemCombatInfo.Antenna + 1) < 0.001 ? "------" : QString::number(mSystemCombatInfo.Antenna),
+                        mSystemCombatInfo.ChanelNo,
+                        mSystemCombatInfo.Inrange};
 }
 
 QStringList SystemInfoModel::getCombatInfoHeaders() const
@@ -138,7 +148,7 @@ SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
 
             mInfoModel->setInformtion(mInformation, systemStatusInfo, systemCambatInfo);
             mItem->setProperty("model", QVariant::fromValue<SystemInfoModel*>(mInfoModel));
-            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
+//            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
 
     });

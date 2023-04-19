@@ -53,6 +53,8 @@ double PolygonPropertiesModel::getHeight() const
 }
 
 void PolygonPropertiesModel::setHeight(const double &value){
+//    qDebug() << mHeight <<endl;
+//    qDebug() << mPolygon->getHeight();
     if(std::abs(value - mHeight) < 1)
         return;
     mHeight = value;
@@ -140,7 +142,7 @@ void PolygonPropertiesModel::setPolygon(Polygon *polygon)
     float lineopacity = tmplineColor.a();
     tmplineColor  = mLinecolor.toStdString();
     tmplineColor.a() = lineopacity;
-    mPolygon->setLineColor(tmpColor);
+    mPolygon->setLineColor(tmplineColor);
     mPolygon->setLineWidth(static_cast<float>(mLineWidth));
     setTransparency(mTransparency);
     mPolygon->setHeight(static_cast<float>(mHeight));

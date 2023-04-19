@@ -43,13 +43,13 @@ Item {
             }
         }
 
-        ListElement {
-            buttonText: "Wez"
-            iconUrl:"qrc:/resources/wez.png"
-            checkable: true
-            checked: false
-            clickCallback: function(check) { rootItem.wezButtonClicked(check);}
-        }
+//        ListElement {
+//            buttonText: "Wez"
+//            iconUrl:"qrc:/resources/wez.png"
+//            checkable: true
+//            checked: false
+//            clickCallback: function(check) { rootItem.wezButtonClicked(check);}
+//        }
 
 
         ListElement {

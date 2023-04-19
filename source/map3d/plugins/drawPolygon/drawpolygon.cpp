@@ -42,7 +42,6 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
             else {
                 mEnterPolygonZone = false;
                 mDrawingState = DrawingState::FINISH;
-                mDrawingState = DrawingState::FINISH;
                 if(mPolygonProperties){
                         mPolygonProperties->hide();
                     }

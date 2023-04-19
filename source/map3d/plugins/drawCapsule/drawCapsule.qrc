@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>CapsuleProperty.qml</file>
+        <file>resource/capsule.png</file>
+    </qresource>
+</RCC>

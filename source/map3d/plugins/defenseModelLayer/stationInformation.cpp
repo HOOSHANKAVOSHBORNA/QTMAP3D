@@ -37,15 +37,16 @@ QStringList StationInfoModel::getMainInfoHeaders() const
 
 QStringList StationInfoModel::getLocationInfo() const
 {
-    return QStringList {QString::number(mStationInfo.Latitude),
-                        QString::number(mStationInfo.Longitude),
-                        QString::number(mStationInfo.Radius),
-                        QString::number(mStationInfo.CycleTime)};
+    return QStringList {QString("%L1").arg(mStationInfo.Latitude),
+                        QString("%L1").arg(mStationInfo.Longitude),
+                        QString("%L1").arg(mStationInfo.Altitude),
+                        QString("%L1").arg(mStationInfo.Radius) + " m",
+                        QString("%L1").arg(mStationInfo.CycleTime) + " s"};
 }
 
 QStringList StationInfoModel::getLocationInfoHeaders() const
 {
-    return QStringList {"Latitude", "Longitude", "Radius", "CycleTime"};
+    return QStringList {"Latitude", "Longitude",  "Altitude", "Radius", "CycleTime"};
 }
 
 QHash<int, QByteArray> StationInfoModel::roleNames() const
@@ -78,7 +79,7 @@ StationInformtion::StationInformtion(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
 
             mInfoModel->setInformtion(mInformation);
             mItem->setProperty("model", QVariant::fromValue<StationInfoModel*>(mInfoModel));
-            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
+//            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
 
     });
