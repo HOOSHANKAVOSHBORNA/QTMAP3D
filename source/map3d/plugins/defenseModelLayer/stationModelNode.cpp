@@ -193,8 +193,8 @@ void StationModelNode::onLeftButtonClicked(bool val)
     if(!val)
     {
         mMapController->untrackNode(getGeoTransform());
-        onRangeButtonToggled(val);
-        onVisibleButtonToggled(val);
+//        onRangeButtonToggled(val);
+//        onVisibleButtonToggled(val);
     }
     select(val);
 }
@@ -345,12 +345,14 @@ void StationModelNode::onModeChanged(bool is3DView)
 
 void StationModelNode::showInfoWidget()
 {
-    StationInformtion *stationInformation = new StationInformtion(mQmlEngine, mUIHandle, mInformation, this);
-    connect(stationInformation->getInfo(), &StationInfoModel::gotoButtonClicked, this, &StationModelNode::onGotoButtonClicked);
-    connect(stationInformation->getInfo(), &StationInfoModel::rangeButtonClicked, this, &StationModelNode::onRangeButtonToggled);
-    connect(stationInformation->getInfo(), &StationInfoModel::visibleButtonClicked, this, &StationModelNode::onVisibleButtonToggled);
-    connect(stationInformation->getInfo(), &StationInfoModel::activeButtonToggled, this, &StationModelNode::onActivateButtonToggled);
-    stationInformation->show();
+    if (mStationInformation == nullptr) {
+        mStationInformation = new StationInformtion(mQmlEngine, mUIHandle, mInformation, this);
+        connect(mStationInformation->getInfo(), &StationInfoModel::gotoButtonClicked, this, &StationModelNode::onGotoButtonClicked);
+        connect(mStationInformation->getInfo(), &StationInfoModel::rangeButtonClicked, this, &StationModelNode::onRangeButtonToggled);
+        connect(mStationInformation->getInfo(), &StationInfoModel::visibleButtonClicked, this, &StationModelNode::onVisibleButtonToggled);
+        connect(mStationInformation->getInfo(), &StationInfoModel::activeButtonToggled, this, &StationModelNode::onActivateButtonToggled);
+    }
+    mStationInformation->show();
 }
 
 void StationModelNode::updateOrCreateLabelImage()

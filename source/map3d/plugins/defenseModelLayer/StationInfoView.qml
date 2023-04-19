@@ -32,11 +32,29 @@ Item {
             RowLayout {
                 anchors.fill: parent
                 anchors.leftMargin: 35
+
+                Text {
+                    Layout.alignment: Qt.AlignCenter
+                    Layout.maximumWidth: 100
+                    clip: true
+                    id: headerName
+                    text: "-------"
+                    color:"yellow"
+                    font.pointSize: 20
+                }
+
+                Rectangle {
+                    width: 1
+                    opacity: 0.5
+                    height: 30
+                    color: "white"
+                }
+
                 Text {
                     id: station
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: implicitWidth
-                    text: "Station"
+                    text: "--------"
                     color:"yellow"
                     font.pointSize: 20
                 }
@@ -115,6 +133,12 @@ Item {
                             target: control
                             property: "checked"
                             value: Active
+                        }
+
+                        Binding {
+                            target: headerName
+                            property: "text"
+                            value: MainInfo[0]
                         }
 
                         Item {

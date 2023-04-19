@@ -307,9 +307,9 @@ void SystemModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode(getGeoTransform());
-        onRangeButtonToggled(val);
-        onWezButtonToggled(val);
-        onMezButtonToggled(val);
+//        onRangeButtonToggled(val);
+//        onWezButtonToggled(val);
+//        onMezButtonToggled(val);
     }
 }
 
@@ -566,12 +566,14 @@ bool SystemModelNode::removeNodeFromLayer(osg::Node *node)
 }
 void SystemModelNode::showInfoWidget()
 {
-    mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-    connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    if (!mSystemInformation) {
+        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    }
     mSystemInformation->show();
 }
 

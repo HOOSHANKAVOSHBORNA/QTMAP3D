@@ -36,18 +36,31 @@ Item {
         Item {
             Layout.fillWidth: true
             Layout.minimumHeight: 60
-
-            Text {
-                id: airplane
+            GridLayout {
+                Layout.fillWidth: true
+                anchors.fill: parent
                 anchors.centerIn: parent
-                text: "Airplane"
-                color:"yellow"
-                font.pointSize: 20
-//                onTextChanged: function(){
-//                    rootItem.titleChanged(airplane.text);
-//                }
+                Text {
+                    Layout.alignment: Qt.AlignCenter
+                    id: headerType
+                    text: "--------"
+                    color:"yellow"
+                    font.pointSize: 20
+                }
+                Rectangle {
+                    width: 1
+                    opacity: 0.5
+                    height: 30
+                    color: "white"
+                }
 
-
+                Text {
+                    Layout.alignment: Qt.AlignCenter
+                    id: headerName
+                    text: "Airplane"
+                    color:"yellow"
+                    font.pointSize: 20
+                }
             }
 
         }
@@ -74,10 +87,17 @@ Item {
                         width: rootItem.width
 
                         Binding {
-                            target: airplane
+                            target: headerName
                             property: "text"
                             value: TN
                         }
+
+                        Binding {
+                            target: headerType
+                            property: "text"
+                            value: MainInfo[4]
+                        }
+
                         Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 200
@@ -134,7 +154,7 @@ Item {
                                     Label {
                                         id: txt
                                         text: MainInfo[index]
-                                        color: index == 5 ? rootItem.model.getAircraftColor() : "white"
+                                        color: index == 1 ? rootItem.model.getAircraftColor() : "white"
                                         clip: true
                                         font.bold: index == 5
                                         Layout.fillWidth: true
