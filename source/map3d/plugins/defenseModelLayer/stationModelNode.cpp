@@ -173,10 +173,10 @@ void StationModelNode::setInformation(const StationInfo& info)
     mInformation = info;
     updateOrCreateLabelImage();
 
-    mNode2D->setValue(0, info.Active);
-    mNode2D->setValue(1, !info.Active);
+    mNode2D->setValue(0, info.RadarSearchStatus == StationInfo::S);
+    mNode2D->setValue(1, info.RadarSearchStatus != StationInfo::S);
 
-    mCircleNode->setStyle(info.Active ? mCircleStyleActive : mCircleStyleDeactive);
+    mCircleNode->setStyle(info.RadarSearchStatus == StationInfo::S ? mCircleStyleActive : mCircleStyleDeactive);
 
 }
 void StationModelNode::goOnTrack()
@@ -317,7 +317,7 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
 
 void StationModelNode::onActivateButtonToggled(bool checked)
 {
-    mInformation.Active = checked;
+    mInformation.RadarSearchStatus = (checked ?  StationInfo::S : StationInfo::US);
 
     mNode2D->setValue(0, checked);
     mNode2D->setValue(1, !checked);

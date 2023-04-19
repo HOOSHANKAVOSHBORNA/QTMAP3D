@@ -189,10 +189,7 @@ void SystemModelNode::setInformation(const SystemInfo& info)
     updateOrCreateLabelImage();
 
 
-    mNode2D->setValue(0, info.Active);
-    mNode2D->setValue(1, !info.Active);
 
-    mCircleNode->setStyle(info.Active ? mCircleStyleActive : mCircleStyleDeactive);
 }
 
 SystemInfo SystemModelNode::getInformation() const
@@ -229,6 +226,10 @@ void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
     if (mSystemInformation)
         mSystemInformation->setStatusInfo(systemStatusInfo);
+    mNode2D->setValue(0, systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S);
+    mNode2D->setValue(1, systemStatusInfo.RadarSearchStatus != SystemStatusInfo::S);
+
+    mCircleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mCircleStyleActive : mCircleStyleDeactive);
     mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
 }
@@ -461,7 +462,7 @@ void SystemModelNode::onMezButtonToggled(bool checked)
 
 void SystemModelNode::onActiveButtonToggled(bool checked)
 {
-    mInformation.Active = checked;
+    mStatusInfo.RadarSearchStatus = (checked ? SystemStatusInfo::S : SystemStatusInfo::US);
 
     mNode2D->setValue(0, checked);
     mNode2D->setValue(1, !checked);

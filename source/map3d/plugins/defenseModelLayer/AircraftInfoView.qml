@@ -104,7 +104,11 @@ Item {
                             Image {
                                 id: img
                                 anchors.fill: parent
-                                source: "qrc:///Resources/airplane1.jpg"
+                                source: MainInfo[4] === "Aircraft" ? "qrc:///Resources/airplane1.jpg":
+                                        MainInfo[4] === "Drone" ? "qrc:/resources/drone.jpg":
+                                        MainInfo[4] === "Fighter" ? "qrc:/resources/fighter.jpg":
+                                        MainInfo[4] === "Helicopter" ? "qrc:/resources/helicopter.jpg":
+                                                                      "qrc:/resources/missile.jpg"
                                 fillMode: Image.Stretch
                             }
                         }

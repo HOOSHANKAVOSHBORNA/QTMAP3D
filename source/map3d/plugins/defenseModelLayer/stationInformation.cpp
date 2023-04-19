@@ -17,7 +17,7 @@ QVariant StationInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case Numberr: return QVariant::fromValue<int>(mStationInfo.Number);
         case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());
         case LocationInfoHeaders: return QVariant::fromValue<QStringList>(getLocationInfoHeaders());
-        case Active: return QVariant::fromValue<bool>(mStationInfo.Active);
+        case Active: return QVariant::fromValue<bool>(mStationInfo.RadarSearchStatus == StationInfo::S);
         case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
         case MainInfoHeaders: return QVariant::fromValue<QStringList>(getMainInfoHeaders());
         default: return mStationInfo.Name;
@@ -26,13 +26,14 @@ QVariant StationInfoModel::data(const QModelIndex &/*index*/, int role) const{
 
 QStringList StationInfoModel::getMainInfo() const {
     QStringList tmp;
-    tmp << mStationInfo.Name << QString::number(mStationInfo.Number) << mStationInfo.Type << mStationInfo.PrimSec;
+    tmp << mStationInfo.Name << QString::number(mStationInfo.Number)
+        << mStationInfo.Type <<mStationInfo.radarStatusToString(mStationInfo.RadarSearchStatus) << mStationInfo.PrimSec;
     return tmp;
 }
 
 QStringList StationInfoModel::getMainInfoHeaders() const
 {
-    return QStringList {"Name" , "Number", "Type", "Prim/Sec"};
+    return QStringList {"Name" , "Number", "Type", "RadarSearch Status", "Prim/Sec"};
 }
 
 QStringList StationInfoModel::getLocationInfo() const

@@ -56,47 +56,47 @@ Item {
                     color:"yellow"
                     font.pointSize: 20
                 }
-                Switch {
-                    id: control
-                    ToolTip {
-                        parent: control
-                        y: control.y + control.height
-                        Text{
-                            text: control.checked ? "Click to deactivate Station" : "Click to activate Station"
-                            color: "white"
-                        }
+//                Switch {
+//                    id: control
+//                    ToolTip {
+//                        parent: control
+//                        y: control.y + control.height
+//                        Text{
+//                            text: control.checked ? "Click to deactivate Station" : "Click to activate Station"
+//                            color: "white"
+//                        }
 
-                        background: Rectangle {
-                            color: "#404040"
-                            radius: 4
-                        }
+//                        background: Rectangle {
+//                            color: "#404040"
+//                            radius: 4
+//                        }
 
-                        visible:  control.hovered
-                    }
-                    onToggled: function() {
-                        rootItem.model.activeButtonToggled(checked);
-                    }
+//                        visible:  control.hovered
+//                    }
+//                    onToggled: function() {
+//                        rootItem.model.activeButtonToggled(checked);
+//                    }
 
-                    Layout.alignment: Qt.AlignRight
-                    indicator: Rectangle {
-                        implicitWidth: 48
-                        implicitHeight: 26
-                        x: control.leftPadding
-                        y: parent.height / 2 - height / 2
-                        radius: 13
-                        color: control.checked ? "#17a81a" : "#a8171a"
-                        border.color: control.checked ? "#17a81a" : "#a8171a"
+//                    Layout.alignment: Qt.AlignRight
+//                    indicator: Rectangle {
+//                        implicitWidth: 48
+//                        implicitHeight: 26
+//                        x: control.leftPadding
+//                        y: parent.height / 2 - height / 2
+//                        radius: 13
+//                        color: control.checked ? "#17a81a" : "#a8171a"
+//                        border.color: control.checked ? "#17a81a" : "#a8171a"
 
-                        Rectangle {
-                            x: control.checked ? parent.width - width : 0
-                            width: 26
-                            height: 26
-                            radius: 13
-                            color: control.down ? "#cccccc" : "#ffffff"
-                            border.color: control.checked ? (control.down ? "#17a81a" : "#21be2b") : "#999999"
-                        }
-                    }
-                }
+//                        Rectangle {
+//                            x: control.checked ? parent.width - width : 0
+//                            width: 26
+//                            height: 26
+//                            radius: 13
+//                            color: control.down ? "#cccccc" : "#ffffff"
+//                            border.color: control.checked ? (control.down ? "#17a81a" : "#21be2b") : "#999999"
+//                        }
+//                    }
+//                }
             }
 
         }
@@ -133,11 +133,11 @@ Item {
                             value: MainInfo[0]
                         }
 
-                        Binding {
-                            target: control
-                            property: "checked"
-                            value: Active
-                        }
+//                        Binding {
+//                            target: control
+//                            property: "checked"
+//                            value: Active
+//                        }
 
                         Item {
                             Layout.fillWidth: true

@@ -204,10 +204,17 @@ public:
 
 struct StationInfo
 {
+
+    enum RadarStatus{
+        US,//disconnect
+        S,//connect
+        NoData
+    };
+
     QString Name = "------";
     QString Type = "------";
     QString PrimSec = "------";
-    bool Active = false;
+//    bool Active = false;
 
     int Number = -1;
     double Latitude = -1;
@@ -215,6 +222,26 @@ struct StationInfo
     double Altitude = -1;
     double Radius = 0;
     int CycleTime = -1;
+    RadarStatus RadarSearchStatus;
+
+
+
+    QString radarStatusToString(RadarStatus status) const
+    {
+        QString result = "------";
+        switch (status) {
+        case US:
+            result = "US";
+            break;
+        case S:
+            result = "S";
+            break;
+        case NoData:
+            result = "NoData";
+            break;
+        }
+        return result;
+    }
 
     QJsonDocument toJson()
     {
@@ -222,7 +249,7 @@ struct StationInfo
         jsonObject.insert("Name", Name);
         jsonObject.insert("Type", Type);
         jsonObject.insert("Primary/Secondary", PrimSec);
-        jsonObject.insert("Active", Active);
+//        jsonObject.insert("Active", Active);
 
         jsonObject.insert("Number", Number);
         jsonObject.insert("Latitude", Latitude);
@@ -241,7 +268,7 @@ struct StationInfo
         Name = data.value("Name").toString();
         Type = data.value("Type").toString();
         PrimSec = data.value("Primary/Secondary").toString();
-        Active = data.value("Active").toBool();
+//        Active = data.value("Active").toBool();
 
         Number = data.value("Number").toInt();
         Latitude = data.value("Latitude").toDouble();
@@ -264,7 +291,7 @@ struct SystemInfo
     double Altitude = -1;
     double ViewRange = -1;
     double MezRange = -1;
-    bool Active = true;
+//    bool Active = true;
 
     QList<AircraftInfo> assignedAircrafts;
 
