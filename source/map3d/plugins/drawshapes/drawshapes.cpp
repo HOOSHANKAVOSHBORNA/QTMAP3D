@@ -64,7 +64,7 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 //    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/resources/capsule.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true});
+//    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true});
     //desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true});
     //desc->toolboxItemsList.push_back(new ItemDesc{EXTRPOLY, CATEGORY, "qrc:/res/extroPolygon.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true});
@@ -160,22 +160,22 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
                 }
             }
         }
-        if( name == BOX)
-        {
-            if(checked)
-            {
-                mBox = new Box(mMapController,500000, 600000, 400000, false);
-                mShape = Shape::BOX;
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                mDrawingState = DrawingState::NONE;
-                if (mBox && mDrawingState != DrawingState::FINISH){
-                    removeNodeFromLayer(mBox);
-                }
-            }
-        }
+//        if( name == BOX)
+//        {
+//            if(checked)
+//            {
+//                mBox = new Box(mMapController,500000, 600000, 400000, false);
+//                mShape = Shape::BOX;
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                mDrawingState = DrawingState::NONE;
+//                if (mBox && mDrawingState != DrawingState::FINISH){
+//                    removeNodeFromLayer(mBox);
+//                }
+//            }
+//        }
         //if( name == POLYGON)
 //        {
 //            if(checked)
