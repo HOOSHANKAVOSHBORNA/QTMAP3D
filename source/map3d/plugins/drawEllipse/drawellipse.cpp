@@ -82,7 +82,7 @@ void DrawEllipse::mousePressEvent(QMouseEvent *event)
             if(mDrawingState == DrawingState::START)
             {
                 finishDraw();
-                event->accept();
+
             }
         }
     }
