@@ -1,4 +1,4 @@
-#include "cone.h"
+#include "capsule.h"
 #include <osgEarth/GLUtils>
 #include <osg/BlendFunc>
 #include <osg/LightModel>
@@ -7,26 +7,26 @@
 #include "mapcontroller.h"
 #include <QDebug>
 
-Cone::Cone()
+Capsule::Capsule()
 {
-    setName("Cone");
+    setName("Capsule");
     mRadius.set(1.0, osgEarth::Units::KILOMETERS);
     mColor = osgEarth::Color::White;
     compile();
 }
 
-void Cone::compile()
+void Capsule::compile()
 {
     osg::Group* pat = getPositionAttitudeTransform();
     pat->removeChildren(0, pat->getNumChildren());
-
     float radius = static_cast<float>(mRadius.as(osgEarth::Units::METERS));
     float height = static_cast<float>(mHeight.as(osgEarth::Units::METERS));
+    mCenter = osg::Vec3(0.f,0.f,radius + height);
     osg::ref_ptr<osg::CompositeShape> compositeShape = new osg::CompositeShape;
     osg::ref_ptr<osg::TessellationHints> tessellationHints = new osg::TessellationHints;
 
-    osg::ref_ptr<osg::Cone> coneShape = new osg::Cone(mCenter, radius, height);
-    compositeShape->addChild(coneShape);
+    osg::ref_ptr<osg::Capsule> capsuleShape = new osg::Capsule(mCenter, radius, height);
+    compositeShape->addChild(capsuleShape);
 
     mShapeDrawable = new osg::ShapeDrawable(compositeShape.get(), tessellationHints);
     mShapeDrawable->setColor(mColor);
@@ -40,7 +40,7 @@ void Cone::compile()
 
 }
 
-osg::Node* Cone::installTwoPassAlpha(osg::Node* node)
+osg::Node* Capsule::installTwoPassAlpha(osg::Node* node)
 {
     // first, get the whole thing under a depth-sorted bin:
     osg::Group* g1 = new osg::Group();
@@ -78,7 +78,7 @@ osg::Node* Cone::installTwoPassAlpha(osg::Node* node)
     return g1;
 }
 
-void Cone::setColor(osgEarth::Color color)
+void Capsule::setColor(osgEarth::Color color)
 {
     mColor = color;
     if(mShapeDrawable)
@@ -88,7 +88,7 @@ void Cone::setColor(osgEarth::Color color)
     }
 }
 
-osgEarth::Color Cone::getColor()
+osgEarth::Color Capsule::getColor()
 {
     if(mShapeDrawable)
     {
@@ -97,7 +97,7 @@ osgEarth::Color Cone::getColor()
     return osgEarth::Color(0, 0, 0);
 }
 
-void Cone::setCenter(osg::Vec3f center)
+void Capsule::setCenter(osg::Vec3f center)
 {
     if (mCenter != center )
     {
@@ -107,12 +107,12 @@ void Cone::setCenter(osg::Vec3f center)
 
 }
 
-osg::Vec3f Cone::getCenter()
+osg::Vec3f Capsule::getCenter()
 {
     return mCenter;
 }
 
-void Cone::setRadius( const osgEarth::Linear& radius )
+void Capsule::setRadius( const osgEarth::Linear& radius )
 {
     if (mRadius != radius )
     {
@@ -121,7 +121,7 @@ void Cone::setRadius( const osgEarth::Linear& radius )
     }
 }
 
-void Cone::setHeight(const osgEarth::Linear &height)
+void Capsule::setHeight(const osgEarth::Linear &height)
 {
     if (mHeight != height) {
         mHeight = height;
@@ -129,12 +129,12 @@ void Cone::setHeight(const osgEarth::Linear &height)
     }
 }
 
-const osgEarth::Linear& Cone::getRadius() const
+const osgEarth::Linear& Capsule::getRadius() const
 {
     return mRadius;
 }
 
-const osgEarth::Linear &Cone::getHeight() const
+const osgEarth::Linear &Capsule::getHeight() const
 {
     return mHeight;
 }

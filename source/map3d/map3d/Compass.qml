@@ -12,8 +12,11 @@ Item {
 
     property real headingAngle
 
+    signal compassDoubleClicked();
 
     Rectangle {
+
+
 
         id: compass
         anchors.fill: parent
@@ -21,6 +24,14 @@ Item {
         smooth: true
         radius: 100
         opacity: 0.8
+
+        MouseArea {
+            anchors.fill: parent
+            onDoubleClicked: function() {
+                rootIte.compassDoubleClicked();
+            }
+        }
+
         Image {
             rotation: rootIte.headingAngle
             id: image

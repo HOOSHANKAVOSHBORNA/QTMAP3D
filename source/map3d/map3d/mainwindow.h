@@ -177,6 +177,8 @@ public slots:
 
     void onFrameSwapped();
 
+    void orientCameraToNorth();
+
 public:
 
     MapController* mapController() const;

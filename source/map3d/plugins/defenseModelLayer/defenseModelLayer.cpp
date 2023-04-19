@@ -105,7 +105,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         aircraftInfo.Heading = 30;
         aircraftInfo.IFFCode = "a12345";
         aircraftInfo.CallSign = "cls";
-        aircraftInfo.Type = "type2";
+        aircraftInfo.Type = AircraftInfo::AircraftType::Aircraft;
         aircraftInfo.MasterRadar = "radar2";
         aircraftInfo.Identification = AircraftInfo::Identify::Z;
         aircraftInfo.IdentificationMethod = "mtd";
