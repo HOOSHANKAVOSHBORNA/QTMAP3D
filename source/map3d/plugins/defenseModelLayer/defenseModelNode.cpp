@@ -307,10 +307,10 @@ void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
 
 void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
 {
-    if(!mIsSelected)
-    {
+    //if(!mIsSelected)
+    //{
         hover(onModel);
-    }
+    //}
 }
 //void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
 //{
@@ -340,10 +340,8 @@ void DefenseModelNode::select(bool val)
 //    else
 //        mMapControler->removeNode(mSelectOutline);
     //--------------------------------------------------------------------------------------------------
-    hover(val);
     mIsSelected = val;
-    if(mLabelNode)
-        mLabelNode->setNodeMask(val);
+    hover(val);
 }
 
 void DefenseModelNode::hover(bool val)
@@ -355,7 +353,7 @@ void DefenseModelNode::hover(bool val)
     //    auto lbStyle = mLabelNode->getStyle();
 
     osg::ref_ptr<osg::Material> mat = new osg::Material;
-    if(!val)
+    if(!val && !mIsSelected)
     {
         mat->setDiffuse (osg::Material::FRONT_AND_BACK, mModelColor);
     }
