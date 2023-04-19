@@ -28,21 +28,21 @@ struct AircraftInfo
     };
 
     //-------------------------------------
-    int TN;
-    QString IFFCode;
-    QString CallSign;
+    int TN = 0;
+    QString IFFCode = "------";
+    QString CallSign = "------";
     AircraftType Type;
-    QString MasterRadar;
-	Identify Identification;
-    QString IdentificationMethod;
+    QString MasterRadar = "------";
+    Identify Identification;
+    QString IdentificationMethod = "------";
     long long int Time;
-    QString Pos;
+    QString Pos = "------";
 
-    double Latitude;
-    double Longitude;
-    double Altitude;
-    double Heading;
-    double Speed;
+    double Latitude = -1;
+    double Longitude = -1;
+    double Altitude = -1;
+    double Heading = -1;
+    double Speed = -1;
 
     QStringList DetectionSystems;
     QStringList Sends;
@@ -53,7 +53,7 @@ struct AircraftInfo
 public:
     QString aircraftTypeToString() const
     {
-        QString result = "";
+        QString result = "------";
         switch (Type) {
         case Fighter:
             result = "Fighter";
@@ -76,7 +76,7 @@ public:
 
     QString identifyToString() const
     {
-        QString result = "";
+        QString result = "------";
         switch (Identification) {
         case F:
             result = "F";
@@ -204,16 +204,17 @@ public:
 
 struct StationInfo
 {
-    QString Name;
-    QString Type;
-    QString PrimSec;
-	bool Active = false;
+    QString Name = "------";
+    QString Type = "------";
+    QString PrimSec = "------";
+    bool Active = false;
 
-    int Number;
-    double Latitude;
-    double Longitude;
-    double Radius{500000};
-    int CycleTime;
+    int Number = -1;
+    double Latitude = -1;
+    double Longitude = -1;
+    double Altitude = -1;
+    double Radius = 0;
+    int CycleTime = -1;
 
     QJsonDocument toJson()
     {
@@ -254,16 +255,16 @@ struct StationInfo
 
 struct SystemInfo
 {
-    QString Terminal;
-    QString Name;
-    int Number;
-    QString Type;
-    double Latitude;
-    double Longitude;
-    double Altitude;
-    double ViewRange{300000};
-    double MezRange{250000};
-	bool Active = true;
+    QString Terminal = "------";
+    QString Name = "------";
+    int Number = -1;
+    QString Type = "------";
+    double Latitude = -1;
+    double Longitude = -1;
+    double Altitude = -1;
+    double ViewRange = -1;
+    double MezRange = -1;
+    bool Active = true;
 
     QList<AircraftInfo> assignedAircrafts;
 
@@ -278,15 +279,15 @@ struct SystemStatusInfo
         NoData
     };
 
-    int Number;
+    int Number = -1;
     //status info
-    QString ReceiveTime;
-    QString Simulation;
+    QString ReceiveTime = "------";
+    QString Simulation = "------";
     RadarStatus BCCStatus;
     RadarStatus RadarSearchStatus;
-    QString Operational;
-    int MissileCount;
-    QString RadarMode;
+    QString Operational = "------";
+    int MissileCount = -1;
+    QString RadarMode = "------";
     QString BCCStatusToString() {
         return radarStatusToString(BCCStatus);
     }
@@ -295,7 +296,7 @@ struct SystemStatusInfo
     }
     QString radarStatusToString(RadarStatus status) const
     {
-        QString result = "";
+        QString result = "------";
         switch (status) {
         case US:
             result = "US";
@@ -319,18 +320,18 @@ struct SystemCambatInfo
         Kill,
         NoKill
     };
-    int Number;
+    int Number = -1;
     //combat info
-    int TN;
-    QString Acceptance;
+    int TN = -1;
+    QString Acceptance = "------";
     Phases Phase;
-    double Antenna;
-    QString ChanelNo;
-    QString Inrange;
+    double Antenna = -1;
+    QString ChanelNo = "------";
+    QString Inrange = "------";
 
     QString phaseToString() const
     {
-        QString result = "";
+        QString result = "------";
         switch (Phase) {
         case Search:
             result = "Search";

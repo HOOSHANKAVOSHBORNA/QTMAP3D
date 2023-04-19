@@ -116,7 +116,7 @@ Item {
         if (nowItem){
             infoItemShowAnimation.stop();
             nowItem.parent = null
-            nowItem.destroy()
+//            nowItem.destroy()
             sidePush.visible = false
 
         }

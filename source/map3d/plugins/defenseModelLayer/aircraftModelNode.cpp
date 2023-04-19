@@ -615,7 +615,8 @@ void AircraftModelNode::changeModelColor(AircraftInfo::Identify identify)
 
 void AircraftModelNode::showInfoWidget()
 {
-    mAircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
+    if (!mAircraftinformation)
+        mAircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
     connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
     connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
     connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);

@@ -56,6 +56,7 @@ private:
     osg::ref_ptr<osgEarth::Annotation::CircleNode> mCircleNode = nullptr;
     osgEarth::Symbology::Style mCircleStyleActive;
     osgEarth::Symbology::Style mCircleStyleDeactive;
+    StationInformtion *mStationInformation = nullptr;
 };
 
 
