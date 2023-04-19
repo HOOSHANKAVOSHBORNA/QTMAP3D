@@ -57,6 +57,7 @@ const QString STATION = "Station";
 //----------------------------------------------
 const QString CATEGORY = "Defense Model";
 const QString ADD_ROCKET = "Fire";
+const QString KILL_ROCKET = "Kill";
 
 DefenseModelLayer::DefenseModelLayer(QObject *parent)
     : PluginInterface(parent)
@@ -86,6 +87,7 @@ bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDe
     pDesc->toolboxItemsList.push_back(new ItemDesc{SYSTEM, CATEGORY, "qrc:/resources/systems.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{STATION, CATEGORY, "qrc:/resources/stations.png", false, false, ""});
     pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
+    pDesc->toolboxItemsList.push_back(new ItemDesc{KILL_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
     return true;
 }
 
@@ -127,6 +129,26 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
                     if(systemModelNode){
                         SystemCambatInfo cambatInfo;
                         cambatInfo.Phase = SystemCambatInfo::Fire;
+                        cambatInfo.TN = aircrafModelNode->getInformation().TN;
+                        systemModelNode->setCambatInfo(cambatInfo);
+                    }
+                }
+            }
+        }
+    }
+    else if(CATEGORY == category && name == KILL_ROCKET)
+    {
+        for(auto modelNode:mModelNodes[AIRCRAFT])
+        {
+            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+            if(aircrafModelNode)
+            {
+                if(aircrafModelNode->getAssignments().size() > 0)
+                {
+                    auto systemModelNode = aircrafModelNode->getAssignments().first();
+                    if(systemModelNode){
+                        SystemCambatInfo cambatInfo;
+                        cambatInfo.Phase = SystemCambatInfo::Kill;
                         cambatInfo.TN = aircrafModelNode->getInformation().TN;
                         systemModelNode->setCambatInfo(cambatInfo);
                     }

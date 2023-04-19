@@ -435,8 +435,13 @@ void AircraftModelNode::hover(bool val)
 {
     DefenseModelNode::hover(val);
 
-    mNode2D->setValue(0, !val);
-    mNode2D->setValue(1, val);
+    if (val || mIsSelected) {
+        mNode2D->setValue(0, false);
+        mNode2D->setValue(1, true);
+    } else {
+        mNode2D->setValue(0, true);
+        mNode2D->setValue(1, false);
+    }
 }
 
 SystemModelNode *AircraftModelNode::getAssignment(int number) const

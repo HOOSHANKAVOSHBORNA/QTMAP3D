@@ -220,9 +220,25 @@ void StationModelNode::hover(bool val)
 
     mNode2DActive->setValue(0, !val);
     mNode2DActive->setValue(1, val);
-
     mNode2DDeactive->setValue(0, !val);
     mNode2DDeactive->setValue(1, val);
+
+    if (val || mIsSelected) {
+
+        mNode2DActive->setValue(0, false);
+        mNode2DActive->setValue(1, true);
+        mNode2DDeactive->setValue(0, false);
+        mNode2DDeactive->setValue(1, true);
+
+    } else {
+
+        mNode2DActive->setValue(0, true);
+        mNode2DActive->setValue(1, false);
+        mNode2DDeactive->setValue(0, true);
+        mNode2DDeactive->setValue(1, false);
+
+    }
+
 }
 
 void StationModelNode::onGotoButtonClicked()
