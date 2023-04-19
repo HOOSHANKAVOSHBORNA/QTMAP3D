@@ -105,7 +105,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         aircraftInfo.Heading = 30;
         aircraftInfo.IFFCode = "a12345";
         aircraftInfo.CallSign = "cls";
-        aircraftInfo.Type = AircraftInfo::AircraftType::Aircraft;
+        aircraftInfo.Type = AircraftInfo::AircraftType::Fighter;
         aircraftInfo.MasterRadar = "radar2";
         aircraftInfo.Identification = AircraftInfo::Identify::Z;
         aircraftInfo.IdentificationMethod = "mtd";
@@ -183,6 +183,8 @@ bool DefenseModelLayer::setup(MapController *mapController,
     osgEarth::ModelLayer *aircraftsModelLayer = new osgEarth::ModelLayer();
     aircraftsModelLayer->setName(AIRCRAFTS_LAYER_NAME);
     mMapController->addLayer(aircraftsModelLayer);
+
+    return true;
 }
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
@@ -206,7 +208,7 @@ void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
     else
     {
         //create and model node------------------------------------------------
-        aircraftModelNode = new AircraftModelNode(mMapController, mQmlEngine,mUIHandle);
+        aircraftModelNode = new AircraftModelNode(mMapController, aircraftInfo.Type, mQmlEngine,mUIHandle);
         aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
         aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
