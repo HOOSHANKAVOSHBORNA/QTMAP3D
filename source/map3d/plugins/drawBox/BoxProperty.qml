@@ -547,7 +547,7 @@ Item {
                                 //                                border.width: 1
 
                                 Text {
-                                    text: qsTr("Height:")
+                                    text: qsTr("Length:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -654,7 +654,7 @@ Item {
                                 //                                border.width: 1
 
                                 Text {
-                                    text: qsTr("Height:")
+                                    text: qsTr("Width:")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter

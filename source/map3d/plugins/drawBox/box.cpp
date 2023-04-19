@@ -23,8 +23,8 @@ Box::Box()
 void Box::construct()
 {
     setName("Box");
-    mRadius.set(1.0, osgEarth::Units::KILOMETERS);
     mColor = osgEarth::Color::White;
+
 }
 
 
