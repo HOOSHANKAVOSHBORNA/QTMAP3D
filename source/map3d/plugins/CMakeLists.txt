@@ -11,4 +11,5 @@ add_subdirectory(drawline)
 add_subdirectory(drawCircle)
 add_subdirectory(drawPolygon)
 add_subdirectory(drawSphere)
+add_subdirectory(drawEllipse)
 

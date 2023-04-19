@@ -3,6 +3,7 @@
 #include <osgEarthDrivers/model_feature_geom/FeatureGeomModelOptions>
 #include <osgEarthFeatures/GeometryCompiler>
 #include "osgEarthAnnotation/AnnotationEditing"
+#include "osgEarth/Tessellator"
 
 Polygon::Polygon(MapController *mapController, bool clamp)
 
@@ -10,14 +11,15 @@ Polygon::Polygon(MapController *mapController, bool clamp)
     mPolygonGeom = new osgEarth::Features::Polygon();
     mMapController = mapController;
     osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(mPolygonGeom, mMapController->getMapSRS());
-    feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
+    feature->geoInterp() = osgEarth::GEOINTERP_GREAT_CIRCLE;
     osgEarth::Symbology::Style geomStyle;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() /*= osgEarth::Color::Purple*/;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() /*= 2.0f*/;
-    geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() /*= 75000*/;
+    geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
+    geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = 200;
     geomStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() /*= osg::Vec4f(1,1,1,1)*/;
     geomStyle.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
-    //geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 0;
+    //geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 80000;
     //geomStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 
     if (clamp){
@@ -27,7 +29,7 @@ Polygon::Polygon(MapController *mapController, bool clamp)
         geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
     }
 
-    geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_MAP;
+    geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
 
     _options = osgEarth::Features::GeometryCompilerOptions();
@@ -50,7 +52,6 @@ double Polygon::getSize()
 {
     return mPolygonGeom->size();
 }
-
 
 osgEarth::Color Polygon::getFillColor()
 {

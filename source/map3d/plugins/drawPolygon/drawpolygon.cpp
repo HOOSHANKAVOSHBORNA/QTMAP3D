@@ -189,4 +189,3 @@ void DrawPolygon::removeNodeFromLayer(osg::Node *node)
         }
     }
 }
-

@@ -66,7 +66,7 @@ private:
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp  = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
     double    mLineWidth ;
 
-    Polygon*   mPolygon;
+    Polygon*   mPolygon{nullptr};
     MapController* mMapController{nullptr};
 
 
