@@ -31,12 +31,16 @@
 
 #include "defenseModelLayer.h"
 
-const float RANGE3D = 832;//std::numeric_limits<float>::max();
+const float RANGE3D = std::numeric_limits<float>::max();//832
 const int NUM_LATEST_POINT = 100;
 
-osg::ref_ptr<osg::Node> AircraftModelNode::mNode3DRef;
+osg::ref_ptr<osg::Node> AircraftModelNode::mAircraft3DRef;
+osg::ref_ptr<osg::Node> AircraftModelNode::mFighter3DRef;
+osg::ref_ptr<osg::Node> AircraftModelNode::mMissile3DRef;
+osg::ref_ptr<osg::Node> AircraftModelNode::mDrone3DRef;
+osg::ref_ptr<osg::Node> AircraftModelNode::mHelicopter3DRef;
 
-AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
+AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::AircraftType aircraftType, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent)
 {
 
@@ -45,16 +49,51 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     mIs3D = mMapController->getMode();
 
     mUIHandle = uiHandle;
-    if (!mNode3DRef.valid()) {
-        mNode3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
+    //--load models----------------------------------------------------------------------------------
+    if (!mAircraft3DRef.valid()) {
+        mAircraft3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
     }
-    if (!mNode3DRef)
-    {
-        return;
+    if (!mFighter3DRef.valid()) {
+        mFighter3DRef = osgDB::readRefNodeFile("../data/models/fighter/fighter.ive");
     }
-
+    if (!mMissile3DRef.valid()) {
+        mMissile3DRef = osgDB::readRefNodeFile("../data/models/missile/missile.osgb");
+    }
+    if (!mDrone3DRef.valid()) {
+        mDrone3DRef = osgDB::readRefNodeFile("../data/models/drone/drone.osgb");
+    }
+    if (!mHelicopter3DRef.valid()) {
+        mHelicopter3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
+    }
+    //----------------------------------------------------------------------------------------------
+//    if (!mNode3DRef)
+//    {
+//        return;
+//    }
+    this->setCullingActive(false);
     mNode3D = new osg::Group;
-    mNode3D->addChild(mNode3DRef.get());
+    switch (aircraftType) {
+    case AircraftInfo::Fighter:
+        mNode3D->addChild(mFighter3DRef);
+        this->addCullCallback(new DefenseModelNodeAutoScaler(11, 7, 400));
+        break;
+    case AircraftInfo::Aircraft:
+        mNode3D->addChild(mAircraft3DRef);
+        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
+        break;
+    case AircraftInfo::Missile:
+        mNode3D->addChild(mMissile3DRef);
+        this->addCullCallback(new DefenseModelNodeAutoScaler(25, 15, 500));
+        break;
+    case AircraftInfo::Drone:
+        mNode3D->addChild(mDrone3DRef);
+        this->addCullCallback(new DefenseModelNodeAutoScaler(30, 20, 500));
+        break;
+    case AircraftInfo::Helicopter:
+        mNode3D->addChild(mHelicopter3DRef);
+        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
+        break;
+    }
 
     mRootNode = new osg::LOD;
     mNode2D = new osg::Switch;
@@ -62,8 +101,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, QQmlEngine *qm
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
 
-    this->setCullingActive(false);
-    this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
+
 
 
 
