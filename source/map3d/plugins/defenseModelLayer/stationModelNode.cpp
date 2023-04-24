@@ -186,7 +186,7 @@ void StationModelNode::goOnTrack()
 
 void StationModelNode::onLeftButtonClicked(bool val)
 {
-    if(val && mSelectionMode == UNSELECTED)
+    if(val)
     {
         showInfoWidget();
     }
