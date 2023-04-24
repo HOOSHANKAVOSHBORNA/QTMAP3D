@@ -115,6 +115,10 @@ DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent)
 //    mSelectOutline->setColor( osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) );
 //    mSelectOutline->addChild(this);
 //    osg::DisplaySettings::instance()->setMinimumNumStencilBits(1);
+
+    QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
+        this->mLabelNode->setNodeMask(this->mHoverMode == HOVERED);
+    });
 }
 
 QString DefenseModelNode::getType() const
@@ -299,26 +303,48 @@ osg::ref_ptr<osg::Image> DefenseModelNode::createDarkerImage(osg::ref_ptr<osg::I
 
 }
 
+void DefenseModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
+{
+    if (mSelectionMode != sm) {
+        mSelectionMode = sm;
+        emit selectionModeChanged();
+    }
+}
+
+void DefenseModelNode::setHoverMode(DefenseModelNode::HoverMode hm)
+{
+    if (mHoverMode != hm) {
+        mHoverMode = hm;
+        emit hoverModeChanged();
+    }
+}
+
 void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
 {
-    if(event->button() != Qt::MiddleButton)
-        select(onModel);
+    //if(event->button() != Qt::MiddleButton)
+        //select(onModel);
+
+    setSelectionMode(onModel ? SELECTED : UNSELECTED);
+    updateColors();
 }
 
 void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
 {
     //if(!mIsSelected)
     //{
-        hover(onModel);
+        //hover(onModel);
     //}
+
+    setHoverMode(onModel ? HOVERED : UNHOVERED);
+    updateColors();
 }
 //void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
 //{
 //    //emit positionChanged(pos);
 //}
 
-void DefenseModelNode::select(bool val)
-{
+//void DefenseModelNode::select(bool val)
+//{
 //    const osg::BoundingSphere& bound = getBound();
 //    qDebug()<<"radius: "<<bound.radius();
 //    qDebug()<<"center:("<<bound.center().x()<<", "<<bound.center().y()<<", "<<bound.center().z()<<")";
@@ -340,29 +366,46 @@ void DefenseModelNode::select(bool val)
 //    else
 //        mMapControler->removeNode(mSelectOutline);
     //--------------------------------------------------------------------------------------------------
-    mIsSelected = val;
-    hover(val);
-}
+    //mIsSelected = val;
+    //hover(val);
+//}
 
-void DefenseModelNode::hover(bool val)
+//void DefenseModelNode::hover(bool val)
+//{
+//    //---------------------------------------------------
+//    if(mLabelNode)
+//        mLabelNode->setNodeMask(val);
+//
+//    //    auto lbStyle = mLabelNode->getStyle();
+//
+//    osg::ref_ptr<osg::Material> mat = new osg::Material;
+//    if(!val && !mIsSelected)
+//    {
+//        mat->setDiffuse (osg::Material::FRONT_AND_BACK, mModelColor);
+//    }
+//    else
+//    {
+//        osgEarth::Color color = mModelColor/2;
+//        color.a() = 1;
+//        mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
+//    }
+//    getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+//    //    mLabelNode->setStyle(lbStyle);
+//}
+
+void DefenseModelNode::updateColors()
 {
-    //---------------------------------------------------
-    if(mLabelNode)
-        mLabelNode->setNodeMask(val);
-
-    //    auto lbStyle = mLabelNode->getStyle();
-
-    osg::ref_ptr<osg::Material> mat = new osg::Material;
-    if(!val && !mIsSelected)
-    {
-        mat->setDiffuse (osg::Material::FRONT_AND_BACK, mModelColor);
-    }
-    else
+     osg::ref_ptr<osg::Material> mat = new osg::Material;
+    if(mSelectionMode == SELECTED || mHoverMode == HOVERED)
     {
         osgEarth::Color color = mModelColor/2;
         color.a() = 1;
         mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
     }
+    else
+    {
+        mat->setDiffuse (osg::Material::FRONT_AND_BACK, mModelColor);
+    }
     getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-    //    mLabelNode->setStyle(lbStyle);
+
 }

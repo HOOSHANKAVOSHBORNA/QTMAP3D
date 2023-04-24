@@ -342,8 +342,10 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 {
     AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(defenseModelNode);
     if(aircraftModelNode){
-        if(mSelectedModelNode)
-            mSelectedModelNode->select(false);
+        if(mSelectedModelNode) {
+            //mSelectedModelNode->select(false);
+            mSelectedModelNode->updateColors();
+        }
         aircraftModelNode->onLeftButtonClicked(true);
         aircraftModelNode->goOnTrack();
         mSelectedModelNode = aircraftModelNode;
@@ -351,8 +353,10 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 
     StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(defenseModelNode);
     if(stationModelNode){
-        if(mSelectedModelNode)
-            mSelectedModelNode->select(false);
+        if(mSelectedModelNode) {
+            //mSelectedModelNode->select(false);
+            mSelectedModelNode->updateColors();
+        }
         stationModelNode->onLeftButtonClicked(true);
         stationModelNode->goOnTrack();
         mSelectedModelNode = stationModelNode;
@@ -360,8 +364,10 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 
     SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(defenseModelNode);
     if(systemModelNode){
-        if(mSelectedModelNode)
-            mSelectedModelNode->select(false);
+        if(mSelectedModelNode) {
+            //mSelectedModelNode->select(false);
+            mSelectedModelNode->updateColors();
+        }
         systemModelNode->onLeftButtonClicked(true);
         systemModelNode->goOnTrack();
         mSelectedModelNode = systemModelNode;

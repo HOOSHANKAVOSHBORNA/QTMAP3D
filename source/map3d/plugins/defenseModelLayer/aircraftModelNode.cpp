@@ -360,7 +360,8 @@ void AircraftModelNode::goOnTrack()
 
 void AircraftModelNode::onLeftButtonClicked(bool val)
 {
-    select(val);
+    //select(val);
+    updateColors();
     if(val)
     {
         showInfoWidget();
@@ -431,11 +432,11 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 }
 
-void AircraftModelNode::hover(bool val)
+void AircraftModelNode::updateColors()
 {
-    DefenseModelNode::hover(val);
+    DefenseModelNode::updateColors();
 
-    if (val || mIsSelected) {
+    if (mSelectionMode == SELECTED || mHoverMode == HOVERED) {
         mNode2D->setValue(0, false);
         mNode2D->setValue(1, true);
     } else {
@@ -610,7 +611,8 @@ void AircraftModelNode::changeModelColor(AircraftInfo::Identify identify)
 
     //change2DImageColore(mModelColor);
 
-    select(mIsSelected);
+    updateColors();
+    //select(mIsSelected);
 }
 
 void AircraftModelNode::showInfoWidget()
