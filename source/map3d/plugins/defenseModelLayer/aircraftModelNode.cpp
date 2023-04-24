@@ -741,14 +741,11 @@ void AircraftModelNode::updateOrCreateLabelImage()
         painter.drawRoundedRect(
                     mRenderTargetImage->rect(),
                     8,8);
-
-        painter.setPen(textPen);
-        painter.setFont(textFont);
-        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
-                         Qt::AlignCenter,
-                         QString::number(mInformation.TN));
-
-
+        painter.setBrush(QBrush(QColor(26, 77, 46, int(255 * 0.2f))));
+        painter.drawRoundedRect(
+                    QRect(0, 0, LABEL_IMAGE_WIDTH, 35),
+                    8,8);
+        //------------------------------------------------------------
         static const QPen linePen(QColor(255, 255, 255),
                                   1,
                                   Qt::PenStyle::DashLine
@@ -757,39 +754,53 @@ void AircraftModelNode::updateOrCreateLabelImage()
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
-
+        painter.drawLine(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 35);
 
         painter.setPen(textPen);
         painter.setFont(textFont);
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignLeft | Qt::AlignVCenter,
-                         "IFFCode:");
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
-                         mInformation.IFFCode);
+        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignCenter,
+                         mInformation.aircraftTypeToString());
+        painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignCenter,
+                         QString::number(mInformation.TN));
+        //-------------------------------------------------------------
 
-
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "CallSign:");
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 40, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
                          mInformation.CallSign);
 
 
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "IFFCode:");
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 70, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         mInformation.IFFCode);
+
+
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "M-Radar:");
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 100, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
                          mInformation.MasterRadar);
 
-        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "I-Method:");
-        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 130, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
                          mInformation.IdentificationMethod);
+        //---------------------------------------------------------
+        painter.drawText(QRect(10, 160, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Assignment:");
 
 
     }
