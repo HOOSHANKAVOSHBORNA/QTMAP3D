@@ -350,7 +350,6 @@ void SystemModelNode::updateColors()
         mNode2DDeactive->setValue(0, false);
         mNode2DDeactive->setValue(1, true);
 
-        qDebug() << "OOO";
 
     } else {
 
@@ -359,7 +358,6 @@ void SystemModelNode::updateColors()
         mNode2DDeactive->setValue(0, true);
         mNode2DDeactive->setValue(1, false);
 
-        qDebug() << "XXX";
     }
 
 
