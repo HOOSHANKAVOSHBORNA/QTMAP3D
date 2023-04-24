@@ -222,6 +222,11 @@ void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
     }
 }
 
+SystemCambatInfo SystemModelNode::getSystemCombatInfo() const
+{
+    return mCambatInfo;
+}
+
 void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
     if (mSystemInformation)

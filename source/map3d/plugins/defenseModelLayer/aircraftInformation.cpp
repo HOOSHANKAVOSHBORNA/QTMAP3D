@@ -6,6 +6,7 @@
 #include "aircraftModelNode.h"
 #include "plugininterface.h"
 #include <time.h>
+#include "systemModelNode.h"
 
 
 AircraftInfoModel::AircraftInfoModel(QObject* parent): QAbstractListModel(parent)
@@ -26,15 +27,16 @@ QVariant AircraftInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case MainInfoHeaders: return QVariant::fromValue<QStringList>(getmainInfoHeaders());
         case DetectionSystems: return QVariant::fromValue<QStringList>(mAircraftInfo.DetectionSystems);
         case Sends: return QVariant::fromValue<QStringList>(mAircraftInfo.Sends);
+        case AssignedSystemsName: return QVariant::fromValue<QStringList>(getSystemsName());
+        case AssignedSystemsNumber: return QVariant::fromValue<QStringList>(getSystemsNumber());
+        case AssignedSystemsPhase: return QVariant::fromValue<QStringList>(getSystemsPhase());
         default: return mAircraftInfo.TN;
     }
 }
 
 void AircraftInfoModel::setAircraftInfo(AircraftInfo &a)
 {
-//    beginResetModel();
     mAircraftInfo = a;
-//    endResetModel();
     QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
@@ -65,9 +67,46 @@ QStringList AircraftInfoModel::getLocationInfo() const
                         QString("%L1").arg(mAircraftInfo.Speed) + " m/s"};
 }
 
+QStringList AircraftInfoModel::getSystemsName() const
+{
+    QStringList systems;
+    for(auto i : mAssignedSystems) {
+        systems.push_back(i->getInformation().Name);
+    }
+    return systems;
+}
+
+QStringList AircraftInfoModel::getSystemsNumber() const
+{
+    QStringList systems;
+    for(auto i : mAssignedSystems) {
+        systems.push_back(QString::number(i->getInformation().Number));
+    }
+    return systems;
+}
+
+QStringList AircraftInfoModel::getSystemsPhase() const
+{
+    QStringList systems;
+    for(auto i : mAssignedSystems) {
+        systems.push_back(i->getSystemCombatInfo().phaseToString());
+    }
+    return systems;
+}
+
 QStringList AircraftInfoModel::getLocationInfoHeader() const
 {
     return QStringList {"Latitude", "Longitude", "Altitude", "Pos", "Heading", "Speed"};
+}
+
+void AircraftInfoModel::addAssignment(int number, SystemModelNode *system)
+{
+    mAssignedSystems[number] = system;
+}
+
+void AircraftInfoModel::removeAssignment(int systemNumber)
+{
+    mAssignedSystems.remove(systemNumber);
 }
 
 QColor AircraftInfoModel::getAircraftColor()
@@ -85,6 +124,9 @@ QHash<int, QByteArray> AircraftInfoModel::roleNames() const
     hash[LocationInfoHeaders] = "LocationInfoHeaders";
     hash[DetectionSystems] = "DetectionSystems";
     hash[Sends] = "Sends";
+    hash[AssignedSystemsName] = "AssignedSystemsName";
+    hash[AssignedSystemsNumber] = "AssignedSystemsNumber";
+    hash[AssignedSystemsPhase] = "AssignedSystemsPhase";
     return hash;
 }
 
@@ -115,4 +157,14 @@ void AircraftInformation::updateAircraft(AircraftInfo &mInformation)
 }
 void AircraftInformation::show() {
     mUiHandle->iwShow(mItem, QString::number(mInformation.TN));
+}
+
+void AircraftInformation::addAssignment(int number, SystemModelNode *system)
+{
+    mInfomodel->addAssignment(number, system);
+}
+
+void AircraftInformation::removeAssignment(int systemNumber)
+{
+    mInfomodel->removeAssignment(systemNumber);
 }

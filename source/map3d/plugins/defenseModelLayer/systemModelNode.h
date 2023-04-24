@@ -23,9 +23,10 @@ public:
     SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
 
     void setInformation(const SystemInfo &info);
-    SystemInfo getInformation()const;
+    SystemInfo getInformation() const;
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void setCambatInfo(const SystemCambatInfo &systemCambatInfo);
+    SystemCambatInfo getSystemCombatInfo() const;
 
     void addAssignment(int tn, AircraftModelNode *assignModelNode);
     AircraftModelNode *getAssignment(int tn) const;

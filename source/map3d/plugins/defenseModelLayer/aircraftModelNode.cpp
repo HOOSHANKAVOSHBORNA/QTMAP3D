@@ -454,11 +454,13 @@ SystemModelNode *AircraftModelNode::getAssignment(int number) const
 void AircraftModelNode::addAssignment(int number, SystemModelNode *assignmentModelNode)
 {
     mAssignmentMap[number] = assignmentModelNode;
+    mAircraftinformation->addAssignment(number, assignmentModelNode);
 }
 
 void AircraftModelNode::removeAssignment(int number)
 {
     mAssignmentMap.remove(number);
+    mAircraftinformation->removeAssignment(number);
 }
 
 void AircraftModelNode::acceptAssignment(int number, bool value)
@@ -474,6 +476,7 @@ void AircraftModelNode::clearAssignments(int exceptNumber)
         if(exceptNumber != number)
         {
             removeAssignment(number);
+            mAircraftinformation->removeAssignment(number);
         }
     }
 }
