@@ -1,6 +1,7 @@
 #include "systemInformation.h"
 #include "plugininterface.h"
 #include <QQmlEngine>
+#include "aircraftModelNode.h"
 
 SystemInfoModel::SystemInfoModel(QObject *parent) : QAbstractListModel(parent)
 {
@@ -16,7 +17,7 @@ int SystemInfoModel::rowCount(const QModelIndex &/*parent*/) const {
 QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
         case Numberr: return QVariant::fromValue<int>(mSystemInfo.Number);
-    case Active: return QVariant::fromValue<bool>(mSystemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? true : false);
+        case Active: return QVariant::fromValue<bool>(mSystemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? true : false);
         case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
         case MainInfoHeaders: return QVariant::fromValue<QStringList>(getMainInfoHeaders());
         case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());
@@ -25,6 +26,8 @@ QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case StatusInfoHeaders: return QVariant::fromValue<QStringList>(getStatusInfoHeaders());
         case CombatInfo: return QVariant::fromValue<QStringList>(getCombatInfo());
         case CombatInfoHeaders: return QVariant::fromValue<QStringList>(getCombatInfoHeaders());
+        case AssignAircraftsName: return QVariant::fromValue<QStringList>(getAssignmentsName());
+        case AssignAircraftsType: return QVariant::fromValue<QStringList>(getAssignmentsType());
         default  : return QVariant::fromValue<QString>(mSystemInfo.Name);
 
     }
@@ -44,6 +47,8 @@ QHash<int, QByteArray> SystemInfoModel::roleNames() const
     hash[StatusInfoHeaders] = "StatusInfoHeaders";
     hash[CombatInfo] = "CombatInfo";
     hash[CombatInfoHeaders] = "CombatInfoHeaders";
+    hash[AssignAircraftsType] = "AssignAircraftsType";
+    hash[AssignAircraftsName] = "AssignAircraftsName";
     return hash;
 }
 
@@ -133,6 +138,36 @@ QStringList SystemInfoModel::getCombatInfoHeaders() const
     return QStringList {"TN", "Acceptance", "Phase", "Antenna", "ChanelNo", "Inrange"};
 }
 
+QStringList SystemInfoModel::getAssignmentsName() const
+{
+    QStringList aircrafts;
+    for (auto i : mAircraftsAssigned) {
+        aircrafts.push_back(QString::number(i->getInformation().TN));
+    }
+    return aircrafts;
+}
+
+QStringList SystemInfoModel::getAssignmentsType() const
+{
+    QStringList aircrafts;
+    for (auto i : mAircraftsAssigned) {
+        aircrafts.push_back(i->getInformation().aircraftTypeToString());
+    }
+    return aircrafts;
+}
+
+void SystemInfoModel::addAssignment(int number, AircraftModelNode *aircraft)
+{
+    mAircraftsAssigned[number] = aircraft;
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
+}
+
+void SystemInfoModel::removeAssignment(int number)
+{
+    mAircraftsAssigned.remove(number);
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
+}
+
 
 SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
                                      SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo,
@@ -169,6 +204,16 @@ void SystemInformation::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 void SystemInformation::setCombatInfo(const SystemCambatInfo &systemCombatInfo)
 {
     mInfoModel->setCombatInfo(systemCombatInfo);
+}
+
+void SystemInformation::addAssignment(int number, AircraftModelNode *aircraft)
+{
+    mInfoModel->addAssignment(number, aircraft);
+}
+
+void SystemInformation::removeAssignment(int number)
+{
+    mInfoModel->removeAssignment(number);
 }
 
 void SystemInformation::show()

@@ -314,8 +314,10 @@ Item {
                             }
                             ColumnLayout {
                                 Layout.preferredHeight: implicitHeight
+                                Layout.fillWidth: true
                                 Repeater {
                                     model: AssignedSystemsName
+                                    Layout.fillWidth: true
                                     Label {
                                         text: AssignedSystemsName[index]
                                         color: keyTextColor
@@ -332,8 +334,10 @@ Item {
                             }
                             ColumnLayout {
                                 Layout.preferredHeight: implicitHeight
+                                Layout.fillWidth: true
                                 Repeater {
                                     model: AssignedSystemsNumber
+                                    Layout.fillWidth: true
                                     Label {
                                         text: AssignedSystemsNumber[index]
                                         color: keyTextColor
@@ -350,20 +354,30 @@ Item {
                             }
                             ColumnLayout {
                                 Layout.preferredHeight: implicitHeight
+                                Layout.fillWidth: true
                                 Repeater {
                                     model: AssignedSystemsPhase
+                                    Layout.fillWidth: true
                                     Label {
                                         text: AssignedSystemsPhase[index]
                                         color: keyTextColor
-                                        Layout.fillWidth: true
+                                        Layout.preferredWidth: implicitWidth
                                         verticalAlignment: Label.AlignVCenter
                                         Layout.leftMargin: 5
+                                        Layout.rightMargin: 5
                                         leftInset: -5
                                         Layout.preferredHeight: implicitHeight + spacee
                                         background: Rectangle {
-                                            color: boxColor
+                                            opacity: 0.4
+                                            color: rootItem.model ? SystemColor[index] :
+                                                                    "transparent";
+                                            anchors.centerIn: parent
+                                            width: 40
+                                            height: 23
+                                            radius: 7
                                         }
                                     }
+
                                 }
                             }
                         }

@@ -30,6 +30,7 @@ QVariant AircraftInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case AssignedSystemsName: return QVariant::fromValue<QStringList>(getSystemsName());
         case AssignedSystemsNumber: return QVariant::fromValue<QStringList>(getSystemsNumber());
         case AssignedSystemsPhase: return QVariant::fromValue<QStringList>(getSystemsPhase());
+        case SystemColor: return QVariant::fromValue<QStringList>(getSystemColor());
         default: return mAircraftInfo.TN;
     }
 }
@@ -67,6 +68,14 @@ QStringList AircraftInfoModel::getLocationInfo() const
                         QString("%L1").arg(mAircraftInfo.Speed) + " m/s"};
 }
 
+QStringList AircraftInfoModel::getSystemColor() const
+{
+    QStringList colors;
+    for (auto i : mAssignedSystems)
+        colors.push_back(i->getSystemCombatInfo().phaseToColor());
+    return colors;
+}
+
 QStringList AircraftInfoModel::getSystemsName() const
 {
     QStringList systems;
@@ -102,11 +111,13 @@ QStringList AircraftInfoModel::getLocationInfoHeader() const
 void AircraftInfoModel::addAssignment(int number, SystemModelNode *system)
 {
     mAssignedSystems[number] = system;
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
 void AircraftInfoModel::removeAssignment(int systemNumber)
 {
     mAssignedSystems.remove(systemNumber);
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
 QColor AircraftInfoModel::getAircraftColor()
@@ -127,6 +138,7 @@ QHash<int, QByteArray> AircraftInfoModel::roleNames() const
     hash[AssignedSystemsName] = "AssignedSystemsName";
     hash[AssignedSystemsNumber] = "AssignedSystemsNumber";
     hash[AssignedSystemsPhase] = "AssignedSystemsPhase";
+    hash[SystemColor] = "SystemColor";
     return hash;
 }
 

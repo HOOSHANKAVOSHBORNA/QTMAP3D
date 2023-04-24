@@ -280,6 +280,120 @@ Item {
                                 }
                             }
                         }
+
+                        Rectangle {
+                            id: assignButton
+                            Layout.preferredWidth: rootItem.width
+                            Layout.preferredHeight: implicitHeight + 25
+                            property var checked: true
+
+                            MouseArea {
+                                hoverEnabled: true
+                                anchors.fill: parent
+                                cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: if (assignButton.checked) {
+                                               assignLayout.Layout.preferredHeight = 0
+                                               imga.rotation = -90
+                                               assignButton.checked = false
+                                           }
+                                           else {
+                                               assignLayout.Layout.preferredHeight = assignLayout.implicitHeight
+                                               imga.rotation = 180
+                                               assignButton.checked = true
+                                           }
+                            }
+
+                            color: "#2F3C7E"
+
+                            Text {
+                                text: "Assignment Aircrafts"
+                                color: "white"
+                                anchors.centerIn: parent
+                                anchors.left: parent.left
+                            }
+
+                            Image {
+                                id: imga
+                                source: "qrc:/Resources/chevron.png"
+                                width: 16
+                                height: 16
+                                rotation: 180
+                                ColorOverlay {
+                                    source: imga
+                                    anchors.fill: imga
+                                    color: "white"
+                                }
+                                anchors.right: parent.right
+                                anchors.rightMargin: 5
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                        }
+
+                        RowLayout {
+                            id: assignLayout
+                            Layout.preferredHeight: implicitHeight
+                            spacing: 2
+                            clip: true
+                            Layout.preferredWidth: rootItem.width
+                            Rectangle {
+                                Layout.preferredWidth: img3.width + 6
+                                Layout.fillHeight: true
+                                Image {
+                                    anchors.top: parent.top
+                                    verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    source: "qrc:/resources/aircraftinfo.png"
+                                    sourceSize: Qt.size(24,24)
+                                    width: 24
+                                    height:24
+                                    rotation: 45
+                                }
+                                color: "#474747"
+                            }
+                            ColumnLayout {
+                                Layout.preferredHeight: implicitHeight
+                                Layout.fillWidth: true
+                                Repeater {
+                                    model: AssignAircraftsName
+                                    Layout.fillWidth: true
+                                    Label {
+                                        text: AssignAircraftsName[index]
+                                        color: keyTextColor
+                                        Layout.fillWidth: true
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
+                                }
+                            }
+                            ColumnLayout {
+                                Layout.preferredHeight: implicitHeight
+                                Layout.fillWidth: true
+                                Repeater {
+                                    model: AssignAircraftsType
+                                    Layout.fillWidth: true
+                                    Label {
+                                        text: AssignAircraftsType[index]
+                                        color: keyTextColor
+                                        Layout.fillWidth: true
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
                         Rectangle {
                             id: firstButton
                             Layout.preferredWidth: rootItem.width

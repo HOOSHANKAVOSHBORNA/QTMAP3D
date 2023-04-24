@@ -348,7 +348,7 @@ void AircraftModelNode::setInformation(AircraftInfo info)
     changeModelColor(mInformation.Identification);
 }
 
-AircraftInfo AircraftModelNode::getInformation()
+AircraftInfo AircraftModelNode::getInformation() const
 {
     return mInformation;
 }

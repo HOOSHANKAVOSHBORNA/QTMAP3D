@@ -21,7 +21,8 @@ public:
         Sends = Qt::UserRole + 216,
         AssignedSystemsName = Qt::UserRole + 217,
         AssignedSystemsNumber = Qt::UserRole + 218,
-        AssignedSystemsPhase = Qt::UserRole + 219
+        AssignedSystemsPhase = Qt::UserRole + 219,
+        SystemColor = Qt::UserRole + 220
     };
 
     AircraftInfoModel(QObject* parent = nullptr);
@@ -41,6 +42,7 @@ public:
     QStringList getSystemsName() const;
     QStringList getSystemsNumber() const;
     QStringList getSystemsPhase() const;
+    QStringList getSystemColor() const;
 public slots:
     AircraftInfo getAircraftInfo() {return mAircraftInfo;}
     QColor getAircraftColor();

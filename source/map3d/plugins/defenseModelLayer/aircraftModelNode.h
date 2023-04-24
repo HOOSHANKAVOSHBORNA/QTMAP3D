@@ -36,7 +36,7 @@ public:
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
     void setInformation(AircraftInfo info);
-    AircraftInfo getInformation();
+    AircraftInfo getInformation() const;
     void goOnTrack();
 public slots:
     void onLeftButtonClicked(bool val);

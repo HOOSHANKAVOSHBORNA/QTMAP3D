@@ -179,6 +179,15 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
+    if (!mSystemInformation) {
+        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    }
+
 }
 
 void SystemModelNode::setInformation(const SystemInfo& info)
@@ -248,6 +257,7 @@ void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
         Assignment* assignmentModel = new  Assignment(mMapController);
         assignmentModel->mModelNode = assignModelNode;
         mAssignmentMap[tn] = assignmentModel;
+        mSystemInformation->addAssignment(tn, assignModelNode);
         addNodeToLayer(assignmentModel->mLine);
     }
 }
@@ -265,8 +275,9 @@ void SystemModelNode::acceptAssignment(int tn, bool value)
     {
         if(value)
             mAssignmentMap[tn]->accept();
-        else
+        else {
             removeAssignment(tn);
+        }
     }
 }
 
@@ -276,6 +287,7 @@ void SystemModelNode::removeAssignment(int tn)
     {
         removeNodeFromLayer(mAssignmentMap[tn]->mLine);
         mAssignmentMap.remove(tn);
+        mSystemInformation->removeAssignment(tn);
     }
 }
 
@@ -286,6 +298,7 @@ void SystemModelNode::clearAssignments(int exceptTN)
         if(tn != exceptTN)
         {
             removeAssignment(tn);
+            mSystemInformation->removeAssignment(tn);
         }
     }
 }
@@ -577,14 +590,14 @@ bool SystemModelNode::removeNodeFromLayer(osg::Node *node)
 }
 void SystemModelNode::showInfoWidget()
 {
-    if (!mSystemInformation) {
-        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
-    }
+//    if (!mSystemInformation) {
+//        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
+//        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+//        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+//        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+//        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+//        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+//    }
     mSystemInformation->show();
 }
 
