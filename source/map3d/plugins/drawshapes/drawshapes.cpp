@@ -69,7 +69,7 @@ bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     //desc->toolboxItemsList.push_back(new ItemDesc{EXTRPOLY, CATEGORY, "qrc:/res/extroPolygon.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true});
     //    desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true});
-    desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true});
+//    desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/resources/rectangle.png", true});
     return true;
 }
@@ -235,23 +235,23 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
         //        }
 
         //    }
-        if(name == ELLIPSE)
-        {
-            if(checked)
-            {
-                mShape = Shape::ELLIPSE;
+//        if(name == ELLIPSE)
+//        {
+//            if(checked)
+//            {
+//                mShape = Shape::ELLIPSE;
 
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                mDrawingState = DrawingState::NONE;
-                if (mEllipse && mDrawingState != DrawingState::FINISH){
-                    removeNodeFromLayer(mEllipse);
-                    removeNodeFromLayer(mElpsEditor);
-                }
-            }
-        }
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                mDrawingState = DrawingState::NONE;
+//                if (mEllipse && mDrawingState != DrawingState::FINISH){
+//                    removeNodeFromLayer(mEllipse);
+//                    removeNodeFromLayer(mElpsEditor);
+//                }
+//            }
+//        }
         if(name == RECT)
         {
             if(checked)

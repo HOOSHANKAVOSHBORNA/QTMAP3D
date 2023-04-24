@@ -43,7 +43,7 @@ public slots:
 public:
     void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
-    virtual void hover(bool val) override;
+    virtual void updateColors() override;
 
     SystemModelNode *getAssignment(int number) const;
     void addAssignment(int number, SystemModelNode *assignmentModelNode);

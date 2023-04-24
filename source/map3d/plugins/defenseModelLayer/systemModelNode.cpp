@@ -305,7 +305,8 @@ void SystemModelNode::goOnTrack()
 
 void SystemModelNode::onLeftButtonClicked(bool val)
 {
-    select(val);
+    updateColors();
+    //select(val);
     if(val)
     {
         showInfoWidget();
@@ -334,6 +335,8 @@ void SystemModelNode::frameEvent()
 
 void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
+    DefenseModelNode::mousePressEvent(event, onModel);
+
     if(event->button() == Qt::LeftButton)
     {
         onLeftButtonClicked(onModel);
@@ -342,16 +345,17 @@ void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
     }
 }
 
-void SystemModelNode::hover(bool val)
+void SystemModelNode::updateColors()
 {
-    DefenseModelNode::hover(val);
+    DefenseModelNode::updateColors();
 
-    if (val || mIsSelected) {
+    if (mSelectionMode == SELECTED || mHoverMode == HOVERED) {
 
         mNode2DActive->setValue(0, false);
         mNode2DActive->setValue(1, true);
         mNode2DDeactive->setValue(0, false);
         mNode2DDeactive->setValue(1, true);
+
 
     } else {
 
@@ -380,7 +384,8 @@ void SystemModelNode::onModeChanged(bool is3DView)
         mRootNode->setRange(1,0, std::numeric_limits<float>::max());
     }
 
-    select(mIsSelected);
+    updateColors();
+    //select(mIsSelected);
 }
 
 void SystemModelNode::onGotoButtonClicked()

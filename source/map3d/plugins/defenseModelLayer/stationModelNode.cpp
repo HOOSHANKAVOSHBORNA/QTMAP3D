@@ -186,7 +186,7 @@ void StationModelNode::goOnTrack()
 
 void StationModelNode::onLeftButtonClicked(bool val)
 {
-    if(val && !mIsSelected)
+    if(val && mSelectionMode == UNSELECTED)
     {
         showInfoWidget();
     }
@@ -196,7 +196,9 @@ void StationModelNode::onLeftButtonClicked(bool val)
 //        onRangeButtonToggled(val);
 //        onVisibleButtonToggled(val);
     }
-    select(val);
+
+    updateColors();
+    //select(val);
 }
 
 void StationModelNode::frameEvent()
@@ -206,6 +208,8 @@ void StationModelNode::frameEvent()
 
 void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
+    DefenseModelNode::mousePressEvent(event, onModel);
+
     if(event->button() == Qt::LeftButton)
     {
         onLeftButtonClicked(onModel);
@@ -214,16 +218,11 @@ void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
     }
 }
 
-void StationModelNode::hover(bool val)
+void StationModelNode::updateColors()
 {
-    DefenseModelNode::hover(val);
+    DefenseModelNode::updateColors();
 
-    mNode2DActive->setValue(0, !val);
-    mNode2DActive->setValue(1, val);
-    mNode2DDeactive->setValue(0, !val);
-    mNode2DDeactive->setValue(1, val);
-
-    if (val || mIsSelected) {
+    if (mSelectionMode == SELECTED || mHoverMode == HOVERED) {
 
         mNode2DActive->setValue(0, false);
         mNode2DActive->setValue(1, true);
@@ -340,7 +339,8 @@ void StationModelNode::onModeChanged(bool is3DView)
         mRootNode->setRange(1,0, std::numeric_limits<float>::max());
     }
 
-    select(mIsSelected);
+    //select(mIsSelected);
+    updateColors();
 }
 
 void StationModelNode::showInfoWidget()
