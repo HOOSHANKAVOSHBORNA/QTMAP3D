@@ -18,7 +18,7 @@
 #include <QMouseEvent>
 #include <QObject>
 
-class DefenseModelNode;
+//class DefenseModelNode;
 
 class ModelAnimationPathCallback: public osg::AnimationPathCallback
 {

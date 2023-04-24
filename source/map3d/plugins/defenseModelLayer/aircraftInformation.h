@@ -5,6 +5,7 @@
 #include "listManager.h"
 #include "defenseDataManager.h"
 
+class SystemModelNode;
 class AircraftInfoModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -17,7 +18,11 @@ public:
         LocationInfo = Qt::UserRole + 213,
         LocationInfoHeaders = Qt::UserRole + 214,
         DetectionSystems = Qt::UserRole + 215,
-        Sends = Qt::UserRole + 216
+        Sends = Qt::UserRole + 216,
+        AssignedSystemsName = Qt::UserRole + 217,
+        AssignedSystemsNumber = Qt::UserRole + 218,
+        AssignedSystemsPhase = Qt::UserRole + 219,
+        SystemColor = Qt::UserRole + 220
     };
 
     AircraftInfoModel(QObject* parent = nullptr);
@@ -31,7 +36,13 @@ public:
     QStringList getmainInfoHeaders() const;
     QStringList getLocationInfo() const;
     QStringList getLocationInfoHeader() const;
+    void addAssignment(int number, SystemModelNode* system);
+    void removeAssignment(int systemNumber);
 
+    QStringList getSystemsName() const;
+    QStringList getSystemsNumber() const;
+    QStringList getSystemsPhase() const;
+    QStringList getSystemColor() const;
 public slots:
     AircraftInfo getAircraftInfo() {return mAircraftInfo;}
     QColor getAircraftColor();
@@ -44,6 +55,7 @@ Q_SIGNALS:
 
 private:
     AircraftInfo mAircraftInfo;
+    QMap<int, SystemModelNode*> mAssignedSystems;
 
 };
 
@@ -55,6 +67,10 @@ public:
     AircraftInfoModel* getInfo(){return mInfomodel;}
     void updateAircraft(AircraftInfo& mInformation);
     void show();
+
+    void addAssignment(int number, SystemModelNode* system);
+    void removeAssignment(int systemNumber);
+
 private:
     AircraftInfo mInformation;
     AircraftInfoModel *mInfomodel;
