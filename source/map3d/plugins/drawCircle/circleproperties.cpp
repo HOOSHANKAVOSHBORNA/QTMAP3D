@@ -222,10 +222,15 @@ void CirclePropertiesModel::setCircle(Circle *circle)
         return;
     }
     osgEarth::Color tmpColor = mCircle->getColor();
-    float opacity = tmpColor.a();
     tmpColor  = mFillcolor.toStdString();
-    tmpColor.a() = opacity;
+    tmpColor.a() = mTransparency;
     mCircle->setColor(tmpColor);
+    osgEarth::Color mpColor = mCircle->getLineColor();
+    mpColor  = mLinecolor.toStdString();
+    mpColor.a() = mLineOpacity;
+    mCircle->setLineColor(tmpColor);
+
+
     mCircle->setLineWidth(static_cast<float>(mLineWidth));
     setTransparency(mTransparency);
     mCircle->setCircleHeight(static_cast<float>(mCircleHeight));

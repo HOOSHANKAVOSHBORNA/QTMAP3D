@@ -16,4 +16,5 @@ add_subdirectory(drawCone)
 add_subdirectory(drawBox)
 add_subdirectory(drawCapsule)
 add_subdirectory(drawCylinder)
+add_subdirectory(drawRect)
 

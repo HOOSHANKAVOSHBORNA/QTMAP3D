@@ -1,4 +1,4 @@
-#include "drawellipse.h"
+#include "drawrect.h"
 
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
@@ -7,53 +7,53 @@
 #include "osgEarth/ModelLayer"
 
 const QString CATEGORY = "Draw";
-const QString ELLIPSE = "Ellipse";
+const QString RECT = "Rect";
 
-DrawEllipse::DrawEllipse(QObject *parent)
+DrawRect::DrawRect(QObject *parent)
     : PluginInterface(parent)
 {
 
 }
-bool DrawEllipse::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+bool DrawRect::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     mQmlEngine = engine;
-    desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true,  false, ""});
+    desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/resources/rectangle.png", true,  false, ""});
     return true;
 }
 
-void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+void DrawRect::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 {
     if (CATEGORY == category) {
-        if (name == ELLIPSE) {
+        if (name == RECT) {
             if (checked) {
-                mEnterEllipseZone = true;
+                mEnterRectZone = true;
                 mDrawingState = DrawingState::START;
                 addNodeToLayer(mIconNode);
             }
             else {
-                mEnterEllipseZone = false;
+                mEnterRectZone = false;
                 mDrawingState = DrawingState::FINISH;
-                mEllipse = nullptr;
+                mRect = nullptr;
                 removeNodeFromLayer(mIconNode);
             }
         }
     }
 }
 
-bool DrawEllipse::setup(MapController *mapController, UIHandle *uIHandle)
+bool DrawRect::setup(MapController *mapController, UIHandle *uIHandle)
 {
     mUiHandle = uIHandle;
     mMapController = mapController;
     osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
-    osgEarth::ModelLayer *ellipseLayer = new osgEarth::ModelLayer();
-    ellipseLayer->setName(DRAW_LAYER_NAME);
-    mMapController->addLayer(ellipseLayer);
+    osgEarth::ModelLayer *rectLayer = new osgEarth::ModelLayer();
+    rectLayer->setName(DRAW_LAYER_NAME);
+    mMapController->addLayer(rectLayer);
     return true;
 }
-void DrawEllipse::mousePressEvent(QMouseEvent *event)
+void DrawRect::mousePressEvent(QMouseEvent *event)
 {
-    if (mEnterEllipseZone){
+    if (mEnterRectZone){
         if(event->button() == Qt::MouseButton::LeftButton)
         {
             if (mDrawingState == DrawingState::START) {
@@ -83,50 +83,52 @@ void DrawEllipse::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void DrawEllipse::mouseMoveEvent(QMouseEvent *event)
+void DrawRect::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mEnterEllipseZone){
+    if (mEnterRectZone){
         osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
         mIconNode->setPosition(geoPos);
     }
 }
 
-osgEarth::Annotation::PlaceNode *DrawEllipse::makeIconNode()
+osgEarth::Annotation::PlaceNode *DrawRect::makeIconNode()
 {
-    osg::ref_ptr<osg::Image> icon = osgDB::readImageFile("../data/images/draw/ellipse.png");
+    osg::ref_ptr<osg::Image> icon = osgDB::readImageFile("../data/images/draw/rectangle.png");
     icon->scaleImage(24, 24, icon->r());
     osg::ref_ptr<osgEarth::Annotation::PlaceNode>  model = new osgEarth::Annotation::PlaceNode();
-    model->setIconImage(icon);
+    if (icon){
+        model->setIconImage(icon);
+    }
     return model.release();
 }
 
-void DrawEllipse::startDraw(QMouseEvent *event)
+void DrawRect::startDraw(QMouseEvent *event)
 {
-    mEllipse = new Ellipse(mMapController, true);
+    mRect = new Rect(mMapController, true);
     osg::Vec3d worldPos;
     mMapController->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
 
-    mEllipse->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
+    mRect->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
 
-    addNodeToLayer(mEllipse);
+    addNodeToLayer(mRect);
 }
 
-void DrawEllipse::cancelDraw()
+void DrawRect::cancelDraw()
 {
-    removeNodeFromLayer(mEllipse);
+    removeNodeFromLayer(mRect);
     mDrawingState = DrawingState::START;
 }
 
-void DrawEllipse::finishDraw()
+void DrawRect::finishDraw()
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mDrawingState = DrawingState::START;
     }
 }
 
-bool DrawEllipse::addNodeToLayer(osg::Node *node)
+bool DrawRect::addNodeToLayer(osg::Node *node)
 {
     auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
     if (layer) {
@@ -136,7 +138,7 @@ bool DrawEllipse::addNodeToLayer(osg::Node *node)
         }
     }
 }
-void DrawEllipse::removeNodeFromLayer(osg::Node *node)
+void DrawRect::removeNodeFromLayer(osg::Node *node)
 {
     auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
     if (layer) {
