@@ -56,47 +56,47 @@ Item {
                     color:"yellow"
                     font.pointSize: 20
                 }
-                Switch {
-                    id: control
-                    ToolTip {
-                        parent: control
-                        y: control.y + control.height
-                        Text{
-                            text: control.checked ? "Click to deactivate Station" : "Click to activate Station"
-                            color: "white"
-                        }
+//                Switch {
+//                    id: control
+//                    ToolTip {
+//                        parent: control
+//                        y: control.y + control.height
+//                        Text{
+//                            text: control.checked ? "Click to deactivate Station" : "Click to activate Station"
+//                            color: "white"
+//                        }
 
-                        background: Rectangle {
-                            color: "#404040"
-                            radius: 4
-                        }
+//                        background: Rectangle {
+//                            color: "#404040"
+//                            radius: 4
+//                        }
 
-                        visible:  control.hovered
-                    }
-                    onToggled: function() {
-                        rootItem.model.activeButtonToggled(checked);
-                    }
+//                        visible:  control.hovered
+//                    }
+//                    onToggled: function() {
+//                        rootItem.model.activeButtonToggled(checked);
+//                    }
 
-                    Layout.alignment: Qt.AlignRight
-                    indicator: Rectangle {
-                        implicitWidth: 48
-                        implicitHeight: 26
-                        x: control.leftPadding
-                        y: parent.height / 2 - height / 2
-                        radius: 13
-                        color: control.checked ? "#17a81a" : "#a8171a"
-                        border.color: control.checked ? "#17a81a" : "#a8171a"
+//                    Layout.alignment: Qt.AlignRight
+//                    indicator: Rectangle {
+//                        implicitWidth: 48
+//                        implicitHeight: 26
+//                        x: control.leftPadding
+//                        y: parent.height / 2 - height / 2
+//                        radius: 13
+//                        color: control.checked ? "#17a81a" : "#a8171a"
+//                        border.color: control.checked ? "#17a81a" : "#a8171a"
 
-                        Rectangle {
-                            x: control.checked ? parent.width - width : 0
-                            width: 26
-                            height: 26
-                            radius: 13
-                            color: control.down ? "#cccccc" : "#ffffff"
-                            border.color: control.checked ? (control.down ? "#17a81a" : "#21be2b") : "#999999"
-                        }
-                    }
-                }
+//                        Rectangle {
+//                            x: control.checked ? parent.width - width : 0
+//                            width: 26
+//                            height: 26
+//                            radius: 13
+//                            color: control.down ? "#cccccc" : "#ffffff"
+//                            border.color: control.checked ? (control.down ? "#17a81a" : "#21be2b") : "#999999"
+//                        }
+//                    }
+//                }
             }
 
         }
@@ -133,11 +133,11 @@ Item {
                             value: MainInfo[0]
                         }
 
-                        Binding {
-                            target: control
-                            property: "checked"
-                            value: Active
-                        }
+//                        Binding {
+//                            target: control
+//                            property: "checked"
+//                            value: Active
+//                        }
 
                         Item {
                             Layout.fillWidth: true
@@ -280,6 +280,120 @@ Item {
                                 }
                             }
                         }
+
+                        Rectangle {
+                            id: assignButton
+                            Layout.preferredWidth: rootItem.width
+                            Layout.preferredHeight: implicitHeight + 25
+                            property var checked: true
+
+                            MouseArea {
+                                hoverEnabled: true
+                                anchors.fill: parent
+                                cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: if (assignButton.checked) {
+                                               assignLayout.Layout.preferredHeight = 0
+                                               imga.rotation = -90
+                                               assignButton.checked = false
+                                           }
+                                           else {
+                                               assignLayout.Layout.preferredHeight = assignLayout.implicitHeight
+                                               imga.rotation = 180
+                                               assignButton.checked = true
+                                           }
+                            }
+
+                            color: "#2F3C7E"
+
+                            Text {
+                                text: "Assignment Aircrafts"
+                                color: "white"
+                                anchors.centerIn: parent
+                                anchors.left: parent.left
+                            }
+
+                            Image {
+                                id: imga
+                                source: "qrc:/Resources/chevron.png"
+                                width: 16
+                                height: 16
+                                rotation: 180
+                                ColorOverlay {
+                                    source: imga
+                                    anchors.fill: imga
+                                    color: "white"
+                                }
+                                anchors.right: parent.right
+                                anchors.rightMargin: 5
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                        }
+
+                        RowLayout {
+                            id: assignLayout
+                            Layout.preferredHeight: implicitHeight
+                            spacing: 2
+                            clip: true
+                            Layout.preferredWidth: rootItem.width
+                            Rectangle {
+                                Layout.preferredWidth: img3.width + 6
+                                Layout.fillHeight: true
+                                Image {
+                                    anchors.top: parent.top
+                                    verticalAlignment: Image.AlignTop
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    source: "qrc:/resources/aircraftinfo.png"
+                                    sourceSize: Qt.size(24,24)
+                                    width: 24
+                                    height:24
+                                    rotation: 45
+                                }
+                                color: "#474747"
+                            }
+                            ColumnLayout {
+                                Layout.preferredHeight: implicitHeight
+                                Layout.fillWidth: true
+                                Repeater {
+                                    model: AssignAircraftsName
+                                    Layout.fillWidth: true
+                                    Label {
+                                        text: AssignAircraftsName[index]
+                                        color: keyTextColor
+                                        Layout.fillWidth: true
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
+                                }
+                            }
+                            ColumnLayout {
+                                Layout.preferredHeight: implicitHeight
+                                Layout.fillWidth: true
+                                Repeater {
+                                    model: AssignAircraftsType
+                                    Layout.fillWidth: true
+                                    Label {
+                                        text: AssignAircraftsType[index]
+                                        color: keyTextColor
+                                        Layout.fillWidth: true
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.leftMargin: 5
+                                        leftInset: -5
+                                        Layout.preferredHeight: implicitHeight + spacee
+                                        background: Rectangle {
+                                            color: boxColor
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
                         Rectangle {
                             id: firstButton
                             Layout.preferredWidth: rootItem.width

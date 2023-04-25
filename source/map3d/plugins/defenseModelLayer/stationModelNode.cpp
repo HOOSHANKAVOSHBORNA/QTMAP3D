@@ -173,10 +173,10 @@ void StationModelNode::setInformation(const StationInfo& info)
     mInformation = info;
     updateOrCreateLabelImage();
 
-    mNode2D->setValue(0, info.Active);
-    mNode2D->setValue(1, !info.Active);
+    mNode2D->setValue(0, info.RadarSearchStatus == StationInfo::S);
+    mNode2D->setValue(1, info.RadarSearchStatus != StationInfo::S);
 
-    mCircleNode->setStyle(info.Active ? mCircleStyleActive : mCircleStyleDeactive);
+    mCircleNode->setStyle(info.RadarSearchStatus == StationInfo::S ? mCircleStyleActive : mCircleStyleDeactive);
 
 }
 void StationModelNode::goOnTrack()
@@ -186,7 +186,7 @@ void StationModelNode::goOnTrack()
 
 void StationModelNode::onLeftButtonClicked(bool val)
 {
-    if(val && !mIsSelected)
+    if(val)
     {
         showInfoWidget();
     }
@@ -196,7 +196,9 @@ void StationModelNode::onLeftButtonClicked(bool val)
 //        onRangeButtonToggled(val);
 //        onVisibleButtonToggled(val);
     }
-    select(val);
+
+    updateColors();
+    //select(val);
 }
 
 void StationModelNode::frameEvent()
@@ -206,6 +208,8 @@ void StationModelNode::frameEvent()
 
 void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
+    DefenseModelNode::mousePressEvent(event, onModel);
+
     if(event->button() == Qt::LeftButton)
     {
         onLeftButtonClicked(onModel);
@@ -214,16 +218,11 @@ void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
     }
 }
 
-void StationModelNode::hover(bool val)
+void StationModelNode::updateColors()
 {
-    DefenseModelNode::hover(val);
+    DefenseModelNode::updateColors();
 
-    mNode2DActive->setValue(0, !val);
-    mNode2DActive->setValue(1, val);
-    mNode2DDeactive->setValue(0, !val);
-    mNode2DDeactive->setValue(1, val);
-
-    if (val || mIsSelected) {
+    if (mSelectionMode == SELECTED || mHoverMode == HOVERED) {
 
         mNode2DActive->setValue(0, false);
         mNode2DActive->setValue(1, true);
@@ -317,7 +316,7 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
 
 void StationModelNode::onActivateButtonToggled(bool checked)
 {
-    mInformation.Active = checked;
+    mInformation.RadarSearchStatus = (checked ?  StationInfo::S : StationInfo::US);
 
     mNode2D->setValue(0, checked);
     mNode2D->setValue(1, !checked);
@@ -340,7 +339,8 @@ void StationModelNode::onModeChanged(bool is3DView)
         mRootNode->setRange(1,0, std::numeric_limits<float>::max());
     }
 
-    select(mIsSelected);
+    //select(mIsSelected);
+    updateColors();
 }
 
 void StationModelNode::showInfoWidget()
@@ -386,14 +386,11 @@ void StationModelNode::updateOrCreateLabelImage()
         painter.drawRoundedRect(
                     mRenderTargetImage->rect(),
                     8,8);
-
-        painter.setPen(textPen);
-        painter.setFont(textFont);
-        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
-                         Qt::AlignCenter,
-                         mInformation.Name);
-
-
+        painter.setBrush(QBrush(QColor(26, 77, 46, int(255 * 0.2f))));
+        painter.drawRoundedRect(
+                    QRect(0, 0, LABEL_IMAGE_WIDTH, 35),
+                    8,8);
+        //-----------------------------------------------------------------
         static const QPen linePen(QColor(255, 255, 255),
                                   1,
                                   Qt::PenStyle::DashLine
@@ -403,31 +400,40 @@ void StationModelNode::updateOrCreateLabelImage()
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
 
+        painter.drawLine(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 35);
 
         painter.setPen(textPen);
         painter.setFont(textFont);
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignLeft | Qt::AlignVCenter,
-                         "Number:");
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignCenter,
+                         mInformation.Name);
+
+        painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignCenter,
                          QString::number(mInformation.Number));
+        //----------------------------------------------------------------
 
-
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignLeft | Qt::AlignVCenter,
-                         "CycleTime:");
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
-                         QString::number(mInformation.CycleTime));
-
-
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignLeft | Qt::AlignVCenter,
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft| Qt::AlignVCenter,
                          "PrimSec:");
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 40, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
                          mInformation.PrimSec);
+
+
+        painter.drawText(QRect(10, 75, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Type:");
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 75, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         mInformation.Type);
+
+        painter.drawText(QRect(10, 110, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Radius:");
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 110, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         QString::number(mInformation.Radius/1000.0, 'f', 1) + " km");
 
 
 

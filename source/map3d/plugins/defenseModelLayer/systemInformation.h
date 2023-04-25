@@ -4,7 +4,7 @@
 #include <QQuickItem>
 #include "listManager.h"
 
-
+class AircraftModelNode;
 class SystemInfoModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -21,7 +21,10 @@ public:
         StatusInfo = Qt::UserRole + 204,
         StatusInfoHeaders = Qt::UserRole + 205,
         CombatInfo = Qt::UserRole + 206,
-        CombatInfoHeaders = Qt::UserRole + 207
+        CombatInfoHeaders = Qt::UserRole + 207,
+        AssignAircraftsName = Qt::UserRole + 208,
+        AssignAircraftsType = Qt::UserRole + 209
+
     };
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -40,6 +43,11 @@ public:
     QStringList getStatusInfoHeaders() const;
     QStringList getCombatInfo() const;
     QStringList getCombatInfoHeaders() const;
+    QStringList getAssignmentsName() const;
+    QStringList getAssignmentsType() const;
+
+    void addAssignment(int number, AircraftModelNode *aircraft);
+    void removeAssignment(int number);
 
 Q_SIGNALS:
     void gotoButtonClicked();
@@ -53,6 +61,7 @@ private:
     SystemInfo mSystemInfo;
     SystemStatusInfo mSystemStatusInfo;
     SystemCambatInfo mSystemCombatInfo;
+    QMap<int, const AircraftModelNode*> mAircraftsAssigned;
 };
 
 class SystemInformation : public QObject
@@ -65,6 +74,10 @@ public:
     void setInfo(const SystemInfo &systemInfo);
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void setCombatInfo(const SystemCambatInfo &systemCombatInfo);
+
+    void addAssignment(int number, AircraftModelNode *aircraft);
+    void removeAssignment(int number);
+
     void show();
 private:
     SystemInfoModel *mInfoModel;

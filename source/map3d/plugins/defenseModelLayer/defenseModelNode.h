@@ -18,7 +18,7 @@
 #include <QMouseEvent>
 #include <QObject>
 
-class DefenseModelNode;
+//class DefenseModelNode;
 
 class ModelAnimationPathCallback: public osg::AnimationPathCallback
 {
@@ -29,6 +29,20 @@ public:
 class DefenseModelNode: public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
+
+public:
+
+    enum SelectionMode {
+        UNSELECTED = 0,
+        SELECTED   = 1
+    };
+
+    enum HoverMode {
+        UNHOVERED = 0,
+        HOVERED   = 1
+    };
+
+
 public:
     DefenseModelNode(MapController* mapControler, QObject* parent = nullptr);
     void setType(const QString &value);
@@ -50,17 +64,26 @@ public:
 
 
 signals:
+    void selectionModeChanged();
+    void hoverModeChanged();
+
+public slots:
+    void setSelectionMode(SelectionMode sm);
+    void setHoverMode(HoverMode hm);
+
+
 protected:
     virtual void playExplosionEffect(float scale);
 public:
     virtual void frameEvent() {}
     virtual void mousePressEvent(QMouseEvent* event, bool onModel);
     virtual void mouseMoveEvent(QMouseEvent* event, bool onModel);
-    void select(bool val);
-    virtual void hover(bool val);
+    //void select(bool val);
+    //virtual void hover(bool val);
+    virtual void updateColors();
 
 protected:
-    bool mIsSelected{false};
+    //bool mIsSelected{false};
     bool mIs3D{false};
     osg::ref_ptr<osg::LOD> mRootNode;
     osg::ref_ptr<osg::Group> mNode3D;
@@ -76,6 +99,10 @@ private:
     QString mType;
     osg::ref_ptr<osgFX::Outline> mSelectOutline;
     MapController *mMapControler;
+
+protected:
+    SelectionMode mSelectionMode = UNSELECTED;
+    HoverMode     mHoverMode     = UNHOVERED;
 };
 
 #endif // BASEMODEL_H
