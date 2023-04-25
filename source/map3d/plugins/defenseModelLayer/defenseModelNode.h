@@ -1,7 +1,7 @@
 ﻿#ifndef BASEMODEL_H
 #define BASEMODEL_H
 
-#include "drawshapes.h"
+#include"mapcontroller.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>

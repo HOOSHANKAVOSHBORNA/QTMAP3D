@@ -1,5 +1,5 @@
 #include "systemModelNode.h"
-#include "polygone.h"
+#include "polygon.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
@@ -175,7 +175,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mMezSphere->setColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
     mMezSphere->setSphereShape(SphereNode::SphereShape::SphereTopHalf);
 
-    mWezPolygon = new Polygone(mMapController, false);
+    mWezPolygon = new Polygon(mMapController, false);
     mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
@@ -453,10 +453,10 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         geoPoint4.z() = 0;
         geoPoint4.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
 
-        mWezPolygon->addPoints(geoPoint1.vec3d());
-        mWezPolygon->addPoints(geoPoint2.vec3d());
-        mWezPolygon->addPoints(geoPoint3.vec3d());
-        mWezPolygon->addPoints(geoPoint4.vec3d());
+        mWezPolygon->addPoints(geoPoint1);
+        mWezPolygon->addPoints(geoPoint2);
+        mWezPolygon->addPoints(geoPoint3);
+        mWezPolygon->addPoints(geoPoint4);
 
         float height = static_cast<float>(radius/3);
         mWezPolygon->setHeight(height);
