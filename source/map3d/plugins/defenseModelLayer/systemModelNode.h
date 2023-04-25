@@ -94,7 +94,7 @@ private:
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;
-    static constexpr int LABEL_IMAGE_WIDTH = 160;
+    static constexpr int LABEL_IMAGE_WIDTH = 210;
     static constexpr int LABEL_IMAGE_HEIGHT = 190;
 
     osg::ref_ptr<osg::LOD> mLOD = nullptr;
