@@ -23,7 +23,7 @@ public slots:
 public:
     virtual void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
-    virtual void hover(bool val) override;
+    virtual void updateColors() override;
 
 protected:
 private slots:
@@ -44,7 +44,7 @@ private:
     osg::ref_ptr<Polygone> mVisiblePolygone;
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
-    static constexpr int LABEL_IMAGE_WIDTH = 180;
+    static constexpr int LABEL_IMAGE_WIDTH = 210;
     static constexpr int LABEL_IMAGE_HEIGHT = 150;
     QImage *mRenderTargetImage{nullptr};
     osg::ref_ptr<osg::Image> mLabelImage{nullptr};

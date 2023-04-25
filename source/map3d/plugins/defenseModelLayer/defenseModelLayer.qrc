@@ -31,5 +31,9 @@
         <file>resources/systems.png</file>
         <file>resources/stations.png</file>
         <file>resources/plane.png</file>
+        <file>resources/drone.jpg</file>
+        <file>resources/fighter.jpg</file>
+        <file>resources/missile.jpg</file>
+        <file>resources/helicopter.jpg</file>
     </qresource>
 </RCC>

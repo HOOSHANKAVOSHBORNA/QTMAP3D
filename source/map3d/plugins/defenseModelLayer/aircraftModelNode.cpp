@@ -348,7 +348,7 @@ void AircraftModelNode::setInformation(AircraftInfo info)
     changeModelColor(mInformation.Identification);
 }
 
-AircraftInfo AircraftModelNode::getInformation()
+AircraftInfo AircraftModelNode::getInformation() const
 {
     return mInformation;
 }
@@ -360,7 +360,8 @@ void AircraftModelNode::goOnTrack()
 
 void AircraftModelNode::onLeftButtonClicked(bool val)
 {
-    select(val);
+    //select(val);
+    updateColors();
     if(val)
     {
         showInfoWidget();
@@ -431,11 +432,11 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 }
 
-void AircraftModelNode::hover(bool val)
+void AircraftModelNode::updateColors()
 {
-    DefenseModelNode::hover(val);
+    DefenseModelNode::updateColors();
 
-    if (val || mIsSelected) {
+    if (mSelectionMode == SELECTED || mHoverMode == HOVERED) {
         mNode2D->setValue(0, false);
         mNode2D->setValue(1, true);
     } else {
@@ -454,11 +455,13 @@ SystemModelNode *AircraftModelNode::getAssignment(int number) const
 void AircraftModelNode::addAssignment(int number, SystemModelNode *assignmentModelNode)
 {
     mAssignmentMap[number] = assignmentModelNode;
+    mAircraftinformation->addAssignment(number, assignmentModelNode);
 }
 
 void AircraftModelNode::removeAssignment(int number)
 {
     mAssignmentMap.remove(number);
+    mAircraftinformation->removeAssignment(number);
 }
 
 void AircraftModelNode::acceptAssignment(int number, bool value)
@@ -474,6 +477,7 @@ void AircraftModelNode::clearAssignments(int exceptNumber)
         if(exceptNumber != number)
         {
             removeAssignment(number);
+            mAircraftinformation->removeAssignment(number);
         }
     }
 }
@@ -610,7 +614,8 @@ void AircraftModelNode::changeModelColor(AircraftInfo::Identify identify)
 
     //change2DImageColore(mModelColor);
 
-    select(mIsSelected);
+    updateColors();
+    //select(mIsSelected);
 }
 
 void AircraftModelNode::showInfoWidget()

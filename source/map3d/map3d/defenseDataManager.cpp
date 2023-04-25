@@ -230,7 +230,7 @@ void Demo::createStationInfo()
         double radius = (200000 + (qrand() % (500000 - 200000)));
 
         stationInfo.Name = name;
-        stationInfo.Active = true;
+        stationInfo.RadarSearchStatus = StationInfo::S;
         stationInfo.Number = stationList.count() + 2000;
         stationInfo.Type = "Type1";
         stationInfo.Latitude = latitude;
@@ -267,13 +267,13 @@ void Demo::createSystemInfo()
         systemInfo.Altitude = 4000;//meter
         systemInfo.ViewRange = viewRange;//meter
         systemInfo.MezRange = mezRange;//meter
-        systemInfo.Active = true;
+//        systemInfo.Active = true;
         //status info
         systemStatusInfo.Number = systemInfo.Number;
         systemStatusInfo.ReceiveTime = "1392/12/01 12:10";
         systemStatusInfo.Simulation = "simulation";
         systemStatusInfo.BCCStatus = SystemStatusInfo::S;//s, us
-        systemStatusInfo.RadarSearchStatus = SystemStatusInfo::US;//s, us
+        systemStatusInfo.RadarSearchStatus = SystemStatusInfo::S;//s, us
         systemStatusInfo.Operational = "operational";
         systemStatusInfo.MissileCount = 6;
         systemStatusInfo.RadarMode = "rMode";
