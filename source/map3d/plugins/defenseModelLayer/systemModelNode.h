@@ -6,7 +6,7 @@
 #include "systemInformation.h"
 #include "circle.h"
 #include "sphereNode.h"
-#include "polygone.h"
+#include "polygon.h"
 #include "aircraftModelNode.h"
 #include "linenode.h"
 #include "truck.h"
@@ -80,7 +80,7 @@ private:
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
-    osg::ref_ptr<Polygone> mWezPolygon;
+    osg::ref_ptr<Polygon> mWezPolygon;
 
     osg::ref_ptr<class TruckS> mTruckS;
     osg::ref_ptr<class TruckF> mTruckF;
