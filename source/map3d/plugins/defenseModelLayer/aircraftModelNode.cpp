@@ -715,6 +715,8 @@ void AircraftModelNode::change2DImageColore(osgEarth::Color color)
 
 void AircraftModelNode::updateOrCreateLabelImage()
 {
+    //int height = LABEL_IMAGE_HEIGHT + mAssignmentMap.keys().count() * 30;
+    //qDebug()<<"hight:"<<height;
     if (!mRenderTargetImage) {
         mRenderTargetImage = new QImage(
                     LABEL_IMAGE_WIDTH,
@@ -724,6 +726,7 @@ void AircraftModelNode::updateOrCreateLabelImage()
     }
 
     if (!mLabelImage) {
+
         mLabelImage = new osg::Image;
     }
 
@@ -803,9 +806,29 @@ void AircraftModelNode::updateOrCreateLabelImage()
         //---------------------------------------------------------
         painter.drawText(QRect(10, 160, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         "Assignment:");
+                         "Assignments:");
 
-
+//        int height = 190;
+//        for(auto val: mAssignmentMap.values())
+//        {
+//            painter.drawText(QRect(10, height, LABEL_IMAGE_WIDTH/2, 30),
+//                             Qt::AlignLeft | Qt::AlignVCenter,
+//                             QString::number(val->getInformation().Number));
+//            painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, height, LABEL_IMAGE_WIDTH/2, 30),
+//                             Qt::AlignLeft | Qt::AlignVCenter,
+//                             val->getSystemCombatInfo().phaseToString());
+//            height += 30;
+//        }
+        QString assignStr = "";
+        for(auto val: mAssignmentMap.values())
+        {
+            assignStr += "["+ QString::number(val->getInformation().Number) +
+                            ", " + val->getSystemCombatInfo().phaseToString()[0] + "]";
+            assignStr += "  ";
+        }
+        painter.drawText(QRect(10, 190, LABEL_IMAGE_WIDTH, 30),
+                                     Qt::AlignLeft | Qt::AlignVCenter,
+                                     assignStr);
     }
     *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
 
@@ -817,6 +840,11 @@ void AircraftModelNode::updateOrCreateLabelImage()
                           GL_UNSIGNED_BYTE,
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
+//    mLabelImage->scaleImage(LABEL_IMAGE_WIDTH, height, mLabelImage->r());
+//    if(mLabelNode){
+//        mLabelNode->setIconImage(mLabelImage);
+//        mLabelNode->dirty();
+//    }
 }
 
 
