@@ -79,17 +79,17 @@ signals:
 
 private:
     QString   mFillcolor ;
-    QString   mLinecolor = "#ffffff";
+    QString   mLinecolor;
     QVector3D  mLocation ;
-    double    mRadius  = 20000  ;
-    double    mCircleHeight = 0  ;
+    double    mRadius   ;
+    double    mCircleHeight   ;
     int       mTransparency ;
-    int       mLineOpacity  = 50 ;
+    int       mLineOpacity  ;
     double    mArcstart  = 0     ;
     double    mArcend    = 360   ;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp  = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
     bool      mRelative  = false ;
-    double    mLineWidth = 1;
+    double    mLineWidth ;
 
     Circle*   mCircle;
     MapController* mMapController{nullptr};

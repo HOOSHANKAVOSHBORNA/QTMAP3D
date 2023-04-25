@@ -24,7 +24,7 @@ float Circle::getCircleHeight()
 Circle::Circle(MapController *mapController, bool clamp)
 {
     mMapController = mapController;
-    circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Cyan, 0.5);
+    circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() ;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = true;
     if (clamp){
         circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
@@ -46,7 +46,7 @@ void Circle::setColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color);
-    circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = true;
+//    circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = true;
     this->setStyle(style);
 }
 

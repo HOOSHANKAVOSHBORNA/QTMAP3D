@@ -20,6 +20,11 @@ Item {
     onVisibleChanged: {
         circleProperties.fillcolor = fillColor
         circleProperties.transparency = opacityValue.value
+        circleProperties.linecolor = lineColor;
+        circleProperties.lineopacity = lineopacityValue.value
+        circleProperties.radius = radiusValue.value
+        circleProperties.circleheight = transValue.value;
+        circleProperties.lineWidth = lineValue.value;
     }
 
     Item {
@@ -460,7 +465,7 @@ Item {
                                 SpinBox {
                                     id: lineValue
                                     stepSize: 1
-                                    value: 0
+                                    value: 5
                                     to : 100000
                                     from : 0
                                     validator: DoubleValidator {
