@@ -74,26 +74,41 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     mNode3D = new osg::Group;
     switch (aircraftType) {
     case AircraftInfo::Fighter:
+        mAutoScaleDefaultValue = 11;
+        mAutoScaleMinValue = 7;
+        mAutoScaleMaxValue = 400;
         mNode3D->addChild(mFighter3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(11, 7, 400));
+//        this->addCullCallback(new DefenseModelNodeAutoScaler(11, 7, 400));
         break;
     case AircraftInfo::Aircraft:
+        mAutoScaleDefaultValue = 2.5;
+        mAutoScaleMinValue = 1;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mAircraft3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
         break;
     case AircraftInfo::Missile:
+        mAutoScaleDefaultValue = 25;
+        mAutoScaleMinValue = 15;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mMissile3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(25, 15, 500));
+//        this->addCullCallback(new DefenseModelNodeAutoScaler(25, 15, 500));
         break;
     case AircraftInfo::Drone:
+        mAutoScaleDefaultValue = 30;
+        mAutoScaleMinValue = 20;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mDrone3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(30, 20, 500));
+//        this->addCullCallback(new DefenseModelNodeAutoScaler(30, 20, 500));
         break;
     case AircraftInfo::Helicopter:
+        mAutoScaleDefaultValue = 2.5;
+        mAutoScaleMinValue = 1;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mHelicopter3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
+//        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
         break;
     }
+    this->addCullCallback(mDefenseModeNodeAutoScaler);
 
     mRootNode = new osg::LOD;
     mNode2D = new osg::Switch;
@@ -221,11 +236,20 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     {
         mRootNode->addChild(mNode3D, 0, RANGE3D);
         mRootNode->addChild(at, RANGE3D, std::numeric_limits<float>::max());
+
+        mDefenseModeNodeAutoScaler->setDefaultScale(mAutoScaleDefaultValue);
+        mDefenseModeNodeAutoScaler->setMinScale(mAutoScaleMinValue);
+        mDefenseModeNodeAutoScaler->setMaxScale(mAutoScaleMaxValue);
+
     }
     else
     {
         mRootNode->addChild(mNode3D, 0, 0);
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
+
+        mDefenseModeNodeAutoScaler->setDefaultScale(2.5);
+        mDefenseModeNodeAutoScaler->setMinScale(1);
+        mDefenseModeNodeAutoScaler->setMaxScale(500);
     }
 
 
@@ -544,18 +568,22 @@ void AircraftModelNode::onModeChanged(bool is3DView)
         mRootNode->setRange(0, 0, RANGE3D);
         mRootNode->setRange(1, RANGE3D, std::numeric_limits<float>::max());
 
-        auto style = getStyle();
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-        setStyle(style);
+        mDefenseModeNodeAutoScaler->setDefaultScale(mAutoScaleDefaultValue);
+        mDefenseModeNodeAutoScaler->setMinScale(mAutoScaleMinValue);
+        mDefenseModeNodeAutoScaler->setMaxScale(mAutoScaleMaxValue);
+
     }
     else
     {
         mRootNode->setRange(0, 0, 0);
         mRootNode->setRange(1,0, std::numeric_limits<float>::max());
-        auto style = getStyle();
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 0;
-        setStyle(style);
+
+
+        mDefenseModeNodeAutoScaler->setDefaultScale(2.5);
+        mDefenseModeNodeAutoScaler->setMinScale(1);
+        mDefenseModeNodeAutoScaler->setMaxScale(500);
     }
+
 }
 
 void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)

@@ -116,6 +116,10 @@ private:
 
     osg::ref_ptr<osg::Switch> mNode2DNormal;
     osg::ref_ptr<osg::Switch> mNode2DHovered;
+
+    double mAutoScaleDefaultValue = 2.5;
+    double mAutoScaleMinValue = 1;
+    double mAutoScaleMaxValue = 500;
 };
 
 #endif // FLYINGMODEL_H
