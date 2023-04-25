@@ -100,9 +100,11 @@ private:
     osg::ref_ptr<osgFX::Outline> mSelectOutline;
     MapController *mMapControler;
 
+
 protected:
     SelectionMode mSelectionMode = UNSELECTED;
     HoverMode     mHoverMode     = UNHOVERED;
+    class DefenseModelNodeAutoScaler *mDefenseModeNodeAutoScaler = nullptr;
 };
 
 #endif // BASEMODEL_H
