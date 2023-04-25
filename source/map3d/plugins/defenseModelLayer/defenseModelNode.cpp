@@ -117,7 +117,8 @@ DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent)
 //    osg::DisplaySettings::instance()->setMinimumNumStencilBits(1);
 
     QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
-        this->mLabelNode->setNodeMask(this->mHoverMode == HOVERED);
+        if(mLabelNode)
+            this->mLabelNode->setNodeMask(this->mHoverMode == HOVERED);
     });
 }
 

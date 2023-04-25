@@ -101,8 +101,8 @@ private:
     static osg::ref_ptr<osg::Node> mDrone3DRef;
 //    static osg::ref_ptr<osg::Image> m2dIcon;
 
-    static constexpr int LABEL_IMAGE_WIDTH = 160;
-    static constexpr int LABEL_IMAGE_HEIGHT = 170;
+    static constexpr int LABEL_IMAGE_WIDTH = 210;
+    static constexpr int LABEL_IMAGE_HEIGHT = 230;
     QImage *mRenderTargetImage{nullptr};
     osg::ref_ptr<osg::Image> mLabelImage{nullptr};
 
