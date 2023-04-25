@@ -572,7 +572,9 @@ Item {
                 }
             }
         }
+
         AircraftInfoButtonGroup {
+            id: buttonGroup
             Layout.fillWidth: true
             Layout.minimumHeight: 60
 
@@ -592,5 +594,9 @@ Item {
                 rootItem.model.latestPointsClicked(check);
             }
         }
+    }
+
+    function setTrackOff() {
+        buttonGroup.setTrackOff(false);
     }
 }

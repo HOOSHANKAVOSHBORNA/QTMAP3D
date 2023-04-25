@@ -372,6 +372,7 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
         removeNodeFromLayer(mRouteLine);
         removeNodeFromLayer(mLatestPointLine);
         removeNodeFromLayer(mTempLine);
+        mAircraftinformation->setTrackOff();
     }
     if(mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();
