@@ -14,6 +14,11 @@ Item {
 
     property var _checked: "#908000"
     property var _colorHover: "#FFCC00"
+
+    function setTrackOff(check) {
+        buttonsModel.setProperty(3, "checked", false)
+    }
+
     ListModel {
         id: buttonsModel
 

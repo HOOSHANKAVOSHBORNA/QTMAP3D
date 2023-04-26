@@ -41,14 +41,14 @@ void DrawCone::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mDrawingState = DrawingState::START;
                 mConeProperties = new ConeProperties(mCone, mQmlEngine, mUiHandle, mMapcontroller);
                 mConeProperties->show();
-                addNodeToLayer(mIconNode);
+                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
                 mEnterConeZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mCone = nullptr;
-                removeNodeFromLayer(mIconNode);
+                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
                 mConeProperties->hide();
             }
         }
@@ -95,7 +95,7 @@ void DrawCone::startDraw(QMouseEvent *event)
     mCone->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
 
     mConeProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    addNodeToLayer(mCone);
+    mMapcontroller->addNodeToLayer(mCone, DRAW_LAYER_NAME);
     event->accept();
 }
 
@@ -109,34 +109,12 @@ void DrawCone::finishDrawing(QMouseEvent *event)
 
 void DrawCone::cancelDrawing(QMouseEvent *event)
 {
-    removeNodeFromLayer(mCone);
+    mMapcontroller->removeNodeFromLayer(mCone, DRAW_LAYER_NAME);
     mCone = nullptr;
     mConeProperties->setCone(mCone);
     mDrawingState = DrawingState::START;
 
     event->accept();
-}
-
-bool DrawCone::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-
-void DrawCone::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawCone::makeIconNode()

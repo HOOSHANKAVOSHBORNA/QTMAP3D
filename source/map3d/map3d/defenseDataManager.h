@@ -351,7 +351,7 @@ struct SystemCambatInfo
     //combat info
     int TN = -1;
     QString Acceptance = "------";
-    Phases Phase;
+    Phases Phase = Search;
     double Antenna = -1;
     QString ChanelNo = "------";
     QString Inrange = "------";

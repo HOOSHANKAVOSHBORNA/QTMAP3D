@@ -180,3 +180,9 @@ void AircraftInformation::removeAssignment(int systemNumber)
 {
     mInfomodel->removeAssignment(systemNumber);
 }
+
+void AircraftInformation::setTrackOff()
+{
+    if(mItem)
+        QMetaObject::invokeMethod(mItem, "setTrackOff");
+}

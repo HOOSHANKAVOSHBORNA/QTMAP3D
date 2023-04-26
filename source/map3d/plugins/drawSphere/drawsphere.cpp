@@ -28,7 +28,7 @@ void drawSphere::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mDrawingState = DrawingState::START;
                 mSphereProperties = new SphereProperties(mQmlEngine, mUiHandle, mMapcontroller);
                 mSphereProperties->show();
-                addNodeToLayer(mIconNode);
+                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
@@ -36,7 +36,7 @@ void drawSphere::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mDrawingState = DrawingState::FINISH;
                 mSphere = nullptr;
                 mSphereProperties->hide();
-                removeNodeFromLayer(mIconNode);
+                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     }
@@ -95,7 +95,7 @@ void drawSphere::startDraw(QMouseEvent *event)
     //mSphereProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
     mSphereProperties->setSphere(mSphere);
 
-    addNodeToLayer(mSphere);
+    mMapcontroller->addNodeToLayer(mSphere, DRAW_LAYER_NAME);
     event->accept();
 }
 
@@ -109,34 +109,12 @@ void drawSphere::finishDrawing(QMouseEvent *event)
 
 void drawSphere::cancelDrawing(QMouseEvent *event)
 {
-    removeNodeFromLayer(mSphere);
+    mMapcontroller->removeNodeFromLayer(mSphere, DRAW_LAYER_NAME);
     mSphere = nullptr;
     mSphereProperties->setSphere(mSphere);
     mDrawingState = DrawingState::START;
 
     event->accept();
-}
-
-bool drawSphere::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-
-void drawSphere::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
 }
 
 osgEarth::Annotation::PlaceNode *drawSphere::makeIconNode()

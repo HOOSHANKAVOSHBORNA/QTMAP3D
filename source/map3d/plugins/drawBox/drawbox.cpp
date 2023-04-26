@@ -41,14 +41,14 @@ void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &ca
                 mDrawingState = DrawingState::START;
                 mBoxProperties = new BoxProperties(mBox, mQmlEngine, mUiHandle, mMapcontroller);
                 mBoxProperties->show();
-                addNodeToLayer(mIconNode);
+                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
                 mEnterBoxZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mBox = nullptr;
-                removeNodeFromLayer(mIconNode);
+                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
                 mBoxProperties->hide();
             }
         }
@@ -96,7 +96,7 @@ void DrawBox::startDraw(QMouseEvent *event)
 
 
     mBoxProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    addNodeToLayer(mBox);
+    mMapcontroller->addNodeToLayer(mBox, DRAW_LAYER_NAME);
     event->accept();
 }
 
@@ -110,34 +110,12 @@ void DrawBox::finishDrawing(QMouseEvent *event)
 
 void DrawBox::cancelDrawing(QMouseEvent *event)
 {
-    removeNodeFromLayer(mBox);
+    mMapcontroller->addNodeToLayer(mBox, DRAW_LAYER_NAME);
     mBox = nullptr;
 //    mBoxProperties->setBox(mBox);
     mDrawingState = DrawingState::START;
 
     event->accept();
-}
-
-bool DrawBox::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-
-void DrawBox::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawBox::makeIconNode()

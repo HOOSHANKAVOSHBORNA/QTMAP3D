@@ -1,19 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/box.png</file>
-        <file>resources/capsule.png</file>
-        <file>resources/circle.png</file>
-        <file>resources/cone.png</file>
-        <file>resources/cylinder.png</file>
-        <file>resources/ellipse.png</file>
-        <file>resources/extroPolygon.png</file>
         <file>resources/image.png</file>
-        <file>resources/line.png</file>
-        <file>resources/polygon.png</file>
-        <file>resources/rectangle.png</file>
-        <file>resources/sphere.png</file>
-        <file>resources/topHalf.png</file>
-        <file>resources/globe.png</file>
-        <file>resources/botHalf.png</file>
     </qresource>
 </RCC>

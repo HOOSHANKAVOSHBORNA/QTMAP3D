@@ -65,8 +65,6 @@ private:
     void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();
-    bool addNodeToLayer(osg::Node *node);
-    bool removeNodeFromLayer(osg::Node *node);
     void change2DImageColore(osgEarth::Color color);
     void updateOrCreateLabelImage();
 private:
@@ -101,8 +99,8 @@ private:
     static osg::ref_ptr<osg::Node> mDrone3DRef;
 //    static osg::ref_ptr<osg::Image> m2dIcon;
 
-    static constexpr int LABEL_IMAGE_WIDTH = 160;
-    static constexpr int LABEL_IMAGE_HEIGHT = 170;
+    static constexpr int LABEL_IMAGE_WIDTH = 210;
+    static constexpr int LABEL_IMAGE_HEIGHT = 230;
     QImage *mRenderTargetImage{nullptr};
     osg::ref_ptr<osg::Image> mLabelImage{nullptr};
 
@@ -116,6 +114,10 @@ private:
 
     osg::ref_ptr<osg::Switch> mNode2DNormal;
     osg::ref_ptr<osg::Switch> mNode2DHovered;
+
+    double mAutoScaleDefaultValue = 2.5;
+    double mAutoScaleMinValue = 1;
+    double mAutoScaleMaxValue = 500;
 };
 
 #endif // FLYINGMODEL_H

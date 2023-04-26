@@ -14,6 +14,7 @@ Item {
     property var boxColor: "#363739"
     property var valueColor: "#363739"
     property var keyTextColor: "#9b9ca0"
+    property var sectionColor: "#00587A"
     property var spacee: 5
 
     Rectangle{
@@ -149,9 +150,59 @@ Item {
                                 fillMode: Image.Stretch
                             }
                         }
+                        Rectangle {
+                            id: mainButton
+                            Layout.preferredWidth: rootItem.width
+                            Layout.preferredHeight: implicitHeight + 25
+                            property var checked: true
+
+                            MouseArea {
+                                hoverEnabled: true
+                                anchors.fill: parent
+                                cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: if (mainButton.checked) {
+                                               mainLayout.Layout.preferredHeight = 0
+                                               imgm.rotation = -90
+                                               mainButton.checked = false
+                                           }
+                                           else {
+                                               mainLayout.Layout.preferredHeight = mainLayout.implicitHeight
+                                               imgm.rotation = 180
+                                               mainButton.checked = true
+                                           }
+                            }
+
+                            color: sectionColor
+
+                            Text {
+                                text: "Main Information"
+                                color: "white"
+                                anchors.centerIn: parent
+                                anchors.left: parent.left
+                            }
+                            Image {
+                                id: imgm
+                                source: "qrc:/Resources/chevron.png"
+                                width: 16
+                                height: 16
+                                rotation: 180
+                                ColorOverlay {
+                                    source: imgm
+                                    anchors.fill: imgm
+                                    color: "white"
+                                }
+                                anchors.right: parent.right
+                                anchors.rightMargin: 5
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
+                        }
                         RowLayout {
+                            id: mainLayout
                             spacing: 2
                             Layout.preferredWidth: rootItem.width
+                            Layout.preferredHeight: implicitHeight
+                            clip: true
                             Rectangle {
                                 Layout.preferredWidth: img2.width + 6
                                 Layout.fillHeight: true
@@ -210,21 +261,62 @@ Item {
                             }
 
                         }
-                        Label {
+
+
+                        Rectangle {
+                            id: locationButton
                             Layout.preferredWidth: rootItem.width
-                            Layout.preferredHeight: 1
-                            verticalAlignment: Label.AlignVCenter
-                            color: "white"
-                            text: ""
-                            horizontalAlignment: Qt.AlignHCenter
-                            background: Rectangle {
-                                color: "#909090"
+                            Layout.preferredHeight: implicitHeight + 25
+                            property var checked: true
+
+                            MouseArea {
+                                hoverEnabled: true
+                                anchors.fill: parent
+                                cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: if (locationButton.checked) {
+                                               locLayout.Layout.preferredHeight = 0
+                                               imgl.rotation = -90
+                                               locationButton.checked = false
+                                           }
+                                           else {
+                                               locLayout.Layout.preferredHeight = locLayout.implicitHeight
+                                               imgl.rotation = 180
+                                               locationButton.checked = true
+                                           }
                             }
+
+                            color: sectionColor
+
+                            Text {
+                                text: "Location Information"
+                                color: "white"
+                                anchors.centerIn: parent
+                                anchors.left: parent.left
+                            }
+                            Image {
+                                id: imgl
+                                source: "qrc:/Resources/chevron.png"
+                                width: 16
+                                height: 16
+                                rotation: 180
+                                ColorOverlay {
+                                    source: imgl
+                                    anchors.fill: imgl
+                                    color: "white"
+                                }
+                                anchors.right: parent.right
+                                anchors.rightMargin: 5
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
                         }
 
                         RowLayout {
+                            id: locLayout
                             spacing: 2
                             Layout.preferredWidth: rootItem.width
+                            Layout.preferredHeight: implicitHeight
+                            clip: true
                             Rectangle {
                                 Layout.preferredWidth: img1.width + 6
                                 Layout.fillHeight: true
@@ -292,18 +384,18 @@ Item {
                                 anchors.fill: parent
                                 cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: if (assignButton.checked) {
-                                               assignLayout.Layout.preferredHeight = 0
-                                               imga.rotation = -90
-                                               assignButton.checked = false
+//                                               assignLayout.Layout.preferredHeight = 0
+//                                               imga.rotation = -90
+//                                               assignButton.checked = false
                                            }
                                            else {
-                                               assignLayout.Layout.preferredHeight = assignLayout.implicitHeight
-                                               imga.rotation = 180
-                                               assignButton.checked = true
+//                                               assignLayout.Layout.preferredHeight = assignLayout.implicitHeight
+//                                               imga.rotation = 180
+//                                               assignButton.checked = true
                                            }
                             }
 
-                            color: "#2F3C7E"
+                            color: sectionColor
 
                             Text {
                                 text: "Assignment Aircrafts"
@@ -416,7 +508,7 @@ Item {
                                            }
                             }
 
-                            color: "#2F3C7E"
+                            color: sectionColor
 
                             Text {
                                 text: "Status Information"
@@ -527,7 +619,7 @@ Item {
                                            }
                             }
 
-                            color: "#2F3C7E"
+                            color: sectionColor
 
                             Text {
                                 text: "Combat Information"

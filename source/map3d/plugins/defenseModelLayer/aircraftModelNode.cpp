@@ -63,7 +63,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
         mDrone3DRef = osgDB::readRefNodeFile("../data/models/drone/drone.osgb");
     }
     if (!mHelicopter3DRef.valid()) {
-        mHelicopter3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
+        mHelicopter3DRef = osgDB::readRefNodeFile("../data/models/hellicopter/HellicopterUC.osgb");
     }
     //----------------------------------------------------------------------------------------------
 //    if (!mNode3DRef)
@@ -74,26 +74,37 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     mNode3D = new osg::Group;
     switch (aircraftType) {
     case AircraftInfo::Fighter:
+        mAutoScaleDefaultValue = 11;
+        mAutoScaleMinValue = 7;
+        mAutoScaleMaxValue = 350;
         mNode3D->addChild(mFighter3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(11, 7, 400));
         break;
     case AircraftInfo::Aircraft:
+        mAutoScaleDefaultValue = 2.5;
+        mAutoScaleMinValue = 1;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mAircraft3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
         break;
     case AircraftInfo::Missile:
+        mAutoScaleDefaultValue = 25;
+        mAutoScaleMinValue = 15;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mMissile3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(25, 15, 500));
         break;
     case AircraftInfo::Drone:
+        mAutoScaleDefaultValue = 30;
+        mAutoScaleMinValue = 20;
+        mAutoScaleMaxValue = 400;
         mNode3D->addChild(mDrone3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(30, 20, 500));
         break;
     case AircraftInfo::Helicopter:
+        mAutoScaleDefaultValue = 22;
+        mAutoScaleMinValue = 12;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mHelicopter3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
         break;
     }
+    this->addCullCallback(mDefenseModeNodeAutoScaler);
 
     mRootNode = new osg::LOD;
     mNode2D = new osg::Switch;
@@ -114,7 +125,27 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     mNode2DHovered = new osg::Switch;
 
     static bool bFirst = true;
-    static osg::ref_ptr<osg::Image> mainImage;
+    static osg::ref_ptr<osg::Image> mainImageAircraft;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListAircraft;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredAircraft;
+
+    static osg::ref_ptr<osg::Image> mainImageDrone;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListDrone;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredDrone;
+
+    static osg::ref_ptr<osg::Image> mainImageFighter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListFighter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredFighter;
+
+    static osg::ref_ptr<osg::Image> mainImageMissile;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListMissile;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredMissile;
+
+    static osg::ref_ptr<osg::Image> mainImageHellicopter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHellicopter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredHellicopter;
+
+
     static const osgEarth::Color colorList[6]= {
         osg::Vec4(0.2f, 0.8f, 0.2f, 1.0f),
         osg::Vec4(0.8f, 0.8f, 0.2f, 1.0f),
@@ -123,16 +154,19 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
         osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f),
         osg::Vec4(0.8f, 0.2f, 0.2f, 1.0f),
     };
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageList;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHovered;
 
 
     if (bFirst) {
-        mainImage = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
+
+        mainImageAircraft = osgDB::readImageFile("../data/models/aircraft/aircraft.png");
+        mainImageMissile = osgDB::readImageFile("../data/models/missile/missle.png");
+        mainImageDrone = osgDB::readImageFile("../data/models/drone/drone.png");
+        mainImageFighter = osgDB::readImageFile("../data/models/fighter/fighter.png");
+        mainImageHellicopter = osgDB::readImageFile("../data/models/hellicopter/hellicopter.gif");
 
 
         for (unsigned int i = 0; i < 6; i++) {
-            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImage, colorList[i]);
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageAircraft, colorList[i]);
             if(aircraftImage)
                 aircraftImage->scaleImage(100, 100, aircraftImage->r());
 
@@ -141,24 +175,107 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
             if(aircraftImageHovered)
                 aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
 
-            imageList[i] = aircraftImage;
-            imageListHovered[i] = aircraftImageHovered;
+            imageListAircraft[i] = aircraftImage;
+            imageListHoveredAircraft[i] = aircraftImageHovered;
         }
+
+        for (unsigned int i = 0; i < 6; i++) {
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageDrone, colorList[i]);
+            if(aircraftImage)
+                aircraftImage->scaleImage(100, 100, aircraftImage->r());
+
+
+            osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+            if(aircraftImageHovered)
+                aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+
+            imageListDrone[i] = aircraftImage;
+            imageListHoveredDrone[i] = aircraftImageHovered;
+        }
+
+        for (unsigned int i = 0; i < 6; i++) {
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageFighter, colorList[i]);
+            if(aircraftImage)
+                aircraftImage->scaleImage(100, 100, aircraftImage->r());
+
+
+            osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+            if(aircraftImageHovered)
+                aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+
+            imageListFighter[i] = aircraftImage;
+            imageListHoveredFighter[i] = aircraftImageHovered;
+        }
+
+        for (unsigned int i = 0; i < 6; i++) {
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageMissile, colorList[i]);
+            if(aircraftImage)
+                aircraftImage->scaleImage(100, 100, aircraftImage->r());
+
+
+            osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+            if(aircraftImageHovered)
+                aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+
+            imageListMissile[i] = aircraftImage;
+            imageListHoveredMissile[i] = aircraftImageHovered;
+        }
+
+        for (unsigned int i = 0; i < 6; i++) {
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageHellicopter, colorList[i]);
+            if(aircraftImage)
+                aircraftImage->scaleImage(100, 100, aircraftImage->r());
+
+
+            osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+            if(aircraftImageHovered)
+                aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+
+            imageListHellicopter[i] = aircraftImage;
+            imageListHoveredHellicopter[i] = aircraftImageHovered;
+        }
+
 
         bFirst = false;
     }
 
     for (unsigned int i = 0; i < 6; i++) {
 
+        osg::ref_ptr<osg::Image> img;
+        osg::ref_ptr<osg::Image> imgHovered;
+
+        switch (aircraftType) {
+        case AircraftInfo::Aircraft:
+            img = imageListAircraft[i];
+            imgHovered = imageListHoveredAircraft[i];
+            break;
+        case AircraftInfo::Fighter:
+            img = imageListFighter[i];
+            imgHovered = imageListHoveredFighter[i];
+            break;
+        case AircraftInfo::Drone:
+            img = imageListDrone[i];
+            imgHovered = imageListHoveredDrone[i];
+            break;
+        case AircraftInfo::Missile:
+            img = imageListMissile[i];
+            imgHovered = imageListHoveredMissile[i];
+            break;
+        case AircraftInfo::Helicopter:
+            img = imageListHellicopter[i];
+            imgHovered = imageListHoveredHellicopter[i];
+            break;
+        }
+
         osg::ref_ptr<osg::Geometry> aircraftImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry
-                (imageList[i], osg::Vec2s(0,0), 0, 0, 0.4);
+                (img, osg::Vec2s(0,0), 0, 0, 0.4);
         osg::ref_ptr<osg::Geode>  aircraftGeode = new osg::Geode();
         aircraftGeode->setStateSet(geodeStateSet);
         aircraftGeode->addDrawable(aircraftImageDrawable);
 
 
         osg::ref_ptr<osg::Geometry> aircraftImageDrawableHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry
-                (imageListHovered[i], osg::Vec2s(0,0), 0, 0, 0.4);
+                (imgHovered, osg::Vec2s(0,0), 0, 0, 0.4);
         osg::ref_ptr<osg::Geode>  aircraftGeodeHovered = new osg::Geode();
         aircraftGeodeHovered->setStateSet(geodeStateSet);
         aircraftGeodeHovered->addDrawable(aircraftImageDrawableHovered);
@@ -221,11 +338,20 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     {
         mRootNode->addChild(mNode3D, 0, RANGE3D);
         mRootNode->addChild(at, RANGE3D, std::numeric_limits<float>::max());
+
+        mDefenseModeNodeAutoScaler->setDefaultScale(mAutoScaleDefaultValue);
+        mDefenseModeNodeAutoScaler->setMinScale(mAutoScaleMinValue);
+        mDefenseModeNodeAutoScaler->setMaxScale(mAutoScaleMaxValue);
+
     }
     else
     {
         mRootNode->addChild(mNode3D, 0, 0);
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
+
+        mDefenseModeNodeAutoScaler->setDefaultScale(2.5);
+        mDefenseModeNodeAutoScaler->setMinScale(1);
+        mDefenseModeNodeAutoScaler->setMaxScale(500);
     }
 
 
@@ -249,6 +375,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     mRouteLine->setTessellation(10);
     mRouteLine->setColor(osgEarth::Color::Purple);
     mRouteLine->setWidth(5);
+    mRouteLine->showLenght(false);
 
     mLatestPointLine = new LineNode(mapControler);
     mLatestPointLine->setPointVisible(true);
@@ -256,11 +383,14 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     mLatestPointLine->setColor(osgEarth::Color::Purple);
     mLatestPointLine->setWidth(5);
     mLatestPointLine->setPointWidth(15);
+    mLatestPointLine->showLenght(false);
+    mLatestPointLine->setSmooth(true);
 
     mTempLine = new LineNode(mapControler);
     mTempLine->setPointVisible(false);
     mTempLine->setColor(osgEarth::Color::Purple);
     mTempLine->setWidth(5);
+    mTempLine->showLenght(false);
 }
 
 void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)
@@ -369,9 +499,10 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode(getGeoTransform());
-        removeNodeFromLayer(mRouteLine);
-        removeNodeFromLayer(mLatestPointLine);
-        removeNodeFromLayer(mTempLine);
+//        mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+//        mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+//        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mAircraftinformation->setTrackOff();
     }
     if(mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();
@@ -503,13 +634,13 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 {
     if(check)
     {
-        addNodeToLayer(mRouteLine);
-        addNodeToLayer(mTempLine);
+        mMapController->addNodeToLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
     else
     {
-        removeNodeFromLayer(mRouteLine);
-        removeNodeFromLayer(mTempLine);
+        mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
 
 }
@@ -517,13 +648,13 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 void AircraftModelNode::onLatestPointsToggled(bool check) {
     if (check)
     {
-        addNodeToLayer(mLatestPointLine);
-        addNodeToLayer(mTempLine);
+        mMapController->addNodeToLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
     else
     {
-        removeNodeFromLayer(mLatestPointLine);
-        removeNodeFromLayer(mTempLine);
+        mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
 }
 
@@ -544,18 +675,22 @@ void AircraftModelNode::onModeChanged(bool is3DView)
         mRootNode->setRange(0, 0, RANGE3D);
         mRootNode->setRange(1, RANGE3D, std::numeric_limits<float>::max());
 
-        auto style = getStyle();
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-        setStyle(style);
+        mDefenseModeNodeAutoScaler->setDefaultScale(mAutoScaleDefaultValue);
+        mDefenseModeNodeAutoScaler->setMinScale(mAutoScaleMinValue);
+        mDefenseModeNodeAutoScaler->setMaxScale(mAutoScaleMaxValue);
+
     }
     else
     {
         mRootNode->setRange(0, 0, 0);
         mRootNode->setRange(1,0, std::numeric_limits<float>::max());
-        auto style = getStyle();
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 0;
-        setStyle(style);
+
+
+        mDefenseModeNodeAutoScaler->setDefaultScale(2.5);
+        mDefenseModeNodeAutoScaler->setMinScale(1);
+        mDefenseModeNodeAutoScaler->setMaxScale(500);
     }
+
 }
 
 void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)
@@ -604,11 +739,11 @@ void AircraftModelNode::changeModelColor(AircraftInfo::Identify identify)
         mNode2DHovered->setValue(5, true);
         break;
 
-    default:
-        color = osgEarth::Color::Green;
-        mNode2DNormal->setValue(0, true);
-        mNode2DHovered->setValue(0, true);
-        break;
+//    default:
+//        color = osgEarth::Color::Green;
+//        mNode2DNormal->setValue(0, true);
+//        mNode2DHovered->setValue(0, true);
+//        break;
     }
     mModelColor = color;
 
@@ -637,49 +772,27 @@ void AircraftModelNode::addEffect(double emitterDuration)
     mFire->setEmitterDuration(emitterDuration);
     mFire->setParticleDuration(0.2);
     osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());// for textures or lighting
-    addNodeToLayer(mFire->getParticleSystem());
+    mMapController->addNodeToLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
     //add smoke----------------------------------------------------------------------------------------------------
     osgEarth::Registry::shaderGenerator().run(mSmoke);// for textures or lighting
     getPositionAttitudeTransform()->addChild(mSmoke);
     mSmoke->setEmitterDuration(emitterDuration);
     mSmoke->setParticleDuration(5);
     osgEarth::Registry::shaderGenerator().run(mSmoke->getParticleSystem());// for textures or lighting
-    addNodeToLayer(mSmoke->getParticleSystem());
+    mMapController->addNodeToLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
 }
 
 void AircraftModelNode::removeEffect()
 {
     //remove fire---------------------------------------------
-    removeNodeFromLayer(mFire->getParticleSystem());
+    mMapController->removeNodeFromLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
     getPositionAttitudeTransform()->removeChild(mFire);
     //remove smoke--------------------------------------------
-    removeNodeFromLayer(mSmoke->getParticleSystem());
+    mMapController->removeNodeFromLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
     getPositionAttitudeTransform()->removeChild(mSmoke);
 }
 
-bool AircraftModelNode::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-
-bool AircraftModelNode::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
-}
-
-void AircraftModelNode::change2DImageColore(osgEarth::Color color)
+void AircraftModelNode::change2DImageColore(osgEarth::Color /*color*/)
 {
 //    if(!m2DIcon)
 //        return;
@@ -715,6 +828,8 @@ void AircraftModelNode::change2DImageColore(osgEarth::Color color)
 
 void AircraftModelNode::updateOrCreateLabelImage()
 {
+    //int height = LABEL_IMAGE_HEIGHT + mAssignmentMap.keys().count() * 30;
+    //qDebug()<<"hight:"<<height;
     if (!mRenderTargetImage) {
         mRenderTargetImage = new QImage(
                     LABEL_IMAGE_WIDTH,
@@ -724,6 +839,7 @@ void AircraftModelNode::updateOrCreateLabelImage()
     }
 
     if (!mLabelImage) {
+
         mLabelImage = new osg::Image;
     }
 
@@ -744,14 +860,11 @@ void AircraftModelNode::updateOrCreateLabelImage()
         painter.drawRoundedRect(
                     mRenderTargetImage->rect(),
                     8,8);
-
-        painter.setPen(textPen);
-        painter.setFont(textFont);
-        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
-                         Qt::AlignCenter,
-                         QString::number(mInformation.TN));
-
-
+        painter.setBrush(QBrush(QColor(26, 77, 46, int(255 * 0.2f))));
+        painter.drawRoundedRect(
+                    QRect(0, 0, LABEL_IMAGE_WIDTH, 35),
+                    8,8);
+        //------------------------------------------------------------
         static const QPen linePen(QColor(255, 255, 255),
                                   1,
                                   Qt::PenStyle::DashLine
@@ -760,41 +873,75 @@ void AircraftModelNode::updateOrCreateLabelImage()
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
-
+        painter.drawLine(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 35);
 
         painter.setPen(textPen);
         painter.setFont(textFont);
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignLeft | Qt::AlignVCenter,
-                         "IFFCode:");
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
-                         mInformation.IFFCode);
+        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignCenter,
+                         mInformation.aircraftTypeToString());
+        painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignCenter,
+                         QString::number(mInformation.TN));
+        //-------------------------------------------------------------
 
-
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "CallSign:");
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 40, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
                          mInformation.CallSign);
 
 
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "IFFCode:");
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 70, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         mInformation.IFFCode);
+
+
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "M-Radar:");
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 100, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
                          mInformation.MasterRadar);
 
-        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
+        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "I-Method:");
-        painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 130, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
                          mInformation.IdentificationMethod);
+        //---------------------------------------------------------
+        painter.drawText(QRect(10, 160, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Assignments:");
 
-
+//        int height = 190;
+//        for(auto val: mAssignmentMap.values())
+//        {
+//            painter.drawText(QRect(10, height, LABEL_IMAGE_WIDTH/2, 30),
+//                             Qt::AlignLeft | Qt::AlignVCenter,
+//                             QString::number(val->getInformation().Number));
+//            painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, height, LABEL_IMAGE_WIDTH/2, 30),
+//                             Qt::AlignLeft | Qt::AlignVCenter,
+//                             val->getSystemCombatInfo().phaseToString());
+//            height += 30;
+//        }
+        QString assignStr = "";
+        for(auto val: mAssignmentMap.values())
+        {
+            assignStr += "["+ QString::number(val->getInformation().Number) +
+                            ", " + val->getSystemCombatInfo().phaseToString()[0] + "]";
+            assignStr += "  ";
+        }
+        painter.drawText(QRect(10, 190, LABEL_IMAGE_WIDTH, 30),
+                                     Qt::AlignLeft | Qt::AlignVCenter,
+                                     assignStr);
     }
     *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
 
@@ -806,6 +953,11 @@ void AircraftModelNode::updateOrCreateLabelImage()
                           GL_UNSIGNED_BYTE,
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
+//    mLabelImage->scaleImage(LABEL_IMAGE_WIDTH, height, mLabelImage->r());
+//    if(mLabelNode){
+//        mLabelNode->setIconImage(mLabelImage);
+//        mLabelNode->dirty();
+//    }
 }
 
 

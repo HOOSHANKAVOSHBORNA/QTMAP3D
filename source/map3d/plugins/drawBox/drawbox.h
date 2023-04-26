@@ -34,9 +34,6 @@ private:
     void startDraw(QMouseEvent* event);
     void finishDrawing(QMouseEvent* event);
     void cancelDrawing(QMouseEvent* event);
-
-    bool addNodeToLayer(osg::Node *node);
-    void removeNodeFromLayer(osg::Node *node);
     osgEarth::Annotation::PlaceNode* makeIconNode();
 
 private:

@@ -23,22 +23,26 @@ public:
     osgEarth::Color getColor() const;
     void setColor(const osgEarth::Color &color);
 
-    osgEarth::Color getPointColor() const;
-    void setPointColor(const osgEarth::Color &pointColor);
-
     float getWidth() const;
     void setWidth(float width);
 
     float getHeight() const;
     void setHeight(float height);
 
-    bool getPointVisible() const;
-    void setPointVisible(bool value);
     osgEarth::Symbology::AltitudeSymbol::Clamping getClamp() const;
     void setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping &clamp);
 
     unsigned getTessellation() const;
     void setTessellation(const unsigned &tessellation);
+
+    bool getIsHeight() const;
+    void setIsHeight(bool value);
+    //----------------------------------------------------------
+    bool getPointVisible() const;
+    void setPointVisible(bool value);
+
+    osgEarth::Color getPointColor() const;
+    void setPointColor(const osgEarth::Color &pointColor);
 
     float getPointWidth() const;
     void setPointWidth(float pointWidth);
@@ -46,23 +50,20 @@ public:
     bool getSmooth() const;
     void setSmooth(bool Smooth);
 
-    bool getIsHeight() const;
-    void setIsHeight(bool value);
-
 private:
     osg::Image *updateLenghtLabel(double lenght);
 private:
     MapController* mMapController{nullptr};
-    osgEarth::Symbology::Geometry* mLineGeometry;
+    osgEarth::Symbology::Geometry* mLineGeometry{nullptr};
     osgEarth::Color mColor{osgEarth::Color::Green};
     osgEarth::Color mPointColor{osgEarth::Color::Blue};
-    float mWidth;
-    float mPointWidth;
-    float mHeight;
-    bool mPointVisible;
+    float mWidth{5};
+    float mPointWidth{5};
+    float mHeight{0};
+    bool mPointVisible{false};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
-    bool mSmooth;
+    bool mSmooth{true};
 
     //Lenght part
     osg::ref_ptr<osg::Group> mLabelGroup;

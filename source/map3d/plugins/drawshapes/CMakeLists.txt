@@ -14,16 +14,9 @@ find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 add_library(drawshapes SHARED
   drawShapesqml.qrc
   drawshapes.cpp
-  rect.cpp
-  line.cpp
   drawShapes.qrc
-  sphere.cpp
   spherenodeeditor.cpp
   drawshapes.json
-  polygone.cpp
-  ellipse.cpp
-  box.cpp
-  linenode.cpp
   drawshapeautoscaler.cpp
 )
 

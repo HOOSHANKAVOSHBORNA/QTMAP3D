@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>RectProperty.qml</file>
+        <file>rectangle.png</file>
+    </qresource>
+</RCC>
