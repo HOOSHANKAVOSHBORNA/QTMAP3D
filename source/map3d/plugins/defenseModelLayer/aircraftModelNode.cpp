@@ -444,6 +444,7 @@ void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double 
     {
         mRouteLine->addPoint(getPosition());
         mLatestPointLine->addPoint(getPosition());
+        mCurrentFlyPoint = getPosition();
     }
     mLatestPointLine->addPoint(mCurrentFlyPoint);
     if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
