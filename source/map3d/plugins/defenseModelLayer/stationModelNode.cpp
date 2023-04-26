@@ -294,23 +294,11 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         geoPoint.z() = 0;
         mVisiblePolygone->addPoints(geoPoint.vec3d());
 
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(mVisiblePolygone);
-            }
-        }
+        mMapController->addNodeToLayer(mVisiblePolygone, STATIONS_LAYER_NAME);
     }
     else
     {
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->removeChild(mVisiblePolygone);
-            }
-        }
+        mMapController->removeNodeFromLayer(mVisiblePolygone, STATIONS_LAYER_NAME);
     }
 }
 

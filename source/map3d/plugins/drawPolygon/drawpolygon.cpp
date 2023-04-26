@@ -34,7 +34,7 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
                     mPolygonProperties->show();
                 }
                 mDrawingState = DrawingState::START;
-                addNodeToLayer(mIconNode);
+                mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
 
 
@@ -49,7 +49,7 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
                 mPolygonProperties->deleteLater();
                 mPolygonProperties = nullptr;
                 mPolygon = nullptr;
-                removeNodeFromLayer(mIconNode);
+                mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     }
@@ -133,7 +133,7 @@ void DrawPolygon::mouseDoubleClickEvent(QMouseEvent *event)
 void DrawPolygon::startDraw(QMouseEvent *event)
 {
     mPolygon = new Polygon(mMapController, true);
-    addNodeToLayer(mPolygon);
+    mMapController->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::DRAWING;
     mPolygonProperties->setPolygon(mPolygon);
 }
@@ -145,7 +145,7 @@ void DrawPolygon::drawing(QMouseEvent *event)
 
 void DrawPolygon::cancelDraw()
 {
-    removeNodeFromLayer(mPolygon);
+    mMapController->removeNodeFromLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::START;
     if(mPolygonProperties)
         mPolygonProperties->setPolygon(nullptr);
@@ -167,24 +167,4 @@ void DrawPolygon::mouseMoveDrawing(QMouseEvent *event)
     }
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mPolygon->addPoints(geoPos);
-}
-bool DrawPolygon::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-void DrawPolygon::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
 }

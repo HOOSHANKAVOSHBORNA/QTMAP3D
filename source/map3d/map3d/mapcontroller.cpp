@@ -191,6 +191,30 @@ void MapController::worldToScreen(osg::Vec3d worldPoint, float &outX, float &out
 
 }
 
+bool MapController::addNodeToLayer(osg::Node *node, std::string layerName)
+{
+    auto layer = getMapNode()->getMap()->getLayerByName(layerName);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->addChild(node);
+        }
+    }
+    return true;
+}
+
+bool MapController::removeNodeFromLayer(osg::Node *node, std::string layerName)
+{
+    auto layer = getMapNode()->getMap()->getLayerByName(layerName);
+    if (layer) {
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        if (group) {
+            group->removeChild(node);
+        }
+    }
+    return true;
+}
+
 void MapController::zoom(double val)
 {
     getEarthManipulator()->zoom(0, -val, getViewer());

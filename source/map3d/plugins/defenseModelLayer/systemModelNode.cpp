@@ -258,7 +258,7 @@ void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
         assignmentModel->mModelNode = assignModelNode;
         mAssignmentMap[tn] = assignmentModel;
         mSystemInformation->addAssignment(tn, assignModelNode);
-        addNodeToLayer(assignmentModel->mLine);
+        mMapController->addNodeToLayer(assignmentModel->mLine, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -285,7 +285,7 @@ void SystemModelNode::removeAssignment(int tn)
 {
     if(mAssignmentMap.contains(tn))
     {
-        removeNodeFromLayer(mAssignmentMap[tn]->mLine);
+        mMapController->removeNodeFromLayer(mAssignmentMap[tn]->mLine, SYSTEMS_LAYER_NAME);
         mAssignmentMap.remove(tn);
         mSystemInformation->removeAssignment(tn);
     }
@@ -413,11 +413,11 @@ void SystemModelNode::onRangeButtonToggled(bool check)
         mRangeCircle->setPosition(getPosition());
         mRangeCircle->setRadius(osgEarth::Distance(mInformation.ViewRange, osgEarth::Units::METERS));
 
-        addNodeToLayer(mRangeCircle);
+        mMapController->addNodeToLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
     }
     else
     {
-        removeNodeFromLayer(mRangeCircle);
+        mMapController->removeNodeFromLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -461,11 +461,11 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         float height = static_cast<float>(radius/3);
         mWezPolygon->setHeight(height);
 
-        addNodeToLayer(mWezPolygon, true);
+        mMapController->addNodeToLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
 
     }
     else {
-        removeNodeFromLayer(mWezPolygon);
+        mMapController->removeNodeFromLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -475,11 +475,11 @@ void SystemModelNode::onMezButtonToggled(bool checked)
     {
         mMezSphere->setPosition(getPosition());
         mMezSphere->setRadius(mInformation.MezRange);
-        addNodeToLayer(mMezSphere);
+        mMapController->addNodeToLayer(mMezSphere, SYSTEMS_LAYER_NAME);
     }
     else
     {
-        removeNodeFromLayer(mMezSphere);
+        mMapController->removeNodeFromLayer(mMezSphere, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -564,30 +564,6 @@ void SystemModelNode::noKillPhase(int tn)
     }
 }
 
-bool SystemModelNode::addNodeToLayer(osg::Node *node, bool insert)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            if(insert)
-                group->insertChild(0,node);
-            else
-                group->addChild(node);
-        }
-    }
-}
-
-bool SystemModelNode::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
-}
 void SystemModelNode::showInfoWidget()
 {
 //    if (!mSystemInformation) {

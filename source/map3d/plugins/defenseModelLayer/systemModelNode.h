@@ -59,8 +59,6 @@ private:
     void killPhase(int tn);
     void noKillPhase(int tn);
 //    bool hasAssigned();
-    bool addNodeToLayer(osg::Node *node,  bool insert = false);
-    bool removeNodeFromLayer(osg::Node *node);
     void showInfoWidget();
     void updateOrCreateLabelImage();
 private:

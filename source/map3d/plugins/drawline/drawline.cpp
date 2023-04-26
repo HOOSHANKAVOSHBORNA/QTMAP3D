@@ -77,7 +77,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mLineProperties->setIsRuler(0);
                 mLineProperties->show();
                 mIconNode = makeIconNode();
-                addNodeToLayer(mIconNode);
+                mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
             }
             else
             {
@@ -90,7 +90,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
 
                 mLineProperties->deleteLater();
                 mLineProperties = nullptr;
-                removeNodeFromLayer(mIconNode);
+                mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     if(name == RULER)
@@ -105,7 +105,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mLineProperties->setIsRuler(1);
             mLineProperties->show();
             mIconNode = makeIconNode();
-            addNodeToLayer(mIconNode);
+            mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
         }
         else
@@ -118,7 +118,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
          }
             mLineProperties->deleteLater();
             mLineProperties = nullptr;
-            removeNodeFromLayer(mIconNode);
+            mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
         }
     }
 
@@ -133,7 +133,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mLineProperties->setIsRuler(2);
             mLineProperties->show();
             mIconNode = makeIconNode();
-            addNodeToLayer(mIconNode);
+            mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
         }
         else
         {
@@ -145,7 +145,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
          }
             mLineProperties->deleteLater();
             mLineProperties = nullptr;
-            removeNodeFromLayer(mIconNode);
+            mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
         }
     }
 }
@@ -225,7 +225,7 @@ void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 void drawLine::startDrawLine()
 {
     mLine = new LineNode(mMapController);
-    addNodeToLayer(mLine);
+    mMapController->addNodeToLayer(mLine, DRAW_LAYER_NAME);
     mLineProperties->setLine(mLine);
     mDrawingState = DrawingState::DRAWING;
 }
@@ -233,7 +233,7 @@ void drawLine::startDrawLine()
 void drawLine::startDrawMeasureHeight()
 {
     mMeasureHeight = new MeasureHeight(mMapController);
-    addNodeToLayer(mMeasureHeight);
+    mMapController->addNodeToLayer(mMeasureHeight, DRAW_LAYER_NAME);
     mLineProperties->setMeasureHeight(mMeasureHeight);
     mDrawingState = DrawingState::DRAWING;
 }
@@ -257,8 +257,8 @@ void drawLine::drawingLine(QMouseEvent *event)
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
-    removeNodeFromLayer(mLine);
-    removeNodeFromLayer(mMeasureHeight);
+    mMapController->removeNodeFromLayer(mLine, DRAW_LAYER_NAME);
+    mMapController->removeNodeFromLayer(mMeasureHeight, DRAW_LAYER_NAME);
     if(mLineProperties)
         mLineProperties->setLine(nullptr);
     event->accept();
@@ -281,7 +281,7 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
     {
         mDrawingState = DrawingState::START;
         if(nodeEditor)
-            removeNodeFromLayer(nodeEditor);
+            mMapController->removeNodeFromLayer(nodeEditor, DRAW_LAYER_NAME);
         event->accept();
     }
 }
@@ -310,28 +310,3 @@ PlaceNode *drawLine::makeIconNode()
     model->setIconImage(mIcon);
     return model.release();
 }
-
-bool drawLine::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-
-void drawLine::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
-}
-
-
-

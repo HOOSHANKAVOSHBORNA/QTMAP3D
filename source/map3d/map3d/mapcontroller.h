@@ -44,6 +44,9 @@ public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;
     osgEarth::GeoPoint screenToGeoPoint(float x, float y) const;
     void worldToScreen(osg::Vec3d worldPoint, float& outX, float& outY) const;
+    bool addNodeToLayer(osg::Node *node, std::string layerName);
+    bool removeNodeFromLayer(osg::Node *node, std::string layerName);
+
 
 public slots:
     void zoom(double);

@@ -41,14 +41,14 @@ void DrawCapsule::onToolboxItemCheckedChanged(const QString &name, const QString
                 mDrawingState = DrawingState::START;
                 mCapsuleProperties = new CapsuleProperties(mCapsule, mQmlEngine, mUiHandle, mMapcontroller);
                 mCapsuleProperties->show();
-                addNodeToLayer(mIconNode);
+                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
                 mEnterCapsuleZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mCapsule = nullptr;
-                removeNodeFromLayer(mIconNode);
+                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
                 mCapsuleProperties->hide();
             }
         }
@@ -95,7 +95,7 @@ void DrawCapsule::startDraw(QMouseEvent *event)
     mCapsule->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
 
     mCapsuleProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    addNodeToLayer(mCapsule);
+    mMapcontroller->addNodeToLayer(mCapsule, DRAW_LAYER_NAME);
     event->accept();
 }
 
@@ -109,7 +109,7 @@ void DrawCapsule::finishDrawing(QMouseEvent *event)
 
 void DrawCapsule::cancelDrawing(QMouseEvent *event)
 {
-    removeNodeFromLayer(mCapsule);
+    mMapcontroller->removeNodeFromLayer(mCapsule, DRAW_LAYER_NAME);
     mCapsule = nullptr;
     mCapsuleProperties->setCapsule(mCapsule);
     mDrawingState = DrawingState::START;
@@ -117,27 +117,6 @@ void DrawCapsule::cancelDrawing(QMouseEvent *event)
     event->accept();
 }
 
-bool DrawCapsule::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-
-void DrawCapsule::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
-}
 
 osgEarth::Annotation::PlaceNode *DrawCapsule::makeIconNode()
 {

@@ -28,13 +28,13 @@ void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString
             if (checked) {
                 mEnterEllipseZone = true;
                 mDrawingState = DrawingState::START;
-                addNodeToLayer(mIconNode);
+                mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
             }
             else {
                 mEnterEllipseZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mEllipse = nullptr;
-                removeNodeFromLayer(mIconNode);
+                mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     }
@@ -110,12 +110,12 @@ void DrawEllipse::startDraw(QMouseEvent *event)
 
     mEllipse->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
 
-    addNodeToLayer(mEllipse);
+    mMapController->addNodeToLayer(mEllipse, DRAW_LAYER_NAME);
 }
 
 void DrawEllipse::cancelDraw()
 {
-    removeNodeFromLayer(mEllipse);
+    mMapController->removeNodeFromLayer(mEllipse, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::START;
 }
 
@@ -123,26 +123,5 @@ void DrawEllipse::finishDraw()
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mDrawingState = DrawingState::START;
-    }
-}
-
-bool DrawEllipse::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-void DrawEllipse::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
     }
 }
