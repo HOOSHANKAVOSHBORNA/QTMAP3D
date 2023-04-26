@@ -75,9 +75,6 @@ Item {
                         source: "/Resources/sidearrow.png"
                         sourceSize: ("25 x 25")
                         anchors.centerIn: parent
-
-
-
                     }
 
                     ColorOverlay {

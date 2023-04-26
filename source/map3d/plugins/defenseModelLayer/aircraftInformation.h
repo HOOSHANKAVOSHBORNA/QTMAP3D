@@ -43,7 +43,6 @@ public:
     QStringList getSystemsNumber() const;
     QStringList getSystemsPhase() const;
     QStringList getSystemColor() const;
-    void setTrackOff();
 
 public slots:
     AircraftInfo getAircraftInfo() {return mAircraftInfo;}
