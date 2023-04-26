@@ -574,6 +574,7 @@ void SystemModelNode::showInfoWidget()
 //        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
 //        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
 //    }
+    mSystemInformation->setInfo(mInformation);
     mSystemInformation->show();
 }
 

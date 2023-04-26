@@ -23,10 +23,8 @@
         <file>resources/missle_red_icon.png</file>
         <file>resources/bullet_green.png</file>
         <file>resources/bullet_red.png</file>
-        <file>resources/arrow.png</file>
         <file>resources/points.png</file>
         <file>resources/refresh.png</file>
-        <file>resources/select.gif</file>
         <file>resources/select.png</file>
         <file>resources/systems.png</file>
         <file>resources/stations.png</file>
@@ -35,5 +33,6 @@
         <file>resources/fighter.jpg</file>
         <file>resources/missile.jpg</file>
         <file>resources/helicopter.jpg</file>
+        <file>resources/boeing-777x.jpg</file>
     </qresource>
 </RCC>
