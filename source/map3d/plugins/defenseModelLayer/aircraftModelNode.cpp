@@ -503,9 +503,9 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode(getGeoTransform());
-        mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-        mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+//        mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+//        mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+//        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
         mAircraftinformation->setTrackOff();
     }
     if(mCurrentContextMenu){
