@@ -63,7 +63,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
         mDrone3DRef = osgDB::readRefNodeFile("../data/models/drone/drone.osgb");
     }
     if (!mHelicopter3DRef.valid()) {
-        mHelicopter3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
+        mHelicopter3DRef = osgDB::readRefNodeFile("../data/models/hellicopter/HellicopterUC.osgb");
     }
     //----------------------------------------------------------------------------------------------
 //    if (!mNode3DRef)
@@ -101,9 +101,9 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
 //        this->addCullCallback(new DefenseModelNodeAutoScaler(30, 20, 500));
         break;
     case AircraftInfo::Helicopter:
-        mAutoScaleDefaultValue = 2.5;
-        mAutoScaleMinValue = 1;
-        mAutoScaleMaxValue = 500;
+        mAutoScaleDefaultValue = 5;
+        mAutoScaleMinValue = 10;
+        mAutoScaleMaxValue = 50000000;
         mNode3D->addChild(mHelicopter3DRef);
 //        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
         break;
