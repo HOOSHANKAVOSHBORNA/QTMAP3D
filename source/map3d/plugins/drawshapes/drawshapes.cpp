@@ -29,7 +29,6 @@
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
 #include <QQuickItem>
-#include <line.h>
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 
