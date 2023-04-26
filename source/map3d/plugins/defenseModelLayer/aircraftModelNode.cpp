@@ -162,7 +162,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
         mainImageMissile = osgDB::readImageFile("../data/models/missile/missle.png");
         mainImageDrone = osgDB::readImageFile("../data/models/drone/drone.png");
         mainImageFighter = osgDB::readImageFile("../data/models/fighter/fighter.png");
-        mainImageHellicopter = osgDB::readImageFile("../data/models/hellicopter/hellicopter.gif");
+        mainImageHellicopter = osgDB::readImageFile("../data/models/hellicopter/hellicopter.png");
 
 
         for (unsigned int i = 0; i < 6; i++) {
