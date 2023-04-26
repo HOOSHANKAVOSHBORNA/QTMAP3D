@@ -11,9 +11,9 @@ LineNode::LineNode(MapController *mapController)
     pathFeature->geoInterp() = osgEarth::GEOINTERP_GREAT_CIRCLE;
 
     osgEarth::Symbology::Style pathStyle;
-    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
-    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
-    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
+//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
+//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
 
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = mColor;
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
@@ -122,25 +122,6 @@ void LineNode::setColor(const osgEarth::Color &color)
     addChild(mLabelGroup);
 }
 
-osgEarth::Color LineNode::getPointColor() const
-{
-    return mPointColor;
-}
-
-void LineNode::setPointColor(const osgEarth::Color &pointColor)
-{
-    if(mPointColor == pointColor)
-        return;
-    mPointColor = pointColor;
-    if(mPointVisible)
-    {
-        auto style = getStyle();
-        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
-        setStyle(style);
-        addChild(mLabelGroup);
-    }
-}
-
 float LineNode::getWidth() const
 {
     return mWidth;
@@ -168,29 +149,6 @@ void LineNode::setHeight(float height)
     if (height<=0){
         style.remove<osgEarth::Symbology::ExtrusionSymbol>();
     }
-    setStyle(style);
-    addChild(mLabelGroup);
-}
-
-bool LineNode::getPointVisible() const
-{
-    return mPointVisible;
-}
-
-void LineNode::setPointVisible(bool value)
-{
-    if(mPointVisible == value)
-        return;
-
-    mPointVisible = value;
-    auto style = getStyle();
-    if(mPointVisible)
-    {
-        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
-        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
-    }
-    else
-        style.remove<osgEarth::Symbology::PointSymbol>();
     setStyle(style);
     addChild(mLabelGroup);
 }
@@ -228,6 +186,59 @@ void LineNode::setTessellation(const unsigned &tessellation)
     addChild(mLabelGroup);
 }
 
+bool LineNode::getIsHeight() const
+{
+    return mIsHeight;
+}
+
+void LineNode::setIsHeight(bool value)
+{
+    mIsHeight = value;
+}
+//--------------------------------------------------------------
+bool LineNode::getPointVisible() const
+{
+    return mPointVisible;
+}
+
+void LineNode::setPointVisible(bool value)
+{
+    if(mPointVisible == value)
+        return;
+
+    mPointVisible = value;
+    auto style = getStyle();
+    if(mPointVisible)
+    {
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+    }
+    else
+        style.remove<osgEarth::Symbology::PointSymbol>();
+    setStyle(style);
+    addChild(mLabelGroup);
+}
+
+osgEarth::Color LineNode::getPointColor() const
+{
+    return mPointColor;
+}
+
+void LineNode::setPointColor(const osgEarth::Color &pointColor)
+{
+    if(mPointColor == pointColor)
+        return;
+    mPointColor = pointColor;
+    if(mPointVisible)
+    {
+        auto style = getStyle();
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
+        setStyle(style);
+        addChild(mLabelGroup);
+    }
+}
+
 float LineNode::getPointWidth() const
 {
     return mPointWidth;
@@ -238,11 +249,30 @@ void LineNode::setPointWidth(float pointWidth)
     mPointWidth = pointWidth;
     auto style = getStyle();
     if(mPointVisible)
+    {
         style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
-    setStyle(style);
-    addChild(mLabelGroup);
+        setStyle(style);
+        addChild(mLabelGroup);
+    }
 }
 
+bool LineNode::getSmooth() const
+{
+    return mSmooth;
+}
+
+void LineNode::setSmooth(bool smooth)
+{
+    mSmooth = smooth;
+    auto sStyle = getStyle();
+    if(mPointVisible)
+    {
+        sStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+        setStyle(sStyle);
+        addChild(mLabelGroup);
+    }
+}
+//---------------------------------------------------------------
 osg::Image* LineNode::updateLenghtLabel(double lenght)
 {
     if (!mRenderImage) {
@@ -294,29 +324,4 @@ osg::Image* LineNode::updateLenghtLabel(double lenght)
                     mRenderImage->bits(),
                     osg::Image::AllocationMode::NO_DELETE);
     return image;
-}
-
-bool LineNode::getIsHeight() const
-{
-    return mIsHeight;
-}
-
-void LineNode::setIsHeight(bool value)
-{
-    mIsHeight = value;
-}
-
-bool LineNode::getSmooth() const
-{
-    return mSmooth;
-}
-
-void LineNode::setSmooth(bool smooth)
-{
-    mSmooth = smooth;
-    auto sStyle = getStyle();
-    if(mSmooth)
-        sStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
-    setStyle(sStyle);
-    addChild(mLabelGroup);
 }

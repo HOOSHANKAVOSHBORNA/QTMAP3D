@@ -41,7 +41,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     static osg::ref_ptr<osg::Image> systemImageDeactiveHovered;
 
     if (bFirst) {
-        mainImage = osgDB::readImageFile("../data/models/system/images/truck.png");
+        mainImage = osgDB::readImageFile("../data/models/system/truck.png");
 
         systemImageActive = createColoredImage(mainImage, osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f));
         systemImageActiveHovered = createDarkerImage(systemImageActive, 0.5f);
