@@ -18,6 +18,9 @@ ellipse.cpp
 ellipse.h
 drawellipse.cpp
 drawellipse.h
+ellipseproperties.cpp
+ellipseproperties.h
+drawEllipse.qrc
 )
 
 target_include_directories(drawEllipse PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

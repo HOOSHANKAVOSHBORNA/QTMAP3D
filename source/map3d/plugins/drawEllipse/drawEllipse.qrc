@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>EllipseProperty.qml</file>
+        <file>ellipse.png</file>
+    </qresource>
+</RCC>
