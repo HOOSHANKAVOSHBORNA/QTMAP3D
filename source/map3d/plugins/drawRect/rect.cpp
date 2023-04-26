@@ -7,9 +7,9 @@
 Rect::Rect(MapController *mapController, bool clamp){
     mMapController = mapController;
     osgEarth::Symbology::Style rectseStyle;
-    rectseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osgEarth::Color::Red, 1);
-    rectseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color(osgEarth::Color::Blue, 1);
-    rectseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 10;
+    rectseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() ;
+    rectseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() ;
+    rectseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() ;
     if (clamp){
         rectseStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
     }
@@ -52,6 +52,7 @@ void Rect::setStrokeColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = color;
+    this->setStyle(style);
 }
 
 osgEarth::Color Rect::getStrokeColor()
@@ -64,6 +65,7 @@ void Rect::setStrokeWidth(float Width)
 {
      auto style = this->getStyle();
      style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = Width;
+     this->setStyle(style);
 }
 
 float Rect::getStrokeWidth()

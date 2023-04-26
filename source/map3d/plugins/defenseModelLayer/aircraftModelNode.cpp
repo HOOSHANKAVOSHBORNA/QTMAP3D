@@ -76,9 +76,8 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     case AircraftInfo::Fighter:
         mAutoScaleDefaultValue = 11;
         mAutoScaleMinValue = 7;
-        mAutoScaleMaxValue = 400;
+        mAutoScaleMaxValue = 350;
         mNode3D->addChild(mFighter3DRef);
-//        this->addCullCallback(new DefenseModelNodeAutoScaler(11, 7, 400));
         break;
     case AircraftInfo::Aircraft:
         mAutoScaleDefaultValue = 2.5;
@@ -91,21 +90,18 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
         mAutoScaleMinValue = 15;
         mAutoScaleMaxValue = 500;
         mNode3D->addChild(mMissile3DRef);
-//        this->addCullCallback(new DefenseModelNodeAutoScaler(25, 15, 500));
         break;
     case AircraftInfo::Drone:
         mAutoScaleDefaultValue = 30;
         mAutoScaleMinValue = 20;
-        mAutoScaleMaxValue = 500;
+        mAutoScaleMaxValue = 400;
         mNode3D->addChild(mDrone3DRef);
-//        this->addCullCallback(new DefenseModelNodeAutoScaler(30, 20, 500));
         break;
     case AircraftInfo::Helicopter:
-        mAutoScaleDefaultValue = 5;
-        mAutoScaleMinValue = 10;
-        mAutoScaleMaxValue = 50000000;
+        mAutoScaleDefaultValue = 22;
+        mAutoScaleMinValue = 12;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mHelicopter3DRef);
-//        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
         break;
     }
     this->addCullCallback(mDefenseModeNodeAutoScaler);
@@ -162,11 +158,11 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
 
     if (bFirst) {
 
-        mainImageAircraft = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
+        mainImageAircraft = osgDB::readImageFile("../data/models/aircraft/aircraft.png");
         mainImageMissile = osgDB::readImageFile("../data/models/missile/missle.png");
         mainImageDrone = osgDB::readImageFile("../data/models/drone/drone.png");
         mainImageFighter = osgDB::readImageFile("../data/models/fighter/fighter.png");
-        mainImageHellicopter = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
+        mainImageHellicopter = osgDB::readImageFile("../data/models/hellicopter/hellicopter.gif");
 
 
         for (unsigned int i = 0; i < 6; i++) {

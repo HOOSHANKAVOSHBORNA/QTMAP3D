@@ -17,6 +17,8 @@ DrawRect::DrawRect(QObject *parent)
 bool DrawRect::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     mQmlEngine = engine;
+    qmlRegisterType<RectPropertiesModel>("Crystal", 1, 0, "RectProperties");
+
     desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/resources/rectangle.png", true,  false, ""});
     return true;
 }
@@ -29,12 +31,15 @@ void DrawRect::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mEnterRectZone = true;
                 mDrawingState = DrawingState::START;
                 addNodeToLayer(mIconNode);
+                mRectProperties = new RectProperties(mRect, mQmlEngine, mUiHandle);
+                mRectProperties->show();
             }
             else {
                 mEnterRectZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mRect = nullptr;
                 removeNodeFromLayer(mIconNode);
+                mRectProperties->hide();
             }
         }
     }
@@ -105,6 +110,7 @@ osgEarth::Annotation::PlaceNode *DrawRect::makeIconNode()
 void DrawRect::startDraw(QMouseEvent *event)
 {
     mRect = new Rect(mMapController, true);
+    mRectProperties->setRect(mRect);
     osg::Vec3d worldPos;
     mMapController->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;

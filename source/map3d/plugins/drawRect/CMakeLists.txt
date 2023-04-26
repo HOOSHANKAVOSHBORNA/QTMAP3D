@@ -18,6 +18,9 @@ rect.cpp
 rect.h
 drawrect.cpp
 drawrect.h
+rectproperties.cpp
+rectproperties.h
+drawRect.qrc
 )
 
 target_include_directories(drawRect PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
