@@ -228,7 +228,7 @@ void CirclePropertiesModel::setCircle(Circle *circle)
     osgEarth::Color mpColor = mCircle->getLineColor();
     mpColor  = mLinecolor.toStdString();
     mpColor.a() = mLineOpacity;
-    mCircle->setLineColor(tmpColor);
+    mCircle->setLineColor(mpColor);
 
 
     mCircle->setLineWidth(static_cast<float>(mLineWidth));

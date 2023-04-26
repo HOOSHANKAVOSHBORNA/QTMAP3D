@@ -17,6 +17,8 @@ class RectPropertiesModel : public QObject
     Q_PROPERTY(int       lineopacity    READ getLineOpacity   WRITE setLineOpacity  )
     Q_PROPERTY(int       clamp          READ getClamp         WRITE setClamp        )
     Q_PROPERTY(double    lineWidth      READ getLineWidth     WRITE setLineWidth    )
+    Q_PROPERTY(double    width          READ getWidth         WRITE setWidth        )
+    Q_PROPERTY(double    height         READ getHeight        WRITE setHeight       )
 
 
 
@@ -41,6 +43,12 @@ public:
     // set lineWidth
     double getLineWidth() const;
     void setLineWidth(double line);
+    // set Height
+    double getHeight() const;
+    void setHeight(double height);
+    // set Width
+    double getWidth() const;
+    void setWidth(double width);
 
     void setRect(Rect* rect);
 
@@ -59,6 +67,8 @@ private:
     int       mLineOpacity  ;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp  = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
     double    mLineWidth ;
+    double    mWidth;
+    double    mHeight;
 
     Rect*   mRect;
     MapController* mMapController{nullptr};

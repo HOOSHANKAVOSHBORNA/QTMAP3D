@@ -141,7 +141,7 @@ void EllipsePropertiesModel::setEllipse(Ellipse *ellipse)
     osgEarth::Color mpColor = mEllipse->getStrokeColor();
     mpColor  = mLinecolor.toStdString();
     mpColor.a() = mLineOpacity;
-    mEllipse->setStrokeColor(tmpColor);
+    mEllipse->setStrokeColor(mpColor);
 
 
     mEllipse->setStrokeWidth(static_cast<float>(mLineWidth));
