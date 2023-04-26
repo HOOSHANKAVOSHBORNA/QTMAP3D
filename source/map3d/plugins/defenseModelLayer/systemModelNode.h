@@ -6,7 +6,7 @@
 #include "systemInformation.h"
 #include "circle.h"
 #include "sphereNode.h"
-#include "polygone.h"
+#include "polygon.h"
 #include "aircraftModelNode.h"
 #include "linenode.h"
 #include "truck.h"
@@ -78,7 +78,7 @@ private:
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
-    osg::ref_ptr<Polygone> mWezPolygon;
+    osg::ref_ptr<Polygon> mWezPolygon;
 
     osg::ref_ptr<class TruckS> mTruckS;
     osg::ref_ptr<class TruckF> mTruckF;
@@ -92,7 +92,7 @@ private:
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;
-    static constexpr int LABEL_IMAGE_WIDTH = 160;
+    static constexpr int LABEL_IMAGE_WIDTH = 210;
     static constexpr int LABEL_IMAGE_HEIGHT = 190;
 
     osg::ref_ptr<osg::LOD> mLOD = nullptr;

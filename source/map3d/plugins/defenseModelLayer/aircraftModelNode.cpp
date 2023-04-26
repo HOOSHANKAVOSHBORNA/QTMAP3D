@@ -74,26 +74,41 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     mNode3D = new osg::Group;
     switch (aircraftType) {
     case AircraftInfo::Fighter:
+        mAutoScaleDefaultValue = 11;
+        mAutoScaleMinValue = 7;
+        mAutoScaleMaxValue = 400;
         mNode3D->addChild(mFighter3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(11, 7, 400));
+//        this->addCullCallback(new DefenseModelNodeAutoScaler(11, 7, 400));
         break;
     case AircraftInfo::Aircraft:
+        mAutoScaleDefaultValue = 2.5;
+        mAutoScaleMinValue = 1;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mAircraft3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
         break;
     case AircraftInfo::Missile:
+        mAutoScaleDefaultValue = 25;
+        mAutoScaleMinValue = 15;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mMissile3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(25, 15, 500));
+//        this->addCullCallback(new DefenseModelNodeAutoScaler(25, 15, 500));
         break;
     case AircraftInfo::Drone:
+        mAutoScaleDefaultValue = 30;
+        mAutoScaleMinValue = 20;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mDrone3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(30, 20, 500));
+//        this->addCullCallback(new DefenseModelNodeAutoScaler(30, 20, 500));
         break;
     case AircraftInfo::Helicopter:
+        mAutoScaleDefaultValue = 2.5;
+        mAutoScaleMinValue = 1;
+        mAutoScaleMaxValue = 500;
         mNode3D->addChild(mHelicopter3DRef);
-        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
+//        this->addCullCallback(new DefenseModelNodeAutoScaler(2.5, 1, 500));
         break;
     }
+    this->addCullCallback(mDefenseModeNodeAutoScaler);
 
     mRootNode = new osg::LOD;
     mNode2D = new osg::Switch;
@@ -114,7 +129,27 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     mNode2DHovered = new osg::Switch;
 
     static bool bFirst = true;
-    static osg::ref_ptr<osg::Image> mainImage;
+    static osg::ref_ptr<osg::Image> mainImageAircraft;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListAircraft;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredAircraft;
+
+    static osg::ref_ptr<osg::Image> mainImageDrone;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListDrone;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredDrone;
+
+    static osg::ref_ptr<osg::Image> mainImageFighter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListFighter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredFighter;
+
+    static osg::ref_ptr<osg::Image> mainImageMissile;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListMissile;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredMissile;
+
+    static osg::ref_ptr<osg::Image> mainImageHellicopter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHellicopter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredHellicopter;
+
+
     static const osgEarth::Color colorList[6]= {
         osg::Vec4(0.2f, 0.8f, 0.2f, 1.0f),
         osg::Vec4(0.8f, 0.8f, 0.2f, 1.0f),
@@ -123,16 +158,19 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
         osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f),
         osg::Vec4(0.8f, 0.2f, 0.2f, 1.0f),
     };
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageList;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHovered;
 
 
     if (bFirst) {
-        mainImage = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
+
+        mainImageAircraft = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
+        mainImageMissile = osgDB::readImageFile("../data/models/missile/missle.png");
+        mainImageDrone = osgDB::readImageFile("../data/models/drone/drone.png");
+        mainImageFighter = osgDB::readImageFile("../data/models/fighter/fighter.png");
+        mainImageHellicopter = osgDB::readImageFile("../data/models/aircraft/images/aircraft.png");
 
 
         for (unsigned int i = 0; i < 6; i++) {
-            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImage, colorList[i]);
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageAircraft, colorList[i]);
             if(aircraftImage)
                 aircraftImage->scaleImage(100, 100, aircraftImage->r());
 
@@ -141,24 +179,107 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
             if(aircraftImageHovered)
                 aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
 
-            imageList[i] = aircraftImage;
-            imageListHovered[i] = aircraftImageHovered;
+            imageListAircraft[i] = aircraftImage;
+            imageListHoveredAircraft[i] = aircraftImageHovered;
         }
+
+        for (unsigned int i = 0; i < 6; i++) {
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageDrone, colorList[i]);
+            if(aircraftImage)
+                aircraftImage->scaleImage(100, 100, aircraftImage->r());
+
+
+            osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+            if(aircraftImageHovered)
+                aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+
+            imageListDrone[i] = aircraftImage;
+            imageListHoveredDrone[i] = aircraftImageHovered;
+        }
+
+        for (unsigned int i = 0; i < 6; i++) {
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageFighter, colorList[i]);
+            if(aircraftImage)
+                aircraftImage->scaleImage(100, 100, aircraftImage->r());
+
+
+            osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+            if(aircraftImageHovered)
+                aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+
+            imageListFighter[i] = aircraftImage;
+            imageListHoveredFighter[i] = aircraftImageHovered;
+        }
+
+        for (unsigned int i = 0; i < 6; i++) {
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageMissile, colorList[i]);
+            if(aircraftImage)
+                aircraftImage->scaleImage(100, 100, aircraftImage->r());
+
+
+            osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+            if(aircraftImageHovered)
+                aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+
+            imageListMissile[i] = aircraftImage;
+            imageListHoveredMissile[i] = aircraftImageHovered;
+        }
+
+        for (unsigned int i = 0; i < 6; i++) {
+            osg::ref_ptr<osg::Image> aircraftImage = createColoredImage(mainImageHellicopter, colorList[i]);
+            if(aircraftImage)
+                aircraftImage->scaleImage(100, 100, aircraftImage->r());
+
+
+            osg::ref_ptr<osg::Image> aircraftImageHovered = createDarkerImage(aircraftImage, 0.5f);
+            if(aircraftImageHovered)
+                aircraftImageHovered->scaleImage(100, 100, aircraftImageHovered->r());
+
+            imageListHellicopter[i] = aircraftImage;
+            imageListHoveredHellicopter[i] = aircraftImageHovered;
+        }
+
 
         bFirst = false;
     }
 
     for (unsigned int i = 0; i < 6; i++) {
 
+        osg::ref_ptr<osg::Image> img;
+        osg::ref_ptr<osg::Image> imgHovered;
+
+        switch (aircraftType) {
+        case AircraftInfo::Aircraft:
+            img = imageListAircraft[i];
+            imgHovered = imageListHoveredAircraft[i];
+            break;
+        case AircraftInfo::Fighter:
+            img = imageListFighter[i];
+            imgHovered = imageListHoveredFighter[i];
+            break;
+        case AircraftInfo::Drone:
+            img = imageListDrone[i];
+            imgHovered = imageListHoveredDrone[i];
+            break;
+        case AircraftInfo::Missile:
+            img = imageListMissile[i];
+            imgHovered = imageListHoveredMissile[i];
+            break;
+        case AircraftInfo::Helicopter:
+            img = imageListHellicopter[i];
+            imgHovered = imageListHoveredHellicopter[i];
+            break;
+        }
+
         osg::ref_ptr<osg::Geometry> aircraftImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry
-                (imageList[i], osg::Vec2s(0,0), 0, 0, 0.4);
+                (img, osg::Vec2s(0,0), 0, 0, 0.4);
         osg::ref_ptr<osg::Geode>  aircraftGeode = new osg::Geode();
         aircraftGeode->setStateSet(geodeStateSet);
         aircraftGeode->addDrawable(aircraftImageDrawable);
 
 
         osg::ref_ptr<osg::Geometry> aircraftImageDrawableHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry
-                (imageListHovered[i], osg::Vec2s(0,0), 0, 0, 0.4);
+                (imgHovered, osg::Vec2s(0,0), 0, 0, 0.4);
         osg::ref_ptr<osg::Geode>  aircraftGeodeHovered = new osg::Geode();
         aircraftGeodeHovered->setStateSet(geodeStateSet);
         aircraftGeodeHovered->addDrawable(aircraftImageDrawableHovered);
@@ -221,11 +342,20 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     {
         mRootNode->addChild(mNode3D, 0, RANGE3D);
         mRootNode->addChild(at, RANGE3D, std::numeric_limits<float>::max());
+
+        mDefenseModeNodeAutoScaler->setDefaultScale(mAutoScaleDefaultValue);
+        mDefenseModeNodeAutoScaler->setMinScale(mAutoScaleMinValue);
+        mDefenseModeNodeAutoScaler->setMaxScale(mAutoScaleMaxValue);
+
     }
     else
     {
         mRootNode->addChild(mNode3D, 0, 0);
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
+
+        mDefenseModeNodeAutoScaler->setDefaultScale(2.5);
+        mDefenseModeNodeAutoScaler->setMinScale(1);
+        mDefenseModeNodeAutoScaler->setMaxScale(500);
     }
 
 
@@ -545,18 +675,22 @@ void AircraftModelNode::onModeChanged(bool is3DView)
         mRootNode->setRange(0, 0, RANGE3D);
         mRootNode->setRange(1, RANGE3D, std::numeric_limits<float>::max());
 
-        auto style = getStyle();
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-        setStyle(style);
+        mDefenseModeNodeAutoScaler->setDefaultScale(mAutoScaleDefaultValue);
+        mDefenseModeNodeAutoScaler->setMinScale(mAutoScaleMinValue);
+        mDefenseModeNodeAutoScaler->setMaxScale(mAutoScaleMaxValue);
+
     }
     else
     {
         mRootNode->setRange(0, 0, 0);
         mRootNode->setRange(1,0, std::numeric_limits<float>::max());
-        auto style = getStyle();
-        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 0;
-        setStyle(style);
+
+
+        mDefenseModeNodeAutoScaler->setDefaultScale(2.5);
+        mDefenseModeNodeAutoScaler->setMinScale(1);
+        mDefenseModeNodeAutoScaler->setMaxScale(500);
     }
+
 }
 
 void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)

@@ -1,7 +1,7 @@
 ﻿#ifndef BASEMODEL_H
 #define BASEMODEL_H
 
-#include "drawshapes.h"
+#include"mapcontroller.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -100,9 +100,11 @@ private:
     osg::ref_ptr<osgFX::Outline> mSelectOutline;
     MapController *mMapControler;
 
+
 protected:
     SelectionMode mSelectionMode = UNSELECTED;
     HoverMode     mHoverMode     = UNHOVERED;
+    class DefenseModelNodeAutoScaler *mDefenseModeNodeAutoScaler = nullptr;
 };
 
 #endif // BASEMODEL_H
