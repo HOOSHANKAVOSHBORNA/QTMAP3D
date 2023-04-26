@@ -6,6 +6,7 @@
 #include "mapcontroller.h"
 #include "plugininterface.h"
 #include "rect.h"
+#include "rectproperties.h"
 
 #define DRAW_LAYER_NAME "Rect"
 
@@ -40,6 +41,8 @@ private:
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     Rect* mRect{nullptr};
+
+    RectProperties* mRectProperties{nullptr};
 
     UIHandle* mUiHandle{nullptr};
 
