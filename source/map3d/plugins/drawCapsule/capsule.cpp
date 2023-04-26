@@ -21,7 +21,7 @@ void Capsule::compile()
     pat->removeChildren(0, pat->getNumChildren());
     float radius = static_cast<float>(mRadius.as(osgEarth::Units::METERS));
     float height = static_cast<float>(mHeight.as(osgEarth::Units::METERS));
-    mCenter = osg::Vec3(0.f,0.f,radius + height);
+    mCenter = osg::Vec3(0.f,0.f,radius);
     osg::ref_ptr<osg::CompositeShape> compositeShape = new osg::CompositeShape;
     osg::ref_ptr<osg::TessellationHints> tessellationHints = new osg::TessellationHints;
 

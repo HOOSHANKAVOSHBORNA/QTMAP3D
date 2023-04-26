@@ -125,6 +125,11 @@ QColor AircraftInfoModel::getAircraftColor()
     return mAircraftInfo.aircraftColor();
 }
 
+void AircraftInfoModel::setTrackOff()
+{
+//    QMetaObject::invokeMethod(mI, "setTrackOff");
+}
+
 QHash<int, QByteArray> AircraftInfoModel::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractListModel::roleNames();
@@ -179,4 +184,10 @@ void AircraftInformation::addAssignment(int number, SystemModelNode *system)
 void AircraftInformation::removeAssignment(int systemNumber)
 {
     mInfomodel->removeAssignment(systemNumber);
+}
+
+void AircraftInformation::setTrackOff()
+{
+    QMetaObject::invokeMethod(mItem, "setTrackOff");
+    mInfomodel->setTrackOff();
 }

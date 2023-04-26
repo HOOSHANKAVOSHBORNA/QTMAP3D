@@ -83,9 +83,26 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         {
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
             //-----------------------------------
-
-            aircraftInfo->assignedSystems.append(*systemInfo);
-            systemInfo->assignedAircrafts.append(*aircraftInfo);
+            SystemInfo tmpSys;
+            AircraftInfo tmpAir;
+            for (int i = 0; i < systemList.count(); ++i){
+                if (systemList[i].Number == systemNo)
+                    tmpSys = systemList[i];
+            }
+            for (int i = 0; i < mAircraftList.count(); ++i){
+                if (mAircraftList[i].TN == tn){
+                    mAircraftList[i].assignedSystems.append(tmpSys);
+                    tmpAir = mAircraftList[i];
+                }
+            }
+            for (int i = 0; i < systemList.count(); ++i){
+                if (systemList[i].Number == systemNo)
+                    systemList[i].assignedAircrafts.append(tmpAir);
+            }
+//            if (aircraftInfo != mAircraftList.end() && systemInfo != systemList.end()) {
+//                aircraftInfo->assignedSystems.append(*systemInfo);
+//                systemInfo->assignedAircrafts.append(*aircraftInfo);
+//            }
         }
     });
     //-------------------------------------------------------------

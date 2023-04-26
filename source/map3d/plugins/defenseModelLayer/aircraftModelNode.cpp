@@ -503,9 +503,10 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     else
     {
         mMapController->untrackNode(getGeoTransform());
-        removeNodeFromLayer(mRouteLine);
-        removeNodeFromLayer(mLatestPointLine);
-        removeNodeFromLayer(mTempLine);
+        mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mAircraftinformation->setTrackOff();
     }
     if(mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();
@@ -637,13 +638,13 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 {
     if(check)
     {
-        addNodeToLayer(mRouteLine);
-        addNodeToLayer(mTempLine);
+        mMapController->addNodeToLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
     else
     {
-        removeNodeFromLayer(mRouteLine);
-        removeNodeFromLayer(mTempLine);
+        mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
 
 }
@@ -651,13 +652,13 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 void AircraftModelNode::onLatestPointsToggled(bool check) {
     if (check)
     {
-        addNodeToLayer(mLatestPointLine);
-        addNodeToLayer(mTempLine);
+        mMapController->addNodeToLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
     else
     {
-        removeNodeFromLayer(mLatestPointLine);
-        removeNodeFromLayer(mTempLine);
+        mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
 }
 
@@ -742,11 +743,11 @@ void AircraftModelNode::changeModelColor(AircraftInfo::Identify identify)
         mNode2DHovered->setValue(5, true);
         break;
 
-    default:
-        color = osgEarth::Color::Green;
-        mNode2DNormal->setValue(0, true);
-        mNode2DHovered->setValue(0, true);
-        break;
+//    default:
+//        color = osgEarth::Color::Green;
+//        mNode2DNormal->setValue(0, true);
+//        mNode2DHovered->setValue(0, true);
+//        break;
     }
     mModelColor = color;
 
@@ -775,49 +776,27 @@ void AircraftModelNode::addEffect(double emitterDuration)
     mFire->setEmitterDuration(emitterDuration);
     mFire->setParticleDuration(0.2);
     osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());// for textures or lighting
-    addNodeToLayer(mFire->getParticleSystem());
+    mMapController->addNodeToLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
     //add smoke----------------------------------------------------------------------------------------------------
     osgEarth::Registry::shaderGenerator().run(mSmoke);// for textures or lighting
     getPositionAttitudeTransform()->addChild(mSmoke);
     mSmoke->setEmitterDuration(emitterDuration);
     mSmoke->setParticleDuration(5);
     osgEarth::Registry::shaderGenerator().run(mSmoke->getParticleSystem());// for textures or lighting
-    addNodeToLayer(mSmoke->getParticleSystem());
+    mMapController->addNodeToLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
 }
 
 void AircraftModelNode::removeEffect()
 {
     //remove fire---------------------------------------------
-    removeNodeFromLayer(mFire->getParticleSystem());
+    mMapController->removeNodeFromLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
     getPositionAttitudeTransform()->removeChild(mFire);
     //remove smoke--------------------------------------------
-    removeNodeFromLayer(mSmoke->getParticleSystem());
+    mMapController->removeNodeFromLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
     getPositionAttitudeTransform()->removeChild(mSmoke);
 }
 
-bool AircraftModelNode::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-
-bool AircraftModelNode::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
-}
-
-void AircraftModelNode::change2DImageColore(osgEarth::Color color)
+void AircraftModelNode::change2DImageColore(osgEarth::Color /*color*/)
 {
 //    if(!m2DIcon)
 //        return;

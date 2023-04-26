@@ -65,8 +65,6 @@ private:
     void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();
-    bool addNodeToLayer(osg::Node *node);
-    bool removeNodeFromLayer(osg::Node *node);
     void change2DImageColore(osgEarth::Color color);
     void updateOrCreateLabelImage();
 private:
