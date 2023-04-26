@@ -7,14 +7,7 @@
 #include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
 
-#include "line.h"
-#include "sphere.h"
-#include "rect.h"
-#include "polygone.h"
-#include "ellipse.h"
-#include "box.h"
 #include "spherenodeeditor.h"
-#include "linenode.h"
 
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>

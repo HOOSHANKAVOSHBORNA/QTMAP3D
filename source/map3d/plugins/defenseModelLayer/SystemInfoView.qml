@@ -384,14 +384,14 @@ Item {
                                 anchors.fill: parent
                                 cursorShape: containsMouse ? Qt.PointingHandCursor : Qt.ArrowCursor
                                 onClicked: if (assignButton.checked) {
-                                               assignLayout.Layout.preferredHeight = 0
-                                               imga.rotation = -90
-                                               assignButton.checked = false
+//                                               assignLayout.Layout.preferredHeight = 0
+//                                               imga.rotation = -90
+//                                               assignButton.checked = false
                                            }
                                            else {
-                                               assignLayout.Layout.preferredHeight = assignLayout.implicitHeight
-                                               imga.rotation = 180
-                                               assignButton.checked = true
+//                                               assignLayout.Layout.preferredHeight = assignLayout.implicitHeight
+//                                               imga.rotation = 180
+//                                               assignButton.checked = true
                                            }
                             }
 
