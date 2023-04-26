@@ -54,7 +54,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
         mAircraft3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
     }
     if (!mFighter3DRef.valid()) {
-        mFighter3DRef = osgDB::readRefNodeFile("../data/models/fighter/fighter.ive");
+        mFighter3DRef = osgDB::readRefNodeFile("../data/models/fighter/fighter.osgb");
     }
     if (!mMissile3DRef.valid()) {
         mMissile3DRef = osgDB::readRefNodeFile("../data/models/missile/missile.osgb");

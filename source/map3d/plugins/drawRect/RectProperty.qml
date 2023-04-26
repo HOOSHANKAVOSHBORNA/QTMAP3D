@@ -23,6 +23,8 @@ Item {
         rectProperties.linecolor = lineColor;
         rectProperties.lineopacity = lineopacityValue.value
         rectProperties.lineWidth = lineValue.value;
+        rectProperties.width = widthValue.value;
+        rectProperties.height = heightValue.value;
     }
 
 
@@ -494,7 +496,7 @@ Item {
                                         onTextChanged: {
                                             if(rectProperties && lineValue && (lineValue.value == 0 || lineValue.value)){
                                                 lineValue.value = widthInput.text
-                                                rectProperties.lineWidth = lineValue.value/10
+                                                rectProperties.lineWidth = lineValue.value
                                             }
                                         }
                                     }
@@ -558,6 +560,223 @@ Item {
                                     x:7
                                 }
                             }
+
+
+
+                            //////////////////////////////////width////////////////////////////////////
+                            Rectangle{
+                                id: widthContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                SpinBox {
+                                    id: widthValue
+                                    stepSize: 1
+                                    value: 3000
+                                    to : 1000000
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  10000
+                                    }
+                                    editable: true
+                                    anchors.centerIn: parent
+                                    height: 20
+
+                                    contentItem: TextInput {
+                                        id: recwidthInput
+                                        z: 2
+                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
+                                        text: widthValue.value
+                                        font: widthValue.font
+                                        color: "#404040"
+                                        horizontalAlignment: Qt.AlignHCenter
+                                        verticalAlignment: Qt.AlignVCenter +10
+                                        readOnly: !widthValue.editable
+                                        validator: widthValue.validator
+                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                        topPadding: 13
+                                        selectByMouse: true
+                                        selectionColor: "dark green"
+                                        onTextChanged: {
+                                            if(rectProperties && widthValue && (widthValue.value == 0 || widthValue.value)){
+                                                widthValue.value = recwidthInput.text
+                                                rectProperties.width = widthValue.value
+                                            }
+                                        }
+                                    }
+                                    up.indicator: Rectangle {
+                                        x: widthValue.mirrored ? 0 : parent.width - width
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: widthValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "+"
+                                            font.pixelSize: widthValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    down.indicator: Rectangle {
+                                        x: widthValue.mirrored ? parent.width - width : 0
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: widthValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "-"
+                                            font.pixelSize: widthValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    background: Rectangle {
+                                        implicitWidth: widthContainer.width -10
+                                        color: "#c9c9c9"
+                                        border.color: "#bdbebf"
+                                    }
+                                }
+                            }
+                            Rectangle{
+                                id:widthtitleContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                Text {
+                                    //                                    id: transSphere
+                                    text: qsTr("Width:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+                            //////////////////////////////////height////////////////////////////////////
+                            Rectangle{
+                                id: heightContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                SpinBox {
+                                    id: heightValue
+                                    stepSize: 1
+                                    value: 1000
+                                    to : 1000000
+                                    from : 0
+                                    validator: DoubleValidator {
+                                        bottom: 0
+                                        top:  10000
+                                    }
+                                    editable: true
+                                    anchors.centerIn: parent
+                                    height: 20
+
+                                    contentItem: TextInput {
+                                        id: recheightInput
+                                        z: 2
+                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
+                                        text: heightValue.value
+                                        font: heightValue.font
+                                        color: "#404040"
+                                        horizontalAlignment: Qt.AlignHCenter
+                                        verticalAlignment: Qt.AlignVCenter +10
+                                        readOnly: !heightValue.editable
+                                        validator: heightValue.validator
+                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                                        topPadding: 13
+                                        selectByMouse: true
+                                        selectionColor: "dark green"
+                                        onTextChanged: {
+                                            if(rectProperties && heightValue && (heightValue.value == 0 || heightValue.value)){
+                                                heightValue.value = recheightInput.text
+                                                rectProperties.height = heightValue.value
+                                            }
+                                        }
+                                    }
+                                    up.indicator: Rectangle {
+                                        x: heightValue.mirrored ? 0 : parent.width - width
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: heightValue.up.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "+"
+                                            font.pixelSize: heightValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    down.indicator: Rectangle {
+                                        x: heightValue.mirrored ? parent.width - width : 0
+                                        height: parent.height
+                                        implicitWidth: 20
+                                        implicitHeight: 20
+                                        color: heightValue.down.pressed ? "#5f5f5f" : "#404040"
+                                        border.color: enabled ? "#404040" : "#5f5f5f"
+
+                                        Text {
+                                            text: "-"
+                                            font.pixelSize: heightValue.font.pixelSize * 2
+                                            color: "white"
+                                            anchors.fill: parent
+                                            fontSizeMode: Text.Fit
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                    }
+                                    background: Rectangle {
+                                        implicitWidth: heightContainer.width -10
+                                        color: "#c9c9c9"
+                                        border.color: "#bdbebf"
+                                    }
+                                }
+                            }
+                            Rectangle{
+                                id:heighttitleContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                Text {
+                                    //                                    id: transSphere
+                                    text: qsTr("Height:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+
+
 
 
 

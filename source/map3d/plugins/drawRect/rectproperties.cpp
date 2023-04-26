@@ -114,6 +114,35 @@ void RectPropertiesModel::setLineWidth(double line)
         mRect->setStrokeWidth(static_cast<float>(mLineWidth));
 }
 
+
+
+double RectPropertiesModel::getWidth() const
+{
+    return mWidth;
+}
+
+void RectPropertiesModel::setWidth(double width)
+{
+    mWidth = width;
+    if (mRect)
+        mRect->setWidth(static_cast<double>(mWidth));
+}
+
+
+double RectPropertiesModel::getHeight() const
+{
+    return mHeight;
+}
+
+void RectPropertiesModel::setHeight(double height)
+{
+    mHeight = height;
+    if (mRect)
+        mRect->setHeight(static_cast<double>(mHeight));
+}
+
+
+
 void RectPropertiesModel::setRect(Rect *rect)
 {
     mRect = rect;
@@ -127,10 +156,12 @@ void RectPropertiesModel::setRect(Rect *rect)
     osgEarth::Color mpColor = mRect->getStrokeColor();
     mpColor  = mLinecolor.toStdString();
     mpColor.a() = mLineOpacity;
-    mRect->setStrokeColor(tmpColor);
+    mRect->setStrokeColor(mpColor);
 
 
     mRect->setStrokeWidth(static_cast<float>(mLineWidth));
+    mRect->setWidth(static_cast<double>(mWidth));
+    mRect->setHeight(static_cast<double>(mHeight));
     setTransparency(mTransparency);
     mRect->setClamp(mClamp);
 
