@@ -41,14 +41,14 @@ void DrawCylinder::onToolboxItemCheckedChanged(const QString &name, const QStrin
                 mDrawingState = DrawingState::START;
                 mCylinderProperties = new CylinderProperties(mCylinder, mQmlEngine, mUiHandle, mMapcontroller);
                 mCylinderProperties->show();
-                addNodeToLayer(mIconNode);
+                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
                 mEnterCylinderZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mCylinder = nullptr;
-                removeNodeFromLayer(mIconNode);
+                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
                 mCylinderProperties->hide();
             }
         }
@@ -95,7 +95,7 @@ void DrawCylinder::startDraw(QMouseEvent *event)
     mCylinder->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
 
     mCylinderProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    addNodeToLayer(mCylinder);
+    mMapcontroller->addNodeToLayer(mCylinder, DRAW_LAYER_NAME);
     event->accept();
 }
 
@@ -109,35 +109,12 @@ void DrawCylinder::finishDrawing(QMouseEvent *event)
 
 void DrawCylinder::cancelDrawing(QMouseEvent *event)
 {
-    removeNodeFromLayer(mCylinder);
+    mMapcontroller->removeNodeFromLayer(mCylinder, DRAW_LAYER_NAME);
     mCylinder = nullptr;
     mCylinderProperties->setCylinder(mCylinder);
     mDrawingState = DrawingState::START;
 
     event->accept();
-}
-
-bool DrawCylinder::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-    return true;
-}
-
-void DrawCylinder::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawCylinder::makeIconNode()

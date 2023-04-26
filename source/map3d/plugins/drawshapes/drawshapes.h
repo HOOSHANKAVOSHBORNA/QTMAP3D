@@ -39,7 +39,6 @@ public:
                UIHandle *UIHandle) override;
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
-    virtual void mouseMoveEvent(QMouseEvent* event) override;
     virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 private:
     enum class Shape {NONE ,LINE, SPHERE, CONE, CYLINDER, CAPSULE, BOX, POLYGON, IMGOVLY,
@@ -48,53 +47,18 @@ private:
     enum class DrawingState {NONE, START, FINISH, DELETE, INITIAL};
     DrawingState mDrawingState;
     osgEarth::Annotation::ImageOverlay* mImageOverlay{nullptr};
-    osgEarth::Annotation::ModelNode* mLineSphereNode{nullptr};
-    osgEarth::Annotation::RectangleNodeEditor* mRectEditor{nullptr};
-    osgEarth::Annotation::EllipseNodeEditor* mElpsEditor{nullptr};
     osgEarth::Annotation::ImageOverlayEditor* mImgOvlEditor{nullptr};
-    osg::Group* mCircleGr;
-    osgEarth::Annotation::AnnotationLayer* mAnnoLayer;
-
-    osgEarth::Annotation::SphereDragger* mPolyHdragger;
-
-    bool addNodeToLayer(osg::Node *node);
-    void removeNodeFromLayer(osg::Node *node);
-//    osgEarth::Symbology::Geometry* mLinePath = new osgEarth::Symbology::LineString();
-
 
 private slots:
-    void onLineBtnClick(QMouseEvent* event);
-//    void onSphereBtnClick(QMouseEvent* event);
-    void onNodeBtnDoubleClick(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
-//    void onConeBtnClick(QMouseEvent* event);
-//    void onCylinderBtnClick(QMouseEvent* event);
-//    void onCapsuleBtnClick(QMouseEvent* event);
-    void onBoxBtnClick(QMouseEvent* event);
-    void onPolygoneBtnClick(QMouseEvent* event);
     void onImgOvlyBtnClick(QMouseEvent* event);
-    void onRectBtnClick(QMouseEvent* event);
-    void onEllipseBtnClick(QMouseEvent* event);
-    void onLineMouseMove(QMouseEvent* event);
-    void onPolyMouseMove(QMouseEvent* event);
 
 
 private:
-    LineNode* mLine{nullptr};
-    Box* mBox;
-    Rect* mRect{nullptr};
-    Polygone* mPoly;
-    Ellipse* mEllipse{nullptr};
+
     MapController* mMapController{nullptr};
-    osgEarth::Annotation::FeatureNode* mPathNode;
-
-//    osg::ref_ptr<SphereNode> mSphereNode;
-//    osg::ref_ptr<SphereNodeEditor> mSphereNodeEditor;
-
-    double mRadius{200000};
     QQmlEngine *mQmlEngine = nullptr;
     QQuickItem *mItem = nullptr;
-//    osgEarth::Annotation::ModelNode* mSphere(float radius);
-//    osgEarth::Annotation::ModelNode* mDrawSphere(float radius);
+
     bool mEnterShapeZone{false};
 
 };

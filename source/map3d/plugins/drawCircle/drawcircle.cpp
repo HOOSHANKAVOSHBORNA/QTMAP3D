@@ -32,7 +32,7 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mEnterCircleZone = true;
                 mCircleProperties = new CircleProperties(mCircle, mQmlEngine, mUiHandle, mMapcontroller);
                 mCircleProperties->show();
-                addNodeToLayer(mIconNode);
+                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
                 mDrawingState = DrawingState::START;
 
             }
@@ -40,7 +40,7 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mEnterCircleZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mCircle = nullptr;
-                removeNodeFromLayer(mIconNode);
+                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
                 mCircleProperties->hide();
             }
         }
@@ -111,13 +111,13 @@ void DrawCircle::startDraw(QMouseEvent *event)
     mCircle->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
 
     mCircleProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    addNodeToLayer(mCircle);
+    mMapcontroller->addNodeToLayer(mCircle, DRAW_LAYER_NAME);
     event->accept();
 }
 
 void DrawCircle::cancelDrawing(QMouseEvent *event)
 {
-    removeNodeFromLayer(mCircle);
+    mMapcontroller->removeNodeFromLayer(mCircle, DRAW_LAYER_NAME);
     mCircle = nullptr;
     mCircleProperties->setCircle(mCircle);
     mDrawingState = DrawingState::START;
@@ -130,27 +130,5 @@ void DrawCircle::finishDrawing(QMouseEvent *event)
     if (mDrawingState == DrawingState::DRAWING) {
         mDrawingState = DrawingState::START;
         event->accept();
-    }
-}
-
-bool DrawCircle::addNodeToLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-        }
-    }
-}
-
-void DrawCircle::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapcontroller->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
     }
 }

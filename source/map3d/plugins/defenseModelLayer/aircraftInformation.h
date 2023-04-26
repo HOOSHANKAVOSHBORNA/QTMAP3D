@@ -43,9 +43,12 @@ public:
     QStringList getSystemsNumber() const;
     QStringList getSystemsPhase() const;
     QStringList getSystemColor() const;
+    void setTrackOff();
+
 public slots:
     AircraftInfo getAircraftInfo() {return mAircraftInfo;}
     QColor getAircraftColor();
+
 Q_SIGNALS:
     void gotoButtonClicked();
     void routeButtonClicked(bool checked);
@@ -70,6 +73,7 @@ public:
 
     void addAssignment(int number, SystemModelNode* system);
     void removeAssignment(int systemNumber);
+    void setTrackOff();
 
 private:
     AircraftInfo mInformation;

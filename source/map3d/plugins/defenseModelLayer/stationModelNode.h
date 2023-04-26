@@ -7,7 +7,7 @@
 #include "listManager.h"
 #include "stationInformation.h"
 #include "circle.h"
-#include "polygone.h"
+#include "polygon.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -41,7 +41,7 @@ private:
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;
-    osg::ref_ptr<Polygone> mVisiblePolygone;
+    osg::ref_ptr<Polygon> mVisiblePolygon;
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
     static constexpr int LABEL_IMAGE_WIDTH = 210;

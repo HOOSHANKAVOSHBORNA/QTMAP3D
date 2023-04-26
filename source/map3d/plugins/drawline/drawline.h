@@ -48,10 +48,6 @@ private:
     osgEarth::Annotation::PlaceNode *makeIconNode();
 
 
-    bool addNodeToLayer(osg::Node *node);
-    void removeNodeFromLayer(osg::Node *node);
-
-
 private:
     MapController* mMapController{nullptr};
     QQmlEngine *mQmlEngine = nullptr;

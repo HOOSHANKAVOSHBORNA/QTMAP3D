@@ -1,5 +1,5 @@
 #include "systemModelNode.h"
-#include "polygone.h"
+#include "polygon.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
@@ -175,7 +175,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mMezSphere->setColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
     mMezSphere->setSphereShape(SphereNode::SphereShape::SphereTopHalf);
 
-    mWezPolygon = new Polygone(mMapController, false);
+    mWezPolygon = new Polygon(mMapController, false);
     mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
@@ -258,7 +258,7 @@ void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
         assignmentModel->mModelNode = assignModelNode;
         mAssignmentMap[tn] = assignmentModel;
         mSystemInformation->addAssignment(tn, assignModelNode);
-        addNodeToLayer(assignmentModel->mLine);
+        mMapController->addNodeToLayer(assignmentModel->mLine, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -285,7 +285,7 @@ void SystemModelNode::removeAssignment(int tn)
 {
     if(mAssignmentMap.contains(tn))
     {
-        removeNodeFromLayer(mAssignmentMap[tn]->mLine);
+        mMapController->removeNodeFromLayer(mAssignmentMap[tn]->mLine, SYSTEMS_LAYER_NAME);
         mAssignmentMap.remove(tn);
         mSystemInformation->removeAssignment(tn);
     }
@@ -413,11 +413,11 @@ void SystemModelNode::onRangeButtonToggled(bool check)
         mRangeCircle->setPosition(getPosition());
         mRangeCircle->setRadius(osgEarth::Distance(mInformation.ViewRange, osgEarth::Units::METERS));
 
-        addNodeToLayer(mRangeCircle);
+        mMapController->addNodeToLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
     }
     else
     {
-        removeNodeFromLayer(mRangeCircle);
+        mMapController->removeNodeFromLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -453,19 +453,19 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         geoPoint4.z() = 0;
         geoPoint4.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
 
-        mWezPolygon->addPoints(geoPoint1.vec3d());
-        mWezPolygon->addPoints(geoPoint2.vec3d());
-        mWezPolygon->addPoints(geoPoint3.vec3d());
-        mWezPolygon->addPoints(geoPoint4.vec3d());
+        mWezPolygon->addPoints(geoPoint1);
+        mWezPolygon->addPoints(geoPoint2);
+        mWezPolygon->addPoints(geoPoint3);
+        mWezPolygon->addPoints(geoPoint4);
 
         float height = static_cast<float>(radius/3);
         mWezPolygon->setHeight(height);
 
-        addNodeToLayer(mWezPolygon, true);
+        mMapController->addNodeToLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
 
     }
     else {
-        removeNodeFromLayer(mWezPolygon);
+        mMapController->removeNodeFromLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -475,11 +475,11 @@ void SystemModelNode::onMezButtonToggled(bool checked)
     {
         mMezSphere->setPosition(getPosition());
         mMezSphere->setRadius(mInformation.MezRange);
-        addNodeToLayer(mMezSphere);
+        mMapController->addNodeToLayer(mMezSphere, SYSTEMS_LAYER_NAME);
     }
     else
     {
-        removeNodeFromLayer(mMezSphere);
+        mMapController->removeNodeFromLayer(mMezSphere, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -564,30 +564,6 @@ void SystemModelNode::noKillPhase(int tn)
     }
 }
 
-bool SystemModelNode::addNodeToLayer(osg::Node *node, bool insert)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            if(insert)
-                group->insertChild(0,node);
-            else
-                group->addChild(node);
-        }
-    }
-}
-
-bool SystemModelNode::removeNodeFromLayer(osg::Node *node)
-{
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
-        }
-    }
-}
 void SystemModelNode::showInfoWidget()
 {
 //    if (!mSystemInformation) {
@@ -632,14 +608,11 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.drawRoundedRect(
                     mRenderTargetImage->rect(),
                     8,8);
-
-        painter.setPen(textPen);
-        painter.setFont(textFont);
-        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH, 30),
-                         Qt::AlignCenter,
-                         mInformation.Name);
-
-
+        painter.setBrush(QBrush(QColor(26, 77, 46, int(255 * 0.2f))));
+        painter.drawRoundedRect(
+                    QRect(0, 0, LABEL_IMAGE_WIDTH, 35),
+                    8,8);
+        //--------------------------------------------------------------
         static const QPen linePen(QColor(255, 255, 255),
                                   1,
                                   Qt::PenStyle::DashLine
@@ -648,22 +621,30 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
+        painter.drawLine(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 35);
 
 
         painter.setPen(textPen);
         painter.setFont(textFont);
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignLeft | Qt::AlignVCenter,
-                         "Number:");
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignCenter,
+                         mInformation.Name);
+        painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignCenter,
                          QString::number(mInformation.Number));
+        //-------------------------------------------------------------
+        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Type:");
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 40, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         mInformation.Type);
 
 
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
+        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "BCC:");
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
+        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Radar:");
 
@@ -673,8 +654,8 @@ void SystemModelNode::updateOrCreateLabelImage()
             textPen.setColor(QColor(255, 0, 0));
         painter.setPen(textPen);
 
-        painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 70, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
                          mStatusInfo.radarStatusToString(mStatusInfo.BCCStatus));
 
         if(mStatusInfo.RadarSearchStatus == SystemStatusInfo::S)
@@ -683,12 +664,12 @@ void SystemModelNode::updateOrCreateLabelImage()
             textPen.setColor(QColor(255, 0, 0));
         painter.setPen(textPen);
 
-        painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH-20, 30),
-                         Qt::AlignRight | Qt::AlignVCenter,
+        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 100, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
                          mStatusInfo.radarStatusToString(mStatusInfo.RadarSearchStatus));
 
 
-
+        //------------------------------------------------------------
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, 135, LABEL_IMAGE_WIDTH, 135);

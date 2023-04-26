@@ -31,9 +31,6 @@ private:
     void cancelDraw();
     void finishDraw();
 
-    bool addNodeToLayer(osg::Node *node);
-    void removeNodeFromLayer(osg::Node *node);
-
     osgEarth::Annotation::PlaceNode* makeIconNode();
 
 private:

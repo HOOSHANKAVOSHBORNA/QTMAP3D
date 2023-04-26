@@ -121,6 +121,7 @@ void Polygon::addPoints(osgEarth::GeoPoint point)
 void Polygon::clearPoints()
 {
     mPolygonGeom->clear();
+//    dirty();
 }
 
 void Polygon::removePoint()

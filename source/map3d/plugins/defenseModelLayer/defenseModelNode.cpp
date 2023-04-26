@@ -5,6 +5,7 @@
 #include <QDebug>
 
 #include <osgEarthUtil/EarthManipulator>
+#include "defenseModelNodeAutoScaler.h"
 
 #include <osg/Material>
 #include <osgFX/Outline>
@@ -95,6 +96,8 @@ DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent)
     QObject(parent),
     osgEarth::Annotation::ModelNode(mapControler->getMapNode(), DefenseModelLayer::getDefaultStyle())
 {
+    mDefenseModeNodeAutoScaler = new DefenseModelNodeAutoScaler(1, 0, 100000);
+
     //--add place node-------------------------------------------------------------------------------------------
     //    osgEarth::Symbology::Style pm;
     //    pm.getOrCreate<osgEarth::Symbology::IconSymbol>()->url()->setLiteral("/home/client110/Downloads/setting.png");
@@ -117,7 +120,8 @@ DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent)
 //    osg::DisplaySettings::instance()->setMinimumNumStencilBits(1);
 
     QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
-        this->mLabelNode->setNodeMask(this->mHoverMode == HOVERED);
+        if(mLabelNode)
+            this->mLabelNode->setNodeMask(this->mHoverMode == HOVERED);
     });
 }
 

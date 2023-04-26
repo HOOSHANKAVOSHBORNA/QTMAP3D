@@ -1,7 +1,7 @@
 ﻿#ifndef BASEMODEL_H
 #define BASEMODEL_H
 
-#include "drawshapes.h"
+#include"mapcontroller.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -88,7 +88,7 @@ protected:
     osg::ref_ptr<osg::LOD> mRootNode;
     osg::ref_ptr<osg::Group> mNode3D;
     osg::ref_ptr<osg::Switch> mNode2D;
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLabelNode;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLabelNode{nullptr};
     osgEarth::Color mModelColor{osgEarth::Color::White};
 
 private:
@@ -100,9 +100,11 @@ private:
     osg::ref_ptr<osgFX::Outline> mSelectOutline;
     MapController *mMapControler;
 
+
 protected:
     SelectionMode mSelectionMode = UNSELECTED;
     HoverMode     mHoverMode     = UNHOVERED;
+    class DefenseModelNodeAutoScaler *mDefenseModeNodeAutoScaler = nullptr;
 };
 
 #endif // BASEMODEL_H
