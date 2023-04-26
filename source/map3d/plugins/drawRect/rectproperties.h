@@ -1,19 +1,18 @@
-#ifndef ELLIPSEPROPERTIES_H
-#define ELLIPSEPROPERTIES_H
+#ifndef RECTPROPERTIES_H
+#define RECTPROPERTIES_H
 
-#include "ellipse.h"
+#include "rect.h"
 #include "mapcontroller.h"
 #include "plugininterface.h"
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
 
-class EllipsePropertiesModel : public QObject
+class RectPropertiesModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString   fillcolor      READ getFillcolor     WRITE setFillColor    )
     Q_PROPERTY(QString   linecolor      READ getLinecolor     WRITE setLineColor    )
-    Q_PROPERTY(double    ellipseheight  READ getEllipseheight WRITE setEllipseHeight)
     Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency )
     Q_PROPERTY(int       lineopacity    READ getLineOpacity   WRITE setLineOpacity  )
     Q_PROPERTY(int       clamp          READ getClamp         WRITE setClamp        )
@@ -23,16 +22,13 @@ class EllipsePropertiesModel : public QObject
 
 public:
 
-    EllipsePropertiesModel(Ellipse* ellipse = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
+    RectPropertiesModel(Rect* rect = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
     //set fillcolor
     QString getFillcolor() const;
     void setFillColor(const QString &fillcolor);
     //set linecolor
     QString getLinecolor() const;
     void setLineColor(const QString &linecolor);
-    //set height
-    double getEllipseheight() const;
-    void setEllipseHeight(const double &ellipseheight);
     // set transparency
     int getTransparency() const;
     void setTransparency(const int &transparency);
@@ -46,26 +42,25 @@ public:
     double getLineWidth() const;
     void setLineWidth(double line);
 
-    void setEllipse(Ellipse* ellipse);
+    void setRect(Rect* rect);
 
 
 
 signals:
 
-    void ellipsePropertiesChanged( QVariant );
+    void rectPropertiesChanged( QVariant );
 
 
 
 private:
     QString   mFillcolor ;
     QString   mLinecolor;
-    double    mEllipseHeight;
     int       mTransparency ;
     int       mLineOpacity  ;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp  = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
     double    mLineWidth ;
 
-    Ellipse*   mEllipse;
+    Rect*   mRect;
     MapController* mMapController{nullptr};
 
 
@@ -73,21 +68,21 @@ private:
 public slots:
 };
 
-class EllipseProperties : public QObject
+class RectProperties : public QObject
 {
     Q_OBJECT
 public:
-    EllipseProperties(Ellipse *ellipse, QQmlEngine *engine, UIHandle *uiHandle, QObject *parent = nullptr);
+    RectProperties(Rect *rect, QQmlEngine *engine, UIHandle *uiHandle, QObject *parent = nullptr);
     void show();
     void hide();
-    void setEllipse(Ellipse* ellipse);
+    void setRect(Rect* rect);
 
 private:
     QQmlEngine* mQmlEngine;
     QQuickItem* mItem;
-    EllipsePropertiesModel* mEllipseProperties;
+    RectPropertiesModel* mRectProperties;
     UIHandle* mUiHandle;
 
 };
 
-#endif // ELLIPSEPROPERTIES_H
+#endif // RECTPROPERTIES_H
