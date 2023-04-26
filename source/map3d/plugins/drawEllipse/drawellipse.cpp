@@ -18,6 +18,8 @@ DrawEllipse::DrawEllipse(QObject *parent)
 bool DrawEllipse::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     mQmlEngine = engine;
+    qmlRegisterType<EllipsePropertiesModel>("Crystal", 1, 0, "EllipseProperties");
+
     desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true,  false, ""});
     return true;
 }
@@ -29,6 +31,8 @@ void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString
             if (checked) {
                 mEnterEllipseZone = true;
                 mDrawingState = DrawingState::START;
+                mEllipseProperties = new EllipseProperties(mEllipse, mQmlEngine, mUiHandle);
+                mEllipseProperties->show();
                 addNodeToLayer(mIconNode);
 
 
@@ -38,6 +42,7 @@ void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString
                 mEnterEllipseZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mEllipse = nullptr;
+                mEllipseProperties->hide();
                 removeNodeFromLayer(mIconNode);
             }
         }
@@ -108,6 +113,7 @@ osgEarth::Annotation::PlaceNode *DrawEllipse::makeIconNode()
 void DrawEllipse::startDraw(QMouseEvent *event)
 {
     mEllipse = new Ellipse(mMapController, true);
+    mEllipseProperties->setEllipse(mEllipse);
     osg::Vec3d worldPos;
     mMapController->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;

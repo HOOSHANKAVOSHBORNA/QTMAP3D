@@ -7,6 +7,7 @@
 #include "mapcontroller.h"
 #include "plugininterface.h"
 #include "ellipse.h"
+#include "ellipseproperties.h"
 
 #define DRAW_LAYER_NAME "Ellipse"
 
@@ -43,6 +44,8 @@ private:
     Ellipse* mEllipse{nullptr};
 
     UIHandle* mUiHandle{nullptr};
+
+    EllipseProperties *mEllipseProperties{nullptr};
 
     bool mEnterEllipseZone{false};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
