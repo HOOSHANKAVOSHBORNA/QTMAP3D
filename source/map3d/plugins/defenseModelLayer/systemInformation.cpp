@@ -193,6 +193,7 @@ SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
 
 void SystemInformation::setInfo(const SystemInfo &systemInfo)
 {
+    mInformation = systemInfo;
     mInfoModel->setInfo(systemInfo);
 }
 
