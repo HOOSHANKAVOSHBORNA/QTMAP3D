@@ -62,7 +62,7 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
                                                      osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).y()),
                                                      osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).x()));
             auto bearing = osg::RadiansToDegrees(bea);
-            qDebug()<<bearing;
+//            qDebug()<<bearing;
             auto imageLabel = updateLenghtLabel(lenght, bearing);
             double lat;
             double lon;
