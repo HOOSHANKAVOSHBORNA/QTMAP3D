@@ -73,6 +73,9 @@ public:
     int  getRuler() const;
     void setRuler(const int ruler);
 
+    bool getShowBearing() const;
+    void setShowBearing(const bool &bearing);
+
     void setLine(LineNode *linNode) ;
     void setMeasureHeight(MeasureHeight *measureHeight);
 

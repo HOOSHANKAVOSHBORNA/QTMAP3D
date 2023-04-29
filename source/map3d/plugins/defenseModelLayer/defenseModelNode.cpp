@@ -246,12 +246,14 @@ void DefenseModelNode::collision()
 osgEarth::Annotation::ModelNode *DefenseModelNode::getDragModelNode()
 {
     osgEarth::Symbology::Style  style = getStyle();
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Gray);
     osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(getMapNode(), style);
+    dragModelNode->setCullingActive(false);
+    dragModelNode->addCullCallback(getCullCallback());
     dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
 //    dragModelNode->addCullCallback(getCullCallback());
