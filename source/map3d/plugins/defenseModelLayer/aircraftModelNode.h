@@ -100,7 +100,7 @@ private:
 //    static osg::ref_ptr<osg::Image> m2dIcon;
 
     static constexpr int LABEL_IMAGE_WIDTH = 210;
-    static constexpr int LABEL_IMAGE_HEIGHT = 230;
+    static constexpr int LABEL_IMAGE_HEIGHT = 210;
     QImage *mRenderTargetImage{nullptr};
     osg::ref_ptr<osg::Image> mLabelImage{nullptr};
 
@@ -118,6 +118,9 @@ private:
     double mAutoScaleDefaultValue = 2.5;
     double mAutoScaleMinValue = 1;
     double mAutoScaleMaxValue = 500;
+
+
+    int __xxx = 1;
 };
 
 #endif // FLYINGMODEL_H

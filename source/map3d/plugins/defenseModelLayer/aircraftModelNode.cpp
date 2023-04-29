@@ -31,6 +31,8 @@
 
 #include "defenseModelLayer.h"
 
+#include <QFontMetrics>
+
 const float RANGE3D = std::numeric_limits<float>::max();//832
 const int NUM_LATEST_POINT = 100;
 
@@ -329,6 +331,8 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
 
     updateOrCreateLabelImage();
     mLabelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+    mLabelNode->setDynamic(true);
+
 
 
     getGeoTransform()->addChild(mLabelNode);
@@ -476,6 +480,8 @@ void AircraftModelNode::setInformation(AircraftInfo info)
         mAircraftinformation->updateAircraft(info);
 
     updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle()); // force PlaceNode to recreate texture
+
     changeModelColor(mInformation.Identification);
 }
 
@@ -829,20 +835,27 @@ void AircraftModelNode::change2DImageColore(osgEarth::Color /*color*/)
 
 void AircraftModelNode::updateOrCreateLabelImage()
 {
-    //int height = LABEL_IMAGE_HEIGHT + mAssignmentMap.keys().count() * 30;
+    int height = LABEL_IMAGE_HEIGHT + ((mAssignmentMap.keys().count()+1)/2) * 30;
     //qDebug()<<"hight:"<<height;
     if (!mRenderTargetImage) {
         mRenderTargetImage = new QImage(
                     LABEL_IMAGE_WIDTH,
-                    LABEL_IMAGE_HEIGHT,
+                    height,
+                    QImage::Format_RGBA8888
+                    );
+    } else {
+        mRenderTargetImage->~QImage();
+        mRenderTargetImage = new(mRenderTargetImage) QImage(
+                    LABEL_IMAGE_WIDTH,
+                    height,
                     QImage::Format_RGBA8888
                     );
     }
 
     if (!mLabelImage) {
-
         mLabelImage = new osg::Image;
     }
+
 
     {
         mRenderTargetImage->fill(QColor(Qt::transparent));
@@ -853,7 +866,7 @@ void AircraftModelNode::updateOrCreateLabelImage()
         static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
 
         static const QFont textFont("SourceSansPro", 12, QFont::Normal);
-        static const QPen  textPen(QColor(255, 255, 255));
+        static QPen  textPen(QColor(255, 255, 255));
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(backgroundBrush);
@@ -918,47 +931,80 @@ void AircraftModelNode::updateOrCreateLabelImage()
                          Qt::AlignLeft | Qt::AlignVCenter,
                          mInformation.IdentificationMethod);
         //---------------------------------------------------------
-        painter.drawText(QRect(10, 160, LABEL_IMAGE_WIDTH/2, 30),
+
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, 165, LABEL_IMAGE_WIDTH, 165);
+
+        painter.setPen(textPen);
+
+        painter.drawText(QRect(10, 170, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Assignments:");
 
-//        int height = 190;
-//        for(auto val: mAssignmentMap.values())
-//        {
-//            painter.drawText(QRect(10, height, LABEL_IMAGE_WIDTH/2, 30),
-//                             Qt::AlignLeft | Qt::AlignVCenter,
-//                             QString::number(val->getInformation().Number));
-//            painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, height, LABEL_IMAGE_WIDTH/2, 30),
-//                             Qt::AlignLeft | Qt::AlignVCenter,
-//                             val->getSystemCombatInfo().phaseToString());
-//            height += 30;
-//        }
-        QString assignStr = "";
-        for(auto val: mAssignmentMap.values())
-        {
-            assignStr += "["+ QString::number(val->getInformation().Number) +
-                            ", " + val->getSystemCombatInfo().phaseToString()[0] + "]";
-            assignStr += "  ";
+        int h = 200;
+        const QFontMetrics fm(textFont);
+        int n = 0;
+        while (n < mAssignmentMap.values().count()) {
+
+            int indent = 0;
+            for (int llidx = 0; llidx < 2; llidx++)// two elements per line
+            {
+
+                if (n >= mAssignmentMap.values().count())
+                    break;
+
+                const auto val = mAssignmentMap.values()[n];
+
+                const QString ss = (llidx == 0 ? QStringLiteral("(") : QStringLiteral(", ("))
+                        + QString::number(val->getInformation().Number)
+                        + QStringLiteral(", ");
+                const QString cc = QString(val->getSystemCombatInfo().phaseToString()[0]);
+                const QString ee = QStringLiteral(")");
+
+                textPen.setColor(QColor(255,255,255));
+                painter.setPen(textPen);
+
+                painter.drawText(QRect(10 + indent, h, LABEL_IMAGE_WIDTH, 30),
+                                 Qt::AlignLeft | Qt::AlignVCenter,
+                                 ss);
+                indent += fm.boundingRect(ss).width();
+
+                textPen.setColor(val->getSystemCombatInfo().phaseToColor());
+                painter.setPen(textPen);
+
+                painter.drawText(QRect(10 + indent, h, LABEL_IMAGE_WIDTH, 30),
+                                 Qt::AlignLeft | Qt::AlignVCenter,
+                                 cc);
+                indent += fm.boundingRect(cc).width();
+
+                textPen.setColor(QColor(255,255,255));
+                painter.setPen(textPen);
+
+                painter.drawText(QRect(10 + indent, h, LABEL_IMAGE_WIDTH, 30),
+                                 Qt::AlignLeft | Qt::AlignVCenter,
+                                 ee);
+                indent += fm.boundingRect(ee).width();
+
+
+                n++;
+            }
+
+            h += 30;
         }
-        painter.drawText(QRect(10, 190, LABEL_IMAGE_WIDTH, 30),
-                                     Qt::AlignLeft | Qt::AlignVCenter,
-                                     assignStr);
+
+
     }
     *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
 
     mLabelImage->setImage(LABEL_IMAGE_WIDTH,
-                          LABEL_IMAGE_HEIGHT,
+                          height,
                           1,
                           GL_RGBA,
                           GL_RGBA,
                           GL_UNSIGNED_BYTE,
                           mRenderTargetImage->bits(),
                           osg::Image::AllocationMode::NO_DELETE);
-//    mLabelImage->scaleImage(LABEL_IMAGE_WIDTH, height, mLabelImage->r());
-//    if(mLabelNode){
-//        mLabelNode->setIconImage(mLabelImage);
-//        mLabelNode->dirty();
-//    }
 }
 
 
