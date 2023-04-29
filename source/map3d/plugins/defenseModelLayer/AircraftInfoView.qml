@@ -36,31 +36,72 @@ Item {
         spacing: 0
         Item {
             Layout.fillWidth: true
-            Layout.minimumHeight: 60
-            GridLayout {
-                Layout.fillWidth: true
+            Layout.minimumHeight: 55
+//            Layout.topMargin: 20
+//            Layout.bottomMargin: 20
+//            Layout.margins: 20
+//            Rectangle{
+//                anchors.fill: parent
+////                gradient: Gradient {
+////                          GradientStop { position: 0.0; color: "#000000" }
+////                          GradientStop { position: 0.9; color: "#373839" }
+////                      }
+//                color: "#404040"
+
+//                anchors.topMargin: 10
+//            }
+            Rectangle{
                 anchors.fill: parent
-                anchors.centerIn: parent
-                Text {
-                    Layout.alignment: Qt.AlignCenter
-                    id: headerType
-                    text: "--------"
-                    color:"yellow"
-                    font.pointSize: 20
+//                gradient: Gradient {
+//                          GradientStop { position: 0.0; color: "#2F2E2C" }
+//                          GradientStop { position: 0.9; color: "#404040" }
+//                      }
+
+                radius: 10
+                color: "transparent"
+//                anchors.margins: 5
+//            }
+
+//            GridLayout {
+//                Layout.fillWidth: true
+//                anchors.fill: parent
+//                anchors.centerIn: parent
+                Label {
+                    Text {
+                        id: headerType
+                        text: "--------"
+                        color:"white"
+                        font.pointSize: 16
+                        anchors.centerIn: parent
+                    }
+//                    Layout.alignment: Qt.AlignCenter
+                    id:headerTypeLbl
+                    width: parent.width/2
+                    anchors.verticalCenter: parent.verticalCenter
+
                 }
                 Rectangle {
+                    id:spaceLine
                     width: 1
                     opacity: 0.5
-                    height: 30
+                    height: 35
                     color: "white"
+                    anchors.left: headerTypeLbl.right
+                    anchors.verticalCenter: parent.verticalCenter
                 }
 
-                Text {
-                    Layout.alignment: Qt.AlignCenter
-                    id: headerName
-                    text: "Airplane"
-                    color:"yellow"
-                    font.pointSize: 20
+                Label {
+                    Text {
+                        id: headerName
+                        text: "Airplane"
+                        color:"white"
+                        font.pointSize: 16
+                        anchors.centerIn: parent
+                    }
+
+                    width: parent.width/2
+                    anchors.left: spaceLine.right
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
 

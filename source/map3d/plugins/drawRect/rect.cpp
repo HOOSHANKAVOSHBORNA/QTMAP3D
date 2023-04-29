@@ -52,6 +52,7 @@ void Rect::setStrokeColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = color;
+    this->setStyle(style);
 }
 
 osgEarth::Color Rect::getStrokeColor()
@@ -64,6 +65,7 @@ void Rect::setStrokeWidth(float Width)
 {
      auto style = this->getStyle();
      style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = Width;
+     this->setStyle(style);
 }
 
 float Rect::getStrokeWidth()

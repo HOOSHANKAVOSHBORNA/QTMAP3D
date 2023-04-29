@@ -69,6 +69,7 @@ void Ellipse::setStrokeColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = color;
+    this->setStyle(style);
 }
 
 osgEarth::Color Ellipse::getStrokeColor()
@@ -81,6 +82,7 @@ void Ellipse::setStrokeWidth(float Width)
 {
      auto style = this->getStyle();
      style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = Width;
+     this->setStyle(style);
 }
 
 float Ellipse::getStrokeWidth()
