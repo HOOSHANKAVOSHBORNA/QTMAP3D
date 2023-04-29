@@ -650,7 +650,7 @@ Item {
                                     id: img4
                                     verticalAlignment: Image.AlignTop
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    source: "qrc:/resources/station_lV.png"
+                                    source: "qrc:/resources/stations.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height: 24
