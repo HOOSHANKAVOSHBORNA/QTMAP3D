@@ -54,7 +54,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
         mAircraft3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
     }
     if (!mFighter3DRef.valid()) {
-        mFighter3DRef = osgDB::readRefNodeFile("../data/models/fighter/fighter.ive");
+        mFighter3DRef = osgDB::readRefNodeFile("../data/models/fighter/fighter.osgb");
     }
     if (!mMissile3DRef.valid()) {
         mMissile3DRef = osgDB::readRefNodeFile("../data/models/missile/missile.osgb");
@@ -162,7 +162,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
         mainImageMissile = osgDB::readImageFile("../data/models/missile/missle.png");
         mainImageDrone = osgDB::readImageFile("../data/models/drone/drone.png");
         mainImageFighter = osgDB::readImageFile("../data/models/fighter/fighter.png");
-        mainImageHellicopter = osgDB::readImageFile("../data/models/hellicopter/hellicopter.gif");
+        mainImageHellicopter = osgDB::readImageFile("../data/models/hellicopter/hellicopter.png");
 
 
         for (unsigned int i = 0; i < 6; i++) {
@@ -444,6 +444,7 @@ void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double 
     {
         mRouteLine->addPoint(getPosition());
         mLatestPointLine->addPoint(getPosition());
+        mCurrentFlyPoint = getPosition();
     }
     mLatestPointLine->addPoint(mCurrentFlyPoint);
     if(mLatestPointLine->getSize() >= NUM_LATEST_POINT)
