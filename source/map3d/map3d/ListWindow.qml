@@ -3,14 +3,16 @@ import QtQuick.Layouts 1.13
 import QtQuick.Controls 2.13
 import Crystal 1.0
 import QtQuick.Window 2.13
+import QtGraphicalEffects 1.0
 CListWindow {
 
 
     property var buttonsModel : ListModel {
 
     }
-    property var selectColor: "#03A9F4"
-    property var unselectColor: "#4568dc"
+    property var selectColor: "gray"
+    property var unselectColor: "#00587A"
+    property int grad: 0
     visible: false
 
     id: root
@@ -182,29 +184,48 @@ CListWindow {
                     width: parent.width
                     Layout.leftMargin: 30
                     Layout.rightMargin: 10
-                    spacing: 0
+                    spacing: 2
                     Repeater {
                         id: rep
                         model: buttonsModel
                         delegate: Button {
-                            text: buttonText
-
+//                            text: buttonText
                             anchors.leftMargin: 0
-                            contentItem :Text {
-                                id: name
-                                text: parent.text
-                                color: "#FFFFFF"
-                                anchors.verticalCenter: parent.verticalCenter
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                elide: Text.ElideRight
-                            }
-                            background: Rectangle {
-                                color: selectColor
-                                radius: 1
+//                            contentItem :Text {
+//                                id: name
+//                                text: parent.text
+//                                color: "#FFFFFF"
+//                                anchors.verticalCenter: parent.verticalCenter
+//                                horizontalAlignment: Text.AlignHCenter
+//                                verticalAlignment: Text.AlignVCenter
+//                                elide: Text.ElideRight
+//                            }
+//                            background: Rectangle {
+//                                color: selectColor
+//                                radius: 1
+//                            }
+                            background:  Rectangle {
+
+                                color: "black"
+                                border.color: index == grad ? "#D0C000" : parent.hovered ? "yellow" : "gray"
+                                border.width: 2
+                                radius: 8
                             }
 
                             height: 35
+                            Text {
+                                id: name
+                                text: buttonText
+                                color: (index == grad) ? "#D0C000" :  parent.hovered ? "yellow" : "#FFFFFF"
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.centerIn: parent
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                elide: Text.ElideRight
+                                font.bold: true
+                                font.pointSize: 12
+                            }
+                            hoverEnabled: true
 
                             width: buttons.width / 6
                             onClicked: showTab(index)
@@ -221,12 +242,16 @@ CListWindow {
                         orientation: Gradient.Horizontal
                         GradientStop {
                             position: 0
-                            color: "#5f72bd"
+                            color: "#00587A"
                         }
 
                         GradientStop {
+                            position: 0.5
+                            color: "yellow"
+                        }
+                        GradientStop {
                             position: 1
-                            color: "#9b23ea"
+                            color: "#00587A"
                         }
                     }
                     Layout.minimumHeight: 1
@@ -256,14 +281,15 @@ CListWindow {
     function showTab(indx){
         stacklayout.currentIndex = indx
         for (var i = 0; i < stacklayout.count; i++){
-            rep.itemAt(i).background.color = unselectColor
+//            rep.itemAt(i).background.color = unselectColor
             rep.itemAt(i).height = 40
 
         }
 
-        rep.itemAt(indx).background.color = selectColor
+//        rep.itemAt(indx).background.color = selectColor
         rep.itemAt(indx).height = 42
         root.tabChanged(indx);
+        grad = indx
 
     }
 

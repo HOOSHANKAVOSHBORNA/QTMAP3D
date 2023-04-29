@@ -61,22 +61,29 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
     {
         return QVariant::fromValue<QColor>(QColor("transparent"));
 
-        break;
     }
 
     case TextColorRole:
     {
+        if (mMode == "Assignment") {
+            return index.column() == 4 ? QVariant::fromValue<QColor>(QColor("black")) : QVariant::fromValue<QColor>(QColor("white"));
+        }
         return QVariant::fromValue<QColor>(QColor("white"));
-        break;
     }
 
 
     case SystemColor:
     {
-        if (index.row() >= mSystemCombatInfoListProxy.size())
+        if (static_cast<size_t>(index.row()) >= mSystemCombatInfoListProxy.size())
             return QVariant::fromValue<QColor>("white");
+        if (mMode == "Assignment") {
+            switch (index.column()) {
+                case 4: return QVariant::fromValue<QColor>(QColor(mSystemCombatInfoListProxy[static_cast<size_t>(index.row())]->phaseToColor()));
+                default : return QVariant::fromValue<QColor>(QColor("transparent"));
+
+            }
+        }
         return QVariant::fromValue<QColor>(QColor(mSystemCombatInfoListProxy[static_cast<size_t>(index.row())]->phaseToColor()));
-        break;
     }
 
     }

@@ -2,7 +2,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
-
+import QtGraphicalEffects 1.13
 Item {
     id:rootItem
 
@@ -78,14 +78,21 @@ Item {
                         spacing: 5
                         Image {
                             anchors.horizontalCenter: parent.horizontalCenter
-
+                            id: img
                             source: iconUrl
                             sourceSize: Qt.size(24,24)
                             width: 24
                             height:24
+//                            ColorOverlay {
+//                                id: glowimg
+//                                anchors.fill: parent
+//                                color: txt.color
+//                                source: img
+//                            }
                         }
 
                         Text {
+                            id: txt
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: control.text
                             font: control.font

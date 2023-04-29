@@ -839,6 +839,7 @@ SystemModelNode::Assignment::Assignment(MapController *mapControler)
     mLine->setWidth(1);
     mLine->setPointWidth(5);
     mLine->setTessellation(15);
+    mLine->setShowBearing(true);
 }
 
 void SystemModelNode::Assignment::accept()

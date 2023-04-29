@@ -15,6 +15,9 @@ Item {
     property int hoveredIndex: -1
     property int selectedIndex: -1
 
+    property var hoverColor: "#add8e6"
+    property var headerColor: "#00587A"
+
     Timer {
         id: signalTimer
         running: false
@@ -57,7 +60,7 @@ Item {
 
             Rectangle {
                 color: "transparent"
-                border.color: "#4568dc"
+                border.color: headerColor
                 radius: 5
                 Layout.minimumWidth:   320
                 Layout.preferredWidth: 320
@@ -111,7 +114,7 @@ Item {
                         width: 160
                         height: 40
                         radius: 5
-                        color: '#4568dc'
+                        color: headerColor
                         Text {
                             color: '#FFFFFF'
                             text: rootItem.model ? rootItem.model.headerText(index) : "";
@@ -168,17 +171,16 @@ Item {
                         color: "transparent"
                         clip: true
                         Rectangle {
-                            opacity: 0.4
-                            color: rootItem.model ? (column == 0 ? AircraftColor:
-                                                        "transparent") : "transparent";
+                            opacity: 1
+                            color: rootItem.model ? d_bkcolor : "transparent";
                             anchors.centerIn: parent
                             width: 25
                             height: 23
                             radius: 7
                         }
                         Rectangle {
-                            opacity: 0.4
-                            color: rootItem.model ? (rootItem.hoveredIndex == row ? "lightskyblue" :
+                            opacity: 0.2
+                            color: rootItem.model ? (rootItem.hoveredIndex == row ? hoverColor :
                                                         "transparent") : "transparent";
                             anchors.fill: parent
                         }
@@ -188,6 +190,7 @@ Item {
                             anchors.leftMargin: 5
                             anchors.rightMargin: 5
                             anchors.centerIn: parent
+                            font.bold: column == 0
                             text: (column == 14 || column == 15) ? display.substring(0, Math.min(15, display.length))
                                                                    + (display.length > 15 ? " ..." : "") : display
                             color: d_txtcolor

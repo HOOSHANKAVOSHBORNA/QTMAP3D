@@ -37,35 +37,12 @@ Item {
         Item {
             Layout.fillWidth: true
             Layout.minimumHeight: 55
-//            Layout.topMargin: 20
-//            Layout.bottomMargin: 20
-//            Layout.margins: 20
-//            Rectangle{
-//                anchors.fill: parent
-////                gradient: Gradient {
-////                          GradientStop { position: 0.0; color: "#000000" }
-////                          GradientStop { position: 0.9; color: "#373839" }
-////                      }
-//                color: "#404040"
-
-//                anchors.topMargin: 10
-//            }
+            /////-----------------header--------------------------
             Rectangle{
                 anchors.fill: parent
-//                gradient: Gradient {
-//                          GradientStop { position: 0.0; color: "#2F2E2C" }
-//                          GradientStop { position: 0.9; color: "#404040" }
-//                      }
 
                 radius: 10
                 color: "transparent"
-//                anchors.margins: 5
-//            }
-
-//            GridLayout {
-//                Layout.fillWidth: true
-//                anchors.fill: parent
-//                anchors.centerIn: parent
                 Label {
                     Text {
                         id: headerType
@@ -74,7 +51,6 @@ Item {
                         font.pointSize: 16
                         anchors.centerIn: parent
                     }
-//                    Layout.alignment: Qt.AlignCenter
                     id:headerTypeLbl
                     width: parent.width/2
                     anchors.verticalCenter: parent.verticalCenter
@@ -139,7 +115,7 @@ Item {
                             property: "text"
                             value: MainInfo[4]
                         }
-
+                        //--------------------------------------image----------------
                         Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 200
@@ -154,7 +130,7 @@ Item {
                                 fillMode: Image.Stretch
                             }
                         }
-
+                        //----------------------------------maininfo---------------
                         Rectangle {
                             id: mainButton
                             Layout.preferredWidth: rootItem.width
@@ -253,7 +229,7 @@ Item {
                                         text: MainInfo[index]
                                         color: index == 1 ? rootItem.model.getAircraftColor() : "white"
                                         clip: true
-                                        font.bold: index == 5
+                                        font.bold: index == 1
                                         Layout.fillWidth: true
                                         Layout.leftMargin: 5
                                         leftInset: -5
@@ -267,6 +243,7 @@ Item {
                                 }
                             }
                         }
+                        //-----------------location info----------------------------
                         Rectangle {
                             id: locationButton
                             Layout.preferredWidth: rootItem.width
@@ -373,7 +350,7 @@ Item {
                             }
 
                         }
-
+                        //---------------assign info------------------------------
                         Rectangle {
                             id: assignButton
                             Layout.preferredWidth: rootItem.width
@@ -492,22 +469,24 @@ Item {
                                     Layout.fillWidth: true
                                     Label {
                                         text: AssignedSystemsPhase[index]
-                                        color: keyTextColor
+                                        color: rootItem.model ? SystemColor[index] :
+                                                                "transparent";
                                         Layout.preferredWidth: implicitWidth
                                         verticalAlignment: Label.AlignVCenter
                                         Layout.leftMargin: 5
                                         Layout.rightMargin: 5
                                         leftInset: -5
+                                        font.bold: true
                                         Layout.preferredHeight: implicitHeight + spacee
-                                        background: Rectangle {
-                                            opacity: 0.4
-                                            color: rootItem.model ? SystemColor[index] :
-                                                                    "transparent";
-                                            anchors.centerIn: parent
-                                            width: 40
-                                            height: 23
-                                            radius: 7
-                                        }
+//                                        background: Rectangle {
+//                                            opacity: 0.4
+//                                            color: rootItem.model ? SystemColor[index] :
+//                                                                    "transparent";
+//                                            anchors.centerIn: parent
+//                                            width: 40
+//                                            height: 23
+//                                            radius: 7
+//                                        }
                                     }
 
                                 }
@@ -671,7 +650,7 @@ Item {
                                     id: img4
                                     verticalAlignment: Image.AlignTop
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    source: "qrc:/resources/station_lV.png"
+                                    source: "qrc:/resources/stations.png"
                                     sourceSize: Qt.size(24,24)
                                     width: 24
                                     height: 24
