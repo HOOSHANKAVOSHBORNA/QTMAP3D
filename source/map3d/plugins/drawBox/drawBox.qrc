@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>resource/box.png</file>
         <file>BoxProperty.qml</file>
+        <file>resources/box.png</file>
     </qresource>
 </RCC>
