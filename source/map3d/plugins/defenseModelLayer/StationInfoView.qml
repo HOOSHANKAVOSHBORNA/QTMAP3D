@@ -30,36 +30,44 @@ Item {
         spacing: 0
         Item {
             Layout.fillWidth: true
-            Layout.minimumHeight: 60
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 35
-
+            Layout.minimumHeight: 55
+            Label {
                 Text {
                     Layout.alignment: Qt.AlignCenter
-                    Layout.maximumWidth: 100
-                    clip: true
                     id: headerName
                     text: "-------"
-                    color:"yellow"
-                    font.pointSize: 20
+                    color:"white"
+                    font.pointSize: 16
+                    anchors.centerIn: parent
                 }
+                id:headerNameLbl
+                width: parent.width/2
+                anchors.verticalCenter: parent.verticalCenter
+            }
 
-                Rectangle {
-                    width: 1
-                    opacity: 0.5
-                    height: 30
-                    color: "white"
-                }
+            Rectangle {
+                id:spaceLine
+                width: 1
+                opacity: 0.5
+                height: 35
+                color: "white"
+                anchors.left: headerNameLbl.right
+                anchors.verticalCenter: parent.verticalCenter
+            }
 
+            Label {
                 Text {
                     id: station
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredWidth: implicitWidth
-                    text: "--------"
-                    color:"yellow"
-                    font.pointSize: 20
+                    text: "Airplane"
+                    color:"white"
+                    font.pointSize: 16
+                    anchors.centerIn: parent
                 }
+
+                width: parent.width/2
+                anchors.left: spaceLine.right
+                anchors.verticalCenter: parent.verticalCenter
+            }
 //                Switch {
 //                    id: control
 //                    ToolTip {
@@ -101,7 +109,6 @@ Item {
 //                        }
 //                    }
 //                }
-            }
 
         }
         Item {

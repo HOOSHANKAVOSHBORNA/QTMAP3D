@@ -29,34 +29,44 @@ Item {
         spacing: 0
         Item {
             Layout.fillWidth: true
-            Layout.minimumHeight: 60
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 35
-
+            Layout.minimumHeight: 55
+            Label {
                 Text {
                     Layout.alignment: Qt.AlignCenter
                     id: headerName
                     text: "-------"
-                    color:"yellow"
-                    font.pointSize: 20
+                    color:"white"
+                    font.pointSize: 16
+                    anchors.centerIn: parent
                 }
+                id:headerNameLbl
+                width: parent.width/2
+                anchors.verticalCenter: parent.verticalCenter
+            }
 
-                Rectangle {
-                    width: 1
-                    opacity: 0.5
-                    height: 30
-                    color: "white"
-                }
+            Rectangle {
+                id:spaceLine
+                width: 1
+                opacity: 0.5
+                height: 35
+                color: "white"
+                anchors.left: headerNameLbl.right
+                anchors.verticalCenter: parent.verticalCenter
+            }
 
+            Label {
                 Text {
                     id: system
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredWidth: implicitWidth
-                    text: "System"
-                    color:"yellow"
-                    font.pointSize: 20
+                    text: "Airplane"
+                    color:"white"
+                    font.pointSize: 16
+                    anchors.centerIn: parent
                 }
+
+                width: parent.width/2
+                anchors.left: spaceLine.right
+                anchors.verticalCenter: parent.verticalCenter
+            }
 //                Switch {
 //                    id: control
 //                    ToolTip {
@@ -98,7 +108,6 @@ Item {
 //                        }
 //                    }
 //                }
-            }
 
         }
         Item {
@@ -483,6 +492,36 @@ Item {
                                     }
                                 }
                             }
+                            ColumnLayout {
+                                Layout.preferredHeight: implicitHeight
+                                Layout.fillWidth: true
+                                Repeater {
+                                    model: AssignAircraftsType
+                                    Layout.fillWidth: true
+                                    Label {
+                                        text: CombatInfo[2]
+                                        color: rootItem.model ? SystemColor :
+                                                                "transparent";
+                                        Layout.preferredWidth: implicitWidth
+                                        verticalAlignment: Label.AlignVCenter
+                                        Layout.leftMargin: 5
+                                        Layout.rightMargin: 5
+                                        leftInset: -5
+                                        font.bold: true
+                                        Layout.preferredHeight: implicitHeight + spacee
+//                                        background: Rectangle {
+//                                            opacity: 0.4
+//                                            color: rootItem.model ? SystemColor[index] :
+//                                                                    "transparent";
+//                                            anchors.centerIn: parent
+//                                            width: 40
+//                                            height: 23
+//                                            radius: 7
+//                                        }
+                                    }
+
+                                }
+                            }
                         }
 
 
@@ -693,7 +732,7 @@ Item {
                                     model: CombatInfo
                                     Label {
                                         text: CombatInfo[index]
-                                        color: "white"
+                                        color: index == 2 ? SystemColor : "white"
                                         Layout.fillWidth: true
                                         Layout.leftMargin: 5
                                         leftInset: -5

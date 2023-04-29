@@ -28,6 +28,7 @@ QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case CombatInfoHeaders: return QVariant::fromValue<QStringList>(getCombatInfoHeaders());
         case AssignAircraftsName: return QVariant::fromValue<QStringList>(getAssignmentsName());
         case AssignAircraftsType: return QVariant::fromValue<QStringList>(getAssignmentsType());
+        case SystemColor: return QVariant::fromValue<QString>(mSystemCombatInfo.phaseToColor());
         default  : return QVariant::fromValue<QString>(mSystemInfo.Name);
 
     }
@@ -49,6 +50,7 @@ QHash<int, QByteArray> SystemInfoModel::roleNames() const
     hash[CombatInfoHeaders] = "CombatInfoHeaders";
     hash[AssignAircraftsType] = "AssignAircraftsType";
     hash[AssignAircraftsName] = "AssignAircraftsName";
+    hash[SystemColor] = "SystemColor";
     return hash;
 }
 

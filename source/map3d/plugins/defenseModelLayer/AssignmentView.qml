@@ -20,6 +20,9 @@ Item {
     signal aircraftDoubleClicked(int TN)
     signal systemDoubleClicked(int Number)
 
+    property var hoverColor: "#add8e6"
+    property var headerColor: "#00587A"
+
     SplitView {
         y: 400
         id: splitView
@@ -123,7 +126,7 @@ Item {
                         Rectangle {
                             width: 113
                             height: 40
-                            color: '#4568dc'
+                            color: headerColor
                             Text {
                                 color: '#FFFFFF'
                                 text: rootItem.aircraftModel ? rootItem.aircraftModel.headerText(index) : "";
@@ -223,9 +226,9 @@ Item {
                                 radius: 7
                             }
                             Rectangle {
-                                opacity: 0.4
+                                opacity: 0.3
                                 color: rootItem.aircraftModel ? (rootItem.aClicked == row ? "lightskyblue" :
-                                                                                            rootItem.aHoveredIndex == row ? "darkYellow" :
+                                                                                            rootItem.aHoveredIndex == row ? hoverColor :
                                                                                                                             "transparent") : "transparent";
                                 anchors.fill: parent
                             }
@@ -292,7 +295,7 @@ Item {
                         Rectangle {
                             width: 113
                             height: 40
-                            color: '#4568dc'
+                            color: headerColor
                             Text {
                                 color: '#FFFFFF'
                                 text: rootItem.systemModel ? rootItem.systemModel.headerText(index) : "";
@@ -374,9 +377,8 @@ Item {
                             color: "transparent"
 
                             Rectangle {
-                                opacity: 0.4
-                                color: rootItem.systemModel ? (column == 4 ? SystemColor:
-                                                                             "transparent") : "transparent";
+                                opacity: 1
+                                color: rootItem.systemModel ? SystemColor: "transparent";
                                 anchors.centerIn: parent
                                 width: 70
                                 height: 23
@@ -384,9 +386,9 @@ Item {
                             }
 
                             Rectangle {
-                                opacity: 0.6
+                                opacity: 0.3
                                 color: rootItem.systemModel ? (rootItem.sClicked == row ? "lightskyblue" :
-                                                                                          rootItem.sHoveredIndex == row ? "darkYellow" :
+                                                                                          rootItem.sHoveredIndex == row ? hoverColor :
                                                                                                                           "transparent") : "transparent";
                                 anchors.fill: parent
                             }
@@ -420,7 +422,8 @@ Item {
                                 id: txt1
                                 anchors.centerIn: parent
                                 text: display
-                                color: "white"
+                                color: d_txtcolor
+                                font.bold: column == 4
                             }
                         }
                     }
