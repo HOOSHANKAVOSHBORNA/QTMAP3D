@@ -78,7 +78,7 @@ private:
     AircraftInfo mInformation;
     AircraftInfoModel *mInfomodel;
     UIHandle *mUiHandle = nullptr;
-    QQuickItem *mItem;
+    QQuickItem *mItem{nullptr};
 };
 
 #endif // INFOMODEL_H

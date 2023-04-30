@@ -509,7 +509,8 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
 //        mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
 //        mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
 //        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
-        mAircraftinformation->setTrackOff();
+        if(mAircraftinformation)
+            mAircraftinformation->setTrackOff();
     }
     if(mCurrentContextMenu){
         mCurrentContextMenu->hideMenu();
@@ -763,11 +764,13 @@ void AircraftModelNode::changeModelColor(AircraftInfo::Identify identify)
 void AircraftModelNode::showInfoWidget()
 {
     if (!mAircraftinformation)
+    {
         mAircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
-    connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
-    connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
-    connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
-    connect(mAircraftinformation->getInfo(), &AircraftInfoModel::latestPointsClicked, this, &AircraftModelNode::onLatestPointsToggled);
+        connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
+        connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
+        connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
+        connect(mAircraftinformation->getInfo(), &AircraftInfoModel::latestPointsClicked, this, &AircraftModelNode::onLatestPointsToggled);
+    }
     mAircraftinformation->show();
 }
 
