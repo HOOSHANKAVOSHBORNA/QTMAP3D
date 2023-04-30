@@ -196,6 +196,7 @@ void SystemModelNode::setInformation(const SystemInfo& info)
         mSystemInformation->setInfo(info);
     mInformation = info;
     updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 
 
 
@@ -229,6 +230,8 @@ void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
         noKillPhase(mCambatInfo.TN);
         break;
     }
+    updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
 SystemCambatInfo SystemModelNode::getSystemCombatInfo() const
@@ -246,6 +249,7 @@ void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
     mCircleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mCircleStyleActive : mCircleStyleDeactive);
     mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
 void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
@@ -260,6 +264,8 @@ void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
         mSystemInformation->addAssignment(tn, assignModelNode);
         mMapController->addNodeToLayer(assignmentModel->mLine, SYSTEMS_LAYER_NAME);
     }
+    updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
 AircraftModelNode *SystemModelNode::getAssignment(int tn) const
@@ -289,6 +295,8 @@ void SystemModelNode::removeAssignment(int tn)
         mAssignmentMap.remove(tn);
         mSystemInformation->removeAssignment(tn);
     }
+    updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
 void SystemModelNode::clearAssignments(int exceptTN)
@@ -580,12 +588,26 @@ void SystemModelNode::showInfoWidget()
 
 void SystemModelNode::updateOrCreateLabelImage()
 {
+//    qDebug() << ">>> : " << mAssignmentMap.keys().count();
+
+    int height = LABEL_IMAGE_HEIGHT + ((mAssignmentMap.keys().count()+2)/3) * 30;
+    if (mStatusInfo.Operational == SystemStatusInfo::Op2)
+        height += 50;
+
     if (!mRenderTargetImage) {
         mRenderTargetImage = new QImage(
                     LABEL_IMAGE_WIDTH,
-                    LABEL_IMAGE_HEIGHT,
+                    height,
                     QImage::Format_RGBA8888
                     );
+    } else {
+        mRenderTargetImage->~QImage();
+        mRenderTargetImage = new(mRenderTargetImage) QImage(
+                    LABEL_IMAGE_WIDTH,
+                    height,
+                    QImage::Format_RGBA8888
+                    );
+
     }
 
     if (!mLabelImage) {
@@ -670,29 +692,125 @@ void SystemModelNode::updateOrCreateLabelImage()
                          mStatusInfo.radarStatusToString(mStatusInfo.RadarSearchStatus));
 
 
-        //------------------------------------------------------------
+
+
+        //---------------------------------------------------------
+
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, 135, LABEL_IMAGE_WIDTH, 135);
 
+        textPen.setColor(QColor(255,255,255));
+        painter.setPen(textPen);
+
+        painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Assignments:");
+        textPen.setColor(mCambatInfo.phaseToColor());
+        painter.setPen(textPen);
+        painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         QString(mCambatInfo.phaseToString()));
+
+        textPen.setColor(QColor(255,255,255));
+        painter.setPen(textPen);
+
+        int h = 170;
+        const QFontMetrics fm(textFont);
+        int n = 0;
+        while (n < mAssignmentMap.values().count()) {
+
+            int indent = 0;
+            for (int llidx = 0; llidx < 3; llidx++)// two elements per line
+            {
+
+                if (n >= mAssignmentMap.values().count())
+                    break;
+
+                const auto val = mAssignmentMap.values()[n];
+
+                const QString ss = (llidx == 0 ? QStringLiteral("") : QStringLiteral(", "))
+                        + QString::number(mStatusInfo.Number);
+
+                textPen.setColor(QColor(255,255,255));
+                painter.setPen(textPen);
+
+                painter.drawText(QRect(10 + indent, h, LABEL_IMAGE_WIDTH, 30),
+                                 Qt::AlignLeft | Qt::AlignVCenter,
+                                 ss);
+                indent += fm.boundingRect(ss).width();
+
+                n++;
+            }
+
+            h += 30;
+        }
+
+
+        //------------------------------------------------------------
+
+
+
+        h = height - 60 - (mStatusInfo.Operational == SystemStatusInfo::Op2 ? 50 : 0);
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, h, LABEL_IMAGE_WIDTH, h);
+
+        h+=10;
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(Qt::white);
         static const QImage missleRedImage(":/resources/bullet_red.png");
         static const QImage missleGreenImage(":/resources/bullet_green.png");
-        for (int i = 0; i < 6; i++) {
-            if(i < mStatusInfo.MissileCount) {
+
+        if (mStatusInfo.Operational == SystemStatusInfo::NoOp) {
+            for (int i = 0; i < 9; i++) {
                 painter.drawImage(
-                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
-                            missleGreenImage,
-                            missleGreenImage.rect()
-                            );
-            } else {
-                painter.drawImage(
-                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
+                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
                             missleRedImage,
                             missleRedImage.rect()
                             );
+
+            }
+
+
+        } else {
+            for (int i = 0; i < 9; i++) {
+                if(i < mStatusInfo.MissileCount) {
+                    painter.drawImage(
+                                QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
+                                missleGreenImage,
+                                missleGreenImage.rect()
+                                );
+                } else {
+                    painter.drawImage(
+                                QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
+                                missleRedImage,
+                                missleRedImage.rect()
+                                );
+
+                }
+            }
+
+            if (mStatusInfo.Operational == SystemStatusInfo::Op2) {
+                h += 50;
+
+                for (int i = 9; i < 18; i++) {
+                    if(i < mStatusInfo.MissileCount) {
+                        painter.drawImage(
+                                    QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * (i-9), h, 20, 40),
+                                    missleGreenImage,
+                                    missleGreenImage.rect()
+                                    );
+                    } else {
+                        painter.drawImage(
+                                    QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * (i-9), h, 20, 40),
+                                    missleRedImage,
+                                    missleRedImage.rect()
+                                    );
+
+                    }
+                }
 
             }
         }
@@ -701,7 +819,7 @@ void SystemModelNode::updateOrCreateLabelImage()
     *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
 
     mLabelImage->setImage(LABEL_IMAGE_WIDTH,
-                          LABEL_IMAGE_HEIGHT,
+                          height,
                           1,
                           GL_RGBA,
                           GL_RGBA,
@@ -721,6 +839,7 @@ SystemModelNode::Assignment::Assignment(MapController *mapControler)
     mLine->setWidth(1);
     mLine->setPointWidth(5);
     mLine->setTessellation(15);
+    mLine->setShowBearing(true);
 }
 
 void SystemModelNode::Assignment::accept()

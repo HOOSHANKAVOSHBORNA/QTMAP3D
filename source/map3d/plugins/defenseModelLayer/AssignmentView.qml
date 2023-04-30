@@ -20,6 +20,9 @@ Item {
     signal aircraftDoubleClicked(int TN)
     signal systemDoubleClicked(int Number)
 
+    property var hoverColor: "#add8e6"
+    property var headerColor: "#00587A"
+
     SplitView {
         y: 400
         id: splitView
@@ -28,14 +31,31 @@ Item {
         anchors.centerIn: parent
         handle: Rectangle {
             id: handleDelegate
-            implicitWidth: 5
-            color: "red"
+            implicitWidth: 4
+//            parent.handle.onStatusChanged: function() {
+//                 handleDelegate.color =  "#D0C000"
+//            }
+            MouseArea {
+                id: test
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onPressed: function(mouse) {
+                    mouse.accepted = false
+                }
+                propagateComposedEvents: true
+                cursorShape: Qt.SizeHorCursor
+
+            }
+
+            color: test.containsMouse ? "#D0C000" : "white"
 
             Rectangle {
                 anchors.left: handleDelegate.right
-                color: (leftRectArea.containsMouse || rightRect.containsMouse) ? "#81e889"
-                                           : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
-                width: 15
+//                color: (leftRectArea.containsMouse || rightRect.containsMouse) ? "#81e889"
+//                                           : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                color: "#252525"
+                width: 0
                 height: parent.height
                 MouseArea {
                     id: rightRect
@@ -48,9 +68,10 @@ Item {
             Rectangle {
                 id: leftRect
                 anchors.right: handleDelegate.left
-                color: (leftRectArea.containsMouse || rightRect.containsMouse)? "#81e889"
-                                           : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
-                width: 15
+//                color: (leftRectArea.containsMouse || rightRect.containsMouse)? "#81e889"
+//                                           : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+                color: "#252525"
+                width: 28
                 height: parent.height
                 MouseArea {
                     id: leftRectArea
@@ -63,7 +84,7 @@ Item {
             Rectangle {
                 anchors.right: leftRect.left
                 color: "#252525"
-                width: 30
+                width: 12
                 height: parent.height
                 MouseArea {
                     anchors.fill: parent
@@ -72,15 +93,15 @@ Item {
 
             Rectangle {
                 width: 5
-                height: 32
+                height: 24
                 y: img.y
-                color: "#c2f4c6"
+                color: "#252525"
             }
             Image {
                 id: img
                 source: "qrc:/resources/refresh.png"
-                width: 32
-                height: 32
+                width: 24
+                height: 24
 
 
                 anchors.centerIn: parent
@@ -93,7 +114,16 @@ Item {
                         rootItem.aClicked = -1
                         rootItem.sClicked = -1
                     }
+                    hoverEnabled: true
+
                 }
+            }
+            ColorOverlay {
+                id: glowimg
+                anchors.fill: img
+                color: refreshimg.pressed ? "#D0C000" : refreshimg.containsMouse ? "yellow" : "white"
+                source: img
+                visible: true
             }
         }
 
@@ -106,8 +136,8 @@ Item {
             Item {
                 Layout.preferredHeight: 40
                 Layout.minimumHeight: 40
-                Layout.leftMargin: 32
-                Layout.rightMargin: 62
+                Layout.leftMargin: 24
+                Layout.rightMargin: 32
 
                 RowLayout {
                     anchors.top: parent.top
@@ -123,7 +153,7 @@ Item {
                         Rectangle {
                             width: 113
                             height: 40
-                            color: '#4568dc'
+                            color: headerColor
                             Text {
                                 color: '#FFFFFF'
                                 text: rootItem.aircraftModel ? rootItem.aircraftModel.headerText(index) : "";
@@ -214,7 +244,7 @@ Item {
                             implicitHeight:  txt.implicitHeight + 10
                             color: "transparent"
                             Rectangle {
-                                opacity: 0.6
+                                opacity: 1
                                 color: rootItem.aircraftModel ? (column == 0 ? AircraftColor:
                                                                                "transparent") : "transparent";
                                 anchors.centerIn: parent
@@ -223,9 +253,9 @@ Item {
                                 radius: 7
                             }
                             Rectangle {
-                                opacity: 0.4
+                                opacity: 0.3
                                 color: rootItem.aircraftModel ? (rootItem.aClicked == row ? "lightskyblue" :
-                                                                                            rootItem.aHoveredIndex == row ? "darkYellow" :
+                                                                                            rootItem.aHoveredIndex == row ? hoverColor :
                                                                                                                             "transparent") : "transparent";
                                 anchors.fill: parent
                             }
@@ -258,7 +288,8 @@ Item {
                                 id: txt
                                 anchors.centerIn: parent
                                 text: rootItem.aircraftModel ? display : "";
-                                color: "white"
+                                color: column == 0? "black" : "white"
+                                font.bold: column == 0
                             }
                         }
                     }
@@ -276,7 +307,7 @@ Item {
                 Layout.fillWidth: true;
                 Layout.preferredHeight: 40
                 Layout.minimumHeight: 40
-                Layout.leftMargin: 43
+                Layout.leftMargin: 32
 
                 Row {
                     anchors.top: parent.top
@@ -292,7 +323,7 @@ Item {
                         Rectangle {
                             width: 113
                             height: 40
-                            color: '#4568dc'
+                            color: headerColor
                             Text {
                                 color: '#FFFFFF'
                                 text: rootItem.systemModel ? rootItem.systemModel.headerText(index) : "";
@@ -306,7 +337,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.topMargin: 15
-                Layout.leftMargin: 43
+                Layout.leftMargin: 32
                 TableView {
                     id: systems
                     model: rootItem.systemModel
@@ -374,9 +405,8 @@ Item {
                             color: "transparent"
 
                             Rectangle {
-                                opacity: 0.4
-                                color: rootItem.systemModel ? (column == 4 ? SystemColor:
-                                                                             "transparent") : "transparent";
+                                opacity: 1
+                                color:  "transparent";
                                 anchors.centerIn: parent
                                 width: 70
                                 height: 23
@@ -384,9 +414,9 @@ Item {
                             }
 
                             Rectangle {
-                                opacity: 0.6
+                                opacity: 0.3
                                 color: rootItem.systemModel ? (rootItem.sClicked == row ? "lightskyblue" :
-                                                                                          rootItem.sHoveredIndex == row ? "darkYellow" :
+                                                                                          rootItem.sHoveredIndex == row ? hoverColor :
                                                                                                                           "transparent") : "transparent";
                                 anchors.fill: parent
                             }
@@ -420,7 +450,9 @@ Item {
                                 id: txt1
                                 anchors.centerIn: parent
                                 text: display
-                                color: "white"
+                                color: column == 4? SystemColor : d_txtcolor
+
+                                font.bold: column == 4
                             }
                         }
                     }

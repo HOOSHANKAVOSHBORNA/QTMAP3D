@@ -67,19 +67,18 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
 
     case BackColorRole:
     {
-        const static auto backColorRole = QVariant::fromValue<QColor>(QColor("transparent"));
-
-        return backColorRole;
-
-        break;
+        switch (index.column()) {
+        case 0: return QVariant::fromValue<QColor>(mAircraftInfoListProxy[static_cast<size_t>(index.row())]->aircraftColor());
+        default : return QVariant::fromValue<QString>("transparent");
+        }
     }
 
     case TextColorRole:
     {
-        const static auto textColorRole = QVariant::fromValue<QColor>(QColor("white"));
-
-        return textColorRole;
-        break;
+        switch (index.column()) {
+            case 0: return QVariant::fromValue<QColor>(QColor("black"));
+            default: return QVariant::fromValue<QColor>(QColor("white"));
+        }
     }
 
     case HeaderTextRole:

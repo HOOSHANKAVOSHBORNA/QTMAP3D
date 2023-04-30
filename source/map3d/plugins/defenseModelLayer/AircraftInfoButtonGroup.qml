@@ -2,6 +2,8 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
+import QtGraphicalEffects 1.13
+
 
 Item {
     id:rootItem
@@ -84,31 +86,34 @@ Item {
                     opacity: 0.0
                 }
                 contentItem: Item {
+                    Image {
+                        id: img
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: parent.top
+                        source: iconUrl
+                        sourceSize: Qt.size(24,24)
+                        width: 24
+                        height:24
+                    }
+                    ColorOverlay {
+                        id: glowimg
+                        anchors.fill: img
+                        color: txt.color
+                        source: img
+                    }
 
-                    Column {
-                        anchors.centerIn: parent
-                        spacing: 5
-                        Image {
-                            anchors.horizontalCenter: parent.horizontalCenter
-
-                            source: iconUrl
-                            sourceSize: Qt.size(24,24)
-                            width: 24
-                            height:24
-                        }
-
-                        Text {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: control.text
-                            font: control.font
-                            opacity: enabled ? 1.0 : 0.3
-                            color: buttonsModel.get(index).checkable ? (buttonsModel.get(index).checked ? _checked :
-                                                                              (hovered ?  _colorHover : "#FFFFFF")) : (hovered ? "#FFCC00" :  "#FFFFFF")
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-
+                    Text {
+                        id: txt
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
+                        text: control.text
+                        font: control.font
+                        opacity: enabled ? 1.0 : 0.3
+                        color: buttonsModel.get(index).checkable ? (buttonsModel.get(index).checked ? _checked :
+                                                                          (hovered ?  _colorHover : "#FFFFFF")) : (hovered ? "#FFCC00" :  "#FFFFFF")
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
                     }
                 }
 

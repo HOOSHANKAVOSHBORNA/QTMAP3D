@@ -306,13 +306,20 @@ struct SystemStatusInfo
         NoData
     };
 
+    enum OperationStatus {
+        NoOp = 0,
+        Op1  = 1,
+        Op2  = 2
+    };
+
+
     int Number = -1;
     //status info
     QString ReceiveTime = "------";
     QString Simulation = "------";
     RadarStatus BCCStatus;
     RadarStatus RadarSearchStatus;
-    QString Operational = "------";
+    OperationStatus Operational = NoOp;
     int MissileCount = -1;
     QString RadarMode = "------";
     QString BCCStatusToString() {
@@ -335,6 +342,24 @@ struct SystemStatusInfo
             result = "NoData";
             break;
         }
+        return result;
+    }
+
+    QString operationalToString() const {
+
+        QString result = "NoOp";
+        switch(Operational) {
+        case NoOp:
+            result = "NoOp";
+            break;
+        case Op1:
+            result = "Op1";
+            break;
+        case Op2:
+            result = "Op2";
+            break;
+        }
+
         return result;
     }
 };
