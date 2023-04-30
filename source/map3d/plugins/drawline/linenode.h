@@ -53,6 +53,9 @@ public:
     bool getSmooth() const;
     void setSmooth(bool Smooth);
 
+    bool getLenght() const;
+    void setLenght(bool lenght);
+
 private:
     osg::Image *updateLenghtLabel(double lenght, double bearing);
 private:
@@ -64,6 +67,7 @@ private:
     float mPointWidth{5};
     float mHeight{0};
     bool mBearing{true};
+    bool mLenght{true};
     bool mPointVisible{false};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
