@@ -588,7 +588,7 @@ void SystemModelNode::showInfoWidget()
 
 void SystemModelNode::updateOrCreateLabelImage()
 {
-    qDebug() << ">>> : " << mAssignmentMap.keys().count();
+//    qDebug() << ">>> : " << mAssignmentMap.keys().count();
 
     int height = LABEL_IMAGE_HEIGHT + ((mAssignmentMap.keys().count()+2)/3) * 30;
     if (mStatusInfo.Operational == SystemStatusInfo::Op2)
