@@ -8,7 +8,7 @@ MeasureHeight::MeasureHeight(MapController *mapController)
     mHLine->setColor(osgEarth::Color::White);
     mVLine->setWidth(5);
     mHLine->setWidth(5);
-    mHLine->showLenght(true);
+    mHLine->showLenght(false);
     mHLine->setIsHeight(true);
     mVLine->showLenght(false);
     mVLine->setPointVisible(false);
@@ -16,6 +16,11 @@ MeasureHeight::MeasureHeight(MapController *mapController)
     addChild(mVLine);
     addChild(mHLine);
     mStarted = false;
+    mLabelNode = new osgEarth::Annotation::PlaceNode();
+    mLabelNode->setDynamic(true);
+    updateHeightLabel(0);
+    mLabelNode->setIconImage(mImageLabel);
+    addChild(mLabelNode);
 }
 
 void MeasureHeight::setFirstPoint(osgEarth::GeoPoint P1)
@@ -27,6 +32,11 @@ void MeasureHeight::setFirstPoint(osgEarth::GeoPoint P1)
 void MeasureHeight::setSecondPoint(osgEarth::GeoPoint P2)
 {
     mSecondPoint = P2;
+    auto lenght = (mJointPoint.vec3d()-mFirstPoint.vec3d()).length();
+    updateHeightLabel(lenght);
+    osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+                                (mJointPoint.vec3d() + mFirstPoint.vec3d()) / 2);
+    mLabelNode->setPosition(midPoint);
     draw();
 }
 
@@ -61,6 +71,62 @@ void MeasureHeight::draw()
 double MeasureHeight::height()
 {
     return  mSecondPoint.z() - mFirstPoint.z();
+}
+
+void MeasureHeight::updateHeightLabel(double height)
+{
+    if (!mRenderImage) {
+        mRenderImage = new QImage(
+                    LABEL_IMAGE_WIDTH,
+                    LABEL_IMAGE_HEIGHT,
+                    QImage::Format_RGBA8888
+                    );
+    }
+    if(!mImageLabel.valid())
+        mImageLabel = new osg::Image;
+
+    {
+
+        mRenderImage->fill(QColor(Qt::red));
+        QPainter painter(mRenderImage);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+        static const QBrush backgroundBrush = QBrush(QColor(0, 0, 0, int(255 * 0.3f)));
+        static const QFont textFont("SourceSansPro", 10, QFont::Normal);
+        static const QPen  textPen(QColor(255, 255, 255));
+
+        painter.setBrush(backgroundBrush);
+        painter.drawRoundedRect(
+                    mRenderImage->rect(),
+                    10,2);
+
+        painter.setPen(textPen);
+        painter.setFont(textFont);
+
+        if (height >= 1000){
+            height/=1000;
+            QString str = QObject::tr("%1 km").arg(height,0,'f',2);
+            painter.drawText(0, 0, LABEL_IMAGE_WIDTH, 20,
+                             Qt::AlignCenter|Qt::AlignVCenter,
+                             str);
+        }
+        else{
+            QString str = QObject::tr("%1 m").arg(height,0,'f',2);
+            painter.drawText(0, 0, LABEL_IMAGE_WIDTH, 20,
+                             Qt::AlignCenter|Qt::AlignVCenter,
+                             str);
+        }
+    }
+    *mRenderImage = mRenderImage->mirrored(false, true);
+
+    mImageLabel->setImage(LABEL_IMAGE_WIDTH,
+                    LABEL_IMAGE_HEIGHT,
+                    1,
+                    GL_RGBA,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    mRenderImage->bits(),
+                    osg::Image::AllocationMode::NO_DELETE);
 }
 
 float MeasureHeight::getWidth() const

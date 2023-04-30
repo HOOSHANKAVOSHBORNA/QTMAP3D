@@ -33,6 +33,7 @@ void DrawRect::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 addNodeToLayer(mIconNode);
                 mRectProperties = new RectProperties(mRect, mQmlEngine, mUiHandle);
                 mRectProperties->show();
+
             }
             else {
                 mEnterRectZone = false;

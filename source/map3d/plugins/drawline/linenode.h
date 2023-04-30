@@ -63,7 +63,7 @@ private:
     float mWidth{5};
     float mPointWidth{5};
     float mHeight{0};
-    bool mBearing{false};
+    bool mBearing{true};
     bool mPointVisible{false};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
@@ -72,8 +72,8 @@ private:
     //Lenght part
     osg::ref_ptr<osg::Group> mLabelGroup;
     QImage *mRenderImage{nullptr};
-    static constexpr int LABEL_IMAGE_WIDTH = 100;
-    static constexpr int LABEL_IMAGE_HEIGHT = 50;
+    static constexpr int LABEL_IMAGE_WIDTH = 90;
+    static constexpr int LABEL_IMAGE_HEIGHT = 40;
     bool mIsHeight{false};
 
 };
