@@ -667,7 +667,7 @@ void AircraftModelNode::onLatestPointsToggled(bool check) {
 
 void AircraftModelNode::onTrackButtonToggled(bool check)
 {
-    std::cout << check << std::endl;
+    //std::cout << check << std::endl;
     if(check)
         mMapController->setTrackNode(getGeoTransform());
     else
@@ -702,7 +702,7 @@ void AircraftModelNode::onModeChanged(bool is3DView)
 
 void AircraftModelNode::onContextmenuItemClicked(int index,  QString systemName)
 {
-    std::cout << index << ", " << systemName.toStdString() << std::endl;
+    //std::cout << index << ", " << systemName.toStdString() << std::endl;
 }
 
 void AircraftModelNode::changeModelColor(AircraftInfo::Identify identify)

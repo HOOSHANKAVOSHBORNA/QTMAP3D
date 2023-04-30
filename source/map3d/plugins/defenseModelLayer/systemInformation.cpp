@@ -115,7 +115,7 @@ QStringList SystemInfoModel::getStatusInfo() const
                         mSystemStatusInfo.Simulation,
                         mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.BCCStatus),
                         mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.RadarSearchStatus),
-                        mSystemStatusInfo.Operational,
+                        mSystemStatusInfo.operationalToString(),
                         mSystemStatusInfo.MissileCount == -1 ? "------" : QString::number(mSystemStatusInfo.MissileCount),
                         mSystemStatusInfo.RadarMode};
 }

@@ -77,9 +77,9 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         });
 
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        if(systemCambatInfo->Phase != SystemCambatInfo::Search)
-            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
-        else
+        if(systemCambatInfo->Phase != SystemCambatInfo::Search) {
+            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
+        } else
         {
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
             //-----------------------------------
@@ -291,7 +291,7 @@ void Demo::createSystemInfo()
         systemStatusInfo.Simulation = "simulation";
         systemStatusInfo.BCCStatus = SystemStatusInfo::S;//s, us
         systemStatusInfo.RadarSearchStatus = SystemStatusInfo::S;//s, us
-        systemStatusInfo.Operational = "operational";
+        systemStatusInfo.Operational = static_cast<SystemStatusInfo::OperationStatus>(qrand() % 3);
         systemStatusInfo.MissileCount = 6;
         systemStatusInfo.RadarMode = "rMode";
         //combat info
