@@ -82,42 +82,39 @@ Item {
                     opacity: 0.0
                 }
                 contentItem: Item {
+                    Image {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: parent.top
+                        id: img
+                        source: iconUrl
+                        sourceSize: Qt.size(24,24)
+                        width: 24
+                        height:24
 
-                    Column {
-                        anchors.centerIn: parent
-                        spacing: 5
-                        Image {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            id: img
-                            source: iconUrl
-                            sourceSize: Qt.size(24,24)
-                            width: 24
-                            height:24
-
-//                            ColorOverlay {
-//                                id: glowimg
-//                                color: txt.color
-//                                source: img
-//                                anchors.fill: img
-//                                cached: false
-//                            }
-                        }
-
-                        Text {
-                            id: txt
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            text: control.text
-                            font: control.font
-                            opacity: enabled ? 1.0 : 0.3
-                            color: buttonsModel.get(index).checkable ? (buttonsModel.get(index).checked ? _checked :
-                                                                              (hovered ?  _colorHover : "#FFFFFF")) : (hovered ? "#FFCC00" :  "#FFFFFF")
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
 
                     }
+                    ColorOverlay {
+                        id: glowimg
+                        color: txt.color
+                        source: img
+                        anchors.fill: img
+                    }
+                    Text {
+                        id: txt
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.bottom: parent.bottom
+                        text: control.text
+                        font: control.font
+                        opacity: enabled ? 1.0 : 0.3
+                        color: buttonsModel.get(index).checkable ? (buttonsModel.get(index).checked ? _checked :
+                                                                          (hovered ?  _colorHover : "#FFFFFF")) : (hovered ? "#FFCC00" :  "#FFFFFF")
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
+
                 }
+
 
                 onClicked: function() {
                     clickCallback(!buttonsModel.get(index).checked)
