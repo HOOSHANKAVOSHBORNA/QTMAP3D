@@ -55,7 +55,7 @@ QHash<int, QByteArray> SystemInfoModel::roleNames() const
 }
 
 
-void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCambatInfo &systemCombatInfo)
+void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCombatInfo &systemCombatInfo)
 {
     mSystemInfo = systemInfo;
     mSystemStatusInfo = systemStatusInfo;
@@ -64,7 +64,7 @@ void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemSt
 
 }
 
-void SystemInfoModel::setCombatInfo(const SystemCambatInfo &combatInfo)
+void SystemInfoModel::setCombatInfo(const SystemCombatInfo &combatInfo)
 {
     mSystemCombatInfo = combatInfo;
     QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
@@ -172,18 +172,18 @@ void SystemInfoModel::removeAssignment(int number)
 
 
 SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
-                                     SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo,
+                                     SystemStatusInfo systemStatusInfo, SystemCombatInfo systemCombatInfo,
                                      QObject *parent) :
     QObject(parent), mUiHandle(uiHandle), mInformation(systemInfo)
 {
     QQmlComponent *comp = new QQmlComponent(qmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, systemStatusInfo, systemCambatInfo](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, systemStatusInfo, systemCombatInfo](){
 
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
             mInfoModel = new SystemInfoModel;
 
-            mInfoModel->setInformtion(mInformation, systemStatusInfo, systemCambatInfo);
+            mInfoModel->setInformtion(mInformation, systemStatusInfo, systemCombatInfo);
             mItem->setProperty("model", QVariant::fromValue<SystemInfoModel*>(mInfoModel));
 //            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
@@ -204,7 +204,7 @@ void SystemInformation::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
     mInfoModel->setStatusInfo(systemStatusInfo);
 }
 
-void SystemInformation::setCombatInfo(const SystemCambatInfo &systemCombatInfo)
+void SystemInformation::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
 {
     mInfoModel->setCombatInfo(systemCombatInfo);
 }

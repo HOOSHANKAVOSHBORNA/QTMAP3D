@@ -32,8 +32,8 @@ public:
     SystemInfo getStationInfo() {return mSystemInfo;}
     QHash<int, QByteArray> roleNames() const override;
 
-    void setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCambatInfo &systemCombatInfo);
-    void setCombatInfo(const SystemCambatInfo &combatInfo);
+    void setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCombatInfo &systemCombatInfo);
+    void setCombatInfo(const SystemCombatInfo &combatInfo);
     void setInfo(const SystemInfo &Info);
     void setStatusInfo(const SystemStatusInfo &statusInfo);
     QStringList getMainInfo() const;
@@ -61,7 +61,7 @@ Q_SIGNALS:
 private:
     SystemInfo mSystemInfo;
     SystemStatusInfo mSystemStatusInfo;
-    SystemCambatInfo mSystemCombatInfo;
+    SystemCombatInfo mSystemCombatInfo;
     QMap<int, const AircraftModelNode*> mAircraftsAssigned;
 };
 
@@ -70,11 +70,11 @@ class SystemInformation : public QObject
     Q_OBJECT
 
 public:
-    SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo, QObject *parent = nullptr);
+    SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, SystemStatusInfo systemStatusInfo, SystemCombatInfo systemCombatInfo, QObject *parent = nullptr);
     SystemInfoModel *getInfo() {return mInfoModel;}
     void setInfo(const SystemInfo &systemInfo);
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
-    void setCombatInfo(const SystemCambatInfo &systemCombatInfo);
+    void setCombatInfo(const SystemCombatInfo &systemCombatInfo);
 
     void addAssignment(int number, AircraftModelNode *aircraft);
     void removeAssignment(int number);

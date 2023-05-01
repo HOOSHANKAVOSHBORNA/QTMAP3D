@@ -363,7 +363,7 @@ struct SystemStatusInfo
         return result;
     }
 };
-struct SystemCambatInfo
+struct SystemCombatInfo
 {
     enum Phases{
         Search,
@@ -444,7 +444,7 @@ signals:
     //--system-------------------------------------------------
     void systemInfoChanged(SystemInfo& systemInfo);
     void systemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
-    void systemCambatInfoChanged(SystemCambatInfo& systemCambatInfo);
+    void systemCombatInfoChanged(SystemCombatInfo& systemCombatInfo);
     //--station------------------------------------------------
     void stationInfoChanged(StationInfo& stationInfo);
 public slots:
@@ -459,7 +459,7 @@ public:
     void updateAircraftInfo();
     void createStationInfo();
     void createSystemInfo();
-    void updateSystemCambatInfo();
+    void updateSystemCombatInfo();
 public:
     DefenseDataManager* mDefenseDataManager;
     QList<AircraftInfo> mAircraftList;
@@ -467,7 +467,7 @@ public:
 
     QList<SystemInfo> systemList;
     QList<SystemStatusInfo> systemStatusList;
-    QList<SystemCambatInfo> SystemCambatList;
+    QList<SystemCombatInfo> SystemCombatList;
 };
 
 #endif // DEFENSEDATAMANAGER_H

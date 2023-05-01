@@ -170,7 +170,7 @@ void ListManager::setSystemInfo(const SystemInfo &systemInfo)
     }
 }
 
-void ListManager::setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo)
+void ListManager::setSystemCombatInfo(const SystemCombatInfo &systemCombatInfo)
 {
     if (mSystemTableModel) {
         mSystemTableModel->updateItemData(systemCombatInfo);

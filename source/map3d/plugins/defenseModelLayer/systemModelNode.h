@@ -25,8 +25,8 @@ public:
     void setInformation(const SystemInfo &info);
     SystemInfo getInformation() const;
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
-    void setCambatInfo(const SystemCambatInfo &systemCambatInfo);
-    SystemCambatInfo getSystemCombatInfo() const;
+    void setCombatInfo(const SystemCombatInfo &systemCombatInfo);
+    SystemCombatInfo getSystemCombatInfo() const;
 
     void addAssignment(int tn, AircraftModelNode *assignModelNode);
     AircraftModelNode *getAssignment(int tn) const;
@@ -73,7 +73,7 @@ private:
     MapController* mMapController{nullptr};
     SystemInfo mInformation;
     SystemStatusInfo mStatusInfo;
-    SystemCambatInfo mCambatInfo;
+    SystemCombatInfo mCombatInfo;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;

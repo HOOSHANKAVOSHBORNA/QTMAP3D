@@ -15,7 +15,7 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *li
     //--system----------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::systemCambatInfoChanged,this ,&DataManager::onSystemCambatInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemCombatInfoChanged,this ,&DataManager::onSystemCombatInfoChanged);
     //--station---------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
 
@@ -63,19 +63,19 @@ void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
         mListManager->setSystemStatusInfo(systemStatusInfo);
 }
 
-void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
+void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 {
-    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemCambatInfo.Number);
-    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCambatInfo.TN);
+    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemCombatInfo.Number);
+    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCombatInfo.TN);
     if(systemModelNode && aircraftModelNode)
     {
-        if(systemCambatInfo.Phase == SystemCambatInfo::Lock || systemCambatInfo.Phase == SystemCambatInfo::Fire)
+        if(systemCombatInfo.Phase == SystemCombatInfo::Lock || systemCombatInfo.Phase == SystemCombatInfo::Fire)
         {
             //--remove system assignment except lock or fire TN----------------------------------
             auto aircrafts = systemModelNode->getAssignments();
             for(auto aircraft: aircrafts)
             {
-                if(systemCambatInfo.TN != aircraft->getInformation().TN)
+                if(systemCombatInfo.TN != aircraft->getInformation().TN)
                 {
                     emit mDefenseDataManager->cancelAircraftAssigned(aircraft->getInformation().TN,
                                                                      systemModelNode->getInformation().Number);
@@ -84,17 +84,17 @@ void DataManager::onSystemCambatInfoChanged(SystemCambatInfo &systemCambatInfo)
                     mListManager->cancelAssign(aircraft->getInformation().TN, systemModelNode->getInformation().Number);
                 }
             }
-            systemModelNode->clearAssignments(systemCambatInfo.TN);
-            mListManager->cancelSystemAssignmentsExcept(systemCambatInfo.TN, systemCambatInfo.Number);
+            systemModelNode->clearAssignments(systemCombatInfo.TN);
+            mListManager->cancelSystemAssignmentsExcept(systemCombatInfo.TN, systemCombatInfo.Number);
             //-------------
         }
         //update information-----------------------------------------------------
-        systemModelNode->setCambatInfo(systemCambatInfo);
+        systemModelNode->setCombatInfo(systemCombatInfo);
         //add update list view-----------------------------------------------------------------
         if (mListManager)
-            mListManager->setSystemCombatInfo(systemCambatInfo);
+            mListManager->setSystemCombatInfo(systemCombatInfo);
 
-        if(systemCambatInfo.Phase == SystemCambatInfo::Kill)
+        if(systemCombatInfo.Phase == SystemCombatInfo::Kill)
         {
             //--remove aircraft assignment---------------------------------------
             auto systems = aircraftModelNode->getAssignments();

@@ -181,7 +181,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
     if (!mSystemInformation) {
-        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
+        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCombatInfo, this);
         connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
         connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
         connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
@@ -208,36 +208,36 @@ SystemInfo SystemModelNode::getInformation() const
     return mInformation;
 }
 
-void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
+void SystemModelNode::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
 {
-    mCambatInfo = systemCambatInfo;
+    mCombatInfo = systemCombatInfo;
     if (mSystemInformation)
-        mSystemInformation->setCombatInfo(systemCambatInfo);
+        mSystemInformation->setCombatInfo(systemCombatInfo);
 
-    switch (mCambatInfo.Phase) {
-    case SystemCambatInfo::Search:
+    switch (mCombatInfo.Phase) {
+    case SystemCombatInfo::Search:
         searchPhase();
         break;
-    case SystemCambatInfo::Lock:
-        lockPhase(mCambatInfo.TN);
+    case SystemCombatInfo::Lock:
+        lockPhase(mCombatInfo.TN);
         break;
-    case SystemCambatInfo::Fire:
-        firePhase(mCambatInfo.TN);
+    case SystemCombatInfo::Fire:
+        firePhase(mCombatInfo.TN);
         break;
-    case SystemCambatInfo::Kill:
-        killPhase(mCambatInfo.TN);
+    case SystemCombatInfo::Kill:
+        killPhase(mCombatInfo.TN);
         break;
-    case SystemCambatInfo::NoKill:
-        noKillPhase(mCambatInfo.TN);
+    case SystemCombatInfo::NoKill:
+        noKillPhase(mCombatInfo.TN);
         break;
     }
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
-SystemCambatInfo SystemModelNode::getSystemCombatInfo() const
+SystemCombatInfo SystemModelNode::getSystemCombatInfo() const
 {
-    return mCambatInfo;
+    return mCombatInfo;
 }
 
 void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
@@ -576,7 +576,7 @@ void SystemModelNode::noKillPhase(int tn)
 void SystemModelNode::showInfoWidget()
 {
 //    if (!mSystemInformation) {
-//        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
+//        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCombatInfo, this);
 //        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
 //        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
 //        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
@@ -707,11 +707,11 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Assignments:");
-        textPen.setColor(mCambatInfo.phaseToColor());
+        textPen.setColor(mCombatInfo.phaseToColor());
         painter.setPen(textPen);
         painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         QString(mCambatInfo.phaseToString()));
+                         QString(mCombatInfo.phaseToString()));
 
         textPen.setColor(QColor(255,255,255));
         painter.setPen(textPen);

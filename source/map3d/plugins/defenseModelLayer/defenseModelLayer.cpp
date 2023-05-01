@@ -127,10 +127,10 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
                 {
                     auto systemModelNode = aircrafModelNode->getAssignments().first();
                     if(systemModelNode){
-                        SystemCambatInfo cambatInfo;
-                        cambatInfo.Phase = SystemCambatInfo::Fire;
-                        cambatInfo.TN = aircrafModelNode->getInformation().TN;
-                        systemModelNode->setCambatInfo(cambatInfo);
+                        SystemCombatInfo CombatInfo;
+                        CombatInfo.Phase = SystemCombatInfo::Fire;
+                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+                        systemModelNode->setCombatInfo(CombatInfo);
                     }
                 }
             }
@@ -147,10 +147,10 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
                 {
                     auto systemModelNode = aircrafModelNode->getAssignments().first();
                     if(systemModelNode){
-                        SystemCambatInfo cambatInfo;
-                        cambatInfo.Phase = SystemCambatInfo::Kill;
-                        cambatInfo.TN = aircrafModelNode->getInformation().TN;
-                        systemModelNode->setCambatInfo(cambatInfo);
+                        SystemCombatInfo CombatInfo;
+                        CombatInfo.Phase = SystemCombatInfo::Kill;
+                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+                        systemModelNode->setCombatInfo(CombatInfo);
                     }
                 }
             }

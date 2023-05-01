@@ -171,7 +171,7 @@ void SystemTableModel::onAircraftClicked(int TN)
             });
             mSystemInfoListProxy.push_back(*it);
 
-            auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [system](QSharedPointer<SystemCambatInfo> &item){
+            auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [system](QSharedPointer<SystemCombatInfo> &item){
                 return item->Number == system.Number;
             });
             mSystemCombatInfoListProxy.push_back(*it2);
@@ -210,16 +210,16 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
         mSystemInfoList.push_back(isp);
 
         //------------------ add combatinfo if doesn't exist
-        const auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [systemInfo](QSharedPointer<SystemCambatInfo> &item){
+        const auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [systemInfo](QSharedPointer<SystemCombatInfo> &item){
             return item->Number == systemInfo.Number;
         });
         const auto it3 = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(), [systemInfo](QSharedPointer<SystemStatusInfo> &item){
             return item->Number == systemInfo.Number;
         });
         if (it2 == mSystemCombatInfoList.end()) {
-            SystemCambatInfo tmp1;
+            SystemCombatInfo tmp1;
             tmp1.Number = systemInfo.Number;
-            tmp1.Phase = SystemCambatInfo::Search;
+            tmp1.Phase = SystemCombatInfo::Search;
             updateItemData(tmp1);
         }
         if (it3 == mSystemStatusInfoList.end()) {
@@ -286,28 +286,28 @@ void SystemTableModel::updateItemData(const SystemStatusInfo &systemStatusInfo)
 //    endResetModel();
 }
 
-void SystemTableModel::updateItemData(const SystemCambatInfo &systemCambatInfo)
+void SystemTableModel::updateItemData(const SystemCombatInfo &systemCombatInfo)
 {
     bool update = false;
     for (auto system : mSystemInfoList) {
-        if (system->Number == systemCambatInfo.Number)
+        if (system->Number == systemCombatInfo.Number)
             update = true;
     }
     if (update) {
         beginResetModel();
 
         const auto it = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(),
-                                     [systemCambatInfo](const QSharedPointer<SystemCambatInfo>& itemInfo){
-            return itemInfo->Number == systemCambatInfo.Number;
+                                     [systemCombatInfo](const QSharedPointer<SystemCombatInfo>& itemInfo){
+            return itemInfo->Number == systemCombatInfo.Number;
         });
 
 
         if (it != mSystemCombatInfoList.end()) {
-            *(*it) = systemCambatInfo;
+            *(*it) = systemCombatInfo;
         } else {
-            QSharedPointer<SystemCambatInfo> isp;
-            isp.reset(new SystemCambatInfo);
-            *(isp) = systemCambatInfo;
+            QSharedPointer<SystemCombatInfo> isp;
+            isp.reset(new SystemCombatInfo);
+            *(isp) = systemCombatInfo;
             mSystemCombatInfoList.push_back(isp);
         }
         if (mMode == "TableModel" || mTN == -1) {
