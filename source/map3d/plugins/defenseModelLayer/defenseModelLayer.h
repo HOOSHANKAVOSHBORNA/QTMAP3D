@@ -64,6 +64,10 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
     virtual void mouseMoveEvent(QMouseEvent* event)override;
+public:
+    MapController *mMapController{nullptr};
+    UIHandle* mUIHandle{nullptr};
+    QQmlEngine *mQmlEngine{nullptr};
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
@@ -71,10 +75,6 @@ private:
     QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
     DefenseModelNode* mSelectedModelNode{nullptr};
     DefenseModelNode* mOnMoveModelNode{nullptr};
-
-    MapController *mMapController;
-    UIHandle* mUIHandle;
-    QQmlEngine *mQmlEngine = nullptr;
     int mPreCameraRange{0};
 
 //    ListManager *mListManager = nullptr;

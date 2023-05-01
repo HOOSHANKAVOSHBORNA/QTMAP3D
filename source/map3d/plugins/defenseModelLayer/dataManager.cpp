@@ -6,11 +6,12 @@
 DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *listManager, DefenseModelLayer *defenseModelLayer):
     mDefenseDataManager(defenseDataManager),
     mListManager(listManager),
-    mDefenseModelLayer(defenseModelLayer)
+    mDefenseModelLayer(defenseModelLayer),
+    mAircraftDataManager(new AircraftDataManager(defenseModelLayer))
 {
     //--aircraft--------------------------------------------------------
-    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
+    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,mAircraftDataManager ,&AircraftDataManager::onInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft, mAircraftDataManager, &AircraftDataManager::onClear);
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
     //--system----------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);

@@ -4,6 +4,7 @@
 #include "defenseModelLayer.h"
 #include "listManager.h"
 #include "defenseDataManager.h"
+#include "aircraftDataManager.h"
 
 class DataManager: public QObject
 {
@@ -14,7 +15,7 @@ public slots:
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
     void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
-    void onSystemCombatInfoChanged(SystemCombatInfo& systemCombatInfo);
+    void onSystemCombatInfoChanged(SystemCombatInfo& systemCambatInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
     void onClearAircraft(int tn);
     void onAircraftAssignedResponse(int tn, int systemNo, bool result);
@@ -26,6 +27,7 @@ private:
     DefenseDataManager *mDefenseDataManager{nullptr};
     ListManager *mListManager{nullptr};
     DefenseModelLayer *mDefenseModelLayer{nullptr};
+    AircraftDataManager *mAircraftDataManager;
 };
 
 #endif // DATAMANAGER_H
