@@ -344,33 +344,42 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
     if(aircraftModelNode){
         if(mSelectedModelNode) {
             //mSelectedModelNode->select(false);
+            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
             mSelectedModelNode->updateColors();
         }
+        mSelectedModelNode = aircraftModelNode;
         aircraftModelNode->onLeftButtonClicked(true);
         aircraftModelNode->goOnTrack();
-        mSelectedModelNode = aircraftModelNode;
+        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+        mSelectedModelNode->updateColors();
     }
 
     StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(defenseModelNode);
     if(stationModelNode){
         if(mSelectedModelNode) {
             //mSelectedModelNode->select(false);
+            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
             mSelectedModelNode->updateColors();
         }
+        mSelectedModelNode = stationModelNode;
         stationModelNode->onLeftButtonClicked(true);
         stationModelNode->goOnTrack();
-        mSelectedModelNode = stationModelNode;
+        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+        mSelectedModelNode->updateColors();
     }
 
     SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(defenseModelNode);
     if(systemModelNode){
         if(mSelectedModelNode) {
             //mSelectedModelNode->select(false);
+            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
             mSelectedModelNode->updateColors();
         }
+        mSelectedModelNode = systemModelNode;
         systemModelNode->onLeftButtonClicked(true);
         systemModelNode->goOnTrack();
-        mSelectedModelNode = systemModelNode;
+        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+        mSelectedModelNode->updateColors();
     }
 }
 
