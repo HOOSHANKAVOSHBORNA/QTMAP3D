@@ -731,7 +731,7 @@ void SystemModelNode::updateOrCreateLabelImage()
                 const auto val = mAssignmentMap.values()[n];
 
                 const QString ss = (llidx == 0 ? QStringLiteral("") : QStringLiteral(", "))
-                        + QString::number(mStatusInfo.Number);
+                        + QString::number(val->mModelNode->getInformation().TN);
 
                 textPen.setColor(QColor(255,255,255));
                 painter.setPen(textPen);
