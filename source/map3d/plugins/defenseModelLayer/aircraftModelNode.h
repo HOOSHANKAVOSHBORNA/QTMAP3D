@@ -5,7 +5,7 @@
 #include "mapcontroller.h"
 #include "plugininterface.h"
 #include "listManager.h"
-#include "aircraftInformation.h"
+#include "aircraftInfoItem.h"
 #include "linenode.h"
 #include "contextMenu.h"
 
@@ -90,7 +90,7 @@ private:
     osg::ref_ptr<LineNode> mLatestPointLine;
     osg::ref_ptr<LineNode> mTempLine;
 
-    AircraftInformation *mAircraftinformation{nullptr};
+    AircraftInfoItem *mAircraftinformation{nullptr};
 
     static osg::ref_ptr<osg::Node> mAircraft3DRef;
     static osg::ref_ptr<osg::Node> mFighter3DRef;

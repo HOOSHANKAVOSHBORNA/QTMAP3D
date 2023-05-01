@@ -1,4 +1,4 @@
-#include "systemInformation.h"
+#include "systemInfoItem.h"
 #include "plugininterface.h"
 #include <QQmlEngine>
 #include "aircraftModelNode.h"
@@ -171,7 +171,7 @@ void SystemInfoModel::removeAssignment(int number)
 }
 
 
-SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
+SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
                                      SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo,
                                      QObject *parent) :
     QObject(parent), mUiHandle(uiHandle), mInformation(systemInfo)
@@ -193,33 +193,33 @@ SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
     comp->loadUrl(QUrl("qrc:/modelplugin/SystemInfoView.qml"));
 }
 
-void SystemInformation::setInfo(const SystemInfo &systemInfo)
+void SystemInfoItem::setInfo(const SystemInfo &systemInfo)
 {
     mInformation = systemInfo;
     mInfoModel->setInfo(systemInfo);
 }
 
-void SystemInformation::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
+void SystemInfoItem::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
     mInfoModel->setStatusInfo(systemStatusInfo);
 }
 
-void SystemInformation::setCombatInfo(const SystemCambatInfo &systemCombatInfo)
+void SystemInfoItem::setCombatInfo(const SystemCambatInfo &systemCombatInfo)
 {
     mInfoModel->setCombatInfo(systemCombatInfo);
 }
 
-void SystemInformation::addAssignment(int number, AircraftModelNode *aircraft)
+void SystemInfoItem::addAssignment(int number, AircraftModelNode *aircraft)
 {
     mInfoModel->addAssignment(number, aircraft);
 }
 
-void SystemInformation::removeAssignment(int number)
+void SystemInfoItem::removeAssignment(int number)
 {
     mInfoModel->removeAssignment(number);
 }
 
-void SystemInformation::show()
+void SystemInfoItem::show()
 {
     mUiHandle->iwShow(mItem, QString::number(mInformation.Number));
 }

@@ -14,9 +14,9 @@ find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 add_library(defenseModelLayer SHARED
   aircraftTableModel.cpp
   contextMenu.cpp
-  aircraftInformation.cpp
+  aircraftInfoItem.cpp
   stationInformation.cpp
-  systemInformation.cpp
+  systemInfoItem.cpp
   stationTableModel.cpp
   systemTableModel.cpp
   defenseModelLayer.cpp
