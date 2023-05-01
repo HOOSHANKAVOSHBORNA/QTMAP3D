@@ -10,8 +10,8 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *li
     mAircraftDataManager(new AircraftDataManager(defenseModelLayer))
 {
     //--aircraft--------------------------------------------------------
-    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,mAircraftDataManager ,&AircraftDataManager::onInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft, mAircraftDataManager, &AircraftDataManager::onClear);
+    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
     //--system----------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
@@ -37,11 +37,12 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *li
 
 void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
-    if(mDefenseModelLayer)
-        mDefenseModelLayer->addUpdateAircraft(aircraftInfo);
-    //add update list view-----------------------------------------------------------------
-    if (mListManager)
-        mListManager->setAircraftInfo(aircraftInfo);
+    mAircraftDataManager->onInfoChanged(aircraftInfo);
+//    if(mDefenseModelLayer)
+//        mDefenseModelLayer->addUpdateAircraft(aircraftInfo);
+//    //add update list view-----------------------------------------------------------------
+//    if (mListManager)
+//        mListManager->setAircraftInfo(aircraftInfo);
 }
 
 void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
@@ -124,33 +125,36 @@ void DataManager::onStationInfoChanged(StationInfo &stationInfo)
 
 void DataManager::onClearAircraft(int tn)
 {
-    if(mDefenseModelLayer)
-        mDefenseModelLayer->clearAircraft(tn);
-    if (mListManager)
-        mListManager->deleteAircraftInfo(tn);
+    mAircraftDataManager->onClear(tn);
+//    if(mDefenseModelLayer)
+//        mDefenseModelLayer->clearAircraft(tn);
+//    if (mListManager)
+//        mListManager->deleteAircraftInfo(tn);
 }
 
 void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool result)
 {
-    //    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
-    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemNo);
-    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(tn);
+    mAircraftDataManager->onAssignedResponse(tn, systemNo, result);
+//    //    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
+//    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemNo);
+//    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(tn);
 
-    if(systemModelNode)
-        systemModelNode->acceptAssignment(tn, result);
-    if(aircraftModelNode)
-        aircraftModelNode->acceptAssignment(systemNo, result);
+//    if(systemModelNode)
+//        systemModelNode->acceptAssignment(tn, result);
+//    if(aircraftModelNode)
+//        aircraftModelNode->acceptAssignment(systemNo, result);
 
-    if (mListManager)
-        mListManager->acceptAssign(tn, systemNo, result);
+//    if (mListManager)
+//        mListManager->acceptAssign(tn, systemNo, result);
 }
 
 void DataManager::aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode)
 {
     if(!aircraftModelNode || !systemModelNode)
         return;
-    systemModelNode->addAssignment(aircraftModelNode->getInformation().TN, aircraftModelNode);
-    aircraftModelNode->addAssignment(systemModelNode->getInformation().Number, systemModelNode);
+    mAircraftDataManager->assignToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
+//    systemModelNode->addAssignment(aircraftModelNode->getInformation().TN, aircraftModelNode);
+//    aircraftModelNode->addAssignment(systemModelNode->getInformation().Number, systemModelNode);
     //--TODO manage memory---------------------------------------
     std::thread* t1 = new std::thread([=](){
         if(mDefenseDataManager)

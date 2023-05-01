@@ -5,6 +5,14 @@ AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
     mDefenseModelLayer = defenseModelLayer;
 }
 
+void AircraftDataManager::assignToSystem(int tn, int systemNo)
+{
+        mAssignments[tn].insert(systemNo);
+
+//        if(mAircraftModelNodes.contains(tn))
+//            mAircraftModelNodes[tn]->addAssignment(systemNo, );
+}
+
 void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
 {
     //--list---------------------------------------------------------------------------------------------------------
@@ -46,6 +54,10 @@ void AircraftDataManager::onClear(int tn)
 
 void AircraftDataManager::onAssignedResponse(int tn, int systemNo, bool result)
 {
+    if(result && mAircraftModelNodes.contains(tn))
+        mAircraftModelNodes[tn]->acceptAssignment(systemNo, result);
+    else if(mAssignments.contains(tn))
+        mAssignments[tn].erase(systemNo);
 
 }
 
