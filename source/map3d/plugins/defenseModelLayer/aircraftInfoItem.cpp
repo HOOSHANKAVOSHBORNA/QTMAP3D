@@ -1,4 +1,4 @@
-#include "aircraftInformation.h"
+#include "aircraftInfoItem.h"
 #include <QDebug>
 #include <QQmlComponent>
 #include <QQmlEngine>
@@ -142,7 +142,7 @@ QHash<int, QByteArray> AircraftInfoModel::roleNames() const
     return hash;
 }
 
-AircraftInformation::AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *muiHandle, const AircraftInfo minformation, QObject *parent)
+AircraftInfoItem::AircraftInfoItem(QQmlEngine *mQmlEngine, UIHandle *muiHandle, const AircraftInfo minformation, QObject *parent)
     :QObject(parent),
     mInformation(minformation), mUiHandle(muiHandle)
 {
@@ -163,25 +163,25 @@ AircraftInformation::AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *muiHa
     comp->loadUrl(QUrl("qrc:/modelplugin/AircraftInfoView.qml"));
 }
 
-void AircraftInformation::updateAircraft(AircraftInfo &mInformation)
+void AircraftInfoItem::updateAircraft(AircraftInfo &mInformation)
 {
     mInfomodel->setAircraftInfo(mInformation);
 }
-void AircraftInformation::show() {
+void AircraftInfoItem::show() {
     mUiHandle->iwShow(mItem, QString::number(mInformation.TN));
 }
 
-void AircraftInformation::addAssignment(int number, SystemModelNode *system)
+void AircraftInfoItem::addAssignment(int number, SystemModelNode *system)
 {
     mInfomodel->addAssignment(number, system);
 }
 
-void AircraftInformation::removeAssignment(int systemNumber)
+void AircraftInfoItem::removeAssignment(int systemNumber)
 {
     mInfomodel->removeAssignment(systemNumber);
 }
 
-void AircraftInformation::setTrackOff()
+void AircraftInfoItem::setTrackOff()
 {
     if(mItem)
         QMetaObject::invokeMethod(mItem, "setTrackOff");

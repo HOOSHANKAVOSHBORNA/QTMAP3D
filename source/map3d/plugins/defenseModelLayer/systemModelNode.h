@@ -3,7 +3,7 @@
 
 #include "mapcontroller.h"
 #include "defenseModelNode.h"
-#include "systemInformation.h"
+#include "systemInfoItem.h"
 #include "circle.h"
 #include "sphereNode.h"
 #include "polygon.h"
@@ -86,7 +86,7 @@ private:
     Rocket* mFiredRocket{nullptr};
 
     QMap<int, Assignment*> mAssignmentMap;
-    SystemInformation *mSystemInformation{nullptr};
+    SystemInfoItem *mSystemInfoItem{nullptr};
 
     AircraftModelNode* mTargetModelNode{nullptr};
 private:

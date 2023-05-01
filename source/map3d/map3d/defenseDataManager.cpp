@@ -113,9 +113,24 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         auto systemInfo = std::find_if(systemList.begin(), systemList.end(), [systemNo](SystemInfo& item){
             return item.Number == systemNo;
         });
-
-        aircraftInfo->assignedSystems.removeAll(*systemInfo);
-        systemInfo->assignedAircrafts.removeAll(*aircraftInfo);
+        int tmpSys = 0;
+        int tmpAir = 0;
+        for (int i = 0; i < systemList.count(); ++i){
+            if (systemList[i].Number == systemNo)
+                tmpSys = i;
+        }
+        for (int i = 0; i < mAircraftList.count(); ++i){
+            if (mAircraftList[i].TN == tn){
+                mAircraftList[i].assignedSystems.removeAt(tmpSys);
+                tmpAir = i;
+            }
+        }
+        for (int i = 0; i < systemList.count(); ++i){
+            if (systemList[i].Number == systemNo)
+                systemList[i].assignedAircrafts.removeAt(tmpAir);
+        }
+//        aircraftInfo->assignedSystems.removeAll(*systemInfo);
+//        systemInfo->assignedAircrafts.removeAll(*aircraftInfo);
     });
 
 }

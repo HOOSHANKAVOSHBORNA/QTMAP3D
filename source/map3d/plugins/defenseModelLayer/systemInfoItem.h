@@ -65,12 +65,13 @@ private:
     QMap<int, const AircraftModelNode*> mAircraftsAssigned;
 };
 
-class SystemInformation : public QObject
+class SystemInfoItem : public QObject
 {
     Q_OBJECT
 
 public:
-    SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, SystemStatusInfo systemStatusInfo, SystemCombatInfo systemCombatInfo, QObject *parent = nullptr);
+    SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, SystemStatusInfo systemStatusInfo, SystemCombatInfo systemCombatInfo, QObject *parent = nullptr);
+
     SystemInfoModel *getInfo() {return mInfoModel;}
     void setInfo(const SystemInfo &systemInfo);
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);

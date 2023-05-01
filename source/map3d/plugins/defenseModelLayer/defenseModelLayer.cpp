@@ -44,10 +44,10 @@
 
 #include "aircraftTableModel.h"
 #include "contextMenu.h"
-#include "aircraftInformation.h"
+#include "aircraftInfoItem.h"
 #include "stationTableModel.h"
 #include "stationInformation.h"
-#include "systemInformation.h"
+#include "systemInfoItem.h"
 #include "systemTableModel.h"
 #include "dataManager.h"
 

@@ -1,4 +1,4 @@
-#include "systemInformation.h"
+#include "systemInfoItem.h"
 #include "plugininterface.h"
 #include <QQmlEngine>
 #include "aircraftModelNode.h"
@@ -170,20 +170,21 @@ void SystemInfoModel::removeAssignment(int number)
     QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
+SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
+                                     SystemStatusInfo systemStatusInfo, SystemCombatInfo systemCambatInfo,
 
-SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
-                                     SystemStatusInfo systemStatusInfo, SystemCombatInfo systemCombatInfo,
+
                                      QObject *parent) :
     QObject(parent), mUiHandle(uiHandle), mInformation(systemInfo)
 {
     QQmlComponent *comp = new QQmlComponent(qmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, systemStatusInfo, systemCombatInfo](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, systemStatusInfo, systemCambatInfo](){
 
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
             mInfoModel = new SystemInfoModel;
 
-            mInfoModel->setInformtion(mInformation, systemStatusInfo, systemCombatInfo);
+            mInfoModel->setInformtion(mInformation, systemStatusInfo, systemCambatInfo);
             mItem->setProperty("model", QVariant::fromValue<SystemInfoModel*>(mInfoModel));
 //            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
@@ -193,33 +194,33 @@ SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
     comp->loadUrl(QUrl("qrc:/modelplugin/SystemInfoView.qml"));
 }
 
-void SystemInformation::setInfo(const SystemInfo &systemInfo)
+void SystemInfoItem::setInfo(const SystemInfo &systemInfo)
 {
     mInformation = systemInfo;
     mInfoModel->setInfo(systemInfo);
 }
 
-void SystemInformation::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
+void SystemInfoItem::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
     mInfoModel->setStatusInfo(systemStatusInfo);
 }
 
-void SystemInformation::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
+void SystemInfoItem::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
 {
     mInfoModel->setCombatInfo(systemCombatInfo);
 }
 
-void SystemInformation::addAssignment(int number, AircraftModelNode *aircraft)
+void SystemInfoItem::addAssignment(int number, AircraftModelNode *aircraft)
 {
     mInfoModel->addAssignment(number, aircraft);
 }
 
-void SystemInformation::removeAssignment(int number)
+void SystemInfoItem::removeAssignment(int number)
 {
     mInfoModel->removeAssignment(number);
 }
 
-void SystemInformation::show()
+void SystemInfoItem::show()
 {
     mUiHandle->iwShow(mItem, QString::number(mInformation.Number));
 }
