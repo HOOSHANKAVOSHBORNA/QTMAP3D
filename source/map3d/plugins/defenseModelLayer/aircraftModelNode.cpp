@@ -332,7 +332,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     updateOrCreateLabelImage();
     mLabelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
     mLabelNode->setDynamic(true);
-
+    mLabelNode->setPriority(10);
 
 
     getGeoTransform()->addChild(mLabelNode);
