@@ -146,24 +146,24 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
 
-    mCircleNode = new osgEarth::Annotation::CircleNode();
-    mCircleNode->setRadius(10);
+    mRectangleNode = new osgEarth::Annotation::RectangleNode();
+    mRectangleNode->setSize(14, 14);
 
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+    mRectangleStyleActive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.2f, 0.2f, 1.0f);
+    mRectangleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mRectangleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mRectangleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+    mRectangleStyleDeactive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.2f, 0.2f, 1.0f);
+    mRectangleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mRectangleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mRectangleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mCircleNode->setStyle(mCircleStyleActive);
-    mCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
-    mCircleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
+    mRectangleNode->setStyle(mRectangleStyleActive);
+    mRectangleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
+    mRectangleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
 
-    //mNode3D->addChild(mCircleNode);
+    mNode3D->addChild(mRectangleNode);
 
 
     //map mode changed-----------------------------------------------------------------------
@@ -249,7 +249,7 @@ void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
     mNode2D->setValue(0, systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S);
     mNode2D->setValue(1, systemStatusInfo.RadarSearchStatus != SystemStatusInfo::S);
 
-    mCircleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mCircleStyleActive : mCircleStyleDeactive);
+    mRectangleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mRectangleStyleActive : mRectangleStyleDeactive);
     mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
@@ -509,7 +509,7 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
     mNode2D->setValue(0, checked);
     mNode2D->setValue(1, !checked);
 
-    mCircleNode->setStyle(checked ? mCircleStyleActive : mCircleStyleDeactive);
+    mRectangleNode->setStyle(checked ? mRectangleStyleActive : mRectangleStyleDeactive);
     updateColors();
 }
 
