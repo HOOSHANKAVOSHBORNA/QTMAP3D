@@ -1,6 +1,6 @@
 ﻿#include "aircraftModelNode.h"
 #include "contextMenu.h"
-#include "aircraftInformation.h"
+#include "aircraftInfoItem.h"
 #include "draw.h"
 #include "systemModelNode.h"
 
@@ -765,7 +765,7 @@ void AircraftModelNode::showInfoWidget()
 {
     if (!mAircraftinformation)
     {
-        mAircraftinformation = new AircraftInformation(mQmlEngine, mUIHandle, mInformation, this);
+        mAircraftinformation = new AircraftInfoItem(mQmlEngine, mUIHandle, mInformation, this);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);

@@ -180,13 +180,13 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
-    if (!mSystemInformation) {
-        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCombatInfo, this);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    if (!mSystemInfoItem) {
+        mSystemInfoItem = new SystemInfoItem(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCombatInfo, this);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
     }
 
     mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
@@ -195,8 +195,8 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 
 void SystemModelNode::setInformation(const SystemInfo& info)
 {
-    if (mSystemInformation)
-        mSystemInformation->setInfo(info);
+    if (mSystemInfoItem)
+        mSystemInfoItem->setInfo(info);
     mInformation = info;
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
@@ -213,8 +213,8 @@ SystemInfo SystemModelNode::getInformation() const
 void SystemModelNode::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
 {
     mCombatInfo = systemCombatInfo;
-    if (mSystemInformation)
-        mSystemInformation->setCombatInfo(systemCombatInfo);
+    if (mSystemInfoItem)
+        mSystemInfoItem->setCombatInfo(systemCombatInfo);
 
     switch (mCombatInfo.Phase) {
     case SystemCombatInfo::Search:
@@ -244,8 +244,8 @@ SystemCombatInfo SystemModelNode::getSystemCombatInfo() const
 
 void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
-    if (mSystemInformation)
-        mSystemInformation->setStatusInfo(systemStatusInfo);
+    if (mSystemInfoItem)
+        mSystemInfoItem->setStatusInfo(systemStatusInfo);
     mNode2D->setValue(0, systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S);
     mNode2D->setValue(1, systemStatusInfo.RadarSearchStatus != SystemStatusInfo::S);
 
@@ -266,7 +266,7 @@ void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
         Assignment* assignmentModel = new  Assignment(mMapController);
         assignmentModel->mModelNode = assignModelNode;
         mAssignmentMap[tn] = assignmentModel;
-        mSystemInformation->addAssignment(tn, assignModelNode);
+        mSystemInfoItem->addAssignment(tn, assignModelNode);
         mMapController->addNodeToLayer(assignmentModel->mLine, SYSTEMS_LAYER_NAME);
     }
     updateOrCreateLabelImage();
@@ -298,7 +298,7 @@ void SystemModelNode::removeAssignment(int tn)
     {
         mMapController->removeNodeFromLayer(mAssignmentMap[tn]->mLine, SYSTEMS_LAYER_NAME);
         mAssignmentMap.remove(tn);
-        mSystemInformation->removeAssignment(tn);
+        mSystemInfoItem->removeAssignment(tn);
     }
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
@@ -311,7 +311,7 @@ void SystemModelNode::clearAssignments(int exceptTN)
         if(tn != exceptTN)
         {
             removeAssignment(tn);
-            mSystemInformation->removeAssignment(tn);
+            mSystemInfoItem->removeAssignment(tn);
         }
     }
 }
@@ -586,16 +586,15 @@ void SystemModelNode::noKillPhase(int tn)
 
 void SystemModelNode::showInfoWidget()
 {
-//    if (!mSystemInformation) {
-//        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCombatInfo, this);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
-//    }
-    mSystemInformation->setInfo(mInformation);
-    mSystemInformation->show();
+//    if (!mSystemInfoItem) {
+//        mSystemInfoItem = new SystemInfoItem(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCombatInfo, this);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    mSystemInfoItem->setInfo(mInformation);
+    mSystemInfoItem->show();
 }
 
 void SystemModelNode::updateOrCreateLabelImage()
