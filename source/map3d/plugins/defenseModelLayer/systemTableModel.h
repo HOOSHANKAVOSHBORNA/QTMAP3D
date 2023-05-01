@@ -53,7 +53,7 @@ public:
     void updateItemData(const QString& jsonStr);
     void updateItemData(const SystemInfo& systemInfo);
     void updateItemData(const SystemStatusInfo& systemStatusInfo);
-    void updateItemData(const SystemCambatInfo& systemCambatInfo);
+    void updateItemData(const SystemCombatInfo& systemCombatInfo);
     void assign(int TN, int Number);
     void cancelSystemsAssigned(int TN, int ExceptNum);
     void cancelAllAssigns();
@@ -70,8 +70,8 @@ private:
     std::deque<QSharedPointer<SystemInfo>> mSystemInfoListProxy;
     std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoList;
     std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoListProxy;
-    std::deque<QSharedPointer<SystemCambatInfo>> mSystemCombatInfoList;
-    std::deque<QSharedPointer<SystemCambatInfo>> mSystemCombatInfoListProxy;
+    std::deque<QSharedPointer<SystemCombatInfo>> mSystemCombatInfoList;
+    std::deque<QSharedPointer<SystemCombatInfo>> mSystemCombatInfoListProxy;
 
     QMap<int, QList<SystemAssignInfo>> mSystemsAssigned;
 

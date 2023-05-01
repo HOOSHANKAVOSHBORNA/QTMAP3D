@@ -55,7 +55,7 @@ QHash<int, QByteArray> SystemInfoModel::roleNames() const
 }
 
 
-void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCambatInfo &systemCombatInfo)
+void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCombatInfo &systemCombatInfo)
 {
     mSystemInfo = systemInfo;
     mSystemStatusInfo = systemStatusInfo;
@@ -64,7 +64,7 @@ void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemSt
 
 }
 
-void SystemInfoModel::setCombatInfo(const SystemCambatInfo &combatInfo)
+void SystemInfoModel::setCombatInfo(const SystemCombatInfo &combatInfo)
 {
     mSystemCombatInfo = combatInfo;
     QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
@@ -170,9 +170,10 @@ void SystemInfoModel::removeAssignment(int number)
     QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
-
 SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
-                                     SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo,
+                                     SystemStatusInfo systemStatusInfo, SystemCombatInfo systemCambatInfo,
+
+
                                      QObject *parent) :
     QObject(parent), mUiHandle(uiHandle), mInformation(systemInfo)
 {
@@ -204,7 +205,7 @@ void SystemInfoItem::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
     mInfoModel->setStatusInfo(systemStatusInfo);
 }
 
-void SystemInfoItem::setCombatInfo(const SystemCambatInfo &systemCombatInfo)
+void SystemInfoItem::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
 {
     mInfoModel->setCombatInfo(systemCombatInfo);
 }

@@ -14,7 +14,7 @@ public slots:
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
     void onSystemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);
-    void onSystemCambatInfoChanged(SystemCambatInfo& systemCambatInfo);
+    void onSystemCombatInfoChanged(SystemCombatInfo& systemCombatInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
     void onClearAircraft(int tn);
     void onAircraftAssignedResponse(int tn, int systemNo, bool result);
