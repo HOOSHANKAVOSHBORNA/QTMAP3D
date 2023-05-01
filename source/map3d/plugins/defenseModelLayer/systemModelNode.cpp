@@ -163,7 +163,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
     mCircleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
 
-    mNode3D->addChild(mCircleNode);
+    //mNode3D->addChild(mCircleNode);
 
 
     //map mode changed-----------------------------------------------------------------------
@@ -189,6 +189,8 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
         connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
     }
 
+    mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+    updateColors();
 }
 
 void SystemModelNode::setInformation(const SystemInfo& info)
@@ -251,6 +253,8 @@ void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
     mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
+
+    updateColors();
 }
 
 void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
@@ -369,7 +373,6 @@ void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 void SystemModelNode::updateColors()
 {
-    DefenseModelNode::updateColors();
 
     if (mSelectionMode == SELECTED || mHoverMode == HOVERED) {
 
@@ -388,6 +391,13 @@ void SystemModelNode::updateColors()
 
     }
 
+    if (mStatusInfo.RadarSearchStatus == SystemStatusInfo::S) {
+        mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+    } else {
+        mModelColor = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
+    }
+
+    DefenseModelNode::updateColors();
 
 
 }
@@ -500,6 +510,7 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
     mNode2D->setValue(1, !checked);
 
     mCircleNode->setStyle(checked ? mCircleStyleActive : mCircleStyleDeactive);
+    updateColors();
 }
 
 void SystemModelNode::searchPhase()
