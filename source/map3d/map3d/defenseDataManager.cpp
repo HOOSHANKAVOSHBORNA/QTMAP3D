@@ -37,11 +37,14 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
             emit mDefenseDataManager->systemStatusInfoChanged(systemStatus);
 
 //        createAircraftInfo();
-//        emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
-//        mAircraftList.removeFirst();
+        if(mAircraftList.count() > 0)
+        {
+            emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
+            mAircraftList.removeFirst();
+        }
     });
     timer->start(10000);
-    //----------------------------------------------------------
+    //--update aircraft info--------------------------------------------------------
     QTimer *timerUpdateAircraft = new QTimer();
     QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
         //---------------------------------------------
@@ -49,9 +52,6 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         updateAircraftInfo();
         for(auto aircraft:mAircraftList)
             emit mDefenseDataManager->aircraftInfoChanged(aircraft);
-
-        //emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
-        //mAircraftList.removeFirst();
     });
     timerUpdateAircraft->start(1000);
     //--update cambat------------------------------------------
@@ -78,7 +78,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         if(systemCambatInfo->Phase != SystemCambatInfo::Search) {
-            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
+            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
         } else
         {
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);

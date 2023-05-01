@@ -132,6 +132,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 
     getGeoTransform()->addChild(mLabelNode);
     mLabelNode->setNodeMask(false);
+    mLabelNode->setPriority(10);
 
 
     if(mIs3D)
