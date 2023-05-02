@@ -147,19 +147,19 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     }
 
     mRectangleNode = new osgEarth::Annotation::RectangleNode();
-    mRectangleNode->setSize(14, 14);
+    mRectangleNode->setSize(16, 16);
 
-    mRectangleStyleActive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.2f, 0.2f, 1.0f);
-    mRectangleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mRectangleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mRectangleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.2f, 0.2f, 1.0f);
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mRectangleStyleDeactive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.2f, 0.2f, 1.0f);
-    mRectangleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mRectangleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mRectangleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.4f, 0.4f, 0.4f, 1.0f);
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mRectangleNode->setStyle(mRectangleStyleActive);
+    mRectangleNode->setStyle(mRectangleStyleDeselected);
     mRectangleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
     mRectangleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
 
@@ -249,7 +249,7 @@ void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
     mNode2D->setValue(0, systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S);
     mNode2D->setValue(1, systemStatusInfo.RadarSearchStatus != SystemStatusInfo::S);
 
-    mRectangleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mRectangleStyleActive : mRectangleStyleDeactive);
+//    mRectangleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mRectangleStyleActive : mRectangleStyleDeactive);
     mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
@@ -399,6 +399,12 @@ void SystemModelNode::updateColors()
 
     DefenseModelNode::updateColors();
 
+    if(mSelectionMode == SELECTED || mHoverMode == HOVERED) {
+        mRectangleNode->setStyle(mRectangleStyleSelected);
+    } else {
+        mRectangleNode->setStyle(mRectangleStyleDeselected);
+    }
+
 
 }
 
@@ -509,7 +515,7 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
     mNode2D->setValue(0, checked);
     mNode2D->setValue(1, !checked);
 
-    mRectangleNode->setStyle(checked ? mRectangleStyleActive : mRectangleStyleDeactive);
+//    mRectangleNode->setStyle(checked ? mRectangleStyleActive : mRectangleStyleDeactive);
     updateColors();
 }
 
