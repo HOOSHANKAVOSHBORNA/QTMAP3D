@@ -11,10 +11,11 @@ AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
 
 void AircraftDataManager::addAssignment(int tn, int systemNo)
 {
-        mAssignments[tn].insert(systemNo);
+    if(mAssignments.contains(tn) && !mAssignments[tn].contains(systemNo))
+        mAssignments[tn].append(systemNo);
 
-//        if(mAircraftModelNodes.contains(tn))
-//            mAircraftModelNodes[tn]->addAssignment(systemNo, );
+//    if(mAircraftModelNodes.contains(tn))
+//        mAircraftModelNodes[tn]->addAssignment(systemNo, );
 }
 
 void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
@@ -35,7 +36,7 @@ void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
     else
     {
         //create and model node------------------------------------------------
-        aircraftModelNode = new AircraftModelNode(mDefenseModelLayer->mMapController, aircraftInfo.Type, mDefenseModelLayer->mQmlEngine,mDefenseModelLayer->mUIHandle);
+        aircraftModelNode = new AircraftModelNode(mDefenseModelLayer,&mAssignments[aircraftInfo.TN], aircraftInfo.Type);
         aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
         aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
@@ -52,6 +53,7 @@ void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
 void AircraftDataManager::onClear(int tn)
 {
     mAircraftInfos.remove(tn);
+    mAssignments.remove(tn);
     //-----------------------------------------
     mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftModelNodes[tn], AIRCRAFTS_LAYER_NAME);
     mAircraftModelNodes.remove(tn);
@@ -60,10 +62,11 @@ void AircraftDataManager::onClear(int tn)
 
 void AircraftDataManager::onAssignmentResponse(int tn, int systemNo, bool result)
 {
-    if(result && mAircraftModelNodes.contains(tn))
-        mAircraftModelNodes[tn]->acceptAssignment(systemNo, result);
-    else if(mAssignments.contains(tn))
-        mAssignments[tn].erase(systemNo);
+    if(!result && mAssignments.contains(tn))
+    {
+        auto list = mAssignments[tn];
+        list.removeAt(list.indexOf(systemNo));
+    }
 
 }
 

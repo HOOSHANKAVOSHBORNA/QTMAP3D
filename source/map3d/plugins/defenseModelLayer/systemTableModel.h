@@ -64,7 +64,7 @@ public:
     void setSystemInfos(QMap<int, SystemInfo> & info);
     void setSystemStatusInfos(QMap<int, SystemStatusInfo> & statusInfos);
     void setSystemCombatInfos(QMap<int, SystemCombatInfo> & combatInfos);
-    void updateTable(int tn);
+    void updateTable(int number);
     ///////////////////
 
 

@@ -2,7 +2,6 @@
 #define AIRCRAFTDATAMANAGER_H
 
 #include <QMap>
-#include <set>
 #include <QObject>
 
 #include "defenseDataManager.h"
@@ -34,8 +33,7 @@ private:
     QMap<int, osg::ref_ptr<AircraftModelNode>> mAircraftModelNodes;
 
     AircraftTableModel *mAircraftTableModel;
-
-    QMap<int, std::set<int>> mAssignments;
+    QMap<int, QList<int>> mAssignments;
 };
 
 #endif // AIRCRAFTDATAMANAGER_H

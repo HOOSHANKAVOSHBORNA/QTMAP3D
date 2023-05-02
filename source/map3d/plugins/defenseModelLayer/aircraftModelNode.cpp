@@ -3,6 +3,7 @@
 #include "aircraftInfoItem.h"
 #include "draw.h"
 #include "systemModelNode.h"
+#include "defenseModelLayer.h"
 
 #include <osgEarth/Registry>
 #include <osgGA/EventVisitor>
@@ -42,15 +43,16 @@ osg::ref_ptr<osg::Node> AircraftModelNode::mMissile3DRef;
 osg::ref_ptr<osg::Node> AircraftModelNode::mDrone3DRef;
 osg::ref_ptr<osg::Node> AircraftModelNode::mHelicopter3DRef;
 
-AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::AircraftType aircraftType, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
-    :DefenseModelNode(mapControler, parent)
+AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, QList<int> *assignments, AircraftInfo::AircraftType aircraftType, QObject *parent)
+    :DefenseModelNode(defenseModelLayer->mMapController, parent)
 {
 
-    mQmlEngine = qmlEngine;
-    mMapController = mapControler;
-    mIs3D = mMapController->getMode();
+    //mQmlEngine = qmlEngine;
+    mAssignments = assignments;
+    mDefenseModelLayer = defenseModelLayer;
+    mIs3D = mDefenseModelLayer->mMapController->getMode();
 
-    mUIHandle = uiHandle;
+    //mUIHandle = uiHandle;
     //--load models----------------------------------------------------------------------------------
     if (!mAircraft3DRef.valid()) {
         mAircraft3DRef = osgDB::readRefNodeFile("../data/models/aircraft/boeing-747.osgb");
@@ -372,16 +374,16 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     mTempLocationPoints = new osg::Vec3Array();
 
 
-    connect(mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
+    connect(mDefenseModelLayer->mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
 
-    mRouteLine = new LineNode(mapControler);
+    mRouteLine = new LineNode(defenseModelLayer->mMapController);
     mRouteLine->setPointVisible(false);
     mRouteLine->setTessellation(10);
     mRouteLine->setColor(osgEarth::Color::Purple);
     mRouteLine->setWidth(5);
     mRouteLine->showLenght(false);
 
-    mLatestPointLine = new LineNode(mapControler);
+    mLatestPointLine = new LineNode(defenseModelLayer->mMapController);
     mLatestPointLine->setPointVisible(true);
     mLatestPointLine->setPointColor(osgEarth::Color::Blue);
     mLatestPointLine->setColor(osgEarth::Color::Purple);
@@ -390,7 +392,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
     mLatestPointLine->showLenght(false);
     mLatestPointLine->setSmooth(true);
 
-    mTempLine = new LineNode(mapControler);
+    mTempLine = new LineNode(defenseModelLayer->mMapController);
     mTempLine->setPointVisible(false);
     mTempLine->setColor(osgEarth::Color::Purple);
     mTempLine->setWidth(5);
@@ -400,7 +402,7 @@ AircraftModelNode::AircraftModelNode(MapController *mapControler, AircraftInfo::
 void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)
 {
 
-    posGeo.transformInPlace(mMapController->getMapSRS());
+    posGeo.transformInPlace(mDefenseModelLayer->mMapController->getMapSRS());
     osg::Vec3d currentPosW;
     getPosition().toWorld(currentPosW);
 
@@ -492,7 +494,7 @@ AircraftInfo AircraftModelNode::getInformation() const
 
 void AircraftModelNode::goOnTrack()
 {
-    mMapController->setTrackNode(getGeoTransform());
+    mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform());
 }
 
 void AircraftModelNode::onLeftButtonClicked(bool val)
@@ -505,10 +507,10 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     }
     else
     {
-        mMapController->untrackNode(getGeoTransform());
-//        mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-//        mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-//        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
         if(mAircraftinformation)
             mAircraftinformation->setTrackOff();
     }
@@ -520,7 +522,7 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
 
 void AircraftModelNode::frameEvent()
 {
-    mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mMapController->getViewpoint().getHeading())
+    mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mDefenseModelLayer->mMapController->getViewpoint().getHeading())
                                                  + mInformation.Heading),
                                   -osg::Z_AXIS));
 
@@ -530,7 +532,7 @@ void AircraftModelNode::frameEvent()
         osg::Vec3d wordPos;
         getPosition().toWorld(wordPos);
         float x, y;
-        mMapController->worldToScreen(wordPos,x, y);
+        mDefenseModelLayer->mMapController->worldToScreen(wordPos,x, y);
         mCurrentContextMenu->updatePosition(static_cast<int>(x), static_cast<int>(y));
     }
 
@@ -552,7 +554,7 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
             event->accept();
     }
     if(event->button() == Qt::RightButton) {
-        mCurrentContextMenu = new ContextMenu(mQmlEngine, mUIHandle, this);
+        mCurrentContextMenu = new ContextMenu(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, this);
         for(auto detectSystem: mInformation.DetectionSystems)
             mCurrentContextMenu->addRow(detectSystem);
 
@@ -560,7 +562,7 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
         osg::Vec3d wordPos;
         getPosition().toWorld(wordPos);
         float x, y;
-        mMapController->worldToScreen(wordPos,x, y);
+        mDefenseModelLayer->mMapController->worldToScreen(wordPos,x, y);
         mCurrentContextMenu->show(static_cast<int>(x), static_cast<int>(y));
         event->accept();
     }
@@ -584,71 +586,71 @@ void AircraftModelNode::updateColors()
     }
 }
 
-SystemModelNode *AircraftModelNode::getAssignment(int number) const
-{
-    if(mAssignmentMap.contains(number))
-        return mAssignmentMap[number];
-    return nullptr;
-}
+//SystemModelNode *AircraftModelNode::getAssignment(int number) const
+//{
+//    if(mAssignmentMap.contains(number))
+//        return mAssignmentMap[number];
+//    return nullptr;
+//}
 
-void AircraftModelNode::addAssignment(int number, SystemModelNode *assignmentModelNode)
-{
-    mAssignmentMap[number] = assignmentModelNode;
-    mAircraftinformation->addAssignment(number, assignmentModelNode);
-}
+//void AircraftModelNode::addAssignment(int number, SystemModelNode *assignmentModelNode)
+//{
+//    mAssignmentMap[number] = assignmentModelNode;
+//    mAircraftinformation->addAssignment(number, assignmentModelNode);
+//}
 
-void AircraftModelNode::removeAssignment(int number)
-{
-    mAssignmentMap.remove(number);
-    mAircraftinformation->removeAssignment(number);
-}
+//void AircraftModelNode::removeAssignment(int number)
+//{
+//    mAssignmentMap.remove(number);
+//    mAircraftinformation->removeAssignment(number);
+//}
 
-void AircraftModelNode::acceptAssignment(int number, bool value)
-{
-    if(!value)
-        removeAssignment(number);
-}
+//void AircraftModelNode::acceptAssignment(int number, bool value)
+//{
+//    if(!value)
+//        removeAssignment(number);
+//}
 
-void AircraftModelNode::clearAssignments(int exceptNumber)
-{
-    for(auto number: mAssignmentMap.keys())
-    {
-        if(exceptNumber != number)
-        {
-            removeAssignment(number);
-            mAircraftinformation->removeAssignment(number);
-        }
-    }
-}
+//void AircraftModelNode::clearAssignments(int exceptNumber)
+//{
+//    for(auto number: mAssignmentMap.keys())
+//    {
+//        if(exceptNumber != number)
+//        {
+//            removeAssignment(number);
+//            mAircraftinformation->removeAssignment(number);
+//        }
+//    }
+//}
 
-bool AircraftModelNode::hasAssignment()
-{
-    return mAssignmentMap.count() > 0;
-}
+//bool AircraftModelNode::hasAssignment()
+//{
+//    return mAssignmentMap.count() > 0;
+//}
 
-QMap<int, SystemModelNode *> AircraftModelNode::getAssignments() const
-{
-    return mAssignmentMap;
-}
+//QMap<int, SystemModelNode *> AircraftModelNode::getAssignments() const
+//{
+//    return mAssignmentMap;
+//}
 
 void AircraftModelNode::onGotoButtonClicked()
 {
     //    goOnTrack();
-    mMapController->goToPosition(getPosition(), 400, 0);
-    mMapController->setTrackNode(getGeoTransform());
+    mDefenseModelLayer->mMapController->goToPosition(getPosition(), 400, 0);
+    mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform());
 }
 
 void AircraftModelNode::onRouteButtonToggled(bool check)
 {
     if(check)
     {
-        mMapController->addNodeToLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-        mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->addNodeToLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
     else
     {
-        mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
 
 }
@@ -656,13 +658,13 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 void AircraftModelNode::onLatestPointsToggled(bool check) {
     if (check)
     {
-        mMapController->addNodeToLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-        mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->addNodeToLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
     else
     {
-        mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-        mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
     }
 }
 
@@ -670,9 +672,9 @@ void AircraftModelNode::onTrackButtonToggled(bool check)
 {
     //std::cout << check << std::endl;
     if(check)
-        mMapController->setTrackNode(getGeoTransform());
+        mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform());
     else
-        mMapController->untrackNode(getGeoTransform());
+        mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
 }
 
 void AircraftModelNode::onModeChanged(bool is3DView)
@@ -765,7 +767,7 @@ void AircraftModelNode::showInfoWidget()
 {
     if (!mAircraftinformation)
     {
-        mAircraftinformation = new AircraftInfoItem(mQmlEngine, mUIHandle, mInformation, this);
+        mAircraftinformation = new AircraftInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mInformation, this);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
@@ -782,23 +784,23 @@ void AircraftModelNode::addEffect(double emitterDuration)
     mFire->setEmitterDuration(emitterDuration);
     mFire->setParticleDuration(0.2);
     osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());// for textures or lighting
-    mMapController->addNodeToLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mMapController->addNodeToLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
     //add smoke----------------------------------------------------------------------------------------------------
     osgEarth::Registry::shaderGenerator().run(mSmoke);// for textures or lighting
     getPositionAttitudeTransform()->addChild(mSmoke);
     mSmoke->setEmitterDuration(emitterDuration);
     mSmoke->setParticleDuration(5);
     osgEarth::Registry::shaderGenerator().run(mSmoke->getParticleSystem());// for textures or lighting
-    mMapController->addNodeToLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mMapController->addNodeToLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
 }
 
 void AircraftModelNode::removeEffect()
 {
     //remove fire---------------------------------------------
-    mMapController->removeNodeFromLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mMapController->removeNodeFromLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
     getPositionAttitudeTransform()->removeChild(mFire);
     //remove smoke--------------------------------------------
-    mMapController->removeNodeFromLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mMapController->removeNodeFromLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
     getPositionAttitudeTransform()->removeChild(mSmoke);
 }
 
@@ -838,7 +840,7 @@ void AircraftModelNode::change2DImageColore(osgEarth::Color /*color*/)
 
 void AircraftModelNode::updateOrCreateLabelImage()
 {
-    int height = LABEL_IMAGE_HEIGHT + ((mAssignmentMap.keys().count()+1)/2) * 30;
+    int height = LABEL_IMAGE_HEIGHT + ((mAssignments->count()+1)/2) * 30;
     //qDebug()<<"hight:"<<height;
     if (!mRenderTargetImage) {
         mRenderTargetImage = new QImage(
@@ -948,21 +950,21 @@ void AircraftModelNode::updateOrCreateLabelImage()
         int h = 200;
         const QFontMetrics fm(textFont);
         int n = 0;
-        while (n < mAssignmentMap.values().count()) {
+        while (n < mAssignments->count()) {
 
             int indent = 0;
             for (int llidx = 0; llidx < 2; llidx++)// two elements per line
             {
 
-                if (n >= mAssignmentMap.values().count())
+                if (n >= mAssignments->count())
                     break;
 
-                const auto val = mAssignmentMap.values()[n];
+                int val = mAssignments->at(n);
 
                 const QString ss = (llidx == 0 ? QStringLiteral("(") : QStringLiteral(", ("))
-                        + QString::number(val->getInformation().Number)
+                        + QString::number(val)
                         + QStringLiteral(", ");
-                const QString cc = QString(val->getSystemCombatInfo().phaseToString()[0]);
+                const QString cc /*= QString(val->getSystemCombatInfo().phaseToString()[0])*/;
                 const QString ee = QStringLiteral(")");
 
                 textPen.setColor(QColor(255,255,255));
@@ -973,7 +975,7 @@ void AircraftModelNode::updateOrCreateLabelImage()
                                  ss);
                 indent += fm.boundingRect(ss).width();
 
-                textPen.setColor(val->getSystemCombatInfo().phaseToColor());
+//                textPen.setColor(val->getSystemCombatInfo().phaseToColor());
                 painter.setPen(textPen);
 
                 painter.drawText(QRect(10 + indent, h, LABEL_IMAGE_WIDTH, 30),

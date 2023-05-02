@@ -241,8 +241,8 @@ void ListManager::clearAll()
 //        mSystemTableModel->clearList();
     if (mStationTableModel)
         mStationTableModel->clear();
-    if (mSystemAssignmentTableModel)
-        mSystemAssignmentTableModel->clearList();
+//    if (mSystemAssignmentTableModel)
+//        mSystemAssignmentTableModel->clearList();
 //    if (mAircraftAssignmentTableModel)
 //        mAircraftAssignmentTableModel->clearList();
 }
