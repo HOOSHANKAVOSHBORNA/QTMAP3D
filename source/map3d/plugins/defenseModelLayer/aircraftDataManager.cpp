@@ -3,6 +3,10 @@
 AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
 {
     mDefenseModelLayer = defenseModelLayer;
+
+    addAircraftTab();
+    mAircraftTableModel->setAircraftInfos(mAircraftInfos);
+
 }
 
 void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
@@ -34,6 +38,7 @@ void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
     }
     //update information------------------------------------------------------------------
     aircraftModelNode->setInformation(aircraftInfo);
+    mAircraftTableModel->updateTable(aircraftInfo.TN);
 }
 
 void AircraftDataManager::onClear(int tn)
@@ -42,11 +47,46 @@ void AircraftDataManager::onClear(int tn)
     //-----------------------------------------
     mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftModelNodes[tn], AIRCRAFTS_LAYER_NAME);
     mAircraftModelNodes.remove(tn);
+    mAircraftTableModel->updateTable(tn);
 }
 
 void AircraftDataManager::onAssignedResponse(int tn, int systemNo, bool result)
 {
 
+}
+
+void AircraftDataManager::addAircraftTab()
+{
+    QQmlComponent *comp = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+//        qDebug() << comp->errorString();
+
+        if (comp->status() == QQmlComponent::Ready) {
+            QQuickItem *aircraftTab = (QQuickItem*) comp->create(nullptr);
+            mAircraftTableModel = new AircraftTableModel;
+            mAircraftTableModel->setMode("TableModel");
+
+            QObject::connect(aircraftTab,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mAircraftTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
+
+            QObject::connect(aircraftTab,
+                             SIGNAL(aircraftDoubleClicked(const int&)),
+                             this,
+                             SIGNAL(aircraftDoubleClicked(const int&)));
+
+            QObject::connect(aircraftTab,
+                             SIGNAL(sortWithHeader(int)),
+                             mAircraftTableModel,
+                             SLOT(sortWithHeader(int)));
+            aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
+            mDefenseModelLayer->mUIHandle->lwAddTab("Aircrafts", aircraftTab);
+        }
+
+    });
+
+    comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
 }
 
 

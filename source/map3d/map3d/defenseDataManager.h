@@ -100,7 +100,7 @@ public:
         return result;
     }
 
-    QColor aircraftColor() {
+    QColor aircraftColor() const {
         QColor color = QColor(Qt::transparent);
         switch (Identification) {
         case F:
@@ -125,7 +125,7 @@ public:
         return color;
     }
 
-    QColor aircraftHoverColor() {
+    QColor aircraftHoverColor() const {
         QColor color = QColor(Qt::transparent);
         switch (Identification) {
         case F:
@@ -150,14 +150,14 @@ public:
         return color;
     }
 
-    QString detectionSystemsToString()
+    QString detectionSystemsToString() const
     {
         QString result = "";
         for(auto detectSystem: DetectionSystems)
             result += detectSystem + ", ";
         return result;
     }
-    QString sendsToString()
+    QString sendsToString() const
     {
         QString result = "";
         for(auto send: Sends)

@@ -38,7 +38,7 @@ public slots:
 
 
 signals:
-    void aircraftDoubleClicked(int NT);
+//    void aircraftDoubleClicked(int NT);
     void stationDoubleClicked(int number);
     void systemDoubleClicked(int number);
     void systemActiveToggled(bool act);
@@ -47,7 +47,7 @@ signals:
 private:
     QQmlEngine *mQmlEngine = nullptr;
     UIHandle *mUiHandle = nullptr;
-    AircraftTableModel *mAircraftTableModel = nullptr;
+//    AircraftTableModel *mAircraftTableModel = nullptr;
     StationTableModel *mStationTableModel = nullptr;
     SystemTableModel *mSystemTableModel = nullptr;
 

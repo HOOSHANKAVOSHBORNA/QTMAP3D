@@ -195,51 +195,51 @@ void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
 {
 //    beginResetModel();
 
-    const auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(),
-                                 [systemInfo](const QSharedPointer<SystemInfo>& itemInfo){
-        return itemInfo->Number == systemInfo.Number;
-    });
+//    const auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(),
+//                                 [systemInfo](const QSharedPointer<SystemInfo>& itemInfo){
+//        return itemInfo->Number == systemInfo.Number;
+//    });
 
 
-    if (it != mSystemInfoList.end()) {
-        *(*it) = systemInfo;
-    } else {
-        QSharedPointer<SystemInfo> isp;
-        isp.reset(new SystemInfo);
-        *(isp) = systemInfo;
-        mSystemInfoList.push_back(isp);
+//    if (it != mSystemInfoList.end()) {
+//        *(*it) = systemInfo;
+//    } else {
+//        QSharedPointer<SystemInfo> isp;
+//        isp.reset(new SystemInfo);
+//        *(isp) = systemInfo;
+//        mSystemInfoList.push_back(isp);
 
-        //------------------ add combatinfo if doesn't exist
-        const auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [systemInfo](QSharedPointer<SystemCombatInfo> &item){
-            return item->Number == systemInfo.Number;
-        });
-        const auto it3 = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(), [systemInfo](QSharedPointer<SystemStatusInfo> &item){
-            return item->Number == systemInfo.Number;
-        });
-        if (it2 == mSystemCombatInfoList.end()) {
-            SystemCombatInfo tmp1;
-            tmp1.Number = systemInfo.Number;
-            tmp1.Phase = SystemCombatInfo::Search;
-            updateItemData(tmp1);
-        }
-        if (it3 == mSystemStatusInfoList.end()) {
-            SystemStatusInfo tmp2;
-            tmp2.Number = systemInfo.Number;
-            updateItemData(tmp2);
-        }
-    }
-    if (mMode == "TableModel" || mTN == -1) {
-        mSystemInfoListProxy.clear();
-        for (auto& item : mSystemInfoList) {
-            if (QString::number(item->Number).contains(mFilter))
-                mSystemInfoListProxy.push_back(item);
-        }
-    }
-    else {
-        if (mTN > 0)
-            onAircraftClicked(mTN);
-    }
-    emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount()-1));
+//        //------------------ add combatinfo if doesn't exist
+//        const auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [systemInfo](QSharedPointer<SystemCombatInfo> &item){
+//            return item->Number == systemInfo.Number;
+//        });
+//        const auto it3 = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(), [systemInfo](QSharedPointer<SystemStatusInfo> &item){
+//            return item->Number == systemInfo.Number;
+//        });
+//        if (it2 == mSystemCombatInfoList.end()) {
+//            SystemCombatInfo tmp1;
+//            tmp1.Number = systemInfo.Number;
+//            tmp1.Phase = SystemCombatInfo::Search;
+//            updateItemData(tmp1);
+//        }
+//        if (it3 == mSystemStatusInfoList.end()) {
+//            SystemStatusInfo tmp2;
+//            tmp2.Number = systemInfo.Number;
+//            updateItemData(tmp2);
+//        }
+//    }
+//    if (mMode == "TableModel" || mTN == -1) {
+//        mSystemInfoListProxy.clear();
+//        for (auto& item : mSystemInfoList) {
+//            if (QString::number(item->Number).contains(mFilter))
+//                mSystemInfoListProxy.push_back(item);
+//        }
+//    }
+//    else {
+//        if (mTN > 0)
+//            onAircraftClicked(mTN);
+//    }
+//    emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount()-1));
 
 //    endResetModel();
 }
@@ -248,40 +248,40 @@ void SystemTableModel::updateItemData(const SystemStatusInfo &systemStatusInfo)
 {
 //    beginResetModel();
 
-    bool update = false;
-    for (auto system : mSystemInfoList) {
-        if (system->Number == systemStatusInfo.Number)
-            update = true;
-    }
-    if (update) {
-        const auto it = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(),
-                                     [systemStatusInfo](const QSharedPointer<SystemStatusInfo>& itemInfo){
-            return itemInfo->Number == systemStatusInfo.Number;
-        });
+//    bool update = false;
+//    for (auto system : mSystemInfoList) {
+//        if (system->Number == systemStatusInfo.Number)
+//            update = true;
+//    }
+//    if (update) {
+//        const auto it = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(),
+//                                     [systemStatusInfo](const QSharedPointer<SystemStatusInfo>& itemInfo){
+//            return itemInfo->Number == systemStatusInfo.Number;
+//        });
 
 
-        if (it != mSystemStatusInfoList.end()) {
-            *(*it) = systemStatusInfo;
-        } else {
-            QSharedPointer<SystemStatusInfo> isp;
-            isp.reset(new SystemStatusInfo);
-            *(isp) = systemStatusInfo;
-            mSystemStatusInfoList.push_back(isp);
-        }
+//        if (it != mSystemStatusInfoList.end()) {
+//            *(*it) = systemStatusInfo;
+//        } else {
+//            QSharedPointer<SystemStatusInfo> isp;
+//            isp.reset(new SystemStatusInfo);
+//            *(isp) = systemStatusInfo;
+//            mSystemStatusInfoList.push_back(isp);
+//        }
 
-        if (mMode == "TableModel" || mTN == -1) {
-            mSystemStatusInfoListProxy.clear();
-            for (auto& item : mSystemStatusInfoList) {
-                if (QString::number(item->Number).contains(mFilter))
-                    mSystemStatusInfoListProxy.push_back(item);
-            }
-            emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount()-1));
-        }
-        else {
-            if (mTN > 0)
-                onAircraftClicked(mTN);
-        }
-    }
+//        if (mMode == "TableModel" || mTN == -1) {
+//            mSystemStatusInfoListProxy.clear();
+//            for (auto& item : mSystemStatusInfoList) {
+//                if (QString::number(item->Number).contains(mFilter))
+//                    mSystemStatusInfoListProxy.push_back(item);
+//            }
+//            emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount()-1));
+//        }
+//        else {
+//            if (mTN > 0)
+//                onAircraftClicked(mTN);
+//        }
+//    }
 
 //    endResetModel();
 }
