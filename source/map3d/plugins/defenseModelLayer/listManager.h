@@ -49,7 +49,7 @@ private:
     UIHandle *mUiHandle = nullptr;
 //    AircraftTableModel *mAircraftTableModel = nullptr;
     StationTableModel *mStationTableModel = nullptr;
-    SystemTableModel *mSystemTableModel = nullptr;
+//    SystemTableModel *mSystemTableModel = nullptr;
 
     AircraftTableModel *mAircraftAssignmentTableModel;
     SystemTableModel *mSystemAssignmentTableModel;

@@ -47,11 +47,11 @@ public:
     virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
     //void addUpdateAircraft(AircraftInfo aircraftInfo);
-    void addUpdateSystem(SystemInfo systemInfo);
-    void addUpdateStation(StationInfo stationInfo);
-    SystemModelNode *getSystemModelNode(int number)const;
-    AircraftModelNode *getAircraftModelNode(int tn) const;
-    StationModelNode *getStationModelNode(int number) const;
+//    void addUpdateSystem(SystemInfo systemInfo);
+//    void addUpdateStation(StationInfo stationInfo);
+//    SystemModelNode *getSystemModelNode(int number)const;
+//    AircraftModelNode *getAircraftModelNode(int tn) const;
+//    StationModelNode *getStationModelNode(int number) const;
     void selectModelNode(DefenseModelNode* defenseModelNode);
     //void clearAircraft(int tn);
 public slots:

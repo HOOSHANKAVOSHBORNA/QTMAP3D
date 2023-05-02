@@ -16,17 +16,17 @@ public:
     AircraftDataManager(DefenseModelLayer* defenseModelLayer);
 
 
-    void assignToSystem(int tn, int systemNo);
-public slots:
-    void onInfoChanged(AircraftInfo& aircraftInfo);
-    void onClear(int tn);
-    void onAssignedResponse(int tn, int systemNo, bool result);
-
+    void addAssignment(int tn, int systemNo);
 signals:
     void aircraftDoubleClicked(int NT);
 
 private:
     void addAircraftTab();
+
+public slots:
+    void onInfoChanged(AircraftInfo& aircraftInfo);
+    void onClear(int tn);
+    void onAssignmentResponse(int tn, int systemNo, bool result);
 
 private:
     DefenseModelLayer* mDefenseModelLayer;

@@ -72,32 +72,32 @@ ListManager::ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
     comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
 
-    QQmlComponent *comp3 = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
-//        qDebug() << comp3->errorString();
+//    QQmlComponent *comp3 = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
+////        qDebug() << comp3->errorString();
 
-        if (comp3->status() == QQmlComponent::Ready) {
-            QQuickItem *systemTab = (QQuickItem*) comp3->create(nullptr);
-            mSystemTableModel = new SystemTableModel;
-            mSystemTableModel->setMode("TableModel");
+//        if (comp3->status() == QQmlComponent::Ready) {
+//            QQuickItem *systemTab = (QQuickItem*) comp3->create(nullptr);
+//            mSystemTableModel = new SystemTableModel;
+//            mSystemTableModel->setMode("TableModel");
 
-            QObject::connect(systemTab,
-                             SIGNAL(filterTextChanged(const QString&)),
-                             mSystemTableModel,
-                             SLOT(setFilterWildcard(const QString&)));
+//            QObject::connect(systemTab,
+//                             SIGNAL(filterTextChanged(const QString&)),
+//                             mSystemTableModel,
+//                             SLOT(setFilterWildcard(const QString&)));
 
-            QObject::connect(systemTab,
-                             SIGNAL(systemDoubleClicked(const int&)),
-                             this,
-                             SIGNAL(systemDoubleClicked(const int&)));
+//            QObject::connect(systemTab,
+//                             SIGNAL(systemDoubleClicked(const int&)),
+//                             this,
+//                             SIGNAL(systemDoubleClicked(const int&)));
 
-            systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
-            mUiHandle->lwAddTab("Systems", systemTab);
-        }
+//            systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
+//            mUiHandle->lwAddTab("Systems", systemTab);
+//        }
 
-    });
+//    });
 
-    comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
+//    comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
 
 //    QQmlComponent *comp4 = new QQmlComponent(mQmlEngine);
 //    QObject::connect(comp4, &QQmlComponent::statusChanged, [this, comp4](){
@@ -162,30 +162,30 @@ void ListManager::setStationInfo(const StationInfo &stationInfo)
 
 void ListManager::setSystemInfo(const SystemInfo &systemInfo)
 {
-    if (mSystemTableModel) {
-        mSystemTableModel->updateItemData(systemInfo);
-    }
-    if (mSystemAssignmentTableModel) {
-        mSystemAssignmentTableModel->updateItemData(systemInfo);
-    }
+//    if (mSystemTableModel) {
+//        mSystemTableModel->updateItemData(systemInfo);
+//    }
+//    if (mSystemAssignmentTableModel) {
+//        mSystemAssignmentTableModel->updateItemData(systemInfo);
+//    }
 }
 
 void ListManager::setSystemCombatInfo(const SystemCombatInfo &systemCombatInfo)
 {
-    if (mSystemTableModel) {
-        mSystemTableModel->updateItemData(systemCombatInfo);
-    }
-    if (mSystemAssignmentTableModel)
-        mSystemAssignmentTableModel->updateItemData(systemCombatInfo);
+//    if (mSystemTableModel) {
+//        mSystemTableModel->updateItemData(systemCombatInfo);
+//    }
+//    if (mSystemAssignmentTableModel)
+//        mSystemAssignmentTableModel->updateItemData(systemCombatInfo);
 }
 
 void ListManager::setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
-    if (mSystemTableModel) {
-        mSystemTableModel->updateItemData(systemStatusInfo);
-    }
-    if (mSystemAssignmentTableModel)
-        mSystemAssignmentTableModel->updateItemData(systemStatusInfo);
+//    if (mSystemTableModel) {
+//        mSystemTableModel->updateItemData(systemStatusInfo);
+//    }
+//    if (mSystemAssignmentTableModel)
+//        mSystemAssignmentTableModel->updateItemData(systemStatusInfo);
 }
 
 void ListManager::assignAirToSystem(int TN, int Number)
@@ -237,13 +237,13 @@ void ListManager::clearAll()
 {
 //    if (mAircraftTableModel)
 //        mAircraftTableModel->clearList();
-    if (mSystemTableModel)
-        mSystemTableModel->clearList();
+//    if (mSystemTableModel)
+//        mSystemTableModel->clearList();
     if (mStationTableModel)
         mStationTableModel->clear();
     if (mSystemAssignmentTableModel)
         mSystemAssignmentTableModel->clearList();
-    if (mAircraftAssignmentTableModel)
-        mAircraftAssignmentTableModel->clearList();
+//    if (mAircraftAssignmentTableModel)
+//        mAircraftAssignmentTableModel->clearList();
 }
 

@@ -50,34 +50,44 @@ public slots:
 signals:
     void systemClicked(int Number);
 public:
-    void updateItemData(const QString& jsonStr);
-    void updateItemData(const SystemInfo& systemInfo);
-    void updateItemData(const SystemStatusInfo& systemStatusInfo);
-    void updateItemData(const SystemCombatInfo& systemCombatInfo);
+
     void assign(int TN, int Number);
     void cancelSystemsAssigned(int TN, int ExceptNum);
     void cancelAllAssigns();
     void cancelAssign(int TN, int Number);
     void acceptAssign(int TN, int Number, bool result);
-    void clearList();
     void setMode(QString mode);
 
     QMap<int, QList<SystemAssignInfo>> getAssignmentMap();
 
+    ///////////////////
+    void setSystemInfos(QMap<int, SystemInfo> & info);
+    void setSystemStatusInfos(QMap<int, SystemStatusInfo> & statusInfos);
+    void setSystemCombatInfos(QMap<int, SystemCombatInfo> & combatInfos);
+    void updateTable(int tn);
+    ///////////////////
+
+
 
 private:
-    std::deque<QSharedPointer<SystemInfo>> mSystemInfoList;
-    std::deque<QSharedPointer<SystemInfo>> mSystemInfoListProxy;
-    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoList;
-    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoListProxy;
-    std::deque<QSharedPointer<SystemCombatInfo>> mSystemCombatInfoList;
-    std::deque<QSharedPointer<SystemCombatInfo>> mSystemCombatInfoListProxy;
+//    std::deque<QSharedPointer<SystemInfo>> mSystemInfoList;
+//    std::deque<QSharedPointer<SystemInfo>> mSystemInfoListProxy;
+//    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoList;
+//    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoListProxy;
+//    std::deque<QSharedPointer<SystemCombatInfo>> mSystemCombatInfoList;
+//    std::deque<QSharedPointer<SystemCombatInfo>> mSystemCombatInfoListProxy;
 
     QMap<int, QList<SystemAssignInfo>> mSystemsAssigned;
 
     QString mMode;
     int mTN = -1;
     QString mFilter;
+
+    QMap<int, SystemInfo> *mSystemInfos;
+    QMap<int, SystemStatusInfo> *mSystemStatusInfos;
+    QMap<int, SystemCombatInfo> *mSystemCombatInfos;
+
+    QList<int> mSystemInfosProxy;
 
 };
 

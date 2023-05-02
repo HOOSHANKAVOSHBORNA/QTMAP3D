@@ -17,7 +17,9 @@ add_library(defenseModelLayer SHARED
   contextMenu.cpp
   aircraftInfoItem.cpp
   stationInformation.cpp
+  stationDataManager.cpp
   systemInfoItem.cpp
+  systemDataManager.cpp
   stationTableModel.cpp
   systemTableModel.cpp
   defenseModelLayer.cpp

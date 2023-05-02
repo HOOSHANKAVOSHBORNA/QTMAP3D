@@ -5,6 +5,8 @@
 #include "listManager.h"
 #include "defenseDataManager.h"
 #include "aircraftDataManager.h"
+#include "systemDataManager.h"
+#include "stationDataManager.h"
 
 class DataManager: public QObject
 {
@@ -28,6 +30,8 @@ private:
     ListManager *mListManager{nullptr};
     DefenseModelLayer *mDefenseModelLayer{nullptr};
     AircraftDataManager *mAircraftDataManager;
+    SystemDataManager *mSystemDataManager;
+    StationDataManager *mStationDataManager;
 };
 
 #endif // DATAMANAGER_H
