@@ -2,6 +2,7 @@
 #define AIRCRAFTDATAMANAGER_H
 
 #include <QMap>
+#include <set>
 #include <QObject>
 
 #include "defenseDataManager.h"
@@ -14,6 +15,8 @@ class AircraftDataManager: public QObject
 public:
     AircraftDataManager(DefenseModelLayer* defenseModelLayer);
 
+
+    void assignToSystem(int tn, int systemNo);
 public slots:
     void onInfoChanged(AircraftInfo& aircraftInfo);
     void onClear(int tn);
@@ -32,6 +35,7 @@ private:
 
     AircraftTableModel *mAircraftTableModel;
 
+    QMap<int, std::set<int>> mAssignments;
 };
 
 #endif // AIRCRAFTDATAMANAGER_H

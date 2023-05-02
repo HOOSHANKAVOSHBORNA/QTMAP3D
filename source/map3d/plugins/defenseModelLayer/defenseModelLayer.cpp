@@ -113,7 +113,8 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         aircraftInfo.IdentificationMethod = "mtd";
         aircraftInfo.Time = 16675478754;
         aircraftInfo.Pos = "pos1";
-        addUpdateAircraft(aircraftInfo);
+        mDataManager->onAircraftInfoChanged(aircraftInfo);
+        //addUpdateAircraft(aircraftInfo);
         //demo();
     }
     if(CATEGORY == category && name == ADD_ROCKET)
@@ -215,40 +216,40 @@ void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataMan
     mDataManager = new DataManager(defenseDataManager, listManager, this);
 }
 
-void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
-{
-    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
-    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
-                                          aircraftInfo.Longitude, aircraftInfo.Latitude, aircraftInfo.Altitude);
+//void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
+//{
+////    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
+////    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+////                                          aircraftInfo.Longitude, aircraftInfo.Latitude, aircraftInfo.Altitude);
 
-    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(aircraftInfo.TN))
-    {
-        aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][aircraftInfo.TN].get());
-        aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
+////    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(aircraftInfo.TN))
+////    {
+////        aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][aircraftInfo.TN].get());
+////        aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
 
-    }
-    else
-    {
-        //create and model node------------------------------------------------
-        aircraftModelNode = new AircraftModelNode(mMapController, aircraftInfo.Type, mQmlEngine,mUIHandle);
-        aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
-        aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
+////    }
+////    else
+////    {
+////        //create and model node------------------------------------------------
+////        aircraftModelNode = new AircraftModelNode(mMapController, aircraftInfo.Type, mQmlEngine,mUIHandle);
+////        aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
+////        aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
-        //add to container-----------------------------------------------------
-        mModelNodes[AIRCRAFT][aircraftInfo.TN] = aircraftModelNode;
-        //add to map ---------------------------------------------------------
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(aircraftModelNode);
-            }
-        }
-    }
-    //update information------------------------------------------------------------------
-    aircraftModelNode->setInformation(aircraftInfo);
+////        //add to container-----------------------------------------------------
+////        mModelNodes[AIRCRAFT][aircraftInfo.TN] = aircraftModelNode;
+////        //add to map ---------------------------------------------------------
+////        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+////        if (layer) {
+////            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+////            if (group) {
+////                group->addChild(aircraftModelNode);
+////            }
+////        }
+////    }
+////    //update information------------------------------------------------------------------
+////    aircraftModelNode->setInformation(aircraftInfo);
 
-}
+//}
 
 void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
 {
@@ -383,14 +384,14 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
     }
 }
 
-void DefenseModelLayer::clearAircraft(int tn)
-{
-    auto aircraftModelNode = getAircraftModelNode(tn);
-    if(aircraftModelNode){
-        aircraftModelNode->onLeftButtonClicked(false);
-        aircraftModelNode->setNodeMask(false);
-    }
-}
+//void DefenseModelLayer::clearAircraft(int tn)
+//{
+////    auto aircraftModelNode = getAircraftModelNode(tn);
+////    if(aircraftModelNode){
+////        aircraftModelNode->onLeftButtonClicked(false);
+////        aircraftModelNode->setNodeMask(false);
+////    }
+//}
 
 void DefenseModelLayer::onMapClear()
 {
@@ -453,10 +454,10 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
     //--drag aircraft--------------------------------------------
     if(event->button() == Qt::LeftButton && mDragAircraftModelNode)
     {
-        auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
+        auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode.get());
         if(systemModelNode)
         {
-            auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
+            auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
             mDataManager->aircraftAssign(aircraftModelNode, systemModelNode);
         }
         mMapController->removeNode(mDragAircraftModelNode);
@@ -468,7 +469,7 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
+        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
         if(aircraftModelNode && aircraftModelNode->hasAssignment())
         {
             mDataManager->cancelAircraftAssign(aircraftModelNode);
