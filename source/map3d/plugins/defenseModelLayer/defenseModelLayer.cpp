@@ -100,7 +100,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     if(CATEGORY == category && name == AIRCRAFT)
     {
         AircraftInfo aircraftInfo;
-        aircraftInfo.TN = mModelNodes[AIRCRAFT].count();
+        aircraftInfo.TN = 0;
         aircraftInfo.Longitude = 52.8601;
         aircraftInfo.Latitude = 35.277;
         aircraftInfo.Altitude = 9100;
@@ -119,48 +119,48 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     }
     if(CATEGORY == category && name == ADD_ROCKET)
     {
-        for(auto modelNode:mModelNodes[AIRCRAFT])
-        {
-            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
-            if(aircrafModelNode)
-            {
-                if(aircrafModelNode->getAssignments().size() > 0)
-                {
-                    auto systemModelNode = aircrafModelNode->getAssignments().first();
-                    if(systemModelNode){
-                        SystemCombatInfo CombatInfo;
-                        CombatInfo.Phase = SystemCombatInfo::Fire;
-                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
-                        systemModelNode->setCombatInfo(CombatInfo);
-                    }
-                }
-            }
-        }
+//        for(auto modelNode:mModelNodes[AIRCRAFT])
+//        {
+//            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+//            if(aircrafModelNode)
+//            {
+//                if(aircrafModelNode->getAssignments().size() > 0)
+//                {
+//                    auto systemModelNode = aircrafModelNode->getAssignments().first();
+//                    if(systemModelNode){
+//                        SystemCombatInfo CombatInfo;
+//                        CombatInfo.Phase = SystemCombatInfo::Fire;
+//                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+//                        systemModelNode->setCombatInfo(CombatInfo);
+//                    }
+//                }
+//            }
+//        }
     }
     else if(CATEGORY == category && name == KILL_ROCKET)
     {
-        for(auto modelNode:mModelNodes[AIRCRAFT])
-        {
-            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
-            if(aircrafModelNode)
-            {
-                if(aircrafModelNode->getAssignments().size() > 0)
-                {
-                    auto systemModelNode = aircrafModelNode->getAssignments().first();
-                    if(systemModelNode){
-                        SystemCombatInfo CombatInfo;
-                        CombatInfo.Phase = SystemCombatInfo::Kill;
-                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
-                        systemModelNode->setCombatInfo(CombatInfo);
-                    }
-                }
-            }
-        }
+//        for(auto modelNode:mModelNodes[AIRCRAFT])
+//        {
+//            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+//            if(aircrafModelNode)
+//            {
+//                if(aircrafModelNode->getAssignments().size() > 0)
+//                {
+//                    auto systemModelNode = aircrafModelNode->getAssignments().first();
+//                    if(systemModelNode){
+//                        SystemCombatInfo CombatInfo;
+//                        CombatInfo.Phase = SystemCombatInfo::Kill;
+//                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+//                        systemModelNode->setCombatInfo(CombatInfo);
+//                    }
+//                }
+//            }
+//        }
     }
     else if(CATEGORY == category && name == SYSTEM)
     {
         SystemInfo systemInfo;
-        systemInfo.Name = SYSTEM + QString::number(mModelNodes[SYSTEM].count());
+        systemInfo.Name = SYSTEM + QString::number(0);
         systemInfo.Longitude = 54.2;
         systemInfo.Latitude = 35.3;
         systemInfo.Number = 1234567;
@@ -178,7 +178,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     else if(CATEGORY == category && name == STATION)
     {
         StationInfo stationInfo;
-        stationInfo.Name = STATION + QString::number(mModelNodes[STATION].count());
+        stationInfo.Name = STATION + QString::number(0);
         stationInfo.Longitude = 52;
         stationInfo.Latitude = 35.2;
         stationInfo.Number = 1234567;
@@ -397,7 +397,7 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 
 void DefenseModelLayer::onMapClear()
 {
-    mModelNodes.clear();
+//    mModelNodes.clear();
     mOnMoveModelNode = nullptr;
     mSelectedModelNode = nullptr;
     //--clear list-----------------------------------------
@@ -419,9 +419,9 @@ void DefenseModelLayer::onMapClear()
 void DefenseModelLayer::frameEvent()
 {
     //    findSceneModels(mMapController->getViewer());
-    for(auto modelNodeList: mModelNodes)
-        for(auto modelNode: modelNodeList)
-            modelNode->frameEvent();
+//    for(auto modelNodeList: mModelNodes)
+//        for(auto modelNode: modelNodeList)
+//            modelNode->frameEvent();
     //    if(mLastSelectedModel)
     //        mLastSelectedModel->frameEvent();
 }
@@ -460,7 +460,7 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
         if(systemModelNode)
         {
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
-            mDataManager->aircraftAssign(aircraftModelNode, systemModelNode);
+            mDataManager->assignAircraft2System(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
@@ -472,7 +472,7 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
     if(event->button() == Qt::LeftButton)
     {
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
-        if(aircraftModelNode && aircraftModelNode->hasAssignment())
+        if(aircraftModelNode /*&& aircraftModelNode->hasAssignment()*/)
         {
             mDataManager->cancelAircraftAssign(aircraftModelNode);
             event->accept();

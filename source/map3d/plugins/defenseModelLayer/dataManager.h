@@ -22,7 +22,7 @@ public slots:
     void onClearAircraft(int tn);
     void onAircraftAssignedResponse(int tn, int systemNo, bool result);
 public:
-    void aircraftAssign(AircraftModelNode *aircraftModelNode, SystemModelNode *systemModelNode);
+    void assignAircraft2System(int tn, int systemNo);
     void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
     void clear();
 private:

@@ -72,7 +72,7 @@ private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
 private:
-    QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
+    //QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
     osg::ref_ptr<DefenseModelNode> mSelectedModelNode{nullptr};
     osg::ref_ptr<DefenseModelNode> mOnMoveModelNode{nullptr};
     int mPreCameraRange{0};

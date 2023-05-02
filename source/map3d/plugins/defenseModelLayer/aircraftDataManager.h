@@ -2,7 +2,6 @@
 #define AIRCRAFTDATAMANAGER_H
 
 #include <QMap>
-#include <set>
 #include <QObject>
 
 #include "defenseDataManager.h"
@@ -23,7 +22,7 @@ private:
     DefenseModelLayer* mDefenseModelLayer;
     QMap<int, AircraftInfo> mAircraftInfos;
     QMap<int, osg::ref_ptr<AircraftModelNode>> mAircraftModelNodes;
-    QMap<int, std::set<int>> mAssignments;
+    QMap<int, QList<int>> mAssignments;
 };
 
 #endif // AIRCRAFTDATAMANAGER_H
