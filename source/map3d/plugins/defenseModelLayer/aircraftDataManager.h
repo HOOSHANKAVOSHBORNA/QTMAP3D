@@ -14,11 +14,11 @@ class AircraftDataManager: public QObject
     Q_OBJECT
 public:
     AircraftDataManager(DefenseModelLayer* defenseModelLayer);
-    void assignToSystem(int tn, int systemNo);
+    void addAssignment(int tn, int systemNo);
 public slots:
     void onInfoChanged(AircraftInfo& aircraftInfo);
     void onClear(int tn);
-    void onAssignedResponse(int tn, int systemNo, bool result);
+    void onAssignmentResponse(int tn, int systemNo, bool result);
 private:
     DefenseModelLayer* mDefenseModelLayer;
     QMap<int, AircraftInfo> mAircraftInfos;

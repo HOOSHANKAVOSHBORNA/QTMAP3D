@@ -164,7 +164,8 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         systemInfo.Longitude = 54.2;
         systemInfo.Latitude = 35.3;
         systemInfo.Number = 1234567;
-        addUpdateSystem(systemInfo);
+//        addUpdateSystem(systemInfo);
+        mDataManager->onSystemInfoChanged(systemInfo);
 
         SystemStatusInfo systemStatusInfo;
         systemStatusInfo.Number = systemInfo.Number;
@@ -183,7 +184,8 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         stationInfo.Number = 1234567;
         stationInfo.PrimSec = "primary";
         stationInfo.CycleTime = 10000;
-        addUpdateStation(stationInfo);
+        mDataManager->onStationInfoChanged(stationInfo);
+//        addUpdateStation(stationInfo);
     }
 }
 
@@ -251,93 +253,93 @@ void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataMan
 
 //}
 
-void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
-{
-    osg::ref_ptr<SystemModelNode> systemModelNode;
-    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
-                                          systemInfo.Longitude, systemInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
-    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemInfo.Number))
-    {
-        systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemInfo.Number].get());
-    }
-    else
-    {
-        //create and setting model-------------------------------------------
-        systemModelNode = new SystemModelNode(mMapController, mQmlEngine, mUIHandle);
-        systemModelNode->setQStringName(systemInfo.Name);
-        systemModelNode->setGeographicPosition(geographicPosition, 0.0);
-        //add to container---------------------------------------------------
-        mModelNodes[SYSTEM][systemInfo.Number] = systemModelNode;
-        //add to map --------------------------------------------------------
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(systemModelNode);
-            }
-        }
-    }
-    //update information-----------------------------------------------------
-    systemModelNode->setInformation(systemInfo);
-}
+//void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
+//{
+//    osg::ref_ptr<SystemModelNode> systemModelNode;
+//    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+//                                          systemInfo.Longitude, systemInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+//    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemInfo.Number))
+//    {
+//        systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemInfo.Number].get());
+//    }
+//    else
+//    {
+//        //create and setting model-------------------------------------------
+//        systemModelNode = new SystemModelNode(mMapController, mQmlEngine, mUIHandle);
+//        systemModelNode->setQStringName(systemInfo.Name);
+//        systemModelNode->setGeographicPosition(geographicPosition, 0.0);
+//        //add to container---------------------------------------------------
+//        mModelNodes[SYSTEM][systemInfo.Number] = systemModelNode;
+//        //add to map --------------------------------------------------------
+//        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+//        if (layer) {
+//            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+//            if (group) {
+//                group->addChild(systemModelNode);
+//            }
+//        }
+//    }
+//    //update information-----------------------------------------------------
+//    systemModelNode->setInformation(systemInfo);
+//}
 
-void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
-{
-    osg::ref_ptr<StationModelNode> stationModelNode;
-    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
-                                          stationInfo.Longitude, stationInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
-    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Number))
-    {
-        stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][stationInfo.Number].get());
-    }
-    else
-    {
-        //create and setting model-------------------------------------------
-        stationModelNode = new StationModelNode(mMapController, mQmlEngine, mUIHandle);
-        stationModelNode->setQStringName(stationInfo.Name);
-        stationModelNode->setGeographicPosition(geographicPosition, 0.0);
-        //add to container---------------------------------------------------
-        mModelNodes[STATION][stationInfo.Number] = stationModelNode;
-        //add to map --------------------------------------------------------
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(stationModelNode);
-            }
-        }
-    }
-    //update information-----------------------------------------------------
-    stationModelNode->setInformation(stationInfo);
+//void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
+//{
+//    osg::ref_ptr<StationModelNode> stationModelNode;
+//    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+//                                          stationInfo.Longitude, stationInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+//    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Number))
+//    {
+//        stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][stationInfo.Number].get());
+//    }
+//    else
+//    {
+//        //create and setting model-------------------------------------------
+//        stationModelNode = new StationModelNode(mMapController, mQmlEngine, mUIHandle);
+//        stationModelNode->setQStringName(stationInfo.Name);
+//        stationModelNode->setGeographicPosition(geographicPosition, 0.0);
+//        //add to container---------------------------------------------------
+//        mModelNodes[STATION][stationInfo.Number] = stationModelNode;
+//        //add to map --------------------------------------------------------
+//        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+//        if (layer) {
+//            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+//            if (group) {
+//                group->addChild(stationModelNode);
+//            }
+//        }
+//    }
+//    //update information-----------------------------------------------------
+//    stationModelNode->setInformation(stationInfo);
 
-}
+//}
 
-SystemModelNode *DefenseModelLayer::getSystemModelNode(int number) const
-{
-    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(number))
-    {
-        return  dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][number].get());
-    }
-    return nullptr;
-}
+//SystemModelNode *DefenseModelLayer::getSystemModelNode(int number) const
+//{
+//    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(number))
+//    {
+//        return  dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][number].get());
+//    }
+//    return nullptr;
+//}
 
-AircraftModelNode *DefenseModelLayer::getAircraftModelNode(int tn) const
-{
-    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
-    {
-        return  dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
-    }
-    return nullptr;
-}
+//AircraftModelNode *DefenseModelLayer::getAircraftModelNode(int tn) const
+//{
+//    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
+//    {
+//        return  dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
+//    }
+//    return nullptr;
+//}
 
-StationModelNode *DefenseModelLayer::getStationModelNode(int number) const
-{
-    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(number))
-    {
-        return  dynamic_cast<StationModelNode*>(mModelNodes[STATION][number].get());
-    }
-    return nullptr;
-}
+//StationModelNode *DefenseModelLayer::getStationModelNode(int number) const
+//{
+//    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(number))
+//    {
+//        return  dynamic_cast<StationModelNode*>(mModelNodes[STATION][number].get());
+//    }
+//    return nullptr;
+//}
 
 void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 {
