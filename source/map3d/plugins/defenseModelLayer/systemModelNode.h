@@ -102,8 +102,8 @@ private:
     osg::ref_ptr<osg::Switch> mNode2DDeactive;
 
     osg::ref_ptr<osgEarth::Annotation::RectangleNode> mRectangleNode = nullptr;
-    osgEarth::Symbology::Style mRectangleStyleActive;
-    osgEarth::Symbology::Style mRectangleStyleDeactive;
+    osgEarth::Symbology::Style mRectangleStyleSelected;
+    osgEarth::Symbology::Style mRectangleStyleDeselected;
 };
 
 #endif // SYSTEM_H
