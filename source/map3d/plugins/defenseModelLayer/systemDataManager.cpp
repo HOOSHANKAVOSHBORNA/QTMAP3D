@@ -6,9 +6,7 @@ SystemDataManager::SystemDataManager(DefenseModelLayer* defenseModelLayer)
     mDefenseModelLayer = defenseModelLayer;
 
     addSystemTab();
-//    mSystemTableModel->setSystemInfos(mSystemInfos);
-//    mSystemTableModel->setSystemStatusInfos(mSystemStatusInfos);
-//    mSystemTableModel->setSystemCombatInfos(mSystemCombatInfos);
+    mSystemTableModel->setSystemInfos(mSystemData);
 }
 
 void SystemDataManager::addAssignment(int systemNo, System::Assignment assignment)
@@ -49,7 +47,7 @@ void SystemDataManager::onInfoChanged(SystemInfo &systemInfo)
     }
     //update information-----------------------------------------------------
     systemModelNode->setInformation(systemInfo);
-//    mSystemTableModel->updateTable(systemInfo.Number);
+    mSystemTableModel->updateTable(systemInfo.Number);
 }
 
 void SystemDataManager::onStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
@@ -60,7 +58,7 @@ void SystemDataManager::onStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 
         auto systemModelNode =  mSystemData[systemStatusInfo.Number].systemModelNode;
         systemModelNode->setStatusInfo(systemStatusInfo);
-//        mSystemTableModel->updateTable(systemStatusInfo.Number);
+        mSystemTableModel->updateTable(systemStatusInfo.Number);
     }
 }
 
@@ -72,7 +70,7 @@ void SystemDataManager::onCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 
         auto systemModelNode = mSystemData[systemCombatInfo.Number].systemModelNode;
         systemModelNode->setCombatInfo(systemCombatInfo);
-//        mSystemTableModel->updateTable(systemCombatInfo.Number);
+        mSystemTableModel->updateTable(systemCombatInfo.Number);
     }
 }
 

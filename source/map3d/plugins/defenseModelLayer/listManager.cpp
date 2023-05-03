@@ -209,22 +209,22 @@ void ListManager::acceptAssign(int TN, int Number, bool result)
 
 void ListManager::cancelSystemAssignmentsExcept(int ExceptTN, int Number)
 {
-    mAircraftAssignmentTableModel->cancelAircraftsAssigned(ExceptTN, Number);
-    for (auto iter : mSystemAssignmentTableModel->getAssignmentMap().keys()) {
-        if (iter != ExceptTN) {
-            mSystemAssignmentTableModel->cancelAssign(iter, Number);
-        }
-    }
+//    mAircraftAssignmentTableModel->cancelAircraftsAssigned(ExceptTN, Number);
+//    for (auto iter : mSystemAssignmentTableModel->getAssignmentMap().keys()) {
+//        if (iter != ExceptTN) {
+//            mSystemAssignmentTableModel->cancelAssign(iter, Number);
+//        }
+//    }
 }
 
 void ListManager::cancelAircraftAssignmentsExcept(int TN, int ExceptNum)
 {
-    mSystemAssignmentTableModel->cancelSystemsAssigned(TN, ExceptNum);
-    for (auto iter : mAircraftAssignmentTableModel->getAssignmentMap().keys()) {
-        if (iter != ExceptNum) {
-            mAircraftAssignmentTableModel->cancelAssign(iter, ExceptNum);
-        }
-    }
+//    mSystemAssignmentTableModel->cancelSystemsAssigned(TN, ExceptNum);
+//    for (auto iter : mAircraftAssignmentTableModel->getAssignmentMap().keys()) {
+//        if (iter != ExceptNum) {
+//            mAircraftAssignmentTableModel->cancelAssign(iter, ExceptNum);
+//        }
+//    }
 }
 
 void ListManager::clearAllAssigns()

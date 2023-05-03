@@ -2,7 +2,6 @@
 #define AIRCRAFTTABLEMODEL_H
 
 #include "defenseDataManager.h"
-
 #include <QAbstractTableModel>
 #include <deque>
 #include <QSharedPointer>
@@ -11,12 +10,10 @@
 #include <QJsonObject>
 #include <QPair>
 
-struct AircraftAssignInfo {
-    int TN;
-    QString Phase;
-    bool assign;
-};
-
+namespace Aircraft {
+    struct Data;
+}
+class SystemModelNode;
 class AircraftTableModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -40,7 +37,7 @@ public:
 
     Q_INVOKABLE int getTN(int row) const;
 
-    void setAircraftInfos(QMap<int, AircraftInfo> & aircrafts);
+    void setAircraftInfos(QMap<int, Aircraft::Data> & aircrafts);
     void updateTable(int tn);
 
 public slots:
@@ -61,13 +58,13 @@ public:
     void acceptAssign(int TN, int Number, bool result);
     void setMode(QString mode);
 
-    QMap<int, QList<AircraftAssignInfo>> getAssignmentMap();
+//    QMap<int, QList<AircraftAssignInfo>> getAssignmentMap();
 
 
 private:
-    QMap<int, QList<AircraftAssignInfo>> mAircraftsAssigned;
+//    QMap<int, QList<AircraftAssignInfo>> mAircraftsAssigned;
 
-    QMap<int, AircraftInfo> *mAircraftInfos;
+    QMap<int, Aircraft::Data> *mAircraftInfos;
     QList<int> mAircraftInfosProxy;
 
 
