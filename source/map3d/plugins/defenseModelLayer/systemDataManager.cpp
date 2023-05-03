@@ -39,7 +39,7 @@ void SystemDataManager::onInfoChanged(SystemInfo &systemInfo)
     else
     {
         //create and setting model-------------------------------------------
-        systemModelNode = new SystemModelNode(mDefenseModelLayer->mMapController, mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle);
+        systemModelNode = new SystemModelNode(mDefenseModelLayer, &mSystemData[systemInfo.Number]);
         systemModelNode->setQStringName(systemInfo.Name);
         systemModelNode->setGeographicPosition(geographicPosition, 0.0);
         //add to container---------------------------------------------------

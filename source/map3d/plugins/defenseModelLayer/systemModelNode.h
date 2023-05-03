@@ -17,24 +17,27 @@
 #include <QPainter>
 #include <osgEarthAnnotation/RectangleNode>
 
-
+namespace System {
+struct Data;
+}
 class SystemModelNode: public DefenseModelNode
 {
 public:
-    SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
+    SystemModelNode(DefenseModelLayer* defenseModelLayer, System::Data* systemData, QObject* parent = nullptr);
 
     void setInformation(const SystemInfo &info);
-    SystemInfo getInformation() const;
+//    SystemInfo getInformation() const;
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void setCombatInfo(const SystemCombatInfo &systemCombatInfo);
-    SystemCombatInfo getSystemCombatInfo() const;
+//    SystemCombatInfo getSystemCombatInfo() const;
 
-    void addAssignment(int tn, AircraftModelNode *assignModelNode);
-    AircraftModelNode *getAssignment(int tn) const;
-    void acceptAssignment(int tn, bool value);
-    void removeAssignment(int tn);
-    void clearAssignments(int exceptTN = -1);
-    QMap<int, AircraftModelNode *> getAssignments() const;
+//    void addAssignment(int tn, AircraftModelNode *assignModelNode);
+//    AircraftModelNode *getAssignment(int tn) const;
+//    void acceptAssignment(int tn, bool value);
+//    void removeAssignment(int tn);
+//    void clearAssignments(int exceptTN = -1);
+//    QMap<int, AircraftModelNode *> getAssignments() const;
+    System::Data* getData();
 
     void goOnTrack();
 public slots:
@@ -71,12 +74,15 @@ private:
         void updateLine(const osgEarth::GeoPoint &position);
     };
 private:
-    MapController* mMapController{nullptr};
-    SystemInfo mInformation;
-    SystemStatusInfo mStatusInfo;
-    SystemCombatInfo mCombatInfo;
-    UIHandle* mUIHandle;
-    QQmlEngine *mQmlEngine;
+//    MapController* mMapController{nullptr};
+//    SystemInfo mInformation;
+//    SystemStatusInfo mStatusInfo;
+//    SystemCombatInfo mCombatInfo;
+//    UIHandle* mUIHandle;
+//    QQmlEngine *mQmlEngine;
+    DefenseModelLayer* mDefenseModelLayer;
+    System::Data* mSystemData;
+
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
     osg::ref_ptr<Polygon> mWezPolygon;
