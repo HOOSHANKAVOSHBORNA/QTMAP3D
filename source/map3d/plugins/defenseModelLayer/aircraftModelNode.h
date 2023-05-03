@@ -81,7 +81,7 @@ private:
     osg::ref_ptr<osgParticle::FireEffect> mFire;
 
     //QMap<int, SystemModelNode*> mAssignmentMap;
-    QList<int>* mAssignments;
+    Aircraft::Data* mAircraftData;
 
     bool mIsStop{false};
     bool mIsRoute{false};

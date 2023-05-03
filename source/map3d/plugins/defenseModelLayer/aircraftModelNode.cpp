@@ -5,6 +5,7 @@
 #include "systemModelNode.h"
 #include "defenseModelLayer.h"
 #include "aircraftDataManager.h"
+#include "systemDataManager.h"
 
 #include <osgEarth/Registry>
 #include <osgGA/EventVisitor>
@@ -49,7 +50,7 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, Aircr
 {
 
     //mQmlEngine = qmlEngine;
-//    mAssignments = assignments;
+    mAircraftData = aircraftData;
     mDefenseModelLayer = defenseModelLayer;
     mIs3D = mDefenseModelLayer->mMapController->getMode();
 
@@ -841,7 +842,7 @@ void AircraftModelNode::change2DImageColore(osgEarth::Color /*color*/)
 
 void AircraftModelNode::updateOrCreateLabelImage()
 {
-    int height = LABEL_IMAGE_HEIGHT + ((mAssignments->count()+1)/2) * 30;
+    int height = LABEL_IMAGE_HEIGHT + ((mAircraftData->assigments.count()+1)/2) * 30;
     //qDebug()<<"hight:"<<height;
     if (!mRenderTargetImage) {
         mRenderTargetImage = new QImage(
@@ -951,21 +952,21 @@ void AircraftModelNode::updateOrCreateLabelImage()
         int h = 200;
         const QFontMetrics fm(textFont);
         int n = 0;
-        while (n < mAssignments->count()) {
+        while (n < mAircraftData->assigments.count()) {
 
             int indent = 0;
             for (int llidx = 0; llidx < 2; llidx++)// two elements per line
             {
 
-                if (n >= mAssignments->count())
+                if (n >= mAircraftData->assigments.count())
                     break;
 
-                int val = mAssignments->at(n);
+                auto val = mAircraftData->assigments.at(n);
 
                 const QString ss = (llidx == 0 ? QStringLiteral("(") : QStringLiteral(", ("))
-                        + QString::number(val)
+                        + QString::number(val.info->systemInfo.Number)
                         + QStringLiteral(", ");
-                const QString cc /*= QString(val->getSystemCombatInfo().phaseToString()[0])*/;
+                const QString cc = QString(val.info->systemCombatInfo.phaseToString()[0]);
                 const QString ee = QStringLiteral(")");
 
                 textPen.setColor(QColor(255,255,255));
