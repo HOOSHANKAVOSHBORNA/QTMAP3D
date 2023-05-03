@@ -50,6 +50,7 @@ Item {
             color: mouseArea.pressed ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"
             source: image
             visible: true
+            rotation: rootIte.headingAngle
         }
 
 

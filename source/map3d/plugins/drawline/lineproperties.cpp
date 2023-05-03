@@ -199,6 +199,16 @@ void LinePropertiesModel::setRuler(const int value)
     }
 }
 
+bool LinePropertiesModel::getShowBearing() const
+{
+
+}
+
+void LinePropertiesModel::setShowBearing(const bool &bearing)
+{
+
+}
+
 void LinePropertiesModel::setLine(LineNode* linNode)
 {
     mMeasureHeight = nullptr;

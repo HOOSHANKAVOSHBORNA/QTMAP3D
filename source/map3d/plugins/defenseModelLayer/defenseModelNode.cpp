@@ -118,6 +118,18 @@ DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent)
 //    mSelectOutline->setColor( osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) );
 //    mSelectOutline->addChild(this);
 //    osg::DisplaySettings::instance()->setMinimumNumStencilBits(1);
+    auto screenOption = osgEarth::ScreenSpaceLayout::getOptions();
+    screenOption.sortByPriority() = true;
+    osgEarth::ScreenSpaceLayout::setOptions(screenOption);
+    osg::ref_ptr<osg::Image> selectImage = osgDB::readImageFile("../data/images/select.png");
+    if(selectImage)
+        selectImage->scaleImage(24, 24, selectImage->r());
+    mSelectedNode = new osgEarth::Annotation::PlaceNode();
+    mSelectedNode->setIconImage(selectImage);
+    mSelectedNode->setPriority(-1);
+    mSelectedNode->setNodeMask(false);
+    mSelectedNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
+    getGeoTransform()->addChild(mSelectedNode);
 
     QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
         if(mLabelNode)
@@ -246,12 +258,14 @@ void DefenseModelNode::collision()
 osgEarth::Annotation::ModelNode *DefenseModelNode::getDragModelNode()
 {
     osgEarth::Symbology::Style  style = getStyle();
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
+//    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Gray);
     osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(getMapNode(), style);
+    dragModelNode->setCullingActive(false);
+    dragModelNode->addCullCallback(getCullCallback());
     dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
 //    dragModelNode->addCullCallback(getCullCallback());
@@ -312,6 +326,7 @@ void DefenseModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
     if (mSelectionMode != sm) {
         mSelectionMode = sm;
         emit selectionModeChanged();
+        mSelectedNode->setNodeMask(sm);
     }
 }
 

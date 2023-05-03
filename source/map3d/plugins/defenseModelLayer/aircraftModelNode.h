@@ -1,13 +1,14 @@
-#ifndef FLYINGMODEL_H
-#define FLYINGMODEL_H
+#ifndef AIRCRAFTMODELNODE_H
+#define AIRCRAFTMODELNODE_H
 
 #include "defenseModelNode.h"
 #include "mapcontroller.h"
 #include "plugininterface.h"
 #include "listManager.h"
-#include "aircraftInformation.h"
+#include "aircraftInfoItem.h"
 #include "linenode.h"
 #include "contextMenu.h"
+
 
 
 #include <osgEarthAnnotation/ModelNode>
@@ -27,12 +28,13 @@
 class MapAnimationPathCallback;
 class EventCallback;
 class SystemModelNode;
+class DefenseModelLayer;
 
 class AircraftModelNode: public DefenseModelNode
 {
     Q_OBJECT
 public:
-    AircraftModelNode(MapController *mapControler, AircraftInfo::AircraftType aircraftType, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
+    AircraftModelNode(DefenseModelLayer* defenseModelLayer, QList<int>* assignments, AircraftInfo::AircraftType aircraftType, QObject* parent = nullptr);
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
     void setInformation(AircraftInfo info);
@@ -45,13 +47,13 @@ public:
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
     virtual void updateColors() override;
 
-    SystemModelNode *getAssignment(int number) const;
-    void addAssignment(int number, SystemModelNode *assignmentModelNode);
-    void removeAssignment(int number);
-    void acceptAssignment(int number, bool value);
-    void clearAssignments(int exceptNumber = -1);
-    bool hasAssignment();
-    QMap<int, SystemModelNode *> getAssignments() const;
+//    SystemModelNode *getAssignment(int number) const;
+//    void addAssignment(int number, SystemModelNode *assignmentModelNode);
+//    void removeAssignment(int number);
+//    void acceptAssignment(int number, bool value);
+//    void clearAssignments(int exceptNumber = -1);
+//    bool hasAssignment();
+//    QMap<int, SystemModelNode *> getAssignments() const;
 
 private slots:
     void onGotoButtonClicked();
@@ -68,29 +70,31 @@ private:
     void change2DImageColore(osgEarth::Color color);
     void updateOrCreateLabelImage();
 private:
-    MapController* mMapController{nullptr};
+//    MapController* mMapController{nullptr};
+    DefenseModelLayer* mDefenseModelLayer{nullptr};
     ModelAnimationPathCallback* mAnimationPathCallback{nullptr};
     osgEarth::Annotation::ModelNode* mTruckModel;
     //    osg::ref_ptr<osg::Geode> mGeodeParticle;
     osg::ref_ptr<osgParticle::SmokeTrailEffect> mSmoke;
     osg::ref_ptr<osgParticle::FireEffect> mFire;
 
-    QMap<int, SystemModelNode*> mAssignmentMap;
+    //QMap<int, SystemModelNode*> mAssignmentMap;
+    QList<int>* mAssignments;
 
     bool mIsStop{false};
     bool mIsRoute{false};
-    UIHandle* mUIHandle;
+//    UIHandle* mUIHandle;
     AircraftInfo mInformation;
     osg::ref_ptr<osg::Vec3Array> mLocationPoints;
     osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
-    QQmlEngine *mQmlEngine;
+//    QQmlEngine *mQmlEngine;
     ContextMenu *mCurrentContextMenu = nullptr;
 
     osg::ref_ptr<LineNode> mRouteLine;
     osg::ref_ptr<LineNode> mLatestPointLine;
     osg::ref_ptr<LineNode> mTempLine;
 
-    AircraftInformation *mAircraftinformation{nullptr};
+    AircraftInfoItem *mAircraftinformation{nullptr};
 
     static osg::ref_ptr<osg::Node> mAircraft3DRef;
     static osg::ref_ptr<osg::Node> mFighter3DRef;
@@ -100,7 +104,7 @@ private:
 //    static osg::ref_ptr<osg::Image> m2dIcon;
 
     static constexpr int LABEL_IMAGE_WIDTH = 210;
-    static constexpr int LABEL_IMAGE_HEIGHT = 230;
+    static constexpr int LABEL_IMAGE_HEIGHT = 210;
     QImage *mRenderTargetImage{nullptr};
     osg::ref_ptr<osg::Image> mLabelImage{nullptr};
 
@@ -120,4 +124,4 @@ private:
     double mAutoScaleMaxValue = 500;
 };
 
-#endif // FLYINGMODEL_H
+#endif // AIRCRAFTMODELNODE_H

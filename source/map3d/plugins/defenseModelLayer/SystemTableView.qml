@@ -14,6 +14,9 @@ Item {
     property int hoveredIndex: -1
     property int selectedIndex: -1
 
+    property var hoverColor: "#add8e6"
+    property var headerColor: "#00587A"
+
     Timer {
         id: signalTimer
         running: false
@@ -56,7 +59,7 @@ Item {
 
             Rectangle {
                 color: "transparent"
-                border.color: "#4568dc"
+                border.color: headerColor
                 radius: 5
                 Layout.minimumWidth:   320
                 Layout.preferredWidth: 320
@@ -110,7 +113,7 @@ Item {
                         width: 140
                         height: 40
                         radius: 5
-                        color: '#4568dc'
+                        color: headerColor
                         Text {
                             color: '#FFFFFF'
                             text: rootItem.model ? rootItem.model.headerText(index) : "";
@@ -163,7 +166,7 @@ Item {
                         color: "transparent"
                         Rectangle {
                             opacity: 0.2
-                            color: (rootItem.hoveredIndex == row) ? "lightskyblue" : "transparent"
+                            color: (rootItem.hoveredIndex == row) ? hoverColor : "transparent"
                             anchors.fill: parent
                         }
                         Text {

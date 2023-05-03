@@ -37,11 +37,14 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
             emit mDefenseDataManager->systemStatusInfoChanged(systemStatus);
 
 //        createAircraftInfo();
-//        emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
-//        mAircraftList.removeFirst();
+        if(mAircraftList.count() > 0)
+        {
+            emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
+            mAircraftList.removeFirst();
+        }
     });
     timer->start(10000);
-    //----------------------------------------------------------
+    //--update aircraft info--------------------------------------------------------
     QTimer *timerUpdateAircraft = new QTimer();
     QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
         //---------------------------------------------
@@ -49,19 +52,16 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         updateAircraftInfo();
         for(auto aircraft:mAircraftList)
             emit mDefenseDataManager->aircraftInfoChanged(aircraft);
-
-        //emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
-        //mAircraftList.removeFirst();
     });
     timerUpdateAircraft->start(1000);
-    //--update cambat------------------------------------------
-    QTimer *timerUpdateCambat = new QTimer();
-    QObject::connect(timerUpdateCambat, &QTimer::timeout, [this](){
-        updateSystemCambatInfo();
-        for(auto systemCambat:SystemCambatList)
-            emit mDefenseDataManager->systemCambatInfoChanged(systemCambat);
+    //--update Combat------------------------------------------
+    QTimer *timerUpdateCombat = new QTimer();
+    QObject::connect(timerUpdateCombat, &QTimer::timeout, [this](){
+        updateSystemCombatInfo();
+        for(auto systemCombat:SystemCombatList)
+            emit mDefenseDataManager->systemCombatInfoChanged(systemCombat);
     });
-    timerUpdateCambat->start(20000);
+    timerUpdateCombat->start(20000);
     //---------------------------------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
 //        qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
@@ -72,14 +72,14 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
             return item.Number == systemNo;
         });
 
-        auto systemCambatInfo = std::find_if(SystemCambatList.begin(), SystemCambatList.end(), [systemNo](SystemCambatInfo& item){
+        auto systemCombatInfo = std::find_if(SystemCombatList.begin(), SystemCombatList.end(), [systemNo](SystemCombatInfo& item){
             return item.Number == systemNo;
         });
 
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        if(systemCambatInfo->Phase != SystemCambatInfo::Search)
+        if(systemCombatInfo->Phase != SystemCombatInfo::Search) {
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
-        else
+        } else
         {
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
             //-----------------------------------
@@ -113,9 +113,24 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
         auto systemInfo = std::find_if(systemList.begin(), systemList.end(), [systemNo](SystemInfo& item){
             return item.Number == systemNo;
         });
-
-        aircraftInfo->assignedSystems.removeAll(*systemInfo);
-        systemInfo->assignedAircrafts.removeAll(*aircraftInfo);
+        int tmpSys = 0;
+        int tmpAir = 0;
+        for (int i = 0; i < systemList.count(); ++i){
+            if (systemList[i].Number == systemNo)
+                tmpSys = i;
+        }
+        for (int i = 0; i < mAircraftList.count(); ++i){
+            if (mAircraftList[i].TN == tn){
+                mAircraftList[i].assignedSystems.removeAt(tmpSys);
+                tmpAir = i;
+            }
+        }
+        for (int i = 0; i < systemList.count(); ++i){
+            if (systemList[i].Number == systemNo)
+                systemList[i].assignedAircrafts.removeAt(tmpAir);
+        }
+//        aircraftInfo->assignedSystems.removeAll(*systemInfo);
+//        systemInfo->assignedAircrafts.removeAll(*aircraftInfo);
     });
 
 }
@@ -265,7 +280,7 @@ void Demo::createSystemInfo()
     for(int i = 0; i < systemNum; ++i)
     {
         SystemInfo  systemInfo;
-        SystemCambatInfo systemCambatInfo;
+        SystemCombatInfo systemCombatInfo;
         SystemStatusInfo systemStatusInfo;
 
         QString name = "System" + QString::number(systemList.count());
@@ -291,48 +306,48 @@ void Demo::createSystemInfo()
         systemStatusInfo.Simulation = "simulation";
         systemStatusInfo.BCCStatus = SystemStatusInfo::S;//s, us
         systemStatusInfo.RadarSearchStatus = SystemStatusInfo::S;//s, us
-        systemStatusInfo.Operational = "operational";
+        systemStatusInfo.Operational = static_cast<SystemStatusInfo::OperationStatus>(qrand() % 3);
         systemStatusInfo.MissileCount = 6;
         systemStatusInfo.RadarMode = "rMode";
         //combat info
-        systemCambatInfo.Number = systemInfo.Number;
-        systemCambatInfo.TN = 10000;
-        systemCambatInfo.Acceptance = "acceptance1";
-        systemCambatInfo.Phase = SystemCambatInfo::Search;//search, lock, ...
-        systemCambatInfo.Antenna = 50;//degree (lock sight
-        systemCambatInfo.ChanelNo = "123014s";
-        systemCambatInfo.Inrange = "inrange";
+        systemCombatInfo.Number = systemInfo.Number;
+        systemCombatInfo.TN = 10000;
+        systemCombatInfo.Acceptance = "acceptance1";
+        systemCombatInfo.Phase = SystemCombatInfo::Search;//search, lock, ...
+        systemCombatInfo.Antenna = 50;//degree (lock sight
+        systemCombatInfo.ChanelNo = "123014s";
+        systemCombatInfo.Inrange = "inrange";
 
         systemList.append(systemInfo);
         systemStatusList.append(systemStatusInfo);
-        SystemCambatList.append(systemCambatInfo);
+        SystemCombatList.append(systemCombatInfo);
     }
 }
 
-void Demo::updateSystemCambatInfo()
+void Demo::updateSystemCombatInfo()
 {
     for(int i = 0; i < systemNum; ++i)
     {
-        auto phase = SystemCambatList[i].Phase;
-        SystemCambatInfo::Phases newPhase = SystemCambatInfo::Search;
+        auto phase = SystemCombatList[i].Phase;
+        SystemCombatInfo::Phases newPhase = SystemCombatInfo::Search;
         if(systemList[i].assignedAircrafts.count() > 0)
         {
             int rn = (0 + (qrand() % systemList[i].assignedAircrafts.count()));
             switch (phase) {
-            case SystemCambatInfo::Search:
-                newPhase = SystemCambatInfo::Lock;
-                SystemCambatList[i].TN = systemList[i].assignedAircrafts[rn].TN;
+            case SystemCombatInfo::Search:
+                newPhase = SystemCombatInfo::Lock;
+                SystemCombatList[i].TN = systemList[i].assignedAircrafts[rn].TN;
                 break;
-            case SystemCambatInfo::Lock:
-                newPhase = SystemCambatInfo::Fire;
+            case SystemCombatInfo::Lock:
+                newPhase = SystemCombatInfo::Fire;
                 break;
-            case SystemCambatInfo::Fire:
+            case SystemCombatInfo::Fire:
                 if(rn % 2 == 0)
-                    newPhase = SystemCambatInfo::Kill;
+                    newPhase = SystemCombatInfo::Kill;
                 else
-                    newPhase = SystemCambatInfo::NoKill;
+                    newPhase = SystemCombatInfo::NoKill;
             }
         }
-        SystemCambatList[i].Phase = newPhase;
+        SystemCombatList[i].Phase = newPhase;
     }
 }

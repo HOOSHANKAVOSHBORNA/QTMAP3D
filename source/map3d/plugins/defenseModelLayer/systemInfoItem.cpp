@@ -1,4 +1,4 @@
-#include "systemInformation.h"
+#include "systemInfoItem.h"
 #include "plugininterface.h"
 #include <QQmlEngine>
 #include "aircraftModelNode.h"
@@ -28,6 +28,7 @@ QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case CombatInfoHeaders: return QVariant::fromValue<QStringList>(getCombatInfoHeaders());
         case AssignAircraftsName: return QVariant::fromValue<QStringList>(getAssignmentsName());
         case AssignAircraftsType: return QVariant::fromValue<QStringList>(getAssignmentsType());
+        case SystemColor: return QVariant::fromValue<QString>(mSystemCombatInfo.phaseToColor());
         default  : return QVariant::fromValue<QString>(mSystemInfo.Name);
 
     }
@@ -49,11 +50,12 @@ QHash<int, QByteArray> SystemInfoModel::roleNames() const
     hash[CombatInfoHeaders] = "CombatInfoHeaders";
     hash[AssignAircraftsType] = "AssignAircraftsType";
     hash[AssignAircraftsName] = "AssignAircraftsName";
+    hash[SystemColor] = "SystemColor";
     return hash;
 }
 
 
-void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCambatInfo &systemCombatInfo)
+void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCombatInfo &systemCombatInfo)
 {
     mSystemInfo = systemInfo;
     mSystemStatusInfo = systemStatusInfo;
@@ -62,7 +64,7 @@ void SystemInfoModel::setInformtion(const SystemInfo &systemInfo, const SystemSt
 
 }
 
-void SystemInfoModel::setCombatInfo(const SystemCambatInfo &combatInfo)
+void SystemInfoModel::setCombatInfo(const SystemCombatInfo &combatInfo)
 {
     mSystemCombatInfo = combatInfo;
     QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
@@ -113,7 +115,7 @@ QStringList SystemInfoModel::getStatusInfo() const
                         mSystemStatusInfo.Simulation,
                         mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.BCCStatus),
                         mSystemStatusInfo.radarStatusToString(mSystemStatusInfo.RadarSearchStatus),
-                        mSystemStatusInfo.Operational,
+                        mSystemStatusInfo.operationalToString(),
                         mSystemStatusInfo.MissileCount == -1 ? "------" : QString::number(mSystemStatusInfo.MissileCount),
                         mSystemStatusInfo.RadarMode};
 }
@@ -168,9 +170,10 @@ void SystemInfoModel::removeAssignment(int number)
     QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
+SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
+                                     SystemStatusInfo systemStatusInfo, SystemCombatInfo systemCambatInfo,
 
-SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo,
-                                     SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo,
+
                                      QObject *parent) :
     QObject(parent), mUiHandle(uiHandle), mInformation(systemInfo)
 {
@@ -191,33 +194,33 @@ SystemInformation::SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
     comp->loadUrl(QUrl("qrc:/modelplugin/SystemInfoView.qml"));
 }
 
-void SystemInformation::setInfo(const SystemInfo &systemInfo)
+void SystemInfoItem::setInfo(const SystemInfo &systemInfo)
 {
     mInformation = systemInfo;
     mInfoModel->setInfo(systemInfo);
 }
 
-void SystemInformation::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
+void SystemInfoItem::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
     mInfoModel->setStatusInfo(systemStatusInfo);
 }
 
-void SystemInformation::setCombatInfo(const SystemCambatInfo &systemCombatInfo)
+void SystemInfoItem::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
 {
     mInfoModel->setCombatInfo(systemCombatInfo);
 }
 
-void SystemInformation::addAssignment(int number, AircraftModelNode *aircraft)
+void SystemInfoItem::addAssignment(int number, AircraftModelNode *aircraft)
 {
     mInfoModel->addAssignment(number, aircraft);
 }
 
-void SystemInformation::removeAssignment(int number)
+void SystemInfoItem::removeAssignment(int number)
 {
     mInfoModel->removeAssignment(number);
 }
 
-void SystemInformation::show()
+void SystemInfoItem::show()
 {
     mUiHandle->iwShow(mItem, QString::number(mInformation.Number));
 }

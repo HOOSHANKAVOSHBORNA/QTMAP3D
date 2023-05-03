@@ -40,45 +40,42 @@ public:
 
     Q_INVOKABLE int getTN(int row) const;
 
+    void setAircraftInfos(QMap<int, AircraftInfo> & aircrafts);
+    void updateTable(int tn);
+
 public slots:
     void setFilterWildcard(const QString& wildcard);
     void sortWithHeader(int column);
     void onAircraftClicked(int TN);
     void onSystemClicked(int Number);
-    void onUpdateTimerTriggered();
     bool getShowAssigned();
     void refresh();
 signals:
     void aircraftClicked(int TN);
 
 public:
-    void updateItemData(const QString& jsonStr);
-    void updateItemData(const AircraftInfo& aircraftInfo);
-    void deleteItem(int TN);
     void assign(int TN, int Number);
     void cancelAssign(int TN, int Number);
     void cancelAllAssigns();
     void cancelAircraftsAssigned(int ExceptTN, int Number);
     void acceptAssign(int TN, int Number, bool result);
-    void clearList();
     void setMode(QString mode);
 
     QMap<int, QList<AircraftAssignInfo>> getAssignmentMap();
 
 
 private:
-    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoList;
-    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoListProxy;
     QMap<int, QList<AircraftAssignInfo>> mAircraftsAssigned;
+
+    QMap<int, AircraftInfo> *mAircraftInfos;
+    QList<int> mAircraftInfosProxy;
 
 
     QString mFilter = "";
 
-    bool mNeedUpdateOnTimerTrigger = false;
-    int mMinRowUpdate = -1;
-    int mMaxRowUpdate = -1;
     int mNumber = -1;
     QString mMode;
 };
+
 
 #endif // AIRCRAFTTABLEMODEL_H

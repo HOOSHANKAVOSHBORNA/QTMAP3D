@@ -100,8 +100,6 @@ void RectPropertiesModel::setClamp(int value){
     }
 }
 
-
-
 double RectPropertiesModel::getLineWidth() const
 {
     return mLineWidth;

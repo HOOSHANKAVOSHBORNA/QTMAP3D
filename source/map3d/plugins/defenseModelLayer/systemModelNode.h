@@ -3,7 +3,7 @@
 
 #include "mapcontroller.h"
 #include "defenseModelNode.h"
-#include "systemInformation.h"
+#include "systemInfoItem.h"
 #include "circle.h"
 #include "sphereNode.h"
 #include "polygon.h"
@@ -15,6 +15,7 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include <QImage>
 #include <QPainter>
+#include <osgEarthAnnotation/RectangleNode>
 
 
 class SystemModelNode: public DefenseModelNode
@@ -25,8 +26,8 @@ public:
     void setInformation(const SystemInfo &info);
     SystemInfo getInformation() const;
     void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
-    void setCambatInfo(const SystemCambatInfo &systemCambatInfo);
-    SystemCambatInfo getSystemCombatInfo() const;
+    void setCombatInfo(const SystemCombatInfo &systemCombatInfo);
+    SystemCombatInfo getSystemCombatInfo() const;
 
     void addAssignment(int tn, AircraftModelNode *assignModelNode);
     AircraftModelNode *getAssignment(int tn) const;
@@ -73,7 +74,7 @@ private:
     MapController* mMapController{nullptr};
     SystemInfo mInformation;
     SystemStatusInfo mStatusInfo;
-    SystemCambatInfo mCambatInfo;
+    SystemCombatInfo mCombatInfo;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;
     osg::ref_ptr<Circle> mRangeCircle;
@@ -86,23 +87,23 @@ private:
     Rocket* mFiredRocket{nullptr};
 
     QMap<int, Assignment*> mAssignmentMap;
-    SystemInformation *mSystemInformation{nullptr};
+    SystemInfoItem *mSystemInfoItem{nullptr};
 
     AircraftModelNode* mTargetModelNode{nullptr};
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;
     static constexpr int LABEL_IMAGE_WIDTH = 210;
-    static constexpr int LABEL_IMAGE_HEIGHT = 190;
+    static constexpr int LABEL_IMAGE_HEIGHT = 190 + 50;
 
     osg::ref_ptr<osg::LOD> mLOD = nullptr;
 
     osg::ref_ptr<osg::Switch> mNode2DActive;
     osg::ref_ptr<osg::Switch> mNode2DDeactive;
 
-    osg::ref_ptr<osgEarth::Annotation::CircleNode> mCircleNode = nullptr;
-    osgEarth::Symbology::Style mCircleStyleActive;
-    osgEarth::Symbology::Style mCircleStyleDeactive;
+    osg::ref_ptr<osgEarth::Annotation::RectangleNode> mRectangleNode = nullptr;
+    osgEarth::Symbology::Style mRectangleStyleSelected;
+    osgEarth::Symbology::Style mRectangleStyleDeselected;
 };
 
 #endif // SYSTEM_H

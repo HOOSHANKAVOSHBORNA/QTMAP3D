@@ -41,6 +41,9 @@ public:
     bool getPointVisible() const;
     void setPointVisible(bool value);
 
+    bool getShowBearing() const;
+    void setShowBearing(const bool &bearing);
+
     osgEarth::Color getPointColor() const;
     void setPointColor(const osgEarth::Color &pointColor);
 
@@ -50,8 +53,11 @@ public:
     bool getSmooth() const;
     void setSmooth(bool Smooth);
 
+    bool getLenght() const;
+    void setLenght(bool lenght);
+
 private:
-    osg::Image *updateLenghtLabel(double lenght);
+    osg::Image *updateLenghtLabel(double lenght, double bearing);
 private:
     MapController* mMapController{nullptr};
     osgEarth::Symbology::Geometry* mLineGeometry{nullptr};
@@ -60,6 +66,8 @@ private:
     float mWidth{5};
     float mPointWidth{5};
     float mHeight{0};
+    bool mBearing{true};
+    bool mLenght{true};
     bool mPointVisible{false};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
@@ -68,8 +76,8 @@ private:
     //Lenght part
     osg::ref_ptr<osg::Group> mLabelGroup;
     QImage *mRenderImage{nullptr};
-    static constexpr int LABEL_IMAGE_WIDTH = 100;
-    static constexpr int LABEL_IMAGE_HEIGHT = 20;
+    static constexpr int LABEL_IMAGE_WIDTH = 90;
+    static constexpr int LABEL_IMAGE_HEIGHT = 40;
     bool mIsHeight{false};
 
 };

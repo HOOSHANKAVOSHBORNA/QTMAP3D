@@ -1,0 +1,51 @@
+#ifndef AIRCRAFTDATAMANAGER_H
+#define AIRCRAFTDATAMANAGER_H
+
+#include <QMap>
+#include <QObject>
+
+#include "defenseDataManager.h"
+#include "aircraftModelNode.h"
+#include "defenseModelLayer.h"
+
+namespace System{
+struct Information;
+};
+
+namespace Aircraft {
+struct Assignment{
+    osg::ref_ptr<SystemModelNode> modelNode;
+    System::Information* info;
+};
+
+struct Data{
+    AircraftInfo info;
+    osg::ref_ptr<AircraftModelNode> modelNode;
+    QList<Assignment> assigments;
+};
+}
+class AircraftDataManager: public QObject
+{
+    Q_OBJECT
+public:
+    AircraftDataManager(DefenseModelLayer* defenseModelLayer);
+    void addAssignment(int tn, int systemNo);
+signals:
+    void aircraftDoubleClicked(int NT);
+
+private:
+    void addAircraftTab();
+
+public slots:
+    void onInfoChanged(AircraftInfo& aircraftInfo);
+    void onClear(int tn);
+    void onAssignmentResponse(int tn, int systemNo, bool result);
+
+private:
+    DefenseModelLayer* mDefenseModelLayer;
+    QMap<int, Aircraft::Data> mAircraftData;
+
+    AircraftTableModel *mAircraftTableModel;
+};
+
+#endif // AIRCRAFTDATAMANAGER_H

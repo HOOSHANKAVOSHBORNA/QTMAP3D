@@ -36,8 +36,6 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
                 mDrawingState = DrawingState::START;
                 mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
-
-
             }
             else {
                 mEnterPolygonZone = false;
@@ -98,7 +96,7 @@ void DrawPolygon::mousePressEvent(QMouseEvent *event)
         {
             if(mDrawingState == DrawingState::DRAWING)
             {
-                finishDraw(event);
+                finishDraw();
                 event->accept();
             }
         }
@@ -151,7 +149,7 @@ void DrawPolygon::cancelDraw()
         mPolygonProperties->setPolygon(nullptr);
 }
 
-void DrawPolygon::finishDraw(QMouseEvent *event)
+void DrawPolygon::finishDraw()
 {
     if(mDrawingState == DrawingState::DRAWING)
     {

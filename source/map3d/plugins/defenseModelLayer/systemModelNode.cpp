@@ -132,6 +132,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 
     getGeoTransform()->addChild(mLabelNode);
     mLabelNode->setNodeMask(false);
+    mLabelNode->setPriority(10);
 
 
     if(mIs3D)
@@ -145,24 +146,24 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
 
-    mCircleNode = new osgEarth::Annotation::CircleNode();
-    mCircleNode->setRadius(10);
+    mRectangleNode = new osgEarth::Annotation::RectangleNode();
+    mRectangleNode->setSize(16, 16);
 
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.2f, 0.2f, 1.0f);
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.4f, 0.4f, 0.4f, 1.0f);
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mCircleNode->setStyle(mCircleStyleActive);
-    mCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
-    mCircleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
+    mRectangleNode->setStyle(mRectangleStyleDeselected);
+    mRectangleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
+    mRectangleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
 
-    mNode3D->addChild(mCircleNode);
+    mNode3D->addChild(mRectangleNode);
 
 
     //map mode changed-----------------------------------------------------------------------
@@ -179,23 +180,26 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
-    if (!mSystemInformation) {
-        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    if (!mSystemInfoItem) {
+        mSystemInfoItem = new SystemInfoItem(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCombatInfo, this);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
     }
 
+    mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+    updateColors();
 }
 
 void SystemModelNode::setInformation(const SystemInfo& info)
 {
-    if (mSystemInformation)
-        mSystemInformation->setInfo(info);
+    if (mSystemInfoItem)
+        mSystemInfoItem->setInfo(info);
     mInformation = info;
     updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 
 
 
@@ -206,46 +210,51 @@ SystemInfo SystemModelNode::getInformation() const
     return mInformation;
 }
 
-void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
+void SystemModelNode::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
 {
-    mCambatInfo = systemCambatInfo;
-    if (mSystemInformation)
-        mSystemInformation->setCombatInfo(systemCambatInfo);
+    mCombatInfo = systemCombatInfo;
+    if (mSystemInfoItem)
+        mSystemInfoItem->setCombatInfo(systemCombatInfo);
 
-    switch (mCambatInfo.Phase) {
-    case SystemCambatInfo::Search:
+    switch (mCombatInfo.Phase) {
+    case SystemCombatInfo::Search:
         searchPhase();
         break;
-    case SystemCambatInfo::Lock:
-        lockPhase(mCambatInfo.TN);
+    case SystemCombatInfo::Lock:
+        lockPhase(mCombatInfo.TN);
         break;
-    case SystemCambatInfo::Fire:
-        firePhase(mCambatInfo.TN);
+    case SystemCombatInfo::Fire:
+        firePhase(mCombatInfo.TN);
         break;
-    case SystemCambatInfo::Kill:
-        killPhase(mCambatInfo.TN);
+    case SystemCombatInfo::Kill:
+        killPhase(mCombatInfo.TN);
         break;
-    case SystemCambatInfo::NoKill:
-        noKillPhase(mCambatInfo.TN);
+    case SystemCombatInfo::NoKill:
+        noKillPhase(mCombatInfo.TN);
         break;
     }
+    updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
-SystemCambatInfo SystemModelNode::getSystemCombatInfo() const
+SystemCombatInfo SystemModelNode::getSystemCombatInfo() const
 {
-    return mCambatInfo;
+    return mCombatInfo;
 }
 
 void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
 {
-    if (mSystemInformation)
-        mSystemInformation->setStatusInfo(systemStatusInfo);
+    if (mSystemInfoItem)
+        mSystemInfoItem->setStatusInfo(systemStatusInfo);
     mNode2D->setValue(0, systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S);
     mNode2D->setValue(1, systemStatusInfo.RadarSearchStatus != SystemStatusInfo::S);
 
-    mCircleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mCircleStyleActive : mCircleStyleDeactive);
+//    mRectangleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mRectangleStyleActive : mRectangleStyleDeactive);
     mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
+
+    updateColors();
 }
 
 void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
@@ -257,9 +266,11 @@ void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
         Assignment* assignmentModel = new  Assignment(mMapController);
         assignmentModel->mModelNode = assignModelNode;
         mAssignmentMap[tn] = assignmentModel;
-        mSystemInformation->addAssignment(tn, assignModelNode);
+        mSystemInfoItem->addAssignment(tn, assignModelNode);
         mMapController->addNodeToLayer(assignmentModel->mLine, SYSTEMS_LAYER_NAME);
     }
+    updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
 AircraftModelNode *SystemModelNode::getAssignment(int tn) const
@@ -287,8 +298,10 @@ void SystemModelNode::removeAssignment(int tn)
     {
         mMapController->removeNodeFromLayer(mAssignmentMap[tn]->mLine, SYSTEMS_LAYER_NAME);
         mAssignmentMap.remove(tn);
-        mSystemInformation->removeAssignment(tn);
+        mSystemInfoItem->removeAssignment(tn);
     }
+    updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
 void SystemModelNode::clearAssignments(int exceptTN)
@@ -298,7 +311,7 @@ void SystemModelNode::clearAssignments(int exceptTN)
         if(tn != exceptTN)
         {
             removeAssignment(tn);
-            mSystemInformation->removeAssignment(tn);
+            mSystemInfoItem->removeAssignment(tn);
         }
     }
 }
@@ -360,7 +373,6 @@ void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 void SystemModelNode::updateColors()
 {
-    DefenseModelNode::updateColors();
 
     if (mSelectionMode == SELECTED || mHoverMode == HOVERED) {
 
@@ -379,6 +391,19 @@ void SystemModelNode::updateColors()
 
     }
 
+    if (mStatusInfo.RadarSearchStatus == SystemStatusInfo::S) {
+        mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+    } else {
+        mModelColor = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
+    }
+
+    DefenseModelNode::updateColors();
+
+    if(mSelectionMode == SELECTED || mHoverMode == HOVERED) {
+        mRectangleNode->setStyle(mRectangleStyleSelected);
+    } else {
+        mRectangleNode->setStyle(mRectangleStyleDeselected);
+    }
 
 
 }
@@ -490,7 +515,8 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
     mNode2D->setValue(0, checked);
     mNode2D->setValue(1, !checked);
 
-    mCircleNode->setStyle(checked ? mCircleStyleActive : mCircleStyleDeactive);
+//    mRectangleNode->setStyle(checked ? mRectangleStyleActive : mRectangleStyleDeactive);
+    updateColors();
 }
 
 void SystemModelNode::searchPhase()
@@ -566,26 +592,39 @@ void SystemModelNode::noKillPhase(int tn)
 
 void SystemModelNode::showInfoWidget()
 {
-//    if (!mSystemInformation) {
-//        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
-//    }
-    mSystemInformation->setInfo(mInformation);
-    mSystemInformation->show();
+//    if (!mSystemInfoItem) {
+//        mSystemInfoItem = new SystemInfoItem(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCombatInfo, this);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    mSystemInfoItem->setInfo(mInformation);
+    mSystemInfoItem->show();
 }
 
 void SystemModelNode::updateOrCreateLabelImage()
 {
+//    qDebug() << ">>> : " << mAssignmentMap.keys().count();
+
+    int height = LABEL_IMAGE_HEIGHT + ((mAssignmentMap.keys().count()+2)/3) * 30;
+    if (mStatusInfo.Operational == SystemStatusInfo::Op2)
+        height += 50;
+
     if (!mRenderTargetImage) {
         mRenderTargetImage = new QImage(
                     LABEL_IMAGE_WIDTH,
-                    LABEL_IMAGE_HEIGHT,
+                    height,
                     QImage::Format_RGBA8888
                     );
+    } else {
+        mRenderTargetImage->~QImage();
+        mRenderTargetImage = new(mRenderTargetImage) QImage(
+                    LABEL_IMAGE_WIDTH,
+                    height,
+                    QImage::Format_RGBA8888
+                    );
+
     }
 
     if (!mLabelImage) {
@@ -670,29 +709,125 @@ void SystemModelNode::updateOrCreateLabelImage()
                          mStatusInfo.radarStatusToString(mStatusInfo.RadarSearchStatus));
 
 
-        //------------------------------------------------------------
+
+
+        //---------------------------------------------------------
+
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, 135, LABEL_IMAGE_WIDTH, 135);
 
+        textPen.setColor(QColor(255,255,255));
+        painter.setPen(textPen);
+
+        painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH/2, 30),
+                         Qt::AlignLeft | Qt::AlignVCenter,
+                         "Assignments:");
+        textPen.setColor(mCombatInfo.phaseToColor());
+        painter.setPen(textPen);
+        painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH-20, 30),
+                         Qt::AlignRight | Qt::AlignVCenter,
+                         QString(mCombatInfo.phaseToString()));
+
+        textPen.setColor(QColor(255,255,255));
+        painter.setPen(textPen);
+
+        int h = 170;
+        const QFontMetrics fm(textFont);
+        int n = 0;
+        while (n < mAssignmentMap.values().count()) {
+
+            int indent = 0;
+            for (int llidx = 0; llidx < 3; llidx++)// two elements per line
+            {
+
+                if (n >= mAssignmentMap.values().count())
+                    break;
+
+                const auto val = mAssignmentMap.values()[n];
+
+                const QString ss = (llidx == 0 ? QStringLiteral("") : QStringLiteral(", "))
+                        + QString::number(val->mModelNode->getInformation().TN);
+
+                textPen.setColor(QColor(255,255,255));
+                painter.setPen(textPen);
+
+                painter.drawText(QRect(10 + indent, h, LABEL_IMAGE_WIDTH, 30),
+                                 Qt::AlignLeft | Qt::AlignVCenter,
+                                 ss);
+                indent += fm.boundingRect(ss).width();
+
+                n++;
+            }
+
+            h += 30;
+        }
+
+
+        //------------------------------------------------------------
+
+
+
+        h = height - 60 - (mStatusInfo.Operational == SystemStatusInfo::Op2 ? 50 : 0);
+        painter.setPen(linePen);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawLine(0, h, LABEL_IMAGE_WIDTH, h);
+
+        h+=10;
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(Qt::white);
         static const QImage missleRedImage(":/resources/bullet_red.png");
         static const QImage missleGreenImage(":/resources/bullet_green.png");
-        for (int i = 0; i < 6; i++) {
-            if(i < mStatusInfo.MissileCount) {
+
+        if (mStatusInfo.Operational == SystemStatusInfo::NoOp) {
+            for (int i = 0; i < 9; i++) {
                 painter.drawImage(
-                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
-                            missleGreenImage,
-                            missleGreenImage.rect()
-                            );
-            } else {
-                painter.drawImage(
-                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 6.0) * i, 143, 20, 40),
+                            QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
                             missleRedImage,
                             missleRedImage.rect()
                             );
+
+            }
+
+
+        } else {
+            for (int i = 0; i < 9; i++) {
+                if(i < mStatusInfo.MissileCount) {
+                    painter.drawImage(
+                                QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
+                                missleGreenImage,
+                                missleGreenImage.rect()
+                                );
+                } else {
+                    painter.drawImage(
+                                QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
+                                missleRedImage,
+                                missleRedImage.rect()
+                                );
+
+                }
+            }
+
+            if (mStatusInfo.Operational == SystemStatusInfo::Op2) {
+                h += 50;
+
+                for (int i = 9; i < 18; i++) {
+                    if(i < mStatusInfo.MissileCount) {
+                        painter.drawImage(
+                                    QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * (i-9), h, 20, 40),
+                                    missleGreenImage,
+                                    missleGreenImage.rect()
+                                    );
+                    } else {
+                        painter.drawImage(
+                                    QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * (i-9), h, 20, 40),
+                                    missleRedImage,
+                                    missleRedImage.rect()
+                                    );
+
+                    }
+                }
 
             }
         }
@@ -701,7 +836,7 @@ void SystemModelNode::updateOrCreateLabelImage()
     *mRenderTargetImage = mRenderTargetImage->mirrored(false, true);
 
     mLabelImage->setImage(LABEL_IMAGE_WIDTH,
-                          LABEL_IMAGE_HEIGHT,
+                          height,
                           1,
                           GL_RGBA,
                           GL_RGBA,
@@ -721,6 +856,7 @@ SystemModelNode::Assignment::Assignment(MapController *mapControler)
     mLine->setWidth(1);
     mLine->setPointWidth(5);
     mLine->setTessellation(15);
+    mLine->setShowBearing(true);
 }
 
 void SystemModelNode::Assignment::accept()

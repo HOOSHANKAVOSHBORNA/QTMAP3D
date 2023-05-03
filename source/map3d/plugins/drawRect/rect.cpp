@@ -25,7 +25,7 @@ Rect::Rect(MapController *mapController, bool clamp){
 void Rect::setColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
-    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color, 0.5);
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = color;
     this->setStyle(style);
 }
 

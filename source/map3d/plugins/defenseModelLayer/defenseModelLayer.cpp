@@ -44,10 +44,10 @@
 
 #include "aircraftTableModel.h"
 #include "contextMenu.h"
-#include "aircraftInformation.h"
+#include "aircraftInfoItem.h"
 #include "stationTableModel.h"
 #include "stationInformation.h"
-#include "systemInformation.h"
+#include "systemInfoItem.h"
 #include "systemTableModel.h"
 #include "dataManager.h"
 
@@ -100,7 +100,7 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     if(CATEGORY == category && name == AIRCRAFT)
     {
         AircraftInfo aircraftInfo;
-        aircraftInfo.TN = mModelNodes[AIRCRAFT].count();
+        aircraftInfo.TN = 0;
         aircraftInfo.Longitude = 52.8601;
         aircraftInfo.Latitude = 35.277;
         aircraftInfo.Altitude = 9100;
@@ -113,57 +113,59 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
         aircraftInfo.IdentificationMethod = "mtd";
         aircraftInfo.Time = 16675478754;
         aircraftInfo.Pos = "pos1";
-        addUpdateAircraft(aircraftInfo);
+        mDataManager->onAircraftInfoChanged(aircraftInfo);
+        //addUpdateAircraft(aircraftInfo);
         //demo();
     }
     if(CATEGORY == category && name == ADD_ROCKET)
     {
-        for(auto modelNode:mModelNodes[AIRCRAFT])
-        {
-            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
-            if(aircrafModelNode)
-            {
-                if(aircrafModelNode->getAssignments().size() > 0)
-                {
-                    auto systemModelNode = aircrafModelNode->getAssignments().first();
-                    if(systemModelNode){
-                        SystemCambatInfo cambatInfo;
-                        cambatInfo.Phase = SystemCambatInfo::Fire;
-                        cambatInfo.TN = aircrafModelNode->getInformation().TN;
-                        systemModelNode->setCambatInfo(cambatInfo);
-                    }
-                }
-            }
-        }
+//        for(auto modelNode:mModelNodes[AIRCRAFT])
+//        {
+//            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+//            if(aircrafModelNode)
+//            {
+//                if(aircrafModelNode->getAssignments().size() > 0)
+//                {
+//                    auto systemModelNode = aircrafModelNode->getAssignments().first();
+//                    if(systemModelNode){
+//                        SystemCombatInfo CombatInfo;
+//                        CombatInfo.Phase = SystemCombatInfo::Fire;
+//                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+//                        systemModelNode->setCombatInfo(CombatInfo);
+//                    }
+//                }
+//            }
+//        }
     }
     else if(CATEGORY == category && name == KILL_ROCKET)
     {
-        for(auto modelNode:mModelNodes[AIRCRAFT])
-        {
-            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
-            if(aircrafModelNode)
-            {
-                if(aircrafModelNode->getAssignments().size() > 0)
-                {
-                    auto systemModelNode = aircrafModelNode->getAssignments().first();
-                    if(systemModelNode){
-                        SystemCambatInfo cambatInfo;
-                        cambatInfo.Phase = SystemCambatInfo::Kill;
-                        cambatInfo.TN = aircrafModelNode->getInformation().TN;
-                        systemModelNode->setCambatInfo(cambatInfo);
-                    }
-                }
-            }
-        }
+//        for(auto modelNode:mModelNodes[AIRCRAFT])
+//        {
+//            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+//            if(aircrafModelNode)
+//            {
+//                if(aircrafModelNode->getAssignments().size() > 0)
+//                {
+//                    auto systemModelNode = aircrafModelNode->getAssignments().first();
+//                    if(systemModelNode){
+//                        SystemCombatInfo CombatInfo;
+//                        CombatInfo.Phase = SystemCombatInfo::Kill;
+//                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+//                        systemModelNode->setCombatInfo(CombatInfo);
+//                    }
+//                }
+//            }
+//        }
     }
     else if(CATEGORY == category && name == SYSTEM)
     {
         SystemInfo systemInfo;
-        systemInfo.Name = SYSTEM + QString::number(mModelNodes[SYSTEM].count());
+        systemInfo.Name = SYSTEM + QString::number(0);
         systemInfo.Longitude = 54.2;
         systemInfo.Latitude = 35.3;
         systemInfo.Number = 1234567;
-        addUpdateSystem(systemInfo);
+//        addUpdateSystem(systemInfo);
+        mDataManager->onSystemInfoChanged(systemInfo);
 
         SystemStatusInfo systemStatusInfo;
         systemStatusInfo.Number = systemInfo.Number;
@@ -176,13 +178,14 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     else if(CATEGORY == category && name == STATION)
     {
         StationInfo stationInfo;
-        stationInfo.Name = STATION + QString::number(mModelNodes[STATION].count());
+        stationInfo.Name = STATION + QString::number(0);
         stationInfo.Longitude = 52;
         stationInfo.Latitude = 35.2;
         stationInfo.Number = 1234567;
         stationInfo.PrimSec = "primary";
         stationInfo.CycleTime = 10000;
-        addUpdateStation(stationInfo);
+        mDataManager->onStationInfoChanged(stationInfo);
+//        addUpdateStation(stationInfo);
     }
 }
 
@@ -215,128 +218,128 @@ void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataMan
     mDataManager = new DataManager(defenseDataManager, listManager, this);
 }
 
-void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
-{
-    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
-    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
-                                          aircraftInfo.Longitude, aircraftInfo.Latitude, aircraftInfo.Altitude);
+//void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
+//{
+////    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
+////    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+////                                          aircraftInfo.Longitude, aircraftInfo.Latitude, aircraftInfo.Altitude);
 
-    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(aircraftInfo.TN))
-    {
-        aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][aircraftInfo.TN].get());
-        aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
+////    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(aircraftInfo.TN))
+////    {
+////        aircraftModelNode = dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][aircraftInfo.TN].get());
+////        aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
 
-    }
-    else
-    {
-        //create and model node------------------------------------------------
-        aircraftModelNode = new AircraftModelNode(mMapController, aircraftInfo.Type, mQmlEngine,mUIHandle);
-        aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
-        aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
+////    }
+////    else
+////    {
+////        //create and model node------------------------------------------------
+////        aircraftModelNode = new AircraftModelNode(mMapController, aircraftInfo.Type, mQmlEngine,mUIHandle);
+////        aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
+////        aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
-        //add to container-----------------------------------------------------
-        mModelNodes[AIRCRAFT][aircraftInfo.TN] = aircraftModelNode;
-        //add to map ---------------------------------------------------------
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(aircraftModelNode);
-            }
-        }
-    }
-    //update information------------------------------------------------------------------
-    aircraftModelNode->setInformation(aircraftInfo);
+////        //add to container-----------------------------------------------------
+////        mModelNodes[AIRCRAFT][aircraftInfo.TN] = aircraftModelNode;
+////        //add to map ---------------------------------------------------------
+////        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(AIRCRAFTS_LAYER_NAME);
+////        if (layer) {
+////            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+////            if (group) {
+////                group->addChild(aircraftModelNode);
+////            }
+////        }
+////    }
+////    //update information------------------------------------------------------------------
+////    aircraftModelNode->setInformation(aircraftInfo);
 
-}
+//}
 
-void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
-{
-    osg::ref_ptr<SystemModelNode> systemModelNode;
-    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
-                                          systemInfo.Longitude, systemInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
-    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemInfo.Number))
-    {
-        systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemInfo.Number].get());
-    }
-    else
-    {
-        //create and setting model-------------------------------------------
-        systemModelNode = new SystemModelNode(mMapController, mQmlEngine, mUIHandle);
-        systemModelNode->setQStringName(systemInfo.Name);
-        systemModelNode->setGeographicPosition(geographicPosition, 0.0);
-        //add to container---------------------------------------------------
-        mModelNodes[SYSTEM][systemInfo.Number] = systemModelNode;
-        //add to map --------------------------------------------------------
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(systemModelNode);
-            }
-        }
-    }
-    //update information-----------------------------------------------------
-    systemModelNode->setInformation(systemInfo);
-}
+//void DefenseModelLayer::addUpdateSystem(SystemInfo systemInfo)
+//{
+//    osg::ref_ptr<SystemModelNode> systemModelNode;
+//    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+//                                          systemInfo.Longitude, systemInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+//    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(systemInfo.Number))
+//    {
+//        systemModelNode = dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][systemInfo.Number].get());
+//    }
+//    else
+//    {
+//        //create and setting model-------------------------------------------
+//        systemModelNode = new SystemModelNode(mMapController, mQmlEngine, mUIHandle);
+//        systemModelNode->setQStringName(systemInfo.Name);
+//        systemModelNode->setGeographicPosition(geographicPosition, 0.0);
+//        //add to container---------------------------------------------------
+//        mModelNodes[SYSTEM][systemInfo.Number] = systemModelNode;
+//        //add to map --------------------------------------------------------
+//        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(SYSTEMS_LAYER_NAME);
+//        if (layer) {
+//            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+//            if (group) {
+//                group->addChild(systemModelNode);
+//            }
+//        }
+//    }
+//    //update information-----------------------------------------------------
+//    systemModelNode->setInformation(systemInfo);
+//}
 
-void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
-{
-    osg::ref_ptr<StationModelNode> stationModelNode;
-    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
-                                          stationInfo.Longitude, stationInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
-    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Number))
-    {
-        stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][stationInfo.Number].get());
-    }
-    else
-    {
-        //create and setting model-------------------------------------------
-        stationModelNode = new StationModelNode(mMapController, mQmlEngine, mUIHandle);
-        stationModelNode->setQStringName(stationInfo.Name);
-        stationModelNode->setGeographicPosition(geographicPosition, 0.0);
-        //add to container---------------------------------------------------
-        mModelNodes[STATION][stationInfo.Number] = stationModelNode;
-        //add to map --------------------------------------------------------
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(stationModelNode);
-            }
-        }
-    }
-    //update information-----------------------------------------------------
-    stationModelNode->setInformation(stationInfo);
+//void DefenseModelLayer::addUpdateStation(StationInfo stationInfo)
+//{
+//    osg::ref_ptr<StationModelNode> stationModelNode;
+//    osgEarth::GeoPoint geographicPosition(mMapController->getMapSRS()->getGeographicSRS(),
+//                                          stationInfo.Longitude, stationInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
+//    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(stationInfo.Number))
+//    {
+//        stationModelNode = dynamic_cast<StationModelNode*>(mModelNodes[STATION][stationInfo.Number].get());
+//    }
+//    else
+//    {
+//        //create and setting model-------------------------------------------
+//        stationModelNode = new StationModelNode(mMapController, mQmlEngine, mUIHandle);
+//        stationModelNode->setQStringName(stationInfo.Name);
+//        stationModelNode->setGeographicPosition(geographicPosition, 0.0);
+//        //add to container---------------------------------------------------
+//        mModelNodes[STATION][stationInfo.Number] = stationModelNode;
+//        //add to map --------------------------------------------------------
+//        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+//        if (layer) {
+//            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+//            if (group) {
+//                group->addChild(stationModelNode);
+//            }
+//        }
+//    }
+//    //update information-----------------------------------------------------
+//    stationModelNode->setInformation(stationInfo);
 
-}
+//}
 
-SystemModelNode *DefenseModelLayer::getSystemModelNode(int number) const
-{
-    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(number))
-    {
-        return  dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][number].get());
-    }
-    return nullptr;
-}
+//SystemModelNode *DefenseModelLayer::getSystemModelNode(int number) const
+//{
+//    if(mModelNodes.contains(SYSTEM) && mModelNodes[SYSTEM].contains(number))
+//    {
+//        return  dynamic_cast<SystemModelNode*>(mModelNodes[SYSTEM][number].get());
+//    }
+//    return nullptr;
+//}
 
-AircraftModelNode *DefenseModelLayer::getAircraftModelNode(int tn) const
-{
-    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
-    {
-        return  dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
-    }
-    return nullptr;
-}
+//AircraftModelNode *DefenseModelLayer::getAircraftModelNode(int tn) const
+//{
+//    if(mModelNodes.contains(AIRCRAFT) && mModelNodes[AIRCRAFT].contains(tn))
+//    {
+//        return  dynamic_cast<AircraftModelNode*>(mModelNodes[AIRCRAFT][tn].get());
+//    }
+//    return nullptr;
+//}
 
-StationModelNode *DefenseModelLayer::getStationModelNode(int number) const
-{
-    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(number))
-    {
-        return  dynamic_cast<StationModelNode*>(mModelNodes[STATION][number].get());
-    }
-    return nullptr;
-}
+//StationModelNode *DefenseModelLayer::getStationModelNode(int number) const
+//{
+//    if(mModelNodes.contains(STATION) && mModelNodes[STATION].contains(number))
+//    {
+//        return  dynamic_cast<StationModelNode*>(mModelNodes[STATION][number].get());
+//    }
+//    return nullptr;
+//}
 
 void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 {
@@ -344,48 +347,57 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
     if(aircraftModelNode){
         if(mSelectedModelNode) {
             //mSelectedModelNode->select(false);
+            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
             mSelectedModelNode->updateColors();
         }
+        mSelectedModelNode = aircraftModelNode;
         aircraftModelNode->onLeftButtonClicked(true);
         aircraftModelNode->goOnTrack();
-        mSelectedModelNode = aircraftModelNode;
+        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+        mSelectedModelNode->updateColors();
     }
 
     StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(defenseModelNode);
     if(stationModelNode){
         if(mSelectedModelNode) {
             //mSelectedModelNode->select(false);
+            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
             mSelectedModelNode->updateColors();
         }
+        mSelectedModelNode = stationModelNode;
         stationModelNode->onLeftButtonClicked(true);
         stationModelNode->goOnTrack();
-        mSelectedModelNode = stationModelNode;
+        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+        mSelectedModelNode->updateColors();
     }
 
     SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(defenseModelNode);
     if(systemModelNode){
         if(mSelectedModelNode) {
             //mSelectedModelNode->select(false);
+            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
             mSelectedModelNode->updateColors();
         }
+        mSelectedModelNode = systemModelNode;
         systemModelNode->onLeftButtonClicked(true);
         systemModelNode->goOnTrack();
-        mSelectedModelNode = systemModelNode;
+        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+        mSelectedModelNode->updateColors();
     }
 }
 
-void DefenseModelLayer::clearAircraft(int tn)
-{
-    auto aircraftModelNode = getAircraftModelNode(tn);
-    if(aircraftModelNode){
-        aircraftModelNode->onLeftButtonClicked(false);
-        aircraftModelNode->setNodeMask(false);
-    }
-}
+//void DefenseModelLayer::clearAircraft(int tn)
+//{
+////    auto aircraftModelNode = getAircraftModelNode(tn);
+////    if(aircraftModelNode){
+////        aircraftModelNode->onLeftButtonClicked(false);
+////        aircraftModelNode->setNodeMask(false);
+////    }
+//}
 
 void DefenseModelLayer::onMapClear()
 {
-    mModelNodes.clear();
+//    mModelNodes.clear();
     mOnMoveModelNode = nullptr;
     mSelectedModelNode = nullptr;
     //--clear list-----------------------------------------
@@ -407,9 +419,9 @@ void DefenseModelLayer::onMapClear()
 void DefenseModelLayer::frameEvent()
 {
     //    findSceneModels(mMapController->getViewer());
-    for(auto modelNodeList: mModelNodes)
-        for(auto modelNode: modelNodeList)
-            modelNode->frameEvent();
+//    for(auto modelNodeList: mModelNodes)
+//        for(auto modelNode: modelNodeList)
+//            modelNode->frameEvent();
     //    if(mLastSelectedModel)
     //        mLastSelectedModel->frameEvent();
 }
@@ -444,11 +456,11 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
     //--drag aircraft--------------------------------------------
     if(event->button() == Qt::LeftButton && mDragAircraftModelNode)
     {
-        auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
+        auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode.get());
         if(systemModelNode)
         {
-            auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
-            mDataManager->aircraftAssign(aircraftModelNode, systemModelNode);
+            auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
+            mDataManager->assignAircraft2System(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
@@ -459,8 +471,8 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
-        if(aircraftModelNode && aircraftModelNode->hasAssignment())
+        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
+        if(aircraftModelNode /*&& aircraftModelNode->hasAssignment()*/)
         {
             mDataManager->cancelAircraftAssign(aircraftModelNode);
             event->accept();

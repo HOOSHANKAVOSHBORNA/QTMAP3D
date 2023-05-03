@@ -38,15 +38,16 @@ public slots:
     void setFilterWildcard(const QString& wildcard);
 
 public:
-    void updateItemData(const QString& jsonStr);
-    void updateItemData(const StationInfo& stationInfo);
-    void clear();
+    void setStationInfos(QMap<int, StationInfo> & stationInfos);
+    void updateTable(int number);
+
 
 private:
-    std::deque<QSharedPointer<StationInfo>> mStationInfoList;
-    std::deque<QSharedPointer<StationInfo>> mStationInfoListProxy;
 
-    QString mFilter;
+    QMap<int, StationInfo> *mStationInfos;
+    QList<int> mStationInfosProxy;
+
+    QString mFilter = "";
 
 };
 

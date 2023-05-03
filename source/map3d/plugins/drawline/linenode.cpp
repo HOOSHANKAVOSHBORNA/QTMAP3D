@@ -11,9 +11,9 @@ LineNode::LineNode(MapController *mapController)
     pathFeature->geoInterp() = osgEarth::GEOINTERP_GREAT_CIRCLE;
 
     osgEarth::Symbology::Style pathStyle;
-//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
-//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
-//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+    //    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
+    //    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
+    //    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
 
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = mColor;
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
@@ -33,45 +33,40 @@ LineNode::LineNode(MapController *mapController)
 void LineNode::addPoint(osgEarth::GeoPoint point)
 {
     mLineGeometry->push_back(point.vec3d());
-    //    qDebug()<< getSize();
     dirty();
-    if(getSize() >= 2)
+
+    if(getSize() >= 2 && mLenght)
     {
         std::vector<osg::Vec3d> distanceVectorPoint;
         distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 2));
         distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 1));
+        auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
 
-        if(mIsHeight){
-            auto lenghtHeight = (mLineGeometry->at(mLineGeometry->size() - 2)-mLineGeometry->at(mLineGeometry->size() - 1)).length();
-            auto imageLabel = updateLenghtLabel(lenghtHeight);
-            osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
-            labelNode->setIconImage(imageLabel);
-            osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
-                                        (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
-            labelNode->setPosition(midPoint);
-
-            mLabelGroup->addChild(labelNode);
-            addChild(mLabelGroup);
+        double bea = osgEarth::GeoMath().bearing(osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 2).y()),
+                                                 osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 2).x()),
+                                                 osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).y()),
+                                                 osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).x()));
+        auto bearing = osg::RadiansToDegrees(bea);
+        if (bearing<0){
+            bearing+=360;
         }
-        else{
-            auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
-            auto imageLabel = updateLenghtLabel(lenght);
-            double lat;
-            double lon;
-            double dis = osgEarth::GeoMath().distance(0.6236764436, 0.8974078097, 0.6380068359, 0.926157676);
-            double bea = osgEarth::GeoMath().bearing(0.6236764436, 0.8974078097, 0.6380068359, 0.926157676);
-            osgEarth::GeoMath().destination(0.6236764436, 0.8974078097, bea, dis, lat, lon);
+
+        auto imageLabel = updateLenghtLabel(lenght, bearing);
+        double lat;
+        double lon;
+        double dis = osgEarth::GeoMath().distance(0.6236764436, 0.8974078097, 0.6380068359, 0.926157676);
+
+        osgEarth::GeoMath().destination(0.6236764436, 0.8974078097, bea, dis, lat, lon);
 
 
-            osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
-            labelNode->setIconImage(imageLabel);
-            osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
-                                        (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
-            labelNode->setPosition(midPoint);
+        osg::ref_ptr<osgEarth::Annotation::PlaceNode> labelNode = new osgEarth::Annotation::PlaceNode();
+        labelNode->setIconImage(imageLabel);
+        osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+                                    (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
+        labelNode->setPosition(midPoint);
 
-            mLabelGroup->addChild(labelNode);
-            addChild(mLabelGroup);
-        }
+        mLabelGroup->addChild(labelNode);
+        addChild(mLabelGroup);
     }
 }
 
@@ -220,6 +215,16 @@ void LineNode::setPointVisible(bool value)
     addChild(mLabelGroup);
 }
 
+bool LineNode::getShowBearing() const
+{
+    return mBearing;
+}
+
+void LineNode::setShowBearing(const bool &bearing)
+{
+    mBearing = bearing;
+}
+
 osgEarth::Color LineNode::getPointColor() const
 {
     return mPointColor;
@@ -273,7 +278,7 @@ void LineNode::setSmooth(bool smooth)
     }
 }
 //---------------------------------------------------------------
-osg::Image* LineNode::updateLenghtLabel(double lenght)
+osg::Image* LineNode::updateLenghtLabel(double lenght, double bearing)
 {
     if (!mRenderImage) {
         mRenderImage = new QImage(
@@ -284,12 +289,13 @@ osg::Image* LineNode::updateLenghtLabel(double lenght)
     }
     osg::Image* image = new osg::Image;
     {
+
         mRenderImage->fill(QColor(Qt::red));
         QPainter painter(mRenderImage);
         painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
         static const QBrush backgroundBrush = QBrush(QColor(0, 0, 0, int(255 * 0.3f)));
-        static const QFont textFont("SourceSansPro", 12, QFont::Normal);
+        static const QFont textFont("SourceSansPro", 10, QFont::Normal);
         static const QPen  textPen(QColor(255, 255, 255));
 
         painter.setBrush(backgroundBrush);
@@ -299,17 +305,25 @@ osg::Image* LineNode::updateLenghtLabel(double lenght)
 
         painter.setPen(textPen);
         painter.setFont(textFont);
+
+        if (getShowBearing()){
+            QString bearStr= QObject::tr("%1").arg(bearing,0,'f',2);
+            painter.drawText(QRect(0, 20, LABEL_IMAGE_WIDTH, 20),
+                             Qt::AlignCenter|Qt::AlignVCenter,
+                             bearStr+"°");
+        }
+
         if (lenght >= 1000){
             lenght/=1000;
             QString str = QObject::tr("%1 km").arg(lenght,0,'f',2);
-            painter.drawText(mRenderImage->rect(),
-                             Qt::AlignCenter,
+            painter.drawText(0, 0, LABEL_IMAGE_WIDTH, 20,
+                             Qt::AlignCenter|Qt::AlignVCenter,
                              str);
         }
         else{
-            QString str = QObject::tr("%1 m").arg(lenght);
-            painter.drawText(mRenderImage->rect(),
-                             Qt::AlignCenter,
+            QString str = QObject::tr("%1 m").arg(lenght,0,'f',2);
+            painter.drawText(0, 0, LABEL_IMAGE_WIDTH, 20,
+                             Qt::AlignCenter|Qt::AlignVCenter,
                              str);
         }
     }
@@ -324,4 +338,14 @@ osg::Image* LineNode::updateLenghtLabel(double lenght)
                     mRenderImage->bits(),
                     osg::Image::AllocationMode::NO_DELETE);
     return image;
+}
+
+bool LineNode::getLenght() const
+{
+    return mLenght;
+}
+
+void LineNode::setLenght(bool lenght)
+{
+    mLenght = lenght;
 }

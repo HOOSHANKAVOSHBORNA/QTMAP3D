@@ -61,11 +61,11 @@ private:
 
 };
 
-class AircraftInformation : public QObject
+class AircraftInfoItem : public QObject
 {
     Q_OBJECT
 public:
-    explicit AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, AircraftInfo mInformation, QObject *parent = nullptr);
+    explicit AircraftInfoItem(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, AircraftInfo mInformation, QObject *parent = nullptr);
     AircraftInfoModel* getInfo(){return mInfomodel;}
     void updateAircraft(AircraftInfo& mInformation);
     void show();
@@ -78,7 +78,7 @@ private:
     AircraftInfo mInformation;
     AircraftInfoModel *mInfomodel;
     UIHandle *mUiHandle = nullptr;
-    QQuickItem *mItem;
+    QQuickItem *mItem{nullptr};
 };
 
 #endif // INFOMODEL_H

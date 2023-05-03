@@ -32,7 +32,7 @@ private:
     void startDraw(QMouseEvent* event);
     void drawing(QMouseEvent* event);
     void cancelDraw();
-    void finishDraw(QMouseEvent* event);
+    void finishDraw();
     void mouseMoveDrawing(QMouseEvent *event);
 
     osgEarth::Annotation::PlaceNode* makeIconNode();

@@ -26,7 +26,7 @@ public slots:
     void deleteAircraftInfo(int TN);
     void setStationInfo(const StationInfo& stationInfo);
     void setSystemInfo(const SystemInfo& systemInfo);
-    void setSystemCombatInfo(const SystemCambatInfo &systemCombatInfo);
+    void setSystemCombatInfo(const SystemCombatInfo &systemCombatInfo);
     void setSystemStatusInfo(const SystemStatusInfo &systemStatusInfo);
     void assignAirToSystem(int TN, int Number);
     void cancelAssign(int TN, int Number);
@@ -38,7 +38,7 @@ public slots:
 
 
 signals:
-    void aircraftDoubleClicked(int NT);
+//    void aircraftDoubleClicked(int NT);
     void stationDoubleClicked(int number);
     void systemDoubleClicked(int number);
     void systemActiveToggled(bool act);
@@ -47,9 +47,9 @@ signals:
 private:
     QQmlEngine *mQmlEngine = nullptr;
     UIHandle *mUiHandle = nullptr;
-    AircraftTableModel *mAircraftTableModel = nullptr;
+//    AircraftTableModel *mAircraftTableModel = nullptr;
     StationTableModel *mStationTableModel = nullptr;
-    SystemTableModel *mSystemTableModel = nullptr;
+//    SystemTableModel *mSystemTableModel = nullptr;
 
     AircraftTableModel *mAircraftAssignmentTableModel;
     SystemTableModel *mSystemAssignmentTableModel;

@@ -35,6 +35,17 @@ private:
     bool mStarted{false};
     osgEarth::Color color{osgEarth::Color::Green};
     float mWidth;
+
+private:
+    //Lenght part
+    QImage *mRenderImage{nullptr};
+    static constexpr int LABEL_IMAGE_WIDTH = 90;
+    static constexpr int LABEL_IMAGE_HEIGHT = 20;
+private:
+    void updateHeightLabel(double height);
+     osg::ref_ptr<osg::Image> mImageLabel;
+     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLabelNode;
+
 };
 
 #endif // MEASUREHEIGHT_H

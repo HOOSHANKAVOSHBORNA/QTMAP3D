@@ -1,0 +1,62 @@
+#ifndef SYSTEMDATAMANAGER_H
+#define SYSTEMDATAMANAGER_H
+
+#include <QMap>
+#include <set>
+#include <QObject>
+
+#include "defenseDataManager.h"
+#include "systemModelNode.h"
+#include "defenseModelLayer.h"
+namespace System {
+
+struct Information
+{
+    SystemInfo systemInfo;
+    SystemStatusInfo systemStatusInfo;
+    SystemCombatInfo systemCombatInfo;
+};
+
+struct Assignment
+{
+    osg::ref_ptr<AircraftModelNode> modelNode;
+    AircraftInfo *info;
+};
+
+struct Data
+{
+    Information information;
+    osg::ref_ptr<SystemModelNode> systemModelNode;
+    QList<Assignment> assignments;
+};
+}
+
+class SystemDataManager: public QObject
+{
+    Q_OBJECT
+
+public:
+    SystemDataManager(DefenseModelLayer* defenseModelLayer);
+    void addAssignment(int tn, int systemNo);
+public slots:
+    void onInfoChanged(SystemInfo& systemInfo);
+    void onStatusInfoChanged(SystemStatusInfo &systemStatusInfo);
+    void onCombatInfoChanged(SystemCombatInfo &systemCombatInfo);
+    void onAssignmentResponse(int tn, int systemNo, bool result);
+
+signals:
+    void systemDoubleClicked(const int&);
+private:
+    void addSystemTab();
+private:
+    DefenseModelLayer* mDefenseModelLayer;
+    //    QMap<int, SystemInfo> mSystemInfos;
+    //    QMap<int, SystemStatusInfo> mSystemStatusInfos;
+    //    QMap<int, SystemCombatInfo> mSystemCombatInfos;
+    //    QMap<int, osg::ref_ptr<SystemModelNode>> mSystemModelNodes;
+    //    QMap<int, std::set<int>> mAssignments;
+    QMap<int, System::Data> mSystemData;
+    SystemTableModel *mSystemTableModel;
+};
+
+#endif // SYSTEMDATAMANAGER_H

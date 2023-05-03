@@ -125,6 +125,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     getGeoTransform()->addChild(mLabelNode);
     mLabelNode->setNodeMask(false);
+    mLabelNode->setPriority(10);
 
     if(mIs3D)
     {
