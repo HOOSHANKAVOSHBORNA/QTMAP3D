@@ -4,6 +4,7 @@
 #include "draw.h"
 #include "systemModelNode.h"
 #include "defenseModelLayer.h"
+#include "aircraftDataManager.h"
 
 #include <osgEarth/Registry>
 #include <osgGA/EventVisitor>
@@ -43,12 +44,12 @@ osg::ref_ptr<osg::Node> AircraftModelNode::mMissile3DRef;
 osg::ref_ptr<osg::Node> AircraftModelNode::mDrone3DRef;
 osg::ref_ptr<osg::Node> AircraftModelNode::mHelicopter3DRef;
 
-AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, QList<int> *assignments, AircraftInfo::AircraftType aircraftType, QObject *parent)
+AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, Aircraft::Data* aircraftData, AircraftInfo::AircraftType aircraftType, QObject *parent)
     :DefenseModelNode(defenseModelLayer->mMapController, parent)
 {
 
     //mQmlEngine = qmlEngine;
-    mAssignments = assignments;
+//    mAssignments = assignments;
     mDefenseModelLayer = defenseModelLayer;
     mIs3D = mDefenseModelLayer->mMapController->getMode();
 
