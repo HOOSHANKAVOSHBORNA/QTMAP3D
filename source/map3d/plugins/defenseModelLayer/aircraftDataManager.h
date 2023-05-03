@@ -10,11 +10,20 @@
 
 class AircraftDataManager: public QObject
 {
+    struct Assignmen{
+        osg::ref_ptr<SystemModelNode> modelNode;
+        SystemInfo* info;
+    };
+
+    struct AircraftData{
+        AircraftInfo info;
+        osg::ref_ptr<AircraftModelNode> modelNode;
+        QList<Assignmen> assigments;
+    };
+
     Q_OBJECT
 public:
     AircraftDataManager(DefenseModelLayer* defenseModelLayer);
-
-
     void addAssignment(int tn, int systemNo);
 signals:
     void aircraftDoubleClicked(int NT);
@@ -29,11 +38,9 @@ public slots:
 
 private:
     DefenseModelLayer* mDefenseModelLayer;
-    QMap<int, AircraftInfo> mAircraftInfos;
-    QMap<int, osg::ref_ptr<AircraftModelNode>> mAircraftModelNodes;
+    QMap<int, AircraftData> mAircraftData;
 
     AircraftTableModel *mAircraftTableModel;
-    QMap<int, QList<int>> mAssignments;
 };
 
 #endif // AIRCRAFTDATAMANAGER_H
