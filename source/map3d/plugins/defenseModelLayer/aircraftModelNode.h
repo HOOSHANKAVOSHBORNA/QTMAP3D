@@ -10,7 +10,6 @@
 #include "contextMenu.h"
 
 
-
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgParticle/FireEffect>
@@ -29,12 +28,15 @@ class MapAnimationPathCallback;
 class EventCallback;
 class SystemModelNode;
 class DefenseModelLayer;
+namespace Aircraft {
+struct Data;
+}
 
 class AircraftModelNode: public DefenseModelNode
 {
     Q_OBJECT
 public:
-    AircraftModelNode(DefenseModelLayer* defenseModelLayer, QList<int>* assignments, AircraftInfo::AircraftType aircraftType, QObject* parent = nullptr);
+    AircraftModelNode(DefenseModelLayer* defenseModelLayer, Aircraft::Data* aircraftData, AircraftInfo::AircraftType aircraftType, QObject* parent = nullptr);
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
     void setInformation(AircraftInfo info);

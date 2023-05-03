@@ -16,20 +16,22 @@ namespace Aircraft {
 struct Assignment{
     osg::ref_ptr<SystemModelNode> modelNode;
     System::Information* info;
+    bool operator== (const Assignment &assignment );
 };
 
 struct Data{
     AircraftInfo info;
-    osg::ref_ptr<AircraftModelNode> modelNode;
+    osg::ref_ptr<AircraftModelNode> modelNode{nullptr};
     QList<Assignment> assigments;
 };
 }
+
 class AircraftDataManager: public QObject
 {
     Q_OBJECT
 public:
     AircraftDataManager(DefenseModelLayer* defenseModelLayer);
-    void addAssignment(int tn, int systemNo);
+    void addAssignment(int tn, Aircraft::Assignment assignment);
 signals:
     void aircraftDoubleClicked(int NT);
 
