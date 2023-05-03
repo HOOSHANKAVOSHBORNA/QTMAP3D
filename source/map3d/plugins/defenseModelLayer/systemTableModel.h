@@ -60,23 +60,14 @@ public:
 
     QMap<int, QList<SystemAssignInfo>> getAssignmentMap();
 
-    ///////////////////
     void setSystemInfos(QMap<int, SystemInfo> & info);
     void setSystemStatusInfos(QMap<int, SystemStatusInfo> & statusInfos);
     void setSystemCombatInfos(QMap<int, SystemCombatInfo> & combatInfos);
     void updateTable(int number);
-    ///////////////////
 
 
 
 private:
-//    std::deque<QSharedPointer<SystemInfo>> mSystemInfoList;
-//    std::deque<QSharedPointer<SystemInfo>> mSystemInfoListProxy;
-//    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoList;
-//    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoListProxy;
-//    std::deque<QSharedPointer<SystemCombatInfo>> mSystemCombatInfoList;
-//    std::deque<QSharedPointer<SystemCombatInfo>> mSystemCombatInfoListProxy;
-
     QMap<int, QList<SystemAssignInfo>> mSystemsAssigned;
 
     QString mMode;

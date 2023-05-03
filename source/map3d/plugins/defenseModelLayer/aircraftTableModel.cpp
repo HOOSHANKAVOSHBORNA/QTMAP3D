@@ -11,11 +11,6 @@
 AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-    QTimer *timer = new QTimer;
-    QObject::connect(timer , &QTimer::timeout,
-                     this, &AircraftTableModel::onUpdateTimerTriggered,
-                     Qt::DirectConnection);
-    timer->start(500);
 }
 
 int AircraftTableModel::columnCount(const QModelIndex &/*parent*/) const
@@ -106,13 +101,11 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     }
     case AircraftColor:
     {
-        const int _row = index.row();
         return QVariant::fromValue<QColor>((*mAircraftInfos)[index.row()].aircraftColor());
     }
 
     case AircraftHoverColor:
     {
-        const int _row = index.row();
         return QVariant::fromValue<QColor>((*mAircraftInfos)[index.row()].aircraftHoverColor());
     }
 
@@ -236,33 +229,6 @@ void AircraftTableModel::onAircraftClicked(int TN)
 void AircraftTableModel::onSystemClicked(int Number) {
 
 
-}
-
-
-void AircraftTableModel::onUpdateTimerTriggered()
-{
-    if (mNeedUpdateOnTimerTrigger) {
-        if (mMode == "TableModel") {
-            mAircraftInfosProxy.clear();
-            for (auto& item : *mAircraftInfos) {
-                if (QString::number(item.TN).contains(mFilter))
-                    mAircraftInfosProxy.push_back(item.TN);
-            }
-//            if (mAircraftInfosProxy.size() > 0)
-                emit dataChanged(createIndex(mMinRowUpdate, 0), createIndex(mMaxRowUpdate, columnCount()-1));
-
-        }
-        else {
-            if (mNumber > 0) {
-                onSystemClicked(mNumber);
-            }
-
-        }
-
-        mMinRowUpdate = -1;
-        mMaxRowUpdate = -1;
-        mNeedUpdateOnTimerTrigger = false;
-    }
 }
 
 void AircraftTableModel::assign(int TN, int Number)

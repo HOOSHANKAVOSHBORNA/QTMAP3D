@@ -12,6 +12,27 @@
 class SystemDataManager: public QObject
 {
     Q_OBJECT
+
+    struct Information
+    {
+        SystemInfo systemInfo;
+        SystemStatusInfo systemStatusInfo;
+        SystemCombatInfo systemCombatInfo;
+    };
+
+    struct Assignments
+    {
+        osg::ref_ptr<AircraftModelNode> modelNode;
+        AircraftInfo *info;
+    };
+
+    struct SystemData
+    {
+        Information information;
+        osg::ref_ptr<SystemModelNode> systemModelNode;
+        QList<int> assignments;
+    };
+
 public:
     SystemDataManager(DefenseModelLayer* defenseModelLayer);
     void addAssignment(int tn, int systemNo);
@@ -27,11 +48,12 @@ private:
     void addSystemTab();
 private:
     DefenseModelLayer* mDefenseModelLayer;
-    QMap<int, SystemInfo> mSystemInfos;
-    QMap<int, SystemStatusInfo> mSystemStatusInfos;
-    QMap<int, SystemCombatInfo> mSystemCombatInfos;
-    QMap<int, osg::ref_ptr<SystemModelNode>> mSystemModelNodes;
-    QMap<int, std::set<int>> mAssignments;
+//    QMap<int, SystemInfo> mSystemInfos;
+//    QMap<int, SystemStatusInfo> mSystemStatusInfos;
+//    QMap<int, SystemCombatInfo> mSystemCombatInfos;
+//    QMap<int, osg::ref_ptr<SystemModelNode>> mSystemModelNodes;
+//    QMap<int, std::set<int>> mAssignments;
+    QMap<int, SystemData> mSystemData;
     SystemTableModel *mSystemTableModel;
 };
 
