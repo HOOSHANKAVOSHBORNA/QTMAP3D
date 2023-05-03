@@ -45,32 +45,32 @@ ListManager::ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
 //    comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
 
-    QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
-//        qDebug() << comp2->errorString();
+//    QQmlComponent *comp2 = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
+////        qDebug() << comp2->errorString();
 
-        if (comp2->status() == QQmlComponent::Ready) {
-            QQuickItem *stationTab = (QQuickItem*) comp2->create(nullptr);
-            mStationTableModel = new StationTableModel;
+//        if (comp2->status() == QQmlComponent::Ready) {
+//            QQuickItem *stationTab = (QQuickItem*) comp2->create(nullptr);
+//            mStationTableModel = new StationTableModel;
 
-            QObject::connect(stationTab,
-                             SIGNAL(filterTextChanged(const QString&)),
-                             mStationTableModel,
-                             SLOT(setFilterWildcard(const QString&)));
+//            QObject::connect(stationTab,
+//                             SIGNAL(filterTextChanged(const QString&)),
+//                             mStationTableModel,
+//                             SLOT(setFilterWildcard(const QString&)));
 
-            QObject::connect(stationTab,
-                             SIGNAL(stationDoubleClicked(const int&)),
-                             this,
-                             SIGNAL(stationDoubleClicked(const int&)));
+//            QObject::connect(stationTab,
+//                             SIGNAL(stationDoubleClicked(const int&)),
+//                             this,
+//                             SIGNAL(stationDoubleClicked(const int&)));
 
 
-            stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
-            mUiHandle->lwAddTab("Stations", stationTab);
-        }
+//            stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
+//            mUiHandle->lwAddTab("Stations", stationTab);
+//        }
 
-    });
+//    });
 
-    comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
+//    comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
 
 //    QQmlComponent *comp3 = new QQmlComponent(mQmlEngine);
 //    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
@@ -155,9 +155,9 @@ ListManager::ListManager(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *par
 
 void ListManager::setStationInfo(const StationInfo &stationInfo)
 {
-    if (mStationTableModel) {
-        mStationTableModel->updateItemData(stationInfo);
-    }
+//    if (mStationTableModel) {
+//        mStationTableModel->updateItemData(stationInfo);
+//    }
 }
 
 void ListManager::setSystemInfo(const SystemInfo &systemInfo)
@@ -239,8 +239,8 @@ void ListManager::clearAll()
 //        mAircraftTableModel->clearList();
 //    if (mSystemTableModel)
 //        mSystemTableModel->clearList();
-    if (mStationTableModel)
-        mStationTableModel->clear();
+//    if (mStationTableModel)
+//        mStationTableModel->clear();
 //    if (mSystemAssignmentTableModel)
 //        mSystemAssignmentTableModel->clearList();
 //    if (mAircraftAssignmentTableModel)

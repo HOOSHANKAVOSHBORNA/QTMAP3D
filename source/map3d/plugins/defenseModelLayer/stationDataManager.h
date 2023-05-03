@@ -17,9 +17,15 @@ public:
 public slots:
     void onInfoChanged(StationInfo& stationInfo);
 private:
+    void addStationTab();
+signals:
+    void stationDoubleClicked(const int&);
+private:
     DefenseModelLayer* mDefenseModelLayer;
     QMap<int, StationInfo> mStationInfos;
     QMap<int, osg::ref_ptr<StationModelNode>> mStationModelNodes;
+
+    StationTableModel *mStationTableModel;
 };
 
 #endif // STATIONDATAMANAGER_H
