@@ -8,19 +8,24 @@
 #include "aircraftModelNode.h"
 #include "defenseModelLayer.h"
 
+namespace System{
+struct Information;
+};
+
+namespace Aircraft {
+struct Assignment{
+    osg::ref_ptr<SystemModelNode> modelNode;
+    System::Information* info;
+};
+
+struct Data{
+    AircraftInfo info;
+    osg::ref_ptr<AircraftModelNode> modelNode;
+    QList<Assignment> assigments;
+};
+}
 class AircraftDataManager: public QObject
 {
-    struct Assignmen{
-        osg::ref_ptr<SystemModelNode> modelNode;
-        SystemInfo* info;
-    };
-
-    struct AircraftData{
-        AircraftInfo info;
-        osg::ref_ptr<AircraftModelNode> modelNode;
-        QList<Assignmen> assigments;
-    };
-
     Q_OBJECT
 public:
     AircraftDataManager(DefenseModelLayer* defenseModelLayer);
@@ -38,7 +43,7 @@ public slots:
 
 private:
     DefenseModelLayer* mDefenseModelLayer;
-    QMap<int, AircraftData> mAircraftData;
+    QMap<int, Aircraft::Data> mAircraftData;
 
     AircraftTableModel *mAircraftTableModel;
 };
