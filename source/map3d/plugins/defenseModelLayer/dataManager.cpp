@@ -159,8 +159,20 @@ void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool result)
 
 void DataManager::assignAircraft2System(int tn, int systemNo)
 {
-    mAircraftDataManager->addAssignment(tn, systemNo);
-    mSystemDataManager->addAssignment(tn, systemNo);
+    Aircraft::Assignment aAssign;
+    System::Data * sData = mSystemDataManager->getSystemData(systemNo);
+    if (!sData) {
+        aAssign.info = &sData->information;
+        aAssign.modelNode = sData->systemModelNode;
+        mAircraftDataManager->addAssignment(tn, aAssign);
+    }
+    System::Assignment sAssign;
+    Aircraft::Data* aData = mAircraftDataManager->getAircraftData(tn);
+    if (!aData){
+        sAssign.info = &aData->info;
+        sAssign.modelNode = aData->modelNode;
+        mSystemDataManager->addAssignment(systemNo, sAssign);
+    }
 //    systemModelNode->addAssignment(aircraftModelNode->getInformation().TN, aircraftModelNode);
 //    aircraftModelNode->addAssignment(systemModelNode->getInformation().Number, systemModelNode);
     //--TODO manage memory---------------------------------------
