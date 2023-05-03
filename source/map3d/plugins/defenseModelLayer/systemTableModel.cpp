@@ -1,4 +1,5 @@
 #include "systemTableModel.h"
+#include "systemDataManager.h"
 
 #include <QDebug>
 #include <QColor>
@@ -29,30 +30,30 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
     {
         switch(index.column()) {
-        case  0: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].Number);
-        case  1: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].Name);
-        case  2: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].Type);
-        case  3: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].Terminal);
-        case  4: return mMode == "Assignment" ? QVariant::fromValue<QString>((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].phaseToString()):
-                                                QVariant::fromValue<double>((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].TN);
-        case  5: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].Latitude);
-        case  6: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].Longitude);
-        case  7: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].Altitude);
-        case  8: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].ViewRange);
-        case  9: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].MezRange);
-        case 10: return QVariant::fromValue<QString>((*mSystemStatusInfos)[mSystemInfosProxy[index.row()]].ReceiveTime);
-        case 11: return QVariant::fromValue<QString>((*mSystemStatusInfos)[mSystemInfosProxy[index.row()]].Simulation);
-        case 12: return QVariant::fromValue<QString>((*mSystemStatusInfos)[mSystemInfosProxy[index.row()]].BCCStatusToString());
-        case 13: return QVariant::fromValue<QString>((*mSystemStatusInfos)[mSystemInfosProxy[index.row()]].radarSearchStatusToString());
-        case 14: return QVariant::fromValue<QString>((*mSystemStatusInfos)[mSystemInfosProxy[index.row()]].operationalToString());
-        case 15: return QVariant::fromValue<int>((*mSystemStatusInfos)[mSystemInfosProxy[index.row()]].MissileCount);
-        case 16: return QVariant::fromValue<QString>((*mSystemStatusInfos)[mSystemInfosProxy[index.row()]].RadarMode);
-        case 17: return QVariant::fromValue<QString>((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].Acceptance);
-        case 18: return mMode == "Assignment" ? QVariant::fromValue<double>((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].TN):
-                                                QVariant::fromValue<QString>((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].phaseToString());
-        case 19: return QVariant::fromValue<double>((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].Antenna);
-        case 20: return QVariant::fromValue<QString>((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].ChanelNo);
-        case 21: return QVariant::fromValue<QString>((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].Inrange);
+        case  0: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemInfo.Number);
+        case  1: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemInfo.Name);
+        case  2: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemInfo.Type);
+        case  3: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemInfo.Terminal);
+        case  4: return mMode == "Assignment" ? QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.phaseToString()):
+                                                QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.TN);
+        case  5: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemInfo.Latitude);
+        case  6: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemInfo.Longitude);
+        case  7: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemInfo.Altitude);
+        case  8: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemInfo.ViewRange);
+        case  9: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemInfo.MezRange);
+        case 10: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemStatusInfo.ReceiveTime);
+        case 11: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemStatusInfo.Simulation);
+        case 12: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemStatusInfo.BCCStatusToString());
+        case 13: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemStatusInfo.radarSearchStatusToString());
+        case 14: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemStatusInfo.operationalToString());
+        case 15: return QVariant::fromValue<int>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemStatusInfo.MissileCount);
+        case 16: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemStatusInfo.RadarMode);
+        case 17: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.Acceptance);
+        case 18: return mMode == "Assignment" ? QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.TN):
+                                                QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.phaseToString());
+        case 19: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.Antenna);
+        case 20: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.ChanelNo);
+        case 21: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.Inrange);
 
         }
         break;
@@ -78,12 +79,12 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
             return QVariant::fromValue<QColor>("white");
         if (mMode == "Assignment") {
             switch (index.column()) {
-                case 4: return QVariant::fromValue<QColor>(QColor((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].phaseToColor()));
+                case 4: return QVariant::fromValue<QColor>(QColor((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.phaseToColor()));
                 default : return QVariant::fromValue<QColor>(QColor("transparent"));
 
             }
         }
-        return QVariant::fromValue<QColor>(QColor((*mSystemCombatInfos)[mSystemInfosProxy[index.row()]].phaseToColor()));
+        return QVariant::fromValue<QColor>(QColor((*mSystemInfos)[mSystemInfosProxy[index.row()]].information.systemCombatInfo.phaseToColor()));
     }
 
     }
@@ -138,7 +139,7 @@ int SystemTableModel::getNumber(int row) const
         return -1;
     }
 
-    return (*mSystemInfos)[mSystemInfosProxy[row]].Number;
+    return (*mSystemInfos)[mSystemInfosProxy[row]].information.systemInfo.Number;
 }
 
 void SystemTableModel::setFilterWildcard(const QString &wildcard)
@@ -150,8 +151,8 @@ void SystemTableModel::setFilterWildcard(const QString &wildcard)
 
         mSystemInfosProxy.clear();
         for (auto& item : *mSystemInfos) {
-            if (QString::number(item.Number).contains(mFilter))
-                mSystemInfosProxy.push_back(item.Number);
+            if (QString::number(item.information.systemInfo.Number).contains(mFilter))
+                mSystemInfosProxy.push_back(item.information.systemInfo.Number);
         }
 
         endResetModel();
@@ -194,36 +195,36 @@ void SystemTableModel::onSystemClicked(int Number)
 
 void SystemTableModel::assign(int Number, int TN)
 {
-    SystemAssignInfo tmp;
-    tmp.Number = Number;
-    tmp.Phase = "";
-    if (mSystemsAssigned.contains(TN)) {
-        mSystemsAssigned[TN].push_back(tmp);
-    }
-    else {
-        mSystemsAssigned[TN] = QList<SystemAssignInfo> {tmp};
-    }
-    if (mMode == "Assignment") {
-        if (mTN > 0)
-            onAircraftClicked(TN);
-    }
+//    SystemAssignInfo tmp;
+//    tmp.Number = Number;
+//    tmp.Phase = "";
+//    if (mSystemsAssigned.contains(TN)) {
+//        mSystemsAssigned[TN].push_back(tmp);
+//    }
+//    else {
+//        mSystemsAssigned[TN] = QList<SystemAssignInfo> {tmp};
+//    }
+//    if (mMode == "Assignment") {
+//        if (mTN > 0)
+//            onAircraftClicked(TN);
+//    }
 
 }
 
 void SystemTableModel::cancelSystemsAssigned(int TN, int ExceptNum)
 {
 
-    if (mSystemsAssigned.contains(TN)){
-        for (auto &system : mSystemsAssigned[TN]){
-            if (system.Number != ExceptNum) {
-                cancelAssign(system.Number, ExceptNum);
-            }
-        }
-    }
-    if (mMode == "Assignment") {
-        if (mTN > 0)
-            onAircraftClicked(TN);
-    }
+//    if (mSystemsAssigned.contains(TN)){
+//        for (auto &system : mSystemsAssigned[TN]){
+//            if (system.Number != ExceptNum) {
+//                cancelAssign(system.Number, ExceptNum);
+//            }
+//        }
+//    }
+//    if (mMode == "Assignment") {
+//        if (mTN > 0)
+//            onAircraftClicked(TN);
+//    }
 }
 
 void SystemTableModel::cancelAllAssigns()
@@ -234,32 +235,32 @@ void SystemTableModel::cancelAllAssigns()
 
 void SystemTableModel::cancelAssign(int TN, int Number)
 {
-    if (mSystemsAssigned.contains(TN)) {
-        auto it = std::remove_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &system){
-            return system.Number == Number;
-    });
-        if (it != mSystemsAssigned[TN].end())
-            mSystemsAssigned[TN].erase(it);
-    }
-    if (mMode == "Assignment"){
-        if (mTN > 0) {
-            onAircraftClicked(mTN);
-        }
-    }
+//    if (mSystemsAssigned.contains(TN)) {
+//        auto it = std::remove_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &system){
+//            return system.Number == Number;
+//    });
+//        if (it != mSystemsAssigned[TN].end())
+//            mSystemsAssigned[TN].erase(it);
+//    }
+//    if (mMode == "Assignment"){
+//        if (mTN > 0) {
+//            onAircraftClicked(mTN);
+//        }
+//    }
 }
 
 void SystemTableModel::acceptAssign(int TN, int Number, bool result)
 {
-    if (result) {
-        auto it = std::find_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &item) {
-            return Number == item.Number;
-        });
-        if (it != mSystemsAssigned[TN].end())
-            it->assign = true;
-    }
-    else {
-        cancelAssign(TN, Number);
-    }
+//    if (result) {
+//        auto it = std::find_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &item) {
+//            return Number == item.Number;
+//        });
+//        if (it != mSystemsAssigned[TN].end())
+//            it->assign = true;
+//    }
+//    else {
+//        cancelAssign(TN, Number);
+//    }
 }
 
 void SystemTableModel::refresh()
@@ -275,20 +276,20 @@ void SystemTableModel::setMode(QString mode)
     mMode = mode;
 }
 
-QMap<int, QList<SystemAssignInfo> > SystemTableModel::getAssignmentMap()
-{
-    return mSystemsAssigned;
-}
+//QMap<int, QList<SystemAssignInfo> > SystemTableModel::getAssignmentMap()
+//{
+//    return mSystemsAssigned;
+//}
 
-void SystemTableModel::setSystemStatusInfos(QMap<int, SystemStatusInfo> &statusInfos)
-{
-    mSystemStatusInfos = &statusInfos;
-}
+//void SystemTableModel::setSystemStatusInfos(QMap<int, SystemStatusInfo> &statusInfos)
+//{
+//    mSystemStatusInfos = &statusInfos;
+//}
 
-void SystemTableModel::setSystemCombatInfos(QMap<int, SystemCombatInfo> &combatInfos)
-{
-    mSystemCombatInfos = &combatInfos;
-}
+//void SystemTableModel::setSystemCombatInfos(QMap<int, SystemCombatInfo> &combatInfos)
+//{
+//    mSystemCombatInfos = &combatInfos;
+//}
 
 void SystemTableModel::updateTable(int number)
 {
@@ -309,7 +310,7 @@ void SystemTableModel::updateTable(int number)
     }
 }
 
-void SystemTableModel::setSystemInfos(QMap<int, SystemInfo> &systems)
+void SystemTableModel::setSystemInfos(QMap<int, System::Data> &systems)
 {
     beginResetModel();
     mSystemInfos = &systems;

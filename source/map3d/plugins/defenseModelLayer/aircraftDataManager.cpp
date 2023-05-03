@@ -11,7 +11,7 @@ AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
     mDefenseModelLayer = defenseModelLayer;
 
     addAircraftTab();
-    //mAircraftTableModel->setAircraftInfos(mAircraftInfos);
+    mAircraftTableModel->setAircraftInfos(mAircraftData);
 
 }
 
@@ -67,9 +67,9 @@ void AircraftDataManager::onClear(int tn)
     mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftData[tn].modelNode, AIRCRAFTS_LAYER_NAME);
     //--TODO remove system assignment
 
-    mAircraftTableModel->updateTable(tn);
 
     mAircraftData.remove(tn);
+    mAircraftTableModel->updateTable(tn);
 }
 
 void AircraftDataManager::onAssignmentResponse(int tn, int systemNo, bool result)

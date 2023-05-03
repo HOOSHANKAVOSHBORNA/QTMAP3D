@@ -11,6 +11,9 @@
 #include <QStringList>
 #include <deque>
 #include <QSharedPointer>
+namespace System {
+struct Data;
+}
 
 struct SystemAssignInfo {
     int Number;
@@ -58,25 +61,21 @@ public:
     void acceptAssign(int TN, int Number, bool result);
     void setMode(QString mode);
 
-    QMap<int, QList<SystemAssignInfo>> getAssignmentMap();
+//    QMap<int, QList<SystemAssignInfo>> getAssignmentMap();
 
-    void setSystemInfos(QMap<int, SystemInfo> & info);
-    void setSystemStatusInfos(QMap<int, SystemStatusInfo> & statusInfos);
-    void setSystemCombatInfos(QMap<int, SystemCombatInfo> & combatInfos);
+    void setSystemInfos(QMap<int, System::Data> & info);
     void updateTable(int number);
 
 
 
 private:
-    QMap<int, QList<SystemAssignInfo>> mSystemsAssigned;
+    QMap<int, System::Data> mSystemsAssigned;
 
     QString mMode;
     int mTN = -1;
     QString mFilter;
 
-    QMap<int, SystemInfo> *mSystemInfos;
-    QMap<int, SystemStatusInfo> *mSystemStatusInfos;
-    QMap<int, SystemCombatInfo> *mSystemCombatInfos;
+    QMap<int, System::Data> *mSystemInfos;
 
     QList<int> mSystemInfosProxy;
 
