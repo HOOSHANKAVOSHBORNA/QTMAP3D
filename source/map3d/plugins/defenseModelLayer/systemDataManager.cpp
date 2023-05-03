@@ -1,31 +1,40 @@
 #include "systemDataManager.h"
+#include "aircraftDataManager.h"
 
 SystemDataManager::SystemDataManager(DefenseModelLayer* defenseModelLayer)
 {
     mDefenseModelLayer = defenseModelLayer;
 
     addSystemTab();
-    mSystemTableModel->setSystemInfos(mSystemInfos);
-    mSystemTableModel->setSystemStatusInfos(mSystemStatusInfos);
-    mSystemTableModel->setSystemCombatInfos(mSystemCombatInfos);
+//    mSystemTableModel->setSystemInfos(mSystemInfos);
+//    mSystemTableModel->setSystemStatusInfos(mSystemStatusInfos);
+//    mSystemTableModel->setSystemCombatInfos(mSystemCombatInfos);
 }
 
-void SystemDataManager::addAssignment(int tn, int systemNo)
+void SystemDataManager::addAssignment(int systemNo, System::Assignment assignment)
 {
-    mAssignments[systemNo].insert(tn);
+    if (!mSystemData[systemNo].assignments.contains(assignment))
+    {
+        mSystemData[systemNo].assignments.push_back(assignment);
+    }
+}
+
+System::Data *SystemDataManager::getSystemData(int number)
+{
+    return mSystemData.contains(number) ? &mSystemData[number] : nullptr;
 }
 
 void SystemDataManager::onInfoChanged(SystemInfo &systemInfo)
 {
     //--list-----------------------------------------------------------
-    mSystemInfos[systemInfo.Number] = systemInfo;
+    mSystemData[systemInfo.Number].information.systemInfo = systemInfo;
     //--model node-----------------------------------------------------
     osg::ref_ptr<SystemModelNode> systemModelNode;
     osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mMapController->getMapSRS()->getGeographicSRS(),
                                           systemInfo.Longitude, systemInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
-    if(mSystemModelNodes.contains(systemInfo.Number))
+    if(mSystemData[systemInfo.Number].systemModelNode.valid())
     {
-        systemModelNode = mSystemModelNodes[systemInfo.Number].get();
+        systemModelNode = mSystemData[systemInfo.Number].systemModelNode;
     }
     else
     {
@@ -34,45 +43,52 @@ void SystemDataManager::onInfoChanged(SystemInfo &systemInfo)
         systemModelNode->setQStringName(systemInfo.Name);
         systemModelNode->setGeographicPosition(geographicPosition, 0.0);
         //add to container---------------------------------------------------
-        mSystemModelNodes[systemInfo.Number] = systemModelNode;
+        mSystemData[systemInfo.Number].systemModelNode = systemModelNode;
         //add to map --------------------------------------------------------
         mDefenseModelLayer->mMapController->addNodeToLayer(systemModelNode, SYSTEMS_LAYER_NAME);
     }
     //update information-----------------------------------------------------
     systemModelNode->setInformation(systemInfo);
-    mSystemTableModel->updateTable(systemInfo.Number);
+//    mSystemTableModel->updateTable(systemInfo.Number);
 }
 
 void SystemDataManager::onStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 {
-    if(mSystemModelNodes.contains(systemStatusInfo.Number))
+    if(mSystemData[systemStatusInfo.Number].systemModelNode.valid())
     {
-        mSystemStatusInfos[systemStatusInfo.Number] = systemStatusInfo;
+        mSystemData[systemStatusInfo.Number].information.systemStatusInfo = systemStatusInfo;
 
-        auto systemModelNode = mSystemModelNodes[systemStatusInfo.Number].get();
+        auto systemModelNode =  mSystemData[systemStatusInfo.Number].systemModelNode;
         systemModelNode->setStatusInfo(systemStatusInfo);
-        mSystemTableModel->updateTable(systemStatusInfo.Number);
+//        mSystemTableModel->updateTable(systemStatusInfo.Number);
     }
 }
 
 void SystemDataManager::onCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 {
-    if(mSystemModelNodes.contains(systemCombatInfo.Number))
+    if(mSystemData[systemCombatInfo.Number].systemModelNode.valid())
     {
-        mSystemCombatInfos[systemCombatInfo.Number] = systemCombatInfo;
+        mSystemData[systemCombatInfo.Number].information.systemCombatInfo = systemCombatInfo;
 
-        auto systemModelNode = mSystemModelNodes[systemCombatInfo.Number].get();
+        auto systemModelNode = mSystemData[systemCombatInfo.Number].systemModelNode;
         systemModelNode->setCombatInfo(systemCombatInfo);
-        mSystemTableModel->updateTable(systemCombatInfo.Number);
+//        mSystemTableModel->updateTable(systemCombatInfo.Number);
     }
 }
 
 void SystemDataManager::onAssignmentResponse(int tn, int systemNo, bool result)
 {
-    if(result && mSystemModelNodes.contains(systemNo))
-        mSystemModelNodes[systemNo]->acceptAssignment(tn, result);
-    else if(mAssignments.contains(systemNo))
-        mAssignments[systemNo].erase(tn);
+    System::Assignment s;
+    s.info = new AircraftInfo;
+    s.info->TN = tn;
+//    if(result && mSystemData[systemNo].assignments.contains(s))
+//        mSystemData[systemNo].systemModelNode->acceptAssignment(tn, result);
+    if(!result && mSystemData.contains(systemNo)){
+        if (mSystemData[systemNo].assignments.contains(s)){
+            int indexx = mSystemData[systemNo].assignments.indexOf(s);
+            mSystemData[systemNo].assignments.removeAt(indexx);
+        }
+    }
 }
 
 void SystemDataManager::addSystemTab()
@@ -82,7 +98,7 @@ void SystemDataManager::addSystemTab()
 //        qDebug() << comp3->errorString();
 
         if (comp3->status() == QQmlComponent::Ready) {
-            QQuickItem *systemTab = (QQuickItem*) comp3->create(nullptr);
+            QQuickItem *systemTab = static_cast<QQuickItem*>(comp3->create(nullptr));
             mSystemTableModel = new SystemTableModel;
             mSystemTableModel->setMode("TableModel");
 

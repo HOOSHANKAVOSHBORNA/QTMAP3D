@@ -32,6 +32,8 @@ class AircraftDataManager: public QObject
 public:
     AircraftDataManager(DefenseModelLayer* defenseModelLayer);
     void addAssignment(int tn, Aircraft::Assignment assignment);
+    Aircraft::Data* getAircraftData(int &tn);
+
 signals:
     void aircraftDoubleClicked(int NT);
 

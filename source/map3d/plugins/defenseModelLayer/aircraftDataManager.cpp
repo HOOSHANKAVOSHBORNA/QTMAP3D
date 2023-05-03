@@ -24,6 +24,11 @@ void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment assignment)
     //        mAircraftModelNodes[tn]->addAssignment(systemNo, );
 }
 
+Aircraft::Data *AircraftDataManager::getAircraftData(int &tn)
+{
+    return mAircraftData.contains(tn) ? &mAircraftData[tn] : nullptr;
+}
+
 void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
 {
     //--list---------------------------------------------------------------------------------------------------------
