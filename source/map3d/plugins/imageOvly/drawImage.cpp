@@ -142,6 +142,10 @@ void DrawImage::startDraw(QMouseEvent *event)
         mImageOverlay->setCenter(geoPos.x(),geoPos.y());
         mImageProperties->setImage(mImageOverlay);
         mImageProperties->setLocation(mImageOverlay->getCenter());
+        mImageProperties->setTL(mImageOverlay->getUpperLeft());
+        mImageProperties->setTR(mImageOverlay->getUpperRight());
+        mImageProperties->setBR(mImageOverlay->getLowerRight());
+        mImageProperties->setBL(mImageOverlay->getLowerLeft());
         mMapcontroller->addNodeToLayer(mImageOverlay, DRAW_LAYER_NAME);
 //        mImgOvlEditor = new osgEarth::Annotation::ImageOverlayEditor(mImageOverlay, false);
 //        mMapcontroller->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
@@ -184,42 +188,6 @@ osgEarth::Annotation::PlaceNode *DrawImage::makeIconNode()
     return model.release();
 }
 
-//osg::Vec2d DrawImage::getCenter()
-//{
-
-//     return mImageOverlay->getCenter();
-
-//}
-
-//void DrawImage::setCenter(osg::Vec2d center)
-//{
-//    double lat = center.x();
-//    double lon = center.y();
-//    mImageOverlay->setCenter(lat,lon);
-//}
-
-//void DrawImage::setImage(QUrl file)
-//{
-//    mImage = osgDB::readImageFile(file.toLocalFile().toStdString());
-//    mImageOverlay->setImage(mImage);
-//}
-
-//void DrawImage::setHeight(double height)
-//{
-////        osg::Vec2d tmpCenter = mImageOverlay->getCenter();
-////        double centerLat = tmpCenter.x();
-//        mImageOverlay->setEast(mImageOverlay->getCenter().x() +height);
-//        mImageOverlay->setWest(mImageOverlay->getCenter().x() -height);
-
-//}
-
-//void DrawImage::setWidth(double width)
-//{
-//    osg::Vec2d tmpCenter = mImageOverlay->getCenter();
-//    double centerlon = tmpCenter.y();
-//    mImageOverlay->setNorth(centerlon+width);
-//    mImageOverlay->setSouth(centerlon-width);
-//}
 
 
 
