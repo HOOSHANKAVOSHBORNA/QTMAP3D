@@ -37,8 +37,9 @@ public:
 
     Q_INVOKABLE int getTN(int row) const;
 
-    void setAircraftInfos(QMap<int, Aircraft::Data> & aircrafts);
+    void setAircraftInfos(const QMap<int, Aircraft::Data> & aircrafts);
     void updateTable(int tn);
+    void setMode(QString mode);
 
 public slots:
     void setFilterWildcard(const QString& wildcard);
@@ -47,24 +48,13 @@ public slots:
     void onSystemClicked(int Number);
     bool getShowAssigned();
     void refresh();
+
 signals:
     void aircraftClicked(int TN);
 
-public:
-    void assign(int TN, int Number);
-    void cancelAssign(int TN, int Number);
-    void cancelAllAssigns();
-    void cancelAircraftsAssigned(int ExceptTN, int Number);
-    void acceptAssign(int TN, int Number, bool result);
-    void setMode(QString mode);
-
-//    QMap<int, QList<AircraftAssignInfo>> getAssignmentMap();
-
-
 private:
-//    QMap<int, QList<AircraftAssignInfo>> mAircraftsAssigned;
 
-    QMap<int, Aircraft::Data> *mAircraftInfos;
+    const QMap<int, Aircraft::Data> *mAircraftInfos;
     QList<int> mAircraftInfosProxy;
 
 

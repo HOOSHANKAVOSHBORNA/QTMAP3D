@@ -2,9 +2,13 @@
 #define SYSTEMINFORMATION_H
 #include <QAbstractTableModel>
 #include <QQuickItem>
-#include "listManager.h"
+#include "aircraftTableModel.h"
+#include "systemTableModel.h"
 
 class AircraftModelNode;
+class UIHandle;
+class QQmlEngine;
+
 class SystemInfoModel : public QAbstractListModel
 {
     Q_OBJECT

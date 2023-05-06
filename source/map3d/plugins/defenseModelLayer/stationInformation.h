@@ -2,8 +2,9 @@
 #define STATIONINFOMODEL_H
 #include <QAbstractListModel>
 #include <QQuickItem>
-
-#include "listManager.h"
+#include "systemTableModel.h"
+class UIHandle;
+class QQmlEngine;
 
 class StationInfoModel : public QAbstractListModel
 {

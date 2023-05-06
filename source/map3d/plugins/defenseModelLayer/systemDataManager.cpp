@@ -34,6 +34,11 @@ System::Data *SystemDataManager::getSystemData(int number)
     return mSystemData.contains(number) ? &mSystemData[number] : nullptr;
 }
 
+QMap<int, System::Data> &SystemDataManager::getSystemsData()
+{
+    return mSystemData;
+}
+
 void SystemDataManager::onInfoChanged(SystemInfo &systemInfo)
 {
     //--list-----------------------------------------------------------

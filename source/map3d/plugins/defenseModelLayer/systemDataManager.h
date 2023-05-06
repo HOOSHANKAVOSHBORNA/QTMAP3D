@@ -68,6 +68,7 @@ public:
     SystemDataManager(DefenseModelLayer* defenseModelLayer);
     void addAssignment(int systemNo, System::Assignment assignment);
     System::Data *getSystemData(int number);
+    QMap<int, System::Data> &getSystemsData();
 
 public slots:
     void onInfoChanged(SystemInfo& systemInfo);
