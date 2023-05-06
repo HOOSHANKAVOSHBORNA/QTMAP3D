@@ -13,14 +13,14 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *li
 {
     //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
-    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
-    //--system----------------------------------------------------------
+//    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
+//    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
+//    //--system----------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::systemCombatInfoChanged,this ,&DataManager::onSystemCombatInfoChanged);
-    //--station---------------------------------------------------------
-    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
+//    //--station---------------------------------------------------------
+//    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
 
     //list view---------------------------------------------------------
 
@@ -161,14 +161,14 @@ void DataManager::assignAircraft2System(int tn, int systemNo)
 {
     Aircraft::Assignment aAssign;
     System::Data * sData = mSystemDataManager->getSystemData(systemNo);
-    if (!sData) {
+    if (sData) {
         aAssign.info = &sData->information;
         aAssign.modelNode = sData->systemModelNode;
         mAircraftDataManager->addAssignment(tn, aAssign);
     }
     System::Assignment sAssign;
     Aircraft::Data* aData = mAircraftDataManager->getAircraftData(tn);
-    if (!aData){
+    if (aData){
         sAssign.info = &aData->info;
         sAssign.modelNode = aData->modelNode;
         mSystemDataManager->addAssignment(systemNo, sAssign);

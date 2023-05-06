@@ -22,6 +22,14 @@ struct Assignment
 {
     osg::ref_ptr<AircraftModelNode> modelNode;
     AircraftInfo *info;
+    osg::ref_ptr<LineNode> line;
+
+    void updateLine(const osgEarth::GeoPoint& position)
+    {
+        line->clear();
+        line->addPoint(position);
+        line->addPoint(modelNode->getPosition());
+    }
 
     bool operator==(const Assignment &assign) {
         return info->TN == assign.info->TN;
@@ -33,6 +41,22 @@ struct Data
     Information information;
     osg::ref_ptr<SystemModelNode> systemModelNode{nullptr};
     QList<Assignment> assignments;
+
+    std::tuple <int, Assignment*> findAssignment(int tn)
+    {
+        std::tuple <int, Assignment*> result = std::make_tuple(-1, nullptr);
+        System::Assignment s;
+        s.info = new AircraftInfo;
+        s.info->TN = tn;
+         if (assignments.contains(s))
+         {
+             int index = assignments.indexOf(s);
+             std::get<0>(result) = index;
+             std::get<1>(result) = &assignments[index];
+         }
+
+         return result;
+    }
 };
 }
 

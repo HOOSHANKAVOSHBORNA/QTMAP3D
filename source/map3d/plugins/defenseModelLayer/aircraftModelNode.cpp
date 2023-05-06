@@ -476,23 +476,28 @@ void AircraftModelNode::stop()
     removeEffect();
 }
 
-void AircraftModelNode::setInformation(AircraftInfo info)
+void AircraftModelNode::dataChanged()
 {
-    mInformation = info;
+//    mInformation = info;
 
     if(mAircraftinformation)
-        mAircraftinformation->updateAircraft(info);
+        mAircraftinformation->updateAircraft(mAircraftData->info);
 
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle()); // force PlaceNode to recreate texture
 
-    changeModelColor(mInformation.Identification);
+    changeModelColor(mAircraftData->info.Identification);
 }
 
-AircraftInfo AircraftModelNode::getInformation() const
+Aircraft::Data *AircraftModelNode::getData() const
 {
-    return mInformation;
+    return mAircraftData;
 }
+
+//AircraftInfo AircraftModelNode::getInformation() const
+//{
+//    return mInformation;
+//}
 
 void AircraftModelNode::goOnTrack()
 {
@@ -525,7 +530,7 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
 void AircraftModelNode::frameEvent()
 {
     mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mDefenseModelLayer->mMapController->getViewpoint().getHeading())
-                                                 + mInformation.Heading),
+                                                 + mAircraftData->info.Heading),
                                   -osg::Z_AXIS));
 
     mPat2D->setPosition(osg::Vec3d(0, 0, 0));
@@ -557,7 +562,7 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
     }
     if(event->button() == Qt::RightButton) {
         mCurrentContextMenu = new ContextMenu(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, this);
-        for(auto detectSystem: mInformation.DetectionSystems)
+        for(auto detectSystem: mAircraftData->info.DetectionSystems)
             mCurrentContextMenu->addRow(detectSystem);
 
         connect(mCurrentContextMenu->getModel(), &ContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
@@ -769,7 +774,7 @@ void AircraftModelNode::showInfoWidget()
 {
     if (!mAircraftinformation)
     {
-        mAircraftinformation = new AircraftInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mInformation, this);
+        mAircraftinformation = new AircraftInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mAircraftData->info, this);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
@@ -900,10 +905,10 @@ void AircraftModelNode::updateOrCreateLabelImage()
         painter.setFont(textFont);
         painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignCenter,
-                         mInformation.aircraftTypeToString());
+                         mAircraftData->info.aircraftTypeToString());
         painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignCenter,
-                         QString::number(mInformation.TN));
+                         QString::number(mAircraftData->info.TN));
         //-------------------------------------------------------------
 
         painter.setPen(textPen);
@@ -913,7 +918,7 @@ void AircraftModelNode::updateOrCreateLabelImage()
                          "CallSign:");
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 40, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mInformation.CallSign);
+                         mAircraftData->info.CallSign);
 
 
         painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH/2, 30),
@@ -921,7 +926,7 @@ void AircraftModelNode::updateOrCreateLabelImage()
                          "IFFCode:");
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 70, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mInformation.IFFCode);
+                         mAircraftData->info.IFFCode);
 
 
         painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH/2, 30),
@@ -929,14 +934,14 @@ void AircraftModelNode::updateOrCreateLabelImage()
                          "M-Radar:");
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 100, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mInformation.MasterRadar);
+                         mAircraftData->info.MasterRadar);
 
         painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "I-Method:");
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 130, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mInformation.IdentificationMethod);
+                         mAircraftData->info.IdentificationMethod);
         //---------------------------------------------------------
 
         painter.setPen(linePen);

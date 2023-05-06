@@ -39,8 +39,9 @@ public:
     AircraftModelNode(DefenseModelLayer* defenseModelLayer, Aircraft::Data* aircraftData, AircraftInfo::AircraftType aircraftType, QObject* parent = nullptr);
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
-    void setInformation(AircraftInfo info);
-    AircraftInfo getInformation() const;
+    void dataChanged();
+    Aircraft::Data* getData() const;
+//    AircraftInfo getInformation() const;
     void goOnTrack();
 public slots:
     void onLeftButtonClicked(bool val);
@@ -86,7 +87,7 @@ private:
     bool mIsStop{false};
     bool mIsRoute{false};
 //    UIHandle* mUIHandle;
-    AircraftInfo mInformation;
+//    AircraftInfo mInformation;
     osg::ref_ptr<osg::Vec3Array> mLocationPoints;
     osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
 //    QQmlEngine *mQmlEngine;

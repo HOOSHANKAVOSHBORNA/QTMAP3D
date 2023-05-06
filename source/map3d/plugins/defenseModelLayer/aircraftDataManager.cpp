@@ -18,10 +18,11 @@ AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
 void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment assignment)
 {
     if(mAircraftData.contains(tn) && !mAircraftData[tn].assigments.contains(assignment))
+    {
         mAircraftData[tn].assigments.append(assignment);
-
-    //    if(mAircraftModelNodes.contains(tn))
-    //        mAircraftModelNodes[tn]->addAssignment(systemNo, );
+        //-----------------------------
+        mAircraftData[tn].modelNode->dataChanged();
+    }
 }
 
 Aircraft::Data *AircraftDataManager::getAircraftData(int &tn)
@@ -57,7 +58,7 @@ void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
         mDefenseModelLayer->mMapController->addNodeToLayer(aircraftModelNode, AIRCRAFTS_LAYER_NAME);
     }
     //update information------------------------------------------------------------------
-    aircraftModelNode->setInformation(aircraftInfo);
+    aircraftModelNode->dataChanged();
     mAircraftTableModel->updateTable(aircraftInfo.TN);
 }
 

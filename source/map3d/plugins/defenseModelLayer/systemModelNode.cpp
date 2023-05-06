@@ -1,6 +1,7 @@
 #include "systemModelNode.h"
 #include "polygon.h"
 #include "systemDataManager.h"
+#include "aircraftDataManager.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
@@ -197,16 +198,13 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     updateColors();
 }
 
-void SystemModelNode::setInformation(const SystemInfo& info)
+void SystemModelNode::informationChanged()
 {
 //    if (mSystemInfoItem)
 //        mSystemInfoItem->setInfo(info);
 //    mInformation = info;
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
-
-
-
 }
 
 //SystemInfo SystemModelNode::getInformation() const
@@ -214,11 +212,11 @@ void SystemModelNode::setInformation(const SystemInfo& info)
 //    return mInformation;
 //}
 
-void SystemModelNode::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
+void SystemModelNode::combatInfoChanged()
 {
     auto combatInfo = mSystemData->information.systemCombatInfo;
     if (mSystemInfoItem)
-        mSystemInfoItem->setCombatInfo(systemCombatInfo);
+        mSystemInfoItem->setCombatInfo(mSystemData->information.systemCombatInfo);
 
     switch (combatInfo.Phase) {
     case SystemCombatInfo::Search:
@@ -241,7 +239,13 @@ void SystemModelNode::setCombatInfo(const SystemCombatInfo &systemCombatInfo)
     mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
-System::Data *SystemModelNode::getData()
+void SystemModelNode::assignmentChanged()
+{
+    updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
+}
+
+System::Data *SystemModelNode::getData() const
 {
     return mSystemData;
 }
@@ -251,8 +255,9 @@ System::Data *SystemModelNode::getData()
 //    return mCombatInfo;
 //}
 
-void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
+void SystemModelNode::statusInfoChanged()
 {
+    auto systemStatusInfo = mSystemData->information.systemStatusInfo;
     if (mSystemInfoItem)
         mSystemInfoItem->setStatusInfo(systemStatusInfo);
     mNode2D->setValue(0, systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S);
@@ -359,8 +364,8 @@ void SystemModelNode::frameEvent()
 {
     mLabelNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 
-    for(auto assinmentModel:mAssignmentMap)
-        assinmentModel->updateLine(getPosition());
+    for(auto assinment:mSystemData->assignments)
+        assinment.updateLine(getPosition());
 
     if (mTargetModelNode) {
         mTruckF->aimTarget(mTargetModelNode->getPosition());
@@ -530,18 +535,20 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
 
 void SystemModelNode::searchPhase()
 {
-    for(auto assignmentModel: mAssignmentMap)
-        assignmentModel->mLine->setColor(osgEarth::Color::Yellow);
+    for(auto assignment: mSystemData->assignments)
+        assignment.line->setColor(osgEarth::Color::Yellow);
 
     mTruckS->startSearch();
 }
 
 void SystemModelNode::lockPhase(int tn)
 {
-    if(mAssignmentMap.contains(tn))
+    auto assignmentTuple = mSystemData->findAssignment(tn);
+
+    if(std::get<0>(assignmentTuple) != -1)
     {
-        mTargetModelNode = mAssignmentMap[tn]->mModelNode;
-        mAssignmentMap[tn]->mLine->setColor(osgEarth::Color::Orange);
+        mTargetModelNode = std::get<1>(assignmentTuple)->modelNode;
+        std::get<1>(assignmentTuple)->line->setColor(osgEarth::Color::Orange);
 
         mTruckL->lockOnTarget(mTargetModelNode->getPosition());
         mTruckF->aimTarget(mTargetModelNode->getPosition());
@@ -558,15 +565,17 @@ void SystemModelNode::lockPhase(int tn)
 
 void SystemModelNode::firePhase(int tn)
 {
-    if(mAssignmentMap.contains(tn))
+    auto assignmentTuple = mSystemData->findAssignment(tn);
+
+    if(std::get<0>(assignmentTuple) != -1)
     {
-        mTargetModelNode = mAssignmentMap[tn]->mModelNode;
-        mAssignmentMap[tn]->mLine->setColor(osgEarth::Color::Red);
+        mTargetModelNode = std::get<1>(assignmentTuple)->modelNode;
+        std::get<1>(assignmentTuple)->line->setColor(osgEarth::Color::Red);
         mFiredRocket = mTruckF->getActiveRocket();
         if(mFiredRocket)
         {
             mFiredRocket->setAutoScale();
-            mTruckF->shoot(mAssignmentMap[tn]->mModelNode->getPosition().vec3d(), 2000);//1000 m/s
+            mTruckF->shoot(mTargetModelNode->getPosition().vec3d(), 2000);//1000 m/s
             mDefenseModelLayer->mMapController->setTrackNode(mFiredRocket->getGeoTransform());
         }
     }
@@ -574,11 +583,13 @@ void SystemModelNode::firePhase(int tn)
 
 void SystemModelNode::killPhase(int tn)
 {
-    if(mAssignmentMap.contains(tn))
+    auto assignmentTuple = mSystemData->findAssignment(tn);
+
+    if(std::get<0>(assignmentTuple) != -1)
     {
         mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
-        mAssignmentMap[tn]->mLine->setColor(osgEarth::Color::Black);
-        mAssignmentMap[tn]->mModelNode->collision();
+        std::get<1>(assignmentTuple)->line->setColor(osgEarth::Color::Black);
+        std::get<1>(assignmentTuple)->modelNode->collision();
 
         if(mFiredRocket)
             mFiredRocket->stop();
@@ -589,10 +600,12 @@ void SystemModelNode::killPhase(int tn)
 
 void SystemModelNode::noKillPhase(int tn)
 {
-    if(mAssignmentMap.contains(tn))
+    auto assignmentTuple = mSystemData->findAssignment(tn);
+
+    if(std::get<0>(assignmentTuple) != -1)
     {
         mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
-        mAssignmentMap[tn]->mLine->setColor(osgEarth::Color::Brown);
+        std::get<1>(assignmentTuple)->line->setColor(osgEarth::Color::Brown);
         if(mFiredRocket)
             mFiredRocket->stop();
 //        removeAssignment(tn);
@@ -616,7 +629,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 {
 //    qDebug() << ">>> : " << mAssignmentMap.keys().count();
 
-    int height = LABEL_IMAGE_HEIGHT + ((mAssignmentMap.keys().count()+2)/3) * 30;
+    int height = LABEL_IMAGE_HEIGHT + ((mSystemData->assignments.count()+2)/3) * 30;
     if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::Op2)
         height += 50;
 
@@ -744,19 +757,19 @@ void SystemModelNode::updateOrCreateLabelImage()
         int h = 170;
         const QFontMetrics fm(textFont);
         int n = 0;
-        while (n < mAssignmentMap.values().count()) {
+        while (n < mSystemData->assignments.count()) {
 
             int indent = 0;
             for (int llidx = 0; llidx < 3; llidx++)// two elements per line
             {
 
-                if (n >= mAssignmentMap.values().count())
+                if (n >= mSystemData->assignments.count())
                     break;
 
-                const auto val = mAssignmentMap.values()[n];
+                const auto val = mSystemData->assignments[n];
 
                 const QString ss = (llidx == 0 ? QStringLiteral("") : QStringLiteral(", "))
-                        + QString::number(val->mModelNode->getInformation().TN);
+                        + QString::number(val.info->TN);
 
                 textPen.setColor(QColor(255,255,255));
                 painter.setPen(textPen);
@@ -856,28 +869,28 @@ void SystemModelNode::updateOrCreateLabelImage()
 
 
 
-SystemModelNode::Assignment::Assignment(MapController *mapControler)
-{
-    mLine = new LineNode(mapControler);
-    mLine->setPointVisible(true);
-    mLine->setColor(osgEarth::Color::White);
-    mLine->setPointColor(osgEarth::Color::Olive);
-    mLine->setWidth(1);
-    mLine->setPointWidth(5);
-    mLine->setTessellation(15);
-    mLine->setShowBearing(true);
-}
+//SystemModelNode::Assignment::Assignment(MapController *mapControler)
+//{
+//    mLine = new LineNode(mapControler);
+//    mLine->setPointVisible(true);
+//    mLine->setColor(osgEarth::Color::White);
+//    mLine->setPointColor(osgEarth::Color::Olive);
+//    mLine->setWidth(1);
+//    mLine->setPointWidth(5);
+//    mLine->setTessellation(15);
+//    mLine->setShowBearing(true);
+//}
 
-void SystemModelNode::Assignment::accept()
-{
-    mLine->setColor(osgEarth::Color::Olive);
-    mLine->setPointVisible(false);
-    mLine->setWidth(5);
-}
+//void SystemModelNode::Assignment::accept()
+//{
+//    mLine->setColor(osgEarth::Color::Olive);
+//    mLine->setPointVisible(false);
+//    mLine->setWidth(5);
+//}
 
-void SystemModelNode::Assignment::updateLine(const osgEarth::GeoPoint& position)
-{
-    mLine->clear();
-    mLine->addPoint(position);
-    mLine->addPoint(mModelNode->getPosition());
-}
+//void SystemModelNode::Assignment::updateLine(const osgEarth::GeoPoint& position)
+//{
+//    mLine->clear();
+//    mLine->addPoint(position);
+//    mLine->addPoint(mModelNode->getPosition());
+//}

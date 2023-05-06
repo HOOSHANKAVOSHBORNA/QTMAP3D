@@ -460,7 +460,7 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
         if(systemModelNode)
         {
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
-            mDataManager->assignAircraft2System(aircraftModelNode->getInformation().TN, systemModelNode->getData()->information.systemInfo.Number);
+            mDataManager->assignAircraft2System(aircraftModelNode->getData()->info.TN, systemModelNode->getData()->information.systemInfo.Number);
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;

@@ -11,9 +11,21 @@ SystemDataManager::SystemDataManager(DefenseModelLayer* defenseModelLayer)
 
 void SystemDataManager::addAssignment(int systemNo, System::Assignment assignment)
 {
-    if (!mSystemData[systemNo].assignments.contains(assignment))
+    if (mSystemData.contains(systemNo) && !mSystemData[systemNo].assignments.contains(assignment))
     {
+        assignment.line = new LineNode(mDefenseModelLayer->mMapController);
+        assignment.line->setPointVisible(true);
+        assignment.line->setColor(osgEarth::Color::White);
+        assignment.line->setPointColor(osgEarth::Color::Olive);
+        assignment.line->setWidth(1);
+        assignment.line->setPointWidth(5);
+        assignment.line->setTessellation(15);
+        assignment.line->setShowBearing(true);
+        mDefenseModelLayer->mMapController->addNodeToLayer(assignment.line, SYSTEMS_LAYER_NAME);
+
         mSystemData[systemNo].assignments.push_back(assignment);
+        //----------------------------------------------------
+        mSystemData[systemNo].systemModelNode->assignmentChanged();
     }
 }
 
@@ -46,7 +58,7 @@ void SystemDataManager::onInfoChanged(SystemInfo &systemInfo)
         mDefenseModelLayer->mMapController->addNodeToLayer(systemModelNode, SYSTEMS_LAYER_NAME);
     }
     //update information-----------------------------------------------------
-    systemModelNode->setInformation(systemInfo);
+    systemModelNode->informationChanged();
     mSystemTableModel->updateTable(systemInfo.Number);
 }
 
@@ -57,7 +69,7 @@ void SystemDataManager::onStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
         mSystemData[systemStatusInfo.Number].information.systemStatusInfo = systemStatusInfo;
 
         auto systemModelNode =  mSystemData[systemStatusInfo.Number].systemModelNode;
-        systemModelNode->setStatusInfo(systemStatusInfo);
+        systemModelNode->statusInfoChanged();
         mSystemTableModel->updateTable(systemStatusInfo.Number);
     }
 }
@@ -69,7 +81,7 @@ void SystemDataManager::onCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
         mSystemData[systemCombatInfo.Number].information.systemCombatInfo = systemCombatInfo;
 
         auto systemModelNode = mSystemData[systemCombatInfo.Number].systemModelNode;
-        systemModelNode->setCombatInfo(systemCombatInfo);
+        systemModelNode->combatInfoChanged();
         mSystemTableModel->updateTable(systemCombatInfo.Number);
     }
 }
