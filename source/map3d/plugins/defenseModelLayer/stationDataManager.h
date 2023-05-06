@@ -8,6 +8,7 @@
 #include "defenseDataManager.h"
 #include "stationModelNode.h"
 #include "defenseModelLayer.h"
+#include "stationTableModel.h"
 
 class StationDataManager: public QObject
 {

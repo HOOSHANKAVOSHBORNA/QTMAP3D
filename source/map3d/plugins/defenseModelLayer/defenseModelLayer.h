@@ -3,7 +3,6 @@
 
 #include "plugininterface.h"
 #include "aircraftModelNode.h"
-#include "listManager.h"
 #include "stationModelNode.h"
 
 #include<osg/Array>

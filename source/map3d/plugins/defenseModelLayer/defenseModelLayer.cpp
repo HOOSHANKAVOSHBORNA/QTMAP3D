@@ -214,8 +214,8 @@ bool DefenseModelLayer::setup(MapController *mapController,
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
-    auto listManager = new ListManager(mQmlEngine, mUIHandle, this);
-    mDataManager = new DataManager(defenseDataManager, listManager, this);
+//    auto listManager = new ListManager(mQmlEngine, mUIHandle, this);
+    mDataManager = new DataManager(defenseDataManager, this);
 }
 
 //void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)

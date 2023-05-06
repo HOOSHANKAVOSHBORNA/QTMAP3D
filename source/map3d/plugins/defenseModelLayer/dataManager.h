@@ -2,7 +2,6 @@
 #define DATAMANAGER_H
 
 #include "defenseModelLayer.h"
-#include "listManager.h"
 #include "defenseDataManager.h"
 #include "aircraftDataManager.h"
 #include "systemDataManager.h"
@@ -12,7 +11,7 @@ class DataManager: public QObject
 {
     Q_OBJECT
 public:
-    DataManager(DefenseDataManager *defenseDataManager, ListManager *listManager, DefenseModelLayer *defenseModelLayer);
+    DataManager(DefenseDataManager *defenseDataManager, DefenseModelLayer *defenseModelLayer);
 public slots:
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
@@ -27,7 +26,6 @@ public:
     void clear();
 private:
     DefenseDataManager *mDefenseDataManager{nullptr};
-    ListManager *mListManager{nullptr};
     DefenseModelLayer *mDefenseModelLayer{nullptr};
     AircraftDataManager *mAircraftDataManager;
     SystemDataManager *mSystemDataManager;

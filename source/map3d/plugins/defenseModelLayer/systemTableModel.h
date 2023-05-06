@@ -43,6 +43,10 @@ public:
     Q_INVOKABLE QString headerText(int column) const;
     Q_INVOKABLE int getNumber(int row) const;
 
+    void setSystemInfos(QMap<int, System::Data> & info);
+    void updateTable(int number);
+    void setMode(QString mode);
+
 public slots:
     void setFilterWildcard(const QString& wildcard);
     void onAircraftClicked(int TN);
@@ -52,20 +56,6 @@ public slots:
 
 signals:
     void systemClicked(int Number);
-public:
-
-    void assign(int TN, int Number);
-    void cancelSystemsAssigned(int TN, int ExceptNum);
-    void cancelAllAssigns();
-    void cancelAssign(int TN, int Number);
-    void acceptAssign(int TN, int Number, bool result);
-    void setMode(QString mode);
-
-//    QMap<int, QList<SystemAssignInfo>> getAssignmentMap();
-
-    void setSystemInfos(QMap<int, System::Data> & info);
-    void updateTable(int number);
-
 
 
 private:

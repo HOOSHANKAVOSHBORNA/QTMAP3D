@@ -3,9 +3,8 @@
 
 #include <thread>
 
-DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *listManager, DefenseModelLayer *defenseModelLayer):
+DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLayer *defenseModelLayer):
     mDefenseDataManager(defenseDataManager),
-    mListManager(listManager),
     mDefenseModelLayer(defenseModelLayer),
     mAircraftDataManager(new AircraftDataManager(defenseModelLayer)),
     mSystemDataManager(new SystemDataManager(defenseModelLayer)),
@@ -29,14 +28,14 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, ListManager *li
 //        mDefenseModelLayer->selectModelNode(aircraftModelNode);
 //    });
 
-    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
+//    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
 //        StationModelNode* stationModelNode = mDefenseModelLayer->getStationModelNode(number);
 //        mDefenseModelLayer->selectModelNode(stationModelNode);
-    });
-    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
+//    });
+//    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
 //        SystemModelNode* systemModelNode = mDefenseModelLayer->getSystemModelNode(number);
 //        mDefenseModelLayer->selectModelNode(systemModelNode);
-    });
+//    });
 }
 
 void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
@@ -208,5 +207,5 @@ void DataManager::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
 
 void DataManager::clear()
 {
-    mListManager->clearAll();
+//    mListManager->clearAll();
 }

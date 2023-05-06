@@ -7,6 +7,7 @@
 #include "defenseDataManager.h"
 #include "aircraftModelNode.h"
 #include "defenseModelLayer.h"
+#include "aircraftTableModel.h"
 
 namespace System{
 struct Information;
