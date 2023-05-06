@@ -34,9 +34,10 @@ public:
     AircraftDataManager(DefenseModelLayer* defenseModelLayer);
     void addAssignment(int tn, Aircraft::Assignment assignment);
     Aircraft::Data* getAircraftData(int &tn);
+    QMap<int, Aircraft::Data> &getAircraftsData();
 
 signals:
-    void aircraftDoubleClicked(int NT);
+    void doubleClicked(int NT);
 
 private:
     void addAircraftTab();
@@ -51,6 +52,7 @@ private:
     QMap<int, Aircraft::Data> mAircraftData;
 
     AircraftTableModel *mAircraftTableModel;
+    AircraftTableModel *mAircraftAssignmentTableModel;
 };
 
 #endif // AIRCRAFTDATAMANAGER_H

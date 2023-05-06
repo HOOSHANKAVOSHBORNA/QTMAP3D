@@ -43,7 +43,7 @@ public:
     Q_INVOKABLE QString headerText(int column) const;
     Q_INVOKABLE int getNumber(int row) const;
 
-    void setSystemInfos(QMap<int, System::Data> & info);
+    void setSystemInfos(const QMap<int, System::Data> & info);
     void updateTable(int number);
     void setMode(QString mode);
 
@@ -65,7 +65,7 @@ private:
     int mTN = -1;
     QString mFilter;
 
-    QMap<int, System::Data> *mSystemInfos;
+    const QMap<int, System::Data> *mSystemInfos;
 
     QList<int> mSystemInfosProxy;
 

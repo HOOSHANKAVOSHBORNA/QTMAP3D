@@ -29,6 +29,11 @@ Aircraft::Data *AircraftDataManager::getAircraftData(int &tn)
     return mAircraftData.contains(tn) ? &mAircraftData[tn] : nullptr;
 }
 
+QMap<int, Aircraft::Data> &AircraftDataManager::getAircraftsData()
+{
+    return mAircraftData;
+}
+
 void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
 {
     //--list---------------------------------------------------------------------------------------------------------
@@ -103,7 +108,7 @@ void AircraftDataManager::addAircraftTab()
             QObject::connect(aircraftTab,
                              SIGNAL(aircraftDoubleClicked(const int&)),
                              this,
-                             SIGNAL(aircraftDoubleClicked(const int&)));
+                             SIGNAL(doubleClicked(const int&)));
 
             QObject::connect(aircraftTab,
                              SIGNAL(sortWithHeader(int)),
@@ -117,4 +122,3 @@ void AircraftDataManager::addAircraftTab()
 
     comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
 }
-

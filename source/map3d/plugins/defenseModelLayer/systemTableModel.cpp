@@ -239,7 +239,7 @@ void SystemTableModel::updateTable(int number)
     }
 }
 
-void SystemTableModel::setSystemInfos(QMap<int, System::Data> &systems)
+void SystemTableModel::setSystemInfos(const QMap<int, System::Data> &systems)
 {
     beginResetModel();
     mSystemInfos = &systems;

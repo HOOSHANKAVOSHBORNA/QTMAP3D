@@ -25,11 +25,15 @@ public:
     void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
     void clear();
 private:
+    void addAssignmentTab();
+private:
     DefenseDataManager *mDefenseDataManager{nullptr};
     DefenseModelLayer *mDefenseModelLayer{nullptr};
     AircraftDataManager *mAircraftDataManager;
     SystemDataManager *mSystemDataManager;
     StationDataManager *mStationDataManager;
+    AircraftTableModel *mAircraftAssignmentTableModel;
+    SystemTableModel *mSystemAssignmentTableModel;
 };
 
 #endif // DATAMANAGER_H

@@ -163,7 +163,7 @@ int AircraftTableModel::getTN(int row) const
     return (*mAircraftInfos)[mAircraftInfosProxy[row]].info.TN;
 }
 
-void AircraftTableModel::setAircraftInfos(QMap<int, Aircraft::Data> &aircrafts)
+void AircraftTableModel::setAircraftInfos(const QMap<int, Aircraft::Data> &aircrafts)
 {
     beginResetModel();
     mAircraftInfos = &aircrafts;
