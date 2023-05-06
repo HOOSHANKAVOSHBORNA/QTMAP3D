@@ -90,13 +90,13 @@ Item {
 
 
 
-                            ///////////////////////////////////Location Property///////////////////////////////
+                            ///////////////////////////////////center Property///////////////////////////////
                             Rectangle{
-                                id:locationContainer
-//                                Layout.fillWidth: true
+                                id:centerContainer
+                                //                                Layout.fillWidth: true
                                 width: parent.width * 0.6
                                 color: "#404040"
-                                height: 80
+                                height: 60
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
@@ -120,7 +120,7 @@ Item {
                                             radius: 5
                                             Layout.fillWidth: true
                                             TextInput {
-                                                id: mlocationX
+                                                id: mcenterX
                                                 padding: 2
                                                 anchors.fill: parent
                                                 text: imageProperties.location.x.toFixed(9)
@@ -158,7 +158,7 @@ Item {
                                             radius: 5
 
                                             TextInput {
-                                                id: mlocationY
+                                                id: mcenterY
                                                 padding: 2
                                                 anchors.fill: parent
                                                 font.pointSize: 10
@@ -182,16 +182,16 @@ Item {
                             }
 
                             Rectangle{
-                                id: locationTitle
-//                                Layout.fillWidth: true
+                                id: centerTitle
+                                //                                Layout.fillWidth: true
                                 width: parent.width * 0.4
                                 color: "#404040"
-                                height: 80
+                                height: 60
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
                                 Text {
-                                    id: locationImage
+                                    id: centerImage
                                     text: qsTr("Center :")
                                     font.pointSize: 10
                                     color: "white"
@@ -200,213 +200,443 @@ Item {
                                 }
                             }
 
-
-
-                            ///////////////////////////////////width/////////////////////////////////////
+                            ///////////////////////////////////tl Property///////////////////////////////
                             Rectangle{
-                                id: widthContainer
-                                Layout.fillWidth: true
+                                id:tlContainer
+                                //                                Layout.fillWidth: true
+                                width: parent.width * 0.6
                                 color: "#404040"
-                                height: 30
-                                //                                border.color: "#5f5f5f"
-                                //                                border.width: 1
+                                height: 60
+                                border.color: "#5f5f5f"
+                                border.width: 1
 
-                                SpinBox {
-                                    id: widthValue
-                                    stepSize: 10
-                                    value: 1000
-                                    to : 10000000
-                                    from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
+                                Column{
+                                    Row{
+                                        spacing: 8
+                                        leftPadding: 5
+                                        topPadding: 5
+                                        anchors.horizontalCenter: parent.horizontalCenter
 
-                                    contentItem: TextInput {
-                                        id: widthInput
-                                        z: 2
-                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
-                                        text: widthValue.value
-                                        font: widthValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !widthValue.editable
-                                        validator: widthValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
-                                            if(imageProperties && widthValue && (widthValue.value == 0 || widthValue.value)){
-                                                widthValue.value = widthInput.text
-                                                imageProperties.width = widthValue.value
+                                        Text {
+                                            color: "#e5e5e5"
+                                            text: qsTr("X:")
+                                            font.pointSize: 10
+                                        }
+                                        Rectangle{
+                                            height: 20
+                                            width: 100
+                                            color: "#c9c9c9"
+                                            clip:  true
+                                            radius: 5
+                                            Layout.fillWidth: true
+                                            TextInput {
+                                                id: mtlX
+                                                padding: 2
+                                                anchors.fill: parent
+                                                text: imageProperties.tl.x.toFixed(9)
+                                                font.pointSize: 10
+                                                selectByMouse: true
+                                                selectionColor: "dark green"
+                                                validator: DoubleValidator {
+                                                    decimals: 13;
+                                                    notation: DoubleValidator.StandardNotation
+                                                    locale: "insert x"
+                                                }
+                                                onTextChanged: {
+                                                    imageProperties.tl.x = text
+
+                                                }
                                             }
                                         }
                                     }
-                                    up.indicator: Rectangle {
-                                        x: widthValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: widthValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
+                                    Row{
+                                        spacing: 8
+                                        leftPadding: 5
+                                        topPadding: 5
+                                        anchors.horizontalCenter: parent.horizontalCenter
 
                                         Text {
-                                            text: "+"
-                                            font.pixelSize: transValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
+                                            color: "#e5e5e5"
+                                            text: qsTr("Y:")
+                                            font.pointSize: 10
                                         }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: widthValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: widthValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
+                                        Rectangle{
+                                            height: 20
+                                            width: 100
+                                            color: "#c9c9c9"
+                                            clip:  true
+                                            radius: 5
 
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: widthValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
+                                            TextInput {
+                                                id: mtlY
+                                                padding: 2
+                                                anchors.fill: parent
+                                                font.pointSize: 10
+                                                text: imageProperties.tl.y.toFixed(9)
+                                                selectByMouse: true
+                                                selectionColor: "dark green"
+                                                validator: DoubleValidator {
+                                                    decimals: 13;
+                                                    notation: DoubleValidator.StandardNotation
+                                                    locale: "insert y"
+                                                }
+                                                onTextChanged: {
+
+                                                    imageProperties.tl.y = text
+
+                                                }
+                                            }
                                         }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: widthContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
                                     }
                                 }
                             }
+
                             Rectangle{
-                                Layout.fillWidth: true
+                                id: tlTitle
+                                //                                Layout.fillWidth: true
+                                width: parent.width * 0.4
                                 color: "#404040"
-                                height: 30
-                                //                                border.color: "#5f5f5f"
-                                //                                border.width: 1
+                                height: 60
+                                border.color: "#5f5f5f"
+                                border.width: 1
 
                                 Text {
-                                    text: qsTr("Width:")
+                                    id: tlImage
+                                    text: qsTr("TopLeft :")
                                     font.pointSize: 10
                                     color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
+                                    y: 10
+                                    x:7
+                                }
+                            }
+
+                            ///////////////////////////////////tr Property///////////////////////////////
+                            Rectangle{
+                                id:trContainer
+                                //                                Layout.fillWidth: true
+                                width: parent.width * 0.6
+                                color: "#404040"
+                                height: 60
+                                border.color: "#5f5f5f"
+                                border.width: 1
+
+                                Column{
+                                    Row{
+                                        spacing: 8
+                                        leftPadding: 5
+                                        topPadding: 5
+                                        anchors.horizontalCenter: parent.horizontalCenter
+
+                                        Text {
+                                            color: "#e5e5e5"
+                                            text: qsTr("X:")
+                                            font.pointSize: 10
+                                        }
+                                        Rectangle{
+                                            height: 20
+                                            width: 100
+                                            color: "#c9c9c9"
+                                            clip:  true
+                                            radius: 5
+                                            Layout.fillWidth: true
+                                            TextInput {
+                                                id: mtrX
+                                                padding: 2
+                                                anchors.fill: parent
+                                                text: imageProperties.tr.x.toFixed(9)
+                                                font.pointSize: 10
+                                                selectByMouse: true
+                                                selectionColor: "dark green"
+                                                validator: DoubleValidator {
+                                                    decimals: 13;
+                                                    notation: DoubleValidator.StandardNotation
+                                                    locale: "insert x"
+                                                }
+                                                onTextChanged: {
+                                                    imageProperties.tr.x = text
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Row{
+                                        spacing: 8
+                                        leftPadding: 5
+                                        topPadding: 5
+                                        anchors.horizontalCenter: parent.horizontalCenter
+
+                                        Text {
+                                            color: "#e5e5e5"
+                                            text: qsTr("Y:")
+                                            font.pointSize: 10
+                                        }
+                                        Rectangle{
+                                            height: 20
+                                            width: 100
+                                            color: "#c9c9c9"
+                                            clip:  true
+                                            radius: 5
+
+                                            TextInput {
+                                                id: mtrY
+                                                padding: 2
+                                                anchors.fill: parent
+                                                font.pointSize: 10
+                                                text: imageProperties.tr.y.toFixed(9)
+                                                selectByMouse: true
+                                                selectionColor: "dark green"
+                                                validator: DoubleValidator {
+                                                    decimals: 13;
+                                                    notation: DoubleValidator.StandardNotation
+                                                    locale: "insert y"
+                                                }
+                                                onTextChanged: {
+
+                                                    imageProperties.tr.y = text
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            Rectangle{
+                                id: trTitle
+                                //                                Layout.fillWidth: true
+                                width: parent.width * 0.4
+                                color: "#404040"
+                                height: 60
+                                border.color: "#5f5f5f"
+                                border.width: 1
+
+                                Text {
+                                    id: trImage
+                                    text: qsTr("TopRight :")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    y: 10
+                                    x:7
+                                }
+                            }
+
+                            ///////////////////////////////////br Property///////////////////////////////
+                            Rectangle{
+                                id:brContainer
+                                //                                Layout.fillWidth: true
+                                width: parent.width * 0.6
+                                color: "#404040"
+                                height: 60
+                                border.color: "#5f5f5f"
+                                border.width: 1
+
+                                Column{
+                                    Row{
+                                        spacing: 8
+                                        leftPadding: 5
+                                        topPadding: 5
+                                        anchors.horizontalCenter: parent.horizontalCenter
+
+                                        Text {
+                                            color: "#e5e5e5"
+                                            text: qsTr("X:")
+                                            font.pointSize: 10
+                                        }
+                                        Rectangle{
+                                            height: 20
+                                            width: 100
+                                            color: "#c9c9c9"
+                                            clip:  true
+                                            radius: 5
+                                            Layout.fillWidth: true
+                                            TextInput {
+                                                id: mbrX
+                                                padding: 2
+                                                anchors.fill: parent
+                                                text: imageProperties.br.x.toFixed(9)
+                                                font.pointSize: 10
+                                                selectByMouse: true
+                                                selectionColor: "dark green"
+                                                validator: DoubleValidator {
+                                                    decimals: 13;
+                                                    notation: DoubleValidator.StandardNotation
+                                                    locale: "insert x"
+                                                }
+                                                onTextChanged: {
+                                                    imageProperties.br.x = text
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Row{
+                                        spacing: 8
+                                        leftPadding: 5
+                                        topPadding: 5
+                                        anchors.horizontalCenter: parent.horizontalCenter
+
+                                        Text {
+                                            color: "#e5e5e5"
+                                            text: qsTr("Y:")
+                                            font.pointSize: 10
+                                        }
+                                        Rectangle{
+                                            height: 20
+                                            width: 100
+                                            color: "#c9c9c9"
+                                            clip:  true
+                                            radius: 5
+
+                                            TextInput {
+                                                id: mbrY
+                                                padding: 2
+                                                anchors.fill: parent
+                                                font.pointSize: 10
+                                                text: imageProperties.br.y.toFixed(9)
+                                                selectByMouse: true
+                                                selectionColor: "dark green"
+                                                validator: DoubleValidator {
+                                                    decimals: 13;
+                                                    notation: DoubleValidator.StandardNotation
+                                                    locale: "insert y"
+                                                }
+                                                onTextChanged: {
+
+                                                    imageProperties.br.y = text
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            Rectangle{
+                                id: brTitle
+                                //                                Layout.fillWidth: true
+                                width: parent.width * 0.4
+                                color: "#404040"
+                                height: 60
+                                border.color: "#5f5f5f"
+                                border.width: 1
+
+                                Text {
+                                    id: brImage
+                                    text: qsTr("BottomRight:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    y: 10
                                     x:7
                                 }
                             }
 
 
-                            ///////////////////////////////////height/////////////////////////////////////
+                            ///////////////////////////////////bl Property///////////////////////////////
                             Rectangle{
-                                id: heightContainer
-                                Layout.fillWidth: true
+                                id:blContainer
+                                //                                Layout.fillWidth: true
+                                width: parent.width * 0.6
                                 color: "#404040"
-                                height: 30
-                                //                                border.color: "#5f5f5f"
-                                //                                border.width: 1
+                                height: 60
+                                border.color: "#5f5f5f"
+                                border.width: 1
 
-                                SpinBox {
-                                    id: heightValue
-                                    stepSize: 10
-                                    value: 1000
-                                    to : 10000000
-                                    from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
+                                Column{
+                                    Row{
+                                        spacing: 8
+                                        leftPadding: 5
+                                        topPadding: 5
+                                        anchors.horizontalCenter: parent.horizontalCenter
 
-                                    contentItem: TextInput {
-                                        id: heightInput
-                                        z: 2
-                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
-                                        text: heightValue.value
-                                        font: heightValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !heightValue.editable
-                                        validator: heightValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
-                                            if(imageProperties && heightValue && (heightValue.value == 0 || heightValue.value)){
-                                                heightValue.value = heightInput.text
-                                                imageProperties.height = heightValue.value
+                                        Text {
+                                            color: "#e5e5e5"
+                                            text: qsTr("X:")
+                                            font.pointSize: 10
+                                        }
+                                        Rectangle{
+                                            height: 20
+                                            width: 100
+                                            color: "#c9c9c9"
+                                            clip:  true
+                                            radius: 5
+                                            Layout.fillWidth: true
+                                            TextInput {
+                                                id: mblX
+                                                padding: 2
+                                                anchors.fill: parent
+                                                text: imageProperties.bl.x.toFixed(9)
+                                                font.pointSize: 10
+                                                selectByMouse: true
+                                                selectionColor: "dark green"
+                                                validator: DoubleValidator {
+                                                    decimals: 13;
+                                                    notation: DoubleValidator.StandardNotation
+                                                    locale: "insert x"
+                                                }
+                                                onTextChanged: {
+                                                    imageProperties.bl.x = text
+
+                                                }
                                             }
                                         }
                                     }
-                                    up.indicator: Rectangle {
-                                        x: heightValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: heightValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
+                                    Row{
+                                        spacing: 8
+                                        leftPadding: 5
+                                        topPadding: 5
+                                        anchors.horizontalCenter: parent.horizontalCenter
 
                                         Text {
-                                            text: "+"
-                                            font.pixelSize: transValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
+                                            color: "#e5e5e5"
+                                            text: qsTr("Y:")
+                                            font.pointSize: 10
                                         }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: heightValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: heightValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
+                                        Rectangle{
+                                            height: 20
+                                            width: 100
+                                            color: "#c9c9c9"
+                                            clip:  true
+                                            radius: 5
 
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: heightValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
+                                            TextInput {
+                                                id: mblY
+                                                padding: 2
+                                                anchors.fill: parent
+                                                font.pointSize: 10
+                                                text: imageProperties.bl.y.toFixed(9)
+                                                selectByMouse: true
+                                                selectionColor: "dark green"
+                                                validator: DoubleValidator {
+                                                    decimals: 13;
+                                                    notation: DoubleValidator.StandardNotation
+                                                    locale: "insert y"
+                                                }
+                                                onTextChanged: {
+
+                                                    imageProperties.bl.y = text
+
+                                                }
+                                            }
                                         }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: heightContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
                                     }
                                 }
                             }
+
                             Rectangle{
-                                Layout.fillWidth: true
+                                id: blTitle
+                                //                                Layout.fillWidth: true
+                                width: parent.width * 0.4
                                 color: "#404040"
-                                height: 30
-                                //                                border.color: "#5f5f5f"
-                                //                                border.width: 1
+                                height: 60
+                                border.color: "#5f5f5f"
+                                border.width: 1
 
                                 Text {
-                                    text: qsTr("Height:")
+                                    id: blImage
+                                    text: qsTr("BottomLeft:")
                                     font.pointSize: 10
                                     color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
+                                    y: 10
                                     x:7
                                 }
                             }

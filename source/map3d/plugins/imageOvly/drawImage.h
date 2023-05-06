@@ -41,11 +41,7 @@ public:
     void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-//    osg::Vec2d getCenter();
-//    void setCenter(osg::Vec2d center);
-//    void setImage(QUrl file);
-//    void setHeight(double height);
-//    void setWidth(double width);
+
 
 private:
     void startDraw(QMouseEvent* event);

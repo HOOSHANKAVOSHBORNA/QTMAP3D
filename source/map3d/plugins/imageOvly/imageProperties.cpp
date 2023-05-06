@@ -16,9 +16,6 @@ ImagePropertiesModel::ImagePropertiesModel(osgEarth::Annotation::ImageOverlay *i
 
 QVector2D ImagePropertiesModel::getLocation()
 {
-
-//    mLocation.setX(static_cast<float>(mImage->getCenter().x()));
-//    mLocation.setY(static_cast<float>(mImage->getCenter().y()));
     return mLocation;
 }
 
@@ -29,51 +26,118 @@ void ImagePropertiesModel::setLocation(const QVector2D &location)
     mLocation.setX(location.x());
     mLocation.setY(location.y());
     if (mImage){
-//        osg::Vec2d tmpLocation = mImage->getCenter();
-//        tmpLocation.x() = static_cast<double>(location.x());
-//        tmpLocation.y() = static_cast<double>(location.y());
         mImage->setCenter(static_cast<double>(location.x()),static_cast<double>(location.y()));
+        emit positionToQmlChanged();
+    }
+}
+
+QVector2D ImagePropertiesModel::getTl()
+{
+    return mTl;
+}
+
+void ImagePropertiesModel::setTl(const QVector2D &TL)
+{
+    if (mTl == TL)
+        return;
+    mTl.setX(TL.x());
+    mTl.setY(TL.y());
+    if (mImage){
+        mImage->setUpperLeft(static_cast<double>(TL.x()),static_cast<double>(TL.y()));
+        emit positionToQmlChanged();
+    }
+}
+
+QVector2D ImagePropertiesModel::getTr()
+{
+    return mTr;
+}
+
+void ImagePropertiesModel::setTr(const QVector2D &TR)
+{
+    if (mTr == TR)
+        return;
+    mTr.setX(TR.x());
+    mTr.setY(TR.y());
+    if (mImage){
+        mImage->setUpperRight(static_cast<double>(TR.x()),static_cast<double>(TR.y()));
+        emit positionToQmlChanged();
+    }
+}
+
+QVector2D ImagePropertiesModel::getBr()
+{
+
+    return mBr;
+}
+
+void ImagePropertiesModel::setBr(const QVector2D &BR)
+{
+    if (mBr == BR)
+        return;
+    mBr.setX(BR.x());
+    mBr.setY(BR.y());
+    if (mImage){
+        mImage->setLowerRight(static_cast<double>(BR.x()),static_cast<double>(BR.y()));
+        emit positionToQmlChanged();
+    }
+}
+
+QVector2D ImagePropertiesModel::getBl()
+{
+
+    return mBl;
+}
+
+void ImagePropertiesModel::setBl(const QVector2D &BL)
+{
+    if (mBl == BL)
+        return;
+    mBl.setX(BL.x());
+    mBl.setY(BL.y());
+    if (mImage){
+        mImage->setLowerLeft(static_cast<double>(BL.x()),static_cast<double>(BL.y()));
         emit positionToQmlChanged();
     }
 }
 
 
 
-double ImagePropertiesModel::getHeight() const
-{
-    return mHeight;
-}
+//double ImagePropertiesModel::getHeight() const
+//{
+//    return mHeight;
+//}
 
-void ImagePropertiesModel::setHeight(const double &imgHeight)
-{
-    if (std::abs(mHeight - imgHeight) < 0.001)
-        return;
-    mHeight = imgHeight;
-    if (mImage){
-        mImage->setNorth(mImage->getCenter().y()+(mHeight/200));
-        mImage->setSouth(mImage->getCenter().y()-(mHeight/200));
-    }
+//void ImagePropertiesModel::setHeight(const double &imgHeight)
+//{
+//    if (std::abs(mHeight - imgHeight) < 0.001)
+//        return;
+//    mHeight = imgHeight;
+//    if (mImage){
+//        mImage->setNorth(mImage->getCenter().y()+(mHeight/200));
+//        mImage->setSouth(mImage->getCenter().y()-(mHeight/200));
+//    }
 
-//        mImage->setHeight(mHeight);
-}
+////        mImage->setHeight(mHeight);
+//}
 
-double ImagePropertiesModel::getWidth() const
-{
-    return mWidth;
-}
+//double ImagePropertiesModel::getWidth() const
+//{
+//    return mWidth;
+//}
 
-void ImagePropertiesModel::setWidth(const double &imgWidth)
-{
-    if (std::abs(mWidth - imgWidth) < 0.001)
-        return;
-    mWidth = imgWidth;
-    if (mImage){
-            mImage->setEast(mImage->getCenter().x()+(mWidth/200));
-            mImage->setWest(mImage->getCenter().x()-(mWidth/200));
-    }
+//void ImagePropertiesModel::setWidth(const double &imgWidth)
+//{
+//    if (std::abs(mWidth - imgWidth) < 0.001)
+//        return;
+//    mWidth = imgWidth;
+//    if (mImage){
+//            mImage->setEast(mImage->getCenter().x()+(mWidth/200));
+//            mImage->setWest(mImage->getCenter().x()-(mWidth/200));
+//    }
 
-//        mDrawImage->setWidth(mWidth);
-}
+////        mDrawImage->setWidth(mWidth);
+//}
 
 
 
@@ -84,11 +148,10 @@ void ImagePropertiesModel::setImage(osgEarth::Annotation::ImageOverlay *image)
         return;
 //    mLocation.setX(mImage->getCenter().x());
 //    mLocation.setY(mImage->getCenter().y());
-    if(mImage){
-        setHeight(mHeight);
-        setWidth(mWidth);
-    }
-
+//    if(mImage){
+//        setHeight(mHeight);
+//        setWidth(mWidth);
+//    }
 }
 
 
@@ -132,5 +195,37 @@ void ImageProperties::setLocation(osg::Vec2d location)
     tmp.setX(static_cast<float>(location.x()));
     tmp.setY(static_cast<float>(location.y()));
     mImageProperties->setLocation(tmp);
+}
+
+void ImageProperties::setTL(osg::Vec2d location)
+{
+    QVector2D tmp;
+    tmp.setX(static_cast<float>(location.x()));
+    tmp.setY(static_cast<float>(location.y()));
+    mImageProperties->setTl(tmp);
+}
+
+void ImageProperties::setTR(osg::Vec2d location)
+{
+    QVector2D tmp;
+    tmp.setX(static_cast<float>(location.x()));
+    tmp.setY(static_cast<float>(location.y()));
+    mImageProperties->setTr(tmp);
+}
+
+void ImageProperties::setBR(osg::Vec2d location)
+{
+    QVector2D tmp;
+    tmp.setX(static_cast<float>(location.x()));
+    tmp.setY(static_cast<float>(location.y()));
+    mImageProperties->setBr(tmp);
+}
+
+void ImageProperties::setBL(osg::Vec2d location)
+{
+    QVector2D tmp;
+    tmp.setX(static_cast<float>(location.x()));
+    tmp.setY(static_cast<float>(location.y()));
+    mImageProperties->setBl(tmp);
 }
 
