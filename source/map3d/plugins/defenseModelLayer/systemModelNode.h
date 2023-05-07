@@ -96,7 +96,7 @@ private:
 //    QMap<int, Assignment*> mAssignmentMap;
     SystemInfoItem *mSystemInfoItem{nullptr};
 
-    AircraftModelNode* mTargetModelNode{nullptr};
+    osg::ref_ptr<AircraftModelNode> mTargetModelNode{nullptr};
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;

@@ -245,7 +245,7 @@ void DefenseModelNode::collision()
     //    }
     float scale =  static_cast<float>(getScale().x() * 20);
     playExplosionEffect(scale);
-    setNodeMask(false);
+    //setNodeMask(false);
     //    mSmoke->setNodeMask(false);
     //    mSmoke->getParticleSystem()->setNodeMask(false);
     //    mFire->setNodeMask(false);

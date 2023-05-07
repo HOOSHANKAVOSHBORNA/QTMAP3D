@@ -29,6 +29,31 @@ void SystemDataManager::addAssignment(int systemNo, System::Assignment assignmen
     }
 }
 
+void SystemDataManager::removeAssignments(int tn)
+{
+    for(auto& data: mSystemData)
+    {
+        auto index = data.findAssignment(tn);
+        if(index != -1){
+            mDefenseModelLayer->mMapController->removeNodeFromLayer(data.assignments.at(index).line, SYSTEMS_LAYER_NAME);
+            data.assignments.removeAt(index);
+            data.systemModelNode->assignmentChanged();
+        }
+    }
+}
+
+void SystemDataManager::removeAssignment(int tn, int systemNo)
+{
+    if(mSystemData.contains(systemNo)){
+        auto index = mSystemData[systemNo].findAssignment(tn);
+        if(index != -1){
+            mDefenseModelLayer->mMapController->removeNodeFromLayer(mSystemData[systemNo].assignments.at(index).line, SYSTEMS_LAYER_NAME);
+            mSystemData[systemNo].assignments.removeAt(index);
+            mSystemData[systemNo].systemModelNode->assignmentChanged();
+        }
+    }
+}
+
 System::Data *SystemDataManager::getSystemData(int number)
 {
     return mSystemData.contains(number) ? &mSystemData[number] : nullptr;
@@ -91,17 +116,22 @@ void SystemDataManager::onCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
     }
 }
 
-void SystemDataManager::onAssignmentResponse(int tn, int systemNo, bool result)
+void SystemDataManager::onAssignmentResponse(int tn, int systemNo, bool accept)
 {
-    System::Assignment s;
-    s.info = new AircraftInfo;
-    s.info->TN = tn;
-//    if(result && mSystemData[systemNo].assignments.contains(s))
-//        mSystemData[systemNo].systemModelNode->acceptAssignment(tn, result);
-    if(!result && mSystemData.contains(systemNo)){
-        if (mSystemData[systemNo].assignments.contains(s)){
-            int indexx = mSystemData[systemNo].assignments.indexOf(s);
-            mSystemData[systemNo].assignments.removeAt(indexx);
+    if(mSystemData.contains(systemNo)){
+        auto index = mSystemData[systemNo].findAssignment(tn);
+        if (index != -1){
+            auto assignment = mSystemData[systemNo].assignments.at(index);
+            if(!accept){
+                mDefenseModelLayer->mMapController->removeNodeFromLayer(assignment.line, SYSTEMS_LAYER_NAME);
+                mSystemData[systemNo].assignments.removeAt(index);
+                mSystemData[systemNo].systemModelNode->assignmentChanged();
+            }
+            else {
+                assignment.line->setColor(osgEarth::Color::Olive);
+                assignment.line->setPointVisible(false);
+                assignment.line->setWidth(5);
+            }
         }
     }
 }
@@ -110,7 +140,7 @@ void SystemDataManager::addSystemTab()
 {
     QQmlComponent *comp3 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
     QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
-//        qDebug() << comp3->errorString();
+        //        qDebug() << comp3->errorString();
 
         if (comp3->status() == QQmlComponent::Ready) {
             QQuickItem *systemTab = static_cast<QQuickItem*>(comp3->create(nullptr));

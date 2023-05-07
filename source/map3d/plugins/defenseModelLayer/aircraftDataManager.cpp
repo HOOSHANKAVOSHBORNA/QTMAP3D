@@ -5,6 +5,20 @@ bool Aircraft::Assignment::operator==(const Aircraft::Assignment &assignment)
 {
     return (info->systemInfo.Number == assignment.info->systemInfo.Number);
 }
+
+int Aircraft::Data::findAssignment(int systemNo)
+{
+    int result = -1;
+    Aircraft::Assignment s;
+    s.info = new  System::Information();
+    s.info->systemInfo.Number = systemNo;
+     if (assignments.contains(s))
+     {
+         result = assignments.indexOf(s);
+     }
+
+     return result;
+}
 //----------------------------------------------------------------------------------------
 AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
 {
@@ -17,11 +31,31 @@ AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
 
 void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment assignment)
 {
-    if(mAircraftData.contains(tn) && !mAircraftData[tn].assigments.contains(assignment))
+    if(mAircraftData.contains(tn) && !mAircraftData[tn].assignments.contains(assignment))
     {
-        mAircraftData[tn].assigments.append(assignment);
+        mAircraftData[tn].assignments.append(assignment);
         //-----------------------------
         mAircraftData[tn].modelNode->dataChanged();
+    }
+}
+
+void AircraftDataManager::clearAssignment(int tn)
+{
+    if(mAircraftData.contains(tn))
+    {
+        mAircraftData[tn].assignments.clear();
+        mAircraftData[tn].modelNode->dataChanged();
+    }
+}
+
+void AircraftDataManager::removeAssignment(int tn, int systemNo)
+{
+    if(mAircraftData.contains(tn)){
+        auto index = mAircraftData[tn].findAssignment(systemNo);
+        if(index != -1){
+            mAircraftData[tn].assignments.removeAt(index);
+            mAircraftData[tn].modelNode->dataChanged();
+        }
     }
 }
 
@@ -78,14 +112,15 @@ void AircraftDataManager::onClear(int tn)
     mAircraftTableModel->updateTable(tn);
 }
 
-void AircraftDataManager::onAssignmentResponse(int tn, int systemNo, bool result)
+void AircraftDataManager::onAssignmentResponse(int tn, int systemNo, bool accept)
 {
-    if(!result && mAircraftData.contains(tn))
+    if(!accept && mAircraftData.contains(tn))
     {
-        Aircraft::Assignment assignment;
-        assignment.info->systemInfo.Number = systemNo;
-        auto list = mAircraftData[tn].assigments;
-        list.removeAt(list.indexOf(assignment));
+        auto index = mAircraftData[tn].findAssignment(systemNo);
+        if(index != -1){
+            mAircraftData[tn].assignments.removeAt(index);
+            mAircraftData[tn].modelNode->dataChanged();
+        }
     }
 
 }

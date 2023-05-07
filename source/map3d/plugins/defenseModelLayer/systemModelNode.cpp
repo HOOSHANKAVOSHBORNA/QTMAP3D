@@ -367,7 +367,7 @@ void SystemModelNode::frameEvent()
     for(auto assinment:mSystemData->assignments)
         assinment.updateLine(getPosition());
 
-    if (mTargetModelNode) {
+    if (mTargetModelNode.valid()) {
         mTruckF->aimTarget(mTargetModelNode->getPosition());
         mTruckL->lockOnTarget(mTargetModelNode->getPosition());
     }
@@ -543,12 +543,13 @@ void SystemModelNode::searchPhase()
 
 void SystemModelNode::lockPhase(int tn)
 {
-    auto assignmentTuple = mSystemData->findAssignment(tn);
+    auto index = mSystemData->findAssignment(tn);
 
-    if(std::get<0>(assignmentTuple) != -1)
+    if(index != -1)
     {
-        mTargetModelNode = std::get<1>(assignmentTuple)->modelNode;
-        std::get<1>(assignmentTuple)->line->setColor(osgEarth::Color::Orange);
+        auto assignment = mSystemData->assignments.at(index);
+        mTargetModelNode = assignment.modelNode;
+        assignment.line->setColor(osgEarth::Color::Orange);
 
         mTruckL->lockOnTarget(mTargetModelNode->getPosition());
         mTruckF->aimTarget(mTargetModelNode->getPosition());
@@ -565,12 +566,13 @@ void SystemModelNode::lockPhase(int tn)
 
 void SystemModelNode::firePhase(int tn)
 {
-    auto assignmentTuple = mSystemData->findAssignment(tn);
+    auto index = mSystemData->findAssignment(tn);
 
-    if(std::get<0>(assignmentTuple) != -1)
+    if(index != -1)
     {
-        mTargetModelNode = std::get<1>(assignmentTuple)->modelNode;
-        std::get<1>(assignmentTuple)->line->setColor(osgEarth::Color::Red);
+        auto assignment = mSystemData->assignments.at(index);
+        mTargetModelNode = assignment.modelNode;
+        assignment.line->setColor(osgEarth::Color::Red);
         mFiredRocket = mTruckF->getActiveRocket();
         if(mFiredRocket)
         {
@@ -583,13 +585,14 @@ void SystemModelNode::firePhase(int tn)
 
 void SystemModelNode::killPhase(int tn)
 {
-    auto assignmentTuple = mSystemData->findAssignment(tn);
+    auto index = mSystemData->findAssignment(tn);
 
-    if(std::get<0>(assignmentTuple) != -1)
+    if(index != -1)
     {
+        auto assignment = mSystemData->assignments.at(index);
         mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
-        std::get<1>(assignmentTuple)->line->setColor(osgEarth::Color::Black);
-        std::get<1>(assignmentTuple)->modelNode->collision();
+        assignment.line->setColor(osgEarth::Color::Black);
+        assignment.modelNode->collision();
 
         if(mFiredRocket)
             mFiredRocket->stop();
@@ -600,12 +603,13 @@ void SystemModelNode::killPhase(int tn)
 
 void SystemModelNode::noKillPhase(int tn)
 {
-    auto assignmentTuple = mSystemData->findAssignment(tn);
+    auto index = mSystemData->findAssignment(tn);
 
-    if(std::get<0>(assignmentTuple) != -1)
+    if(index != -1)
     {
+        auto assignment = mSystemData->assignments.at(index);
         mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
-        std::get<1>(assignmentTuple)->line->setColor(osgEarth::Color::Brown);
+        assignment.line->setColor(osgEarth::Color::Brown);
         if(mFiredRocket)
             mFiredRocket->stop();
 //        removeAssignment(tn);

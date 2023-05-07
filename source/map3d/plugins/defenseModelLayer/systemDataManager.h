@@ -42,17 +42,15 @@ struct Data
     osg::ref_ptr<SystemModelNode> systemModelNode{nullptr};
     QList<Assignment> assignments;
 
-    std::tuple <int, Assignment*> findAssignment(int tn)
+    int findAssignment(int tn)
     {
-        std::tuple <int, Assignment*> result = std::make_tuple(-1, nullptr);
+        int result = -1;
         System::Assignment s;
         s.info = new AircraftInfo;
         s.info->TN = tn;
          if (assignments.contains(s))
          {
-             int index = assignments.indexOf(s);
-             std::get<0>(result) = index;
-             std::get<1>(result) = &assignments[index];
+             result = assignments.indexOf(s);
          }
 
          return result;
@@ -67,6 +65,8 @@ class SystemDataManager: public QObject
 public:
     SystemDataManager(DefenseModelLayer* defenseModelLayer);
     void addAssignment(int systemNo, System::Assignment assignment);
+    void removeAssignments(int tn);
+    void removeAssignment(int tn, int systemNo);
     System::Data *getSystemData(int number);
     QMap<int, System::Data> &getSystemsData();
 
@@ -74,7 +74,7 @@ public slots:
     void onInfoChanged(SystemInfo& systemInfo);
     void onStatusInfoChanged(SystemStatusInfo &systemStatusInfo);
     void onCombatInfoChanged(SystemCombatInfo &systemCombatInfo);
-    void onAssignmentResponse(int tn, int systemNo, bool result);
+    void onAssignmentResponse(int tn, int systemNo, bool accept);
 
 signals:
     void systemDoubleClicked(const int&);

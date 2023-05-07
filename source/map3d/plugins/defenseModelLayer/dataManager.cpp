@@ -12,14 +12,14 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 {
     //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
-//    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
-//    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
-//    //--system----------------------------------------------------------
+    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
+    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
+    //    //--system----------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
     QObject::connect(defenseDataManager, &DefenseDataManager::systemCombatInfoChanged,this ,&DataManager::onSystemCombatInfoChanged);
-//    //--station---------------------------------------------------------
-//    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
+    //    //--station---------------------------------------------------------
+    //    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
 
     //list view---------------------------------------------------------
 
@@ -35,55 +35,73 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
     mSystemAssignmentTableModel->setSystemInfos(mSystemDataManager->getSystemsData());
     addAssignmentTab();
 
-//    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
-//        StationModelNode* stationModelNode = mDefenseModelLayer->getStationModelNode(number);
-//        mDefenseModelLayer->selectModelNode(stationModelNode);
-//    });
-//    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
-//        SystemModelNode* systemModelNode = mDefenseModelLayer->getSystemModelNode(number);
-//        mDefenseModelLayer->selectModelNode(systemModelNode);
-//    });
+    //    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
+    //        StationModelNode* stationModelNode = mDefenseModelLayer->getStationModelNode(number);
+    //        mDefenseModelLayer->selectModelNode(stationModelNode);
+    //    });
+    //    connect(mListManager, &ListManager::systemDoubleClicked,[=](int number){
+    //        SystemModelNode* systemModelNode = mDefenseModelLayer->getSystemModelNode(number);
+    //        mDefenseModelLayer->selectModelNode(systemModelNode);
+    //    });
 }
 
 void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
     mAircraftDataManager->onInfoChanged(aircraftInfo);
     mAircraftAssignmentTableModel->updateTable(aircraftInfo.TN);
-//    if(mDefenseModelLayer)
-//        mDefenseModelLayer->addUpdateAircraft(aircraftInfo);
-//    //add update list view-----------------------------------------------------------------
-//    if (mListManager)
-//        mListManager->setAircraftInfo(aircraftInfo);
+    //    if(mDefenseModelLayer)
+    //        mDefenseModelLayer->addUpdateAircraft(aircraftInfo);
+    //    //add update list view-----------------------------------------------------------------
+    //    if (mListManager)
+    //        mListManager->setAircraftInfo(aircraftInfo);
 }
 
 void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
 {
     mSystemDataManager->onInfoChanged(systemInfo);
     mSystemAssignmentTableModel->updateTable(systemInfo.Number);
-//    if(mDefenseModelLayer)
-//        mDefenseModelLayer->addUpdateSystem(systemInfo);
-//    //add update list view-----------------------------------------------------------------
-//    if (mListManager)
-//        mListManager->setSystemInfo(systemInfo);
+    //    if(mDefenseModelLayer)
+    //        mDefenseModelLayer->addUpdateSystem(systemInfo);
+    //    //add update list view-----------------------------------------------------------------
+    //    if (mListManager)
+    //        mListManager->setSystemInfo(systemInfo);
 }
 
 void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 {
     mSystemDataManager->onStatusInfoChanged(systemStatusInfo);
     mSystemAssignmentTableModel->updateTable(systemStatusInfo.Number);
-//    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemStatusInfo.Number);
-//    //update information-----------------------------------------------------
-//    if(systemModelNode)
-//        systemModelNode->setStatusInfo(systemStatusInfo);
-//    //add update list view-----------------------------------------------------------------
-//    if (mListManager)
-//        mListManager->setSystemStatusInfo(systemStatusInfo);
+    //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemStatusInfo.Number);
+    //    //update information-----------------------------------------------------
+    //    if(systemModelNode)
+    //        systemModelNode->setStatusInfo(systemStatusInfo);
+    //    //add update list view-----------------------------------------------------------------
+    //    if (mListManager)
+    //        mListManager->setSystemStatusInfo(systemStatusInfo);
 }
 
 void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 {
     mSystemDataManager->onCombatInfoChanged(systemCombatInfo);
     mSystemAssignmentTableModel->updateTable(systemCombatInfo.Number);
+    //--------------------------------------------------------------------
+    if(systemCombatInfo.Phase == SystemCombatInfo::Lock || systemCombatInfo.Phase == SystemCombatInfo::Fire){
+        auto systemData = mSystemDataManager->getSystemData(systemCombatInfo.Number);
+        if(systemData){
+            for(auto assignment: systemData->assignments){
+                if(assignment.info->TN != systemCombatInfo.TN)
+                {
+                    mSystemDataManager->removeAssignment(assignment.info->TN, systemCombatInfo.Number);
+                    mAircraftDataManager->removeAssignment(assignment.info->TN, systemCombatInfo.Number);
+                }
+            }
+        }
+    }
+    //-----------------------------------------------------------------
+    if(systemCombatInfo.Phase == SystemCombatInfo::Kill)
+    {
+        onClearAircraft(systemCombatInfo.TN);
+    }
 //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemCombatInfo.Number);
 //    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCombatInfo.TN);
 //    if(systemModelNode && aircraftModelNode)
@@ -134,38 +152,39 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 void DataManager::onStationInfoChanged(StationInfo &stationInfo)
 {
     mStationDataManager->onInfoChanged(stationInfo);
-//    if(mDefenseModelLayer)
-//        mDefenseModelLayer->addUpdateStation(stationInfo);
-//    //add update list view-----------------------------------------------------------------
-//    if (mListManager)
-//        mListManager->setStationInfo(stationInfo);
+    //    if(mDefenseModelLayer)
+    //        mDefenseModelLayer->addUpdateStation(stationInfo);
+    //    //add update list view-----------------------------------------------------------------
+    //    if (mListManager)
+    //        mListManager->setStationInfo(stationInfo);
 }
 
 void DataManager::onClearAircraft(int tn)
 {
     mAircraftDataManager->onClear(tn);
+    systemDataManager()->removeAssignments(tn);
     mAircraftAssignmentTableModel->updateTable(tn);
-//    if(mDefenseModelLayer)
-//        mDefenseModelLayer->clearAircraft(tn);
-//    if (mListManager)
-//        mListManager->deleteAircraftInfo(tn);
+    //    if(mDefenseModelLayer)
+    //        mDefenseModelLayer->clearAircraft(tn);
+    //    if (mListManager)
+    //        mListManager->deleteAircraftInfo(tn);
 }
 
-void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool result)
+void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool accept)
 {
-    mAircraftDataManager->onAssignmentResponse(tn, systemNo, result);
-    mSystemDataManager->onAssignmentResponse(tn, systemNo, result);
-//    //    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
-//    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemNo);
-//    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(tn);
+    mAircraftDataManager->onAssignmentResponse(tn, systemNo, accept);
+    mSystemDataManager->onAssignmentResponse(tn, systemNo, accept);
+    //    //    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
+    //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemNo);
+    //    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(tn);
 
-//    if(systemModelNode)
-//        systemModelNode->acceptAssignment(tn, result);
-//    if(aircraftModelNode)
-//        aircraftModelNode->acceptAssignment(systemNo, result);
+    //    if(systemModelNode)
+    //        systemModelNode->acceptAssignment(tn, result);
+    //    if(aircraftModelNode)
+    //        aircraftModelNode->acceptAssignment(systemNo, result);
 
-//    if (mListManager)
-//        mListManager->acceptAssign(tn, systemNo, result);
+    //    if (mListManager)
+    //        mListManager->acceptAssign(tn, systemNo, result);
 }
 
 void DataManager::assignAircraft2System(int tn, int systemNo)
@@ -184,42 +203,44 @@ void DataManager::assignAircraft2System(int tn, int systemNo)
         sAssign.modelNode = aData->modelNode;
         mSystemDataManager->addAssignment(systemNo, sAssign);
     }
-//    systemModelNode->addAssignment(aircraftModelNode->getInformation().TN, aircraftModelNode);
-//    aircraftModelNode->addAssignment(systemModelNode->getInformation().Number, systemModelNode);
-    //--TODO manage memory---------------------------------------
-//    std::thread* t1 = new std::thread([=](){
-//        if(mDefenseDataManager)
-//            emit mDefenseDataManager->aircraftAssigned(aircraftModelNode->getInformation().TN,
-//                                                       systemModelNode->getInformation().Number);
-//    });
 
-//    mListManager->assignAirToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
+    //    systemModelNode->addAssignment(aircraftModelNode->getInformation().TN, aircraftModelNode);
+    //    aircraftModelNode->addAssignment(systemModelNode->getInformation().Number, systemModelNode);
+    //--TODO manage memory---------------------------------------
+    std::thread* t1 = new std::thread([=](){
+        if(mDefenseDataManager)
+            emit mDefenseDataManager->aircraftAssigned(tn, systemNo);
+    });
+
+    //    mListManager->assignAirToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
 }
 
-void DataManager::cancelAircraftAssign(AircraftModelNode *aircraftModelNode)
+void DataManager::cancelAircraftAssignments(int tn)
 {
-//    if(aircraftModelNode)
-//    {
-//        auto systemModelNodes = aircraftModelNode->getAssignments();
-//        for(auto systemModelNode: systemModelNodes)
-//        {
-//            if(systemModelNode)
-//            {
-//                emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
-//                                                                 systemModelNode->getInformation().Number);
-//                systemModelNode->removeAssignment(aircraftModelNode->getInformation().TN);
-//                mListManager->cancelSystemAssignmentsExcept(-1, systemModelNode->getInformation().Number);
-//            }
-//        }
+    mAircraftDataManager->clearAssignment(tn);
+    mSystemDataManager->removeAssignments(tn);
+    //    if(aircraftModelNode)
+    //    {
+    //        auto systemModelNodes = aircraftModelNode->getAssignments();
+    //        for(auto systemModelNode: systemModelNodes)
+    //        {
+    //            if(systemModelNode)
+    //            {
+    //                emit mDefenseDataManager->cancelAircraftAssigned(aircraftModelNode->getInformation().TN,
+    //                                                                 systemModelNode->getInformation().Number);
+    //                systemModelNode->removeAssignment(aircraftModelNode->getInformation().TN);
+    //                mListManager->cancelSystemAssignmentsExcept(-1, systemModelNode->getInformation().Number);
+    //            }
+    //        }
 
-//        aircraftModelNode->clearAssignments();
-//        mListManager->cancelAircraftAssignmentsExcept(aircraftModelNode->getInformation().TN, -1);
-//    }
+    //        aircraftModelNode->clearAssignments();
+    //        mListManager->cancelAircraftAssignmentsExcept(aircraftModelNode->getInformation().TN, -1);
+    //    }
 }
 
 void DataManager::clear()
 {
-//    mListManager->clearAll();
+    //    mListManager->clearAll();
 }
 
 
@@ -227,20 +248,20 @@ void DataManager::addAssignmentTab()
 {
     QQmlComponent *comp4 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
     QObject::connect(comp4, &QQmlComponent::statusChanged, [this, comp4](){
-//        qDebug() << comp3->errorString();
+        //        qDebug() << comp3->errorString();
 
         if (comp4->status() == QQmlComponent::Ready) {
             QQuickItem *assignTab = (QQuickItem*) comp4->create(nullptr);
-//            mAssignModel = new AssignmentModel;
-//            QObject::connect(assignTab,
-//                             SIGNAL(systemDoubleClicked(const int&)),
-//                             this,
-//                             SIGNAL(systemDoubleClicked(const int&)));
+            //            mAssignModel = new AssignmentModel;
+            //            QObject::connect(assignTab,
+            //                             SIGNAL(systemDoubleClicked(const int&)),
+            //                             this,
+            //                             SIGNAL(systemDoubleClicked(const int&)));
 
-//            QObject::connect(assignTab,
-//                             SIGNAL(aircraftDoubleClicked(const int&)),
-//                             this,
-//                             SIGNAL(aircraftDoubleClicked(const int&)));
+            //            QObject::connect(assignTab,
+            //                             SIGNAL(aircraftDoubleClicked(const int&)),
+            //                             this,
+            //                             SIGNAL(aircraftDoubleClicked(const int&)));
 
             assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftAssignmentTableModel));
             assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemAssignmentTableModel));
@@ -250,5 +271,20 @@ void DataManager::addAssignmentTab()
     });
 
     comp4->loadUrl(QUrl("qrc:/modelplugin/AssignmentView.qml"));
+}
+
+StationDataManager *DataManager::stationDataManager() const
+{
+    return mStationDataManager;
+}
+
+SystemDataManager *DataManager::systemDataManager() const
+{
+    return mSystemDataManager;
+}
+
+AircraftDataManager *DataManager::aircraftDataManager() const
+{
+    return mAircraftDataManager;
 }
 

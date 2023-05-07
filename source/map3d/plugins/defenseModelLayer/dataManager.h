@@ -19,11 +19,17 @@ public slots:
     void onSystemCombatInfoChanged(SystemCombatInfo& systemCambatInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
     void onClearAircraft(int tn);
-    void onAircraftAssignedResponse(int tn, int systemNo, bool result);
+    void onAircraftAssignedResponse(int tn, int systemNo, bool accept);
 public:
     void assignAircraft2System(int tn, int systemNo);
-    void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
+    void cancelAircraftAssignments(int tn);
     void clear();
+    AircraftDataManager *aircraftDataManager() const;
+
+    SystemDataManager *systemDataManager() const;
+
+    StationDataManager *stationDataManager() const;
+
 private:
     void addAssignmentTab();
 private:

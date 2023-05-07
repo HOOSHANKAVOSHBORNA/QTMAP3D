@@ -847,7 +847,7 @@ void AircraftModelNode::change2DImageColore(osgEarth::Color /*color*/)
 
 void AircraftModelNode::updateOrCreateLabelImage()
 {
-    int height = LABEL_IMAGE_HEIGHT + ((mAircraftData->assigments.count()+1)/2) * 30;
+    int height = LABEL_IMAGE_HEIGHT + ((mAircraftData->assignments.count()+1)/2) * 30;
     //qDebug()<<"hight:"<<height;
     if (!mRenderTargetImage) {
         mRenderTargetImage = new QImage(
@@ -957,16 +957,16 @@ void AircraftModelNode::updateOrCreateLabelImage()
         int h = 200;
         const QFontMetrics fm(textFont);
         int n = 0;
-        while (n < mAircraftData->assigments.count()) {
+        while (n < mAircraftData->assignments.count()) {
 
             int indent = 0;
             for (int llidx = 0; llidx < 2; llidx++)// two elements per line
             {
 
-                if (n >= mAircraftData->assigments.count())
+                if (n >= mAircraftData->assignments.count())
                     break;
 
-                auto val = mAircraftData->assigments.at(n);
+                auto val = mAircraftData->assignments.at(n);
 
                 const QString ss = (llidx == 0 ? QStringLiteral("(") : QStringLiteral(", ("))
                         + QString::number(val.info->systemInfo.Number)
