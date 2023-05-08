@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QObject>
 #include <QColor>
+#include <QMap>
 
 struct SystemInfo;
 struct AircraftInfo
@@ -307,9 +308,9 @@ struct SystemStatusInfo
     };
 
     enum OperationStatus {
-        NoOp = 0,
-        Op1  = 1,
-        Op2  = 2
+        NOP = 0,
+        OP1  = 1,
+        OP2  = 2
     };
 
 
@@ -319,7 +320,7 @@ struct SystemStatusInfo
     QString Simulation = "------";
     RadarStatus BCCStatus;
     RadarStatus RadarSearchStatus;
-    OperationStatus Operational = NoOp;
+    OperationStatus Operational = NOP;
     int MissileCount = -1;
     QString RadarMode = "------";
     QString BCCStatusToString() const {
@@ -347,16 +348,16 @@ struct SystemStatusInfo
 
     QString operationalToString() const {
 
-        QString result = "NoOp";
+        QString result = "NOP";
         switch(Operational) {
-        case NoOp:
-            result = "NoOp";
+        case NOP:
+            result = "NOP";
             break;
-        case Op1:
-            result = "Op1";
+        case OP1:
+            result = "OP1";
             break;
-        case Op2:
-            result = "Op2";
+        case OP2:
+            result = "OP2";
             break;
         }
 
@@ -455,19 +456,35 @@ class Demo
 public:
     Demo(DefenseDataManager* defenseDataManager);
     ~Demo();
-    AircraftInfo createAircraftInfo();
+    void createAircraftInfo();
     void updateAircraftInfo();
-    void createStationInfo();
+
     void createSystemInfo();
     void updateSystemCombatInfo();
-public:
-    DefenseDataManager* mDefenseDataManager;
-    QList<AircraftInfo> mAircraftList;
-    QList<StationInfo> stationList;
 
-    QList<SystemInfo> systemList;
-    QList<SystemStatusInfo> systemStatusList;
-    QList<SystemCombatInfo> SystemCombatList;
+    void createStationInfo();
+public:
+    struct SystemInformation{
+        SystemInfo info;
+        SystemStatusInfo statusInfo;
+        SystemCombatInfo combatInfo;
+    };
+
+    DefenseDataManager* mDefenseDataManager;
+
+    QMap<int, AircraftInfo> mAircrafts;
+    QMap<int, QList<SystemInformation*>> mAircrafAssignment;
+
+    QMap<int, SystemInformation> mSystems;
+    QMap<int, QList<AircraftInfo*>> mSystemAssignment;
+    QMap<int, StationInfo> mStations;
+
+//    QList<AircraftInfo> mAircraftList;
+    //QList<StationInfo> stationList;
+
+    //QList<SystemInfo> systemList;
+    //QList<SystemStatusInfo> systemStatusList;
+    //QList<SystemCombatInfo> SystemCombatList;
 };
 
 #endif // DEFENSEDATAMANAGER_H

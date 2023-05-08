@@ -105,8 +105,6 @@ void AircraftDataManager::onClear(int tn)
 {
     //-----------------------------------------
     mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftData[tn].modelNode, AIRCRAFTS_LAYER_NAME);
-    //--TODO remove system assignment
-
 
     mAircraftData.remove(tn);
     mAircraftTableModel->updateTable(tn);

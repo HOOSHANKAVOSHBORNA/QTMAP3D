@@ -93,6 +93,7 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
                 {
                     mSystemDataManager->removeAssignment(assignment.info->TN, systemCombatInfo.Number);
                     mAircraftDataManager->removeAssignment(assignment.info->TN, systemCombatInfo.Number);
+                    emit mDefenseDataManager->cancelAircraftAssigned(assignment.info->TN, systemCombatInfo.Number);
                 }
             }
         }
@@ -101,6 +102,11 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
     if(systemCombatInfo.Phase == SystemCombatInfo::Kill)
     {
         onClearAircraft(systemCombatInfo.TN);
+    }
+    if(systemCombatInfo.Phase == SystemCombatInfo::NoKill)
+    {
+        mAircraftDataManager->removeAssignment(systemCombatInfo.TN, systemCombatInfo.Number);
+        mSystemDataManager->removeAssignment(systemCombatInfo.TN, systemCombatInfo.Number);
     }
 //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemCombatInfo.Number);
 //    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCombatInfo.TN);
@@ -162,7 +168,7 @@ void DataManager::onStationInfoChanged(StationInfo &stationInfo)
 void DataManager::onClearAircraft(int tn)
 {
     mAircraftDataManager->onClear(tn);
-    systemDataManager()->removeAssignments(tn);
+    mSystemDataManager->removeAssignments(tn);
     mAircraftAssignmentTableModel->updateTable(tn);
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->clearAircraft(tn);
