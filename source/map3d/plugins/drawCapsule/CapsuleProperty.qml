@@ -15,6 +15,9 @@ Item {
     property string headerTitleSTR: "capsule Properties"
     property string fillColor: "#91001d"
     property string lineColor: "#ffffff"
+    property double unitsMulti
+    property double stepSize :10
+
 
 
     onVisibleChanged: {
@@ -23,6 +26,16 @@ Item {
         capsuleProperties.radius = radiusValue.value
         capsuleProperties.height = heightValue.value
     }
+    onUnitsMultiChanged: {
+        capsuleProperties.radius = radiusValue.value*unitsMulti
+        capsuleProperties.height = heightValue.value*unitsMulti
+    }
+
+    onStepSizeChanged: {
+        radiusValue.stepSize = stepSize
+        heightValue.stepSize = stepSize
+    }
+
 
     Item {
         id: dialog
@@ -62,13 +75,210 @@ Item {
 
             }
 
+
+            ///////////////////////////////////////units///////////////////////////////////////////////
+            Rectangle{
+                id:units
+                width: parent.width -2
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: header.bottom
+                height: 25
+                radius: 0
+                color: "#303030"
+                RowLayout{
+                    spacing: 10
+                    x:2
+                    anchors.centerIn: parent
+                    Text {
+                        text: qsTr("Unit:")
+                        color: "white"
+                    }
+                    ComboBox {
+                        id: unitControl
+                        currentIndex: 1
+                        model: ["KM", "M", "CM"]
+                        onCurrentIndexChanged:   {
+                            if(currentIndex === 0){
+                                unitsMulti = 1000
+                            }else if(currentIndex === 1){
+                                unitsMulti = 1
+                            }else if(currentIndex === 2){
+                                unitsMulti = 0.01
+                            }
+                        }
+                        delegate: ItemDelegate {
+                            width: unitControl.width
+                            contentItem: Text {
+                                text: unitControl.textRole
+                                      ? (Array.isArray(unitControl.model) ? modelData[unitControl.textRole] : model[unitControl.textRole])
+                                      : modelData
+                                color: "#5f5f5f"
+                                font: unitControl.font
+                                elide: Text.ElideRight
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                            highlighted: unitControl.highlightedIndex === index
+                        }
+                        indicator: Canvas {
+                            id: unitcanvas
+                            x: unitControl.width - width - unitControl.rightPadding
+                            y: unitControl.topPadding + (unitControl.availableHeight - height) / 2
+                            width: 12
+                            height: 8
+                            contextType: "2d"
+                            Connections {
+                                target: unitControl
+                                function onPressedChanged() { unitcanvas.requestPaint(); }
+                            }
+                        }
+                        contentItem: Text {
+                            leftPadding: 5
+                            rightPadding: unitControl.indicator.width + unitControl.spacing
+                            text: unitControl.displayText
+                            font: unitControl.font
+                            color: unitControl.pressed ? "#5f5f5f" : "#404040"
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 22
+                            border.color: unitControl.pressed ? "#5f5f5f" : "#404040"
+                            border.width: unitControl.visualFocus ? 2 : 1
+                            radius: 5
+                            color: "#c9c9c9"
+                        }
+                        popup: Popup {
+                            y: unitControl.height - 1
+                            width: unitControl.width
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: unitControl.popup.visible ? unitControl.delegateModel : null
+                                currentIndex: unitControl.highlightedIndex
+
+                                ScrollIndicator.vertical: ScrollIndicator { }
+                            }
+                            background: Rectangle {
+                                border.color: "#404040"
+                                radius: 5
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+            ///////////////////////////////////////steps///////////////////////////////////////////////
+            Rectangle{
+                id:steps
+                width: parent.width -2
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: units.bottom
+                height: 30
+                radius: 0
+                color: "#303030"
+                RowLayout{
+                    spacing: 2
+                    x:2
+                    anchors.centerIn: parent
+                    Text {
+                        text: qsTr("Step:")
+                        color: "white"
+                    }
+                    ComboBox {
+                        id: controls
+                        currentIndex: 2
+                        model: ["1000", "100", "10","1"]
+                        onCurrentIndexChanged:   {
+                            if(currentIndex === 0){
+                                stepSize = 1000
+                            }else if(currentIndex === 1){
+                                stepSize = 100
+                            }else if(currentIndex === 2){
+                                stepSize = 10
+                            }else if(currentIndex === 3){
+                                stepSize = 1
+                            }
+                        }
+                        delegate: ItemDelegate {
+                            width: controls.width
+                            contentItem: Text {
+                                text: controls.textRole
+                                      ? (Array.isArray(controls.model) ? modelData[controls.textRole] : model[controls.textRole])
+                                      : modelData
+                                color: "#5f5f5f"
+                                font: controls.font
+                                elide: Text.ElideRight
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                            highlighted: controls.highlightedIndex === index
+                        }
+                        indicator: Canvas {
+                            id: canvass
+                            x: controls.width - width - controls.rightPadding
+                            y: controls.topPadding + (controls.availableHeight - height) / 2
+                            width: 12
+                            height: 8
+                            contextType: "2d"
+                            Connections {
+                                target: controls
+                                function onPressedChanged() { canvass.requestPaint(); }
+                            }
+                        }
+                        contentItem: Text {
+                            leftPadding: 5
+                            rightPadding: controls.indicator.width + controls.spacing
+                            text: controls.displayText
+                            font: controls.font
+                            color: controls.pressed ? "#5f5f5f" : "#404040"
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 22
+                            border.color: controls.pressed ? "#5f5f5f" : "#404040"
+                            border.width: controls.visualFocus ? 2 : 1
+                            radius: 5
+                            color: "#c9c9c9"
+                        }
+                        popup: Popup {
+                            y: controls.height - 1
+                            width: controls.width
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: controls.popup.visible ? controls.delegateModel : null
+                                currentIndex: controls.highlightedIndex
+
+                                ScrollIndicator.vertical: ScrollIndicator { }
+                            }
+                            background: Rectangle {
+                                border.color: "#404040"
+                                radius: 5
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
             ScrollView {
                 id: frame
                 clip: true
-                anchors.top: header.bottom
+                anchors.top: steps.bottom
                 padding: 5
                 width: parent.width
-                height: parent.height - header.height
+                height: parent.height - header.height -55
                 //                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
                     contentHeight: 400
@@ -461,7 +671,7 @@ Item {
 
                                 SpinBox {
                                     id: radiusValue
-                                    stepSize: 500
+                                    stepSize: stepSize
                                     value: 20000
                                     to : 10000000
                                     from : 0
@@ -493,7 +703,7 @@ Item {
                                         onTextChanged: {
                                             if(capsuleProperties){
                                                 radiusValue.value = valueInput.text
-                                                capsuleProperties.radius = radiusValue.value
+                                                capsuleProperties.radius = radiusValue.value*unitsMulti
                                             }
                                         }
                                     }
@@ -571,7 +781,7 @@ Item {
 
                                 SpinBox {
                                     id: heightValue
-                                    stepSize: 100
+                                    stepSize: stepSize
                                     value: 10000
                                     to : 10000000
                                     from : 0
@@ -601,7 +811,7 @@ Item {
                                         onTextChanged: {
                                             if(capsuleProperties && heightValue && (heightValue.value == 0 || heightValue.value)){
                                                 heightValue.value = heightInput.text
-                                                capsuleProperties.height = heightValue.value
+                                                capsuleProperties.height = heightValue.value*unitsMulti
                                             }
                                         }
                                     }
