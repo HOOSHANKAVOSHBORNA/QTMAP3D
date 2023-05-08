@@ -89,100 +89,86 @@ Item {
                 RowLayout{
                     spacing: 10
                     x:2
+                    anchors.centerIn: parent
                     Text {
                         text: qsTr("Unit:")
                         color: "white"
                     }
-                    RadioButton{
-                        id:kmradio
-                        text: "km"
-                        contentItem: Text {
-                            text: kmradio.text
-                            color: "white"
-                            leftPadding: kmradio.indicator.width + kmradio.spacing
-                            verticalAlignment: Text.AlignVCenter
+                    ComboBox {
+                        id: control
+                        model: ["KM", "M", "CM"]
+                        onCurrentIndexChanged:   {
+                            if(currentIndex === 0){
+                                unitsMulti = 1000
+                            }else if(currentIndex === 1){
+                                unitsMulti = 1
+                            }else if(currentIndex === 2){
+                                unitsMulti = 0.01
+                            }
                         }
-                        indicator: Rectangle {
-                            id:kmbtn
-                            implicitWidth: 15
-                            implicitHeight: 15
-                            x: kmradio.leftPadding
-                            y: parent.height / 2 - height / 2
-                            radius: 8
-                            border.color: kmradio.down ? "#17a81a" : "#21be2b"
-                            Rectangle {
-                                width: 9
-                                height: 9
-                                anchors.centerIn: kmbtn
+                        delegate: ItemDelegate {
+                            width: control.width
+                            contentItem: Text {
+                                text: control.textRole
+                                      ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole])
+                                      : modelData
+                                color: "#5f5f5f"
+                                font: control.font
+                                elide: Text.ElideRight
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                            highlighted: control.highlightedIndex === index
+                        }
+                        indicator: Canvas {
+                            id: canvas
+                            x: control.width - width - control.rightPadding
+                            y: control.topPadding + (control.availableHeight - height) / 2
+                            width: 12
+                            height: 8
+                            contextType: "2d"
+                            Connections {
+                                target: control
+                                function onPressedChanged() { canvas.requestPaint(); }
+                            }
+                        }
+                        contentItem: Text {
+                            leftPadding: 5
+                            rightPadding: control.indicator.width + control.spacing
+                            text: control.displayText
+                            font: control.font
+                            color: control.pressed ? "#5f5f5f" : "#404040"
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 22
+                            border.color: control.pressed ? "#5f5f5f" : "#404040"
+                            border.width: control.visualFocus ? 2 : 1
+                            radius: 5
+                            color: "#c9c9c9"
+                        }
+                        popup: Popup {
+                            y: control.height - 1
+                            width: control.width
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: control.popup.visible ? control.delegateModel : null
+                                currentIndex: control.highlightedIndex
+
+                                ScrollIndicator.vertical: ScrollIndicator { }
+                            }
+                            background: Rectangle {
+                                border.color: "#404040"
                                 radius: 5
-                                color: kmradio.down ? "#17a81a" : "#21be2b"
-                                visible: kmradio.checked
-                                onVisibleChanged: if(kmradio.checked){
-                                                      unitsMulti = 1000
-                                                  }
                             }
                         }
                     }
-                    RadioButton{
-                        id:mradio
-                        text: "m"
-                        checked: true
-                        contentItem: Text {
-                            text: mradio.text
-                            color: "white"
-                            leftPadding: mradio.indicator.width + mradio.spacing
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        indicator: Rectangle {
-                            id:mbtn
-                            implicitWidth: 15
-                            implicitHeight: 15
-                            x: mradio.leftPadding
-                            y: parent.height / 2 - height / 2
-                            radius: 8
-                            border.color: mradio.down ? "#17a81a" : "#21be2b"
-                            Rectangle {
-                                width: 9
-                                height: 9
-                                anchors.centerIn: mbtn
-                                radius: 5
-                                color: mradio.down ? "#17a81a" : "#21be2b"
-                                visible: mradio.checked
-                                onVisibleChanged: if(mradio.checked){
-                                                      unitsMulti = 1
-                                                  }
-                            }
-                        }
-                    }RadioButton{
-                        id:cmradio
-                        text: "cm"
-                        contentItem: Text {
-                            text: cmradio.text
-                            color: "white"
-                            leftPadding: cmradio.indicator.width + cmradio.spacing
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        indicator: Rectangle {
-                            id:cmbtn
-                            implicitWidth: 15
-                            implicitHeight: 15
-                            x: cmradio.leftPadding
-                            y: parent.height / 2 - height / 2
-                            radius: 8
-                            border.color: cmradio.down ? "#17a81a" : "#21be2b"
-                            Rectangle {
-                                width: 9
-                                height: 9
-                                anchors.centerIn: cmbtn
-                                radius: 5
-                                color: cmradio.down ? "#17a81a" : "#21be2b"
-                                visible: cmradio.checked
-                                onVisibleChanged: if(cmradio.checked){
-                                                      unitsMulti = 0.01
-                                                  }
-                            }
-                        }
-                    }
+
                 }
 
             }
@@ -199,137 +185,88 @@ Item {
                 RowLayout{
                     spacing: 2
                     x:2
+                    anchors.centerIn: parent
                     Text {
                         text: qsTr("Step:")
                         color: "white"
                     }
-                    RadioButton{
-                        id:aHund
-                        text: "1000"
-                        contentItem: Text {
-                            text: aHund.text
-                            color: "white"
-//                            leftPadding: aHund.indicator.width + aHund.spacing
-                            leftPadding: 10
-                            verticalAlignment: Text.AlignVCenter
+                    ComboBox {
+                        id: controls
+                        model: ["1000", "100", "10","1"]
+                        onCurrentIndexChanged:   {
+                            if(currentIndex === 0){
+                                stepSize = 1000
+                            }else if(currentIndex === 1){
+                                stepSize = 100
+                            }else if(currentIndex === 2){
+                                stepSize = 10
+                            }else if(currentIndex === 3){
+                                stepSize = 1
+                            }
                         }
-                        indicator: Rectangle {
-                            id:aHundBtn
-                            implicitWidth: 15
-                            implicitHeight: 15
-//                            x: aHund.leftPadding
-                            x: 0
-                            y: parent.height / 2 - height / 2
-                            radius: 8
-                            border.color: aHund.down ? "#17a81a" : "#21be2b"
-                            Rectangle {
-                                width: 9
-                                height: 9
-                                anchors.centerIn: aHundBtn
+                        delegate: ItemDelegate {
+                            width: controls.width
+                            contentItem: Text {
+                                text: controls.textRole
+                                      ? (Array.isArray(controls.model) ? modelData[controls.textRole] : model[controls.textRole])
+                                      : modelData
+                                color: "#5f5f5f"
+                                font: controls.font
+                                elide: Text.ElideRight
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                            highlighted: controls.highlightedIndex === index
+                        }
+                        indicator: Canvas {
+                            id: canvass
+                            x: controls.width - width - controls.rightPadding
+                            y: controls.topPadding + (controls.availableHeight - height) / 2
+                            width: 12
+                            height: 8
+                            contextType: "2d"
+                            Connections {
+                                target: controls
+                                function onPressedChanged() { canvass.requestPaint(); }
+                            }
+                        }
+                        contentItem: Text {
+                            leftPadding: 5
+                            rightPadding: controls.indicator.width + controls.spacing
+                            text: controls.displayText
+                            font: controls.font
+                            color: controls.pressed ? "#5f5f5f" : "#404040"
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+                        background: Rectangle {
+                            implicitWidth: 100
+                            implicitHeight: 22
+                            border.color: controls.pressed ? "#5f5f5f" : "#404040"
+                            border.width: controls.visualFocus ? 2 : 1
+                            radius: 5
+                            color: "#c9c9c9"
+                        }
+                        popup: Popup {
+                            y: controls.height - 1
+                            width: controls.width
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: controls.popup.visible ? controls.delegateModel : null
+                                currentIndex: controls.highlightedIndex
+
+                                ScrollIndicator.vertical: ScrollIndicator { }
+                            }
+                            background: Rectangle {
+                                border.color: "#404040"
                                 radius: 5
-                                color: aHund.down ? "#17a81a" : "#21be2b"
-                                visible: aHund.checked
-                                onVisibleChanged: if(aHund.checked){
-                                                      stepSize = 1000
-                                                  }
                             }
                         }
                     }
-                    RadioButton{
-                        id:aOne
-                        text: "100"
-                        contentItem: Text {
-                            text: aOne.text
-                            color: "white"
-//                            leftPadding: aOne.indicator.width + aOne.spacing
-                            leftPadding: 10
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        indicator: Rectangle {
-                            id:aOneBtn
-                            implicitWidth: 15
-                            implicitHeight: 15
-//                            x: aOne.leftPadding
-                            x:0
-                            y: parent.height / 2 - height / 2
-                            radius: 8
-                            border.color: aOne.down ? "#17a81a" : "#21be2b"
-                            Rectangle {
-                                width: 9
-                                height: 9
-                                anchors.centerIn: aOneBtn
-                                radius: 5
-                                color: aOne.down ? "#17a81a" : "#21be2b"
-                                visible: aOne.checked
-                                onVisibleChanged: if(aOne.checked){
-                                                      stepSize = 100
-                                                  }
-                            }
-                        }
-                    }RadioButton{
-                        id:adigit
-                        text: "10"
-                        contentItem: Text {
-                            text: adigit.text
-                            color: "white"
-//                            leftPadding: adigit.indicator.width + adigit.spacing
-                            leftPadding: 10
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        indicator: Rectangle {
-                            id:adigitBtn
-                            implicitWidth: 15
-                            implicitHeight: 15
-//                            x: adigit.leftPadding
-                            x:0
-                            y: parent.height / 2 - height / 2
-                            radius: 8
-                            border.color: adigit.down ? "#17a81a" : "#21be2b"
-                            Rectangle {
-                                width: 9
-                                height: 9
-                                anchors.centerIn: adigitBtn
-                                radius: 5
-                                color: adigit.down ? "#17a81a" : "#21be2b"
-                                visible: adigit.checked
-                                onVisibleChanged: if(adigit.checked){
-                                                      stepSize = 10
-                                                  }
-                            }
-                        }
-                    }RadioButton{
-                        id:twodigit
-                        text: "1"
-                        checked: true
-                        contentItem: Text {
-                            text: twodigit.text
-                            color: "white"
-//                            leftPadding: twodigit.indicator.width + twodigit.spacing
-                            leftPadding: 10
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        indicator: Rectangle {
-                            id:twodigitBtn
-                            implicitWidth: 15
-                            implicitHeight: 15
-//                            x: twodigit.leftPadding
-                            x:0
-                            y: parent.height / 2 - height / 2
-                            radius: 8
-                            border.color: twodigit.down ? "#17a81a" : "#21be2b"
-                            Rectangle {
-                                width: 9
-                                height: 9
-                                anchors.centerIn: twodigitBtn
-                                radius: 5
-                                color: twodigit.down ? "#17a81a" : "#21be2b"
-                                visible: twodigit.checked
-                                onVisibleChanged: if(twodigit.checked){
-                                                      stepSize = 1
-                                                  }
-                            }
-                        }
-                    }
+
                 }
 
             }
