@@ -107,7 +107,6 @@ void ImagePropertiesModel::setBl(const QVector2D &BL)
 //{
 //    return mHeight;
 //}
-
 //void ImagePropertiesModel::setHeight(const double &imgHeight)
 //{
 //    if (std::abs(mHeight - imgHeight) < 0.001)
@@ -117,15 +116,12 @@ void ImagePropertiesModel::setBl(const QVector2D &BL)
 //        mImage->setNorth(mImage->getCenter().y()+(mHeight/200));
 //        mImage->setSouth(mImage->getCenter().y()-(mHeight/200));
 //    }
-
 ////        mImage->setHeight(mHeight);
 //}
-
 //double ImagePropertiesModel::getWidth() const
 //{
 //    return mWidth;
 //}
-
 //void ImagePropertiesModel::setWidth(const double &imgWidth)
 //{
 //    if (std::abs(mWidth - imgWidth) < 0.001)
@@ -135,7 +131,6 @@ void ImagePropertiesModel::setBl(const QVector2D &BL)
 //            mImage->setEast(mImage->getCenter().x()+(mWidth/200));
 //            mImage->setWest(mImage->getCenter().x()-(mWidth/200));
 //    }
-
 ////        mDrawImage->setWidth(mWidth);
 //}
 

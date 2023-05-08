@@ -15,15 +15,30 @@ Item {
     property string headerTitleSTR: "box Properties"
     property string fillColor: "#91001d"
     property string lineColor: "#ffffff"
+    property double unitsMulti
+    property double stepSize
 
 
     onVisibleChanged: {
         boxProperties.color = fillColor
         boxProperties.opacity = opacityValue.value
-        boxProperties.width = widthValue.value
-        boxProperties.height = heightValue.value
-        boxProperties.length = lengthValue.value
+        boxProperties.width = widthValue.value*unitsMulti
+        boxProperties.height = heightValue.value*unitsMulti
+        boxProperties.length = lengthValue.value*unitsMulti
     }
+
+    onUnitsMultiChanged: {
+        boxProperties.width = widthValue.value*unitsMulti
+        boxProperties.height = heightValue.value*unitsMulti
+        boxProperties.length = lengthValue.value*unitsMulti
+    }
+
+    onStepSizeChanged: {
+        widthValue.stepSize = stepSize
+        heightValue.stepSize = stepSize
+        lengthValue.stepSize = stepSize
+    }
+
 
     Item {
         id: dialog
@@ -62,11 +77,267 @@ Item {
                 }
 
             }
+            ///////////////////////////////////////units///////////////////////////////////////////////
+            Rectangle{
+                id:units
+                width: parent.width -2
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: header.bottom
+                height: 25
+                radius: 0
+                color: "#303030"
+                RowLayout{
+                    spacing: 10
+                    x:2
+                    Text {
+                        text: qsTr("Unit:")
+                        color: "white"
+                    }
+                    RadioButton{
+                        id:kmradio
+                        text: "km"
+                        contentItem: Text {
+                            text: kmradio.text
+                            color: "white"
+                            leftPadding: kmradio.indicator.width + kmradio.spacing
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        indicator: Rectangle {
+                            id:kmbtn
+                            implicitWidth: 15
+                            implicitHeight: 15
+                            x: kmradio.leftPadding
+                            y: parent.height / 2 - height / 2
+                            radius: 8
+                            border.color: kmradio.down ? "#17a81a" : "#21be2b"
+                            Rectangle {
+                                width: 9
+                                height: 9
+                                anchors.centerIn: kmbtn
+                                radius: 5
+                                color: kmradio.down ? "#17a81a" : "#21be2b"
+                                visible: kmradio.checked
+                                onVisibleChanged: if(kmradio.checked){
+                                                      unitsMulti = 1000
+                                                  }
+                            }
+                        }
+                    }
+                    RadioButton{
+                        id:mradio
+                        text: "m"
+                        checked: true
+                        contentItem: Text {
+                            text: mradio.text
+                            color: "white"
+                            leftPadding: mradio.indicator.width + mradio.spacing
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        indicator: Rectangle {
+                            id:mbtn
+                            implicitWidth: 15
+                            implicitHeight: 15
+                            x: mradio.leftPadding
+                            y: parent.height / 2 - height / 2
+                            radius: 8
+                            border.color: mradio.down ? "#17a81a" : "#21be2b"
+                            Rectangle {
+                                width: 9
+                                height: 9
+                                anchors.centerIn: mbtn
+                                radius: 5
+                                color: mradio.down ? "#17a81a" : "#21be2b"
+                                visible: mradio.checked
+                                onVisibleChanged: if(mradio.checked){
+                                                      unitsMulti = 1
+                                                  }
+                            }
+                        }
+                    }RadioButton{
+                        id:cmradio
+                        text: "cm"
+                        contentItem: Text {
+                            text: cmradio.text
+                            color: "white"
+                            leftPadding: cmradio.indicator.width + cmradio.spacing
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        indicator: Rectangle {
+                            id:cmbtn
+                            implicitWidth: 15
+                            implicitHeight: 15
+                            x: cmradio.leftPadding
+                            y: parent.height / 2 - height / 2
+                            radius: 8
+                            border.color: cmradio.down ? "#17a81a" : "#21be2b"
+                            Rectangle {
+                                width: 9
+                                height: 9
+                                anchors.centerIn: cmbtn
+                                radius: 5
+                                color: cmradio.down ? "#17a81a" : "#21be2b"
+                                visible: cmradio.checked
+                                onVisibleChanged: if(cmradio.checked){
+                                                      unitsMulti = 0.01
+                                                  }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            ///////////////////////////////////////steps///////////////////////////////////////////////
+            Rectangle{
+                id:steps
+                width: parent.width -2
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: units.bottom
+                height: 30
+                radius: 0
+                color: "#303030"
+                RowLayout{
+                    spacing: 2
+                    x:2
+                    Text {
+                        text: qsTr("Step:")
+                        color: "white"
+                    }
+                    RadioButton{
+                        id:aHund
+                        text: "1000"
+                        contentItem: Text {
+                            text: aHund.text
+                            color: "white"
+//                            leftPadding: aHund.indicator.width + aHund.spacing
+                            leftPadding: 10
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        indicator: Rectangle {
+                            id:aHundBtn
+                            implicitWidth: 15
+                            implicitHeight: 15
+//                            x: aHund.leftPadding
+                            x: 0
+                            y: parent.height / 2 - height / 2
+                            radius: 8
+                            border.color: aHund.down ? "#17a81a" : "#21be2b"
+                            Rectangle {
+                                width: 9
+                                height: 9
+                                anchors.centerIn: aHundBtn
+                                radius: 5
+                                color: aHund.down ? "#17a81a" : "#21be2b"
+                                visible: aHund.checked
+                                onVisibleChanged: if(aHund.checked){
+                                                      stepSize = 1000
+                                                  }
+                            }
+                        }
+                    }
+                    RadioButton{
+                        id:aOne
+                        text: "100"
+                        contentItem: Text {
+                            text: aOne.text
+                            color: "white"
+//                            leftPadding: aOne.indicator.width + aOne.spacing
+                            leftPadding: 10
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        indicator: Rectangle {
+                            id:aOneBtn
+                            implicitWidth: 15
+                            implicitHeight: 15
+//                            x: aOne.leftPadding
+                            x:0
+                            y: parent.height / 2 - height / 2
+                            radius: 8
+                            border.color: aOne.down ? "#17a81a" : "#21be2b"
+                            Rectangle {
+                                width: 9
+                                height: 9
+                                anchors.centerIn: aOneBtn
+                                radius: 5
+                                color: aOne.down ? "#17a81a" : "#21be2b"
+                                visible: aOne.checked
+                                onVisibleChanged: if(aOne.checked){
+                                                      stepSize = 100
+                                                  }
+                            }
+                        }
+                    }RadioButton{
+                        id:adigit
+                        text: "10"
+                        contentItem: Text {
+                            text: adigit.text
+                            color: "white"
+//                            leftPadding: adigit.indicator.width + adigit.spacing
+                            leftPadding: 10
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        indicator: Rectangle {
+                            id:adigitBtn
+                            implicitWidth: 15
+                            implicitHeight: 15
+//                            x: adigit.leftPadding
+                            x:0
+                            y: parent.height / 2 - height / 2
+                            radius: 8
+                            border.color: adigit.down ? "#17a81a" : "#21be2b"
+                            Rectangle {
+                                width: 9
+                                height: 9
+                                anchors.centerIn: adigitBtn
+                                radius: 5
+                                color: adigit.down ? "#17a81a" : "#21be2b"
+                                visible: adigit.checked
+                                onVisibleChanged: if(adigit.checked){
+                                                      stepSize = 10
+                                                  }
+                            }
+                        }
+                    }RadioButton{
+                        id:twodigit
+                        text: "1"
+                        checked: true
+                        contentItem: Text {
+                            text: twodigit.text
+                            color: "white"
+//                            leftPadding: twodigit.indicator.width + twodigit.spacing
+                            leftPadding: 10
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                        indicator: Rectangle {
+                            id:twodigitBtn
+                            implicitWidth: 15
+                            implicitHeight: 15
+//                            x: twodigit.leftPadding
+                            x:0
+                            y: parent.height / 2 - height / 2
+                            radius: 8
+                            border.color: twodigit.down ? "#17a81a" : "#21be2b"
+                            Rectangle {
+                                width: 9
+                                height: 9
+                                anchors.centerIn: twodigitBtn
+                                radius: 5
+                                color: twodigit.down ? "#17a81a" : "#21be2b"
+                                visible: twodigit.checked
+                                onVisibleChanged: if(twodigit.checked){
+                                                      stepSize = 1
+                                                  }
+                            }
+                        }
+                    }
+                }
+
+            }
 
             ScrollView {
                 id: frame
                 clip: true
-                anchors.top: header.bottom
+                anchors.top: steps.bottom
                 padding: 5
                 width: parent.width
                 height: parent.height - header.height
@@ -462,14 +733,15 @@ Item {
 
                                 SpinBox {
                                     id: lengthValue
-                                    stepSize: 100
-                                    value: 40000
+                                    stepSize: stepSize
+                                    value: 40000.00
                                     to : 10000000
                                     from : 0
                                     validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
+                                            bottom: Math.min(spinbox.from, spinbox.to)
+                                            top:  Math.max(spinbox.from, spinbox.to)
+                                            decimals: 2
+                                        }
                                     editable: true
                                     anchors.centerIn: parent
                                     height: 20
@@ -480,6 +752,7 @@ Item {
                                         //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
                                         text: lengthValue.value
                                         font: lengthValue.font
+
                                         color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
@@ -492,7 +765,7 @@ Item {
                                         onTextChanged: {
                                             if(boxProperties && lengthValue && (lengthValue.value == 0 || lengthValue.value)){
                                                 lengthValue.value = lengthInput.text
-                                                boxProperties.length = lengthValue.value
+                                                boxProperties.length = lengthValue.value*unitsMulti
                                             }
                                         }
                                     }
@@ -569,7 +842,7 @@ Item {
 
                                 SpinBox {
                                     id: widthValue
-                                    stepSize: 100
+                                    stepSize: stepSize
                                     value: 20000
                                     to : 10000000
                                     from : 0
@@ -599,7 +872,7 @@ Item {
                                         onTextChanged: {
                                             if(boxProperties && widthValue && (widthValue.value == 0 || widthValue.value)){
                                                 widthValue.value = widthInput.text
-                                                boxProperties.width = widthValue.value
+                                                boxProperties.width = widthValue.value*unitsMulti
                                             }
                                         }
                                     }
@@ -674,7 +947,7 @@ Item {
 
                                 SpinBox {
                                     id: heightValue
-                                    stepSize: 100
+                                    stepSize: stepSize
                                     value: 20000
                                     to : 10000000
                                     from : 0
@@ -704,7 +977,7 @@ Item {
                                         onTextChanged: {
                                             if(boxProperties && heightValue && (heightValue.value == 0 || heightValue.value)){
                                                 heightValue.value = heightInput.text
-                                                boxProperties.height = heightValue.value
+                                                boxProperties.height = heightValue.value*unitsMulti
                                             }
                                         }
                                     }

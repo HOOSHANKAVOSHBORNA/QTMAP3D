@@ -80,10 +80,11 @@ void DrawImage::onToolboxItemCheckedChanged(const QString &name, const QString &
             else {
                 mEnterImageZone = false;
                 mDrawingState = DrawingState::FINISH;
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
                 mMapcontroller->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
 //                mMapcontroller->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
                 mImageProperties->hide();
+                mMapcontroller->removeNodeFromLayer(mIconNode,DRAW_LAYER_NAME);
             }
         }
     }
@@ -159,8 +160,9 @@ void DrawImage::finishDrawing(QMouseEvent *event)
         mDrawingState = DrawingState::START;
         event->accept();
         mImageProperties->setImage(mImageOverlay);
-        mMapcontroller->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+//        mMapcontroller->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
 //        mMapcontroller->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+        mImageOverlay = nullptr;
 
 
     }
@@ -172,6 +174,7 @@ void DrawImage::cancelDrawing(QMouseEvent *event)
 //    mMapcontroller->addNodeToLayer(mImage, DRAW_LAYER_NAME);
     mImageProperties->setImage(mImageOverlay);
     mDrawingState = DrawingState::START;
+    mMapcontroller->removeNodeFromLayer(mImageOverlay , DRAW_LAYER_NAME);
 //    mMapcontroller->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
     mImageOverlay = nullptr;
 //    mImgOvlEditor = nullptr;
