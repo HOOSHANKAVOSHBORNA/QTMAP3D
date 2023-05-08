@@ -30,11 +30,14 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
     mAircraftAssignmentTableModel = new AircraftTableModel;
     mAircraftAssignmentTableModel->setMode("Assignment");
     mAircraftAssignmentTableModel->setAircraftInfos(mAircraftDataManager->getAircraftsData());
+    mAircraftAssignmentTableModel->setSystemInfos(mSystemDataManager->getSystemsData());
     mSystemAssignmentTableModel = new SystemTableModel;
     mSystemAssignmentTableModel->setMode("Assignment");
     mSystemAssignmentTableModel->setSystemInfos(mSystemDataManager->getSystemsData());
+    mSystemAssignmentTableModel->setAircraftInfos(mAircraftDataManager->getAircraftsData());
     addAssignmentTab();
-
+    connect(mSystemAssignmentTableModel, &SystemTableModel::systemClicked, mAircraftAssignmentTableModel, &AircraftTableModel::onSystemClicked);
+    connect(mAircraftAssignmentTableModel, &AircraftTableModel::aircraftClicked, mSystemAssignmentTableModel, &SystemTableModel::onAircraftClicked);
     //    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
     //        StationModelNode* stationModelNode = mDefenseModelLayer->getStationModelNode(number);
     //        mDefenseModelLayer->selectModelNode(stationModelNode);
@@ -49,6 +52,7 @@ void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
     mAircraftDataManager->onInfoChanged(aircraftInfo);
     mAircraftAssignmentTableModel->updateTable(aircraftInfo.TN);
+    mSystemAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->addUpdateAircraft(aircraftInfo);
     //    //add update list view-----------------------------------------------------------------
@@ -60,6 +64,7 @@ void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
 {
     mSystemDataManager->onInfoChanged(systemInfo);
     mSystemAssignmentTableModel->updateTable(systemInfo.Number);
+    mAircraftAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->addUpdateSystem(systemInfo);
     //    //add update list view-----------------------------------------------------------------
@@ -71,6 +76,7 @@ void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 {
     mSystemDataManager->onStatusInfoChanged(systemStatusInfo);
     mSystemAssignmentTableModel->updateTable(systemStatusInfo.Number);
+    mAircraftAssignmentTableModel->updateAssignments();
     //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemStatusInfo.Number);
     //    //update information-----------------------------------------------------
     //    if(systemModelNode)
@@ -84,6 +90,7 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 {
     mSystemDataManager->onCombatInfoChanged(systemCombatInfo);
     mSystemAssignmentTableModel->updateTable(systemCombatInfo.Number);
+    mAircraftAssignmentTableModel->updateAssignments();
     //--------------------------------------------------------------------
     if(systemCombatInfo.Phase == SystemCombatInfo::Lock || systemCombatInfo.Phase == SystemCombatInfo::Fire){
         auto systemData = mSystemDataManager->getSystemData(systemCombatInfo.Number);
@@ -164,6 +171,8 @@ void DataManager::onClearAircraft(int tn)
     mAircraftDataManager->onClear(tn);
     systemDataManager()->removeAssignments(tn);
     mAircraftAssignmentTableModel->updateTable(tn);
+    mAircraftAssignmentTableModel->updateAssignments();
+    mSystemAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->clearAircraft(tn);
     //    if (mListManager)
@@ -211,7 +220,8 @@ void DataManager::assignAircraft2System(int tn, int systemNo)
         if(mDefenseDataManager)
             emit mDefenseDataManager->aircraftAssigned(tn, systemNo);
     });
-
+    mAircraftAssignmentTableModel->updateAssignments();
+    mSystemAssignmentTableModel->updateAssignments();
     //    mListManager->assignAirToSystem(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
 }
 
@@ -236,6 +246,8 @@ void DataManager::cancelAircraftAssignments(int tn)
     //        aircraftModelNode->clearAssignments();
     //        mListManager->cancelAircraftAssignmentsExcept(aircraftModelNode->getInformation().TN, -1);
     //    }
+    mAircraftAssignmentTableModel->updateAssignments();
+    mSystemAssignmentTableModel->updateAssignments();
 }
 
 void DataManager::clear()

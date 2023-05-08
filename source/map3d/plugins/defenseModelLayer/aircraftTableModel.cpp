@@ -1,5 +1,6 @@
 #include "aircraftTableModel.h"
 #include "aircraftDataManager.h"
+#include "systemDataManager.h"
 #include "systemModelNode.h"
 #include <QHash>
 #include <QColor>
@@ -103,7 +104,10 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     }
     case AircraftColor:
     {
-        return QVariant::fromValue<QColor>((*mAircraftInfos)[index.row()].info.aircraftColor());
+        switch (index.column()) {
+        case 0:return QVariant::fromValue<QColor>((*mAircraftInfos)[index.row()].info.aircraftColor());
+        default: return QVariant::fromValue<QString>("transparent");
+        }
     }
 
     case AircraftHoverColor:
@@ -171,40 +175,71 @@ void AircraftTableModel::setAircraftInfos(const QMap<int, Aircraft::Data> &aircr
     endResetModel();
 }
 
+void AircraftTableModel::setSystemInfos(const QMap<int, System::Data> &systems)
+{
+    beginResetModel();
+    mSystemInfos = &systems;
+    mAircraftInfosProxy.clear();
+    if (mNumber == -1)
+        mAircraftInfosProxy = mAircraftInfos->keys();
+    else
+        updateAssignments();
+    endResetModel();
+
+}
+
+void AircraftTableModel::updateAssignments() {
+    if (mNumber != -1) {
+        mAircraftInfosProxy.clear();
+        for (auto& aircraft :  (*mSystemInfos)[mNumber].assignments){
+            mAircraftInfosProxy.push_back(aircraft.info->TN);
+        }
+    }
+}
+
 void AircraftTableModel::updateTable(int tn)
 {
-    if (!mAircraftInfos->contains(tn) && mAircraftInfosProxy.contains(tn)) {
-        beginRemoveRows(QModelIndex(), mAircraftInfosProxy.indexOf(tn), mAircraftInfosProxy.indexOf(tn));
-        mAircraftInfosProxy = mAircraftInfos->keys();
-        endRemoveRows();
-    }
+    if (mNumber == -1) {
+        if (!mAircraftInfos->contains(tn) && mAircraftInfosProxy.contains(tn)) {
+            beginRemoveRows(QModelIndex(), mAircraftInfosProxy.indexOf(tn), mAircraftInfosProxy.indexOf(tn));
+            mAircraftInfosProxy = mAircraftInfos->keys();
+            endRemoveRows();
+        }
 
-    else if (mAircraftInfos->contains(tn) && !mAircraftInfosProxy.contains(tn)) {
-        mAircraftInfosProxy = mAircraftInfos->keys();
-        setFilterWildcard(mFilter);
-    }
+        else if (mAircraftInfos->contains(tn) && !mAircraftInfosProxy.contains(tn)) {
+            mAircraftInfosProxy = mAircraftInfos->keys();
+            setFilterWildcard(mFilter);
+        }
 
+        else {
+            int row = mAircraftInfosProxy.indexOf(tn);
+            emit dataChanged(createIndex(row, 0), createIndex(row, 16));
+        }
+    }
     else {
-        int row = mAircraftInfosProxy.indexOf(tn);
-        emit dataChanged(createIndex(row, 0), createIndex(row, 16));
+        updateAssignments();
     }
-
-
 }
 
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 {
     beginResetModel();
+    if (mMode != "Assignment" || mNumber == -1) {
+        mFilter = wildcard;
+        mFilter.remove(QRegularExpression("\\s"));
 
-    mFilter = wildcard;
-    mFilter.remove(QRegularExpression("\\s"));
-
-    mAircraftInfosProxy.clear();
-    for (auto& item : mAircraftInfos->keys()) {
-        if (QString::number(item).contains(mFilter))
-            mAircraftInfosProxy.push_back(item);
+        mAircraftInfosProxy.clear();
+        for (auto& item : mAircraftInfos->keys()) {
+            if (QString::number(item).contains(mFilter))
+                mAircraftInfosProxy.push_back(item);
+        }
     }
-
+    else {
+        mAircraftInfosProxy.clear();
+        for (auto i : *mAircraftInfos){
+            auto tmp = AircraftInfo();
+        }
+    }
     endResetModel();
 }
 
@@ -218,8 +253,6 @@ void AircraftTableModel::sortWithHeader(int column)
 //    }
 //    mNeedUpdateOnTimerTrigger = true;
 //    onUpdateTimerTriggered();
-
-
 }
 
 void AircraftTableModel::onAircraftClicked(int TN)
@@ -229,14 +262,17 @@ void AircraftTableModel::onAircraftClicked(int TN)
 }
 
 void AircraftTableModel::onSystemClicked(int Number) {
-
-
+    mNumber = Number;
+    beginResetModel();
+    mAircraftInfosProxy.clear();
+    updateAssignments();
+    endResetModel();
 }
 
 void AircraftTableModel::refresh()
 {
     beginResetModel();
-//    mNumber = -1;
+    mNumber = -1;
     mAircraftInfosProxy.clear();
     mAircraftInfosProxy = mAircraftInfos->keys();
     endResetModel();

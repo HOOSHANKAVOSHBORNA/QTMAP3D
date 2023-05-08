@@ -186,7 +186,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
     if (!mSystemInfoItem) {
-        mSystemInfoItem = new SystemInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mSystemData->information.systemInfo, mSystemData->information.systemStatusInfo, mSystemData->information.systemCombatInfo, this);
+        mSystemInfoItem = new SystemInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mSystemData, this);
         connect(mSystemInfoItem->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
         connect(mSystemInfoItem->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
         connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
@@ -216,7 +216,7 @@ void SystemModelNode::combatInfoChanged()
 {
     auto combatInfo = mSystemData->information.systemCombatInfo;
     if (mSystemInfoItem)
-        mSystemInfoItem->setCombatInfo(mSystemData->information.systemCombatInfo);
+        mSystemInfoItem->setInfo(mSystemData);
 
     switch (combatInfo.Phase) {
     case SystemCombatInfo::Search:
@@ -259,7 +259,7 @@ void SystemModelNode::statusInfoChanged()
 {
     auto systemStatusInfo = mSystemData->information.systemStatusInfo;
     if (mSystemInfoItem)
-        mSystemInfoItem->setStatusInfo(systemStatusInfo);
+        mSystemInfoItem->setInfo(mSystemData);
     mNode2D->setValue(0, systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S);
     mNode2D->setValue(1, systemStatusInfo.RadarSearchStatus != SystemStatusInfo::S);
 
@@ -625,7 +625,7 @@ void SystemModelNode::showInfoWidget()
 //        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
 //        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
 //        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
-    mSystemInfoItem->setInfo(mSystemData->information.systemInfo);
+    mSystemInfoItem->setInfo(mSystemData);
     mSystemInfoItem->show();
 }
 

@@ -3,7 +3,12 @@
 #include <QAbstractListModel>
 #include <QQuickItem>
 #include "defenseDataManager.h"
-
+namespace Aircraft {
+struct Data;
+}
+namespace System {
+struct Data;
+}
 class SystemModelNode;
 class UIHandle;
 class QQmlEngine;
@@ -33,7 +38,7 @@ public:
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    void setAircraftInfo(AircraftInfo &a);
+    void setAircraftInfo(const Aircraft::Data *a);
     QStringList getMainInfo() const;
     QStringList getmainInfoHeaders() const;
     QStringList getLocationInfo() const;
@@ -47,7 +52,7 @@ public:
     QStringList getSystemColor() const;
 
 public slots:
-    AircraftInfo getAircraftInfo() {return mAircraftInfo;}
+    const Aircraft::Data* getAircraftInfo() {return mAircraftInfo;}
     QColor getAircraftColor();
 
 Q_SIGNALS:
@@ -58,8 +63,8 @@ Q_SIGNALS:
     void moreButtonClicked();
 
 private:
-    AircraftInfo mAircraftInfo;
-    QMap<int, SystemModelNode*> mAssignedSystems;
+    const Aircraft::Data *mAircraftInfo;
+//    QMap<int, SystemModelNode*> mAssignedSystems;
 
 };
 
@@ -67,9 +72,9 @@ class AircraftInfoItem : public QObject
 {
     Q_OBJECT
 public:
-    explicit AircraftInfoItem(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, AircraftInfo mInformation, QObject *parent = nullptr);
+    explicit AircraftInfoItem(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, const Aircraft::Data *mInformation, QObject *parent = nullptr);
     AircraftInfoModel* getInfo(){return mInfomodel;}
-    void updateAircraft(AircraftInfo& mInformation);
+    void updateAircraft(const Aircraft::Data* mInformation);
     void show();
 
     void addAssignment(int number, SystemModelNode* system);
@@ -77,7 +82,7 @@ public:
     void setTrackOff();
 
 private:
-    AircraftInfo mInformation;
+    const Aircraft::Data *mInformation;
     AircraftInfoModel *mInfomodel;
     UIHandle *mUiHandle = nullptr;
     QQuickItem *mItem{nullptr};
