@@ -14,6 +14,9 @@
 namespace System {
 struct Data;
 }
+namespace Aircraft {
+struct Data;
+}
 
 struct SystemAssignInfo {
     int Number;
@@ -44,8 +47,10 @@ public:
     Q_INVOKABLE int getNumber(int row) const;
 
     void setSystemInfos(const QMap<int, System::Data> & info);
+    void setAircraftInfos(const QMap<int, Aircraft::Data> &info);
     void updateTable(int number);
     void setMode(QString mode);
+    void updateAssignments();
 
 public slots:
     void setFilterWildcard(const QString& wildcard);
@@ -59,13 +64,12 @@ signals:
 
 
 private:
-    QMap<int, System::Data> mSystemsAssigned;
-
     QString mMode;
     int mTN = -1;
     QString mFilter;
 
     const QMap<int, System::Data> *mSystemInfos;
+    const QMap<int, Aircraft::Data> *mAircraftInfos;
 
     QList<int> mSystemInfosProxy;
 

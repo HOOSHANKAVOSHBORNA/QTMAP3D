@@ -13,6 +13,9 @@
 namespace Aircraft {
     struct Data;
 }
+namespace System {
+    struct Data;
+}
 class SystemModelNode;
 class AircraftTableModel : public QAbstractTableModel
 {
@@ -38,9 +41,11 @@ public:
     Q_INVOKABLE int getTN(int row) const;
 
     void setAircraftInfos(const QMap<int, Aircraft::Data> & aircrafts);
+    void setSystemInfos(const QMap<int, System::Data> &systems);
     void updateTable(int tn);
     void setMode(QString mode);
 
+    void updateAssignments();
 public slots:
     void setFilterWildcard(const QString& wildcard);
     void sortWithHeader(int column);
@@ -55,6 +60,7 @@ signals:
 private:
 
     const QMap<int, Aircraft::Data> *mAircraftInfos;
+    const QMap<int, System::Data> *mSystemInfos;
     QList<int> mAircraftInfosProxy;
 
 

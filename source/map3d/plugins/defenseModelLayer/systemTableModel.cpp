@@ -1,5 +1,6 @@
 #include "systemTableModel.h"
 #include "systemDataManager.h"
+#include "aircraftDataManager.h"
 
 #include <QDebug>
 #include <QColor>
@@ -160,30 +161,11 @@ void SystemTableModel::setFilterWildcard(const QString &wildcard)
 
 void SystemTableModel::onAircraftClicked(int TN)
 {
-//    mTN = TN;
-//    beginResetModel();
-//    mSystemInfosProxy.clear();
-//    mSystemInfosProxy.clear();
-//    mSystemInfosProxy.clear();
-//    if (mSystemsAssigned.contains(TN)) {
-//        for (SystemAssignInfo system : mSystemsAssigned[TN]) {
-//            auto it = std::find_if(mSystemInfos.begin(), mSystemInfos.end(), [system](QSharedPointer<SystemInfo> &item){
-//                return item->Number == system.Number;
-//            });
-//            mSystemInfosProxy.push_back(*it);
-
-//            auto it2 = std::find_if(mSystemCombatInfos.begin(), mSystemCombatInfos.end(), [system](QSharedPointer<SystemCombatInfo> &item){
-//                return item->Number == system.Number;
-//            });
-//            mSystemInfosProxy.push_back(*it2);
-
-//            auto it3 = std::find_if(mSystemStatusInfos.begin(), mSystemStatusInfos.end(), [system](QSharedPointer<SystemStatusInfo> &item){
-//                return item->Number == system.Number;
-//            });
-//            mSystemInfosProxy.push_back(*it3);
-//        }
-//    }
-//    endResetModel();
+    mTN = TN;
+    beginResetModel();
+    mSystemInfosProxy.clear();
+    updateAssignments();
+    endResetModel();
 }
 
 void SystemTableModel::onSystemClicked(int Number)
@@ -197,6 +179,7 @@ void SystemTableModel::refresh()
     beginResetModel();
     mTN = -1;
     mSystemInfosProxy.clear();
+    mSystemInfosProxy = mSystemInfos->keys();
     endResetModel();
 }
 
@@ -205,37 +188,37 @@ void SystemTableModel::setMode(QString mode)
     mMode = mode;
 }
 
-//QMap<int, QList<SystemAssignInfo> > SystemTableModel::getAssignmentMap()
-//{
-//    return mSystemsAssigned;
-//}
-
-//void SystemTableModel::setSystemStatusInfos(QMap<int, SystemStatusInfo> &statusInfos)
-//{
-//    mSystemStatusInfos = &statusInfos;
-//}
-
-//void SystemTableModel::setSystemCombatInfos(QMap<int, SystemCombatInfo> &combatInfos)
-//{
-//    mSystemCombatInfos = &combatInfos;
-//}
+void SystemTableModel::updateAssignments()
+{
+    if (mTN != -1) {
+        mSystemInfosProxy.clear();
+        for (auto& system :  (*mAircraftInfos)[mTN].assignments){
+            mSystemInfosProxy.push_back(system.info->systemInfo.Number);
+        }
+    }
+}
 
 void SystemTableModel::updateTable(int number)
 {
-    if (!mSystemInfos->contains(number) && mSystemInfosProxy.contains(number)) {
-        beginRemoveRows(QModelIndex(), mSystemInfosProxy.indexOf(number), mSystemInfosProxy.indexOf(number));
-        mSystemInfosProxy = mSystemInfos->keys();
-        endRemoveRows();
-    }
+    if (mTN == -1) {
+        if (!mSystemInfos->contains(number) && mSystemInfosProxy.contains(number)) {
+            beginRemoveRows(QModelIndex(), mSystemInfosProxy.indexOf(number), mSystemInfosProxy.indexOf(number));
+            mSystemInfosProxy = mSystemInfos->keys();
+            endRemoveRows();
+        }
 
-    else if (mSystemInfos->contains(number) && !mSystemInfosProxy.contains(number)) {
-        mSystemInfosProxy = mSystemInfos->keys();
-        setFilterWildcard(mFilter);
-    }
+        else if (mSystemInfos->contains(number) && !mSystemInfosProxy.contains(number)) {
+            mSystemInfosProxy = mSystemInfos->keys();
+            setFilterWildcard(mFilter);
+        }
 
+        else {
+            int row = mSystemInfosProxy.indexOf(number);
+            emit dataChanged(createIndex(row, 0), createIndex(row, 22));
+        }
+    }
     else {
-        int row = mSystemInfosProxy.indexOf(number);
-        emit dataChanged(createIndex(row, 0), createIndex(row, 22));
+        updateAssignments();
     }
 }
 
@@ -245,5 +228,10 @@ void SystemTableModel::setSystemInfos(const QMap<int, System::Data> &systems)
     mSystemInfos = &systems;
     mSystemInfosProxy = mSystemInfos->keys();
     endResetModel();
+}
+
+void SystemTableModel::setAircraftInfos(const QMap<int, Aircraft::Data> &info)
+{
+    mAircraftInfos = &info;
 }
 

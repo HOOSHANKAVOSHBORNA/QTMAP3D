@@ -9,6 +9,13 @@ class AircraftModelNode;
 class UIHandle;
 class QQmlEngine;
 
+namespace Aircraft {
+struct Data;
+}
+namespace System {
+struct Data;
+}
+
 class SystemInfoModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -33,13 +40,10 @@ public:
     };
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    SystemInfo getStationInfo() {return mSystemInfo;}
+    const System::Data* getStationInfo() {return mSystemInfo;}
     QHash<int, QByteArray> roleNames() const override;
 
-    void setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCombatInfo &systemCombatInfo);
-    void setCombatInfo(const SystemCombatInfo &combatInfo);
-    void setInfo(const SystemInfo &Info);
-    void setStatusInfo(const SystemStatusInfo &statusInfo);
+    void setInformtion(const System::Data *info);
     QStringList getMainInfo() const;
     QStringList getMainInfoHeaders() const;
     QStringList getLocationInfo() const;
@@ -51,9 +55,6 @@ public:
     QStringList getAssignmentsName() const;
     QStringList getAssignmentsType() const;
 
-    void addAssignment(int number, AircraftModelNode *aircraft);
-    void removeAssignment(int number);
-
 Q_SIGNALS:
     void gotoButtonClicked();
     void rangeButtonClicked(bool check);
@@ -63,10 +64,7 @@ Q_SIGNALS:
     void moreButtonClicked();
 
 private:
-    SystemInfo mSystemInfo;
-    SystemStatusInfo mSystemStatusInfo;
-    SystemCombatInfo mSystemCombatInfo;
-    QMap<int, const AircraftModelNode*> mAircraftsAssigned;
+    const System::Data* mSystemInfo;
 };
 
 class SystemInfoItem : public QObject
@@ -74,22 +72,17 @@ class SystemInfoItem : public QObject
     Q_OBJECT
 
 public:
-    SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, SystemStatusInfo systemStatusInfo, SystemCombatInfo systemCombatInfo, QObject *parent = nullptr);
+    SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, const System::Data *data, QObject *parent = nullptr);
 
     SystemInfoModel *getInfo() {return mInfoModel;}
-    void setInfo(const SystemInfo &systemInfo);
-    void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
-    void setCombatInfo(const SystemCombatInfo &systemCombatInfo);
-
-    void addAssignment(int number, AircraftModelNode *aircraft);
-    void removeAssignment(int number);
+    void setInfo(const System::Data *systemInfo);
 
     void show();
 private:
-    SystemInfoModel *mInfoModel;
+    SystemInfoModel* mInfoModel;
     UIHandle *mUiHandle;
     QQuickItem *mItem;
-    SystemInfo mInformation;
+    const System::Data* mInformation;
 };
 
 #endif

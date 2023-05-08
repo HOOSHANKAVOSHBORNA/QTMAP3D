@@ -481,7 +481,7 @@ void AircraftModelNode::dataChanged()
 //    mInformation = info;
 
     if(mAircraftinformation)
-        mAircraftinformation->updateAircraft(mAircraftData->info);
+        mAircraftinformation->updateAircraft(mAircraftData);
 
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle()); // force PlaceNode to recreate texture
@@ -774,7 +774,7 @@ void AircraftModelNode::showInfoWidget()
 {
     if (!mAircraftinformation)
     {
-        mAircraftinformation = new AircraftInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mAircraftData->info, this);
+        mAircraftinformation = new AircraftInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mAircraftData, this);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
