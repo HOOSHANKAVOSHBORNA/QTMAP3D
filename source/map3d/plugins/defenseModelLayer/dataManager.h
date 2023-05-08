@@ -2,7 +2,6 @@
 #define DATAMANAGER_H
 
 #include "defenseModelLayer.h"
-#include "listManager.h"
 #include "defenseDataManager.h"
 #include "aircraftDataManager.h"
 #include "systemDataManager.h"
@@ -12,7 +11,7 @@ class DataManager: public QObject
 {
     Q_OBJECT
 public:
-    DataManager(DefenseDataManager *defenseDataManager, ListManager *listManager, DefenseModelLayer *defenseModelLayer);
+    DataManager(DefenseDataManager *defenseDataManager, DefenseModelLayer *defenseModelLayer);
 public slots:
     void onAircraftInfoChanged(AircraftInfo& aircraftInfo);
     void onSystemInfoChanged(SystemInfo& systemInfo);
@@ -20,18 +19,27 @@ public slots:
     void onSystemCombatInfoChanged(SystemCombatInfo& systemCambatInfo);
     void onStationInfoChanged(StationInfo& stationInfo);
     void onClearAircraft(int tn);
-    void onAircraftAssignedResponse(int tn, int systemNo, bool result);
+    void onAircraftAssignedResponse(int tn, int systemNo, bool accept);
 public:
     void assignAircraft2System(int tn, int systemNo);
-    void cancelAircraftAssign(AircraftModelNode *aircraftModelNode);
+    void cancelAircraftAssignments(int tn);
     void clear();
+    AircraftDataManager *aircraftDataManager() const;
+
+    SystemDataManager *systemDataManager() const;
+
+    StationDataManager *stationDataManager() const;
+
+private:
+    void addAssignmentTab();
 private:
     DefenseDataManager *mDefenseDataManager{nullptr};
-    ListManager *mListManager{nullptr};
     DefenseModelLayer *mDefenseModelLayer{nullptr};
     AircraftDataManager *mAircraftDataManager;
     SystemDataManager *mSystemDataManager;
     StationDataManager *mStationDataManager;
+    AircraftTableModel *mAircraftAssignmentTableModel;
+    SystemTableModel *mSystemAssignmentTableModel;
 };
 
 #endif // DATAMANAGER_H

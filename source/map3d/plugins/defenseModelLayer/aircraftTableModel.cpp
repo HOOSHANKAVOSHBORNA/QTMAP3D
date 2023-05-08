@@ -163,7 +163,7 @@ int AircraftTableModel::getTN(int row) const
     return (*mAircraftInfos)[mAircraftInfosProxy[row]].info.TN;
 }
 
-void AircraftTableModel::setAircraftInfos(QMap<int, Aircraft::Data> &aircrafts)
+void AircraftTableModel::setAircraftInfos(const QMap<int, Aircraft::Data> &aircrafts)
 {
     beginResetModel();
     mAircraftInfos = &aircrafts;
@@ -233,74 +233,6 @@ void AircraftTableModel::onSystemClicked(int Number) {
 
 }
 
-void AircraftTableModel::assign(int TN, int Number)
-{
-//    AircraftAssignInfo tmp;
-//    tmp.TN = TN;
-//    if (mAircraftsAssigned.contains(Number)) {
-//        mAircraftsAssigned[Number].push_back(tmp);
-//    }
-//    else {
-//        mAircraftsAssigned[Number] = QList<AircraftAssignInfo> {tmp};
-//    }
-//    if (mMode == "Assignment") {
-//        if (mNumber > 0)
-//            onSystemClicked(mNumber);
-//    }
-}
-
-void AircraftTableModel::cancelAssign(int TN, int Number)
-{
-//    if (mAircraftsAssigned.contains(Number)) {
-//        const auto it = std::remove_if(mAircraftsAssigned[Number].begin(), mAircraftsAssigned[Number].end(), [TN](AircraftAssignInfo &aircraft){
-//                return aircraft.TN == TN;
-//    });
-//        mAircraftsAssigned[Number].erase(it, mAircraftsAssigned[Number].end());
-//    }
-//    if (mMode == "Assignment") {
-//        if (mNumber > 0)
-//            onSystemClicked(mNumber);
-//    }
-}
-
-void AircraftTableModel::cancelAllAssigns()
-{
-//    mAircraftsAssigned.clear();
-//    refresh();
-}
-
-void AircraftTableModel::cancelAircraftsAssigned(int ExceptTN, int Number)
-{
-//    if (mAircraftsAssigned.contains(Number)){
-//        for (auto &aircraft : mAircraftsAssigned[Number]){
-//            if (aircraft.TN != ExceptTN) {
-//                cancelAssign(aircraft.TN, Number);
-//            }
-//        }
-//    }
-//    if (mMode == "Assignment") {
-//        if (mNumber > 0)
-//            onSystemClicked(mNumber);
-//    }
-
-}
-
-void AircraftTableModel::acceptAssign(int TN, int Number, bool result)
-{
-//    if (result) {
-//        auto it = std::find_if(mAircraftsAssigned[Number].begin(), mAircraftsAssigned[Number].end(), [TN] (AircraftAssignInfo &item) {
-//                return item.TN == TN;
-//    });
-//        if (it != mAircraftsAssigned[Number].end())
-//            it->assign = true;
-//    }
-//    else {
-//        cancelAssign(TN, Number);
-//    }
-
-}
-
-
 void AircraftTableModel::refresh()
 {
     beginResetModel();
@@ -314,9 +246,3 @@ void AircraftTableModel::setMode(QString mode)
 {
     mMode = mode;
 }
-
-//QMap<int, QList<AircraftAssignInfo>> AircraftTableModel::getAssignmentMap()
-//{
-//    return mAircraftsAssigned;
-//}
-

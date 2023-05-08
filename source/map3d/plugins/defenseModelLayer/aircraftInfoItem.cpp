@@ -71,35 +71,35 @@ QStringList AircraftInfoModel::getLocationInfo() const
 QStringList AircraftInfoModel::getSystemColor() const
 {
     QStringList colors;
-    for (auto i : mAssignedSystems)
-        colors.push_back(i->getSystemCombatInfo().phaseToColor());
+//    for (auto i : mAssignedSystems)
+//        colors.push_back(i->getSystemCombatInfo().phaseToColor());
     return colors;
 }
 
 QStringList AircraftInfoModel::getSystemsName() const
 {
     QStringList systems;
-    for(auto i : mAssignedSystems) {
-        systems.push_back(i->getInformation().Name);
-    }
+//    for(auto i : mAssignedSystems) {
+//        systems.push_back(i->getInformation().Name);
+//    }
     return systems;
 }
 
 QStringList AircraftInfoModel::getSystemsNumber() const
 {
     QStringList systems;
-    for(auto i : mAssignedSystems) {
-        systems.push_back(QString::number(i->getInformation().Number));
-    }
+//    for(auto i : mAssignedSystems) {
+//        systems.push_back(QString::number(i->getInformation().Number));
+//    }
     return systems;
 }
 
 QStringList AircraftInfoModel::getSystemsPhase() const
 {
     QStringList systems;
-    for(auto i : mAssignedSystems) {
-        systems.push_back(i->getSystemCombatInfo().phaseToString());
-    }
+//    for(auto i : mAssignedSystems) {
+//        systems.push_back(i->getSystemCombatInfo().phaseToString());
+//    }
     return systems;
 }
 

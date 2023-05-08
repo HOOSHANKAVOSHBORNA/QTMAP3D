@@ -322,10 +322,10 @@ struct SystemStatusInfo
     OperationStatus Operational = NoOp;
     int MissileCount = -1;
     QString RadarMode = "------";
-    QString BCCStatusToString() {
+    QString BCCStatusToString() const {
         return radarStatusToString(BCCStatus);
     }
-    QString radarSearchStatusToString() {
+    QString radarSearchStatusToString() const{
         return radarStatusToString(RadarSearchStatus);
     }
     QString radarStatusToString(RadarStatus status) const

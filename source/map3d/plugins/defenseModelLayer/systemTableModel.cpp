@@ -192,77 +192,6 @@ void SystemTableModel::onSystemClicked(int Number)
 //    refresh();
 }
 
-
-void SystemTableModel::assign(int Number, int TN)
-{
-//    SystemAssignInfo tmp;
-//    tmp.Number = Number;
-//    tmp.Phase = "";
-//    if (mSystemsAssigned.contains(TN)) {
-//        mSystemsAssigned[TN].push_back(tmp);
-//    }
-//    else {
-//        mSystemsAssigned[TN] = QList<SystemAssignInfo> {tmp};
-//    }
-//    if (mMode == "Assignment") {
-//        if (mTN > 0)
-//            onAircraftClicked(TN);
-//    }
-
-}
-
-void SystemTableModel::cancelSystemsAssigned(int TN, int ExceptNum)
-{
-
-//    if (mSystemsAssigned.contains(TN)){
-//        for (auto &system : mSystemsAssigned[TN]){
-//            if (system.Number != ExceptNum) {
-//                cancelAssign(system.Number, ExceptNum);
-//            }
-//        }
-//    }
-//    if (mMode == "Assignment") {
-//        if (mTN > 0)
-//            onAircraftClicked(TN);
-//    }
-}
-
-void SystemTableModel::cancelAllAssigns()
-{
-    mSystemsAssigned.clear();
-    refresh();
-}
-
-void SystemTableModel::cancelAssign(int TN, int Number)
-{
-//    if (mSystemsAssigned.contains(TN)) {
-//        auto it = std::remove_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &system){
-//            return system.Number == Number;
-//    });
-//        if (it != mSystemsAssigned[TN].end())
-//            mSystemsAssigned[TN].erase(it);
-//    }
-//    if (mMode == "Assignment"){
-//        if (mTN > 0) {
-//            onAircraftClicked(mTN);
-//        }
-//    }
-}
-
-void SystemTableModel::acceptAssign(int TN, int Number, bool result)
-{
-//    if (result) {
-//        auto it = std::find_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &item) {
-//            return Number == item.Number;
-//        });
-//        if (it != mSystemsAssigned[TN].end())
-//            it->assign = true;
-//    }
-//    else {
-//        cancelAssign(TN, Number);
-//    }
-}
-
 void SystemTableModel::refresh()
 {
     beginResetModel();
@@ -310,7 +239,7 @@ void SystemTableModel::updateTable(int number)
     }
 }
 
-void SystemTableModel::setSystemInfos(QMap<int, System::Data> &systems)
+void SystemTableModel::setSystemInfos(const QMap<int, System::Data> &systems)
 {
     beginResetModel();
     mSystemInfos = &systems;

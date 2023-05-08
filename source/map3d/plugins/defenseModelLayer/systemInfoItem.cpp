@@ -2,6 +2,7 @@
 #include "plugininterface.h"
 #include <QQmlEngine>
 #include "aircraftModelNode.h"
+#include "aircraftDataManager.h"
 
 SystemInfoModel::SystemInfoModel(QObject *parent) : QAbstractListModel(parent)
 {
@@ -144,7 +145,7 @@ QStringList SystemInfoModel::getAssignmentsName() const
 {
     QStringList aircrafts;
     for (auto i : mAircraftsAssigned) {
-        aircrafts.push_back(QString::number(i->getInformation().TN));
+        aircrafts.push_back(QString::number(i->getData()->info.TN));
     }
     return aircrafts;
 }
@@ -153,7 +154,7 @@ QStringList SystemInfoModel::getAssignmentsType() const
 {
     QStringList aircrafts;
     for (auto i : mAircraftsAssigned) {
-        aircrafts.push_back(i->getInformation().aircraftTypeToString());
+        aircrafts.push_back(i->getData()->info.aircraftTypeToString());
     }
     return aircrafts;
 }

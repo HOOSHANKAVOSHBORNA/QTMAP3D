@@ -2,10 +2,12 @@
 #define INFOMODEL_H
 #include <QAbstractListModel>
 #include <QQuickItem>
-#include "listManager.h"
 #include "defenseDataManager.h"
 
 class SystemModelNode;
+class UIHandle;
+class QQmlEngine;
+
 class AircraftInfoModel : public QAbstractListModel
 {
     Q_OBJECT

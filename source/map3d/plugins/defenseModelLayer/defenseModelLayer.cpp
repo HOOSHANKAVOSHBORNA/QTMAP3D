@@ -214,8 +214,8 @@ bool DefenseModelLayer::setup(MapController *mapController,
 
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
-    auto listManager = new ListManager(mQmlEngine, mUIHandle, this);
-    mDataManager = new DataManager(defenseDataManager, listManager, this);
+//    auto listManager = new ListManager(mQmlEngine, mUIHandle, this);
+    mDataManager = new DataManager(defenseDataManager, this);
 }
 
 //void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
@@ -419,11 +419,12 @@ void DefenseModelLayer::onMapClear()
 void DefenseModelLayer::frameEvent()
 {
     //    findSceneModels(mMapController->getViewer());
-//    for(auto modelNodeList: mModelNodes)
-//        for(auto modelNode: modelNodeList)
-//            modelNode->frameEvent();
-    //    if(mLastSelectedModel)
-    //        mLastSelectedModel->frameEvent();
+    for(auto data: mDataManager->aircraftDataManager()->getAircraftsData())
+        if(data.modelNode.valid())
+            data.modelNode->frameEvent();
+    for(auto data: mDataManager->systemDataManager()->getSystemsData())
+        if(data.systemModelNode.valid())
+            data.systemModelNode->frameEvent();
 }
 
 void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
@@ -460,7 +461,7 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
         if(systemModelNode)
         {
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
-            mDataManager->assignAircraft2System(aircraftModelNode->getInformation().TN, systemModelNode->getInformation().Number);
+            mDataManager->assignAircraft2System(aircraftModelNode->getData()->info.TN, systemModelNode->getData()->information.systemInfo.Number);
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
@@ -474,7 +475,7 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
         if(aircraftModelNode /*&& aircraftModelNode->hasAssignment()*/)
         {
-            mDataManager->cancelAircraftAssign(aircraftModelNode);
+            mDataManager->cancelAircraftAssignments(aircraftModelNode->getData()->info.TN);
             event->accept();
         }
     }
@@ -527,16 +528,16 @@ void DefenseModelLayer::findSceneModels(osgViewer::Viewer *viewer)
     osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
     if(!camera)
         return;
-    int range = static_cast<int>(camera->getViewpoint().getRange());
-    if(range != mPreCameraRange && range < 12000)
-    {
-        mPreCameraRange = range;
+//    int range = static_cast<int>(camera->getViewpoint().getRange());
+//    if(range != mPreCameraRange && range < 12000)
+//    {
+//        mPreCameraRange = range;
         osg::Viewport* viewport = viewer->getCamera()->getViewport();
         osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
         intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
                                                        viewport->x() + viewport->width(), viewport->y() + viewport->height());
 
-        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::ALL_PRIMITIVES);
+        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::TRIANGLE_PRIMITIVES);
         intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
 
         osgUtil::IntersectionVisitor iv(intersector);
@@ -564,20 +565,21 @@ void DefenseModelLayer::findSceneModels(osgViewer::Viewer *viewer)
                         //qDebug() <<model->getQStringName();
                         //qDebug() <<"range: "<<camera->getViewpoint().getRange();
                         //qDebug() <<"z: "<<model->getPosition().z();
-                        double distance = 0;
-                        if(camera->getViewpoint().getRange() < defenseModelNode->getPosition().z())///for track node
-                            distance = camera->getViewpoint().getRange();
-                        else
-                            distance = camera->getViewpoint().getRange() - defenseModelNode->getPosition().z();
+//                        double distance = 0;
+//                        if(camera->getViewpoint().getRange() < defenseModelNode->getPosition().z())///for track node
+//                            distance = camera->getViewpoint().getRange();
+//                        else
+//                            distance = camera->getViewpoint().getRange() - defenseModelNode->getPosition().z();
                         //                        model->cameraRangeChanged(distance);
                         //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
                         //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
+                        qDebug()<<defenseModelNode->getQStringName();
                     }
                 }
             }
 
         }
-    }
+//    }
 }
 
 osgEarth::Symbology::Style &DefenseModelLayer::getDefaultStyle()
