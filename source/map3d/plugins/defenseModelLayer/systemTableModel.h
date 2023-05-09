@@ -46,8 +46,8 @@ public:
     Q_INVOKABLE QString headerText(int column) const;
     Q_INVOKABLE int getNumber(int row) const;
 
-    void setSystemInfos(const QMap<int, System::Data> & info);
-    void setAircraftInfos(const QMap<int, Aircraft::Data> &info);
+    void setSystemInfos(const QMap<int, System::Data*> & info);
+    void setAircraftInfos(const QMap<int, Aircraft::Data*> &info);
     void updateTable(int number);
     void setMode(QString mode);
     void updateAssignments();
@@ -68,8 +68,8 @@ private:
     int mTN = -1;
     QString mFilter;
 
-    const QMap<int, System::Data> *mSystemInfos;
-    const QMap<int, Aircraft::Data> *mAircraftInfos;
+    const QMap<int, System::Data*> *mSystemInfos;
+    const QMap<int, Aircraft::Data*> *mAircraftInfos;
 
     QList<int> mSystemInfosProxy;
 

@@ -59,7 +59,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 //        if(mAircrafts.count() > 0){
 //            emit mDefenseDataManager->clearAircraft(mAircrafts.first().TN);
 //            mAircrafts.remove(mAircrafts.first().TN);
-//                mAircrafAssignment.remove(mAircrafts.first().TN);
+////                mAircrafAssignment.remove(mAircrafts.first().TN);
 //        }
 //    });
 //    timerClearAircraft->start(5000);

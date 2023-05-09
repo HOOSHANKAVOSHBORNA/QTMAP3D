@@ -969,9 +969,9 @@ void AircraftModelNode::updateOrCreateLabelImage()
                 auto val = mAircraftData->assignments.at(n);
 
                 const QString ss = (llidx == 0 ? QStringLiteral("(") : QStringLiteral(", ("))
-                        + QString::number(val.info->systemInfo.Number)
+                        + QString::number(val->info->systemInfo.Number)
                         + QStringLiteral(", ");
-                const QString cc = QString(val.info->systemCombatInfo.phaseToString()[0]);
+                const QString cc = QString(val->info->systemCombatInfo.phaseToString()[0]);
                 const QString ee = QStringLiteral(")");
 
                 textPen.setColor(QColor(255,255,255));

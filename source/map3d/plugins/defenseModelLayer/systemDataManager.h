@@ -31,27 +31,23 @@ struct Assignment
         line->addPoint(modelNode->getPosition());
     }
 
-    bool operator==(const Assignment &assign) {
-        return info->TN == assign.info->TN;
-    }
+    bool operator== (Assignment *assign);
 };
 
 struct Data
 {
-    Information information;
+    Information* information;
     osg::ref_ptr<SystemModelNode> systemModelNode{nullptr};
-    QList<Assignment> assignments;
+    QList<Assignment*> assignments;
 
     int findAssignment(int tn)
     {
         int result = -1;
-        System::Assignment s;
-        s.info = new AircraftInfo;
-        s.info->TN = tn;
-         if (assignments.contains(s))
-         {
-             result = assignments.indexOf(s);
-         }
+        auto fit = std::find_if(assignments.begin(), assignments.end(), [tn](Assignment* as){
+            return as->info->TN == tn;
+        });
+        if(fit != assignments.end())
+            result = static_cast<int>(std::distance(assignments.begin(), fit));
 
          return result;
     }
@@ -64,11 +60,11 @@ class SystemDataManager: public QObject
 
 public:
     SystemDataManager(DefenseModelLayer* defenseModelLayer);
-    void addAssignment(int systemNo, System::Assignment assignment);
+    void addAssignment(int systemNo, System::Assignment *assignment);
     void removeAssignments(int tn);
     void removeAssignment(int tn, int systemNo);
 //    System::Data *getSystemData(int number);
-    const QMap<int, System::Data> &getSystemsData() const;
+    const QMap<int, System::Data *> &getSystemsData() const;
 
 public slots:
     void onInfoChanged(SystemInfo& systemInfo);
@@ -82,7 +78,7 @@ private:
     void addSystemTab();
 private:
     DefenseModelLayer* mDefenseModelLayer;
-    QMap<int, System::Data> mSystemData;
+    QMap<int, System::Data*> mSystemData;
     SystemTableModel *mSystemTableModel;
 };
 

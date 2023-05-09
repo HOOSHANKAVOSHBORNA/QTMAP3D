@@ -36,27 +36,27 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
     {
-        time_t datetime = (*mAircraftInfos)[mAircraftInfosProxy[_row]].info.Time;
+        time_t datetime = (*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.Time;
         char buffer[256];
         std::tm* currTm = localtime(&datetime);
         strftime(buffer, sizeof(buffer), "%Y/%m/%d %H:%M", currTm);
         switch(index.column()) {
-        case  0: return QVariant::fromValue<QString>( (*mAircraftInfos)[mAircraftInfosProxy[_row]].info.identifyToString());
-        case  1: return QVariant::fromValue<int>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.TN);
-        case  2: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.IFFCode);
-        case  3: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.CallSign);
-        case  4: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.aircraftTypeToString());
-        case  5: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.MasterRadar);
-        case  6: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.IdentificationMethod);
+        case  0: return QVariant::fromValue<QString>( (*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.identifyToString());
+        case  1: return QVariant::fromValue<int>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.TN);
+        case  2: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.IFFCode);
+        case  3: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.CallSign);
+        case  4: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.aircraftTypeToString());
+        case  5: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.MasterRadar);
+        case  6: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.IdentificationMethod);
         case  7: return QVariant::fromValue<QString>(buffer);
-        case  8: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.Pos);
-        case  9: return QVariant::fromValue<QString>(QString::number((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.Latitude, 'f', 6));
-        case 10: return QVariant::fromValue<QString>(QString::number((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.Longitude, 'f', 6));
-        case 11: return QVariant::fromValue<QString>(QString::number((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.Altitude, 'f', 6));
-        case 12: return QVariant::fromValue<double>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.Heading);
-        case 13: return QVariant::fromValue<double>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.Speed);
-        case 14: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.detectionSystemsToString());
-        case 15: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]].info.sendsToString());
+        case  8: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.Pos);
+        case  9: return QVariant::fromValue<QString>(QString::number((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.Latitude, 'f', 6));
+        case 10: return QVariant::fromValue<QString>(QString::number((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.Longitude, 'f', 6));
+        case 11: return QVariant::fromValue<QString>(QString::number((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.Altitude, 'f', 6));
+        case 12: return QVariant::fromValue<double>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.Heading);
+        case 13: return QVariant::fromValue<double>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.Speed);
+        case 14: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.detectionSystemsToString());
+        case 15: return QVariant::fromValue<QString>((*mAircraftInfos)[mAircraftInfosProxy[_row]]->info.sendsToString());
         }
 
         break;
@@ -66,7 +66,7 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     case BackColorRole:
     {
         switch (index.column()) {
-        case 0: return QVariant::fromValue<QColor>((*mAircraftInfos)[mAircraftInfosProxy[index.row()]].info.aircraftColor());
+        case 0: return QVariant::fromValue<QColor>((*mAircraftInfos)[mAircraftInfosProxy[index.row()]]->info.aircraftColor());
         default : return QVariant::fromValue<QString>("transparent");
         }
     }
@@ -105,14 +105,14 @@ QVariant AircraftTableModel::data(const QModelIndex &index, int role) const
     case AircraftColor:
     {
         switch (index.column()) {
-        case 0:return QVariant::fromValue<QColor>((*mAircraftInfos)[index.row()].info.aircraftColor());
+        case 0:return QVariant::fromValue<QColor>((*mAircraftInfos)[index.row()]->info.aircraftColor());
         default: return QVariant::fromValue<QString>("transparent");
         }
     }
 
     case AircraftHoverColor:
     {
-        return QVariant::fromValue<QColor>((*mAircraftInfos)[index.row()].info.aircraftHoverColor());
+        return QVariant::fromValue<QColor>((*mAircraftInfos)[index.row()]->info.aircraftHoverColor());
     }
 
 
@@ -164,10 +164,10 @@ int AircraftTableModel::getTN(int row) const
         return -1;
     }
 
-    return (*mAircraftInfos)[mAircraftInfosProxy[row]].info.TN;
+    return (*mAircraftInfos)[mAircraftInfosProxy[row]]->info.TN;
 }
 
-void AircraftTableModel::setAircraftInfos(const QMap<int, Aircraft::Data> &aircrafts)
+void AircraftTableModel::setAircraftInfos(const QMap<int, Aircraft::Data*> &aircrafts)
 {
     beginResetModel();
     mAircraftInfos = &aircrafts;
@@ -175,7 +175,7 @@ void AircraftTableModel::setAircraftInfos(const QMap<int, Aircraft::Data> &aircr
     endResetModel();
 }
 
-void AircraftTableModel::setSystemInfos(const QMap<int, System::Data> &systems)
+void AircraftTableModel::setSystemInfos(const QMap<int, System::Data*> &systems)
 {
     beginResetModel();
     mSystemInfos = &systems;
@@ -191,8 +191,8 @@ void AircraftTableModel::setSystemInfos(const QMap<int, System::Data> &systems)
 void AircraftTableModel::updateAssignments() {
     if (mNumber != -1) {
         mAircraftInfosProxy.clear();
-        for (auto& aircraft :  (*mSystemInfos)[mNumber].assignments){
-            mAircraftInfosProxy.push_back(aircraft.info->TN);
+        for (auto& aircraft :  (*mSystemInfos)[mNumber]->assignments){
+            mAircraftInfosProxy.push_back(aircraft->info->TN);
         }
     }
 }

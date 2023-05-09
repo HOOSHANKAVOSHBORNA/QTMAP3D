@@ -25,8 +25,8 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 
     connect(mAircraftDataManager, &AircraftDataManager::doubleClicked,[=](int tn){
         if(mAircraftDataManager->getAircraftsData().contains(tn)){
-            mAircraftDataManager->getAircraftsData()[tn].modelNode->onLeftButtonClicked(true);
-            mAircraftDataManager->getAircraftsData()[tn].modelNode->goOnTrack();
+            mAircraftDataManager->getAircraftsData()[tn]->modelNode->onLeftButtonClicked(true);
+            mAircraftDataManager->getAircraftsData()[tn]->modelNode->goOnTrack();
         }
     });
     mAircraftAssignmentTableModel = new AircraftTableModel;
@@ -96,11 +96,11 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
     //--------------------------------------------------------------------
     if(systemCombatInfo.Phase == SystemCombatInfo::Lock || systemCombatInfo.Phase == SystemCombatInfo::Fire){
         if(mSystemDataManager->getSystemsData().contains(systemCombatInfo.Number)){
-            for(auto assignment: mSystemDataManager->getSystemsData()[systemCombatInfo.Number].assignments){
-                if(assignment.info->TN != systemCombatInfo.TN)
+            for(auto assignment: mSystemDataManager->getSystemsData()[systemCombatInfo.Number]->assignments){
+                if(assignment->info->TN != systemCombatInfo.TN)
                 {
-                    mSystemDataManager->removeAssignment(assignment.info->TN, systemCombatInfo.Number);
-                    mAircraftDataManager->removeAssignment(assignment.info->TN, systemCombatInfo.Number);
+                    mSystemDataManager->removeAssignment(assignment->info->TN, systemCombatInfo.Number);
+                    mAircraftDataManager->removeAssignment(assignment->info->TN, systemCombatInfo.Number);
                 }
             }
         }
@@ -204,18 +204,18 @@ void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool accept)
 
 void DataManager::assignAircraft2System(int tn, int systemNo)
 {
-    Aircraft::Assignment aAssign;
+    Aircraft::Assignment* aAssign = new Aircraft::Assignment();
     if (mSystemDataManager->getSystemsData().contains(systemNo)) {
         auto sData = mSystemDataManager->getSystemsData()[systemNo];
-        aAssign.info = &sData.information;
-        aAssign.modelNode = sData.systemModelNode;
+        aAssign->info = sData->information;
+        aAssign->modelNode = sData->systemModelNode;
         mAircraftDataManager->addAssignment(tn, aAssign);
     }
-    System::Assignment sAssign;
+    System::Assignment* sAssign = new System::Assignment();
     if (mAircraftDataManager->getAircraftsData().contains(tn)){
         auto aData = mAircraftDataManager->getAircraftsData()[tn];
-        sAssign.info = &aData.info;
-        sAssign.modelNode = aData.modelNode;
+        sAssign->info = &aData->info;
+        sAssign->modelNode = aData->modelNode;
         mSystemDataManager->addAssignment(systemNo, sAssign);
     }
 
