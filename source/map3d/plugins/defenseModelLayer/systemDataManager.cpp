@@ -54,12 +54,12 @@ void SystemDataManager::removeAssignment(int tn, int systemNo)
     }
 }
 
-System::Data *SystemDataManager::getSystemData(int number)
-{
-    return mSystemData.contains(number) ? &mSystemData[number] : nullptr;
-}
+//System::Data *SystemDataManager::getSystemData(int number)
+//{
+//    return mSystemData.contains(number) ? &mSystemData[number] : nullptr;
+//}
 
-QMap<int, System::Data> &SystemDataManager::getSystemsData()
+const QMap<int, System::Data> &SystemDataManager::getSystemsData() const
 {
     return mSystemData;
 }

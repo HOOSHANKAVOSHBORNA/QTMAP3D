@@ -59,6 +59,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 //        if(mAircrafts.count() > 0){
 //            emit mDefenseDataManager->clearAircraft(mAircrafts.first().TN);
 //            mAircrafts.remove(mAircrafts.first().TN);
+//                mAircrafAssignment.remove(mAircrafts.first().TN);
 //        }
 //    });
 //    timerClearAircraft->start(5000);
@@ -80,8 +81,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     });
     //--cancel assignment---------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::cancelAircraftAssigned,[=](int tn, int systemNo){
-        if(mAircrafAssignment.contains(tn))
-        {
+        if(mAircrafAssignment.contains(tn)){
             auto& assignmens = mAircrafAssignment[tn];
             for(int i = 0; i< assignmens.count(); i++)
                 if(assignmens[i]->info.Number == systemNo){
@@ -280,10 +280,39 @@ void Demo::updateSystemCombatInfo()
                 newPhase = SystemCombatInfo::Fire;
                 break;
             case SystemCombatInfo::Fire:
-                if(rn % 2 == 0)
+                if(rn % 2 == 0){
                     newPhase = SystemCombatInfo::Kill;
-                else
+                    mAircrafts.remove(system.combatInfo.TN);
+                    mAircrafAssignment.remove(system.combatInfo.TN);
+
+                    if(mSystemAssignment.contains(system.combatInfo.Number)){
+                        auto& assignmens = mSystemAssignment[system.combatInfo.Number];
+                        for(int i = 0; i< assignmens.count(); i++)
+                            if(assignmens[i]->TN == system.combatInfo.TN){
+                                assignmens.removeAt(i);
+                            }
+                    }
+
+                }
+                else{
                     newPhase = SystemCombatInfo::NoKill;
+
+                    if(mAircrafAssignment.contains(system.combatInfo.TN)){
+                        auto& assignmens = mAircrafAssignment[system.combatInfo.TN];
+                        for(int i = 0; i< assignmens.count(); i++)
+                            if(assignmens[i]->info.Number == system.combatInfo.Number){
+                                assignmens.removeAt(i);
+                            }
+                    }
+
+                    if(mSystemAssignment.contains(system.combatInfo.Number)){
+                        auto& assignmens = mSystemAssignment[system.combatInfo.Number];
+                        for(int i = 0; i< assignmens.count(); i++)
+                            if(assignmens[i]->TN == system.combatInfo.TN){
+                                assignmens.removeAt(i);
+                            }
+                    }
+                }
             }
         }
         system.combatInfo.Phase = newPhase;

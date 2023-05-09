@@ -37,9 +37,14 @@ QVariant AircraftInfoModel::data(const QModelIndex &/*index*/, int role) const{
     }
 }
 
-void AircraftInfoModel::setAircraftInfo(const Aircraft::Data *a)
+void AircraftInfoModel::setAircraftInfo(const Aircraft::Data& a)
 {
-    mAircraftInfo = a;
+    mAircraftInfo = &a;
+    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
+}
+
+void AircraftInfoModel::updateAircraftInfo()
+{
     QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
@@ -74,15 +79,15 @@ QStringList AircraftInfoModel::getSystemColor() const
 {
     QStringList colors;
     for (auto& i : mAircraftInfo->assignments)
-        colors.push_back(i.info->systemCombatInfo.phaseToColor());
+        colors.append(i.info->systemCombatInfo.phaseToColor());
     return colors;
 }
 
 QStringList AircraftInfoModel::getSystemsName() const
 {
     QStringList systems;
-    for (auto& i : mAircraftInfo->assignments) {
-        systems.push_back(i.info->systemInfo.Name);
+    for (auto i : mAircraftInfo->assignments) {
+        systems.append(i.info->systemInfo.Name);
     }
     return systems;
 }
@@ -90,8 +95,8 @@ QStringList AircraftInfoModel::getSystemsName() const
 QStringList AircraftInfoModel::getSystemsNumber() const
 {
     QStringList systems;
-    for (auto& i : mAircraftInfo->assignments) {
-        systems.push_back(QString::number(i.info->systemInfo.Number));
+    for (auto i : mAircraftInfo->assignments) {
+        systems.append(QString::number(i.info->systemInfo.Number));
     }
     return systems;
 }
@@ -99,7 +104,7 @@ QStringList AircraftInfoModel::getSystemsNumber() const
 QStringList AircraftInfoModel::getSystemsPhase() const
 {
     QStringList systems;
-    for (auto& i : mAircraftInfo->assignments) {
+    for (auto i : mAircraftInfo->assignments) {
         systems.push_back(i.info->systemCombatInfo.phaseToString());
     }
     return systems;
@@ -144,18 +149,19 @@ QHash<int, QByteArray> AircraftInfoModel::roleNames() const
     return hash;
 }
 
-AircraftInfoItem::AircraftInfoItem(QQmlEngine *mQmlEngine, UIHandle *muiHandle, const Aircraft::Data *minformation, QObject *parent)
+AircraftInfoItem::AircraftInfoItem(DefenseModelLayer *defenseModelLayer, const Aircraft::Data& minformation, QObject *parent)
     :QObject(parent),
-    mInformation(minformation), mUiHandle(muiHandle)
+    mInformation(&minformation), mUiHandle(defenseModelLayer->mUIHandle)
 {
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+    QQmlComponent *comp = new QQmlComponent(defenseModelLayer->mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
 
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
             mInfomodel = new AircraftInfoModel;
 
-            mInfomodel->setAircraftInfo(mInformation);
+            mInfomodel->setAircraftInfo(*mInformation);
+
             mItem->setProperty("model", QVariant::fromValue<AircraftInfoModel*>(mInfomodel));
 //            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
@@ -165,9 +171,9 @@ AircraftInfoItem::AircraftInfoItem(QQmlEngine *mQmlEngine, UIHandle *muiHandle, 
     comp->loadUrl(QUrl("qrc:/modelplugin/AircraftInfoView.qml"));
 }
 
-void AircraftInfoItem::updateAircraft(const Aircraft::Data *mInformation)
+void AircraftInfoItem::updateAircraft()
 {
-    mInfomodel->setAircraftInfo(mInformation);
+    mInfomodel->updateAircraftInfo();
 }
 void AircraftInfoItem::show() {
     mUiHandle->iwShow(mItem, QString::number(mInformation->info.TN));

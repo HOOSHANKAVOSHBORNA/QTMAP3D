@@ -35,11 +35,11 @@ class AircraftModelNode: public DefenseModelNode
 {
     Q_OBJECT
 public:
-    AircraftModelNode(DefenseModelLayer* defenseModelLayer, Aircraft::Data* aircraftData, AircraftInfo::AircraftType aircraftType, QObject* parent = nullptr);
+    AircraftModelNode(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &aircraftData, AircraftInfo::AircraftType aircraftType, QObject* parent = nullptr);
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
     void dataChanged();
-    Aircraft::Data* getData() const;
+    const Aircraft::Data &getData() const;
 //    AircraftInfo getInformation() const;
     void goOnTrack();
 public slots:
@@ -81,7 +81,7 @@ private:
     osg::ref_ptr<osgParticle::FireEffect> mFire;
 
     //QMap<int, SystemModelNode*> mAssignmentMap;
-    Aircraft::Data* mAircraftData;
+    const Aircraft::Data* mAircraftData;
 
     bool mIsStop{false};
     bool mIsRoute{false};

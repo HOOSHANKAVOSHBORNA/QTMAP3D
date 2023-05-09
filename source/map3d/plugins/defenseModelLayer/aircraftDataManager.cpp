@@ -59,12 +59,7 @@ void AircraftDataManager::removeAssignment(int tn, int systemNo)
     }
 }
 
-Aircraft::Data *AircraftDataManager::getAircraftData(int &tn)
-{
-    return mAircraftData.contains(tn) ? &mAircraftData[tn] : nullptr;
-}
-
-QMap<int, Aircraft::Data> &AircraftDataManager::getAircraftsData()
+const QMap<int, Aircraft::Data> &AircraftDataManager::getAircraftsData() const
 {
     return mAircraftData;
 }
@@ -87,7 +82,7 @@ void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
     else
     {
         //create and model node------------------------------------------------
-        aircraftModelNode = new AircraftModelNode(mDefenseModelLayer,&mAircraftData[aircraftInfo.TN], aircraftInfo.Type);
+        aircraftModelNode = new AircraftModelNode(mDefenseModelLayer,mAircraftData[aircraftInfo.TN], aircraftInfo.Type);
         aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
         aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 

@@ -461,7 +461,7 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
         if(systemModelNode)
         {
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
-            mDataManager->assignAircraft2System(aircraftModelNode->getData()->info.TN, systemModelNode->getData()->information.systemInfo.Number);
+            mDataManager->assignAircraft2System(aircraftModelNode->getData().info.TN, systemModelNode->getData()->information.systemInfo.Number);
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
@@ -475,7 +475,7 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
         if(aircraftModelNode /*&& aircraftModelNode->hasAssignment()*/)
         {
-            mDataManager->cancelAircraftAssignments(aircraftModelNode->getData()->info.TN);
+            mDataManager->cancelAircraftAssignments(aircraftModelNode->getData().info.TN);
             event->accept();
         }
     }

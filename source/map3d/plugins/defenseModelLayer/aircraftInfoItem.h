@@ -12,6 +12,7 @@ struct Data;
 class SystemModelNode;
 class UIHandle;
 class QQmlEngine;
+class DefenseModelLayer;
 
 class AircraftInfoModel : public QAbstractListModel
 {
@@ -38,7 +39,8 @@ public:
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    void setAircraftInfo(const Aircraft::Data *a);
+    void setAircraftInfo(const Aircraft::Data &a);
+    void updateAircraftInfo();
     QStringList getMainInfo() const;
     QStringList getmainInfoHeaders() const;
     QStringList getLocationInfo() const;
@@ -72,9 +74,9 @@ class AircraftInfoItem : public QObject
 {
     Q_OBJECT
 public:
-    explicit AircraftInfoItem(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, const Aircraft::Data *mInformation, QObject *parent = nullptr);
+    explicit AircraftInfoItem(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &mInformation, QObject *parent = nullptr);
     AircraftInfoModel* getInfo(){return mInfomodel;}
-    void updateAircraft(const Aircraft::Data* mInformation);
+    void updateAircraft();
     void show();
 
     void addAssignment(int number, SystemModelNode* system);
