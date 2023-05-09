@@ -45,12 +45,12 @@ osg::ref_ptr<osg::Node> AircraftModelNode::mMissile3DRef;
 osg::ref_ptr<osg::Node> AircraftModelNode::mDrone3DRef;
 osg::ref_ptr<osg::Node> AircraftModelNode::mHelicopter3DRef;
 
-AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, Aircraft::Data* aircraftData, AircraftInfo::AircraftType aircraftType, QObject *parent)
+AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const Aircraft::Data& aircraftData, AircraftInfo::AircraftType aircraftType, QObject *parent)
     :DefenseModelNode(defenseModelLayer->mMapController, parent)
 {
 
     //mQmlEngine = qmlEngine;
-    mAircraftData = aircraftData;
+    mAircraftData = &aircraftData;
     mDefenseModelLayer = defenseModelLayer;
     mIs3D = mDefenseModelLayer->mMapController->getMode();
 
@@ -481,7 +481,7 @@ void AircraftModelNode::dataChanged()
 //    mInformation = info;
 
     if(mAircraftinformation)
-        mAircraftinformation->updateAircraft(mAircraftData);
+        mAircraftinformation->updateAircraft();
 
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle()); // force PlaceNode to recreate texture
@@ -489,9 +489,9 @@ void AircraftModelNode::dataChanged()
     changeModelColor(mAircraftData->info.Identification);
 }
 
-Aircraft::Data *AircraftModelNode::getData() const
+const Aircraft::Data& AircraftModelNode::getData() const
 {
-    return mAircraftData;
+    return *mAircraftData;
 }
 
 //AircraftInfo AircraftModelNode::getInformation() const
@@ -774,7 +774,7 @@ void AircraftModelNode::showInfoWidget()
 {
     if (!mAircraftinformation)
     {
-        mAircraftinformation = new AircraftInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mAircraftData, this);
+        mAircraftinformation = new AircraftInfoItem(mDefenseModelLayer, *mAircraftData, this);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
         connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);

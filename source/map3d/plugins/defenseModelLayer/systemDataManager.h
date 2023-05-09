@@ -67,8 +67,8 @@ public:
     void addAssignment(int systemNo, System::Assignment assignment);
     void removeAssignments(int tn);
     void removeAssignment(int tn, int systemNo);
-    System::Data *getSystemData(int number);
-    QMap<int, System::Data> &getSystemsData();
+//    System::Data *getSystemData(int number);
+    const QMap<int, System::Data> &getSystemsData() const;
 
 public slots:
     void onInfoChanged(SystemInfo& systemInfo);

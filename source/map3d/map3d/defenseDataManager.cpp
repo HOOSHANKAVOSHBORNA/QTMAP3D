@@ -20,117 +20,81 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 
     mDefenseDataManager = defenseDataManager;
     //run demo ------------------------------------------------
-    QTimer *timer = new QTimer();
-
+    //--stystem and station----------------------------------------------------------------------------
+    QTimer *timerSystem = new QTimer();
     createStationInfo();
     createSystemInfo();
-    createAircraftInfo();
-    //----------------------------------------------------------
-    QObject::connect(timer, &QTimer::timeout, [this](){
-        //---------------------------------------------
-        for(auto station:stationList)
-            emit mDefenseDataManager->stationInfoChanged(station);
-        //---------------------------------------------
-        for(auto system:systemList)
-            emit mDefenseDataManager->systemInfoChanged(system);
-        for(auto systemStatus:systemStatusList)
-            emit mDefenseDataManager->systemStatusInfoChanged(systemStatus);
 
-//        createAircraftInfo();
-        if(mAircraftList.count() > 0)
-        {
-            emit mDefenseDataManager->clearAircraft(mAircraftList.first().TN);
-            mAircraftList.removeFirst();
+    QObject::connect(timerSystem, &QTimer::timeout, [this](){
+        for(auto station:mStations)
+            emit mDefenseDataManager->stationInfoChanged(station);
+        //-------------------
+        for(auto system:mSystems){
+            emit mDefenseDataManager->systemInfoChanged(system.info);
+            emit mDefenseDataManager->systemStatusInfoChanged(system.statusInfo);
         }
     });
-    timer->start(10000);
-    //--update aircraft info--------------------------------------------------------
-    QTimer *timerUpdateAircraft = new QTimer();
-    QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
-        //---------------------------------------------
-        createAircraftInfo();
-        updateAircraftInfo();
-        for(auto aircraft:mAircraftList)
-            emit mDefenseDataManager->aircraftInfoChanged(aircraft);
-    });
-    timerUpdateAircraft->start(1000);
+    timerSystem->start(10000);
     //--update Combat------------------------------------------
     QTimer *timerUpdateCombat = new QTimer();
     QObject::connect(timerUpdateCombat, &QTimer::timeout, [this](){
         updateSystemCombatInfo();
-        for(auto systemCombat:SystemCombatList)
-            emit mDefenseDataManager->systemCombatInfoChanged(systemCombat);
+        for(auto system:mSystems)
+            emit mDefenseDataManager->systemCombatInfoChanged(system.combatInfo);
     });
     timerUpdateCombat->start(20000);
-    //---------------------------------------------------------
+    //--aircraft------------------------------------------------------------------------------------------
+    //--create and update aircraft info------------------------
+    QTimer *timerUpdateAircraft = new QTimer();
+    QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
+        createAircraftInfo();
+        updateAircraftInfo();
+        for(auto aircraft:mAircrafts)
+            emit mDefenseDataManager->aircraftInfoChanged(aircraft);
+    });
+    timerUpdateAircraft->start(1000);
+    //--clear aircraft-----------------------------------------
+//    QTimer *timerClearAircraft = new QTimer();
+//    QObject::connect(timerClearAircraft, &QTimer::timeout, [this](){
+//        if(mAircrafts.count() > 0){
+//            emit mDefenseDataManager->clearAircraft(mAircrafts.first().TN);
+//            mAircrafts.remove(mAircrafts.first().TN);
+//                mAircrafAssignment.remove(mAircrafts.first().TN);
+//        }
+//    });
+//    timerClearAircraft->start(5000);
+    //--assignment -----------------------------------------------------------------------------------------
+    //--add assignment------------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
-//        qDebug() << "aircraftAssigned: "<<tn<<", "<<systemNo;
-        auto aircraftInfo = std::find_if(mAircraftList.begin(), mAircraftList.end(), [tn](AircraftInfo& item){
-            return item.TN == tn;
-        });
-        auto systemInfo = std::find_if(systemList.begin(), systemList.end(), [systemNo](SystemInfo& item){
-            return item.Number == systemNo;
-        });
-
-        auto systemCombatInfo = std::find_if(SystemCombatList.begin(), SystemCombatList.end(), [systemNo](SystemCombatInfo& item){
-            return item.Number == systemNo;
-        });
-
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-        if(systemCombatInfo->Phase != SystemCombatInfo::Search) {
+
+        if(!mAircrafts.contains(tn) || !mSystems.contains(systemNo))
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
-        } else
-        {
+        else if(mSystems[systemNo].combatInfo.Phase != SystemCombatInfo::Search)
+            emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, false);
+        else{
             emit mDefenseDataManager->aircraftAssignedResponse(tn, systemNo, true);
-            //-----------------------------------
-            SystemInfo tmpSys;
-            AircraftInfo tmpAir;
-            for (int i = 0; i < systemList.count(); ++i){
-                if (systemList[i].Number == systemNo)
-                    tmpSys = systemList[i];
-            }
-            for (int i = 0; i < mAircraftList.count(); ++i){
-                if (mAircraftList[i].TN == tn){
-                    mAircraftList[i].assignedSystems.append(tmpSys);
-                    tmpAir = mAircraftList[i];
-                }
-            }
-            for (int i = 0; i < systemList.count(); ++i){
-                if (systemList[i].Number == systemNo)
-                    systemList[i].assignedAircrafts.append(tmpAir);
-            }
-//            if (aircraftInfo != mAircraftList.end() && systemInfo != systemList.end()) {
-//                aircraftInfo->assignedSystems.append(*systemInfo);
-//                systemInfo->assignedAircrafts.append(*aircraftInfo);
-//            }
+
+            mAircrafAssignment[tn].append(&mSystems[systemNo]);
+            mSystemAssignment[systemNo].append(&mAircrafts[tn]);
         }
     });
-    //-------------------------------------------------------------
+    //--cancel assignment---------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::cancelAircraftAssigned,[=](int tn, int systemNo){
-        auto aircraftInfo = std::find_if(mAircraftList.begin(), mAircraftList.end(), [tn](AircraftInfo& item){
-            return item.TN == tn;
-        });
-        auto systemInfo = std::find_if(systemList.begin(), systemList.end(), [systemNo](SystemInfo& item){
-            return item.Number == systemNo;
-        });
-        int tmpSys = 0;
-        int tmpAir = 0;
-        for (int i = 0; i < systemList.count(); ++i){
-            if (systemList[i].Number == systemNo)
-                tmpSys = i;
+        if(mAircrafAssignment.contains(tn)){
+            auto& assignmens = mAircrafAssignment[tn];
+            for(int i = 0; i< assignmens.count(); i++)
+                if(assignmens[i]->info.Number == systemNo){
+                    assignmens.removeAt(i);
+                }
         }
-        for (int i = 0; i < mAircraftList.count(); ++i){
-            if (mAircraftList[i].TN == tn){
-                mAircraftList[i].assignedSystems.removeAt(tmpSys);
-                tmpAir = i;
-            }
+        if(mSystemAssignment.contains(systemNo)){
+            auto& assignmens = mSystemAssignment[systemNo];
+            for(int i = 0; i< assignmens.count(); i++)
+                if(assignmens[i]->TN == tn){
+                    assignmens.removeAt(i);
+                }
         }
-        for (int i = 0; i < systemList.count(); ++i){
-            if (systemList[i].Number == systemNo)
-                systemList[i].assignedAircrafts.removeAt(tmpAir);
-        }
-//        aircraftInfo->assignedSystems.removeAll(*systemInfo);
-//        systemInfo->assignedAircrafts.removeAll(*aircraftInfo);
     });
 
 }
@@ -143,11 +107,11 @@ Demo::~Demo()
 static int aircraftNumber = 0;
 const int systemNum = 20;
 const int stationNum = 5;
-AircraftInfo Demo::createAircraftInfo()
+void Demo::createAircraftInfo()
 {
     AircraftInfo aircraftInfo;
     if(aircraftNumber > 20)
-        return aircraftInfo;
+        return;
     int tn = 10000 + aircraftNumber++;
     aircraftInfo.TN = tn;
     aircraftInfo.IFFCode="a12345";
@@ -172,31 +136,29 @@ AircraftInfo Demo::createAircraftInfo()
     aircraftInfo.Heading = (0 + (qrand() % 361));
     aircraftInfo.Speed=150;//m/s
     //
-    for(auto system: systemList)
+    for(const auto& system: mSystems)
     {
-        aircraftInfo.Sends.append(system.Name);
+        aircraftInfo.Sends.append(system.info.Name);
     }
 
-    for(auto station: stationList)
+    for(const auto& station: mStations)
     {
         aircraftInfo.DetectionSystems.append(station.Name);
     }
 
-    mAircraftList.append(aircraftInfo);
-    return aircraftInfo;
-
+    mAircrafts[tn] = aircraftInfo;
 }
 
 void Demo::updateAircraftInfo()
 {
-    for(int i = 0; i < mAircraftList.count(); ++i)
+    for(auto& aircraft: mAircrafts)
     {
         //------------------------
-        double latitude = mAircraftList[i].Latitude;
-        double longitude = mAircraftList[i].Longitude;
-        double altitude = mAircraftList[i].Altitude;
-        double speed = mAircraftList[i].Speed;
-        double heading = mAircraftList[i].Heading;
+        double latitude = aircraft.Latitude;
+        double longitude = aircraft.Longitude;
+        double altitude = aircraft.Altitude;
+        double speed = aircraft.Speed;
+        double heading = aircraft.Heading;
 
         //    double latitudeDiff = latitude;
         //    double longitudeDiff = longitude;
@@ -243,35 +205,11 @@ void Demo::updateAircraftInfo()
         //    //north =(0, 1, 0)
         //    heading = acos(longitudeDiff/sqrt(latitudeDiff * latitudeDiff + longitudeDiff * longitudeDiff + altitudeDiff * altitudeDiff));
         //    heading *= (180.0/3.141592653589793238463);
-        mAircraftList[i].Latitude = latitude;
-        mAircraftList[i].Longitude = longitude;
-        mAircraftList[i].Altitude = altitude;
-        mAircraftList[i].Speed = speed;
-        mAircraftList[i].Heading = heading;
-    }
-}
-
-void Demo::createStationInfo()
-{
-    for(int i = 0; i < stationNum; ++i)
-    {
-        StationInfo stationInfo;
-        QString name = "Station" + QString::number(stationList.count());
-        double longitude = 48 + (qrand() % (59 - 48));
-        double latitude = 27 + (qrand() % (38 - 27));
-        double radius = (200000 + (qrand() % (500000 - 200000)));
-
-        stationInfo.Name = name;
-        stationInfo.RadarSearchStatus = StationInfo::S;
-        stationInfo.Number = stationList.count() + 2000;
-        stationInfo.Type = "Type1";
-        stationInfo.Latitude = latitude;
-        stationInfo.Longitude = longitude;
-        stationInfo.PrimSec = "secondary";
-        stationInfo.Radius = radius;//meter
-        stationInfo.CycleTime = 123;//
-
-        stationList.append(stationInfo);
+        aircraft.Latitude = latitude;
+        aircraft.Longitude = longitude;
+        aircraft.Altitude = altitude;
+        aircraft.Speed = speed;
+        aircraft.Heading = heading;
     }
 }
 
@@ -283,7 +221,7 @@ void Demo::createSystemInfo()
         SystemCombatInfo systemCombatInfo;
         SystemStatusInfo systemStatusInfo;
 
-        QString name = "System" + QString::number(systemList.count());
+        QString name = "System" + QString::number(mSystems.count());
         double longitude = 48 + (qrand() % (59 - 48));
         double latitude = 27 + (qrand() % (38 - 27));
         double viewRange = (100000 + (qrand() % (300000 - 100000)));
@@ -291,7 +229,7 @@ void Demo::createSystemInfo()
 
         systemInfo.Terminal = "terminal1";
         systemInfo.Name = name;
-        systemInfo.Number = systemList.count() + 3000;
+        systemInfo.Number = mSystems.count() + 3000;
         systemInfo.Type = "Type1";
         //
         systemInfo.Latitude = latitude;
@@ -318,36 +256,89 @@ void Demo::createSystemInfo()
         systemCombatInfo.ChanelNo = "123014s";
         systemCombatInfo.Inrange = "inrange";
 
-        systemList.append(systemInfo);
-        systemStatusList.append(systemStatusInfo);
-        SystemCombatList.append(systemCombatInfo);
+        mSystems[systemInfo.Number].info = systemInfo;
+        mSystems[systemInfo.Number].statusInfo = systemStatusInfo;
+        mSystems[systemInfo.Number].combatInfo = systemCombatInfo;
     }
 }
 
 void Demo::updateSystemCombatInfo()
 {
-    for(int i = 0; i < systemNum; ++i)
+    for(auto& system: mSystems)
     {
-        auto phase = SystemCombatList[i].Phase;
+        auto phase = system.combatInfo.Phase;
         SystemCombatInfo::Phases newPhase = SystemCombatInfo::Search;
-        if(systemList[i].assignedAircrafts.count() > 0)
+        if(mSystemAssignment[system.combatInfo.Number].count() > 0)
         {
-            int rn = (0 + (qrand() % systemList[i].assignedAircrafts.count()));
+            int rn = (0 + (qrand() % mSystemAssignment[system.combatInfo.Number].count()));
             switch (phase) {
             case SystemCombatInfo::Search:
                 newPhase = SystemCombatInfo::Lock;
-                SystemCombatList[i].TN = systemList[i].assignedAircrafts[rn].TN;
+                system.combatInfo.TN = mSystemAssignment[system.combatInfo.Number].at(rn)->TN;
                 break;
             case SystemCombatInfo::Lock:
                 newPhase = SystemCombatInfo::Fire;
                 break;
             case SystemCombatInfo::Fire:
-                if(rn % 2 == 0)
+                if(rn % 2 == 0){
                     newPhase = SystemCombatInfo::Kill;
-                else
+                    mAircrafts.remove(system.combatInfo.TN);
+                    mAircrafAssignment.remove(system.combatInfo.TN);
+
+                    if(mSystemAssignment.contains(system.combatInfo.Number)){
+                        auto& assignmens = mSystemAssignment[system.combatInfo.Number];
+                        for(int i = 0; i< assignmens.count(); i++)
+                            if(assignmens[i]->TN == system.combatInfo.TN){
+                                assignmens.removeAt(i);
+                            }
+                    }
+
+                }
+                else{
                     newPhase = SystemCombatInfo::NoKill;
+
+                    if(mAircrafAssignment.contains(system.combatInfo.TN)){
+                        auto& assignmens = mAircrafAssignment[system.combatInfo.TN];
+                        for(int i = 0; i< assignmens.count(); i++)
+                            if(assignmens[i]->info.Number == system.combatInfo.Number){
+                                assignmens.removeAt(i);
+                            }
+                    }
+
+                    if(mSystemAssignment.contains(system.combatInfo.Number)){
+                        auto& assignmens = mSystemAssignment[system.combatInfo.Number];
+                        for(int i = 0; i< assignmens.count(); i++)
+                            if(assignmens[i]->TN == system.combatInfo.TN){
+                                assignmens.removeAt(i);
+                            }
+                    }
+                }
             }
         }
-        SystemCombatList[i].Phase = newPhase;
+        system.combatInfo.Phase = newPhase;
+    }
+}
+
+void Demo::createStationInfo()
+{
+    for(int i = 0; i < stationNum; ++i)
+    {
+        StationInfo stationInfo;
+        QString name = "Station" + QString::number(mStations.count());
+        double longitude = 48 + (qrand() % (59 - 48));
+        double latitude = 27 + (qrand() % (38 - 27));
+        double radius = (200000 + (qrand() % (500000 - 200000)));
+
+        stationInfo.Name = name;
+        stationInfo.RadarSearchStatus = StationInfo::S;
+        stationInfo.Number = mStations.count() + 2000;
+        stationInfo.Type = "Type1";
+        stationInfo.Latitude = latitude;
+        stationInfo.Longitude = longitude;
+        stationInfo.PrimSec = "secondary";
+        stationInfo.Radius = radius;//meter
+        stationInfo.CycleTime = 123;//
+
+        mStations[stationInfo.Number] = stationInfo;
     }
 }

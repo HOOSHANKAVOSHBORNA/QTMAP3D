@@ -23,9 +23,11 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 
     //list view---------------------------------------------------------
 
-    connect(mAircraftDataManager, &AircraftDataManager::doubleClicked,[=](int TN){
-        mAircraftDataManager->getAircraftData(TN)->modelNode->onLeftButtonClicked(true);
-        mAircraftDataManager->getAircraftData(TN)->modelNode->goOnTrack();
+    connect(mAircraftDataManager, &AircraftDataManager::doubleClicked,[=](int tn){
+        if(mAircraftDataManager->getAircraftsData().contains(tn)){
+            mAircraftDataManager->getAircraftsData()[tn].modelNode->onLeftButtonClicked(true);
+            mAircraftDataManager->getAircraftsData()[tn].modelNode->goOnTrack();
+        }
     });
     mAircraftAssignmentTableModel = new AircraftTableModel;
     mAircraftAssignmentTableModel->setMode("Assignment");
@@ -101,9 +103,8 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
     mSystemAssignmentTableModel->updateAssignments();
     //--------------------------------------------------------------------
     if(systemCombatInfo.Phase == SystemCombatInfo::Lock || systemCombatInfo.Phase == SystemCombatInfo::Fire){
-        auto systemData = mSystemDataManager->getSystemData(systemCombatInfo.Number);
-        if(systemData){
-            for(auto assignment: systemData->assignments){
+        if(mSystemDataManager->getSystemsData().contains(systemCombatInfo.Number)){
+            for(auto assignment: mSystemDataManager->getSystemsData()[systemCombatInfo.Number].assignments){
                 if(assignment.info->TN != systemCombatInfo.TN)
                 {
                     mSystemDataManager->removeAssignment(assignment.info->TN, systemCombatInfo.Number);
@@ -118,6 +119,11 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
     if(systemCombatInfo.Phase == SystemCombatInfo::Kill)
     {
         onClearAircraft(systemCombatInfo.TN);
+    }
+    if(systemCombatInfo.Phase == SystemCombatInfo::NoKill)
+    {
+        mAircraftDataManager->removeAssignment(systemCombatInfo.TN, systemCombatInfo.Number);
+        mSystemDataManager->removeAssignment(systemCombatInfo.TN, systemCombatInfo.Number);
     }
 //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemCombatInfo.Number);
 //    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(systemCombatInfo.TN);
@@ -179,7 +185,7 @@ void DataManager::onStationInfoChanged(StationInfo &stationInfo)
 void DataManager::onClearAircraft(int tn)
 {
     mAircraftDataManager->onClear(tn);
-    systemDataManager()->removeAssignments(tn);
+    mSystemDataManager->removeAssignments(tn);
     mAircraftAssignmentTableModel->updateTable(tn);
     mAircraftAssignmentTableModel->updateAssignments();
     mSystemAssignmentTableModel->updateAssignments();
@@ -209,17 +215,17 @@ void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool accept)
 void DataManager::assignAircraft2System(int tn, int systemNo)
 {
     Aircraft::Assignment aAssign;
-    System::Data * sData = mSystemDataManager->getSystemData(systemNo);
-    if (sData) {
-        aAssign.info = &sData->information;
-        aAssign.modelNode = sData->systemModelNode;
+    if (mSystemDataManager->getSystemsData().contains(systemNo)) {
+        auto sData = mSystemDataManager->getSystemsData()[systemNo];
+        aAssign.info = &sData.information;
+        aAssign.modelNode = sData.systemModelNode;
         mAircraftDataManager->addAssignment(tn, aAssign);
     }
     System::Assignment sAssign;
-    Aircraft::Data* aData = mAircraftDataManager->getAircraftData(tn);
-    if (aData){
-        sAssign.info = &aData->info;
-        sAssign.modelNode = aData->modelNode;
+    if (mAircraftDataManager->getAircraftsData().contains(tn)){
+        auto aData = mAircraftDataManager->getAircraftsData()[tn];
+        sAssign.info = &aData.info;
+        sAssign.modelNode = aData.modelNode;
         mSystemDataManager->addAssignment(systemNo, sAssign);
     }
 

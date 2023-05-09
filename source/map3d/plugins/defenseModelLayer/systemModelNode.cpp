@@ -634,7 +634,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 //    qDebug() << ">>> : " << mAssignmentMap.keys().count();
 
     int height = LABEL_IMAGE_HEIGHT + ((mSystemData->assignments.count()+2)/3) * 30;
-    if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::Op2)
+    if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::OP2)
         height += 50;
 
     if (!mRenderTargetImage) {
@@ -794,7 +794,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 
 
 
-        h = height - 60 - (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::Op2 ? 50 : 0);
+        h = height - 60 - (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::OP2 ? 50 : 0);
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, h, LABEL_IMAGE_WIDTH, h);
@@ -806,7 +806,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         static const QImage missleRedImage(":/resources/bullet_red.png");
         static const QImage missleGreenImage(":/resources/bullet_green.png");
 
-        if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::NoOp) {
+        if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::NOP) {
             for (int i = 0; i < 9; i++) {
                 painter.drawImage(
                             QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
@@ -835,7 +835,7 @@ void SystemModelNode::updateOrCreateLabelImage()
                 }
             }
 
-            if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::Op2) {
+            if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::OP2) {
                 h += 50;
 
                 for (int i = 9; i < 18; i++) {

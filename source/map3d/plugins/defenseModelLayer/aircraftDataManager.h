@@ -37,8 +37,7 @@ public:
     void addAssignment(int tn, Aircraft::Assignment assignment);
     void clearAssignment(int tn);
     void removeAssignment(int tn, int systemNo);
-    Aircraft::Data* getAircraftData(int &tn);
-    QMap<int, Aircraft::Data> &getAircraftsData();
+    const QMap<int, Aircraft::Data> &getAircraftsData() const;
 
 signals:
     void doubleClicked(int NT);
