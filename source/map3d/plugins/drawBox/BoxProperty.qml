@@ -96,6 +96,7 @@ Item {
                     }
                     ComboBox {
                         id: control
+                        currentIndex: 1
                         model: ["KM", "M", "CM"]
                         onCurrentIndexChanged:   {
                             if(currentIndex === 0){
@@ -192,6 +193,7 @@ Item {
                     }
                     ComboBox {
                         id: controls
+                        currentIndex: 2
                         model: ["1000", "100", "10","1"]
                         onCurrentIndexChanged:   {
                             if(currentIndex === 0){
