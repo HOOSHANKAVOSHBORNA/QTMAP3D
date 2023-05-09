@@ -35,7 +35,9 @@ public:
         CombatInfoHeaders = Qt::UserRole + 207,
         AssignAircraftsName = Qt::UserRole + 208,
         AssignAircraftsType = Qt::UserRole + 209,
-        SystemColor = Qt::UserRole + 210
+        SystemColor = Qt::UserRole + 210,
+        BCCStatusColor = Qt::UserRole + 211,
+        RadarStatusColor = Qt::UserRole + 212
 
     };
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

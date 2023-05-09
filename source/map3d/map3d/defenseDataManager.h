@@ -325,6 +325,13 @@ struct SystemStatusInfo
     QString BCCStatusToString() const {
         return radarStatusToString(BCCStatus);
     }
+    QColor statusToColor(RadarStatus status) const {
+        switch (status) {
+            case S: return QColor("green");
+            case US: return QColor("red");
+            default: return QColor("transparent");
+        }
+    }
     QString radarSearchStatusToString() const{
         return radarStatusToString(RadarSearchStatus);
     }

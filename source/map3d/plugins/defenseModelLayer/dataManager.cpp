@@ -52,6 +52,8 @@ void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
     mAircraftDataManager->onInfoChanged(aircraftInfo);
     mAircraftAssignmentTableModel->updateTable(aircraftInfo.TN);
+
+    mAircraftAssignmentTableModel->updateAssignments();
     mSystemAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->addUpdateAircraft(aircraftInfo);
@@ -64,7 +66,9 @@ void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
 {
     mSystemDataManager->onInfoChanged(systemInfo);
     mSystemAssignmentTableModel->updateTable(systemInfo.Number);
+
     mAircraftAssignmentTableModel->updateAssignments();
+    mSystemAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->addUpdateSystem(systemInfo);
     //    //add update list view-----------------------------------------------------------------
@@ -76,7 +80,9 @@ void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 {
     mSystemDataManager->onStatusInfoChanged(systemStatusInfo);
     mSystemAssignmentTableModel->updateTable(systemStatusInfo.Number);
+
     mAircraftAssignmentTableModel->updateAssignments();
+    mSystemAssignmentTableModel->updateAssignments();
     //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemStatusInfo.Number);
     //    //update information-----------------------------------------------------
     //    if(systemModelNode)
@@ -90,7 +96,9 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 {
     mSystemDataManager->onCombatInfoChanged(systemCombatInfo);
     mSystemAssignmentTableModel->updateTable(systemCombatInfo.Number);
+
     mAircraftAssignmentTableModel->updateAssignments();
+    mSystemAssignmentTableModel->updateAssignments();
     //--------------------------------------------------------------------
     if(systemCombatInfo.Phase == SystemCombatInfo::Lock || systemCombatInfo.Phase == SystemCombatInfo::Fire){
         auto systemData = mSystemDataManager->getSystemData(systemCombatInfo.Number);
@@ -100,6 +108,8 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
                 {
                     mSystemDataManager->removeAssignment(assignment.info->TN, systemCombatInfo.Number);
                     mAircraftDataManager->removeAssignment(assignment.info->TN, systemCombatInfo.Number);
+                    mSystemAssignmentTableModel->updateAssignments();
+                    mAircraftAssignmentTableModel->updateAssignments();
                 }
             }
         }
