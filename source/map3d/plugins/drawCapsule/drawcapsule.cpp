@@ -62,11 +62,11 @@ void DrawCapsule::mousePressEvent(QMouseEvent *event)
             if (mDrawingState == DrawingState::START) {
                 mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
-                finishDrawing(event);
+//                finishDrawing(event);
                 event->accept();
             }
         }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
+        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
             cancelDrawing(event);
         }
         else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
@@ -87,7 +87,7 @@ void DrawCapsule::startDraw(QMouseEvent *event)
 {
     mCapsule = new Capsule();
     mCapsuleProperties->setCapsule(mCapsule);
-
+    mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
@@ -109,10 +109,12 @@ void DrawCapsule::finishDrawing(QMouseEvent *event)
 
 void DrawCapsule::cancelDrawing(QMouseEvent *event)
 {
-    mMapcontroller->removeNodeFromLayer(mCapsule, DRAW_LAYER_NAME);
-    mCapsule = nullptr;
-    mCapsuleProperties->setCapsule(mCapsule);
-    mDrawingState = DrawingState::START;
+    if(mDrawingState == DrawingState::DRAWING){
+        mMapcontroller->removeNodeFromLayer(mCapsule, DRAW_LAYER_NAME);
+        mCapsule = nullptr;
+        mCapsuleProperties->setCapsule(mCapsule);
+        mDrawingState = DrawingState::START;
+    }
 
     event->accept();
 }

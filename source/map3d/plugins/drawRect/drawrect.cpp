@@ -65,14 +65,14 @@ void DrawRect::mousePressEvent(QMouseEvent *event)
             if (mDrawingState == DrawingState::START) {
                 mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
-                finishDraw();
+//                finishDraw();
                 event->accept();
             }
         }
         //cancel
         if(event->button() == Qt::MouseButton::RightButton)
         {
-            if(mDrawingState == DrawingState::START)
+            if(mDrawingState == DrawingState::DRAWING)
             {
                 cancelDraw();
                 event->accept();
@@ -81,7 +81,7 @@ void DrawRect::mousePressEvent(QMouseEvent *event)
         //finish
         if(event->button() == Qt::MouseButton::MidButton)
         {
-            if(mDrawingState == DrawingState::START)
+            if(mDrawingState == DrawingState::DRAWING)
             {
                 finishDraw();
             }
@@ -112,6 +112,8 @@ void DrawRect::startDraw(QMouseEvent *event)
 {
     mRect = new Rect(mMapController, true);
     mRectProperties->setRect(mRect);
+
+    mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
     mMapController->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
@@ -124,8 +126,10 @@ void DrawRect::startDraw(QMouseEvent *event)
 
 void DrawRect::cancelDraw()
 {
+    if(mDrawingState == DrawingState::DRAWING){
     removeNodeFromLayer(mRect);
     mDrawingState = DrawingState::START;
+    }
 }
 
 void DrawRect::finishDraw()
