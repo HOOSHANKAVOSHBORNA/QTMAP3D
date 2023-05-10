@@ -1,5 +1,5 @@
 #include "stationTableModel.h"
-
+#include "stationDataManager.h"
 #include <QColor>
 #include <QRegularExpression>
 
@@ -27,14 +27,14 @@ QVariant StationTableModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
     {
         switch(index.column()) {
-        case  0: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]].Number);
-        case  1: return QVariant::fromValue<QString>((*mStationInfos)[mStationInfosProxy[index.row()]].Name);
-        case  2: return QVariant::fromValue<QString>((*mStationInfos)[mStationInfosProxy[index.row()]].Type);
-        case  3: return QVariant::fromValue<QString>((*mStationInfos)[mStationInfosProxy[index.row()]].PrimSec);
-        case  4: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]].Latitude);
-        case  5: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]].Longitude);
-        case  6: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]].Radius);
-        case  7: return QVariant::fromValue<int>((*mStationInfos)[mStationInfosProxy[index.row()]].CycleTime);
+        case  0: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Number);
+        case  1: return QVariant::fromValue<QString>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Name);
+        case  2: return QVariant::fromValue<QString>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Type);
+        case  3: return QVariant::fromValue<QString>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.PrimSec);
+        case  4: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Latitude);
+        case  5: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Longitude);
+        case  6: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Radius);
+        case  7: return QVariant::fromValue<int>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.CycleTime);
         }
 
         break;
@@ -103,7 +103,7 @@ int StationTableModel::getNumber(int row) const
         return -1;
     }
 
-    return(*mStationInfos)[mStationInfosProxy[row]].Number;
+    return(*mStationInfos)[mStationInfosProxy[row]]->info.Number;
 }
 
 void StationTableModel::setFilterWildcard(const QString &wildcard)
@@ -115,30 +115,22 @@ void StationTableModel::setFilterWildcard(const QString &wildcard)
 
     mStationInfosProxy.clear();
     for (auto& item : *mStationInfos) {
-        if (QString::number(item.Number).contains(mFilter))
-            mStationInfosProxy.push_back(item.Number);
+        if (QString::number(item->info.Number).contains(mFilter))
+            mStationInfosProxy.push_back(item->info.Number);
     }
 
     endResetModel();
 }
 
-void StationTableModel::setStationInfos(QMap<int, StationInfo> &stationInfos)
+void StationTableModel::onInfoChanged(int number)
 {
-    beginResetModel();
-    mStationInfos = &stationInfos;
-    mStationInfosProxy = mStationInfos->keys();
-    endResetModel();
-}
+//    if (!mStationInfos->contains(number) && mStationInfosProxy.contains(number)) {
+//        beginRemoveRows(QModelIndex(), mStationInfosProxy.indexOf(number), mStationInfosProxy.indexOf(number));
+//        mStationInfosProxy = mStationInfos->keys();
+//        endRemoveRows();
+//    }
 
-void StationTableModel::updateTable(int number)
-{
-    if (!mStationInfos->contains(number) && mStationInfosProxy.contains(number)) {
-        beginRemoveRows(QModelIndex(), mStationInfosProxy.indexOf(number), mStationInfosProxy.indexOf(number));
-        mStationInfosProxy = mStationInfos->keys();
-        endRemoveRows();
-    }
-
-    else if (mStationInfos->contains(number) && !mStationInfosProxy.contains(number)) {
+    if (mStationInfos->contains(number) && !mStationInfosProxy.contains(number)) {
         mStationInfosProxy = mStationInfos->keys();
         setFilterWildcard(mFilter);
     }
@@ -147,4 +139,50 @@ void StationTableModel::updateTable(int number)
         int row = mStationInfosProxy.indexOf(number);
         emit dataChanged(createIndex(row, 0), createIndex(row, 22));
     }
+}
+
+void StationTableModel::setStationInfos(const QMap<int, Station::Data *> &stationInfos)
+{
+    beginResetModel();
+    mStationInfos = &stationInfos;
+    mStationInfosProxy = mStationInfos->keys();
+    endResetModel();
+}
+
+StationTable::StationTable(StationDataManager *stationDataManager, DefenseModelLayer *defenseModelLayer, QObject *parent) :
+    QObject(parent),
+    mStationDataManager(stationDataManager),
+    mDefenseModelLayer(defenseModelLayer)
+{
+    QQmlComponent *comp2 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
+    QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
+        if (comp2->status() == QQmlComponent::Ready) {
+            QQuickItem *stationTab = static_cast<QQuickItem*>(comp2->create(nullptr));
+            mStationTableModel = new StationTableModel;
+            mStationTableModel->setStationInfos(mStationDataManager->getStationsData());
+            connect(mStationDataManager, &StationDataManager::infoChanged, mStationTableModel, &StationTableModel::onInfoChanged);
+            QObject::connect(stationTab,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mStationTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
+
+            QObject::connect(stationTab,
+                             SIGNAL(stationDoubleClicked(const int&)),
+                             this,
+                             SLOT(onDoubleClicked(const int&)));
+
+
+            stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
+            mDefenseModelLayer->mUIHandle->lwAddTab("Stations", stationTab);
+        }
+
+    });
+
+    comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
+}
+
+void StationTable::onDoubleClicked(const int &number)
+{
+    if (mStationDataManager->getStationsData().contains(number))
+        mStationDataManager->getStationsData()[number]->modelNode->onLeftButtonClicked(true);
 }

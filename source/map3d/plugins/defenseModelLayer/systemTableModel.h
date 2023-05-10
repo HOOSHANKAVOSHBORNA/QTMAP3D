@@ -44,12 +44,12 @@ public:
     Q_INVOKABLE int getNumber(int row) const;
 
     void setSystemInfos(const QMap<int, System::Data*> & info);
-    void onInfoChanged(int number);
-    void onRemoveData(int number);
 
 public slots:
     void setFilterWildcard(const QString& wildcard);
     void refresh();
+    void onInfoChanged(int number);
+    void onRemoveData(int number);
 
 private:
     QString mFilter;
@@ -59,7 +59,7 @@ private:
     QList<int> mSystemInfosProxy;
 };
 
-class SystemTable : public QObject
+class SystemTable : QObject
 {
     Q_OBJECT
 public:
