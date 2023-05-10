@@ -22,17 +22,15 @@ class StationDataManager: public QObject
 public:
     StationDataManager(DefenseModelLayer* defenseModelLayer);
     void upsertInfo(StationInfo& stationInfo);
-
+    const QMap<int, Station::Data*> &getStationsData() const;
 signals:
     void infoChanged(int stationNo);
     void stationDoubleClicked(const int&);
 private:
-    void addStationTab();
-private:
     DefenseModelLayer* mDefenseModelLayer;
     QMap<int, Station::Data*> mStationData;
 
-    StationTableModel *mStationTableModel;
+    StationTable *mStationTableModel;
 };
 
 #endif // STATIONDATAMANAGER_H

@@ -3,9 +3,7 @@
 StationDataManager::StationDataManager(DefenseModelLayer* defenseModelLayer)
 {
     mDefenseModelLayer = defenseModelLayer;
-
-    addStationTab();
-//    mStationTableModel->setStationInfos(mStationInfos);
+    mStationTableModel = new StationTable(this, mDefenseModelLayer);
 }
 
 void StationDataManager::upsertInfo(StationInfo &stationInfo)
@@ -40,39 +38,11 @@ void StationDataManager::upsertInfo(StationInfo &stationInfo)
     }
     //update information-----------------------------------------------------
     stationModelNode->setInformation(stationInfo);
-    mStationTableModel->updateTable(stationInfo.Number);
 
     emit infoChanged(stationInfo.Number);
 }
 
-void StationDataManager::addStationTab()
+const QMap<int, Station::Data *> &StationDataManager::getStationsData() const
 {
-    QQmlComponent *comp2 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
-    QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
-//        qDebug() << comp2->errorString();
-
-        if (comp2->status() == QQmlComponent::Ready) {
-            QQuickItem *stationTab = (QQuickItem*) comp2->create(nullptr);
-            mStationTableModel = new StationTableModel;
-
-            QObject::connect(stationTab,
-                             SIGNAL(filterTextChanged(const QString&)),
-                             mStationTableModel,
-                             SLOT(setFilterWildcard(const QString&)));
-
-            QObject::connect(stationTab,
-                             SIGNAL(stationDoubleClicked(const int&)),
-                             this,
-                             SIGNAL(stationDoubleClicked(const int&)));
-
-
-            stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
-            mDefenseModelLayer->mUIHandle->lwAddTab("Stations", stationTab);
-        }
-
-    });
-
-    comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
+    return mStationData;
 }
-
-

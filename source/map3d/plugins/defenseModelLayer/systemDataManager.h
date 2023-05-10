@@ -77,15 +77,12 @@ public:
     const QMap<int, System::Data *> &getSystemsData() const;
 
 signals:
-    void systemDoubleClicked(const int&);
     void infoChanged(int systemNo);
     void assignmentChanged(int systemNo);
 private:
-    void addSystemTab();
-private:
     DefenseModelLayer* mDefenseModelLayer;
     QMap<int, System::Data*> mSystemData;
-    SystemTableModel *mSystemTableModel;
+    SystemTable *mSystemTableModel;
 };
 
 #endif // SYSTEMDATAMANAGER_H

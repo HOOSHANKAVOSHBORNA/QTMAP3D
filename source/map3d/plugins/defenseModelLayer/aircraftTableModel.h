@@ -43,13 +43,13 @@ public:
     Q_INVOKABLE int getTN(int row) const;
 
     void setAircraftInfos(const QMap<int, Aircraft::Data *> &aircrafts);
-    void onInfoChanged(int tn);
-    void onRemoveData(int tn);
 
 public slots:
     void setFilterWildcard(const QString& wildcard);
     void sortWithHeader(int column);
     void refresh();
+    void onInfoChanged(int tn);
+    void onRemoveData(int tn);
 
 private:
     const QMap<int, Aircraft::Data*> *mAircraftInfos;
@@ -58,7 +58,7 @@ private:
     QString mFilter = "";
 };
 
-class AircraftTable : QObject
+class AircraftTable : public QObject
 {
     Q_OBJECT
 public:

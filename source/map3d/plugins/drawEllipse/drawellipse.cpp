@@ -32,8 +32,6 @@ void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString
                 mDrawingState = DrawingState::START;
                 mEllipseProperties = new EllipseProperties(mEllipse, mQmlEngine, mUiHandle);
                 mEllipseProperties->show();
-//                addNodeToLayer(mIconNode);
-
                 mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
@@ -43,7 +41,6 @@ void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString
                 mEllipse = nullptr;
 
                 mEllipseProperties->hide();
-//                removeNodeFromLayer(mIconNode);
                 mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
@@ -70,14 +67,14 @@ void DrawEllipse::mousePressEvent(QMouseEvent *event)
             if (mDrawingState == DrawingState::START) {
                 mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
-                finishDraw();
+//                finishDraw();
                 event->accept();
             }
         }
         //cancel
         if(event->button() == Qt::MouseButton::RightButton)
         {
-            if(mDrawingState == DrawingState::START)
+            if(mDrawingState == DrawingState::DRAWING)
             {
                 cancelDraw();
                 event->accept();
@@ -86,7 +83,7 @@ void DrawEllipse::mousePressEvent(QMouseEvent *event)
         //finish
         if(event->button() == Qt::MouseButton::MidButton)
         {
-            if(mDrawingState == DrawingState::START)
+            if(mDrawingState == DrawingState::DRAWING)
             {
                 finishDraw();
             }
@@ -119,7 +116,7 @@ void DrawEllipse::startDraw(QMouseEvent *event)
     mMapController->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
-
+    mDrawingState = DrawingState::DRAWING;
     mEllipse->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
 
     mMapController->addNodeToLayer(mEllipse, DRAW_LAYER_NAME);
@@ -127,8 +124,10 @@ void DrawEllipse::startDraw(QMouseEvent *event)
 
 void DrawEllipse::cancelDraw()
 {
+    if(mDrawingState == DrawingState::DRAWING){
     mMapController->removeNodeFromLayer(mEllipse, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::START;
+    }
 }
 
 void DrawEllipse::finishDraw()
