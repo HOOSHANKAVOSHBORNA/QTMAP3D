@@ -31,7 +31,9 @@ struct Assignment
         line->addPoint(modelNode->getPosition());
     }
 
-    bool operator== (Assignment *assign);
+    bool operator== (Assignment *assign){
+        return info->TN == assign->info->TN;
+    }
 };
 
 struct Data
@@ -51,6 +53,9 @@ struct Data
 
          return result;
     }
+    ~Data(){
+        delete information;
+    }
 };
 }
 
@@ -60,20 +65,21 @@ class SystemDataManager: public QObject
 
 public:
     SystemDataManager(DefenseModelLayer* defenseModelLayer);
+    void upsertInfo(SystemInfo& systemInfo);
+    void updateStatusInfo(SystemStatusInfo &systemStatusInfo);
+    void updateCombatInfo(SystemCombatInfo &systemCombatInfo);
+
     void addAssignment(int systemNo, System::Assignment *assignment);
-    void removeAssignments(int tn);
+    void assignmentResponse(int tn, int systemNo, bool accept);
+    void clearAssignments(int tn);
     void removeAssignment(int tn, int systemNo);
 //    System::Data *getSystemData(int number);
     const QMap<int, System::Data *> &getSystemsData() const;
 
-public slots:
-    void onInfoChanged(SystemInfo& systemInfo);
-    void onStatusInfoChanged(SystemStatusInfo &systemStatusInfo);
-    void onCombatInfoChanged(SystemCombatInfo &systemCombatInfo);
-    void onAssignmentResponse(int tn, int systemNo, bool accept);
-
 signals:
     void systemDoubleClicked(const int&);
+    void infoChanged(int systemNo);
+    void assignmentChanged(int systemNo);
 private:
     void addSystemTab();
 private:

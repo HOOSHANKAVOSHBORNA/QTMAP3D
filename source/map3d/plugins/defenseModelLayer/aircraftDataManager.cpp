@@ -88,7 +88,8 @@ void AircraftDataManager::remove(int tn)
 
 void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment* assignment)
 {
-    if(mAircraftData.contains(tn) && mAircraftData[tn]->findAssignment(assignment->info->systemInfo.Number) >= 0)
+    if(mAircraftData.contains(tn) &&
+            mAircraftData[tn]->findAssignment(assignment->info->systemInfo.Number) < 0)
     {
         mAircraftData[tn]->assignments.append(assignment);
         //-----------------------------
