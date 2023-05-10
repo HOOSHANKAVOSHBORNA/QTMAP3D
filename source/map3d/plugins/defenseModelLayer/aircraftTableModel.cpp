@@ -197,27 +197,25 @@ void AircraftTableModel::updateAssignments() {
     }
 }
 
-void AircraftTableModel::updateTable(int tn)
+void AircraftTableModel::onInfoChanged(int tn)
 {
-    if (mNumber == -1) {
-        if (!mAircraftInfos->contains(tn) && mAircraftInfosProxy.contains(tn)) {
-            beginRemoveRows(QModelIndex(), mAircraftInfosProxy.indexOf(tn), mAircraftInfosProxy.indexOf(tn));
-            mAircraftInfosProxy = mAircraftInfos->keys();
-            endRemoveRows();
-        }
-
-        else if (mAircraftInfos->contains(tn) && !mAircraftInfosProxy.contains(tn)) {
-            mAircraftInfosProxy = mAircraftInfos->keys();
-            setFilterWildcard(mFilter);
-        }
-
-        else {
-            int row = mAircraftInfosProxy.indexOf(tn);
-            emit dataChanged(createIndex(row, 0), createIndex(row, 16));
-        }
+    if (mAircraftInfos->contains(tn) && !mAircraftInfosProxy.contains(tn)) {
+        mAircraftInfosProxy = mAircraftInfos->keys();
+        setFilterWildcard(mFilter);
     }
+
     else {
-        updateAssignments();
+        int row = mAircraftInfosProxy.indexOf(tn);
+        emit dataChanged(createIndex(row, 0), createIndex(row, 16));
+    }
+}
+
+void AircraftTableModel::onRemoveData(int tn)
+{
+    if (mAircraftInfosProxy.contains(tn)) {
+        beginRemoveRows(QModelIndex(), mAircraftInfosProxy.indexOf(tn), mAircraftInfosProxy.indexOf(tn));
+        mAircraftInfosProxy = mAircraftInfos->keys();
+        endRemoveRows();
     }
 }
 
@@ -294,7 +292,10 @@ AircraftTable::AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseMo
             QQuickItem *aircraftTab = static_cast<QQuickItem*>(comp->create(nullptr));
             mAircraftTableModel = new AircraftTableModel;
             mAircraftTableModel->setAircraftInfos(mAircraftDatamanager->getAircraftsData());
+
             mAircraftTableModel->setMode("TableModel");
+            QObject::connect(mAircraftDatamanager, &AircraftDataManager::infoChanged, mAircraftTableModel, &AircraftTableModel::onInfoChanged);
+            QObject::connect(mAircraftDatamanager, &AircraftDataManager::removed, mAircraftTableModel, &AircraftTableModel::onRemoveData);
 
             QObject::connect(aircraftTab,
                              SIGNAL(filterTextChanged(const QString&)),

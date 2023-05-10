@@ -54,15 +54,15 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
     });
     timerUpdateAircraft->start(1000);
     //--clear aircraft-----------------------------------------
-//    QTimer *timerClearAircraft = new QTimer();
-//    QObject::connect(timerClearAircraft, &QTimer::timeout, [this](){
-//        if(mAircrafts.count() > 0){
-//            emit mDefenseDataManager->clearAircraft(mAircrafts.first().TN);
-//            mAircrafts.remove(mAircrafts.first().TN);
-////                mAircrafAssignment.remove(mAircrafts.first().TN);
-//        }
-//    });
-//    timerClearAircraft->start(5000);
+    QTimer *timerClearAircraft = new QTimer();
+    QObject::connect(timerClearAircraft, &QTimer::timeout, [this](){
+        if(mAircrafts.count() > 0){
+            emit mDefenseDataManager->clearAircraft(mAircrafts.first().TN);
+            mAircrafts.remove(mAircrafts.first().TN);
+//                mAircrafAssignment.remove(mAircrafts.first().TN);
+        }
+    });
+    timerClearAircraft->start(5000);
     //--assignment -----------------------------------------------------------------------------------------
     //--add assignment------------------------------------
     QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){

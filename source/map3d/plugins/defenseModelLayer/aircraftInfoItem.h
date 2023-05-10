@@ -72,6 +72,7 @@ class AircraftInfoItem : public QObject
     Q_OBJECT
 public:
     explicit AircraftInfoItem(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &mInformation, QObject *parent = nullptr);
+    ~AircraftInfoItem();
     AircraftInfoModel* getInfo();
     void updateAircraft();
     void show();

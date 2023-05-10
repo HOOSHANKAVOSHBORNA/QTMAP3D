@@ -44,7 +44,8 @@ public:
 
     void setAircraftInfos(const QMap<int, Aircraft::Data *> &aircrafts);
     void setSystemInfos(const QMap<int, System::Data *> &systems);
-    void updateTable(int tn);
+    void onInfoChanged(int tn);
+    void onRemoveData(int tn);
     void setMode(QString mode);
 
     void updateAssignments();

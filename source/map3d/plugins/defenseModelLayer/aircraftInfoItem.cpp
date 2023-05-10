@@ -157,6 +157,13 @@ AircraftInfoItem::AircraftInfoItem(DefenseModelLayer *defenseModelLayer, const A
     comp->loadUrl(QUrl("qrc:/modelplugin/AircraftInfoView.qml"));
 }
 
+AircraftInfoItem::~AircraftInfoItem()
+{
+    mUiHandle->iwHide();
+    delete mInfomodel;
+    delete mItem;
+}
+
 AircraftInfoModel *AircraftInfoItem::getInfo()
 {
     return mInfomodel;
