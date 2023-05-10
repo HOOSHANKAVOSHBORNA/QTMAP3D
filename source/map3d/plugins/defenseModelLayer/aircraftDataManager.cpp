@@ -33,43 +33,7 @@ AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
     mAircraftTableModel->setAircraftInfos(mAircraftData);
 
 }
-
-void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment* assignment)
-{
-    if(mAircraftData.contains(tn) && !mAircraftData[tn]->assignments.contains(assignment))
-    {
-        mAircraftData[tn]->assignments.append(assignment);
-        //-----------------------------
-        mAircraftData[tn]->modelNode->dataChanged();
-    }
-}
-
-void AircraftDataManager::clearAssignment(int tn)
-{
-    if(mAircraftData.contains(tn))
-    {
-        mAircraftData[tn]->assignments.clear();
-        mAircraftData[tn]->modelNode->dataChanged();
-    }
-}
-
-void AircraftDataManager::removeAssignment(int tn, int systemNo)
-{
-    if(mAircraftData.contains(tn)){
-        auto index = mAircraftData[tn]->findAssignment(systemNo);
-        if(index != -1){
-            mAircraftData[tn]->assignments.removeAt(index);
-            mAircraftData[tn]->modelNode->dataChanged();
-        }
-    }
-}
-
-const QMap<int, Aircraft::Data *> &AircraftDataManager::getAircraftsData() const
-{
-    return mAircraftData;
-}
-
-void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
+void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 {
     //--list---------------------------------------------------------------------------------------------------------
     if(mAircraftData.contains(aircraftInfo.TN))
@@ -105,29 +69,70 @@ void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
     //update information------------------------------------------------------------------
     aircraftModelNode->dataChanged();
     mAircraftTableModel->updateTable(aircraftInfo.TN);
+
+    emit infoChanged(aircraftInfo.TN);
 }
 
-void AircraftDataManager::onClear(int tn)
+void AircraftDataManager::remove(int tn)
 {
-    //-----------------------------------------
-    mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftData[tn]->modelNode, AIRCRAFTS_LAYER_NAME);
+    if(mAircraftData.contains(tn)){
+        mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftData[tn]->modelNode, AIRCRAFTS_LAYER_NAME);
 
-    mAircraftData.remove(tn);
-    mAircraftTableModel->updateTable(tn);
+        delete mAircraftData[tn];
+        mAircraftData.remove(tn);
+        mAircraftTableModel->updateTable(tn);
+
+        emit removed(tn);
+    }
 }
 
-void AircraftDataManager::onAssignmentResponse(int tn, int systemNo, bool accept)
+void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment* assignment)
 {
-    if(!accept && mAircraftData.contains(tn))
+    if(mAircraftData.contains(tn) && mAircraftData[tn]->findAssignment(assignment->info->systemInfo.Number) >= 0)
     {
+        mAircraftData[tn]->assignments.append(assignment);
+        //-----------------------------
+        mAircraftData[tn]->modelNode->dataChanged();
+
+        emit assignmentChanged(tn);
+    }
+}
+
+void AircraftDataManager::assignmentResponse(int tn, int systemNo, bool accept)
+{
+    if(!accept)
+        removeAssignment(tn, systemNo);
+}
+
+void AircraftDataManager::clearAssignments(int tn)
+{
+    if(mAircraftData.contains(tn))
+    {
+        mAircraftData[tn]->assignments.clear();
+        mAircraftData[tn]->modelNode->dataChanged();
+
+        emit assignmentChanged(tn);
+    }
+}
+
+void AircraftDataManager::removeAssignment(int tn, int systemNo)
+{
+    if(mAircraftData.contains(tn)){
         auto index = mAircraftData[tn]->findAssignment(systemNo);
-        if(index != -1){
+        if(index >= 0){
             mAircraftData[tn]->assignments.removeAt(index);
             mAircraftData[tn]->modelNode->dataChanged();
+
+            emit assignmentChanged(tn);
         }
     }
-
 }
+
+const QMap<int, Aircraft::Data *> &AircraftDataManager::getAircraftsData() const
+{
+    return mAircraftData;
+}
+
 
 void AircraftDataManager::addAircraftTab()
 {
