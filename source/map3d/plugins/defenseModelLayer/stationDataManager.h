@@ -10,21 +10,27 @@
 #include "defenseModelLayer.h"
 #include "stationTableModel.h"
 
+namespace Station {
+struct Data{
+    StationInfo info;
+    osg::ref_ptr<StationModelNode> modelNode{nullptr};
+};
+}
 class StationDataManager: public QObject
 {
     Q_OBJECT
 public:
     StationDataManager(DefenseModelLayer* defenseModelLayer);
-public slots:
-    void onInfoChanged(StationInfo& stationInfo);
-private:
-    void addStationTab();
+    void upsertInfo(StationInfo& stationInfo);
+
 signals:
+    void infoChanged(int stationNo);
     void stationDoubleClicked(const int&);
 private:
+    void addStationTab();
+private:
     DefenseModelLayer* mDefenseModelLayer;
-    QMap<int, StationInfo> mStationInfos;
-    QMap<int, osg::ref_ptr<StationModelNode>> mStationModelNodes;
+    QMap<int, Station::Data*> mStationData;
 
     StationTableModel *mStationTableModel;
 };

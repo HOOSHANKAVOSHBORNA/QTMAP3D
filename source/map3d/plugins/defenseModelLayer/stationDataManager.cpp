@@ -5,20 +5,27 @@ StationDataManager::StationDataManager(DefenseModelLayer* defenseModelLayer)
     mDefenseModelLayer = defenseModelLayer;
 
     addStationTab();
-    mStationTableModel->setStationInfos(mStationInfos);
+//    mStationTableModel->setStationInfos(mStationInfos);
 }
 
-void StationDataManager::onInfoChanged(StationInfo &stationInfo)
+void StationDataManager::upsertInfo(StationInfo &stationInfo)
 {
     //--list------------------------------------------------------------------
-    mStationInfos[stationInfo.Number] = stationInfo;
+    if(mStationData.contains(stationInfo.Number)){
+        mStationData[stationInfo.Number]->info = stationInfo;
+    }
+    else {
+        Station::Data* data = new Station::Data();
+        data->info = stationInfo;
+        mStationData[stationInfo.Number] = data;
+    }
     //--model node------------------------------------------------------------
     osg::ref_ptr<StationModelNode> stationModelNode;
     osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mMapController->getMapSRS()->getGeographicSRS(),
                                           stationInfo.Longitude, stationInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
-    if(mStationModelNodes.contains(stationInfo.Number))
+    if(mStationData[stationInfo.Number]->modelNode.valid())
     {
-        stationModelNode = mStationModelNodes[stationInfo.Number];
+        stationModelNode = mStationData[stationInfo.Number]->modelNode;
     }
     else
     {
@@ -27,13 +34,15 @@ void StationDataManager::onInfoChanged(StationInfo &stationInfo)
         stationModelNode->setQStringName(stationInfo.Name);
         stationModelNode->setGeographicPosition(geographicPosition, 0.0);
         //add to container---------------------------------------------------
-        mStationModelNodes[stationInfo.Number] = stationModelNode;
+        mStationData[stationInfo.Number]->modelNode = stationModelNode;
         //add to map --------------------------------------------------------
         mDefenseModelLayer->mMapController->addNodeToLayer(stationModelNode,STATIONS_LAYER_NAME);
     }
     //update information-----------------------------------------------------
     stationModelNode->setInformation(stationInfo);
     mStationTableModel->updateTable(stationInfo.Number);
+
+    emit infoChanged(stationInfo.Number);
 }
 
 void StationDataManager::addStationTab()

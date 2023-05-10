@@ -175,7 +175,7 @@ void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 
 void DataManager::onStationInfoChanged(StationInfo &stationInfo)
 {
-    mStationDataManager->onInfoChanged(stationInfo);
+    mStationDataManager->upsertInfo(stationInfo);
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->addUpdateStation(stationInfo);
     //    //add update list view-----------------------------------------------------------------
