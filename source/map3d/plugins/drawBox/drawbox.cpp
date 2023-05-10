@@ -48,8 +48,8 @@ void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &ca
                 mEnterBoxZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mBox = nullptr;
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
                 mBoxProperties->hide();
+                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     }
@@ -62,11 +62,11 @@ void DrawBox::mousePressEvent(QMouseEvent *event)
             if (mDrawingState == DrawingState::START) {
                 mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
-                finishDrawing(event);
+//                finishDrawing(event);
                 event->accept();
             }
         }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
+        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
             cancelDrawing(event);
         }
         else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
@@ -87,14 +87,12 @@ void DrawBox::startDraw(QMouseEvent *event)
 {
     mBox = new Box();
     mBoxProperties->setBox(mBox);
-
+    mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
     mBox->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-
-
     mBoxProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
     mMapcontroller->addNodeToLayer(mBox, DRAW_LAYER_NAME);
     event->accept();
@@ -110,12 +108,13 @@ void DrawBox::finishDrawing(QMouseEvent *event)
 
 void DrawBox::cancelDrawing(QMouseEvent *event)
 {
-    mMapcontroller->addNodeToLayer(mBox, DRAW_LAYER_NAME);
-    mBox = nullptr;
-//    mBoxProperties->setBox(mBox);
-    mDrawingState = DrawingState::START;
-
-    event->accept();
+    if(mDrawingState == DrawingState::DRAWING){
+        mMapcontroller->removeNodeFromLayer(mBox, DRAW_LAYER_NAME);
+        mBox = nullptr;
+        mBoxProperties->setBox(mBox);
+        mDrawingState = DrawingState::START;
+        event->accept();
+    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawBox::makeIconNode()

@@ -62,11 +62,11 @@ void DrawCylinder::mousePressEvent(QMouseEvent *event)
             if (mDrawingState == DrawingState::START) {
                 mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
-                finishDrawing(event);
+//                finishDrawing(event);
                 event->accept();
             }
         }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
+        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
             cancelDrawing(event);
         }
         else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
@@ -87,7 +87,7 @@ void DrawCylinder::startDraw(QMouseEvent *event)
 {
     mCylinder = new Cylinder();
     mCylinderProperties->setCylinder(mCylinder);
-
+    mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
@@ -109,12 +109,14 @@ void DrawCylinder::finishDrawing(QMouseEvent *event)
 
 void DrawCylinder::cancelDrawing(QMouseEvent *event)
 {
-    mMapcontroller->removeNodeFromLayer(mCylinder, DRAW_LAYER_NAME);
-    mCylinder = nullptr;
-    mCylinderProperties->setCylinder(mCylinder);
-    mDrawingState = DrawingState::START;
+    if(mDrawingState == DrawingState::DRAWING){
+        mMapcontroller->removeNodeFromLayer(mCylinder, DRAW_LAYER_NAME);
+        mCylinder = nullptr;
+        mCylinderProperties->setCylinder(mCylinder);
+        mDrawingState = DrawingState::START;
 
-    event->accept();
+        event->accept();
+    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawCylinder::makeIconNode()

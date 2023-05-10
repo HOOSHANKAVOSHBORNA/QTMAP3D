@@ -63,11 +63,11 @@ void drawSphere::mousePressEvent(QMouseEvent *event)
             if (mDrawingState == DrawingState::START) {
                 mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
-                finishDrawing(event);
+                //                finishDrawing(event);
                 event->accept();
             }
         }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
+        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
             cancelDrawing(event);
         }
         else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
@@ -87,6 +87,7 @@ void drawSphere::mouseMoveEvent(QMouseEvent *event)
 void drawSphere::startDraw(QMouseEvent *event)
 {
     mSphere = new SphereNode();
+    mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
@@ -109,12 +110,14 @@ void drawSphere::finishDrawing(QMouseEvent *event)
 
 void drawSphere::cancelDrawing(QMouseEvent *event)
 {
-    mMapcontroller->removeNodeFromLayer(mSphere, DRAW_LAYER_NAME);
-    mSphere = nullptr;
-    mSphereProperties->setSphere(mSphere);
-    mDrawingState = DrawingState::START;
+    if(mDrawingState == DrawingState::DRAWING){
+        mMapcontroller->removeNodeFromLayer(mSphere, DRAW_LAYER_NAME);
+        mSphere = nullptr;
+        mSphereProperties->setSphere(mSphere);
+        mDrawingState = DrawingState::START;
 
-    event->accept();
+        event->accept();
+    }
 }
 
 osgEarth::Annotation::PlaceNode *drawSphere::makeIconNode()
