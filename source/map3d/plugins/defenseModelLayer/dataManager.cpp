@@ -62,7 +62,7 @@ void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 
 void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
 {
-    mSystemDataManager->onInfoChanged(systemInfo);
+    mSystemDataManager->upsertInfo(systemInfo);
     mSystemAssignmentTableModel->updateTable(systemInfo.Number);
 
     mAircraftAssignmentTableModel->updateAssignments();
@@ -76,7 +76,7 @@ void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
 
 void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 {
-    mSystemDataManager->onStatusInfoChanged(systemStatusInfo);
+    mSystemDataManager->updateStatusInfo(systemStatusInfo);
     mSystemAssignmentTableModel->updateTable(systemStatusInfo.Number);
 
     mAircraftAssignmentTableModel->updateAssignments();
@@ -92,7 +92,7 @@ void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 
 void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 {
-    mSystemDataManager->onCombatInfoChanged(systemCombatInfo);
+    mSystemDataManager->updateCombatInfo(systemCombatInfo);
     mSystemAssignmentTableModel->updateTable(systemCombatInfo.Number);
 
     mAircraftAssignmentTableModel->updateAssignments();
@@ -182,7 +182,8 @@ void DataManager::onClearAircraft(int tn)
 {
     mAircraftDataManager->remove(tn);
 
-    mSystemDataManager->removeAssignments(tn);
+
+    mSystemDataManager->clearAssignments(tn);
 //    mAircraftAssignmentTableModel->updateTable(tn);
     mAircraftAssignmentTableModel->updateAssignments();
     mSystemAssignmentTableModel->updateAssignments();
@@ -195,7 +196,7 @@ void DataManager::onClearAircraft(int tn)
 void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool accept)
 {
     mAircraftDataManager->assignmentResponse(tn, systemNo, accept);
-    mSystemDataManager->onAssignmentResponse(tn, systemNo, accept);
+    mSystemDataManager->assignmentResponse(tn, systemNo, accept);
     //    //    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
     //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemNo);
     //    AircraftModelNode *aircraftModelNode = mDefenseModelLayer->getAircraftModelNode(tn);
@@ -241,7 +242,7 @@ void DataManager::assignAircraft2System(int tn, int systemNo)
 void DataManager::cancelAircraftAssignments(int tn)
 {
     mAircraftDataManager->clearAssignments(tn);
-    mSystemDataManager->removeAssignments(tn);
+    mSystemDataManager->clearAssignments(tn);
     //    if(aircraftModelNode)
     //    {
     //        auto systemModelNodes = aircraftModelNode->getAssignments();
