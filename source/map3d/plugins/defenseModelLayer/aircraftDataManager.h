@@ -23,7 +23,7 @@ struct Assignment{
 struct Data{
     AircraftInfo info;
     osg::ref_ptr<AircraftModelNode> modelNode{nullptr};
-    QList<Assignment> assignments;
+    QList<Assignment*> assignments;
     int findAssignment(int systemNo);
 
 };
@@ -34,10 +34,10 @@ class AircraftDataManager: public QObject
     Q_OBJECT
 public:
     AircraftDataManager(DefenseModelLayer* defenseModelLayer);
-    void addAssignment(int tn, Aircraft::Assignment assignment);
+    void addAssignment(int tn, Aircraft::Assignment *assignment);
     void clearAssignment(int tn);
     void removeAssignment(int tn, int systemNo);
-    const QMap<int, Aircraft::Data> &getAircraftsData() const;
+    const QMap<int, Aircraft::Data*> &getAircraftsData() const;
 
 signals:
     void doubleClicked(int NT);
@@ -52,7 +52,7 @@ public slots:
 
 private:
     DefenseModelLayer* mDefenseModelLayer;
-    QMap<int, Aircraft::Data> mAircraftData;
+    QMap<int, Aircraft::Data*> mAircraftData;
 
     AircraftTableModel *mAircraftTableModel;
     AircraftTableModel *mAircraftAssignmentTableModel;

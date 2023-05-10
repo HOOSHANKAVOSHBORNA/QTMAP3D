@@ -79,7 +79,7 @@ QStringList AircraftInfoModel::getSystemColor() const
 {
     QStringList colors;
     for (auto& i : mAircraftInfo->assignments)
-        colors.append(i.info->systemCombatInfo.phaseToColor());
+        colors.append(i->info->systemCombatInfo.phaseToColor());
     return colors;
 }
 
@@ -87,7 +87,7 @@ QStringList AircraftInfoModel::getSystemsName() const
 {
     QStringList systems;
     for (auto i : mAircraftInfo->assignments) {
-        systems.append(i.info->systemInfo.Name);
+        systems.append(i->info->systemInfo.Name);
     }
     return systems;
 }
@@ -96,7 +96,7 @@ QStringList AircraftInfoModel::getSystemsNumber() const
 {
     QStringList systems;
     for (auto i : mAircraftInfo->assignments) {
-        systems.append(QString::number(i.info->systemInfo.Number));
+        systems.append(QString::number(i->info->systemInfo.Number));
     }
     return systems;
 }
@@ -105,7 +105,7 @@ QStringList AircraftInfoModel::getSystemsPhase() const
 {
     QStringList systems;
     for (auto i : mAircraftInfo->assignments) {
-        systems.push_back(i.info->systemCombatInfo.phaseToString());
+        systems.push_back(i->info->systemCombatInfo.phaseToString());
     }
     return systems;
 }

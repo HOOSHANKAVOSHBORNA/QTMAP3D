@@ -40,8 +40,8 @@ public:
 
     Q_INVOKABLE int getTN(int row) const;
 
-    void setAircraftInfos(const QMap<int, Aircraft::Data> & aircrafts);
-    void setSystemInfos(const QMap<int, System::Data> &systems);
+    void setAircraftInfos(const QMap<int, Aircraft::Data *> &aircrafts);
+    void setSystemInfos(const QMap<int, System::Data *> &systems);
     void updateTable(int tn);
     void setMode(QString mode);
 
@@ -59,8 +59,8 @@ signals:
 
 private:
 
-    const QMap<int, Aircraft::Data> *mAircraftInfos;
-    const QMap<int, System::Data> *mSystemInfos;
+    const QMap<int, Aircraft::Data*> *mAircraftInfos;
+    const QMap<int, System::Data*> *mSystemInfos;
     QList<int> mAircraftInfosProxy;
 
 
