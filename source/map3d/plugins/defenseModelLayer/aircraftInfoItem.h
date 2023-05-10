@@ -12,6 +12,7 @@ struct Data;
 class SystemModelNode;
 class UIHandle;
 class QQmlEngine;
+class DefenseModelLayer;
 
 class AircraftInfoModel : public QAbstractListModel
 {
@@ -38,24 +39,14 @@ public:
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    void setAircraftInfo(const Aircraft::Data *a);
-    QStringList getMainInfo() const;
-    QStringList getmainInfoHeaders() const;
-    QStringList getLocationInfo() const;
-    QStringList getLocationInfoHeader() const;
-    void addAssignment(int number, SystemModelNode* system);
-    void removeAssignment(int systemNumber);
-
-    QStringList getSystemsName() const;
-    QStringList getSystemsNumber() const;
-    QStringList getSystemsPhase() const;
-    QStringList getSystemColor() const;
+    void setAircraftInfo(const Aircraft::Data &a);
+    void updateAircraftInfo();
 
 public slots:
     const Aircraft::Data* getAircraftInfo() {return mAircraftInfo;}
     QColor getAircraftColor();
 
-Q_SIGNALS:
+signals:
     void gotoButtonClicked();
     void routeButtonClicked(bool checked);
     void trackButtonClicked(bool checked);
@@ -63,22 +54,28 @@ Q_SIGNALS:
     void moreButtonClicked();
 
 private:
-    const Aircraft::Data *mAircraftInfo;
-//    QMap<int, SystemModelNode*> mAssignedSystems;
+    QStringList getMainInfo() const;
+    QStringList getmainInfoHeaders() const;
+    QStringList getLocationInfo() const;
+    QStringList getLocationInfoHeader() const;
+    QStringList getSystemsName() const;
+    QStringList getSystemsNumber() const;
+    QStringList getSystemsPhase() const;
+    QStringList getSystemColor() const;
 
+private:
+    const Aircraft::Data *mAircraftInfo;
 };
 
 class AircraftInfoItem : public QObject
 {
     Q_OBJECT
 public:
-    explicit AircraftInfoItem(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, const Aircraft::Data *mInformation, QObject *parent = nullptr);
-    AircraftInfoModel* getInfo(){return mInfomodel;}
-    void updateAircraft(const Aircraft::Data* mInformation);
+    explicit AircraftInfoItem(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &mInformation, QObject *parent = nullptr);
+    ~AircraftInfoItem();
+    AircraftInfoModel* getInfo();
+    void updateAircraft();
     void show();
-
-    void addAssignment(int number, SystemModelNode* system);
-    void removeAssignment(int systemNumber);
     void setTrackOff();
 
 private:

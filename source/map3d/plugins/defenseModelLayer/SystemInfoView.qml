@@ -622,7 +622,8 @@ Item {
                                     model: StatusInfo
                                     Label {
                                         text: StatusInfo[index]
-                                        color: "white"
+                                        color: index == 2 ? BCCStatusColor : index == 3 ? RadarStatusColor : "white"
+                                        font.bold: index == 2 || index == 3
                                         Layout.fillWidth: true
                                         Layout.leftMargin: 5
                                         leftInset: -5

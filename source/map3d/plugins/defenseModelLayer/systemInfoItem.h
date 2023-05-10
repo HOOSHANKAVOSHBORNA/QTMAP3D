@@ -35,7 +35,9 @@ public:
         CombatInfoHeaders = Qt::UserRole + 207,
         AssignAircraftsName = Qt::UserRole + 208,
         AssignAircraftsType = Qt::UserRole + 209,
-        SystemColor = Qt::UserRole + 210
+        SystemColor = Qt::UserRole + 210,
+        BCCStatusColor = Qt::UserRole + 211,
+        RadarStatusColor = Qt::UserRole + 212
 
     };
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -44,6 +46,14 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     void setInformtion(const System::Data *info);
+signals:
+    void gotoButtonClicked();
+    void rangeButtonClicked(bool check);
+    void wezButtonClicked(bool checked);
+    void mezButtonClicked(bool checked);
+    void activeButtonToggled(bool checked);
+    void moreButtonClicked();
+private:
     QStringList getMainInfo() const;
     QStringList getMainInfoHeaders() const;
     QStringList getLocationInfo() const;
@@ -54,15 +64,6 @@ public:
     QStringList getCombatInfoHeaders() const;
     QStringList getAssignmentsName() const;
     QStringList getAssignmentsType() const;
-
-Q_SIGNALS:
-    void gotoButtonClicked();
-    void rangeButtonClicked(bool check);
-    void wezButtonClicked(bool checked);
-    void mezButtonClicked(bool checked);
-    void activeButtonToggled(bool checked);
-    void moreButtonClicked();
-
 private:
     const System::Data* mSystemInfo;
 };

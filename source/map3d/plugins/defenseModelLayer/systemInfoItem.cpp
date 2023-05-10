@@ -7,7 +7,6 @@
 
 SystemInfoModel::SystemInfoModel(QObject *parent) : QAbstractListModel(parent)
 {
-
 }
 
 
@@ -18,8 +17,8 @@ int SystemInfoModel::rowCount(const QModelIndex &/*parent*/) const {
 
 QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
     switch (role) {
-        case Numberr: return QVariant::fromValue<int>(mSystemInfo->information.systemInfo.Number);
-        case Active: return QVariant::fromValue<bool>(mSystemInfo->information.systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? true : false);
+        case Numberr: return QVariant::fromValue<int>(mSystemInfo->information->systemInfo.Number);
+        case Active: return QVariant::fromValue<bool>(mSystemInfo->information->systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? true : false);
         case MainInfo: return QVariant::fromValue<QStringList>(getMainInfo());
         case MainInfoHeaders: return QVariant::fromValue<QStringList>(getMainInfoHeaders());
         case LocationInfo: return QVariant::fromValue<QStringList>(getLocationInfo());
@@ -30,9 +29,10 @@ QVariant SystemInfoModel::data(const QModelIndex &/*index*/, int role) const{
         case CombatInfoHeaders: return QVariant::fromValue<QStringList>(getCombatInfoHeaders());
         case AssignAircraftsName: return QVariant::fromValue<QStringList>(getAssignmentsName());
         case AssignAircraftsType: return QVariant::fromValue<QStringList>(getAssignmentsType());
-        case SystemColor: return QVariant::fromValue<QString>(mSystemInfo->information.systemCombatInfo.phaseToColor());
-        default  : return QVariant::fromValue<QString>(mSystemInfo->information.systemInfo.Name);
-
+        case SystemColor: return QVariant::fromValue<QString>(mSystemInfo->information->systemCombatInfo.phaseToColor());
+        case BCCStatusColor: return QVariant::fromValue<QColor>(mSystemInfo->information->systemStatusInfo.statusToColor(mSystemInfo->information->systemStatusInfo.BCCStatus));
+        case RadarStatusColor: return QVariant::fromValue<QColor>(mSystemInfo->information->systemStatusInfo.statusToColor(mSystemInfo->information->systemStatusInfo.RadarSearchStatus));
+        default  : return QVariant::fromValue<QString>(mSystemInfo->information->systemInfo.Name);
     }
 }
 
@@ -53,6 +53,8 @@ QHash<int, QByteArray> SystemInfoModel::roleNames() const
     hash[AssignAircraftsType] = "AssignAircraftsType";
     hash[AssignAircraftsName] = "AssignAircraftsName";
     hash[SystemColor] = "SystemColor";
+    hash[BCCStatusColor] = "BCCStatusColor";
+    hash[RadarStatusColor] = "RadarStatusColor";
     return hash;
 }
 
@@ -66,10 +68,10 @@ void SystemInfoModel::setInformtion(const System::Data *info)
 
 QStringList SystemInfoModel::getMainInfo() const
 {
-    return QStringList {mSystemInfo->information.systemInfo.Name,
-                        QString::number(mSystemInfo->information.systemInfo.Number),
-                        mSystemInfo->information.systemInfo.Type,
-                        mSystemInfo->information.systemInfo.Terminal};
+    return QStringList {mSystemInfo->information->systemInfo.Name,
+                        QString::number(mSystemInfo->information->systemInfo.Number),
+                        mSystemInfo->information->systemInfo.Type,
+                        mSystemInfo->information->systemInfo.Terminal};
 }
 
 QStringList SystemInfoModel::getMainInfoHeaders() const
@@ -79,11 +81,11 @@ QStringList SystemInfoModel::getMainInfoHeaders() const
 
 QStringList SystemInfoModel::getLocationInfo() const
 {
-    return QStringList {std::abs(mSystemInfo->information.systemInfo.Latitude + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information.systemInfo.Latitude),
-                        std::abs(mSystemInfo->information.systemInfo.Longitude + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information.systemInfo.Longitude),
-                        std::abs(mSystemInfo->information.systemInfo.Altitude + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information.systemInfo.Altitude),
-                        std::abs(mSystemInfo->information.systemInfo.ViewRange + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information.systemInfo.ViewRange) + " m",
-                        std::abs(mSystemInfo->information.systemInfo.MezRange + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information.systemInfo.MezRange) + " m"};
+    return QStringList {std::abs(mSystemInfo->information->systemInfo.Latitude + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information->systemInfo.Latitude),
+                        std::abs(mSystemInfo->information->systemInfo.Longitude + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information->systemInfo.Longitude),
+                        std::abs(mSystemInfo->information->systemInfo.Altitude + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information->systemInfo.Altitude),
+                        std::abs(mSystemInfo->information->systemInfo.ViewRange + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information->systemInfo.ViewRange) + " m",
+                        std::abs(mSystemInfo->information->systemInfo.MezRange + 1) < 0.00001 ? "------" : QString("%L1").arg(mSystemInfo->information->systemInfo.MezRange) + " m"};
 }
 
 QStringList SystemInfoModel::getLocationInfoHeaders() const
@@ -93,13 +95,13 @@ QStringList SystemInfoModel::getLocationInfoHeaders() const
 
 QStringList SystemInfoModel::getStatusInfo() const
 {
-    return QStringList {mSystemInfo->information.systemStatusInfo.ReceiveTime,
-                        mSystemInfo->information.systemStatusInfo.Simulation,
-                        mSystemInfo->information.systemStatusInfo.radarStatusToString(mSystemInfo->information.systemStatusInfo.BCCStatus),
-                        mSystemInfo->information.systemStatusInfo.radarStatusToString(mSystemInfo->information.systemStatusInfo.RadarSearchStatus),
-                        mSystemInfo->information.systemStatusInfo.operationalToString(),
-                        mSystemInfo->information.systemStatusInfo.MissileCount == -1 ? "------" : QString::number(mSystemInfo->information.systemStatusInfo.MissileCount),
-                        mSystemInfo->information.systemStatusInfo.RadarMode};
+    return QStringList {mSystemInfo->information->systemStatusInfo.ReceiveTime,
+                        mSystemInfo->information->systemStatusInfo.Simulation,
+                        mSystemInfo->information->systemStatusInfo.radarStatusToString(mSystemInfo->information->systemStatusInfo.BCCStatus),
+                        mSystemInfo->information->systemStatusInfo.radarStatusToString(mSystemInfo->information->systemStatusInfo.RadarSearchStatus),
+                        mSystemInfo->information->systemStatusInfo.operationalToString(),
+                        mSystemInfo->information->systemStatusInfo.MissileCount == -1 ? "------" : QString::number(mSystemInfo->information->systemStatusInfo.MissileCount),
+                        mSystemInfo->information->systemStatusInfo.RadarMode};
 }
 
 QStringList SystemInfoModel::getStatusInfoHeaders() const
@@ -109,12 +111,12 @@ QStringList SystemInfoModel::getStatusInfoHeaders() const
 
 QStringList SystemInfoModel::getCombatInfo() const
 {
-    return QStringList {mSystemInfo->information.systemCombatInfo.TN == -1 ? "------" : QString::number(mSystemInfo->information.systemCombatInfo.TN),
-                        mSystemInfo->information.systemCombatInfo.Acceptance,
-                        mSystemInfo->information.systemCombatInfo.phaseToString(),
-                        std::abs(mSystemInfo->information.systemCombatInfo.Antenna + 1) < 0.001 ? "------" : QString::number(mSystemInfo->information.systemCombatInfo.Antenna),
-                        mSystemInfo->information.systemCombatInfo.ChanelNo,
-                        mSystemInfo->information.systemCombatInfo.Inrange};
+    return QStringList {mSystemInfo->information->systemCombatInfo.TN == -1 ? "------" : QString::number(mSystemInfo->information->systemCombatInfo.TN),
+                        mSystemInfo->information->systemCombatInfo.Acceptance,
+                        mSystemInfo->information->systemCombatInfo.phaseToString(),
+                        std::abs(mSystemInfo->information->systemCombatInfo.Antenna + 1) < 0.001 ? "------" : QString::number(mSystemInfo->information->systemCombatInfo.Antenna),
+                        mSystemInfo->information->systemCombatInfo.ChanelNo,
+                        mSystemInfo->information->systemCombatInfo.Inrange};
 }
 
 QStringList SystemInfoModel::getCombatInfoHeaders() const
@@ -125,8 +127,8 @@ QStringList SystemInfoModel::getCombatInfoHeaders() const
 QStringList SystemInfoModel::getAssignmentsName() const
 {
     QStringList aircrafts;
-    for (auto i : mSystemInfo->assignments) {
-        aircrafts.push_back(QString::number(i.info->TN));
+    for (auto& i : mSystemInfo->assignments) {
+        aircrafts.push_back(QString::number(i->info->TN));
     }
     return aircrafts;
 }
@@ -134,8 +136,8 @@ QStringList SystemInfoModel::getAssignmentsName() const
 QStringList SystemInfoModel::getAssignmentsType() const
 {
     QStringList aircrafts;
-    for (auto i : mSystemInfo->assignments) {
-        aircrafts.push_back(i.info->aircraftTypeToString());
+    for (auto& i : mSystemInfo->assignments) {
+        aircrafts.push_back(i->info->aircraftTypeToString());
     }
     return aircrafts;
 }
@@ -153,7 +155,6 @@ SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, const 
 
             mInfoModel->setInformtion(mInformation);
             mItem->setProperty("model", QVariant::fromValue<SystemInfoModel*>(mInfoModel));
-//            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
 
     });
@@ -169,7 +170,7 @@ void SystemInfoItem::setInfo(const System::Data *systemInfo)
 
 void SystemInfoItem::show()
 {
-    mUiHandle->iwShow(mItem, QString::number(mInformation->information.systemInfo.Number));
+    mUiHandle->iwShow(mItem, QString::number(mInformation->information->systemInfo.Number));
 }
 
 

@@ -9,13 +9,18 @@ bool Aircraft::Assignment::operator==(const Aircraft::Assignment &assignment)
 int Aircraft::Data::findAssignment(int systemNo)
 {
     int result = -1;
-    Aircraft::Assignment s;
-    s.info = new  System::Information();
-    s.info->systemInfo.Number = systemNo;
-     if (assignments.contains(s))
-     {
-         result = assignments.indexOf(s);
-     }
+    auto fit = std::find_if(assignments.begin(), assignments.end(), [systemNo](Assignment* as){
+        return as->info->systemInfo.Number == systemNo;
+    });
+    if(fit != assignments.end())
+        result = static_cast<int>(std::distance(assignments.begin(), fit));
+//    Aircraft::Assignment s;
+//    s.info = new  System::Information();
+//    s.info->systemInfo.Number = systemNo;
+//     if (assignments.contains(&s))
+//     {
+//         result = assignments.indexOf(&s);
+//     }
 
      return result;
 }
@@ -24,137 +29,105 @@ AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
 {
     mDefenseModelLayer = defenseModelLayer;
 
-    addAircraftTab();
-    mAircraftTableModel->setAircraftInfos(mAircraftData);
+    mAircraftsTable = new AircraftTable(this, mDefenseModelLayer);
 
 }
-
-void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment assignment)
-{
-    if(mAircraftData.contains(tn) && !mAircraftData[tn].assignments.contains(assignment))
-    {
-        mAircraftData[tn].assignments.append(assignment);
-        //-----------------------------
-        mAircraftData[tn].modelNode->dataChanged();
-    }
-}
-
-void AircraftDataManager::clearAssignment(int tn)
-{
-    if(mAircraftData.contains(tn))
-    {
-        mAircraftData[tn].assignments.clear();
-        mAircraftData[tn].modelNode->dataChanged();
-    }
-}
-
-void AircraftDataManager::removeAssignment(int tn, int systemNo)
-{
-    if(mAircraftData.contains(tn)){
-        auto index = mAircraftData[tn].findAssignment(systemNo);
-        if(index != -1){
-            mAircraftData[tn].assignments.removeAt(index);
-            mAircraftData[tn].modelNode->dataChanged();
-        }
-    }
-}
-
-Aircraft::Data *AircraftDataManager::getAircraftData(int &tn)
-{
-    return mAircraftData.contains(tn) ? &mAircraftData[tn] : nullptr;
-}
-
-QMap<int, Aircraft::Data> &AircraftDataManager::getAircraftsData()
-{
-    return mAircraftData;
-}
-
-void AircraftDataManager::onInfoChanged(AircraftInfo &aircraftInfo)
+void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 {
     //--list---------------------------------------------------------------------------------------------------------
-    mAircraftData[aircraftInfo.TN].info = aircraftInfo;
+    if(mAircraftData.contains(aircraftInfo.TN))
+        mAircraftData[aircraftInfo.TN]->info = aircraftInfo;
+    else{
+        Aircraft::Data* data = new Aircraft::Data();
+        data->info = aircraftInfo;
+        mAircraftData[aircraftInfo.TN] = data;
+    }
     //--model node----------------------------------------------------------------------------------------------------
     osg::ref_ptr<AircraftModelNode> aircraftModelNode;
     osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mMapController->getMapSRS()->getGeographicSRS(),
                                           aircraftInfo.Longitude, aircraftInfo.Latitude, aircraftInfo.Altitude);
 
-    if(mAircraftData[aircraftInfo.TN].modelNode.valid())
+    if(mAircraftData[aircraftInfo.TN]->modelNode.valid())
     {
-        aircraftModelNode = mAircraftData[aircraftInfo.TN].modelNode;
+        aircraftModelNode = mAircraftData[aircraftInfo.TN]->modelNode;
         aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
 
     }
     else
     {
         //create and model node------------------------------------------------
-        aircraftModelNode = new AircraftModelNode(mDefenseModelLayer,&mAircraftData[aircraftInfo.TN], aircraftInfo.Type);
+        aircraftModelNode = new AircraftModelNode(mDefenseModelLayer,*mAircraftData[aircraftInfo.TN], aircraftInfo.Type);
         aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
         aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
         //add to container-----------------------------------------------------
-        mAircraftData[aircraftInfo.TN].modelNode = aircraftModelNode;
+        mAircraftData[aircraftInfo.TN]->modelNode = aircraftModelNode;
         //add to map ---------------------------------------------------------
         mDefenseModelLayer->mMapController->addNodeToLayer(aircraftModelNode, AIRCRAFTS_LAYER_NAME);
     }
     //update information------------------------------------------------------------------
     aircraftModelNode->dataChanged();
-    mAircraftTableModel->updateTable(aircraftInfo.TN);
+//    mAircraftTableModel->updateTable(aircraftInfo.TN);
+    emit infoChanged(aircraftInfo.TN);
 }
 
-void AircraftDataManager::onClear(int tn)
+void AircraftDataManager::remove(int tn)
 {
-    //-----------------------------------------
-    mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftData[tn].modelNode, AIRCRAFTS_LAYER_NAME);
-    //--TODO remove system assignment
+    if(mAircraftData.contains(tn)){
+        mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftData[tn]->modelNode, AIRCRAFTS_LAYER_NAME);
 
+        delete mAircraftData[tn];
+        mAircraftData.remove(tn);
+//        mAircraftTableModel->updateTable(tn);
 
-    mAircraftData.remove(tn);
-    mAircraftTableModel->updateTable(tn);
+        emit removed(tn);
+    }
 }
 
-void AircraftDataManager::onAssignmentResponse(int tn, int systemNo, bool accept)
+void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment* assignment)
 {
-    if(!accept && mAircraftData.contains(tn))
+    if(mAircraftData.contains(tn) &&
+            mAircraftData[tn]->findAssignment(assignment->info->systemInfo.Number) < 0)
     {
-        auto index = mAircraftData[tn].findAssignment(systemNo);
-        if(index != -1){
-            mAircraftData[tn].assignments.removeAt(index);
-            mAircraftData[tn].modelNode->dataChanged();
+        mAircraftData[tn]->assignments.append(assignment);
+        //-----------------------------
+        mAircraftData[tn]->modelNode->dataChanged();
+
+        emit assignmentChanged(tn);
+    }
+}
+
+void AircraftDataManager::assignmentResponse(int tn, int systemNo, bool accept)
+{
+    if(!accept)
+        removeAssignment(tn, systemNo);
+}
+
+void AircraftDataManager::clearAssignments(int tn)
+{
+    if(mAircraftData.contains(tn))
+    {
+        mAircraftData[tn]->assignments.clear();
+        mAircraftData[tn]->modelNode->dataChanged();
+
+        emit assignmentChanged(tn);
+    }
+}
+
+void AircraftDataManager::removeAssignment(int tn, int systemNo)
+{
+    if(mAircraftData.contains(tn)){
+        auto index = mAircraftData[tn]->findAssignment(systemNo);
+        if(index >= 0){
+            mAircraftData[tn]->assignments.removeAt(index);
+            mAircraftData[tn]->modelNode->dataChanged();
+
+            emit assignmentChanged(tn);
         }
     }
-
 }
 
-void AircraftDataManager::addAircraftTab()
+const QMap<int, Aircraft::Data *> &AircraftDataManager::getAircraftsData() const
 {
-    QQmlComponent *comp = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        //        qDebug() << comp->errorString();
-
-        if (comp->status() == QQmlComponent::Ready) {
-            QQuickItem *aircraftTab = (QQuickItem*) comp->create(nullptr);
-            mAircraftTableModel = new AircraftTableModel;
-            mAircraftTableModel->setMode("TableModel");
-
-            QObject::connect(aircraftTab,
-                             SIGNAL(filterTextChanged(const QString&)),
-                             mAircraftTableModel,
-                             SLOT(setFilterWildcard(const QString&)));
-
-            QObject::connect(aircraftTab,
-                             SIGNAL(aircraftDoubleClicked(const int&)),
-                             this,
-                             SIGNAL(doubleClicked(const int&)));
-
-            QObject::connect(aircraftTab,
-                             SIGNAL(sortWithHeader(int)),
-                             mAircraftTableModel,
-                             SLOT(sortWithHeader(int)));
-            aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
-            mDefenseModelLayer->mUIHandle->lwAddTab("Aircrafts", aircraftTab);
-        }
-
-    });
-
-    comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
+    return mAircraftData;
 }

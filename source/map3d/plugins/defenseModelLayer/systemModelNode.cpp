@@ -214,7 +214,7 @@ void SystemModelNode::informationChanged()
 
 void SystemModelNode::combatInfoChanged()
 {
-    auto combatInfo = mSystemData->information.systemCombatInfo;
+    auto combatInfo = mSystemData->information->systemCombatInfo;
     if (mSystemInfoItem)
         mSystemInfoItem->setInfo(mSystemData);
 
@@ -257,7 +257,7 @@ System::Data *SystemModelNode::getData() const
 
 void SystemModelNode::statusInfoChanged()
 {
-    auto systemStatusInfo = mSystemData->information.systemStatusInfo;
+    auto systemStatusInfo = mSystemData->information->systemStatusInfo;
     if (mSystemInfoItem)
         mSystemInfoItem->setInfo(mSystemData);
     mNode2D->setValue(0, systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S);
@@ -365,7 +365,7 @@ void SystemModelNode::frameEvent()
     mLabelNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 
     for(auto assinment:mSystemData->assignments)
-        assinment.updateLine(getPosition());
+        assinment->updateLine(getPosition());
 
     if (mTargetModelNode.valid()) {
         mTruckF->aimTarget(mTargetModelNode->getPosition());
@@ -405,7 +405,7 @@ void SystemModelNode::updateColors()
 
     }
 
-    if (mSystemData->information.systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S) {
+    if (mSystemData->information->systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S) {
         mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
     } else {
         mModelColor = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
@@ -450,7 +450,7 @@ void SystemModelNode::onRangeButtonToggled(bool check)
     if(check)
     {
         mRangeCircle->setPosition(getPosition());
-        mRangeCircle->setRadius(osgEarth::Distance(mSystemData->information.systemInfo.ViewRange, osgEarth::Units::METERS));
+        mRangeCircle->setRadius(osgEarth::Distance(mSystemData->information->systemInfo.ViewRange, osgEarth::Units::METERS));
 
         mDefenseModelLayer->mMapController->addNodeToLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
     }
@@ -468,7 +468,7 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         osg::Vec3d worldPosition;
         getPosition().toWorld(worldPosition, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint;
-        double radius = mSystemData->information.systemInfo.MezRange;
+        double radius = mSystemData->information->systemInfo.MezRange;
 
         osg::Vec3d v1 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
         osg::Vec3d v2 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() + radius*2/4, worldPosition.z());
@@ -513,7 +513,7 @@ void SystemModelNode::onMezButtonToggled(bool checked)
     if(checked)
     {
         mMezSphere->setPosition(getPosition());
-        mMezSphere->setRadius(mSystemData->information.systemInfo.MezRange);
+        mMezSphere->setRadius(mSystemData->information->systemInfo.MezRange);
         mDefenseModelLayer->mMapController->addNodeToLayer(mMezSphere, SYSTEMS_LAYER_NAME);
     }
     else
@@ -524,7 +524,7 @@ void SystemModelNode::onMezButtonToggled(bool checked)
 
 void SystemModelNode::onActiveButtonToggled(bool checked)
 {
-    mSystemData->information.systemStatusInfo.RadarSearchStatus = (checked ? SystemStatusInfo::S : SystemStatusInfo::US);
+    mSystemData->information->systemStatusInfo.RadarSearchStatus = (checked ? SystemStatusInfo::S : SystemStatusInfo::US);
 
     mNode2D->setValue(0, checked);
     mNode2D->setValue(1, !checked);
@@ -536,7 +536,7 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
 void SystemModelNode::searchPhase()
 {
     for(auto assignment: mSystemData->assignments)
-        assignment.line->setColor(osgEarth::Color::Yellow);
+        assignment->line->setColor(osgEarth::Color::Yellow);
 
     mTruckS->startSearch();
 }
@@ -548,8 +548,8 @@ void SystemModelNode::lockPhase(int tn)
     if(index != -1)
     {
         auto assignment = mSystemData->assignments.at(index);
-        mTargetModelNode = assignment.modelNode;
-        assignment.line->setColor(osgEarth::Color::Orange);
+        mTargetModelNode = assignment->modelNode;
+        assignment->line->setColor(osgEarth::Color::Orange);
 
         mTruckL->lockOnTarget(mTargetModelNode->getPosition());
         mTruckF->aimTarget(mTargetModelNode->getPosition());
@@ -571,8 +571,8 @@ void SystemModelNode::firePhase(int tn)
     if(index != -1)
     {
         auto assignment = mSystemData->assignments.at(index);
-        mTargetModelNode = assignment.modelNode;
-        assignment.line->setColor(osgEarth::Color::Red);
+        mTargetModelNode = assignment->modelNode;
+        assignment->line->setColor(osgEarth::Color::Red);
         mFiredRocket = mTruckF->getActiveRocket();
         if(mFiredRocket)
         {
@@ -591,8 +591,8 @@ void SystemModelNode::killPhase(int tn)
     {
         auto assignment = mSystemData->assignments.at(index);
         mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
-        assignment.line->setColor(osgEarth::Color::Black);
-        assignment.modelNode->collision();
+        assignment->line->setColor(osgEarth::Color::Black);
+        assignment->modelNode->collision();
 
         if(mFiredRocket)
             mFiredRocket->stop();
@@ -609,7 +609,7 @@ void SystemModelNode::noKillPhase(int tn)
     {
         auto assignment = mSystemData->assignments.at(index);
         mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
-        assignment.line->setColor(osgEarth::Color::Brown);
+        assignment->line->setColor(osgEarth::Color::Brown);
         if(mFiredRocket)
             mFiredRocket->stop();
 //        removeAssignment(tn);
@@ -634,7 +634,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 //    qDebug() << ">>> : " << mAssignmentMap.keys().count();
 
     int height = LABEL_IMAGE_HEIGHT + ((mSystemData->assignments.count()+2)/3) * 30;
-    if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::Op2)
+    if (mSystemData->information->systemStatusInfo.Operational == SystemStatusInfo::OP2)
         height += 50;
 
     if (!mRenderTargetImage) {
@@ -694,17 +694,17 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.setFont(textFont);
         painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignCenter,
-                         mSystemData->information.systemInfo.Name);
+                         mSystemData->information->systemInfo.Name);
         painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignCenter,
-                         QString::number(mSystemData->information.systemInfo.Number));
+                         QString::number(mSystemData->information->systemInfo.Number));
         //-------------------------------------------------------------
         painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Type:");
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 40, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mSystemData->information.systemInfo.Type);
+                         mSystemData->information->systemInfo.Type);
 
 
         painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH/2, 30),
@@ -714,7 +714,7 @@ void SystemModelNode::updateOrCreateLabelImage()
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Radar:");
 
-        if(mSystemData->information.systemStatusInfo.BCCStatus == SystemStatusInfo::S)
+        if(mSystemData->information->systemStatusInfo.BCCStatus == SystemStatusInfo::S)
             textPen.setColor(QColor(0, 255, 0));
         else
             textPen.setColor(QColor(255, 0, 0));
@@ -722,9 +722,9 @@ void SystemModelNode::updateOrCreateLabelImage()
 
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 70, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mSystemData->information.systemStatusInfo.radarStatusToString(mSystemData->information.systemStatusInfo.BCCStatus));
+                         mSystemData->information->systemStatusInfo.radarStatusToString(mSystemData->information->systemStatusInfo.BCCStatus));
 
-        if(mSystemData->information.systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S)
+        if(mSystemData->information->systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S)
             textPen.setColor(QColor(0, 255, 0));
         else
             textPen.setColor(QColor(255, 0, 0));
@@ -732,7 +732,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 100, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mSystemData->information.systemStatusInfo.radarStatusToString(mSystemData->information.systemStatusInfo.RadarSearchStatus));
+                         mSystemData->information->systemStatusInfo.radarStatusToString(mSystemData->information->systemStatusInfo.RadarSearchStatus));
 
 
 
@@ -749,11 +749,11 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Assignments:");
-        textPen.setColor(mSystemData->information.systemCombatInfo.phaseToColor());
+        textPen.setColor(mSystemData->information->systemCombatInfo.phaseToColor());
         painter.setPen(textPen);
         painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         QString(mSystemData->information.systemCombatInfo.phaseToString()));
+                         QString(mSystemData->information->systemCombatInfo.phaseToString()));
 
         textPen.setColor(QColor(255,255,255));
         painter.setPen(textPen);
@@ -773,7 +773,7 @@ void SystemModelNode::updateOrCreateLabelImage()
                 const auto val = mSystemData->assignments[n];
 
                 const QString ss = (llidx == 0 ? QStringLiteral("") : QStringLiteral(", "))
-                        + QString::number(val.info->TN);
+                        + QString::number(val->info->TN);
 
                 textPen.setColor(QColor(255,255,255));
                 painter.setPen(textPen);
@@ -794,7 +794,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 
 
 
-        h = height - 60 - (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::Op2 ? 50 : 0);
+        h = height - 60 - (mSystemData->information->systemStatusInfo.Operational == SystemStatusInfo::OP2 ? 50 : 0);
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, h, LABEL_IMAGE_WIDTH, h);
@@ -806,7 +806,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         static const QImage missleRedImage(":/resources/bullet_red.png");
         static const QImage missleGreenImage(":/resources/bullet_green.png");
 
-        if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::NoOp) {
+        if (mSystemData->information->systemStatusInfo.Operational == SystemStatusInfo::NOP) {
             for (int i = 0; i < 9; i++) {
                 painter.drawImage(
                             QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
@@ -819,7 +819,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 
         } else {
             for (int i = 0; i < 9; i++) {
-                if(i < mSystemData->information.systemStatusInfo.MissileCount) {
+                if(i < mSystemData->information->systemStatusInfo.MissileCount) {
                     painter.drawImage(
                                 QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
                                 missleGreenImage,
@@ -835,11 +835,11 @@ void SystemModelNode::updateOrCreateLabelImage()
                 }
             }
 
-            if (mSystemData->information.systemStatusInfo.Operational == SystemStatusInfo::Op2) {
+            if (mSystemData->information->systemStatusInfo.Operational == SystemStatusInfo::OP2) {
                 h += 50;
 
                 for (int i = 9; i < 18; i++) {
-                    if(i < mSystemData->information.systemStatusInfo.MissileCount) {
+                    if(i < mSystemData->information->systemStatusInfo.MissileCount) {
                         painter.drawImage(
                                     QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * (i-9), h, 20, 40),
                                     missleGreenImage,

@@ -420,11 +420,11 @@ void DefenseModelLayer::frameEvent()
 {
     //    findSceneModels(mMapController->getViewer());
     for(auto data: mDataManager->aircraftDataManager()->getAircraftsData())
-        if(data.modelNode.valid())
-            data.modelNode->frameEvent();
+        if(data->modelNode.valid())
+            data->modelNode->frameEvent();
     for(auto data: mDataManager->systemDataManager()->getSystemsData())
-        if(data.systemModelNode.valid())
-            data.systemModelNode->frameEvent();
+        if(data->systemModelNode.valid())
+            data->systemModelNode->frameEvent();
 }
 
 void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
@@ -461,7 +461,7 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
         if(systemModelNode)
         {
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
-            mDataManager->assignAircraft2System(aircraftModelNode->getData()->info.TN, systemModelNode->getData()->information.systemInfo.Number);
+            mDataManager->assignAircraft2System(aircraftModelNode->getData().info.TN, systemModelNode->getData()->information->systemInfo.Number);
         }
         mMapController->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
@@ -475,7 +475,7 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
         if(aircraftModelNode /*&& aircraftModelNode->hasAssignment()*/)
         {
-            mDataManager->cancelAircraftAssignments(aircraftModelNode->getData()->info.TN);
+            mDataManager->cancelAircraftAssignments(aircraftModelNode->getData().info.TN);
             event->accept();
         }
     }
