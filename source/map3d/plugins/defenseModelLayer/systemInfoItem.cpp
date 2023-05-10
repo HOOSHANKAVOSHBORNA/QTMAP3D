@@ -7,7 +7,6 @@
 
 SystemInfoModel::SystemInfoModel(QObject *parent) : QAbstractListModel(parent)
 {
-
 }
 
 
@@ -128,7 +127,7 @@ QStringList SystemInfoModel::getCombatInfoHeaders() const
 QStringList SystemInfoModel::getAssignmentsName() const
 {
     QStringList aircrafts;
-    for (auto i : mSystemInfo->assignments) {
+    for (auto& i : mSystemInfo->assignments) {
         aircrafts.push_back(QString::number(i->info->TN));
     }
     return aircrafts;
@@ -137,7 +136,7 @@ QStringList SystemInfoModel::getAssignmentsName() const
 QStringList SystemInfoModel::getAssignmentsType() const
 {
     QStringList aircrafts;
-    for (auto i : mSystemInfo->assignments) {
+    for (auto& i : mSystemInfo->assignments) {
         aircrafts.push_back(i->info->aircraftTypeToString());
     }
     return aircrafts;
@@ -156,7 +155,6 @@ SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, const 
 
             mInfoModel->setInformtion(mInformation);
             mItem->setProperty("model", QVariant::fromValue<SystemInfoModel*>(mInfoModel));
-//            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
 
     });

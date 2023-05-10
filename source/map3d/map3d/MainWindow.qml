@@ -485,6 +485,10 @@ CMainWindow {
         infoo.titleText = title;
     }
 
+    function hideInfoView() {
+        infoo.hideItem();
+    }
+
 
     RightContainer {
         id: leftContainerHolder

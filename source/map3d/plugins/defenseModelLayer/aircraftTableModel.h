@@ -10,6 +10,8 @@
 #include <QJsonObject>
 #include <QPair>
 
+class AircraftDataManager;
+class DefenseModelLayer;
 namespace Aircraft {
     struct Data;
 }
@@ -42,7 +44,8 @@ public:
 
     void setAircraftInfos(const QMap<int, Aircraft::Data *> &aircrafts);
     void setSystemInfos(const QMap<int, System::Data *> &systems);
-    void updateTable(int tn);
+    void onInfoChanged(int tn);
+    void onRemoveData(int tn);
     void setMode(QString mode);
 
     void updateAssignments();
@@ -70,5 +73,18 @@ private:
     QString mMode;
 };
 
+class AircraftTable : QObject
+{
+    Q_OBJECT
+public:
+    AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseModelLayer *defenseModelLayer, QObject *parent = nullptr);
+public slots:
+    void onDoubleClicked(const int &tn);
+private:
+    AircraftTableModel *mAircraftTableModel;
+    DefenseModelLayer *mDefenseModelLayer;
+    AircraftDataManager *mAircraftDatamanager;
+
+};
 
 #endif // AIRCRAFTTABLEMODEL_H

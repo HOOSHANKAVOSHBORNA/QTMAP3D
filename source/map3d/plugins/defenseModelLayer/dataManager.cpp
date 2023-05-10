@@ -12,7 +12,8 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 {
     //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
-//    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
+    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
+
 //    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
     //    //--system----------------------------------------------------------
 //    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
@@ -23,12 +24,6 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 
     //list view---------------------------------------------------------
 
-    connect(mAircraftDataManager, &AircraftDataManager::doubleClicked,[=](int tn){
-        if(mAircraftDataManager->getAircraftsData().contains(tn)){
-            mAircraftDataManager->getAircraftsData()[tn]->modelNode->onLeftButtonClicked(true);
-            mAircraftDataManager->getAircraftsData()[tn]->modelNode->goOnTrack();
-        }
-    });
     mAircraftAssignmentTableModel = new AircraftTableModel;
     mAircraftAssignmentTableModel->setMode("Assignment");
     mAircraftAssignmentTableModel->setAircraftInfos(mAircraftDataManager->getAircraftsData());
@@ -54,7 +49,7 @@ void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
     mAircraftDataManager->upsertInfo(aircraftInfo);
 
-    mAircraftAssignmentTableModel->updateTable(aircraftInfo.TN);
+//    mAircraftAssignmentTableModel->updateTable(aircraftInfo.TN);
 
     mAircraftAssignmentTableModel->updateAssignments();
     mSystemAssignmentTableModel->updateAssignments();
@@ -187,8 +182,9 @@ void DataManager::onClearAircraft(int tn)
 {
     mAircraftDataManager->remove(tn);
 
+
     mSystemDataManager->clearAssignments(tn);
-    mAircraftAssignmentTableModel->updateTable(tn);
+//    mAircraftAssignmentTableModel->updateTable(tn);
     mAircraftAssignmentTableModel->updateAssignments();
     mSystemAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)

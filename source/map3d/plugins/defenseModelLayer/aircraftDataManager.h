@@ -43,19 +43,15 @@ public:
     const QMap<int, Aircraft::Data*> &getAircraftsData() const;
 
 signals:
-    void doubleClicked(int NT);
     void infoChanged(int tn);
     void removed(int tn);
     void assignmentChanged(int tn);
 
 private:
-    void addAircraftTab();
-
-private:
     DefenseModelLayer* mDefenseModelLayer;
     QMap<int, Aircraft::Data*> mAircraftData;
 
-    AircraftTableModel *mAircraftTableModel;
+    AircraftTable *mAircraftsTable;
     AircraftTableModel *mAircraftAssignmentTableModel;
 };
 
