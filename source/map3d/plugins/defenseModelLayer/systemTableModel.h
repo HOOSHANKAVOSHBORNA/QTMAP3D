@@ -11,18 +11,15 @@
 #include <QStringList>
 #include <deque>
 #include <QSharedPointer>
+
+class SystemDataManager;
+class DefenseModelLayer;
 namespace System {
 struct Data;
 }
 namespace Aircraft {
 struct Data;
 }
-
-struct SystemAssignInfo {
-    int Number;
-    QString Phase;
-    bool assign = false;
-};
 
 class SystemTableModel : public QAbstractTableModel
 {
@@ -47,32 +44,32 @@ public:
     Q_INVOKABLE int getNumber(int row) const;
 
     void setSystemInfos(const QMap<int, System::Data*> & info);
-    void setAircraftInfos(const QMap<int, Aircraft::Data*> &info);
-    void updateTable(int number);
-    void setMode(QString mode);
-    void updateAssignments();
+    void onInfoChanged(int number);
+    void onRemoveData(int number);
 
 public slots:
     void setFilterWildcard(const QString& wildcard);
-    void onAircraftClicked(int TN);
-    void onSystemClicked(int Number);
-    bool getShowAssigned();
     void refresh();
 
-signals:
-    void systemClicked(int Number);
-
-
 private:
-    QString mMode;
-    int mTN = -1;
     QString mFilter;
 
     const QMap<int, System::Data*> *mSystemInfos;
     const QMap<int, Aircraft::Data*> *mAircraftInfos;
-
     QList<int> mSystemInfosProxy;
+};
 
+class SystemTable : public QObject
+{
+    Q_OBJECT
+public:
+    SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer *defenseModelLayer, QObject *parent=nullptr);
+public slots:
+    void onDoubleClicked(int number);
+private:
+    SystemDataManager *mSystemDataManger;
+    DefenseModelLayer *mDefenseModelLayer;
+    SystemTableModel *mSystemTableModel;
 };
 
 #endif // SYSTEMTABLEMODEL_H

@@ -58,7 +58,7 @@ private:
     QString mFilter = "";
 };
 
-class AircraftTable : QObject
+class AircraftTable : public QObject
 {
     Q_OBJECT
 public:

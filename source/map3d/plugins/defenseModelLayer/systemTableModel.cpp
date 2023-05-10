@@ -9,7 +9,6 @@
 SystemTableModel::SystemTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-
 }
 
 int SystemTableModel::columnCount(const QModelIndex &/*parent*/) const
@@ -35,8 +34,7 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         case  1: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Name);
         case  2: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Type);
         case  3: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Terminal);
-        case  4: return mMode == "Assignment" ? QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.phaseToString()):
-                                                QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.TN);
+        case  4: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.TN);
         case  5: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Latitude);
         case  6: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Longitude);
         case  7: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Altitude);
@@ -50,8 +48,7 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
         case 15: return QVariant::fromValue<int>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemStatusInfo.MissileCount);
         case 16: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemStatusInfo.RadarMode);
         case 17: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.Acceptance);
-        case 18: return mMode == "Assignment" ? QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.TN):
-                                                QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.phaseToString());
+        case 18: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.phaseToString());
         case 19: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.Antenna);
         case 20: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.ChanelNo);
         case 21: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.Inrange);
@@ -67,24 +64,14 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
 
     case TextColorRole:
     {
-        if (mMode == "Assignment") {
-            return index.column() == 4 ? QVariant::fromValue<QColor>(QColor("black")) : QVariant::fromValue<QColor>(QColor("white"));
-        }
         return QVariant::fromValue<QColor>(QColor("white"));
     }
 
 
     case SystemColor:
     {
-        if (static_cast<size_t>(index.row()) >= mSystemInfosProxy.size())
+        if (index.row() >= mSystemInfosProxy.size())
             return QVariant::fromValue<QColor>("white");
-        if (mMode == "Assignment") {
-            switch (index.column()) {
-                case 4: return QVariant::fromValue<QColor>(QColor((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.phaseToColor()));
-                default : return QVariant::fromValue<QColor>(QColor("transparent"));
-
-            }
-        }
         return QVariant::fromValue<QColor>(QColor((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.phaseToColor()));
     }
 
@@ -110,7 +97,7 @@ QString SystemTableModel::headerText(int column) const
     case  1: return QStringLiteral("Name");
     case  2: return QStringLiteral("Type");
     case  3: return QStringLiteral("Terminal");
-    case  4: return mMode == "Assignment" ? QStringLiteral("Phase") : QStringLiteral("TN");
+    case  4: return QStringLiteral("TN");
     case  5: return QStringLiteral("Latitude");
     case  6: return QStringLiteral("Longitude");
     case  7: return QStringLiteral("Altitude");
@@ -124,11 +111,11 @@ QString SystemTableModel::headerText(int column) const
     case 15: return QStringLiteral("MissileCount");
     case 16: return QStringLiteral("RadarMode");
     case 17: return QStringLiteral("Acceptance");
-    case 18: return mMode == "Assignment" ? QStringLiteral("TN") : QStringLiteral("Phase");
+    case 18: return QStringLiteral("Phase");
     case 19: return QStringLiteral("Antenna");
     case 20: return QStringLiteral("ChanelNo");
     case 21: return QStringLiteral("Inrange");
-    default: QStringLiteral("");
+    default: return QStringLiteral("");
     }
 }
 
@@ -159,67 +146,12 @@ void SystemTableModel::setFilterWildcard(const QString &wildcard)
         endResetModel();
 }
 
-void SystemTableModel::onAircraftClicked(int TN)
-{
-    mTN = TN;
-    beginResetModel();
-    mSystemInfosProxy.clear();
-    updateAssignments();
-    endResetModel();
-}
-
-void SystemTableModel::onSystemClicked(int Number)
-{
-    emit systemClicked(Number);
-//    refresh();
-}
-
 void SystemTableModel::refresh()
 {
     beginResetModel();
-    mTN = -1;
     mSystemInfosProxy.clear();
     mSystemInfosProxy = mSystemInfos->keys();
     endResetModel();
-}
-
-void SystemTableModel::setMode(QString mode)
-{
-    mMode = mode;
-}
-
-void SystemTableModel::updateAssignments()
-{
-    if (mTN != -1) {
-        mSystemInfosProxy.clear();
-        for (auto& system :  (*mAircraftInfos)[mTN]->assignments){
-            mSystemInfosProxy.push_back(system->info->systemInfo.Number);
-        }
-    }
-}
-
-void SystemTableModel::updateTable(int number)
-{
-    if (mTN == -1) {
-        if (!mSystemInfos->contains(number) && mSystemInfosProxy.contains(number)) {
-            beginRemoveRows(QModelIndex(), mSystemInfosProxy.indexOf(number), mSystemInfosProxy.indexOf(number));
-            mSystemInfosProxy = mSystemInfos->keys();
-            endRemoveRows();
-        }
-
-        else if (mSystemInfos->contains(number) && !mSystemInfosProxy.contains(number)) {
-            mSystemInfosProxy = mSystemInfos->keys();
-            setFilterWildcard(mFilter);
-        }
-
-        else {
-            int row = mSystemInfosProxy.indexOf(number);
-            emit dataChanged(createIndex(row, 0), createIndex(row, 22));
-        }
-    }
-    else {
-        updateAssignments();
-    }
 }
 
 void SystemTableModel::setSystemInfos(const QMap<int, System::Data*> &systems)
@@ -230,8 +162,62 @@ void SystemTableModel::setSystemInfos(const QMap<int, System::Data*> &systems)
     endResetModel();
 }
 
-void SystemTableModel::setAircraftInfos(const QMap<int, Aircraft::Data*> &info)
+void SystemTableModel::onInfoChanged(int number)
 {
-    mAircraftInfos = &info;
+    if (mSystemInfos->contains(number) && !mSystemInfosProxy.contains(number)) {
+        mSystemInfosProxy = mSystemInfos->keys();
+        setFilterWildcard(mFilter);
+    }
+
+    else {
+        int row = mSystemInfosProxy.indexOf(number);
+        emit dataChanged(createIndex(row, 0), createIndex(row, 22));
+    }
 }
 
+void SystemTableModel::onRemoveData(int number)
+{
+    if (!mSystemInfos->contains(number) && mSystemInfosProxy.contains(number)) {
+        beginRemoveRows(QModelIndex(), mSystemInfosProxy.indexOf(number), mSystemInfosProxy.indexOf(number));
+        mSystemInfosProxy = mSystemInfos->keys();
+        endRemoveRows();
+    }
+}
+
+SystemTable::SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer *defenseModelLayer, QObject *parent) :
+    QObject(parent),
+    mSystemDataManger(systemDataManger),
+    mDefenseModelLayer(defenseModelLayer)
+{
+    QQmlComponent *comp3 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
+    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
+        if (comp3->status() == QQmlComponent::Ready) {
+            QQuickItem *systemTab = static_cast<QQuickItem*>(comp3->create(nullptr));
+            mSystemTableModel = new SystemTableModel;
+            mSystemTableModel->setSystemInfos(mSystemDataManger->getSystemsData());
+
+            connect(mSystemDataManger, &SystemDataManager::infoChanged, mSystemTableModel, &SystemTableModel::onInfoChanged);
+            QObject::connect(systemTab,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mSystemTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
+
+            QObject::connect(systemTab,
+                             SIGNAL(systemDoubleClicked(const int&)),
+                             this,
+                             SLOT(onDoubleClicked(const int&)));
+
+            systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
+            mDefenseModelLayer->mUIHandle->lwAddTab("Systems", systemTab);
+        }
+
+    });
+
+    comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
+}
+
+void SystemTable::onDoubleClicked(int number)
+{
+    if (mSystemDataManger->getSystemsData().contains(number))
+        mSystemDataManger->getSystemsData()[number]->systemModelNode->onLeftButtonClicked(true);
+}

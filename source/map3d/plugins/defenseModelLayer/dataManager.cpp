@@ -16,11 +16,11 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 
 //    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
     //    //--system----------------------------------------------------------
-//    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
-//    QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
-//    QObject::connect(defenseDataManager, &DefenseDataManager::systemCombatInfoChanged,this ,&DataManager::onSystemCombatInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemCombatInfoChanged,this ,&DataManager::onSystemCombatInfoChanged);
     //    //--station---------------------------------------------------------
-    //    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
+//        QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
 
     //list view---------------------------------------------------------
 
@@ -28,7 +28,6 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
     mAircraftAssignmentTableModel->setAircraftInfos(mAircraftDataManager->getAircraftsData());
     mSystemAssignmentTableModel = new SystemTableModel;
     mSystemAssignmentTableModel->setSystemInfos(mSystemDataManager->getSystemsData());
-    mSystemAssignmentTableModel->setAircraftInfos(mAircraftDataManager->getAircraftsData());
     addAssignmentTab();
     //    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
     //        StationModelNode* stationModelNode = mDefenseModelLayer->getStationModelNode(number);
@@ -44,8 +43,6 @@ void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
     mAircraftDataManager->upsertInfo(aircraftInfo);
 
-//    mAircraftAssignmentTableModel->updateTable(aircraftInfo.TN);
-    mSystemAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->addUpdateAircraft(aircraftInfo);
     //    //add update list view-----------------------------------------------------------------
@@ -56,8 +53,6 @@ void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
 {
     mSystemDataManager->upsertInfo(systemInfo);
-    mSystemAssignmentTableModel->updateTable(systemInfo.Number);
-    mSystemAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->addUpdateSystem(systemInfo);
     //    //add update list view-----------------------------------------------------------------
@@ -68,7 +63,6 @@ void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
 void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 {
     mSystemDataManager->updateStatusInfo(systemStatusInfo);
-    mSystemAssignmentTableModel->updateTable(systemStatusInfo.Number);
 
     //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemStatusInfo.Number);
     //    //update information-----------------------------------------------------
@@ -82,7 +76,6 @@ void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 {
     mSystemDataManager->updateCombatInfo(systemCombatInfo);
-    mSystemAssignmentTableModel->updateTable(systemCombatInfo.Number);
 
     //--------------------------------------------------------------------
     if(systemCombatInfo.Phase == SystemCombatInfo::Lock || systemCombatInfo.Phase == SystemCombatInfo::Fire){

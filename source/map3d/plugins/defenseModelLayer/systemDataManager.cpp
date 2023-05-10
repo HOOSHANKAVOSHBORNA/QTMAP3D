@@ -4,9 +4,7 @@
 SystemDataManager::SystemDataManager(DefenseModelLayer* defenseModelLayer)
 {
     mDefenseModelLayer = defenseModelLayer;
-
-    addSystemTab();
-    mSystemTableModel->setSystemInfos(mSystemData);
+    mSystemTableModel = new SystemTable(this, mDefenseModelLayer);
 }
 
 void SystemDataManager::upsertInfo(SystemInfo &systemInfo)
@@ -42,7 +40,6 @@ void SystemDataManager::upsertInfo(SystemInfo &systemInfo)
     }
     //update information-----------------------------------------------------
     systemModelNode->informationChanged();
-    mSystemTableModel->updateTable(systemInfo.Number);
 
     emit infoChanged(systemInfo.Number);
 }
@@ -57,8 +54,6 @@ void SystemDataManager::updateStatusInfo(SystemStatusInfo &systemStatusInfo)
         if(systemModelNode.valid())
             systemModelNode->statusInfoChanged();
 
-        mSystemTableModel->updateTable(systemStatusInfo.Number);
-
         emit infoChanged(systemStatusInfo.Number);
     }
 }
@@ -72,8 +67,6 @@ void SystemDataManager::updateCombatInfo(SystemCombatInfo &systemCombatInfo)
         auto systemModelNode = mSystemData[systemCombatInfo.Number]->systemModelNode;
         if(systemModelNode.valid())
             systemModelNode->combatInfoChanged();
-
-        mSystemTableModel->updateTable(systemCombatInfo.Number);
 
         emit infoChanged(systemCombatInfo.Number);
     }
@@ -143,34 +136,4 @@ void SystemDataManager::removeAssignment(int tn, int systemNo)
 const QMap<int, System::Data*> &SystemDataManager::getSystemsData() const
 {
     return mSystemData;
-}
-
-void SystemDataManager::addSystemTab()
-{
-    QQmlComponent *comp3 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
-    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
-        //        qDebug() << comp3->errorString();
-
-        if (comp3->status() == QQmlComponent::Ready) {
-            QQuickItem *systemTab = static_cast<QQuickItem*>(comp3->create(nullptr));
-            mSystemTableModel = new SystemTableModel;
-            mSystemTableModel->setMode("TableModel");
-
-            QObject::connect(systemTab,
-                             SIGNAL(filterTextChanged(const QString&)),
-                             mSystemTableModel,
-                             SLOT(setFilterWildcard(const QString&)));
-
-            QObject::connect(systemTab,
-                             SIGNAL(systemDoubleClicked(const int&)),
-                             this,
-                             SIGNAL(systemDoubleClicked(const int&)));
-
-            systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
-            mDefenseModelLayer->mUIHandle->lwAddTab("Systems", systemTab);
-        }
-
-    });
-
-    comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
 }
