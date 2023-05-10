@@ -13,11 +13,12 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
     //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
 //    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
-    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
+
+//    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
     //    //--system----------------------------------------------------------
-    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::systemCombatInfoChanged,this ,&DataManager::onSystemCombatInfoChanged);
+//    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
+//    QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
+//    QObject::connect(defenseDataManager, &DefenseDataManager::systemCombatInfoChanged,this ,&DataManager::onSystemCombatInfoChanged);
     //    //--station---------------------------------------------------------
     //    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
 
@@ -46,7 +47,8 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 
 void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
-    mAircraftDataManager->onInfoChanged(aircraftInfo);
+    mAircraftDataManager->upsertInfo(aircraftInfo);
+
     mAircraftAssignmentTableModel->updateTable(aircraftInfo.TN);
 
     mAircraftAssignmentTableModel->updateAssignments();
@@ -178,7 +180,8 @@ void DataManager::onStationInfoChanged(StationInfo &stationInfo)
 
 void DataManager::onClearAircraft(int tn)
 {
-    mAircraftDataManager->onClear(tn);
+    mAircraftDataManager->remove(tn);
+
     mSystemDataManager->removeAssignments(tn);
     mAircraftAssignmentTableModel->updateTable(tn);
     mAircraftAssignmentTableModel->updateAssignments();
@@ -191,7 +194,7 @@ void DataManager::onClearAircraft(int tn)
 
 void DataManager::onAircraftAssignedResponse(int tn, int systemNo, bool accept)
 {
-    mAircraftDataManager->onAssignmentResponse(tn, systemNo, accept);
+    mAircraftDataManager->assignmentResponse(tn, systemNo, accept);
     mSystemDataManager->onAssignmentResponse(tn, systemNo, accept);
     //    //    qDebug()<<"onAircraftAssignedResponse:"<<tn<< ", "<< systemNo<<", "<<result;
     //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemNo);
@@ -237,7 +240,7 @@ void DataManager::assignAircraft2System(int tn, int systemNo)
 
 void DataManager::cancelAircraftAssignments(int tn)
 {
-    mAircraftDataManager->clearAssignment(tn);
+    mAircraftDataManager->clearAssignments(tn);
     mSystemDataManager->removeAssignments(tn);
     //    if(aircraftModelNode)
     //    {
