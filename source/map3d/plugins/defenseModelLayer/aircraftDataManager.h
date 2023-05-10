@@ -39,12 +39,6 @@ public:
     void removeAssignment(int tn, int systemNo);
     const QMap<int, Aircraft::Data*> &getAircraftsData() const;
 
-signals:
-    void doubleClicked(int NT);
-
-private:
-    void addAircraftTab();
-
 public slots:
     void onInfoChanged(AircraftInfo& aircraftInfo);
     void onClear(int tn);
@@ -54,7 +48,7 @@ private:
     DefenseModelLayer* mDefenseModelLayer;
     QMap<int, Aircraft::Data*> mAircraftData;
 
-    AircraftTableModel *mAircraftTableModel;
+    AircraftTable *mAircraftsTable;
     AircraftTableModel *mAircraftAssignmentTableModel;
 };
 

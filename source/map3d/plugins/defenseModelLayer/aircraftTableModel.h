@@ -10,6 +10,8 @@
 #include <QJsonObject>
 #include <QPair>
 
+class AircraftDataManager;
+class DefenseModelLayer;
 namespace Aircraft {
     struct Data;
 }
@@ -70,5 +72,18 @@ private:
     QString mMode;
 };
 
+class AircraftTable : QObject
+{
+    Q_OBJECT
+public:
+    AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseModelLayer *defenseModelLayer, QObject *parent = nullptr);
+public slots:
+    void onDoubleClicked(const int &tn);
+private:
+    AircraftTableModel *mAircraftTableModel;
+    DefenseModelLayer *mDefenseModelLayer;
+    AircraftDataManager *mAircraftDatamanager;
+
+};
 
 #endif // AIRCRAFTTABLEMODEL_H

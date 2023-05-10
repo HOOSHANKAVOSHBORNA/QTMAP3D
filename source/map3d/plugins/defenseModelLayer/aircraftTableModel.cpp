@@ -235,15 +235,15 @@ void AircraftTableModel::setFilterWildcard(const QString &wildcard)
         }
     }
     else {
-        mAircraftInfosProxy.clear();
-        for (auto i : *mAircraftInfos){
-            auto tmp = AircraftInfo();
-        }
+//        mAircraftInfosProxy.clear();
+//        for (auto i : *mAircraftInfos){
+//            auto tmp = AircraftInfo();
+//        }
     }
     endResetModel();
 }
 
-void AircraftTableModel::sortWithHeader(int column)
+void AircraftTableModel::sortWithHeader(int /*column*/)
 {
 //    switch (column) {
 //    case 0: std::sort(mAircraftInfos.begin(), mAircraftInfos.end(), [=](const QSharedPointer<AircraftInfo> &item1, const QSharedPointer<AircraftInfo> &item2) {
@@ -281,4 +281,46 @@ void AircraftTableModel::refresh()
 void AircraftTableModel::setMode(QString mode)
 {
     mMode = mode;
+}
+
+AircraftTable::AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseModelLayer * defenseModelLayer, QObject *parent):
+    QObject(parent),
+    mDefenseModelLayer(defenseModelLayer),
+    mAircraftDatamanager(aircraftDatamanager)
+{
+    QQmlComponent *comp = new QQmlComponent(defenseModelLayer->mQmlEngine);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+        if (comp->status() == QQmlComponent::Ready) {
+            QQuickItem *aircraftTab = static_cast<QQuickItem*>(comp->create(nullptr));
+            mAircraftTableModel = new AircraftTableModel;
+            mAircraftTableModel->setAircraftInfos(mAircraftDatamanager->getAircraftsData());
+            mAircraftTableModel->setMode("TableModel");
+
+            QObject::connect(aircraftTab,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mAircraftTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
+
+            QObject::connect(aircraftTab,
+                             SIGNAL(aircraftDoubleClicked(const int&)),
+                             this,
+                             SLOT(onDoubleClicked(const int&)));
+
+            QObject::connect(aircraftTab,
+                             SIGNAL(sortWithHeader(int)),
+                             mAircraftTableModel,
+                             SLOT(sortWithHeader(int)));
+            aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
+            mDefenseModelLayer->mUIHandle->lwAddTab("Aircrafts", aircraftTab);
+        }
+
+    });
+    comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
+}
+
+void AircraftTable::onDoubleClicked(const int &tn)
+{
+    if (mAircraftDatamanager->getAircraftsData().contains(tn)){
+        mAircraftDatamanager->getAircraftsData()[tn]->modelNode->onLeftButtonClicked(true);
+    }
 }
