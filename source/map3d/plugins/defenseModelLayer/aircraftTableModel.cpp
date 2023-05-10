@@ -175,28 +175,6 @@ void AircraftTableModel::setAircraftInfos(const QMap<int, Aircraft::Data*> &airc
     endResetModel();
 }
 
-void AircraftTableModel::setSystemInfos(const QMap<int, System::Data*> &systems)
-{
-    beginResetModel();
-    mSystemInfos = &systems;
-    mAircraftInfosProxy.clear();
-    if (mNumber == -1)
-        mAircraftInfosProxy = mAircraftInfos->keys();
-    else
-        updateAssignments();
-    endResetModel();
-
-}
-
-void AircraftTableModel::updateAssignments() {
-    if (mNumber != -1) {
-        mAircraftInfosProxy.clear();
-        for (auto& aircraft :  (*mSystemInfos)[mNumber]->assignments){
-            mAircraftInfosProxy.push_back(aircraft->info->TN);
-        }
-    }
-}
-
 void AircraftTableModel::onInfoChanged(int tn)
 {
     if (mAircraftInfos->contains(tn) && !mAircraftInfosProxy.contains(tn)) {
@@ -222,21 +200,13 @@ void AircraftTableModel::onRemoveData(int tn)
 void AircraftTableModel::setFilterWildcard(const QString &wildcard)
 {
     beginResetModel();
-    if (mMode != "Assignment" || mNumber == -1) {
-        mFilter = wildcard;
-        mFilter.remove(QRegularExpression("\\s"));
+    mFilter = wildcard;
+    mFilter.remove(QRegularExpression("\\s"));
 
-        mAircraftInfosProxy.clear();
-        for (auto& item : mAircraftInfos->keys()) {
-            if (QString::number(item).contains(mFilter))
-                mAircraftInfosProxy.push_back(item);
-        }
-    }
-    else {
-//        mAircraftInfosProxy.clear();
-//        for (auto i : *mAircraftInfos){
-//            auto tmp = AircraftInfo();
-//        }
+    mAircraftInfosProxy.clear();
+    for (auto& item : mAircraftInfos->keys()) {
+        if (QString::number(item).contains(mFilter))
+            mAircraftInfosProxy.push_back(item);
     }
     endResetModel();
 }
@@ -253,32 +223,12 @@ void AircraftTableModel::sortWithHeader(int /*column*/)
 //    onUpdateTimerTriggered();
 }
 
-void AircraftTableModel::onAircraftClicked(int TN)
-{
-    emit aircraftClicked(TN);
-//    refresh();
-}
-
-void AircraftTableModel::onSystemClicked(int Number) {
-    mNumber = Number;
-    beginResetModel();
-    mAircraftInfosProxy.clear();
-    updateAssignments();
-    endResetModel();
-}
-
 void AircraftTableModel::refresh()
 {
     beginResetModel();
-    mNumber = -1;
     mAircraftInfosProxy.clear();
     mAircraftInfosProxy = mAircraftInfos->keys();
     endResetModel();
-}
-
-void AircraftTableModel::setMode(QString mode)
-{
-    mMode = mode;
 }
 
 AircraftTable::AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseModelLayer * defenseModelLayer, QObject *parent):
@@ -293,7 +243,6 @@ AircraftTable::AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseMo
             mAircraftTableModel = new AircraftTableModel;
             mAircraftTableModel->setAircraftInfos(mAircraftDatamanager->getAircraftsData());
 
-            mAircraftTableModel->setMode("TableModel");
             QObject::connect(mAircraftDatamanager, &AircraftDataManager::infoChanged, mAircraftTableModel, &AircraftTableModel::onInfoChanged);
             QObject::connect(mAircraftDatamanager, &AircraftDataManager::removed, mAircraftTableModel, &AircraftTableModel::onRemoveData);
 
