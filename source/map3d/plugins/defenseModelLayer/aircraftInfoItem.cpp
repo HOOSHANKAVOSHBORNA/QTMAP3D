@@ -159,7 +159,8 @@ AircraftInfoItem::AircraftInfoItem(DefenseModelLayer *defenseModelLayer, const A
 
 AircraftInfoItem::~AircraftInfoItem()
 {
-    mUiHandle->iwHide();
+    if(mUiHandle)
+        mUiHandle->iwHide();
     delete mInfomodel;
     delete mItem;
 }
