@@ -76,14 +76,12 @@ void Polygon::setLineColor(osgEarth::Color color)
     this->setStyle(style);
 }
 
-
 void Polygon::setFillColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = color;
     this->setStyle(style);
 }
-
 
 void Polygon::setLineWidth(float width)
 {

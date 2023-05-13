@@ -759,6 +759,8 @@ Item {
                                 }
                             }
 
+
+
                             Rectangle{
                                 id:lenContainerTitle
                                 Layout.fillWidth: true
@@ -769,6 +771,77 @@ Item {
 
                                 Text {
                                     text: qsTr("Show Length:")
+                                    font.pointSize: 10
+                                    color: "white"
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    x:7
+                                }
+                            }
+
+
+                            Rectangle{
+                                id: beaContainer
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                Switch {
+                                    id: bea
+                                    anchors.centerIn: parent
+                                    checked: false
+
+                                    ToolTip {
+                                        parent: bea
+                                        y: bea.y + bea.height
+                                        Text{
+                                            text: bea.checked ? "Click to deactive" : "Click to active"
+                                            color: "white"
+                                        }
+
+                                        background: Rectangle {
+                                            color: "#404040"
+                                            radius: 4
+                                        }
+
+                                        visible:  bea.hovered
+                                    }
+                                    onToggled: function() {
+                                        lineProperties.bearing = bea.checked
+                                    }
+
+                                    Layout.alignment: Qt.AlignRight
+                                    indicator: Rectangle {
+                                        implicitWidth: 70
+                                        implicitHeight: 20
+                                        x: bea.leftPadding
+                                        y: parent.height / 2 - height / 2
+                                        radius: 13
+                                        color: bea.checked ? "#3f9173" : "#383838"
+                                        border.color: bea.checked ? "#17a81a" : "#a8171a"
+
+                                        Rectangle {
+                                            x: bea.checked ? parent.width - width : 0
+                                            width: 20
+                                            height: 20
+                                            radius: 13
+                                            color: bea.down ? "#cccccc" : "#ffffff"
+                                            border.color: bea.checked ? (bea.down ? "#17a81a" : "#21be2b") : "#999999"
+                                        }
+                                    }
+                                }
+                            }
+                            Rectangle{
+                                id:beaContainerTitle
+                                Layout.fillWidth: true
+                                color: "#404040"
+                                height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
+                                Text {
+                                    text: qsTr("Bearing :")
                                     font.pointSize: 10
                                     color: "white"
                                     anchors.verticalCenter:  parent.verticalCenter
@@ -870,6 +943,7 @@ Item {
                                     }
                                 }
                             }
+
 
                             GridLayout{
                                 id: pointprops
@@ -1161,6 +1235,7 @@ Item {
             tesselationContainer.visible = false
             tesselationContainerTitle.visible = false
             lineProperties.showLen = true
+            lineProperties.bearing = false
             lineProperties.visible = false
             headerTitleSTR = "Ruler Properties"
 
@@ -1178,6 +1253,7 @@ Item {
             tesselationContainer.visible = true
             tesselationContainerTitle.visible = true
             lineProperties.showLen = false
+            lineProperties.bearing = false
             lineProperties.visible = true
             headerTitleSTR = "Line Properties"
         }
@@ -1193,6 +1269,8 @@ Item {
             clampContainerTitle.visible = false
             tesselationContainer.visible = false
             tesselationContainerTitle.visible = false
+            beaContainer.visible = false
+            beaContainerTitle.visible = false
             lineProperties.showLen = true
             lineProperties.visible = false
             headerTitleSTR = "Height Measure"
