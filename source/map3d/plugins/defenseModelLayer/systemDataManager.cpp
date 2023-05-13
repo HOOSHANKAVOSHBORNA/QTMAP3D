@@ -92,6 +92,7 @@ void SystemDataManager::addAssignment(int systemNo, System::Assignment* assignme
         mSystemData[systemNo]->systemModelNode->assignmentChanged();
 
         emit assignmentChanged(systemNo);
+        emit infoChanged(systemNo);
     }
 }
 
@@ -129,6 +130,7 @@ void SystemDataManager::removeAssignment(int tn, int systemNo)
             mSystemData[systemNo]->systemModelNode->assignmentChanged();
 
             emit assignmentChanged(systemNo);
+            emit infoChanged(systemNo);
         }
     }
 }

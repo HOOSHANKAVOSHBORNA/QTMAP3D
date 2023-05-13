@@ -94,6 +94,7 @@ void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment* assignment
         mAircraftData[tn]->modelNode->updateData();
 
         emit assignmentChanged(tn);
+        emit infoChanged(tn);
     }
 }
 
@@ -111,6 +112,7 @@ void AircraftDataManager::clearAssignments(int tn)
         mAircraftData[tn]->modelNode->updateData();
 
         emit assignmentChanged(tn);
+        emit infoChanged(tn);
     }
 }
 
@@ -123,6 +125,7 @@ void AircraftDataManager::removeAssignment(int tn, int systemNo)
             mAircraftData[tn]->modelNode->updateData();
 
             emit assignmentChanged(tn);
+            emit infoChanged(tn);
         }
     }
 }

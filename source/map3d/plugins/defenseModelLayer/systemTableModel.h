@@ -44,16 +44,21 @@ public:
     Q_INVOKABLE int getNumber(int row) const;
 
     void setSystemInfos(const QMap<int, System::Data*> & info);
-
+    void setAircraftInfos(const QMap<int, Aircraft::Data*> &info);
+signals:
+    void systemClicked(const int&);
 public slots:
     void setFilterWildcard(const QString& wildcard);
     void refresh();
     void onInfoChanged(int number);
     void onRemoveData(int number);
+    void onSystemClicked(const int &number);
+    void onAircraftClicked(const int &tn);
+    void updateAssignment(int tn);
 
 private:
     QString mFilter;
-
+    int mTN = -1;
     const QMap<int, System::Data*> *mSystemInfos;
     const QMap<int, Aircraft::Data*> *mAircraftInfos;
     QList<int> mSystemInfosProxy;

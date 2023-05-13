@@ -12,7 +12,7 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 {
     //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
+//    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
 
 //    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
     //    //--system----------------------------------------------------------
@@ -155,10 +155,11 @@ void DataManager::onStationInfoChanged(StationInfo &stationInfo)
 
 void DataManager::onClearAircraft(int tn)
 {
+    //----------- first clear from assignment
+    mSystemDataManager->clearAssignments(tn);
     mAircraftDataManager->remove(tn);
 
 
-    mSystemDataManager->clearAssignments(tn);
 //    mAircraftAssignmentTableModel->updateTable(tn);
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->clearAircraft(tn);
