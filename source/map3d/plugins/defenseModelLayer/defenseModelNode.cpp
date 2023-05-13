@@ -118,6 +118,18 @@ DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent)
 //    mSelectOutline->setColor( osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) );
 //    mSelectOutline->addChild(this);
 //    osg::DisplaySettings::instance()->setMinimumNumStencilBits(1);
+    auto screenOption = osgEarth::ScreenSpaceLayout::getOptions();
+    screenOption.sortByPriority() = true;
+    osgEarth::ScreenSpaceLayout::setOptions(screenOption);
+    osg::ref_ptr<osg::Image> selectImage = osgDB::readImageFile("../data/images/select.png");
+    if(selectImage)
+        selectImage->scaleImage(24, 24, selectImage->r());
+    mSelectedNode = new osgEarth::Annotation::PlaceNode();
+    mSelectedNode->setIconImage(selectImage);
+    mSelectedNode->setPriority(-1);
+    mSelectedNode->setNodeMask(false);
+    mSelectedNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
+    getGeoTransform()->addChild(mSelectedNode);
 
     QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
         if(mLabelNode)
@@ -233,7 +245,7 @@ void DefenseModelNode::collision()
     //    }
     float scale =  static_cast<float>(getScale().x() * 20);
     playExplosionEffect(scale);
-    setNodeMask(false);
+    //setNodeMask(false);
     //    mSmoke->setNodeMask(false);
     //    mSmoke->getParticleSystem()->setNodeMask(false);
     //    mFire->setNodeMask(false);
@@ -314,6 +326,7 @@ void DefenseModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
     if (mSelectionMode != sm) {
         mSelectionMode = sm;
         emit selectionModeChanged();
+        mSelectedNode->setNodeMask(sm);
     }
 }
 

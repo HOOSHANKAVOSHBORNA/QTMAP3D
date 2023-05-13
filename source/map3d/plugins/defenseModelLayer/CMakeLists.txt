@@ -13,10 +13,13 @@ find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(defenseModelLayer SHARED
   aircraftTableModel.cpp
+  aircraftDataManager.cpp
   contextMenu.cpp
-  aircraftInformation.cpp
+  aircraftInfoItem.cpp
   stationInformation.cpp
-  systemInformation.cpp
+  stationDataManager.cpp
+  systemInfoItem.cpp
+  systemDataManager.cpp
   stationTableModel.cpp
   systemTableModel.cpp
   defenseModelLayer.cpp
@@ -31,7 +34,6 @@ add_library(defenseModelLayer SHARED
   defenseModelLayer.json
   defenseModelLayer.qrc
   defenseModelLayerqml.qrc
-  listManager.cpp
   truckf.cpp
   truckl.cpp
   trucks.cpp

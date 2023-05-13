@@ -734,6 +734,7 @@ Item {
                                         visible:  len.hovered
                                     }
                                     onToggled: function() {
+//                                        lineProperties.showLen = len.checked
                                         lineProperties.showLen = len.checked
                                     }
 

@@ -3,7 +3,7 @@
 
 #include "mapcontroller.h"
 #include "defenseModelNode.h"
-#include "systemInformation.h"
+#include "systemInfoItem.h"
 #include "circle.h"
 #include "sphereNode.h"
 #include "polygon.h"
@@ -15,25 +15,30 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include <QImage>
 #include <QPainter>
+#include <osgEarthAnnotation/RectangleNode>
 
-
+namespace System {
+struct Data;
+}
 class SystemModelNode: public DefenseModelNode
 {
 public:
-    SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
+    SystemModelNode(DefenseModelLayer* defenseModelLayer, System::Data* systemData, QObject* parent = nullptr);
 
-    void setInformation(const SystemInfo &info);
-    SystemInfo getInformation() const;
-    void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
-    void setCambatInfo(const SystemCambatInfo &systemCambatInfo);
-    SystemCambatInfo getSystemCombatInfo() const;
+    void informationChanged();
+//    SystemInfo getInformation() const;
+    void statusInfoChanged();
+    void combatInfoChanged();
+    void assignmentChanged();
+//    SystemCombatInfo getSystemCombatInfo() const;
 
-    void addAssignment(int tn, AircraftModelNode *assignModelNode);
-    AircraftModelNode *getAssignment(int tn) const;
-    void acceptAssignment(int tn, bool value);
-    void removeAssignment(int tn);
-    void clearAssignments(int exceptTN = -1);
-    QMap<int, AircraftModelNode *> getAssignments() const;
+//    void addAssignment(int tn, AircraftModelNode *assignModelNode);
+//    AircraftModelNode *getAssignment(int tn) const;
+//    void acceptAssignment(int tn, bool value);
+//    void removeAssignment(int tn);
+//    void clearAssignments(int exceptTN = -1);
+//    QMap<int, AircraftModelNode *> getAssignments() const;
+    System::Data* getData() const;
 
     void goOnTrack();
 public slots:
@@ -62,20 +67,23 @@ private:
     void showInfoWidget();
     void updateOrCreateLabelImage();
 private:
-    struct Assignment{
-        AircraftModelNode *mModelNode{nullptr};
-        osg::ref_ptr<LineNode> mLine;
-        Assignment(MapController *mapControler);
-        void accept();
-        void updateLine(const osgEarth::GeoPoint &position);
-    };
+//    struct Assignment{
+//        AircraftModelNode *mModelNode{nullptr};
+//        osg::ref_ptr<LineNode> mLine;
+//        Assignment(MapController *mapControler);
+//        void accept();
+//        void updateLine(const osgEarth::GeoPoint &position);
+//    };
 private:
-    MapController* mMapController{nullptr};
-    SystemInfo mInformation;
-    SystemStatusInfo mStatusInfo;
-    SystemCambatInfo mCambatInfo;
-    UIHandle* mUIHandle;
-    QQmlEngine *mQmlEngine;
+//    MapController* mMapController{nullptr};
+//    SystemInfo mInformation;
+//    SystemStatusInfo mStatusInfo;
+//    SystemCombatInfo mCombatInfo;
+//    UIHandle* mUIHandle;
+//    QQmlEngine *mQmlEngine;
+    DefenseModelLayer* mDefenseModelLayer;
+    System::Data* mSystemData;
+
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
     osg::ref_ptr<Polygon> mWezPolygon;
@@ -85,10 +93,10 @@ private:
     osg::ref_ptr<class TruckL> mTruckL;
     Rocket* mFiredRocket{nullptr};
 
-    QMap<int, Assignment*> mAssignmentMap;
-    SystemInformation *mSystemInformation{nullptr};
+//    QMap<int, Assignment*> mAssignmentMap;
+    SystemInfoItem *mSystemInfoItem{nullptr};
 
-    AircraftModelNode* mTargetModelNode{nullptr};
+    osg::ref_ptr<AircraftModelNode> mTargetModelNode{nullptr};
 private:
     QImage                  *mRenderTargetImage = nullptr;
     osg::ref_ptr<osg::Image> mLabelImage = nullptr;
@@ -100,9 +108,9 @@ private:
     osg::ref_ptr<osg::Switch> mNode2DActive;
     osg::ref_ptr<osg::Switch> mNode2DDeactive;
 
-    osg::ref_ptr<osgEarth::Annotation::CircleNode> mCircleNode = nullptr;
-    osgEarth::Symbology::Style mCircleStyleActive;
-    osgEarth::Symbology::Style mCircleStyleDeactive;
+    osg::ref_ptr<osgEarth::Annotation::RectangleNode> mRectangleNode = nullptr;
+    osgEarth::Symbology::Style mRectangleStyleSelected;
+    osgEarth::Symbology::Style mRectangleStyleDeselected;
 };
 
 #endif // SYSTEM_H

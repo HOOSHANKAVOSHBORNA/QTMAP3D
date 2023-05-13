@@ -99,7 +99,7 @@ private:
     QString mType;
     osg::ref_ptr<osgFX::Outline> mSelectOutline;
     MapController *mMapControler;
-
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mSelectedNode{nullptr};
 
 protected:
     SelectionMode mSelectionMode = UNSELECTED;

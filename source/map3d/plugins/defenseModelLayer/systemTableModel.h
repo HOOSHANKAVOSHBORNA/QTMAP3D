@@ -12,11 +12,14 @@
 #include <deque>
 #include <QSharedPointer>
 
-struct SystemAssignInfo {
-    int Number;
-    QString Phase;
-    bool assign = false;
-};
+class SystemDataManager;
+class DefenseModelLayer;
+namespace System {
+struct Data;
+}
+namespace Aircraft {
+struct Data;
+}
 
 class SystemTableModel : public QAbstractTableModel
 {
@@ -40,45 +43,33 @@ public:
     Q_INVOKABLE QString headerText(int column) const;
     Q_INVOKABLE int getNumber(int row) const;
 
+    void setSystemInfos(const QMap<int, System::Data*> & info);
+
 public slots:
     void setFilterWildcard(const QString& wildcard);
-    void onAircraftClicked(int TN);
-    void onSystemClicked(int Number);
-    bool getShowAssigned();
     void refresh();
-
-signals:
-    void systemClicked(int Number);
-public:
-    void updateItemData(const QString& jsonStr);
-    void updateItemData(const SystemInfo& systemInfo);
-    void updateItemData(const SystemStatusInfo& systemStatusInfo);
-    void updateItemData(const SystemCambatInfo& systemCambatInfo);
-    void assign(int TN, int Number);
-    void cancelSystemsAssigned(int TN, int ExceptNum);
-    void cancelAllAssigns();
-    void cancelAssign(int TN, int Number);
-    void acceptAssign(int TN, int Number, bool result);
-    void clearList();
-    void setMode(QString mode);
-
-    QMap<int, QList<SystemAssignInfo>> getAssignmentMap();
-
+    void onInfoChanged(int number);
+    void onRemoveData(int number);
 
 private:
-    std::deque<QSharedPointer<SystemInfo>> mSystemInfoList;
-    std::deque<QSharedPointer<SystemInfo>> mSystemInfoListProxy;
-    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoList;
-    std::deque<QSharedPointer<SystemStatusInfo>> mSystemStatusInfoListProxy;
-    std::deque<QSharedPointer<SystemCambatInfo>> mSystemCombatInfoList;
-    std::deque<QSharedPointer<SystemCambatInfo>> mSystemCombatInfoListProxy;
-
-    QMap<int, QList<SystemAssignInfo>> mSystemsAssigned;
-
-    QString mMode;
-    int mTN = -1;
     QString mFilter;
 
+    const QMap<int, System::Data*> *mSystemInfos;
+    const QMap<int, Aircraft::Data*> *mAircraftInfos;
+    QList<int> mSystemInfosProxy;
+};
+
+class SystemTable : QObject
+{
+    Q_OBJECT
+public:
+    SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer *defenseModelLayer, QObject *parent=nullptr);
+public slots:
+    void onDoubleClicked(int number);
+private:
+    SystemDataManager *mSystemDataManger;
+    DefenseModelLayer *mDefenseModelLayer;
+    SystemTableModel *mSystemTableModel;
 };
 
 #endif // SYSTEMTABLEMODEL_H

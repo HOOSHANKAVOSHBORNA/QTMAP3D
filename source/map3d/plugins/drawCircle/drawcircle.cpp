@@ -24,6 +24,22 @@ bool DrawCircle::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     return true;
 }
 
+
+bool DrawCircle::setup(MapController *mapController, UIHandle *uIHandle)
+{
+    mUiHandle = uIHandle;
+    mMapcontroller = mapController;
+    mIconNode = makeIconNode();
+    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+
+    osgEarth::ModelLayer *circleLayer = new osgEarth::ModelLayer();
+    circleLayer->setName(DRAW_LAYER_NAME);
+    mMapcontroller->addLayer(circleLayer);
+
+    return true;
+}
+
+
 void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 {
     if (CATEGORY == category) {
@@ -47,19 +63,6 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
     }
 }
 
-bool DrawCircle::setup(MapController *mapController, UIHandle *uIHandle)
-{
-    mUiHandle = uIHandle;
-    mMapcontroller = mapController;
-    mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
-
-    osgEarth::ModelLayer *circleLayer = new osgEarth::ModelLayer();
-    circleLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(circleLayer);
-
-    return true;
-}
 
 void DrawCircle::mousePressEvent(QMouseEvent *event)
 {
@@ -68,11 +71,11 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
             if (mDrawingState == DrawingState::START) {
                 mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
-                finishDrawing(event);
+                //                finishDrawing(event);
                 event->accept();
             }
         }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
+        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
             cancelDrawing(event);
         }
         else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
@@ -80,6 +83,7 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
         }
     }
 }
+
 
 void DrawCircle::mouseMoveEvent(QMouseEvent *event)
 {
@@ -103,6 +107,7 @@ void DrawCircle::startDraw(QMouseEvent *event)
     mCircle = new Circle(mMapcontroller, true);
     mCircleProperties->setCircle(mCircle);
 
+    mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
@@ -117,12 +122,14 @@ void DrawCircle::startDraw(QMouseEvent *event)
 
 void DrawCircle::cancelDrawing(QMouseEvent *event)
 {
-    mMapcontroller->removeNodeFromLayer(mCircle, DRAW_LAYER_NAME);
-    mCircle = nullptr;
-    mCircleProperties->setCircle(mCircle);
-    mDrawingState = DrawingState::START;
+    if(mDrawingState == DrawingState::DRAWING){
+        mMapcontroller->removeNodeFromLayer(mCircle, DRAW_LAYER_NAME);
+        mCircle = nullptr;
+        mCircleProperties->setCircle(mCircle);
+        mDrawingState = DrawingState::START;
 
-    event->accept();
+        event->accept();
+    }
 }
 
 void DrawCircle::finishDrawing(QMouseEvent *event)

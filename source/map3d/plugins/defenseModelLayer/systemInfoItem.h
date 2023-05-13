@@ -2,9 +2,20 @@
 #define SYSTEMINFORMATION_H
 #include <QAbstractTableModel>
 #include <QQuickItem>
-#include "listManager.h"
+#include "aircraftTableModel.h"
+#include "systemTableModel.h"
 
 class AircraftModelNode;
+class UIHandle;
+class QQmlEngine;
+
+namespace Aircraft {
+struct Data;
+}
+namespace System {
+struct Data;
+}
+
 class SystemInfoModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -24,18 +35,25 @@ public:
         CombatInfoHeaders = Qt::UserRole + 207,
         AssignAircraftsName = Qt::UserRole + 208,
         AssignAircraftsType = Qt::UserRole + 209,
-        SystemColor = Qt::UserRole + 210
+        SystemColor = Qt::UserRole + 210,
+        BCCStatusColor = Qt::UserRole + 211,
+        RadarStatusColor = Qt::UserRole + 212
 
     };
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    SystemInfo getStationInfo() {return mSystemInfo;}
+    const System::Data* getStationInfo() {return mSystemInfo;}
     QHash<int, QByteArray> roleNames() const override;
 
-    void setInformtion(const SystemInfo &systemInfo, const SystemStatusInfo &systemStatusInfo, const SystemCambatInfo &systemCombatInfo);
-    void setCombatInfo(const SystemCambatInfo &combatInfo);
-    void setInfo(const SystemInfo &Info);
-    void setStatusInfo(const SystemStatusInfo &statusInfo);
+    void setInformtion(const System::Data *info);
+signals:
+    void gotoButtonClicked();
+    void rangeButtonClicked(bool check);
+    void wezButtonClicked(bool checked);
+    void mezButtonClicked(bool checked);
+    void activeButtonToggled(bool checked);
+    void moreButtonClicked();
+private:
     QStringList getMainInfo() const;
     QStringList getMainInfoHeaders() const;
     QStringList getLocationInfo() const;
@@ -46,45 +64,26 @@ public:
     QStringList getCombatInfoHeaders() const;
     QStringList getAssignmentsName() const;
     QStringList getAssignmentsType() const;
-
-    void addAssignment(int number, AircraftModelNode *aircraft);
-    void removeAssignment(int number);
-
-Q_SIGNALS:
-    void gotoButtonClicked();
-    void rangeButtonClicked(bool check);
-    void wezButtonClicked(bool checked);
-    void mezButtonClicked(bool checked);
-    void activeButtonToggled(bool checked);
-    void moreButtonClicked();
-
 private:
-    SystemInfo mSystemInfo;
-    SystemStatusInfo mSystemStatusInfo;
-    SystemCambatInfo mSystemCombatInfo;
-    QMap<int, const AircraftModelNode*> mAircraftsAssigned;
+    const System::Data* mSystemInfo;
 };
 
-class SystemInformation : public QObject
+class SystemInfoItem : public QObject
 {
     Q_OBJECT
 
 public:
-    SystemInformation(QQmlEngine *qmlEngine, UIHandle *uiHandle, SystemInfo systemInfo, SystemStatusInfo systemStatusInfo, SystemCambatInfo systemCambatInfo, QObject *parent = nullptr);
-    SystemInfoModel *getInfo() {return mInfoModel;}
-    void setInfo(const SystemInfo &systemInfo);
-    void setStatusInfo(const SystemStatusInfo &systemStatusInfo);
-    void setCombatInfo(const SystemCambatInfo &systemCombatInfo);
+    SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, const System::Data *data, QObject *parent = nullptr);
 
-    void addAssignment(int number, AircraftModelNode *aircraft);
-    void removeAssignment(int number);
+    SystemInfoModel *getInfo() {return mInfoModel;}
+    void setInfo(const System::Data *systemInfo);
 
     void show();
 private:
-    SystemInfoModel *mInfoModel;
+    SystemInfoModel* mInfoModel;
     UIHandle *mUiHandle;
     QQuickItem *mItem;
-    SystemInfo mInformation;
+    const System::Data* mInformation;
 };
 
 #endif

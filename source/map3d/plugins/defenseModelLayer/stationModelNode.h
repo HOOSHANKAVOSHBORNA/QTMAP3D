@@ -4,7 +4,6 @@
 
 #include "mapcontroller.h"
 #include "defenseModelNode.h"
-#include "listManager.h"
 #include "stationInformation.h"
 #include "circle.h"
 #include "polygon.h"

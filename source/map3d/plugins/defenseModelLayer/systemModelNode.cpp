@@ -1,5 +1,7 @@
 #include "systemModelNode.h"
 #include "polygon.h"
+#include "systemDataManager.h"
+#include "aircraftDataManager.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
@@ -8,16 +10,19 @@
 #include "truckf.h"
 #include "trucks.h"
 #include "truckl.h"
+#include "defenseModelLayer.h"
 #include <QtMath>
 #include <osgEarthAnnotation/CircleNode>
 #include <osg/AutoTransform>
 
 const float RANGE3D = 600;//std::numeric_limits<float>::max();;
 
-SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
-    :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
+SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::Data* systemData, QObject* parent)
+    :DefenseModelNode(defenseModelLayer->mMapController, parent),
+      mDefenseModelLayer(defenseModelLayer),
+      mSystemData(systemData)
 {
-    mIs3D = mMapController->getMode();
+    mIs3D = mDefenseModelLayer->mMapController->getMode();
     //--create root node--------------------------------------------------------------------------
     mRootNode = new osg::LOD;
 
@@ -108,13 +113,13 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
     at->addChild(mNode2D);
     at->setAutoRotateMode(osg::AutoTransform::AutoRotateMode::ROTATE_TO_CAMERA);
 
-    mTruckF = new TruckF(mMapController);
+    mTruckF = new TruckF(mDefenseModelLayer->mMapController);
     mTruckF->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,5.0,0));
-    mTruckS = new TruckS(mMapController);
+    mTruckS = new TruckS(mDefenseModelLayer->mMapController);
     mTruckS->stopSearch();
     mTruckS->getPositionAttitudeTransform()->setPosition(osg::Vec3d(-5.0 * std::sin(qDegreesToRadians(60.0)), -5.0 * std::cos(qDegreesToRadians(60.0)),0));
 
-    mTruckL = new TruckL(mMapController);
+    mTruckL = new TruckL(mDefenseModelLayer->mMapController);
     mTruckL->getPositionAttitudeTransform()->setPosition(osg::Vec3d(5.0 * std::sin(qDegreesToRadians(60.0)), -5.0 * std::cos(qDegreesToRadians(60.0)),0));
 
     mNode3D = new Group;
@@ -132,6 +137,7 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
 
     getGeoTransform()->addChild(mLabelNode);
     mLabelNode->setNodeMask(false);
+    mLabelNode->setPriority(10);
 
 
     if(mIs3D)
@@ -145,183 +151,196 @@ SystemModelNode::SystemModelNode(MapController *mapControler, QQmlEngine *qmlEng
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
 
-    mCircleNode = new osgEarth::Annotation::CircleNode();
-    mCircleNode->setRadius(10);
+    mRectangleNode = new osgEarth::Annotation::RectangleNode();
+    mRectangleNode->setSize(16, 16);
 
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.2f, 0.2f, 1.0f);
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mRectangleStyleSelected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.4f, 0.4f, 0.4f, 1.0f);
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+    mRectangleStyleDeselected.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mCircleNode->setStyle(mCircleStyleActive);
-    mCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
-    mCircleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
+    mRectangleNode->setStyle(mRectangleStyleDeselected);
+    mRectangleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
+    mRectangleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
 
-    mNode3D->addChild(mCircleNode);
+    mNode3D->addChild(mRectangleNode);
 
 
     //map mode changed-----------------------------------------------------------------------
-    connect(mapControler, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
+    connect(mDefenseModelLayer->mMapController, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------
-    mRangeCircle = new Circle(mMapController, true);
+    mRangeCircle = new Circle(mDefenseModelLayer->mMapController, true);
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
 
     mMezSphere = new SphereNode();
     mMezSphere->setColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
     mMezSphere->setSphereShape(SphereNode::SphereShape::SphereTopHalf);
 
-    mWezPolygon = new Polygon(mMapController, false);
+    mWezPolygon = new Polygon(mDefenseModelLayer->mMapController, false);
     mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
-    if (!mSystemInformation) {
-        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    if (!mSystemInfoItem) {
+        mSystemInfoItem = new SystemInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mSystemData, this);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
     }
 
+    mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+    updateColors();
 }
 
-void SystemModelNode::setInformation(const SystemInfo& info)
+void SystemModelNode::informationChanged()
 {
-    if (mSystemInformation)
-        mSystemInformation->setInfo(info);
-    mInformation = info;
+//    if (mSystemInfoItem)
+//        mSystemInfoItem->setInfo(info);
+//    mInformation = info;
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
-
-
-
 }
 
-SystemInfo SystemModelNode::getInformation() const
-{
-    return mInformation;
-}
+//SystemInfo SystemModelNode::getInformation() const
+//{
+//    return mInformation;
+//}
 
-void SystemModelNode::setCambatInfo(const SystemCambatInfo &systemCambatInfo)
+void SystemModelNode::combatInfoChanged()
 {
-    mCambatInfo = systemCambatInfo;
-    if (mSystemInformation)
-        mSystemInformation->setCombatInfo(systemCambatInfo);
+    auto combatInfo = mSystemData->information->systemCombatInfo;
+    if (mSystemInfoItem)
+        mSystemInfoItem->setInfo(mSystemData);
 
-    switch (mCambatInfo.Phase) {
-    case SystemCambatInfo::Search:
+    switch (combatInfo.Phase) {
+    case SystemCombatInfo::Search:
         searchPhase();
         break;
-    case SystemCambatInfo::Lock:
-        lockPhase(mCambatInfo.TN);
+    case SystemCombatInfo::Lock:
+        lockPhase(combatInfo.TN);
         break;
-    case SystemCambatInfo::Fire:
-        firePhase(mCambatInfo.TN);
+    case SystemCombatInfo::Fire:
+        firePhase(combatInfo.TN);
         break;
-    case SystemCambatInfo::Kill:
-        killPhase(mCambatInfo.TN);
+    case SystemCombatInfo::Kill:
+        killPhase(combatInfo.TN);
         break;
-    case SystemCambatInfo::NoKill:
-        noKillPhase(mCambatInfo.TN);
+    case SystemCombatInfo::NoKill:
+        noKillPhase(combatInfo.TN);
         break;
     }
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
-SystemCambatInfo SystemModelNode::getSystemCombatInfo() const
+void SystemModelNode::assignmentChanged()
 {
-    return mCambatInfo;
+    updateOrCreateLabelImage();
+    mLabelNode->setStyle(mLabelNode->getStyle());
 }
 
-void SystemModelNode::setStatusInfo(const SystemStatusInfo &systemStatusInfo)
+System::Data *SystemModelNode::getData() const
 {
-    if (mSystemInformation)
-        mSystemInformation->setStatusInfo(systemStatusInfo);
+    return mSystemData;
+}
+
+//SystemCombatInfo SystemModelNode::getSystemCombatInfo() const
+//{
+//    return mCombatInfo;
+//}
+
+void SystemModelNode::statusInfoChanged()
+{
+    auto systemStatusInfo = mSystemData->information->systemStatusInfo;
+    if (mSystemInfoItem)
+        mSystemInfoItem->setInfo(mSystemData);
     mNode2D->setValue(0, systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S);
     mNode2D->setValue(1, systemStatusInfo.RadarSearchStatus != SystemStatusInfo::S);
 
-    mCircleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mCircleStyleActive : mCircleStyleDeactive);
-    mStatusInfo = systemStatusInfo;
+//    mRectangleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mRectangleStyleActive : mRectangleStyleDeactive);
+    //mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
     mLabelNode->setStyle(mLabelNode->getStyle());
+
+    updateColors();
 }
 
-void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
-{
-    if(!assignModelNode)
-        return;
-    if(!mAssignmentMap.contains(tn))
-    {
-        Assignment* assignmentModel = new  Assignment(mMapController);
-        assignmentModel->mModelNode = assignModelNode;
-        mAssignmentMap[tn] = assignmentModel;
-        mSystemInformation->addAssignment(tn, assignModelNode);
-        mMapController->addNodeToLayer(assignmentModel->mLine, SYSTEMS_LAYER_NAME);
-    }
-    updateOrCreateLabelImage();
-    mLabelNode->setStyle(mLabelNode->getStyle());
-}
+//void SystemModelNode::addAssignment(int tn, AircraftModelNode *assignModelNode)
+//{
+//    if(!assignModelNode)
+//        return;
+//    if(!mAssignmentMap.contains(tn))
+//    {
+//        Assignment* assignmentModel = new  Assignment(mMapController);
+//        assignmentModel->mModelNode = assignModelNode;
+//        mAssignmentMap[tn] = assignmentModel;
+//        mSystemInfoItem->addAssignment(tn, assignModelNode);
+//        mMapController->addNodeToLayer(assignmentModel->mLine, SYSTEMS_LAYER_NAME);
+//    }
+//    updateOrCreateLabelImage();
+//    mLabelNode->setStyle(mLabelNode->getStyle());
+//}
 
-AircraftModelNode *SystemModelNode::getAssignment(int tn) const
-{
-    if(!mAssignmentMap.contains(tn))
-        return mAssignmentMap[tn]->mModelNode;
-    return nullptr;
-}
+//AircraftModelNode *SystemModelNode::getAssignment(int tn) const
+//{
+//    if(!mAssignmentMap.contains(tn))
+//        return mAssignmentMap[tn]->mModelNode;
+//    return nullptr;
+//}
 
-void SystemModelNode::acceptAssignment(int tn, bool value)
-{
-    if(mAssignmentMap.contains(tn))
-    {
-        if(value)
-            mAssignmentMap[tn]->accept();
-        else {
-            removeAssignment(tn);
-        }
-    }
-}
+//void SystemModelNode::acceptAssignment(int tn, bool value)
+//{
+//    if(mAssignmentMap.contains(tn))
+//    {
+//        if(value)
+//            mAssignmentMap[tn]->accept();
+//        else {
+//            removeAssignment(tn);
+//        }
+//    }
+//}
 
-void SystemModelNode::removeAssignment(int tn)
-{
-    if(mAssignmentMap.contains(tn))
-    {
-        mMapController->removeNodeFromLayer(mAssignmentMap[tn]->mLine, SYSTEMS_LAYER_NAME);
-        mAssignmentMap.remove(tn);
-        mSystemInformation->removeAssignment(tn);
-    }
-    updateOrCreateLabelImage();
-    mLabelNode->setStyle(mLabelNode->getStyle());
-}
+//void SystemModelNode::removeAssignment(int tn)
+//{
+//    if(mAssignmentMap.contains(tn))
+//    {
+//        mMapController->removeNodeFromLayer(mAssignmentMap[tn]->mLine, SYSTEMS_LAYER_NAME);
+//        mAssignmentMap.remove(tn);
+//        mSystemInfoItem->removeAssignment(tn);
+//    }
+//    updateOrCreateLabelImage();
+//    mLabelNode->setStyle(mLabelNode->getStyle());
+//}
 
-void SystemModelNode::clearAssignments(int exceptTN)
-{
-    for(auto tn: mAssignmentMap.keys())
-    {
-        if(tn != exceptTN)
-        {
-            removeAssignment(tn);
-            mSystemInformation->removeAssignment(tn);
-        }
-    }
-}
+//void SystemModelNode::clearAssignments(int exceptTN)
+//{
+//    for(auto tn: mAssignmentMap.keys())
+//    {
+//        if(tn != exceptTN)
+//        {
+//            removeAssignment(tn);
+//            mSystemInfoItem->removeAssignment(tn);
+//        }
+//    }
+//}
 
-QMap<int, AircraftModelNode *> SystemModelNode::getAssignments() const
-{
-    QMap<int, AircraftModelNode *> assignModelNods;
-    for(auto key: mAssignmentMap.keys())
-        assignModelNods[key] = mAssignmentMap[key]->mModelNode;
-    return assignModelNods;
-}
+//QMap<int, AircraftModelNode *> SystemModelNode::getAssignments() const
+//{
+//    QMap<int, AircraftModelNode *> assignModelNods;
+//    for(auto key: mAssignmentMap.keys())
+//        assignModelNods[key] = mAssignmentMap[key]->mModelNode;
+//    return assignModelNods;
+//}
 
 void SystemModelNode::goOnTrack()
 {
-    mMapController->setTrackNode(getGeoTransform());
+    mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform());
 }
 
 void SystemModelNode::onLeftButtonClicked(bool val)
@@ -334,7 +353,7 @@ void SystemModelNode::onLeftButtonClicked(bool val)
     }
     else
     {
-        mMapController->untrackNode(getGeoTransform());
+        mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
 //        onRangeButtonToggled(val);
 //        onWezButtonToggled(val);
 //        onMezButtonToggled(val);
@@ -345,10 +364,10 @@ void SystemModelNode::frameEvent()
 {
     mLabelNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 
-    for(auto assinmentModel:mAssignmentMap)
-        assinmentModel->updateLine(getPosition());
+    for(auto assinment:mSystemData->assignments)
+        assinment->updateLine(getPosition());
 
-    if (mTargetModelNode) {
+    if (mTargetModelNode.valid()) {
         mTruckF->aimTarget(mTargetModelNode->getPosition());
         mTruckL->lockOnTarget(mTargetModelNode->getPosition());
     }
@@ -368,7 +387,6 @@ void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 
 void SystemModelNode::updateColors()
 {
-    DefenseModelNode::updateColors();
 
     if (mSelectionMode == SELECTED || mHoverMode == HOVERED) {
 
@@ -387,6 +405,19 @@ void SystemModelNode::updateColors()
 
     }
 
+    if (mSystemData->information->systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S) {
+        mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+    } else {
+        mModelColor = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
+    }
+
+    DefenseModelNode::updateColors();
+
+    if(mSelectionMode == SELECTED || mHoverMode == HOVERED) {
+        mRectangleNode->setStyle(mRectangleStyleSelected);
+    } else {
+        mRectangleNode->setStyle(mRectangleStyleDeselected);
+    }
 
 
 }
@@ -411,7 +442,7 @@ void SystemModelNode::onModeChanged(bool is3DView)
 
 void SystemModelNode::onGotoButtonClicked()
 {
-    mMapController->goToPosition(getPosition(), 200);
+    mDefenseModelLayer->mMapController->goToPosition(getPosition(), 200);
 }
 
 void SystemModelNode::onRangeButtonToggled(bool check)
@@ -419,13 +450,13 @@ void SystemModelNode::onRangeButtonToggled(bool check)
     if(check)
     {
         mRangeCircle->setPosition(getPosition());
-        mRangeCircle->setRadius(osgEarth::Distance(mInformation.ViewRange, osgEarth::Units::METERS));
+        mRangeCircle->setRadius(osgEarth::Distance(mSystemData->information->systemInfo.ViewRange, osgEarth::Units::METERS));
 
-        mMapController->addNodeToLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->addNodeToLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
     }
     else
     {
-        mMapController->removeNodeFromLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->removeNodeFromLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -435,9 +466,9 @@ void SystemModelNode::onWezButtonToggled(bool checked)
     {
         mWezPolygon->clearPoints();
         osg::Vec3d worldPosition;
-        getPosition().toWorld(worldPosition, mMapController->getMapNode()->getTerrain());
+        getPosition().toWorld(worldPosition, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint;
-        double radius = mInformation.MezRange;
+        double radius = mSystemData->information->systemInfo.MezRange;
 
         osg::Vec3d v1 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
         osg::Vec3d v2 = osg::Vec3d(worldPosition.x() - radius*2/4, worldPosition.y() + radius*2/4, worldPosition.z());
@@ -445,21 +476,21 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         osg::Vec3d v4 = osg::Vec3d(worldPosition.x() + radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
 
         osgEarth::GeoPoint geoPoint1;
-        geoPoint1.fromWorld(mMapController->getMapSRS(), v1);
+        geoPoint1.fromWorld(mDefenseModelLayer->mMapController->getMapSRS(), v1);
         geoPoint1.z() = 0;
-        geoPoint1.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        geoPoint1.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint2;
-        geoPoint2.fromWorld(mMapController->getMapSRS(), v2);
+        geoPoint2.fromWorld(mDefenseModelLayer->mMapController->getMapSRS(), v2);
         geoPoint2.z() = 0;
-        geoPoint2.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        geoPoint2.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint3;
-        geoPoint3.fromWorld(mMapController->getMapSRS(), v3);
+        geoPoint3.fromWorld(mDefenseModelLayer->mMapController->getMapSRS(), v3);
         geoPoint3.z() = 0;
-        geoPoint3.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        geoPoint3.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint4;
-        geoPoint4.fromWorld(mMapController->getMapSRS(), v4);
+        geoPoint4.fromWorld(mDefenseModelLayer->mMapController->getMapSRS(), v4);
         geoPoint4.z() = 0;
-        geoPoint4.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mMapController->getMapNode()->getTerrain());
+        geoPoint4.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
 
         mWezPolygon->addPoints(geoPoint1);
         mWezPolygon->addPoints(geoPoint2);
@@ -469,11 +500,11 @@ void SystemModelNode::onWezButtonToggled(bool checked)
         float height = static_cast<float>(radius/3);
         mWezPolygon->setHeight(height);
 
-        mMapController->addNodeToLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->addNodeToLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
 
     }
     else {
-        mMapController->removeNodeFromLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->removeNodeFromLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
     }
 }
 
@@ -482,39 +513,43 @@ void SystemModelNode::onMezButtonToggled(bool checked)
     if(checked)
     {
         mMezSphere->setPosition(getPosition());
-        mMezSphere->setRadius(mInformation.MezRange);
-        mMapController->addNodeToLayer(mMezSphere, SYSTEMS_LAYER_NAME);
+        mMezSphere->setRadius(mSystemData->information->systemInfo.MezRange);
+        mDefenseModelLayer->mMapController->addNodeToLayer(mMezSphere, SYSTEMS_LAYER_NAME);
     }
     else
     {
-        mMapController->removeNodeFromLayer(mMezSphere, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mMapController->removeNodeFromLayer(mMezSphere, SYSTEMS_LAYER_NAME);
     }
 }
 
 void SystemModelNode::onActiveButtonToggled(bool checked)
 {
-    mStatusInfo.RadarSearchStatus = (checked ? SystemStatusInfo::S : SystemStatusInfo::US);
+    mSystemData->information->systemStatusInfo.RadarSearchStatus = (checked ? SystemStatusInfo::S : SystemStatusInfo::US);
 
     mNode2D->setValue(0, checked);
     mNode2D->setValue(1, !checked);
 
-    mCircleNode->setStyle(checked ? mCircleStyleActive : mCircleStyleDeactive);
+//    mRectangleNode->setStyle(checked ? mRectangleStyleActive : mRectangleStyleDeactive);
+    updateColors();
 }
 
 void SystemModelNode::searchPhase()
 {
-    for(auto assignmentModel: mAssignmentMap)
-        assignmentModel->mLine->setColor(osgEarth::Color::Yellow);
+    for(auto assignment: mSystemData->assignments)
+        assignment->line->setColor(osgEarth::Color::Yellow);
 
     mTruckS->startSearch();
 }
 
 void SystemModelNode::lockPhase(int tn)
 {
-    if(mAssignmentMap.contains(tn))
+    auto index = mSystemData->findAssignment(tn);
+
+    if(index != -1)
     {
-        mTargetModelNode = mAssignmentMap[tn]->mModelNode;
-        mAssignmentMap[tn]->mLine->setColor(osgEarth::Color::Orange);
+        auto assignment = mSystemData->assignments.at(index);
+        mTargetModelNode = assignment->modelNode;
+        assignment->line->setColor(osgEarth::Color::Orange);
 
         mTruckL->lockOnTarget(mTargetModelNode->getPosition());
         mTruckF->aimTarget(mTargetModelNode->getPosition());
@@ -531,27 +566,33 @@ void SystemModelNode::lockPhase(int tn)
 
 void SystemModelNode::firePhase(int tn)
 {
-    if(mAssignmentMap.contains(tn))
+    auto index = mSystemData->findAssignment(tn);
+
+    if(index != -1)
     {
-        mTargetModelNode = mAssignmentMap[tn]->mModelNode;
-        mAssignmentMap[tn]->mLine->setColor(osgEarth::Color::Red);
+        auto assignment = mSystemData->assignments.at(index);
+        mTargetModelNode = assignment->modelNode;
+        assignment->line->setColor(osgEarth::Color::Red);
         mFiredRocket = mTruckF->getActiveRocket();
         if(mFiredRocket)
         {
             mFiredRocket->setAutoScale();
-            mTruckF->shoot(mAssignmentMap[tn]->mModelNode->getPosition().vec3d(), 2000);//1000 m/s
-            mMapController->setTrackNode(mFiredRocket->getGeoTransform());
+            mTruckF->shoot(mTargetModelNode->getPosition().vec3d(), 2000);//1000 m/s
+            mDefenseModelLayer->mMapController->setTrackNode(mFiredRocket->getGeoTransform());
         }
     }
 }
 
 void SystemModelNode::killPhase(int tn)
 {
-    if(mAssignmentMap.contains(tn))
+    auto index = mSystemData->findAssignment(tn);
+
+    if(index != -1)
     {
-        mMapController->untrackNode(mFiredRocket->getGeoTransform());
-        mAssignmentMap[tn]->mLine->setColor(osgEarth::Color::Black);
-        mAssignmentMap[tn]->mModelNode->collision();
+        auto assignment = mSystemData->assignments.at(index);
+        mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
+        assignment->line->setColor(osgEarth::Color::Black);
+        assignment->modelNode->collision();
 
         if(mFiredRocket)
             mFiredRocket->stop();
@@ -562,10 +603,13 @@ void SystemModelNode::killPhase(int tn)
 
 void SystemModelNode::noKillPhase(int tn)
 {
-    if(mAssignmentMap.contains(tn))
+    auto index = mSystemData->findAssignment(tn);
+
+    if(index != -1)
     {
-        mMapController->untrackNode(mFiredRocket->getGeoTransform());
-        mAssignmentMap[tn]->mLine->setColor(osgEarth::Color::Brown);
+        auto assignment = mSystemData->assignments.at(index);
+        mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
+        assignment->line->setColor(osgEarth::Color::Brown);
         if(mFiredRocket)
             mFiredRocket->stop();
 //        removeAssignment(tn);
@@ -574,24 +618,23 @@ void SystemModelNode::noKillPhase(int tn)
 
 void SystemModelNode::showInfoWidget()
 {
-//    if (!mSystemInformation) {
-//        mSystemInformation = new SystemInformation(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCambatInfo, this);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
-//        connect(mSystemInformation->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
-//    }
-    mSystemInformation->setInfo(mInformation);
-    mSystemInformation->show();
+//    if (!mSystemInfoItem) {
+//        mSystemInfoItem = new SystemInfoItem(mQmlEngine, mUIHandle, mInformation, mStatusInfo, mCombatInfo, this);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::mezButtonClicked, this, &SystemModelNode::onMezButtonToggled);
+//        connect(mSystemInfoItem->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
+    mSystemInfoItem->setInfo(mSystemData);
+    mSystemInfoItem->show();
 }
 
 void SystemModelNode::updateOrCreateLabelImage()
 {
 //    qDebug() << ">>> : " << mAssignmentMap.keys().count();
 
-    int height = LABEL_IMAGE_HEIGHT + ((mAssignmentMap.keys().count()+2)/3) * 30;
-    if (mStatusInfo.Operational == SystemStatusInfo::Op2)
+    int height = LABEL_IMAGE_HEIGHT + ((mSystemData->assignments.count()+2)/3) * 30;
+    if (mSystemData->information->systemStatusInfo.Operational == SystemStatusInfo::OP2)
         height += 50;
 
     if (!mRenderTargetImage) {
@@ -651,17 +694,17 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.setFont(textFont);
         painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignCenter,
-                         mInformation.Name);
+                         mSystemData->information->systemInfo.Name);
         painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignCenter,
-                         QString::number(mInformation.Number));
+                         QString::number(mSystemData->information->systemInfo.Number));
         //-------------------------------------------------------------
         painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Type:");
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 40, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mInformation.Type);
+                         mSystemData->information->systemInfo.Type);
 
 
         painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH/2, 30),
@@ -671,7 +714,7 @@ void SystemModelNode::updateOrCreateLabelImage()
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Radar:");
 
-        if(mStatusInfo.BCCStatus == SystemStatusInfo::S)
+        if(mSystemData->information->systemStatusInfo.BCCStatus == SystemStatusInfo::S)
             textPen.setColor(QColor(0, 255, 0));
         else
             textPen.setColor(QColor(255, 0, 0));
@@ -679,9 +722,9 @@ void SystemModelNode::updateOrCreateLabelImage()
 
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 70, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mStatusInfo.radarStatusToString(mStatusInfo.BCCStatus));
+                         mSystemData->information->systemStatusInfo.radarStatusToString(mSystemData->information->systemStatusInfo.BCCStatus));
 
-        if(mStatusInfo.RadarSearchStatus == SystemStatusInfo::S)
+        if(mSystemData->information->systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S)
             textPen.setColor(QColor(0, 255, 0));
         else
             textPen.setColor(QColor(255, 0, 0));
@@ -689,7 +732,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 
         painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 100, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mStatusInfo.radarStatusToString(mStatusInfo.RadarSearchStatus));
+                         mSystemData->information->systemStatusInfo.radarStatusToString(mSystemData->information->systemStatusInfo.RadarSearchStatus));
 
 
 
@@ -706,11 +749,11 @@ void SystemModelNode::updateOrCreateLabelImage()
         painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH/2, 30),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Assignments:");
-        textPen.setColor(mCambatInfo.phaseToColor());
+        textPen.setColor(mSystemData->information->systemCombatInfo.phaseToColor());
         painter.setPen(textPen);
         painter.drawText(QRect(10, 140, LABEL_IMAGE_WIDTH-20, 30),
                          Qt::AlignRight | Qt::AlignVCenter,
-                         QString(mCambatInfo.phaseToString()));
+                         QString(mSystemData->information->systemCombatInfo.phaseToString()));
 
         textPen.setColor(QColor(255,255,255));
         painter.setPen(textPen);
@@ -718,19 +761,19 @@ void SystemModelNode::updateOrCreateLabelImage()
         int h = 170;
         const QFontMetrics fm(textFont);
         int n = 0;
-        while (n < mAssignmentMap.values().count()) {
+        while (n < mSystemData->assignments.count()) {
 
             int indent = 0;
             for (int llidx = 0; llidx < 3; llidx++)// two elements per line
             {
 
-                if (n >= mAssignmentMap.values().count())
+                if (n >= mSystemData->assignments.count())
                     break;
 
-                const auto val = mAssignmentMap.values()[n];
+                const auto val = mSystemData->assignments[n];
 
                 const QString ss = (llidx == 0 ? QStringLiteral("") : QStringLiteral(", "))
-                        + QString::number(mStatusInfo.Number);
+                        + QString::number(val->info->TN);
 
                 textPen.setColor(QColor(255,255,255));
                 painter.setPen(textPen);
@@ -751,7 +794,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 
 
 
-        h = height - 60 - (mStatusInfo.Operational == SystemStatusInfo::Op2 ? 50 : 0);
+        h = height - 60 - (mSystemData->information->systemStatusInfo.Operational == SystemStatusInfo::OP2 ? 50 : 0);
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
         painter.drawLine(0, h, LABEL_IMAGE_WIDTH, h);
@@ -763,7 +806,7 @@ void SystemModelNode::updateOrCreateLabelImage()
         static const QImage missleRedImage(":/resources/bullet_red.png");
         static const QImage missleGreenImage(":/resources/bullet_green.png");
 
-        if (mStatusInfo.Operational == SystemStatusInfo::NoOp) {
+        if (mSystemData->information->systemStatusInfo.Operational == SystemStatusInfo::NOP) {
             for (int i = 0; i < 9; i++) {
                 painter.drawImage(
                             QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
@@ -776,7 +819,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 
         } else {
             for (int i = 0; i < 9; i++) {
-                if(i < mStatusInfo.MissileCount) {
+                if(i < mSystemData->information->systemStatusInfo.MissileCount) {
                     painter.drawImage(
                                 QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * i, h, 20, 40),
                                 missleGreenImage,
@@ -792,11 +835,11 @@ void SystemModelNode::updateOrCreateLabelImage()
                 }
             }
 
-            if (mStatusInfo.Operational == SystemStatusInfo::Op2) {
+            if (mSystemData->information->systemStatusInfo.Operational == SystemStatusInfo::OP2) {
                 h += 50;
 
                 for (int i = 9; i < 18; i++) {
-                    if(i < mStatusInfo.MissileCount) {
+                    if(i < mSystemData->information->systemStatusInfo.MissileCount) {
                         painter.drawImage(
                                     QRect(10 + ((LABEL_IMAGE_WIDTH - 20.0) / 9.0) * (i-9), h, 20, 40),
                                     missleGreenImage,
@@ -830,28 +873,28 @@ void SystemModelNode::updateOrCreateLabelImage()
 
 
 
-SystemModelNode::Assignment::Assignment(MapController *mapControler)
-{
-    mLine = new LineNode(mapControler);
-    mLine->setPointVisible(true);
-    mLine->setColor(osgEarth::Color::White);
-    mLine->setPointColor(osgEarth::Color::Olive);
-    mLine->setWidth(1);
-    mLine->setPointWidth(5);
-    mLine->setTessellation(15);
-    mLine->setShowBearing(true);
-}
+//SystemModelNode::Assignment::Assignment(MapController *mapControler)
+//{
+//    mLine = new LineNode(mapControler);
+//    mLine->setPointVisible(true);
+//    mLine->setColor(osgEarth::Color::White);
+//    mLine->setPointColor(osgEarth::Color::Olive);
+//    mLine->setWidth(1);
+//    mLine->setPointWidth(5);
+//    mLine->setTessellation(15);
+//    mLine->setShowBearing(true);
+//}
 
-void SystemModelNode::Assignment::accept()
-{
-    mLine->setColor(osgEarth::Color::Olive);
-    mLine->setPointVisible(false);
-    mLine->setWidth(5);
-}
+//void SystemModelNode::Assignment::accept()
+//{
+//    mLine->setColor(osgEarth::Color::Olive);
+//    mLine->setPointVisible(false);
+//    mLine->setWidth(5);
+//}
 
-void SystemModelNode::Assignment::updateLine(const osgEarth::GeoPoint& position)
-{
-    mLine->clear();
-    mLine->addPoint(position);
-    mLine->addPoint(mModelNode->getPosition());
-}
+//void SystemModelNode::Assignment::updateLine(const osgEarth::GeoPoint& position)
+//{
+//    mLine->clear();
+//    mLine->addPoint(position);
+//    mLine->addPoint(mModelNode->getPosition());
+//}

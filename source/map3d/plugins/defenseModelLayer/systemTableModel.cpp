@@ -1,4 +1,6 @@
 #include "systemTableModel.h"
+#include "systemDataManager.h"
+#include "aircraftDataManager.h"
 
 #include <QDebug>
 #include <QColor>
@@ -7,7 +9,6 @@
 SystemTableModel::SystemTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
-
 }
 
 int SystemTableModel::columnCount(const QModelIndex &/*parent*/) const
@@ -17,42 +18,40 @@ int SystemTableModel::columnCount(const QModelIndex &/*parent*/) const
 
 int SystemTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
-    return static_cast<int>(mSystemInfoListProxy.size());
+    return static_cast<int>(mSystemInfosProxy.size());
 }
 
 QVariant SystemTableModel::data(const QModelIndex &index, int role) const
 {
-    if (index.row() > int(mSystemInfoListProxy.size()))
+    if (index.row() > int(mSystemInfosProxy.size()))
         return QVariant();
 
     switch (role) {
     case Qt::DisplayRole:
     {
         switch(index.column()) {
-        case  0: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row())]->Number);
-        case  1: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())]->Name);
-        case  2: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row())]->Type);
-        case  3: return QVariant::fromValue<QString>(mSystemInfoListProxy[static_cast<size_t>(index.row() )]->Terminal);
-        case  4: return mMode == "Assignment" ? QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )]->phaseToString()):
-                                                QVariant::fromValue<double>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )]->TN);
-        case  5: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )]->Latitude);
-        case  6: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )]->Longitude);
-        case  7: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row() )]->Altitude);
-        case  8: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row()    )]->ViewRange);
-        case  9: return QVariant::fromValue<double>(mSystemInfoListProxy[static_cast<size_t>(index.row())]->MezRange);
-        case 10: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row())]->ReceiveTime);
-        case 11: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row() )]->Simulation);
-        case 12: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row() )]->BCCStatusToString());
-        case 13: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row() )]->radarSearchStatusToString());
-        case 14: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row() )]->operationalToString());
-        case 15: return QVariant::fromValue<int>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row() )]->MissileCount);
-        case 16: return QVariant::fromValue<QString>(mSystemStatusInfoListProxy[static_cast<size_t>(index.row()    )]->RadarMode);
-        case 17: return QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row())]->Acceptance);
-        case 18: return mMode == "Assignment" ? QVariant::fromValue<double>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )]->TN):
-                                                QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )]->phaseToString());
-        case 19: return QVariant::fromValue<double>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )]->Antenna);
-        case 20: return QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )]->ChanelNo);
-        case 21: return QVariant::fromValue<QString>(mSystemCombatInfoListProxy[static_cast<size_t>(index.row() )]->Inrange);
+        case  0: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Number);
+        case  1: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Name);
+        case  2: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Type);
+        case  3: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Terminal);
+        case  4: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.TN);
+        case  5: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Latitude);
+        case  6: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Longitude);
+        case  7: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.Altitude);
+        case  8: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.ViewRange);
+        case  9: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemInfo.MezRange);
+        case 10: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemStatusInfo.ReceiveTime);
+        case 11: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemStatusInfo.Simulation);
+        case 12: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemStatusInfo.BCCStatusToString());
+        case 13: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemStatusInfo.radarSearchStatusToString());
+        case 14: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemStatusInfo.operationalToString());
+        case 15: return QVariant::fromValue<int>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemStatusInfo.MissileCount);
+        case 16: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemStatusInfo.RadarMode);
+        case 17: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.Acceptance);
+        case 18: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.phaseToString());
+        case 19: return QVariant::fromValue<double>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.Antenna);
+        case 20: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.ChanelNo);
+        case 21: return QVariant::fromValue<QString>((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.Inrange);
 
         }
         break;
@@ -65,25 +64,15 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
 
     case TextColorRole:
     {
-        if (mMode == "Assignment") {
-            return index.column() == 4 ? QVariant::fromValue<QColor>(QColor("black")) : QVariant::fromValue<QColor>(QColor("white"));
-        }
         return QVariant::fromValue<QColor>(QColor("white"));
     }
 
 
     case SystemColor:
     {
-        if (static_cast<size_t>(index.row()) >= mSystemCombatInfoListProxy.size())
+        if (index.row() >= mSystemInfosProxy.size())
             return QVariant::fromValue<QColor>("white");
-        if (mMode == "Assignment") {
-            switch (index.column()) {
-                case 4: return QVariant::fromValue<QColor>(QColor(mSystemCombatInfoListProxy[static_cast<size_t>(index.row())]->phaseToColor()));
-                default : return QVariant::fromValue<QColor>(QColor("transparent"));
-
-            }
-        }
-        return QVariant::fromValue<QColor>(QColor(mSystemCombatInfoListProxy[static_cast<size_t>(index.row())]->phaseToColor()));
+        return QVariant::fromValue<QColor>(QColor((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.phaseToColor()));
     }
 
     }
@@ -108,7 +97,7 @@ QString SystemTableModel::headerText(int column) const
     case  1: return QStringLiteral("Name");
     case  2: return QStringLiteral("Type");
     case  3: return QStringLiteral("Terminal");
-    case  4: return mMode == "Assignment" ? QStringLiteral("Phase") : QStringLiteral("TN");
+    case  4: return QStringLiteral("TN");
     case  5: return QStringLiteral("Latitude");
     case  6: return QStringLiteral("Longitude");
     case  7: return QStringLiteral("Altitude");
@@ -122,11 +111,11 @@ QString SystemTableModel::headerText(int column) const
     case 15: return QStringLiteral("MissileCount");
     case 16: return QStringLiteral("RadarMode");
     case 17: return QStringLiteral("Acceptance");
-    case 18: return mMode == "Assignment" ? QStringLiteral("TN") : QStringLiteral("Phase");
+    case 18: return QStringLiteral("Phase");
     case 19: return QStringLiteral("Antenna");
     case 20: return QStringLiteral("ChanelNo");
     case 21: return QStringLiteral("Inrange");
-    default: QStringLiteral("");
+    default: return QStringLiteral("");
     }
 }
 
@@ -134,11 +123,11 @@ int SystemTableModel::getNumber(int row) const
 {
     if (row < 0) return -1;
 
-    if (row >= static_cast<int>(mSystemInfoListProxy.size())) {
+    if (row >= static_cast<int>(mSystemInfosProxy.size())) {
         return -1;
     }
 
-    return mSystemInfoListProxy[std::size_t(row)]->Number;
+    return (*mSystemInfos)[mSystemInfosProxy[row]]->information->systemInfo.Number;
 }
 
 void SystemTableModel::setFilterWildcard(const QString &wildcard)
@@ -148,288 +137,87 @@ void SystemTableModel::setFilterWildcard(const QString &wildcard)
         mFilter = wildcard;
         mFilter.remove(QRegularExpression("\\s"));
 
-        mSystemInfoListProxy.clear();
-        for (auto& item : mSystemInfoList) {
-            if (QString::number(item->Number).contains(mFilter))
-                mSystemInfoListProxy.push_back(item);
+        mSystemInfosProxy.clear();
+        for (auto& item : *mSystemInfos) {
+            if (QString::number(item->information->systemInfo.Number).contains(mFilter))
+                mSystemInfosProxy.push_back(item->information->systemInfo.Number);
         }
 
         endResetModel();
-}
-
-void SystemTableModel::onAircraftClicked(int TN)
-{
-    mTN = TN;
-    beginResetModel();
-    mSystemInfoListProxy.clear();
-    mSystemCombatInfoListProxy.clear();
-    mSystemStatusInfoListProxy.clear();
-    if (mSystemsAssigned.contains(TN)) {
-        for (SystemAssignInfo system : mSystemsAssigned[TN]) {
-            auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(), [system](QSharedPointer<SystemInfo> &item){
-                return item->Number == system.Number;
-            });
-            mSystemInfoListProxy.push_back(*it);
-
-            auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [system](QSharedPointer<SystemCambatInfo> &item){
-                return item->Number == system.Number;
-            });
-            mSystemCombatInfoListProxy.push_back(*it2);
-
-            auto it3 = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(), [system](QSharedPointer<SystemStatusInfo> &item){
-                return item->Number == system.Number;
-            });
-            mSystemStatusInfoListProxy.push_back(*it3);
-        }
-    }
-    endResetModel();
-}
-
-void SystemTableModel::onSystemClicked(int Number)
-{
-    emit systemClicked(Number);
-//    refresh();
-}
-
-void SystemTableModel::updateItemData(const SystemInfo &systemInfo)
-{
-//    beginResetModel();
-
-    const auto it = std::find_if(mSystemInfoList.begin(), mSystemInfoList.end(),
-                                 [systemInfo](const QSharedPointer<SystemInfo>& itemInfo){
-        return itemInfo->Number == systemInfo.Number;
-    });
-
-
-    if (it != mSystemInfoList.end()) {
-        *(*it) = systemInfo;
-    } else {
-        QSharedPointer<SystemInfo> isp;
-        isp.reset(new SystemInfo);
-        *(isp) = systemInfo;
-        mSystemInfoList.push_back(isp);
-
-        //------------------ add combatinfo if doesn't exist
-        const auto it2 = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(), [systemInfo](QSharedPointer<SystemCambatInfo> &item){
-            return item->Number == systemInfo.Number;
-        });
-        const auto it3 = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(), [systemInfo](QSharedPointer<SystemStatusInfo> &item){
-            return item->Number == systemInfo.Number;
-        });
-        if (it2 == mSystemCombatInfoList.end()) {
-            SystemCambatInfo tmp1;
-            tmp1.Number = systemInfo.Number;
-            tmp1.Phase = SystemCambatInfo::Search;
-            updateItemData(tmp1);
-        }
-        if (it3 == mSystemStatusInfoList.end()) {
-            SystemStatusInfo tmp2;
-            tmp2.Number = systemInfo.Number;
-            updateItemData(tmp2);
-        }
-    }
-    if (mMode == "TableModel" || mTN == -1) {
-        mSystemInfoListProxy.clear();
-        for (auto& item : mSystemInfoList) {
-            if (QString::number(item->Number).contains(mFilter))
-                mSystemInfoListProxy.push_back(item);
-        }
-    }
-    else {
-        if (mTN > 0)
-            onAircraftClicked(mTN);
-    }
-    emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount()-1));
-
-//    endResetModel();
-}
-
-void SystemTableModel::updateItemData(const SystemStatusInfo &systemStatusInfo)
-{
-//    beginResetModel();
-
-    bool update = false;
-    for (auto system : mSystemInfoList) {
-        if (system->Number == systemStatusInfo.Number)
-            update = true;
-    }
-    if (update) {
-        const auto it = std::find_if(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end(),
-                                     [systemStatusInfo](const QSharedPointer<SystemStatusInfo>& itemInfo){
-            return itemInfo->Number == systemStatusInfo.Number;
-        });
-
-
-        if (it != mSystemStatusInfoList.end()) {
-            *(*it) = systemStatusInfo;
-        } else {
-            QSharedPointer<SystemStatusInfo> isp;
-            isp.reset(new SystemStatusInfo);
-            *(isp) = systemStatusInfo;
-            mSystemStatusInfoList.push_back(isp);
-        }
-
-        if (mMode == "TableModel" || mTN == -1) {
-            mSystemStatusInfoListProxy.clear();
-            for (auto& item : mSystemStatusInfoList) {
-                if (QString::number(item->Number).contains(mFilter))
-                    mSystemStatusInfoListProxy.push_back(item);
-            }
-            emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, columnCount()-1));
-        }
-        else {
-            if (mTN > 0)
-                onAircraftClicked(mTN);
-        }
-    }
-
-//    endResetModel();
-}
-
-void SystemTableModel::updateItemData(const SystemCambatInfo &systemCambatInfo)
-{
-    bool update = false;
-    for (auto system : mSystemInfoList) {
-        if (system->Number == systemCambatInfo.Number)
-            update = true;
-    }
-    if (update) {
-        beginResetModel();
-
-        const auto it = std::find_if(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end(),
-                                     [systemCambatInfo](const QSharedPointer<SystemCambatInfo>& itemInfo){
-            return itemInfo->Number == systemCambatInfo.Number;
-        });
-
-
-        if (it != mSystemCombatInfoList.end()) {
-            *(*it) = systemCambatInfo;
-        } else {
-            QSharedPointer<SystemCambatInfo> isp;
-            isp.reset(new SystemCambatInfo);
-            *(isp) = systemCambatInfo;
-            mSystemCombatInfoList.push_back(isp);
-        }
-        if (mMode == "TableModel" || mTN == -1) {
-            mSystemCombatInfoListProxy.clear();
-            for (auto& item : mSystemCombatInfoList) {
-                if (QString::number(item->Number).contains(mFilter))
-                    mSystemCombatInfoListProxy.push_back(item);
-            }
-        }
-        else {
-            if (mTN > 0)
-                onAircraftClicked(mTN);
-        }
-
-        endResetModel();
-    }
-}
-
-void SystemTableModel::assign(int Number, int TN)
-{
-    SystemAssignInfo tmp;
-    tmp.Number = Number;
-    tmp.Phase = "";
-    if (mSystemsAssigned.contains(TN)) {
-        mSystemsAssigned[TN].push_back(tmp);
-    }
-    else {
-        mSystemsAssigned[TN] = QList<SystemAssignInfo> {tmp};
-    }
-    if (mMode == "Assignment") {
-        if (mTN > 0)
-            onAircraftClicked(TN);
-    }
-
-}
-
-void SystemTableModel::cancelSystemsAssigned(int TN, int ExceptNum)
-{
-
-    if (mSystemsAssigned.contains(TN)){
-        for (auto &system : mSystemsAssigned[TN]){
-            if (system.Number != ExceptNum) {
-                cancelAssign(system.Number, ExceptNum);
-            }
-        }
-    }
-    if (mMode == "Assignment") {
-        if (mTN > 0)
-            onAircraftClicked(TN);
-    }
-}
-
-void SystemTableModel::cancelAllAssigns()
-{
-    mSystemsAssigned.clear();
-    refresh();
-}
-
-void SystemTableModel::cancelAssign(int TN, int Number)
-{
-    if (mSystemsAssigned.contains(TN)) {
-        auto it = std::remove_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &system){
-            return system.Number == Number;
-    });
-        if (it != mSystemsAssigned[TN].end())
-            mSystemsAssigned[TN].erase(it);
-    }
-    if (mMode == "Assignment"){
-        if (mTN > 0) {
-            onAircraftClicked(mTN);
-        }
-    }
-}
-
-void SystemTableModel::acceptAssign(int TN, int Number, bool result)
-{
-    if (result) {
-        auto it = std::find_if(mSystemsAssigned[TN].begin(), mSystemsAssigned[TN].end(), [Number](SystemAssignInfo &item) {
-            return Number == item.Number;
-        });
-        if (it != mSystemsAssigned[TN].end())
-            it->assign = true;
-    }
-    else {
-        cancelAssign(TN, Number);
-    }
 }
 
 void SystemTableModel::refresh()
 {
     beginResetModel();
-    mTN = -1;
-    mSystemInfoListProxy.clear();
-    mSystemCombatInfoListProxy.clear();
-    mSystemStatusInfoListProxy.clear();
-    mSystemInfoListProxy.assign(mSystemInfoList.begin(), mSystemInfoList.end());
-    mSystemCombatInfoListProxy.assign(mSystemCombatInfoList.begin(), mSystemCombatInfoList.end());
-    mSystemStatusInfoListProxy.assign(mSystemStatusInfoList.begin(), mSystemStatusInfoList.end());
-
+    mSystemInfosProxy.clear();
+    mSystemInfosProxy = mSystemInfos->keys();
     endResetModel();
 }
 
-void SystemTableModel::clearList()
+void SystemTableModel::setSystemInfos(const QMap<int, System::Data*> &systems)
 {
     beginResetModel();
-    mSystemInfoList.clear();
-    mSystemInfoListProxy.clear();
-    mSystemCombatInfoList.clear();
-    mSystemCombatInfoListProxy.clear();
-    mSystemStatusInfoList.clear();
-    mSystemStatusInfoListProxy.clear();
-    cancelAllAssigns();
+    mSystemInfos = &systems;
+    mSystemInfosProxy = mSystemInfos->keys();
     endResetModel();
 }
 
-void SystemTableModel::setMode(QString mode)
+void SystemTableModel::onInfoChanged(int number)
 {
-    mMode = mode;
+    if (mSystemInfos->contains(number) && !mSystemInfosProxy.contains(number)) {
+        mSystemInfosProxy = mSystemInfos->keys();
+        setFilterWildcard(mFilter);
+    }
+
+    else {
+        int row = mSystemInfosProxy.indexOf(number);
+        emit dataChanged(createIndex(row, 0), createIndex(row, 22));
+    }
 }
 
-QMap<int, QList<SystemAssignInfo> > SystemTableModel::getAssignmentMap()
+void SystemTableModel::onRemoveData(int number)
 {
-    return mSystemsAssigned;
+    if (!mSystemInfos->contains(number) && mSystemInfosProxy.contains(number)) {
+        beginRemoveRows(QModelIndex(), mSystemInfosProxy.indexOf(number), mSystemInfosProxy.indexOf(number));
+        mSystemInfosProxy = mSystemInfos->keys();
+        endRemoveRows();
+    }
 }
 
+SystemTable::SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer *defenseModelLayer, QObject *parent) :
+    QObject(parent),
+    mSystemDataManger(systemDataManger),
+    mDefenseModelLayer(defenseModelLayer)
+{
+    QQmlComponent *comp3 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
+    QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
+        if (comp3->status() == QQmlComponent::Ready) {
+            QQuickItem *systemTab = static_cast<QQuickItem*>(comp3->create(nullptr));
+            mSystemTableModel = new SystemTableModel;
+            mSystemTableModel->setSystemInfos(mSystemDataManger->getSystemsData());
+
+            connect(mSystemDataManger, &SystemDataManager::infoChanged, mSystemTableModel, &SystemTableModel::onInfoChanged);
+            QObject::connect(systemTab,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mSystemTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
+
+            QObject::connect(systemTab,
+                             SIGNAL(systemDoubleClicked(const int&)),
+                             this,
+                             SLOT(onDoubleClicked(const int&)));
+
+            systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
+            mDefenseModelLayer->mUIHandle->lwAddTab("Systems", systemTab);
+        }
+
+    });
+
+    comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
+}
+
+void SystemTable::onDoubleClicked(int number)
+{
+    if (mSystemDataManger->getSystemsData().contains(number))
+        mSystemDataManger->getSystemsData()[number]->systemModelNode->onLeftButtonClicked(true);
+}

@@ -15,6 +15,8 @@ Item {
     property string headerTitleSTR: "box Properties"
     property string fillColor: "#91001d"
     property string lineColor: "#ffffff"
+//    property double unitsMulti: 1
+//    property double stepSize
 
 
     onVisibleChanged: {
@@ -24,6 +26,19 @@ Item {
         boxProperties.height = heightValue.value
         boxProperties.length = lengthValue.value
     }
+
+//    onUnitsMultiChanged: {
+//        widthValue.value = widthValue.value/unitsMulti
+//        heightValue.value = heightValue.value/unitsMulti
+//        lengthValue.value = lengthValue.value/unitsMulti
+//    }
+
+//    onStepSizeChanged: {
+//        widthValue.stepSize = stepSize
+//        heightValue.stepSize = stepSize
+//        lengthValue.stepSize = stepSize
+//    }
+
 
     Item {
         id: dialog
@@ -62,6 +77,201 @@ Item {
                 }
 
             }
+//            ///////////////////////////////////////units///////////////////////////////////////////////
+//            Rectangle{
+//                id:units
+//                width: parent.width -2
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                anchors.top: header.bottom
+//                height: 25
+//                radius: 0
+//                color: "#303030"
+//                RowLayout{
+//                    spacing: 10
+//                    x:2
+//                    anchors.centerIn: parent
+//                    Text {
+//                        text: qsTr("Unit:")
+//                        color: "white"
+//                    }
+//                    ComboBox {
+//                        id: control
+//                        currentIndex: 1
+//                        model: ["KM", "M", "CM"]
+//                        onCurrentIndexChanged:  {
+//                            if(currentIndex === 0){
+//                                unitsMulti = 1000
+//                            }else if(currentIndex === 1){
+//                                unitsMulti = 1
+//                            }else if(currentIndex === 2){
+//                                unitsMulti = 0.01
+//                            }
+//                        }
+//                        delegate: ItemDelegate {
+//                            width: control.width
+//                            contentItem: Text {
+//                                text: control.textRole
+//                                      ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole])
+//                                      : modelData
+//                                color: "#5f5f5f"
+//                                font: control.font
+//                                elide: Text.ElideRight
+//                                verticalAlignment: Text.AlignVCenter
+//                            }
+//                            highlighted: control.highlightedIndex === index
+//                        }
+//                        indicator: Canvas {
+//                            id: canvas
+//                            x: control.width - width - control.rightPadding
+//                            y: control.topPadding + (control.availableHeight - height) / 2
+//                            width: 12
+//                            height: 8
+//                            contextType: "2d"
+//                            Connections {
+//                                target: control
+//                                function onPressedChanged() { canvas.requestPaint(); }
+//                            }
+//                        }
+//                        contentItem: Text {
+//                            leftPadding: 5
+//                            rightPadding: control.indicator.width + control.spacing
+//                            text: control.displayText
+//                            font: control.font
+//                            color: control.pressed ? "#5f5f5f" : "#404040"
+//                            verticalAlignment: Text.AlignVCenter
+//                            elide: Text.ElideRight
+//                        }
+//                        background: Rectangle {
+//                            implicitWidth: 100
+//                            implicitHeight: 22
+//                            border.color: control.pressed ? "#5f5f5f" : "#404040"
+//                            border.width: control.visualFocus ? 2 : 1
+//                            radius: 5
+//                            color: "#c9c9c9"
+//                        }
+//                        popup: Popup {
+//                            y: control.height - 1
+//                            width: control.width
+//                            implicitHeight: contentItem.implicitHeight
+//                            padding: 1
+
+//                            contentItem: ListView {
+//                                clip: true
+//                                implicitHeight: contentHeight
+//                                model: control.popup.visible ? control.delegateModel : null
+//                                currentIndex: control.highlightedIndex
+
+//                                ScrollIndicator.vertical: ScrollIndicator { }
+//                            }
+//                            background: Rectangle {
+//                                border.color: "#404040"
+//                                radius: 5
+//                            }
+//                        }
+//                    }
+
+//                }
+
+//            }
+
+//            ///////////////////////////////////////steps///////////////////////////////////////////////
+//            Rectangle{
+//                id:steps
+//                width: parent.width -2
+//                anchors.horizontalCenter: parent.horizontalCenter
+//                anchors.top: units.bottom
+//                height: 30
+//                radius: 0
+//                color: "#303030"
+//                RowLayout{
+//                    spacing: 2
+//                    x:2
+//                    anchors.centerIn: parent
+//                    Text {
+//                        text: qsTr("Step:")
+//                        color: "white"
+//                    }
+//                    ComboBox {
+//                        id: controls
+//                        currentIndex: 2
+//                        model: ["1000", "100", "10","1"]
+//                        onCurrentIndexChanged:   {
+//                            if(currentIndex === 0){
+//                                stepSize = 1000
+//                            }else if(currentIndex === 1){
+//                                stepSize = 100
+//                            }else if(currentIndex === 2){
+//                                stepSize = 10
+//                            }else if(currentIndex === 3){
+//                                stepSize = 1
+//                            }
+//                        }
+//                        delegate: ItemDelegate {
+//                            width: controls.width
+//                            contentItem: Text {
+//                                text: controls.textRole
+//                                      ? (Array.isArray(controls.model) ? modelData[controls.textRole] : model[controls.textRole])
+//                                      : modelData
+//                                color: "#5f5f5f"
+//                                font: controls.font
+//                                elide: Text.ElideRight
+//                                verticalAlignment: Text.AlignVCenter
+//                            }
+//                            highlighted: controls.highlightedIndex === index
+//                        }
+//                        indicator: Canvas {
+//                            id: canvass
+//                            x: controls.width - width - controls.rightPadding
+//                            y: controls.topPadding + (controls.availableHeight - height) / 2
+//                            width: 12
+//                            height: 8
+//                            contextType: "2d"
+//                            Connections {
+//                                target: controls
+//                                function onPressedChanged() { canvass.requestPaint(); }
+//                            }
+//                        }
+//                        contentItem: Text {
+//                            leftPadding: 5
+//                            rightPadding: controls.indicator.width + controls.spacing
+//                            text: controls.displayText
+//                            font: controls.font
+//                            color: controls.pressed ? "#5f5f5f" : "#404040"
+//                            verticalAlignment: Text.AlignVCenter
+//                            elide: Text.ElideRight
+//                        }
+//                        background: Rectangle {
+//                            implicitWidth: 100
+//                            implicitHeight: 22
+//                            border.color: controls.pressed ? "#5f5f5f" : "#404040"
+//                            border.width: controls.visualFocus ? 2 : 1
+//                            radius: 5
+//                            color: "#c9c9c9"
+//                        }
+//                        popup: Popup {
+//                            y: controls.height - 1
+//                            width: controls.width
+//                            implicitHeight: contentItem.implicitHeight
+//                            padding: 1
+
+//                            contentItem: ListView {
+//                                clip: true
+//                                implicitHeight: contentHeight
+//                                model: controls.popup.visible ? controls.delegateModel : null
+//                                currentIndex: controls.highlightedIndex
+
+//                                ScrollIndicator.vertical: ScrollIndicator { }
+//                            }
+//                            background: Rectangle {
+//                                border.color: "#404040"
+//                                radius: 5
+//                            }
+//                        }
+//                    }
+
+//                }
+
+//            }
 
             ScrollView {
                 id: frame
@@ -462,14 +672,15 @@ Item {
 
                                 SpinBox {
                                     id: lengthValue
-                                    stepSize: 100
-                                    value: 40000
+                                    stepSize: stepSize
+                                    value: 40000.00
                                     to : 10000000
                                     from : 0
                                     validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
+                                            bottom: Math.min(spinbox.from, spinbox.to)
+                                            top:  Math.max(spinbox.from, spinbox.to)
+                                            decimals: 2
+                                        }
                                     editable: true
                                     anchors.centerIn: parent
                                     height: 20
@@ -480,6 +691,7 @@ Item {
                                         //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
                                         text: lengthValue.value
                                         font: lengthValue.font
+
                                         color: "#404040"
                                         horizontalAlignment: Qt.AlignHCenter
                                         verticalAlignment: Qt.AlignVCenter +10
@@ -569,7 +781,7 @@ Item {
 
                                 SpinBox {
                                     id: widthValue
-                                    stepSize: 100
+                                    stepSize: stepSize
                                     value: 20000
                                     to : 10000000
                                     from : 0
@@ -674,7 +886,7 @@ Item {
 
                                 SpinBox {
                                     id: heightValue
-                                    stepSize: 100
+                                    stepSize: stepSize
                                     value: 20000
                                     to : 10000000
                                     from : 0

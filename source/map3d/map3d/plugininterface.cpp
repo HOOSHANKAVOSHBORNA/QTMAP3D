@@ -59,6 +59,13 @@ void UIHandle::iwShow(QQuickItem* item, QString title)
                               );
 }
 
+void UIHandle::iwHide()
+{
+    QMetaObject::invokeMethod(mMainWindow,
+                              "hideInfoView"
+                              );
+}
+
 void UIHandle::propertiesShow(QQuickItem *item)
 {
     QMetaObject::invokeMethod(mMainWindow,

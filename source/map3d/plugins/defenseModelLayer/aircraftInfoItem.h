@@ -2,10 +2,18 @@
 #define INFOMODEL_H
 #include <QAbstractListModel>
 #include <QQuickItem>
-#include "listManager.h"
 #include "defenseDataManager.h"
-
+namespace Aircraft {
+struct Data;
+}
+namespace System {
+struct Data;
+}
 class SystemModelNode;
+class UIHandle;
+class QQmlEngine;
+class DefenseModelLayer;
+
 class AircraftInfoModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -31,24 +39,14 @@ public:
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    void setAircraftInfo(AircraftInfo &a);
-    QStringList getMainInfo() const;
-    QStringList getmainInfoHeaders() const;
-    QStringList getLocationInfo() const;
-    QStringList getLocationInfoHeader() const;
-    void addAssignment(int number, SystemModelNode* system);
-    void removeAssignment(int systemNumber);
-
-    QStringList getSystemsName() const;
-    QStringList getSystemsNumber() const;
-    QStringList getSystemsPhase() const;
-    QStringList getSystemColor() const;
+    void setAircraftInfo(const Aircraft::Data &a);
+    void updateAircraftInfo();
 
 public slots:
-    AircraftInfo getAircraftInfo() {return mAircraftInfo;}
+    const Aircraft::Data* getAircraftInfo() {return mAircraftInfo;}
     QColor getAircraftColor();
 
-Q_SIGNALS:
+signals:
     void gotoButtonClicked();
     void routeButtonClicked(bool checked);
     void trackButtonClicked(bool checked);
@@ -56,29 +54,35 @@ Q_SIGNALS:
     void moreButtonClicked();
 
 private:
-    AircraftInfo mAircraftInfo;
-    QMap<int, SystemModelNode*> mAssignedSystems;
+    QStringList getMainInfo() const;
+    QStringList getmainInfoHeaders() const;
+    QStringList getLocationInfo() const;
+    QStringList getLocationInfoHeader() const;
+    QStringList getSystemsName() const;
+    QStringList getSystemsNumber() const;
+    QStringList getSystemsPhase() const;
+    QStringList getSystemColor() const;
 
+private:
+    const Aircraft::Data *mAircraftInfo;
 };
 
-class AircraftInformation : public QObject
+class AircraftInfoItem : public QObject
 {
     Q_OBJECT
 public:
-    explicit AircraftInformation(QQmlEngine *mQmlEngine, UIHandle *mUiHandle, AircraftInfo mInformation, QObject *parent = nullptr);
-    AircraftInfoModel* getInfo(){return mInfomodel;}
-    void updateAircraft(AircraftInfo& mInformation);
+    explicit AircraftInfoItem(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &mInformation, QObject *parent = nullptr);
+    ~AircraftInfoItem();
+    AircraftInfoModel* getInfo();
+    void updateAircraft();
     void show();
-
-    void addAssignment(int number, SystemModelNode* system);
-    void removeAssignment(int systemNumber);
     void setTrackOff();
 
 private:
-    AircraftInfo mInformation;
+    const Aircraft::Data *mInformation;
     AircraftInfoModel *mInfomodel;
     UIHandle *mUiHandle = nullptr;
-    QQuickItem *mItem;
+    QQuickItem *mItem{nullptr};
 };
 
 #endif // INFOMODEL_H

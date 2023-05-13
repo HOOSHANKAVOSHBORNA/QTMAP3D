@@ -109,8 +109,8 @@ Item {
                     id: refreshimg
                     anchors.fill: parent
                     onClicked: {
-                        rootItem.aircraftModel.refresh(3);
-                        rootItem.systemModel.refresh(3);
+                        rootItem.aircraftModel.refresh();
+                        rootItem.systemModel.refresh();
                         rootItem.aClicked = -1
                         rootItem.sClicked = -1
                     }
@@ -245,8 +245,7 @@ Item {
                             color: "transparent"
                             Rectangle {
                                 opacity: 1
-                                color: rootItem.aircraftModel ? (column == 0 ? AircraftColor:
-                                                                               "transparent") : "transparent";
+                                color: d_bkcolor
                                 anchors.centerIn: parent
                                 width: 25
                                 height: 23

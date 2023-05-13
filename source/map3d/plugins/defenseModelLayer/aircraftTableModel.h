@@ -2,7 +2,6 @@
 #define AIRCRAFTTABLEMODEL_H
 
 #include "defenseDataManager.h"
-
 #include <QAbstractTableModel>
 #include <deque>
 #include <QSharedPointer>
@@ -11,12 +10,15 @@
 #include <QJsonObject>
 #include <QPair>
 
-struct AircraftAssignInfo {
-    int TN;
-    QString Phase;
-    bool assign;
-};
-
+class AircraftDataManager;
+class DefenseModelLayer;
+namespace Aircraft {
+    struct Data;
+}
+namespace System {
+    struct Data;
+}
+class SystemModelNode;
 class AircraftTableModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -40,45 +42,34 @@ public:
 
     Q_INVOKABLE int getTN(int row) const;
 
+    void setAircraftInfos(const QMap<int, Aircraft::Data *> &aircrafts);
+
 public slots:
     void setFilterWildcard(const QString& wildcard);
     void sortWithHeader(int column);
-    void onAircraftClicked(int TN);
-    void onSystemClicked(int Number);
-    void onUpdateTimerTriggered();
-    bool getShowAssigned();
     void refresh();
-signals:
-    void aircraftClicked(int TN);
-
-public:
-    void updateItemData(const QString& jsonStr);
-    void updateItemData(const AircraftInfo& aircraftInfo);
-    void deleteItem(int TN);
-    void assign(int TN, int Number);
-    void cancelAssign(int TN, int Number);
-    void cancelAllAssigns();
-    void cancelAircraftsAssigned(int ExceptTN, int Number);
-    void acceptAssign(int TN, int Number, bool result);
-    void clearList();
-    void setMode(QString mode);
-
-    QMap<int, QList<AircraftAssignInfo>> getAssignmentMap();
-
+    void onInfoChanged(int tn);
+    void onRemoveData(int tn);
 
 private:
-    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoList;
-    std::deque<QSharedPointer<AircraftInfo>> mAircraftInfoListProxy;
-    QMap<int, QList<AircraftAssignInfo>> mAircraftsAssigned;
-
+    const QMap<int, Aircraft::Data*> *mAircraftInfos;
+    QList<int> mAircraftInfosProxy;
 
     QString mFilter = "";
+};
 
-    bool mNeedUpdateOnTimerTrigger = false;
-    int mMinRowUpdate = -1;
-    int mMaxRowUpdate = -1;
-    int mNumber = -1;
-    QString mMode;
+class AircraftTable : public QObject
+{
+    Q_OBJECT
+public:
+    AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseModelLayer *defenseModelLayer, QObject *parent = nullptr);
+public slots:
+    void onDoubleClicked(const int &tn);
+private:
+    AircraftTableModel *mAircraftTableModel;
+    DefenseModelLayer *mDefenseModelLayer;
+    AircraftDataManager *mAircraftDatamanager;
+
 };
 
 #endif // AIRCRAFTTABLEMODEL_H

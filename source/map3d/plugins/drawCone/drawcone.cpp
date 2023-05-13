@@ -62,11 +62,11 @@ void DrawCone::mousePressEvent(QMouseEvent *event)
             if (mDrawingState == DrawingState::START) {
                 mDrawingState = DrawingState::DRAWING;
                 startDraw(event);
-                finishDrawing(event);
+//                finishDrawing(event);
                 event->accept();
             }
         }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
+        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
             cancelDrawing(event);
         }
         else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
@@ -88,6 +88,7 @@ void DrawCone::startDraw(QMouseEvent *event)
     mCone = new Cone();
     mConeProperties->setCone(mCone);
 
+    mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
     mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
@@ -109,12 +110,14 @@ void DrawCone::finishDrawing(QMouseEvent *event)
 
 void DrawCone::cancelDrawing(QMouseEvent *event)
 {
+    if(mDrawingState == DrawingState::DRAWING){
     mMapcontroller->removeNodeFromLayer(mCone, DRAW_LAYER_NAME);
     mCone = nullptr;
     mConeProperties->setCone(mCone);
     mDrawingState = DrawingState::START;
 
     event->accept();
+    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawCone::makeIconNode()

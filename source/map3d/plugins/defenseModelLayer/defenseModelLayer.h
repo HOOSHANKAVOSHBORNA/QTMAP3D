@@ -3,7 +3,6 @@
 
 #include "plugininterface.h"
 #include "aircraftModelNode.h"
-#include "listManager.h"
 #include "stationModelNode.h"
 
 #include<osg/Array>
@@ -46,14 +45,14 @@ public:
                        UIHandle *UIHandle) override;
     virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
-    void addUpdateAircraft(AircraftInfo aircraftInfo);
-    void addUpdateSystem(SystemInfo systemInfo);
-    void addUpdateStation(StationInfo stationInfo);
-    SystemModelNode *getSystemModelNode(int number)const;
-    AircraftModelNode *getAircraftModelNode(int tn) const;
-    StationModelNode *getStationModelNode(int number) const;
+    //void addUpdateAircraft(AircraftInfo aircraftInfo);
+//    void addUpdateSystem(SystemInfo systemInfo);
+//    void addUpdateStation(StationInfo stationInfo);
+//    SystemModelNode *getSystemModelNode(int number)const;
+//    AircraftModelNode *getAircraftModelNode(int tn) const;
+//    StationModelNode *getStationModelNode(int number) const;
     void selectModelNode(DefenseModelNode* defenseModelNode);
-    void clearAircraft(int tn);
+    //void clearAircraft(int tn);
 public slots:
     void onMapClear();
 
@@ -64,17 +63,17 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
     virtual void mouseMoveEvent(QMouseEvent* event)override;
+public:
+    MapController *mMapController{nullptr};
+    UIHandle* mUIHandle{nullptr};
+    QQmlEngine *mQmlEngine{nullptr};
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
 private:
-    QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
-    DefenseModelNode* mSelectedModelNode{nullptr};
-    DefenseModelNode* mOnMoveModelNode{nullptr};
-
-    MapController *mMapController;
-    UIHandle* mUIHandle;
-    QQmlEngine *mQmlEngine = nullptr;
+    //QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
+    osg::ref_ptr<DefenseModelNode> mSelectedModelNode{nullptr};
+    osg::ref_ptr<DefenseModelNode> mOnMoveModelNode{nullptr};
     int mPreCameraRange{0};
 
 //    ListManager *mListManager = nullptr;

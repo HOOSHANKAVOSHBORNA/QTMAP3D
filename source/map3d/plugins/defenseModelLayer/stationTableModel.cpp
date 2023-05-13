@@ -1,5 +1,5 @@
 #include "stationTableModel.h"
-
+#include "stationDataManager.h"
 #include <QColor>
 #include <QRegularExpression>
 
@@ -15,26 +15,26 @@ int StationTableModel::columnCount(const QModelIndex &/*parent*/) const
 
 int StationTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
-    return static_cast<int>(mStationInfoListProxy.size());
+    return static_cast<int>(mStationInfosProxy.size());
 }
 
 QVariant StationTableModel::data(const QModelIndex &index, int role) const
 {
-    if (index.row() > int(mStationInfoListProxy.size()))
+    if (index.row() > int(mStationInfosProxy.size()))
         return QVariant();
 
     switch (role) {
     case Qt::DisplayRole:
     {
         switch(index.column()) {
-        case  0: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )]->Number);
-        case  1: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())]->Name);
-        case  2: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())]->Type);
-        case  3: return QVariant::fromValue<QString>(mStationInfoListProxy[static_cast<size_t>(index.row())]->PrimSec);
-        case  4: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )]->Latitude);
-        case  5: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )]->Longitude);
-        case  6: return QVariant::fromValue<double>(mStationInfoListProxy[static_cast<size_t>(index.row() )]->Radius);
-        case  7: return QVariant::fromValue<int>(mStationInfoListProxy[static_cast<size_t>(index.row()    )]->CycleTime);
+        case  0: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Number);
+        case  1: return QVariant::fromValue<QString>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Name);
+        case  2: return QVariant::fromValue<QString>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Type);
+        case  3: return QVariant::fromValue<QString>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.PrimSec);
+        case  4: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Latitude);
+        case  5: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Longitude);
+        case  6: return QVariant::fromValue<double>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.Radius);
+        case  7: return QVariant::fromValue<int>((*mStationInfos)[mStationInfosProxy[index.row()]]->info.CycleTime);
         }
 
         break;
@@ -43,14 +43,11 @@ QVariant StationTableModel::data(const QModelIndex &index, int role) const
     case BackColorRole:
     {
         return QVariant::fromValue<QColor>(QColor("transparent"));
-
-        break;
     }
 
     case TextColorRole:
     {
         return QVariant::fromValue<QColor>(QColor("white"));
-        break;
     }
 
     case HeaderTextRole:
@@ -102,11 +99,11 @@ int StationTableModel::getNumber(int row) const
 {
     if (row < 0) return -1;
 
-    if (row >= static_cast<int>(mStationInfoListProxy.size())) {
+    if (row >= static_cast<int>(mStationInfosProxy.size())) {
         return -1;
     }
 
-    return mStationInfoListProxy[std::size_t(row)]->Number;
+    return(*mStationInfos)[mStationInfosProxy[row]]->info.Number;
 }
 
 void StationTableModel::setFilterWildcard(const QString &wildcard)
@@ -116,49 +113,76 @@ void StationTableModel::setFilterWildcard(const QString &wildcard)
     mFilter = wildcard;
     mFilter.remove(QRegularExpression("\\s"));
 
-    mStationInfoListProxy.clear();
-    for (auto& item : mStationInfoList) {
-        if (QString::number(item->Number).contains(mFilter))
-            mStationInfoListProxy.push_back(item);
+    mStationInfosProxy.clear();
+    for (auto& item : *mStationInfos) {
+        if (QString::number(item->info.Number).contains(mFilter))
+            mStationInfosProxy.push_back(item->info.Number);
     }
 
     endResetModel();
 }
 
+void StationTableModel::onInfoChanged(int number)
+{
+//    if (!mStationInfos->contains(number) && mStationInfosProxy.contains(number)) {
+//        beginRemoveRows(QModelIndex(), mStationInfosProxy.indexOf(number), mStationInfosProxy.indexOf(number));
+//        mStationInfosProxy = mStationInfos->keys();
+//        endRemoveRows();
+//    }
 
-void StationTableModel::updateItemData(const StationInfo &stationInfo)
+    if (mStationInfos->contains(number) && !mStationInfosProxy.contains(number)) {
+        mStationInfosProxy = mStationInfos->keys();
+        setFilterWildcard(mFilter);
+    }
+
+    else {
+        int row = mStationInfosProxy.indexOf(number);
+        emit dataChanged(createIndex(row, 0), createIndex(row, 22));
+    }
+}
+
+void StationTableModel::setStationInfos(const QMap<int, Station::Data *> &stationInfos)
 {
     beginResetModel();
+    mStationInfos = &stationInfos;
+    mStationInfosProxy = mStationInfos->keys();
+    endResetModel();
+}
 
-    const auto it = std::find_if(mStationInfoList.begin(), mStationInfoList.end(),
-                                 [stationInfo](const QSharedPointer<StationInfo>& itemInfo){
-        return itemInfo->Number == stationInfo.Number;
+StationTable::StationTable(StationDataManager *stationDataManager, DefenseModelLayer *defenseModelLayer, QObject *parent) :
+    QObject(parent),
+    mStationDataManager(stationDataManager),
+    mDefenseModelLayer(defenseModelLayer)
+{
+    QQmlComponent *comp2 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
+    QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
+        if (comp2->status() == QQmlComponent::Ready) {
+            QQuickItem *stationTab = static_cast<QQuickItem*>(comp2->create(nullptr));
+            mStationTableModel = new StationTableModel;
+            mStationTableModel->setStationInfos(mStationDataManager->getStationsData());
+            connect(mStationDataManager, &StationDataManager::infoChanged, mStationTableModel, &StationTableModel::onInfoChanged);
+            QObject::connect(stationTab,
+                             SIGNAL(filterTextChanged(const QString&)),
+                             mStationTableModel,
+                             SLOT(setFilterWildcard(const QString&)));
+
+            QObject::connect(stationTab,
+                             SIGNAL(stationDoubleClicked(const int&)),
+                             this,
+                             SLOT(onDoubleClicked(const int&)));
+
+
+            stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
+            mDefenseModelLayer->mUIHandle->lwAddTab("Stations", stationTab);
+        }
+
     });
 
-
-    if (it != mStationInfoList.end()) {
-        *(*it) = stationInfo;
-    } else {
-        QSharedPointer<StationInfo> isp;
-        isp.reset(new StationInfo);
-        *(isp) = stationInfo;
-        mStationInfoList.push_back(isp);
-    }
-
-    mStationInfoListProxy.clear();
-    for (auto& item : mStationInfoList) {
-        if (QString::number(item->Number).contains(mFilter))
-            mStationInfoListProxy.push_back(item);
-    }
-
-    endResetModel();
-
+    comp2->loadUrl(QUrl("qrc:///modelplugin/StationTableView.qml"));
 }
 
-void StationTableModel::clear()
+void StationTable::onDoubleClicked(const int &number)
 {
-    beginResetModel();
-    mStationInfoList.clear();
-    mStationInfoListProxy.clear();
-    endResetModel();
+    if (mStationDataManager->getStationsData().contains(number))
+        mStationDataManager->getStationsData()[number]->modelNode->onLeftButtonClicked(true);
 }
