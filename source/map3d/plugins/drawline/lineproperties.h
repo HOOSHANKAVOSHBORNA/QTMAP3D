@@ -29,6 +29,7 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(bool      smooth         READ getSmooth        WRITE setSmooth       )
     Q_PROPERTY(bool      showLen        READ getShowLen       WRITE setShowLen      )
     Q_PROPERTY(int       ruler          READ getRuler         WRITE setRuler        NOTIFY rulerChanged )
+    Q_PROPERTY(bool      bearing        READ getShowBearing   WRITE setShowBearing      )
 
 public:
 
@@ -99,7 +100,8 @@ private:
     bool                                              mSmooth      = true;
     bool                                              mShowLen     = false;
 
-    int                                              mRuler;
+    int                                               mRuler;
+    bool                                              mShowBearing{false};
 
 
     LineNode* mLineNode{nullptr};

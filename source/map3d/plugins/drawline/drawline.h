@@ -58,7 +58,6 @@ private:
     LineNode* mLine{nullptr};
     MeasureHeight* mMeasureHeight{nullptr};
     LineProperties *mLineProperties = nullptr;
-    osgEarth::GeoPoint P1;
     UIHandle *muiHandle;
     bool mEnterLineZone{false};
     bool mLenghtShow;
