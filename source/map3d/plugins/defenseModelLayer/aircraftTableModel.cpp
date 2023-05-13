@@ -268,6 +268,11 @@ AircraftTable::AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseMo
     comp->loadUrl(QUrl("qrc:///modelplugin/AircraftTableView.qml"));
 }
 
+AircraftTableModel *AircraftTable::getModel() const
+{
+    return mAircraftTableModel;
+}
+
 void AircraftTable::onDoubleClicked(const int &tn)
 {
     if (mAircraftDatamanager->getAircraftsData().contains(tn)){

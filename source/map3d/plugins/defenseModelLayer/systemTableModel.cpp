@@ -216,6 +216,11 @@ SystemTable::SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer 
     comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
 }
 
+SystemTableModel *SystemTable::getModel() const
+{
+    return mSystemTableModel;
+}
+
 void SystemTable::onDoubleClicked(int number)
 {
     if (mSystemDataManger->getSystemsData().contains(number))

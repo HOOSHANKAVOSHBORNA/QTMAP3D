@@ -63,6 +63,7 @@ class AircraftTable : public QObject
     Q_OBJECT
 public:
     AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseModelLayer *defenseModelLayer, QObject *parent = nullptr);
+    AircraftTableModel* getModel() const;
 public slots:
     void onDoubleClicked(const int &tn);
 private:

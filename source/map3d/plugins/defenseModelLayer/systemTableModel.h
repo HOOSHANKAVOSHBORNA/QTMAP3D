@@ -64,6 +64,7 @@ class SystemTable : QObject
     Q_OBJECT
 public:
     SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer *defenseModelLayer, QObject *parent=nullptr);
+    SystemTableModel* getModel() const;
 public slots:
     void onDoubleClicked(int number);
 private:
