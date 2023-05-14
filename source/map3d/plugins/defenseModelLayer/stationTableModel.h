@@ -11,7 +11,12 @@
 #include <QStringList>
 #include <deque>
 #include <QSharedPointer>
-
+\
+class StationDataManager;
+class DefenseModelLayer;
+namespace Station {
+struct Data;
+}
 class StationTableModel: public QAbstractTableModel
 {
     Q_OBJECT
@@ -36,19 +41,27 @@ public:
 
 public slots:
     void setFilterWildcard(const QString& wildcard);
+    void onInfoChanged(int number);
 
 public:
-    void setStationInfos(QMap<int, StationInfo> & stationInfos);
-    void updateTable(int number);
-
-
+    void setStationInfos(const QMap<int, Station::Data*> & stationInfos);
 private:
-
-    QMap<int, StationInfo> *mStationInfos;
+    const QMap<int, Station::Data*> *mStationInfos;
     QList<int> mStationInfosProxy;
-
     QString mFilter = "";
 
+};
+
+class StationTable : public QObject {
+    Q_OBJECT
+public:
+    StationTable(StationDataManager *stationDataManager, DefenseModelLayer* defenseModelLayer, QObject* parent=nullptr);
+public slots:
+    void onDoubleClicked(const int&);
+private:
+    StationDataManager *mStationDataManager;
+    DefenseModelLayer *mDefenseModelLayer;
+    StationTableModel *mStationTableModel;
 };
 
 #endif // STATIONTABLEMODEL_H

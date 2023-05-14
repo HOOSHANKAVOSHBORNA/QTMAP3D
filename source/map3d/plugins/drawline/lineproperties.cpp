@@ -181,7 +181,7 @@ void LinePropertiesModel::setShowLen(const bool &value){
         return;
     mShowLen = value;
     if(mLineNode){
-        mLineNode->showLenght(value);
+        mLineNode->setShowLenght(value);
     }
 }
 
@@ -201,11 +201,18 @@ void LinePropertiesModel::setRuler(const int value)
 
 bool LinePropertiesModel::getShowBearing() const
 {
-
+    return mShowBearing;
 }
 
 void LinePropertiesModel::setShowBearing(const bool &bearing)
 {
+    if (bearing == mShowBearing){
+        return;
+    }
+    mShowBearing = bearing;
+    if(mLineNode){
+        mLineNode->setShowBearing(bearing);
+    }
 
 }
 
@@ -220,6 +227,7 @@ void LinePropertiesModel::setLine(LineNode* linNode)
     mLineNode->setWidth(mWidth);
     mLineNode->setTessellation(mTesselation);
     mLineNode->setClamp(mClamp);
+    mLineNode->setShowBearing(mShowBearing);
     if(mRuler == 0)
     {
         mLineNode->setPointColor(mPointColor.toStdString());
@@ -227,13 +235,13 @@ void LinePropertiesModel::setLine(LineNode* linNode)
         mLineNode->setSmooth(mSmooth);
         mLineNode->setPointVisible(mVisible);
         mLineNode->setHeight(mHeight);
-        mLineNode->showLenght(mShowLen);
+        mLineNode->setShowLenght(mShowLen);
     }
     else if(mRuler == 1)
     {
         mLineNode->setPointVisible(false);
         mLineNode->setHeight(0);
-        mLineNode->showLenght(true);
+        mLineNode->setShowLenght(true);
     }
 
 }

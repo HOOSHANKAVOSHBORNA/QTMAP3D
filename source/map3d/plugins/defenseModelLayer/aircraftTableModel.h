@@ -41,28 +41,37 @@ public:
     Q_INVOKABLE QString headerText(int column) const;
 
     Q_INVOKABLE int getTN(int row) const;
-
     void setAircraftInfos(const QMap<int, Aircraft::Data *> &aircrafts);
-    void onInfoChanged(int tn);
-    void onRemoveData(int tn);
+    void setSystemInfos(const QMap<int, System::Data*> &systems);
 
+signals:
+    void aircraftClicked(const int&);
 public slots:
     void setFilterWildcard(const QString& wildcard);
     void sortWithHeader(int column);
     void refresh();
+    void onInfoChanged(int tn);
+    void onRemoveData(int tn);
+    void onSystemClicked(const int &number);
+    void onAircraftClicked(const int &tn);
+    void updateAssignmnets(int number);
+private:
 
 private:
     const QMap<int, Aircraft::Data*> *mAircraftInfos;
+    const QMap<int, System::Data*> *mSystemInfos;
     QList<int> mAircraftInfosProxy;
 
+    int mNumber {-1};
     QString mFilter = "";
 };
 
-class AircraftTable : QObject
+class AircraftTable : public QObject
 {
     Q_OBJECT
 public:
     AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseModelLayer *defenseModelLayer, QObject *parent = nullptr);
+    AircraftTableModel* getModel() const;
 public slots:
     void onDoubleClicked(const int &tn);
 private:

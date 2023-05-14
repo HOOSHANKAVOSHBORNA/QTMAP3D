@@ -45,7 +45,27 @@ osg::ref_ptr<osg::Node> AircraftModelNode::mMissile3DRef;
 osg::ref_ptr<osg::Node> AircraftModelNode::mDrone3DRef;
 osg::ref_ptr<osg::Node> AircraftModelNode::mHelicopter3DRef;
 
-AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const Aircraft::Data& aircraftData, AircraftInfo::AircraftType aircraftType, QObject *parent)
+ osg::ref_ptr<osg::Image> AircraftModelNode::mainImageAircraft;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListAircraft;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListHoveredAircraft;
+
+ osg::ref_ptr<osg::Image> AircraftModelNode::mainImageDrone;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListDrone;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListHoveredDrone;
+
+ osg::ref_ptr<osg::Image> AircraftModelNode::mainImageFighter;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListFighter;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListHoveredFighter;
+
+ osg::ref_ptr<osg::Image> AircraftModelNode::mainImageMissile;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListMissile;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListHoveredMissile;
+
+ osg::ref_ptr<osg::Image> AircraftModelNode::mainImageHellicopter;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListHellicopter;
+ std::array<osg::ref_ptr<osg::Image>, 6> AircraftModelNode::imageListHoveredHellicopter;
+
+AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const Aircraft::Data& aircraftData, QObject *parent)
     :DefenseModelNode(defenseModelLayer->mMapController, parent)
 {
 
@@ -53,6 +73,7 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
     mAircraftData = &aircraftData;
     mDefenseModelLayer = defenseModelLayer;
     mIs3D = mDefenseModelLayer->mMapController->getMode();
+    mType = AircraftInfo::Aircraft;
 
     //mUIHandle = uiHandle;
     //--load models----------------------------------------------------------------------------------
@@ -72,84 +93,8 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
         mHelicopter3DRef = osgDB::readRefNodeFile("../data/models/hellicopter/HellicopterUC.osgb");
     }
     //----------------------------------------------------------------------------------------------
-//    if (!mNode3DRef)
-//    {
-//        return;
-//    }
-    this->setCullingActive(false);
-    mNode3D = new osg::Group;
-    switch (aircraftType) {
-    case AircraftInfo::Fighter:
-        mAutoScaleDefaultValue = 11;
-        mAutoScaleMinValue = 7;
-        mAutoScaleMaxValue = 350;
-        mNode3D->addChild(mFighter3DRef);
-        break;
-    case AircraftInfo::Aircraft:
-        mAutoScaleDefaultValue = 2.5;
-        mAutoScaleMinValue = 1;
-        mAutoScaleMaxValue = 500;
-        mNode3D->addChild(mAircraft3DRef);
-        break;
-    case AircraftInfo::Missile:
-        mAutoScaleDefaultValue = 25;
-        mAutoScaleMinValue = 15;
-        mAutoScaleMaxValue = 500;
-        mNode3D->addChild(mMissile3DRef);
-        break;
-    case AircraftInfo::Drone:
-        mAutoScaleDefaultValue = 30;
-        mAutoScaleMinValue = 20;
-        mAutoScaleMaxValue = 400;
-        mNode3D->addChild(mDrone3DRef);
-        break;
-    case AircraftInfo::Helicopter:
-        mAutoScaleDefaultValue = 22;
-        mAutoScaleMinValue = 12;
-        mAutoScaleMaxValue = 500;
-        mNode3D->addChild(mHelicopter3DRef);
-        break;
-    }
-    this->addCullCallback(mDefenseModeNodeAutoScaler);
-
-    mRootNode = new osg::LOD;
-    mNode2D = new osg::Switch;
-
-    osgEarth::Symbology::Style  rootStyle;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
-
-
-
-
-
-    setStyle(rootStyle);
-
-    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
-    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
-
-    mNode2DNormal = new osg::Switch;
-    mNode2DHovered = new osg::Switch;
-
     static bool bFirst = true;
-    static osg::ref_ptr<osg::Image> mainImageAircraft;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListAircraft;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredAircraft;
 
-    static osg::ref_ptr<osg::Image> mainImageDrone;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListDrone;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredDrone;
-
-    static osg::ref_ptr<osg::Image> mainImageFighter;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListFighter;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredFighter;
-
-    static osg::ref_ptr<osg::Image> mainImageMissile;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListMissile;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredMissile;
-
-    static osg::ref_ptr<osg::Image> mainImageHellicopter;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHellicopter;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredHellicopter;
 
 
     static const osgEarth::Color colorList[6]= {
@@ -244,34 +189,95 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 
         bFirst = false;
     }
+    //----------------------------------------------------------------------------------------------
+    mNode3D = new osg::Group;
+    this->setCullingActive(false);
+    mAutoScaleDefaultValue = 2.5;
+    mAutoScaleMinValue = 1;
+    mAutoScaleMaxValue = 500;
+    mNode3D->addChild(mAircraft3DRef);
+    this->addCullCallback(mDefenseModeNodeAutoScaler);
+
+//    mNode3D = new osg::Group;
+//    switch (aircraftType) {
+//    case AircraftInfo::Fighter:
+//        mAutoScaleDefaultValue = 11;
+//        mAutoScaleMinValue = 7;
+//        mAutoScaleMaxValue = 350;
+//        mNode3D->addChild(mFighter3DRef);
+//        break;
+//    case AircraftInfo::Aircraft:
+//        mAutoScaleDefaultValue = 2.5;
+//        mAutoScaleMinValue = 1;
+//        mAutoScaleMaxValue = 500;
+//        mNode3D->addChild(mAircraft3DRef);
+//        break;
+//    case AircraftInfo::Missile:
+//        mAutoScaleDefaultValue = 25;
+//        mAutoScaleMinValue = 15;
+//        mAutoScaleMaxValue = 500;
+//        mNode3D->addChild(mMissile3DRef);
+//        break;
+//    case AircraftInfo::Drone:
+//        mAutoScaleDefaultValue = 30;
+//        mAutoScaleMinValue = 20;
+//        mAutoScaleMaxValue = 400;
+//        mNode3D->addChild(mDrone3DRef);
+//        break;
+//    case AircraftInfo::Helicopter:
+//        mAutoScaleDefaultValue = 22;
+//        mAutoScaleMinValue = 12;
+//        mAutoScaleMaxValue = 500;
+//        mNode3D->addChild(mHelicopter3DRef);
+//        break;
+//    }
+//    this->addCullCallback(mDefenseModeNodeAutoScaler);
+
+    mRootNode = new osg::LOD;
+    mNode2D = new osg::Switch;
+
+    osgEarth::Symbology::Style  rootStyle;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRootNode);
+    setStyle(rootStyle);
+
+    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+
+    mNode2DNormal = new osg::Switch;
+    mNode2DHovered = new osg::Switch;
+
+
 
     for (unsigned int i = 0; i < 6; i++) {
 
         osg::ref_ptr<osg::Image> img;
         osg::ref_ptr<osg::Image> imgHovered;
 
-        switch (aircraftType) {
-        case AircraftInfo::Aircraft:
-            img = imageListAircraft[i];
-            imgHovered = imageListHoveredAircraft[i];
-            break;
-        case AircraftInfo::Fighter:
-            img = imageListFighter[i];
-            imgHovered = imageListHoveredFighter[i];
-            break;
-        case AircraftInfo::Drone:
-            img = imageListDrone[i];
-            imgHovered = imageListHoveredDrone[i];
-            break;
-        case AircraftInfo::Missile:
-            img = imageListMissile[i];
-            imgHovered = imageListHoveredMissile[i];
-            break;
-        case AircraftInfo::Helicopter:
-            img = imageListHellicopter[i];
-            imgHovered = imageListHoveredHellicopter[i];
-            break;
-        }
+        img = imageListAircraft[i];
+        imgHovered = imageListHoveredAircraft[i];
+
+//        switch (aircraftType) {
+//        case AircraftInfo::Aircraft:
+//            img = imageListAircraft[i];
+//            imgHovered = imageListHoveredAircraft[i];
+//            break;
+//        case AircraftInfo::Fighter:
+//            img = imageListFighter[i];
+//            imgHovered = imageListHoveredFighter[i];
+//            break;
+//        case AircraftInfo::Drone:
+//            img = imageListDrone[i];
+//            imgHovered = imageListHoveredDrone[i];
+//            break;
+//        case AircraftInfo::Missile:
+//            img = imageListMissile[i];
+//            imgHovered = imageListHoveredMissile[i];
+//            break;
+//        case AircraftInfo::Helicopter:
+//            img = imageListHellicopter[i];
+//            imgHovered = imageListHoveredHellicopter[i];
+//            break;
+//        }
 
         osg::ref_ptr<osg::Geometry> aircraftImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry
                 (img, osg::Vec2s(0,0), 0, 0, 0.4);
@@ -328,13 +334,14 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
     at->addChild(mPat2D);
     at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
 
-    osgEarth::Symbology::Style labelStyle;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
-    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
+//    osgEarth::Symbology::Style labelStyle;
+//    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
+//    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill()->color() = osgEarth::Symbology::Color::White;
+//    labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
 
     updateOrCreateLabelImage();
-    mLabelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+    mLabelNode = new osgEarth::Annotation::PlaceNode();
+    mLabelNode->setIconImage(mLabelImage);
     mLabelNode->setDynamic(true);
     mLabelNode->setPriority(10);
 
@@ -383,7 +390,7 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
     mRouteLine->setTessellation(10);
     mRouteLine->setColor(osgEarth::Color::Purple);
     mRouteLine->setWidth(5);
-    mRouteLine->showLenght(false);
+    mRouteLine->setShowLenght(false);
 
     mLatestPointLine = new LineNode(defenseModelLayer->mMapController);
     mLatestPointLine->setPointVisible(true);
@@ -391,14 +398,14 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
     mLatestPointLine->setColor(osgEarth::Color::Purple);
     mLatestPointLine->setWidth(5);
     mLatestPointLine->setPointWidth(15);
-    mLatestPointLine->showLenght(false);
+    mLatestPointLine->setShowLenght(false);
     mLatestPointLine->setSmooth(true);
 
     mTempLine = new LineNode(defenseModelLayer->mMapController);
     mTempLine->setPointVisible(false);
     mTempLine->setColor(osgEarth::Color::Purple);
     mTempLine->setWidth(5);
-    mTempLine->showLenght(false);
+    mTempLine->setShowLenght(false);
 }
 
 void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)
@@ -476,10 +483,11 @@ void AircraftModelNode::stop()
     removeEffect();
 }
 
-void AircraftModelNode::dataChanged()
+void AircraftModelNode::updateData()
 {
 //    mInformation = info;
-
+    if(mType != mAircraftData->info.Type)
+        updateType();
     if(mAircraftinformation)
         mAircraftinformation->updateAircraft();
 
@@ -487,6 +495,99 @@ void AircraftModelNode::dataChanged()
     mLabelNode->setStyle(mLabelNode->getStyle()); // force PlaceNode to recreate texture
 
     changeModelColor(mAircraftData->info.Identification);
+}
+
+void AircraftModelNode::updateType()
+{
+        switch (mAircraftData->info.Type) {
+        case AircraftInfo::Fighter:
+            mAutoScaleDefaultValue = 11;
+            mAutoScaleMinValue = 7;
+            mAutoScaleMaxValue = 350;
+            mNode3D->replaceChild(mNode3D->getChild(0), mFighter3DRef);
+            break;
+        case AircraftInfo::Aircraft:
+            mAutoScaleDefaultValue = 2.5;
+            mAutoScaleMinValue = 1;
+            mAutoScaleMaxValue = 500;
+            mNode3D->replaceChild(mNode3D->getChild(0), mAircraft3DRef);
+            break;
+        case AircraftInfo::Missile:
+            mAutoScaleDefaultValue = 25;
+            mAutoScaleMinValue = 15;
+            mAutoScaleMaxValue = 500;
+            mNode3D->replaceChild(mNode3D->getChild(0), mMissile3DRef);
+            break;
+        case AircraftInfo::Drone:
+            mAutoScaleDefaultValue = 30;
+            mAutoScaleMinValue = 20;
+            mAutoScaleMaxValue = 400;
+            mNode3D->replaceChild(mNode3D->getChild(0), mDrone3DRef);
+            break;
+        case AircraftInfo::Helicopter:
+            mAutoScaleDefaultValue = 22;
+            mAutoScaleMinValue = 12;
+            mAutoScaleMaxValue = 500;
+            mNode3D->replaceChild(mNode3D->getChild(0), mHelicopter3DRef);
+            break;
+        }
+        //----------------------------------------------------------------------------
+        mNode2DNormal->removeChildren(0, mNode2DNormal->getNumChildren());
+        mNode2DHovered->removeChildren(0, mNode2DHovered->getNumChildren());
+        osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+        geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+        for (unsigned int i = 0; i < 6; i++) {
+
+            osg::ref_ptr<osg::Image> img;
+            osg::ref_ptr<osg::Image> imgHovered;
+
+            img = imageListAircraft[i];
+            imgHovered = imageListHoveredAircraft[i];
+
+            switch (mAircraftData->info.Type) {
+            case AircraftInfo::Aircraft:
+                img = imageListAircraft[i];
+                imgHovered = imageListHoveredAircraft[i];
+                break;
+            case AircraftInfo::Fighter:
+                img = imageListFighter[i];
+                imgHovered = imageListHoveredFighter[i];
+                break;
+            case AircraftInfo::Drone:
+                img = imageListDrone[i];
+                imgHovered = imageListHoveredDrone[i];
+                break;
+            case AircraftInfo::Missile:
+                img = imageListMissile[i];
+                imgHovered = imageListHoveredMissile[i];
+                break;
+            case AircraftInfo::Helicopter:
+                img = imageListHellicopter[i];
+                imgHovered = imageListHoveredHellicopter[i];
+                break;
+            }
+
+            osg::ref_ptr<osg::Geometry> aircraftImageDrawable = osgEarth::Annotation::AnnotationUtils::createImageGeometry
+                    (img, osg::Vec2s(0,0), 0, 0, 0.4);
+            osg::ref_ptr<osg::Geode>  aircraftGeode = new osg::Geode();
+            aircraftGeode->setStateSet(geodeStateSet);
+            aircraftGeode->addDrawable(aircraftImageDrawable);
+
+
+            osg::ref_ptr<osg::Geometry> aircraftImageDrawableHovered = osgEarth::Annotation::AnnotationUtils::createImageGeometry
+                    (imgHovered, osg::Vec2s(0,0), 0, 0, 0.4);
+            osg::ref_ptr<osg::Geode>  aircraftGeodeHovered = new osg::Geode();
+            aircraftGeodeHovered->setStateSet(geodeStateSet);
+            aircraftGeodeHovered->addDrawable(aircraftImageDrawableHovered);
+
+            mNode2DNormal->addChild(aircraftGeode, false);
+            mNode2DHovered->addChild(aircraftGeodeHovered, false);
+
+        }
+        changeModelColor(mAircraftData->info.Identification);
+        //-------------------------------------------------------------------------------------
+        onModeChanged(mIs3D);
+
 }
 
 const Aircraft::Data& AircraftModelNode::getData() const
@@ -592,53 +693,6 @@ void AircraftModelNode::updateColors()
         mNode2D->setValue(1, false);
     }
 }
-
-//SystemModelNode *AircraftModelNode::getAssignment(int number) const
-//{
-//    if(mAssignmentMap.contains(number))
-//        return mAssignmentMap[number];
-//    return nullptr;
-//}
-
-//void AircraftModelNode::addAssignment(int number, SystemModelNode *assignmentModelNode)
-//{
-//    mAssignmentMap[number] = assignmentModelNode;
-//    mAircraftinformation->addAssignment(number, assignmentModelNode);
-//}
-
-//void AircraftModelNode::removeAssignment(int number)
-//{
-//    mAssignmentMap.remove(number);
-//    mAircraftinformation->removeAssignment(number);
-//}
-
-//void AircraftModelNode::acceptAssignment(int number, bool value)
-//{
-//    if(!value)
-//        removeAssignment(number);
-//}
-
-//void AircraftModelNode::clearAssignments(int exceptNumber)
-//{
-//    for(auto number: mAssignmentMap.keys())
-//    {
-//        if(exceptNumber != number)
-//        {
-//            removeAssignment(number);
-//            mAircraftinformation->removeAssignment(number);
-//        }
-//    }
-//}
-
-//bool AircraftModelNode::hasAssignment()
-//{
-//    return mAssignmentMap.count() > 0;
-//}
-
-//QMap<int, SystemModelNode *> AircraftModelNode::getAssignments() const
-//{
-//    return mAssignmentMap;
-//}
 
 void AircraftModelNode::onGotoButtonClicked()
 {

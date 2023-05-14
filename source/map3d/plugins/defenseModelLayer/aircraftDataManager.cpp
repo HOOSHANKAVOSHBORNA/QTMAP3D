@@ -56,7 +56,7 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
     else
     {
         //create and model node------------------------------------------------
-        aircraftModelNode = new AircraftModelNode(mDefenseModelLayer,*mAircraftData[aircraftInfo.TN], aircraftInfo.Type);
+        aircraftModelNode = new AircraftModelNode(mDefenseModelLayer,*mAircraftData[aircraftInfo.TN]);
         aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
         aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
@@ -66,7 +66,7 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
         mDefenseModelLayer->mMapController->addNodeToLayer(aircraftModelNode, AIRCRAFTS_LAYER_NAME);
     }
     //update information------------------------------------------------------------------
-    aircraftModelNode->dataChanged();
+    aircraftModelNode->updateData();
 //    mAircraftTableModel->updateTable(aircraftInfo.TN);
     emit infoChanged(aircraftInfo.TN);
 }
@@ -91,9 +91,10 @@ void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment* assignment
     {
         mAircraftData[tn]->assignments.append(assignment);
         //-----------------------------
-        mAircraftData[tn]->modelNode->dataChanged();
+        mAircraftData[tn]->modelNode->updateData();
 
         emit assignmentChanged(tn);
+        emit infoChanged(tn);
     }
 }
 
@@ -108,9 +109,10 @@ void AircraftDataManager::clearAssignments(int tn)
     if(mAircraftData.contains(tn))
     {
         mAircraftData[tn]->assignments.clear();
-        mAircraftData[tn]->modelNode->dataChanged();
+        mAircraftData[tn]->modelNode->updateData();
 
         emit assignmentChanged(tn);
+        emit infoChanged(tn);
     }
 }
 
@@ -120,9 +122,10 @@ void AircraftDataManager::removeAssignment(int tn, int systemNo)
         auto index = mAircraftData[tn]->findAssignment(systemNo);
         if(index >= 0){
             mAircraftData[tn]->assignments.removeAt(index);
-            mAircraftData[tn]->modelNode->dataChanged();
+            mAircraftData[tn]->modelNode->updateData();
 
             emit assignmentChanged(tn);
+            emit infoChanged(tn);
         }
     }
 }

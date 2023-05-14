@@ -13,6 +13,7 @@ find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(defenseModelLayer SHARED
   aircraftTableModel.cpp
+  assignmentTableModel.cpp
   aircraftDataManager.cpp
   contextMenu.cpp
   aircraftInfoItem.cpp

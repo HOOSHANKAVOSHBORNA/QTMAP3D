@@ -10,6 +10,7 @@ Item {
 
     signal filterTextChanged(string txt)
     signal systemDoubleClicked(int Number)
+    signal systemClicked(int Number)
 
     property int hoveredIndex: -1
     property int selectedIndex: -1

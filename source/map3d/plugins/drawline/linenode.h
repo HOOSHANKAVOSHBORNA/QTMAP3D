@@ -8,6 +8,7 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <QPainter>
 #include <osgEarthAnnotation/PlaceNode>
+#include <QImage>
 
 class LineNode : public osgEarth::Annotation::FeatureNode
 {
@@ -18,8 +19,6 @@ public:
     void removeFirstPoint();
     void clear();
     int getSize();
-    void showLenght(bool show);
-
     osgEarth::Color getColor() const;
     void setColor(const osgEarth::Color &color);
 
@@ -44,6 +43,9 @@ public:
     bool getShowBearing() const;
     void setShowBearing(const bool &bearing);
 
+    void setShowLenght(const bool &show);
+    bool getShowLenght() const;
+
     osgEarth::Color getPointColor() const;
     void setPointColor(const osgEarth::Color &pointColor);
 
@@ -53,11 +55,16 @@ public:
     bool getSmooth() const;
     void setSmooth(bool Smooth);
 
-    bool getLenght() const;
-    void setLenght(bool lenght);
-
 private:
-    osg::Image *updateLenghtLabel(double lenght, double bearing);
+    void createOrUpdateLabelImg(QImage** qImage, osg::ref_ptr<osg::Image> &img, double lenght, double bearing);
+    struct LabelData {
+        QImage** qImage;
+        osg::ref_ptr<osg::Image> img;
+        double lenght;
+        double bearing;
+        osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode;
+    };
+
 private:
     MapController* mMapController{nullptr};
     osgEarth::Symbology::Geometry* mLineGeometry{nullptr};
@@ -66,20 +73,23 @@ private:
     float mWidth{5};
     float mPointWidth{5};
     float mHeight{0};
-    bool mBearing{true};
-    bool mLenght{true};
+    bool mShowBearing{false};
+    bool mShowLenght{false};
     bool mPointVisible{false};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
     bool mSmooth{true};
+    std::vector<LabelData> mVecLabelData;
+
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mPlaceNode;
 
     //Lenght part
     osg::ref_ptr<osg::Group> mLabelGroup;
-    QImage *mRenderImage{nullptr};
     static constexpr int LABEL_IMAGE_WIDTH = 90;
-    static constexpr int LABEL_IMAGE_HEIGHT = 40;
+    static constexpr int LABEL_IMAGE_HEIGHT = 30;
+    int mHeightLbl;
     bool mIsHeight{false};
-
+    int mBeaPos;
 };
 
 #endif // LINENODE_H

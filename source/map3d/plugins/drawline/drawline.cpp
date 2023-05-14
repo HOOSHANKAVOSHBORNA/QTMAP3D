@@ -97,7 +97,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
     {
         if(checked)
         {
-            mLenghtShow = false;
+            mLenghtShow = true;
             mEnterLineZone = true;
             mType = Type::RULER;
             mDrawingState = DrawingState::START;
@@ -170,10 +170,11 @@ void drawLine::mousePressEvent(QMouseEvent *event)
             {
                 if (mType == Type::RULER && mLine->getSize()>= 2){
                     finishDrawing(event);
+                    //mDrawingState = DrawingState::START;
                 }
                 else
                     drawingLine(event);
-                event->accept();
+                    event->accept();
             }
 
             //height part
@@ -251,8 +252,8 @@ void drawLine::mouseMoveMeasureHeightDrawing(QMouseEvent *event)
 
 void drawLine::drawingLine(QMouseEvent *event)
 {
-    osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
-    mLine->addPoint(geoPos);
+        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+        mLine->addPoint(geoPos);
 }
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)
@@ -267,12 +268,14 @@ void drawLine::cancelDrawingLine(QMouseEvent *event)
 
 void drawLine::mouseMoveDrawing(QMouseEvent *event)
 {
+
     if (mLine->getSize() >= 2)
     {
         mLine->removePoint();
     }
     osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
+
 }
 
 void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)

@@ -449,7 +449,7 @@ Item {
                                 id: txt1
                                 anchors.centerIn: parent
                                 text: display
-                                color: column == 4? SystemColor : d_txtcolor
+                                color: SystemColor
 
                                 font.bold: column == 4
                             }

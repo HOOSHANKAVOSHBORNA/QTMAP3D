@@ -8,9 +8,9 @@ MeasureHeight::MeasureHeight(MapController *mapController)
     mHLine->setColor(osgEarth::Color::White);
     mVLine->setWidth(5);
     mHLine->setWidth(5);
-    mHLine->showLenght(false);
+    mHLine->setShowLenght(false);
     mHLine->setIsHeight(true);
-    mVLine->showLenght(false);
+    mVLine->setShowLenght(false);
     mVLine->setPointVisible(false);
     mHLine->setPointVisible(false);
     addChild(mVLine);
@@ -32,11 +32,22 @@ void MeasureHeight::setFirstPoint(osgEarth::GeoPoint P1)
 void MeasureHeight::setSecondPoint(osgEarth::GeoPoint P2)
 {
     mSecondPoint = P2;
-    auto lenght = (mJointPoint.vec3d()-mFirstPoint.vec3d()).length();
-    updateHeightLabel(lenght);
+
+    if (mSecondPoint.z() > mFirstPoint.z()){
+        auto lenght = (mJointPoint.vec3d()-mFirstPoint.vec3d()).length();
+        updateHeightLabel(lenght);
     osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
                                 (mJointPoint.vec3d() + mFirstPoint.vec3d()) / 2);
     mLabelNode->setPosition(midPoint);
+    }
+    else{
+        auto lenght = (mJointPoint.vec3d()-mSecondPoint.vec3d()).length();
+        updateHeightLabel(lenght);
+        osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+                                    (mJointPoint.vec3d() + mSecondPoint.vec3d()) / 2);
+        mLabelNode->setPosition(midPoint);
+    }
+
     draw();
 }
 

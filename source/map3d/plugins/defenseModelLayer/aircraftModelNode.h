@@ -35,10 +35,12 @@ class AircraftModelNode: public DefenseModelNode
 {
     Q_OBJECT
 public:
-    AircraftModelNode(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &aircraftData, AircraftInfo::AircraftType aircraftType, QObject* parent = nullptr);
+    AircraftModelNode(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &aircraftData, QObject* parent = nullptr);
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
-    void dataChanged();
+    void updateData();
+    void updateType();
+
     const Aircraft::Data &getData() const;
 //    AircraftInfo getInformation() const;
     void goOnTrack();
@@ -82,6 +84,7 @@ private:
 
     //QMap<int, SystemModelNode*> mAssignmentMap;
     const Aircraft::Data* mAircraftData;
+    AircraftInfo::AircraftType mType;
 
     bool mIsStop{false};
     bool mIsRoute{false};
@@ -124,6 +127,26 @@ private:
     double mAutoScaleDefaultValue = 2.5;
     double mAutoScaleMinValue = 1;
     double mAutoScaleMaxValue = 500;
+
+    static osg::ref_ptr<osg::Image> mainImageAircraft;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListAircraft;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredAircraft;
+
+    static osg::ref_ptr<osg::Image> mainImageDrone;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListDrone;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredDrone;
+
+    static osg::ref_ptr<osg::Image> mainImageFighter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListFighter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredFighter;
+
+    static osg::ref_ptr<osg::Image> mainImageMissile;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListMissile;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredMissile;
+
+    static osg::ref_ptr<osg::Image> mainImageHellicopter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHellicopter;
+    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredHellicopter;
 };
 
 #endif // AIRCRAFTMODELNODE_H

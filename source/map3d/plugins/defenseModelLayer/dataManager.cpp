@@ -12,24 +12,19 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 {
     //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
-    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
+//    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
 
 //    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
     //    //--system----------------------------------------------------------
-//    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
-//    QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
-//    QObject::connect(defenseDataManager, &DefenseDataManager::systemCombatInfoChanged,this ,&DataManager::onSystemCombatInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemInfoChanged,this ,&DataManager::onSystemInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemStatusInfoChanged,this ,&DataManager::onSystemStatusInfoChanged);
+    QObject::connect(defenseDataManager, &DefenseDataManager::systemCombatInfoChanged,this ,&DataManager::onSystemCombatInfoChanged);
     //    //--station---------------------------------------------------------
-    //    QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
+        QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
 
     //list view---------------------------------------------------------
 
-    mAircraftAssignmentTableModel = new AircraftTableModel;
-    mAircraftAssignmentTableModel->setAircraftInfos(mAircraftDataManager->getAircraftsData());
-    mSystemAssignmentTableModel = new SystemTableModel;
-    mSystemAssignmentTableModel->setSystemInfos(mSystemDataManager->getSystemsData());
-    mSystemAssignmentTableModel->setAircraftInfos(mAircraftDataManager->getAircraftsData());
-    addAssignmentTab();
+    mAssignmentTableModel = new AssignmentTableModel(mAircraftDataManager, mSystemDataManager, mDefenseModelLayer);
     //    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
     //        StationModelNode* stationModelNode = mDefenseModelLayer->getStationModelNode(number);
     //        mDefenseModelLayer->selectModelNode(stationModelNode);
@@ -44,8 +39,6 @@ void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 {
     mAircraftDataManager->upsertInfo(aircraftInfo);
 
-//    mAircraftAssignmentTableModel->updateTable(aircraftInfo.TN);
-    mSystemAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->addUpdateAircraft(aircraftInfo);
     //    //add update list view-----------------------------------------------------------------
@@ -56,8 +49,6 @@ void DataManager::onAircraftInfoChanged(AircraftInfo &aircraftInfo)
 void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
 {
     mSystemDataManager->upsertInfo(systemInfo);
-    mSystemAssignmentTableModel->updateTable(systemInfo.Number);
-    mSystemAssignmentTableModel->updateAssignments();
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->addUpdateSystem(systemInfo);
     //    //add update list view-----------------------------------------------------------------
@@ -68,7 +59,6 @@ void DataManager::onSystemInfoChanged(SystemInfo &systemInfo)
 void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 {
     mSystemDataManager->updateStatusInfo(systemStatusInfo);
-    mSystemAssignmentTableModel->updateTable(systemStatusInfo.Number);
 
     //    SystemModelNode *systemModelNode = mDefenseModelLayer->getSystemModelNode(systemStatusInfo.Number);
     //    //update information-----------------------------------------------------
@@ -82,7 +72,6 @@ void DataManager::onSystemStatusInfoChanged(SystemStatusInfo &systemStatusInfo)
 void DataManager::onSystemCombatInfoChanged(SystemCombatInfo &systemCombatInfo)
 {
     mSystemDataManager->updateCombatInfo(systemCombatInfo);
-    mSystemAssignmentTableModel->updateTable(systemCombatInfo.Number);
 
     //--------------------------------------------------------------------
     if(systemCombatInfo.Phase == SystemCombatInfo::Lock || systemCombatInfo.Phase == SystemCombatInfo::Fire){
@@ -166,10 +155,11 @@ void DataManager::onStationInfoChanged(StationInfo &stationInfo)
 
 void DataManager::onClearAircraft(int tn)
 {
+    //----------- first clear from assignment
+    mSystemDataManager->clearAssignments(tn);
     mAircraftDataManager->remove(tn);
 
 
-    mSystemDataManager->clearAssignments(tn);
 //    mAircraftAssignmentTableModel->updateTable(tn);
     //    if(mDefenseModelLayer)
     //        mDefenseModelLayer->clearAircraft(tn);
@@ -247,36 +237,6 @@ void DataManager::cancelAircraftAssignments(int tn)
 void DataManager::clear()
 {
     //    mListManager->clearAll();
-}
-
-
-void DataManager::addAssignmentTab()
-{
-    QQmlComponent *comp4 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
-    QObject::connect(comp4, &QQmlComponent::statusChanged, [this, comp4](){
-        //        qDebug() << comp3->errorString();
-
-        if (comp4->status() == QQmlComponent::Ready) {
-            QQuickItem *assignTab = static_cast<QQuickItem*>(comp4->create(nullptr));
-            //            mAssignModel = new AssignmentModel;
-            //            QObject::connect(assignTab,
-            //                             SIGNAL(systemDoubleClicked(const int&)),
-            //                             this,
-            //                             SIGNAL(systemDoubleClicked(const int&)));
-
-            //            QObject::connect(assignTab,
-            //                             SIGNAL(aircraftDoubleClicked(const int&)),
-            //                             this,
-            //                             SIGNAL(aircraftDoubleClicked(const int&)));
-
-            assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftAssignmentTableModel));
-            assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemAssignmentTableModel));
-            mDefenseModelLayer->mUIHandle->lwAddTab("Assignments", assignTab);
-        }
-
-    });
-
-    comp4->loadUrl(QUrl("qrc:/modelplugin/AssignmentView.qml"));
 }
 
 StationDataManager *DataManager::stationDataManager() const
