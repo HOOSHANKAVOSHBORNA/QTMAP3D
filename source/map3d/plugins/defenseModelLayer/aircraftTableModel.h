@@ -41,6 +41,7 @@ public:
     Q_INVOKABLE QString headerText(int column) const;
 
     Q_INVOKABLE int getTN(int row) const;
+    Q_INVOKABLE int getIndex(int tn);
     void setAircraftInfos(const QMap<int, Aircraft::Data *> &aircrafts);
     void setSystemInfos(const QMap<int, System::Data*> &systems);
 
