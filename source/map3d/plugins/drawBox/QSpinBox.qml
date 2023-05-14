@@ -10,7 +10,7 @@ import QtQuick.Layouts 1.12
 Item {
     property double step: 1
     property double value
-    property var    showText      : value ? value : 0
+    property double    showText      : value ? value : 0
     property string secondaryColor: "orange"
     property string primaryColor  : "#404040"
     property string btntxtColor   : "#bbbbbb"
@@ -398,7 +398,7 @@ Item {
                 //                anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
                 onTextChanged: value = showText
-                text: showText
+                text: showText.toFixed(decimals)
                 font.pixelSize: parent.height/3
                 color: btntxtColor
                 selectByMouse: true

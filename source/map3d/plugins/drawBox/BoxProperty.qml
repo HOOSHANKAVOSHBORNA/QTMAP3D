@@ -7,7 +7,7 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    implicitHeight: parent.height
+    implicitHeight: parent ? parent.height : 0
 
 
 
@@ -28,22 +28,6 @@ Item {
     }
 
 
-//    onBoxPropertiesChanged: {
-//        mlocationX.value = boxProperties.location.x
-
-//    }
-
-
-
-    Timer{
-        interval: 1000
-        repeat: true
-        onTriggered: if(boxProperties.location.x){
-                         mlocationX.value =  boxProperties.location.x
-                         mlocationY.value =  boxProperties.location.y
-                         mlocationZ.value =  boxProperties.location.z
-                     }
-    }
 
 
     Item {
@@ -234,6 +218,7 @@ Item {
                                 height: 110
                                 border.color: "#5f5f5f"
                                 border.width: 1
+                                z:9
 
                                 Column{
                                     Row{
@@ -260,7 +245,7 @@ Item {
                                                 anchors.fill: parent
                                                 step: 0.01
                                                 //                                                value: xLoc
-                                                showText:  boxProperties.location.x
+                                                showText:  boxProperties ? boxProperties.location.x  : 0
                                                 onValueChanged: {
                                                     boxProperties.location.x = value
                                                 }
@@ -291,7 +276,7 @@ Item {
                                                 anchors.fill: parent
                                                 step: 0.01
                                                 //                                                value: yLoc
-                                                showText : boxProperties.location.y
+                                                showText : boxProperties ? boxProperties.location.y  : 0
                                                 onValueChanged: {
                                                     boxProperties.location.y = value
                                                 }
@@ -320,8 +305,8 @@ Item {
                                             QSpinBox {
                                                 id: mlocationZ
                                                 anchors.fill: parent
-                                                step: 0.01
-                                                showText : boxProperties.location.z
+                                                step: 10
+                                                showText : boxProperties ? boxProperties.location.z  : 0
                                                 onValueChanged: {
                                                     boxProperties.location.z = value
                                                 }
