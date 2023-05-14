@@ -3,28 +3,58 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 
+
+
+
+
 Item {
     property double step: 1
-    property double value: 256
+    property double value
+    property double    showText      : value ? value : 0
     property string secondaryColor: "orange"
-    property string primaryColor  : "#454545"
+    property string primaryColor  : "#404040"
     property string btntxtColor   : "#bbbbbb"
+    property int    spinSpeed     : 50
+    property int    decimals      : 3
+    property double from          : 0
+    property double to            : 9999999999999
+
+
     id: btn
     width: 120
     height: 30
+
+
+    Timer {
+        id: timerUp
+        interval: spinSpeed; running: false; repeat: true
+        onTriggered: if(value < to){
+                         value += step
+                     }
+    }
+    Timer {
+        id: timerDown
+        interval: spinSpeed; running: false; repeat: true
+        onTriggered: if(value > from){
+                         value -= step
+                     }
+    }
+
+
     Rectangle{
         id:mainHolder
         anchors.fill: parent
         color: primaryColor
         radius: 3
         border.color: btntxtColor
-        border.width: 2
+        border.width:  1
         Rectangle{
             id:stepContainer
-            width: btn.width/4
+            width: Math.min(btn.width/4 , btn.height -4 )
             height: btn.height -4
             anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
+            //            anchors.left: parent.left
+            x:2
             color: primaryColor
             radius: 3
             ColumnLayout{
@@ -32,7 +62,7 @@ Item {
                 Text {
                     id:stepText
                     text: qsTr("STEP")
-                    font.pixelSize: btn.height/4
+                    font.pixelSize: stepContainer.height/3
                     color: btntxtColor
                 }
                 Text {
@@ -43,21 +73,23 @@ Item {
                 }
             }
             MouseArea{
+                hoverEnabled: true
                 anchors.fill: parent
                 cursorShape: "PointingHandCursor"
                 onPressed:  if(dropDownMenu.height === 0){
-                               openStepAnimate.running = true
-                               dropDownMenuTextopen.running = true
-                                stepText.color = secondaryColor
-                           }else{
-                               closeStepAnimate.running = true
-                               dropDownMenuTextclose.running = true
-                           }
-                onReleased: stepText.color = btntxtColor
+                                openStepAnimate.running = true
+                                dropDownMenuTextopen.running = true
+                            }else{
+                                closeStepAnimate.running = true
+                                dropDownMenuTextclose.running = true
+                            }
+                onEntered: stepText.color = secondaryColor
+                onExited: stepText.color = btntxtColor
             }
             Rectangle{
                 id: dropDownMenu
                 width: btn.width
+                z: 10
                 height: 0
                 anchors.top: parent.bottom
                 color: "transparent"
@@ -72,7 +104,8 @@ Item {
                         width: dropDownMenu.width/4   -1
                         height: dropDownMenu.height/2 -1
                         color: primaryColor
-                        radius: 3
+                        border.color: btntxtColor
+                        radius: Math.min(width/8 , height/8)
                         Text {
                             id:kilo
                             text: qsTr("1000")
@@ -82,18 +115,24 @@ Item {
                         }
                         MouseArea{
                             anchors.fill: parent
+                            cursorShape: "PointingHandCursor"
                             onClicked: {
                                 step = 1000
                                 closeStepAnimate.running = true
                                 dropDownMenuTextclose.running = true
                             }
+                            hoverEnabled: true
+                            onEntered: parent.color = secondaryColor
+                            onExited: parent.color = primaryColor
+
                         }
                     }
                     Rectangle{
                         width: dropDownMenu.width/4   -1
                         height: dropDownMenu.height/2 -1
                         color: primaryColor
-                        radius: 3
+                        border.color: btntxtColor
+                        radius: Math.min(width/8 , height/8)
                         Text {
                             id:sad
                             text: qsTr("100")
@@ -103,18 +142,23 @@ Item {
                         }
                         MouseArea{
                             anchors.fill: parent
+                            cursorShape: "PointingHandCursor"
                             onClicked: {
                                 step = 100
                                 closeStepAnimate.running = true
                                 dropDownMenuTextclose.running = true
                             }
+                            hoverEnabled: true
+                            onEntered: parent.color = secondaryColor
+                            onExited: parent.color = primaryColor
                         }
                     }
                     Rectangle{
                         width: dropDownMenu.width/4   -1
                         height: dropDownMenu.height/2 -1
                         color: primaryColor
-                        radius: 3
+                        border.color: btntxtColor
+                        radius: Math.min(width/8 , height/8)
                         Text {
                             id:dah
                             text: qsTr("10")
@@ -124,18 +168,23 @@ Item {
                         }
                         MouseArea{
                             anchors.fill: parent
+                            cursorShape: "PointingHandCursor"
                             onClicked: {
                                 step = 10
                                 closeStepAnimate.running = true
                                 dropDownMenuTextclose.running = true
                             }
+                            hoverEnabled: true
+                            onEntered: parent.color = secondaryColor
+                            onExited: parent.color = primaryColor
                         }
                     }
                     Rectangle{
                         width: dropDownMenu.width/4   -1
                         height: dropDownMenu.height/2 -1
                         color: primaryColor
-                        radius: 3
+                        border.color: btntxtColor
+                        radius: Math.min(width/8 , height/8)
                         Text {
                             id:panj
                             text: qsTr("5")
@@ -145,18 +194,23 @@ Item {
                         }
                         MouseArea{
                             anchors.fill: parent
+                            cursorShape: "PointingHandCursor"
                             onClicked: {
                                 step = 5
                                 closeStepAnimate.running = true
                                 dropDownMenuTextclose.running = true
                             }
+                            hoverEnabled: true
+                            onEntered: parent.color = secondaryColor
+                            onExited: parent.color = primaryColor
                         }
                     }
                     Rectangle{
                         width: dropDownMenu.width/4   -1
                         height: dropDownMenu.height/2 -1
                         color: primaryColor
-                        radius: 3
+                        border.color: btntxtColor
+                        radius: Math.min(width/8 , height/8)
                         Text {
                             id:yek
                             text: qsTr("1")
@@ -166,18 +220,23 @@ Item {
                         }
                         MouseArea{
                             anchors.fill: parent
+                            cursorShape: "PointingHandCursor"
                             onClicked: {
                                 step = 1
                                 closeStepAnimate.running = true
                                 dropDownMenuTextclose.running = true
                             }
+                            hoverEnabled: true
+                            onEntered: parent.color = secondaryColor
+                            onExited: parent.color = primaryColor
                         }
                     }
                     Rectangle{
                         width: dropDownMenu.width/4   -1
                         height: dropDownMenu.height/2 -1
                         color: primaryColor
-                        radius: 3
+                        border.color: btntxtColor
+                        radius: Math.min(width/8 , height/8)
                         Text {
                             id:dahom
                             text: qsTr("0.1")
@@ -187,18 +246,23 @@ Item {
                         }
                         MouseArea{
                             anchors.fill: parent
+                            cursorShape: "PointingHandCursor"
                             onClicked: {
                                 step = 0.1
                                 closeStepAnimate.running = true
                                 dropDownMenuTextclose.running = true
                             }
+                            hoverEnabled: true
+                            onEntered: parent.color = secondaryColor
+                            onExited: parent.color = primaryColor
                         }
                     }
                     Rectangle{
                         width: dropDownMenu.width/4   -1
                         height: dropDownMenu.height/2 -1
                         color: primaryColor
-                        radius: 3
+                        border.color: btntxtColor
+                        radius: Math.min(width/8 , height/8)
                         Text {
                             id:sadom
                             text: qsTr("0.01")
@@ -208,18 +272,23 @@ Item {
                         }
                         MouseArea{
                             anchors.fill: parent
+                            cursorShape: "PointingHandCursor"
                             onClicked: {
                                 step = 0.01
                                 closeStepAnimate.running = true
                                 dropDownMenuTextclose.running = true
                             }
+                            hoverEnabled: true
+                            onEntered: parent.color = secondaryColor
+                            onExited: parent.color = primaryColor
                         }
                     }
                     Rectangle{
                         width: dropDownMenu.width/4   -1
                         height: dropDownMenu.height/2 -1
                         color: primaryColor
-                        radius: 3
+                        border.color: btntxtColor
+                        radius: Math.min(width/8 , height/8)
                         Text {
                             id:hezarom
                             text: qsTr("0.001")
@@ -229,11 +298,15 @@ Item {
                         }
                         MouseArea{
                             anchors.fill: parent
+                            cursorShape: "PointingHandCursor"
                             onClicked: {
                                 step = 0.001
                                 closeStepAnimate.running = true
                                 dropDownMenuTextclose.running = true
                             }
+                            hoverEnabled: true
+                            onEntered: parent.color = secondaryColor
+                            onExited: parent.color = primaryColor
                         }
                     }
                 }
@@ -242,13 +315,13 @@ Item {
         Rectangle{
             id: plus
             anchors.verticalCenter: parent.verticalCenter
-            height: mainHolder.height -4
-            width: mainHolder.width/7
-            radius: mainHolder.height/8
+            height: mainHolder.height
+            width: mainHolder.width/9
+            //            radius: mainHolder.height/8
             color: btntxtColor
             anchors.right: mainHolder.right
-            border.width: 4
-            border.color: primaryColor
+            //            border.width: 2
+            //            border.color: primaryColor
             Text {
                 id:plusText
                 text: qsTr("+")
@@ -260,24 +333,30 @@ Item {
                 cursorShape: "PointingHandCursor"
                 anchors.fill: parent
                 onPressed:  {
-                    plusText.color = secondaryColor
-                    value += step
+                    if(value < from){value = from}
+                    else if(value > to){value = to}
+                    else if(value >= from && value <to){
+                        plusText.color = secondaryColor
+                        value += step
+                    }
                 }
+                onPressAndHold: timerUp.start();
                 onReleased: {
                     plusText.color = primaryColor
+                    timerUp.stop();
                 }
             }
         }
         Rectangle{
             id: minus
             anchors.verticalCenter: parent.verticalCenter
-            height: mainHolder.height -4
-            width: mainHolder.width/7
-            radius: mainHolder.height/8
+            height: mainHolder.height
+            width: mainHolder.width/9
+            //            radius: mainHolder.height/8
             color: btntxtColor
             anchors.left: stepContainer.right
-            border.width: 4
-            border.color: primaryColor
+            //            border.width: 2
+            //            border.color: primaryColor
             Text {
                 id: minusText
                 text: qsTr("-")
@@ -289,11 +368,17 @@ Item {
                 cursorShape: "PointingHandCursor"
                 anchors.fill: parent
                 onPressed:  {
-                    minusText.color = secondaryColor
-                    value -= step
+                    if(value < from){value = from}
+                    else if(value > to){value = to}
+                    else if(value > from && value <= to){
+                        minusText.color = secondaryColor
+                        value -= step
+                    }
                 }
+                onPressAndHold: timerDown.start();
                 onReleased: {
                     minusText.color = primaryColor
+                    timerDown.stop();
                 }
             }
         }
@@ -303,16 +388,19 @@ Item {
             anchors.left: minus.right
             anchors.right: plus.left
             height: parent.height
-            color: "transparent"
+            color: primaryColor
             clip: true
+            border.width: 1
+            border.color: btntxtColor
             TextInput {
                 id: valueText
-                anchors.left: parent.left
+                x: 4
+                //                anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                text: value.toFixed(6)
+                onTextChanged: value = showText
+                text: showText.toFixed(decimals)
                 font.pixelSize: parent.height/3
                 color: btntxtColor
-                onTextChanged: value = text
                 selectByMouse: true
                 selectedTextColor: "black"
                 selectionColor: secondaryColor
