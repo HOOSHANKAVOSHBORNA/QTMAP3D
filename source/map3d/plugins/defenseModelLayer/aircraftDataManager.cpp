@@ -66,7 +66,7 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
         mDefenseModelLayer->mMapController->addNodeToLayer(aircraftModelNode, AIRCRAFTS_LAYER_NAME);
     }
     //update information------------------------------------------------------------------
-    aircraftModelNode->updateData();
+    aircraftModelNode->dataChanged();
 //    mAircraftTableModel->updateTable(aircraftInfo.TN);
     emit infoChanged(aircraftInfo.TN);
 }
@@ -91,7 +91,7 @@ void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment* assignment
     {
         mAircraftData[tn]->assignments.append(assignment);
         //-----------------------------
-        mAircraftData[tn]->modelNode->updateData();
+        mAircraftData[tn]->modelNode->dataChanged();
 
         emit assignmentChanged(tn);
     }
@@ -108,7 +108,7 @@ void AircraftDataManager::clearAssignments(int tn)
     if(mAircraftData.contains(tn))
     {
         mAircraftData[tn]->assignments.clear();
-        mAircraftData[tn]->modelNode->updateData();
+        mAircraftData[tn]->modelNode->dataChanged();
 
         emit assignmentChanged(tn);
     }
@@ -120,7 +120,7 @@ void AircraftDataManager::removeAssignment(int tn, int systemNo)
         auto index = mAircraftData[tn]->findAssignment(systemNo);
         if(index >= 0){
             mAircraftData[tn]->assignments.removeAt(index);
-            mAircraftData[tn]->modelNode->updateData();
+            mAircraftData[tn]->modelNode->dataChanged();
 
             emit assignmentChanged(tn);
         }

@@ -35,14 +35,11 @@ class AircraftModelNode: public DefenseModelNode
 {
     Q_OBJECT
 public:
-    AircraftModelNode(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &aircraftData, QObject* parent = nullptr);
+	AircraftModelNode(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &data, QObject* parent = nullptr);
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
-    void updateData();
-    void updateType();
-
+	void dataChanged();
     const Aircraft::Data &getData() const;
-//    AircraftInfo getInformation() const;
     void goOnTrack();
 public slots:
     void onLeftButtonClicked(bool val);
@@ -50,14 +47,6 @@ public:
     void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
     virtual void updateColors() override;
-
-//    SystemModelNode *getAssignment(int number) const;
-//    void addAssignment(int number, SystemModelNode *assignmentModelNode);
-//    void removeAssignment(int number);
-//    void acceptAssignment(int number, bool value);
-//    void clearAssignments(int exceptNumber = -1);
-//    bool hasAssignment();
-//    QMap<int, SystemModelNode *> getAssignments() const;
 
 private slots:
     void onGotoButtonClicked();
@@ -67,12 +56,13 @@ private slots:
     void onModeChanged(bool is3DView);
     void onContextmenuItemClicked(int index, QString systemName);
 private:
-    void changeModelColor(AircraftInfo::Identify identify);
+	void updateOrCreateNodes();
+//    void changeModelColor(AircraftInfo::Identify identify);
     void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();
-    void change2DImageColore(osgEarth::Color color);
-    void updateOrCreateLabelImage();
+	//void change2DImageColore(osgEarth::Color color);
+	void updateOrCreateStatusImage();
 private:
 //    MapController* mMapController{nullptr};
     DefenseModelLayer* mDefenseModelLayer{nullptr};
@@ -83,15 +73,16 @@ private:
     osg::ref_ptr<osgParticle::FireEffect> mFire;
 
     //QMap<int, SystemModelNode*> mAssignmentMap;
-    const Aircraft::Data* mAircraftData;
+	const Aircraft::Data* mData;
     AircraftInfo::AircraftType mType;
+	AircraftInfo::Identify mIdentification;
 
     bool mIsStop{false};
     bool mIsRoute{false};
 //    UIHandle* mUIHandle;
 //    AircraftInfo mInformation;
-    osg::ref_ptr<osg::Vec3Array> mLocationPoints;
-    osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
+//    osg::ref_ptr<osg::Vec3Array> mLocationPoints;
+//    osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
 //    QQmlEngine *mQmlEngine;
     ContextMenu *mCurrentContextMenu = nullptr;
 
@@ -104,14 +95,19 @@ private:
     static osg::ref_ptr<osg::Node> mAircraft3DRef;
     static osg::ref_ptr<osg::Node> mFighter3DRef;
     static osg::ref_ptr<osg::Node> mMissile3DRef;
-    static osg::ref_ptr<osg::Node> mHelicopter3DRef;
+	static osg::ref_ptr<osg::Node> mHellicopter3DRef;
     static osg::ref_ptr<osg::Node> mDrone3DRef;
-//    static osg::ref_ptr<osg::Image> m2dIcon;
+
+	static osg::ref_ptr<osg::Image> mAircraft2DImage;
+	static osg::ref_ptr<osg::Image> mDrone2DImage;
+	static osg::ref_ptr<osg::Image> mFighter2DImage;
+	static osg::ref_ptr<osg::Image> mMissile2DImage;
+	static osg::ref_ptr<osg::Image> mHellicopter2DImage;
 
     static constexpr int LABEL_IMAGE_WIDTH = 210;
     static constexpr int LABEL_IMAGE_HEIGHT = 210;
-    QImage *mRenderTargetImage{nullptr};
-    osg::ref_ptr<osg::Image> mLabelImage{nullptr};
+	QImage *mRenderStatusImage{nullptr};
+	osg::ref_ptr<osg::Image> mStatusImage{nullptr};
 
     //osg::Image* m2DIcon;
     //osg::Image* mSelect2DIcon;
@@ -121,32 +117,17 @@ private:
 
     osg::ref_ptr<osg::PositionAttitudeTransform> mPat2D;
 
-    osg::ref_ptr<osg::Switch> mNode2DNormal;
-    osg::ref_ptr<osg::Switch> mNode2DHovered;
+//    osg::ref_ptr<osg::Switch> mNode2DNormal;
+//    osg::ref_ptr<osg::Switch> mNode2DHovered;
 
     double mAutoScaleDefaultValue = 2.5;
     double mAutoScaleMinValue = 1;
     double mAutoScaleMaxValue = 500;
 
-    static osg::ref_ptr<osg::Image> mainImageAircraft;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListAircraft;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredAircraft;
 
-    static osg::ref_ptr<osg::Image> mainImageDrone;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListDrone;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredDrone;
-
-    static osg::ref_ptr<osg::Image> mainImageFighter;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListFighter;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredFighter;
-
-    static osg::ref_ptr<osg::Image> mainImageMissile;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListMissile;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredMissile;
-
-    static osg::ref_ptr<osg::Image> mainImageHellicopter;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHellicopter;
-    static std::array<osg::ref_ptr<osg::Image>, 6> imageListHoveredHellicopter;
+	bool bXnxx = false;
+	osg::ref_ptr<osg::Image>    mImage                = nullptr;
+	osg::ref_ptr<osg::Image>    mImageHovered         = nullptr;
 };
 
 #endif // AIRCRAFTMODELNODE_H

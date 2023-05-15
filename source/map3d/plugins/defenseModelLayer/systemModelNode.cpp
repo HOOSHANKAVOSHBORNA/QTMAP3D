@@ -133,11 +133,11 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
 
     updateOrCreateLabelImage();
-    mLabelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+    mStatusNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
 
-    getGeoTransform()->addChild(mLabelNode);
-    mLabelNode->setNodeMask(false);
-    mLabelNode->setPriority(10);
+    getGeoTransform()->addChild(mStatusNode);
+    mStatusNode->setNodeMask(false);
+    mStatusNode->setPriority(10);
 
 
     if(mIs3D)
@@ -204,7 +204,7 @@ void SystemModelNode::informationChanged()
 //        mSystemInfoItem->setInfo(info);
 //    mInformation = info;
     updateOrCreateLabelImage();
-    mLabelNode->setStyle(mLabelNode->getStyle());
+    mStatusNode->setStyle(mStatusNode->getStyle());
 }
 
 //SystemInfo SystemModelNode::getInformation() const
@@ -236,13 +236,13 @@ void SystemModelNode::combatInfoChanged()
         break;
     }
     updateOrCreateLabelImage();
-    mLabelNode->setStyle(mLabelNode->getStyle());
+    mStatusNode->setStyle(mStatusNode->getStyle());
 }
 
 void SystemModelNode::assignmentChanged()
 {
     updateOrCreateLabelImage();
-    mLabelNode->setStyle(mLabelNode->getStyle());
+    mStatusNode->setStyle(mStatusNode->getStyle());
 }
 
 System::Data *SystemModelNode::getData() const
@@ -266,7 +266,7 @@ void SystemModelNode::statusInfoChanged()
 //    mRectangleNode->setStyle(systemStatusInfo.RadarSearchStatus == SystemStatusInfo::S ? mRectangleStyleActive : mRectangleStyleDeactive);
     //mStatusInfo = systemStatusInfo;
     updateOrCreateLabelImage();
-    mLabelNode->setStyle(mLabelNode->getStyle());
+    mStatusNode->setStyle(mStatusNode->getStyle());
 
     updateColors();
 }
@@ -362,7 +362,7 @@ void SystemModelNode::onLeftButtonClicked(bool val)
 
 void SystemModelNode::frameEvent()
 {
-    mLabelNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+    mStatusNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 
     for(auto assinment:mSystemData->assignments)
         assinment->updateLine(getPosition());
