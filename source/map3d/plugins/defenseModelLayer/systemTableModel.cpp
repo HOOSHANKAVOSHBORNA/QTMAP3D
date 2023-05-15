@@ -72,7 +72,8 @@ QVariant SystemTableModel::data(const QModelIndex &index, int role) const
     {
         if (index.row() >= mSystemInfosProxy.size())
             return QVariant::fromValue<QColor>("white");
-        return QVariant::fromValue<QColor>(QColor((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.phaseToColor()));
+        return index.column() == 18 ? QVariant::fromValue<QColor>(QColor((*mSystemInfos)[mSystemInfosProxy[index.row()]]->information->systemCombatInfo.phaseToColor())):
+            QVariant::fromValue<QColor>(QColor("white"));
     }
 
     }
@@ -132,27 +133,32 @@ int SystemTableModel::getNumber(int row) const
 
 void SystemTableModel::setFilterWildcard(const QString &wildcard)
 {
-        beginResetModel();
+    beginResetModel();
 
-        mFilter = wildcard;
-        mFilter.remove(QRegularExpression("\\s"));
-
-        mSystemInfosProxy.clear();
+    mFilter = wildcard;
+    mFilter.remove(QRegularExpression("\\s"));
+    if (mTN == -1){
+    mSystemInfosProxy.clear();
         for (auto& item : *mSystemInfos) {
             if (QString::number(item->information->systemInfo.Number).contains(mFilter))
                 mSystemInfosProxy.push_back(item->information->systemInfo.Number);
         }
+    }
+    else
+        updateAssignment(mTN);
 
-        endResetModel();
+    endResetModel();
 }
 
 void SystemTableModel::refresh()
 {
     beginResetModel();
+    mTN = -1;
     mSystemInfosProxy.clear();
     mSystemInfosProxy = mSystemInfos->keys();
     endResetModel();
 }
+
 
 void SystemTableModel::setSystemInfos(const QMap<int, System::Data*> &systems)
 {
@@ -160,6 +166,23 @@ void SystemTableModel::setSystemInfos(const QMap<int, System::Data*> &systems)
     mSystemInfos = &systems;
     mSystemInfosProxy = mSystemInfos->keys();
     endResetModel();
+}
+
+void SystemTableModel::setAircraftInfos(const QMap<int, Aircraft::Data *> &info)
+{
+    mAircraftInfos = &info;
+}
+
+void SystemTableModel::updateAssignment(int /*tn*/)
+{
+    if (mTN != -1 && mAircraftInfos->contains(mTN)){
+        beginResetModel();
+        mSystemInfosProxy.clear();
+        for (auto &system: (*mAircraftInfos)[mTN]->assignments){
+            mSystemInfosProxy.append(system->info->systemInfo.Number);
+        }
+        endResetModel();
+    }
 }
 
 void SystemTableModel::onInfoChanged(int number)
@@ -182,6 +205,17 @@ void SystemTableModel::onRemoveData(int number)
         mSystemInfosProxy = mSystemInfos->keys();
         endRemoveRows();
     }
+}
+
+void SystemTableModel::onSystemClicked(const int &number)
+{
+    emit systemClicked(number);
+}
+
+void SystemTableModel::onAircraftClicked(const int &tn)
+{
+    mTN = tn;
+    updateAssignment(mTN);
 }
 
 SystemTable::SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer *defenseModelLayer, QObject *parent) :
@@ -214,6 +248,11 @@ SystemTable::SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer 
     });
 
     comp3->loadUrl(QUrl("qrc:///modelplugin/SystemTableView.qml"));
+}
+
+SystemTableModel *SystemTable::getModel() const
+{
+    return mSystemTableModel;
 }
 
 void SystemTable::onDoubleClicked(int number)
