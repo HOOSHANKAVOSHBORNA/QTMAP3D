@@ -31,6 +31,22 @@ namespace Aircraft {
 struct Data;
 }
 
+class VisualData
+{
+public:
+	struct Image2D{
+		osg::ref_ptr<osg::Image> image;
+		osg::ref_ptr<osg::Image> imageHover;
+	};
+public:
+	static osg::ref_ptr<osg::Node> get3DNode(AircraftInfo::AircraftType type);
+	static Image2D get2DImage(AircraftInfo::AircraftType type, AircraftInfo::Identify identification);
+private:
+	static QMap<AircraftInfo::AircraftType, osg::ref_ptr<osg::Node>> mNodes3D;
+	static QMap<AircraftInfo::AircraftType, QMap<AircraftInfo::Identify, Image2D>> mImages2D;
+
+};
+
 class AircraftModelNode: public DefenseModelNode
 {
     Q_OBJECT
@@ -57,77 +73,49 @@ private slots:
     void onContextmenuItemClicked(int index, QString systemName);
 private:
 	void updateOrCreateNodes();
-//    void changeModelColor(AircraftInfo::Identify identify);
     void showInfoWidget();
     void addEffect(double emitterDuration);
     void removeEffect();
-	//void change2DImageColore(osgEarth::Color color);
 	void updateOrCreateStatusImage();
 private:
-//    MapController* mMapController{nullptr};
     DefenseModelLayer* mDefenseModelLayer{nullptr};
     ModelAnimationPathCallback* mAnimationPathCallback{nullptr};
     osgEarth::Annotation::ModelNode* mTruckModel;
-    //    osg::ref_ptr<osg::Geode> mGeodeParticle;
+
     osg::ref_ptr<osgParticle::SmokeTrailEffect> mSmoke;
     osg::ref_ptr<osgParticle::FireEffect> mFire;
 
-    //QMap<int, SystemModelNode*> mAssignmentMap;
 	const Aircraft::Data* mData;
     AircraftInfo::AircraftType mType;
 	AircraftInfo::Identify mIdentification;
 
     bool mIsStop{false};
     bool mIsRoute{false};
-//    UIHandle* mUIHandle;
-//    AircraftInfo mInformation;
-//    osg::ref_ptr<osg::Vec3Array> mLocationPoints;
-//    osg::ref_ptr<osg::Vec3Array> mTempLocationPoints;
-//    QQmlEngine *mQmlEngine;
     ContextMenu *mCurrentContextMenu = nullptr;
 
     osg::ref_ptr<LineNode> mRouteLine;
     osg::ref_ptr<LineNode> mLatestPointLine;
     osg::ref_ptr<LineNode> mTempLine;
 
-    AircraftInfoItem *mAircraftinformation{nullptr};
-
-    static osg::ref_ptr<osg::Node> mAircraft3DRef;
-    static osg::ref_ptr<osg::Node> mFighter3DRef;
-    static osg::ref_ptr<osg::Node> mMissile3DRef;
-	static osg::ref_ptr<osg::Node> mHellicopter3DRef;
-    static osg::ref_ptr<osg::Node> mDrone3DRef;
-
-	static osg::ref_ptr<osg::Image> mAircraft2DImage;
-	static osg::ref_ptr<osg::Image> mDrone2DImage;
-	static osg::ref_ptr<osg::Image> mFighter2DImage;
-	static osg::ref_ptr<osg::Image> mMissile2DImage;
-	static osg::ref_ptr<osg::Image> mHellicopter2DImage;
+	AircraftInfoItem *mAircraftinformation{nullptr};
 
     static constexpr int LABEL_IMAGE_WIDTH = 210;
     static constexpr int LABEL_IMAGE_HEIGHT = 210;
 	QImage *mRenderStatusImage{nullptr};
 	osg::ref_ptr<osg::Image> mStatusImage{nullptr};
 
-    //osg::Image* m2DIcon;
-    //osg::Image* mSelect2DIcon;
 
     double mCurrentHeading{500};
     osgEarth::GeoPoint mCurrentFlyPoint;
 
     osg::ref_ptr<osg::PositionAttitudeTransform> mPat2D;
 
-//    osg::ref_ptr<osg::Switch> mNode2DNormal;
-//    osg::ref_ptr<osg::Switch> mNode2DHovered;
-
     double mAutoScaleDefaultValue = 2.5;
     double mAutoScaleMinValue = 1;
     double mAutoScaleMaxValue = 500;
 
-
-	bool bXnxx = false;
 	osg::ref_ptr<osg::Image>    mImage                = nullptr;
-	osg::ref_ptr<osg::Image>    mImageHovered         = nullptr;
+	osg::ref_ptr<osg::Image>    mImageHover           = nullptr;
 };
 
 #endif // AIRCRAFTMODELNODE_H
