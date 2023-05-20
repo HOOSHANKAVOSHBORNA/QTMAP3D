@@ -59,8 +59,11 @@ public:
     osgEarth::Annotation::ModelNode* getDragModelNode();
 
 
-    static osg::ref_ptr<osg::Image> createColoredImage(osg::ref_ptr<osg::Image> sourceImage, osgEarth::Color color);
-    static osg::ref_ptr<osg::Image> createDarkerImage(osg::ref_ptr<osg::Image> sourceImage, float factor);
+	static osg::Image* createColoredImage(osg::Image* sourceImage, osgEarth::Color color);
+	static osg::Image* createDarkerImage(osg::Image *sourceImage, float factor);
+
+	static void copyColoredImage(osg::Image* sourceImage, osg::Image* destImage, osgEarth::Color color);
+	static void copyDarkerImage(osg::Image *sourceImage, osg::Image* destImage, float factor);
 
 
 signals:
@@ -88,7 +91,7 @@ protected:
     osg::ref_ptr<osg::LOD> mRootNode;
     osg::ref_ptr<osg::Group> mNode3D;
     osg::ref_ptr<osg::Switch> mNode2D;
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLabelNode{nullptr};
+	osg::ref_ptr<osgEarth::Annotation::PlaceNode> mStatusNode{nullptr};
     osgEarth::Color mModelColor{osgEarth::Color::White};
 
 private:

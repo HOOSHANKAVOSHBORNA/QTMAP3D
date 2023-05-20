@@ -56,13 +56,45 @@ public:
     void setSmooth(bool Smooth);
 
 private:
-    void createOrUpdateLabelImg(QImage** qImage, osg::ref_ptr<osg::Image> &img, double lenght, double bearing);
+	QImage *createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double lenght, double bearing);
     struct LabelData {
-        QImage** qImage;
-        osg::ref_ptr<osg::Image> img;
+		QImage *qImage{nullptr};
+		osg::ref_ptr<osg::Image> image;
         double lenght;
         double bearing;
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode;
+//		LabelData() = default;
+//		LabelData(const LabelData& source){
+//			qImage = source.qImage;
+//			image = source.image;
+//			lenght = source.lenght;
+//			bearing = source.bearing;
+//			placeNode = source.placeNode;
+//		}
+//		LabelData(LabelData&& source){
+//			qImage = source.qImage;
+//			image = source.image;
+//			lenght = source.lenght;
+//			bearing = source.bearing;
+//			placeNode = source.placeNode;
+
+//			source.qImage = nullptr;
+//		}
+//		LabelData& operator=(const LabelData& source){
+//			LabelData* data = new LabelData ();
+//			data->qImage = source.qImage;
+//			data->image = source.image;
+//			data->lenght = source.lenght;
+//			data->bearing = source.bearing;
+//			data->placeNode = source.placeNode;
+//			return *data;
+//		}
+//		~LabelData(){
+//			if(qImage){
+//				delete qImage;
+//				qImage = nullptr;
+//			}
+//		}
     };
 
 private:
@@ -81,7 +113,7 @@ private:
     bool mSmooth{true};
     std::vector<LabelData> mVecLabelData;
 
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mPlaceNode;
+//    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mPlaceNode;
 
     //Lenght part
     osg::ref_ptr<osg::Group> mLabelGroup;

@@ -204,7 +204,7 @@ Item {
                                             systems.contentY = 0;
                                         }
                                         if (rootItem.aircraftModel){
-                                            rootItem.aClicked = row;
+                                            rootItem.aClicked = rootItem.aircraftModel.getTN(row);
                                             rootItem.sClicked = -1;
                                         }
                                     }
@@ -253,7 +253,7 @@ Item {
                             }
                             Rectangle {
                                 opacity: 0.3
-                                color: rootItem.aircraftModel ? (rootItem.aClicked == row ? "lightskyblue" :
+                                color: rootItem.aircraftModel ? (rootItem.aClicked == rootItem.aircraftModel.getTN(row) ? "lightskyblue" :
                                                                                             rootItem.aHoveredIndex == row ? hoverColor :
                                                                                                                             "transparent") : "transparent";
                                 anchors.fill: parent
@@ -276,10 +276,10 @@ Item {
                                 }
                                 ColorOverlay {
                                     anchors.fill: img6
-                                    color: (row == rootItem.aClicked && column == 0) ? "#FFFFFF" : (rootItem.aHoveredIndex == row ? "#404040" : "transparent")
+                                    color: (rootItem.aircraftModel.getTN(row) == rootItem.aClicked && column == 0) ? "#FFFFFF" : (rootItem.aHoveredIndex == row ? "#404040" : "transparent")
                                     source: img6
                                     rotation: 90
-                                    visible: column == 0 && (row == aHoveredIndex || row == aClicked)
+                                    visible: column == 0 && (row == aHoveredIndex || rootItem.aircraftModel.getTN(row) == aClicked)
                                 }
                             }
 

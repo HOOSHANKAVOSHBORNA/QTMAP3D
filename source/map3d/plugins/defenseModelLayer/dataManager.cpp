@@ -12,7 +12,7 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 {
     //--aircraft--------------------------------------------------------
     QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
-//    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
+    QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
 
 //    QObject::connect(defenseDataManager, &DefenseDataManager::aircraftAssignedResponse,this ,&DataManager::onAircraftAssignedResponse);
     //    //--system----------------------------------------------------------

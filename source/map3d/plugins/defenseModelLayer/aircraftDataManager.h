@@ -51,7 +51,7 @@ private:
     DefenseModelLayer* mDefenseModelLayer;
     QMap<int, Aircraft::Data*> mAircraftData;
 
-    AircraftTable *mAircraftsTable;
+	AircraftTable *mAircraftsTable;
     AircraftTableModel *mAircraftAssignmentTableModel;
 };
 

@@ -167,6 +167,11 @@ int AircraftTableModel::getTN(int row) const
     return (*mAircraftInfos)[mAircraftInfosProxy[row]]->info.TN;
 }
 
+int AircraftTableModel::getIndex(int tn)
+{
+    return mAircraftInfosProxy.indexOf(tn);
+}
+
 void AircraftTableModel::setAircraftInfos(const QMap<int, Aircraft::Data*> &aircrafts)
 {
     beginResetModel();
@@ -201,9 +206,11 @@ void AircraftTableModel::onInfoChanged(int tn)
 void AircraftTableModel::onRemoveData(int tn)
 {
     if (mAircraftInfosProxy.contains(tn) && mNumber == -1) {
-        beginRemoveRows(QModelIndex(), mAircraftInfosProxy.indexOf(tn), mAircraftInfosProxy.indexOf(tn));
+//        beginRemoveRows(QModelIndex(), mAircraftInfosProxy.indexOf(tn), mAircraftInfosProxy.indexOf(tn));
+        beginResetModel();
         mAircraftInfosProxy = mAircraftInfos->keys();
-        endRemoveRows();
+        endResetModel();
+//        endRemoveRows();
     }
     if (mNumber != -1) {
         updateAssignmnets(mNumber);

@@ -29,46 +29,46 @@ AircraftDataManager::AircraftDataManager(DefenseModelLayer* defenseModelLayer)
 {
     mDefenseModelLayer = defenseModelLayer;
 
-    mAircraftsTable = new AircraftTable(this, mDefenseModelLayer);
+	mAircraftsTable = new AircraftTable(this, mDefenseModelLayer);
 
 }
 void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 {
     //--list---------------------------------------------------------------------------------------------------------
-    if(mAircraftData.contains(aircraftInfo.TN))
-        mAircraftData[aircraftInfo.TN]->info = aircraftInfo;
-    else{
-        Aircraft::Data* data = new Aircraft::Data();
-        data->info = aircraftInfo;
-        mAircraftData[aircraftInfo.TN] = data;
-    }
-    //--model node----------------------------------------------------------------------------------------------------
-    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
-    osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mMapController->getMapSRS()->getGeographicSRS(),
-                                          aircraftInfo.Longitude, aircraftInfo.Latitude, aircraftInfo.Altitude);
+	if(mAircraftData.contains(aircraftInfo.TN))
+		mAircraftData[aircraftInfo.TN]->info = aircraftInfo;
+	else{
+		Aircraft::Data* data = new Aircraft::Data();
+		data->info = aircraftInfo;
+		mAircraftData[aircraftInfo.TN] = data;
+	}
+	//--model node----------------------------------------------------------------------------------------------------
+	osg::ref_ptr<AircraftModelNode> aircraftModelNode;
+	osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mMapController->getMapSRS()->getGeographicSRS(),
+										  aircraftInfo.Longitude, aircraftInfo.Latitude, aircraftInfo.Altitude);
 
-    if(mAircraftData[aircraftInfo.TN]->modelNode.valid())
-    {
-        aircraftModelNode = mAircraftData[aircraftInfo.TN]->modelNode;
-        aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
+	if(mAircraftData[aircraftInfo.TN]->modelNode.valid())
+	{
+		aircraftModelNode = mAircraftData[aircraftInfo.TN]->modelNode;
+		aircraftModelNode->flyTo(geographicPosition, aircraftInfo.Heading, aircraftInfo.Speed);
 
-    }
-    else
-    {
-        //create and model node------------------------------------------------
-        aircraftModelNode = new AircraftModelNode(mDefenseModelLayer,*mAircraftData[aircraftInfo.TN]);
-        aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
-        aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
+	}
+	else
+	{
+		//create and model node------------------------------------------------
+		aircraftModelNode = new AircraftModelNode(mDefenseModelLayer,*mAircraftData[aircraftInfo.TN]);
+		aircraftModelNode->setQStringName(QString::number(aircraftInfo.TN));
+		aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
-        //add to container-----------------------------------------------------
-        mAircraftData[aircraftInfo.TN]->modelNode = aircraftModelNode;
-        //add to map ---------------------------------------------------------
-        mDefenseModelLayer->mMapController->addNodeToLayer(aircraftModelNode, AIRCRAFTS_LAYER_NAME);
-    }
-    //update information------------------------------------------------------------------
-    aircraftModelNode->updateData();
+		//add to container-----------------------------------------------------
+		mAircraftData[aircraftInfo.TN]->modelNode = aircraftModelNode;
+		//add to map ---------------------------------------------------------
+		mDefenseModelLayer->mMapController->addNodeToLayer(aircraftModelNode, AIRCRAFTS_LAYER_NAME);
+	}
+	//update information------------------------------------------------------------------
+	aircraftModelNode->dataChanged();
 //    mAircraftTableModel->updateTable(aircraftInfo.TN);
-    emit infoChanged(aircraftInfo.TN);
+	emit infoChanged(aircraftInfo.TN);
 }
 
 void AircraftDataManager::remove(int tn)
@@ -91,7 +91,7 @@ void AircraftDataManager::addAssignment(int tn, Aircraft::Assignment* assignment
     {
         mAircraftData[tn]->assignments.append(assignment);
         //-----------------------------
-        mAircraftData[tn]->modelNode->updateData();
+        mAircraftData[tn]->modelNode->dataChanged();
 
         emit assignmentChanged(tn);
         emit infoChanged(tn);
@@ -109,7 +109,7 @@ void AircraftDataManager::clearAssignments(int tn)
     if(mAircraftData.contains(tn))
     {
         mAircraftData[tn]->assignments.clear();
-        mAircraftData[tn]->modelNode->updateData();
+        mAircraftData[tn]->modelNode->dataChanged();
 
         emit assignmentChanged(tn);
         emit infoChanged(tn);
@@ -122,7 +122,7 @@ void AircraftDataManager::removeAssignment(int tn, int systemNo)
         auto index = mAircraftData[tn]->findAssignment(systemNo);
         if(index >= 0){
             mAircraftData[tn]->assignments.removeAt(index);
-            mAircraftData[tn]->modelNode->updateData();
+            mAircraftData[tn]->modelNode->dataChanged();
 
             emit assignmentChanged(tn);
             emit infoChanged(tn);
