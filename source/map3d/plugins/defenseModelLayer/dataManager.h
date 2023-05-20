@@ -6,6 +6,7 @@
 #include "aircraftDataManager.h"
 #include "systemDataManager.h"
 #include "stationDataManager.h"
+#include "assignmentTableModel.h"
 
 class DataManager: public QObject
 {
@@ -31,15 +32,14 @@ public:
     StationDataManager *stationDataManager() const;
 
 private:
-    void addAssignmentTab();
+
 private:
     DefenseDataManager *mDefenseDataManager{nullptr};
     DefenseModelLayer *mDefenseModelLayer{nullptr};
     AircraftDataManager *mAircraftDataManager;
     SystemDataManager *mSystemDataManager;
     StationDataManager *mStationDataManager;
-    AircraftTableModel *mAircraftAssignmentTableModel;
-    SystemTableModel *mSystemAssignmentTableModel;
+    AssignmentTableModel *mAssignmentTableModel;
 };
 
 #endif // DATAMANAGER_H

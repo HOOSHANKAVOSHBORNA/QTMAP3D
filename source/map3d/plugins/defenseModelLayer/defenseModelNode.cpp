@@ -132,8 +132,8 @@ DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent)
     getGeoTransform()->addChild(mSelectedNode);
 
     QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
-        if(mLabelNode)
-            this->mLabelNode->setNodeMask(this->mHoverMode == HOVERED);
+        if(mStatusNode)
+            this->mStatusNode->setNodeMask(this->mHoverMode == HOVERED);
     });
 }
 
@@ -257,22 +257,22 @@ void DefenseModelNode::collision()
 }
 osgEarth::Annotation::ModelNode *DefenseModelNode::getDragModelNode()
 {
-    osgEarth::Symbology::Style  style = getStyle();
+	osgEarth::Symbology::Style  style = getStyle();
 //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
 //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Gray);
     osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(getMapNode(), style);
-    dragModelNode->setCullingActive(false);
-    dragModelNode->addCullCallback(getCullCallback());
-    dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+	dragModelNode->setCullingActive(false);
+	dragModelNode->addCullCallback(getCullCallback());
+	dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
 //    dragModelNode->addCullCallback(getCullCallback());
     return dragModelNode.release();
 }
 
-osg::ref_ptr<osg::Image> DefenseModelNode::createColoredImage(osg::ref_ptr<osg::Image> sourceImage, osgEarth::Color color)
+osg::Image* DefenseModelNode::createColoredImage(osg::Image* sourceImage, osgEarth::Color color)
 {
     osg::ref_ptr<osg::Image> newImage = new osg::Image(*sourceImage, osg::CopyOp::DEEP_COPY_ALL);
 
@@ -290,10 +290,10 @@ osg::ref_ptr<osg::Image> DefenseModelNode::createColoredImage(osg::ref_ptr<osg::
         }
     }
 
-    return newImage;
+	return newImage.release();
 }
 
-osg::ref_ptr<osg::Image> DefenseModelNode::createDarkerImage(osg::ref_ptr<osg::Image> sourceImage, float factor)
+osg::Image *DefenseModelNode::createDarkerImage(osg::Image* sourceImage, float factor)
 {
     osg::ref_ptr<osg::Image> newImage = new osg::Image(*sourceImage, osg::CopyOp::DEEP_COPY_ALL);
 
@@ -317,9 +317,59 @@ osg::ref_ptr<osg::Image> DefenseModelNode::createDarkerImage(osg::ref_ptr<osg::I
         }
     }
 
-    return newImage;
+	return newImage.release();
 
 }
+
+
+void DefenseModelNode::copyColoredImage(osg::Image* sourceImage, osg::Image* destImage, osgEarth::Color color)
+{
+	destImage->allocateImage(sourceImage->s(), sourceImage->t(), sourceImage->r(),
+							 sourceImage->getPixelFormat(), sourceImage->getDataType());
+
+	unsigned int width = static_cast<unsigned int>(sourceImage->s());
+	unsigned int height = static_cast<unsigned int>(sourceImage->t());
+
+	for(unsigned int i = 0; i < width; i++) {
+		for(unsigned int j = 0; j < height; j++)
+		{
+			const osg::Vec4 pixColore = sourceImage->getColor(i, j);
+			if(pixColore.a() > 0)
+				destImage->setColor(color, i, j);
+			else
+				destImage->setColor(osg::Vec4(0,0,0,0), i, j);
+		}
+	}
+
+}
+
+void DefenseModelNode::copyDarkerImage(osg::Image* sourceImage, osg::Image* destImage, float factor)
+{
+	destImage->allocateImage(sourceImage->s(), sourceImage->t(), sourceImage->r(),
+							 sourceImage->getPixelFormat(), sourceImage->getDataType());
+
+	unsigned int width = static_cast<unsigned int>(sourceImage->s());
+	unsigned int height = static_cast<unsigned int>(sourceImage->t());
+
+	for(unsigned int i = 0; i < width; i++) {
+		for(unsigned int j = 0; j < height; j++)
+		{
+			const osg::Vec4 pixColore = sourceImage->getColor(i, j);
+			if(pixColore.a() > 0) {
+				const osg::Vec4 newColor(pixColore.r() * factor,
+										 pixColore.g() * factor,
+										 pixColore.b() * factor,
+										 pixColore.a());
+				destImage->setColor(newColor, i, j);
+			}
+			else {
+				destImage->setColor(osg::Vec4(0,0,0,0), i, j);
+			}
+		}
+	}
+}
+
+
 
 void DefenseModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
 {

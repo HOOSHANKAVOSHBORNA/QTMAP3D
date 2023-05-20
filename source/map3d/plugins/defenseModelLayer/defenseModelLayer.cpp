@@ -352,7 +352,7 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
         }
         mSelectedModelNode = aircraftModelNode;
         aircraftModelNode->onLeftButtonClicked(true);
-        aircraftModelNode->goOnTrack();
+//        aircraftModelNode->goOnTrack();
         mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
         mSelectedModelNode->updateColors();
     }
@@ -366,7 +366,7 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
         }
         mSelectedModelNode = stationModelNode;
         stationModelNode->onLeftButtonClicked(true);
-        stationModelNode->goOnTrack();
+//        stationModelNode->goOnTrack();
         mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
         mSelectedModelNode->updateColors();
     }
@@ -380,7 +380,7 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
         }
         mSelectedModelNode = systemModelNode;
         systemModelNode->onLeftButtonClicked(true);
-        systemModelNode->goOnTrack();
+//        systemModelNode->goOnTrack();
         mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
         mSelectedModelNode->updateColors();
     }
@@ -431,22 +431,22 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
 {
 
     DefenseModelNode* modelNode = pick(event->x(), event->y());
-    if(modelNode)
+	if(modelNode)
     {
-        modelNode->mousePressEvent(event, true);
+		modelNode->mousePressEvent(event, true);
     }
-    if(mSelectedModelNode && mSelectedModelNode != modelNode)
+	if(mSelectedModelNode && mSelectedModelNode != modelNode)
         mSelectedModelNode->mousePressEvent(event, false);
-    if(modelNode)
+	if(modelNode)
         mSelectedModelNode = modelNode;
-    //--drag aircraft---------------------------------------
+	//--drag aircraft---------------------------------------
     if(event->button() == Qt::LeftButton)
     {
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
         if(aircraftModelNode)
         {
-            mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
-            mMapController->addNode(mDragAircraftModelNode);
+			mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
+			mMapController->addNode(mDragAircraftModelNode);
         }
     }
 

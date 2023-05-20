@@ -8,9 +8,9 @@ MeasureHeight::MeasureHeight(MapController *mapController)
     mHLine->setColor(osgEarth::Color::White);
     mVLine->setWidth(5);
     mHLine->setWidth(5);
-    mHLine->setShowLenght(false);
-    mHLine->setIsHeight(true);
-    mVLine->setShowLenght(false);
+	mHLine->setShowDistance(false);
+//    mHLine->setIsHeight(true);
+	mVLine->setShowDistance(false);
     mVLine->setPointVisible(false);
     mHLine->setPointVisible(false);
     addChild(mVLine);

@@ -181,7 +181,7 @@ void LinePropertiesModel::setShowLen(const bool &value){
         return;
     mShowLen = value;
     if(mLineNode){
-        mLineNode->setShowLenght(value);
+		mLineNode->setShowDistance(value);
     }
 }
 
@@ -235,13 +235,13 @@ void LinePropertiesModel::setLine(LineNode* linNode)
         mLineNode->setSmooth(mSmooth);
         mLineNode->setPointVisible(mVisible);
         mLineNode->setHeight(mHeight);
-        mLineNode->setShowLenght(mShowLen);
+		mLineNode->setShowDistance(mShowLen);
     }
     else if(mRuler == 1)
     {
         mLineNode->setPointVisible(false);
         mLineNode->setHeight(0);
-        mLineNode->setShowLenght(true);
+		mLineNode->setShowDistance(true);
     }
 
 }

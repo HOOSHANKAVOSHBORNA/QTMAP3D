@@ -121,11 +121,11 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
 
     updateOrCreateLabelImage();
-    mLabelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+    mStatusNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
 
-    getGeoTransform()->addChild(mLabelNode);
-    mLabelNode->setNodeMask(false);
-    mLabelNode->setPriority(10);
+    getGeoTransform()->addChild(mStatusNode);
+    mStatusNode->setNodeMask(false);
+    mStatusNode->setPriority(10);
 
     if(mIs3D)
     {
@@ -204,7 +204,7 @@ void StationModelNode::onLeftButtonClicked(bool val)
 
 void StationModelNode::frameEvent()
 {
-    mLabelNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+    mStatusNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 }
 
 void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)

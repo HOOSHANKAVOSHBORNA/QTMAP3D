@@ -85,6 +85,7 @@ void SystemDataManager::addAssignment(int systemNo, System::Assignment* assignme
         assignment->line->setPointWidth(5);
         assignment->line->setTessellation(15);
         assignment->line->setShowBearing(true);
+		assignment->line->setShowDistance(true);
         mDefenseModelLayer->mMapController->addNodeToLayer(assignment->line, SYSTEMS_LAYER_NAME);
 
         mSystemData[systemNo]->assignments.push_back(assignment);
@@ -92,6 +93,7 @@ void SystemDataManager::addAssignment(int systemNo, System::Assignment* assignme
         mSystemData[systemNo]->systemModelNode->assignmentChanged();
 
         emit assignmentChanged(systemNo);
+        emit infoChanged(systemNo);
     }
 }
 
@@ -129,6 +131,7 @@ void SystemDataManager::removeAssignment(int tn, int systemNo)
             mSystemData[systemNo]->systemModelNode->assignmentChanged();
 
             emit assignmentChanged(systemNo);
+            emit infoChanged(systemNo);
         }
     }
 }

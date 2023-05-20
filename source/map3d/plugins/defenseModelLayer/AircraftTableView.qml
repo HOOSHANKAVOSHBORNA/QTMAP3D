@@ -10,6 +10,7 @@ Item {
 
     signal filterTextChanged(string txt)
     signal aircraftDoubleClicked(int TN)
+    signal aircraftClicked(int TN)
     signal sortWithHeader(int column)
 
     property int hoveredIndex: -1
