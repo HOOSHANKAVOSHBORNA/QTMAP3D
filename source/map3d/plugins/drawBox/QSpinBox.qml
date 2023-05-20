@@ -8,16 +8,18 @@ Item {
 
     property var steps: [5000,1000,100,10,5,1,0.5,0.1,0.05,0.01,0.005,0.001]
     property int index: 5
-    property var value: 2000
+    property var value: 0
     property string secondaryColor: "orange"
-    property string btntxtColor   : "#cccccc"
+    property string btntxtColor   : "#c9c9c9"
     property string primaryColor   : "#424242"
-    property double showText   : value ? value : 0
+    property double showText
     property int    spinSpeed     : 30
     property int    decimals      : 0
     property double from          : -9999999999999
     property double to            : 9999999999999
-    property bool round: false
+    property bool round: true
+
+    onShowTextChanged: value = showText
 
     implicitHeight: 35
     implicitWidth: 200
@@ -47,7 +49,7 @@ Item {
 
         Rectangle{
             id: stepContainer
-            width: parent.width * 0.3 -4
+            width: parent.width * 0.35 -4
             height: parent.height -4
             x:2
             y:2
@@ -124,7 +126,7 @@ Item {
             id: spinnerContainer
             height: parent.height -2
             anchors.verticalCenter: parent.verticalCenter
-            width: parent.width * 0.7 -4
+            width: parent.width * 0.65 -4
             anchors.right: parent.right
 //            border.width: 1
 //            border.color: primaryColor
@@ -208,16 +210,25 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 clip: true
                 color: "transparent"
+                MouseArea{
+                    anchors.fill: parent
+                    cursorShape: "IBeamCursor"
+                }
+
                 TextInput {
                     id: input
-                    text: showText.toFixed(decimals)
-                    anchors.centerIn: parent
+                    text: value ? value.toFixed(decimals) : 0
+                    padding: 5
+                    anchors.fill: parent
                     color: primaryColor
                     selectByMouse: true
                     selectionColor: secondaryColor
-                    selectedTextColor: btntxtColor
+                    selectedTextColor: primaryColor
                     font.pointSize: parent.height *0.4
                     onTextEdited: value = text
+                    mouseSelectionMode: TextInput.SelectCharacters
+                    autoScroll: true
+
                 }
             }
         }

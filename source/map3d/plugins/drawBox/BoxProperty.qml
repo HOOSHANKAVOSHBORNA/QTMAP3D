@@ -30,6 +30,8 @@ Item {
 
 
 
+
+
     Item {
         id: dialog
         width: 250
@@ -248,6 +250,8 @@ Item {
                                                 decimals: 4
 //                                                step: 0.01
                                                 //                                                value: xLoc
+
+
                                                 showText:  boxProperties ? boxProperties.location.x  : 0
                                                 onValueChanged: {
                                                     boxProperties.location.x = value
