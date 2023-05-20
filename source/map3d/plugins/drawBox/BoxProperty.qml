@@ -71,7 +71,7 @@ Item {
                 id: frame
                 clip: true
                 anchors.top: header.bottom
-                padding: 5
+                padding: 10
                 width: parent.width
                 height: parent.height - header.height
                 //                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
@@ -84,6 +84,7 @@ Item {
                         color: "transparent"
                         anchors.fill: parent
 
+
                         /////////////////////// components Grid ////////////////////////////
                         GridLayout{
                             id: props
@@ -91,9 +92,10 @@ Item {
                             y: innerContainer.y +3
                             anchors.horizontalCenter: parent.horizontalCenter
                             columnSpacing: 0
-                            rowSpacing: 1
+                            rowSpacing: 2
                             columns:2
                             rows: 6
+
                             layoutDirection: Qt.RightToLeft
 
                             ////////////////////////////////////fill Color Property//////////////////////////////////
@@ -172,7 +174,7 @@ Item {
                                 color: "#404040"
                                 height: 35
                                 z:10
-                                //                                border.color: "#5f5f5f"
+                                                                //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
                                 QSpinBox {

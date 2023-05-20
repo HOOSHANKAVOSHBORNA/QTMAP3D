@@ -10,10 +10,10 @@ import QtQuick.Layouts 1.12
 Item {
     property double step: 1
     property double value
-    property double    showText      : value ? value : 0
-    property string secondaryColor: "orange"
-    property string primaryColor  : "#404040"
-    property string btntxtColor   : "#bbbbbb"
+    property double showText   : value ? value : 0
+    property string secondaryColor: "#ffb300"
+    property string primaryColor  : "#c9c9c9"
+    property string btntxtColor   : "#404040"
     property int    spinSpeed     : 50
     property int    decimals      : 3
     property double from          : 0
@@ -44,10 +44,14 @@ Item {
     Rectangle{
         id:mainHolder
         anchors.fill: parent
-        color: primaryColor
+        color: btntxtColor
         radius: 3
         border.color: btntxtColor
         border.width:  1
+
+
+
+
         Rectangle{
             id:stepContainer
             width: Math.min(btn.width/4 , btn.height -4 )
@@ -55,21 +59,23 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             //            anchors.left: parent.left
             x:2
-            color: primaryColor
+            color: btntxtColor
             radius: 3
+            border.color: primaryColor
+            border.width: 1
             ColumnLayout{
                 anchors.centerIn: parent
                 Text {
                     id:stepText
                     text: qsTr("STEP")
                     font.pixelSize: stepContainer.height/3
-                    color: btntxtColor
+                    color: primaryColor
                 }
                 Text {
                     id:stepSize
                     text: step.toString()
                     font.pixelSize: btn.height/4
-                    color: btntxtColor
+                    color: primaryColor
                 }
             }
             MouseArea{
@@ -84,7 +90,7 @@ Item {
                                 dropDownMenuTextclose.running = true
                             }
                 onEntered: stepText.color = secondaryColor
-                onExited: stepText.color = btntxtColor
+                onExited: stepText.color = primaryColor
             }
             Rectangle{
                 id: dropDownMenu
@@ -93,6 +99,15 @@ Item {
                 height: 0
                 anchors.top: parent.bottom
                 color: "transparent"
+
+                MouseArea{
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onExited: {
+                        closeStepAnimate.running = true
+                        dropDownMenuTextclose.running = true
+                    }
+                }
 
                 Grid{
                     anchors.margins: 1
@@ -122,8 +137,8 @@ Item {
                                 dropDownMenuTextclose.running = true
                             }
                             hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
+                            onEntered: kilo.color = secondaryColor
+                            onExited: kilo.color = btntxtColor
 
                         }
                     }
@@ -149,8 +164,8 @@ Item {
                                 dropDownMenuTextclose.running = true
                             }
                             hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
+                            onEntered: sad.color = secondaryColor
+                            onExited: sad.color = btntxtColor
                         }
                     }
                     Rectangle{
@@ -175,8 +190,8 @@ Item {
                                 dropDownMenuTextclose.running = true
                             }
                             hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
+                            onEntered: dah.color = secondaryColor
+                            onExited: dah.color = btntxtColor
                         }
                     }
                     Rectangle{
@@ -201,8 +216,8 @@ Item {
                                 dropDownMenuTextclose.running = true
                             }
                             hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
+                            onEntered: panj.color = secondaryColor
+                            onExited: panj.color = btntxtColor
                         }
                     }
                     Rectangle{
@@ -227,8 +242,8 @@ Item {
                                 dropDownMenuTextclose.running = true
                             }
                             hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
+                            onEntered: yek.color = secondaryColor
+                            onExited: yek.color = btntxtColor
                         }
                     }
                     Rectangle{
@@ -253,8 +268,8 @@ Item {
                                 dropDownMenuTextclose.running = true
                             }
                             hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
+                            onEntered: dahom.color = secondaryColor
+                            onExited: dahom.color = btntxtColor
                         }
                     }
                     Rectangle{
@@ -279,8 +294,8 @@ Item {
                                 dropDownMenuTextclose.running = true
                             }
                             hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
+                            onEntered: sadom.color = secondaryColor
+                            onExited: sadom.color = btntxtColor
                         }
                     }
                     Rectangle{
@@ -305,8 +320,8 @@ Item {
                                 dropDownMenuTextclose.running = true
                             }
                             hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
+                            onEntered: hezarom.color = secondaryColor
+                            onExited: hezarom.color = btntxtColor
                         }
                     }
                 }
@@ -332,17 +347,25 @@ Item {
             MouseArea{
                 cursorShape: "PointingHandCursor"
                 anchors.fill: parent
+                hoverEnabled: true
+                onEntered: {
+                    plusText.color = secondaryColor
+                }
+                onExited: {
+                    plusText.color = primaryColor
+                }
+
                 onPressed:  {
                     if(value < from){value = from}
                     else if(value > to){value = to}
                     else if(value >= from && value <to){
-                        plusText.color = secondaryColor
+                        plus.color = secondaryColor
                         value += step
                     }
                 }
                 onPressAndHold: timerUp.start();
                 onReleased: {
-                    plusText.color = primaryColor
+                    plus.color = btntxtColor
                     timerUp.stop();
                 }
             }
@@ -360,24 +383,31 @@ Item {
             Text {
                 id: minusText
                 text: qsTr("-")
-                color: "#525252"
+                color: primaryColor
                 font.pixelSize: minus.width*1.1
                 anchors.centerIn: parent
             }
             MouseArea{
                 cursorShape: "PointingHandCursor"
                 anchors.fill: parent
+                hoverEnabled: true
+                onEntered: {
+                    minusText.color = secondaryColor
+                }
+                onExited: {
+                    minusText.color = primaryColor
+                }
                 onPressed:  {
                     if(value < from){value = from}
                     else if(value > to){value = to}
                     else if(value > from && value <= to){
-                        minusText.color = secondaryColor
+                        minus.color = secondaryColor
                         value -= step
                     }
                 }
                 onPressAndHold: timerDown.start();
                 onReleased: {
-                    minusText.color = primaryColor
+                    minus.color = btntxtColor
                     timerDown.stop();
                 }
             }
