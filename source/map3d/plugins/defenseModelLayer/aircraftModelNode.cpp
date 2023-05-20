@@ -223,7 +223,6 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 	mRouteLine->setTessellation(10);
 	mRouteLine->setColor(osgEarth::Color::Purple);
 	mRouteLine->setWidth(5);
-	mRouteLine->setShowLenght(false);
 
 	mLatestPointLine = new LineNode(defenseModelLayer->mMapController);
 	mLatestPointLine->setPointVisible(true);
@@ -231,14 +230,12 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 	mLatestPointLine->setColor(osgEarth::Color::Purple);
 	mLatestPointLine->setWidth(5);
 	mLatestPointLine->setPointWidth(15);
-	mLatestPointLine->setShowLenght(false);
 	mLatestPointLine->setSmooth(true);
 
 	mTempLine = new LineNode(defenseModelLayer->mMapController);
 	mTempLine->setPointVisible(false);
 	mTempLine->setColor(osgEarth::Color::Purple);
 	mTempLine->setWidth(5);
-	mTempLine->setShowLenght(false);
 }
 
 void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)

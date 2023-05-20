@@ -33,6 +33,15 @@ LineNode::LineNode(MapController *mapController)
 	setStyle(pathStyle);
 	mLabelGroup = new osg::Group;
 	addChild(mLabelGroup);
+	mLabelGroup->setNodeMask(false);
+}
+
+LineNode::~LineNode()
+{
+	for(auto labelData: mVecLabelData){
+		if(labelData.qImage)
+			delete labelData.qImage;
+	}
 }
 
 void LineNode::addPoint(osgEarth::GeoPoint point)
@@ -219,15 +228,6 @@ void LineNode::setTessellation(const unsigned &tessellation)
 	addChild(mLabelGroup);
 }
 
-bool LineNode::getIsHeight() const
-{
-	return mIsHeight;
-}
-
-void LineNode::setIsHeight(bool value)
-{
-	mIsHeight = value;
-}
 //--------------------------------------------------------------
 bool LineNode::getPointVisible() const
 {
@@ -266,7 +266,7 @@ void LineNode::setShowBearing(const bool &bearing)
 		createOrUpdateLabelImg(data.image, data.lenght, data.bearing);
 		data.placeNode->setStyle(data.placeNode->getStyle());
 	}
-	if(!(mShowLenght||mShowBearing)){
+	if(!(mShowDistance||mShowBearing)){
 		mLabelGroup->setNodeMask(false);
 	}
 	else{
@@ -275,15 +275,15 @@ void LineNode::setShowBearing(const bool &bearing)
 
 }
 
-void LineNode::setShowLenght(const bool &show)
+void LineNode::setShowDistance(const bool &show)
 {
-	mShowLenght = show;
+	mShowDistance = show;
 	for(auto& data:mVecLabelData)
 	{
 		createOrUpdateLabelImg(data.image, data.lenght, data.bearing);
 		data.placeNode->setStyle(data.placeNode->getStyle());
 	}
-	if(!(mShowLenght||mShowBearing)){
+	if(!(mShowDistance||mShowBearing)){
 		mLabelGroup->setNodeMask(false);
 	}
 	else{
@@ -291,9 +291,9 @@ void LineNode::setShowLenght(const bool &show)
 	}
 }
 
-bool LineNode::getShowLenght() const
+bool LineNode::getShowDistance() const
 {
-	return  mShowLenght;
+	return  mShowDistance;
 }
 
 osgEarth::Color LineNode::getPointColor() const
@@ -352,17 +352,17 @@ void LineNode::setSmooth(bool smooth)
 //---------------------------------------------------------------
 QImage *LineNode::createOrUpdateLabelImg(osg::ref_ptr<osg::Image>& image, double lenght, double bearing)
 {
-	mHeightLbl = LABEL_IMAGE_HEIGHT;
-	mBeaPos = 8;
-	if (mShowLenght && mShowBearing){
-		mHeightLbl = LABEL_IMAGE_HEIGHT + 20 ;
-		mBeaPos = 30;
+	int imageHeight = LABEL_IMAGE_HEIGHT;
+	int bearingPos = 8;
+	if (mShowDistance && mShowBearing){
+		imageHeight = LABEL_IMAGE_HEIGHT + 20 ;
+		bearingPos = 30;
 	}
 
 
 	QImage* lblImage = new QImage(
 				LABEL_IMAGE_WIDTH,
-				mHeightLbl,
+				imageHeight,
 				QImage::Format_RGBA8888);
 
 //	QImage *lblImage = *qImage;
@@ -405,26 +405,27 @@ QImage *LineNode::createOrUpdateLabelImg(osg::ref_ptr<osg::Image>& image, double
 		painter.setPen(textPen);
 		painter.setFont(textFont);
 
-		if (mShowLenght){
+		if (mShowDistance){
 			if (lenght >= 1000){
 				lenght/=1000;
-				QString str = QObject::tr("%1 km").arg(lenght,0,'f',2);
-				painter.drawText(0, 10, LABEL_IMAGE_WIDTH, 15,
-								 Qt::AlignCenter|Qt::AlignVCenter,
+				QString str = QObject::tr("d: %1 km").arg(lenght,0,'f',2);
+				painter.drawText(4, 10, LABEL_IMAGE_WIDTH, 15,
+								 Qt::AlignLeft|Qt::AlignVCenter,
 								 str);
 			}
 			else{
-				QString str = QObject::tr("%1 m").arg(lenght,0,'f',2);
-				painter.drawText(0, 10, LABEL_IMAGE_WIDTH, 15,
-								 Qt::AlignCenter|Qt::AlignVCenter,
+				QString str = QObject::tr("d: %1 m").arg(lenght,0,'f',2);
+				painter.drawText(4, 10, LABEL_IMAGE_WIDTH, 15,
+								 Qt::AlignLeft|Qt::AlignVCenter,
 								 str);
 			}
 		}
 		if (mShowBearing){
-			QString bearStr= QString::number(bearing, 'f', 2);
-			painter.drawText(QRect(4, mBeaPos, LABEL_IMAGE_WIDTH, 15),
-							 Qt::AlignCenter|Qt::AlignVCenter,
-							 bearStr+"°");
+//			QString bearStr= QString::number(bearing, 'f', 2);
+			QString bearStr= QObject::tr("b: %1°").arg(bearing,0,'f',2);
+			painter.drawText(QRect(4, bearingPos, LABEL_IMAGE_WIDTH, 15),
+							 Qt::AlignLeft|Qt::AlignVCenter,
+							 bearStr);
 
 
 		}
@@ -444,7 +445,7 @@ QImage *LineNode::createOrUpdateLabelImg(osg::ref_ptr<osg::Image>& image, double
 
 
 	image->setImage(LABEL_IMAGE_WIDTH,
-				  mHeightLbl,
+				  imageHeight,
 				  1,
 				  GL_RGBA,
 				  GL_RGBA,
