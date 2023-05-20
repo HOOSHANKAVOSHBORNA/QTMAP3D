@@ -886,9 +886,9 @@ Item {
                                     Switch {
                                         id: visibleSwitch
                                         anchors.centerIn: parent
-                                        checked: true
+                                        checked: false
                                         onCheckedChanged:      if(visibleSwitch.checked === false){
-                                                                   smooth.opacity = 0.2;
+                                                                   smoothContainer.opacity = 0.2;
                                                                    smooth.enabled = false
                                                                    pointwidthValue.enabled = false;
                                                                    pointwidthContainer.opacity = 0.2
@@ -896,11 +896,12 @@ Item {
                                                                    pointColorSecR.opacity = 0.2
                                                                }else{
                                                                    smooth.enabled = true;
-                                                                   smooth.opacity = 1
+                                                                   smoothContainer.opacity = 1
                                                                    pointwidthValue.enabled = true;
                                                                    pointwidthContainer.opacity = 1
                                                                    pointcolorbtn.enabled = true
-                                                                   pointColorSecR.opacity = 1
+                                                                   pointColorSecR.opacity = 1;
+
                                                                }
 
                                         ToolTip {
@@ -963,6 +964,7 @@ Item {
                                     Layout.fillWidth: true
                                     color: "#404040"
                                     height: 35
+                                    opacity : 0.2;
                                     //                                border.color: "#5f5f5f"
                                     //                                border.width: 1
 
@@ -979,6 +981,7 @@ Item {
 
                                         MouseArea{
                                             id:pointcolorbtn
+                                            enabled: false
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: pointColorDialog.visible = true
@@ -1039,11 +1042,13 @@ Item {
                                     Layout.fillWidth: true
                                     color: "#404040"
                                     height: 30
+                                    opacity : 0.2;
                                     //                                border.color: "#5f5f5f"
                                     //                                border.width: 1
 
                                     SpinBox {
                                         id: pointwidthValue
+                                        enabled: false
                                         stepSize: 1
                                         value: 10
                                         to : 10000
@@ -1149,6 +1154,8 @@ Item {
                                     Layout.fillWidth: true
                                     color: "#404040"
                                     height: 30
+                                    opacity : 0.2;
+
                                     //                                border.color: "#5f5f5f"
                                     //                                border.width: 1
 
@@ -1156,6 +1163,8 @@ Item {
                                         id: smooth
                                         anchors.centerIn: parent
                                         checked: true
+                                        enabled: false
+
 
                                         ToolTip {
                                             parent: smooth
@@ -1255,7 +1264,7 @@ Item {
             tesselationContainerTitle.visible = true
             lineProperties.showLen = false
             lineProperties.bearing = false
-            lineProperties.visible = true
+            lineProperties.visible = false
             headerTitleSTR = "Line Properties"
         }
         else if(rulerCondition === 2){

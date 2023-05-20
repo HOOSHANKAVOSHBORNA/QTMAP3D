@@ -55,14 +55,20 @@ public:
     bool getSmooth() const;
     void setSmooth(bool Smooth);
 
+    bool getShowSlope() const;
+    void setShowSlope(bool showSlope);
+
 private:
-    void createOrUpdateLabelImg(QImage** qImage, osg::ref_ptr<osg::Image> &img, double lenght, double bearing);
+    void createOrUpdateLabelImg(QImage** qImage, osg::ref_ptr<osg::Image> &img,
+                                double lenght, double bearing, double slope);
     struct LabelData {
         QImage** qImage;
         osg::ref_ptr<osg::Image> img;
         double lenght;
         double bearing;
+        double slope;
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode;
+
     };
 
 private:
@@ -75,6 +81,7 @@ private:
     float mHeight{0};
     bool mShowBearing{false};
     bool mShowLenght{false};
+    bool mShowSlope{true};
     bool mPointVisible{false};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
@@ -85,11 +92,13 @@ private:
 
     //Lenght part
     osg::ref_ptr<osg::Group> mLabelGroup;
-    static constexpr int LABEL_IMAGE_WIDTH = 90;
+    static constexpr int LABEL_IMAGE_WIDTH = 100;
     static constexpr int LABEL_IMAGE_HEIGHT = 30;
     int mHeightLbl;
     bool mIsHeight{false};
     int mBeaPos;
+    int mSlopePos;
+    int mCount{0};
 };
 
 #endif // LINENODE_H

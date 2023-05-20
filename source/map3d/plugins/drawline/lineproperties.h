@@ -96,7 +96,7 @@ private:
     float                                             mPointwidth  = 10.00;
     unsigned                                          mTesselation =10.00;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp       = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
-    bool                                              mVisible     = true;
+    bool                                              mVisible     = false;
     bool                                              mSmooth      = true;
     bool                                              mShowLen     = false;
 
