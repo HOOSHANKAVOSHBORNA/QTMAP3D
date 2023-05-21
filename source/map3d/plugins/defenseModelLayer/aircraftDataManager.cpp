@@ -75,7 +75,7 @@ void AircraftDataManager::remove(int tn)
 {
     if(mAircraftData.contains(tn)){
         mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftData[tn]->modelNode, AIRCRAFTS_LAYER_NAME);
-
+		mDefenseModelLayer->modelNodeDeleted(mAircraftData[tn]->modelNode);
         delete mAircraftData[tn];
         mAircraftData.remove(tn);
 //        mAircraftTableModel->updateTable(tn);

@@ -62,7 +62,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 	//                mAircrafAssignment.remove(mAircrafts.first().TN);
 			}
 		});
-		timerClearAircraft->start(20000);
+		timerClearAircraft->start(30000);
 	//--assignment -----------------------------------------------------------------------------------------
 	//--add assignment------------------------------------
 	QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){

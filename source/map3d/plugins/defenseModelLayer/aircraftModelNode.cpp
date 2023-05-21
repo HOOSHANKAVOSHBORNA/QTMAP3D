@@ -242,11 +242,14 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 
 AircraftModelNode::~AircraftModelNode()
 {
-	mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+//	qDebug()<<"~tn"<<mData->info.TN;
+//	mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
 
 	mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
 	mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
 	mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+
+	delete mRenderStatusImage;
 }
 
 void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)
@@ -360,7 +363,7 @@ void AircraftModelNode::setSelectionMode(SelectionMode sm)
 	}
 	else
 	{
-		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+//		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
 		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
 		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
 		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
@@ -616,13 +619,12 @@ void AircraftModelNode::removeEffect()
 
 void AircraftModelNode::updateOrCreateStatusImage()
 {
-	int txtLeft = 5;
-	int txtTop = 0;
+	int txtLeftPos = 5;
+	int txtTopPos = 0;
 //	int txtWidth = 30;
 	int txtHeight = 22;
-	int naEachRow = 1;
 
-	int height = LABEL_IMAGE_HEIGHT + ((mData->assignments.count())/naEachRow) * txtHeight;
+	int height = LABEL_IMAGE_HEIGHT + ((mData->assignments.count())) * txtHeight;
 	//qDebug()<<"hight:"<<height;
 	if (!mRenderStatusImage) {
 		mRenderStatusImage = new QImage(
@@ -687,106 +689,125 @@ void AircraftModelNode::updateOrCreateStatusImage()
 						 Qt::AlignCenter,
 						 QString::number(mData->info.TN));
 		//-------------------------------------------------------------
-		txtTop += txtHeight;
+		txtTopPos += txtHeight;
 		painter.setPen(textPen);
 		painter.setFont(textFont);
-		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
+		painter.drawText(QRect(txtLeftPos, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "CallSign:");
-		painter.drawText(QRect(txtLeft + LABEL_IMAGE_WIDTH/2, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
+		painter.drawText(QRect(txtLeftPos + LABEL_IMAGE_WIDTH/2, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 mData->info.CallSign);
 
 
-		txtTop += txtHeight;
-		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
+		txtTopPos += txtHeight;
+		painter.drawText(QRect(txtLeftPos, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "IFFCode:");
-		painter.drawText(QRect(txtLeft + LABEL_IMAGE_WIDTH/2, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
+		painter.drawText(QRect(txtLeftPos + LABEL_IMAGE_WIDTH/2, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 mData->info.IFFCode);
 
 
-		txtTop += txtHeight;
-		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
+		txtTopPos += txtHeight;
+		painter.drawText(QRect(txtLeftPos, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "M-Radar:");
-		painter.drawText(QRect(txtLeft + LABEL_IMAGE_WIDTH/2, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
+		painter.drawText(QRect(txtLeftPos + LABEL_IMAGE_WIDTH/2, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 mData->info.MasterRadar);
 
-		txtTop += txtHeight;
-		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
+		txtTopPos += txtHeight;
+		painter.drawText(QRect(txtLeftPos, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "I-Method:");
-		painter.drawText(QRect(txtLeft + LABEL_IMAGE_WIDTH/2, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
+		painter.drawText(QRect(txtLeftPos + LABEL_IMAGE_WIDTH/2, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 mData->info.IdentificationMethod);
 		//---------------------------------------------------------
-		txtTop += txtHeight;
+		txtTopPos += txtHeight;
 
 		painter.setPen(linePen);
 		painter.setBrush(Qt::NoBrush);
-		painter.drawLine(0, txtTop, LABEL_IMAGE_WIDTH, txtTop);
+		painter.drawLine(0, txtTopPos, LABEL_IMAGE_WIDTH, txtTopPos);
 
 		painter.setPen(textPen);
 
-		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
+		painter.drawText(QRect(txtLeftPos, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "Assignments:");
 
-		txtTop += txtHeight;
-		int h = txtTop;
-		const QFontMetrics fm(textFont);
-		int n = 0;
-		while (n < mData->assignments.count()) {
+		txtTopPos += txtHeight;
+		for(auto assignment: mData->assignments){
 
-			int indent = 0;
-			for (int llidx = 0; llidx < naEachRow; llidx++)// two elements per line
-			{
+			textPen.setColor(QColor(255,255,255));
+			painter.setPen(textPen);
 
-				if (n >= mData->assignments.count())
-					break;
+			painter.drawText(QRect(txtLeftPos , txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
+							 Qt::AlignLeft | Qt::AlignVCenter,
+							 assignment->info->systemInfo.Name + ": ");
 
-				auto val = mData->assignments.at(n);
+			textPen.setColor(assignment->info->systemCombatInfo.phaseToColor());
+			painter.setPen(textPen);
 
-				const QString ss = /*(llidx == 0 ? "(" : ", (")*/
-						/*+*/ val->info->systemInfo.Name
-						+ ": ";
-				const QString cc = QString(val->info->systemCombatInfo.phaseToString());
-//				const QString ee = ".";
+			painter.drawText(QRect(txtLeftPos + LABEL_IMAGE_WIDTH/2, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
+							 Qt::AlignLeft | Qt::AlignVCenter,
+							 assignment->info->systemCombatInfo.phaseToString());
 
-				textPen.setColor(QColor(255,255,255));
-				painter.setPen(textPen);
+			textPen.setColor(QColor(255,255,255));
+			txtTopPos += txtHeight;
+		}
+//		int h = txtTop;
+//		const QFontMetrics fm(textFont);
+//		int n = 0;
+//		while (n < mData->assignments.count()) {
 
-				painter.drawText(QRect(txtLeft + indent, h, LABEL_IMAGE_WIDTH, txtHeight),
-								 Qt::AlignLeft | Qt::AlignVCenter,
-								 ss);
-				indent += fm.boundingRect(ss).width();
-				indent += 3;
+//			int indent = 0;
+//			for (int llidx = 0; llidx < naEachRow; llidx++)// two elements per line
+//			{
 
-				textPen.setColor(val->info->systemCombatInfo.phaseToColor());
-				painter.setPen(textPen);
+//				if (n >= mData->assignments.count())
+//					break;
 
-				painter.drawText(QRect(txtLeft + indent, h, LABEL_IMAGE_WIDTH, txtHeight),
-								 Qt::AlignLeft | Qt::AlignVCenter,
-								 cc);
-				indent += fm.boundingRect(cc).width();
+//				auto val = mData->assignments.at(n);
 
-				textPen.setColor(QColor(255,255,255));
+//				const QString ss = /*(llidx == 0 ? "(" : ", (")*/
+//						/*+*/ val->info->systemInfo.Name
+//						+ ": ";
+//				const QString cc = QString(val->info->systemCombatInfo.phaseToString());
+////				const QString ee = ".";
+
+//				textPen.setColor(QColor(255,255,255));
 //				painter.setPen(textPen);
 
 //				painter.drawText(QRect(txtLeft + indent, h, LABEL_IMAGE_WIDTH, txtHeight),
 //								 Qt::AlignLeft | Qt::AlignVCenter,
-//								 ee);
-//				indent += fm.boundingRect(ee).width();
+//								 ss);
+//				indent += fm.boundingRect(ss).width();
+//				indent += 3;
+
+//				textPen.setColor(val->info->systemCombatInfo.phaseToColor());
+//				painter.setPen(textPen);
+
+//				painter.drawText(QRect(txtLeft + indent, h, LABEL_IMAGE_WIDTH, txtHeight),
+//								 Qt::AlignLeft | Qt::AlignVCenter,
+//								 cc);
+//				indent += fm.boundingRect(cc).width();
+
+//				textPen.setColor(QColor(255,255,255));
+////				painter.setPen(textPen);
+
+////				painter.drawText(QRect(txtLeft + indent, h, LABEL_IMAGE_WIDTH, txtHeight),
+////								 Qt::AlignLeft | Qt::AlignVCenter,
+////								 ee);
+////				indent += fm.boundingRect(ee).width();
 
 
-				n++;
-			}
+//				n++;
+//			}
 
-			h += txtHeight;
-		}
+//			h += txtHeight;
+//		}
 
 
 	}
