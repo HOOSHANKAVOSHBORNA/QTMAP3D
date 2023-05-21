@@ -257,6 +257,22 @@ void LinePropertiesModel::setMeasureHeight(MeasureHeight *measureHeight)
     mMeasureHeight->setWidth(mWidth);
 }
 
+bool LinePropertiesModel::getShowSlope() const
+{
+    return mShowSlope;
+}
+
+void LinePropertiesModel::setShowSlope(bool showSlope)
+{
+    if (showSlope == mShowSlope){
+        return;
+    }
+    mShowSlope = showSlope;
+    if(mLineNode){
+        mLineNode->setShowSlope(showSlope);
+    }
+}
+
 LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):
     QObject(parent),
     mQmlEngine(engine),
