@@ -10,7 +10,7 @@
 #include <osg/Material>
 #include <osgFX/Outline>
 
-const osg::Node::NodeMask NODE_MASK = 0x00000001;
+//const osg::Node::NodeMask NODE_MASK = 0x00000001;
 
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
@@ -131,10 +131,10 @@ DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent)
     mSelectedNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
     getGeoTransform()->addChild(mSelectedNode);
 
-    QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
-        if(mStatusNode)
-            this->mStatusNode->setNodeMask(this->mHoverMode == HOVERED);
-    });
+//    QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
+//        if(mStatusNode)
+//            this->mStatusNode->setNodeMask(this->mHoverMode == HOVERED);
+//    });
 }
 
 QString DefenseModelNode::getType() const
@@ -375,8 +375,9 @@ void DefenseModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
 {
     if (mSelectionMode != sm) {
         mSelectionMode = sm;
-        emit selectionModeChanged();
+		//emit selectionModeChanged();
         mSelectedNode->setNodeMask(sm);
+		updateColors();
     }
 }
 
@@ -384,17 +385,21 @@ void DefenseModelNode::setHoverMode(DefenseModelNode::HoverMode hm)
 {
     if (mHoverMode != hm) {
         mHoverMode = hm;
-        emit hoverModeChanged();
+		//emit hoverModeChanged();
+		if(mStatusNode.valid())
+			mStatusNode->setNodeMask(mHoverMode == HOVERED);
+		updateColors();
     }
 }
 
 void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
 {
-    //if(event->button() != Qt::MiddleButton)
-        //select(onModel);
-
-    setSelectionMode(onModel ? SELECTED : UNSELECTED);
-    updateColors();
+	if(event->button() == Qt::LeftButton)
+	{
+		setSelectionMode(onModel ? SELECTED : UNSELECTED);
+		if(onModel)
+			event->accept();
+	}
 }
 
 void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
@@ -405,7 +410,6 @@ void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
     //}
 
     setHoverMode(onModel ? HOVERED : UNHOVERED);
-    updateColors();
 }
 //void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
 //{

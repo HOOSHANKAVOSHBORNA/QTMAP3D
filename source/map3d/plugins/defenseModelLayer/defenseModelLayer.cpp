@@ -215,7 +215,21 @@ bool DefenseModelLayer::setup(MapController *mapController,
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
 //    auto listManager = new ListManager(mQmlEngine, mUIHandle, this);
-    mDataManager = new DataManager(defenseDataManager, this);
+	mDataManager = new DataManager(defenseDataManager, this);
+}
+
+void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
+{
+	QMouseEvent* event = new QMouseEvent(QEvent::Type::Enter, QPointF(0,0), Qt::MouseButton::LeftButton,
+										 Qt::MouseButton::LeftButton, Qt::KeyboardModifier::NoModifier);
+	if(defenseModelNode)
+	{
+		defenseModelNode->mousePressEvent(event, true);
+	}
+	if(mSelectedModelNode && mSelectedModelNode != defenseModelNode)
+		mSelectedModelNode->mousePressEvent(event, false);
+	if(defenseModelNode)
+		mSelectedModelNode = defenseModelNode;
 }
 
 //void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
@@ -341,50 +355,50 @@ void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataMan
 //    return nullptr;
 //}
 
-void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
-{
-    AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(defenseModelNode);
-    if(aircraftModelNode){
-        if(mSelectedModelNode) {
-            //mSelectedModelNode->select(false);
-            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
-            mSelectedModelNode->updateColors();
-        }
-        mSelectedModelNode = aircraftModelNode;
-        aircraftModelNode->onLeftButtonClicked(true);
-//        aircraftModelNode->goOnTrack();
-        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
-        mSelectedModelNode->updateColors();
-    }
+//void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
+//{
+//    AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(defenseModelNode);
+//    if(aircraftModelNode){
+//        if(mSelectedModelNode) {
+//            //mSelectedModelNode->select(false);
+//            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
+//            mSelectedModelNode->updateColors();
+//        }
+//        mSelectedModelNode = aircraftModelNode;
+//        aircraftModelNode->onLeftButtonClicked(true);
+////        aircraftModelNode->goOnTrack();
+//        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+//        mSelectedModelNode->updateColors();
+//    }
 
-    StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(defenseModelNode);
-    if(stationModelNode){
-        if(mSelectedModelNode) {
-            //mSelectedModelNode->select(false);
-            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
-            mSelectedModelNode->updateColors();
-        }
-        mSelectedModelNode = stationModelNode;
-        stationModelNode->onLeftButtonClicked(true);
-//        stationModelNode->goOnTrack();
-        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
-        mSelectedModelNode->updateColors();
-    }
+//    StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(defenseModelNode);
+//    if(stationModelNode){
+//        if(mSelectedModelNode) {
+//            //mSelectedModelNode->select(false);
+//            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
+//            mSelectedModelNode->updateColors();
+//        }
+//        mSelectedModelNode = stationModelNode;
+//        stationModelNode->onLeftButtonClicked(true);
+////        stationModelNode->goOnTrack();
+//        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+//        mSelectedModelNode->updateColors();
+//    }
 
-    SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(defenseModelNode);
-    if(systemModelNode){
-        if(mSelectedModelNode) {
-            //mSelectedModelNode->select(false);
-            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
-            mSelectedModelNode->updateColors();
-        }
-        mSelectedModelNode = systemModelNode;
-        systemModelNode->onLeftButtonClicked(true);
-//        systemModelNode->goOnTrack();
-        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
-        mSelectedModelNode->updateColors();
-    }
-}
+//    SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(defenseModelNode);
+//    if(systemModelNode){
+//        if(mSelectedModelNode) {
+//            //mSelectedModelNode->select(false);
+//            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
+//            mSelectedModelNode->updateColors();
+//        }
+//        mSelectedModelNode = systemModelNode;
+//        systemModelNode->onLeftButtonClicked(true);
+////        systemModelNode->goOnTrack();
+//        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+//        mSelectedModelNode->updateColors();
+//    }
+//}
 
 //void DefenseModelLayer::clearAircraft(int tn)
 //{
