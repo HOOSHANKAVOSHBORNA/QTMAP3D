@@ -14,7 +14,7 @@ Item {
     property LineProperties lineProperties
     property int rulerCondition : lineProperties.ruler
     property string headerTitleSTR: "Line Properties"
-    property string lColor: "#91001d"
+    property string lColor: "#000000"
     property string pColor: "#001191"
 
 
@@ -849,7 +849,83 @@ Item {
                                     x:7
                                 }
                             }
+
+
+                        /////////////////////////////////////////////////////showslop//////////////////////////////////////////////////
+                        Rectangle{
+                            id: slopeContainer
+                            Layout.fillWidth: true
+                            color: "#404040"
+                            height: 30
+                            //                                border.color: "#5f5f5f"
+                            //                                border.width: 1
+
+                            Switch {
+                                id: slope
+                                anchors.centerIn: parent
+                                checked: false
+
+                                ToolTip {
+                                    parent: slope
+                                    y: slope.y + slope.height
+                                    Text{
+                                        text: slope.checked ? "Click to deactive" : "Click to active"
+                                        color: "white"
+                                    }
+
+                                    background: Rectangle {
+                                        color: "#404040"
+                                        radius: 4
+                                    }
+
+                                    visible:  slope.hovered
+                                }
+                                onToggled: function() {
+//                                        lineProperties.showLen = len.checked
+                                    lineProperties.showSlope = slope.checked
+                                }
+
+                                Layout.alignment: Qt.AlignRight
+                                indicator: Rectangle {
+                                    implicitWidth: 70
+                                    implicitHeight: 20
+                                    x: slope.leftPadding
+                                    y: parent.height / 2 - height / 2
+                                    radius: 13
+                                    color: slope.checked ? "#3f9173" : "#383838"
+                                    border.color: slope.checked ? "#17a81a" : "#a8171a"
+
+                                    Rectangle {
+                                        x: slope.checked ? parent.width - width : 0
+                                        width: 20
+                                        height: 20
+                                        radius: 13
+                                        color: slope.down ? "#cccccc" : "#ffffff"
+                                        border.color: slope.checked ? (slope.down ? "#17a81a" : "#21be2b") : "#999999"
+                                    }
+                                }
+                            }
                         }
+
+
+
+                        Rectangle{
+                            id:slopeContainerTitle
+                            Layout.fillWidth: true
+                            color: "#404040"
+                            height: 30
+                            //                                border.color: "#5f5f5f"
+                            //                                border.width: 1
+
+                            Text {
+                                text: qsTr("Show Slope:")
+                                font.pointSize: 10
+                                color: "white"
+                                anchors.verticalCenter:  parent.verticalCenter
+                                x:7
+                            }
+                        }
+}
 
                         GroupBox{
                             id: pointGroup
@@ -886,9 +962,9 @@ Item {
                                     Switch {
                                         id: visibleSwitch
                                         anchors.centerIn: parent
-                                        checked: true
+                                        checked: false
                                         onCheckedChanged:      if(visibleSwitch.checked === false){
-                                                                   smooth.opacity = 0.2;
+                                                                   smoothContainer.opacity = 0.2;
                                                                    smooth.enabled = false
                                                                    pointwidthValue.enabled = false;
                                                                    pointwidthContainer.opacity = 0.2
@@ -896,11 +972,12 @@ Item {
                                                                    pointColorSecR.opacity = 0.2
                                                                }else{
                                                                    smooth.enabled = true;
-                                                                   smooth.opacity = 1
+                                                                   smoothContainer.opacity = 1
                                                                    pointwidthValue.enabled = true;
                                                                    pointwidthContainer.opacity = 1
                                                                    pointcolorbtn.enabled = true
-                                                                   pointColorSecR.opacity = 1
+                                                                   pointColorSecR.opacity = 1;
+
                                                                }
 
                                         ToolTip {
@@ -963,6 +1040,7 @@ Item {
                                     Layout.fillWidth: true
                                     color: "#404040"
                                     height: 35
+                                    opacity : 0.2;
                                     //                                border.color: "#5f5f5f"
                                     //                                border.width: 1
 
@@ -979,6 +1057,7 @@ Item {
 
                                         MouseArea{
                                             id:pointcolorbtn
+                                            enabled: false
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: pointColorDialog.visible = true
@@ -1039,11 +1118,13 @@ Item {
                                     Layout.fillWidth: true
                                     color: "#404040"
                                     height: 30
+                                    opacity : 0.2;
                                     //                                border.color: "#5f5f5f"
                                     //                                border.width: 1
 
                                     SpinBox {
                                         id: pointwidthValue
+                                        enabled: false
                                         stepSize: 1
                                         value: 10
                                         to : 10000
@@ -1149,6 +1230,8 @@ Item {
                                     Layout.fillWidth: true
                                     color: "#404040"
                                     height: 30
+                                    opacity : 0.2;
+
                                     //                                border.color: "#5f5f5f"
                                     //                                border.width: 1
 
@@ -1156,6 +1239,8 @@ Item {
                                         id: smooth
                                         anchors.centerIn: parent
                                         checked: true
+                                        enabled: false
+
 
                                         ToolTip {
                                             parent: smooth
@@ -1255,7 +1340,7 @@ Item {
             tesselationContainerTitle.visible = true
             lineProperties.showLen = false
             lineProperties.bearing = false
-            lineProperties.visible = true
+            lineProperties.visible = false
             headerTitleSTR = "Line Properties"
         }
         else if(rulerCondition === 2){

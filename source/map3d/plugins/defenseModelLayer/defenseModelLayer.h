@@ -51,8 +51,9 @@ public:
 //    SystemModelNode *getSystemModelNode(int number)const;
 //    AircraftModelNode *getAircraftModelNode(int tn) const;
 //    StationModelNode *getStationModelNode(int number) const;
-    void selectModelNode(DefenseModelNode* defenseModelNode);
+//    void selectModelNode(DefenseModelNode* defenseModelNode);
     //void clearAircraft(int tn);
+	void selectModelNode(DefenseModelNode* defenseModelNode);
 public slots:
     void onMapClear();
 

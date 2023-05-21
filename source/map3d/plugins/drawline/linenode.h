@@ -45,22 +45,28 @@ public:
     void setShowDistance(const bool &show);
     bool getShowDistance() const;
 
+    bool getSmooth() const;
+    void setSmooth(bool Smooth);
+
     osgEarth::Color getPointColor() const;
     void setPointColor(const osgEarth::Color &pointColor);
 
     float getPointWidth() const;
     void setPointWidth(float pointWidth);
 
-    bool getSmooth() const;
-    void setSmooth(bool Smooth);
+    bool getShowSlope() const;
+    void setShowSlope(bool showSlope);
 
 private:
-    QImage *createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double lenght, double bearing);
+
+    QImage *createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double lenght, double bearing, double slope);
+
     struct LabelData {
         QImage *qImage{nullptr};
         osg::ref_ptr<osg::Image> image;
         double lenght;
         double bearing;
+        double slope;
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode;
         //		LabelData() = default;
         //		LabelData(const LabelData& source){
@@ -94,6 +100,7 @@ private:
         //				qImage = nullptr;
         //			}
         //		}
+
     };
 
 private:
@@ -105,7 +112,9 @@ private:
     float mPointWidth{5};
     float mHeight{0};
     bool mShowBearing{false};
+    bool mShowSlope{false};
     bool mShowDistance{false};
+
     bool mPointVisible{false};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     unsigned mTessellation{1};
@@ -114,7 +123,9 @@ private:
     //Lenght part
     osg::ref_ptr<osg::Group> mLabelGroup;
     static constexpr int LABEL_IMAGE_WIDTH = 100;
-    static constexpr int LABEL_IMAGE_HEIGHT = 30;
+    static constexpr int LABEL_IMAGE_HEIGHT = 27;
+    int mCount{0};
+
 };
 
 #endif // LINENODE_H

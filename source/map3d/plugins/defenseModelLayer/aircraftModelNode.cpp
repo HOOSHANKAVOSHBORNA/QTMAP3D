@@ -236,6 +236,17 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 	mTempLine->setPointVisible(false);
 	mTempLine->setColor(osgEarth::Color::Purple);
 	mTempLine->setWidth(5);
+
+	onRouteButtonToggled(true);
+}
+
+AircraftModelNode::~AircraftModelNode()
+{
+	mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+
+	mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+	mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+	mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
 }
 
 void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)
@@ -321,8 +332,8 @@ void AircraftModelNode::dataChanged()
 		mIdentification = mData->info.Identification;
 		updateOrCreateNodes();
 	}
-	if(mAircraftinformation)
-		mAircraftinformation->updateAircraft();
+	if(mAircraftInfoItem)
+		mAircraftInfoItem->updateAircraft();
 
 	updateOrCreateStatusImage();
 	mStatusNode->setStyle(mStatusNode->getStyle()); // force PlaceNode to recreate texture
@@ -333,16 +344,17 @@ const Aircraft::Data& AircraftModelNode::getData() const
 	return *mData;
 }
 
-void AircraftModelNode::goOnTrack()
-{
-	mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform());
-}
+//void AircraftModelNode::select()
+//{
+//	setSelectionMode(SELECTED);
+//	double range = mDefenseModelLayer->mMapController->getViewpoint().range()->getValue();
+//	mDefenseModelLayer->mMapController->goToPosition(getPosition(), range, 0);
+//}
 
-void AircraftModelNode::onLeftButtonClicked(bool val)
+void AircraftModelNode::setSelectionMode(SelectionMode sm)
 {
-	//select(val);
-	updateColors();
-	if(val)
+	DefenseModelNode::setSelectionMode(sm);
+	if(sm == SELECTED)
 	{
 		showInfoWidget();
 	}
@@ -352,8 +364,8 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
 		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
 		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
 		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
-		if(mAircraftinformation)
-			mAircraftinformation->setTrackOff();
+		if(mAircraftInfoItem)
+			mAircraftInfoItem->setTrackOff();
 	}
 	if(mCurrentContextMenu){
 		mCurrentContextMenu->hideMenu();
@@ -389,12 +401,12 @@ void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
 
 	DefenseModelNode::mousePressEvent(event, onModel);
-	if(event->button() == Qt::LeftButton)
-	{
-		onLeftButtonClicked(onModel);
-		if(onModel)
-			event->accept();
-	}
+//	if(event->button() == Qt::LeftButton)
+//	{
+//		onLeftButtonClicked(onModel);
+//		if(onModel)
+//			event->accept();
+//	}
 	if(event->button() == Qt::RightButton) {
 		mCurrentContextMenu = new ContextMenu(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, this);
 		for(auto detectSystem: mData->info.DetectionSystems)
@@ -563,15 +575,15 @@ void AircraftModelNode::updateOrCreateNodes()
 
 void AircraftModelNode::showInfoWidget()
 {
-	if (!mAircraftinformation)
+	if (!mAircraftInfoItem)
 	{
-		mAircraftinformation = new AircraftInfoItem(mDefenseModelLayer, *mData, this);
-		connect(mAircraftinformation->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
-		connect(mAircraftinformation->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
-		connect(mAircraftinformation->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
-		connect(mAircraftinformation->getInfo(), &AircraftInfoModel::latestPointsClicked, this, &AircraftModelNode::onLatestPointsToggled);
+		mAircraftInfoItem = new AircraftInfoItem(mDefenseModelLayer, *mData, this);
+		connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
+		connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
+		connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
+		connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::latestPointsClicked, this, &AircraftModelNode::onLatestPointsToggled);
 	}
-	mAircraftinformation->show();
+	mAircraftInfoItem->show();
 }
 
 void AircraftModelNode::addEffect(double emitterDuration)
@@ -604,7 +616,13 @@ void AircraftModelNode::removeEffect()
 
 void AircraftModelNode::updateOrCreateStatusImage()
 {
-	int height = LABEL_IMAGE_HEIGHT + ((mData->assignments.count()+1)/2) * 30;
+	int txtLeft = 5;
+	int txtTop = 0;
+//	int txtWidth = 30;
+	int txtHeight = 22;
+	int naEachRow = 1;
+
+	int height = LABEL_IMAGE_HEIGHT + ((mData->assignments.count())/naEachRow) * txtHeight;
 	//qDebug()<<"hight:"<<height;
 	if (!mRenderStatusImage) {
 		mRenderStatusImage = new QImage(
@@ -634,8 +652,10 @@ void AircraftModelNode::updateOrCreateStatusImage()
 
 		static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
 
-		static const QFont textFont("SourceSansPro", 12, QFont::Normal);
+		static const QFont textFont("SourceSansPro", 10, QFont::Normal);
+		static const QFont textFontBold("SourceSansPro", 10, QFont::Bold);
 		static QPen  textPen(QColor(255, 255, 255));
+		static QPen  textPenYellow(QColor(204, 204, 51, 255));
 
 		painter.setPen(Qt::NoPen);
 		painter.setBrush(backgroundBrush);
@@ -645,7 +665,7 @@ void AircraftModelNode::updateOrCreateStatusImage()
 					8,8);
 		painter.setBrush(QBrush(QColor(26, 77, 46, int(255 * 0.2f))));
 		painter.drawRoundedRect(
-					QRect(0, 0, LABEL_IMAGE_WIDTH, 35),
+					QRect(0, 0, LABEL_IMAGE_WIDTH, txtHeight),
 					8,8);
 		//------------------------------------------------------------
 		static const QPen linePen(QColor(255, 255, 255),
@@ -655,69 +675,74 @@ void AircraftModelNode::updateOrCreateStatusImage()
 
 		painter.setPen(linePen);
 		painter.setBrush(Qt::NoBrush);
-		painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
-		painter.drawLine(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 35);
+		painter.drawLine(0, txtHeight, LABEL_IMAGE_WIDTH, txtHeight);
+		painter.drawLine(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, txtHeight);
 
-		painter.setPen(textPen);
-		painter.setFont(textFont);
-		painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, 30),
+		painter.setPen(textPenYellow);
+		painter.setFont(textFontBold);
+		painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignCenter,
 						 mData->info.aircraftTypeToString());
-		painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignCenter,
 						 QString::number(mData->info.TN));
 		//-------------------------------------------------------------
-
+		txtTop += txtHeight;
 		painter.setPen(textPen);
 		painter.setFont(textFont);
-		painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "CallSign:");
-		painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 40, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(txtLeft + LABEL_IMAGE_WIDTH/2, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 mData->info.CallSign);
 
 
-		painter.drawText(QRect(10, 70, LABEL_IMAGE_WIDTH/2, 30),
+		txtTop += txtHeight;
+		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "IFFCode:");
-		painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 70, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(txtLeft + LABEL_IMAGE_WIDTH/2, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 mData->info.IFFCode);
 
 
-		painter.drawText(QRect(10, 100, LABEL_IMAGE_WIDTH/2, 30),
+		txtTop += txtHeight;
+		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "M-Radar:");
-		painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 100, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(txtLeft + LABEL_IMAGE_WIDTH/2, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 mData->info.MasterRadar);
 
-		painter.drawText(QRect(10, 130, LABEL_IMAGE_WIDTH/2, 30),
+		txtTop += txtHeight;
+		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "I-Method:");
-		painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 130, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(txtLeft + LABEL_IMAGE_WIDTH/2, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 mData->info.IdentificationMethod);
 		//---------------------------------------------------------
+		txtTop += txtHeight;
 
 		painter.setPen(linePen);
 		painter.setBrush(Qt::NoBrush);
-		painter.drawLine(0, 165, LABEL_IMAGE_WIDTH, 165);
+		painter.drawLine(0, txtTop, LABEL_IMAGE_WIDTH, txtTop);
 
 		painter.setPen(textPen);
 
-		painter.drawText(QRect(10, 170, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(txtLeft, txtTop, LABEL_IMAGE_WIDTH/2, txtHeight),
 						 Qt::AlignLeft | Qt::AlignVCenter,
 						 "Assignments:");
 
-		int h = 200;
+		txtTop += txtHeight;
+		int h = txtTop;
 		const QFontMetrics fm(textFont);
 		int n = 0;
 		while (n < mData->assignments.count()) {
 
 			int indent = 0;
-			for (int llidx = 0; llidx < 2; llidx++)// two elements per line
+			for (int llidx = 0; llidx < naEachRow; llidx++)// two elements per line
 			{
 
 				if (n >= mData->assignments.count())
@@ -725,41 +750,42 @@ void AircraftModelNode::updateOrCreateStatusImage()
 
 				auto val = mData->assignments.at(n);
 
-				const QString ss = (llidx == 0 ? QStringLiteral("(") : QStringLiteral(", ("))
-						+ QString::number(val->info->systemInfo.Number)
-						+ QStringLiteral(", ");
-				const QString cc = QString(val->info->systemCombatInfo.phaseToString()[0]);
-				const QString ee = QStringLiteral(")");
+				const QString ss = /*(llidx == 0 ? "(" : ", (")*/
+						/*+*/ val->info->systemInfo.Name
+						+ ": ";
+				const QString cc = QString(val->info->systemCombatInfo.phaseToString());
+//				const QString ee = ".";
 
 				textPen.setColor(QColor(255,255,255));
 				painter.setPen(textPen);
 
-				painter.drawText(QRect(10 + indent, h, LABEL_IMAGE_WIDTH, 30),
+				painter.drawText(QRect(txtLeft + indent, h, LABEL_IMAGE_WIDTH, txtHeight),
 								 Qt::AlignLeft | Qt::AlignVCenter,
 								 ss);
 				indent += fm.boundingRect(ss).width();
+				indent += 3;
 
-				//                textPen.setColor(val->getSystemCombatInfo().phaseToColor());
+				textPen.setColor(val->info->systemCombatInfo.phaseToColor());
 				painter.setPen(textPen);
 
-				painter.drawText(QRect(10 + indent, h, LABEL_IMAGE_WIDTH, 30),
+				painter.drawText(QRect(txtLeft + indent, h, LABEL_IMAGE_WIDTH, txtHeight),
 								 Qt::AlignLeft | Qt::AlignVCenter,
 								 cc);
 				indent += fm.boundingRect(cc).width();
 
 				textPen.setColor(QColor(255,255,255));
-				painter.setPen(textPen);
+//				painter.setPen(textPen);
 
-				painter.drawText(QRect(10 + indent, h, LABEL_IMAGE_WIDTH, 30),
-								 Qt::AlignLeft | Qt::AlignVCenter,
-								 ee);
-				indent += fm.boundingRect(ee).width();
+//				painter.drawText(QRect(txtLeft + indent, h, LABEL_IMAGE_WIDTH, txtHeight),
+//								 Qt::AlignLeft | Qt::AlignVCenter,
+//								 ee);
+//				indent += fm.boundingRect(ee).width();
 
 
 				n++;
 			}
 
-			h += 30;
+			h += txtHeight;
 		}
 
 

@@ -30,6 +30,7 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(bool      showLen        READ getShowLen       WRITE setShowLen      )
     Q_PROPERTY(int       ruler          READ getRuler         WRITE setRuler        NOTIFY rulerChanged )
     Q_PROPERTY(bool      bearing        READ getShowBearing   WRITE setShowBearing      )
+    Q_PROPERTY(bool      showSlope        READ getShowSlope   WRITE setShowSlope      )
 
 public:
 
@@ -80,6 +81,9 @@ public:
     void setLine(LineNode *linNode) ;
     void setMeasureHeight(MeasureHeight *measureHeight);
 
+    bool getShowSlope() const;
+    void setShowSlope(bool showSlope);
+
 signals:
 
     void linePropertiesChanged(  QVariant );
@@ -87,7 +91,7 @@ signals:
 
 
 private:
-    QString                                           mColor       = "#91001d";
+    QString                                           mColor       = "#000000";
     int                                               mLineOpacity = 100 ;
     int                                               mPointOpacity= 100 ;
     QString                                           mPointColor  = "#001191";
@@ -96,12 +100,14 @@ private:
     float                                             mPointwidth  = 10.00;
     unsigned                                          mTesselation =10.00;
     osgEarth::Symbology::AltitudeSymbol::Clamping     mClamp       = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
-    bool                                              mVisible     = true;
+    bool                                              mVisible     = false;
     bool                                              mSmooth      = true;
     bool                                              mShowLen     = false;
 
     int                                               mRuler;
     bool                                              mShowBearing{false};
+    bool                                              mShowSlope{false};
+
 
 
     LineNode* mLineNode{nullptr};

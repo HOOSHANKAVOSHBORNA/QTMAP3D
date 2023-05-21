@@ -52,13 +52,14 @@ class AircraftModelNode: public DefenseModelNode
     Q_OBJECT
 public:
 	AircraftModelNode(DefenseModelLayer* defenseModelLayer, const Aircraft::Data &data, QObject* parent = nullptr);
+	~AircraftModelNode()override;
     void flyTo(osgEarth::GeoPoint posGeo, double heading, double speed);
     void stop() override;
 	void dataChanged();
     const Aircraft::Data &getData() const;
-    void goOnTrack();
-public slots:
-    void onLeftButtonClicked(bool val);
+//	void select();
+protected:
+	void setSelectionMode(SelectionMode sm) override;
 public:
     void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override;
@@ -97,10 +98,10 @@ private:
     osg::ref_ptr<LineNode> mLatestPointLine;
     osg::ref_ptr<LineNode> mTempLine;
 
-	AircraftInfoItem *mAircraftinformation{nullptr};
+	AircraftInfoItem *mAircraftInfoItem{nullptr};
 
-    static constexpr int LABEL_IMAGE_WIDTH = 210;
-    static constexpr int LABEL_IMAGE_HEIGHT = 210;
+	static constexpr int LABEL_IMAGE_WIDTH = 180;
+	static constexpr int LABEL_IMAGE_HEIGHT = 132;
 	QImage *mRenderStatusImage{nullptr};
 	osg::ref_ptr<osg::Image> mStatusImage{nullptr};
 
