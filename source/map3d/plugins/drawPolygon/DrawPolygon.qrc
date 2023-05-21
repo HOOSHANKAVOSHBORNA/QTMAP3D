@@ -3,6 +3,6 @@
         <file>resources/polygon.png</file>
         <file>resources/PolygonProperties.qml</file>
         <file>resources/arrow.png</file>
-        <file>QSpinBox.qml</file>
+        <file>resources/QSpinBox.qml</file>
     </qresource>
 </RCC>
