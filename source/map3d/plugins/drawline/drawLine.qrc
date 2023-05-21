@@ -4,5 +4,7 @@
         <file>resources/LineProperty.qml</file>
         <file>resources/ruler.png</file>
         <file>resources/height.png</file>
+        <file>resources/arrow.png</file>
+        <file>QSpinBox.qml</file>
     </qresource>
 </RCC>

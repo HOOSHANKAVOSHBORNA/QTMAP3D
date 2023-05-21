@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>resources/sphere.png</file>
         <file>SphereProperty.qml</file>
+        <file>resources/arrow.png</file>
+        <file>QSpinBox.qml</file>
     </qresource>
 </RCC>

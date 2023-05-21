@@ -54,8 +54,6 @@ Item {
             x:2
             y:2
             color: primaryColor
-//            border.width: 1
-//            border.color: primaryColor
             clip: true
             radius: round ? height/4 : 0
 
@@ -69,7 +67,7 @@ Item {
                     text: steps[index]
                     anchors.margins: 1
                     color: btntxtColor
-                    font.pixelSize: parent.height/3.5
+                    font.pointSize:  parent.height/2.5
                     anchors.centerIn: parent
                     rotation: 0
                 }

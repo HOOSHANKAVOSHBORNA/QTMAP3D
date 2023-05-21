@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>CapsuleProperty.qml</file>
         <file>resources/capsule.png</file>
+        <file>resources/arrow.png</file>
+        <file>QSpinBox.qml</file>
     </qresource>
 </RCC>
