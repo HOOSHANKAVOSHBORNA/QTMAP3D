@@ -30,6 +30,8 @@ Item {
 
 
 
+
+
     Item {
         id: dialog
         width: 250
@@ -182,7 +184,7 @@ Item {
                                     value: 50
                                     from: 0
                                     to: 100
-                                    step: 10
+//                                    step: 10
                                     z:10
                                     anchors.fill:parent
                                     onValueChanged: {
@@ -245,8 +247,11 @@ Item {
                                             QSpinBox {
                                                 id: mlocationX
                                                 anchors.fill: parent
-                                                step: 0.01
+                                                decimals: 4
+//                                                step: 0.01
                                                 //                                                value: xLoc
+
+
                                                 showText:  boxProperties ? boxProperties.location.x  : 0
                                                 onValueChanged: {
                                                     boxProperties.location.x = value
@@ -276,7 +281,8 @@ Item {
                                             QSpinBox {
                                                 id: mlocationY
                                                 anchors.fill: parent
-                                                step: 0.01
+                                                decimals: 4
+//                                                step: 0.01
                                                 //                                                value: yLoc
                                                 showText : boxProperties ? boxProperties.location.y  : 0
                                                 onValueChanged: {
@@ -307,7 +313,8 @@ Item {
                                             QSpinBox {
                                                 id: mlocationZ
                                                 anchors.fill: parent
-                                                step: 10
+                                                decimals: 4
+//                                                step: 10
                                                 showText : boxProperties ? boxProperties.location.z  : 0
                                                 onValueChanged: {
                                                     boxProperties.location.z = value
@@ -389,7 +396,7 @@ Item {
                                 QSpinBox {
                                     id: lengthValue
                                     value: 40000.00
-                                    step: 1000
+//                                    step: 1000
                                     z:6
                                     anchors.fill:parent
                                     onValueChanged: {
@@ -429,7 +436,7 @@ Item {
                                 QSpinBox {
                                     id: widthValue
                                     value: 40000.00
-                                    step: 1000
+//                                    step: 1000
                                     z:5
                                     anchors.fill:parent
                                     onValueChanged: {
@@ -469,7 +476,7 @@ Item {
                                 QSpinBox {
                                     id: heightValue
                                     value: 40000.00
-                                    step: 1000
+//                                    step: 1000
                                     z:4
                                     anchors.fill:parent
                                     onValueChanged: {

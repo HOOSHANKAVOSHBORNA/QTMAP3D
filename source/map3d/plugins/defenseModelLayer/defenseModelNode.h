@@ -67,12 +67,12 @@ public:
 
 
 signals:
-    void selectionModeChanged();
-    void hoverModeChanged();
+//    void selectionModeChanged();
+//    void hoverModeChanged();
 
-public slots:
-    void setSelectionMode(SelectionMode sm);
-    void setHoverMode(HoverMode hm);
+protected:
+	virtual void setSelectionMode(SelectionMode sm);
+	void setHoverMode(HoverMode hm);
 
 
 protected:

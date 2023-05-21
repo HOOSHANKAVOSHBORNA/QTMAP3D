@@ -425,28 +425,50 @@ struct SystemCombatInfo
         return result;
     }
 
-    QString phaseToColor() const
-    {
-        QString result = "white";
-        switch (Phase) {
-        case Search:
-            result = "yellow";
-            break;
-        case Lock:
-            result = "orange";
-            break;
-        case Fire:
-            result = "red";
-            break;
-        case Kill:
-            result = "black";
-            break;
-        case NoKill:
-            result = "brown";
-            break;
-        }
-        return result;
-    }
+//    QString phaseToColor() const
+//    {
+//        QString result = "white";
+//        switch (Phase) {
+//        case Search:
+//            result = "yellow";
+//            break;
+//        case Lock:
+//            result = "orange";
+//            break;
+//        case Fire:
+//            result = "red";
+//            break;
+//        case Kill:
+//            result = "black";
+//            break;
+//        case NoKill:
+//            result = "brown";
+//            break;
+//        }
+//        return result;
+//    }
+	QColor phaseToColor() const
+	{
+		QColor result = QColor("white");
+		switch (Phase) {
+		case Search:
+			result = QColor("yellow");
+			break;
+		case Lock:
+			result = QColor("orange");
+			break;
+		case Fire:
+			result = QColor("red");
+			break;
+		case Kill:
+			result = QColor("black");
+			break;
+		case NoKill:
+			result = QColor("brown");
+			break;
+		}
+		return result;
+	}
 };
 
 class DefenseDataManager: public QObject

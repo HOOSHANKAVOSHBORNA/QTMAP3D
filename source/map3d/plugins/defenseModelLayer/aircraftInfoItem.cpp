@@ -78,7 +78,7 @@ QStringList AircraftInfoModel::getSystemColor() const
 {
     QStringList colors;
     for (auto& i : mAircraftInfo->assignments)
-        colors.append(i->info->systemCombatInfo.phaseToColor());
+		colors.append(i->info->systemCombatInfo.phaseToColor().name());
     return colors;
 }
 
