@@ -236,8 +236,6 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 	mTempLine->setPointVisible(false);
 	mTempLine->setColor(osgEarth::Color::Purple);
 	mTempLine->setWidth(5);
-
-	onRouteButtonToggled(true);
 }
 
 AircraftModelNode::~AircraftModelNode()
