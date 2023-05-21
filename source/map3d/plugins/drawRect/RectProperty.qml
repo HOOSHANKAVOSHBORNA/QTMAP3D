@@ -7,7 +7,7 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    implicitHeight: parent.height
+    implicitHeight: parent ? parent.height : 0
 
 
 
@@ -15,8 +15,6 @@ Item {
     property string headerTitleSTR: "Rect Properties"
     property string fillColor: "#91001d"
     property string lineColor: "#ffffff"
-    property double unitsMulti
-    property double stepSize
 
 
     onVisibleChanged: {
@@ -29,17 +27,6 @@ Item {
         rectProperties.height = heightValue.value;
     }
 
-    onUnitsMultiChanged: {
-        rectProperties.lineWidth = lineValue.value*unitsMulti
-        rectProperties.width = widthValue.value*unitsMulti
-        rectProperties.height = heightValue.value*unitsMulti
-    }
-
-    onStepSizeChanged: {
-        lineValue.stepSize = stepSize
-        widthValue.stepSize = stepSize
-        heightValue.stepSize = stepSize
-    }
 
 
     Item {
@@ -80,210 +67,14 @@ Item {
 
             }
 
-            ///////////////////////////////////////units///////////////////////////////////////////////
-            Rectangle{
-                id:units
-                width: parent.width -2
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: header.bottom
-                height: 25
-                radius: 0
-                color: "#303030"
-                RowLayout{
-                    spacing: 10
-                    x:2
-                    anchors.centerIn: parent
-                    Text {
-                        text: qsTr("Unit:")
-                        color: "white"
-                    }
-                    ComboBox {
-                        id: unitControl
-                        currentIndex: 1
-                        model: ["KM", "M", "CM"]
-                        onCurrentIndexChanged:   {
-                            if(currentIndex === 0){
-                                unitsMulti = 1000
-                            }else if(currentIndex === 1){
-                                unitsMulti = 1
-                            }else if(currentIndex === 2){
-                                unitsMulti = 0.01
-                            }
-                        }
-                        delegate: ItemDelegate {
-                            width: unitControl.width
-                            contentItem: Text {
-                                text: unitControl.textRole
-                                      ? (Array.isArray(unitControl.model) ? modelData[unitControl.textRole] : model[unitControl.textRole])
-                                      : modelData
-                                color: "#5f5f5f"
-                                font: unitControl.font
-                                elide: Text.ElideRight
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                            highlighted: unitControl.highlightedIndex === index
-                        }
-                        indicator: Canvas {
-                            id: unitcanvas
-                            x: unitControl.width - width - unitControl.rightPadding
-                            y: unitControl.topPadding + (unitControl.availableHeight - height) / 2
-                            width: 12
-                            height: 8
-                            contextType: "2d"
-                            Connections {
-                                target: unitControl
-                                function onPressedChanged() { unitcanvas.requestPaint(); }
-                            }
-                        }
-                        contentItem: Text {
-                            leftPadding: 5
-                            rightPadding: unitControl.indicator.width + unitControl.spacing
-                            text: unitControl.displayText
-                            font: unitControl.font
-                            color: unitControl.pressed ? "#5f5f5f" : "#404040"
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 22
-                            border.color: unitControl.pressed ? "#5f5f5f" : "#404040"
-                            border.width: unitControl.visualFocus ? 2 : 1
-                            radius: 5
-                            color: "#c9c9c9"
-                        }
-                        popup: Popup {
-                            y: unitControl.height - 1
-                            width: unitControl.width
-                            implicitHeight: contentItem.implicitHeight
-                            padding: 1
-
-                            contentItem: ListView {
-                                clip: true
-                                implicitHeight: contentHeight
-                                model: unitControl.popup.visible ? unitControl.delegateModel : null
-                                currentIndex: unitControl.highlightedIndex
-
-                                ScrollIndicator.vertical: ScrollIndicator { }
-                            }
-                            background: Rectangle {
-                                border.color: "#404040"
-                                radius: 5
-                            }
-                        }
-                    }
-
-                }
-
-            }
-
-            ///////////////////////////////////////steps///////////////////////////////////////////////
-            Rectangle{
-                id:steps
-                width: parent.width -2
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: units.bottom
-                height: 30
-                radius: 0
-                color: "#303030"
-                RowLayout{
-                    spacing: 2
-                    x:2
-                    anchors.centerIn: parent
-                    Text {
-                        text: qsTr("Step:")
-                        color: "white"
-                    }
-                    ComboBox {
-                        id: controls
-                        currentIndex: 2
-                        model: ["1000", "100", "10","1"]
-                        onCurrentIndexChanged:   {
-                            if(currentIndex === 0){
-                                stepSize = 1000
-                            }else if(currentIndex === 1){
-                                stepSize = 100
-                            }else if(currentIndex === 2){
-                                stepSize = 10
-                            }else if(currentIndex === 3){
-                                stepSize = 1
-                            }
-                        }
-                        delegate: ItemDelegate {
-                            width: controls.width
-                            contentItem: Text {
-                                text: controls.textRole
-                                      ? (Array.isArray(controls.model) ? modelData[controls.textRole] : model[controls.textRole])
-                                      : modelData
-                                color: "#5f5f5f"
-                                font: controls.font
-                                elide: Text.ElideRight
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                            highlighted: controls.highlightedIndex === index
-                        }
-                        indicator: Canvas {
-                            id: canvass
-                            x: controls.width - width - controls.rightPadding
-                            y: controls.topPadding + (controls.availableHeight - height) / 2
-                            width: 12
-                            height: 8
-                            contextType: "2d"
-                            Connections {
-                                target: controls
-                                function onPressedChanged() { canvass.requestPaint(); }
-                            }
-                        }
-                        contentItem: Text {
-                            leftPadding: 5
-                            rightPadding: controls.indicator.width + controls.spacing
-                            text: controls.displayText
-                            font: controls.font
-                            color: controls.pressed ? "#5f5f5f" : "#404040"
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 22
-                            border.color: controls.pressed ? "#5f5f5f" : "#404040"
-                            border.width: controls.visualFocus ? 2 : 1
-                            radius: 5
-                            color: "#c9c9c9"
-                        }
-                        popup: Popup {
-                            y: controls.height - 1
-                            width: controls.width
-                            implicitHeight: contentItem.implicitHeight
-                            padding: 1
-
-                            contentItem: ListView {
-                                clip: true
-                                implicitHeight: contentHeight
-                                model: controls.popup.visible ? controls.delegateModel : null
-                                currentIndex: controls.highlightedIndex
-
-                                ScrollIndicator.vertical: ScrollIndicator { }
-                            }
-                            background: Rectangle {
-                                border.color: "#404040"
-                                radius: 5
-                            }
-                        }
-                    }
-
-                }
-
-            }
 
             ScrollView {
                 id: frame
                 clip: true
-                anchors.top: steps.bottom
+                anchors.top: header.bottom
                 padding: 5
                 width: parent.width
-                height: parent.height - header.height -55
-//                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+                height: parent.height - header.height
                 Flickable {
                     contentHeight: 400
                     width: 240
@@ -307,7 +98,7 @@ Item {
 
                             ////////////////////////////////////fill Color Property//////////////////////////////////
                             Rectangle{
-                                                                Layout.fillWidth: true
+                                Layout.fillWidth: true
                                 width: parent.width/1.9
                                 color: "#404040"
                                 height: 35
@@ -359,7 +150,7 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                width: parent.width/3
+                                width: parent.width/2.3
                                 color: "#404040"
                                 height: 35
 
@@ -383,84 +174,16 @@ Item {
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
-                                SpinBox {
+                                QSpinBox {
                                     id: opacityValue
-                                    stepSize: 5
                                     value: 50
                                     to : 100
                                     from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-
-                                    contentItem: TextInput {
-                                        id:opacityValueInput
-                                        z: 2
-                                        //                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
-                                        text: opacityValue.value
-                                        font: opacityValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !opacityValue.editable
-                                        validator: opacityValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
-//                                            console.log(rectProperties + "prop")
-                                            if(rectProperties){
-                                                opacityValue.value = opacityValueInput.text
-                                                rectProperties.transparency = opacityValue.value
-                                            }
+                                    anchors.fill: parent
+                                    onValueChanged: {
+                                        if(rectProperties){
+                                            rectProperties.transparency = value
                                         }
-                                    }
-                                    up.indicator: Rectangle {
-                                        x: opacityValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: opacityValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: opacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: opacityValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: opacityValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: opacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: opacityContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
                                     }
                                 }
                             }
@@ -566,83 +289,16 @@ Item {
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
-                                SpinBox {
+                                QSpinBox {
                                     id: lineopacityValue
-                                    stepSize: 5
                                     value: 50
                                     to : 100
                                     from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-
-                                    contentItem: TextInput {
-                                        id:lineopacityValueInput
-                                        z: 2
-                                        //                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
-                                        text: lineopacityValue.value
-                                        font: lineopacityValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !lineopacityValue.editable
-                                        validator: lineopacityValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
-                                            if(rectProperties){
-                                                lineopacityValue.value = lineopacityValueInput.text
-                                                rectProperties.lineopacity = lineopacityValue.value
-                                            }
+                                    anchors.fill: parent
+                                    onValueChanged: {
+                                        if(rectProperties){
+                                            rectProperties.lineopacity = value
                                         }
-                                    }
-                                    up.indicator: Rectangle {
-                                        x: lineopacityValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: lineopacityValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: lineopacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: lineopacityValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: lineopacityValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: lineopacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: lineopacityContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
                                     }
                                 }
                             }
@@ -674,82 +330,16 @@ Item {
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
-                                SpinBox {
+                                QSpinBox {
                                     id: lineValue
-                                    stepSize: stepSize
                                     value: 10
                                     to : 100000
                                     from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  10000
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-                                    contentItem: TextInput {
-                                        id: widthInput
-                                        z: 2
-                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
-                                        text: lineValue.value
-                                        font: lineValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !lineValue.editable
-                                        validator: lineValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
-                                            if(rectProperties && lineValue && (lineValue.value == 0 || lineValue.value)){
-                                                lineValue.value = widthInput.text
-                                                rectProperties.lineWidth = lineValue.value*unitsMulti
-                                            }
+                                    anchors.fill: parent
+                                    onValueChanged: {
+                                        if(rectProperties && lineValue && (lineValue.value == 0 || lineValue.value)){
+                                            rectProperties.lineWidth = value
                                         }
-                                    }
-                                    up.indicator: Rectangle {
-                                        x: lineValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: lineValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: lineValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: lineValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: lineValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: lineValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: lineContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
                                     }
                                 }
                             }
@@ -782,82 +372,16 @@ Item {
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
-                                SpinBox {
+                                QSpinBox {
                                     id: widthValue
-                                    stepSize: stepSize
                                     value: 3000
                                     to : 1000000
                                     from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  10000
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-                                    contentItem: TextInput {
-                                        id: recwidthInput
-                                        z: 2
-                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
-                                        text: widthValue.value
-                                        font: widthValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !widthValue.editable
-                                        validator: widthValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
-                                            if(rectProperties && widthValue && (widthValue.value == 0 || widthValue.value)){
-                                                widthValue.value = recwidthInput.text
-                                                rectProperties.width = widthValue.value*unitsMulti
-                                            }
+                                    anchors.fill: parent
+                                    onValueChanged: {
+                                        if(rectProperties && widthValue && (widthValue.value == 0 || widthValue.value)){
+                                            rectProperties.width = value
                                         }
-                                    }
-                                    up.indicator: Rectangle {
-                                        x: widthValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: widthValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: widthValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: widthValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: widthValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: widthValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: widthContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
                                     }
                                 }
                             }
@@ -866,8 +390,6 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
-                                //                                border.color: "#5f5f5f"
-                                //                                border.width: 1
 
                                 Text {
                                     //                                    id: transSphere
@@ -888,82 +410,16 @@ Item {
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
-                                SpinBox {
+                                QSpinBox {
                                     id: heightValue
-                                    stepSize: stepSize
                                     value: 1000
                                     to : 1000000
                                     from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  10000
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-                                    contentItem: TextInput {
-                                        id: recheightInput
-                                        z: 2
-                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
-                                        text: heightValue.value
-                                        font: heightValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !heightValue.editable
-                                        validator: heightValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
-                                            if(rectProperties && heightValue && (heightValue.value == 0 || heightValue.value)){
-                                                heightValue.value = recheightInput.text
-                                                rectProperties.height = heightValue.value*unitsMulti
-                                            }
+                                    anchors.fill: parent
+                                    onValueChanged: {
+                                        if(rectProperties && heightValue && (heightValue.value == 0 || heightValue.value)){
+                                            rectProperties.height = value
                                         }
-                                    }
-                                    up.indicator: Rectangle {
-                                        x: heightValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: heightValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: heightValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: heightValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: heightValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: heightValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: heightContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
                                     }
                                 }
                             }
@@ -984,11 +440,6 @@ Item {
                                     x:7
                                 }
                             }
-
-
-
-
-
 
 
                             /////////////////////////////////// Clamp ///////////////////////////////////////////

@@ -76,7 +76,7 @@ Item {
             }
             Image {
                 id: stepUp
-                source: "./resources/arrow.png"
+                source: "./arrow.png"
                 sourceSize.height: parent.height/2.1
                 anchors.left: parent.left
                 anchors.top: parent.top
@@ -99,7 +99,7 @@ Item {
             }
             Image {
                 id: stepDown
-                source: "./resources/arrow.png"
+                source: "./arrow.png"
                 rotation: 180
                 sourceSize.height: parent.height/2.1
                 anchors.left: parent.left
@@ -134,7 +134,7 @@ Item {
             radius: round ? height/4 : 0
             Image {
                 id: spinUp
-                source: "./resources/arrow.png"
+                source: "./arrow.png"
                 sourceSize.height: parent.height/2.1
                 anchors.right:  parent.right
                 anchors.top: parent.top
@@ -169,7 +169,7 @@ Item {
             }
             Image {
                 id: spinDown
-                source: "./resources/arrow.png"
+                source: "./arrow.png"
                 rotation: 180
                 sourceSize.height: parent.height/2.1
                 anchors.right:  parent.right
