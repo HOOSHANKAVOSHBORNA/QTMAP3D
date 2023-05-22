@@ -228,6 +228,7 @@ void LinePropertiesModel::setLine(LineNode* linNode)
     mLineNode->setTessellation(mTesselation);
     mLineNode->setClamp(mClamp);
     mLineNode->setShowBearing(mShowBearing);
+    mLineNode->setShowSlope(mShowSlope);
     if(mRuler == 0)
     {
         mLineNode->setPointColor(mPointColor.toStdString());
