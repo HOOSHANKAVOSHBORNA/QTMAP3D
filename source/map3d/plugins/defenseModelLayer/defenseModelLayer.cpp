@@ -232,6 +232,14 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 		mSelectedModelNode = defenseModelNode;
 }
 
+void DefenseModelLayer::modelNodeDeleted(DefenseModelNode *defenseModelNode)
+{
+	if(mSelectedModelNode == defenseModelNode)
+		mSelectedModelNode = nullptr;
+	if(mOnMoveModelNode == defenseModelNode)
+		mOnMoveModelNode = nullptr;
+}
+
 //void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 //{
 ////    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
@@ -452,7 +460,7 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
 	if(mSelectedModelNode && mSelectedModelNode != modelNode)
         mSelectedModelNode->mousePressEvent(event, false);
 	if(modelNode)
-        mSelectedModelNode = modelNode;
+		mSelectedModelNode = modelNode;
 	//--drag aircraft---------------------------------------
     if(event->button() == Qt::LeftButton)
     {
@@ -471,10 +479,10 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
     //--drag aircraft--------------------------------------------
     if(event->button() == Qt::LeftButton && mDragAircraftModelNode)
     {
-        auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode.get());
+		auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
         if(systemModelNode)
         {
-            auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
+			auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
             mDataManager->assignAircraft2System(aircraftModelNode->getData().info.TN, systemModelNode->getData()->information->systemInfo.Number);
         }
         mMapController->removeNode(mDragAircraftModelNode);
@@ -486,7 +494,7 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
+		auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
         if(aircraftModelNode /*&& aircraftModelNode->hasAssignment()*/)
         {
             mDataManager->cancelAircraftAssignments(aircraftModelNode->getData().info.TN);
@@ -516,8 +524,8 @@ void DefenseModelLayer::mouseMoveEvent(QMouseEvent *event)
 
 DefenseModelNode *DefenseModelLayer::pick(float x, float y)
 {
-    DefenseModelNode* defenseModelNode = nullptr;
-    osgViewer::Viewer * viewer = mMapController->getViewer();
+	DefenseModelNode *defenseModelNode = nullptr;
+	osgViewer::Viewer *viewer = mMapController->getViewer();
     float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
     osgUtil::LineSegmentIntersector::Intersections intersections;
     if (viewer->computeIntersections(x, height - y, intersections))

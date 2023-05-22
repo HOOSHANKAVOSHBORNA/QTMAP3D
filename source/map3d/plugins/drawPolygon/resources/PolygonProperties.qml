@@ -7,7 +7,7 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    implicitHeight: parent.height
+    implicitHeight: parent ? parent.height : 0
 
 
 
@@ -15,8 +15,6 @@ Item {
     property string headerTitleSTR: "Polygon Properties"
     property string fillColor: "#91001d"
     property string lineColor: "#ffffff"
-    property double unitsMulti
-    property double stepSize
 
 
     onVisibleChanged: {
@@ -28,21 +26,11 @@ Item {
         polygonProperties.transparency = opacityValue.value
     }
 
-    onUnitsMultiChanged: {
-        circleProperties.lineWidth = lineValue.value*unitsMulti
-        polygonProperties.height = transValue.value*unitsMulti
-    }
-
-    onStepSizeChanged: {
-        lineValue.stepSize = stepSize
-        transValue.stepSize = stepSize
-    }
 
     Item {
         id: dialog
         width: 250
         height: rootItem.height
-
 
         //////////////////////////Main Content////////////////////////
         Rectangle {
@@ -77,209 +65,14 @@ Item {
             }
 
 
-            ///////////////////////////////////////units///////////////////////////////////////////////
-            Rectangle{
-                id:units
-                width: parent.width -2
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: header.bottom
-                height: 25
-                radius: 0
-                color: "#303030"
-                RowLayout{
-                    spacing: 10
-                    x:2
-                    anchors.centerIn: parent
-                    Text {
-                        text: qsTr("Unit:")
-                        color: "white"
-                    }
-                    ComboBox {
-                        id: unitControl
-                        currentIndex: 1
-                        model: ["KM", "M", "CM"]
-                        onCurrentIndexChanged:   {
-                            if(currentIndex === 0){
-                                unitsMulti = 1000
-                            }else if(currentIndex === 1){
-                                unitsMulti = 1
-                            }else if(currentIndex === 2){
-                                unitsMulti = 0.01
-                            }
-                        }
-                        delegate: ItemDelegate {
-                            width: unitControl.width
-                            contentItem: Text {
-                                text: unitControl.textRole
-                                      ? (Array.isArray(unitControl.model) ? modelData[unitControl.textRole] : model[unitControl.textRole])
-                                      : modelData
-                                color: "#5f5f5f"
-                                font: unitControl.font
-                                elide: Text.ElideRight
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                            highlighted: unitControl.highlightedIndex === index
-                        }
-                        indicator: Canvas {
-                            id: unitcanvas
-                            x: unitControl.width - width - unitControl.rightPadding
-                            y: unitControl.topPadding + (unitControl.availableHeight - height) / 2
-                            width: 12
-                            height: 8
-                            contextType: "2d"
-                            Connections {
-                                target: unitControl
-                                function onPressedChanged() { unitcanvas.requestPaint(); }
-                            }
-                        }
-                        contentItem: Text {
-                            leftPadding: 5
-                            rightPadding: unitControl.indicator.width + unitControl.spacing
-                            text: unitControl.displayText
-                            font: unitControl.font
-                            color: unitControl.pressed ? "#5f5f5f" : "#404040"
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 22
-                            border.color: unitControl.pressed ? "#5f5f5f" : "#404040"
-                            border.width: unitControl.visualFocus ? 2 : 1
-                            radius: 5
-                            color: "#c9c9c9"
-                        }
-                        popup: Popup {
-                            y: unitControl.height - 1
-                            width: unitControl.width
-                            implicitHeight: contentItem.implicitHeight
-                            padding: 1
-
-                            contentItem: ListView {
-                                clip: true
-                                implicitHeight: contentHeight
-                                model: unitControl.popup.visible ? unitControl.delegateModel : null
-                                currentIndex: unitControl.highlightedIndex
-
-                                ScrollIndicator.vertical: ScrollIndicator { }
-                            }
-                            background: Rectangle {
-                                border.color: "#404040"
-                                radius: 5
-                            }
-                        }
-                    }
-
-                }
-
-            }
-
-            ///////////////////////////////////////steps///////////////////////////////////////////////
-            Rectangle{
-                id:steps
-                width: parent.width -2
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: units.bottom
-                height: 30
-                radius: 0
-                color: "#303030"
-                RowLayout{
-                    spacing: 2
-                    x:2
-                    anchors.centerIn: parent
-                    Text {
-                        text: qsTr("Step:")
-                        color: "white"
-                    }
-                    ComboBox {
-                        id: controls
-                        currentIndex: 2
-                        model: ["1000", "100", "10","1"]
-                        onCurrentIndexChanged:   {
-                            if(currentIndex === 0){
-                                stepSize = 1000
-                            }else if(currentIndex === 1){
-                                stepSize = 100
-                            }else if(currentIndex === 2){
-                                stepSize = 10
-                            }else if(currentIndex === 3){
-                                stepSize = 1
-                            }
-                        }
-                        delegate: ItemDelegate {
-                            width: controls.width
-                            contentItem: Text {
-                                text: controls.textRole
-                                      ? (Array.isArray(controls.model) ? modelData[controls.textRole] : model[controls.textRole])
-                                      : modelData
-                                color: "#5f5f5f"
-                                font: controls.font
-                                elide: Text.ElideRight
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                            highlighted: controls.highlightedIndex === index
-                        }
-                        indicator: Canvas {
-                            id: canvass
-                            x: controls.width - width - controls.rightPadding
-                            y: controls.topPadding + (controls.availableHeight - height) / 2
-                            width: 12
-                            height: 8
-                            contextType: "2d"
-                            Connections {
-                                target: controls
-                                function onPressedChanged() { canvass.requestPaint(); }
-                            }
-                        }
-                        contentItem: Text {
-                            leftPadding: 5
-                            rightPadding: controls.indicator.width + controls.spacing
-                            text: controls.displayText
-                            font: controls.font
-                            color: controls.pressed ? "#5f5f5f" : "#404040"
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 22
-                            border.color: controls.pressed ? "#5f5f5f" : "#404040"
-                            border.width: controls.visualFocus ? 2 : 1
-                            radius: 5
-                            color: "#c9c9c9"
-                        }
-                        popup: Popup {
-                            y: controls.height - 1
-                            width: controls.width
-                            implicitHeight: contentItem.implicitHeight
-                            padding: 1
-
-                            contentItem: ListView {
-                                clip: true
-                                implicitHeight: contentHeight
-                                model: controls.popup.visible ? controls.delegateModel : null
-                                currentIndex: controls.highlightedIndex
-
-                                ScrollIndicator.vertical: ScrollIndicator { }
-                            }
-                            background: Rectangle {
-                                border.color: "#404040"
-                                radius: 5
-                            }
-                        }
-                    }
-
-                }
-
-            }
 
             ScrollView {
                 id: frame
                 clip: true
-                anchors.top: steps.bottom
+                anchors.top: header.bottom
                 padding: 5
                 width: parent.width
-                height: parent.height - header.height -55
+                height: parent.height - header.height
 //                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
                     contentHeight: 400
@@ -356,7 +149,7 @@ Item {
                             }
                             Rectangle{
                                 Layout.fillWidth: true
-                                width: parent.width/3
+                                width: parent.width/2.3
                                 color: "#404040"
                                 height: 35
 
@@ -380,85 +173,18 @@ Item {
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
-                                SpinBox {
+                                QSpinBox {
                                     id: opacityValue
-                                    stepSize: 5
                                     value: 50
                                     to : 100
                                     from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-
-                                    contentItem: TextInput {
-                                        id:opacityValueInput
-                                        z: 2
-                                        //                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
-                                        text: opacityValue.value
-                                        font: opacityValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !opacityValue.editable
-                                        validator: opacityValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
+                                    anchors.fill: parent
+                                        onValueChanged: {
                                             if(polygonProperties){
-                                                opacityValue.value = opacityValueInput.text
-                                                polygonProperties.transparency = opacityValue.value
+                                                polygonProperties.transparency = value
                                             }
                                         }
                                     }
-                                    up.indicator: Rectangle {
-                                        x: opacityValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: opacityValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: opacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: opacityValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: opacityValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: opacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: opacityContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
-                                    }
-                                }
                             }
                             Rectangle{
                                 id: opacityTitle
@@ -562,85 +288,18 @@ Item {
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
-                                SpinBox {
+                                QSpinBox {
                                     id: lineopacityValue
-                                    stepSize: 5
                                     value: 50
                                     to : 100
                                     from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-
-                                    contentItem: TextInput {
-                                        id:lineopacityValueInput
-                                        z: 2
-                                        //                                        text: pointwidthValue.textFromValue(pointwidthValue.value, pointwidthValue.locale)
-                                        text: lineopacityValue.value
-                                        font: lineopacityValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !lineopacityValue.editable
-                                        validator: lineopacityValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
+                                    anchors.fill: parent
+                                        onValueChanged: {
                                             if(polygonProperties){
-                                                lineopacityValue.value = lineopacityValueInput.text
-                                                polygonProperties.lineopacity = lineopacityValue.value
+                                                polygonProperties.lineopacity = value
                                             }
                                         }
                                     }
-                                    up.indicator: Rectangle {
-                                        x: lineopacityValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: lineopacityValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: lineopacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: lineopacityValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: lineopacityValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: lineopacityValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: lineopacityContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
-                                    }
-                                }
                             }
                             Rectangle{
                                 id: lineopacityTitle
@@ -670,84 +329,18 @@ Item {
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
-                                SpinBox {
+                                QSpinBox {
                                     id: lineValue
-                                    stepSize: stepSize
                                     value: 0
                                     to : 100000
                                     from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  10000
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-                                    contentItem: TextInput {
-                                        id: widthInput
-                                        z: 2
-                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
-                                        text: lineValue.value
-                                        font: lineValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !lineValue.editable
-                                        validator: lineValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
+                                    anchors.fill: parent
+                                        onValueChanged: {
                                             if(polygonProperties && lineValue && (lineValue.value == 0 || lineValue.value)){
-                                                lineValue.value = widthInput.text
-                                                polygonProperties.lineWidth = (lineValue.value/10)*unitsMulti
+                                                polygonProperties.lineWidth = value
                                             }
                                         }
                                     }
-                                    up.indicator: Rectangle {
-                                        x: lineValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: lineValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: lineValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: lineValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: lineValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: lineValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: lineContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
-                                    }
-                                }
                             }
                             Rectangle{
                                 id:weightContainer
@@ -776,84 +369,18 @@ Item {
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
 
-                                SpinBox {
+                                QSpinBox {
                                     id: transValue
-                                    stepSize: stepSize
                                     value: 0
                                     to : 1000000
                                     from : 0
-                                    validator: DoubleValidator {
-                                        bottom: 0
-                                        top:  100
-                                    }
-                                    editable: true
-                                    anchors.centerIn: parent
-                                    height: 20
-
-                                    contentItem: TextInput {
-                                        id: heightInput
-                                        z: 2
-                                        //                                        text: transValue.textFromValue(transValue.value, transValue.locale)
-                                        text: transValue.value
-                                        font: transValue.font
-                                        color: "#404040"
-                                        horizontalAlignment: Qt.AlignHCenter
-                                        verticalAlignment: Qt.AlignVCenter +10
-                                        readOnly: !transValue.editable
-                                        validator: transValue.validator
-                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-                                        topPadding: 13
-                                        selectByMouse: true
-                                        selectionColor: "dark green"
-                                        onTextChanged: {
+                                    anchors.fill: parent
+                                        onValueChanged: {
                                             if(polygonProperties && transValue && (transValue.value == 0 || transValue.value)){
-                                                transValue.value = heightInput.text
-                                                polygonProperties.height = transValue.value*unitsMulti
+                                                polygonProperties.height = value
                                             }
                                         }
                                     }
-                                    up.indicator: Rectangle {
-                                        x: transValue.mirrored ? 0 : parent.width - width
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: transValue.up.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "+"
-                                            font.pixelSize: transValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    down.indicator: Rectangle {
-                                        x: transValue.mirrored ? parent.width - width : 0
-                                        height: parent.height
-                                        implicitWidth: 20
-                                        implicitHeight: 20
-                                        color: transValue.down.pressed ? "#5f5f5f" : "#404040"
-                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-                                        Text {
-                                            text: "-"
-                                            font.pixelSize: transValue.font.pixelSize * 2
-                                            color: "white"
-                                            anchors.fill: parent
-                                            fontSizeMode: Text.Fit
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        implicitWidth: transContainer.width -10
-                                        color: "#c9c9c9"
-                                        border.color: "#bdbebf"
-                                    }
-                                }
                             }
                             Rectangle{
                                 id:heightContainer
@@ -872,114 +399,6 @@ Item {
                                     x:7
                                 }
                             }
-
-
-
-//                            ///////////////////////////////////tesselation///////////////////////////////////////////
-//                            Rectangle{
-//                                id: tesselationContainer
-//                                Layout.fillWidth: true
-//                                color: "#404040"
-//                                height: 30
-//                                //                                border.color: "#5f5f5f"
-//                                //                                border.width: 1
-
-//                                SpinBox {
-//                                    id: tesselationValue
-//                                    stepSize: 1
-//                                    value: 10
-//                                    to : 100000
-//                                    from : 0
-//                                    validator: DoubleValidator {
-//                                        bottom: 0
-//                                        top:  100
-//                                    }
-//                                    editable: true
-//                                    anchors.centerIn: parent
-//                                    height: 20
-
-//                                    contentItem: TextInput {
-//                                        id:tesselInput
-//                                        z: 2
-//                                        //                                        text: tesselationValue.textFromValue(tesselationValue.value, tesselationValue.locale)
-//                                        text: tesselationValue.value
-//                                        font: tesselationValue.font
-//                                        color: "#404040"
-//                                        horizontalAlignment: Qt.AlignHCenter
-//                                        verticalAlignment: Qt.AlignVCenter +10
-//                                        readOnly: !tesselationValue.editable
-//                                        validator: tesselationValue.validator
-//                                        inputMethodHints: Qt.ImhFormattedNumbersOnly
-//                                        topPadding: 13
-//                                        selectByMouse: true
-//                                        selectionColor: "dark green"
-//                                        onTextChanged: {
-//                                            if(polygonProperties){
-//                                                tesselationValue.value = tesselInput.text
-//                                                polygonProperties.tesselation = tesselationValue.value
-//                                            }
-//                                        }
-//                                    }
-//                                    up.indicator: Rectangle {
-//                                        x: tesselationValue.mirrored ? 0 : parent.width - width
-//                                        height: parent.height
-//                                        implicitWidth: 20
-//                                        implicitHeight: 20
-//                                        color: tesselationValue.up.pressed ? "#5f5f5f" : "#404040"
-//                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-//                                        Text {
-//                                            text: "+"
-//                                            font.pixelSize: tesselationValue.font.pixelSize * 2
-//                                            color: "white"
-//                                            anchors.fill: parent
-//                                            fontSizeMode: Text.Fit
-//                                            horizontalAlignment: Text.AlignHCenter
-//                                            verticalAlignment: Text.AlignVCenter
-//                                        }
-//                                    }
-//                                    down.indicator: Rectangle {
-//                                        x: tesselationValue.mirrored ? parent.width - width : 0
-//                                        height: parent.height
-//                                        implicitWidth: 20
-//                                        implicitHeight: 20
-//                                        color: tesselationValue.down.pressed ? "#5f5f5f" : "#404040"
-//                                        border.color: enabled ? "#404040" : "#5f5f5f"
-
-//                                        Text {
-//                                            text: "-"
-//                                            font.pixelSize: tesselationValue.font.pixelSize * 2
-//                                            color: "white"
-//                                            anchors.fill: parent
-//                                            fontSizeMode: Text.Fit
-//                                            horizontalAlignment: Text.AlignHCenter
-//                                            verticalAlignment: Text.AlignVCenter
-//                                        }
-//                                    }
-//                                    background: Rectangle {
-//                                        implicitWidth: tesselationContainer.width -10
-//                                        color: "#c9c9c9"
-//                                        border.color: "#bdbebf"
-//                                    }
-//                                }
-//                            }
-//                            Rectangle{
-//                                id:tesselationContainerTitle
-//                                Layout.fillWidth: true
-//                                color: "#404040"
-//                                height: 30
-//                                //                                border.color: "#5f5f5f"
-//                                //                                border.width: 1
-
-//                                Text {
-//                                    id: tesselationSphere
-//                                    text: qsTr("Tesselation:")
-//                                    font.pointSize: 10
-//                                    color: "white"
-//                                    anchors.verticalCenter:  parent.verticalCenter
-//                                    x:7
-//                                }
-//                            }
 
 
 

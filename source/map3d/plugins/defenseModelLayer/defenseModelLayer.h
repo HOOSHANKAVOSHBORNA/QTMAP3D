@@ -54,6 +54,7 @@ public:
 //    void selectModelNode(DefenseModelNode* defenseModelNode);
     //void clearAircraft(int tn);
 	void selectModelNode(DefenseModelNode* defenseModelNode);
+	void modelNodeDeleted(DefenseModelNode* defenseModelNode);
 public slots:
     void onMapClear();
 
@@ -73,8 +74,8 @@ private:
     void findSceneModels(osgViewer::Viewer *viewer);
 private:
     //QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
-    osg::ref_ptr<DefenseModelNode> mSelectedModelNode{nullptr};
-    osg::ref_ptr<DefenseModelNode> mOnMoveModelNode{nullptr};
+	DefenseModelNode* mSelectedModelNode{nullptr};//do not define as ref_ptr
+	DefenseModelNode* mOnMoveModelNode{nullptr};
     int mPreCameraRange{0};
 
 //    ListManager *mListManager = nullptr;

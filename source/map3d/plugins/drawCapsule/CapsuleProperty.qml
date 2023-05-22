@@ -7,7 +7,8 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    implicitHeight: parent.height
+
+    implicitHeight: parent ? parent.height : 0
 
 
 
