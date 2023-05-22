@@ -94,9 +94,9 @@ private:
     bool mIsRoute{false};
     ContextMenu *mCurrentContextMenu = nullptr;
 
-    osg::ref_ptr<LineNode> mRouteLine;
-    osg::ref_ptr<LineNode> mLatestPointLine;
-    osg::ref_ptr<LineNode> mTempLine;
+	osg::ref_ptr<LineNode> mRouteLine;
+	osg::ref_ptr<LineNode> mLatestPointLine;
+	osg::ref_ptr<LineNode> mTempLine;
 
 	AircraftInfoItem *mAircraftInfoItem{nullptr};
 
