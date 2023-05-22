@@ -52,7 +52,7 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
 	mLineGeometry->push_back(point.vec3d());
 	dirty();
 
-	if(getSize() >= 2)
+    if(getSize() >= 2)
 	{
 		std::vector<osg::Vec3d> distanceVectorPoint;
 		distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 2));
@@ -114,7 +114,7 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
 void LineNode::removePoint()
 {
 	mLineGeometry->pop_back();
-	auto qImage = mVecLabelData[mVecLabelData.size() - 1].qImage;
+    auto qImage = mVecLabelData[mVecLabelData.size()-1 ].qImage;
 	if(qImage)
 		delete  qImage;
 

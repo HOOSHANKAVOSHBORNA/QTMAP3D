@@ -6,5 +6,6 @@
         <file>resources/height.png</file>
         <file>resources/arrow.png</file>
         <file>resources/QSpinBox.qml</file>
+        <file>resources/slope.png</file>
     </qresource>
 </RCC>

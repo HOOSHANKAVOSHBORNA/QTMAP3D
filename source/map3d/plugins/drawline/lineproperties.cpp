@@ -41,9 +41,9 @@ void LinePropertiesModel::setLineOpacity(const int &value){
     mLineOpacity = value;
     if(mLineNode){
         float tempValue = value;
-        osg::Vec4f tempColor = mLineNode->getColor();
-        tempColor.a() = tempValue /100;
-        mLineNode->setColor(osg::Vec4f(tempColor));
+        mOpColor = mLineNode->getColor();
+        mOpColor.a() = tempValue /100;
+        mLineNode->setColor(osg::Vec4f(mOpColor));
     }
 }
 
@@ -229,6 +229,9 @@ void LinePropertiesModel::setLine(LineNode* linNode)
     mLineNode->setClamp(mClamp);
     mLineNode->setShowBearing(mShowBearing);
     mLineNode->setShowSlope(mShowSlope);
+    mLineNode->setColor(mOpColor);
+
+
     if(mRuler == 0)
     {
         mLineNode->setPointColor(mPointColor.toStdString());
@@ -237,12 +240,29 @@ void LinePropertiesModel::setLine(LineNode* linNode)
         mLineNode->setPointVisible(mVisible);
         mLineNode->setHeight(mHeight);
 		mLineNode->setShowDistance(mShowLen);
+        mLineNode->setColor(mOpColor);
     }
     else if(mRuler == 1)
     {
-        mLineNode->setPointVisible(false);
-        mLineNode->setHeight(0);
-		mLineNode->setShowDistance(true);
+        mLineNode->setColor(mColor.toStdString());
+        mLineNode->setWidth(mWidth);
+        mLineNode->setShowDistance(true);
+        mLineNode->setColor(mOpColor);
+    }
+
+    else if(mRuler == 2)
+    {
+        mLineNode->setColor(mColor.toStdString());
+        mLineNode->setWidth(mWidth);
+        mLineNode->setColor(mOpColor);
+    }
+    else if(mRuler == 3)
+    {
+        mLineNode->setColor(mColor.toStdString());
+        mLineNode->setWidth(mWidth);
+        mLineNode->setShowSlope(true);
+        mLineNode->setColor(mOpColor);
+
     }
 
 }
