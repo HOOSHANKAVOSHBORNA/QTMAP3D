@@ -881,7 +881,6 @@ Item {
                                     visible:  slope.hovered
                                 }
                                 onToggled: function() {
-//                                        lineProperties.showLen = len.checked
                                     lineProperties.showSlope = slope.checked
                                 }
 
@@ -1341,6 +1340,7 @@ Item {
             lineProperties.showLen = false
             lineProperties.bearing = false
             lineProperties.visible = false
+            lineProperties.showSlope = false
             headerTitleSTR = "Line Properties"
         }
         else if(rulerCondition === 2){
