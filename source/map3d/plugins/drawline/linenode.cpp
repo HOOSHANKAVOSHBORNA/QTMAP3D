@@ -1,6 +1,7 @@
 #include "linenode.h"
 #include "drawshapeautoscaler.h"
 #include <osgEarth/GeoMath>
+#include <osgEarthAnnotation/LabelNode>
 #include <osg/Point>
 #include <QLabel>
 #include <QMainWindow>
@@ -356,7 +357,17 @@ void LineNode::setShowSlope(bool showSlope)
 			QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
 			data.qImage = qImage;
 			data.placeNode->setIconImage(data.image);
-			data.placeNode->setStyle(data.placeNode->getStyle());
+//			osgEarth::Annotation::Style style;
+//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
+//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
+//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill() = osgEarth::Color::Black;
+//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->haloBackdropType() = osgText::Text::BackdropType::OUTLINE;
+//			osgEarth::Symbology::Stroke strok;
+//			strok.color() = osgEarth::Color::White;
+//			strok.width() = 0;
+//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->halo() = strok;
+//			data.placeNode->setText(std::to_string(data.slope));
+			data.placeNode->setStyle(getStyle());
 		}
 	}
 	else
@@ -436,18 +447,18 @@ QImage *LineNode::createOrUpdateLabelImg(osg::ref_ptr<osg::Image>& image, double
 		image = new osg::Image;
 	{
 
-		lblImage->fill(QColor(143, 51, 255));
+		lblImage->fill(QColor(Qt::transparent));
 		QPainter painter(lblImage);
 		painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
-		static const QBrush backgroundBrush = QBrush(QColor(0, 0, 0, int(255 * 0.3f)));
+		static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
 		static const QFont textFont("SourceSansPro", 10, QFont::Normal);
 		static const QPen  textPen(QColor(255, 255, 255));
-
+		painter.setPen(Qt::NoPen);
 		painter.setBrush(backgroundBrush);
 		painter.drawRoundedRect(
 					lblImage->rect(),
-					10,2);
+					8,8);
 
 
 		painter.setPen(textPen);
