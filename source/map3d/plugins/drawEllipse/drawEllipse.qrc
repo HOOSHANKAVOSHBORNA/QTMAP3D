@@ -2,7 +2,5 @@
     <qresource prefix="/">
         <file>EllipseProperty.qml</file>
         <file>resources/ellipse.png</file>
-        <file>resources/arrow.png</file>
-        <file>QSpinBox.qml</file>
     </qresource>
 </RCC>

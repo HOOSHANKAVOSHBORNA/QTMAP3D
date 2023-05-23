@@ -2,7 +2,5 @@
     <qresource prefix="/">
         <file>resource/image.png</file>
         <file>ImageProperty.qml</file>
-        <file>resource/arrow.png</file>
-        <file>QSpinBox.qml</file>
     </qresource>
 </RCC>

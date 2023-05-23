@@ -308,7 +308,7 @@ LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *
             mItem->setProperty("lineProperties", QVariant::fromValue<LinePropertiesModel*>(mLineProperties));
         }
     });
-    comp->loadUrl(QUrl("qrc:/resources/LineProperty.qml"));
+    comp->loadUrl(QUrl("qrc:/LineProperty.qml"));
     //--------------------------------------------------------------------------------------------------
 
 }

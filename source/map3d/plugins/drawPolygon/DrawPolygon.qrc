@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/polygon.png</file>
-        <file>resources/PolygonProperties.qml</file>
-        <file>resources/arrow.png</file>
-        <file>resources/QSpinBox.qml</file>
+        <file>PolygonProperties.qml</file>
     </qresource>
 </RCC>
