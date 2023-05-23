@@ -43,7 +43,7 @@ void ConePropertiesModel::setLocation(const QVector3D &location)
         osgEarth::GeoPoint tmpLocation = mCone->getPosition();
         tmpLocation.x() = static_cast<double>(location.x());
         tmpLocation.y() = static_cast<double>(location.y());
-        tmpLocation.z() = static_cast<double>(location.z());
+        tmpLocation.z() = static_cast<double>(location.z()+mCone->getHeight().getValue()/2);
         mCone->setPosition(tmpLocation);
         emit positionToQmlChanged();
     }

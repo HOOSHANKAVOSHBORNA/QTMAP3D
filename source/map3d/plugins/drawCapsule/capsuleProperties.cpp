@@ -43,7 +43,7 @@ void CapsulePropertiesModel::setLocation(const QVector3D &location)
         osgEarth::GeoPoint tmpLocation = mCapsule->getPosition();
         tmpLocation.x() = static_cast<double>(location.x());
         tmpLocation.y() = static_cast<double>(location.y());
-        tmpLocation.z() = static_cast<double>(location.z());
+        tmpLocation.z() = static_cast<double>(location.z()+mCapsule->getHeight().getValue()/2);
         mCapsule->setPosition(tmpLocation);
         emit positionToQmlChanged();
     }

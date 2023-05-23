@@ -187,7 +187,7 @@ void BoxProperties::setLocation(osgEarth::GeoPoint location)
     QVector3D tmp;
     tmp.setX(static_cast<float>(location.x()));
     tmp.setY(static_cast<float>(location.y()));
-    tmp.setZ(static_cast<float>(location.z()));
+    tmp.setZ(static_cast<float>(location.z()+mBoxProperties->getHeight()/2));
 
     mBoxProperties->setLocation(tmp);
 }

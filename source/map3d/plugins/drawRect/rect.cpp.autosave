@@ -14,7 +14,6 @@ Rect::Rect(MapController *mapController){
     //rectseStyle.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
     this->setWidth(osgEarth::Distance(10, osgEarth::Units::KILOMETERS));
     this->setHeight(osgEarth::Distance(5, osgEarth::Units::KILOMETERS));
-
     this->setStyle(rectseStyle);
 }
 

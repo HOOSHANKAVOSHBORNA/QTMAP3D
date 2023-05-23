@@ -10,15 +10,11 @@
 #include "mapcontroller.h"
 #include <QDebug>
 
-
-
 Box::Box()
 {
     construct();
     compile();
 }
-
-
 
 void Box::construct()
 {
@@ -26,8 +22,6 @@ void Box::construct()
     mColor = osgEarth::Color::White;
 
 }
-
-
 
 void Box::compile()
 {
@@ -122,8 +116,6 @@ void Box::setCenter(osg::Vec3 center)
         compile();
     }
 }
-
-
 
 void Box::setHeight(double height)
 {
