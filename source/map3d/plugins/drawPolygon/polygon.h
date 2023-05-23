@@ -7,7 +7,7 @@
 class Polygon : public osgEarth::Annotation::FeatureNode
 {
 public:
-    Polygon(MapController *mapController, bool clamp);
+    Polygon(MapController *mapController);
     double getSize();
     void setLineColor(osgEarth::Color color);
     osgEarth::Color getLineColor();

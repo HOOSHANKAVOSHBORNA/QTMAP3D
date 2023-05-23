@@ -161,10 +161,10 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
 
     connect(mapControler, &MapController::modeChanged, this, &StationModelNode::onModeChanged);
 
-    mRangeCircle = new Circle(mMapController, true);
+    mRangeCircle = new Circle(mMapController);
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
 
-    mVisiblePolygon = new Polygon(mMapController, true);
+    mVisiblePolygon = new Polygon(mMapController);
     mVisiblePolygon->setLineColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
     mVisiblePolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.5f));
 }

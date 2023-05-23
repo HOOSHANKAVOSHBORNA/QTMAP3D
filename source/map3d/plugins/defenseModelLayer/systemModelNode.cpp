@@ -20,7 +20,7 @@ const float RANGE3D = 600;//std::numeric_limits<float>::max();;
 SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::Data* systemData, QObject* parent)
 	:DefenseModelNode(defenseModelLayer->mMapController, parent),
 	  mDefenseModelLayer(defenseModelLayer),
-	  mSystemData(systemData)
+	  mData(systemData)
 {
 	mIs3D = mDefenseModelLayer->mMapController->getMode();
 	//--create root node--------------------------------------------------------------------------
@@ -151,7 +151,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
 		mRootNode->addChild(mNode3D, 0, 0);
 		mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
 	}
-	mBackCircleNode = new Circle(mDefenseModelLayer->mMapController, false);
+	mBackCircleNode = new Circle(mDefenseModelLayer->mMapController);
 	mBackCircleNode->setRadius(6.5);
 	//	mBackCircleNode->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 	mBackCircleNode->setColor(osgEarth::Color(0.2f, 0.2f, 0.2f, 0.05f));
@@ -176,19 +176,19 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
 	mNode3D->addChild(mBackCircleNode);
 
 
-	//map mode changed-----------------------------------------------------------------------
-	connect(mDefenseModelLayer->mMapController, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
-	//--create shapes-----------------------------------------------------------------------------
-	mRangeCircle = new Circle(mDefenseModelLayer->mMapController, true);
-	mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
+    //map mode changed-----------------------------------------------------------------------
+    connect(mDefenseModelLayer->mMapController, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
+    //--create shapes-----------------------------------------------------------------------------
+    mRangeCircle = new Circle(mDefenseModelLayer->mMapController);
+    mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
 
 	mMezSphere = new SphereNode();
 	mMezSphere->setColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
 	mMezSphere->setSphereShape(SphereNode::SphereShape::SphereTopHalf);
 
-	mWezPolygon = new Polygon(mDefenseModelLayer->mMapController, false);
-	mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
-	mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
+    mWezPolygon = new Polygon(mDefenseModelLayer->mMapController);
+    mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
+    mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
 	if (!mSystemInfoItem) {
 		mSystemInfoItem = new SystemInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mData, this);

@@ -92,20 +92,21 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
 		data.placeNode = placeNode;
 		mVecLabelData.push_back(data);
 		placeNode->setIconImage(image);
-				double latMidP;
-				double lonMidP;
-		double zMidP = ((mLineGeometry->at(mLineGeometry->size() - 2).z())+(mLineGeometry->at(mLineGeometry->size() - 1).z()))/2;
-		osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
-									(mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
 
-		osgEarth::GeoMath().midpoint(osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 2).x())),
-											 osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 2).y())),
-											 osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).x())),
-											 osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).y())),
-											 latMidP, lonMidP);
+                double latMidP;
+                double lonMidP;
+        double zMidP = ((mLineGeometry->at(mLineGeometry->size() - 2).z())+(mLineGeometry->at(mLineGeometry->size() - 1).z()))/2;
+//		osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+//									(mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
 
-		osgEarth::GeoPoint midpoint(mMapController->getMapSRS()->getGeographicSRS(),osg::RadiansToDegrees(latMidP),osg::RadiansToDegrees(lonMidP),zMidP);
-		placeNode->setPosition(midPoint);
+        osgEarth::GeoMath().midpoint(osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 2).x())),
+                                             osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 2).y())),
+                                             osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).x())),
+                                             osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).y())),
+                                             latMidP, lonMidP);
+
+        osgEarth::GeoPoint midpoint(mMapController->getMapSRS()->getGeographicSRS(),osg::RadiansToDegrees(latMidP),osg::RadiansToDegrees(lonMidP),zMidP);
+        placeNode->setPosition(midpoint);
 
 		placeNode->setStyle(placeNode->getStyle());
 		mLabelGroup->addChild(placeNode);

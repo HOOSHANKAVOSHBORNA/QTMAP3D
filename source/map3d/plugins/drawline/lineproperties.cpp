@@ -12,7 +12,6 @@ LinePropertiesModel::LinePropertiesModel(QObject *parent) :
     QObject(parent)
 {
 
-
 }
 
 QString LinePropertiesModel::getColor() const
@@ -24,9 +23,17 @@ void LinePropertiesModel:: setColor(const QString &value){
         return;
     mColor = value;
     if(mLineNode){
-        mLineNode->setColor(value.toStdString());
+        osgEarth::Color tmpColor = mLineNode->getColor();
+        float A = tmpColor.a();
+        tmpColor = mColor.toStdString();
+        tmpColor.a() = A;
+        mLineNode->setColor(tmpColor);
     }else if(mMeasureHeight){
-        mMeasureHeight->setColor(value.toStdString());
+        osgEarth::Color tmpColor = mMeasureHeight->getColor();
+        float A = tmpColor.a();
+        tmpColor = mColor.toStdString();
+        tmpColor.a() = A;
+        mMeasureHeight->setColor(tmpColor);
     }
 
 }
@@ -40,10 +47,14 @@ void LinePropertiesModel::setLineOpacity(const int &value){
         return;
     mLineOpacity = value;
     if(mLineNode){
-        float tempValue = value;
-        mOpColor = mLineNode->getColor();
-        mOpColor.a() = tempValue /100;
-        mLineNode->setColor(osg::Vec4f(mOpColor));
+        osgEarth::Color tmpColor = mLineNode->getColor();
+        tmpColor.a() = static_cast<float>(value) / 100;
+        mLineNode->setColor(tmpColor);
+    }
+    else if (mMeasureHeight) {
+        osgEarth::Color tmpColor = mMeasureHeight->getColor();
+        tmpColor.a() = static_cast<float>(value) / 100;
+        mMeasureHeight->setColor(tmpColor);
     }
 }
 
@@ -223,14 +234,16 @@ void LinePropertiesModel::setLine(LineNode* linNode)
     if(!linNode){
         return;
     }
-    mLineNode->setColor(mColor.toStdString());
     mLineNode->setWidth(mWidth);
     mLineNode->setTessellation(mTesselation);
     mLineNode->setClamp(mClamp);
     mLineNode->setShowBearing(mShowBearing);
     mLineNode->setShowSlope(mShowSlope);
-    mLineNode->setColor(mOpColor);
-
+    osgEarth::Color tmpColorL = mLineNode->getColor();
+    float opacity = mLineOpacity;
+    tmpColorL  = mColor.toStdString();
+    tmpColorL.a() = opacity / 100;
+    mLineNode->setColor(tmpColorL);
 
     if(mRuler == 0)
     {
@@ -240,31 +253,23 @@ void LinePropertiesModel::setLine(LineNode* linNode)
         mLineNode->setPointVisible(mVisible);
         mLineNode->setHeight(mHeight);
 		mLineNode->setShowDistance(mShowLen);
-        mLineNode->setColor(mOpColor);
+
     }
     else if(mRuler == 1)
     {
-        mLineNode->setColor(mColor.toStdString());
         mLineNode->setWidth(mWidth);
         mLineNode->setShowDistance(true);
-        mLineNode->setColor(mOpColor);
     }
 
     else if(mRuler == 2)
     {
-        mLineNode->setColor(mColor.toStdString());
         mLineNode->setWidth(mWidth);
-        mLineNode->setColor(mOpColor);
     }
     else if(mRuler == 3)
     {
-        mLineNode->setColor(mColor.toStdString());
         mLineNode->setWidth(mWidth);
         mLineNode->setShowSlope(true);
-        mLineNode->setColor(mOpColor);
-
     }
-
 }
 
 void LinePropertiesModel::setMeasureHeight(MeasureHeight *measureHeight)
@@ -274,7 +279,11 @@ void LinePropertiesModel::setMeasureHeight(MeasureHeight *measureHeight)
     if(!measureHeight){
         return;
     }
-    mMeasureHeight->setColor(mColor.toStdString());
+    osgEarth::Color tmpColorH = mMeasureHeight->getColor();
+    float opacity = mLineOpacity;
+    tmpColorH  = mColor.toStdString();
+    tmpColorH.a() = opacity / 100;
+    mMeasureHeight->setColor(tmpColorH);
     mMeasureHeight->setWidth(mWidth);
 }
 
