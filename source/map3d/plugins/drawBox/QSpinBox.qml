@@ -8,16 +8,16 @@ Item {
 
     property var steps: [5000,1000,100,10,5,1,0.5,0.1,0.05,0.01,0.005,0.001]
     property int index: 5
-    property var value: 0
+    property double value
     property string secondaryColor: "orange"
     property string btntxtColor   : "#c9c9c9"
     property string primaryColor   : "#424242"
     property double showText
     property int    spinSpeed     : 30
-    property int    decimals      : 0
+    property int    decimals
     property double from          : -9999999999999
     property double to            : 9999999999999
-    property bool round: true
+    property bool round: false
 
     onShowTextChanged: value = showText
 
@@ -54,8 +54,6 @@ Item {
             x:2
             y:2
             color: primaryColor
-//            border.width: 1
-//            border.color: primaryColor
             clip: true
             radius: round ? height/4 : 0
 
@@ -69,7 +67,7 @@ Item {
                     text: steps[index]
                     anchors.margins: 1
                     color: btntxtColor
-                    font.pixelSize: parent.height/3.5
+                    font.pointSize:  parent.height/2.5
                     anchors.centerIn: parent
                     rotation: 0
                 }
@@ -225,9 +223,10 @@ Item {
                     selectionColor: secondaryColor
                     selectedTextColor: primaryColor
                     font.pointSize: parent.height *0.4
-                    onTextEdited: value = text
+                    onTextEdited: value = parseFloat(text)
                     mouseSelectionMode: TextInput.SelectCharacters
                     autoScroll: true
+                    inputMethodHints: "ImhFormattedNumbersOnly"
 
                 }
             }

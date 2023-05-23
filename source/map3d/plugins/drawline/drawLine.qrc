@@ -1,10 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/line.png</file>
-        <file>resources/LineProperty.qml</file>
         <file>resources/ruler.png</file>
         <file>resources/height.png</file>
-        <file>resources/arrow.png</file>
-        <file>resources/QSpinBox.qml</file>
+        <file>LineProperty.qml</file>
     </qresource>
 </RCC>

@@ -30,8 +30,6 @@ Item {
 
 
 
-
-
     Item {
         id: dialog
         width: 250
@@ -174,7 +172,7 @@ Item {
                                 id: opacityContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
-                                height: 35
+                                height: 30
                                 z:10
                                                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
@@ -219,7 +217,7 @@ Item {
                                 id:locationContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
-                                height: 110
+                                height: 100
                                 border.color: "#5f5f5f"
                                 border.width: 1
                                 z:9
@@ -238,9 +236,9 @@ Item {
                                         //                                            font.pointSize: 10
                                         //                                        }
                                         Rectangle{
-                                            height: 35
+                                            height: 30
                                             width: locationContainer.width
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             //                                            clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
@@ -272,9 +270,9 @@ Item {
                                         //                                            font.pointSize: 10
                                         //                                        }
                                         Rectangle{
-                                            height: 35
+                                            height: 30
                                             width: locationContainer.width
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             //                                            clip:  true
                                             radius: 5
 
@@ -304,9 +302,9 @@ Item {
                                         //                                            font.pointSize: 10
                                         //                                        }
                                         Rectangle{
-                                            height: 35
+                                            height: 30
                                             width: locationContainer.width
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             //                                            clip:  true
                                             radius: 5
 
@@ -329,7 +327,7 @@ Item {
                                 id: locationTitle
                                 Layout.fillWidth: true
                                 color: "#404040"
-                                height: 110
+                                height: 100
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
@@ -388,7 +386,7 @@ Item {
                                 id: lengthContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
-                                height: 35
+                                height: 30
                                 z:6
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
@@ -396,6 +394,8 @@ Item {
                                 QSpinBox {
                                     id: lengthValue
                                     value: 40000.00
+                                    from : 0
+
 //                                    step: 1000
                                     z:6
                                     anchors.fill:parent
@@ -428,7 +428,7 @@ Item {
                                 id: widthContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
-                                height: 35
+                                height: 30
                                 z:5
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
@@ -436,6 +436,7 @@ Item {
                                 QSpinBox {
                                     id: widthValue
                                     value: 40000.00
+                                    from:0
 //                                    step: 1000
                                     z:5
                                     anchors.fill:parent
@@ -468,7 +469,7 @@ Item {
                                 id: heightContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
-                                height: 35
+                                height: 30
                                 z:4
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
@@ -476,6 +477,7 @@ Item {
                                 QSpinBox {
                                     id: heightValue
                                     value: 40000.00
+                                    from:0
 //                                    step: 1000
                                     z:4
                                     anchors.fill:parent
