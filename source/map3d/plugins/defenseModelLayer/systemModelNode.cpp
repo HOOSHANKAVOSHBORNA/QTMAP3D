@@ -174,14 +174,14 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     //map mode changed-----------------------------------------------------------------------
     connect(mDefenseModelLayer->mMapController, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------
-    mRangeCircle = new Circle(mDefenseModelLayer->mMapController, true);
+    mRangeCircle = new Circle(mDefenseModelLayer->mMapController);
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
 
     mMezSphere = new SphereNode();
     mMezSphere->setColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
     mMezSphere->setSphereShape(SphereNode::SphereShape::SphereTopHalf);
 
-    mWezPolygon = new Polygon(mDefenseModelLayer->mMapController, false);
+    mWezPolygon = new Polygon(mDefenseModelLayer->mMapController);
     mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 

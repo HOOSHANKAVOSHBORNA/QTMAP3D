@@ -21,17 +21,11 @@ float Circle::getCircleHeight()
     return style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
 }
 
-Circle::Circle(MapController *mapController, bool clamp)
+Circle::Circle(MapController *mapController)
 {
     mMapController = mapController;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() ;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = true;
-    if (clamp){
-        circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    }
-    else {
-        circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
-    }
     circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
     this->setRadius(osgEarth::Distance(300, osgEarth::Units::KILOMETERS));
@@ -41,7 +35,6 @@ Circle::Circle(MapController *mapController, bool clamp)
     this->setPie(true);
 
 }
-
 void Circle::setColor(osgEarth::Color color)
 {
     auto style = this->getStyle();

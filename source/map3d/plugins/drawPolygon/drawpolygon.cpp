@@ -130,7 +130,7 @@ void DrawPolygon::mouseDoubleClickEvent(QMouseEvent *event)
 
 void DrawPolygon::startDraw(QMouseEvent *event)
 {
-    mPolygon = new Polygon(mMapController, true);
+    mPolygon = new Polygon(mMapController);
     mMapController->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::DRAWING;
     mPolygonProperties->setPolygon(mPolygon);

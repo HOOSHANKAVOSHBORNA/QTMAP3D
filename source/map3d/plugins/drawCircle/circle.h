@@ -6,7 +6,7 @@
 class Circle: public osgEarth::Annotation::CircleNode
 {
 public:
-    Circle(MapController *mapController, bool clamp);
+    Circle(MapController *mapController);
 
     void setCircleHeight(float hieght);
     void setColor(osgEarth::Color color);

@@ -85,7 +85,7 @@ Item {
                     hoverEnabled: true
                     onEntered: upColor.color = secondaryColor
                     onExited: upColor.color = btntxtColor
-                    onPressed: if(index !=0){index --}
+                    onPressed: if(index >0){index --}
                 }
                 ColorOverlay{
                     id:upColor
@@ -182,10 +182,14 @@ Item {
                     onPressed:  {
                         if(value < from){value = from}
                         else if(value > to){value = to}
-                        else if(value > from && value <= to){
+                        else if(value > from && value <= to && value > steps[index]){
                             spindownColor.color = btntxtColor
                             value -= steps[index]
                         }
+                        else if (steps[index] > value){
+                            value = from
+                        }
+
                     }
                     onPressAndHold: timerDown.start();
                     onReleased: {

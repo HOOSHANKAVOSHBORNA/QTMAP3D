@@ -104,7 +104,7 @@ osgEarth::Annotation::PlaceNode *DrawCircle::makeIconNode()
 
 void DrawCircle::startDraw(QMouseEvent *event)
 {
-    mCircle = new Circle(mMapcontroller, true);
+    mCircle = new Circle(mMapcontroller);
     mCircleProperties->setCircle(mCircle);
 
     mDrawingState = DrawingState::DRAWING;
