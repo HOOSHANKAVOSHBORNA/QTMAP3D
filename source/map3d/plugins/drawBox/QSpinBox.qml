@@ -17,7 +17,7 @@ Item {
     property int    decimals
     property double from          : -9999999999999
     property double to            : 9999999999999
-    property bool round: false
+    property bool round: true
 
     onShowTextChanged: value = showText
 

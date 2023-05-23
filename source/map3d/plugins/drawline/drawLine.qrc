@@ -4,5 +4,6 @@
         <file>resources/ruler.png</file>
         <file>resources/height.png</file>
         <file>LineProperty.qml</file>
+        <file>resources/slope.png</file>
     </qresource>
 </RCC>

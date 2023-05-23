@@ -393,6 +393,7 @@ void AircraftModelNode::frameEvent()
 
 	mStatusNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 
+	qDebug()<<"tn:"<<mData->info.TN;
 	if(mTempLine->getSize() > 1)
 		mTempLine->removePoint();
 	mTempLine->addPoint(getPosition());

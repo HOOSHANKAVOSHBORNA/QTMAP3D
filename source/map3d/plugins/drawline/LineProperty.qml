@@ -980,6 +980,10 @@ Item {
             smoothContainerTitle.visible = false
             lenContainer.visible = false
             lenContainerTitle.visible = false
+            beaContainer.visible = false
+            beaContainerTitle.visible = false
+            slopeContainer.visible = false
+            slopeContainerTitle.visible = false
             transContainer.visible = false
             heightContainer.visible = false
             clampContainer.visible = false
@@ -1022,11 +1026,37 @@ Item {
             clampContainerTitle.visible = false
             tesselationContainer.visible = false
             tesselationContainerTitle.visible = false
+            slopeContainer.visible = false
+            slopeContainerTitle.visible = false
             beaContainer.visible = false
             beaContainerTitle.visible = false
-            lineProperties.showLen = true
+            lineProperties.showLen = false
             lineProperties.visible = false
             headerTitleSTR = "Height Measure"
+        }
+
+        else if(rulerCondition === 3){
+            pointGroup.visible = false;
+            smoothContainer.visible = false
+            smoothContainerTitle.visible = false
+            lenContainer.visible = false
+            lenContainerTitle.visible = false
+            beaContainer.visible = false
+            beaContainerTitle.visible = false
+            slopeContainer.visible = false
+            slopeContainerTitle.visible = false
+            transContainer.visible = false
+            heightContainer.visible = false
+            clampContainer.visible = false
+            clampContainerTitle.visible = false
+            tesselationContainer.visible = false
+            tesselationContainerTitle.visible = false
+            lineProperties.showLen = false
+            lineProperties.showSlope = true
+            lineProperties.bearing = false
+            lineProperties.visible = false
+            headerTitleSTR = "Slope Properties"
+
         }
     }
 }

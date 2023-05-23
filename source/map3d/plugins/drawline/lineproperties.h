@@ -108,6 +108,8 @@ private:
     bool                                              mShowBearing{false};
     bool                                              mShowSlope{false};
 
+    osg::Vec4f mOpColor{0,0,0,100};
+
 
 
     LineNode* mLineNode{nullptr};

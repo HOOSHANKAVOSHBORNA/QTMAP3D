@@ -34,6 +34,7 @@ const QString LINE = "Line";
 const QString M_CATEGORY = "Measurement";
 const QString RULER = "Ruler";
 const QString MEASUREHEIGHT = "Measure Height";
+const QString SLOPE = "Slope";
 
 
 drawLine::drawLine(QWidget *parent)
@@ -51,6 +52,7 @@ bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     desc->toolboxItemsList.push_back(new ItemDesc{LINE, CATEGORY, "qrc:/resources/line.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{RULER, M_CATEGORY, "qrc:/resources/ruler.png", true});
     desc->toolboxItemsList.push_back(new ItemDesc{MEASUREHEIGHT, M_CATEGORY, "qrc:/resources/height.png", true});
+    desc->toolboxItemsList.push_back(new ItemDesc{SLOPE, M_CATEGORY, "qrc:/resources/slope.png", true});
     return true;
 }
 
@@ -69,7 +71,6 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
         {
             if(checked)
             {
-                mLenghtShow = true;
                 mEnterLineZone = true;
                 mType = Type::LINE;
                 mDrawingState = DrawingState::START;
@@ -97,7 +98,6 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
     {
         if(checked)
         {
-            mLenghtShow = true;
             mEnterLineZone = true;
             mType = Type::RULER;
             mDrawingState = DrawingState::START;
@@ -121,6 +121,35 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
         }
     }
+
+    if(name == SLOPE)
+    {
+        if(checked)
+        {
+            mEnterLineZone = true;
+            mType = Type::SLOPE;
+            mDrawingState = DrawingState::START;
+            mLineProperties = new LineProperties(mQmlEngine,muiHandle );
+            mLineProperties->setIsRuler(3);
+            mLineProperties->show();
+            mIconNode = makeIconNode();
+            mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+        }
+        else
+        {
+            mEnterLineZone = false;
+            mType = Type::NONE;
+            mDrawingState = DrawingState::FINISH;
+            if(mLineProperties){
+                    mLineProperties->hide();
+         }
+            mLineProperties->deleteLater();
+            mLineProperties = nullptr;
+            mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+        }
+    }
+
 
     if(name == MEASUREHEIGHT)
     {
@@ -168,7 +197,7 @@ void drawLine::mousePressEvent(QMouseEvent *event)
             }
             if(mDrawingState == DrawingState::DRAWING && mType != Type::HEIGHT)
             {
-                if (mType == Type::RULER && mLine->getSize()>= 2){
+                if ((mType == Type::RULER || mType == Type::SLOPE)  && mLine->getSize()>= 2){
                     finishDrawing(event);
                     //mDrawingState = DrawingState::START;
                 }
@@ -292,16 +321,19 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
 PlaceNode *drawLine::makeIconNode()
 {
     switch(mType) {
-      case Type::LINE:
+    case Type::LINE:
         mIcon = osgDB::readImageFile("../data/images/draw/line.png");
         break;
-      case Type::RULER:
+    case Type::RULER:
         mIcon = osgDB::readImageFile("../data/images/draw/ruler.png");
         break;
-      case Type::HEIGHT:
+    case Type::HEIGHT:
         mIcon = osgDB::readImageFile("../data/images/draw/height.png");
         break;
-      case Type::NONE:
+    case Type::SLOPE:
+        mIcon = osgDB::readImageFile("../data/images/draw/slope.png");
+        break;
+    case Type::NONE:
         mIcon = nullptr;
         break;
     //default:

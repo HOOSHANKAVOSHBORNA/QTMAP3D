@@ -53,14 +53,13 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
-    enum class Type{NONE, LINE, RULER, HEIGHT};
+    enum class Type{NONE, LINE, RULER, HEIGHT, SLOPE};
     Type mType;
     LineNode* mLine{nullptr};
     MeasureHeight* mMeasureHeight{nullptr};
     LineProperties *mLineProperties = nullptr;
     UIHandle *muiHandle;
     bool mEnterLineZone{false};
-    bool mLenghtShow;
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<osg::Image> mIcon;
 };
