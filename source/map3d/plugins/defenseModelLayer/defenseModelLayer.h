@@ -66,9 +66,9 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 public:
-    MapController *mMapController{nullptr};
-    UIHandle* mUIHandle{nullptr};
-    QQmlEngine *mQmlEngine{nullptr};
+	MapController *mMapController{nullptr};
+	UIHandle* mUIHandle{nullptr};
+	QQmlEngine *mQmlEngine{nullptr};
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
