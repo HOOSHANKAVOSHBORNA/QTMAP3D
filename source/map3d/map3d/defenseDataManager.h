@@ -489,7 +489,7 @@ signals:
     void aircraftAssignedResponse(int tn, int systemNo, bool result);
     //--send command---------------------------------------------
     void aircraftAssigned(int tn, int systemNo);
-    void cancelAircraftAssigned(int tn, int systemNo);
+    void cancelAircraftAssignments(int tn);
     //--system-------------------------------------------------
     void systemInfoChanged(SystemInfo& systemInfo);
     void systemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);

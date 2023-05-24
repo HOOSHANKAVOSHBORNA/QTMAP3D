@@ -54,15 +54,15 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 	});
 	timerUpdateAircraft->start(1000);
 	//--clear aircraft-----------------------------------------
-//		QTimer *timerClearAircraft = new QTimer();
-//		QObject::connect(timerClearAircraft, &QTimer::timeout, [this](){
-//			if(mAircrafts.count() > 0){
-//				emit mDefenseDataManager->clearAircraft(mAircrafts.first().TN);
-//				mAircrafts.remove(mAircrafts.first().TN);
-//	//                mAircrafAssignment.remove(mAircrafts.first().TN);
-//			}
-//		});
-//		timerClearAircraft->start(30000);
+	//		QTimer *timerClearAircraft = new QTimer();
+	//		QObject::connect(timerClearAircraft, &QTimer::timeout, [this](){
+	//			if(mAircrafts.count() > 0){
+	//				emit mDefenseDataManager->clearAircraft(mAircrafts.first().TN);
+	//				mAircrafts.remove(mAircrafts.first().TN);
+	//	//                mAircrafAssignment.remove(mAircrafts.first().TN);
+	//			}
+	//		});
+	//		timerClearAircraft->start(30000);
 	//--assignment -----------------------------------------------------------------------------------------
 	//--add assignment------------------------------------
 	QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
@@ -80,20 +80,20 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 		}
 	});
 	//--cancel assignment---------------------------------
-	QObject::connect(mDefenseDataManager, &DefenseDataManager::cancelAircraftAssigned,[=](int tn, int systemNo){
+	QObject::connect(mDefenseDataManager, &DefenseDataManager::cancelAircraftAssignments,[=](int tn){
 		if(mAircrafAssignment.contains(tn)){
 			auto& assignmens = mAircrafAssignment[tn];
-			for(int i = 0; i< assignmens.count(); i++)
-				if(assignmens[i]->info.Number == systemNo){
-					assignmens.removeAt(i);
+			for(int i = 0; i< assignmens.count(); i++){
+				auto systemNo = assignmens[i]->info.Number;
+				if(mSystemAssignment.contains(systemNo)){
+					auto& assignmens = mSystemAssignment[systemNo];
+					for(int i = 0; i< assignmens.count(); i++)
+						if(assignmens[i]->TN == tn){
+							assignmens.removeAt(i);
+						}
 				}
-		}
-		if(mSystemAssignment.contains(systemNo)){
-			auto& assignmens = mSystemAssignment[systemNo];
-			for(int i = 0; i< assignmens.count(); i++)
-				if(assignmens[i]->TN == tn){
-					assignmens.removeAt(i);
-				}
+			}
+			assignmens.clear();
 		}
 	});
 

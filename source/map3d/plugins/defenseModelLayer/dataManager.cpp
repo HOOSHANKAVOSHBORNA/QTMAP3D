@@ -215,6 +215,7 @@ void DataManager::cancelAircraftAssignments(int tn)
 {
 	mAircraftDataManager->clearAssignments(tn);
 	mSystemDataManager->clearAssignments(tn);
+	emit mDefenseDataManager->cancelAircraftAssignments(tn);
 	//    if(aircraftModelNode)
 	//    {
 	//        auto systemModelNodes = aircraftModelNode->getAssignments();
