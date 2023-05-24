@@ -361,7 +361,7 @@ void AircraftModelNode::setSelectionMode(SelectionMode sm)
 	}
 	else
 	{
-//		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+		mDefenseModelLayer->mMapController->untrack();
 		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
 		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
 		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
@@ -446,8 +446,9 @@ void AircraftModelNode::updateColors()
 void AircraftModelNode::onGotoButtonClicked()
 {
 	//    goOnTrack();
-	mDefenseModelLayer->mMapController->goToPosition(getPosition(), 400, 0);
-	mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform());
+	mDefenseModelLayer->mMapController->goToPosition(getPosition(), 500, 0);
+	if(mIsTrack)
+		mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform(), 400);
 }
 
 void AircraftModelNode::onRouteButtonToggled(bool check)
@@ -481,10 +482,11 @@ void AircraftModelNode::onLatestPointsToggled(bool check) {
 void AircraftModelNode::onTrackButtonToggled(bool check)
 {
 	//std::cout << check << std::endl;
+	mIsTrack = check;
 	if(check)
-		mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform());
+		mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform(), 400);
 	else
-		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+		mDefenseModelLayer->mMapController->untrack();
 }
 
 void AircraftModelNode::onModeChanged(bool is3DView)

@@ -232,7 +232,7 @@ void StationModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
 	}
 	else
 	{
-		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+//		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
 //        onRangeButtonToggled(val);
 //        onVisibleButtonToggled(val);
 	}

@@ -355,7 +355,7 @@ void SystemModelNode::setSelectionMode(SelectionMode sm)
 	}
 	else
 	{
-		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+//		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
 		//        onRangeButtonToggled(val);
 		//        onWezButtonToggled(val);
 		//        onMezButtonToggled(val);
@@ -580,7 +580,7 @@ void SystemModelNode::firePhase(int tn)
 		{
 			mFiredRocket->setAutoScale();
 			mTruckF->shoot(mTargetModelNode->getPosition().vec3d(), 2000);//1000 m/s
-			mDefenseModelLayer->mMapController->setTrackNode(mFiredRocket->getGeoTransform());
+			mDefenseModelLayer->mMapController->setTrackNode(mFiredRocket->getGeoTransform(), 400);
 		}
 	}
 }
@@ -592,7 +592,7 @@ void SystemModelNode::killPhase(int tn)
 	if(index != -1)
 	{
 		auto assignment = mData->assignments.at(index);
-		mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
+		mDefenseModelLayer->mMapController->untrack();
 		assignment->line->setColor(osgEarth::Color::Black);
 		assignment->modelNode->collision();
 
@@ -610,7 +610,7 @@ void SystemModelNode::noKillPhase(int tn)
 	if(index != -1)
 	{
 		auto assignment = mData->assignments.at(index);
-		mDefenseModelLayer->mMapController->untrackNode(mFiredRocket->getGeoTransform());
+		mDefenseModelLayer->mMapController->untrack();
 		assignment->line->setColor(osgEarth::Color::Brown);
 		if(mFiredRocket)
 			mFiredRocket->stop();

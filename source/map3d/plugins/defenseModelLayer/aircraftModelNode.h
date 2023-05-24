@@ -117,6 +117,7 @@ private:
 
 	osg::ref_ptr<osg::Image>    mImage                = nullptr;
 	osg::ref_ptr<osg::Image>    mImageHover           = nullptr;
+	bool mIsTrack{false};
 };
 
 #endif // AIRCRAFTMODELNODE_H
