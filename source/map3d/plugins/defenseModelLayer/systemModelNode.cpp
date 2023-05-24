@@ -181,6 +181,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     //--create shapes-----------------------------------------------------------------------------
     mRangeCircle = new Circle(mDefenseModelLayer->mMapController);
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
+	mRangeCircle->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 
 	mMezSphere = new SphereNode();
 	mMezSphere->setColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
@@ -199,8 +200,8 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
 		connect(mSystemInfoItem->getInfo(), &SystemInfoModel::activeButtonToggled, this, &SystemModelNode::onActiveButtonToggled);
 	}
 
-	mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
-	updateColors();
+//	mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+//	updateColors();
 }
 
 void SystemModelNode::informationChanged()
@@ -342,11 +343,6 @@ void SystemModelNode::statusInfoChanged()
 //        assignModelNods[key] = mAssignmentMap[key]->mModelNode;
 //    return assignModelNods;
 //}
-
-void SystemModelNode::goOnTrack()
-{
-	mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform());
-}
 
 void SystemModelNode::setSelectionMode(SelectionMode sm)
 {

@@ -182,7 +182,12 @@ osg::Vec3d DefenseModelNode::getGeographicPosition() const
 {
     osgEarth::GeoPoint position = getPosition();
     position.makeGeographic();
-    return position.vec3d();
+	return position.vec3d();
+}
+
+void DefenseModelNode::goOn()
+{
+	mMapControler->goToPosition(getPosition(), mMapControler->getViewpoint().getRange(), 0);
 }
 
 void DefenseModelNode::playExplosionEffect(float scale)

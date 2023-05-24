@@ -225,6 +225,7 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 	if(defenseModelNode)
 	{
 		defenseModelNode->mousePressEvent(event, true);
+		defenseModelNode->goOn();
 	}
 	if(mSelectedModelNode && mSelectedModelNode != defenseModelNode)
 		mSelectedModelNode->mousePressEvent(event, false);

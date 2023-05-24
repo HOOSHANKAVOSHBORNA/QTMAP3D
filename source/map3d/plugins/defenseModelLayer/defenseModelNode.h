@@ -51,7 +51,7 @@ public:
     QString getQStringName();
     virtual void setGeographicPosition(const osgEarth::GeoPoint& pos, double heading);
     osg::Vec3d getGeographicPosition() const;
-
+	void goOn();
 
 
     virtual void stop(){}

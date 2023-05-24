@@ -40,7 +40,6 @@ public:
 //    QMap<int, AircraftModelNode *> getAssignments() const;
     System::Data* getData() const;
 
-    void goOnTrack();
 public slots:
 public:
     virtual void frameEvent()override;

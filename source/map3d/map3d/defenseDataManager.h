@@ -238,7 +238,13 @@ struct StationInfo
     int CycleTime = -1;
     RadarStatus RadarSearchStatus;
 
-
+    QColor statusToColor(RadarStatus status) const {
+        switch (status) {
+            case S: return QColor("green");
+            case US: return QColor("red");
+            default: return QColor("red");
+        }
+    }
 
     QString radarStatusToString(RadarStatus status) const
     {
@@ -343,7 +349,7 @@ struct SystemStatusInfo
         switch (status) {
             case S: return QColor("green");
             case US: return QColor("red");
-            default: return QColor("transparent");
+            default: return QColor("red");
         }
     }
     QString radarSearchStatusToString() const{

@@ -54,15 +54,15 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 	});
 	timerUpdateAircraft->start(1000);
 	//--clear aircraft-----------------------------------------
-		QTimer *timerClearAircraft = new QTimer();
-		QObject::connect(timerClearAircraft, &QTimer::timeout, [this](){
-			if(mAircrafts.count() > 0){
-				emit mDefenseDataManager->clearAircraft(mAircrafts.first().TN);
-				mAircrafts.remove(mAircrafts.first().TN);
-	//                mAircrafAssignment.remove(mAircrafts.first().TN);
-			}
-		});
-		timerClearAircraft->start(30000);
+//		QTimer *timerClearAircraft = new QTimer();
+//		QObject::connect(timerClearAircraft, &QTimer::timeout, [this](){
+//			if(mAircrafts.count() > 0){
+//				emit mDefenseDataManager->clearAircraft(mAircrafts.first().TN);
+//				mAircrafts.remove(mAircrafts.first().TN);
+//	//                mAircrafAssignment.remove(mAircrafts.first().TN);
+//			}
+//		});
+//		timerClearAircraft->start(30000);
 	//--assignment -----------------------------------------------------------------------------------------
 	//--add assignment------------------------------------
 	QObject::connect(mDefenseDataManager, &DefenseDataManager::aircraftAssigned,[=](int tn, int systemNo){
@@ -106,7 +106,7 @@ Demo::~Demo()
 
 static int aircraftNumber = 0;
 const int systemNum = 20;
-const int stationNum = 5;
+const int stationNum = 10;
 void Demo::createAircraftInfo()
 {
 	AircraftInfo aircraftInfo;
@@ -250,8 +250,8 @@ void Demo::createSystemInfo()
 		systemStatusInfo.Number = systemInfo.Number;
 		systemStatusInfo.ReceiveTime = "1392/12/01 12:10";
 		systemStatusInfo.Simulation = "simulation";
-		systemStatusInfo.BCCStatus = SystemStatusInfo::S;//s, us
-		systemStatusInfo.RadarSearchStatus = SystemStatusInfo::S;//s, us
+		systemStatusInfo.BCCStatus = static_cast<SystemStatusInfo::RadarStatus>(qrand() % 3);//s, us
+		systemStatusInfo.RadarSearchStatus = static_cast<SystemStatusInfo::RadarStatus>(qrand() % 3);//s, us
 		systemStatusInfo.Operational = static_cast<SystemStatusInfo::OperationStatus>(qrand() % 3);
 		systemStatusInfo.MissileCount = 6;
 		systemStatusInfo.RadarMode = "rMode";
@@ -338,7 +338,7 @@ void Demo::createStationInfo()
 		double radius = (200000 + (qrand() % (500000 - 200000)));
 
 		stationInfo.Name = name;
-		stationInfo.RadarSearchStatus = StationInfo::S;
+		stationInfo.RadarSearchStatus = static_cast<StationInfo::RadarStatus>(qrand() % 3);
 		stationInfo.Number = mStations.count() + 2000;
 		stationInfo.Type = "Type1";
 		stationInfo.Latitude = latitude;
