@@ -150,7 +150,7 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 	mDefenseModelLayer = defenseModelLayer;
 	mIs3D = mDefenseModelLayer->mMapController->getMode();
 	mType = mData->info.Type;
-	mIdentification = mData->info.Identification;
+    mIdentification = mData->info.Identification;
     connect(mDefenseModelLayer->mMapController, &MapItem::modeChanged, this, &AircraftModelNode::onModeChanged);
 
 	//----------------------------------------------------------------------------------------------

@@ -19,6 +19,7 @@ class StationModelNode: public DefenseModelNode
 {
 public:
 	StationModelNode(DefenseModelLayer* defenseModelLayer, Station::Data* data, QObject* parent = nullptr);
+
     void dataChanged();
 public:
     virtual void frameEvent()override;
@@ -37,12 +38,11 @@ private:
     void showInfoWidget();
     void updateOrCreateLabelImage();
 private:
-
 //    MapController* mMapController{nullptr};
 //    StationInfo mInformation;
 //    UIHandle* mUIHandle;
 //    QQmlEngine *mQmlEngine;
-	DefenseModelLayer* mDefenseModelLayer;
+    DefenseModelLayer* mDefenseModelLayer;
     Station::Data* mData;
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<Polygon> mVisiblePolygon;

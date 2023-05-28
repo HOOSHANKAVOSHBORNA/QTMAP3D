@@ -10,7 +10,6 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 	mSystemDataManager(new SystemDataManager(defenseModelLayer)),
 	mStationDataManager(new StationDataManager(defenseModelLayer))
 {
-
 	//--aircraft--------------------------------------------------------
 	QObject::connect(defenseDataManager, &DefenseDataManager::aircraftInfoChanged,this ,&DataManager::onAircraftInfoChanged);
 	QObject::connect(defenseDataManager, &DefenseDataManager::clearAircraft,this ,&DataManager::onClearAircraft);
@@ -24,7 +23,6 @@ DataManager::DataManager(DefenseDataManager *defenseDataManager, DefenseModelLay
 	QObject::connect(defenseDataManager, &DefenseDataManager::stationInfoChanged,this ,&DataManager::onStationInfoChanged);
 
 	//list view---------------------------------------------------------
-
 	mAssignmentTableModel = new AssignmentTableModel(mAircraftDataManager, mSystemDataManager, mDefenseModelLayer);
 	//    connect(mListManager, &ListManager::stationDoubleClicked,[=](int number){
 	//        StationModelNode* stationModelNode = mDefenseModelLayer->getStationModelNode(number);

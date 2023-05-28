@@ -146,16 +146,30 @@ void MapItem::setTrackNode(osg::Node *node, double minDistance)
     getEarthManipulator()->applySettings(camSet);
 }
 
-void MapItem::untrack()
-{
-    auto vp = getEarthManipulator()->getViewpoint();
+//void MapController::untrackNode(osg::Node *node)
+//{
+//    auto vp = getEarthManipulator()->getViewpoint();
 //    if(vp.getNode() == nullptr)
 //        return;
-    vp.setNode(nullptr);
-    getEarthManipulator()->setViewpoint(vp);
+//    if(vp.getNode() != node)
+//        return;
+//    vp.setNode(nullptr);
+//    getEarthManipulator()->setViewpoint(vp);
+//    auto camSet = getEarthManipulator()->getSettings();
+//    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
+//	getEarthManipulator()->applySettings(camSet);
+//}
 
-    auto camSet = getEarthManipulator()->getSettings();
-    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
+void MapItem::untrack()
+{
+	auto vp = getEarthManipulator()->getViewpoint();
+//    if(vp.getNode() == nullptr)
+//        return;
+	vp.setNode(nullptr);
+	getEarthManipulator()->setViewpoint(vp);
+
+	auto camSet = getEarthManipulator()->getSettings();
+	camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
     getEarthManipulator()->applySettings(camSet);
 
 }
