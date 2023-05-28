@@ -11,28 +11,26 @@ Item {
 
 
 
-    property EllipseProperties ellipseProperties
-    property string headerTitleSTR: "Ellipse Properties"
+    property PolygonProperties polygonProperties
+    property string headerTitleSTR: "Polygon Properties"
     property string fillColor: "#91001d"
     property string lineColor: "#ffffff"
 
 
     onVisibleChanged: {
-        ellipseProperties.fillcolor = fillColor
-        ellipseProperties.transparency = opacityValue.value
-        ellipseProperties.linecolor = lineColor;
-        ellipseProperties.lineopacity = lineopacityValue.value
-        ellipseProperties.ellipseheight = transValue.value
-        ellipseProperties.lineWidth = lineValue.value;
+        polygonProperties.fillcolor = fillColor
+        polygonProperties.linecolor = lineColor
+        polygonProperties.height = transValue.value
+        polygonProperties .lineWidth = lineValue.value
+        polygonProperties.lineopacity = lineopacityValue.value
+        polygonProperties.transparency = opacityValue.value
     }
-
 
 
     Item {
         id: dialog
         width: 250
         height: rootItem.height
-
 
         //////////////////////////Main Content////////////////////////
         Rectangle {
@@ -75,6 +73,7 @@ Item {
                 padding: 5
                 width: parent.width
                 height: parent.height - header.height
+//                ScrollBar.vertical.policy: ScrollBar.AlwaysOn
                 Flickable {
                     contentHeight: 400
                     width: 240
@@ -98,7 +97,7 @@ Item {
 
                             ////////////////////////////////////fill Color Property//////////////////////////////////
                             Rectangle{
-                                Layout.fillWidth: true
+                                                                Layout.fillWidth: true
                                 width: parent.width/1.9
                                 color: "#404040"
                                 height: 35
@@ -143,7 +142,7 @@ Item {
                                     title: "Please choose a color"
                                     onAccepted: {
                                         fillColor = fillColorDialog.color
-                                        ellipseProperties.fillcolor= fillColor.toString()
+                                        polygonProperties.fillcolor = fillColor.toString()
                                     }
 
                                 }
@@ -156,7 +155,7 @@ Item {
 
 
                                 Text {
-                                    id: fillColorEllipse
+                                    id: fillColorpolygon
                                     text: qsTr("Fill Color :")
                                     font.pointSize: 10
                                     color: "white"
@@ -180,12 +179,12 @@ Item {
                                     to : 100
                                     from : 0
                                     anchors.fill: parent
-                                    onValueChanged: {
-                                        if(ellipseProperties){
-                                            ellipseProperties.transparency = value
+                                        onValueChanged: {
+                                            if(polygonProperties){
+                                                polygonProperties.transparency = value
+                                            }
                                         }
                                     }
-                                }
                             }
                             Rectangle{
                                 id: opacityTitle
@@ -196,7 +195,7 @@ Item {
                                 //                                border.width: 1
 
                                 Text {
-                                    id: opacityEllipse
+                                    id: opacitypolygon
                                     text: qsTr("Opacity:")
                                     font.pointSize: 10
                                     color: "white"
@@ -256,7 +255,7 @@ Item {
                                     onAccepted: {
                                         //                                    lineColor = lineColorDialog.color
                                         lineColor = lineColorDialog.color
-                                        ellipseProperties.linecolor = lineColor
+                                        polygonProperties.linecolor = lineColor
                                     }
 
                                 }
@@ -296,8 +295,8 @@ Item {
                                     from : 0
                                     anchors.fill: parent
                                         onValueChanged: {
-                                            if(ellipseProperties){
-                                                ellipseProperties.lineopacity = value
+                                            if(polygonProperties){
+                                                polygonProperties.lineopacity = value
                                             }
                                         }
                                     }
@@ -307,8 +306,11 @@ Item {
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
+
                                 Text {
-                                    id: lineopacityEllipse
+                                    id: lineopacitypolygon
                                     text: qsTr("Stroke Opacity:")
                                     font.pointSize: 10
                                     color: "white"
@@ -329,13 +331,13 @@ Item {
 
                                 QSpinBox {
                                     id: lineValue
-                                    value: 10
+                                    value: 0
                                     to : 100000
                                     from : 0
                                     anchors.fill: parent
                                         onValueChanged: {
-                                            if(ellipseProperties && lineValue && (lineValue.value == 0 || lineValue.value)){
-                                                ellipseProperties.lineWidth = value
+                                            if(polygonProperties && lineValue && (lineValue.value == 0 || lineValue.value)){
+                                                polygonProperties.lineWidth = value
                                             }
                                         }
                                     }
@@ -358,9 +360,6 @@ Item {
                                 }
                             }
 
-
-
-
                             ///////////////////////////////////height/////////////////////////////////////
                             Rectangle{
                                 id: transContainer
@@ -377,8 +376,8 @@ Item {
                                     from : 0
                                     anchors.fill: parent
                                         onValueChanged: {
-                                            if(ellipseProperties && transValue && (transValue.value == 0 || transValue.value)){
-                                                ellipseProperties.ellipseheight = value
+                                            if(polygonProperties && transValue && (transValue.value == 0 || transValue.value)){
+                                                polygonProperties.height = value
                                             }
                                         }
                                     }
@@ -403,8 +402,6 @@ Item {
 
 
 
-
-
                             /////////////////////////////////// Clamp ///////////////////////////////////////////
                             Rectangle{
                                 id: clampContainer
@@ -418,8 +415,8 @@ Item {
                                     model: ["None", "Terrain", "Relative","Absolute"]
                                     anchors.centerIn: parent
                                     onCurrentIndexChanged:   {
-                                        if (ellipseProperties)
-                                            ellipseProperties.clamp = currentIndex
+                                        if (polygonProperties)
+                                            polygonProperties.clamp = currentIndex
                                     }
 
                                     delegate: ItemDelegate {

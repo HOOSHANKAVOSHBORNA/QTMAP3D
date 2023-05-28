@@ -163,7 +163,7 @@ PolygonProperties::PolygonProperties(QQmlEngine *engine, UIHandle *uiHandle,  QO
             mItem->setProperty("polygonProperties", QVariant::fromValue<PolygonPropertiesModel*>(mPolygonProperties));
         }
     });
-    comp->loadUrl(QUrl("qrc:/resources/PolygonProperties.qml"));
+    comp->loadUrl(QUrl("qrc:/PolygonProperties.qml"));
     //--------------------------------------------------------------------------------------------------
 
 }

@@ -258,5 +258,6 @@ SystemTableModel *SystemTable::getModel() const
 void SystemTable::onDoubleClicked(int number)
 {
     if (mSystemDataManger->getSystemsData().contains(number))
-        mSystemDataManger->getSystemsData()[number]->systemModelNode->onLeftButtonClicked(true);
+		mDefenseModelLayer->selectModelNode(mSystemDataManger->getSystemsData()[number]->systemModelNode);
+//        mSystemDataManger->getSystemsData()[number]->systemModelNode->onLeftButtonClicked(true);
 }

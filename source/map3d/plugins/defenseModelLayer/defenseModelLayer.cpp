@@ -215,7 +215,30 @@ bool DefenseModelLayer::setup(MapItem *mapItem,
 void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
 //    auto listManager = new ListManager(mQmlEngine, mUIHandle, this);
-    mDataManager = new DataManager(defenseDataManager, this);
+	mDataManager = new DataManager(defenseDataManager, this);
+}
+
+void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
+{
+	QMouseEvent* event = new QMouseEvent(QEvent::Type::Enter, QPointF(0,0), Qt::MouseButton::LeftButton,
+										 Qt::MouseButton::LeftButton, Qt::KeyboardModifier::NoModifier);
+	if(defenseModelNode)
+	{
+		defenseModelNode->mousePressEvent(event, true);
+		defenseModelNode->goOn();
+	}
+	if(mSelectedModelNode && mSelectedModelNode != defenseModelNode)
+		mSelectedModelNode->mousePressEvent(event, false);
+	if(defenseModelNode)
+		mSelectedModelNode = defenseModelNode;
+}
+
+void DefenseModelLayer::modelNodeDeleted(DefenseModelNode *defenseModelNode)
+{
+	if(mSelectedModelNode == defenseModelNode)
+		mSelectedModelNode = nullptr;
+	if(mOnMoveModelNode == defenseModelNode)
+		mOnMoveModelNode = nullptr;
 }
 
 //void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
@@ -341,50 +364,50 @@ void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataMan
 //    return nullptr;
 //}
 
-void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
-{
-    AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(defenseModelNode);
-    if(aircraftModelNode){
-        if(mSelectedModelNode) {
-            //mSelectedModelNode->select(false);
-            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
-            mSelectedModelNode->updateColors();
-        }
-        mSelectedModelNode = aircraftModelNode;
-        aircraftModelNode->onLeftButtonClicked(true);
-        aircraftModelNode->goOnTrack();
-        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
-        mSelectedModelNode->updateColors();
-    }
+//void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
+//{
+//    AircraftModelNode* aircraftModelNode = dynamic_cast<AircraftModelNode*>(defenseModelNode);
+//    if(aircraftModelNode){
+//        if(mSelectedModelNode) {
+//            //mSelectedModelNode->select(false);
+//            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
+//            mSelectedModelNode->updateColors();
+//        }
+//        mSelectedModelNode = aircraftModelNode;
+//        aircraftModelNode->onLeftButtonClicked(true);
+////        aircraftModelNode->goOnTrack();
+//        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+//        mSelectedModelNode->updateColors();
+//    }
 
-    StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(defenseModelNode);
-    if(stationModelNode){
-        if(mSelectedModelNode) {
-            //mSelectedModelNode->select(false);
-            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
-            mSelectedModelNode->updateColors();
-        }
-        mSelectedModelNode = stationModelNode;
-        stationModelNode->onLeftButtonClicked(true);
-        stationModelNode->goOnTrack();
-        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
-        mSelectedModelNode->updateColors();
-    }
+//    StationModelNode* stationModelNode = dynamic_cast<StationModelNode*>(defenseModelNode);
+//    if(stationModelNode){
+//        if(mSelectedModelNode) {
+//            //mSelectedModelNode->select(false);
+//            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
+//            mSelectedModelNode->updateColors();
+//        }
+//        mSelectedModelNode = stationModelNode;
+//        stationModelNode->onLeftButtonClicked(true);
+////        stationModelNode->goOnTrack();
+//        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+//        mSelectedModelNode->updateColors();
+//    }
 
-    SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(defenseModelNode);
-    if(systemModelNode){
-        if(mSelectedModelNode) {
-            //mSelectedModelNode->select(false);
-            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
-            mSelectedModelNode->updateColors();
-        }
-        mSelectedModelNode = systemModelNode;
-        systemModelNode->onLeftButtonClicked(true);
-        systemModelNode->goOnTrack();
-        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
-        mSelectedModelNode->updateColors();
-    }
-}
+//    SystemModelNode* systemModelNode = dynamic_cast<SystemModelNode*>(defenseModelNode);
+//    if(systemModelNode){
+//        if(mSelectedModelNode) {
+//            //mSelectedModelNode->select(false);
+//            mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::UNSELECTED);
+//            mSelectedModelNode->updateColors();
+//        }
+//        mSelectedModelNode = systemModelNode;
+//        systemModelNode->onLeftButtonClicked(true);
+////        systemModelNode->goOnTrack();
+//        mSelectedModelNode->setSelectionMode(DefenseModelNode::SelectionMode::SELECTED);
+//        mSelectedModelNode->updateColors();
+//    }
+//}
 
 //void DefenseModelLayer::clearAircraft(int tn)
 //{
@@ -431,22 +454,22 @@ void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
 {
 
     DefenseModelNode* modelNode = pick(event->x(), event->y());
-    if(modelNode)
+	if(modelNode)
     {
-        modelNode->mousePressEvent(event, true);
+		modelNode->mousePressEvent(event, true);
     }
-    if(mSelectedModelNode && mSelectedModelNode != modelNode)
+	if(mSelectedModelNode && mSelectedModelNode != modelNode)
         mSelectedModelNode->mousePressEvent(event, false);
-    if(modelNode)
-        mSelectedModelNode = modelNode;
-    //--drag aircraft---------------------------------------
+	if(modelNode)
+		mSelectedModelNode = modelNode;
+	//--drag aircraft---------------------------------------
     if(event->button() == Qt::LeftButton)
     {
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
         if(aircraftModelNode)
         {
-            mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
-            mMapController->addNode(mDragAircraftModelNode);
+			mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
+			mMapController->addNode(mDragAircraftModelNode);
         }
     }
 
@@ -457,10 +480,10 @@ void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
     //--drag aircraft--------------------------------------------
     if(event->button() == Qt::LeftButton && mDragAircraftModelNode)
     {
-        auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode.get());
+		auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
         if(systemModelNode)
         {
-            auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
+			auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
             mDataManager->assignAircraft2System(aircraftModelNode->getData().info.TN, systemModelNode->getData()->information->systemInfo.Number);
         }
         mMapController->removeNode(mDragAircraftModelNode);
@@ -472,7 +495,7 @@ void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode.get());
+		auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
         if(aircraftModelNode /*&& aircraftModelNode->hasAssignment()*/)
         {
             mDataManager->cancelAircraftAssignments(aircraftModelNode->getData().info.TN);
@@ -502,8 +525,8 @@ void DefenseModelLayer::mouseMoveEvent(QMouseEvent *event)
 
 DefenseModelNode *DefenseModelLayer::pick(float x, float y)
 {
-    DefenseModelNode* defenseModelNode = nullptr;
-    osgViewer::Viewer * viewer = mMapController->getViewer();
+	DefenseModelNode *defenseModelNode = nullptr;
+	osgViewer::Viewer *viewer = mMapController->getViewer();
     float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
     osgUtil::LineSegmentIntersector::Intersections intersections;
     if (viewer->computeIntersections(x, height - y, intersections))

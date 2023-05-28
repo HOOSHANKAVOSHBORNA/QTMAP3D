@@ -1,7 +1,9 @@
 #include "stationInformation.h"
+#include "stationDataManager.h"
 #include "plugininterface.h"
 #include <iostream>
 #include <QQmlEngine>
+
 StationInfoModel::StationInfoModel(QObject *parent) : QAbstractListModel(parent)
 {
 
@@ -68,17 +70,19 @@ void StationInfoModel::setInformtion(const StationInfo &stationInfo)
     QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
-StationInformtion::StationInformtion(QQmlEngine *qmlEngine, UIHandle *uiHandle, StationInfo stationInfo, QObject *parent) :
-    QObject(parent), mInformation(stationInfo), mUiHandle(uiHandle)
+StationInformtion::StationInformtion(DefenseModelLayer *defenseModelLayer, Station::Data *data, QObject *parent) :
+	QObject(parent),
+	mDefenseModelLayer(defenseModelLayer),
+	mData(data)
 {
-    QQmlComponent *comp = new QQmlComponent(qmlEngine);
+	QQmlComponent *comp = new QQmlComponent(defenseModelLayer->mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
 
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
             mInfoModel = new StationInfoModel;
 
-            mInfoModel->setInformtion(mInformation);
+			mInfoModel->setInformtion(mData->info);
             mItem->setProperty("model", QVariant::fromValue<StationInfoModel*>(mInfoModel));
 //            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
@@ -90,5 +94,5 @@ StationInformtion::StationInformtion(QQmlEngine *qmlEngine, UIHandle *uiHandle, 
 
 void StationInformtion::show()
 {
-    mUiHandle->iwShow(mItem, QString::number(mInformation.Number));
+	mDefenseModelLayer->mUIHandle->iwShow(mItem, QString::number(mData->info.Number));
 }

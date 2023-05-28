@@ -8,7 +8,7 @@
 class Rect : public osgEarth::Annotation::RectangleNode
 {
 public:
-    Rect(MapItem *mapItem, bool clamp);
+    Rect(MapItem *mapItem);
     void setColor(osgEarth::Color color);
     osgEarth::Color getColor();
     void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);

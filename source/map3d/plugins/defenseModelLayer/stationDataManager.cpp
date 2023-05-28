@@ -28,7 +28,7 @@ void StationDataManager::upsertInfo(StationInfo &stationInfo)
     else
     {
         //create and setting model-------------------------------------------
-        stationModelNode = new StationModelNode(mDefenseModelLayer->mMapController, mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle);
+		stationModelNode = new StationModelNode(mDefenseModelLayer, mStationData[stationInfo.Number]);
         stationModelNode->setQStringName(stationInfo.Name);
         stationModelNode->setGeographicPosition(geographicPosition, 0.0);
         //add to container---------------------------------------------------
@@ -37,7 +37,7 @@ void StationDataManager::upsertInfo(StationInfo &stationInfo)
         mDefenseModelLayer->mMapController->addNodeToLayer(stationModelNode,STATIONS_LAYER_NAME);
     }
     //update information-----------------------------------------------------
-    stationModelNode->setInformation(stationInfo);
+	stationModelNode->dataChanged();
 
     emit infoChanged(stationInfo.Number);
 }

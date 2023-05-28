@@ -6,15 +6,21 @@
 #include <osg/Depth>
 #include <osg/Material>
 #include "defenseModelNodeAutoScaler.h"
+#include "stationDataManager.h"
 
 const float RANGE3D = 835;// std::numeric_limits<float>::max();
 
 osg::ref_ptr<osg::Node> StationModelNode::mNode3DRef;
 
-StationModelNode::StationModelNode(MapItem *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
-    :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
+
+StationModelNode::StationModelNode(DefenseModelLayer *defenseModelLayer, Station::Data *data, QObject *parent)
+	:DefenseModelNode(defenseModelLayer->mMapController, parent),
+	  mDefenseModelLayer(defenseModelLayer),
+      mData(data)
 {
-    mIs3D = mMapController->getMode();
+    connect(mDefenseModelLayer->mMapController, &MapItem::modeChanged, this, &StationModelNode::onModeChanged);
+
+	mIs3D = mDefenseModelLayer->mMapController->getMode();
 
     mRootNode = new osg::LOD;
     osgEarth::Symbology::Style  rootStyle;
@@ -106,10 +112,6 @@ StationModelNode::StationModelNode(MapItem *mapControler, QQmlEngine *qmlEngine,
     if (!mNode3DRef.valid()) {
         mNode3DRef = osgDB::readRefNodeFile("../data/models/station/Station.osgb");
     }
-    if (!mNode3DRef)
-    {
-        return;
-    }
 
     mNode3D = new osg::Group;
     mNode3D->addChild(mNode3DRef.get());
@@ -121,11 +123,11 @@ StationModelNode::StationModelNode(MapItem *mapControler, QQmlEngine *qmlEngine,
     labelStyle.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
 
     updateOrCreateLabelImage();
-    mLabelNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
+    mStatusNode = new osgEarth::Annotation::PlaceNode("",labelStyle, mLabelImage);
 
-    getGeoTransform()->addChild(mLabelNode);
-    mLabelNode->setNodeMask(false);
-    mLabelNode->setPriority(10);
+    getGeoTransform()->addChild(mStatusNode);
+    mStatusNode->setNodeMask(false);
+    mStatusNode->setPriority(10);
 
     if(mIs3D)
     {
@@ -138,85 +140,59 @@ StationModelNode::StationModelNode(MapItem *mapControler, QQmlEngine *qmlEngine,
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
 
-    mCircleNode = new osgEarth::Annotation::CircleNode();
-    mCircleNode->setRadius(10);
+	mBackCircleNode = new Circle(mDefenseModelLayer->mMapController);
+	mBackCircleNode->setRadius(6.5);
+	mBackCircleNode->setColor(osgEarth::Color(0.2f, 0.2f, 0.2f, 0.05f));
+	mBackCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.08));
 
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
+//    mCircleStyleActive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+//    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+//    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+//    mCircleStyleActive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
-    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
-
-
-    mCircleNode->setStyle(mCircleStyleActive);
-    mCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
-    mCircleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
-
-    mNode3D->addChild(mCircleNode);
+//    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
+//    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_RELATIVE_TO_TERRAIN;
+//    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_SCENE;
+//    mCircleStyleDeactive.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->binding() = osgEarth::Symbology::AltitudeSymbol::BINDING_CENTROID;
 
 
-    connect(mapControler, &MapItem::modeChanged, this, &StationModelNode::onModeChanged);
+//    mCircleNode->setStyle(mCircleStyleActive);
+//    mCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.05));
+//    mCircleNode->getOrCreateStateSet()->setAttributeAndModes( new osg::Depth(osg::Depth::LEQUAL,0,1,false), 1);
 
-    mRangeCircle = new Circle(mMapController, true);
-    mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
+	mNode3D->addChild(mBackCircleNode);
 
-    mVisiblePolygon = new Polygon(mMapController, true);
-    mVisiblePolygon->setLineColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));
-    mVisiblePolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.5f));
+	mRangeCircle = new Circle(mDefenseModelLayer->mMapController);
+	mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.3f));
+	mRangeCircle->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
+
+
+	mVisiblePolygon = new Polygon(mDefenseModelLayer->mMapController);
+	mVisiblePolygon->setLineColor(osg::Vec4(1.0, 0.0, 0.0, 0.3f));
+	mVisiblePolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
+    mVisiblePolygon->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 }
 
-void StationModelNode::setInformation(const StationInfo& info)
+void StationModelNode::dataChanged()
 {
-    mInformation = info;
     updateOrCreateLabelImage();
 
-    mNode2D->setValue(0, info.RadarSearchStatus == StationInfo::S);
-    mNode2D->setValue(1, info.RadarSearchStatus != StationInfo::S);
+	mNode2D->setValue(0, mData->info.RadarSearchStatus == StationInfo::S);
+	mNode2D->setValue(1, mData->info.RadarSearchStatus != StationInfo::S);
 
-    mCircleNode->setStyle(info.RadarSearchStatus == StationInfo::S ? mCircleStyleActive : mCircleStyleDeactive);
+	updateColors();
 
-}
-void StationModelNode::goOnTrack()
-{
-    mMapController->setTrackNode(getGeoTransform(), 250);
-}
-
-void StationModelNode::onLeftButtonClicked(bool val)
-{
-    if(val)
-    {
-        showInfoWidget();
-    }
-    if(!val)
-    {
-        mMapController->untrackNode(getGeoTransform());
-//        onRangeButtonToggled(val);
-//        onVisibleButtonToggled(val);
-    }
-
-    updateColors();
-    //select(val);
 }
 
 void StationModelNode::frameEvent()
 {
-    mLabelNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+    mStatusNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 }
 
 void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
 {
     DefenseModelNode::mousePressEvent(event, onModel);
 
-    if(event->button() == Qt::LeftButton)
-    {
-        onLeftButtonClicked(onModel);
-        if(onModel)
-            event->accept();
-    }
 }
 
 void StationModelNode::updateColors()
@@ -238,12 +214,35 @@ void StationModelNode::updateColors()
         mNode2DDeactive->setValue(1, false);
 
     }
+	if (mData->info.RadarSearchStatus == StationInfo::S) {
+		mModelColor = osgEarth::Color(0.2f, 0.8f, 0.2f, 1.0f);
+	} else {
+		mModelColor = osgEarth::Color(0.8f, 0.2f, 0.2f, 1.0f);
+	}
 
+	DefenseModelNode::updateColors();
+
+}
+
+void StationModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
+{
+	DefenseModelNode::setSelectionMode(sm);
+
+	if(sm == SELECTED)
+	{
+		showInfoWidget();
+	}
+	else
+	{
+//		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+//        onRangeButtonToggled(val);
+//        onVisibleButtonToggled(val);
+	}
 }
 
 void StationModelNode::onGotoButtonClicked()
 {
-    mMapController->goToPosition(getPosition(), 200);
+	mDefenseModelLayer->mMapController->goToPosition(getPosition(), 200);
 }
 
 void StationModelNode::onRangeButtonToggled(bool check)
@@ -251,9 +250,9 @@ void StationModelNode::onRangeButtonToggled(bool check)
     if(check)
     {
         mRangeCircle->setPosition(getPosition());
-        mRangeCircle->setRadius(osgEarth::Distance(mInformation.Radius, osgEarth::Units::METERS));
+		mRangeCircle->setRadius(osgEarth::Distance(mData->info.Radius, osgEarth::Units::METERS));
 
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+		auto layer = mDefenseModelLayer->mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             if (group) {
@@ -263,7 +262,7 @@ void StationModelNode::onRangeButtonToggled(bool check)
     }
     else
     {
-        auto layer = mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+		auto layer = mDefenseModelLayer->mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             if (group) {
@@ -281,9 +280,9 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         {
         mVisiblePolygon->clearPoints();
         osg::Vec3d worldPosition;
-        getPosition().toWorld(worldPosition, mMapController->getMapNode()->getTerrain());
+		getPosition().toWorld(worldPosition, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint;
-        double radius = mInformation.Radius;
+		double radius = mData->info.Radius;
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
         //geoPoint.z() = 0;
         mVisiblePolygon->addPoints(geoPoint);
@@ -299,23 +298,23 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         }
 
 
-        mMapController->addNodeToLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
+		mDefenseModelLayer->mMapController->addNodeToLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
     }
     else
     {
-        mMapController->removeNodeFromLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
+		mDefenseModelLayer->mMapController->removeNodeFromLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
     }
 }
 
 void StationModelNode::onActivateButtonToggled(bool checked)
 {
-    mInformation.RadarSearchStatus = (checked ?  StationInfo::S : StationInfo::US);
+	mData->info.RadarSearchStatus = (checked ?  StationInfo::S : StationInfo::US);
 
     mNode2D->setValue(0, checked);
     mNode2D->setValue(1, !checked);
 
 
-    mCircleNode->setStyle(checked ? mCircleStyleActive : mCircleStyleDeactive);
+//    mCircleNode->setStyle(checked ? mCircleStyleActive : mCircleStyleDeactive);
 }
 
 void StationModelNode::onModeChanged(bool is3DView)
@@ -339,7 +338,7 @@ void StationModelNode::onModeChanged(bool is3DView)
 void StationModelNode::showInfoWidget()
 {
     if (mStationInformation == nullptr) {
-        mStationInformation = new StationInformtion(mQmlEngine, mUIHandle, mInformation, this);
+		mStationInformation = new StationInformtion(mDefenseModelLayer,mData, this);
         connect(mStationInformation->getInfo(), &StationInfoModel::gotoButtonClicked, this, &StationModelNode::onGotoButtonClicked);
         connect(mStationInformation->getInfo(), &StationInfoModel::rangeButtonClicked, this, &StationModelNode::onRangeButtonToggled);
         connect(mStationInformation->getInfo(), &StationInfoModel::visibleButtonClicked, this, &StationModelNode::onVisibleButtonToggled);
@@ -350,6 +349,11 @@ void StationModelNode::showInfoWidget()
 
 void StationModelNode::updateOrCreateLabelImage()
 {
+	int txtLeftPos = 5;
+	int txtTopPos = 0;
+	//	int txtWidth = 30;
+	int txtHeight = 22;
+
     if (!mRenderTargetImage) {
         mRenderTargetImage = new QImage(
                     LABEL_IMAGE_WIDTH,
@@ -370,8 +374,10 @@ void StationModelNode::updateOrCreateLabelImage()
 
         static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
 
-        static const QFont textFont("SourceSansPro", 12, QFont::Normal);
+		static const QFont textFont("SourceSansPro", 10, QFont::Normal);
+		static const QFont textFontBold("SourceSansPro", 10, QFont::Bold);
         static const QPen  textPen(QColor(255, 255, 255));
+		static QPen  textPenYellow(QColor(204, 204, 51, 255));
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(backgroundBrush);
@@ -381,7 +387,7 @@ void StationModelNode::updateOrCreateLabelImage()
                     8,8);
         painter.setBrush(QBrush(QColor(26, 77, 46, int(255 * 0.2f))));
         painter.drawRoundedRect(
-                    QRect(0, 0, LABEL_IMAGE_WIDTH, 35),
+					QRect(0, 0, LABEL_IMAGE_WIDTH, txtHeight),
                     8,8);
         //-----------------------------------------------------------------
         static const QPen linePen(QColor(255, 255, 255),
@@ -391,42 +397,45 @@ void StationModelNode::updateOrCreateLabelImage()
 
         painter.setPen(linePen);
         painter.setBrush(Qt::NoBrush);
-        painter.drawLine(0, 35, LABEL_IMAGE_WIDTH, 35);
+		painter.drawLine(0, txtHeight, LABEL_IMAGE_WIDTH, txtHeight);
 
-        painter.drawLine(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 35);
+		painter.drawLine(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, txtHeight);
 
-        painter.setPen(textPen);
-        painter.setFont(textFont);
-        painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, 30),
+		painter.setPen(textPenYellow);
+		painter.setFont(textFontBold);
+		painter.drawText(QRect(0, 0, LABEL_IMAGE_WIDTH/2, txtHeight),
                          Qt::AlignCenter,
-                         mInformation.Name);
+						 mData->info.Name);
 
-        painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(LABEL_IMAGE_WIDTH/2, 0, LABEL_IMAGE_WIDTH/2, txtHeight),
                          Qt::AlignCenter,
-                         QString::number(mInformation.Number));
+						 QString::number(mData->info.Number));
         //----------------------------------------------------------------
-
-        painter.drawText(QRect(10, 40, LABEL_IMAGE_WIDTH/2, 30),
+		painter.setPen(textPen);
+		painter.setFont(textFont);
+		txtTopPos += txtHeight;
+		painter.drawText(QRect(txtLeftPos, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
                          Qt::AlignLeft| Qt::AlignVCenter,
                          "PrimSec:");
-        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 40, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(txtLeftPos + LABEL_IMAGE_WIDTH/2, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mInformation.PrimSec);
+						 mData->info.PrimSec);
 
-
-        painter.drawText(QRect(10, 75, LABEL_IMAGE_WIDTH/2, 30),
+		txtTopPos += txtHeight;
+		painter.drawText(QRect(txtLeftPos, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Type:");
-        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 75, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(txtLeftPos + LABEL_IMAGE_WIDTH/2, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         mInformation.Type);
+						 mData->info.Type);
 
-        painter.drawText(QRect(10, 110, LABEL_IMAGE_WIDTH/2, 30),
+		txtTopPos += txtHeight;
+		painter.drawText(QRect(txtLeftPos, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
                          Qt::AlignLeft | Qt::AlignVCenter,
                          "Radius:");
-        painter.drawText(QRect(10 + LABEL_IMAGE_WIDTH/2, 110, LABEL_IMAGE_WIDTH/2, 30),
+		painter.drawText(QRect(txtLeftPos + LABEL_IMAGE_WIDTH/2, txtTopPos, LABEL_IMAGE_WIDTH/2, txtHeight),
                          Qt::AlignLeft | Qt::AlignVCenter,
-                         QString::number(mInformation.Radius/1000.0, 'f', 1) + " km");
+						 QString::number(mData->info.Radius/1000.0, 'f', 1) + " km");
 
 
 

@@ -51,8 +51,10 @@ public:
 //    SystemModelNode *getSystemModelNode(int number)const;
 //    AircraftModelNode *getAircraftModelNode(int tn) const;
 //    StationModelNode *getStationModelNode(int number) const;
-    void selectModelNode(DefenseModelNode* defenseModelNode);
+//    void selectModelNode(DefenseModelNode* defenseModelNode);
     //void clearAircraft(int tn);
+	void selectModelNode(DefenseModelNode* defenseModelNode);
+	void modelNodeDeleted(DefenseModelNode* defenseModelNode);
 public slots:
     void onMapClear();
 
@@ -65,15 +67,15 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 public:
     MapItem *mMapController{nullptr};
-    UIHandle* mUIHandle{nullptr};
+	UIHandle* mUIHandle{nullptr};
     QQmlEngine *mQmlEngine{nullptr};
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
 private:
     //QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
-    osg::ref_ptr<DefenseModelNode> mSelectedModelNode{nullptr};
-    osg::ref_ptr<DefenseModelNode> mOnMoveModelNode{nullptr};
+	DefenseModelNode* mSelectedModelNode{nullptr};//do not define as ref_ptr
+	DefenseModelNode* mOnMoveModelNode{nullptr};
     int mPreCameraRange{0};
 
 //    ListManager *mListManager = nullptr;

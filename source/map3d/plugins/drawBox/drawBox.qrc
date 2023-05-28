@@ -3,5 +3,6 @@
         <file>BoxProperty.qml</file>
         <file>resources/box.png</file>
         <file>QSpinBox.qml</file>
+        <file>resources/arrow.png</file>
     </qresource>
 </RCC>

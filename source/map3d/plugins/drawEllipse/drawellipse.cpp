@@ -110,7 +110,7 @@ osgEarth::Annotation::PlaceNode *DrawEllipse::makeIconNode()
 
 void DrawEllipse::startDraw(QMouseEvent *event)
 {
-    mEllipse = new Ellipse(mMapItem, true);
+    mEllipse = new Ellipse(mMapItem);
     mEllipseProperties->setEllipse(mEllipse);
     osg::Vec3d worldPos;
     mMapItem->screenToWorld(event->x(), event->y(), worldPos);

@@ -7,19 +7,13 @@ import Crystal 1.0
 
 Item {
     id: rootItem
-    implicitHeight: parent.height
+    implicitHeight: parent ? parent.height : 0
 
 
 
     property ImageProperties imageProperties
     property string headerTitleSTR: "Image Properties"
 
-
-
-    onVisibleChanged: {
-        imageProperties.height = heightValue.value
-        imageProperties.width = widthValue.value
-    }
 
     Item {
         id: dialog
@@ -115,25 +109,17 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            TextInput {
+                                            QSpinBox {
+                                                decimals: 5
                                                 id: mcenterX
-                                                padding: 2
                                                 anchors.fill: parent
-                                                text: imageProperties.location.x.toFixed(9)
-                                                font.pointSize: 10
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert x"
-                                                }
-                                                onTextChanged: {
-                                                    imageProperties.location.x = text
+                                                 showText: imageProperties ? imageProperties.location.x : 0
+                                                onValueChanged: {
+                                                    imageProperties.location.x = value
 
                                                 }
                                             }
@@ -153,26 +139,17 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
-
-                                            TextInput {
+                                            Layout.fillWidth: true
+                                            QSpinBox {
+                                                decimals: 5
                                                 id: mcenterY
-                                                padding: 2
                                                 anchors.fill: parent
-                                                font.pointSize: 10
-                                                text: imageProperties.location.y.toFixed(9)
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert y"
-                                                }
-                                                onTextChanged: {
-
-                                                    imageProperties.location.y = text
+                                                 showText: imageProperties ? imageProperties.location.y : 0
+                                                onValueChanged: {
+                                                    imageProperties.location.y = value
 
                                                 }
                                             }
@@ -225,25 +202,16 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            TextInput {
-                                                id: mtlX
-                                                padding: 2
+                                            QSpinBox {
+                                                decimals: 5
                                                 anchors.fill: parent
-                                                text: imageProperties.tl.x.toFixed(9)
-                                                font.pointSize: 10
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert x"
-                                                }
-                                                onTextChanged: {
-                                                    imageProperties.tl.x = text
+                                                 showText: imageProperties ? imageProperties.tl.x : 0
+                                                onValueChanged: {
+                                                    imageProperties.tl.x = value
 
                                                 }
                                             }
@@ -263,26 +231,16 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
-
-                                            TextInput {
-                                                id: mtlY
-                                                padding: 2
+                                            Layout.fillWidth: true
+                                            QSpinBox {
+                                                decimals: 5
                                                 anchors.fill: parent
-                                                font.pointSize: 10
-                                                text: imageProperties.tl.y.toFixed(9)
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert y"
-                                                }
-                                                onTextChanged: {
-
-                                                    imageProperties.tl.y = text
+                                                 showText: imageProperties ? imageProperties.tl.y : 0
+                                                onValueChanged: {
+                                                    imageProperties.tl.y = value
 
                                                 }
                                             }
@@ -335,25 +293,16 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            TextInput {
-                                                id: mtrX
-                                                padding: 2
+                                            QSpinBox {
+                                                decimals: 5
                                                 anchors.fill: parent
-                                                text: imageProperties.tr.x.toFixed(9)
-                                                font.pointSize: 10
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert x"
-                                                }
-                                                onTextChanged: {
-                                                    imageProperties.tr.x = text
+                                                 showText: imageProperties ? imageProperties.tr.x : 0
+                                                onValueChanged: {
+                                                    imageProperties.tr.x = value
 
                                                 }
                                             }
@@ -373,26 +322,16 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
-
-                                            TextInput {
-                                                id: mtrY
-                                                padding: 2
+                                            Layout.fillWidth: true
+                                            QSpinBox {
+                                                decimals: 5
                                                 anchors.fill: parent
-                                                font.pointSize: 10
-                                                text: imageProperties.tr.y.toFixed(9)
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert y"
-                                                }
-                                                onTextChanged: {
-
-                                                    imageProperties.tr.y = text
+                                                 showText: imageProperties ? imageProperties.tr.y : 0
+                                                onValueChanged: {
+                                                    imageProperties.tr.y = value
 
                                                 }
                                             }
@@ -445,25 +384,16 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            TextInput {
-                                                id: mbrX
-                                                padding: 2
+                                            QSpinBox {
+                                                decimals: 5
                                                 anchors.fill: parent
-                                                text: imageProperties.br.x.toFixed(9)
-                                                font.pointSize: 10
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert x"
-                                                }
-                                                onTextChanged: {
-                                                    imageProperties.br.x = text
+                                                 showText: imageProperties ? imageProperties.br.x : 0
+                                                onValueChanged: {
+                                                    imageProperties.br.x = value
 
                                                 }
                                             }
@@ -483,26 +413,16 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
-
-                                            TextInput {
-                                                id: mbrY
-                                                padding: 2
+                                            Layout.fillWidth: true
+                                            QSpinBox {
+                                                decimals: 5
                                                 anchors.fill: parent
-                                                font.pointSize: 10
-                                                text: imageProperties.br.y.toFixed(9)
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert y"
-                                                }
-                                                onTextChanged: {
-
-                                                    imageProperties.br.y = text
+                                                 showText: imageProperties ? imageProperties.br.y : 0
+                                                onValueChanged: {
+                                                    imageProperties.br.y = value
 
                                                 }
                                             }
@@ -556,25 +476,16 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            TextInput {
-                                                id: mblX
-                                                padding: 2
+                                            QSpinBox {
                                                 anchors.fill: parent
-                                                text: imageProperties.bl.x.toFixed(9)
-                                                font.pointSize: 10
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert x"
-                                                }
-                                                onTextChanged: {
-                                                    imageProperties.bl.x = text
+                                                decimals: 5
+                                                 showText: imageProperties ? imageProperties.bl.x : 0
+                                                onValueChanged: {
+                                                    imageProperties.bl.x = value
 
                                                 }
                                             }
@@ -594,26 +505,16 @@ Item {
                                         Rectangle{
                                             height: 20
                                             width: 100
-                                            color: "#c9c9c9"
+                                            color: "transparent"
                                             clip:  true
                                             radius: 5
-
-                                            TextInput {
-                                                id: mblY
-                                                padding: 2
+                                            Layout.fillWidth: true
+                                            QSpinBox {
+                                                decimals: 5
                                                 anchors.fill: parent
-                                                font.pointSize: 10
-                                                text: imageProperties.bl.y.toFixed(9)
-                                                selectByMouse: true
-                                                selectionColor: "dark green"
-                                                validator: DoubleValidator {
-                                                    decimals: 13;
-                                                    notation: DoubleValidator.StandardNotation
-                                                    locale: "insert y"
-                                                }
-                                                onTextChanged: {
-
-                                                    imageProperties.bl.y = text
+                                                 showText: imageProperties ? imageProperties.bl.y : 0
+                                                onValueChanged: {
+                                                    imageProperties.bl.y = value
 
                                                 }
                                             }

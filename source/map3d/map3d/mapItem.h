@@ -39,8 +39,9 @@ public://camera functions
     osgEarth::Util::EarthManipulator *getEarthManipulator() const;
     void setViewpoint(const osgEarth::Viewpoint& vp, double duration_s = 0.0);
     osgEarth::Viewpoint getViewpoint() const;
-    void setTrackNode(osg::Node *node, double minDistance = 400);
-    void untrackNode(osg::Node *node);
+	void setTrackNode(osg::Node *node, double minDistance);
+//    void untrackNode(osg::Node *node);
+	void untrack();
 
 public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;

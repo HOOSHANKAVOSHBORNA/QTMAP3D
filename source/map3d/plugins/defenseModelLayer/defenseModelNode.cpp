@@ -10,7 +10,7 @@
 #include <osg/Material>
 #include <osgFX/Outline>
 
-const osg::Node::NodeMask NODE_MASK = 0x00000001;
+//const osg::Node::NodeMask NODE_MASK = 0x00000001;
 
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
@@ -131,10 +131,10 @@ DefenseModelNode::DefenseModelNode(MapItem *mapControler, QObject *parent):
     mSelectedNode->getPositionAttitudeTransform()->setPosition(osg::Vec3(0, 0, 2));
     getGeoTransform()->addChild(mSelectedNode);
 
-    QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
-        if(mLabelNode)
-            this->mLabelNode->setNodeMask(this->mHoverMode == HOVERED);
-    });
+//    QObject::connect(this, &DefenseModelNode::hoverModeChanged, [this](){
+//        if(mStatusNode)
+//            this->mStatusNode->setNodeMask(this->mHoverMode == HOVERED);
+//    });
 }
 
 QString DefenseModelNode::getType() const
@@ -182,7 +182,12 @@ osg::Vec3d DefenseModelNode::getGeographicPosition() const
 {
     osgEarth::GeoPoint position = getPosition();
     position.makeGeographic();
-    return position.vec3d();
+	return position.vec3d();
+}
+
+void DefenseModelNode::goOn()
+{
+	mMapControler->goToPosition(getPosition(), mMapControler->getViewpoint().getRange(), 0);
 }
 
 void DefenseModelNode::playExplosionEffect(float scale)
@@ -257,22 +262,22 @@ void DefenseModelNode::collision()
 }
 osgEarth::Annotation::ModelNode *DefenseModelNode::getDragModelNode()
 {
-    osgEarth::Symbology::Style  style = getStyle();
+	osgEarth::Symbology::Style  style = getStyle();
 //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->minAutoScale() = 1;
 //    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->maxAutoScale() = 1700;
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Gray);
     osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(getMapNode(), style);
-    dragModelNode->setCullingActive(false);
-    dragModelNode->addCullCallback(getCullCallback());
-    dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+	dragModelNode->setCullingActive(false);
+	dragModelNode->addCullCallback(getCullCallback());
+	dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
 //    dragModelNode->addCullCallback(getCullCallback());
     return dragModelNode.release();
 }
 
-osg::ref_ptr<osg::Image> DefenseModelNode::createColoredImage(osg::ref_ptr<osg::Image> sourceImage, osgEarth::Color color)
+osg::Image* DefenseModelNode::createColoredImage(osg::Image* sourceImage, osgEarth::Color color)
 {
     osg::ref_ptr<osg::Image> newImage = new osg::Image(*sourceImage, osg::CopyOp::DEEP_COPY_ALL);
 
@@ -290,10 +295,10 @@ osg::ref_ptr<osg::Image> DefenseModelNode::createColoredImage(osg::ref_ptr<osg::
         }
     }
 
-    return newImage;
+	return newImage.release();
 }
 
-osg::ref_ptr<osg::Image> DefenseModelNode::createDarkerImage(osg::ref_ptr<osg::Image> sourceImage, float factor)
+osg::Image *DefenseModelNode::createDarkerImage(osg::Image* sourceImage, float factor)
 {
     osg::ref_ptr<osg::Image> newImage = new osg::Image(*sourceImage, osg::CopyOp::DEEP_COPY_ALL);
 
@@ -317,16 +322,67 @@ osg::ref_ptr<osg::Image> DefenseModelNode::createDarkerImage(osg::ref_ptr<osg::I
         }
     }
 
-    return newImage;
+	return newImage.release();
 
 }
+
+
+void DefenseModelNode::copyColoredImage(osg::Image* sourceImage, osg::Image* destImage, osgEarth::Color color)
+{
+	destImage->allocateImage(sourceImage->s(), sourceImage->t(), sourceImage->r(),
+							 sourceImage->getPixelFormat(), sourceImage->getDataType());
+
+	unsigned int width = static_cast<unsigned int>(sourceImage->s());
+	unsigned int height = static_cast<unsigned int>(sourceImage->t());
+
+	for(unsigned int i = 0; i < width; i++) {
+		for(unsigned int j = 0; j < height; j++)
+		{
+			const osg::Vec4 pixColore = sourceImage->getColor(i, j);
+			if(pixColore.a() > 0)
+				destImage->setColor(color, i, j);
+			else
+				destImage->setColor(osg::Vec4(0,0,0,0), i, j);
+		}
+	}
+
+}
+
+void DefenseModelNode::copyDarkerImage(osg::Image* sourceImage, osg::Image* destImage, float factor)
+{
+	destImage->allocateImage(sourceImage->s(), sourceImage->t(), sourceImage->r(),
+							 sourceImage->getPixelFormat(), sourceImage->getDataType());
+
+	unsigned int width = static_cast<unsigned int>(sourceImage->s());
+	unsigned int height = static_cast<unsigned int>(sourceImage->t());
+
+	for(unsigned int i = 0; i < width; i++) {
+		for(unsigned int j = 0; j < height; j++)
+		{
+			const osg::Vec4 pixColore = sourceImage->getColor(i, j);
+			if(pixColore.a() > 0) {
+				const osg::Vec4 newColor(pixColore.r() * factor,
+										 pixColore.g() * factor,
+										 pixColore.b() * factor,
+										 pixColore.a());
+				destImage->setColor(newColor, i, j);
+			}
+			else {
+				destImage->setColor(osg::Vec4(0,0,0,0), i, j);
+			}
+		}
+	}
+}
+
+
 
 void DefenseModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
 {
     if (mSelectionMode != sm) {
         mSelectionMode = sm;
-        emit selectionModeChanged();
+		//emit selectionModeChanged();
         mSelectedNode->setNodeMask(sm);
+		updateColors();
     }
 }
 
@@ -334,17 +390,21 @@ void DefenseModelNode::setHoverMode(DefenseModelNode::HoverMode hm)
 {
     if (mHoverMode != hm) {
         mHoverMode = hm;
-        emit hoverModeChanged();
+		//emit hoverModeChanged();
+		if(mStatusNode.valid())
+			mStatusNode->setNodeMask(mHoverMode == HOVERED);
+		updateColors();
     }
 }
 
 void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
 {
-    //if(event->button() != Qt::MiddleButton)
-        //select(onModel);
-
-    setSelectionMode(onModel ? SELECTED : UNSELECTED);
-    updateColors();
+	if(event->button() == Qt::LeftButton)
+	{
+		setSelectionMode(onModel ? SELECTED : UNSELECTED);
+		if(onModel)
+			event->accept();
+	}
 }
 
 void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
@@ -355,7 +415,6 @@ void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
     //}
 
     setHoverMode(onModel ? HOVERED : UNHOVERED);
-    updateColors();
 }
 //void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
 //{

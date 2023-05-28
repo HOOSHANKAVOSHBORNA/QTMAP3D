@@ -4,18 +4,14 @@
 #include "osgEarth/Layer"
 #include "osgEarthAnnotation/AnnotationEditing"
 
-Rect::Rect(MapItem *mapItem, bool clamp){
+Rect::Rect(MapItem *mapItem){
     mMapItem = mapItem;
     osgEarth::Symbology::Style rectseStyle;
     rectseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() ;
     rectseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() ;
     rectseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() ;
-    if (clamp){
-        rectseStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    }
-    else{
-        rectseStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_NONE;
-    }
+    rectseStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+    //rectseStyle.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
     this->setWidth(osgEarth::Distance(10, osgEarth::Units::KILOMETERS));
     this->setHeight(osgEarth::Distance(5, osgEarth::Units::KILOMETERS));
 

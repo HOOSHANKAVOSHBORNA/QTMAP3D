@@ -184,5 +184,6 @@ StationTable::StationTable(StationDataManager *stationDataManager, DefenseModelL
 void StationTable::onDoubleClicked(const int &number)
 {
     if (mStationDataManager->getStationsData().contains(number))
-        mStationDataManager->getStationsData()[number]->modelNode->onLeftButtonClicked(true);
+		mDefenseModelLayer->selectModelNode(mStationDataManager->getStationsData()[number]->modelNode);
+//        mStationDataManager->getStationsData()[number]->modelNode->onLeftButtonClicked(true);
 }

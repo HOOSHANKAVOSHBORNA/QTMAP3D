@@ -6,7 +6,7 @@
 class Ellipse : public osgEarth::Annotation::EllipseNode
 {
 public:
-    Ellipse(MapItem *mapItem, bool clamp);
+    Ellipse(MapItem *mapItem);
     void setColor(osgEarth::Color color);
     osgEarth::Color getColor();
     void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);

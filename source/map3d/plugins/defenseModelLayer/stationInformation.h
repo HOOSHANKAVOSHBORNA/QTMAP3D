@@ -3,6 +3,12 @@
 #include <QAbstractListModel>
 #include <QQuickItem>
 #include "systemTableModel.h"
+
+
+
+namespace Station {
+struct Data;
+}
 class UIHandle;
 class QQmlEngine;
 
@@ -55,14 +61,16 @@ class StationInformtion : public QObject
     Q_OBJECT
 
 public:
-    StationInformtion(QQmlEngine *qmlEngine, UIHandle *uiHandle, StationInfo stationInfo, QObject *parent = nullptr);
+	StationInformtion(DefenseModelLayer* defenseModelLayer, Station::Data* data, QObject *parent = nullptr);
     StationInfoModel *getInfo() {return mInfoModel;}
     void show();
 private:
-    StationInfo mInformation;
+//    StationInfo mInformation;
     StationInfoModel *mInfoModel;
-    UIHandle *mUiHandle;
-    QQuickItem *mItem;
+//    UIHandle *mUiHandle;
+	QQuickItem *mItem;
+	DefenseModelLayer* mDefenseModelLayer;
+	Station::Data* mData;
 };
 
 #endif

@@ -7,18 +7,21 @@
 #include <QStringList>
 #include <QObject>
 #include <QColor>
+#include <osgEarth/Color>
 #include <QMap>
 
 struct SystemInfo;
 struct AircraftInfo
 {
     enum Identify{
-        F,//green
+		Begin, //for iterate on enum
+		F = Begin,//green
         K,//yellow
         Z,//orange
         X,//red
         U,//white
-        H//red
+		H,//red
+		End = H //for iterate on enum
     };
     enum AircraftType{
         Fighter = 1,
@@ -28,7 +31,7 @@ struct AircraftInfo
         Aircraft = 5
     };
 
-    //-------------------------------------
+	//-------------------------------------QColor
     int TN = 0;
     QString IFFCode = "------";
     QString CallSign = "------";
@@ -101,30 +104,40 @@ public:
         return result;
     }
 
-    QColor aircraftColor() const {
+	static QColor osgEarthColor2QColor(osgEarth::Color color)  {
+		return QColor(color.r()*255, color.g()*255, color.b()*255, color.a()*255);
+	}
+	static osgEarth::Color qColor2osgEarthColor(QColor color){
+		return osgEarth::Color(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+	}
+	static QColor aircraftColor(Identify identification) {
         QColor color = QColor(Qt::transparent);
-        switch (Identification) {
+		switch (identification) {
         case F:
-            color = QColor("green");
+			color = QColor(51, 204, 51, 255);//green
             break;
         case K:
-            color = QColor("yellow");
+			color = QColor(204, 204, 51, 255);//yellow
             break;
         case Z:
-            color = QColor("orange");
+			color = QColor(204, 127, 51, 255);//orange
             break;
         case X:
-            color = QColor("red");
+			color = QColor(204, 51, 51, 255);//red
             break;
         case U:
-            color = QColor("white");
+			color = QColor(204, 204, 204, 255);//white
             break;
         case H:
-            color = QColor("red");
+			color = QColor(204, 51, 51, 255);//red
             break;
         }
         return color;
     }
+
+	QColor aircraftColor() const{
+		return aircraftColor(Identification);
+	}
 
     QColor aircraftHoverColor() const {
         QColor color = QColor(Qt::transparent);
@@ -225,7 +238,13 @@ struct StationInfo
     int CycleTime = -1;
     RadarStatus RadarSearchStatus;
 
-
+    QColor statusToColor(RadarStatus status) const {
+        switch (status) {
+            case S: return QColor("green");
+            case US: return QColor("red");
+            default: return QColor("red");
+        }
+    }
 
     QString radarStatusToString(RadarStatus status) const
     {
@@ -330,7 +349,7 @@ struct SystemStatusInfo
         switch (status) {
             case S: return QColor("green");
             case US: return QColor("red");
-            default: return QColor("transparent");
+            default: return QColor("red");
         }
     }
     QString radarSearchStatusToString() const{
@@ -412,28 +431,50 @@ struct SystemCombatInfo
         return result;
     }
 
-    QString phaseToColor() const
-    {
-        QString result = "white";
-        switch (Phase) {
-        case Search:
-            result = "yellow";
-            break;
-        case Lock:
-            result = "orange";
-            break;
-        case Fire:
-            result = "red";
-            break;
-        case Kill:
-            result = "black";
-            break;
-        case NoKill:
-            result = "brown";
-            break;
-        }
-        return result;
-    }
+//    QString phaseToColor() const
+//    {
+//        QString result = "white";
+//        switch (Phase) {
+//        case Search:
+//            result = "yellow";
+//            break;
+//        case Lock:
+//            result = "orange";
+//            break;
+//        case Fire:
+//            result = "red";
+//            break;
+//        case Kill:
+//            result = "black";
+//            break;
+//        case NoKill:
+//            result = "brown";
+//            break;
+//        }
+//        return result;
+//    }
+	QColor phaseToColor() const
+	{
+		QColor result = QColor("white");
+		switch (Phase) {
+		case Search:
+			result = QColor("yellow");
+			break;
+		case Lock:
+			result = QColor("orange");
+			break;
+		case Fire:
+			result = QColor("red");
+			break;
+		case Kill:
+			result = QColor("black");
+			break;
+		case NoKill:
+			result = QColor("brown");
+			break;
+		}
+		return result;
+	}
 };
 
 class DefenseDataManager: public QObject
@@ -448,7 +489,7 @@ signals:
     void aircraftAssignedResponse(int tn, int systemNo, bool result);
     //--send command---------------------------------------------
     void aircraftAssigned(int tn, int systemNo);
-    void cancelAircraftAssigned(int tn, int systemNo);
+    void cancelAircraftAssignments(int tn);
     //--system-------------------------------------------------
     void systemInfoChanged(SystemInfo& systemInfo);
     void systemStatusInfoChanged(SystemStatusInfo& systemStatusInfo);

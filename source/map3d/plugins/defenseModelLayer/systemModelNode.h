@@ -40,15 +40,14 @@ public:
 //    QMap<int, AircraftModelNode *> getAssignments() const;
     System::Data* getData() const;
 
-    void goOnTrack();
 public slots:
-    void onLeftButtonClicked(bool val);
 public:
     virtual void frameEvent()override;
     void mousePressEvent(QMouseEvent *event, bool onModel) override; 
     virtual void updateColors() override;
 
 protected:
+	void setSelectionMode(SelectionMode sm) override;
 private slots:
     void onGotoButtonClicked();
     void onRangeButtonToggled(bool check);
@@ -82,7 +81,7 @@ private:
 //    UIHandle* mUIHandle;
 //    QQmlEngine *mQmlEngine;
     DefenseModelLayer* mDefenseModelLayer;
-    System::Data* mSystemData;
+	System::Data* mData;
 
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
@@ -99,18 +98,18 @@ private:
     osg::ref_ptr<AircraftModelNode> mTargetModelNode{nullptr};
 private:
     QImage                  *mRenderTargetImage = nullptr;
-    osg::ref_ptr<osg::Image> mLabelImage = nullptr;
-    static constexpr int LABEL_IMAGE_WIDTH = 210;
-    static constexpr int LABEL_IMAGE_HEIGHT = 190 + 50;
+	osg::ref_ptr<osg::Image> mStatusImage = nullptr;
+	static constexpr int LABEL_IMAGE_WIDTH = 180;
+	static constexpr int LABEL_IMAGE_HEIGHT = 132;
 
     osg::ref_ptr<osg::LOD> mLOD = nullptr;
 
     osg::ref_ptr<osg::Switch> mNode2DActive;
     osg::ref_ptr<osg::Switch> mNode2DDeactive;
 
-    osg::ref_ptr<osgEarth::Annotation::RectangleNode> mRectangleNode = nullptr;
-    osgEarth::Symbology::Style mRectangleStyleSelected;
-    osgEarth::Symbology::Style mRectangleStyleDeselected;
+	osg::ref_ptr<Circle> mBackCircleNode = nullptr;
+//    osgEarth::Symbology::Style mRectangleStyleSelected;
+//    osgEarth::Symbology::Style mRectangleStyleDeselected;
 };
 
 #endif // SYSTEM_H

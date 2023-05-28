@@ -1,442 +1,239 @@
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-
-
-
-
+import QtGraphicalEffects 1.12
 
 
 Item {
-    property double step: 1
+
+    property var steps: [5000,1000,100,10,5,1,0.5,0.1,0.05,0.01,0.005,0.001]
+    property int index: 5
     property double value
-    property double    showText      : value ? value : 0
     property string secondaryColor: "orange"
-    property string primaryColor  : "#404040"
-    property string btntxtColor   : "#bbbbbb"
-    property int    spinSpeed     : 50
-    property int    decimals      : 3
-    property double from          : 0
+    property string btntxtColor   : "#c9c9c9"
+    property string primaryColor   : "#424242"
+    property double showText
+    property int    spinSpeed     : 30
+    property int    decimals
+    property double from          : -9999999999999
     property double to            : 9999999999999
+    property bool round: true
 
+    onShowTextChanged: value = showText
 
-    id: btn
-    width: 120
-    height: 30
-
-
-    Timer {
-        id: timerUp
-        interval: spinSpeed; running: false; repeat: true
-        onTriggered: if(value < to){
-                         value += step
-                     }
-    }
-    Timer {
-        id: timerDown
-        interval: spinSpeed; running: false; repeat: true
-        onTriggered: if(value > from){
-                         value -= step
-                     }
-    }
-
+    implicitHeight: 35
+    implicitWidth: 200
 
     Rectangle{
-        id:mainHolder
-        anchors.fill: parent
-        color: primaryColor
-        radius: 3
-        border.color: btntxtColor
-        border.width:  1
+        height: parent.height
+        width: parent.width
+        color: btntxtColor
+        border.width: 1
+        border.color: primaryColor
+        radius: round ? height/4 : 0
+
+        Timer {
+            id: timerUp
+            interval: spinSpeed; running: false; repeat: true
+            onTriggered: if(value < to){
+                             value += steps[index]
+                         }
+        }
+        Timer {
+            id: timerDown
+            interval: spinSpeed; running: false; repeat: true
+            onTriggered: if(value > from){
+                             value -= steps[index]
+                         }
+        }
+
         Rectangle{
-            id:stepContainer
-            width: Math.min(btn.width/4 , btn.height -4 )
-            height: btn.height -4
-            anchors.verticalCenter: parent.verticalCenter
-            //            anchors.left: parent.left
+            id: stepContainer
+            width: parent.width * 0.35 -4
+            height: parent.height -4
             x:2
-            color: primaryColor
-            radius: 3
-            ColumnLayout{
-                anchors.centerIn: parent
-                Text {
-                    id:stepText
-                    text: qsTr("STEP")
-                    font.pixelSize: stepContainer.height/3
-                    color: btntxtColor
-                }
-                Text {
-                    id:stepSize
-                    text: step.toString()
-                    font.pixelSize: btn.height/4
-                    color: btntxtColor
-                }
-            }
-            MouseArea{
-                hoverEnabled: true
-                anchors.fill: parent
-                cursorShape: "PointingHandCursor"
-                onPressed:  if(dropDownMenu.height === 0){
-                                openStepAnimate.running = true
-                                dropDownMenuTextopen.running = true
-                            }else{
-                                closeStepAnimate.running = true
-                                dropDownMenuTextclose.running = true
-                            }
-                onEntered: stepText.color = secondaryColor
-                onExited: stepText.color = btntxtColor
-            }
-            Rectangle{
-                id: dropDownMenu
-                width: btn.width
-                z: 10
-                height: 0
-                anchors.top: parent.bottom
-                color: "transparent"
-
-                Grid{
-                    anchors.margins: 1
-                    columns: 4
-                    rows: 2
-                    spacing: 1
-                    anchors.fill: parent
-                    Rectangle{
-                        width: dropDownMenu.width/4   -1
-                        height: dropDownMenu.height/2 -1
-                        color: primaryColor
-                        border.color: btntxtColor
-                        radius: Math.min(width/8 , height/8)
-                        Text {
-                            id:kilo
-                            text: qsTr("1000")
-                            anchors.centerIn: parent
-                            color: btntxtColor
-                            font.pixelSize:  1
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            cursorShape: "PointingHandCursor"
-                            onClicked: {
-                                step = 1000
-                                closeStepAnimate.running = true
-                                dropDownMenuTextclose.running = true
-                            }
-                            hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
-
-                        }
-                    }
-                    Rectangle{
-                        width: dropDownMenu.width/4   -1
-                        height: dropDownMenu.height/2 -1
-                        color: primaryColor
-                        border.color: btntxtColor
-                        radius: Math.min(width/8 , height/8)
-                        Text {
-                            id:sad
-                            text: qsTr("100")
-                            anchors.centerIn: parent
-                            color: btntxtColor
-                            font.pixelSize: 1
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            cursorShape: "PointingHandCursor"
-                            onClicked: {
-                                step = 100
-                                closeStepAnimate.running = true
-                                dropDownMenuTextclose.running = true
-                            }
-                            hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
-                        }
-                    }
-                    Rectangle{
-                        width: dropDownMenu.width/4   -1
-                        height: dropDownMenu.height/2 -1
-                        color: primaryColor
-                        border.color: btntxtColor
-                        radius: Math.min(width/8 , height/8)
-                        Text {
-                            id:dah
-                            text: qsTr("10")
-                            anchors.centerIn: parent
-                            color: btntxtColor
-                            font.pixelSize:1
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            cursorShape: "PointingHandCursor"
-                            onClicked: {
-                                step = 10
-                                closeStepAnimate.running = true
-                                dropDownMenuTextclose.running = true
-                            }
-                            hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
-                        }
-                    }
-                    Rectangle{
-                        width: dropDownMenu.width/4   -1
-                        height: dropDownMenu.height/2 -1
-                        color: primaryColor
-                        border.color: btntxtColor
-                        radius: Math.min(width/8 , height/8)
-                        Text {
-                            id:panj
-                            text: qsTr("5")
-                            anchors.centerIn: parent
-                            color: btntxtColor
-                            font.pixelSize: 1
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            cursorShape: "PointingHandCursor"
-                            onClicked: {
-                                step = 5
-                                closeStepAnimate.running = true
-                                dropDownMenuTextclose.running = true
-                            }
-                            hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
-                        }
-                    }
-                    Rectangle{
-                        width: dropDownMenu.width/4   -1
-                        height: dropDownMenu.height/2 -1
-                        color: primaryColor
-                        border.color: btntxtColor
-                        radius: Math.min(width/8 , height/8)
-                        Text {
-                            id:yek
-                            text: qsTr("1")
-                            anchors.centerIn: parent
-                            color: btntxtColor
-                            font.pixelSize: 1
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            cursorShape: "PointingHandCursor"
-                            onClicked: {
-                                step = 1
-                                closeStepAnimate.running = true
-                                dropDownMenuTextclose.running = true
-                            }
-                            hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
-                        }
-                    }
-                    Rectangle{
-                        width: dropDownMenu.width/4   -1
-                        height: dropDownMenu.height/2 -1
-                        color: primaryColor
-                        border.color: btntxtColor
-                        radius: Math.min(width/8 , height/8)
-                        Text {
-                            id:dahom
-                            text: qsTr("0.1")
-                            anchors.centerIn: parent
-                            color: btntxtColor
-                            font.pixelSize:1
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            cursorShape: "PointingHandCursor"
-                            onClicked: {
-                                step = 0.1
-                                closeStepAnimate.running = true
-                                dropDownMenuTextclose.running = true
-                            }
-                            hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
-                        }
-                    }
-                    Rectangle{
-                        width: dropDownMenu.width/4   -1
-                        height: dropDownMenu.height/2 -1
-                        color: primaryColor
-                        border.color: btntxtColor
-                        radius: Math.min(width/8 , height/8)
-                        Text {
-                            id:sadom
-                            text: qsTr("0.01")
-                            anchors.centerIn: parent
-                            color: btntxtColor
-                            font.pixelSize: 1
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            cursorShape: "PointingHandCursor"
-                            onClicked: {
-                                step = 0.01
-                                closeStepAnimate.running = true
-                                dropDownMenuTextclose.running = true
-                            }
-                            hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
-                        }
-                    }
-                    Rectangle{
-                        width: dropDownMenu.width/4   -1
-                        height: dropDownMenu.height/2 -1
-                        color: primaryColor
-                        border.color: btntxtColor
-                        radius: Math.min(width/8 , height/8)
-                        Text {
-                            id:hezarom
-                            text: qsTr("0.001")
-                            anchors.centerIn: parent
-                            color: btntxtColor
-                            font.pixelSize: 1
-                        }
-                        MouseArea{
-                            anchors.fill: parent
-                            cursorShape: "PointingHandCursor"
-                            onClicked: {
-                                step = 0.001
-                                closeStepAnimate.running = true
-                                dropDownMenuTextclose.running = true
-                            }
-                            hoverEnabled: true
-                            onEntered: parent.color = secondaryColor
-                            onExited: parent.color = primaryColor
-                        }
-                    }
-                }
-            }
-        }
-        Rectangle{
-            id: plus
-            anchors.verticalCenter: parent.verticalCenter
-            height: mainHolder.height
-            width: mainHolder.width/9
-            //            radius: mainHolder.height/8
-            color: btntxtColor
-            anchors.right: mainHolder.right
-            //            border.width: 2
-            //            border.color: primaryColor
-            Text {
-                id:plusText
-                text: qsTr("+")
-                color: primaryColor
-                font.pixelSize: plus.width/1.3
-                anchors.centerIn: parent
-            }
-            MouseArea{
-                cursorShape: "PointingHandCursor"
-                anchors.fill: parent
-                onPressed:  {
-                    if(value < from){value = from}
-                    else if(value > to){value = to}
-                    else if(value >= from && value <to){
-                        plusText.color = secondaryColor
-                        value += step
-                    }
-                }
-                onPressAndHold: timerUp.start();
-                onReleased: {
-                    plusText.color = primaryColor
-                    timerUp.stop();
-                }
-            }
-        }
-        Rectangle{
-            id: minus
-            anchors.verticalCenter: parent.verticalCenter
-            height: mainHolder.height
-            width: mainHolder.width/9
-            //            radius: mainHolder.height/8
-            color: btntxtColor
-            anchors.left: stepContainer.right
-            //            border.width: 2
-            //            border.color: primaryColor
-            Text {
-                id: minusText
-                text: qsTr("-")
-                color: "#525252"
-                font.pixelSize: minus.width*1.1
-                anchors.centerIn: parent
-            }
-            MouseArea{
-                cursorShape: "PointingHandCursor"
-                anchors.fill: parent
-                onPressed:  {
-                    if(value < from){value = from}
-                    else if(value > to){value = to}
-                    else if(value > from && value <= to){
-                        minusText.color = secondaryColor
-                        value -= step
-                    }
-                }
-                onPressAndHold: timerDown.start();
-                onReleased: {
-                    minusText.color = primaryColor
-                    timerDown.stop();
-                }
-            }
-        }
-
-        Rectangle {
-            id: valueHolder
-            anchors.left: minus.right
-            anchors.right: plus.left
-            height: parent.height
+            y:2
             color: primaryColor
             clip: true
-            border.width: 1
-            border.color: btntxtColor
-            TextInput {
-                id: valueText
-                x: 4
-                //                anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
-                onTextChanged: value = showText
-                text: showText.toFixed(decimals)
-                font.pixelSize: parent.height/3
-                color: btntxtColor
-                selectByMouse: true
-                selectedTextColor: "black"
-                selectionColor: secondaryColor
+            radius: round ? height/4 : 0
+
+            Rectangle{
+                anchors.right: parent.right
+                height: parent.height
+                width: parent.width * 0.7
+                color: "transparent"
+                Text {
+                    id: stepperValue
+                    text: steps[index]
+                    anchors.margins: 1
+                    color: btntxtColor
+                    font.pointSize:  parent.height/2.5
+                    anchors.centerIn: parent
+                    rotation: 0
+                }
+            }
+            Image {
+                id: stepUp
+                source: "./resources/arrow.png"
+                sourceSize.height: parent.height/2.1
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.margins: sourceSize.height/10
+                MouseArea{
+                    anchors.fill: parent
+                    cursorShape: "PointingHandCursor"
+                    hoverEnabled: true
+                    onEntered: upColor.color = secondaryColor
+                    onExited: upColor.color = btntxtColor
+                    onPressed: if(index >0){index --}
+                }
+                ColorOverlay{
+                    id:upColor
+                    anchors.fill: parent
+                    source: stepDown
+                    color: btntxtColor
+                    visible: true
+                }
+            }
+            Image {
+                id: stepDown
+                source: "./resources/arrow.png"
+                rotation: 180
+                sourceSize.height: parent.height/2.1
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                anchors.margins: sourceSize.height/10
+                MouseArea{
+                    anchors.fill: parent
+                    cursorShape: "PointingHandCursor"
+                    hoverEnabled: true
+                    onEntered: downColor.color = secondaryColor
+                    onExited: downColor.color = btntxtColor
+                    onPressed: if(index < steps.length-1){index ++}
+                }
+                ColorOverlay{
+                    id:downColor
+                    anchors.fill: parent
+                    source: stepDown
+                    color: btntxtColor
+                    visible: true
+                }
             }
         }
-    }
-    PropertyAnimation{
-        id: openStepAnimate
-        target: dropDownMenu
-        property: "height"
-        to : btn.height*2
-        duration: 100
-        running: false
-    }
-    PropertyAnimation{
-        id: closeStepAnimate
-        target: dropDownMenu
-        property: "height"
-        to : 0
-        duration: 100
-        running: false
-    }
-    PropertyAnimation{
-        id:dropDownMenuTextopen
-        targets: [kilo,sad,dah,yek,dahom,sadom,hezarom,panj]
-        properties: "font.pixelSize"
-        to: btn.height/4
-        duration: 200
-        running: false
-    }
-    PropertyAnimation{
-        id:dropDownMenuTextclose
-        targets: [kilo,sad,dah,yek,dahom,sadom,hezarom,panj]
-        properties: "font.pixelSize"
-        to: 1
-        duration: 100
-        running: false
+        Rectangle {
+            id: spinnerContainer
+            height: parent.height -2
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width * 0.65 -4
+            anchors.right: parent.right
+//            border.width: 1
+//            border.color: primaryColor
+            color: btntxtColor
+            radius: round ? height/4 : 0
+            Image {
+                id: spinUp
+                source: "./resources/arrow.png"
+                sourceSize.height: parent.height/2.1
+                anchors.right:  parent.right
+                anchors.top: parent.top
+                anchors.margins: sourceSize.height/10
+                MouseArea{
+                    anchors.fill: parent
+                    cursorShape: "PointingHandCursor"
+                    hoverEnabled: true
+                    onEntered: spinupColor.color = secondaryColor
+                    onExited: spinupColor.color = primaryColor
+                    onPressed:  {
+                        if(value < from){value = from}
+                        else if(value > to){value = to}
+                        else if(value >= from && value <to){
+                            spinupColor.color = btntxtColor
+                            value += steps[index]
+                        }
+                    }
+                    onPressAndHold: timerUp.start();
+                    onReleased: {
+                        spinupColor.color = secondaryColor
+                        timerUp.stop();
+                    }
+                }
+                ColorOverlay{
+                    id:spinupColor
+                    anchors.fill: parent
+                    source: stepDown
+                    color: primaryColor
+                    visible: true
+                }
+            }
+            Image {
+                id: spinDown
+                source: "./resources/arrow.png"
+                rotation: 180
+                sourceSize.height: parent.height/2.1
+                anchors.right:  parent.right
+                anchors.bottom: parent.bottom
+                anchors.margins: sourceSize.height/10
+                MouseArea{
+                    anchors.fill: parent
+                    cursorShape: "PointingHandCursor"
+                    hoverEnabled: true
+                    onEntered: spindownColor.color = secondaryColor
+                    onExited: spindownColor.color = primaryColor
+                    onPressed:  {
+                        if(value < from){value = from}
+                        else if(value > to){value = to}
+                        else if(value > from && value <= to && value > steps[index]){
+                            spindownColor.color = btntxtColor
+                            value -= steps[index]
+                        }
+                        else if (steps[index] > value){
+                            value = from
+                        }
+
+                    }
+                    onPressAndHold: timerDown.start();
+                    onReleased: {
+                        spindownColor.color = secondaryColor
+                        timerDown.stop();
+                    }
+                }
+                ColorOverlay{
+                    id:spindownColor
+                    anchors.fill: parent
+                    source: stepDown
+                    color: primaryColor
+                    visible: true
+                }
+            }
+            Rectangle{
+                height: parent.height -2
+                width: parent.width - 1.2*spinUp.width
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                clip: true
+                color: "transparent"
+                MouseArea{
+                    anchors.fill: parent
+                    cursorShape: "IBeamCursor"
+                }
+
+                TextInput {
+                    id: input
+                    text: value ? value.toFixed(decimals) : 0
+                    padding: 5
+                    anchors.fill: parent
+                    color: primaryColor
+                    selectByMouse: true
+                    selectionColor: secondaryColor
+                    selectedTextColor: primaryColor
+                    font.pointSize: parent.height *0.4
+                    onTextEdited: value = parseFloat(text)
+                    mouseSelectionMode: TextInput.SelectCharacters
+                    autoScroll: true
+                    inputMethodHints: "ImhFormattedNumbersOnly"
+
+                }
+            }
+        }
     }
 }

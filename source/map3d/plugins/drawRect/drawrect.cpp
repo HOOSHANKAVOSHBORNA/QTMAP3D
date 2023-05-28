@@ -110,7 +110,7 @@ osgEarth::Annotation::PlaceNode *DrawRect::makeIconNode()
 
 void DrawRect::startDraw(QMouseEvent *event)
 {
-    mRect = new Rect(mMapItem, true);
+    mRect = new Rect(mMapItem);
     mRectProperties->setRect(mRect);
 
     mDrawingState = DrawingState::DRAWING;

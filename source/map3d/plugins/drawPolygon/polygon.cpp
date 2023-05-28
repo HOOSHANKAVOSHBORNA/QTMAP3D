@@ -5,8 +5,7 @@
 #include "osgEarthAnnotation/AnnotationEditing"
 #include "osgEarth/Tessellator"
 
-Polygon::Polygon(MapItem *mapItem, bool clamp)
-
+Polygon::Polygon(MapItem *mapItem)
 {
     mPolygonGeom = new osgEarth::Features::Polygon();
     mMapItem = mapItem;
@@ -26,12 +25,6 @@ Polygon::Polygon(MapItem *mapItem, bool clamp)
 
     //geomStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 
-    if (clamp){
-        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN;
-    }
-    else{
-        geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = osgEarth::Symbology::AltitudeSymbol::CLAMP_ABSOLUTE;
-    }
 
     geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
