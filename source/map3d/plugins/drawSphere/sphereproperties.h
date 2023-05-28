@@ -2,7 +2,7 @@
 #define SPHEREPROPERTIES_H
 
 #include "sphereNode.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 #include <QObject>
 #include <QVariant>
@@ -24,7 +24,7 @@ public:
 
 
 
-    SpherePropertiesModel(MapController *mapController = nullptr, QObject *parent = nullptr);
+    SpherePropertiesModel(MapItem *mapController = nullptr, QObject *parent = nullptr);
     //set color
     QString getColor() const;
     void setColor(const QString &color);
@@ -66,7 +66,7 @@ private:
 
 
     SphereNode* mSphereNode{nullptr};
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 
 
 public slots:
@@ -76,7 +76,7 @@ class SphereProperties: public QObject
 {
     Q_OBJECT
 public:
-    SphereProperties(QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    SphereProperties(QQmlEngine *engine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
     void show();
     void hide();
     void setSphere(SphereNode* sphere);

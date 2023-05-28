@@ -1,7 +1,7 @@
 #include "featurelayer.h"
 #include "multichoosedlg.h"
 #include "urldialog.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 #include <osgEarthSymbology/Style>
 #include <osgEarth/ModelLayer>
@@ -49,10 +49,10 @@ void FeatureLayer::onToolboxItemClicked(const QString &name, const QString &cate
     }
 }
 
-bool FeatureLayer::setup(MapController *mapController,
+bool FeatureLayer::setup(MapItem *mapItem,
                          UIHandle *UIHandle)
 {
-    mMapController = mapController;
+    mMapItem = mapItem;
 }
 
 void FeatureLayer::addGDAL()
@@ -86,7 +86,7 @@ void FeatureLayer::addGDAL()
 
         osgEarth::Drivers::ModelLayerOptions *options = new osgEarth::Drivers::ModelLayerOptions(nodeName, geomOptions);
         osg::ref_ptr<osgEarth::ModelLayer>    layer   = new osgEarth::Drivers::ModelLayer(*options);
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
 
     }
 
@@ -117,7 +117,7 @@ void FeatureLayer::addWFS()
         //        geomOptions.styles()->addStyle(style);
         geomOptions.enableLighting() = false;
         osg::ref_ptr<osgEarth::ModelLayer>  layer = new osgEarth::Drivers::ModelLayer(osgEarth::Drivers::ModelLayerOptions(nodeName, geomOptions));
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
 
     }
 }
@@ -143,7 +143,7 @@ void FeatureLayer::addArcGIS()
         arcGeomOptions.enableLighting() = false;
         osg::ref_ptr<osgEarth::ModelLayer>  layer = new osgEarth::ModelLayer(osgEarth::ModelLayerOptions(nodeName, arcGeomOptions));
 
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
     }
 }
 

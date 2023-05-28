@@ -1,7 +1,7 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "defenseModelNode.h"
 #include "systemInfoItem.h"
 #include "circle.h"

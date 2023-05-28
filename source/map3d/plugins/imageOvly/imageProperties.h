@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "plugininterface.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
@@ -27,7 +27,7 @@ class ImagePropertiesModel: public QObject
 
 
 public:
-    ImagePropertiesModel(osgEarth::Annotation::ImageOverlay *image = nullptr, MapController *mapcontroller = nullptr, QObject *parent = nullptr);
+    ImagePropertiesModel(osgEarth::Annotation::ImageOverlay *image = nullptr, MapItem *mapItem = nullptr, QObject *parent = nullptr);
 
     QVector2D getLocation();
     void setLocation(const QVector2D  &location);
@@ -65,7 +65,7 @@ private:
 
 
     osgEarth::Annotation::ImageOverlay *mImage{nullptr};
-    MapController *mMapController {nullptr};
+    MapItem *mMapItem {nullptr};
     DrawImage * mDrawImage{nullptr};
 
 };
@@ -75,7 +75,7 @@ class ImageProperties: public QObject
     Q_OBJECT
 
 public:
-    ImageProperties(osgEarth::Annotation::ImageOverlay *image, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    ImageProperties(osgEarth::Annotation::ImageOverlay *image, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent = nullptr);
 
     void show();
     void hide();

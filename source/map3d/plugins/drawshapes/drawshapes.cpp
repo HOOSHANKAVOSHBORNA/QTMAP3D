@@ -24,7 +24,7 @@
 #include <osgEarthAnnotation/LocalGeometryNode>
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "osg/Group"
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
@@ -66,23 +66,23 @@ void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mShape = Shape::NONE;
                 mDrawingState = DrawingState::NONE;
                 if (mImageOverlay && mDrawingState != DrawingState::FINISH){
-                    mMapController->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-                    mMapController->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+                    mMapItem->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+                    mMapItem->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
                 }
             }
         }
     }
 }
 
-bool DrawShapes::setup(MapController *mapController,
+bool DrawShapes::setup(MapItem *mapItem,
                        UIHandle */*UIHandle*/)
 {
-    mMapController = mapController;
-    osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
+    mMapItem = mapItem;
+    osgEarth::GLUtils::setGlobalDefaults(mMapItem->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *drawShapeLayer = new osgEarth::ModelLayer();
     drawShapeLayer->setName(DRAW_LAYER_NAME);
-    mMapController->addLayer(drawShapeLayer);
+    mMapItem->addLayer(drawShapeLayer);
     return true;
 }
 
@@ -119,9 +119,9 @@ void DrawShapes::mouseDoubleClickEvent(QMouseEvent */*event*/)
 void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
 {
     osg::Vec3d worldPos;
-    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+    mMapItem->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+    geoPos.fromWorld(mMapItem->getMapSRS(), worldPos);
 
     if(event->button() == Qt::MouseButton::LeftButton && !(mDrawingState==DrawingState::START))
     {
@@ -129,14 +129,14 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
         if (image)
         {
             mDrawingState = DrawingState::START;
-            mImageOverlay = new osgEarth::Annotation::ImageOverlay(mMapController->getMapNode(), image);
+            mImageOverlay = new osgEarth::Annotation::ImageOverlay(mMapItem->getMapNode(), image);
             //imageOverlay->setBounds(osgEarth::Bounds(-100.0, 35.0, -90.0, 40.0));
             mImageOverlay->setCenter(geoPos.x(),geoPos.y());
-            mMapController->addNodeToLayer(mImageOverlay, DRAW_LAYER_NAME);
-            //mMapController->addNode(mImageOverlay);
+            mMapItem->addNodeToLayer(mImageOverlay, DRAW_LAYER_NAME);
+            //mMapItem->addNode(mImageOverlay);
             mImgOvlEditor = new osgEarth::Annotation::ImageOverlayEditor(mImageOverlay, false);
-            //mMapController->getMapNode()->addChild(mImgOvlEditor);
-            mMapController->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+            //mMapItem->getMapNode()->addChild(mImgOvlEditor);
+            mMapItem->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
 
 
         }
@@ -145,19 +145,19 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
     if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::DELETE;
-        mMapController->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-        //mMapController->removeNode(mImageOverlay);
-        mMapController->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
-        //mMapController->removeNode(mImgOvlEditor);
+        mMapItem->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+        //mMapItem->removeNode(mImageOverlay);
+        mMapItem->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+        //mMapItem->removeNode(mImgOvlEditor);
         mImageOverlay = nullptr;
         mImgOvlEditor = nullptr;
     }
 
-    if(event->button() == Qt::MouseButton::MidButton && mDrawingState==DrawingState::START)
+    if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::FINISH;
-        mMapController->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
-        //mMapController->removeNode(mImgOvlEditor);
+        mMapItem->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+        //mMapItem->removeNode(mImgOvlEditor);
         mImageOverlay = nullptr;
         mImgOvlEditor = nullptr;
     }

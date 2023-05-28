@@ -4,8 +4,8 @@
 #include "osgEarth/Layer"
 #include "osgEarthAnnotation/AnnotationEditing"
 
-Rect::Rect(MapController *mapController, bool clamp){
-    mMapController = mapController;
+Rect::Rect(MapItem *mapItem, bool clamp){
+    mMapItem = mapItem;
     osgEarth::Symbology::Style rectseStyle;
     rectseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() ;
     rectseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() ;

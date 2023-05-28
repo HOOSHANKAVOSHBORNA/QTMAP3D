@@ -13,10 +13,10 @@ public:
     explicit EarthFile(QWidget *parent = nullptr);
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     void onFileItemClicked(const QString &name, const QString &category) override;
-    bool setup(MapController *mapController,
+    bool setup(MapItem *mapItem,
                UIHandle *UIHandle) override;
 private:
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 };
 
 #endif // EARTHFILE_H

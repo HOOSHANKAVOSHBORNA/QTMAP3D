@@ -1,5 +1,5 @@
 #include "visibility.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 const QString CATEGORY = "Analyze";
 const QString VISIBILITY = "Visibility";
@@ -29,25 +29,25 @@ void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString 
     {
         if(checked)
         {
-            //QObject::connect(mMapController,&MapController::mouseEvent, this, &Visibility::onMouseEvent);
-            mMapController->addNode(mIconNode);
+            //QObject::connect(mMapItem,&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
+            mMapItem->addNode(mIconNode);
         }
         else
         {
-            //QObject::disconnect(mMapController,&MapController::mouseEvent, this, &Visibility::onMouseEvent);
+            //QObject::disconnect(mMapItem,&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
 
-            mMapController->removeNode(mBackVisibilityNode);
-            mMapController->removeNode(mVisibilityNode);
+            mMapItem->removeNode(mBackVisibilityNode);
+            mMapItem->removeNode(mVisibilityNode);
 
-            mMapController->removeNode(mIconNode);
+            mMapItem->removeNode(mIconNode);
         }
     }
 }
 
-bool Visibility::setup(MapController *mapController,
+bool Visibility::setup(MapItem *mapItem,
                        UIHandle *UIHandle)
 {
-    mMapController = mapController;
+    mMapItem = mapItem;
     mIconNode = makeIconNode();
     return true;
 }
@@ -57,8 +57,8 @@ void Visibility::onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos)
     if(event->button() == Qt::MouseButton::LeftButton && event->type() ==  QEvent::Type::MouseButtonPress)
     {
 
-        mMapController->removeNode(mBackVisibilityNode);
-        mMapController->removeNode(mVisibilityNode);
+        mMapItem->removeNode(mBackVisibilityNode);
+        mMapItem->removeNode(mVisibilityNode);
 
         geoPos.makeGeographic();
 //        mMainWindow->webSocket()->sendMessage(QString::fromStdString(geoPos.toString()));
@@ -66,7 +66,7 @@ void Visibility::onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos)
         mBackVisibilityNode = makeBackground(20000.0f);
         //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.461);
         mBackVisibilityNode->setPosition(geoPos);
-        mMapController->addNode(mBackVisibilityNode);
+        mMapItem->addNode(mBackVisibilityNode);
         ///////////
         QVector<osg::Vec3d> vertices;
         vertices.push_back( osg::Vec3d(geoPos.x() - 0.089,geoPos.y() + 0.059, 0));
@@ -86,10 +86,10 @@ void Visibility::onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos)
         vertices.push_back( osg::Vec3d(geoPos.x() - 0.119,geoPos.y() + 0.029, 0));
 
         mVisibilityNode = makepolygan(vertices);
-        mMapController->addNode(mVisibilityNode);
+        mMapItem->addNode(mVisibilityNode);
 
         //Set view point------------------------------------------------------------------
-//        mMapController->goToPosition(geoPos.x(), geoPos.y(), 100000);
+//        mMapItem->goToPosition(geoPos.x(), geoPos.y(), 100000);
     }
 
     if(event->type() ==  QEvent::Type::MouseMove)
@@ -106,7 +106,7 @@ osgEarth::Annotation::FeatureNode* Visibility::makepolygan(QVector<osg::Vec3d> v
         geom->push_back(vertices[i]);
     }
 
-    osg::ref_ptr<osgEarth::Features::Feature> feature = new osgEarth::Features::Feature(geom, mMapController->getMapSRS());
+    osg::ref_ptr<osgEarth::Features::Feature> feature = new osgEarth::Features::Feature(geom, mMapItem->getMapSRS());
     feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
     osgEarth::Symbology::Style geomStyle;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::Green;
@@ -145,7 +145,7 @@ osgEarth::Annotation::ModelNode *Visibility::makeBackground(float radius)
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(geode);
 
     osg::ref_ptr<osgEarth::Annotation::ModelNode>  model;
-    model = new osgEarth::Annotation::ModelNode(mMapController->getMapNode(), style);
+    model = new osgEarth::Annotation::ModelNode(mMapItem->getMapNode(), style);
 
     return model.release();
 }

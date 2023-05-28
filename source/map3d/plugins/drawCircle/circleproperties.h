@@ -2,7 +2,7 @@
 #define CIRCLEPROPERTIES_H
 
 #include "circle.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 #include <QObject>
 #include <QVariant>
@@ -28,7 +28,7 @@ class CirclePropertiesModel : public QObject
 
 public:
 
-    CirclePropertiesModel(Circle* circle = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
+    CirclePropertiesModel(Circle* circle = nullptr, MapItem *mapController = nullptr, QObject *parent = nullptr);
     //set fillcolor
     QString getFillcolor() const;
     void setFillColor(const QString &fillcolor);
@@ -92,7 +92,7 @@ private:
     double    mLineWidth ;
 
     Circle*   mCircle;
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 
 
 
@@ -103,7 +103,7 @@ class CircleProperties : public QObject
 {
     Q_OBJECT
 public:
-    CircleProperties(Circle *circle, QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    CircleProperties(Circle *circle, QQmlEngine *engine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
     void show();
     void hide();
     void setCircle(Circle* circle);

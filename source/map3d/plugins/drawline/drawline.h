@@ -28,7 +28,7 @@ public:
     explicit drawLine(QWidget *parent = nullptr);
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    bool setup(MapController *mapController,
+    bool setup(MapItem *mapItem,
                UIHandle *UIHandle) override;
 
 protected:
@@ -49,7 +49,7 @@ private:
 
 
 private:
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
     QQmlEngine *mQmlEngine = nullptr;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;

@@ -1,10 +1,10 @@
 #include "measureHeight.h"
 
-MeasureHeight::MeasureHeight(MapController *mapController)
+MeasureHeight::MeasureHeight(MapItem *mapItem)
 {
-    mMapController = mapController;
-    mHLine = new LineNode(mMapController);
-    mVLine = new LineNode(mMapController);
+    mMapItem = mapItem;
+    mHLine = new LineNode(mMapItem);
+    mVLine = new LineNode(mMapItem);
     mHLine->setColor(osgEarth::Color::White);
     mVLine->setWidth(5);
     mHLine->setWidth(5);
@@ -36,14 +36,14 @@ void MeasureHeight::setSecondPoint(osgEarth::GeoPoint P2)
     if (mSecondPoint.z() > mFirstPoint.z()){
         auto lenght = (mJointPoint.vec3d()-mFirstPoint.vec3d()).length();
         updateHeightLabel(lenght);
-    osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+    osgEarth::GeoPoint midPoint(mMapItem->getMapSRS(),
                                 (mJointPoint.vec3d() + mFirstPoint.vec3d()) / 2);
     mLabelNode->setPosition(midPoint);
     }
     else{
         auto lenght = (mJointPoint.vec3d()-mSecondPoint.vec3d()).length();
         updateHeightLabel(lenght);
-        osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+        osgEarth::GeoPoint midPoint(mMapItem->getMapSRS(),
                                     (mJointPoint.vec3d() + mSecondPoint.vec3d()) / 2);
         mLabelNode->setPosition(midPoint);
     }
@@ -65,14 +65,14 @@ void MeasureHeight::draw()
         mHLine->addPoint(mFirstPoint);
         mVLine->addPoint(mSecondPoint);
         mJointPoint.set(
-                    mMapController->getMapSRS(), mFirstPoint.x(), mFirstPoint.y(),
+                    mMapItem->getMapSRS(), mFirstPoint.x(), mFirstPoint.y(),
                     mSecondPoint.z(), osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
     }
     else {
         mHLine->addPoint(mSecondPoint);
         mVLine->addPoint(mFirstPoint);
         mJointPoint.set(
-                    mMapController->getMapSRS(), mSecondPoint.x(), mSecondPoint.y(),
+                    mMapItem->getMapSRS(), mSecondPoint.x(), mSecondPoint.y(),
                     mFirstPoint.z(), osgEarth::AltitudeMode::ALTMODE_ABSOLUTE);
     }
     mHLine->addPoint(mJointPoint);

@@ -1,7 +1,7 @@
 #include "imagelayer.h"
 #include "multichoosedlg.h"
 #include "urldialog.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 #include <osgEarth/Registry>
 #include <osgEarth/XmlUtils>
@@ -63,10 +63,10 @@ void ImageLayer::onToolboxItemClicked(const QString &name, const QString &catego
     }
 }
 
-bool ImageLayer::setup(MapController *mapController,
+bool ImageLayer::setup(MapItem *mapItem,
                        UIHandle *UIHandle)
 {
-    mMapController = mapController;
+    mMapItem = mapItem;
 }
 
 void ImageLayer::addXYZ()
@@ -107,7 +107,7 @@ void ImageLayer::addXYZ()
             auto imageLayerOptions = osgEarth::ImageLayerOptions(nodeName, opt);
             osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
             layer->setName(it->toStdString());
-            mMapController->addLayer(layer);
+            mMapItem->addLayer(layer);
 
         }
 
@@ -133,7 +133,7 @@ void ImageLayer::addArcGIS()
         opt.url() = nodeName;
 
         osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
     }
 }
 
@@ -148,7 +148,7 @@ void ImageLayer::addGDAL()
         osgEarth::Drivers::GDALOptions  opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
     }
 }
 
@@ -170,7 +170,7 @@ void ImageLayer::addTMS()
         osgEarth::Drivers::TMSOptions opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
     }
 }
 
@@ -311,7 +311,7 @@ void ImageLayer::addWMS()
             opt.profile()     = { "EPSG:4326" };
 
             osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-            mMapController->addLayer(layer);
+            mMapItem->addLayer(layer);
 
         }
     }

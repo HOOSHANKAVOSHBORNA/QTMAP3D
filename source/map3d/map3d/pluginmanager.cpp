@@ -65,12 +65,12 @@ void PluginManager::performPluginsInitQMLDesc(QQmlEngine *qmlEngine)
     }
 }
 
-void PluginManager::performPluginsSetup(MapController *mapController)
+void PluginManager::performPluginsSetup(MapItem *mapItem)
 {
     DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
     UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
     for (const auto& item : mPluginsInfoList) {
-        item.interface->setup(mapController, uiHandle);
+        item.interface->setup(mapItem, uiHandle);
         item.interface->setDefenseDataManager(defenseDataManager);
     }
 }

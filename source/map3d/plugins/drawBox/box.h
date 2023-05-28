@@ -48,7 +48,7 @@ private:
 
 
 private:
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
     osgEarth::Symbology::Style style;
     osg::ref_ptr<osg::Box> pBoxShape;
     osgEarth::Symbology::Style  mStyle;

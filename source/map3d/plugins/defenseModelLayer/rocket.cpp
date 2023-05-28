@@ -2,7 +2,7 @@
 #include "draw.h"
 #include "defenseModelNodeAutoScaler.h"
 
-Rocket::Rocket(MapController *mapControler, QObject *parent):
+Rocket::Rocket(MapItem *mapControler, QObject *parent):
     DefenseModelNode(mapControler, parent)
 {
     osg::ref_ptr<osg::Node>  node = osgDB::readRefNodeFile("../data/models/system/truck/rocket.osgb");

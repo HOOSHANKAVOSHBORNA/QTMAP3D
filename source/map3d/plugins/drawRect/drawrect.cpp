@@ -46,15 +46,15 @@ void DrawRect::onToolboxItemCheckedChanged(const QString &name, const QString &c
     }
 }
 
-bool DrawRect::setup(MapController *mapController, UIHandle *uIHandle)
+bool DrawRect::setup(MapItem *mapItem, UIHandle *uIHandle)
 {
     mUiHandle = uIHandle;
-    mMapController = mapController;
-    osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
+    mMapItem = mapItem;
+    osgEarth::GLUtils::setGlobalDefaults(mMapItem->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
     osgEarth::ModelLayer *rectLayer = new osgEarth::ModelLayer();
     rectLayer->setName(DRAW_LAYER_NAME);
-    mMapController->addLayer(rectLayer);
+    mMapItem->addLayer(rectLayer);
     return true;
 }
 void DrawRect::mousePressEvent(QMouseEvent *event)
@@ -79,7 +79,7 @@ void DrawRect::mousePressEvent(QMouseEvent *event)
             }
         }
         //finish
-        if(event->button() == Qt::MouseButton::MidButton)
+        if(event->button() == Qt::MouseButton::MiddleButton)
         {
             if(mDrawingState == DrawingState::DRAWING)
             {
@@ -92,7 +92,7 @@ void DrawRect::mousePressEvent(QMouseEvent *event)
 void DrawRect::mouseMoveEvent(QMouseEvent *event)
 {
     if (mEnterRectZone){
-        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
         mIconNode->setPosition(geoPos);
     }
 }
@@ -110,16 +110,16 @@ osgEarth::Annotation::PlaceNode *DrawRect::makeIconNode()
 
 void DrawRect::startDraw(QMouseEvent *event)
 {
-    mRect = new Rect(mMapController, true);
+    mRect = new Rect(mMapItem, true);
     mRectProperties->setRect(mRect);
 
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapController->screenToWorld(event->x(), event->y(), worldPos);
+    mMapItem->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapController->getMapSRS(), worldPos);
+    geoPos.fromWorld(mMapItem->getMapSRS(), worldPos);
 
-    mRect->setPosition(osgEarth::GeoPoint(mMapController->getMapSRS(), geoPos.x(), geoPos.y()));
+    mRect->setPosition(osgEarth::GeoPoint(mMapItem->getMapSRS(), geoPos.x(), geoPos.y()));
 
     addNodeToLayer(mRect);
 }
@@ -141,7 +141,7 @@ void DrawRect::finishDraw()
 
 bool DrawRect::addNodeToLayer(osg::Node *node)
 {
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
+    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
     if (layer) {
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {
@@ -151,7 +151,7 @@ bool DrawRect::addNodeToLayer(osg::Node *node)
 }
 void DrawRect::removeNodeFromLayer(osg::Node *node)
 {
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
+    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
     if (layer) {
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {

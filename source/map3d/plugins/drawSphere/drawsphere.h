@@ -7,7 +7,7 @@
 
 #include "plugininterface.h"
 #include "sphereproperties.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "sphereNode.h"
 
 #define DRAW_LAYER_NAME "Sphere"
@@ -20,7 +20,7 @@ public:
     drawSphere(QObject *parent = nullptr);
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    virtual bool setup(MapController *mapController, UIHandle *uiHandle) override;
+    virtual bool setup(MapItem *mapController, UIHandle *uiHandle) override;
 
     virtual void mousePressEvent(QMouseEvent *event) override;
     virtual void mouseMoveEvent(QMouseEvent *event) override;
@@ -33,7 +33,7 @@ private:
     osgEarth::Annotation::PlaceNode* makeIconNode();
 
 private:
-    MapController* mMapcontroller {nullptr};
+    MapItem* mMapcontroller {nullptr};
     QQmlEngine* mQmlEngine {nullptr};
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;

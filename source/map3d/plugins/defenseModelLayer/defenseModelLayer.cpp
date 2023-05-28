@@ -4,7 +4,7 @@
 #include "rocket.h"
 #include "systemModelNode.h"
 #include "stationModelNode.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "defenseDataManager.h"
 
 #include <QDebug>
@@ -189,13 +189,13 @@ void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString 
     }
 }
 
-bool DefenseModelLayer::setup(MapController *mapController,
+bool DefenseModelLayer::setup(MapItem *mapItem,
                               UIHandle *uiHandle)
 {
-    mMapController = mapController;
+    mMapController = mapItem;
     mUIHandle = uiHandle;
 
-    connect(mMapController, &MapController::mapCleared, this, &DefenseModelLayer::onMapClear);
+    connect(mMapController, &MapItem::mapCleared, this, &DefenseModelLayer::onMapClear);
 
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);

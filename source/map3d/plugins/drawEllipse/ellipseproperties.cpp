@@ -6,10 +6,10 @@
 
 
 
-EllipsePropertiesModel::EllipsePropertiesModel(Ellipse *ellipse, MapController *mapController, QObject *parent) :
+EllipsePropertiesModel::EllipsePropertiesModel(Ellipse *ellipse, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mEllipse(ellipse),
-    mMapController(mapController)
+    mMapItem(mapItem)
 {
 
 }

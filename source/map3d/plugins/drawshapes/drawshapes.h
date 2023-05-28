@@ -28,7 +28,7 @@ public:
     explicit DrawShapes(QWidget *parent = nullptr);
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    bool setup(MapController *mapController,
+    bool setup(MapItem *mapController,
                UIHandle *UIHandle) override;
 protected:
     virtual void mousePressEvent(QMouseEvent* event) override;
@@ -48,7 +48,7 @@ private slots:
 
 private:
 
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
     QQmlEngine *mQmlEngine = nullptr;
     QQuickItem *mItem = nullptr;
 

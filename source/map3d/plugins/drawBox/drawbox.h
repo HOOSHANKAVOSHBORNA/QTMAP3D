@@ -8,7 +8,7 @@
 #include <osg/ClipNode>
 #include <osg/ClipPlane>
 
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 #include "box.h"
 #include "boxProperties.h"
@@ -24,7 +24,7 @@ class DrawBox : public PluginInterface
 public:
     DrawBox(QObject *parent = nullptr);
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    bool setup(MapController *mapController, UIHandle *uiHandle) override;
+    bool setup(MapItem *mapItem, UIHandle *uiHandle) override;
 
     void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -39,7 +39,7 @@ private:
 private:
     QQmlEngine *mQmlEngine;
     UIHandle *mUiHandle;
-    MapController *mMapcontroller;
+    MapItem *mMapcontroller;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     Box* mBox{nullptr};

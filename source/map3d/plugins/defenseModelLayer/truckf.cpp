@@ -1,6 +1,6 @@
 
 #include "truckf.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include <osgDB/ReadFile>
 #include <QDebug>
 #include <QTimer>
@@ -18,8 +18,8 @@ osg::ref_ptr<osg::Node> TruckF::mMeshNodeP4LOD1;
 
 bool TruckF::mMeshNodesLoaded = false;
 
-TruckF::TruckF(class MapController *mapController) :
-    osgEarth::Annotation::ModelNode(mapController->getMapNode(), DefenseModelLayer::getDefaultStyle())
+TruckF::TruckF(class MapItem *mapItem) :
+    osgEarth::Annotation::ModelNode(mapItem->getMapNode(), DefenseModelLayer::getDefaultStyle())
 {
 
     if (!mMeshNodesLoaded) {
@@ -73,7 +73,7 @@ TruckF::TruckF(class MapController *mapController) :
 
 
     for (int i = 0; i < 6; i++) {
-        mRocketModelNodeList.push_back(new Rocket(mapController, nullptr));
+        mRocketModelNodeList.push_back(new Rocket(mapItem, nullptr));
     }
 
 

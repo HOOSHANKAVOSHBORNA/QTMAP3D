@@ -9,7 +9,7 @@
 
 #include "pluginmanager.h"
 #include "layersmodel.h"
-
+#include "mapItem.h"
 class QOpenGLFunctions_2_0;
 class PluginInfo;
 class PluginInterface;
@@ -181,7 +181,7 @@ public slots:
 
 public:
 
-    MapController* mapController() const;
+    MapItem* getMapItem() const;
 
 
 public slots:
@@ -193,9 +193,9 @@ public slots:
     void setListWindow(ListWindow *listWindow);
 
 private:
-    void initializeGL();
-    void resizeGL();
-    void paintGL();
+//    void initializeGL();
+//    void resizeGL();
+//    void paintGL();
 
 protected:
     void resizeEvent(QResizeEvent *) override;
@@ -236,7 +236,7 @@ private:
     bool mInClickProcess = false;
 
 protected:
-    MapController *mMapController = nullptr;
+    MapItem *mMapItem = nullptr;
 
 private:
     qreal mheadingAngle = 0.0;

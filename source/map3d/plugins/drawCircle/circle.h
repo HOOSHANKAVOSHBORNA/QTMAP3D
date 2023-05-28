@@ -1,12 +1,12 @@
 #ifndef CIRCLE_H
 #define CIRCLE_H
 #include <osgEarthAnnotation/CircleNode>
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 class Circle: public osgEarth::Annotation::CircleNode
 {
 public:
-    Circle(MapController *mapController, bool clamp);
+    Circle(MapItem *mapController, bool clamp);
 
     void setCircleHeight(float hieght);
     void setColor(osgEarth::Color color);
@@ -22,7 +22,7 @@ public:
 
 private:
     osgEarth::Symbology::Style circleStyle;
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 };
 
 #endif // Circle_H

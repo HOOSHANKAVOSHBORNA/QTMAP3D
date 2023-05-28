@@ -3,10 +3,10 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 
-ConePropertiesModel::ConePropertiesModel(Cone *cone, MapController *mapcontroller, QObject *parent):
+ConePropertiesModel::ConePropertiesModel(Cone *cone, MapItem *mapItem, QObject *parent):
     QObject(parent),
     mCone(cone),
-    mMapController(mapcontroller)
+    mMapItem(mapItem)
 {
 }
 
@@ -116,28 +116,28 @@ void ConePropertiesModel::setRelative(const bool &value){
         osgEarth::GeoPoint tempLocation =  mCone->getPosition();
         if(value == true )
         {
-            tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeRelative(mMapItem->getMapNode()->getTerrain());
             mCone->setPosition(tempLocation);
         }
         else if(value == false )
         {
-            tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeAbsolute(mMapItem->getMapNode()->getTerrain());
             mCone->setPosition(tempLocation);
         }
     }
 }
 
 
-ConeProperties::ConeProperties(Cone* cone, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent) :
+ConeProperties::ConeProperties(Cone* cone, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mQmlEngine(qmlEngine),
     mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapcontroller, cone](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, cone](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mConeProperties = new ConePropertiesModel(cone, mapcontroller);
+            mConeProperties = new ConePropertiesModel(cone, mapItem);
             mItem->setProperty("coneProperties", QVariant::fromValue<ConePropertiesModel*>(mConeProperties));
         }
     });

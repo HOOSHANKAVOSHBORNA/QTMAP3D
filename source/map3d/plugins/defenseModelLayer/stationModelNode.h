@@ -2,7 +2,7 @@
 #define STATION_H
 
 
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "defenseModelNode.h"
 #include "stationInformation.h"
 #include "circle.h"
@@ -14,7 +14,7 @@
 class StationModelNode: public DefenseModelNode
 {
 public:
-    StationModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
+    StationModelNode(MapItem *mapControler, QQmlEngine *qmlEngine, UIHandle* uiHandle, QObject* parent = nullptr);
     void setInformation(const StationInfo &info);
     void goOnTrack();
 public slots:
@@ -35,7 +35,7 @@ private:
     void showInfoWidget();
     void updateOrCreateLabelImage();
 private:
-    MapController* mMapController{nullptr};
+    MapItem* mMapController{nullptr};
     StationInfo mInformation;
     UIHandle* mUIHandle;
     QQmlEngine *mQmlEngine;

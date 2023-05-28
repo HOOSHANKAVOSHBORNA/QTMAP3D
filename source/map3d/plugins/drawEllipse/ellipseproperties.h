@@ -2,7 +2,7 @@
 #define ELLIPSEPROPERTIES_H
 
 #include "ellipse.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 #include <QObject>
 #include <QVariant>
@@ -23,7 +23,7 @@ class EllipsePropertiesModel : public QObject
 
 public:
 
-    EllipsePropertiesModel(Ellipse* ellipse = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
+    EllipsePropertiesModel(Ellipse* ellipse = nullptr, MapItem *mapItem = nullptr, QObject *parent = nullptr);
     //set fillcolor
     QString getFillcolor() const;
     void setFillColor(const QString &fillcolor);
@@ -66,7 +66,7 @@ private:
     double    mLineWidth ;
 
     Ellipse*   mEllipse;
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 
 
 

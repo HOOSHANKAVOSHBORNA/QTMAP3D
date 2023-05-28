@@ -4,7 +4,7 @@
 #include <osg/LightModel>
 #include <osg/CullFace>
 #include <osg/Depth>
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include <QDebug>
 
 Cone::Cone()

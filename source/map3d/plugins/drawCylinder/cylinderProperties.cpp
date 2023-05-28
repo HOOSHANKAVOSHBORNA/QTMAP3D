@@ -3,10 +3,10 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 
-CylinderPropertiesModel::CylinderPropertiesModel(Cylinder *Cylinder, MapController *mapcontroller, QObject *parent):
+CylinderPropertiesModel::CylinderPropertiesModel(Cylinder *Cylinder, MapItem *mapItem, QObject *parent):
     QObject(parent),
     mCylinder(Cylinder),
-    mMapController(mapcontroller)
+    mMapItem(mapItem)
 {
 }
 
@@ -116,28 +116,28 @@ void CylinderPropertiesModel::setRelative(const bool &value){
         osgEarth::GeoPoint tempLocation =  mCylinder->getPosition();
         if(value == true )
         {
-            tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeRelative(mMapItem->getMapNode()->getTerrain());
             mCylinder->setPosition(tempLocation);
         }
         else if(value == false )
         {
-            tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeAbsolute(mMapItem->getMapNode()->getTerrain());
             mCylinder->setPosition(tempLocation);
         }
     }
 }
 
 
-CylinderProperties::CylinderProperties(Cylinder* Cylinder, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent) :
+CylinderProperties::CylinderProperties(Cylinder* Cylinder, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mQmlEngine(qmlEngine),
     mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapcontroller, Cylinder](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, Cylinder](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mCylinderProperties = new CylinderPropertiesModel(Cylinder, mapcontroller);
+            mCylinderProperties = new CylinderPropertiesModel(Cylinder, mapItem);
             mItem->setProperty("cylinderProperties", QVariant::fromValue<CylinderPropertiesModel*>(mCylinderProperties));
         }
     });

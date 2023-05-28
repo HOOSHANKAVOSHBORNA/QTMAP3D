@@ -21,7 +21,7 @@
 #include <QQmlEngine>
 #include <QQmlComponent>
 
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 
 
@@ -36,7 +36,7 @@ class DrawImage : public PluginInterface
 public:
     DrawImage(QObject *parent = nullptr);
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    bool setup(MapController *mapController, UIHandle *uiHandle) override;
+    bool setup(MapItem *mapItem, UIHandle *uiHandle) override;
     void loadImage();
     void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -55,7 +55,7 @@ private:
     osg::Image *mImage{nullptr};
     QQmlEngine *mQmlEngine;
     UIHandle *mUiHandle;
-    MapController *mMapcontroller;
+    MapItem *mMapcontroller;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     bool mEnterImageZone{false};

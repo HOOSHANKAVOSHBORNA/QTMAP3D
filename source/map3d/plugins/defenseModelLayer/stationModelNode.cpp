@@ -11,7 +11,7 @@ const float RANGE3D = 835;// std::numeric_limits<float>::max();
 
 osg::ref_ptr<osg::Node> StationModelNode::mNode3DRef;
 
-StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
+StationModelNode::StationModelNode(MapItem *mapControler, QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent)
     :DefenseModelNode(mapControler, parent), mMapController(mapControler), mUIHandle(uiHandle), mQmlEngine(qmlEngine)
 {
     mIs3D = mMapController->getMode();
@@ -159,7 +159,7 @@ StationModelNode::StationModelNode(MapController *mapControler, QQmlEngine *qmlE
     mNode3D->addChild(mCircleNode);
 
 
-    connect(mapControler, &MapController::modeChanged, this, &StationModelNode::onModeChanged);
+    connect(mapControler, &MapItem::modeChanged, this, &StationModelNode::onModeChanged);
 
     mRangeCircle = new Circle(mMapController, true);
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.5f));

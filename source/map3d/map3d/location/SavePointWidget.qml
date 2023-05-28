@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
-import QtGraphicalEffects 1.13
+//import QtGraphicalEffects 1.13
 import Qt.labs.platform 1.1
 Rectangle{
     id : rootItem
@@ -144,12 +144,12 @@ Rectangle{
                 opacity: btnGo.hovered ? 0.8 : 1
                 radius: _radius
                 layer.enabled: true
-                layer.effect: DropShadow {
-                    transparentBorder: true
-                    horizontalOffset: 7
-                    verticalOffset: 7
-                    color: "#88000000"
-                }
+//                layer.effect: DropShadow {
+//                    transparentBorder: true
+//                    horizontalOffset: 7
+//                    verticalOffset: 7
+//                    color: "#88000000"
+//                }
 
 
             }

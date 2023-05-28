@@ -4,7 +4,7 @@
 #include <osgEarthAnnotation/ModelNode>
 #include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/PlaceNode>
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 #include "ellipse.h"
 #include "ellipseproperties.h"
@@ -21,7 +21,7 @@ public:
     explicit DrawEllipse(QObject *parent = nullptr);
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    bool setup(MapController *mapController,
+    bool setup(MapItem *mapItem,
                UIHandle *UIHandle) override;
 
     virtual void mousePressEvent(QMouseEvent* event) override;
@@ -34,7 +34,7 @@ private:
     osgEarth::Annotation::PlaceNode* makeIconNode();
 
 private:
-    MapController* mMapController {nullptr};
+    MapItem* mMapItem {nullptr};
     QQmlEngine* mQmlEngine {nullptr};
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;

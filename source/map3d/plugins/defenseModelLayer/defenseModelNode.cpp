@@ -92,7 +92,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
     //        baseModel->curentPosition(geoPoint);
 }
 
-DefenseModelNode::DefenseModelNode(MapController *mapControler, QObject *parent):
+DefenseModelNode::DefenseModelNode(MapItem *mapControler, QObject *parent):
     QObject(parent),
     osgEarth::Annotation::ModelNode(mapControler->getMapNode(), DefenseModelLayer::getDefaultStyle())
 {

@@ -2,7 +2,7 @@
 #define POLYGONPROPERTIES_H
 
 #include "polygon.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 #include <QObject>
 #include <QVariant>
@@ -67,7 +67,7 @@ private:
     double    mLineWidth ;
 
     Polygon*   mPolygon{nullptr};
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 
 
 

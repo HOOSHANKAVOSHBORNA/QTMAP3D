@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "plugininterface.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "box.h"
 
 class BoxPropertiesModel: public QObject
@@ -18,7 +18,7 @@ class BoxPropertiesModel: public QObject
     Q_PROPERTY(int       opacity        READ getOpacity       WRITE setOpacity      )
 
 public:
-    BoxPropertiesModel(Box *box = nullptr, MapController *mapcontroller = nullptr, QObject *parent = nullptr);
+    BoxPropertiesModel(Box *box = nullptr, MapItem *mapItem = nullptr, QObject *parent = nullptr);
 
     //set color
     QString getColor() const;
@@ -59,7 +59,7 @@ private:
     bool      mRelative = false;
 
     Box *mBox;
-    MapController *mMapController {nullptr};
+    MapItem *mMapItem {nullptr};
 
 };
 
@@ -68,7 +68,7 @@ class BoxProperties: public QObject
     Q_OBJECT
 
 public:
-    BoxProperties(Box *box, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    BoxProperties(Box *box, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent = nullptr);
 
     void show();
     void hide();

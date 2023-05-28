@@ -9,9 +9,9 @@ URLDialog::URLDialog(QMap<QString, QString> example, QWidget *parent) :
     ui->comboBox->addItem("");
     for(auto key: example.keys())
         ui->comboBox->addItem(key);
-    QObject::connect(ui->comboBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString& selectedItem){
-        ui->lineEdit->setText(example[selectedItem]);
-    });
+//    QObject::connect(ui->comboBox, QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=](const QString& selectedItem){
+//        ui->lineEdit->setText(example[selectedItem]);
+//    });
 }
 
 URLDialog::~URLDialog()

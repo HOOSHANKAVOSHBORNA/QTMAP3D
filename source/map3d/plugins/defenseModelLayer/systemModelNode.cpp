@@ -172,7 +172,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
 
 
     //map mode changed-----------------------------------------------------------------------
-    connect(mDefenseModelLayer->mMapController, &MapController::modeChanged, this, &SystemModelNode::onModeChanged);
+    connect(mDefenseModelLayer->mMapController, &MapItem::modeChanged, this, &SystemModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------
     mRangeCircle = new Circle(mDefenseModelLayer->mMapController, true);
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
@@ -873,7 +873,7 @@ void SystemModelNode::updateOrCreateLabelImage()
 
 
 
-//SystemModelNode::Assignment::Assignment(MapController *mapControler)
+//SystemModelNode::Assignment::Assignment(MapItem *mapControler)
 //{
 //    mLine = new LineNode(mapControler);
 //    mLine->setPointVisible(true);

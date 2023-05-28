@@ -5,7 +5,7 @@
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/PlaceNode>
 
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 #include "cylinder.h"
 #include "cylinderProperties.h"
@@ -21,7 +21,7 @@ class DrawCylinder : public PluginInterface
 public:
     DrawCylinder(QObject *parent = nullptr);
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    bool setup(MapController *mapController, UIHandle *uiHandle) override;
+    bool setup(MapItem *mapController, UIHandle *uiHandle) override;
 
     void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -37,7 +37,7 @@ private:
 private:
     QQmlEngine *mQmlEngine;
     UIHandle *mUiHandle;
-    MapController *mMapcontroller;
+    MapItem *mMapcontroller;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     Cylinder* mCylinder{nullptr};

@@ -9,7 +9,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(terrainlayer SHARED
   terrainlayer.cpp
@@ -22,7 +22,7 @@ add_library(terrainlayer SHARED
 )
 
 target_include_directories(terrainlayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
-target_link_libraries(terrainlayer PRIVATE Qt5::Gui Qt5::Quick Qt5::Widgets)
+target_link_libraries(terrainlayer PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
 
 target_compile_definitions(terrainlayer PRIVATE CPTEST_LIBRARY)
 

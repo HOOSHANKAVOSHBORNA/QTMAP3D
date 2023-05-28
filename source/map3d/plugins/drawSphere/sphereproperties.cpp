@@ -6,9 +6,9 @@
 
 
 
-SpherePropertiesModel::SpherePropertiesModel(MapController *mapController, QObject *parent) :
+SpherePropertiesModel::SpherePropertiesModel(MapItem *mapItem, QObject *parent) :
     QObject(parent),
-    mMapController(mapController)
+    mMapItem(mapItem)
 {
 
 }
@@ -124,12 +124,12 @@ void SpherePropertiesModel::setRelative(const bool &value){
         osgEarth::GeoPoint tempLocation =  mSphereNode->getPosition();
         if(value == true )
         {
-            tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeRelative(mMapItem->getMapNode()->getTerrain());
             mSphereNode->setPosition(tempLocation);
         }
         else if(value == false )
         {
-            tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeAbsolute(mMapItem->getMapNode()->getTerrain());
             mSphereNode->setPosition(tempLocation);
         }
     }
@@ -152,16 +152,16 @@ void SpherePropertiesModel::setSphere(SphereNode *sphere)
 
 }
 
-SphereProperties::SphereProperties(QQmlEngine *engine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent):
+SphereProperties::SphereProperties(QQmlEngine *engine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent):
     QObject(parent),
     mQmlEngine(engine),
     mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapcontroller](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mSphereProperties = new SpherePropertiesModel(mapcontroller);
+            mSphereProperties = new SpherePropertiesModel(mapItem);
             mItem->setProperty("sphereProperties", QVariant::fromValue<SpherePropertiesModel*>(mSphereProperties));
         }
     });

@@ -7,7 +7,7 @@
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
 #include "osgEarthAnnotation/AnnotationEditing"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include <QDebug>
 
 

@@ -20,7 +20,7 @@
 #include <osgEarthAnnotation/LocalGeometryNode>
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "osg/Group"
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
@@ -50,10 +50,10 @@ bool DrawImage::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 }
 
 
-bool DrawImage::setup(MapController *mapController, UIHandle *uIHandle)
+bool DrawImage::setup(MapItem *mapItem, UIHandle *uIHandle)
 {
     mUiHandle = uIHandle;
-    mMapcontroller = mapController;
+    mMapcontroller = mapItem;
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -106,7 +106,7 @@ void DrawImage::mousePressEvent(QMouseEvent *event)
         else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
             cancelDrawing(event);
         }
-        else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
+        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
             finishDrawing(event);
         }
     }

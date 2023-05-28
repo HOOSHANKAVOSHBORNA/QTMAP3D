@@ -1,6 +1,5 @@
 #include "terrainlayer.h"
 #include "urldialog.h"
-#include "mapcontroller.h"
 
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthDrivers/arcgis/ArcGISOptions>
@@ -54,10 +53,10 @@ void TerrainLayer::onToolboxItemClicked(const QString &name, const QString &cate
     }
 }
 
-bool TerrainLayer::setup(MapController *mapController,
+bool TerrainLayer::setup(MapItem *mapItem,
                          UIHandle *UIHandle)
 {
-    mMapController = mapController;
+    mMapItem = mapItem;
 }
 
 void TerrainLayer::addGDAL()
@@ -71,7 +70,7 @@ void TerrainLayer::addGDAL()
         osgEarth::Drivers::GDALOptions  opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
     }
 }
 
@@ -94,7 +93,7 @@ void TerrainLayer::addArcGIS()
         opt.url() = nodeName;
 
         osg::ref_ptr<osgEarth::ElevationLayer> layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
     }
 }
 
@@ -120,7 +119,7 @@ void TerrainLayer::addWCS()
         opt.identifier() = "DEP3ElevationPrototype";
 
         osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
     }
 }
 
@@ -142,6 +141,6 @@ void TerrainLayer::addTMS()
         osgEarth::Drivers::TMSOptions opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ElevationLayer> layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
-        mMapController->addLayer(layer);
+        mMapItem->addLayer(layer);
     }
 }

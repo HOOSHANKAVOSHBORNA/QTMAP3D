@@ -10,7 +10,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 COMPONENTS Gui Quick Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(drawimage SHARED
 drawImage.cpp
@@ -22,7 +22,7 @@ imageProperties.h
 )
 
 target_include_directories(drawimage PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
-target_link_libraries(drawimage PRIVATE Qt5::Gui Qt5::Quick Qt5::Widgets)
+target_link_libraries(drawimage PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
 
 target_compile_definitions(drawimage PRIVATE CPTEST_LIBRARY)
 

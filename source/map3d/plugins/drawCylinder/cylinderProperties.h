@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "plugininterface.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "cylinder.h"
 
 class CylinderPropertiesModel: public QObject
@@ -17,7 +17,7 @@ class CylinderPropertiesModel: public QObject
     Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency )
 
 public:
-    CylinderPropertiesModel(Cylinder *Cylinder = nullptr, MapController *mapcontroller = nullptr, QObject *parent = nullptr);
+    CylinderPropertiesModel(Cylinder *Cylinder = nullptr, MapItem *mapcontroller = nullptr, QObject *parent = nullptr);
 
     //set fillcolor
     QString getFillcolor() const;
@@ -54,7 +54,7 @@ private:
     bool      mRelative = false;
 
     Cylinder *mCylinder;
-    MapController *mMapController {nullptr};
+    MapItem *mMapItem {nullptr};
 
 };
 
@@ -63,7 +63,7 @@ class CylinderProperties: public QObject
     Q_OBJECT
 
 public:
-    CylinderProperties(Cylinder *Cylinder, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    CylinderProperties(Cylinder *Cylinder, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
 
     void show();
     void hide();

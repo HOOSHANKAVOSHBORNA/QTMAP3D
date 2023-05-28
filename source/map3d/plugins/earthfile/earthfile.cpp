@@ -1,5 +1,5 @@
 #include "earthfile.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 #include <QFileDialog>
 #include <QPushButton>
@@ -48,7 +48,7 @@ void EarthFile::onFileItemClicked(const QString &name, const QString &category)
 
           osg::ref_ptr<osg::Node> baseMap = osgDB::readNodeFile(fileName.toStdString(), myReadOptions);
           osg::ref_ptr<osgEarth::MapNode> mapNode1 = osgEarth::MapNode::get(baseMap);
-          mMapController->setMap(mapNode1->getMap());
+          mMapItem->setMap(mapNode1->getMap());
 
         }
     }
@@ -65,13 +65,13 @@ void EarthFile::onFileItemClicked(const QString &name, const QString &category)
             defMNO.setTerrainOptions(to);
             myReadOptions->setPluginStringData("osgEarth.defaultOptions", defMNO.getConfig().toJSON());
 
-            osgDB::writeNodeFile(*mMapController->getMapNode(), fileName.toStdString(), myReadOptions);
+            osgDB::writeNodeFile(*mMapItem->getMapNode(), fileName.toStdString(), myReadOptions);
         }
     }
 }
 
-bool EarthFile::setup(MapController *mapController,
+bool EarthFile::setup(MapItem *mapItem,
                       UIHandle *UIHandle)
 {
-    mMapController = mapController;
+    mMapItem = mapItem;
 }

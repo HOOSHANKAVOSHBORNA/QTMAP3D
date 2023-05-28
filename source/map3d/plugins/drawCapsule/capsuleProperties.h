@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "plugininterface.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "capsule.h"
 
 class CapsulePropertiesModel: public QObject
@@ -17,7 +17,7 @@ class CapsulePropertiesModel: public QObject
     Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency )
 
 public:
-    CapsulePropertiesModel(Capsule *Capsule = nullptr, MapController *mapcontroller = nullptr, QObject *parent = nullptr);
+    CapsulePropertiesModel(Capsule *Capsule = nullptr, MapItem *mapcontroller = nullptr, QObject *parent = nullptr);
 
     //set fillcolor
     QString getFillcolor() const;
@@ -54,7 +54,7 @@ private:
     bool      mRelative = false;
 
     Capsule *mCapsule;
-    MapController *mMapController {nullptr};
+    MapItem *mMapItem {nullptr};
 
 };
 
@@ -63,7 +63,7 @@ class CapsuleProperties: public QObject
     Q_OBJECT
 
 public:
-    CapsuleProperties(Capsule *Capsule, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    CapsuleProperties(Capsule *Capsule, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
 
     void show();
     void hide();

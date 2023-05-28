@@ -8,7 +8,7 @@
 class TruckF : public osgEarth::Annotation::ModelNode
 {
 public:
-    TruckF(class MapController *mapController);
+    TruckF(class MapItem *mapController);
     void aimTarget(const osgEarth::GeoPoint &gpt);
     bool shoot(const osg::Vec3d &pos, double speed);
     Rocket* getActiveRocket()const;

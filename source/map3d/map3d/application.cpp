@@ -96,7 +96,7 @@ void Application::createListWindow()
 void Application::initializeDefenseDataManager()
 {
     //TODO set parent
-    mDefenseDataManager = new DefenseDataManager;
+//    mDefenseDataManager = new DefenseDataManager;
 }
 
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
@@ -186,7 +186,7 @@ void Application::onAllWindowsCreated()
 void Application::setup()
 {
     initializeDefenseDataManager();
-    mPluginManager->performPluginsSetup(mMainWindow->mapController());
+    mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
     emit defenseDataManagerInitialized(mDefenseDataManager);
 }
 

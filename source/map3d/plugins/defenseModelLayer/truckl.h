@@ -8,7 +8,7 @@
 class TruckL : public osgEarth::Annotation::ModelNode
 {
 public:
-    TruckL(class MapController *mapController);
+    TruckL(class MapItem *mapController);
     void lockOnTarget(const osgEarth::GeoPoint &gpt);
 
 protected:

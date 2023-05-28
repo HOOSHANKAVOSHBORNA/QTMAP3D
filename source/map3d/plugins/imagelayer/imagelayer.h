@@ -13,7 +13,7 @@ public:
     ~ImageLayer()override{}
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     void onToolboxItemClicked(const QString &name, const QString &category) override;
-    bool setup(MapController *mapController,
+    bool setup(MapItem *mapItem,
                UIHandle *UIHandle) override;
 private:
     void addXYZ();
@@ -22,6 +22,6 @@ private:
     void addTMS();
     void addWMS();
 private:
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 };
 #endif // IMAGELAYER_H

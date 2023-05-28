@@ -18,10 +18,10 @@ bool DrawCapsule::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     return true;
 }
 
-bool DrawCapsule::setup(MapController *mapController, UIHandle *uiHandle)
+bool DrawCapsule::setup(MapItem *mapItem, UIHandle *uiHandle)
 {
     mUiHandle = uiHandle;
-    mMapcontroller = mapController;
+    mMapcontroller = mapItem;
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -69,7 +69,7 @@ void DrawCapsule::mousePressEvent(QMouseEvent *event)
         else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
             cancelDrawing(event);
         }
-        else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
+        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
             finishDrawing(event);
         }
     }

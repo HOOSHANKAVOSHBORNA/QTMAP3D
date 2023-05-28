@@ -1,12 +1,12 @@
 #ifndef ELLIPSE_H
 #define ELLIPSE_H
 #include <osgEarthAnnotation/EllipseNode>
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 class Ellipse : public osgEarth::Annotation::EllipseNode
 {
 public:
-    Ellipse(MapController *mapController, bool clamp);
+    Ellipse(MapItem *mapItem, bool clamp);
     void setColor(osgEarth::Color color);
     osgEarth::Color getColor();
     void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
@@ -19,7 +19,7 @@ public:
     float getStrokeWidth();
 
 private:
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 };
 
 #endif // ELLIPSE_H

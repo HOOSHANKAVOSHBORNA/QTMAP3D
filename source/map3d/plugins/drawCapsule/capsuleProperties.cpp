@@ -3,10 +3,10 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 
-CapsulePropertiesModel::CapsulePropertiesModel(Capsule *Capsule, MapController *mapcontroller, QObject *parent):
+CapsulePropertiesModel::CapsulePropertiesModel(Capsule *Capsule, MapItem *mapItem, QObject *parent):
     QObject(parent),
     mCapsule(Capsule),
-    mMapController(mapcontroller)
+    mMapItem(mapItem)
 {
 }
 
@@ -116,28 +116,28 @@ void CapsulePropertiesModel::setRelative(const bool &value){
         osgEarth::GeoPoint tempLocation =  mCapsule->getPosition();
         if(value == true )
         {
-            tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeRelative(mMapItem->getMapNode()->getTerrain());
             mCapsule->setPosition(tempLocation);
         }
         else if(value == false )
         {
-            tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeAbsolute(mMapItem->getMapNode()->getTerrain());
             mCapsule->setPosition(tempLocation);
         }
     }
 }
 
 
-CapsuleProperties::CapsuleProperties(Capsule* Capsule, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent) :
+CapsuleProperties::CapsuleProperties(Capsule* Capsule, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mQmlEngine(qmlEngine),
     mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapcontroller, Capsule](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, Capsule](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mCapsuleProperties = new CapsulePropertiesModel(Capsule, mapcontroller);
+            mCapsuleProperties = new CapsulePropertiesModel(Capsule, mapItem);
             mItem->setProperty("capsuleProperties", QVariant::fromValue<CapsulePropertiesModel*>(mCapsuleProperties));
         }
     });

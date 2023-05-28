@@ -1,7 +1,7 @@
 ﻿#ifndef BASEMODEL_H
 #define BASEMODEL_H
 
-#include"mapcontroller.h"
+#include "mapItem.h"
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -44,7 +44,7 @@ public:
 
 
 public:
-    DefenseModelNode(MapController* mapControler, QObject* parent = nullptr);
+    DefenseModelNode(MapItem* mapControler, QObject* parent = nullptr);
     void setType(const QString &value);
     QString getType() const;
     void setQStringName(QString name);
@@ -98,7 +98,7 @@ private:
 private:
     QString mType;
     osg::ref_ptr<osgFX::Outline> mSelectOutline;
-    MapController *mMapControler;
+    MapItem *mMapControler;
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mSelectedNode{nullptr};
 
 protected:

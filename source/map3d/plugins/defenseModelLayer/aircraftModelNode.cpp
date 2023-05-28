@@ -383,7 +383,7 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
     mTempLocationPoints = new osg::Vec3Array();
 
 
-    connect(mDefenseModelLayer->mMapController, &MapController::modeChanged, this, &AircraftModelNode::onModeChanged);
+    connect(mDefenseModelLayer->mMapController, &MapItem::modeChanged, this, &AircraftModelNode::onModeChanged);
 
     mRouteLine = new LineNode(defenseModelLayer->mMapController);
     mRouteLine->setPointVisible(false);
@@ -616,9 +616,9 @@ void AircraftModelNode::onLeftButtonClicked(bool val)
     else
     {
         mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
-//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+//        mDefenseModelLayer->mMapItem->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+//        mDefenseModelLayer->mMapItem->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+//        mDefenseModelLayer->mMapItem->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
         if(mAircraftinformation)
             mAircraftinformation->setTrackOff();
     }

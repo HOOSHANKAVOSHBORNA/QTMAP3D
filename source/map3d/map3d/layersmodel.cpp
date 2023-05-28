@@ -4,16 +4,16 @@
 #include <osgEarth/ModelLayer>
 
 
-LayersModel::LayersModel(MapController *mapController, QObject *parent) :
+LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
     QAbstractListModel(parent)
 {
-    updateLayers(mapController->getMapNode()->getMap());
-    connect(mapController, &MapController::layerChanged,[this, mapController](){
-        updateLayers(mapController->getMapNode()->getMap());
+    updateLayers(mapItem->getMapNode()->getMap());
+    connect(mapItem, &MapItem::layerChanged,[this, mapItem](){
+        updateLayers(mapItem->getMapNode()->getMap());
     });
-    connect(mapController, &MapController::mapCleared,[this, mapController](){
+    connect(mapItem, &MapItem::mapCleared,[this, mapItem](){
         clear();
-        updateLayers(mapController->getMapNode()->getMap());
+        updateLayers(mapItem->getMapNode()->getMap());
     });
 }
 

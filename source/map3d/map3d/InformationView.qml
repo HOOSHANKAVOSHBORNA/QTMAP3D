@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtGraphicalEffects 1.13
+//import QtGraphicalEffects 1.13
 
 
 Item {
@@ -77,13 +77,13 @@ Item {
                         anchors.centerIn: parent
                     }
 
-                    ColorOverlay {
-                        id: glowimg
-                        anchors.fill: arrow
-                        color: "orange"
-                        source: arrow
-                        visible: false
-                        }
+//                    ColorOverlay {
+//                        id: glowimg
+//                        anchors.fill: arrow
+//                        color: "orange"
+//                        source: arrow
+//                        visible: false
+//                        }
                 }
             PropertyAnimation {id:maxmove ; target: minimize ; property: "x" ; from :-300 ; to :0; duration: 200 ; easing.type: Easing.OutQuint ;running: false}
             PropertyAnimation {id:minix   ; target:root ; property:"x";  to: -620 ; duration: 200 ; running: false}

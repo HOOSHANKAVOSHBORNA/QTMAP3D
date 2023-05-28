@@ -12,7 +12,7 @@
 
 class QQmlEngine;
 class QQmlComponent;
-class MapController;
+class MapItem;
 class MainWindow;
 class ListWindow;
 class QQuickItem;
@@ -133,7 +133,7 @@ public:
     virtual void onFileItemClicked(const QString& name,
                                       const QString& category) {}
 
-    virtual bool setup(MapController *mapController,
+    virtual bool setup(MapItem *mapController,
                        UIHandle *uiHandle) {}
     virtual void setDefenseDataManager(DefenseDataManager* defenseDataManager){}
 

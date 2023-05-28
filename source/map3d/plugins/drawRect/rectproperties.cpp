@@ -6,10 +6,10 @@
 
 
 
-RectPropertiesModel::RectPropertiesModel(Rect *rect, MapController *mapController, QObject *parent) :
+RectPropertiesModel::RectPropertiesModel(Rect *rect, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mRect(rect),
-    mMapController(mapController)
+    mMapItem(mapItem)
 {
 
 }

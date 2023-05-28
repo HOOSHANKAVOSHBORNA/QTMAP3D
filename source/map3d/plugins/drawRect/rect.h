@@ -3,12 +3,12 @@
 
 
 #include <osgEarthAnnotation/RectangleNode>
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 class Rect : public osgEarth::Annotation::RectangleNode
 {
 public:
-    Rect(MapController *mapController, bool clamp);
+    Rect(MapItem *mapItem, bool clamp);
     void setColor(osgEarth::Color color);
     osgEarth::Color getColor();
     void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
@@ -19,7 +19,7 @@ public:
     float getStrokeWidth();
 
 private:
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 };
 
 #endif // RECT_H

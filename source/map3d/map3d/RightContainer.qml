@@ -1,7 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
-import QtGraphicalEffects 1.0
+//import QtGraphicalEffects 1.0
 
 
 Item {
@@ -165,13 +165,13 @@ Item {
                 rotation: 0
 
             }
-            ColorOverlay {
-                id: glowimg
-                anchors.fill: arrow
-                color: "orange"
-                source: arrow
-                visible: false
-            }
+//            ColorOverlay {
+//                id: glowimg
+//                anchors.fill: arrow
+//                color: "orange"
+//                source: arrow
+//                visible: false
+//            }
         }
         PropertyAnimation{id:miniLayer ; target: containerHolder ; property: "x" ; to: -40 ; duration:150;  running: false }
         PropertyAnimation{id:maxiLayer ; target: containerHolder ; property: "x" ; to: -300 ; duration: 150; running: false }

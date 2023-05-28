@@ -5,12 +5,12 @@
 #include "osgEarthAnnotation/AnnotationEditing"
 #include "osgEarth/Tessellator"
 
-Polygon::Polygon(MapController *mapController, bool clamp)
+Polygon::Polygon(MapItem *mapItem, bool clamp)
 
 {
     mPolygonGeom = new osgEarth::Features::Polygon();
-    mMapController = mapController;
-    osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(mPolygonGeom, mMapController->getMapSRS());
+    mMapItem = mapItem;
+    osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(mPolygonGeom, mMapItem->getMapSRS());
     feature->geoInterp() = osgEarth::GEOINTERP_GREAT_CIRCLE;
     osgEarth::Symbology::Style geomStyle;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() /*= osgEarth::Color::Purple*/;

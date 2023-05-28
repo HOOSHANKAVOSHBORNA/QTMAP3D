@@ -2,7 +2,7 @@
 #ifndef LAYERSMODEL_H
 #define LAYERSMODEL_H
 
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 #include <QAbstractListModel>
 #include <QHash>
@@ -14,7 +14,7 @@ class LayersModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    LayersModel(MapController *mapController = nullptr, QObject *parent = nullptr);
+    LayersModel(MapItem *mapController = nullptr, QObject *parent = nullptr);
 
     enum {
         LayerIndexRole = Qt::UserRole + 300,

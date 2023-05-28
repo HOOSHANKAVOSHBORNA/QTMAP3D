@@ -10,7 +10,7 @@ class TruckUpdateCallback;
 class Truck: public osgEarth::Annotation::ModelNode
 {
 public:
-    Truck(MapController *mapControler, osgEarth::Annotation::GeoPositionNode* parent);
+    Truck(MapItem *mapControler, osgEarth::Annotation::GeoPositionNode* parent);
     void moveTo(const osg::Vec3d &pos, double speed);
     void aimTarget(const osg::Vec3d &pos);
     bool shoot(const osg::Vec3d &pos, double speed);

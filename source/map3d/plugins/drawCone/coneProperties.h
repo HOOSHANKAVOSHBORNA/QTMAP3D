@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "plugininterface.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "cone.h"
 
 class ConePropertiesModel: public QObject
@@ -17,7 +17,7 @@ class ConePropertiesModel: public QObject
     Q_PROPERTY(int       transparency   READ getTransparency  WRITE setTransparency )
 
 public:
-    ConePropertiesModel(Cone *cone = nullptr, MapController *mapcontroller = nullptr, QObject *parent = nullptr);
+    ConePropertiesModel(Cone *cone = nullptr, MapItem *mapcontroller = nullptr, QObject *parent = nullptr);
 
     //set fillcolor
     QString getFillcolor() const;
@@ -54,7 +54,7 @@ private:
     bool      mRelative = false;
 
     Cone *mCone;
-    MapController *mMapController {nullptr};
+    MapItem *mMapItem {nullptr};
 
 };
 
@@ -63,7 +63,7 @@ class ConeProperties: public QObject
     Q_OBJECT
 
 public:
-    ConeProperties(Cone *cone, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent = nullptr);
+    ConeProperties(Cone *cone, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
 
     void show();
     void hide();

@@ -3,8 +3,8 @@
 #include "osgEarth/Layer"
 #include "osgEarthAnnotation/AnnotationEditing"
 
-Ellipse::Ellipse(MapController *mapController, bool clamp){
-    mMapController = mapController;
+Ellipse::Ellipse(MapItem *mapItem, bool clamp){
+    mMapItem = mapItem;
     osgEarth::Symbology::Style ellipseStyle;
     ellipseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() ;
     ellipseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() ;

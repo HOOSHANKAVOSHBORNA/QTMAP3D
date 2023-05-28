@@ -3,7 +3,7 @@
 
 #include <osgEarth/Color>
 #include <osgEarthAnnotation/FeatureNode>
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include <osgEarthAnnotation/CircleNode>
 #include <osgEarthAnnotation/ModelNode>
 #include <QPainter>
@@ -13,7 +13,7 @@
 class LineNode : public osgEarth::Annotation::FeatureNode
 {
 public:
-    LineNode(MapController *mapController);
+    LineNode(MapItem *mapItem);
     void addPoint(osgEarth::GeoPoint point);
     void removePoint();
     void removeFirstPoint();
@@ -66,7 +66,7 @@ private:
     };
 
 private:
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
     osgEarth::Symbology::Geometry* mLineGeometry{nullptr};
     osgEarth::Color mColor{osgEarth::Color::Green};
     osgEarth::Color mPointColor{osgEarth::Color::Blue};

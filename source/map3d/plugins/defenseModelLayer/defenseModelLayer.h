@@ -41,7 +41,7 @@ public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
     virtual void onSideItemCreated(int index, QObject *pSideItem) override;
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
-    virtual bool setup(MapController *mapController,
+    virtual bool setup(MapItem *mapController,
                        UIHandle *UIHandle) override;
     virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
@@ -64,7 +64,7 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
     virtual void mouseMoveEvent(QMouseEvent* event)override;
 public:
-    MapController *mMapController{nullptr};
+    MapItem *mMapController{nullptr};
     UIHandle* mUIHandle{nullptr};
     QQmlEngine *mQmlEngine{nullptr};
 private:

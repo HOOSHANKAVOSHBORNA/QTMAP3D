@@ -1,6 +1,6 @@
 
 #include "trucks.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "defenseModelLayer.h"
 
 osg::ref_ptr<osg::Node> TruckS::mMeshNodeP1LOD0;
@@ -15,8 +15,8 @@ osg::ref_ptr<osg::Node> TruckS::mMeshNodeP4LOD1;
 
 bool TruckS::mMeshNodesLoaded = false;
 
-TruckS::TruckS(MapController *mapController) :
-    osgEarth::Annotation::ModelNode(mapController->getMapNode(), DefenseModelLayer::getDefaultStyle())
+TruckS::TruckS(MapItem *mapItem) :
+    osgEarth::Annotation::ModelNode(mapItem->getMapNode(), DefenseModelLayer::getDefaultStyle())
 {
     if (!mMeshNodesLoaded) {
 

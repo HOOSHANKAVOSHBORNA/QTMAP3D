@@ -1,5 +1,5 @@
 import QtQuick 2.12
-import QtGraphicalEffects 1.13
+//import QtGraphicalEffects 1.13
 
 Item {
     id: rootIte
@@ -44,14 +44,14 @@ Item {
             source: "qrc:/Resources/compass.png"
             opacity: 1            
         }
-        ColorOverlay {
-            id: glowimg
-            anchors.fill: image
-            color: mouseArea.pressed ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"
-            source: image
-            visible: true
-            rotation: rootIte.headingAngle
-        }
+//        ColorOverlay {
+//            id: glowimg
+//            anchors.fill: image
+//            color: mouseArea.pressed ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"
+//            source: image
+//            visible: true
+//            rotation: rootIte.headingAngle
+//        }
 
 
     }

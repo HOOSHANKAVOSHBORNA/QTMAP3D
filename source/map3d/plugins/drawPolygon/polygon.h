@@ -2,12 +2,12 @@
 #define POLYGON_H
 
 #include <osgEarthAnnotation/FeatureNode>
-#include "mapcontroller.h"
+#include "mapItem.h"
 
 class Polygon : public osgEarth::Annotation::FeatureNode
 {
 public:
-    Polygon(MapController *mapController, bool clamp);
+    Polygon(MapItem *mapItem, bool clamp);
     double getSize();
     void setLineColor(osgEarth::Color color);
     osgEarth::Color getLineColor();
@@ -25,7 +25,7 @@ public:
 
 
 private:
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
     osg::ref_ptr<osgEarth::Features::Geometry> mPolygonGeom;
 };
 

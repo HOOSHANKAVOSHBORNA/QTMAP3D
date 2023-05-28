@@ -83,14 +83,14 @@ int LinePropertiesModel::getWidth() const
 {
     return mWidth;
 }
-void LinePropertiesModel:: setWidth(const QString &value){
-    if(value.toInt() == mWidth)
+void LinePropertiesModel:: setWidth(const int &value){
+    if(value == mWidth)
         return;
-    mWidth =  value.toInt() ;
+    mWidth =  value;
     if(mLineNode){
-        mLineNode->setWidth(value.toInt());
+        mLineNode->setWidth(value);
     }else if(mMeasureHeight){
-        mMeasureHeight->setWidth(value.toInt());
+        mMeasureHeight->setWidth(value);
     }
 }
 

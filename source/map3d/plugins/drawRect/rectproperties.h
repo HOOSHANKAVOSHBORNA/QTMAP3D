@@ -2,7 +2,7 @@
 #define RECTPROPERTIES_H
 
 #include "rect.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 #include <QObject>
 #include <QVariant>
@@ -24,7 +24,7 @@ class RectPropertiesModel : public QObject
 
 public:
 
-    RectPropertiesModel(Rect* rect = nullptr, MapController *mapController = nullptr, QObject *parent = nullptr);
+    RectPropertiesModel(Rect* rect = nullptr, MapItem *mapItem = nullptr, QObject *parent = nullptr);
     //set fillcolor
     QString getFillcolor() const;
     void setFillColor(const QString &fillcolor);
@@ -71,7 +71,7 @@ private:
     double    mHeight;
 
     Rect*   mRect;
-    MapController* mMapController{nullptr};
+    MapItem* mMapItem{nullptr};
 
 
 

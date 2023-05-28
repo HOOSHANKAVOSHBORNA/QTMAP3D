@@ -3,10 +3,10 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 
-BoxPropertiesModel::BoxPropertiesModel(Box *box, MapController *mapcontroller, QObject *parent):
+BoxPropertiesModel::BoxPropertiesModel(Box *box, MapItem *mapItem, QObject *parent):
     QObject(parent),
     mBox(box),
-    mMapController(mapcontroller)
+    mMapItem(mapItem)
 {
 }
 
@@ -121,12 +121,12 @@ void BoxPropertiesModel::setRelative(const bool &value){
         osgEarth::GeoPoint tempLocation =  mBox->getPosition();
         if(value == true )
         {
-            tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeRelative(mMapItem->getMapNode()->getTerrain());
             mBox->setPosition(tempLocation);
         }
         else if(value == false )
         {
-            tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeAbsolute(mMapItem->getMapNode()->getTerrain());
             mBox->setPosition(tempLocation);
         }
     }
@@ -151,16 +151,16 @@ void BoxPropertiesModel::setBox(Box *box)
 
 
 
-BoxProperties::BoxProperties(Box* box, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent) :
+BoxProperties::BoxProperties(Box* box, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mQmlEngine(qmlEngine),
     mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapcontroller, box](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, box](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mBoxProperties = new BoxPropertiesModel(box, mapcontroller);
+            mBoxProperties = new BoxPropertiesModel(box, mapItem);
             mItem->setProperty("boxProperties", QVariant::fromValue<BoxPropertiesModel*>(mBoxProperties));
         }
     });

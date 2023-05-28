@@ -16,7 +16,7 @@
 #include <osgEarthAnnotation/LocalGeometryNode>
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "osg/Group"
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
@@ -56,11 +56,11 @@ bool drawLine::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 
 void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 {
-    auto layer = mMapController->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
+    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
     if (!layer) {
         osgEarth::ModelLayer *lineLayer = new osgEarth::ModelLayer();
         lineLayer->setName(DRAW_LAYER_NAME);
-        mMapController->addLayer(lineLayer);
+        mMapItem->addLayer(lineLayer);
 
     }
 
@@ -77,7 +77,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mLineProperties->setIsRuler(0);
                 mLineProperties->show();
                 mIconNode = makeIconNode();
-                mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mMapItem->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
             }
             else
             {
@@ -90,7 +90,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
 
                 mLineProperties->deleteLater();
                 mLineProperties = nullptr;
-                mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+                mMapItem->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     if(name == RULER)
@@ -105,7 +105,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mLineProperties->setIsRuler(1);
             mLineProperties->show();
             mIconNode = makeIconNode();
-            mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+            mMapItem->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
         }
         else
@@ -118,7 +118,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
          }
             mLineProperties->deleteLater();
             mLineProperties = nullptr;
-            mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+            mMapItem->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
         }
     }
 
@@ -133,7 +133,7 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
             mLineProperties->setIsRuler(2);
             mLineProperties->show();
             mIconNode = makeIconNode();
-            mMapController->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+            mMapItem->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
         }
         else
         {
@@ -145,15 +145,15 @@ void drawLine::onToolboxItemCheckedChanged(const QString &name, const QString &c
          }
             mLineProperties->deleteLater();
             mLineProperties = nullptr;
-            mMapController->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+            mMapItem->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
         }
     }
 }
-bool drawLine::setup(MapController *mapController, UIHandle *uIHandle)
+bool drawLine::setup(MapItem *mapItem, UIHandle *uIHandle)
 {
     muiHandle = uIHandle;
-    mMapController = mapController;
-    osgEarth::GLUtils::setGlobalDefaults(mMapController->getViewer()->getCamera()->getOrCreateStateSet());
+    mMapItem = mapItem;
+    osgEarth::GLUtils::setGlobalDefaults(mMapItem->getViewer()->getCamera()->getOrCreateStateSet());
     return true;
 }
 void drawLine::mousePressEvent(QMouseEvent *event)
@@ -196,7 +196,7 @@ void drawLine::mousePressEvent(QMouseEvent *event)
         {
             cancelDrawingLine(event);
         }
-        else if(event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING)
+        else if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING)
         {
             finishDrawing(event);
             event->accept();
@@ -206,7 +206,7 @@ void drawLine::mousePressEvent(QMouseEvent *event)
 void drawLine::mouseMoveEvent(QMouseEvent *event)
 {
     if (mEnterLineZone){
-        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
         mIconNode->setPosition(geoPos);
 
         if (mDrawingState == DrawingState::DRAWING && mType!=Type::HEIGHT){
@@ -225,41 +225,41 @@ void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 
 void drawLine::startDrawLine()
 {
-    mLine = new LineNode(mMapController);
-    mMapController->addNodeToLayer(mLine, DRAW_LAYER_NAME);
+    mLine = new LineNode(mMapItem);
+    mMapItem->addNodeToLayer(mLine, DRAW_LAYER_NAME);
     mLineProperties->setLine(mLine);
     mDrawingState = DrawingState::DRAWING;
 }
 
 void drawLine::startDrawMeasureHeight()
 {
-    mMeasureHeight = new MeasureHeight(mMapController);
-    mMapController->addNodeToLayer(mMeasureHeight, DRAW_LAYER_NAME);
+    mMeasureHeight = new MeasureHeight(mMapItem);
+    mMapItem->addNodeToLayer(mMeasureHeight, DRAW_LAYER_NAME);
     mLineProperties->setMeasureHeight(mMeasureHeight);
     mDrawingState = DrawingState::DRAWING;
 }
 
 void drawLine::drawingMeasureHeight(QMouseEvent *event)
 {
-    mMeasureHeight->setFirstPoint(mMapController->screenToGeoPoint(event->x(), event->y()));
+    mMeasureHeight->setFirstPoint(mMapItem->screenToGeoPoint(event->x(), event->y()));
 }
 
 void drawLine::mouseMoveMeasureHeightDrawing(QMouseEvent *event)
 {
     mMeasureHeight->clear();
-    mMeasureHeight->setSecondPoint(mMapController->screenToGeoPoint(event->x(), event->y()));
+    mMeasureHeight->setSecondPoint(mMapItem->screenToGeoPoint(event->x(), event->y()));
 }
 
 void drawLine::drawingLine(QMouseEvent *event)
 {
-        osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
         mLine->addPoint(geoPos);
 }
 
 void drawLine::cancelDrawingLine(QMouseEvent *event)
 {
-    mMapController->removeNodeFromLayer(mLine, DRAW_LAYER_NAME);
-    mMapController->removeNodeFromLayer(mMeasureHeight, DRAW_LAYER_NAME);
+    mMapItem->removeNodeFromLayer(mLine, DRAW_LAYER_NAME);
+    mMapItem->removeNodeFromLayer(mMeasureHeight, DRAW_LAYER_NAME);
     if(mLineProperties)
         mLineProperties->setLine(nullptr);
     event->accept();
@@ -273,7 +273,7 @@ void drawLine::mouseMoveDrawing(QMouseEvent *event)
     {
         mLine->removePoint();
     }
-    osgEarth::GeoPoint geoPos = mMapController->screenToGeoPoint(event->x(), event->y());
+    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
     mLine->addPoint(geoPos);
 
 }
@@ -284,7 +284,7 @@ void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
     {
         mDrawingState = DrawingState::START;
         if(nodeEditor)
-            mMapController->removeNodeFromLayer(nodeEditor, DRAW_LAYER_NAME);
+            mMapItem->removeNodeFromLayer(nodeEditor, DRAW_LAYER_NAME);
         event->accept();
     }
 }

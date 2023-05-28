@@ -4,10 +4,10 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 
-ImagePropertiesModel::ImagePropertiesModel(osgEarth::Annotation::ImageOverlay *image, MapController *mapcontroller, QObject *parent):
+ImagePropertiesModel::ImagePropertiesModel(osgEarth::Annotation::ImageOverlay *image, MapItem *mapItem, QObject *parent):
     QObject(parent),
     mImage(image),
-    mMapController(mapcontroller)
+    mMapItem(mapItem)
 {
 
 
@@ -152,17 +152,17 @@ void ImagePropertiesModel::setImage(osgEarth::Annotation::ImageOverlay *image)
 
 
 
-ImageProperties::ImageProperties(osgEarth::Annotation::ImageOverlay* image, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapController *mapcontroller, QObject *parent) :
+ImageProperties::ImageProperties(osgEarth::Annotation::ImageOverlay* image, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mQmlEngine(qmlEngine),
 //    mImage(*image),
     mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapcontroller, image](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, image](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mImageProperties = new ImagePropertiesModel(image, mapcontroller);
+            mImageProperties = new ImagePropertiesModel(image, mapItem);
             mItem->setProperty("imageProperties", QVariant::fromValue<ImagePropertiesModel*>(mImageProperties));
         }
     });

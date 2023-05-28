@@ -7,11 +7,11 @@
 #include <QVBoxLayout>
 #include <QDialog>
 
-LineNode::LineNode(MapController *mapController)
+LineNode::LineNode(MapItem *mapItem)
 {
-    mMapController = mapController;
+    mMapItem = mapItem;
     mLineGeometry = new osgEarth::Symbology::Geometry();
-    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLineGeometry, mMapController->getMapSRS());
+    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLineGeometry, mMapItem->getMapSRS());
     pathFeature->geoInterp() = osgEarth::GEOINTERP_GREAT_CIRCLE;
 
     osgEarth::Symbology::Style pathStyle;
@@ -81,7 +81,7 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
         mVecLabelData.push_back(data);
         mPlaceNode->setIconImage(img);
 
-        osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+        osgEarth::GeoPoint midPoint(mMapItem->getMapSRS(),
                                     (mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
         mPlaceNode->setPosition(midPoint);
         mPlaceNode->setStyle(mPlaceNode->getStyle());

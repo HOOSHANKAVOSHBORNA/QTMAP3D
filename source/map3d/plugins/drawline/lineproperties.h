@@ -3,7 +3,7 @@
 
 #include "linenode.h"
 #include "measureHeight.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "plugininterface.h"
 
 #include <QAbstractListModel>
@@ -20,7 +20,7 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(int       lineOpacity    READ getLineOpacity   WRITE setLineOpacity  )
     Q_PROPERTY(QString   pointColor     READ getPointColor    WRITE setPointColor   )
     Q_PROPERTY(int       pointOpacity   READ getPointOpacity  WRITE setPointOpacity )
-    Q_PROPERTY(QString   width          READ getWidth         WRITE setWidth        )
+    Q_PROPERTY(int   width          READ getWidth         WRITE setWidth        )
     Q_PROPERTY(float     pointwidth     READ getPointwidth    WRITE setPointwidth   )
     Q_PROPERTY(float     height         READ getHeight        WRITE setHeight       )
     Q_PROPERTY(unsigned  tesselation    READ getTesselation   WRITE setTesselation  )
@@ -48,7 +48,7 @@ public:
     void setPointOpacity(const int &pointOpacity);
     // set width
     int getWidth() const;
-    void setWidth(const QString &width);
+    void setWidth(const int &width);
     // set pointwidth
     float getPointwidth() const;
     void setPointwidth(const float &pointwidth);

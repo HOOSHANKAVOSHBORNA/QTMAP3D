@@ -25,10 +25,10 @@ bool DrawCircle::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 }
 
 
-bool DrawCircle::setup(MapController *mapController, UIHandle *uIHandle)
+bool DrawCircle::setup(MapItem *mapItem, UIHandle *uIHandle)
 {
     mUiHandle = uIHandle;
-    mMapcontroller = mapController;
+    mMapcontroller = mapItem;
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -78,7 +78,7 @@ void DrawCircle::mousePressEvent(QMouseEvent *event)
         else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
             cancelDrawing(event);
         }
-        else if (event->button() == Qt::MouseButton::MidButton && mDrawingState == DrawingState::DRAWING) {
+        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
             finishDrawing(event);
         }
     }

@@ -12,86 +12,84 @@
 #include "mainwindow.h"
 #include "pluginmanager.h"
 #include "plugininterface.h"
-#include "mapcontroller.h"
+#include "mapItem.h"
 #include "listwindow.h"
 #include "application.h"
-
+#include <QQuickOpenGLUtils>
 MainWindow::MainWindow(QWindow *parent) :
-        QQuickWindow(parent),
-        mMapController(new MapController(this))
+    QQuickWindow(parent), mMapItem(new MapItem(this))
 {
-    mOGLF = new QOpenGLFunctions_2_0;
+//    mOGLF = new QOpenGLFunctions_2_0;
+//    QObject::connect(this, &MainWindow::sceneGraphInitialized,
+//                     this, &MainWindow::initializeGL,
+//                     Qt::DirectConnection);
+//    QObject::connect(this, &MainWindow::sceneGraphInvalidated,
+//                     this, &MainWindow::cleanup,
+//                     Qt::DirectConnection);
 
-    QObject::connect(this, &MainWindow::sceneGraphInitialized,
-                     this, &MainWindow::initializeGL,
-                     Qt::DirectConnection);
-    QObject::connect(this, &MainWindow::sceneGraphInvalidated,
-                     this, &MainWindow::cleanup,
-                     Qt::DirectConnection);
-
-    setClearBeforeRendering(false);
+//    setClearBeforeRendering(false);
     setColor(Qt::black);
 
 
 
 
 
-
+///////////////////
     QObject::connect(this, &MainWindow::homeButtonClicked,
-                     mMapController, &MapController::goToHome);
+                     mMapItem, &MapItem::goToHome);
     QObject::connect(this, &MainWindow::view3DButtonClicked,
-                     mMapController, &MapController::toggle3DView);
-
+                     mMapItem, &MapItem::toggle3DView);
+//////////////////////
 
 //    QObject::connect(this, &MainWindow::upButtonClicked,
-//                     mMapController, &MapController::panUp);
+//                     mMapItem, &MapItem::panUp);
 //    QObject::connect(this, &MainWindow::downButtonClicked,
-//                     mMapController, &MapController::panDown);
+//                     mMapItem, &MapItem::panDown);
 //    QObject::connect(this, &MainWindow::leftButtonClicked,
-//                     mMapController, &MapController::panLeft);
+//                     mMapItem, &MapItem::panLeft);
 //    QObject::connect(this, &MainWindow::rightButtonClicked,
-//                     mMapController, &MapController::panRight);
+//                     mMapItem, &MapItem::panRight);
 //
 //
 //    QObject::connect(this, &MainWindow::rotateUpButtonClicked,
-//                     mMapController, &MapController::rotateUp);
+//                     mMapItem, &MapItem::rotateUp);
 //    QObject::connect(this, &MainWindow::rotateDownButtonClicked,
-//                     mMapController, &MapController::rotateDown);
+//                     mMapItem, &MapItem::rotateDown);
 //    QObject::connect(this, &MainWindow::rotateLeftButtonClicked,
-//                     mMapController, &MapController::rotateLeft);
+//                     mMapItem, &MapItem::rotateLeft);
 //    QObject::connect(this, &MainWindow::rotateRightButtonClicked,
-//                     mMapController, &MapController::rotateRight);
+//                     mMapItem, &MapItem::rotateRight);
 //
 //
 //    QObject::connect(this, &MainWindow::zoomInButtonClicked,
-//                     mMapController, &MapController::zoomIn);
+//                     mMapItem, &MapItem::zoomIn);
 //    QObject::connect(this, &MainWindow::zoomOutButtonClicked,
-//                     mMapController, &MapController::zoomOut);
-
-    QObject::connect(mMapController, &MapController::headingAngleChanged,
+//                     mMapItem, &MapItem::zoomOut);
+///////////////
+    QObject::connect(mMapItem, &MapItem::headingAngleChanged,
                      this, &MainWindow::setHeadingAngle);
 
 
-    QObject::connect(mMapController, &MapController::mousePointingLocationWgs84Changed,
+    QObject::connect(mMapItem, &MapItem::mousePointingLocationWgs84Changed,
                      this, &MainWindow::setMousePointingLocationWgs84);
-    QObject::connect(mMapController, &MapController::mousePointingLocationChanged,
+    QObject::connect(mMapItem, &MapItem::mousePointingLocationChanged,
                      this, &MainWindow::setMousePointingLocation);
     QObject::connect(this, &MainWindow::goToLocation,
-                     mMapController, QOverload<double, double, double>::of(&MapController::goToPosition));
+                     mMapItem, QOverload<double, double, double>::of(&MapItem::goToPosition));
 
 
-    QObject::connect(mMapController, &MapController::focalPointLatChanged,
+    QObject::connect(mMapItem, &MapItem::focalPointLatChanged,
                      this, &MainWindow::setFocalPointLat);
-    QObject::connect(mMapController, &MapController::focalPointLongChanged,
+    QObject::connect(mMapItem, &MapItem::focalPointLongChanged,
                      this, &MainWindow::setFocalPointLong);
-    QObject::connect(mMapController, &MapController::focalPointRangeChanged,
+    QObject::connect(mMapItem, &MapItem::focalPointRangeChanged,
                      this, &MainWindow::setFocalPointRange);
-    QObject::connect(mMapController, &MapController::focalPointPitchChanged,
+    QObject::connect(mMapItem, &MapItem::focalPointPitchChanged,
                      this, &MainWindow::setFocalPointPitch);
-    QObject::connect(mMapController, &MapController::focalPointHeadChanged,
+    QObject::connect(mMapItem, &MapItem::focalPointHeadChanged,
                      this, &MainWindow::setFocalPointHead);
 
-
+////////////////
 
 
     mUIHandle = new UIHandle(this);
@@ -121,7 +119,7 @@ MainWindow::MainWindow(QWindow *parent) :
 MainWindow::~MainWindow()
 {
     cleanup();
-    mMapController->deleteLater();
+    mMapItem->deleteLater();
 }
 
 qreal MainWindow::headingAngle() const
@@ -437,7 +435,7 @@ void MainWindow::setrotateRightButtonPressed(bool pressed)
 
 void MainWindow::travelToViewpoint(qreal latitude, qreal longitude, qreal range, qreal pitch, qreal heading)
 {
-    mMapController->travelToViewpoint(latitude,
+    mMapItem->travelToViewpoint(latitude,
                                       longitude,
                                       range,
                                       pitch,
@@ -515,8 +513,8 @@ void MainWindow::onFrameSwapped()
 
 void MainWindow::orientCameraToNorth()
 {
-    if (mMapController)
-        mMapController->orientCameraToNorth();
+    if (mMapItem)
+        mMapItem->orientCameraToNorth();
 }
 
 
@@ -525,71 +523,71 @@ void MainWindow::orientCameraToNorth()
 
 
 
-MapController *MainWindow::mapController() const
+MapItem *MainWindow::getMapItem() const
 {
-    return mMapController;
+    return mMapItem;
 }
 
 
 void MainWindow::cleanup()
 {
-    mMapController->cleanup();
+//    mMapItem->cleanup();
 }
 
 void MainWindow::frame()
 {
-    static auto lastFrameTimePoint = std::chrono::high_resolution_clock::now() - std::chrono::milliseconds(10);
-    auto now = std::chrono::high_resolution_clock::now();
+//    static auto lastFrameTimePoint = std::chrono::high_resolution_clock::now() - std::chrono::milliseconds(10);
+//    auto now = std::chrono::high_resolution_clock::now();
 
 
-    const double deltaTime =
-            static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrameTimePoint).count())
-            * 0.001;
+//    const double deltaTime =
+//            static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrameTimePoint).count())
+//            * 0.001;
 
 
-    if (mResized) {
-        resizeGL();
-        mResized = false;
-    }
+//    if (mResized) {
+////        resizeGL();
+//        mResized = false;
+//    }
 
-    tickNavigation(deltaTime);
-    paintGL();
+//    tickNavigation(deltaTime);
+////    paintGL();
 
-    const auto pluginManager = Application::instance()->pluginManager();
-    if (pluginManager) {
-        pluginManager->frameEvent();
-    }
+//    const auto pluginManager = Application::instance()->pluginManager();
+//    if (pluginManager) {
+//        pluginManager->frameEvent();
+//    }
 
-    lastFrameTimePoint = now;
+//    lastFrameTimePoint = now;
 
 }
 
 void MainWindow::tickNavigation(double deltaTime)
 {
     if (mZoomInButtonPressed) {
-        mMapController->zoom(0.0018 * deltaTime);
+        mMapItem->zoom(0.0018 * deltaTime);
     } else if (mZoomOutButtonPressed) {
-        mMapController->zoom(-0.0018 * deltaTime);
+        mMapItem->zoom(-0.0018 * deltaTime);
     }
 
     if (mUpButtonPressed) {
-        mMapController->pan(0.0, -0.0015 * deltaTime);
+        mMapItem->pan(0.0, -0.0015 * deltaTime);
     } else if (mDownButtonPressed) {
-        mMapController->pan(0.0, 0.0015 * deltaTime);
+        mMapItem->pan(0.0, 0.0015 * deltaTime);
     } else if (mLeftButtonPressed) {
-        mMapController->pan(0.0015 * deltaTime, 0.0);
+        mMapItem->pan(0.0015 * deltaTime, 0.0);
     } else if (mRightButtonPressed) {
-        mMapController->pan(-0.0015 * deltaTime, 0.0);
+        mMapItem->pan(-0.0015 * deltaTime, 0.0);
     }
 
     if (mRotateUpButtonPressed) {
-        mMapController->rotate(0.0, 0.001 * deltaTime);
+        mMapItem->rotate(0.0, 0.001 * deltaTime);
     } else if (mRotateDownButtonPressed) {
-        mMapController->rotate(0.0, -0.001 * deltaTime);
+        mMapItem->rotate(0.0, -0.001 * deltaTime);
     } else if (mRotateLeftButtonPressed) {
-        mMapController->rotate(-0.001 * deltaTime, 0.0);
+        mMapItem->rotate(-0.001 * deltaTime, 0.0);
     } else if (mRotateRightButtonPressed) {
-        mMapController->rotate(0.001 * deltaTime, 0.0);
+        mMapItem->rotate(0.001 * deltaTime, 0.0);
     }
 }
 
@@ -607,53 +605,58 @@ void MainWindow::setListWindow(ListWindow *listWindow)
 }
 
 
-void MainWindow::initializeGL()
-{
-    mOGLF->initializeOpenGLFunctions();
+//void MainWindow::initializeGL()
+//{
 
-    mContext = QOpenGLContext::currentContext();
-    mSurface = mContext->surface();
+//    QQuickOpenGLUtils::resetOpenGLState();
+//    mOGLF->initializeOpenGLFunctions();
+
+//    mContext = QOpenGLContext::currentContext();
+//    mSurface = mContext->surface();
 
 
-    mOGLF->glViewport(0, 0, mViewportWidth, mViewportHeight);
-    mMapController->initializeGL(width(), height(), screen(), renderTargetId());
+//    mOGLF->glViewport(0, 0, mViewportWidth, mViewportHeight);
+////    mMapItem->initializeGL(width(), height(), screen(), 1);
 
-    restoreContext();
-    mMapController->initializeOsgEarth();
-    restoreContext();
-    emit osgInitialized();
-    //----------------------------------------------------------
-    LayersModel *layersModel = new LayersModel(mMapController);
-    setLayersModel(layersModel);
-    QObject::connect(this, &MainWindow::toggleLayerEnabled,
-                     layersModel, &LayersModel::toggleLayerEnabled);
-    //----------------------------------------------------------
-    restoreContext();
+//    restoreContext();
+//    mMapItem->initializeOsgEarth();
+//    restoreContext();
+//    emit osgInitialized();
+//    //----------------------------------------------------------
+//    LayersModel *layersModel = new LayersModel(mMapItem);
+//    setLayersModel(layersModel);
+//    QObject::connect(this, &MainWindow::toggleLayerEnabled,
+//                     layersModel, &LayersModel::toggleLayerEnabled);
+//    //----------------------------------------------------------
+//    restoreContext();
 
-    resetOpenGLState();
+////    resetOpenGLState();
 
-    QObject::connect(this, &MainWindow::beforeRendering,
-                     this, &MainWindow::frame,
-                     Qt::DirectConnection);
-}
+//    QObject::connect(this, &MainWindow::beforeRendering,
+//                     this, &MainWindow::frame,
+//                     Qt::DirectConnection);
+//    QQuickOpenGLUtils::resetOpenGLState();
+//}
 
-void MainWindow::resizeGL()
-{
-    mOGLF->glViewport(0, 0, mViewportWidth, mViewportHeight);
-    mMapController->resizeGL(mViewportWidth, mViewportHeight, screen());
-}
+//void MainWindow::resizeGL()
+//{
+//    mOGLF->glViewport(0, 0, mViewportWidth, mViewportHeight);
+//    mMapItem->resizeGL(mViewportWidth, mViewportHeight, screen());
+//}
 
-void MainWindow::paintGL()
-{
-    resetOpenGLState();
-    mOGLF->glClearColor(0,0,0,1);
-    mOGLF->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    mOGLF->glViewport(0, 0, mViewportWidth, mViewportHeight);
-    mMapController->paintGL();
-    mOGLF->glClear(GL_DEPTH_BUFFER_BIT);
-    mOGLF->glViewport(0, 0, mViewportWidth, mViewportHeight);
-    resetOpenGLState();
-}
+//void MainWindow::paintGL()
+//{
+//    QQuickOpenGLUtils::resetOpenGLState();
+////    resetOpenGLState();
+////    mOGLF->glClearColor(0,0,0,1);
+////    mOGLF->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+////    mOGLF->glViewport(0, 0, mViewportWidth, mViewportHeight);
+//    mMapItem->paintGL();
+////    mOGLF->glClear(GL_DEPTH_BUFFER_BIT);
+////    mOGLF->glViewport(0, 0, mViewportWidth, mViewportHeight);
+////    resetOpenGLState();
+////    QQuickOpenGLUtils::resetOpenGLState();
+//}
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
@@ -677,7 +680,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     switch (event->key()) {
     case Qt::Key_Up:
     {
-        auto manip = mMapController->getEarthManipulator();
+        auto manip = mMapItem->getEarthManipulator();
         if (manip) {
             manip->pan(0, -0.03);
         }
@@ -686,7 +689,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Down:
     {
-        auto manip = mMapController->getEarthManipulator();
+        auto manip = mMapItem->getEarthManipulator();
         if (manip) {
             manip->pan(0, 0.03);
         }
@@ -695,7 +698,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Left:
     {
-        auto manip = mMapController->getEarthManipulator();
+        auto manip = mMapItem->getEarthManipulator();
         if (manip) {
             manip->pan(0.03, 0);
         }
@@ -704,7 +707,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_Right:
     {
-        auto manip = mMapController->getEarthManipulator();
+        auto manip = mMapItem->getEarthManipulator();
         if (manip) {
             manip->pan(-0.03, 0);
         }
@@ -725,7 +728,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if (event->isAccepted())
         return;
 
-    mMapController->keyPressEvent(event);
+    mMapItem->keyPressEvent(event);
 
 
 }
@@ -756,7 +759,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
     if (event->isAccepted())
         return;
 
-    mMapController->keyReleaseEvent(event);
+    mMapItem->keyReleaseEvent(event);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -775,7 +778,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         return;
 
 
-    mMapController->mousePressEvent(event);
+    mMapItem->mousePressEvent(event);
 
 
     if (event->button() == Qt::LeftButton) {
@@ -808,7 +811,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
         return;
 
 
-    mMapController->mouseReleaseEvent(event);
+    mMapItem->mouseReleaseEvent(event);
 
 
     if (event->button() == Qt::LeftButton) {
@@ -847,7 +850,7 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
         return;
 
 
-    mMapController->mouseDoubleClickEvent(event);
+    mMapItem->mouseDoubleClickEvent(event);
 
 }
 
@@ -866,7 +869,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
         return;
 
 
-    mMapController->mouseMoveEvent(event);
+    mMapItem->mouseMoveEvent(event);
 
 }
 
@@ -884,7 +887,7 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     if (event->isAccepted())
         return;
 
-    mMapController->wheelEvent(event);
+    mMapItem->wheelEvent(event);
 
 }
 

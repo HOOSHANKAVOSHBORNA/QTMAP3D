@@ -6,10 +6,10 @@
 
 
 
-CirclePropertiesModel::CirclePropertiesModel(Circle *circle, MapController *mapController, QObject *parent) :
+CirclePropertiesModel::CirclePropertiesModel(Circle *circle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mCircle(circle),
-    mMapController(mapController)
+    mMapItem(mapItem)
 {
 //       QObject::connect(this,&CirclePropertiesModel::circlePropertiesChanged,this,&CirclePropertiesModel::circlePropertiesChangedToQML);
     if (mCircle) {
@@ -192,12 +192,12 @@ void CirclePropertiesModel::setRelative(const bool &value){
 
         if(value == true)
         {
-            tempLocation.makeRelative(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeRelative(mMapItem->getMapNode()->getTerrain());
             mCircle->setPosition(tempLocation);
         }
         else if(value == false)
         {
-            tempLocation.makeAbsolute(mMapController->getMapNode()->getTerrain());
+            tempLocation.makeAbsolute(mMapItem->getMapNode()->getTerrain());
             mCircle->setPosition(tempLocation);
         }
     }
@@ -240,16 +240,16 @@ void CirclePropertiesModel::setCircle(Circle *circle)
     mCircle->setRadius(mRadius);
 }
 
-CircleProperties::CircleProperties(Circle* circle, QQmlEngine *engine, UIHandle *uiHandle, MapController *mapController, QObject *parent) :
+CircleProperties::CircleProperties(Circle* circle, QQmlEngine *engine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mQmlEngine(engine),
     mUiHandle(uiHandle)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapController, circle](){
+    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, circle](){
         if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mCircleProperties = new CirclePropertiesModel(circle, mapController);
+            mCircleProperties = new CirclePropertiesModel(circle, mapItem);
             mItem->setProperty("circleProperties", QVariant::fromValue<CirclePropertiesModel*>(mCircleProperties));
         }
     });

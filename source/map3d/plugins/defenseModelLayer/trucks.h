@@ -6,7 +6,7 @@
 class TruckS : public osgEarth::Annotation::ModelNode
 {
 public:
-    TruckS(class MapController *mapController);
+    TruckS(class MapItem *mapController);
 
     void startSearch();
     void stopSearch();

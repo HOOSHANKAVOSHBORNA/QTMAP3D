@@ -21,9 +21,9 @@ float Circle::getCircleHeight()
     return style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
 }
 
-Circle::Circle(MapController *mapController, bool clamp)
+Circle::Circle(MapItem *mapItem, bool clamp)
 {
-    mMapController = mapController;
+    mMapItem = mapItem;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() ;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = true;
     if (clamp){
