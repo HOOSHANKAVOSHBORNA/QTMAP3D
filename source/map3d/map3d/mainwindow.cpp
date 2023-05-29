@@ -17,8 +17,9 @@
 #include "application.h"
 #include <QQuickOpenGLUtils>
 MainWindow::MainWindow(QWindow *parent) :
-    QQuickWindow(parent), mMapItem(new MapItem(this))
+    QQuickWindow(parent)
 {
+
 //    mOGLF = new QOpenGLFunctions_2_0;
 //    QObject::connect(this, &MainWindow::sceneGraphInitialized,
 //                     this, &MainWindow::initializeGL,
@@ -34,11 +35,12 @@ MainWindow::MainWindow(QWindow *parent) :
 
 
 
+
 ///////////////////
-    QObject::connect(this, &MainWindow::homeButtonClicked,
-                     mMapItem, &MapItem::goToHome);
-    QObject::connect(this, &MainWindow::view3DButtonClicked,
-                     mMapItem, &MapItem::toggle3DView);
+//    QObject::connect(this, &MainWindow::homeButtonClicked,
+//                     mMapItem, &MapItem::goToHome);
+//    QObject::connect(this, &MainWindow::view3DButtonClicked,
+//                     mMapItem, &MapItem::toggle3DView);
 //////////////////////
 
 //    QObject::connect(this, &MainWindow::upButtonClicked,
@@ -66,28 +68,28 @@ MainWindow::MainWindow(QWindow *parent) :
 //    QObject::connect(this, &MainWindow::zoomOutButtonClicked,
 //                     mMapItem, &MapItem::zoomOut);
 ///////////////
-    QObject::connect(mMapItem, &MapItem::headingAngleChanged,
-                     this, &MainWindow::setHeadingAngle);
+//    QObject::connect(mMapItem, &MapItem::headingAngleChanged,
+//                     this, &MainWindow::setHeadingAngle);
 
 
-    QObject::connect(mMapItem, &MapItem::mousePointingLocationWgs84Changed,
-                     this, &MainWindow::setMousePointingLocationWgs84);
-    QObject::connect(mMapItem, &MapItem::mousePointingLocationChanged,
-                     this, &MainWindow::setMousePointingLocation);
-    QObject::connect(this, &MainWindow::goToLocation,
-                     mMapItem, QOverload<double, double, double>::of(&MapItem::goToPosition));
+//    QObject::connect(mMapItem, &MapItem::mousePointingLocationWgs84Changed,
+//                     this, &MainWindow::setMousePointingLocationWgs84);
+//    QObject::connect(mMapItem, &MapItem::mousePointingLocationChanged,
+//                     this, &MainWindow::setMousePointingLocation);
+//    QObject::connect(this, &MainWindow::goToLocation,
+//                     mMapItem, QOverload<double, double, double>::of(&MapItem::goToPosition));
 
 
-    QObject::connect(mMapItem, &MapItem::focalPointLatChanged,
-                     this, &MainWindow::setFocalPointLat);
-    QObject::connect(mMapItem, &MapItem::focalPointLongChanged,
-                     this, &MainWindow::setFocalPointLong);
-    QObject::connect(mMapItem, &MapItem::focalPointRangeChanged,
-                     this, &MainWindow::setFocalPointRange);
-    QObject::connect(mMapItem, &MapItem::focalPointPitchChanged,
-                     this, &MainWindow::setFocalPointPitch);
-    QObject::connect(mMapItem, &MapItem::focalPointHeadChanged,
-                     this, &MainWindow::setFocalPointHead);
+//    QObject::connect(mMapItem, &MapItem::focalPointLatChanged,
+//                     this, &MainWindow::setFocalPointLat);
+//    QObject::connect(mMapItem, &MapItem::focalPointLongChanged,
+//                     this, &MainWindow::setFocalPointLong);
+//    QObject::connect(mMapItem, &MapItem::focalPointRangeChanged,
+//                     this, &MainWindow::setFocalPointRange);
+//    QObject::connect(mMapItem, &MapItem::focalPointPitchChanged,
+//                     this, &MainWindow::setFocalPointPitch);
+//    QObject::connect(mMapItem, &MapItem::focalPointHeadChanged,
+//                     this, &MainWindow::setFocalPointHead);
 
 ////////////////
 
@@ -119,7 +121,7 @@ MainWindow::MainWindow(QWindow *parent) :
 MainWindow::~MainWindow()
 {
     cleanup();
-    mMapItem->deleteLater();
+//    mMapItem->deleteLater();
 }
 
 qreal MainWindow::headingAngle() const
@@ -435,11 +437,11 @@ void MainWindow::setrotateRightButtonPressed(bool pressed)
 
 void MainWindow::travelToViewpoint(qreal latitude, qreal longitude, qreal range, qreal pitch, qreal heading)
 {
-    mMapItem->travelToViewpoint(latitude,
-                                      longitude,
-                                      range,
-                                      pitch,
-                                      heading);
+//    mMapItem->travelToViewpoint(latitude,
+//                                      longitude,
+//                                      range,
+//                                      pitch,
+//                                      heading);
 }
 
 void MainWindow::showInfoWidget(MainWindow::InfoWidgetType infoWidgetType)
@@ -513,8 +515,8 @@ void MainWindow::onFrameSwapped()
 
 void MainWindow::orientCameraToNorth()
 {
-    if (mMapItem)
-        mMapItem->orientCameraToNorth();
+//    if (mMapItem)
+//        mMapItem->orientCameraToNorth();
 }
 
 
@@ -523,10 +525,19 @@ void MainWindow::orientCameraToNorth()
 
 
 
-MapItem *MainWindow::getMapItem() const
+MapItem *MainWindow::getMapItem()
 {
+    if(!mMapItem)
+        mMapItem = findChild<MapItem*>("MainMap");
+//    if (mapItem)
+//        qDebug()<<"mapitem"<<mapItem->getMode();
     return mMapItem;
 }
+
+//void MainWindow::setMapItem(MapItem &mapItem)
+//{
+//    mMapItem = &mapItem;
+//}
 
 
 void MainWindow::cleanup()
@@ -564,31 +575,31 @@ void MainWindow::frame()
 
 void MainWindow::tickNavigation(double deltaTime)
 {
-    if (mZoomInButtonPressed) {
-        mMapItem->zoom(0.0018 * deltaTime);
-    } else if (mZoomOutButtonPressed) {
-        mMapItem->zoom(-0.0018 * deltaTime);
-    }
+//    if (mZoomInButtonPressed) {
+//        mMapItem->zoom(0.0018 * deltaTime);
+//    } else if (mZoomOutButtonPressed) {
+//        mMapItem->zoom(-0.0018 * deltaTime);
+//    }
 
-    if (mUpButtonPressed) {
-        mMapItem->pan(0.0, -0.0015 * deltaTime);
-    } else if (mDownButtonPressed) {
-        mMapItem->pan(0.0, 0.0015 * deltaTime);
-    } else if (mLeftButtonPressed) {
-        mMapItem->pan(0.0015 * deltaTime, 0.0);
-    } else if (mRightButtonPressed) {
-        mMapItem->pan(-0.0015 * deltaTime, 0.0);
-    }
+//    if (mUpButtonPressed) {
+//        mMapItem->pan(0.0, -0.0015 * deltaTime);
+//    } else if (mDownButtonPressed) {
+//        mMapItem->pan(0.0, 0.0015 * deltaTime);
+//    } else if (mLeftButtonPressed) {
+//        mMapItem->pan(0.0015 * deltaTime, 0.0);
+//    } else if (mRightButtonPressed) {
+//        mMapItem->pan(-0.0015 * deltaTime, 0.0);
+//    }
 
-    if (mRotateUpButtonPressed) {
-        mMapItem->rotate(0.0, 0.001 * deltaTime);
-    } else if (mRotateDownButtonPressed) {
-        mMapItem->rotate(0.0, -0.001 * deltaTime);
-    } else if (mRotateLeftButtonPressed) {
-        mMapItem->rotate(-0.001 * deltaTime, 0.0);
-    } else if (mRotateRightButtonPressed) {
-        mMapItem->rotate(0.001 * deltaTime, 0.0);
-    }
+//    if (mRotateUpButtonPressed) {
+//        mMapItem->rotate(0.0, 0.001 * deltaTime);
+//    } else if (mRotateDownButtonPressed) {
+//        mMapItem->rotate(0.0, -0.001 * deltaTime);
+//    } else if (mRotateLeftButtonPressed) {
+//        mMapItem->rotate(-0.001 * deltaTime, 0.0);
+//    } else if (mRotateRightButtonPressed) {
+//        mMapItem->rotate(0.001 * deltaTime, 0.0);
+//    }
 }
 
 void MainWindow::restoreContext()
@@ -677,58 +688,58 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         return;
 
 
-    switch (event->key()) {
-    case Qt::Key_Up:
-    {
-        auto manip = mMapItem->getEarthManipulator();
-        if (manip) {
-            manip->pan(0, -0.03);
-        }
-        event->accept();
-    }
-        break;
-    case Qt::Key_Down:
-    {
-        auto manip = mMapItem->getEarthManipulator();
-        if (manip) {
-            manip->pan(0, 0.03);
-        }
-        event->accept();
-    }
-        break;
-    case Qt::Key_Left:
-    {
-        auto manip = mMapItem->getEarthManipulator();
-        if (manip) {
-            manip->pan(0.03, 0);
-        }
-        event->accept();
-    }
-        break;
-    case Qt::Key_Right:
-    {
-        auto manip = mMapItem->getEarthManipulator();
-        if (manip) {
-            manip->pan(-0.03, 0);
-        }
-        event->accept();
-    }
-        break;
-    }
+//    switch (event->key()) {
+//    case Qt::Key_Up:
+//    {
+//        auto manip = mMapItem->getEarthManipulator();
+//        if (manip) {
+//            manip->pan(0, -0.03);
+//        }
+//        event->accept();
+//    }
+//        break;
+//    case Qt::Key_Down:
+//    {
+//        auto manip = mMapItem->getEarthManipulator();
+//        if (manip) {
+//            manip->pan(0, 0.03);
+//        }
+//        event->accept();
+//    }
+//        break;
+//    case Qt::Key_Left:
+//    {
+//        auto manip = mMapItem->getEarthManipulator();
+//        if (manip) {
+//            manip->pan(0.03, 0);
+//        }
+//        event->accept();
+//    }
+//        break;
+//    case Qt::Key_Right:
+//    {
+//        auto manip = mMapItem->getEarthManipulator();
+//        if (manip) {
+//            manip->pan(-0.03, 0);
+//        }
+//        event->accept();
+//    }
+//        break;
+//    }
 
 
-    if (event->isAccepted())
-        return;
+//    if (event->isAccepted())
+//        return;
 
-    const auto pluginManager = Application::instance()->pluginManager();
-    if (pluginManager) {
-        pluginManager->keyPressEvent(event);
-    }
+//    const auto pluginManager = Application::instance()->pluginManager();
+//    if (pluginManager) {
+//        pluginManager->keyPressEvent(event);
+//    }
 
-    if (event->isAccepted())
-        return;
+//    if (event->isAccepted())
+//        return;
 
-    mMapItem->keyPressEvent(event);
+//    mMapItem->keyPressEvent(event);
 
 
 }
@@ -740,26 +751,26 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
     if (event->isAccepted())
         return;
 
-    switch (event->key()) {
-    case Qt::Key_Up:
-    case Qt::Key_Down:
-    case Qt::Key_Left:
-    case Qt::Key_Right:
-        event->accept();
-        break;
-    }
+//    switch (event->key()) {
+//    case Qt::Key_Up:
+//    case Qt::Key_Down:
+//    case Qt::Key_Left:
+//    case Qt::Key_Right:
+//        event->accept();
+//        break;
+//    }
 
-    if (event->isAccepted())
-        return;
+//    if (event->isAccepted())
+//        return;
 
-    const auto pluginManager = Application::instance()->pluginManager();
-    if (pluginManager) {
-        pluginManager->keyReleaseEvent(event);
-    }
-    if (event->isAccepted())
-        return;
+//    const auto pluginManager = Application::instance()->pluginManager();
+//    if (pluginManager) {
+//        pluginManager->keyReleaseEvent(event);
+//    }
+//    if (event->isAccepted())
+//        return;
 
-    mMapItem->keyReleaseEvent(event);
+//    mMapItem->keyReleaseEvent(event);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -778,7 +789,7 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         return;
 
 
-    mMapItem->mousePressEvent(event);
+//    mMapItem->mousePressEvent(event);
 
 
     if (event->button() == Qt::LeftButton) {
@@ -811,7 +822,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
         return;
 
 
-    mMapItem->mouseReleaseEvent(event);
+//    mMapItem->mouseReleaseEvent(event);
 
 
     if (event->button() == Qt::LeftButton) {
@@ -850,7 +861,7 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
         return;
 
 
-    mMapItem->mouseDoubleClickEvent(event);
+//    mMapItem->mouseDoubleClickEvent(event);
 
 }
 
@@ -869,7 +880,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
         return;
 
 
-    mMapItem->mouseMoveEvent(event);
+//    mMapItem->mouseMoveEvent(event);
 
 }
 
@@ -887,7 +898,7 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     if (event->isAccepted())
         return;
 
-    mMapItem->wheelEvent(event);
+//    mMapItem->wheelEvent(event);
 
 }
 

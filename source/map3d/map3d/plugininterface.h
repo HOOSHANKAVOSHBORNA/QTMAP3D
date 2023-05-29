@@ -146,6 +146,9 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* event) {}
     virtual void mouseMoveEvent       (QMouseEvent* event) {}
     virtual void wheelEvent           (QWheelEvent* event) {}
+private:
+    MapItem *mMapItem;
+    UIHandle *mUiHandle;
 };
 
 

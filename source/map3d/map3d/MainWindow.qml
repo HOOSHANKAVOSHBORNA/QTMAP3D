@@ -9,6 +9,10 @@ import Crystal 1.0
 
 
 CMainWindow {
+    CListWindow{
+        width: 100
+        height: 100
+    }
 
     readonly  property int      _iconSize   : 24
     readonly property int       _margin     : 15
@@ -28,16 +32,16 @@ CMainWindow {
     property string modeMap: "geocentric"
 
 
-    zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
-    zoomOutButtonPressed:     navigationWidget.zoomOutButtonPressed
-    upButtonPressed:          navigationWidget.upButtonPressed
-    downButtonPressed:        navigationWidget.downButtonPressed
-    leftButtonPressed:        navigationWidget.leftButtonPressed
-    rightButtonPressed:       navigationWidget.rightButtonPressed
-    rotateUpButtonPressed:    navigationWidget.rotateUpButtonPressed
-    rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
-    rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
-    rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
+//    zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
+//    zoomOutButtonPressed:     navigationWidget.zoomOutButtonPressed
+//    upButtonPressed:          navigationWidget.upButtonPressed
+//    downButtonPressed:        navigationWidget.downButtonPressed
+//    leftButtonPressed:        navigationWidget.leftButtonPressed
+//    rightButtonPressed:       navigationWidget.rightButtonPressed
+//    rotateUpButtonPressed:    navigationWidget.rotateUpButtonPressed
+//    rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
+//    rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
+//    rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
 
 
     id: wnd
@@ -47,8 +51,9 @@ CMainWindow {
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("MAP3D")
-    MapItem {
+    MapControllerItem {
         anchors.fill: parent
+        objectName: "MainMap"
 
     }
 
@@ -149,7 +154,7 @@ CMainWindow {
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.bottom: statusBar.top
+//        anchors.bottom: statusBar.top
         width: parent.width
 
         MenuWidget {
@@ -185,7 +190,7 @@ CMainWindow {
             y: menuWidget.height + (widgetsMargins * 2.0)
             width: implicitWidth + (widgetsMargins * 2)
 //            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
-            height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
+            height: parent.height - menuWidget.height - (widgetsMargins * 3)/* - navigationWidget.height*/
             sideItemsModel: wnd.sideItemsModel
 
             onSideItemCreated: function(index, item) {
@@ -250,35 +255,35 @@ CMainWindow {
 
         //        }
 
-        Compass{
-            id:compass
-            headingAngle: wnd.headingAngle
-            anchors.left: parent.left
-            anchors.leftMargin: widgetsMargins //+ 10
-            anchors.bottomMargin: widgetsMargins
-//            y: 25 + parent.height - (wnd.widgetsPositionFactor * (height + (widgetsMargins - 10)+ 25) )
-            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
+//        Compass{
+//            id:compass
+//            headingAngle: wnd.headingAngle
+//            anchors.left: parent.left
+//            anchors.leftMargin: widgetsMargins //+ 10
+//            anchors.bottomMargin: widgetsMargins
+////            y: 25 + parent.height - (wnd.widgetsPositionFactor * (height + (widgetsMargins - 10)+ 25) )
+//            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins)))
 
-            onCompassDoubleClicked: function() {
-                wnd.orientCameraToNorth();
-            }
-        }
+//            onCompassDoubleClicked: function() {
+//                wnd.orientCameraToNorth();
+//            }
+//        }
 
 
-        NavigationWidget{
-            id : navigationWidget
-            anchors.right: parent.right
-            anchors.rightMargin: _margin
-//            y:25 + parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/2+3)+25))
-            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins/2+3)))
-            // slot button
-            onBtnHomeClicked: function() {
-                wnd.homeButtonClicked();
-            }
-            onBtnProjectionClicked: function() {
-                wnd.view3DButtonClicked();
-            }
-        }
+//        NavigationWidget{
+//            id : navigationWidget
+//            anchors.right: parent.right
+//            anchors.rightMargin: _margin
+////            y:25 + parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/2+3)+25))
+//            y: parent.height  - (wnd.widgetsPositionFactor * (height + (widgetsMargins/2+3)))
+//            // slot button
+//            onBtnHomeClicked: function() {
+//                wnd.homeButtonClicked();
+//            }
+//            onBtnProjectionClicked: function() {
+//                wnd.view3DButtonClicked();
+//            }
+//        }
     }
 
 
@@ -289,26 +294,26 @@ CMainWindow {
     }
 
 
-    StatusBar {
-        id: statusBar
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.leftMargin: 0
-        anchors.rightMargin: 0
-        width: parent.width
-        height: childrenRect.height
-        latitude: wnd.mousePointingLocationWgs84.x
-        longitude: wnd.mousePointingLocationWgs84.y
-        altitude: wnd.mousePointingLocationWgs84.z
-        coordinate1: wnd.mousePointingLocation.x
-        coordinate2: wnd.mousePointingLocation.y
-        coordinate3: wnd.mousePointingLocation.z
-        message: "Ready"
-        timer: -1
+//    StatusBar {
+//        id: statusBar
+//        anchors.bottom: parent.bottom
+//        anchors.bottomMargin: 0
+//        anchors.left: parent.left
+//        anchors.right: parent.right
+//        anchors.leftMargin: 0
+//        anchors.rightMargin: 0
+//        width: parent.width
+//        height: childrenRect.height
+//        latitude: wnd.mousePointingLocationWgs84.x
+//        longitude: wnd.mousePointingLocationWgs84.y
+//        altitude: wnd.mousePointingLocationWgs84.z
+//        coordinate1: wnd.mousePointingLocation.x
+//        coordinate2: wnd.mousePointingLocation.y
+//        coordinate3: wnd.mousePointingLocation.z
+//        message: "Ready"
+//        timer: -1
 
-    }
+//    }
 
 
     Label {
@@ -479,7 +484,7 @@ CMainWindow {
         y: menuWidget.height + (widgetsMargins * 2.0)
         width: 600 + (widgetsMargins * 2)
 //        height: parent.height - (menuWidget.height *2.5)- navigationWidget.height - (widgetsMargins * 5)
-        height: parent.height - menuWidget.height - (widgetsMargins * 3) - navigationWidget.height
+        height: parent.height - menuWidget.height - (widgetsMargins * 3) /*- navigationWidget.height*/
     }
 
     function showInfoView(item, title) {
@@ -499,7 +504,7 @@ CMainWindow {
         x: parent.width + widgetsMargins*2 - (wnd.widgetsPositionFactor * (250 + (widgetsMargins *3.0))) +300
         y: menuWidget.height + (widgetsMargins*2 )
         width: 250
-        height: parent.height - menuWidget.height - (widgetsMargins * 6) - navigationWidget.height
+        height: parent.height - menuWidget.height - (widgetsMargins * 6) /*- navigationWidget.height*/
         }
 
     function showRightContainer(item) {

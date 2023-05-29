@@ -17,10 +17,12 @@ class UIHandle;
 class ListWindow;
 class LayersModel;
 
-
+Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QQuickWindow
 {
     Q_OBJECT
+//    Q_PROPERTY(MapItem mapItem READ getMapItem WRITE setMapItem)
+
     Q_PROPERTY(qreal headingAngle READ headingAngle WRITE setHeadingAngle NOTIFY headingAngleChanged)
     Q_PROPERTY(QVector3D mousePointingLocationWgs84 READ mousePointingLocationWgs84 WRITE setMousePointingLocationWgs84 NOTIFY mousePointingLocationWgs84Changed)
     Q_PROPERTY(QVector3D mousePointingLocation READ mousePointingLocation WRITE setMousePointingLocation NOTIFY mousePointingLocationChanged)
@@ -181,7 +183,8 @@ public slots:
 
 public:
 
-    MapItem* getMapItem() const;
+    MapItem* getMapItem();
+//    void setMapItem(MapItem& mapItem);
 
 
 public slots:

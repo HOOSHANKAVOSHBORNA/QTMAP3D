@@ -22,5 +22,6 @@
         <file>setting/Settings.qml</file>
         <file>StatusBar.qml</file>
         <file>RightContainer.qml</file>
+        <file>MapControllerItem.qml</file>
     </qresource>
 </RCC>

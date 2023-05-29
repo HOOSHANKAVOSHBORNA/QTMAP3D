@@ -22,8 +22,25 @@ class MainMapCallback;
 class MapItem : public QQuickItem
 {
     Q_OBJECT
+
+    Q_PROPERTY(qreal headingAngle READ headingAngle NOTIFY headingAngleChanged)
+
+    Q_PROPERTY(bool zoomInButtonPressed       WRITE setZoomInButtonPressed      )
+    Q_PROPERTY(bool zoomOutButtonPressed      WRITE setZoomOutButtonPressed     )
+    Q_PROPERTY(bool upButtonPressed           WRITE setUpButtonPressed          )
+    Q_PROPERTY(bool downButtonPressed         WRITE setdownButtonPressed        )
+    Q_PROPERTY(bool leftButtonPressed         WRITE setleftButtonPressed        )
+    Q_PROPERTY(bool rightButtonPressed        WRITE setrightButtonPressed       )
+    Q_PROPERTY(bool rotateUpButtonPressed     WRITE setrotateUpButtonPressed    )
+    Q_PROPERTY(bool rotateDownButtonPressed   WRITE setrotateDownButtonPressed  )
+    Q_PROPERTY(bool rotateLeftButtonPressed   WRITE setrotateLeftButtonPressed  )
+    Q_PROPERTY(bool rotateRightButtonPressed  WRITE setrotateRightButtonPressed )
+
+    Q_PROPERTY(QVector3D mapMouseGeoLocation READ mapMouseGeoLocation NOTIFY mouseLocationChanged)
+    Q_PROPERTY(QVector3D mapMouseLocation READ mapMouseLocation NOTIFY mouseLocationChanged)
+
 public:
-    explicit MapItem(QObject *parent = nullptr);
+    explicit MapItem(QQuickItem *parent = nullptr);
     ~MapItem();
     void setMap(osgEarth::Map *map);
     osgViewer::Viewer *getViewer()const;
@@ -42,7 +59,7 @@ public://camera functions
 	void setTrackNode(osg::Node *node, double minDistance);
 //    void untrackNode(osg::Node *node);
 	void untrack();
-
+    qreal headingAngle() const;
 public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;
     osgEarth::GeoPoint screenToGeoPoint(float x, float y) const;
@@ -56,10 +73,10 @@ public slots:
     void goToHome();
     void goToPosition(double latitude, double longitude, double range);
     void goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration = 3.0);
-    void setMode(bool is3DView);
+    void changeMode();
     bool getMode() const;
     void setGeocentric(bool isGeocentric);
-    void toggle3DView();
+//    void toggle3DView();
     void pan(double xVal, double yVal);
     void rotate(double xVal, double yVal);
     void travelToViewpoint(qreal latitude,
@@ -69,11 +86,24 @@ public slots:
                            qreal heading);
 
     void orientCameraToNorth();
-
+    QVector3D mapMouseGeoLocation() const;
+    QVector3D mapMouseLocation() const;
+//
+public slots:
+    void setZoomInButtonPressed(bool pressed);
+    void setZoomOutButtonPressed(bool pressed);
+    void setUpButtonPressed(bool pressed);
+    void setdownButtonPressed(bool pressed);
+    void setleftButtonPressed(bool pressed);
+    void setrightButtonPressed(bool pressed);
+    void setrotateUpButtonPressed(bool pressed);
+    void setrotateDownButtonPressed(bool pressed);
+    void setrotateLeftButtonPressed(bool pressed);
+    void setrotateRightButtonPressed(bool pressed);
 signals:
-    void headingAngleChanged(qreal angle);
+    void headingAngleChanged();
     //void mouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos, osg::Vec3d worldPos);
-    void mousePointingLocationWgs84Changed(QVector3D location);
+    void mouseLocationChanged();
     void mousePointingLocationChanged(QVector3D location);
 
     void focalPointLatChanged  (qreal focalPointLat);
@@ -88,8 +118,9 @@ signals:
 //    void mapSRSChanged();
 
 private:
+    void tickNavigation(double deltaTime);
 
-    void mapMouseLocation(osgEarth::GeoPoint geoPos);
+//    void mapMouseLocation(osgEarth::GeoPoint geoPos);
 
     void initializeOsgEarth();
     void createMapNode(bool geocentric, osgEarth::Map *map = nullptr);
@@ -111,13 +142,26 @@ private:
     osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
     bool mIsGeocentric{true};
     bool mIs3DView{true};
+    osgEarth::GeoPoint mCurrentMouseGeoPoint;
+
+private:
+    bool mZoomInButtonPressed{false};
+    bool mZoomOutButtonPressed{false};
+    bool mUpButtonPressed{false};
+    bool mDownButtonPressed{false};
+    bool mLeftButtonPressed{false};
+    bool mRightButtonPressed{false};
+    bool mRotateUpButtonPressed{false};
+    bool mRotateDownButtonPressed{false};
+    bool mRotateLeftButtonPressed{false};
+    bool mRotateRightButtonPressed{false};
 //--renderer------------------------------------------------------------------------------------------------------
 public:
 //    void cleanup();
 //    void initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId);
 //    void resizeGL(int width, int height, QScreen *screen);
 //    void paintGL();
-    void createOsgRenderer();
+//    void createOsgRenderer();
     void frame();
     //events------------------------------
     void keyPressEvent(QKeyEvent* event) override;

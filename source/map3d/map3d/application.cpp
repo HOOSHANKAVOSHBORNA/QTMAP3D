@@ -27,7 +27,7 @@ void Application::performStartupConfiguration()
 {
     qputenv("QSG_RENDER_LOOP", "basic"); // This line is very important and can not be removed
     initializeSurfaceFormat();
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
 }
 
@@ -69,6 +69,7 @@ void Application::registerTypes()
     qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
     qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
+    qmlRegisterType<MapItem>("Crystal",1,0,"MapItem");
 }
 
 void Application::initializeQmlEngine()
@@ -186,7 +187,7 @@ void Application::onAllWindowsCreated()
 void Application::setup()
 {
     initializeDefenseDataManager();
-    mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
+//    mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
     emit defenseDataManagerInitialized(mDefenseDataManager);
 }
 
