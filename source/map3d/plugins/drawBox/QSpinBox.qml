@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import QtGraphicalEffects 1.12
+import QtQuick.Effects
 
 
 Item {
@@ -83,16 +83,16 @@ Item {
                     anchors.fill: parent
                     cursorShape: "PointingHandCursor"
                     hoverEnabled: true
-                    onEntered: upColor.color = secondaryColor
-                    onExited: upColor.color = btntxtColor
+                    onEntered: upColor.colorizationColor = secondaryColor
+                    onExited: upColor.colorizationColor = btntxtColor
                     onPressed: if(index >0){index --}
                 }
-                ColorOverlay{
+                MultiEffect{
                     id:upColor
                     anchors.fill: parent
                     source: stepDown
-                    color: btntxtColor
-                    visible: true
+                    colorizationColor: btntxtColor
+                    colorization:  1
                 }
             }
             Image {
@@ -107,16 +107,16 @@ Item {
                     anchors.fill: parent
                     cursorShape: "PointingHandCursor"
                     hoverEnabled: true
-                    onEntered: downColor.color = secondaryColor
-                    onExited: downColor.color = btntxtColor
+                    onEntered: downColor.colorizationColor = secondaryColor
+                    onExited: downColor.colorizationColor = btntxtColor
                     onPressed: if(index < steps.length-1){index ++}
                 }
-                ColorOverlay{
+                MultiEffect{
                     id:downColor
                     anchors.fill: parent
                     source: stepDown
-                    color: btntxtColor
-                    visible: true
+                    colorizationColor: btntxtColor
+                    colorization:  1
                 }
             }
         }
@@ -157,11 +157,12 @@ Item {
                         timerUp.stop();
                     }
                 }
-                ColorOverlay{
+                MultiEffect{
                     id:spinupColor
                     anchors.fill: parent
                     source: stepDown
-                    color: primaryColor
+                    colorization: 1
+                    colorizationColor: primaryColor
                     visible: true
                 }
             }
@@ -197,11 +198,12 @@ Item {
                         timerDown.stop();
                     }
                 }
-                ColorOverlay{
+                MultiEffect{
                     id:spindownColor
                     anchors.fill: parent
                     source: stepDown
-                    color: primaryColor
+                    colorization: 1
+                    colorizationColor: primaryColor
                     visible: true
                 }
             }

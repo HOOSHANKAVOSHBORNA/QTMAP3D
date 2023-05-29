@@ -1,5 +1,5 @@
 import QtQuick 2.0
-//import QtGraphicalEffects 1.13
+import QtQuick.Effects
 
 
 Item {
@@ -53,9 +53,9 @@ Item {
                                    }
                             hoverEnabled: true
                             onEntered:   if(root.x !== -620){
-                                            glowimg.visible=true
+                                            glowimg.colorization =1
                                          }
-                            onExited:    glowimg.visible=false
+                            onExited:    glowimg.colorization =0
 
 
 
@@ -77,13 +77,13 @@ Item {
                         anchors.centerIn: parent
                     }
 
-//                    ColorOverlay {
-//                        id: glowimg
-//                        anchors.fill: arrow
-//                        color: "orange"
-//                        source: arrow
-//                        visible: false
-//                        }
+                    MultiEffect {
+                        id: glowimg
+                        anchors.fill: arrow
+                        colorizationColor:   "orange"
+                        source: arrow
+                        colorization: 0
+                        }
                 }
             PropertyAnimation {id:maxmove ; target: minimize ; property: "x" ; from :-300 ; to :0; duration: 200 ; easing.type: Easing.OutQuint ;running: false}
             PropertyAnimation {id:minix   ; target:root ; property:"x";  to: -620 ; duration: 200 ; running: false}

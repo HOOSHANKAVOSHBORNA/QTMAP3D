@@ -2,7 +2,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
-import QtGraphicalEffects 1.13
+import QtQuick.Effects
 
 
 Item {
@@ -95,10 +95,11 @@ Item {
                         width: 24
                         height:24
                     }
-                    ColorOverlay {
+                    MultiEffect {
                         id: glowimg
                         anchors.fill: img
-                        color: txt.color
+                        colorization: 1
+                        colorizationColor: txt.color
                         source: img
                     }
 

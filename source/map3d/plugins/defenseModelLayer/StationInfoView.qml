@@ -1,8 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.13
-import QtQuick.Extras 1.4
-import QtGraphicalEffects 1.0
+//import QtQuick.Extras 1.4
+import QtQuick.Effects
 import Crystal 1.0
 
 Item {
@@ -196,10 +196,11 @@ Item {
                                 width: 16
                                 height: 16
                                 rotation: 180
-                                ColorOverlay {
+                                MultiEffect {
                                     source: imgm
                                     anchors.fill: imgm
-                                    color: "white"
+                                    colorization: 1
+                                    colorizationColor: "white"
                                 }
                                 anchors.right: parent.right
                                 anchors.rightMargin: 5
@@ -306,10 +307,11 @@ Item {
                                 width: 16
                                 height: 16
                                 rotation: 180
-                                ColorOverlay {
+                                MultiEffect {
                                     source: imgl
                                     anchors.fill: imgl
-                                    color: "white"
+                                    colorization:1
+                                    colorizationColor: "white"
                                 }
                                 anchors.right: parent.right
                                 anchors.rightMargin: 5

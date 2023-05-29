@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
-//import QtGraphicalEffects 1.0
+import QtQuick.Effects
 Item {
     readonly property int round: 5
     signal itemClicked(string itemname, string category_name);
@@ -170,13 +170,14 @@ Item {
                     height: rectangle.icon.height
                     anchors.verticalCenter: parent.verticalCenter
                     rotation: -90
-//                    ColorOverlay{
-//                        id:layeColor1
-//                        source:img1
-//                        anchors.fill: img1
-//                        color: rectangle.hovered  ? (rectangle.pressed ? _colorPresed: _colorHover) :
-//                                                    (rectangle.pressed ? _colorHover : "#FFFFFF");
-//                    }
+                    MultiEffect{
+                        id:layeColor1
+                        source:img1
+                        anchors.fill: img1
+                        colorization: 1
+                        colorizationColor: rectangle.hovered  ? (rectangle.pressed ? _colorPresed: _colorHover) :
+                                                    (rectangle.pressed ? _colorHover : "#FFFFFF");
+                    }
                 }
             }
         }

@@ -1,7 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
-import QtGraphicalEffects 1.13
+import QtQuick.Effects
 import Crystal 1.0
 Item {
 
@@ -118,10 +118,11 @@ Item {
 
                 }
             }
-            ColorOverlay {
+            MultiEffect {
                 id: glowimg
                 anchors.fill: img
-                color: refreshimg.pressed ? "#D0C000" : refreshimg.containsMouse ? "yellow" : "white"
+                colorization: 1
+                colorizationColor: refreshimg.pressed ? "#D0C000" : refreshimg.containsMouse ? "yellow" : "white"
                 source: img
                 visible: true
             }
@@ -274,9 +275,10 @@ Item {
                                     visible: false
 
                                 }
-                                ColorOverlay {
+                                MultiEffect {
                                     anchors.fill: img6
-                                    color: (rootItem.aircraftModel.getTN(row) == rootItem.aClicked && column == 0) ? "#FFFFFF" : (rootItem.aHoveredIndex == row ? "#404040" : "transparent")
+                                    colorization: 1
+                                    colorizationColor: (rootItem.aircraftModel.getTN(row) == rootItem.aClicked && column == 0) ? "#FFFFFF" : (rootItem.aHoveredIndex == row ? "#404040" : "transparent")
                                     source: img6
                                     rotation: 90
                                     visible: column == 0 && (row == aHoveredIndex || rootItem.aircraftModel.getTN(row) == aClicked)
@@ -436,9 +438,10 @@ Item {
                                     visible: false
 
                                 }
-                                ColorOverlay {
+                                MultiEffect {
                                     anchors.fill: img7
-                                    color: (row == rootItem.sClicked && column == 0) ? "#FFFFFF" : (rootItem.sHoveredIndex == row ? "#404040" : "transparent")
+                                    colorization: 1
+                                    colorizationColor: (row == rootItem.sClicked && column == 0) ? "#FFFFFF" : (rootItem.sHoveredIndex == row ? "#404040" : "transparent")
                                     source: img7
                                     rotation: 90
                                     visible: column == 0 && (row == sHoveredIndex || row == sClicked)

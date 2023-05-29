@@ -2,7 +2,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
-//import QtGraphicalEffects 1.13
+import QtQuick.Effects
 import Crystal 1.0
 
 Item {
@@ -97,13 +97,14 @@ Item {
                         }
                     }
 
-//                    ColorOverlay {
-//                        anchors.fill: col
-//                        source: col
-//                        color: mouseArea.isMouseOnItem ?
-//                                   (mouseArea.pressed ? _colorPresed: _colorHover) :
-//                                   (mouseArea.pressed ? _colorHover : "#FFFFFF");
-//                    }
+                    MultiEffect{
+                        anchors.fill: col
+                        source: col
+                        colorization: 1
+                        colorizationColor: mouseArea.isMouseOnItem ?
+                                   (mouseArea.pressed ? _colorPresed: _colorHover) :
+                                   (mouseArea.pressed ? _colorHover : "#FFFFFF");
+                    }
                 }
             }
 
@@ -158,13 +159,14 @@ Item {
                     }
                 }
 
-//                ColorOverlay {
-//                    anchors.fill: col2
-//                    source: col2
-//                    color: mouseArea2.isMouseOnItem ?
-//                               (mouseArea2.pressed ? _colorPresed: _colorHover) :
-//                               (mouseArea2.pressed ? _colorHover : "#FFFFFF");
-//                }
+                MultiEffect {
+                    anchors.fill: col2
+                    source: col2
+                    colorization: 1
+                    colorizationColor: mouseArea2.isMouseOnItem ?
+                               (mouseArea2.pressed ? _colorPresed: _colorHover) :
+                               (mouseArea2.pressed ? _colorHover : "#FFFFFF");
+                }
             }
 
 
@@ -218,13 +220,14 @@ Item {
                     }
                 }
 
-//                ColorOverlay {
-//                    anchors.fill: col1
-//                    source: col1
-//                    color: mouseArea1.isMouseOnItem ?
-//                               (mouseArea1.pressed ? _colorPresed: _colorHover) :
-//                               (mouseArea1.pressed ? _colorHover : "#FFFFFF");
-//                }
+                MultiEffect {
+                    anchors.fill: col1
+                    source: col1
+                    colorization: 1
+                    colorizationColor: mouseArea1.isMouseOnItem ?
+                               (mouseArea1.pressed ? _colorPresed: _colorHover) :
+                               (mouseArea1.pressed ? _colorHover : "#FFFFFF");
+                }
             }
 //            Item {
 //                Layout.alignment: Qt.AlignCenter

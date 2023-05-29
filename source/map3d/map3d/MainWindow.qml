@@ -4,7 +4,7 @@ import QtQuick.Window 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 
-//import QtGraphicalEffects
+import QtQuick.Effects
 import Crystal 1.0
 
 
@@ -14,7 +14,7 @@ CMainWindow {
         height: 100
     }
 
-    readonly  property int      _iconSize   : 24
+    readonly property int       _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
     readonly property color     _colorRec   : "#404040"
@@ -591,13 +591,14 @@ CMainWindow {
                     }
                 }
 
-//                ColorOverlay {
-//                    anchors.fill: col3
-//                    source: col3
-//                    color: mouseArea3.isMouseOnItem ?
-//                               (mouseArea3.pressed ? _colorPresed: _colorHover) :
-//                               (mouseArea3.pressed ? _colorHover : "#FFFFFF");
-//                }
+                MultiEffect {
+                    anchors.fill: col3
+                    source: col3
+                    colorization: 1
+                    colorizationColor: mouseArea3.isMouseOnItem ?
+                               (mouseArea3.pressed ? _colorPresed: _colorHover) :
+                               (mouseArea3.pressed ? _colorHover : "#FFFFFF");
+                }
             }
             Item {
                 Layout.alignment: Qt.AlignCenter
@@ -649,13 +650,14 @@ CMainWindow {
                     }
                 }
 
-//                ColorOverlay {
-//                    anchors.fill: col4
-//                    source: col4
-//                    color: mouseArea4.isMouseOnItem ?
-//                               (mouseArea4.pressed ? _colorPresed: _colorHover) :
-//                               (mouseArea4.pressed ? _colorHover : "#FFFFFF");
-//                }
+                MultiEffect {
+                    anchors.fill: col4
+                    source: col4
+                    colorization: 1
+                    colorizationColor: mouseArea4.isMouseOnItem ?
+                               (mouseArea4.pressed ? _colorPresed: _colorHover) :
+                               (mouseArea4.pressed ? _colorHover : "#FFFFFF");
+                }
             }
         }
     }

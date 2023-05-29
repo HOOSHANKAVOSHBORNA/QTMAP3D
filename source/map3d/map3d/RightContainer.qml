@@ -1,7 +1,7 @@
-import QtQuick 2.13
-import QtQuick.Controls 2.13
-import QtQuick.Layouts 1.13
-//import QtGraphicalEffects 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtQuick.Effects
 
 
 Item {
@@ -143,10 +143,22 @@ Item {
                 onClicked: minimizeBtn();
                 hoverEnabled: true
                 onEntered:  if(containerHolder.x === -300){
-                                glowimg.visible=true
+                                glowimg.colorization=1
+                                glowimg.visible = true
+                            }else{
+                                glowimg.colorization =1
+                                glowimg.visible = true
+                                glowimg.rotation = 180
                             }
-                onExited:   glowimg.visible=false
 
+                onExited:   if(containerHolder.x === -300){
+                                glowimg.colorization=0
+                                glowimg.visible = false
+                            }else{
+                                glowimg.colorization =0
+                                glowimg.visible = false
+                                glowimg.rotation = 0
+                            }
             }
             Text {
                 id: sideInfoTxt
@@ -165,13 +177,14 @@ Item {
                 rotation: 0
 
             }
-//            ColorOverlay {
-//                id: glowimg
-//                anchors.fill: arrow
-//                color: "orange"
-//                source: arrow
-//                visible: false
-//            }
+            MultiEffect {
+                id: glowimg
+                anchors.fill: arrow
+                colorization: 0
+                source: arrow
+                colorizationColor: "orange"
+                visible: false
+            }
         }
         PropertyAnimation{id:miniLayer ; target: containerHolder ; property: "x" ; to: -40 ; duration:150;  running: false }
         PropertyAnimation{id:maxiLayer ; target: containerHolder ; property: "x" ; to: -300 ; duration: 150; running: false }
