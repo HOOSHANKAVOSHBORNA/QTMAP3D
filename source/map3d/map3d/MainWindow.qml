@@ -80,9 +80,9 @@ CMainWindow {
     //        z:1
     //}
 
-    onClicked: function() {
-        toggleWidgetsVisible();
-    }
+//    onClicked: function() {
+//        toggleWidgetsVisible();
+//    }
 
 //    onWidthChanged: leftContainerHolder.adjustRightContainer(wnd.width);
 

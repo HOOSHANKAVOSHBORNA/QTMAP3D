@@ -1,5 +1,7 @@
 #include "mapControllerItem.h"
 
+#include <QTimer>
+
 
 MapControllerItem::MapControllerItem():
     MapItem()
@@ -138,6 +140,45 @@ void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
     MapItem::mouseMoveEvent(event);
     mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
     emit mouseLocationChanged();
+}
+
+void MapControllerItem::mousePressEvent(QMouseEvent *event)
+{
+    MapItem::mousePressEvent(event);
+    if (event->button() == Qt::LeftButton) {
+        mLastMousePressTime = QTime::currentTime();
+        mLastPressPoint = event->pos();
+
+        if (!mInClickProcess) {
+            mMousePressOusideClickProcess = true;
+        } else {
+            mMousePressOusideClickProcess = false;
+        }
+
+    }
+//    emit clicked();
+}
+
+void MapControllerItem::mouseReleaseEvent(QMouseEvent *event)
+{
+    MapItem::mouseReleaseEvent(event);
+    if (event->button() == Qt::LeftButton) {
+        if (mLastMousePressTime.msecsTo(QTime::currentTime()) < 400) {
+            const QPoint diff = event->pos() - mLastPressPoint;
+            if (std::abs(diff.x()) < 10 && std::abs(diff.y()) < 10) {
+
+                if (!mInClickProcess && mMousePressOusideClickProcess) {
+                    mInClickProcess = true;
+                    QTimer::singleShot(300, [this](){
+                        if (mMousePressOusideClickProcess)
+                            emit clicked();
+                        this->mInClickProcess = false;
+                    });
+
+                }
+            }
+        }
+    }
 }
 
 void MapControllerItem::hoverMoveEvent(QHoverEvent *event)

@@ -13,12 +13,51 @@ MapController {
     rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
     rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
     rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
+
+    property real widgetsPositionFactor: 1.0
+    property bool widgetsVisible: true
 //    MapItem {
 //        anchors.fill: parent
 //        readonly property real      widgetsMargins: 10
 
 
+    onClicked: function() {
+        toggleWidgetsVisible();
+    }
 
+    function toggleWidgetsVisible() {
+        if (rootItem.widgetsVisible === true) {
+            widgetsShowAnimation.stop();
+            widgetsHideAnimation.start();
+            rootItem.widgetsVisible = false;
+        } else {
+
+            widgetsHideAnimation.stop();
+            widgetsShowAnimation.start();
+            rootItem.widgetsVisible = true;
+        }
+    }
+
+    PropertyAnimation {
+        id: widgetsShowAnimation
+        target: rootItem
+        property: "widgetsPositionFactor"
+        from: rootItem.widgetsPositionFactor
+        to: 1.0
+        duration: 200 * Math.abs(1.0 - rootItem.widgetsPositionFactor)
+
+        easing.type: Easing.OutQuint
+    }
+    PropertyAnimation {
+        id: widgetsHideAnimation
+        target: rootItem
+        property: "widgetsPositionFactor"
+        from: rootItem.widgetsPositionFactor
+        to: 0.0
+        duration: 200 * Math.abs(rootItem.widgetsPositionFactor)
+
+        easing.type: Easing.InQuint
+    }
 //        id:mapItem
         Compass{
             id:compass
@@ -26,7 +65,7 @@ MapController {
             anchors.left: parent.left
             anchors.leftMargin: widgetsMargins
             anchors.bottomMargin: widgetsMargins
-            y: parent.height  - (height + (widgetsMargins) + statusBar.height)
+            y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins) + statusBar.height)
 
             onCompassDoubleClicked: function() {
                 rootItem.orientCameraToNorth();
@@ -39,7 +78,7 @@ MapController {
             anchors.right: parent.right
             anchors.rightMargin: widgetsMargins
             //            y:25 + parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/2+3)+25))
-            y: parent.height  - (height + (widgetsMargins/2+3) + statusBar.height)
+            y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins/2+3) + statusBar.height)
             // slot button
             onBtnHomeClicked: function() {
                 rootItem.goToHome();

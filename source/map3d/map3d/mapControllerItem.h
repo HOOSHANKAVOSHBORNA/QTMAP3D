@@ -2,6 +2,7 @@
 #define MAPCONTROLLERITEM_H
 
 #include <QObject>
+#include <QTime>
 #include "mapItem.h"
 
 class MapControllerItem : public MapItem
@@ -31,7 +32,10 @@ public:
     QVector3D mapMouseLocation() const;
     virtual void frame() override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void hoverMoveEvent(QHoverEvent *event) override;
+//    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
 public slots:
     void setZoomInButtonPressed(bool pressed);
     void setZoomOutButtonPressed(bool pressed);
@@ -48,6 +52,7 @@ signals:
     void headingAngleChanged();
     void mouseLocationChanged();
     void mousePointingLocationChanged(QVector3D location);
+    void clicked();
 private:
     void tickNavigation(double deltaTime);
 private:
@@ -65,6 +70,11 @@ private:
     bool mRotateLeftButtonPressed{false};
     bool mRotateRightButtonPressed{false};
     osgEarth::GeoPoint mCurrentMouseGeoPoint;
+
+    QTime mLastMousePressTime = QTime::currentTime();
+    QPoint mLastPressPoint = QPoint();
+    bool mMousePressOusideClickProcess = false;
+    bool mInClickProcess = false;
 };
 
 #endif // MAPCONTROLLERITEM_H
