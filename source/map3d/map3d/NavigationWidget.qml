@@ -50,25 +50,26 @@ Item {
         Rectangle {
             id: control
             color: "transparent"
-
-            Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.minimumWidth: 215
-            Layout.maximumWidth: 215
-
-
+            Layout.fillHeight: true
+            Layout.minimumWidth: 100
+            Layout.maximumWidth: 100
+            Layout.maximumHeight: 180
+            anchors.right: grL.left
+            anchors.rightMargin: 10
             clip: true
             ControlCamera{
                 id: rotationControlCamera
                 width: 100
                 radius: _radius
                 anchors.leftMargin: _margin
-                anchors.left: moveControlCamera.right
-                anchors.rightMargin: 0
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 1
                 anchors.top: parent.top
-                anchors.topMargin: 3
+                //anchors.rightMargin: 0
+                x: positionFactor * 215
+//                anchors.top: parent.bottom
+                //anchors.bottomMargin: 1
+               // anchors.top: parent.top
+                anchors.topMargin: 35
                 color: "transparent"
                 buttonIcon: "qrc:/Resources/rotate.png"
 
@@ -80,9 +81,9 @@ Item {
                 x: positionFactor * 215
                 anchors.rightMargin: _margin
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 1
-                anchors.top: parent.top
-                anchors.topMargin: 3
+                anchors.bottomMargin: 35
+//                anchors.top:
+//                anchors.topMargin: 3
                 color: "transparent"
             }
         }
@@ -137,8 +138,9 @@ Item {
 
 
         GridLayout {
-            columns:  2
-            rows: 2
+            id:grL
+            columns:  1
+            rows: 4
             rowSpacing: 5
             columnSpacing: 5
 
