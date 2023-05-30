@@ -4,7 +4,8 @@
 MapControllerItem::MapControllerItem():
     MapItem()
 {
-//    connect(mMapItem, &MapItem::frameChanged, this, &MapControllerItem::frame);
+    setAcceptHoverEvents(true);
+    setFlag(ItemAcceptsInputMethod, true);
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -134,8 +135,16 @@ void MapControllerItem::frame()
 
 void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
 {
-    QQuickItem::mouseMoveEvent(event);
     MapItem::mouseMoveEvent(event);
     mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
     emit mouseLocationChanged();
+}
+
+void MapControllerItem::hoverMoveEvent(QHoverEvent *event)
+{
+    MapItem::hoverMoveEvent(event);
+//    qDebug() << event->position().x() << ", " << event->position().y() ;
+    mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
+    emit mouseLocationChanged();
+    event->ignore();
 }

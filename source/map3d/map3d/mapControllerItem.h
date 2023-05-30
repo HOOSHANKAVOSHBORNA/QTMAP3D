@@ -31,6 +31,7 @@ public:
     QVector3D mapMouseLocation() const;
     virtual void frame() override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void hoverMoveEvent(QHoverEvent *event) override;
 public slots:
     void setZoomInButtonPressed(bool pressed);
     void setZoomOutButtonPressed(bool pressed);

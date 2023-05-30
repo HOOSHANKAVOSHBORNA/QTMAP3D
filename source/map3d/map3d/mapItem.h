@@ -83,6 +83,7 @@ signals:
     void mapCleared();
     void frameChanged();
 //    void mapSRSChanged();
+    void mouseLocationChanged();
 
 private:
     void initializeOsgEarth();
@@ -105,6 +106,7 @@ private:
     osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
     bool mIsGeocentric{true};
     bool mIs3DView{true};
+    osgEarth::GeoPoint mCurrentMouseGeoPoint;
 //--renderer------------------------------------------------------------------------------------------------------
 public:
 //    void cleanup();
@@ -121,6 +123,7 @@ public:
     virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
     virtual void mouseMoveEvent(QMouseEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
+    virtual void hoverMoveEvent(QHoverEvent *event) override;
 
 private:
     OSGRenderNode *mOSGRenderNode{nullptr};

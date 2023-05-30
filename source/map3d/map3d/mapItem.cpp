@@ -41,6 +41,7 @@ const double MAX_CAM_DISTANCE = 30000000.0;
 MapItem::MapItem(QQuickItem *parent) :
     QQuickItem(parent)
 {
+    setAcceptHoverEvents(true);
     setFlag(ItemHasContents);
     setAcceptedMouseButtons(Qt::MouseButton::AllButtons);
     mOSGRenderNode = new OSGRenderNode(this);
@@ -192,7 +193,7 @@ void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
             return;
         }
     }
-    //    mEarthManipulator->screenToWorld(x, height - y,mOsgRenderer, outWorldPoint);
+//        mEarthManipulator->screenToWorld(x, height - y,mOSGRenderNode, outWorldPoint);
 }
 
 osgEarth::GeoPoint MapItem::screenToGeoPoint(float x, float y) const
@@ -623,10 +624,16 @@ void MapItem::mouseMoveEvent(QMouseEvent *event)
     if (mOSGRenderNode) {
         mOSGRenderNode->mouseMoveEvent(event);
     }
+    mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
 }
 
 void MapItem::wheelEvent(QWheelEvent *event)
 {
     if (mOSGRenderNode)
         mOSGRenderNode->wheelEvent(event);
+}
+
+void MapItem::hoverMoveEvent(QHoverEvent *event)
+{
+    mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
 }
