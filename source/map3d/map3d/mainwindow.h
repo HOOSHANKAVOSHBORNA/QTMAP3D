@@ -10,6 +10,7 @@
 #include "pluginmanager.h"
 #include "layersmodel.h"
 #include "mapItem.h"
+#include "mapControllerItem.h"
 class QOpenGLFunctions_2_0;
 class PluginInfo;
 class PluginInterface;

@@ -43,7 +43,6 @@ MapItem::MapItem(QQuickItem *parent) :
 {
     setFlag(ItemHasContents);
     setAcceptedMouseButtons(Qt::MouseButton::AllButtons);
-
     mOSGRenderNode = new OSGRenderNode(this);
     mOSGRenderNode->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
     //    createOsgRenderer();
@@ -393,136 +392,6 @@ void MapItem::orientCameraToNorth()
     mEarthManipulator->setViewpoint(vp, 0.3);
 }
 
-QVector3D MapItem::mapMouseGeoLocation() const
-{
-    osgEarth::GeoPoint geoPos = mCurrentMouseGeoPoint;
-    geoPos.makeGeographic();
-    return QVector3D(geoPos.x(), geoPos.y(), geoPos.z());
-}
-
-QVector3D MapItem::mapMouseLocation() const
-{
-    return QVector3D(mCurrentMouseGeoPoint.x(), mCurrentMouseGeoPoint.y(), mCurrentMouseGeoPoint.z());
-}
-
-void MapItem::setZoomInButtonPressed(bool pressed)
-{
-    if (mZoomInButtonPressed != pressed) {
-        mZoomInButtonPressed = pressed;
-    }
-}
-
-void MapItem::setZoomOutButtonPressed(bool pressed)
-{
-    if (mZoomOutButtonPressed != pressed) {
-        mZoomOutButtonPressed = pressed;
-    }
-}
-
-void MapItem::setUpButtonPressed(bool pressed)
-{
-    if (mUpButtonPressed != pressed) {
-        mUpButtonPressed = pressed;
-    }
-
-}
-
-void MapItem::setdownButtonPressed(bool pressed)
-{
-    if (mDownButtonPressed != pressed) {
-        mDownButtonPressed = pressed;
-    }
-}
-
-void MapItem::setleftButtonPressed(bool pressed)
-{
-    if (mLeftButtonPressed != pressed) {
-        mLeftButtonPressed = pressed;
-    }
-}
-
-void MapItem::setrightButtonPressed(bool pressed)
-{
-    if (mRightButtonPressed != pressed) {
-        mRightButtonPressed = pressed;
-    }
-}
-
-void MapItem::setrotateUpButtonPressed(bool pressed)
-{
-    if (mRotateUpButtonPressed != pressed) {
-        mRotateUpButtonPressed = pressed;
-    }
-}
-
-void MapItem::setrotateDownButtonPressed(bool pressed)
-{
-    if (mRotateDownButtonPressed != pressed) {
-        mRotateDownButtonPressed = pressed;
-    }
-}
-
-void MapItem::setrotateLeftButtonPressed(bool pressed)
-{
-    if (mRotateLeftButtonPressed != pressed) {
-        mRotateLeftButtonPressed = pressed;
-    }
-}
-
-void MapItem::setrotateRightButtonPressed(bool pressed)
-{
-    if (mRotateRightButtonPressed != pressed) {
-        mRotateRightButtonPressed = pressed;
-    }
-}
-
-void MapItem::tickNavigation(double deltaTime)
-{
-    if (mZoomInButtonPressed) {
-        zoom(0.0018 * deltaTime);
-    } else if (mZoomOutButtonPressed) {
-        zoom(-0.0018 * deltaTime);
-    }
-
-    if (mUpButtonPressed) {
-        pan(0.0, -0.0015 * deltaTime);
-    } else if (mDownButtonPressed) {
-        pan(0.0, 0.0015 * deltaTime);
-    } else if (mLeftButtonPressed) {
-        pan(0.0015 * deltaTime, 0.0);
-    } else if (mRightButtonPressed) {
-        pan(-0.0015 * deltaTime, 0.0);
-    }
-
-    if (mRotateUpButtonPressed) {
-        rotate(0.0, 0.001 * deltaTime);
-    } else if (mRotateDownButtonPressed) {
-        rotate(0.0, -0.001 * deltaTime);
-    } else if (mRotateLeftButtonPressed) {
-        rotate(-0.001 * deltaTime, 0.0);
-    } else if (mRotateRightButtonPressed) {
-        rotate(0.001 * deltaTime, 0.0);
-    }
-}
-
-//void MapItem::mapMouseLocation(osgEarth::GeoPoint geoPos)
-//{
-//    //    osgEarth::GeoPoint geoPos;
-//    //    geoPos.fromWorld(getMapSRS(), worldPos);
-//    //    osgEarth::GeoPoint  geographicPos = geoPos.transform(getMapSRS()->getGeocentricSRS()->getGeographicSRS());
-
-//    emit mousePointingLocationChanged(QVector3D(
-//        static_cast<float>(geoPos.x()),
-//        static_cast<float>(geoPos.y()),
-//        static_cast<float>(geoPos.z())));
-
-//    geoPos.makeGeographic();
-//    emit mousePointingLocationWgs84Changed(QVector3D(
-//        static_cast<float>(geoPos.x()),
-//        static_cast<float>(geoPos.y()),
-//        static_cast<float>(geoPos.z())));
-//}
-
 void MapItem::initializeOsgEarth()
 {
     mMapRoot = new osg::Group();
@@ -615,18 +484,6 @@ void MapItem::layerRemoved(osgEarth::Layer */*layer*/, unsigned /*index*/)
 
 void MapItem::frame()
 {
-    //--------------------------------------------
-    static auto lastFrameTimePoint = std::chrono::high_resolution_clock::now() - std::chrono::milliseconds(10);
-    auto now = std::chrono::high_resolution_clock::now();
-    const double deltaTime =
-        static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrameTimePoint).count())
-        * 0.001;
-    lastFrameTimePoint = now;
-    tickNavigation(deltaTime);
-    //-------------------------------------------
-
-    emit headingAngleChanged();
-
     const auto vp = mEarthManipulator->getViewpoint();
     const auto fp = vp.focalPoint();
     if (fp.isSet()) {
@@ -766,8 +623,6 @@ void MapItem::mouseMoveEvent(QMouseEvent *event)
     if (mOSGRenderNode) {
         mOSGRenderNode->mouseMoveEvent(event);
     }
-    mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
-    emit mouseLocationChanged();
 }
 
 void MapItem::wheelEvent(QWheelEvent *event)
@@ -775,5 +630,3 @@ void MapItem::wheelEvent(QWheelEvent *event)
     if (mOSGRenderNode)
         mOSGRenderNode->wheelEvent(event);
 }
-
-

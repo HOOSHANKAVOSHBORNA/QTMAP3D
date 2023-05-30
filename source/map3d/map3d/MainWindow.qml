@@ -13,7 +13,6 @@ CMainWindow {
         width: 100
         height: 100
     }
-
     readonly property int       _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10

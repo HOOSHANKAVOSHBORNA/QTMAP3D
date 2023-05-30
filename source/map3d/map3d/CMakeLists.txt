@@ -20,16 +20,17 @@ find_package(Qt6 COMPONENTS Core Quick Gui Widgets REQUIRED)
 
 add_executable(Map3d
         main.cpp
-        mainwindow.cpp
-        plugininterface.cpp
-        application.cpp
-        mapItem.cpp
-        pluginmanager.cpp
-        defenseDataManager.cpp
-        listwindow.cpp
-        layersmodel.cpp
+        mainwindow.cpp  mainwindow.h
+        plugininterface.cpp plugininterface.h
+        application.cpp mapItem.h
+        mapItem.cpp application.h
+        pluginmanager.cpp   pluginmanager.h
+        defenseDataManager.cpp  defenseDataManager.h
+        listwindow.cpp  listwindow.h
+        layersmodel.cpp layersmodel.h
+        osgRenderNode.cpp   osgRenderNode.h
+        mapControllerItem.cpp mapControllerItem.h
         qml.qrc
-        osgRenderNode.cpp
         resources.qrc)
 
 
@@ -51,14 +52,14 @@ add_custom_command(TARGET Map3d POST_BUILD
     COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/../data/*" "${CMAKE_CURRENT_BINARY_DIR}/../data/")
 
 add_custom_command(TARGET Map3d POST_BUILD
-	COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/moon_1024x512.jpg" "${CMAKE_CURRENT_BINARY_DIR}/")
+        COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/moon_1024x512.jpg" "${CMAKE_CURRENT_BINARY_DIR}/")
 
 add_custom_command(TARGET Map3d POST_BUILD
-	COMMAND mkdir ARGS "-p" "${CMAKE_CURRENT_BINARY_DIR}/Images")
+        COMMAND mkdir ARGS "-p" "${CMAKE_CURRENT_BINARY_DIR}/Images")
 add_custom_command(TARGET Map3d POST_BUILD
-	COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/Images/smoke.rgb" "${CMAKE_CURRENT_BINARY_DIR}/Images/")
+        COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/Images/smoke.rgb" "${CMAKE_CURRENT_BINARY_DIR}/Images/")
 add_custom_command(TARGET Map3d POST_BUILD
-	COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/Images/continous_smoke.rgb" "${CMAKE_CURRENT_BINARY_DIR}/Images/")
+        COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/Images/continous_smoke.rgb" "${CMAKE_CURRENT_BINARY_DIR}/Images/")
 
 
 

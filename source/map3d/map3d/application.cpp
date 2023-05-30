@@ -70,6 +70,7 @@ void Application::registerTypes()
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
     qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
     qmlRegisterType<MapItem>("Crystal",1,0,"MapItem");
+    qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
 }
 
 void Application::initializeQmlEngine()

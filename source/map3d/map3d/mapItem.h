@@ -23,22 +23,6 @@ class MapItem : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal headingAngle READ headingAngle NOTIFY headingAngleChanged)
-
-    Q_PROPERTY(bool zoomInButtonPressed       WRITE setZoomInButtonPressed      )
-    Q_PROPERTY(bool zoomOutButtonPressed      WRITE setZoomOutButtonPressed     )
-    Q_PROPERTY(bool upButtonPressed           WRITE setUpButtonPressed          )
-    Q_PROPERTY(bool downButtonPressed         WRITE setdownButtonPressed        )
-    Q_PROPERTY(bool leftButtonPressed         WRITE setleftButtonPressed        )
-    Q_PROPERTY(bool rightButtonPressed        WRITE setrightButtonPressed       )
-    Q_PROPERTY(bool rotateUpButtonPressed     WRITE setrotateUpButtonPressed    )
-    Q_PROPERTY(bool rotateDownButtonPressed   WRITE setrotateDownButtonPressed  )
-    Q_PROPERTY(bool rotateLeftButtonPressed   WRITE setrotateLeftButtonPressed  )
-    Q_PROPERTY(bool rotateRightButtonPressed  WRITE setrotateRightButtonPressed )
-
-    Q_PROPERTY(QVector3D mapMouseGeoLocation READ mapMouseGeoLocation NOTIFY mouseLocationChanged)
-    Q_PROPERTY(QVector3D mapMouseLocation READ mapMouseLocation NOTIFY mouseLocationChanged)
-
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
     ~MapItem();
@@ -86,26 +70,8 @@ public slots:
                            qreal heading);
 
     void orientCameraToNorth();
-    QVector3D mapMouseGeoLocation() const;
-    QVector3D mapMouseLocation() const;
-//
-public slots:
-    void setZoomInButtonPressed(bool pressed);
-    void setZoomOutButtonPressed(bool pressed);
-    void setUpButtonPressed(bool pressed);
-    void setdownButtonPressed(bool pressed);
-    void setleftButtonPressed(bool pressed);
-    void setrightButtonPressed(bool pressed);
-    void setrotateUpButtonPressed(bool pressed);
-    void setrotateDownButtonPressed(bool pressed);
-    void setrotateLeftButtonPressed(bool pressed);
-    void setrotateRightButtonPressed(bool pressed);
-signals:
-    void headingAngleChanged();
-    //void mouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos, osg::Vec3d worldPos);
-    void mouseLocationChanged();
-    void mousePointingLocationChanged(QVector3D location);
 
+signals:
     void focalPointLatChanged  (qreal focalPointLat);
     void focalPointLongChanged (qreal focalPointLong);
     void focalPointRangeChanged(qreal focalPointRange);
@@ -115,13 +81,10 @@ signals:
     void modeChanged(bool is3DView);
     void layerChanged();
     void mapCleared();
+    void frameChanged();
 //    void mapSRSChanged();
 
 private:
-    void tickNavigation(double deltaTime);
-
-//    void mapMouseLocation(osgEarth::GeoPoint geoPos);
-
     void initializeOsgEarth();
     void createMapNode(bool geocentric, osgEarth::Map *map = nullptr);
     void createCameraManipulator();
@@ -142,19 +105,6 @@ private:
     osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
     bool mIsGeocentric{true};
     bool mIs3DView{true};
-    osgEarth::GeoPoint mCurrentMouseGeoPoint;
-
-private:
-    bool mZoomInButtonPressed{false};
-    bool mZoomOutButtonPressed{false};
-    bool mUpButtonPressed{false};
-    bool mDownButtonPressed{false};
-    bool mLeftButtonPressed{false};
-    bool mRightButtonPressed{false};
-    bool mRotateUpButtonPressed{false};
-    bool mRotateDownButtonPressed{false};
-    bool mRotateLeftButtonPressed{false};
-    bool mRotateRightButtonPressed{false};
 //--renderer------------------------------------------------------------------------------------------------------
 public:
 //    void cleanup();
@@ -162,15 +112,16 @@ public:
 //    void resizeGL(int width, int height, QScreen *screen);
 //    void paintGL();
 //    void createOsgRenderer();
-    void frame();
+    virtual void frame();
     //events------------------------------
-    void keyPressEvent(QKeyEvent* event) override;
-    void keyReleaseEvent(QKeyEvent* event) override;
-    void mousePressEvent(QMouseEvent* event) override;
-    void mouseReleaseEvent(QMouseEvent* event) override;
-    void mouseDoubleClickEvent(QMouseEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override;
-    void wheelEvent(QWheelEvent* event) override;
+    virtual void keyPressEvent(QKeyEvent* event) override;
+    virtual void keyReleaseEvent(QKeyEvent* event) override;
+    virtual void mousePressEvent(QMouseEvent* event) override;
+    virtual void mouseReleaseEvent(QMouseEvent* event) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual void wheelEvent(QWheelEvent* event) override;
+
 private:
     OSGRenderNode *mOSGRenderNode{nullptr};
 //    QQuickWindow *mWindow{nullptr};
