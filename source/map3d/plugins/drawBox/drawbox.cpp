@@ -55,33 +55,33 @@ void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &ca
     }
 }
 
-void DrawBox::mousePressEvent(QMouseEvent *event)
-{
-    if (mEnterBoxZone) {
-        if (event->button() == Qt::MouseButton::LeftButton) {
-            if (mDrawingState == DrawingState::START) {
-                mDrawingState = DrawingState::DRAWING;
-                startDraw(event);
-//                finishDrawing(event);
-                event->accept();
-            }
-        }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
-            cancelDrawing(event);
-        }
-        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-            finishDrawing(event);
-        }
-    }
-}
+//void DrawBox::mousePressEvent(QMouseEvent *event)
+//{
+//    if (mEnterBoxZone) {
+//        if (event->button() == Qt::MouseButton::LeftButton) {
+//            if (mDrawingState == DrawingState::START) {
+//                mDrawingState = DrawingState::DRAWING;
+//                startDraw(event);
+////                finishDrawing(event);
+//                event->accept();
+//            }
+//        }
+//        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
+//            cancelDrawing(event);
+//        }
+//        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
+//            finishDrawing(event);
+//        }
+//    }
+//}
 
-void DrawBox::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mEnterBoxZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-    }
-}
+//void DrawBox::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (mEnterBoxZone) {
+//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+//        mIconNode->setPosition(geoPos);
+//    }
+//}
 
 void DrawBox::startDraw(QMouseEvent *event)
 {

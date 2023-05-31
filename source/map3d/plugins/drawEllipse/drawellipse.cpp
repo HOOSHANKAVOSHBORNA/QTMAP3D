@@ -59,45 +59,45 @@ bool DrawEllipse::setup(MapItem *mapItem, UIHandle *uIHandle)
     mMapItem->addLayer(ellipseLayer);
     return true;
 }
-void DrawEllipse::mousePressEvent(QMouseEvent *event)
-{
-    if (mEnterEllipseZone){
-        if(event->button() == Qt::MouseButton::LeftButton)
-        {
-            if (mDrawingState == DrawingState::START) {
-                mDrawingState = DrawingState::DRAWING;
-                startDraw(event);
+//void DrawEllipse::mousePressEvent(QMouseEvent *event)
+//{
+//    if (mEnterEllipseZone){
+//        if(event->button() == Qt::MouseButton::LeftButton)
+//        {
+//            if (mDrawingState == DrawingState::START) {
+//                mDrawingState = DrawingState::DRAWING;
+//                startDraw(event);
+////                finishDraw();
+//                event->accept();
+//            }
+//        }
+//        //cancel
+//        if(event->button() == Qt::MouseButton::RightButton)
+//        {
+//            if(mDrawingState == DrawingState::DRAWING)
+//            {
+//                cancelDraw();
+//                event->accept();
+//            }
+//        }
+//        //finish
+//        if(event->button() == Qt::MouseButton::MiddleButton)
+//        {
+//            if(mDrawingState == DrawingState::DRAWING)
+//            {
 //                finishDraw();
-                event->accept();
-            }
-        }
-        //cancel
-        if(event->button() == Qt::MouseButton::RightButton)
-        {
-            if(mDrawingState == DrawingState::DRAWING)
-            {
-                cancelDraw();
-                event->accept();
-            }
-        }
-        //finish
-        if(event->button() == Qt::MouseButton::MiddleButton)
-        {
-            if(mDrawingState == DrawingState::DRAWING)
-            {
-                finishDraw();
-            }
-        }
-    }
-}
+//            }
+//        }
+//    }
+//}
 
-void DrawEllipse::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mEnterEllipseZone){
-        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-    }
-}
+//void DrawEllipse::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (mEnterEllipseZone){
+//        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
+//        mIconNode->setPosition(geoPos);
+//    }
+//}
 
 osgEarth::Annotation::PlaceNode *DrawEllipse::makeIconNode()
 {

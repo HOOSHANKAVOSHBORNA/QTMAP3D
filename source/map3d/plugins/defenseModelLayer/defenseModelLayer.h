@@ -60,11 +60,11 @@ public slots:
 
     static osgEarth::Symbology::Style& getDefaultStyle();
 protected:
-    virtual void frameEvent() override;
-    virtual void mousePressEvent(QMouseEvent* event)override;
-    virtual void mouseReleaseEvent(QMouseEvent *event) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
-    virtual void mouseMoveEvent(QMouseEvent* event)override;
+//    virtual void frameEvent() override;
+//    virtual void mousePressEvent(QMouseEvent* event)override;
+//    virtual void mouseReleaseEvent(QMouseEvent *event) override;
+//    virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
+//    virtual void mouseMoveEvent(QMouseEvent* event)override;
 public:
     MapItem *mMapController{nullptr};
 	UIHandle* mUIHandle{nullptr};

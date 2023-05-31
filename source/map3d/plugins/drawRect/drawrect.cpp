@@ -57,45 +57,45 @@ bool DrawRect::setup(MapItem *mapItem, UIHandle *uIHandle)
     mMapItem->addLayer(rectLayer);
     return true;
 }
-void DrawRect::mousePressEvent(QMouseEvent *event)
-{
-    if (mEnterRectZone){
-        if(event->button() == Qt::MouseButton::LeftButton)
-        {
-            if (mDrawingState == DrawingState::START) {
-                mDrawingState = DrawingState::DRAWING;
-                startDraw(event);
+//void DrawRect::mousePressEvent(QMouseEvent *event)
+//{
+//    if (mEnterRectZone){
+//        if(event->button() == Qt::MouseButton::LeftButton)
+//        {
+//            if (mDrawingState == DrawingState::START) {
+//                mDrawingState = DrawingState::DRAWING;
+//                startDraw(event);
+////                finishDraw();
+//                event->accept();
+//            }
+//        }
+//        //cancel
+//        if(event->button() == Qt::MouseButton::RightButton)
+//        {
+//            if(mDrawingState == DrawingState::DRAWING)
+//            {
+//                cancelDraw();
+//                event->accept();
+//            }
+//        }
+//        //finish
+//        if(event->button() == Qt::MouseButton::MiddleButton)
+//        {
+//            if(mDrawingState == DrawingState::DRAWING)
+//            {
 //                finishDraw();
-                event->accept();
-            }
-        }
-        //cancel
-        if(event->button() == Qt::MouseButton::RightButton)
-        {
-            if(mDrawingState == DrawingState::DRAWING)
-            {
-                cancelDraw();
-                event->accept();
-            }
-        }
-        //finish
-        if(event->button() == Qt::MouseButton::MiddleButton)
-        {
-            if(mDrawingState == DrawingState::DRAWING)
-            {
-                finishDraw();
-            }
-        }
-    }
-}
+//            }
+//        }
+//    }
+//}
 
-void DrawRect::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mEnterRectZone){
-        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-    }
-}
+//void DrawRect::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (mEnterRectZone){
+//        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
+//        mIconNode->setPosition(geoPos);
+//    }
+//}
 
 osgEarth::Annotation::PlaceNode *DrawRect::makeIconNode()
 {

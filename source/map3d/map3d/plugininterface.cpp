@@ -6,15 +6,90 @@
 #include <QTimer>
 #include <QQmlComponent>
 #include <QQmlApplicationEngine>
-#include "application.h"
-
-
 
 UIHandle::UIHandle(MainWindow *mainWindow, QObject *parent) : QObject(parent)
 {
     mMainWindow = mainWindow;
 }
 
+PluginInterface::PluginInterface(QObject *parent):
+    QObject(parent)
+{
+
+}
+
+
+MapItem *PluginInterface::mapItem() const
+{
+    return mMapItem;
+}
+void PluginInterface::setMapItem(MapItem *mapItem)
+{
+    mMapItem = mapItem;
+//    bool isSetHandler = false;
+//    for(auto eventHandler :mMapItem->getViewer()->getEventHandlers()){
+//        auto pli = dynamic_cast<PluginInterface*>(eventHandler.get());
+//        if(pli){
+//            isSetHandler = true;
+//            break;
+//        }
+//    }
+//    if(!isSetHandler)
+        mMapItem->getViewer()->addEventHandler(this);
+}
+
+UIHandle *PluginInterface::uiHandle() const
+{
+        return mUiHandle;
+}
+
+void PluginInterface::setUiHandle(UIHandle *newUiHandle)
+{
+        mUiHandle = newUiHandle;
+}
+
+bool PluginInterface::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    // Get view and event adaptor
+    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
+
+    if (!view)
+    {
+        return false;
+    }
+    switch (ea.getEventType())
+    {
+    case osgGA::GUIEventAdapter::FRAME:
+        return frameEvent(ea, aa);
+    case (osgGA::GUIEventAdapter::KEYDOWN):
+        return keyPressEvent(ea, aa);
+    case (osgGA::GUIEventAdapter::KEYUP):
+        return keyReleaseEvent(ea, aa);
+    case (osgGA::GUIEventAdapter::PUSH):
+        return mousePressEvent(ea, aa);
+    case (osgGA::GUIEventAdapter::RELEASE):
+        return mouseReleaseEvent(ea, aa);
+    case (osgGA::GUIEventAdapter::DOUBLECLICK):
+        return mouseDoubleClickEvent(ea, aa);
+    case (osgGA::GUIEventAdapter::MOVE):
+        return mouseMoveEvent(ea, aa);
+    case (osgGA::GUIEventAdapter::SCROLL):
+        return wheelEvent(ea, aa);
+    default:
+
+        return false;
+    }
+}
+
+QString PluginInterface::name() const
+{
+    return mName;
+}
+
+void PluginInterface::setName(const QString &newName)
+{
+    mName = newName;
+}
 
 void UIHandle::iwSetReceiverObject(QObject *receiverObject)
 {
@@ -24,34 +99,34 @@ void UIHandle::iwSetReceiverObject(QObject *receiverObject)
 void UIHandle::iwShow(QQuickItem* item, QString title)
 {
 
-//    if (!mReceiverObject) return;
-//    if (mReceiverObject != receiverObject) return;
+    //    if (!mReceiverObject) return;
+    //    if (mReceiverObject != receiverObject) return;
 
-//    if (mMainWindow) {
-//        bool bValidType = false;
-//        QString itemTypeString = "";
-//        switch (infoWidgetType) {
-//        case UIHandle::InfoWidgetType::Airplane:
-//            bValidType = true;
-//            itemTypeString = "Airplane";
-//            break;
-//        case UIHandle::InfoWidgetType::Station:
-//            bValidType = true;
-//            itemTypeString = "Station";
-//            break;
-//        case UIHandle::InfoWidgetType::System:
-//            bValidType = true;
-//            itemTypeString = "System";
-//            break;
-//        }
+    //    if (mMainWindow) {
+    //        bool bValidType = false;
+    //        QString itemTypeString = "";
+    //        switch (infoWidgetType) {
+    //        case UIHandle::InfoWidgetType::Airplane:
+    //            bValidType = true;
+    //            itemTypeString = "Airplane";
+    //            break;
+    //        case UIHandle::InfoWidgetType::Station:
+    //            bValidType = true;
+    //            itemTypeString = "Station";
+    //            break;
+    //        case UIHandle::InfoWidgetType::System:
+    //            bValidType = true;
+    //            itemTypeString = "System";
+    //            break;
+    //        }
 
-//        if (bValidType) {
-//            QMetaObject::invokeMethod(mMainWindow,
-//                                      "showInfoItem",
-//                                      Q_ARG(QVariant, QVariant::fromValue<QString>(itemTypeString))
-//                                      );
-//        }
-//    }
+    //        if (bValidType) {
+    //            QMetaObject::invokeMethod(mMainWindow,
+    //                                      "showInfoItem",
+    //                                      Q_ARG(QVariant, QVariant::fromValue<QString>(itemTypeString))
+    //                                      );
+    //        }
+    //    }
     QMetaObject::invokeMethod(mMainWindow,
                               "showInfoView",
                               Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
@@ -119,11 +194,11 @@ void UIHandle::cmShowContextMenu(QQuickItem *contextMenu, int x, int y)
 
         mCurrentContextMenuItem = contextMenu;
         QMetaObject::invokeMethod(mMainWindow,
-                              "addContextmenu",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(contextMenu)),
-                              Q_ARG(QVariant, QVariant::fromValue<int>(x)),
-                              Q_ARG(QVariant, QVariant::fromValue<int>(y))
-                              );
+                                  "addContextmenu",
+                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(contextMenu)),
+                                  Q_ARG(QVariant, QVariant::fromValue<int>(x)),
+                                  Q_ARG(QVariant, QVariant::fromValue<int>(y))
+                                  );
 
 
     }
@@ -205,3 +280,5 @@ void UIHandle::setListWindow(ListWindow *listWindow)
     mListWindow = listWindow;
     QObject::connect(mListWindow, &ListWindow::tabChanged, this, &UIHandle::listwindowTabChanged);
 }
+
+

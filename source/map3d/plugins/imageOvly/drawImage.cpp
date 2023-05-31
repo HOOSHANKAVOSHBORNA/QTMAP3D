@@ -90,35 +90,35 @@ void DrawImage::onToolboxItemCheckedChanged(const QString &name, const QString &
     }
 }
 
-void DrawImage::mousePressEvent(QMouseEvent *event)
-{
+//void DrawImage::mousePressEvent(QMouseEvent *event)
+//{
 
 
-    if (mEnterImageZone) {
-        if (event->button() == Qt::MouseButton::LeftButton) {
-            if (mDrawingState == DrawingState::START) {
-                mDrawingState = DrawingState::DRAWING;
-                startDraw(event);
-                finishDrawing(event);
-                event->accept();
-            }
-        }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
-            cancelDrawing(event);
-        }
-        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-            finishDrawing(event);
-        }
-    }
-}
+//    if (mEnterImageZone) {
+//        if (event->button() == Qt::MouseButton::LeftButton) {
+//            if (mDrawingState == DrawingState::START) {
+//                mDrawingState = DrawingState::DRAWING;
+//                startDraw(event);
+//                finishDrawing(event);
+//                event->accept();
+//            }
+//        }
+//        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
+//            cancelDrawing(event);
+//        }
+//        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
+//            finishDrawing(event);
+//        }
+//    }
+//}
 
-void DrawImage::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mEnterImageZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-    }
-}
+//void DrawImage::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (mEnterImageZone) {
+//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+//        mIconNode->setPosition(geoPos);
+//    }
+//}
 
 
 void DrawImage::loadImage()

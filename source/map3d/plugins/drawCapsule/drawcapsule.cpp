@@ -55,33 +55,33 @@ void DrawCapsule::onToolboxItemCheckedChanged(const QString &name, const QString
     }
 }
 
-void DrawCapsule::mousePressEvent(QMouseEvent *event)
-{
-    if (mEnterCapsuleZone) {
-        if (event->button() == Qt::MouseButton::LeftButton) {
-            if (mDrawingState == DrawingState::START) {
-                mDrawingState = DrawingState::DRAWING;
-                startDraw(event);
-//                finishDrawing(event);
-                event->accept();
-            }
-        }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
-            cancelDrawing(event);
-        }
-        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-            finishDrawing(event);
-        }
-    }
-}
+//void DrawCapsule::mousePressEvent(QMouseEvent *event)
+//{
+//    if (mEnterCapsuleZone) {
+//        if (event->button() == Qt::MouseButton::LeftButton) {
+//            if (mDrawingState == DrawingState::START) {
+//                mDrawingState = DrawingState::DRAWING;
+//                startDraw(event);
+////                finishDrawing(event);
+//                event->accept();
+//            }
+//        }
+//        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
+//            cancelDrawing(event);
+//        }
+//        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
+//            finishDrawing(event);
+//        }
+//    }
+//}
 
-void DrawCapsule::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mEnterCapsuleZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-    }
-}
+//void DrawCapsule::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (mEnterCapsuleZone) {
+//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+//        mIconNode->setPosition(geoPos);
+//    }
+//}
 
 void DrawCapsule::startDraw(QMouseEvent *event)
 {

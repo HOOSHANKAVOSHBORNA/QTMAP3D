@@ -86,27 +86,28 @@ bool DrawShapes::setup(MapItem *mapItem,
     return true;
 }
 
-void DrawShapes::mousePressEvent(QMouseEvent *event)
+bool DrawShapes::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if(!mEnterShapeZone)
-        return;
+        return false;
 
     switch (mShape) {
     case Shape::NONE:
         break;
     case Shape::IMGOVLY:
-        onImgOvlyBtnClick(event);
+//        onImgOvlyBtnClick(ea);
         break;
     default:
         break;
     }
+    return false;
 }
 
 
-void DrawShapes::mouseDoubleClickEvent(QMouseEvent */*event*/)
+bool DrawShapes::mouseDoubleClickEvent(const osgGA::GUIEventAdapter &/*event*/, osgGA::GUIActionAdapter &aa)
 {
     if(!mEnterShapeZone)
-        return;
+        return false;
     switch (mShape) {
     case Shape::NONE:
         break;
@@ -115,6 +116,7 @@ void DrawShapes::mouseDoubleClickEvent(QMouseEvent */*event*/)
     default:
         break;
     }
+    return false;
 }
 void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
 {

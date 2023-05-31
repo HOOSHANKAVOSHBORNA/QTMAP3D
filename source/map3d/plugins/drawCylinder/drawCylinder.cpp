@@ -55,33 +55,33 @@ void DrawCylinder::onToolboxItemCheckedChanged(const QString &name, const QStrin
     }
 }
 
-void DrawCylinder::mousePressEvent(QMouseEvent *event)
-{
-    if (mEnterCylinderZone) {
-        if (event->button() == Qt::MouseButton::LeftButton) {
-            if (mDrawingState == DrawingState::START) {
-                mDrawingState = DrawingState::DRAWING;
-                startDraw(event);
-//                finishDrawing(event);
-                event->accept();
-            }
-        }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
-            cancelDrawing(event);
-        }
-        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-            finishDrawing(event);
-        }
-    }
-}
+//void DrawCylinder::mousePressEvent(QMouseEvent *event)
+//{
+//    if (mEnterCylinderZone) {
+//        if (event->button() == Qt::MouseButton::LeftButton) {
+//            if (mDrawingState == DrawingState::START) {
+//                mDrawingState = DrawingState::DRAWING;
+//                startDraw(event);
+////                finishDrawing(event);
+//                event->accept();
+//            }
+//        }
+//        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
+//            cancelDrawing(event);
+//        }
+//        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
+//            finishDrawing(event);
+//        }
+//    }
+//}
 
-void DrawCylinder::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mEnterCylinderZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-    }
-}
+//void DrawCylinder::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (mEnterCylinderZone) {
+//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+//        mIconNode->setPosition(geoPos);
+//    }
+//}
 
 void DrawCylinder::startDraw(QMouseEvent *event)
 {
