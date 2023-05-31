@@ -24,8 +24,8 @@ public:
     bool setup(MapItem *mapController, UIHandle *uiHandle) override;
 
     void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
+//    void mousePressEvent(QMouseEvent *event) override;
+//    void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     void startDraw(QMouseEvent* event);

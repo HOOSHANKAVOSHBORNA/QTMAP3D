@@ -31,8 +31,8 @@ public:
     bool setup(MapItem *mapController,
                UIHandle *UIHandle) override;
 protected:
-    virtual void mousePressEvent(QMouseEvent* event) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private:
     enum class Shape {NONE ,LINE, SPHERE, CONE, CYLINDER, CAPSULE, BOX, POLYGON, IMGOVLY,
                RECT, ELLIPSE};

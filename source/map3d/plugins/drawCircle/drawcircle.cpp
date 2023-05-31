@@ -64,33 +64,33 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
 }
 
 
-void DrawCircle::mousePressEvent(QMouseEvent *event)
+bool DrawCircle::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    if (mEnterCircleZone) {
-        if (event->button() == Qt::MouseButton::LeftButton) {
-            if (mDrawingState == DrawingState::START) {
-                mDrawingState = DrawingState::DRAWING;
-                startDraw(event);
-                //                finishDrawing(event);
-                event->accept();
-            }
-        }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
-            cancelDrawing(event);
-        }
-        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-            finishDrawing(event);
-        }
-    }
+//    if (mEnterCircleZone) {
+//        if (ea->button() == Qt::MouseButton::LeftButton) {
+//            if (mDrawingState == DrawingState::START) {
+//                mDrawingState = DrawingState::DRAWING;
+//                startDraw(ea);
+//                //                finishDrawing(event);
+//                ea->accept();
+//            }
+//        }
+//        else if (ea->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
+//            cancelDrawing(ea);
+//        }
+//        else if (ea->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
+//            finishDrawing(ea);
+//        }
+//    }
 }
 
 
-void DrawCircle::mouseMoveEvent(QMouseEvent *event)
+bool DrawCircle::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    if (mEnterCircleZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-    }
+//    if (mEnterCircleZone) {
+//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+//        mIconNode->setPosition(geoPos);
+//    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawCircle::makeIconNode()

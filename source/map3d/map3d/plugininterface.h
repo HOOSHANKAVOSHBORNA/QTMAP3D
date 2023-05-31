@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QKeyEvent>
+#include <osgGA/GUIEventHandler>
 
 class QQmlEngine;
 class QQmlComponent;
@@ -114,16 +115,21 @@ struct PluginQMLDesc
     QList<ItemDesc*> fileItemsList;
 };
 
-class PluginInterface : public QObject
+class PluginInterface : public QObject, public osgGA::GUIEventHandler
 {
     friend class PluginManager;
     Q_OBJECT
 
 public:
-    PluginInterface(QObject *parent = nullptr) : QObject(parent) { }
+    PluginInterface(QObject *parent = nullptr);
     virtual ~PluginInterface() { }
+    MapItem *mapItem() const;
+    void setMapItem(MapItem *mapItem);
+    UIHandle *uiHandle() const;
+    void setUiHandle(UIHandle *newUiHandle);
 
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {}
+    virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
     virtual void onSideItemCreated(int index, QObject *sideItem) {}
     virtual void onToolboxItemClicked(const QString& name,
                                       const QString& category) {}
@@ -134,21 +140,27 @@ public:
                                       const QString& category) {}
 
     virtual bool setup(MapItem *mapController,
-                       UIHandle *uiHandle) {}
+                       UIHandle *uiHandle) {return false;}
     virtual void setDefenseDataManager(DefenseDataManager* defenseDataManager){}
 
+    QString name() const;
+    void setName(const QString &newName);
+
+
+
 protected:
-    virtual void frameEvent           () {}
-    virtual void keyPressEvent        (QKeyEvent* event) {}
-    virtual void keyReleaseEvent      (QKeyEvent* event) {}
-    virtual void mousePressEvent      (QMouseEvent* event) {}
-    virtual void mouseReleaseEvent    (QMouseEvent* event) {}
-    virtual void mouseDoubleClickEvent(QMouseEvent* event) {}
-    virtual void mouseMoveEvent       (QMouseEvent* event) {}
-    virtual void wheelEvent           (QWheelEvent* event) {}
+    virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
+    virtual bool keyPressEvent        (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
+    virtual bool keyReleaseEvent      (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
+    virtual bool mousePressEvent      (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {qDebug()<<"click:"<<mName; return false;}
+    virtual bool mouseReleaseEvent    (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
+    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
+    virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
+    virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
 private:
     MapItem *mMapItem;
     UIHandle *mUiHandle;
+    QString mName;
 };
 
 

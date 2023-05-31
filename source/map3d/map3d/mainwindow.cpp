@@ -781,12 +781,12 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         return;
 
 
-    const auto pluginManager = Application::instance()->pluginManager();
-    if (pluginManager) {
-        pluginManager->mousePressEvent(event);
-    }
-    if (event->isAccepted())
-        return;
+//    const auto pluginManager = Application::instance()->pluginManager();
+//    if (pluginManager) {
+//        pluginManager->mousePressEvent(event);
+//    }
+//    if (event->isAccepted())
+//        return;
 
 
 //    mMapItem->mousePressEvent(event);
@@ -814,12 +814,12 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
     if (event->isAccepted())
         return;
 
-    const auto pluginManager = Application::instance()->pluginManager();
-    if (pluginManager) {
-        pluginManager->mouseReleaseEvent(event);
-    }
-    if (event->isAccepted())
-        return;
+//    const auto pluginManager = Application::instance()->pluginManager();
+//    if (pluginManager) {
+//        pluginManager->mouseReleaseEvent(event);
+//    }
+//    if (event->isAccepted())
+//        return;
 
 
 //    mMapItem->mouseReleaseEvent(event);
@@ -853,12 +853,12 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
     if (event->isAccepted())
         return;
 
-    const auto pluginManager = Application::instance()->pluginManager();
-    if (pluginManager) {
-        pluginManager->mouseDoubleClickEvent(event);
-    }
-    if (event->isAccepted())
-        return;
+//    const auto pluginManager = Application::instance()->pluginManager();
+//    if (pluginManager) {
+//        pluginManager->mouseDoubleClickEvent(event);
+//    }
+//    if (event->isAccepted())
+//        return;
 
 
 //    mMapItem->mouseDoubleClickEvent(event);
@@ -872,12 +872,12 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     if (event->isAccepted())
         return;
 
-    const auto pluginManager = Application::instance()->pluginManager();
-    if (pluginManager) {
-        pluginManager->mouseMoveEvent(event);
-    }
-    if (event->isAccepted())
-        return;
+//    const auto pluginManager = Application::instance()->pluginManager();
+//    if (pluginManager) {
+//        pluginManager->mouseMoveEvent(event);
+//    }
+//    if (event->isAccepted())
+//        return;
 
 
 //    mMapItem->mouseMoveEvent(event);
@@ -891,12 +891,12 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     if (event->isAccepted())
         return;
 
-    const auto pluginManager = Application::instance()->pluginManager();
-    if (pluginManager) {
-        pluginManager->wheelEvent(event);
-    }
-    if (event->isAccepted())
-        return;
+//    const auto pluginManager = Application::instance()->pluginManager();
+//    if (pluginManager) {
+//        pluginManager->wheelEvent(event);
+//    }
+//    if (event->isAccepted())
+//        return;
 
 //    mMapItem->wheelEvent(event);
 

@@ -65,54 +65,54 @@ bool DrawPolygon::setup(MapItem *mapItem, UIHandle *uIHandle)
     return true;
 }
 
-void DrawPolygon::mousePressEvent(QMouseEvent *event)
-{
-    if (mEnterPolygonZone){
-        if(event->button() == Qt::MouseButton::LeftButton)
-        {
-            if(mDrawingState == DrawingState::START)
-            {
-                startDraw(event);
-                event->accept();
-            }
+//void DrawPolygon::mousePressEvent(QMouseEvent *event)
+//{
+//    if (mEnterPolygonZone){
+//        if(event->button() == Qt::MouseButton::LeftButton)
+//        {
+//            if(mDrawingState == DrawingState::START)
+//            {
+//                startDraw(event);
+//                event->accept();
+//            }
 
-            if(mDrawingState == DrawingState::DRAWING)
-            {
-                drawing(event);
-                event->accept();
-            }
-        }
-        //cancel
-        if(event->button() == Qt::MouseButton::RightButton)
-        {
-            if(mDrawingState == DrawingState::DRAWING)
-            {
-                cancelDraw();
-                event->accept();
-            }
-        }
-        //finish
-        if(event->button() == Qt::MouseButton::MiddleButton)
-        {
-            if(mDrawingState == DrawingState::DRAWING)
-            {
-                finishDraw();
-                event->accept();
-            }
-        }
-    }
-}
+//            if(mDrawingState == DrawingState::DRAWING)
+//            {
+//                drawing(event);
+//                event->accept();
+//            }
+//        }
+//        //cancel
+//        if(event->button() == Qt::MouseButton::RightButton)
+//        {
+//            if(mDrawingState == DrawingState::DRAWING)
+//            {
+//                cancelDraw();
+//                event->accept();
+//            }
+//        }
+//        //finish
+//        if(event->button() == Qt::MouseButton::MiddleButton)
+//        {
+//            if(mDrawingState == DrawingState::DRAWING)
+//            {
+//                finishDraw();
+//                event->accept();
+//            }
+//        }
+//    }
+//}
 
-void DrawPolygon::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mEnterPolygonZone){
-        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-        if (mDrawingState == DrawingState::DRAWING){
-            mouseMoveDrawing(event);
-        }
-    }
-}
+//void DrawPolygon::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (mEnterPolygonZone){
+//        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
+//        mIconNode->setPosition(geoPos);
+//        if (mDrawingState == DrawingState::DRAWING){
+//            mouseMoveDrawing(event);
+//        }
+//    }
+//}
 
 osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
 {
@@ -123,10 +123,10 @@ osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
     return model.release();
 }
 
-void DrawPolygon::mouseDoubleClickEvent(QMouseEvent *event)
-{
+//void DrawPolygon::mouseDoubleClickEvent(QMouseEvent *event)
+//{
 
-}
+//}
 
 void DrawPolygon::startDraw(QMouseEvent *event)
 {

@@ -55,33 +55,33 @@ void DrawCone::onToolboxItemCheckedChanged(const QString &name, const QString &c
     }
 }
 
-void DrawCone::mousePressEvent(QMouseEvent *event)
-{
-    if (mEnterConeZone) {
-        if (event->button() == Qt::MouseButton::LeftButton) {
-            if (mDrawingState == DrawingState::START) {
-                mDrawingState = DrawingState::DRAWING;
-                startDraw(event);
-//                finishDrawing(event);
-                event->accept();
-            }
-        }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
-            cancelDrawing(event);
-        }
-        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-            finishDrawing(event);
-        }
-    }
-}
+//void DrawCone::mousePressEvent(QMouseEvent *event)
+//{
+//    if (mEnterConeZone) {
+//        if (event->button() == Qt::MouseButton::LeftButton) {
+//            if (mDrawingState == DrawingState::START) {
+//                mDrawingState = DrawingState::DRAWING;
+//                startDraw(event);
+////                finishDrawing(event);
+//                event->accept();
+//            }
+//        }
+//        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
+//            cancelDrawing(event);
+//        }
+//        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
+//            finishDrawing(event);
+//        }
+//    }
+//}
 
-void DrawCone::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mEnterConeZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-    }
-}
+//void DrawCone::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (mEnterConeZone) {
+//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+//        mIconNode->setPosition(geoPos);
+//    }
+//}
 
 void DrawCone::startDraw(QMouseEvent *event)
 {

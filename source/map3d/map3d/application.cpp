@@ -182,13 +182,14 @@ void Application::onAllWindowsCreated()
 
     mMainWindow->initializePluginsUI(mPluginManager->pluginsInfoList());
 
+    setup();
 
 }
 
 void Application::setup()
 {
     initializeDefenseDataManager();
-//    mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
+    mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
     emit defenseDataManagerInitialized(mDefenseDataManager);
 }
 

@@ -25,9 +25,9 @@ public:
     bool setup(MapItem *mapItem,
                UIHandle *UIHandle) override;
 
-    virtual void mousePressEvent(QMouseEvent* event) override;
-    virtual void mouseMoveEvent(QMouseEvent* event) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+//    virtual void mousePressEvent(QMouseEvent* event) override;
+//    virtual void mouseMoveEvent(QMouseEvent* event) override;
+//    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 private:
     void startDraw(QMouseEvent* event);
     void drawing(QMouseEvent* event);

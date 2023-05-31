@@ -56,32 +56,32 @@ bool drawSphere::setup(MapItem *mapItem, UIHandle *uiHandle)
     return true;
 }
 
-void drawSphere::mousePressEvent(QMouseEvent *event)
+bool drawSphere::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    if (mEnterSphereZone) {
-        if (event->button() == Qt::MouseButton::LeftButton) {
-            if (mDrawingState == DrawingState::START) {
-                mDrawingState = DrawingState::DRAWING;
-                startDraw(event);
-                //                finishDrawing(event);
-                event->accept();
-            }
-        }
-        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
-            cancelDrawing(event);
-        }
-        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-            finishDrawing(event);
-        }
-    }
+//    if (mEnterSphereZone) {
+//        if (ea->button() == Qt::MouseButton::LeftButton) {
+//            if (mDrawingState == DrawingState::START) {
+//                mDrawingState = DrawingState::DRAWING;
+//                startDraw(ea);
+//                //                finishDrawing(event);
+//                ea->accept();
+//            }
+//        }
+//        else if (ea->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
+//            cancelDrawing(ea);
+//        }
+//        else if (ea->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
+//            finishDrawing(ea);
+//        }
+//    }
 }
 
-void drawSphere::mouseMoveEvent(QMouseEvent *event)
+bool drawSphere::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    if (mEnterSphereZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-        mIconNode->setPosition(geoPos);
-    }
+//    if (mEnterSphereZone) {
+//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea->x(), ea->y());
+//        mIconNode->setPosition(geoPos);
+//    }
 }
 
 void drawSphere::startDraw(QMouseEvent *event)
