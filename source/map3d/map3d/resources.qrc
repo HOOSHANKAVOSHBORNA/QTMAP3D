@@ -49,5 +49,6 @@
         <file>Resources/collapse2.png</file>
         <file>Resources/sideTab.png</file>
         <file>Resources/sidearrow.png</file>
+        <file>Resources/drag.png</file>
     </qresource>
 </RCC>

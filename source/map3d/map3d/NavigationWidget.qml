@@ -55,7 +55,7 @@ Item {
             Layout.minimumWidth: 100
             Layout.maximumWidth: 100
             Layout.maximumHeight: 180
-            anchors.right: grL.left
+//            anchors.right: grL.left
             anchors.rightMargin: 10
             clip: true
             ControlCamera{
