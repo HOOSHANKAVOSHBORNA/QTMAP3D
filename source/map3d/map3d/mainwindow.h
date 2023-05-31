@@ -197,7 +197,7 @@ public slots:
     void setListWindow(ListWindow *listWindow);
 
 private:
-//    void initializeGL();
+    void initializeGL();
 //    void resizeGL();
 //    void paintGL();
 

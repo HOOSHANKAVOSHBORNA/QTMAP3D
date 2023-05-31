@@ -27,7 +27,7 @@ void Application::performStartupConfiguration()
 {
     qputenv("QSG_RENDER_LOOP", "basic"); // This line is very important and can not be removed
     initializeSurfaceFormat();
-//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
 }
 
@@ -98,7 +98,7 @@ void Application::createListWindow()
 void Application::initializeDefenseDataManager()
 {
     //TODO set parent
-//    mDefenseDataManager = new DefenseDataManager;
+    mDefenseDataManager = new DefenseDataManager;
 }
 
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
