@@ -21,9 +21,9 @@ MainWindow::MainWindow(QWindow *parent) :
 {
 
 //    mOGLF = new QOpenGLFunctions_2_0;
-//    QObject::connect(this, &MainWindow::sceneGraphInitialized,
-//                     this, &MainWindow::initializeGL,
-//                     Qt::DirectConnection);
+    QObject::connect(this, &MainWindow::sceneGraphInitialized,
+                     this, &MainWindow::initializeGL,
+                     Qt::DirectConnection);
 //    QObject::connect(this, &MainWindow::sceneGraphInvalidated,
 //                     this, &MainWindow::cleanup,
 //                     Qt::DirectConnection);
@@ -257,6 +257,7 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
 
         for (auto toolboxItemDesc : item.qmlDesc->toolboxItemsList)
         {
+//            qDebug() <<"item name:"<<toolboxItemDesc->name;
             QVariant ret;
             ItemDescProxy proxy(*toolboxItemDesc, item.interface);
             QMetaObject::invokeMethod(this,
@@ -616,8 +617,8 @@ void MainWindow::setListWindow(ListWindow *listWindow)
 }
 
 
-//void MainWindow::initializeGL()
-//{
+void MainWindow::initializeGL()
+{
 
 //    QQuickOpenGLUtils::resetOpenGLState();
 //    mOGLF->initializeOpenGLFunctions();
@@ -633,21 +634,21 @@ void MainWindow::setListWindow(ListWindow *listWindow)
 //    mMapItem->initializeOsgEarth();
 //    restoreContext();
 //    emit osgInitialized();
-//    //----------------------------------------------------------
-//    LayersModel *layersModel = new LayersModel(mMapItem);
-//    setLayersModel(layersModel);
-//    QObject::connect(this, &MainWindow::toggleLayerEnabled,
-//                     layersModel, &LayersModel::toggleLayerEnabled);
-//    //----------------------------------------------------------
-//    restoreContext();
+    //----------------------------------------------------------
+    LayersModel *layersModel = new LayersModel(mMapItem);
+    setLayersModel(layersModel);
+    QObject::connect(this, &MainWindow::toggleLayerEnabled,
+                     layersModel, &LayersModel::toggleLayerEnabled);
+    //----------------------------------------------------------
+    restoreContext();
 
-////    resetOpenGLState();
+//    resetOpenGLState();
 
 //    QObject::connect(this, &MainWindow::beforeRendering,
 //                     this, &MainWindow::frame,
 //                     Qt::DirectConnection);
 //    QQuickOpenGLUtils::resetOpenGLState();
-//}
+}
 
 //void MainWindow::resizeGL()
 //{

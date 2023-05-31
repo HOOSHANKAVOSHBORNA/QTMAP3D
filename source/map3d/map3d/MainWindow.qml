@@ -193,6 +193,7 @@ CMainWindow {
             sideItemsModel: wnd.sideItemsModel
 
             onSideItemCreated: function(index, item) {
+                print(item);
                 switch(index) {
                 case 0:
                     item.listModel = wnd.fileModel;
@@ -349,7 +350,7 @@ CMainWindow {
 
 
     function addToolboxItem(itemDesc) {
-
+        print(itemDesc.name)
         const toolboxModelCount = toolboxModel.count;
         var category_found = false;
         var category_index = -1;

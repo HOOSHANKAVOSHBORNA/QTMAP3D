@@ -18,7 +18,6 @@ Item {
 
 
     function menuWidgetItemClicked(index) {
-
         sideItemHideAnimation.stop();
         sideItemShowAnimation.stop();
 
