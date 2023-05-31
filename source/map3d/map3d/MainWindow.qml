@@ -373,6 +373,7 @@ CMainWindow {
                                                                           'itemCheckable' : itemDesc.checkable
                                                                       });
                 wnd.toolboxItemCreated(itemDesc);
+                print("kkkkkkkkkkkkkkkkkkk")
             } else {
                 return false;
             }

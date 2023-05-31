@@ -74,6 +74,7 @@ bool drawSphere::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
 //            finishDrawing(ea);
 //        }
 //    }
+    return false;
 }
 
 bool drawSphere::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -82,6 +83,7 @@ bool drawSphere::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActi
 //        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea->x(), ea->y());
 //        mIconNode->setPosition(geoPos);
 //    }
+    return false;
 }
 
 void drawSphere::startDraw(QMouseEvent *event)

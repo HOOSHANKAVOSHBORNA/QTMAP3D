@@ -82,6 +82,7 @@ bool DrawCircle::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
 //            finishDrawing(ea);
 //        }
 //    }
+    return false;
 }
 
 
@@ -91,6 +92,7 @@ bool DrawCircle::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActi
 //        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
 //        mIconNode->setPosition(geoPos);
 //    }
+    return false;
 }
 
 osgEarth::Annotation::PlaceNode *DrawCircle::makeIconNode()
