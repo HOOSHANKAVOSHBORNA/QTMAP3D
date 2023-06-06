@@ -9,6 +9,9 @@
 #include <QByteArray>
 #include <QList>
 #include <osgEarth/Layer>
+#include <QAbstractTableModel>
+#include <QAbstractItemModel>
+#include <QStandardItemModel>
 
 class LayersModel : public QAbstractListModel
 {
@@ -30,12 +33,13 @@ public slots:
     void toggleLayerEnabled(int layerIndex);
 
 public:
-	int rowCount(const QModelIndex &parent) const override;
-	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-	QHash<int,QByteArray> roleNames() const override;
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QHash<int,QByteArray> roleNames() const override;
 
 private:
     QList<osgEarth::Layer*> mLayersList;
 };
+
 
 #endif // LAYERSMODEL_H
