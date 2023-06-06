@@ -1,8 +1,10 @@
-import QtQuick 2.13
-import QtQuick.Controls 2.13
+//import QtQuick 2.13
+//import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import Crystal 1.0
-//import QtQuick.Effects
+import QtQuick
+import QtQuick.Controls 2.15
+import QtQuick.Effects
 
 
 
@@ -22,7 +24,7 @@ Item {
 
         if (rootItem.layersItemVisible == true) {
             layersItemHideAnimation.to = 310 + (widgetsMargins * 2.0);
-//            layersItemHideAnimation.from = 0;
+            //            layersItemHideAnimation.from = 0;
             layersItemHideAnimation.duration = 200;
             rootItem.layersItemVisible = false;
             layersItemHideAnimation.start();
@@ -67,98 +69,99 @@ Item {
 
 
 
-              }
+    }
 
-        Rectangle {
-            anchors.fill: parent
-            radius: 10
-            color: "#404040"
-            opacity: 0.8
-            anchors.margins: 6
+    Rectangle {
+        anchors.fill: parent
+        radius: 10
+        color: "#404040"
+        opacity: 0.8
+        anchors.margins: 6
+    }
+
+    ColumnLayout {
+        anchors.fill: parent
+
+        Label {
+            color: "white"
+            text: "Layers"
+            font.family: "SourceSansPro"
+            font.pointSize: 14
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignCenter
+            Layout.minimumHeight: implicitHeight + 16
+            horizontalAlignment: Qt.AlignHCenter
+            verticalAlignment: Qt.AlignVCenter
+
         }
 
-        ColumnLayout {
-            anchors.fill: parent
 
-            Label {
-                color: "white"
-                text: "Layers"
-                font.family: "SourceSansPro"
-                font.pointSize: 14
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
-                Layout.minimumHeight: implicitHeight + 16
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-
-            }
+        Item {
+            clip:true
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            id: containerItem
+            Layout.margins: 10
 
 
-            Item {
-                clip:true
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                id: containerItem
-                Layout.margins: 10
+            ScrollView {
+                anchors.fill: parent
+                ColumnLayout {
+                    width: containerItem.width
+                    id: col
 
 
-                ScrollView {
-                    anchors.fill: parent
-                    ColumnLayout {
-                        width: containerItem.width
-                        id: col
+                    Repeater {
+                        model: rootItem.layersModel
 
+                        Item {
+                            id: row
+                            Layout.fillWidth: true
+                            Layout.minimumHeight: lay.implicitHeight
+                            RowLayout {
+                                id:lay
+                                anchors.fill: parent
 
-                        Repeater {
-                            model: rootItem.layersModel
+                                Item {
+                                    id: img
+                                    Layout.preferredWidth: 20
+                                    Layout.preferredHeight: 20
+                                    Layout.alignment: Qt.AlignCenter
 
-                            Item {
-                                id: row
-                                Layout.fillWidth: true
-                                Layout.minimumHeight: lay.implicitHeight
-                                RowLayout {
-                                    id:lay
-                                    anchors.fill: parent
-
-                                    Item {
-                                        id: img
-                                        Layout.preferredWidth: 20
-                                        Layout.preferredHeight: 20
-                                        Layout.alignment: Qt.AlignCenter
-
-                                        Image {
-                                            anchors.fill: parent
-                                            source: "qrc:/Resources/eye_open.png"
-                                            sourceSize: Qt.size(20,20)
-                                            visible: layer_enabled
-                                        }
-                                        Image {
-                                            anchors.fill: parent
-                                            source: "qrc:/Resources/eye_close.png"
-                                            sourceSize: Qt.size(20,20)
-                                            visible: layer_enabled == false
-                                        }
+                                    Image {
+                                        anchors.fill: parent
+                                        source: "qrc:/Resources/eye_open.png"
+                                        sourceSize: Qt.size(20,20)
+                                        visible: layer_enabled
                                     }
-
-
-                                    Label {
-                                        id: label
-                                        text: display
-                                        font.pointSize: 10
-                                        color: "white"
-
-                                        Layout.alignment: Qt.AlignCenter
-                                        Layout.fillWidth: true
-
+                                    Image {
+                                        anchors.fill: parent
+                                        source: "qrc:/Resources/eye_close.png"
+                                        sourceSize: Qt.size(20,20)
+                                        visible: layer_enabled == false
                                     }
+                                }
+
+
+                                Label {
+                                    id: label
+                                    text: display
+                                    font.pointSize: 10
+                                    color: "white"
+
+                                    Layout.alignment: Qt.AlignCenter
+                                    Layout.fillWidth: true
 
                                 }
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: function() {
-                                        rootItem.toggleLayerEnabled(layer_index);
-                                    }
+                            }
+
+
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: function() {
+                                    rootItem.toggleLayerEnabled(layer_index);
                                 }
                             }
                         }
@@ -167,4 +170,5 @@ Item {
             }
         }
     }
-//}
+}
+
