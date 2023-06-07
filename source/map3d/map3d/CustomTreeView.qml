@@ -6,7 +6,7 @@ import QtQuick.Effects
 
 TreeView{
     anchors.fill: parent
-    model: layersModel
+//    model: layersModel
 
     delegate: Item {
         id: treeDelegate
@@ -26,8 +26,8 @@ TreeView{
             id: container
             width: parent.width
             height: parent.height
-            color: "#454545"
-//                color: "transparent"
+//            color: "#454545"
+                color: "transparent"
 //                                            border.color: "#ffffff"
 //                                            border.width: 1
             radius: height/10
