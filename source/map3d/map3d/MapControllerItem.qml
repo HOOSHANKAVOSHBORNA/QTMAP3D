@@ -75,11 +75,13 @@ MapController {
 
         NavigationWidget{
             id : navigationWidget
-            anchors.right: parent.right
+            //anchors.right: parent.right
             anchors.rightMargin: widgetsMargins
             //            y:25 + parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/2+3)+25))
-            y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins/2+3) + statusBar.height)
+            //y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins/2+3) + statusBar.height)
             // slot button
+            y: parent.height/2
+            x:parent.width - widgetsPositionFactor * (width + widgetsMargins)
             onBtnHomeClicked: function() {
                 rootItem.goToHome();
             }

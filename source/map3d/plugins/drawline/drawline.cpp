@@ -185,80 +185,82 @@ bool drawLine::setup(MapItem *mapItem, UIHandle *uIHandle)
     osgEarth::GLUtils::setGlobalDefaults(mMapItem->getViewer()->getCamera()->getOrCreateStateSet());
     return true;
 }
-//void drawLine::mousePressEvent(QMouseEvent *event)
-//{
-//    if (mEnterLineZone){
-//        if(event->button() == Qt::MouseButton::LeftButton)
-//        {
-//            if(mDrawingState == DrawingState::START && mType != Type::HEIGHT)
-//            {
-//                startDrawLine();
-//                event->accept();
-//            }
-//            if(mDrawingState == DrawingState::DRAWING && mType != Type::HEIGHT)
-//            {
-//                if ((mType == Type::RULER || mType == Type::SLOPE)  && mLine->getSize()>= 2){
-//                    finishDrawing(event);
-//                    //mDrawingState = DrawingState::START;
-//                }
-//                else
-//                    drawingLine(event);
-//                    event->accept();
-//            }
+bool drawLine::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterLineZone){
+        if(ea.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
+        {
+            if(mDrawingState == DrawingState::START && mType != Type::HEIGHT)
+            {
+                startDrawLine();
+                return true;
+            }
+            if(mDrawingState == DrawingState::DRAWING && mType != Type::HEIGHT)
+            {
+                if ((mType == Type::RULER || mType == Type::SLOPE)  && mLine->getSize()>= 2){
+                    finishDrawing(ea);
+                    //mDrawingState = DrawingState::START;
+                }
+                else
+                    drawingLine(ea);
+                    return true;
+            }
 
-//            //height part
-//            if(mDrawingState == DrawingState::START && mType == Type::HEIGHT){
-//                startDrawMeasureHeight();
-//                event->accept();
-//            }
-//            if(mDrawingState == DrawingState::DRAWING && mType == Type::HEIGHT)
-//            {
-//                if (mType == Type::HEIGHT && mMeasureHeight->started() ){
-//                    finishDrawing(event);
-//                }
-//                else
-//                    drawingMeasureHeight(event);
-//                event->accept();
-//            }
-//        }
-//        else if(event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING)
-//        {
-//            cancelDrawingLine(event);
-//        }
-//        else if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING)
-//        {
-//            finishDrawing(event);
-//            event->accept();
-//        }
-//    }
-//}
-//void drawLine::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (mEnterLineZone){
-//        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
-//        mIconNode->setPosition(geoPos);
+            //height part
+            if(mDrawingState == DrawingState::START && mType == Type::HEIGHT){
+                startDrawMeasureHeight();
+                return true;
+            }
+            if(mDrawingState == DrawingState::DRAWING && mType == Type::HEIGHT)
+            {
+                if (mType == Type::HEIGHT && mMeasureHeight->started() ){
+                    finishDrawing(ea);
+                }
+                else
+                    drawingMeasureHeight(ea);
+                return true;
+            }
+        }
+        else if(ea.getButton() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON && mDrawingState == DrawingState::DRAWING)
+        {
+            cancelDrawingLine(ea);
+        }
+        else if(ea.getButton() == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON && mDrawingState == DrawingState::DRAWING)
+        {
+            finishDrawing(ea);
+            return true;
+        }
+    }
+    return false;
+}
+bool drawLine::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterLineZone){
+        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(ea.getX(), ea.getY());
+        mIconNode->setPosition(geoPos);
 
-//        if (mDrawingState == DrawingState::DRAWING && mType!=Type::HEIGHT){
-//            mouseMoveDrawing(event);
-//        }
-//        else if (mDrawingState == DrawingState::DRAWING && mType==Type::HEIGHT){
-//            mouseMoveMeasureHeightDrawing(event);
-//        }
-//    }
-//}
+        if (mDrawingState == DrawingState::DRAWING && mType!=Type::HEIGHT){
+            mouseMoveDrawing(ea);
+        }
+        else if (mDrawingState == DrawingState::DRAWING && mType==Type::HEIGHT){
+            mouseMoveMeasureHeightDrawing(ea);
+        }
+    }
+    return false;
+}
 
 //void drawLine::mouseDoubleClickEvent(QMouseEvent */*event*/)
 //{
 //    //    finishDrawing(event);
 //}
 
-//void drawLine::startDrawLine()
-//{
-//    mLine = new LineNode(mMapItem);
-//    mMapItem->addNodeToLayer(mLine, DRAW_LAYER_NAME);
-//    mLineProperties->setLine(mLine);
-//    mDrawingState = DrawingState::DRAWING;
-//}
+void drawLine::startDrawLine()
+{
+    mLine = new LineNode(mMapItem);
+    mMapItem->addNodeToLayer(mLine, DRAW_LAYER_NAME);
+    mLineProperties->setLine(mLine);
+    mDrawingState = DrawingState::DRAWING;
+}
 
 void drawLine::startDrawMeasureHeight()
 {
@@ -268,54 +270,59 @@ void drawLine::startDrawMeasureHeight()
     mDrawingState = DrawingState::DRAWING;
 }
 
-void drawLine::drawingMeasureHeight(QMouseEvent *event)
+bool drawLine::drawingMeasureHeight(const osgGA::GUIEventAdapter &event)
 {
-    mMeasureHeight->setFirstPoint(mMapItem->screenToGeoPoint(event->x(), event->y()));
+    mMeasureHeight->setFirstPoint(mMapItem->screenToGeoPoint(event.getX(), event.getY()));
+    return false;
 }
 
-void drawLine::mouseMoveMeasureHeightDrawing(QMouseEvent *event)
+bool drawLine::mouseMoveMeasureHeightDrawing(const osgGA::GUIEventAdapter &event)
 {
     mMeasureHeight->clear();
-    mMeasureHeight->setSecondPoint(mMapItem->screenToGeoPoint(event->x(), event->y()));
+    mMeasureHeight->setSecondPoint(mMapItem->screenToGeoPoint(event.getX(), event.getY()));
+    return false;
 }
 
-void drawLine::drawingLine(QMouseEvent *event)
+bool drawLine::drawingLine(const osgGA::GUIEventAdapter &event)
 {
-        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
+        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event.getX(), event.getY());
         mLine->addPoint(geoPos);
+        return false;
 }
 
-void drawLine::cancelDrawingLine(QMouseEvent *event)
+bool drawLine::cancelDrawingLine(const osgGA::GUIEventAdapter &event)
 {
     mMapItem->removeNodeFromLayer(mLine, DRAW_LAYER_NAME);
     mMapItem->removeNodeFromLayer(mMeasureHeight, DRAW_LAYER_NAME);
     if(mLineProperties)
         mLineProperties->setLine(nullptr);
-    event->accept();
+    return true;
     mDrawingState = DrawingState::START;
 }
 
-void drawLine::mouseMoveDrawing(QMouseEvent *event)
+bool drawLine::mouseMoveDrawing(const osgGA::GUIEventAdapter &event)
 {
 
     if (mLine->getSize() >= 2)
     {
         mLine->removePoint();
     }
-    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
+    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event.getX(), event.getY());
     mLine->addPoint(geoPos);
+    return false;
 
 }
 
-void drawLine::finishDrawing(QMouseEvent *event, osg::Node *nodeEditor)
+bool drawLine::finishDrawing(const osgGA::GUIEventAdapter &event, osg::Node *nodeEditor)
 {
     if(mDrawingState == DrawingState::DRAWING)
     {
         mDrawingState = DrawingState::START;
         if(nodeEditor)
             mMapItem->removeNodeFromLayer(nodeEditor, DRAW_LAYER_NAME);
-        event->accept();
+        return true;
     }
+    return false;
 }
 
 PlaceNode *drawLine::makeIconNode()

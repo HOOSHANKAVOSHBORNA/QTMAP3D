@@ -59,45 +59,47 @@ bool DrawEllipse::setup(MapItem *mapItem, UIHandle *uIHandle)
     mMapItem->addLayer(ellipseLayer);
     return true;
 }
-//void DrawEllipse::mousePressEvent(QMouseEvent *event)
-//{
-//    if (mEnterEllipseZone){
-//        if(event->button() == Qt::MouseButton::LeftButton)
-//        {
-//            if (mDrawingState == DrawingState::START) {
-//                mDrawingState = DrawingState::DRAWING;
-//                startDraw(event);
-////                finishDraw();
-//                event->accept();
-//            }
-//        }
-//        //cancel
-//        if(event->button() == Qt::MouseButton::RightButton)
-//        {
-//            if(mDrawingState == DrawingState::DRAWING)
-//            {
-//                cancelDraw();
-//                event->accept();
-//            }
-//        }
-//        //finish
-//        if(event->button() == Qt::MouseButton::MiddleButton)
-//        {
-//            if(mDrawingState == DrawingState::DRAWING)
-//            {
+bool DrawEllipse::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterEllipseZone){
+        if(ea.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
+        {
+            if (mDrawingState == DrawingState::START) {
+                mDrawingState = DrawingState::DRAWING;
+                startDraw(ea);
 //                finishDraw();
-//            }
-//        }
-//    }
-//}
+                return true;
+            }
+        }
+        //cancel
+        if(ea.getButton() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON)
+        {
+            if(mDrawingState == DrawingState::DRAWING)
+            {
+                cancelDraw();
+                return true;
+            }
+        }
+        //finish
+        if(ea.getButton() == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON)
+        {
+            if(mDrawingState == DrawingState::DRAWING)
+            {
+                finishDraw();
+            }
+        }
+    }
+    return false;
+}
 
-//void DrawEllipse::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (mEnterEllipseZone){
-//        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
-//        mIconNode->setPosition(geoPos);
-//    }
-//}
+bool DrawEllipse::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterEllipseZone){
+        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(ea.getX(), ea.getX());
+        mIconNode->setPosition(geoPos);
+    }
+    return false;
+}
 
 osgEarth::Annotation::PlaceNode *DrawEllipse::makeIconNode()
 {
@@ -108,17 +110,16 @@ osgEarth::Annotation::PlaceNode *DrawEllipse::makeIconNode()
     return model.release();
 }
 
-void DrawEllipse::startDraw(QMouseEvent *event)
+void DrawEllipse::startDraw(const osgGA::GUIEventAdapter &event)
 {
     mEllipse = new Ellipse(mMapItem);
     mEllipseProperties->setEllipse(mEllipse);
     osg::Vec3d worldPos;
-    mMapItem->screenToWorld(event->x(), event->y(), worldPos);
+    mMapItem->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapItem->getMapSRS(), worldPos);
     mDrawingState = DrawingState::DRAWING;
     mEllipse->setPosition(osgEarth::GeoPoint(mMapItem->getMapSRS(), geoPos.x(), geoPos.y()));
-
     mMapItem->addNodeToLayer(mEllipse, DRAW_LAYER_NAME);
 }
 

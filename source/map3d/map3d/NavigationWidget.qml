@@ -46,7 +46,6 @@ Item {
         id: mainRowLayout
         anchors.fill: parent
 
-
         Rectangle {
             id: control
             color: "transparent"
@@ -55,7 +54,6 @@ Item {
             Layout.minimumWidth: 100
             Layout.maximumWidth: 100
             Layout.maximumHeight: 180
-            anchors.right: grL.left
             anchors.rightMargin: 10
             clip: true
             ControlCamera{
@@ -141,7 +139,7 @@ Item {
             id:grL
             columns:  1
             rows: 4
-            rowSpacing: 5
+            rowSpacing: 3
             columnSpacing: 5
 
             Layout.preferredWidth: implicitWidth
@@ -156,29 +154,10 @@ Item {
                                        (pressed ? _colorHover : "#FFFFFF");
                 background:Rectangle {
                     color:_colorRec
-                    radius: _radius
+                    //opacity: 0.8
+                    //radius: _radius
                 }
             }
-
-
-            Button {
-                id: home
-                hoverEnabled: true
-                display: AbstractButton.IconOnly
-                icon.source : "qrc:/Resources/home-r.png"
-                icon.width : _iconSize
-                icon.height : _iconSize
-                icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                       (pressed ? _colorHover : "#FFFFFF");
-                background: Rectangle{
-                    radius: 10
-                    color: _colorRec
-                }
-
-                onClicked: btnHomeClicked()
-            }
-
-
 
 
 
@@ -194,8 +173,28 @@ Item {
                                        (pressed ? _colorHover : "#FFFFFF");
                 background:Rectangle {
                     color:_colorRec
-                    radius: _radius
+                    //opacity: 0.8
+                    //radius: _radius
                 }
+            }
+
+
+            Button {
+                id: home
+                hoverEnabled: true
+                display: AbstractButton.IconOnly
+                icon.source : "qrc:/Resources/home-r.png"
+                icon.width : _iconSize
+                icon.height : _iconSize
+                icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                       (pressed ? _colorHover : "#FFFFFF");
+                background: Rectangle{
+                    //radius: 10
+                    //opacity: 0.8
+                    color: _colorRec
+                }
+
+                onClicked: btnHomeClicked()
             }
 
 
@@ -208,8 +207,9 @@ Item {
                 icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
                                        (pressed ? _colorHover : "transparent");
                 background: Rectangle{
-                    radius: _radius
+                    //radius: _radius
                     color: _colorRec
+                    //opacity: 0.8
                 }
                 smooth: true
 
