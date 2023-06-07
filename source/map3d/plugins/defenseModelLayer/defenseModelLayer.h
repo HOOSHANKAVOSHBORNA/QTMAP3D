@@ -43,7 +43,7 @@ public:
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
     virtual bool setup(MapItem *mapController,
                        UIHandle *UIHandle) override;
-    virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
+//    virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
     //void addUpdateAircraft(AircraftInfo aircraftInfo);
 //    void addUpdateSystem(SystemInfo systemInfo);

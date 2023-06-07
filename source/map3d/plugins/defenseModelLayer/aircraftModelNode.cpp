@@ -1,8 +1,6 @@
 ﻿#include "aircraftModelNode.h"
 #include "contextMenu.h"
 #include "aircraftInfoItem.h"
-#include "draw.h"
-#include "systemModelNode.h"
 #include "defenseModelLayer.h"
 #include "aircraftDataManager.h"
 #include "systemDataManager.h"

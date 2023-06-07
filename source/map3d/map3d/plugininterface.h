@@ -124,11 +124,13 @@ public:
     PluginInterface(QObject *parent = nullptr);
     virtual ~PluginInterface() { }
     MapItem *mapItem() const;
-    void setMapItem(MapItem *mapItem);
+    static void setMapItem(MapItem *mapItem);
     UIHandle *uiHandle() const;
-    void setUiHandle(UIHandle *newUiHandle);
+    static void setUiHandle(UIHandle *newUiHandle);
+    DefenseDataManager *defenseDataManager() const;
+    static void setDefenseDataManager(DefenseDataManager* defenseDataManager);
 
-    virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+//    virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
     virtual void onSideItemCreated(int index, QObject *sideItem) {}
     virtual void onToolboxItemClicked(const QString& name,
@@ -141,14 +143,12 @@ public:
 
     virtual bool setup(MapItem *mapController,
                        UIHandle *uiHandle) {return false;}
-    virtual void setDefenseDataManager(DefenseDataManager* defenseDataManager){}
+
 
     QString name() const;
     void setName(const QString &newName);
 
-
-
-protected:
+public:
     virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool keyPressEvent        (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool keyReleaseEvent      (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
@@ -158,8 +158,9 @@ protected:
     virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
 private:
-    MapItem *mMapItem;
-    UIHandle *mUiHandle;
+    static MapItem *mMapItem;
+    static UIHandle *mUiHandle;
+    static DefenseDataManager *mDefenseDataManager;
     QString mName;
 };
 

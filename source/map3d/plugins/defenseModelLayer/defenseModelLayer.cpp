@@ -212,11 +212,11 @@ bool DefenseModelLayer::setup(MapItem *mapItem,
     return true;
 }
 
-void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
-{
-//    auto listManager = new ListManager(mQmlEngine, mUIHandle, this);
-	mDataManager = new DataManager(defenseDataManager, this);
-}
+//void DefenseModelLayer::setDefenseDataManager(DefenseDataManager *defenseDataManager)
+//{
+////    auto listManager = new ListManager(mQmlEngine, mUIHandle, this);
+//	mDataManager = new DataManager(defenseDataManager, this);
+//}
 
 void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 {

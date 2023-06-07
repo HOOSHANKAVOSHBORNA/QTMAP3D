@@ -30,7 +30,7 @@ signals:
     void uiCreated();
 //    void  mainWindowCreated();
 //    void  listWindowCreated();
-    void defenseDataManagerInitialized(DefenseDataManager *defenseDataManager);
+//    void defenseDataManagerInitialized(DefenseDataManager *defenseDataManager);
 
 
 private:
