@@ -43,7 +43,7 @@ private:
     osgEarth::Annotation::ImageOverlayEditor* mImgOvlEditor{nullptr};
 
 private slots:
-    void onImgOvlyBtnClick(QMouseEvent* event);
+    bool onImgOvlyBtnClick(const osgGA::GUIEventAdapter& event);
 
 
 private:
