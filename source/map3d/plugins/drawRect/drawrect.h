@@ -23,12 +23,12 @@ public:
     bool setup(MapItem *mapItem,
                UIHandle *UIHandle) override;
 
-//    virtual void mousePressEvent(QMouseEvent* event) override;
-//    virtual void mouseMoveEvent(QMouseEvent* event) override;
+    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private:
-    void startDraw(QMouseEvent* event);
-    void cancelDraw();
-    void finishDraw();
+    void startDraw(const osgGA::GUIEventAdapter& event);
+    bool cancelDraw(const osgGA::GUIEventAdapter& event);
+    bool finishDraw(const osgGA::GUIEventAdapter& event);
 
     bool addNodeToLayer(osg::Node *node);
     void removeNodeFromLayer(osg::Node *node);

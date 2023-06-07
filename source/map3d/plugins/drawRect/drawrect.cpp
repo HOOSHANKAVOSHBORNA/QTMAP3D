@@ -57,45 +57,47 @@ bool DrawRect::setup(MapItem *mapItem, UIHandle *uIHandle)
     mMapItem->addLayer(rectLayer);
     return true;
 }
-//void DrawRect::mousePressEvent(QMouseEvent *event)
-//{
-//    if (mEnterRectZone){
-//        if(event->button() == Qt::MouseButton::LeftButton)
-//        {
-//            if (mDrawingState == DrawingState::START) {
-//                mDrawingState = DrawingState::DRAWING;
-//                startDraw(event);
-////                finishDraw();
-//                event->accept();
-//            }
-//        }
-//        //cancel
-//        if(event->button() == Qt::MouseButton::RightButton)
-//        {
-//            if(mDrawingState == DrawingState::DRAWING)
-//            {
-//                cancelDraw();
-//                event->accept();
-//            }
-//        }
-//        //finish
-//        if(event->button() == Qt::MouseButton::MiddleButton)
-//        {
-//            if(mDrawingState == DrawingState::DRAWING)
-//            {
+bool DrawRect::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterRectZone){
+        if(ea.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
+        {
+            if (mDrawingState == DrawingState::START) {
+                mDrawingState = DrawingState::DRAWING;
+                startDraw(ea);
 //                finishDraw();
-//            }
-//        }
-//    }
-//}
+                return true;
+            }
+        }
+        //cancel
+        if(ea.getButton() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON)
+        {
+            if(mDrawingState == DrawingState::DRAWING)
+            {
+                cancelDraw(ea);
+                return true;
+            }
+        }
+        //finish
+        if(ea.getButton() == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON)
+        {
+            if(mDrawingState == DrawingState::DRAWING)
+            {
+                finishDraw(ea);
+            }
+        }
+    }
+    return false;
+}
 
-//void DrawRect::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (mEnterRectZone){
-//        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
-//        mIconNode->setPosition(geoPos);
-//    }
-//}
+bool DrawRect::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterRectZone){
+        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(ea.getX(), ea.getY());
+        mIconNode->setPosition(geoPos);
+    }
+    return false;
+}
 
 osgEarth::Annotation::PlaceNode *DrawRect::makeIconNode()
 {
@@ -108,14 +110,14 @@ osgEarth::Annotation::PlaceNode *DrawRect::makeIconNode()
     return model.release();
 }
 
-void DrawRect::startDraw(QMouseEvent *event)
+void DrawRect::startDraw(const osgGA::GUIEventAdapter &event)
 {
     mRect = new Rect(mMapItem);
     mRectProperties->setRect(mRect);
 
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapItem->screenToWorld(event->x(), event->y(), worldPos);
+    mMapItem->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapItem->getMapSRS(), worldPos);
 
@@ -124,30 +126,37 @@ void DrawRect::startDraw(QMouseEvent *event)
     addNodeToLayer(mRect);
 }
 
-void DrawRect::cancelDraw()
+bool DrawRect::cancelDraw(const osgGA::GUIEventAdapter &event)
 {
     if(mDrawingState == DrawingState::DRAWING){
     removeNodeFromLayer(mRect);
     mDrawingState = DrawingState::START;
+    return true;
     }
+    return false;
 }
 
-void DrawRect::finishDraw()
+bool DrawRect::finishDraw(const osgGA::GUIEventAdapter &event)
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mDrawingState = DrawingState::START;
+    return true;
     }
+    return false;
 }
 
 bool DrawRect::addNodeToLayer(osg::Node *node)
 {
     auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
     if (layer) {
+    return true;
+
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {
             group->addChild(node);
         }
     }
+    return false;
 }
 void DrawRect::removeNodeFromLayer(osg::Node *node)
 {

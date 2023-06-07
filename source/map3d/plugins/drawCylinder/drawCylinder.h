@@ -24,13 +24,13 @@ public:
     bool setup(MapItem *mapController, UIHandle *uiHandle) override;
 
     void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-//    void mousePressEvent(QMouseEvent *event) override;
-//    void mouseMoveEvent(QMouseEvent *event) override;
+    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 
 private:
-    void startDraw(QMouseEvent* event);
-    void finishDrawing(QMouseEvent* event);
-    void cancelDrawing(QMouseEvent* event);
+    bool startDraw(const osgGA::GUIEventAdapter& event);
+    bool finishDrawing(const osgGA::GUIEventAdapter& event);
+    bool cancelDrawing(const osgGA::GUIEventAdapter& event);
 
     osgEarth::Annotation::PlaceNode* makeIconNode();
 

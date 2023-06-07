@@ -26,9 +26,9 @@ public:
     virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 
 private:
-    void startDraw(QMouseEvent* event);
-    void finishDrawing(QMouseEvent* event);
-    void cancelDrawing(QMouseEvent* event);
+    bool startDraw(const osgGA::GUIEventAdapter& event);
+    bool finishDrawing(const osgGA::GUIEventAdapter& event);
+    bool cancelDrawing(const osgGA::GUIEventAdapter& event);
 
     osgEarth::Annotation::PlaceNode* makeIconNode();
 

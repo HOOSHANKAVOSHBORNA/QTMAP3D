@@ -32,45 +32,45 @@ MapController {
             color: dragMouseArea.drag.active ? (dragTarget.containsDrag ? "grey" : dragTarget.colorKey) : "transparent"
         }
     }
-//    MouseArea {
-//        id: mouseArea
+    //    MouseArea {
+    //        id: mouseArea
 
-//        width: 64
-//        height: 64
-//        anchors.centerIn: parent
+    //        width: 64
+    //        height: 64
+    //        anchors.centerIn: parent
 
-//        drag.target: tile
+    //        drag.target: tile
 
-//        onReleased: parent = tile.Drag.target !== null ? tile.Drag.target : rootItem
+    //        onReleased: parent = tile.Drag.target !== null ? tile.Drag.target : rootItem
 
-//        Rectangle {
-//            id: tile
+    //        Rectangle {
+    //            id: tile
 
-//            width: 64
-//            height: 64
-//            anchors {
-//                verticalCenter: parent.verticalCenter
-//                horizontalCenter: parent.horizontalCenter
-//            }
+    //            width: 64
+    //            height: 64
+    //            anchors {
+    //                verticalCenter: parent.verticalCenter
+    //                horizontalCenter: parent.horizontalCenter
+    //            }
 
-//            color: "#505050"
+    //            color: "#505050"
 
-//            Drag.keys: [ rootItem.colorKey ]
-//            Drag.active: mouseArea.drag.active
-//            Drag.hotSpot.x: 32
-//            Drag.hotSpot.y: 32
-//            states: State {
-//                when: mouseArea.drag.active
-//                AnchorChanges {
-//                    target: tile
-//                    anchors {
-//                        verticalCenter: undefined
-//                        horizontalCenter: undefined
-//                    }
-//                }
-//            }
-//        }
-//    }
+    //            Drag.keys: [ rootItem.colorKey ]
+    //            Drag.active: mouseArea.drag.active
+    //            Drag.hotSpot.x: 32
+    //            Drag.hotSpot.y: 32
+    //            states: State {
+    //                when: mouseArea.drag.active
+    //                AnchorChanges {
+    //                    target: tile
+    //                    anchors {
+    //                        verticalCenter: undefined
+    //                        horizontalCenter: undefined
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
 
     onClicked: function() {
         toggleWidgetsVisible();
@@ -170,14 +170,20 @@ MapController {
 
     NavigationWidget{
         id : navigationWidget
-        anchors.right: parent.right
+        //anchors.right: parent.right
         anchors.rightMargin: widgetsMargins
         //            y:25 + parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/2+3)+25))
-        y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins/2+3) + statusBar.height)
+        //y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins/2+3) + statusBar.height)
         // slot button
+        y: parent.height/2
+        x:parent.width - widgetsPositionFactor * (width + widgetsMargins)
         onBtnHomeClicked: function() {
             rootItem.goToHome();
         }
+        onBtnProjectionClicked: function() {
+            rootItem.changeMode();
+        }
+
         onBtnProjectionClicked: function() {
             rootItem.changeMode();
         }

@@ -32,19 +32,19 @@ public:
                UIHandle *UIHandle) override;
 
 protected:
-//    virtual void mousePressEvent(QMouseEvent* event) override;
-//    virtual void mouseMoveEvent(QMouseEvent* event) override;
-//    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 
 private:
     void startDrawLine();
     void startDrawMeasureHeight();
-    void drawingMeasureHeight(QMouseEvent* event);
-    void mouseMoveMeasureHeightDrawing(QMouseEvent* event);
-    void drawingLine(QMouseEvent* event);
-    void cancelDrawingLine(QMouseEvent* event);
-    void mouseMoveDrawing(QMouseEvent* event);
-    void finishDrawing(QMouseEvent* event, osg::Node *nodeEditor = nullptr);
+    bool drawingMeasureHeight(const osgGA::GUIEventAdapter& event);
+    bool mouseMoveMeasureHeightDrawing(const osgGA::GUIEventAdapter& event);
+    bool drawingLine(const osgGA::GUIEventAdapter& event);
+    bool cancelDrawingLine(const osgGA::GUIEventAdapter& event);
+    bool mouseMoveDrawing(const osgGA::GUIEventAdapter& event);
+    bool finishDrawing(const osgGA::GUIEventAdapter& event, osg::Node *nodeEditor = nullptr);
     osgEarth::Annotation::PlaceNode *makeIconNode();
 
 
