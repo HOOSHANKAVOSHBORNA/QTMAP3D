@@ -11,6 +11,7 @@
 #include "mainwindow.h"
 #include "listwindow.h"
 #include "layersmodel.h"
+#include "mapControllerItem.h"
 
 Application::Application() :
     mPluginManager(new PluginManager)
@@ -39,20 +40,27 @@ void Application::initialize()
     initializeQmlEngine();
 
     mPluginManager->loadPlugins();
-    QObject::connect(this, &Application::mainWindowCreated,
-                     this, &Application::onMainWindowCreated,
-                     Qt::DirectConnection);
-    QObject::connect(this, &Application::listWindowCreated,
-                     this, &Application::onListWindowCreated,
-                     Qt::DirectConnection);
-
-    QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreated,
-                     this, &Application::onQmlObjectCreated,
-                     Qt::DirectConnection);
+//    QObject::connect(this, &Application::mainWindowCreated,
+//                     this, &Application::onMainWindowCreated,
+//                     Qt::DirectConnection);
+//    QObject::connect(this, &Application::listWindowCreated,
+//                     this, &Application::onListWindowCreated,
+//                     Qt::DirectConnection);
 
     createMainWindow();
     createListWindow();
 
+}
+
+void Application::show()
+{
+    if (mUIIsReady) {
+        mMainWindow->show();
+    } else {
+        QObject::connect(this, &Application::uiCreated, [this]() {
+            mMainWindow->show();
+        });
+    }
 }
 
 void Application::initializeSurfaceFormat()
@@ -76,6 +84,9 @@ void Application::registerTypes()
 void Application::initializeQmlEngine()
 {
     mQmlEngine = new QQmlApplicationEngine();
+    QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreated,
+                     this, &Application::onQmlObjectCreated,
+                     Qt::DirectConnection);
 }
 
 
@@ -92,7 +103,7 @@ void Application::createListWindow()
 
 //void Application::initializeNetworkManager()
 //{
-//    mNetworkManager = new NetworkManager;
+//    mNetworkManager = new NetworkManager;mMainWindow
 //}
 
 void Application::initializeDefenseDataManager()
@@ -115,79 +126,95 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 
     if (mainWnd && !mMainWindow) {
         mMainWindow = mainWnd;
-        emit mainWindowCreated();
+        if(mListWindow)
+            onUICreated();
+//        emit mainWindowCreated();
     }
     if (listWnd && !mListWindow) {
         mListWindow = listWnd;
-        emit listWindowCreated();
+        if(mMainWindow)
+            onUICreated();
+
+//        emit listWindowCreated();
     }
 
 
 }
 
-void Application::onMainWindowCreated()
+void Application::onUICreated()
 {
-    mMainWindowIsReady = true;
-
-    if (mMainWindowIsReady && mListWindowIsReady) {
-        onAllWindowsCreated();
-    }
+    mUIIsReady = true;
+    setup();
+    emit uiCreated();
 }
 
-void Application::onListWindowCreated()
+//void Application::onMainWindowCreated()
+//{
+//    mMainWindowIsReady = true;
+
+//    if (mMainWindowIsReady && mListWindowIsReady) {
+//        onAllWindowsCreated();
+//    }
+//}
+
+//void Application::onListWindowCreated()
+//{
+//    mListWindowIsReady = true;
+
+//    if (mMainWindowIsReady && mListWindowIsReady) {
+//        onAllWindowsCreated();
+//    }
+//}
+
+//void Application::onAllWindowsCreated()
+//{
+//    if (mMainWindow && mListWindow) {
+//        static bool bFirst = true;
+//        if (bFirst) {
+//            mMainWindow->setListWindow(mListWindow);
+//            bFirst = false;
+//        }
+//    }
+
+
+
+//    QObject::connect(mMainWindow, &MainWindow::sideItemCreated,
+//                     mPluginManager, &PluginManager::onSideItemCreated,
+//                     Qt::QueuedConnection);
+//    QObject::connect(mMainWindow, &MainWindow::toolboxItemCreated,
+//                     mPluginManager, &PluginManager::onToolboxItemCreated,
+//                     Qt::DirectConnection);
+//    QObject::connect(mMainWindow, &MainWindow::toolboxItemClicked,
+//                     mPluginManager, &PluginManager::onToolboxItemClicked,
+//                     Qt::DirectConnection);
+//    QObject::connect(mMainWindow, &MainWindow::toolboxItemCheckedChanged,
+//                     mPluginManager, &PluginManager::onToolboxItemCheckedChanged,
+//                     Qt::DirectConnection);
+//    QObject::connect(mMainWindow, &MainWindow::osgInitialized,
+//                     this, &Application::setup,
+//                     Qt::DirectConnection);
+
+//    QObject::connect(mMainWindow, &MainWindow::fileItemCreated,
+//                     mPluginManager, &PluginManager::onFileItemCreated,
+//                     Qt::DirectConnection);
+//    QObject::connect(mMainWindow, &MainWindow::fileItemClicked,
+//                     mPluginManager, &PluginManager::onFileItemClicked,
+//                     Qt::DirectConnection);
+
+//    mPluginManager->performPluginsInitQMLDesc(mQmlEngine);
+
+//    mMainWindow->initializePluginsUI(mPluginManager->pluginsInfoList());
+
+//    setup();
+
+//}
+
+void Application::setup()
 {
-    mListWindowIsReady = true;
-
-    if (mMainWindowIsReady && mListWindowIsReady) {
-        onAllWindowsCreated();
-    }
-}
-
-void Application::onAllWindowsCreated()
-{
-    if (mMainWindow && mListWindow) {
-        static bool bFirst = true;
-        if (bFirst) {
-            mMainWindow->setListWindow(mListWindow);
-            bFirst = false;
-        }
-    }
-
-
-
-    QObject::connect(mMainWindow, &MainWindow::sideItemCreated,
-                     mPluginManager, &PluginManager::onSideItemCreated,
-                     Qt::QueuedConnection);
-    QObject::connect(mMainWindow, &MainWindow::toolboxItemCreated,
-                     mPluginManager, &PluginManager::onToolboxItemCreated,
-                     Qt::DirectConnection);
-    QObject::connect(mMainWindow, &MainWindow::toolboxItemClicked,
-                     mPluginManager, &PluginManager::onToolboxItemClicked,
-                     Qt::DirectConnection);
-    QObject::connect(mMainWindow, &MainWindow::toolboxItemCheckedChanged,
-                     mPluginManager, &PluginManager::onToolboxItemCheckedChanged,
-                     Qt::DirectConnection);
-    QObject::connect(mMainWindow, &MainWindow::osgInitialized,
-                     this, &Application::setup,
-                     Qt::DirectConnection);
-
-    QObject::connect(mMainWindow, &MainWindow::fileItemCreated,
-                     mPluginManager, &PluginManager::onFileItemCreated,
-                     Qt::DirectConnection);
-    QObject::connect(mMainWindow, &MainWindow::fileItemClicked,
-                     mPluginManager, &PluginManager::onFileItemClicked,
-                     Qt::DirectConnection);
-
     mPluginManager->performPluginsInitQMLDesc(mQmlEngine);
 
     mMainWindow->initializePluginsUI(mPluginManager->pluginsInfoList());
 
-    setup();
-
-}
-
-void Application::setup()
-{
     initializeDefenseDataManager();
     mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
     emit defenseDataManagerInitialized(mDefenseDataManager);
