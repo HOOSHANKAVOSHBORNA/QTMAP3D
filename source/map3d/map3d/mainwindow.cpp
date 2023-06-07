@@ -14,16 +14,16 @@
 #include "plugininterface.h"
 #include "mapItem.h"
 #include "listwindow.h"
-#include "application.h"
+
 #include <QQuickOpenGLUtils>
 MainWindow::MainWindow(QWindow *parent) :
     QQuickWindow(parent)
 {
 
 //    mOGLF = new QOpenGLFunctions_2_0;
-//    QObject::connect(this, &MainWindow::sceneGraphInitialized,
-//                     this, &MainWindow::initializeGL,
-//                     Qt::DirectConnection);
+    QObject::connect(this, &MainWindow::sceneGraphInitialized,
+                     this, &MainWindow::initializeGL,
+                     Qt::DirectConnection);
 //    QObject::connect(this, &MainWindow::sceneGraphInvalidated,
 //                     this, &MainWindow::cleanup,
 //                     Qt::DirectConnection);
@@ -96,18 +96,18 @@ MainWindow::MainWindow(QWindow *parent) :
 
     mUIHandle = new UIHandle(this);
 
-    QObject::connect(this, &MainWindow::infoWidget2D3DButtonClicked, [this](){
-        mUIHandle->onInfoWidget2D3DButtonClicked();
-    });
-    QObject::connect(this, &MainWindow::infoWidgetRouteButtonClicked, [this](){
-        mUIHandle->onInfoWidgetRouteButtonClicked();
-    });
-    QObject::connect(this, &MainWindow::infoWidgetFollowButtonClicked, [this](){
-        mUIHandle->onInfoWidgetFollowButtonClicked();
-    });
-    QObject::connect(this, &MainWindow::infoWidgetMoreButtonClicked, [this](){
-        mUIHandle->onInfoWidgetMoreButtonClicked();
-    });
+//    QObject::connect(this, &MainWindow::infoWidget2D3DButtonClicked, [this](){
+//        mUIHandle->onInfoWidget2D3DButtonClicked();
+//    });
+//    QObject::connect(this, &MainWindow::infoWidgetRouteButtonClicked, [this](){
+//        mUIHandle->onInfoWidgetRouteButtonClicked();
+//    });
+//    QObject::connect(this, &MainWindow::infoWidgetFollowButtonClicked, [this](){
+//        mUIHandle->onInfoWidgetFollowButtonClicked();
+//    });
+//    QObject::connect(this, &MainWindow::infoWidgetMoreButtonClicked, [this](){
+//        mUIHandle->onInfoWidgetMoreButtonClicked();
+//    });
 
 
 
@@ -120,106 +120,106 @@ MainWindow::MainWindow(QWindow *parent) :
 
 MainWindow::~MainWindow()
 {
-    cleanup();
+//    cleanup();
 //    mMapItem->deleteLater();
 }
 
-qreal MainWindow::headingAngle() const
-{
-    return mheadingAngle;
-}
+//qreal MainWindow::headingAngle() const
+//{
+//    return mheadingAngle;
+//}
 
-QVector3D MainWindow::mousePointingLocationWgs84() const
-{
-    return mMousePointingLocationWgs84;
-}
+//QVector3D MainWindow::mousePointingLocationWgs84() const
+//{
+//    return mMousePointingLocationWgs84;
+//}
 
-QVector3D MainWindow::mousePointingLocation() const
-{
-    return mMousePointingLocation;
-}
+//QVector3D MainWindow::mousePointingLocation() const
+//{
+//    return mMousePointingLocation;
+//}
 
 
-qreal MainWindow::focalPointLat() const
-{
-    return mFocalPointLat;
-}
+//qreal MainWindow::focalPointLat() const
+//{
+//    return mFocalPointLat;
+//}
 
-qreal MainWindow::focalPointLong() const
-{
-    return mFocalPointLong;
-}
+//qreal MainWindow::focalPointLong() const
+//{
+//    return mFocalPointLong;
+//}
 
-qreal MainWindow::focalPointRange() const
-{
-    return mFocalPointRange;
+//qreal MainWindow::focalPointRange() const
+//{
+//    return mFocalPointRange;
 
-}
+//}
 
-qreal MainWindow::focalPointPitch() const
-{
-    return mFocalPointPitch;
-}
+//qreal MainWindow::focalPointPitch() const
+//{
+//    return mFocalPointPitch;
+//}
 
-qreal MainWindow::focalPointHead() const
-{
-    return mFocalPointHead;
-}
+//qreal MainWindow::focalPointHead() const
+//{
+//    return mFocalPointHead;
+//}
 
 qreal MainWindow::fps() const
 {
     return mFps;
 }
 
-bool MainWindow::zoomInButtonPressed() const
-{
-    return mZoomInButtonPressed;
-}
+//bool MainWindow::zoomInButtonPressed() const
+//{
+//    return mZoomInButtonPressed;
+//}
 
-bool MainWindow::zoomOutButtonPressed() const
-{
-    return mZoomOutButtonPressed;
-}
+//bool MainWindow::zoomOutButtonPressed() const
+//{
+//    return mZoomOutButtonPressed;
+//}
 
-bool MainWindow::upButtonPressed() const
-{
-    return mUpButtonPressed;
-}
+//bool MainWindow::upButtonPressed() const
+//{
+//    return mUpButtonPressed;
+//}
 
-bool MainWindow::downButtonPressed() const
-{
-    return mDownButtonPressed;
-}
+//bool MainWindow::downButtonPressed() const
+//{
+//    return mDownButtonPressed;
+//}
 
-bool MainWindow::leftButtonPressed() const
-{
-    return mLeftButtonPressed;
-}
+//bool MainWindow::leftButtonPressed() const
+//{
+//    return mLeftButtonPressed;
+//}
 
-bool MainWindow::rightButtonPressed() const
-{
-    return mRightButtonPressed;
-}
+//bool MainWindow::rightButtonPressed() const
+//{
+//    return mRightButtonPressed;
+//}
 
-bool MainWindow::rotateUpButtonPressed() const
-{
-    return mRotateUpButtonPressed;
-}
+//bool MainWindow::rotateUpButtonPressed() const
+//{
+//    return mRotateUpButtonPressed;
+//}
 
-bool MainWindow::rotateDownButtonPressed() const
-{
-    return mRotateDownButtonPressed;
-}
+//bool MainWindow::rotateDownButtonPressed() const
+//{
+//    return mRotateDownButtonPressed;
+//}
 
-bool MainWindow::rotateLeftButtonPressed() const
-{
-    return mRotateLeftButtonPressed;
-}
+//bool MainWindow::rotateLeftButtonPressed() const
+//{
+//    return mRotateLeftButtonPressed;
+//}
 
-bool MainWindow::rotateRightButtonPressed() const
-{
-    return mRotateRightButtonPressed;
-}
+//bool MainWindow::rotateRightButtonPressed() const
+//{
+//    return mRotateRightButtonPressed;
+//}
 
 LayersModel *MainWindow::layersModel() const
 {
@@ -257,6 +257,7 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
 
         for (auto toolboxItemDesc : item.qmlDesc->toolboxItemsList)
         {
+//            qDebug() <<"item name:"<<toolboxItemDesc->name;
             QVariant ret;
             ItemDescProxy proxy(*toolboxItemDesc, item.interface);
             QMetaObject::invokeMethod(this,
@@ -280,71 +281,71 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
     }
 }
 
-void MainWindow::setHeadingAngle(qreal angle)
-{
-    if (mheadingAngle != angle) {
-        mheadingAngle = angle;
-        emit headingAngleChanged(angle);
-    }
-}
+//void MainWindow::setHeadingAngle(qreal angle)
+//{
+//    if (mheadingAngle != angle) {
+//        mheadingAngle = angle;
+//        emit headingAngleChanged(angle);
+//    }
+//}
 
-void MainWindow::setMousePointingLocationWgs84(const QVector3D &pointedLoc)
-{
-    if (mMousePointingLocationWgs84 != pointedLoc) {
-        mMousePointingLocationWgs84 = pointedLoc;
-        emit mousePointingLocationWgs84Changed();
-    }
-}
+//void MainWindow::setMousePointingLocationWgs84(const QVector3D &pointedLoc)
+//{
+//    if (mMousePointingLocationWgs84 != pointedLoc) {
+//        mMousePointingLocationWgs84 = pointedLoc;
+//        emit mousePointingLocationWgs84Changed();
+//    }
+//}
 
-void MainWindow::setMousePointingLocation(const QVector3D &pointedLoc)
-{
-    if (mMousePointingLocation != pointedLoc) {
-        mMousePointingLocation = pointedLoc;
-        emit mousePointingLocationChanged();
-    }
-}
+//void MainWindow::setMousePointingLocation(const QVector3D &pointedLoc)
+//{
+//    if (mMousePointingLocation != pointedLoc) {
+//        mMousePointingLocation = pointedLoc;
+//        emit mousePointingLocationChanged();
+//    }
+//}
 
 
-void MainWindow::setFocalPointLat(qreal focalPointLat)
-{
-    if (mFocalPointLat != focalPointLat) {
-        mFocalPointLat = focalPointLat;
-        emit focalPointLatChanged();
-    }
-}
+//void MainWindow::setFocalPointLat(qreal focalPointLat)
+//{
+//    if (mFocalPointLat != focalPointLat) {
+//        mFocalPointLat = focalPointLat;
+//        emit focalPointLatChanged();
+//    }
+//}
 
-void MainWindow::setFocalPointLong(qreal focalPointLong)
-{
-    if (mFocalPointLong != focalPointLong) {
-        mFocalPointLong = focalPointLong;
-        emit focalPointLongChanged();
-    }
-}
+//void MainWindow::setFocalPointLong(qreal focalPointLong)
+//{
+//    if (mFocalPointLong != focalPointLong) {
+//        mFocalPointLong = focalPointLong;
+//        emit focalPointLongChanged();
+//    }
+//}
 
-void MainWindow::setFocalPointRange(qreal focalPointRange)
-{
-    if (mFocalPointRange != focalPointRange) {
-        mFocalPointRange = focalPointRange;
-        emit focalPointRangeChanged();
-    }
+//void MainWindow::setFocalPointRange(qreal focalPointRange)
+//{
+//    if (mFocalPointRange != focalPointRange) {
+//        mFocalPointRange = focalPointRange;
+//        emit focalPointRangeChanged();
+//    }
 
-}
+//}
 
-void MainWindow::setFocalPointPitch(qreal focalPointPitch)
-{
-    if (mFocalPointPitch != focalPointPitch) {
-        mFocalPointPitch = focalPointPitch;
-        emit focalPointPitchChanged();
-    }
-}
+//void MainWindow::setFocalPointPitch(qreal focalPointPitch)
+//{
+//    if (mFocalPointPitch != focalPointPitch) {
+//        mFocalPointPitch = focalPointPitch;
+//        emit focalPointPitchChanged();
+//    }
+//}
 
-void MainWindow::setFocalPointHead(qreal focalPointHead)
-{
-    if (mFocalPointHead != focalPointHead) {
-        mFocalPointHead = focalPointHead;
-        emit focalPointHeadChanged();
-    }
-}
+//void MainWindow::setFocalPointHead(qreal focalPointHead)
+//{
+//    if (mFocalPointHead != focalPointHead) {
+//        mFocalPointHead = focalPointHead;
+//        emit focalPointHeadChanged();
+//    }
+//}
 
 void MainWindow::setFps(qreal fps)
 {
@@ -354,95 +355,95 @@ void MainWindow::setFps(qreal fps)
     }
 }
 
-void MainWindow::setZoomInButtonPressed(bool pressed)
-{
-    if (mZoomInButtonPressed != pressed) {
-        mZoomInButtonPressed = pressed;
-        emit zoomInButtonPressedChanged();
-    }
-}
+//void MainWindow::setZoomInButtonPressed(bool pressed)
+//{
+//    if (mZoomInButtonPressed != pressed) {
+//        mZoomInButtonPressed = pressed;
+//        emit zoomInButtonPressedChanged();
+//    }
+//}
 
-void MainWindow::setZoomOutButtonPressed(bool pressed)
-{
-    if (mZoomOutButtonPressed != pressed) {
-        mZoomOutButtonPressed = pressed;
-        emit zoomOutButtonPressedChanged();
-    }
-}
+//void MainWindow::setZoomOutButtonPressed(bool pressed)
+//{
+//    if (mZoomOutButtonPressed != pressed) {
+//        mZoomOutButtonPressed = pressed;
+//        emit zoomOutButtonPressedChanged();
+//    }
+//}
 
-void MainWindow::setUpButtonPressed(bool pressed)
-{
-    if (mUpButtonPressed != pressed) {
-        mUpButtonPressed = pressed;
-        emit upButtonPressedChanged();
-    }
+//void MainWindow::setUpButtonPressed(bool pressed)
+//{
+//    if (mUpButtonPressed != pressed) {
+//        mUpButtonPressed = pressed;
+//        emit upButtonPressedChanged();
+//    }
 
-}
+//}
 
-void MainWindow::setdownButtonPressed(bool pressed)
-{
-    if (mDownButtonPressed != pressed) {
-        mDownButtonPressed = pressed;
-        emit downButtonPressedChanged();
-    }
-}
+//void MainWindow::setdownButtonPressed(bool pressed)
+//{
+//    if (mDownButtonPressed != pressed) {
+//        mDownButtonPressed = pressed;
+//        emit downButtonPressedChanged();
+//    }
+//}
 
-void MainWindow::setleftButtonPressed(bool pressed)
-{
-    if (mLeftButtonPressed != pressed) {
-        mLeftButtonPressed = pressed;
-        emit leftButtonPressedChanged();
-    }
-}
+//void MainWindow::setleftButtonPressed(bool pressed)
+//{
+//    if (mLeftButtonPressed != pressed) {
+//        mLeftButtonPressed = pressed;
+//        emit leftButtonPressedChanged();
+//    }
+//}
 
-void MainWindow::setrightButtonPressed(bool pressed)
-{
-    if (mRightButtonPressed != pressed) {
-        mRightButtonPressed = pressed;
-        emit rightButtonPressedChanged();
-    }
-}
+//void MainWindow::setrightButtonPressed(bool pressed)
+//{
+//    if (mRightButtonPressed != pressed) {
+//        mRightButtonPressed = pressed;
+//        emit rightButtonPressedChanged();
+//    }
+//}
 
-void MainWindow::setrotateUpButtonPressed(bool pressed)
-{
-    if (mRotateUpButtonPressed != pressed) {
-        mRotateUpButtonPressed = pressed;
-        emit rotateUpButtonPressedChanged();
-    }
-}
+//void MainWindow::setrotateUpButtonPressed(bool pressed)
+//{
+//    if (mRotateUpButtonPressed != pressed) {
+//        mRotateUpButtonPressed = pressed;
+//        emit rotateUpButtonPressedChanged();
+//    }
+//}
 
-void MainWindow::setrotateDownButtonPressed(bool pressed)
-{
-    if (mRotateDownButtonPressed != pressed) {
-        mRotateDownButtonPressed = pressed;
-        emit rotateDownButtonPressedChanged();
-    }
-}
+//void MainWindow::setrotateDownButtonPressed(bool pressed)
+//{
+//    if (mRotateDownButtonPressed != pressed) {
+//        mRotateDownButtonPressed = pressed;
+//        emit rotateDownButtonPressedChanged();
+//    }
+//}
 
-void MainWindow::setrotateLeftButtonPressed(bool pressed)
-{
-    if (mRotateLeftButtonPressed != pressed) {
-        mRotateLeftButtonPressed = pressed;
-        emit rotateLeftButtonPressedChanged();
-    }
-}
+//void MainWindow::setrotateLeftButtonPressed(bool pressed)
+//{
+//    if (mRotateLeftButtonPressed != pressed) {
+//        mRotateLeftButtonPressed = pressed;
+//        emit rotateLeftButtonPressedChanged();
+//    }
+//}
 
-void MainWindow::setrotateRightButtonPressed(bool pressed)
-{
-    if (mRotateRightButtonPressed != pressed) {
-        mRotateRightButtonPressed = pressed;
-        emit rotateRightButtonPressedChanged();
-    }
-}
+//void MainWindow::setrotateRightButtonPressed(bool pressed)
+//{
+//    if (mRotateRightButtonPressed != pressed) {
+//        mRotateRightButtonPressed = pressed;
+//        emit rotateRightButtonPressedChanged();
+//    }
+//}
 
-void MainWindow::travelToViewpoint(qreal latitude, qreal longitude, qreal range, qreal pitch, qreal heading)
-{
-//    mMapItem->travelToViewpoint(latitude,
-//                                      longitude,
-//                                      range,
-//                                      pitch,
-//                                      heading);
-}
+//void MainWindow::travelToViewpoint(qreal latitude, qreal longitude, qreal range, qreal pitch, qreal heading)
+//{
+////    mMapItem->travelToViewpoint(latitude,
+////                                      longitude,
+////                                      range,
+////                                      pitch,
+////                                      heading);
+//}
 
 void MainWindow::showInfoWidget(MainWindow::InfoWidgetType infoWidgetType)
 {
@@ -456,15 +457,15 @@ void MainWindow::updateInfoWidgetData(const QString &dataJSON)
 
 
 
-void MainWindow::setStatusBarText(const QString message, int time) {
-    QVariant ret;
-    QMetaObject::invokeMethod(this,
-                              "showStatusMessage",
-                              Qt::DirectConnection,
-                              Q_ARG(QVariant, QVariant::fromValue<QString>(message)),
-                              Q_ARG(QVariant, QVariant::fromValue<int>(time))
-                              );
-}
+//void MainWindow::setStatusBarText(const QString message, int time) {
+//    QVariant ret;
+//    QMetaObject::invokeMethod(this,
+//                              "showStatusMessage",
+//                              Qt::DirectConnection,
+//                              Q_ARG(QVariant, QVariant::fromValue<QString>(message)),
+//                              Q_ARG(QVariant, QVariant::fromValue<int>(time))
+//                              );
+//}
 
 void MainWindow::showListWindow()
 {
@@ -513,11 +514,11 @@ void MainWindow::onFrameSwapped()
 
 }
 
-void MainWindow::orientCameraToNorth()
-{
-//    if (mMapItem)
-//        mMapItem->orientCameraToNorth();
-}
+//void MainWindow::orientCameraToNorth()
+//{
+////    if (mMapItem)
+////        mMapItem->orientCameraToNorth();
+//}
 
 
 
@@ -540,10 +541,10 @@ MapItem *MainWindow::getMapItem()
 //}
 
 
-void MainWindow::cleanup()
-{
-//    mMapItem->cleanup();
-}
+//void MainWindow::cleanup()
+//{
+////    mMapItem->cleanup();
+//}
 
 void MainWindow::frame()
 {
@@ -616,8 +617,8 @@ void MainWindow::setListWindow(ListWindow *listWindow)
 }
 
 
-//void MainWindow::initializeGL()
-//{
+void MainWindow::initializeGL()
+{
 
 //    QQuickOpenGLUtils::resetOpenGLState();
 //    mOGLF->initializeOpenGLFunctions();
@@ -633,21 +634,21 @@ void MainWindow::setListWindow(ListWindow *listWindow)
 //    mMapItem->initializeOsgEarth();
 //    restoreContext();
 //    emit osgInitialized();
-//    //----------------------------------------------------------
-//    LayersModel *layersModel = new LayersModel(mMapItem);
-//    setLayersModel(layersModel);
-//    QObject::connect(this, &MainWindow::toggleLayerEnabled,
-//                     layersModel, &LayersModel::toggleLayerEnabled);
-//    //----------------------------------------------------------
-//    restoreContext();
+    //----------------------------------------------------------
+    LayersModel *layersModel = new LayersModel(getMapItem());
+    setLayersModel(layersModel);
+    QObject::connect(this, &MainWindow::toggleLayerEnabled,
+                     layersModel, &LayersModel::toggleLayerEnabled);
+    //----------------------------------------------------------
+    restoreContext();
 
-////    resetOpenGLState();
+//    resetOpenGLState();
 
 //    QObject::connect(this, &MainWindow::beforeRendering,
 //                     this, &MainWindow::frame,
 //                     Qt::DirectConnection);
 //    QQuickOpenGLUtils::resetOpenGLState();
-//}
+}
 
 //void MainWindow::resizeGL()
 //{
@@ -825,23 +826,23 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 //    mMapItem->mouseReleaseEvent(event);
 
 
-    if (event->button() == Qt::LeftButton) {
-        if (mLastMousePressTime.msecsTo(QTime::currentTime()) < 400) {
-            const QPoint diff = event->pos() - mLastPressPoint;
-            if (std::abs(diff.x()) < 10 && std::abs(diff.y()) < 10) {
+//    if (event->button() == Qt::LeftButton) {
+//        if (mLastMousePressTime.msecsTo(QTime::currentTime()) < 400) {
+//            const QPoint diff = event->pos() - mLastPressPoint;
+//            if (std::abs(diff.x()) < 10 && std::abs(diff.y()) < 10) {
 
-                if (!mInClickProcess && mMousePressOusideClickProcess) {
-                    mInClickProcess = true;
-                    QTimer::singleShot(300, [this](){
-                        if (mMousePressOusideClickProcess)
-                            emit clicked();
-                        this->mInClickProcess = false;
-                    });
+//                if (!mInClickProcess && mMousePressOusideClickProcess) {
+//                    mInClickProcess = true;
+//                    QTimer::singleShot(300, [this](){
+//                        if (mMousePressOusideClickProcess)
+//                            emit clicked();
+//                        this->mInClickProcess = false;
+//                    });
 
-                }
-            }
-        }
-    }
+//                }
+//            }
+//        }
+//    }
 
 }
 

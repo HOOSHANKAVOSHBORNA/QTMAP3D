@@ -193,6 +193,7 @@ CMainWindow {
             sideItemsModel: wnd.sideItemsModel
 
             onSideItemCreated: function(index, item) {
+                print(item);
                 switch(index) {
                 case 0:
                     item.listModel = wnd.fileModel;
@@ -206,13 +207,13 @@ CMainWindow {
 
 
                 case 2:
-                    item.goToLocation.connect(wnd.goToLocation);
-                    wnd.focalPointLatChanged.connect(function(){item.latitude = wnd.focalPointLat;});
-                    wnd.focalPointLongChanged.connect(function(){item.longitude = wnd.focalPointLong;});
-                    wnd.focalPointRangeChanged.connect(function(){item.range = wnd.focalPointRange;});
-                    wnd.focalPointPitchChanged.connect(function(){item.pitch = wnd.focalPointPitch;});
-                    wnd.focalPointHeadChanged.connect(function(){item.head = wnd.focalPointHead;});
-                    item.goToView.connect(wnd.travelToViewpoint);
+//                    item.goToLocation.connect(wnd.goToLocation);
+//                    wnd.focalPointLatChanged.connect(function(){item.latitude = wnd.focalPointLat;});
+//                    wnd.focalPointLongChanged.connect(function(){item.longitude = wnd.focalPointLong;});
+//                    wnd.focalPointRangeChanged.connect(function(){item.range = wnd.focalPointRange;});
+//                    wnd.focalPointPitchChanged.connect(function(){item.pitch = wnd.focalPointPitch;});
+//                    wnd.focalPointHeadChanged.connect(function(){item.head = wnd.focalPointHead;});
+//                    item.goToView.connect(wnd.travelToViewpoint);
 
                     break;
                 }
@@ -349,7 +350,7 @@ CMainWindow {
 
 
     function addToolboxItem(itemDesc) {
-
+        print(itemDesc.name)
         const toolboxModelCount = toolboxModel.count;
         var category_found = false;
         var category_index = -1;
