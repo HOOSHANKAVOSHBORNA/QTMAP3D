@@ -65,54 +65,56 @@ bool DrawPolygon::setup(MapItem *mapItem, UIHandle *uIHandle)
     return true;
 }
 
-//void DrawPolygon::mousePressEvent(QMouseEvent *event)
-//{
-//    if (mEnterPolygonZone){
-//        if(event->button() == Qt::MouseButton::LeftButton)
-//        {
-//            if(mDrawingState == DrawingState::START)
-//            {
-//                startDraw(event);
-//                event->accept();
-//            }
+bool DrawPolygon::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterPolygonZone){
+        if(ea.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
+        {
+            if(mDrawingState == DrawingState::START)
+            {
+                startDraw(ea);
+                return true;
+            }
 
-//            if(mDrawingState == DrawingState::DRAWING)
-//            {
-//                drawing(event);
-//                event->accept();
-//            }
-//        }
-//        //cancel
-//        if(event->button() == Qt::MouseButton::RightButton)
-//        {
-//            if(mDrawingState == DrawingState::DRAWING)
-//            {
-//                cancelDraw();
-//                event->accept();
-//            }
-//        }
-//        //finish
-//        if(event->button() == Qt::MouseButton::MiddleButton)
-//        {
-//            if(mDrawingState == DrawingState::DRAWING)
-//            {
-//                finishDraw();
-//                event->accept();
-//            }
-//        }
-//    }
-//}
+            if(mDrawingState == DrawingState::DRAWING)
+            {
+                drawing(ea);
+                return true;
+            }
+        }
+        //cancel
+        if(ea.getButton() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON)
+        {
+            if(mDrawingState == DrawingState::DRAWING)
+            {
+                cancelDraw();
+                return true;
+            }
+        }
+        //finish
+        if(ea.getButton() == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON)
+        {
+            if(mDrawingState == DrawingState::DRAWING)
+            {
+                finishDraw();
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
-//void DrawPolygon::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (mEnterPolygonZone){
-//        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
-//        mIconNode->setPosition(geoPos);
-//        if (mDrawingState == DrawingState::DRAWING){
-//            mouseMoveDrawing(event);
-//        }
-//    }
-//}
+bool DrawPolygon::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterPolygonZone){
+        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(ea.getX(), ea.getY());
+        mIconNode->setPosition(geoPos);
+        if (mDrawingState == DrawingState::DRAWING){
+            mouseMoveDrawing(ea);
+        }
+    }
+    return false;
+}
 
 osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
 {
@@ -128,16 +130,16 @@ osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
 
 //}
 
-void DrawPolygon::startDraw(QMouseEvent *event)
+void DrawPolygon::startDraw(const osgGA::GUIEventAdapter &event)
 {
     mPolygon = new Polygon(mMapItem);
     mMapItem->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::DRAWING;
     mPolygonProperties->setPolygon(mPolygon);
 }
-void DrawPolygon::drawing(QMouseEvent *event)
+void DrawPolygon::drawing(const osgGA::GUIEventAdapter &event)
 {
-    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
+    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
 }
 
@@ -156,13 +158,14 @@ void DrawPolygon::finishDraw()
         mDrawingState = DrawingState::START;
     }
 }
-void DrawPolygon::mouseMoveDrawing(QMouseEvent *event)
+void DrawPolygon::mouseMoveDrawing(const osgGA::GUIEventAdapter &event)
 {
     if (mPolygon->getSize() >= 2)
     {
         mPolygon->removePoint();
 
     }
-    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event->x(), event->y());
+    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
+
 }

@@ -55,59 +55,62 @@ void DrawCylinder::onToolboxItemCheckedChanged(const QString &name, const QStrin
     }
 }
 
-//void DrawCylinder::mousePressEvent(QMouseEvent *event)
-//{
-//    if (mEnterCylinderZone) {
-//        if (event->button() == Qt::MouseButton::LeftButton) {
-//            if (mDrawingState == DrawingState::START) {
-//                mDrawingState = DrawingState::DRAWING;
-//                startDraw(event);
-////                finishDrawing(event);
-//                event->accept();
-//            }
-//        }
-//        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
-//            cancelDrawing(event);
-//        }
-//        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-//            finishDrawing(event);
-//        }
-//    }
-//}
+bool DrawCylinder::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterCylinderZone) {
+        if (ea.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON) {
+            if (mDrawingState == DrawingState::START) {
+                mDrawingState = DrawingState::DRAWING;
+                startDraw(ea);
+//                finishDrawing(event);
+                return true;
+            }
+        }
+        else if (ea.getButton() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON && mDrawingState == DrawingState::DRAWING) {
+            cancelDrawing(ea);
+        }
+        else if (ea.getButton() == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON && mDrawingState == DrawingState::DRAWING) {
+            finishDrawing(ea);
+        }
+    }
+    return false;
+}
 
-//void DrawCylinder::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (mEnterCylinderZone) {
-//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-//        mIconNode->setPosition(geoPos);
-//    }
-//}
+bool DrawCylinder::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterCylinderZone) {
+        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea.getX(), ea.getY());
+        mIconNode->setPosition(geoPos);
+    }
+    return false;
+}
 
-void DrawCylinder::startDraw(QMouseEvent *event)
+bool DrawCylinder::startDraw(const osgGA::GUIEventAdapter& event)
 {
     mCylinder = new Cylinder();
     mCylinderProperties->setCylinder(mCylinder);
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
+    mMapcontroller->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
     mCylinder->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
 
     mCylinderProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
     mMapcontroller->addNodeToLayer(mCylinder, DRAW_LAYER_NAME);
-    event->accept();
+    return true;
 }
 
-void DrawCylinder::finishDrawing(QMouseEvent *event)
+bool DrawCylinder::finishDrawing(const osgGA::GUIEventAdapter& event)
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mDrawingState = DrawingState::START;
-        event->accept();
+        return true;
     }
+    return false;
 }
 
-void DrawCylinder::cancelDrawing(QMouseEvent *event)
+bool DrawCylinder::cancelDrawing(const osgGA::GUIEventAdapter& event)
 {
     if(mDrawingState == DrawingState::DRAWING){
         mMapcontroller->removeNodeFromLayer(mCylinder, DRAW_LAYER_NAME);
@@ -115,8 +118,9 @@ void DrawCylinder::cancelDrawing(QMouseEvent *event)
         mCylinderProperties->setCylinder(mCylinder);
         mDrawingState = DrawingState::START;
 
-        event->accept();
+        return true;
     }
+    return false;
 }
 
 osgEarth::Annotation::PlaceNode *DrawCylinder::makeIconNode()

@@ -25,15 +25,15 @@ public:
     bool setup(MapItem *mapItem,
                UIHandle *UIHandle) override;
 
-//    virtual void mousePressEvent(QMouseEvent* event) override;
-//    virtual void mouseMoveEvent(QMouseEvent* event) override;
-//    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private:
-    void startDraw(QMouseEvent* event);
-    void drawing(QMouseEvent* event);
+    void startDraw(const osgGA::GUIEventAdapter& event);
+    void drawing(const osgGA::GUIEventAdapter& event);
     void cancelDraw();
     void finishDraw();
-    void mouseMoveDrawing(QMouseEvent *event);
+    void mouseMoveDrawing(const osgGA::GUIEventAdapter& event);
 
     osgEarth::Annotation::PlaceNode* makeIconNode();
 

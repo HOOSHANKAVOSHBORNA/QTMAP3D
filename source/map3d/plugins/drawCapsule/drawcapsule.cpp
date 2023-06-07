@@ -55,59 +55,62 @@ void DrawCapsule::onToolboxItemCheckedChanged(const QString &name, const QString
     }
 }
 
-//void DrawCapsule::mousePressEvent(QMouseEvent *event)
-//{
-//    if (mEnterCapsuleZone) {
-//        if (event->button() == Qt::MouseButton::LeftButton) {
-//            if (mDrawingState == DrawingState::START) {
-//                mDrawingState = DrawingState::DRAWING;
-//                startDraw(event);
-////                finishDrawing(event);
-//                event->accept();
-//            }
-//        }
-//        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::DRAWING) {
-//            cancelDrawing(event);
-//        }
-//        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-//            finishDrawing(event);
-//        }
-//    }
-//}
+bool DrawCapsule::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterCapsuleZone) {
+        if (ea.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON) {
+            if (mDrawingState == DrawingState::START) {
+                mDrawingState = DrawingState::DRAWING;
+                startDraw(ea);
+//                finishDrawing(event);
+                return true;
+            }
+        }
+        else if (ea.getButton() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON) {
+            cancelDrawing(ea);
+        }
+        else if (ea.getButton() == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON && mDrawingState == DrawingState::DRAWING) {
+            finishDrawing(ea);
+        }
+    }
+    return false;
+}
 
-//void DrawCapsule::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (mEnterCapsuleZone) {
-//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-//        mIconNode->setPosition(geoPos);
-//    }
-//}
+bool DrawCapsule::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterCapsuleZone) {
+        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea.getX(), ea.getY());
+        mIconNode->setPosition(geoPos);
+    }
+    return false;
+}
 
-void DrawCapsule::startDraw(QMouseEvent *event)
+bool DrawCapsule::startDraw(const osgGA::GUIEventAdapter &event)
 {
     mCapsule = new Capsule();
     mCapsuleProperties->setCapsule(mCapsule);
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
+    mMapcontroller->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
     mCapsule->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
 
     mCapsuleProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
     mMapcontroller->addNodeToLayer(mCapsule, DRAW_LAYER_NAME);
-    event->accept();
+    return true;
 }
 
-void DrawCapsule::finishDrawing(QMouseEvent *event)
+bool DrawCapsule::finishDrawing(const osgGA::GUIEventAdapter &event)
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mDrawingState = DrawingState::START;
-        event->accept();
+        return true;
     }
+    return false;
 }
 
-void DrawCapsule::cancelDrawing(QMouseEvent *event)
+bool DrawCapsule::cancelDrawing(const osgGA::GUIEventAdapter &event)
 {
     if(mDrawingState == DrawingState::DRAWING){
         mMapcontroller->removeNodeFromLayer(mCapsule, DRAW_LAYER_NAME);
@@ -116,7 +119,7 @@ void DrawCapsule::cancelDrawing(QMouseEvent *event)
         mDrawingState = DrawingState::START;
     }
 
-    event->accept();
+    return true;
 }
 
 
