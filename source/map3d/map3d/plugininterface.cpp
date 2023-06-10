@@ -12,12 +12,15 @@ UIHandle::UIHandle(MainWindow *mainWindow, QObject *parent) : QObject(parent)
     mMainWindow = mainWindow;
 }
 
+MapItem *PluginInterface::mMapItem;
+UIHandle *PluginInterface::mUiHandle;
+DefenseDataManager *PluginInterface::mDefenseDataManager;
+
 PluginInterface::PluginInterface(QObject *parent):
     QObject(parent)
 {
 
 }
-
 
 MapItem *PluginInterface::mapItem() const
 {
@@ -35,7 +38,7 @@ void PluginInterface::setMapItem(MapItem *mapItem)
 //        }
 //    }
 //    if(!isSetHandler)
-        mMapItem->getViewer()->addEventHandler(this);
+//        mMapItem->getViewer()->addEventHandler(this);
 }
 
 UIHandle *PluginInterface::uiHandle() const
@@ -48,38 +51,48 @@ void PluginInterface::setUiHandle(UIHandle *newUiHandle)
         mUiHandle = newUiHandle;
 }
 
-bool PluginInterface::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+DefenseDataManager *PluginInterface::defenseDataManager() const
 {
-    // Get view and event adaptor
-    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
-
-    if (!view)
-    {
-        return false;
-    }
-    switch (ea.getEventType())
-    {
-    case osgGA::GUIEventAdapter::FRAME:
-        return frameEvent(ea, aa);
-    case (osgGA::GUIEventAdapter::KEYDOWN):
-        return keyPressEvent(ea, aa);
-    case (osgGA::GUIEventAdapter::KEYUP):
-        return keyReleaseEvent(ea, aa);
-    case (osgGA::GUIEventAdapter::PUSH):
-        return mousePressEvent(ea, aa);
-    case (osgGA::GUIEventAdapter::RELEASE):
-        return mouseReleaseEvent(ea, aa);
-    case (osgGA::GUIEventAdapter::DOUBLECLICK):
-        return mouseDoubleClickEvent(ea, aa);
-    case (osgGA::GUIEventAdapter::MOVE):
-        return mouseMoveEvent(ea, aa);
-    case (osgGA::GUIEventAdapter::SCROLL):
-        return wheelEvent(ea, aa);
-    default:
-
-        return false;
-    }
+        return mDefenseDataManager;
 }
+
+void PluginInterface::setDefenseDataManager(DefenseDataManager *defenseDataManager)
+{
+        mDefenseDataManager = defenseDataManager;
+}
+
+//bool PluginInterface::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+//{
+//    // Get view and event adaptor
+//    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
+
+//    if (!view)
+//    {
+//        return false;
+//    }
+//    switch (ea.getEventType())
+//    {
+//    case osgGA::GUIEventAdapter::FRAME:
+//        return frameEvent(ea, aa);
+//    case (osgGA::GUIEventAdapter::KEYDOWN):
+//        return keyPressEvent(ea, aa);
+//    case (osgGA::GUIEventAdapter::KEYUP):
+//        return keyReleaseEvent(ea, aa);
+//    case (osgGA::GUIEventAdapter::PUSH):
+//        return mousePressEvent(ea, aa);
+//    case (osgGA::GUIEventAdapter::RELEASE):
+//        return mouseReleaseEvent(ea, aa);
+//    case (osgGA::GUIEventAdapter::DOUBLECLICK):
+//        return mouseDoubleClickEvent(ea, aa);
+//    case (osgGA::GUIEventAdapter::MOVE):
+//        return mouseMoveEvent(ea, aa);
+//    case (osgGA::GUIEventAdapter::SCROLL):
+//        return wheelEvent(ea, aa);
+//    default:
+
+//        return false;
+//    }
+//}
 
 QString PluginInterface::name() const
 {

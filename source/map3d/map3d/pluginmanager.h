@@ -11,7 +11,7 @@
 
 #include "plugininterface.h"
 
-class MapController;
+//class MapController;
 class PluginInterface;
 
 class ItemDescProxy : public QObject
@@ -64,6 +64,15 @@ struct PluginInfo
     int              sideItemIndex      = -1;
 };
 
+class PluginManager;
+class EventHandler: public osgGA::GUIEventHandler{
+public:
+    EventHandler(PluginManager *pluginManager);
+    virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+private:
+    PluginManager *mPluginManager;
+};
+
 class PluginManager : public QObject
 {
     Q_OBJECT
@@ -73,10 +82,12 @@ public:
 
 public:
     void loadPlugins();
-    void performPluginsInitQMLDesc(QQmlEngine *qmlEngine);
-    void performPluginsSetup(MapItem *mapController);
+//    void setQmlEngine(QQmlEngine *qmlEngine);
+//    void setMapItem(MapItem *mapItem);
+    void setup();
+//    void setDefenseDataManager(DefenseDataManager *defenseDataManager);
 
-    std::list<PluginInfo>& pluginsInfoList();
+//    std::list<PluginInfo>& pluginsInfoList();
 
 public slots:
     void onSideItemCreated(int index, QObject *sideItem);
@@ -103,6 +114,7 @@ public:
 
 
 private:
+    friend EventHandler;
     std::list<PluginInfo> mPluginsInfoList;
     QMap<QString, QMap<QString, PluginInterface*>> mToolboxItemsMap;
     QMap<QString, QMap<QString, PluginInterface*>> mFileItemsMap;

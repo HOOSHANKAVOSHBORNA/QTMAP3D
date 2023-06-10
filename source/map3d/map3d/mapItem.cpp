@@ -405,6 +405,9 @@ void MapItem::initializeOsgEarth()
     mOSGRenderNode->setSceneData(mMapRoot);
 
     osgEarth::Drivers::GDALOptions gdal;
+    gdal.maxDataLevelOverride() = 700000;
+    gdal.interpolation() = osgEarth::ElevationInterpolation::INTERP_CUBICSPLINE;
+    gdal.L2CacheSize() = 2048;
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
     addLayer(imlayer);

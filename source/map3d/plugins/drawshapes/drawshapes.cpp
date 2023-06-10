@@ -118,14 +118,14 @@ bool DrawShapes::mouseDoubleClickEvent(const osgGA::GUIEventAdapter &/*event*/, 
     }
     return false;
 }
-void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
+bool DrawShapes::onImgOvlyBtnClick(const osgGA::GUIEventAdapter &event)
 {
     osg::Vec3d worldPos;
-    mMapItem->screenToWorld(event->x(), event->y(), worldPos);
+    mMapItem->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mMapItem->getMapSRS(), worldPos);
 
-    if(event->button() == Qt::MouseButton::LeftButton && !(mDrawingState==DrawingState::START))
+    if(event.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON && !(mDrawingState==DrawingState::START))
     {
         osg::Image* image = osgDB::readImageFile("../data/ImgOverLay/usa_flag.png");
         if (image)
@@ -140,11 +140,12 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
             //mMapItem->getMapNode()->addChild(mImgOvlEditor);
             mMapItem->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
 
-
+            return true;
         }
+        return false;
     }
 
-    if(event->button() == Qt::MouseButton::RightButton && mDrawingState==DrawingState::START)
+    if(event.getButton() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::DELETE;
         mMapItem->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
@@ -155,7 +156,7 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
         mImgOvlEditor = nullptr;
     }
 
-    if(event->button() == Qt::MouseButton::MiddleButton && mDrawingState==DrawingState::START)
+    if(event.getButton() == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::FINISH;
         mMapItem->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
@@ -163,4 +164,5 @@ void DrawShapes::onImgOvlyBtnClick(QMouseEvent *event)
         mImageOverlay = nullptr;
         mImgOvlEditor = nullptr;
     }
+    return false;
 }

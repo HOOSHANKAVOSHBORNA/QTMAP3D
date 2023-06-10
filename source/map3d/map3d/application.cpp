@@ -38,6 +38,7 @@ void Application::initialize()
     //initializeNetworkManager();
     registerTypes();
     initializeQmlEngine();
+    initializeDefenseDataManager();
 
 
 //    QObject::connect(this, &Application::mainWindowCreated,
@@ -212,12 +213,12 @@ void Application::onUICreated()
 
 void Application::setup()
 {
-    mPluginManager->performPluginsInitQMLDesc(mQmlEngine);
+//    mPluginManager->performPluginsInitQMLDesc(mQmlEngine);
 
-    mMainWindow->initializePluginsUI(mPluginManager->pluginsInfoList());
+//    mMainWindow->initializePluginsUI(mPluginManager->pluginsInfoList());
+    mPluginManager->setup();
 
-    initializeDefenseDataManager();
-    mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
-    emit defenseDataManagerInitialized(mDefenseDataManager);
+//    mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
+//    emit defenseDataManagerInitialized(mDefenseDataManager);
 }
 

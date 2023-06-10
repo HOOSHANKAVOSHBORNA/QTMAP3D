@@ -11,6 +11,84 @@
 #include "plugininterface.h"
 #include "application.h"
 #include "mainwindow.h"
+#include "qqmlapplicationengine.h"
+
+EventHandler::EventHandler(PluginManager *pluginManager)
+{
+    mPluginManager = pluginManager;
+}
+
+bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    osgViewer::View *view = dynamic_cast<osgViewer::View *>(&aa);
+
+    if (!view)
+    {
+        return false;
+    }
+    switch (ea.getEventType())
+    {
+    case osgGA::GUIEventAdapter::FRAME:
+        for (auto& item : mPluginManager->mPluginsInfoList) {
+            bool res = item.interface->frameEvent(ea, aa);
+            if(res)
+                return true;
+        }
+        return false;
+    case (osgGA::GUIEventAdapter::KEYDOWN):
+        for (auto& item : mPluginManager->mPluginsInfoList) {
+            bool res = item.interface->keyPressEvent(ea, aa);
+            if(res)
+                return true;
+        }
+        return false;
+    case (osgGA::GUIEventAdapter::KEYUP):
+        for (auto& item : mPluginManager->mPluginsInfoList) {
+            bool res = item.interface->keyReleaseEvent(ea, aa);
+            if(res)
+                return true;
+        }
+        return false;
+    case (osgGA::GUIEventAdapter::PUSH):
+        for (auto& item : mPluginManager->mPluginsInfoList) {
+            bool res = item.interface->mousePressEvent(ea, aa);
+            if(res)
+                return true;
+        }
+        return false;
+    case (osgGA::GUIEventAdapter::RELEASE):
+        for (auto& item : mPluginManager->mPluginsInfoList) {
+            bool res = item.interface->mouseReleaseEvent(ea, aa);
+            if(res)
+                return true;
+        }
+        return false;
+    case (osgGA::GUIEventAdapter::DOUBLECLICK):
+        for (auto& item : mPluginManager->mPluginsInfoList) {
+            bool res = item.interface->mouseDoubleClickEvent(ea, aa);
+            if(res)
+                return true;
+        }
+        return false;
+    case (osgGA::GUIEventAdapter::MOVE):
+        for (auto& item : mPluginManager->mPluginsInfoList) {
+            bool res = item.interface->mouseMoveEvent(ea, aa);
+            if(res)
+                return true;
+        }
+        return false;
+    case (osgGA::GUIEventAdapter::SCROLL):
+        for (auto& item : mPluginManager->mPluginsInfoList) {
+            bool res = item.interface->wheelEvent(ea, aa);
+            if(res)
+                return true;
+        }
+        return false;
+    default:
+
+        return false;
+    }
+}
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
@@ -34,7 +112,7 @@ void PluginManager::loadPlugins()
 
             if (!instance)
             {
-                QString errStr = pluginLoader.errorString();
+//                QString errStr = pluginLoader.errorString();
                 qWarning() << "Plugin loading failed: [" << fileName
                            << "] " << pluginLoader.errorString();
                 continue;
@@ -55,20 +133,20 @@ void PluginManager::loadPlugins()
     }
 }
 
-void PluginManager::performPluginsInitQMLDesc(QQmlEngine *qmlEngine)
+void PluginManager::setup()
 {
-
-
-
-
+    auto mapItem = Application::instance()->mainWindow()->getMapItem();
+    PluginInterface::setMapItem(mapItem);
+    mapItem->getViewer()->addEventHandler(new EventHandler(this));
+    //--------------------------------
+    QQmlEngine *qmlEngine = dynamic_cast<QQmlEngine*>(Application::instance()->qmlEngine());
     for (const auto& item : mPluginsInfoList) {
         item.interface->initializeQMLDesc(qmlEngine, item.qmlDesc);
     }
-}
-
-void PluginManager::performPluginsSetup(MapItem *mapItem)
-{
+    //-----------------------------------
     DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
+    PluginInterface::setDefenseDataManager(defenseDataManager);
+
     UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
     auto toolbox = Application::instance()->mainWindow()->toolbox();
     for (const auto& item : mPluginsInfoList) {
@@ -78,12 +156,38 @@ void PluginManager::performPluginsSetup(MapItem *mapItem)
         item.interface->setDefenseDataManager(defenseDataManager);
 
     }
+    PluginInterface::setUiHandle(uiHandle);
 }
 
-std::list<PluginInfo> &PluginManager::pluginsInfoList()
-{
-    return mPluginsInfoList;
-}
+//void PluginManager::setQmlEngine(QQmlEngine *qmlEngine)
+//{
+//    for (const auto& item : mPluginsInfoList) {
+//        item.interface->initializeQMLDesc(qmlEngine, item.qmlDesc);
+//    }
+//}
+
+//void PluginManager::setMapItem(MapItem *mapItem)
+//{
+//    PluginInterface::setMapItem(mapItem);
+//    mapItem->getViewer()->addEventHandler(new EventHandler(this));
+////    DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
+////    UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
+////    for (const auto& item : mPluginsInfoList) {
+////        item.interface->setup(mapItem, uiHandle);
+////        item.interface->setMapItem(mapItem);
+////        item.interface->setDefenseDataManager(defenseDataManager);
+////    }
+//}
+
+//void PluginManager::setDefenseDataManager(DefenseDataManager *defenseDataManager)
+//{
+
+//}
+
+//std::list<PluginInfo> &PluginManager::pluginsInfoList()
+//{
+//    return mPluginsInfoList;
+//}
 
 void PluginManager::onSideItemCreated(int index, QObject *sideItem)
 {
@@ -200,3 +304,4 @@ void PluginManager::onFileItemClicked(const QString &name, const QString &catego
 //        item.interface->wheelEvent(event);
 //    }
 //}
+
