@@ -19,7 +19,9 @@ bool DrawBox::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 
 bool DrawBox::setup()
 {
-    toolbox()->addItem(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true,  false, ""});
+    auto toolboxItem =  new ToolboxItem{BOX, CATEGORY, "qrc:/resources/box.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemClicked, this, &DrawBox::onBoxClick);
+    toolbox()->addItem(toolboxItem);
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -84,6 +86,11 @@ bool DrawBox::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
         return true;
     }
     return false;
+}
+
+void DrawBox::onBoxClick()
+{
+    qDebug()<<"onBoxClick()";
 }
 
 bool DrawBox::startDraw(const osgGA::GUIEventAdapter &ea)

@@ -26,7 +26,7 @@ bool DrawCircle::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 
 bool DrawCircle::setup()
 {
-    toolbox()->addItem(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true,  false, ""});
+//    toolbox()->addItem(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true,  false, ""});
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 

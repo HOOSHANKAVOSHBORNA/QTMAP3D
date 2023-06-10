@@ -117,6 +117,32 @@ struct PluginQMLDesc
     QList<ItemDesc*> fileItemsList;
 };
 
+struct ToolboxItem: public QObject
+{
+    Q_OBJECT
+public:
+    ToolboxItem(
+        QString _name      = QString(),
+        QString _category  = QString(),
+        QString _iconUrl   = QString(),
+        bool    _checkable = false):
+        name     (_name     ),
+        category (_category ),
+        iconUrl  (_iconUrl  ),
+        checkable(_checkable)
+    {
+
+    }
+
+    QString name;
+    QString category;
+    QString iconUrl;
+    bool    checkable = false;
+signals:
+    void itemClicked();
+    void itemChecked(bool check);
+};
+
 class PluginInterface : public QObject
 {
     friend class PluginManager;

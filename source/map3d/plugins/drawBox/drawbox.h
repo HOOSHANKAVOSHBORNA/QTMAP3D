@@ -8,7 +8,6 @@
 #include <osg/ClipNode>
 #include <osg/ClipPlane>
 
-#include "mapItem.h"
 #include "plugininterface.h"
 #include "box.h"
 #include "boxProperties.h"
@@ -29,7 +28,8 @@ public:
     void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-
+private slots:
+    void onBoxClick();
 private:
     bool startDraw(const osgGA::GUIEventAdapter &ea);
     bool finishDrawing(const osgGA::GUIEventAdapter &ea);

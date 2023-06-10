@@ -195,20 +195,24 @@ Toolbox::Toolbox(QObject *parent):
 
 }
 
-void Toolbox::addItem(ItemDesc *item)
+void Toolbox::addItem(ToolboxItem *toolboxItem)
 {
-    bool s = mItems.contains(item->category);
+    bool s = mItems.contains(toolboxItem->category);
     if (!s){
-        QStandardItem* catItem = new QStandardItem(item->category);
-        mItems[item->category] = catItem;
+        QStandardItem* catItem = new QStandardItem(toolboxItem->category);
+        mItems[toolboxItem->category] = catItem;
         QStandardItem *rootItem = invisibleRootItem();
         rootItem->appendRow(catItem);
     }
-    mItems[item->category]->appendRow(new QStandardItem(item->name));
+    mItems[toolboxItem->category]->appendRow(new QStandardItem(toolboxItem->name));
+    mToolboxItems[toolboxItem->name] = toolboxItem;
 }
 
 void Toolbox::onItemClicked(QString name)
 {
+    if(mToolboxItems.contains(name)){
+        emit mToolboxItems[name]->itemClicked();
+    }
 //    for (auto& v: mItems.values())
 //    emit toolBoxItemClicked()
     qDebug() << ", " << name;
