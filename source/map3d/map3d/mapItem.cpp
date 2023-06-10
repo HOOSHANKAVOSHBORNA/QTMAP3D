@@ -182,9 +182,10 @@ qreal MapItem::headingAngle() const
 
 void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
 {
-    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
+//    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
+    float height = 0;
     osgUtil::LineSegmentIntersector::Intersections intersections;
-    if (mOSGRenderNode->computeIntersections(x, height - y, intersections))
+    if (mOSGRenderNode->computeIntersections(x, /*height - */y, intersections))
     {
         for (const auto &intersection : intersections)
         {

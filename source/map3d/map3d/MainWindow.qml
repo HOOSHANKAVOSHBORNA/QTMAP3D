@@ -9,10 +9,13 @@ import Crystal 1.0
 
 
 CMainWindow {
-    CListWindow{
-        width: 100
-        height: 100
+
+    ToolboxView {
+        model: toolbox
+        anchors.top: parent.top
+        anchors.left: parent.left
     }
+
     readonly property int       _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
@@ -53,7 +56,7 @@ CMainWindow {
     MapControllerItem {
         anchors.fill: parent
         objectName: "MainMap"
-
+        z: -1
     }
 
     //flags: Qt.FramelessWindowHint
@@ -376,6 +379,7 @@ CMainWindow {
                                                                           'itemCheckable' : itemDesc.checkable
                                                                       });
                 wnd.toolboxItemCreated(itemDesc);
+                print("kkkkkkkkkkkkkkkkkkk")
             } else {
                 return false;
             }

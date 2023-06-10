@@ -17,6 +17,7 @@ MapItem *PluginInterface::mMapItem;
 UIHandle *PluginInterface::mUiHandle;
 DefenseDataManager *PluginInterface::mDefenseDataManager;
 QQmlEngine *PluginInterface::mQmlEngine;
+Toolbox *PluginInterface::mToolbox;
 
 PluginInterface::PluginInterface(QObject *parent):
     QObject(parent)
@@ -114,6 +115,16 @@ QString PluginInterface::name() const
 void PluginInterface::setName(const QString &newName)
 {
     mName = newName;
+}
+
+Toolbox *PluginInterface::toolbox() const
+{
+    return mToolbox;
+}
+
+void PluginInterface::setToolbox(Toolbox *newToolbox)
+{
+    mToolbox = newToolbox;
 }
 
 void UIHandle::iwSetReceiverObject(QObject *receiverObject)

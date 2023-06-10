@@ -54,6 +54,7 @@ bool drawSphere::setup()
 
 bool drawSphere::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+
     if (mEnterSphereZone) {
         if (ea.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON) {
             if (mDrawingState == DrawingState::START) {
