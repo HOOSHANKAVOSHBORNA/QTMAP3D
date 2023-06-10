@@ -5,7 +5,7 @@
 
 
 LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
-    QAbstractListModel(parent)
+    QStandardItemModel(parent)
 {
 
         updateLayers(mapItem->getMapNode()->getMap());
@@ -17,21 +17,6 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
             updateLayers(mapItem->getMapNode()->getMap());
         });
 
-
-//    QStandardItem *rootItem = invisibleRootItem();
-//    QStandardItem *group1 = new QStandardItem;
-//    QStandardItem *group2 = new QStandardItem;
-//    QStandardItem *group3 = new QStandardItem;
-
-//    QStandardItem *value1 = new QStandardItem;
-//    QStandardItem *value2 = new QStandardItem;
-//    QStandardItem *value3 = new QStandardItem;
-//    QStandardItem *value4 = new QStandardItem;
-//    QStandardItem *value5 = new QStandardItem;
-//    QStandardItem *value6 = new QStandardItem;
-//    QStandardItem *value7 = new QStandardItem;
-//    QStandardItem *value8 = new QStandardItem;
-//    QStandardItem *value9 = new QStandardItem;
 
 //    rootItem->appendRow(group1);
 //    rootItem->appendRow(group2);
@@ -60,100 +45,115 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
 //    value7->setText("value7");
 //    value8->setText("value8");
 //    value9->setText("value9");
-//}
+}
 
 //int LayersModel::columnCount(const QModelIndex &parent) const
 //{
 //    return 1;
 //}
 
-
-}
-
 void LayersModel::updateLayers(osgEarth::Map *map)
 {
-        beginResetModel();
+//        beginResetModel();
 
-        mLayersList.clear();
+//        mLayersList.clear();
+        this->clear();
+
+        QStandardItem *rootItem = invisibleRootItem();
 
         osgEarth::LayerVector layers;
         map->getLayers(layers);
 
         for(auto layer : layers) {
-            mLayersList.push_back(layer);
+//            mLayersList.push_back(layer);
+//            rootItem->appendRows(mLayersList);
+            QStandardItem *lv1Items = new QStandardItem(QString(layer->getName().c_str()));
+            rootItem->appendRow(lv1Items);
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+            if (group) {
+                group->getNumChildren();
+                for(int i = 0; i < group->getNumChildren(); i++){
+                    auto node = group->getChild(i);
+                    QStandardItem *lv2Items = new QStandardItem(QString(node->getName().c_str()));
+                    lv1Items->appendRow(lv2Items);
+                }
+            }
+
+
+
         }
 
-        endResetModel();
+//        endResetModel();
 }
 
-void LayersModel::clear()
-{
-        beginResetModel();
-        mLayersList.clear();
-        endResetModel();
-}
+//void LayersModel::clear()
+//{
+//        beginResetModel();
+//        mLayersList.clear();
+//        endResetModel();
+//}
 
 void LayersModel::toggleLayerEnabled(int layerIndex)
 {
-        if (layerIndex < mLayersList.size()) {
-            auto layer = mLayersList[layerIndex];
-            auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
-            if (visibleLayer) {
-                visibleLayer->setVisible(!visibleLayer->getVisible());
-            } else {
-                layer->setEnabled(!layer->getEnabled());
-            }
-            emit dataChanged(index(layerIndex),
-                             index(layerIndex),
-                             {LayerEnabledRole});
-        }
+//        if (layerIndex < mLayersList.size()) {
+//            auto layer = mLayersList[layerIndex];
+//            auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+//            if (visibleLayer) {
+//                visibleLayer->setVisible(!visibleLayer->getVisible());
+//            } else {
+//                layer->setEnabled(!layer->getEnabled());
+//            }
+//            emit dataChanged(index(layerIndex),
+//                             index(layerIndex),
+//                             {LayerEnabledRole});
+//        }
 }
 
-int LayersModel::rowCount(const QModelIndex &parent) const
-{
-        return mLayersList.size();
-}
+//int LayersModel::rowCount(const QModelIndex &parent) const
+//{
+//        return mLayersList.size();
+//}
 
-QVariant LayersModel::data(const QModelIndex &index, int role) const
-{
-        if (index.row() >= mLayersList.size())
-            return QVariant();
+//QVariant LayersModel::data(const QModelIndex &index, int role) const
+//{
+//        if (index.row() >= mLayersList.size())
+//            return QVariant();
 
-        switch (role) {
-        case Qt::DisplayRole:
-        {
-            return QVariant::fromValue<QString>(mLayersList[index.row()]->getName().c_str());
+//        switch (role) {
+//        case Qt::DisplayRole:
+//        {
+//            return QVariant::fromValue<QString>(mLayersList[index.row()]->getName().c_str());
 
-            break;
-        }
+//            break;
+//        }
 
-        case LayerIndexRole:
-        {
-            return index.row();
-            break;
-        }
+//        case LayerIndexRole:
+//        {
+//            return index.row();
+//            break;
+//        }
 
-        case LayerEnabledRole:
-        {
-            auto layer = mLayersList[index.row()];
-            auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
-            if (visibleLayer) {
-                return QVariant::fromValue<bool>(visibleLayer->getVisible());
-            } else {
-                return QVariant::fromValue<bool>(layer->getEnabled());
-            }
-            break;
-        }
+//        case LayerEnabledRole:
+//        {
+//            auto layer = mLayersList[index.row()];
+//            auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+//            if (visibleLayer) {
+//                return QVariant::fromValue<bool>(visibleLayer->getVisible());
+//            } else {
+//                return QVariant::fromValue<bool>(layer->getEnabled());
+//            }
+//            break;
+//        }
 
-        }
+//        }
 
-        return QVariant();
-}
+//        return QVariant();
+//}
 
-QHash<int, QByteArray> LayersModel::roleNames() const
-{
-        auto hash = QAbstractListModel::roleNames();
-        hash[LayerIndexRole] = "layer_index";
-        hash[LayerEnabledRole] = "layer_enabled";
-        return hash;
-}
+//QHash<int, QByteArray> LayersModel::roleNames() const
+//{
+//        auto hash = QAbstractListModel::roleNames();
+//        hash[LayerIndexRole] = "layer_index";
+//        hash[LayerEnabledRole] = "layer_enabled";
+//        return hash;
+//}

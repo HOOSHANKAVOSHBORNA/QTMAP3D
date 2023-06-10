@@ -106,67 +106,73 @@ Item {
 
             ScrollView {
                 anchors.fill: parent
-                ColumnLayout {
-                    width: containerItem.width
-                    id: col
 
-
-                    Repeater {
-                        model: rootItem.layersModel
-
-                        Item {
-                            id: row
-                            Layout.fillWidth: true
-                            Layout.minimumHeight: lay.implicitHeight
-                            RowLayout {
-                                id:lay
-                                anchors.fill: parent
-
-                                Item {
-                                    id: img
-                                    Layout.preferredWidth: 20
-                                    Layout.preferredHeight: 20
-                                    Layout.alignment: Qt.AlignCenter
-
-                                    Image {
-                                        anchors.fill: parent
-                                        source: "qrc:/Resources/eye_open.png"
-                                        sourceSize: Qt.size(20,20)
-                                        visible: layer_enabled
-                                    }
-                                    Image {
-                                        anchors.fill: parent
-                                        source: "qrc:/Resources/eye_close.png"
-                                        sourceSize: Qt.size(20,20)
-                                        visible: layer_enabled == false
-                                    }
-                                }
-
-
-                                Label {
-                                    id: label
-                                    text: display
-                                    font.pointSize: 10
-                                    color: "white"
-
-                                    Layout.alignment: Qt.AlignCenter
-                                    Layout.fillWidth: true
-
-                                }
-
-                            }
-
-
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: function() {
-                                    rootItem.toggleLayerEnabled(layer_index);
-                                }
-                            }
-                        }
-                    }
+                CustomTreeView{
+                    anchors.fill: parent
+                    model: layersModel
                 }
+
+//                ColumnLayout {
+//                    width: containerItem.width
+//                    id: col
+
+
+//                    Repeater {
+//                        model: rootItem.layersModel
+
+//                        Item {
+//                            id: row
+//                            Layout.fillWidth: true
+//                            Layout.minimumHeight: lay.implicitHeight
+//                            RowLayout {
+//                                id:lay
+//                                anchors.fill: parent
+
+//                                Item {
+//                                    id: img
+//                                    Layout.preferredWidth: 20
+//                                    Layout.preferredHeight: 20
+//                                    Layout.alignment: Qt.AlignCenter
+
+//                                    Image {
+//                                        anchors.fill: parent
+//                                        source: "qrc:/Resources/eye_open.png"
+//                                        sourceSize: Qt.size(20,20)
+//                                        visible: layer_enabled
+//                                    }
+//                                    Image {
+//                                        anchors.fill: parent
+//                                        source: "qrc:/Resources/eye_close.png"
+//                                        sourceSize: Qt.size(20,20)
+//                                        visible: layer_enabled == false
+//                                    }
+//                                }
+
+
+//                                Label {
+//                                    id: label
+//                                    text: display
+//                                    font.pointSize: 10
+//                                    color: "white"
+
+//                                    Layout.alignment: Qt.AlignCenter
+//                                    Layout.fillWidth: true
+
+//                                }
+
+//                            }
+
+
+
+//                            MouseArea {
+//                                anchors.fill: parent
+//                                onClicked: function() {
+//                                    rootItem.toggleLayerEnabled(layer_index);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
     }
