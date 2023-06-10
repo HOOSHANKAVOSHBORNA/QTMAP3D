@@ -13,14 +13,12 @@ public:
     ~FeatureLayer()override{}
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     void onToolboxItemClicked(const QString &name, const QString &category) override;
-    bool setup(MapItem *mapItem,
-               UIHandle *UIHandle) override;
+    bool setup() override;
 private:
     void addGDAL();
     void addWFS();
     void addArcGIS();
 private:
-    MapItem* mMapItem{nullptr};
 };
 
 #endif // FEATURELAYER_H

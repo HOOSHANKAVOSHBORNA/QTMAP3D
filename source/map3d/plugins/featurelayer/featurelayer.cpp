@@ -49,10 +49,9 @@ void FeatureLayer::onToolboxItemClicked(const QString &name, const QString &cate
     }
 }
 
-bool FeatureLayer::setup(MapItem *mapItem,
-                         UIHandle *UIHandle)
+bool FeatureLayer::setup()
 {
-    mMapItem = mapItem;
+    return true;
 }
 
 void FeatureLayer::addGDAL()
@@ -86,7 +85,7 @@ void FeatureLayer::addGDAL()
 
         osgEarth::Drivers::ModelLayerOptions *options = new osgEarth::Drivers::ModelLayerOptions(nodeName, geomOptions);
         osg::ref_ptr<osgEarth::ModelLayer>    layer   = new osgEarth::Drivers::ModelLayer(*options);
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
 
     }
 
@@ -117,7 +116,7 @@ void FeatureLayer::addWFS()
         //        geomOptions.styles()->addStyle(style);
         geomOptions.enableLighting() = false;
         osg::ref_ptr<osgEarth::ModelLayer>  layer = new osgEarth::Drivers::ModelLayer(osgEarth::Drivers::ModelLayerOptions(nodeName, geomOptions));
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
 
     }
 }
@@ -143,7 +142,7 @@ void FeatureLayer::addArcGIS()
         arcGeomOptions.enableLighting() = false;
         osg::ref_ptr<osgEarth::ModelLayer>  layer = new osgEarth::ModelLayer(osgEarth::ModelLayerOptions(nodeName, arcGeomOptions));
 
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
     }
 }
 

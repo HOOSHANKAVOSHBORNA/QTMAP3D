@@ -140,6 +140,8 @@ void PluginManager::setup()
     mapItem->getViewer()->addEventHandler(new EventHandler(this));
     //--------------------------------
     QQmlEngine *qmlEngine = dynamic_cast<QQmlEngine*>(Application::instance()->qmlEngine());
+    PluginInterface::setQmlEngine(qmlEngine);
+
     for (const auto& item : mPluginsInfoList) {
         item.interface->initializeQMLDesc(qmlEngine, item.qmlDesc);
     }
@@ -148,15 +150,13 @@ void PluginManager::setup()
     PluginInterface::setDefenseDataManager(defenseDataManager);
 
     UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
-    auto toolbox = Application::instance()->mainWindow()->toolbox();
-    for (const auto& item : mPluginsInfoList) {
-        item.interface->setToolbox(toolbox);
-        item.interface->setup(mapItem, uiHandle);
-        item.interface->setMapItem(mapItem);
-        item.interface->setDefenseDataManager(defenseDataManager);
-
-    }
     PluginInterface::setUiHandle(uiHandle);
+    auto toolbox = Application::instance()->mainWindow()->toolbox();
+    PluginInterface::setToolbox(toolbox);
+    //-------------------------------------
+    for (const auto& item : mPluginsInfoList) {
+        item.interface->setup();
+    }
 }
 
 //void PluginManager::setQmlEngine(QQmlEngine *qmlEngine)

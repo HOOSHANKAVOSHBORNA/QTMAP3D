@@ -10,7 +10,6 @@ DrawBox::DrawBox(QObject *parent): PluginInterface(parent)
 
 bool DrawBox::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-    mQmlEngine = engine;
     qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
 
     desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true,  false, ""});
@@ -18,17 +17,17 @@ bool DrawBox::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     return true;
 }
 
-bool DrawBox::setup(MapItem *mapItem, UIHandle *uiHandle)
+bool DrawBox::setup()
 {
-    toolbox()->addItem(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true,  false, ""});
-    mUiHandle = uiHandle;
-    mMapcontroller = mapItem;
+    auto toolboxItem =  new ToolboxItem{BOX, CATEGORY, "qrc:/resources/box.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemClicked, this, &DrawBox::onBoxClick);
+    toolbox()->addItem(toolboxItem);
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *boxLayer = new osgEarth::ModelLayer();
     boxLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(boxLayer);
+    mapItem()->addLayer(boxLayer);
 
     return true;
 }
@@ -40,9 +39,9 @@ void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &ca
             if (checked) {
                 mEnterBoxZone = true;
                 mDrawingState = DrawingState::START;
-                mBoxProperties = new BoxProperties(mBox, mQmlEngine, mUiHandle, mMapcontroller);
+                mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
                 mBoxProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
@@ -50,7 +49,7 @@ void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &ca
                 mDrawingState = DrawingState::FINISH;
                 mBox = nullptr;
                 mBoxProperties->hide();
-                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     }
@@ -82,11 +81,16 @@ bool DrawBox::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 bool DrawBox::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterBoxZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
         return true;
     }
     return false;
+}
+
+void DrawBox::onBoxClick()
+{
+    qDebug()<<"onBoxClick()";
 }
 
 bool DrawBox::startDraw(const osgGA::GUIEventAdapter &ea)
@@ -95,12 +99,13 @@ bool DrawBox::startDraw(const osgGA::GUIEventAdapter &ea)
     mBoxProperties->setBox(mBox);
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(ea.getX(), ea.getY(), worldPos);
+
+    mapItem()->screenToWorld(ea.getX(), ea.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
-    mBox->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mBoxProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mMapcontroller->addNodeToLayer(mBox, DRAW_LAYER_NAME);
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
+    mBox->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    mBoxProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    mapItem()->addNodeToLayer(mBox, DRAW_LAYER_NAME);
     return true;
 }
 
@@ -116,7 +121,7 @@ bool DrawBox::finishDrawing(const osgGA::GUIEventAdapter &ea)
 bool DrawBox::cancelDrawing(const osgGA::GUIEventAdapter &ea)
 {
     if(mDrawingState == DrawingState::DRAWING){
-        mMapcontroller->removeNodeFromLayer(mBox, DRAW_LAYER_NAME);
+        mapItem()->removeNodeFromLayer(mBox, DRAW_LAYER_NAME);
         mBox = nullptr;
         mBoxProperties->setBox(mBox);
         mDrawingState = DrawingState::START;

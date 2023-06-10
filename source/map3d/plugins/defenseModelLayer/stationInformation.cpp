@@ -75,7 +75,7 @@ StationInformtion::StationInformtion(DefenseModelLayer *defenseModelLayer, Stati
 	mDefenseModelLayer(defenseModelLayer),
 	mData(data)
 {
-	QQmlComponent *comp = new QQmlComponent(defenseModelLayer->mQmlEngine);
+    QQmlComponent *comp = new QQmlComponent(defenseModelLayer->qmlEngine());
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
 
         if (comp->status() == QQmlComponent::Ready) {
@@ -94,5 +94,5 @@ StationInformtion::StationInformtion(DefenseModelLayer *defenseModelLayer, Stati
 
 void StationInformtion::show()
 {
-	mDefenseModelLayer->mUIHandle->iwShow(mItem, QString::number(mData->info.Number));
+    mDefenseModelLayer->uiHandle()->iwShow(mItem, QString::number(mData->info.Number));
 }

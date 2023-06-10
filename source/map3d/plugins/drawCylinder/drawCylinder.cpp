@@ -10,7 +10,6 @@ DrawCylinder::DrawCylinder(QObject *parent): PluginInterface(parent)
 
 bool DrawCylinder::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-    mQmlEngine = engine;
     qmlRegisterType<CylinderPropertiesModel>("Crystal", 1, 0, "CylinderProperties");
 
     desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true,  false, ""});
@@ -18,16 +17,14 @@ bool DrawCylinder::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     return true;
 }
 
-bool DrawCylinder::setup(MapItem *mapItem, UIHandle *uiHandle)
+bool DrawCylinder::setup()
 {
-    mUiHandle = uiHandle;
-    mMapcontroller = mapItem;
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *circleLayer = new osgEarth::ModelLayer();
     circleLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(circleLayer);
+    mapItem()->addLayer(circleLayer);
 
     return true;
 }
@@ -39,16 +36,16 @@ void DrawCylinder::onToolboxItemCheckedChanged(const QString &name, const QStrin
             if (checked) {
                 mEnterCylinderZone = true;
                 mDrawingState = DrawingState::START;
-                mCylinderProperties = new CylinderProperties(mCylinder, mQmlEngine, mUiHandle, mMapcontroller);
+                mCylinderProperties = new CylinderProperties(mCylinder, qmlEngine(), uiHandle(), mapItem());
                 mCylinderProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
                 mEnterCylinderZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mCylinder = nullptr;
-                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
                 mCylinderProperties->hide();
             }
         }
@@ -79,7 +76,7 @@ bool DrawCylinder::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIA
 bool DrawCylinder::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterCylinderZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
     }
     return false;
@@ -91,13 +88,13 @@ bool DrawCylinder::startDraw(const osgGA::GUIEventAdapter& event)
     mCylinderProperties->setCylinder(mCylinder);
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(event.getX(), event.getY(), worldPos);
+    mapItem()->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
-    mCylinder->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
+    mCylinder->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
 
-    mCylinderProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mMapcontroller->addNodeToLayer(mCylinder, DRAW_LAYER_NAME);
+    mCylinderProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    mapItem()->addNodeToLayer(mCylinder, DRAW_LAYER_NAME);
     return true;
 }
 
@@ -113,7 +110,7 @@ bool DrawCylinder::finishDrawing(const osgGA::GUIEventAdapter& event)
 bool DrawCylinder::cancelDrawing(const osgGA::GUIEventAdapter& event)
 {
     if(mDrawingState == DrawingState::DRAWING){
-        mMapcontroller->removeNodeFromLayer(mCylinder, DRAW_LAYER_NAME);
+        mapItem()->removeNodeFromLayer(mCylinder, DRAW_LAYER_NAME);
         mCylinder = nullptr;
         mCylinderProperties->setCylinder(mCylinder);
         mDrawingState = DrawingState::START;

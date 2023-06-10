@@ -16,7 +16,6 @@ DrawEllipse::DrawEllipse(QObject *parent)
 }
 bool DrawEllipse::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-    mQmlEngine = engine;
     qmlRegisterType<EllipsePropertiesModel>("Crystal", 1, 0, "EllipseProperties");
 
     desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true,  false, ""});
@@ -30,9 +29,9 @@ void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString
             if (checked) {
                 mEnterEllipseZone = true;
                 mDrawingState = DrawingState::START;
-                mEllipseProperties = new EllipseProperties(mEllipse, mQmlEngine, mUiHandle);
+                mEllipseProperties = new EllipseProperties(mEllipse, qmlEngine(), uiHandle());
                 mEllipseProperties->show();
-                mMapItem->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
@@ -41,22 +40,20 @@ void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString
                 mEllipse = nullptr;
 
                 mEllipseProperties->hide();
-                mMapItem->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
         }
     }
 }
 
-bool DrawEllipse::setup(MapItem *mapItem, UIHandle *uIHandle)
+bool DrawEllipse::setup()
 {
-    mUiHandle = uIHandle;
-    mMapItem = mapItem;
-    osgEarth::GLUtils::setGlobalDefaults(mMapItem->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
     osgEarth::ModelLayer *ellipseLayer = new osgEarth::ModelLayer();
     ellipseLayer->setName(DRAW_LAYER_NAME);
-    mMapItem->addLayer(ellipseLayer);
+    mapItem()->addLayer(ellipseLayer);
     return true;
 }
 bool DrawEllipse::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -95,7 +92,7 @@ bool DrawEllipse::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAc
 bool DrawEllipse::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterEllipseZone){
-        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(ea.getX(), ea.getX());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getX());
         mIconNode->setPosition(geoPos);
     }
     return false;
@@ -112,21 +109,21 @@ osgEarth::Annotation::PlaceNode *DrawEllipse::makeIconNode()
 
 void DrawEllipse::startDraw(const osgGA::GUIEventAdapter &event)
 {
-    mEllipse = new Ellipse(mMapItem);
+    mEllipse = new Ellipse(mapItem());
     mEllipseProperties->setEllipse(mEllipse);
     osg::Vec3d worldPos;
-    mMapItem->screenToWorld(event.getX(), event.getY(), worldPos);
+    mapItem()->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapItem->getMapSRS(), worldPos);
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
     mDrawingState = DrawingState::DRAWING;
-    mEllipse->setPosition(osgEarth::GeoPoint(mMapItem->getMapSRS(), geoPos.x(), geoPos.y()));
-    mMapItem->addNodeToLayer(mEllipse, DRAW_LAYER_NAME);
+    mEllipse->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    mapItem()->addNodeToLayer(mEllipse, DRAW_LAYER_NAME);
 }
 
 void DrawEllipse::cancelDraw()
 {
     if(mDrawingState == DrawingState::DRAWING){
-    mMapItem->removeNodeFromLayer(mEllipse, DRAW_LAYER_NAME);
+    mapItem()->removeNodeFromLayer(mEllipse, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::START;
     }
 }

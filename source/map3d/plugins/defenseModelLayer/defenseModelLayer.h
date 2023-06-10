@@ -41,8 +41,7 @@ public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
     virtual void onSideItemCreated(int index, QObject *pSideItem) override;
     virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
-    virtual bool setup(MapItem *mapController,
-                       UIHandle *UIHandle) override;
+    virtual bool setup() override;
 //    virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
     //void addUpdateAircraft(AircraftInfo aircraftInfo);
@@ -65,10 +64,6 @@ protected:
 //    virtual void mouseReleaseEvent(QMouseEvent *event) override;
 //    virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
 //    virtual void mouseMoveEvent(QMouseEvent* event)override;
-public:
-    MapItem *mMapController{nullptr};
-	UIHandle* mUIHandle{nullptr};
-    QQmlEngine *mQmlEngine{nullptr};
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
