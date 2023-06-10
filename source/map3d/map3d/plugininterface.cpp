@@ -91,6 +91,16 @@ void PluginInterface::setName(const QString &newName)
     mName = newName;
 }
 
+Toolbox *PluginInterface::toolbox() const
+{
+    return mToolbox;
+}
+
+void PluginInterface::setToolbox(Toolbox *newToolbox)
+{
+    mToolbox = newToolbox;
+}
+
 void UIHandle::iwSetReceiverObject(QObject *receiverObject)
 {
     mReceiverObject = receiverObject;

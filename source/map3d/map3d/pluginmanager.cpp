@@ -70,10 +70,13 @@ void PluginManager::performPluginsSetup(MapItem *mapItem)
 {
     DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
     UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
+    auto toolbox = Application::instance()->mainWindow()->toolbox();
     for (const auto& item : mPluginsInfoList) {
+        item.interface->setToolbox(toolbox);
         item.interface->setup(mapItem, uiHandle);
         item.interface->setMapItem(mapItem);
         item.interface->setDefenseDataManager(defenseDataManager);
+
     }
 }
 

@@ -27,6 +27,7 @@ bool DrawCircle::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 
 bool DrawCircle::setup(MapItem *mapItem, UIHandle *uIHandle)
 {
+    toolbox()->addItem(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true,  false, ""});
     mUiHandle = uIHandle;
     mMapcontroller = mapItem;
     mIconNode = makeIconNode();

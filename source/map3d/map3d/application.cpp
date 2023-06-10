@@ -39,7 +39,7 @@ void Application::initialize()
     registerTypes();
     initializeQmlEngine();
 
-    mPluginManager->loadPlugins();
+
 //    QObject::connect(this, &Application::mainWindowCreated,
 //                     this, &Application::onMainWindowCreated,
 //                     Qt::DirectConnection);
@@ -144,6 +144,7 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 void Application::onUICreated()
 {
     mUIIsReady = true;
+    mPluginManager->loadPlugins();
     setup();
     emit uiCreated();
 }

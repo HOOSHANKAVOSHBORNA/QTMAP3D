@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWindow *parent) :
 
 //    setClearBeforeRendering(false);
     setColor(Qt::black);
+    Toolbox *toolbox = new Toolbox();
+    setToolbox(toolbox);
 
 
 
@@ -224,6 +226,11 @@ qreal MainWindow::fps() const
 LayersModel *MainWindow::layersModel() const
 {
     return mLayersModel;
+}
+
+Toolbox *MainWindow::toolbox() const
+{
+    return mToolbox;
 }
 
 UIHandle *MainWindow::uiHandle() const
@@ -485,6 +492,11 @@ void MainWindow::setLayersModel(LayersModel *layersModel)
     }
 }
 
+void MainWindow::setToolbox(Toolbox *toolbox)
+{
+    mToolbox = toolbox;
+}
+
 void MainWindow::onFrameSwapped()
 {
 
@@ -637,6 +649,7 @@ void MainWindow::initializeGL()
     //----------------------------------------------------------
     LayersModel *layersModel = new LayersModel(getMapItem());
     setLayersModel(layersModel);
+
     QObject::connect(this, &MainWindow::toggleLayerEnabled,
                      layersModel, &LayersModel::toggleLayerEnabled);
     //----------------------------------------------------------

@@ -20,6 +20,7 @@ bool DrawBox::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 
 bool DrawBox::setup(MapItem *mapItem, UIHandle *uiHandle)
 {
+    toolbox()->addItem(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true,  false, ""});
     mUiHandle = uiHandle;
     mMapcontroller = mapItem;
     mIconNode = makeIconNode();

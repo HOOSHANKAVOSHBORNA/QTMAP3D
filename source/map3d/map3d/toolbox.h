@@ -4,7 +4,8 @@
 #include <QAbstractItemModel>
 #include <QQmlEngine>
 #include <QStandardItemModel>
-#include "plugininterface.h"
+#include <QMap>
+struct ItemDesc;
 //class TreeItem;
 
 //class ToolboxModel : public QAbstractItemModel
@@ -67,12 +68,17 @@
 
 class Toolbox : public QStandardItemModel
 {
+    Q_OBJECT
 public:
     Toolbox(QObject *parent = nullptr);
 
     void addItem(ItemDesc *item);
-
-    std::map<QString, QStandardItem> mItems;
+public slots:
+    void onItemClicked(QString name);
+signals:
+    void toolBoxItemClicked(QString category, QString name);
+private:
+    QMap<QString, QStandardItem*> mItems;
 };
 
 #endif // TOOLBOX_H

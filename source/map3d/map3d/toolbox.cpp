@@ -3,6 +3,7 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 
+#include "plugininterface.h"
 //ToolboxModel::ToolboxModel(QObject *parent):
 //    QAbstractItemModel(parent)
 //{
@@ -196,11 +197,19 @@ Toolbox::Toolbox(QObject *parent):
 
 void Toolbox::addItem(ItemDesc *item)
 {
-    if (!mItems.contains(item->category)){
+    bool s = mItems.contains(item->category);
+    if (!s){
         QStandardItem* catItem = new QStandardItem(item->category);
         mItems[item->category] = catItem;
         QStandardItem *rootItem = invisibleRootItem();
         rootItem->appendRow(catItem);
     }
     mItems[item->category]->appendRow(new QStandardItem(item->name));
+}
+
+void Toolbox::onItemClicked(QString name)
+{
+//    for (auto& v: mItems.values())
+//    emit toolBoxItemClicked()
+    qDebug() << ", " << name;
 }

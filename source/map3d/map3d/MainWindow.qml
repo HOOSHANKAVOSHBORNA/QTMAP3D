@@ -10,6 +10,12 @@ import Crystal 1.0
 
 CMainWindow {
 
+    ToolboxView {
+        model: toolbox
+        anchors.top: parent.top
+        anchors.left: parent.left
+    }
+
     readonly property int       _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10

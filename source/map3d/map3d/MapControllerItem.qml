@@ -183,10 +183,6 @@ MapController {
         onBtnProjectionClicked: function() {
             rootItem.changeMode();
         }
-
-        onBtnProjectionClicked: function() {
-            rootItem.changeMode();
-        }
     }
 
     StatusBar {

@@ -3,6 +3,8 @@
 #define PluginInterface_H
 
 
+#include "toolbox.h"
+
 #include <QObject>
 #include <QString>
 #include <QEvent>
@@ -148,6 +150,9 @@ public:
 
 
 
+    Toolbox *toolbox() const;
+    void setToolbox(Toolbox *newToolbox);
+
 protected:
     virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool keyPressEvent        (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
@@ -161,6 +166,7 @@ private:
     MapItem *mMapItem;
     UIHandle *mUiHandle;
     QString mName;
+    Toolbox *mToolbox = nullptr;
 };
 
 

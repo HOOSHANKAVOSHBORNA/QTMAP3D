@@ -10,7 +10,7 @@
 #include "pluginmanager.h"
 #include "layersmodel.h"
 #include "mapItem.h"
-
+#include "toolbox.h"
 class QOpenGLFunctions_2_0;
 class PluginInfo;
 class PluginInterface;
@@ -50,6 +50,7 @@ class MainWindow : public QQuickWindow
 
 
     Q_PROPERTY(LayersModel* layersModel READ layersModel WRITE setLayersModel NOTIFY layersModelChanged)
+    Q_PROPERTY(Toolbox* toolbox READ toolbox WRITE setToolbox NOTIFY layersModelChanged)
 
     enum class InfoWidgetType {
         Airplane,
@@ -86,7 +87,7 @@ public:
 
 
     LayersModel *layersModel() const;
-
+    Toolbox *toolbox() const;
 
     UIHandle *uiHandle() const;
 
@@ -177,7 +178,7 @@ public slots:
     void showListWindow();
 
     void setLayersModel(LayersModel *layersModel);
-
+    void setToolbox(Toolbox* toolbox);
     void onFrameSwapped();
 
 //    void orientCameraToNorth();
@@ -269,6 +270,7 @@ private:
     UIHandle *mUIHandle = nullptr;
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
+    Toolbox *mToolbox = nullptr;
 };
 
 #endif // MainWindow_H
