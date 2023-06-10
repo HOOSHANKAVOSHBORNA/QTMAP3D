@@ -80,6 +80,8 @@ void Application::registerTypes()
     qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
     qmlRegisterType<MapItem>("Crystal",1,0,"MapItem");
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
+
+    qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 }
 
 void Application::initializeQmlEngine()

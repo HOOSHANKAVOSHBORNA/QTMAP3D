@@ -204,9 +204,32 @@ void Toolbox::addItem(ToolboxItem *toolboxItem)
         QStandardItem *rootItem = invisibleRootItem();
         rootItem->appendRow(catItem);
     }
+    auto subItem = new QStandardItem(toolboxItem->name);
+    subItem->setData(toolboxItem->iconUrl, imageSource);
     mItems[toolboxItem->category]->appendRow(new QStandardItem(toolboxItem->name));
     mToolboxItems[toolboxItem->name] = toolboxItem;
 }
+
+//QVariant Toolbox::data(const QModelIndex &index, int role) const
+//{
+//    switch (role) {
+//    case Qt::DisplayRole:
+//        return QStandardItemModel::data(index, role);
+//        break;
+//    case imageSource:
+//        qDebug() <<index.row()<<":" << index.column() << QStandardItemModel::data(index, role);
+//        return QStandardItemModel::data(index, role);
+//    default:
+//        break;
+//    }
+//}
+
+//QHash<int, QByteArray> Toolbox::roleNames() const
+//{
+//    QHash<int, QByteArray> hash = QStandardItemModel::roleNames();
+//    hash[imageSource] = "imageSource";
+//    return hash;
+//}
 
 void Toolbox::onItemClicked(QString name)
 {

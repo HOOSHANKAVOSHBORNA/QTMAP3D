@@ -91,12 +91,31 @@ bool DrawBox::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
 void DrawBox::onBoxClick()
 {
     qDebug()<<"onBoxClick()";
+    bool checked = true;
+    if (checked) {
+        mEnterBoxZone = true;
+        mDrawingState = DrawingState::START;
+//        mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
+//        mBoxProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterBoxZone = false;
+        mDrawingState = DrawingState::FINISH;
+        mBox = nullptr;
+        mBoxProperties->hide();
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+    }
 }
 
 bool DrawBox::startDraw(const osgGA::GUIEventAdapter &ea)
 {
     mBox = new Box();
-    mBoxProperties->setBox(mBox);
+    mBox->setHeight(100000);
+    mBox->setWidth(100000);
+    mBox->setLength(100000);
+//    mBoxProperties->setBox(mBox);
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
 
@@ -104,7 +123,7 @@ bool DrawBox::startDraw(const osgGA::GUIEventAdapter &ea)
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
     mBox->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
-    mBoxProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+//    mBoxProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
     mapItem()->addNodeToLayer(mBox, DRAW_LAYER_NAME);
     return true;
 }

@@ -19,6 +19,9 @@ bool DrawCapsule::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 
 bool DrawCapsule::setup()
 {
+    auto toolboxItem =  new ToolboxItem{CAPSULE, CATEGORY, "qrc:/resources/box.png", true};
+//    QObject::connect(toolboxItem, &ToolboxItem::itemClicked, this, &DrawBox::onBoxClick);
+    toolbox()->addItem(toolboxItem);
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 

@@ -2,12 +2,16 @@ import QtQuick.Layouts 1.13
 import QtQuick
 import QtQuick.Controls 2.15
 import QtQuick.Effects
+import Crystal 1.0
+
 
 
 TreeView{
     id: treeView
-    anchors.fill: parent
-//    model: layersModel
+//    anchors.fill: parent
+//    model: rootItem.toolmodel
+    height: 300
+    width: 100
     signal toolboxItemClicked(string category, string name)
     delegate: Item {
         id: treeDelegate
@@ -27,13 +31,30 @@ TreeView{
             id: container
             width: parent.width
             height: parent.height
-//            color: "#454545"
-                color: "transparent"
+            color: "#454545"
+//                color: "transparent"
 //                                            border.color: "#ffffff"
 //                                            border.width: 1
             radius: height/10
             x: padding + (treeDelegate.depth * treeDelegate.indent)
+            RowLayout {
+                anchors.fill: parent
 
+//                Image {
+//                    source: imageSource
+//                }
+
+                Label {
+                    id: label
+                    x: padding + (treeDelegate.isTreeNode ? (treeDelegate.depth + 1) * treeDelegate.indent : 0)
+                    width: treeDelegate.width - treeDelegate.padding - x
+                    clip: true
+                    font.pixelSize: 14
+                    anchors.verticalCenter: container.verticalCenter
+                    color: "#ffffff"
+                    text: display
+                }
+            }
         }
 
         HoverHandler{
@@ -54,26 +75,17 @@ TreeView{
         }
 
 
-        Text {
-            id: indicator
-            visible: treeDelegate.isTreeNode && treeDelegate.hasChildren
-            x: padding + (treeDelegate.depth * treeDelegate.indent)
-            anchors.verticalCenter: label.verticalCenter
-            text: "▸"
-            rotation: treeDelegate.expanded ? 90 : 0
-            padding: 4
-            color: "#ffffff"
-        }
+//        Text {
+//            id: indicator
+//            visible: treeDelegate.isTreeNode && treeDelegate.hasChildren
+//            x: padding + (treeDelegate.depth * treeDelegate.indent)
+//            anchors.verticalCenter: label.verticalCenter
+//            text: "▸"
+//            rotation: treeDelegate.expanded ? 90 : 0
+//            padding: 4
+//            color: "#ffffff"
+//        }
 
-        Text {
-            id: label
-            x: padding + (treeDelegate.isTreeNode ? (treeDelegate.depth + 1) * treeDelegate.indent : 0)
-            width: treeDelegate.width - treeDelegate.padding - x
-            clip: true
-            font.pixelSize: 14
-            anchors.verticalCenter: container.verticalCenter
-            color: "#ffffff"
-            text: display
-        }
+
     }
 }

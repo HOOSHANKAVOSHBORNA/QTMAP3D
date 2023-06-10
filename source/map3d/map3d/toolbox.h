@@ -70,10 +70,16 @@ struct ToolboxItem;
 class Toolbox : public QStandardItemModel
 {
     Q_OBJECT
+    enum CustomRoles {
+        imageSource = Qt::UserRole + 100
+    };
+
 public:
     Toolbox(QObject *parent = nullptr);
 
     void addItem(ToolboxItem *item);
+//    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+//    QHash<int,QByteArray> roleNames() const override;
 public slots:
     void onItemClicked(QString name);
 private:
