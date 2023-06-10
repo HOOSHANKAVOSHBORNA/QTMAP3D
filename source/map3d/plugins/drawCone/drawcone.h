@@ -5,7 +5,6 @@
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/PlaceNode>
 
-#include "mapItem.h"
 #include "plugininterface.h"
 #include "cone.h"
 #include "coneProperties.h"
@@ -21,7 +20,7 @@ class DrawCone : public PluginInterface
 public:
     DrawCone(QObject *parent = nullptr);
     bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    bool setup(MapItem *mapController, UIHandle *uiHandle) override;
+    bool setup() override;
 
     void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
@@ -34,9 +33,6 @@ private:
     osgEarth::Annotation::PlaceNode* makeIconNode();
 
 private:
-    QQmlEngine *mQmlEngine;
-    UIHandle *mUiHandle;
-    MapItem *mMapcontroller;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     Cone* mCone{nullptr};

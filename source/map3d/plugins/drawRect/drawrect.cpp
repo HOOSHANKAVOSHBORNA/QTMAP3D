@@ -16,7 +16,6 @@ DrawRect::DrawRect(QObject *parent)
 }
 bool DrawRect::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-    mQmlEngine = engine;
     qmlRegisterType<RectPropertiesModel>("Crystal", 1, 0, "RectProperties");
 
     desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/resources/rectangle.png", true,  false, ""});
@@ -31,7 +30,7 @@ void DrawRect::onToolboxItemCheckedChanged(const QString &name, const QString &c
                 mEnterRectZone = true;
                 mDrawingState = DrawingState::START;
                 addNodeToLayer(mIconNode);
-                mRectProperties = new RectProperties(mRect, mQmlEngine, mUiHandle);
+                mRectProperties = new RectProperties(mRect, qmlEngine(), uiHandle());
                 mRectProperties->show();
 
             }
@@ -46,15 +45,13 @@ void DrawRect::onToolboxItemCheckedChanged(const QString &name, const QString &c
     }
 }
 
-bool DrawRect::setup(MapItem *mapItem, UIHandle *uIHandle)
+bool DrawRect::setup()
 {
-    mUiHandle = uIHandle;
-    mMapItem = mapItem;
-    osgEarth::GLUtils::setGlobalDefaults(mMapItem->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
     osgEarth::ModelLayer *rectLayer = new osgEarth::ModelLayer();
     rectLayer->setName(DRAW_LAYER_NAME);
-    mMapItem->addLayer(rectLayer);
+    mapItem()->addLayer(rectLayer);
     return true;
 }
 bool DrawRect::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -93,7 +90,7 @@ bool DrawRect::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
 bool DrawRect::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterRectZone){
-        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
     }
     return false;
@@ -112,16 +109,16 @@ osgEarth::Annotation::PlaceNode *DrawRect::makeIconNode()
 
 void DrawRect::startDraw(const osgGA::GUIEventAdapter &event)
 {
-    mRect = new Rect(mMapItem);
+    mRect = new Rect(mapItem());
     mRectProperties->setRect(mRect);
 
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapItem->screenToWorld(event.getX(), event.getY(), worldPos);
+    mapItem()->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapItem->getMapSRS(), worldPos);
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
 
-    mRect->setPosition(osgEarth::GeoPoint(mMapItem->getMapSRS(), geoPos.x(), geoPos.y()));
+    mRect->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
 
     addNodeToLayer(mRect);
 }
@@ -147,7 +144,7 @@ bool DrawRect::finishDraw(const osgGA::GUIEventAdapter &event)
 
 bool DrawRect::addNodeToLayer(osg::Node *node)
 {
-    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
+    auto layer = mapItem()->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
     if (layer) {
     return true;
 
@@ -160,7 +157,7 @@ bool DrawRect::addNodeToLayer(osg::Node *node)
 }
 void DrawRect::removeNodeFromLayer(osg::Node *node)
 {
-    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
+    auto layer = mapItem()->getMapNode()->getMap()->getLayerByName(DRAW_LAYER_NAME);
     if (layer) {
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {

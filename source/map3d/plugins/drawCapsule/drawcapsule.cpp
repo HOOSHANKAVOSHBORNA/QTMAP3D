@@ -10,7 +10,6 @@ DrawCapsule::DrawCapsule(QObject *parent): PluginInterface(parent)
 
 bool DrawCapsule::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-    mQmlEngine = engine;
     qmlRegisterType<CapsulePropertiesModel>("Crystal", 1, 0, "CapsuleProperties");
 
     desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/resources/capsule.png", true,  false, ""});
@@ -18,16 +17,14 @@ bool DrawCapsule::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     return true;
 }
 
-bool DrawCapsule::setup(MapItem *mapItem, UIHandle *uiHandle)
+bool DrawCapsule::setup()
 {
-    mUiHandle = uiHandle;
-    mMapcontroller = mapItem;
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *circleLayer = new osgEarth::ModelLayer();
     circleLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(circleLayer);
+    mapItem()->addLayer(circleLayer);
 
     return true;
 }
@@ -39,16 +36,16 @@ void DrawCapsule::onToolboxItemCheckedChanged(const QString &name, const QString
             if (checked) {
                 mEnterCapsuleZone = true;
                 mDrawingState = DrawingState::START;
-                mCapsuleProperties = new CapsuleProperties(mCapsule, mQmlEngine, mUiHandle, mMapcontroller);
+                mCapsuleProperties = new CapsuleProperties(mCapsule, qmlEngine(), uiHandle(), mapItem());
                 mCapsuleProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
                 mEnterCapsuleZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mCapsule = nullptr;
-                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
                 mCapsuleProperties->hide();
             }
         }
@@ -79,7 +76,7 @@ bool DrawCapsule::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAc
 bool DrawCapsule::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterCapsuleZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
     }
     return false;
@@ -91,13 +88,13 @@ bool DrawCapsule::startDraw(const osgGA::GUIEventAdapter &event)
     mCapsuleProperties->setCapsule(mCapsule);
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(event.getX(), event.getY(), worldPos);
+    mapItem()->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
-    mCapsule->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
+    mCapsule->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
 
-    mCapsuleProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mMapcontroller->addNodeToLayer(mCapsule, DRAW_LAYER_NAME);
+    mCapsuleProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    mapItem()->addNodeToLayer(mCapsule, DRAW_LAYER_NAME);
     return true;
 }
 
@@ -113,7 +110,7 @@ bool DrawCapsule::finishDrawing(const osgGA::GUIEventAdapter &event)
 bool DrawCapsule::cancelDrawing(const osgGA::GUIEventAdapter &event)
 {
     if(mDrawingState == DrawingState::DRAWING){
-        mMapcontroller->removeNodeFromLayer(mCapsule, DRAW_LAYER_NAME);
+        mapItem()->removeNodeFromLayer(mCapsule, DRAW_LAYER_NAME);
         mCapsule = nullptr;
         mCapsuleProperties->setCapsule(mCapsule);
         mDrawingState = DrawingState::START;

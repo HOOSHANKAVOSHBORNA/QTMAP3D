@@ -10,7 +10,6 @@ DrawBox::DrawBox(QObject *parent): PluginInterface(parent)
 
 bool DrawBox::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-    mQmlEngine = engine;
     qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
 
     desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true,  false, ""});
@@ -18,16 +17,14 @@ bool DrawBox::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
     return true;
 }
 
-bool DrawBox::setup(MapItem *mapItem, UIHandle *uiHandle)
+bool DrawBox::setup()
 {
-    mUiHandle = uiHandle;
-    mMapcontroller = mapItem;
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *boxLayer = new osgEarth::ModelLayer();
     boxLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(boxLayer);
+    mapItem()->addLayer(boxLayer);
 
     return true;
 }
@@ -39,9 +36,9 @@ void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &ca
             if (checked) {
                 mEnterBoxZone = true;
                 mDrawingState = DrawingState::START;
-                mBoxProperties = new BoxProperties(mBox, mQmlEngine, mUiHandle, mMapcontroller);
+                mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
                 mBoxProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
@@ -49,7 +46,7 @@ void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &ca
                 mDrawingState = DrawingState::FINISH;
                 mBox = nullptr;
                 mBoxProperties->hide();
-                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     }
@@ -78,7 +75,7 @@ void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &ca
 //void DrawBox::mouseMoveEvent(QMouseEvent *event)
 //{
 //    if (mEnterBoxZone) {
-//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+//        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event->x(), event->y());
 //        mIconNode->setPosition(geoPos);
 //    }
 //}
@@ -89,12 +86,12 @@ void DrawBox::startDraw(QMouseEvent *event)
     mBoxProperties->setBox(mBox);
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
+    mapItem()->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
-    mBox->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mBoxProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mMapcontroller->addNodeToLayer(mBox, DRAW_LAYER_NAME);
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
+    mBox->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    mBoxProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    mapItem()->addNodeToLayer(mBox, DRAW_LAYER_NAME);
     event->accept();
 }
 
@@ -109,7 +106,7 @@ void DrawBox::finishDrawing(QMouseEvent *event)
 void DrawBox::cancelDrawing(QMouseEvent *event)
 {
     if(mDrawingState == DrawingState::DRAWING){
-        mMapcontroller->removeNodeFromLayer(mBox, DRAW_LAYER_NAME);
+        mapItem()->removeNodeFromLayer(mBox, DRAW_LAYER_NAME);
         mBox = nullptr;
         mBoxProperties->setBox(mBox);
         mDrawingState = DrawingState::START;

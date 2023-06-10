@@ -44,7 +44,7 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 	}
 	//--model node----------------------------------------------------------------------------------------------------
 	osg::ref_ptr<AircraftModelNode> aircraftModelNode;
-	osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mMapController->getMapSRS()->getGeographicSRS(),
+    osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mapItem()->getMapSRS()->getGeographicSRS(),
 										  aircraftInfo.Longitude, aircraftInfo.Latitude, aircraftInfo.Altitude);
 
 	if(mAircraftData[aircraftInfo.TN]->modelNode.valid())
@@ -63,7 +63,7 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 		//add to container-----------------------------------------------------
 		mAircraftData[aircraftInfo.TN]->modelNode = aircraftModelNode;
 		//add to map ---------------------------------------------------------
-		mDefenseModelLayer->mMapController->addNodeToLayer(aircraftModelNode, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(aircraftModelNode, AIRCRAFTS_LAYER_NAME);
 	}
 	//update information------------------------------------------------------------------
 	aircraftModelNode->dataChanged();
@@ -74,7 +74,7 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 void AircraftDataManager::remove(int tn)
 {
     if(mAircraftData.contains(tn)){
-        mDefenseModelLayer->mMapController->removeNodeFromLayer(mAircraftData[tn]->modelNode, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mAircraftData[tn]->modelNode, AIRCRAFTS_LAYER_NAME);
 		mDefenseModelLayer->modelNodeDeleted(mAircraftData[tn]->modelNode);
         delete mAircraftData[tn];
         mAircraftData.remove(tn);

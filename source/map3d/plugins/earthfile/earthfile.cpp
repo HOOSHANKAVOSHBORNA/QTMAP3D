@@ -48,7 +48,7 @@ void EarthFile::onFileItemClicked(const QString &name, const QString &category)
 
           osg::ref_ptr<osg::Node> baseMap = osgDB::readNodeFile(fileName.toStdString(), myReadOptions);
           osg::ref_ptr<osgEarth::MapNode> mapNode1 = osgEarth::MapNode::get(baseMap);
-          mMapItem->setMap(mapNode1->getMap());
+          mapItem()->setMap(mapNode1->getMap());
 
         }
     }
@@ -65,13 +65,12 @@ void EarthFile::onFileItemClicked(const QString &name, const QString &category)
             defMNO.setTerrainOptions(to);
             myReadOptions->setPluginStringData("osgEarth.defaultOptions", defMNO.getConfig().toJSON());
 
-            osgDB::writeNodeFile(*mMapItem->getMapNode(), fileName.toStdString(), myReadOptions);
+            osgDB::writeNodeFile(*mapItem()->getMapNode(), fileName.toStdString(), myReadOptions);
         }
     }
 }
 
-bool EarthFile::setup(MapItem *mapItem,
-                      UIHandle *UIHandle)
+bool EarthFile::setup()
 {
-    mMapItem = mapItem;
+    return true;
 }

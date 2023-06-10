@@ -19,7 +19,7 @@ void StationDataManager::upsertInfo(StationInfo &stationInfo)
     }
     //--model node------------------------------------------------------------
     osg::ref_ptr<StationModelNode> stationModelNode;
-    osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mMapController->getMapSRS()->getGeographicSRS(),
+    osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mapItem()->getMapSRS()->getGeographicSRS(),
                                           stationInfo.Longitude, stationInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     if(mStationData[stationInfo.Number]->modelNode.valid())
     {
@@ -34,7 +34,7 @@ void StationDataManager::upsertInfo(StationInfo &stationInfo)
         //add to container---------------------------------------------------
         mStationData[stationInfo.Number]->modelNode = stationModelNode;
         //add to map --------------------------------------------------------
-        mDefenseModelLayer->mMapController->addNodeToLayer(stationModelNode,STATIONS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(stationModelNode,STATIONS_LAYER_NAME);
     }
     //update information-----------------------------------------------------
 	stationModelNode->dataChanged();

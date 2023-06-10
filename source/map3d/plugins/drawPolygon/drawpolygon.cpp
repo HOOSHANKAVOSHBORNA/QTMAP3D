@@ -18,7 +18,6 @@ DrawPolygon::DrawPolygon(QObject *parent)
 bool DrawPolygon::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
-    mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true,  false, ""});
     return true;
 }
@@ -29,12 +28,12 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
         if (name == POLYGON) {
             if (checked) {
                 mEnterPolygonZone = true;
-                mPolygonProperties = new PolygonProperties(mQmlEngine, mUiHandle);
-                if(mUiHandle && mPolygonProperties){
+                mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle());
+                if(/*mUiHandle &&*/ mPolygonProperties){
                     mPolygonProperties->show();
                 }
                 mDrawingState = DrawingState::START;
-                mMapItem->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
@@ -47,21 +46,19 @@ void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString
                 mPolygonProperties->deleteLater();
                 mPolygonProperties = nullptr;
                 mPolygon = nullptr;
-                mMapItem->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     }
 }
 
-bool DrawPolygon::setup(MapItem *mapItem, UIHandle *uIHandle)
+bool DrawPolygon::setup()
 {
-    mUiHandle = uIHandle;
-    mMapItem = mapItem;
-    osgEarth::GLUtils::setGlobalDefaults(mMapItem->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
     osgEarth::ModelLayer *polygonLayer = new osgEarth::ModelLayer();
     polygonLayer->setName(DRAW_LAYER_NAME);
-    mMapItem->addLayer(polygonLayer);
+    mapItem()->addLayer(polygonLayer);
     return true;
 }
 
@@ -107,7 +104,7 @@ bool DrawPolygon::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAc
 bool DrawPolygon::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterPolygonZone){
-        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
         if (mDrawingState == DrawingState::DRAWING){
             mouseMoveDrawing(ea);
@@ -132,20 +129,20 @@ osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
 
 void DrawPolygon::startDraw(const osgGA::GUIEventAdapter &event)
 {
-    mPolygon = new Polygon(mMapItem);
-    mMapItem->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
+    mPolygon = new Polygon(mapItem());
+    mapItem()->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::DRAWING;
     mPolygonProperties->setPolygon(mPolygon);
 }
 void DrawPolygon::drawing(const osgGA::GUIEventAdapter &event)
 {
-    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event.getX(), event.getY());
+    osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
 }
 
 void DrawPolygon::cancelDraw()
 {
-    mMapItem->removeNodeFromLayer(mPolygon, DRAW_LAYER_NAME);
+    mapItem()->removeNodeFromLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::START;
     if(mPolygonProperties)
         mPolygonProperties->setPolygon(nullptr);
@@ -165,7 +162,7 @@ void DrawPolygon::mouseMoveDrawing(const osgGA::GUIEventAdapter &event)
         mPolygon->removePoint();
 
     }
-    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event.getX(), event.getY());
+    osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
 
 }

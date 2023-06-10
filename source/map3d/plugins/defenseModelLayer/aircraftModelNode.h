@@ -2,8 +2,6 @@
 #define AIRCRAFTMODELNODE_H
 
 #include "defenseModelNode.h"
-#include "mapItem.h"
-#include "plugininterface.h"
 #include "aircraftInfoItem.h"
 #include "linenode.h"
 #include "contextMenu.h"

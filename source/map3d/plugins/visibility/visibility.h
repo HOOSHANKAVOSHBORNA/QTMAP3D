@@ -28,8 +28,7 @@ public:
 public:
     virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    bool setup(MapItem *mapItem,
-               UIHandle *UIHandle) override;
+    bool setup() override;
 private slots:
     void onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos);
 private:
@@ -40,7 +39,6 @@ private:
     osg::ref_ptr<osgEarth::Annotation::ModelNode>  mBackVisibilityNode{nullptr};
     osg::ref_ptr<osgEarth::Annotation::FeatureNode> mVisibilityNode{nullptr};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
-    MapItem* mMapItem{nullptr};
 };
 
 #endif // CPTESTPLUGIN_H

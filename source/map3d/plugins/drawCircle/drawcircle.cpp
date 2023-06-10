@@ -18,23 +18,20 @@ DrawCircle::DrawCircle(QObject *parent)
 bool DrawCircle::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
-    mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true,  false, ""});
 
     return true;
 }
 
 
-bool DrawCircle::setup(MapItem *mapItem, UIHandle *uIHandle)
+bool DrawCircle::setup()
 {
-    mUiHandle = uIHandle;
-    mMapcontroller = mapItem;
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *circleLayer = new osgEarth::ModelLayer();
     circleLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(circleLayer);
+    mapItem()->addLayer(circleLayer);
 
     return true;
 }
@@ -46,9 +43,9 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
         if (name == CIRCLE) {
             if (checked) {
                 mEnterCircleZone = true;
-                mCircleProperties = new CircleProperties(mCircle, mQmlEngine, mUiHandle, mMapcontroller);
+                mCircleProperties = new CircleProperties(mCircle, qmlEngine(), uiHandle(), mapItem());
                 mCircleProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
                 mDrawingState = DrawingState::START;
 
             }
@@ -56,7 +53,7 @@ void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mEnterCircleZone = false;
                 mDrawingState = DrawingState::FINISH;
                 mCircle = nullptr;
-                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
                 mCircleProperties->hide();
             }
         }
@@ -88,7 +85,7 @@ bool DrawCircle::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
 bool DrawCircle::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterCircleZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
     }
     return false;
@@ -105,26 +102,26 @@ osgEarth::Annotation::PlaceNode *DrawCircle::makeIconNode()
 
 bool DrawCircle::startDraw(const osgGA::GUIEventAdapter& event)
 {
-    mCircle = new Circle(mMapcontroller);
+    mCircle = new Circle(mapItem());
     mCircleProperties->setCircle(mCircle);
 
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(event.getX(), event.getY(), worldPos);
+    mapItem()->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
 
-    mCircle->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    mCircle->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
 
-    mCircleProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mMapcontroller->addNodeToLayer(mCircle, DRAW_LAYER_NAME);
+    mCircleProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    mapItem()->addNodeToLayer(mCircle, DRAW_LAYER_NAME);
     return true;
 }
 
 bool DrawCircle::cancelDrawing(const osgGA::GUIEventAdapter& event)
 {
     if(mDrawingState == DrawingState::DRAWING){
-        mMapcontroller->removeNodeFromLayer(mCircle, DRAW_LAYER_NAME);
+        mapItem()->removeNodeFromLayer(mCircle, DRAW_LAYER_NAME);
         mCircle = nullptr;
         mCircleProperties->setCircle(mCircle);
         mDrawingState = DrawingState::START;

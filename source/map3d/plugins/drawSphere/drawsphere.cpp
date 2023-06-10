@@ -12,7 +12,6 @@ drawSphere::drawSphere(QObject *parent)
 bool drawSphere::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
     qmlRegisterType<SpherePropertiesModel>("Crystal", 1, 0, "SphereProperties");
-    mQmlEngine = engine;
     desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true,  false, ""});
 
     return true;
@@ -25,9 +24,9 @@ void drawSphere::onToolboxItemCheckedChanged(const QString &name, const QString 
             if (checked) {
                 mEnterSphereZone = true;
                 mDrawingState = DrawingState::START;
-                mSphereProperties = new SphereProperties(mQmlEngine, mUiHandle, mMapcontroller);
+                mSphereProperties = new SphereProperties(qmlEngine(), uiHandle(), mapItem());
                 mSphereProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
@@ -35,22 +34,20 @@ void drawSphere::onToolboxItemCheckedChanged(const QString &name, const QString 
                 mDrawingState = DrawingState::FINISH;
                 mSphere = nullptr;
                 mSphereProperties->hide();
-                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
             }
         }
     }
 }
 
-bool drawSphere::setup(MapItem *mapItem, UIHandle *uiHandle)
+bool drawSphere::setup()
 {
-    mUiHandle = uiHandle;
-    mMapcontroller = mapItem;
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *sphereLayer = new osgEarth::ModelLayer();
     sphereLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(sphereLayer);
+    mapItem()->addLayer(sphereLayer);
 
     return true;
 }
@@ -79,7 +76,7 @@ bool drawSphere::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
 bool drawSphere::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterSphereZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
         return true;
     }
@@ -91,14 +88,14 @@ bool drawSphere::startDraw( const osgGA::GUIEventAdapter &event)
     mSphere = new SphereNode();
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(event.getX(), event.getY(), worldPos);
+    mapItem()->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
-    mSphere->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    //mSphereProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
+    mSphere->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    //mSphereProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
     mSphereProperties->setSphere(mSphere);
 
-    mMapcontroller->addNodeToLayer(mSphere, DRAW_LAYER_NAME);
+    mapItem()->addNodeToLayer(mSphere, DRAW_LAYER_NAME);
     return true;
 }
 
@@ -114,7 +111,7 @@ bool drawSphere::finishDrawing(const osgGA::GUIEventAdapter &event)
 bool drawSphere::cancelDrawing(const osgGA::GUIEventAdapter &event)
 {
     if(mDrawingState == DrawingState::DRAWING){
-        mMapcontroller->removeNodeFromLayer(mSphere, DRAW_LAYER_NAME);
+        mapItem()->removeNodeFromLayer(mSphere, DRAW_LAYER_NAME);
         mSphere = nullptr;
         mSphereProperties->setSphere(mSphere);
         mDrawingState = DrawingState::START;

@@ -6,15 +6,17 @@
 #include <QTimer>
 #include <QQmlComponent>
 #include <QQmlApplicationEngine>
+#include <QQmlEngine>
 
 UIHandle::UIHandle(MainWindow *mainWindow, QObject *parent) : QObject(parent)
 {
     mMainWindow = mainWindow;
 }
-
+//-------------------------------------------------------------------------
 MapItem *PluginInterface::mMapItem;
 UIHandle *PluginInterface::mUiHandle;
 DefenseDataManager *PluginInterface::mDefenseDataManager;
+QQmlEngine *PluginInterface::mQmlEngine;
 
 PluginInterface::PluginInterface(QObject *parent):
     QObject(parent)
@@ -29,36 +31,46 @@ MapItem *PluginInterface::mapItem() const
 void PluginInterface::setMapItem(MapItem *mapItem)
 {
     mMapItem = mapItem;
-//    bool isSetHandler = false;
-//    for(auto eventHandler :mMapItem->getViewer()->getEventHandlers()){
-//        auto pli = dynamic_cast<PluginInterface*>(eventHandler.get());
-//        if(pli){
-//            isSetHandler = true;
-//            break;
-//        }
-//    }
-//    if(!isSetHandler)
-//        mMapItem->getViewer()->addEventHandler(this);
+    //    bool isSetHandler = false;
+    //    for(auto eventHandler :mMapItem->getViewer()->getEventHandlers()){
+    //        auto pli = dynamic_cast<PluginInterface*>(eventHandler.get());
+    //        if(pli){
+    //            isSetHandler = true;
+    //            break;
+    //        }
+    //    }
+    //    if(!isSetHandler)
+    //        mMapItem->getViewer()->addEventHandler(this);
+}
+
+QQmlEngine *PluginInterface::qmlEngine() const
+{
+    return mQmlEngine;
+}
+
+void PluginInterface::setQmlEngine(QQmlEngine *newQmlEngine)
+{
+    mQmlEngine = newQmlEngine;
 }
 
 UIHandle *PluginInterface::uiHandle() const
 {
-        return mUiHandle;
+    return mUiHandle;
 }
 
 void PluginInterface::setUiHandle(UIHandle *newUiHandle)
 {
-        mUiHandle = newUiHandle;
+    mUiHandle = newUiHandle;
 }
 
 DefenseDataManager *PluginInterface::defenseDataManager() const
 {
-        return mDefenseDataManager;
+    return mDefenseDataManager;
 }
 
 void PluginInterface::setDefenseDataManager(DefenseDataManager *defenseDataManager)
 {
-        mDefenseDataManager = defenseDataManager;
+    mDefenseDataManager = defenseDataManager;
 }
 
 //bool PluginInterface::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)

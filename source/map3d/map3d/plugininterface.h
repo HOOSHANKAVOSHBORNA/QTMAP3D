@@ -115,7 +115,7 @@ struct PluginQMLDesc
     QList<ItemDesc*> fileItemsList;
 };
 
-class PluginInterface : public QObject, public osgGA::GUIEventHandler
+class PluginInterface : public QObject
 {
     friend class PluginManager;
     Q_OBJECT
@@ -123,10 +123,16 @@ class PluginInterface : public QObject, public osgGA::GUIEventHandler
 public:
     PluginInterface(QObject *parent = nullptr);
     virtual ~PluginInterface() { }
+
     MapItem *mapItem() const;
     static void setMapItem(MapItem *mapItem);
+
+    QQmlEngine *qmlEngine() const;
+    static void setQmlEngine(QQmlEngine *newQmlEngine);
+
     UIHandle *uiHandle() const;
     static void setUiHandle(UIHandle *newUiHandle);
+
     DefenseDataManager *defenseDataManager() const;
     static void setDefenseDataManager(DefenseDataManager* defenseDataManager);
 
@@ -141,9 +147,7 @@ public:
     virtual void onFileItemClicked(const QString& name,
                                       const QString& category) {}
 
-    virtual bool setup(MapItem *mapController,
-                       UIHandle *uiHandle) {return false;}
-
+    virtual bool setup() {return false;}
 
     QString name() const;
     void setName(const QString &newName);
@@ -157,8 +161,10 @@ public:
     virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
+
 private:
     static MapItem *mMapItem;
+    static QQmlEngine *mQmlEngine;
     static UIHandle *mUiHandle;
     static DefenseDataManager *mDefenseDataManager;
     QString mName;

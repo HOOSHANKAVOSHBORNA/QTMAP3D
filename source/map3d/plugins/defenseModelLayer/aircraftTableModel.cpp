@@ -284,7 +284,7 @@ AircraftTable::AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseMo
     mDefenseModelLayer(defenseModelLayer),
     mAircraftDatamanager(aircraftDatamanager)
 {
-    QQmlComponent *comp = new QQmlComponent(defenseModelLayer->mQmlEngine);
+    QQmlComponent *comp = new QQmlComponent(defenseModelLayer->qmlEngine());
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
         if (comp->status() == QQmlComponent::Ready) {
             QQuickItem *aircraftTab = static_cast<QQuickItem*>(comp->create(nullptr));
@@ -309,7 +309,7 @@ AircraftTable::AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseMo
                              mAircraftTableModel,
                              SLOT(sortWithHeader(int)));
             aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
-            mDefenseModelLayer->mUIHandle->lwAddTab("Aircrafts", aircraftTab);
+            mDefenseModelLayer->uiHandle()->lwAddTab("Aircrafts", aircraftTab);
         }
 
     });

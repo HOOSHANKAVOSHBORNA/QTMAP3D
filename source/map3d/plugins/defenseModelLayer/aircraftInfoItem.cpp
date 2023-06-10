@@ -3,10 +3,8 @@
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQuickItem>
-#include "aircraftModelNode.h"
 #include "plugininterface.h"
 #include <time.h>
-#include "systemModelNode.h"
 #include "aircraftDataManager.h"
 #include "systemDataManager.h"
 
@@ -39,12 +37,12 @@ QVariant AircraftInfoModel::data(const QModelIndex &/*index*/, int role) const{
 void AircraftInfoModel::setAircraftInfo(const Aircraft::Data& a)
 {
     mAircraftInfo = &a;
-    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
+    emit QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
 void AircraftInfoModel::updateAircraftInfo()
 {
-    QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
+    emit QAbstractListModel::dataChanged(createIndex(0, 0), createIndex(1, 0));
 }
 
 QStringList AircraftInfoModel::getMainInfo() const
@@ -138,9 +136,9 @@ QHash<int, QByteArray> AircraftInfoModel::roleNames() const
 
 AircraftInfoItem::AircraftInfoItem(DefenseModelLayer *defenseModelLayer, const Aircraft::Data& minformation, QObject *parent)
     :QObject(parent),
-    mInformation(&minformation), mUiHandle(defenseModelLayer->mUIHandle)
+    mInformation(&minformation), mUiHandle(defenseModelLayer->uiHandle())
 {
-    QQmlComponent *comp = new QQmlComponent(defenseModelLayer->mQmlEngine);
+    QQmlComponent *comp = new QQmlComponent(defenseModelLayer->qmlEngine());
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
 
         if (comp->status() == QQmlComponent::Ready) {

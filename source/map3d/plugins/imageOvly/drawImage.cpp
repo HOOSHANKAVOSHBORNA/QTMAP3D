@@ -42,24 +42,20 @@ DrawImage::DrawImage(QObject *parent): PluginInterface(parent)
 
 bool DrawImage::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
 {
-
-    mQmlEngine = engine;
     qmlRegisterType<ImagePropertiesModel>("Crystal", 1, 0, "ImageProperties");
     desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true,  false, ""});
     return true;
 }
 
 
-bool DrawImage::setup(MapItem *mapItem, UIHandle *uIHandle)
+bool DrawImage::setup()
 {
-    mUiHandle = uIHandle;
-    mMapcontroller = mapItem;
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *drawImageLayer = new osgEarth::ModelLayer();
     drawImageLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(drawImageLayer);
+    mapItem()->addLayer(drawImageLayer);
     return true;
 }
 
@@ -72,19 +68,19 @@ void DrawImage::onToolboxItemCheckedChanged(const QString &name, const QString &
                 mEnterImageZone = true;
                 mDrawingState = DrawingState::START;
                 loadImage();
-                mImageProperties = new ImageProperties(mImageOverlay, mQmlEngine, mUiHandle, mMapcontroller);
+                mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
                 mImageProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
             }
             else {
                 mEnterImageZone = false;
                 mDrawingState = DrawingState::FINISH;
-//                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
-                mMapcontroller->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-//                mMapcontroller->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+//                mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
                 mImageProperties->hide();
-                mMapcontroller->removeNodeFromLayer(mIconNode,DRAW_LAYER_NAME);
+                mapItem()->removeNodeFromLayer(mIconNode,DRAW_LAYER_NAME);
             }
         }
     }
@@ -115,7 +111,7 @@ void DrawImage::onToolboxItemCheckedChanged(const QString &name, const QString &
 //void DrawImage::mouseMoveEvent(QMouseEvent *event)
 //{
 //    if (mEnterImageZone) {
-//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
+//        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event->x(), event->y());
 //        mIconNode->setPosition(geoPos);
 //    }
 //}
@@ -132,14 +128,14 @@ void DrawImage::startDraw(QMouseEvent *event)
 
     osg::Vec3d worldPos;
 
-    mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
+    mapItem()->screenToWorld(event->x(), event->y(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
 
     if (imageAddr)
     {
         mDrawingState = DrawingState::START;
-        mImageOverlay = new osgEarth::Annotation::ImageOverlay(mMapcontroller->getMapNode(), imageAddr);
+        mImageOverlay = new osgEarth::Annotation::ImageOverlay(mapItem()->getMapNode(), imageAddr);
         mImageOverlay->setCenter(geoPos.x(),geoPos.y());
         mImageProperties->setImage(mImageOverlay);
         mImageProperties->setLocation(mImageOverlay->getCenter());
@@ -147,9 +143,9 @@ void DrawImage::startDraw(QMouseEvent *event)
         mImageProperties->setTR(mImageOverlay->getUpperRight());
         mImageProperties->setBR(mImageOverlay->getLowerRight());
         mImageProperties->setBL(mImageOverlay->getLowerLeft());
-        mMapcontroller->addNodeToLayer(mImageOverlay, DRAW_LAYER_NAME);
+        mapItem()->addNodeToLayer(mImageOverlay, DRAW_LAYER_NAME);
 //        mImgOvlEditor = new osgEarth::Annotation::ImageOverlayEditor(mImageOverlay, false);
-//        mMapcontroller->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+//        mapItem()->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
 
     }
 }
@@ -160,8 +156,8 @@ void DrawImage::finishDrawing(QMouseEvent *event)
         mDrawingState = DrawingState::START;
         event->accept();
         mImageProperties->setImage(mImageOverlay);
-//        mMapcontroller->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-//        mMapcontroller->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+//        mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+//        mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
         mImageOverlay = nullptr;
 
 
@@ -171,11 +167,11 @@ void DrawImage::finishDrawing(QMouseEvent *event)
 void DrawImage::cancelDrawing(QMouseEvent *event)
 {
 
-//    mMapcontroller->addNodeToLayer(mImage, DRAW_LAYER_NAME);
+//    mapItem()->addNodeToLayer(mImage, DRAW_LAYER_NAME);
     mImageProperties->setImage(mImageOverlay);
     mDrawingState = DrawingState::START;
-    mMapcontroller->removeNodeFromLayer(mImageOverlay , DRAW_LAYER_NAME);
-//    mMapcontroller->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+    mapItem()->removeNodeFromLayer(mImageOverlay , DRAW_LAYER_NAME);
+//    mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
     mImageOverlay = nullptr;
 //    mImgOvlEditor = nullptr;
 

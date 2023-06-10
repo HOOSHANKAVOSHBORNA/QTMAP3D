@@ -223,7 +223,7 @@ SystemTable::SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer 
     mSystemDataManger(systemDataManger),
     mDefenseModelLayer(defenseModelLayer)
 {
-    QQmlComponent *comp3 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
+    QQmlComponent *comp3 = new QQmlComponent(mDefenseModelLayer->qmlEngine());
     QObject::connect(comp3, &QQmlComponent::statusChanged, [this, comp3](){
         if (comp3->status() == QQmlComponent::Ready) {
             QQuickItem *systemTab = static_cast<QQuickItem*>(comp3->create(nullptr));
@@ -242,7 +242,7 @@ SystemTable::SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer 
                              SLOT(onDoubleClicked(const int&)));
 
             systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
-            mDefenseModelLayer->mUIHandle->lwAddTab("Systems", systemTab);
+            mDefenseModelLayer->uiHandle()->lwAddTab("Systems", systemTab);
         }
 
     });
