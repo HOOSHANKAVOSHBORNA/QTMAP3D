@@ -6,22 +6,24 @@ const QString CAPSULE = "Capsule";
 
 DrawCapsule::DrawCapsule(QObject *parent): PluginInterface(parent)
 {
-}
-
-bool DrawCapsule::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<CapsulePropertiesModel>("Crystal", 1, 0, "CapsuleProperties");
-
-    desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/resources/capsule.png", true,  false, ""});
-
-    return true;
 }
+
+//bool DrawCapsule::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<CapsulePropertiesModel>("Crystal", 1, 0, "CapsuleProperties");
+
+//    desc->toolboxItemsList.push_back(new ItemDesc{CAPSULE, CATEGORY, "qrc:/resources/capsule.png", true,  false, ""});
+
+//    return true;
+//}
 
 bool DrawCapsule::setup()
 {
-    auto toolboxItem =  new ToolboxItem{CAPSULE, CATEGORY, "qrc:/resources/box.png", true};
-//    QObject::connect(toolboxItem, &ToolboxItem::itemClicked, this, &DrawBox::onBoxClick);
+    auto toolboxItem =  new ToolboxItem{CAPSULE, CATEGORY, "qrc:/resources/capsule.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCapsule::onCapsuleItemCheck);
     toolbox()->addItem(toolboxItem);
+
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -32,28 +34,28 @@ bool DrawCapsule::setup()
     return true;
 }
 
-void DrawCapsule::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == CAPSULE) {
-            if (checked) {
-                mEnterCapsuleZone = true;
-                mDrawingState = DrawingState::START;
-                mCapsuleProperties = new CapsuleProperties(mCapsule, qmlEngine(), uiHandle(), mapItem());
-                mCapsuleProperties->show();
-                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//void DrawCapsule::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == CAPSULE) {
+//            if (checked) {
+//                mEnterCapsuleZone = true;
+//                mDrawingState = DrawingState::START;
+//                mCapsuleProperties = new CapsuleProperties(mCapsule, qmlEngine(), uiHandle(), mapItem());
+//                mCapsuleProperties->show();
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
-            }
-            else {
-                mEnterCapsuleZone = false;
-                mDrawingState = DrawingState::FINISH;
-                mCapsule = nullptr;
-                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
-                mCapsuleProperties->hide();
-            }
-        }
-    }
-}
+//            }
+//            else {
+//                mEnterCapsuleZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                mCapsule = nullptr;
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//                mCapsuleProperties->hide();
+//            }
+//        }
+//    }
+//}
 
 bool DrawCapsule::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
@@ -83,6 +85,25 @@ bool DrawCapsule::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
         mIconNode->setPosition(geoPos);
     }
     return false;
+}
+
+void DrawCapsule::onCapsuleItemCheck(bool check)
+{
+    if (check) {
+        mEnterCapsuleZone = true;
+        mDrawingState = DrawingState::START;
+        mCapsuleProperties = new CapsuleProperties(mCapsule, qmlEngine(), uiHandle(), mapItem());
+        mCapsuleProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterCapsuleZone = false;
+        mDrawingState = DrawingState::FINISH;
+        mCapsule = nullptr;
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+        mCapsuleProperties->hide();
+    }
 }
 
 bool DrawCapsule::startDraw(const osgGA::GUIEventAdapter &event)

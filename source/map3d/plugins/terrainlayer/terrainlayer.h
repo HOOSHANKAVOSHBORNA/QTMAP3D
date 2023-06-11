@@ -11,10 +11,10 @@ class TerrainLayer: public PluginInterface
 public:
     TerrainLayer(QWidget *parent = nullptr);
     ~TerrainLayer()override{}
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    void onToolboxItemClicked(const QString &name, const QString &category) override;
+//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    void onToolboxItemClicked(const QString &name, const QString &category) override;
     bool setup() override;
-private:
+private slots:
     void addGDAL();
     void addArcGIS();
     void addWCS();

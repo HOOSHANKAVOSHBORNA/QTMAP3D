@@ -26,8 +26,8 @@ public:
     explicit Visibility(QObject *parent = nullptr);
 
 public:
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool setup() override;
 private slots:
     void onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos);

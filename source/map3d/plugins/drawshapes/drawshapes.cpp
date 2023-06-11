@@ -40,35 +40,35 @@ DrawShapes::DrawShapes(QWidget *parent)
 {
     Q_INIT_RESOURCE(drawShapes);
 }
-bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
-    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true});
-    return true;
-}
+//bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true});
+//    return true;
+//}
 
-void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if(CATEGORY == category)
-    {
-        mEnterShapeZone = checked;
-        if(name == IMAGE_OVERLAY)
-        {
-            if(checked)
-            {
-                mShape = Shape::IMGOVLY;
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                mDrawingState = DrawingState::NONE;
-                if (mImageOverlay && mDrawingState != DrawingState::FINISH){
-                    mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-                    mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
-                }
-            }
-        }
-    }
-}
+//void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if(CATEGORY == category)
+//    {
+//        mEnterShapeZone = checked;
+//        if(name == IMAGE_OVERLAY)
+//        {
+//            if(checked)
+//            {
+//                mShape = Shape::IMGOVLY;
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                mDrawingState = DrawingState::NONE;
+//                if (mImageOverlay && mDrawingState != DrawingState::FINISH){
+//                    mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+//                    mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+//                }
+//            }
+//        }
+//    }
+//}
 
 bool DrawShapes::setup()
 {

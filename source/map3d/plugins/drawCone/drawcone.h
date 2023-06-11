@@ -19,12 +19,14 @@ class DrawCone : public PluginInterface
 
 public:
     DrawCone(QObject *parent = nullptr);
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     bool setup() override;
 
-    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+//    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
     virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+private slots:
+    void onConeItemCheck(bool check);
 private:
     bool startDraw(const osgGA::GUIEventAdapter& event);
     bool finishDrawing(const osgGA::GUIEventAdapter& event);

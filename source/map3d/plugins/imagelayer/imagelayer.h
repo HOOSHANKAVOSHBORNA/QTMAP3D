@@ -11,10 +11,10 @@ class ImageLayer : public PluginInterface
 public:
     ImageLayer(QWidget *parent = nullptr);
     ~ImageLayer()override{}
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    void onToolboxItemClicked(const QString &name, const QString &category) override;
+//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    void onToolboxItemClicked(const QString &name, const QString &category) override;
     bool setup() override;
-private:
+private slots:
     void addXYZ();
     void addArcGIS();
     void addGDAL();

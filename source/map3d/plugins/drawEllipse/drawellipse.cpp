@@ -12,43 +12,47 @@ const QString ELLIPSE = "Ellipse";
 DrawEllipse::DrawEllipse(QObject *parent)
     : PluginInterface(parent)
 {
-
-}
-bool DrawEllipse::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<EllipsePropertiesModel>("Crystal", 1, 0, "EllipseProperties");
-
-    desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true,  false, ""});
-    return true;
 }
+//bool DrawEllipse::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<EllipsePropertiesModel>("Crystal", 1, 0, "EllipseProperties");
 
-void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == ELLIPSE) {
-            if (checked) {
-                mEnterEllipseZone = true;
-                mDrawingState = DrawingState::START;
-                mEllipseProperties = new EllipseProperties(mEllipse, qmlEngine(), uiHandle());
-                mEllipseProperties->show();
-                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//    desc->toolboxItemsList.push_back(new ItemDesc{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true,  false, ""});
+//    return true;
+//}
 
-            }
-            else {
-                mEnterEllipseZone = false;
-                mDrawingState = DrawingState::FINISH;
-                mEllipse = nullptr;
+//void DrawEllipse::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == ELLIPSE) {
+//            if (checked) {
+//                mEnterEllipseZone = true;
+//                mDrawingState = DrawingState::START;
+//                mEllipseProperties = new EllipseProperties(mEllipse, qmlEngine(), uiHandle());
+//                mEllipseProperties->show();
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
-                mEllipseProperties->hide();
-                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//            }
+//            else {
+//                mEnterEllipseZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                mEllipse = nullptr;
 
-            }
-        }
-    }
-}
+//                mEllipseProperties->hide();
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+
+//            }
+//        }
+//    }
+//}
 
 bool DrawEllipse::setup()
 {
+    auto toolboxItem =  new ToolboxItem{ELLIPSE, CATEGORY, "qrc:/resources/ellipse.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawEllipse::onEllipseItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
     osgEarth::ModelLayer *ellipseLayer = new osgEarth::ModelLayer();
@@ -96,6 +100,27 @@ bool DrawEllipse::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
         mIconNode->setPosition(geoPos);
     }
     return false;
+}
+
+void DrawEllipse::onEllipseItemCheck(bool check)
+{
+    if (check) {
+        mEnterEllipseZone = true;
+        mDrawingState = DrawingState::START;
+        mEllipseProperties = new EllipseProperties(mEllipse, qmlEngine(), uiHandle());
+        mEllipseProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterEllipseZone = false;
+        mDrawingState = DrawingState::FINISH;
+        mEllipse = nullptr;
+
+        mEllipseProperties->hide();
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawEllipse::makeIconNode()

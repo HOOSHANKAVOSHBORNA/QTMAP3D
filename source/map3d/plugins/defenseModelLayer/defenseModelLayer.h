@@ -1,10 +1,8 @@
 ﻿#ifndef MODEL_H
 #define MODEL_H
 
+#include "defenseModelNode.h"
 #include "plugininterface.h"
-#include "aircraftModelNode.h"
-#include "stationModelNode.h"
-
 #include<osg/Array>
 #include <osg/AnimationPath>
 #include <osgAnimation/EaseMotion>
@@ -38,9 +36,9 @@ class DefenseModelLayer :public PluginInterface
 public:
     explicit DefenseModelLayer(QObject *parent = nullptr);
 public:
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
-    virtual void onSideItemCreated(int index, QObject *pSideItem) override;
-    virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
+//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
+//    virtual void onSideItemCreated(int index, QObject *pSideItem) override;
+//    virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
     virtual bool setup() override;
 //    virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
@@ -64,6 +62,13 @@ protected:
 //    virtual void mouseReleaseEvent(QMouseEvent *event) override;
 //    virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
 //    virtual void mouseMoveEvent(QMouseEvent* event)override;
+
+private slots:
+    void onAircraftItemClick();
+    void onSystemItemClick();
+    void onStationItemClick();
+    void onFireItemClick();
+    void onKillItemClick();
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);

@@ -78,44 +78,44 @@ private:
 
 };
 
-struct ItemDesc
-{
-    ItemDesc(
-            QString _name      = QString(),
-            QString _category  = QString(),
-            QString _iconUrl   = QString(),
-            bool    _checkable = false,
-            bool    _hasMenu   = false,
-            QString _menuUrl   = QString()) :
-        name     (_name     ),
-        category (_category ),
-        iconUrl  (_iconUrl  ),
-        checkable(_checkable),
-        hasMenu  (_hasMenu  ),
-        menuUrl  (_menuUrl  )
-    {
+//struct ItemDesc
+//{
+//    ItemDesc(
+//            QString _name      = QString(),
+//            QString _category  = QString(),
+//            QString _iconUrl   = QString(),
+//            bool    _checkable = false,
+//            bool    _hasMenu   = false,
+//            QString _menuUrl   = QString()) :
+//        name     (_name     ),
+//        category (_category ),
+//        iconUrl  (_iconUrl  ),
+//        checkable(_checkable),
+//        hasMenu  (_hasMenu  ),
+//        menuUrl  (_menuUrl  )
+//    {
 
-    }
+//    }
 
-    QString name;
-    QString category;
-    QString iconUrl;
-    bool    checkable = false;
-    bool    hasMenu   = false;
-    QString menuUrl;
-};
+//    QString name;
+//    QString category;
+//    QString iconUrl;
+//    bool    checkable = false;
+//    bool    hasMenu   = false;
+//    QString menuUrl;
+//};
 
 
-struct PluginQMLDesc
-{
-    bool           pluginHasSideItem = false;
-    QString        sideItemMenuBarTitle;
-    QString        sideItemMenuBarIconUrl;
-    QString        sideItemUrl;
+//struct PluginQMLDesc
+//{
+//    bool           pluginHasSideItem = false;
+//    QString        sideItemMenuBarTitle;
+//    QString        sideItemMenuBarIconUrl;
+//    QString        sideItemUrl;
 
-    QList<ItemDesc*> toolboxItemsList;
-    QList<ItemDesc*> fileItemsList;
-};
+//    QList<ItemDesc*> toolboxItemsList;
+//    QList<ItemDesc*> fileItemsList;
+//};
 
 struct ToolboxItem: public QObject
 {
@@ -165,15 +165,23 @@ public:
     static void setDefenseDataManager(DefenseDataManager* defenseDataManager);
 
 //    virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
-    virtual void onSideItemCreated(int index, QObject *sideItem) {}
-    virtual void onToolboxItemClicked(const QString& name,
-                                      const QString& category) {}
-    virtual void onToolboxItemCheckedChanged(const QString& name,
-                                             const QString& category,
-                                             bool checked) {}
-    virtual void onFileItemClicked(const QString& name,
-                                      const QString& category) {}
+//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
+//    virtual void onSideItemCreated(int index, QObject *sideItem) {}
+//    virtual void onToolboxItemClicked(const QS//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
+    //    virtual void onSideItemCreated(int index, QObject *sideItem) {}
+    //    virtual void onToolboxItemClicked(const QString& name,
+    //                                      const QString& category) {}
+    //    virtual void onToolboxItemCheckedChanged(const QString& name,
+    //                                             const QString& category,
+    //                                             bool checked) {}
+    //    virtual void onFileItemClicked(const QString& name,
+    //                                      const QString& category) {}tring& name,
+//                                      const QString& category) {}
+//    virtual void onToolboxItemCheckedChanged(const QString& name,
+//                                             const QString& category,
+//                                             bool checked) {}
+//    virtual void onFileItemClicked(const QString& name,
+//                                      const QString& category) {}
 
     virtual bool setup() {return false;}
 

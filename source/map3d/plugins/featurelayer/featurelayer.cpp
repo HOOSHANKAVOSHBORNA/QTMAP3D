@@ -23,34 +23,46 @@ FeatureLayer::FeatureLayer(QWidget *parent)
     : PluginInterface(parent)
 {
 }
-bool FeatureLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
-    Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{WFS, CATEGORY, "qrc:/resources/wfs.png", false, false, ""});
+//bool FeatureLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    Q_UNUSED(engine)
+//    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{WFS, CATEGORY, "qrc:/resources/wfs.png", false, false, ""});
 
-    return true;
-}
+//    return true;
+//}
 
-void FeatureLayer::onToolboxItemClicked(const QString &name, const QString &category)
-{
-    if(CATEGORY == category && name == GDAL)
-    {
-        addGDAL();
-    }
-    if(CATEGORY == category && name == ARCGIS)
-    {
-        addArcGIS();
-    }
-    if(CATEGORY == category && name == WFS)
-    {
-        addWFS();
-    }
-}
+//void FeatureLayer::onToolboxItemClicked(const QString &name, const QString &category)
+//{
+//    if(CATEGORY == category && name == GDAL)
+//    {
+//        addGDAL();
+//    }
+//    if(CATEGORY == category && name == ARCGIS)
+//    {
+//        addArcGIS();
+//    }
+//    if(CATEGORY == category && name == WFS)
+//    {
+//        addWFS();
+//    }
+//}
 
 bool FeatureLayer::setup()
 {
+    auto toolboxItemGDAL =  new ToolboxItem{GDAL, CATEGORY, "qrc:/resources/gdal.png", false};
+    QObject::connect(toolboxItemGDAL, &ToolboxItem::itemClicked, this, &FeatureLayer::addGDAL);
+    toolbox()->addItem(toolboxItemGDAL);
+
+    auto toolboxItemArcGIS =  new ToolboxItem{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false};
+    QObject::connect(toolboxItemArcGIS, &ToolboxItem::itemClicked, this, &FeatureLayer::addArcGIS);
+    toolbox()->addItem(toolboxItemArcGIS);
+
+    auto toolboxItemWFS =  new ToolboxItem{WFS, CATEGORY, "qrc:/resources/wfs.png", false};
+    QObject::connect(toolboxItemWFS, &ToolboxItem::itemClicked, this, &FeatureLayer::addWFS);
+    toolbox()->addItem(toolboxItemWFS);
+
     return true;
 }
 

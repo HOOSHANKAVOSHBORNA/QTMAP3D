@@ -23,8 +23,8 @@ class DrawShapes : public PluginInterface
 
 public:
     explicit DrawShapes(QWidget *parent = nullptr);
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool setup() override;
 protected:
     virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;

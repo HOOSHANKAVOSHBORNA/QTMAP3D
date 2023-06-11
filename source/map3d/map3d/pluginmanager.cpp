@@ -125,7 +125,7 @@ void PluginManager::loadPlugins()
                 pluginInterface->setName(fileName);
                 PluginInfo cpi;
                 cpi.interface = pluginInterface;
-                cpi.qmlDesc    = new PluginQMLDesc;
+//                cpi.qmlDesc    = new PluginQMLDesc;
                 cpi.sideItemIndex = -1;
                 mPluginsInfoList.push_back(std::move(cpi));
             }
@@ -142,9 +142,9 @@ void PluginManager::setup()
     QQmlEngine *qmlEngine = dynamic_cast<QQmlEngine*>(Application::instance()->qmlEngine());
     PluginInterface::setQmlEngine(qmlEngine);
 
-    for (const auto& item : mPluginsInfoList) {
-        item.interface->initializeQMLDesc(qmlEngine, item.qmlDesc);
-    }
+//    for (const auto& item : mPluginsInfoList) {
+//        item.interface->initializeQMLDesc(qmlEngine, item.qmlDesc);
+//    }
     //-----------------------------------
     DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
     PluginInterface::setDefenseDataManager(defenseDataManager);
@@ -189,65 +189,65 @@ void PluginManager::setup()
 //    return mPluginsInfoList;
 //}
 
-void PluginManager::onSideItemCreated(int index, QObject *sideItem)
-{
-    const auto it = std::find_if(mPluginsInfoList.begin(),
-                                 mPluginsInfoList.end(),
-                                 [index](const PluginInfo& item){
-        return (item.sideItemIndex == index);
-    });
+//void PluginManager::onSideItemCreated(int index, QObject *sideItem)
+//{
+//    const auto it = std::find_if(mPluginsInfoList.begin(),
+//                                 mPluginsInfoList.end(),
+//                                 [index](const PluginInfo& item){
+//        return (item.sideItemIndex == index);
+//    });
 
-    if (it != mPluginsInfoList.end()) {
-        it->interface->onSideItemCreated(index, sideItem);
-    }
-}
+//    if (it != mPluginsInfoList.end()) {
+//        it->interface->onSideItemCreated(index, sideItem);
+//    }
+//}
 
-void PluginManager::onToolboxItemCreated(ItemDescProxy *itemProxy)
-{
-    mToolboxItemsMap[itemProxy->category()][itemProxy->name()] = itemProxy->pluginInterface();
-}
+//void PluginManager::onToolboxItemCreated(ItemDescProxy *itemProxy)
+//{
+//    mToolboxItemsMap[itemProxy->category()][itemProxy->name()] = itemProxy->pluginInterface();
+//}
 
-void PluginManager::onFileItemCreated(ItemDescProxy *itemProxy)
-{
-    mFileItemsMap[itemProxy->category()][itemProxy->name()] = itemProxy->pluginInterface();
-}
+//void PluginManager::onFileItemCreated(ItemDescProxy *itemProxy)
+//{
+//    mFileItemsMap[itemProxy->category()][itemProxy->name()] = itemProxy->pluginInterface();
+//}
 
-void PluginManager::onToolboxItemClicked(const QString &name, const QString &category)
-{
-    if (mToolboxItemsMap.contains(category)) {
-        if (mToolboxItemsMap[category].contains(name)) {
-            PluginInterface* pInterface = mToolboxItemsMap[category][name];
-            if (pInterface) {
-                pInterface->onToolboxItemClicked(name, category);
-            }
-        }
-    }
-}
+//void PluginManager::onToolboxItemClicked(const QString &name, const QString &category)
+//{
+//    if (mToolboxItemsMap.contains(category)) {
+//        if (mToolboxItemsMap[category].contains(name)) {
+//            PluginInterface* pInterface = mToolboxItemsMap[category][name];
+//            if (pInterface) {
+//                pInterface->onToolboxItemClicked(name, category);
+//            }
+//        }
+//    }
+//}
 
-void PluginManager::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (mToolboxItemsMap.contains(category)) {
-        if (mToolboxItemsMap[category].contains(name)) {
-            PluginInterface* pInterface = mToolboxItemsMap[category][name];
-            if (pInterface) {
-                pInterface->onToolboxItemCheckedChanged(name, category, checked);
-            }
-        }
-    }
+//void PluginManager::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (mToolboxItemsMap.contains(category)) {
+//        if (mToolboxItemsMap[category].contains(name)) {
+//            PluginInterface* pInterface = mToolboxItemsMap[category][name];
+//            if (pInterface) {
+//                pInterface->onToolboxItemCheckedChanged(name, category, checked);
+//            }
+//        }
+//    }
 
-}
+//}
 
-void PluginManager::onFileItemClicked(const QString &name, const QString &category)
-{
-    if (mFileItemsMap.contains(category)) {
-        if (mFileItemsMap[category].contains(name)) {
-            PluginInterface* pInterface = mFileItemsMap[category][name];
-            if (pInterface) {
-                pInterface->onFileItemClicked(name, category);
-            }
-        }
-    }
-}
+//void PluginManager::onFileItemClicked(const QString &name, const QString &category)
+//{
+//    if (mFileItemsMap.contains(category)) {
+//        if (mFileItemsMap[category].contains(name)) {
+//            PluginInterface* pInterface = mFileItemsMap[category][name];
+//            if (pInterface) {
+//                pInterface->onFileItemClicked(name, category);
+//            }
+//        }
+//    }
+//}
 
 //void PluginManager::frameEvent()
 //{

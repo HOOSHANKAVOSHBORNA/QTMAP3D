@@ -35,21 +35,23 @@ const QString IMAGE_OVERLAY = "Add Image Overlay";
 
 DrawImage::DrawImage(QObject *parent): PluginInterface(parent)
 {
-
-
-
-}
-
-bool DrawImage::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<ImagePropertiesModel>("Crystal", 1, 0, "ImageProperties");
-    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true,  false, ""});
-    return true;
 }
+
+//bool DrawImage::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<ImagePropertiesModel>("Crystal", 1, 0, "ImageProperties");
+//    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true,  false, ""});
+//    return true;
+//}
 
 
 bool DrawImage::setup()
 {
+    auto toolboxItem =  new ToolboxItem{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true,};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawImage::onImageItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -60,31 +62,31 @@ bool DrawImage::setup()
 }
 
 
-void DrawImage::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == IMAGE_OVERLAY) {
-            if (checked) {
-                mEnterImageZone = true;
-                mDrawingState = DrawingState::START;
-                loadImage();
-                mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
-                mImageProperties->show();
-                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
-
-            }
-            else {
-                mEnterImageZone = false;
-                mDrawingState = DrawingState::FINISH;
+//void DrawImage::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == IMAGE_OVERLAY) {
+//            if (checked) {
+//                mEnterImageZone = true;
+//                mDrawingState = DrawingState::START;
+//                loadImage();
+//                mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
+//                mImageProperties->show();
 //                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
-                mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-//                mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
-                mImageProperties->hide();
-                mapItem()->removeNodeFromLayer(mIconNode,DRAW_LAYER_NAME);
-            }
-        }
-    }
-}
+
+//            }
+//            else {
+//                mEnterImageZone = false;
+//                mDrawingState = DrawingState::FINISH;
+////                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//                mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+////                mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+//                mImageProperties->hide();
+//                mapItem()->removeNodeFromLayer(mIconNode,DRAW_LAYER_NAME);
+//            }
+//        }
+//    }
+//}
 
 //void DrawImage::mousePressEvent(QMouseEvent *event)
 //{
@@ -121,6 +123,28 @@ void DrawImage::loadImage()
 {
     QUrl fileDialog = QFileDialog::getOpenFileUrl();
     imageAddr = osgDB::readImageFile(fileDialog.toLocalFile().toStdString());
+}
+
+void DrawImage::onImageItemCheck(bool check)
+{
+    if (check) {
+        mEnterImageZone = true;
+        mDrawingState = DrawingState::START;
+        loadImage();
+        mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
+        mImageProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterImageZone = false;
+        mDrawingState = DrawingState::FINISH;
+        //                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+        mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+        //                mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+        mImageProperties->hide();
+        mapItem()->removeNodeFromLayer(mIconNode,DRAW_LAYER_NAME);
+    }
 }
 
 void DrawImage::startDraw(QMouseEvent *event)

@@ -27,17 +27,17 @@ class ItemDescProxy : public QObject
 
 
 public:
-    ItemDescProxy(const ItemDesc& desc, PluginInterface *interface = nullptr) :
-        _name     (desc.name     ),
-        _category (desc.category ),
-        _iconUrl  (desc.iconUrl  ),
-        _checkable(desc.checkable),
-        _hasMenu  (desc.hasMenu  ),
-        _menuUrl  (desc.menuUrl  ),
-        _pluginInterface(interface)
-    {
+//    ItemDescProxy(const ItemDesc& desc, PluginInterface *interface = nullptr) :
+//        _name     (desc.name     ),
+//        _category (desc.category ),
+//        _iconUrl  (desc.iconUrl  ),
+//        _checkable(desc.checkable),
+//        _hasMenu  (desc.hasMenu  ),
+//        _menuUrl  (desc.menuUrl  ),
+//        _pluginInterface(interface)
+//    {
 
-    }
+//    }
 
     QString name     (){return _name;     }
     QString category (){return _category; }
@@ -60,7 +60,7 @@ private:
 struct PluginInfo
 {
     PluginInterface *interface = nullptr;
-    PluginQMLDesc   *qmlDesc    = nullptr;
+//    PluginQMLDesc   *qmlDesc    = nullptr;
     int              sideItemIndex      = -1;
 };
 
@@ -90,16 +90,16 @@ public:
 //    std::list<PluginInfo>& pluginsInfoList();
 
 public slots:
-    void onSideItemCreated(int index, QObject *sideItem);
-    void onToolboxItemCreated(ItemDescProxy *itemProxy);
-    void onFileItemCreated(ItemDescProxy *itemProxy);
-    void onToolboxItemClicked(const QString& name,
-                              const QString& category);
-    void onToolboxItemCheckedChanged(const QString& name,
-                                     const QString& category,
-                                     bool checked);
-    void onFileItemClicked(const QString& name,
-                           const QString& category);
+//    void onSideItemCreated(int index, QObject *sideItem);
+//    void onToolboxItemCreated(ItemDescProxy *itemProxy);
+//    void onFileItemCreated(ItemDescProxy *itemProxy);
+//    void onToolboxItemClicked(const QString& name,
+//                              const QString& category);
+//    void onToolboxItemCheckedChanged(const QString& name,
+//                                     const QString& category,
+//                                     bool checked);
+//    void onFileItemClicked(const QString& name,
+//                           const QString& category);
 
 
 public:

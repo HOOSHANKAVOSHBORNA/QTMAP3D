@@ -11,10 +11,10 @@ class FeatureLayer : public PluginInterface
 public:
     FeatureLayer(QWidget *parent = nullptr);
     ~FeatureLayer()override{}
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    void onToolboxItemClicked(const QString &name, const QString &category) override;
+//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    void onToolboxItemClicked(const QString &name, const QString &category) override;
     bool setup() override;
-private:
+private slots:
     void addGDAL();
     void addWFS();
     void addArcGIS();

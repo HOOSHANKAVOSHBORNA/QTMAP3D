@@ -12,48 +12,52 @@ const QString POLYGON = "Polygon";
 DrawPolygon::DrawPolygon(QObject *parent)
     : PluginInterface(parent)
 {
-
-}
-
-bool DrawPolygon::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
-    desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true,  false, ""});
-    return true;
 }
 
-void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == POLYGON) {
-            if (checked) {
-                mEnterPolygonZone = true;
-                mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle());
-                if(/*mUiHandle &&*/ mPolygonProperties){
-                    mPolygonProperties->show();
-                }
-                mDrawingState = DrawingState::START;
-                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//bool DrawPolygon::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
+//    desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true,  false, ""});
+//    return true;
+//}
 
-            }
-            else {
-                mEnterPolygonZone = false;
-                mDrawingState = DrawingState::FINISH;
-                if(mPolygonProperties){
-                        mPolygonProperties->hide();
-                    }
+//void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == POLYGON) {
+//            if (checked) {
+//                mEnterPolygonZone = true;
+//                mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle());
+//                if(/*mUiHandle &&*/ mPolygonProperties){
+//                    mPolygonProperties->show();
+//                }
+//                mDrawingState = DrawingState::START;
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
-                mPolygonProperties->deleteLater();
-                mPolygonProperties = nullptr;
-                mPolygon = nullptr;
-                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
-            }
-        }
-    }
-}
+//            }
+//            else {
+//                mEnterPolygonZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                if(mPolygonProperties){
+//                        mPolygonProperties->hide();
+//                    }
+
+//                mPolygonProperties->deleteLater();
+//                mPolygonProperties = nullptr;
+//                mPolygon = nullptr;
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//            }
+//        }
+//    }
+//}
 
 bool DrawPolygon::setup()
 {
+    auto toolboxItem =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawPolygon::onPolygonItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
     osgEarth::ModelLayer *polygonLayer = new osgEarth::ModelLayer();
@@ -111,6 +115,32 @@ bool DrawPolygon::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
         }
     }
     return false;
+}
+
+void DrawPolygon::onPolygonItemCheck(bool check)
+{
+    if (check) {
+        mEnterPolygonZone = true;
+        mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle());
+        if(/*mUiHandle &&*/ mPolygonProperties){
+            mPolygonProperties->show();
+        }
+        mDrawingState = DrawingState::START;
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterPolygonZone = false;
+        mDrawingState = DrawingState::FINISH;
+        if(mPolygonProperties){
+            mPolygonProperties->hide();
+        }
+
+        mPolygonProperties->deleteLater();
+        mPolygonProperties = nullptr;
+        mPolygon = nullptr;
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()

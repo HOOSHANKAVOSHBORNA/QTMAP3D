@@ -60,14 +60,6 @@ DefenseModelLayer::DefenseModelLayer(QObject *parent)
     //    Q_INIT_RESOURCE(modelqml);
     Q_INIT_RESOURCE(defenseModelLayer);
     Q_INIT_RESOURCE(defenseModelLayerqml);
-}
-
-bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
-{
-    //    pDesc->pluginHasSideItem = true;
-    //    pDesc->sideItemMenuBarTitle = "Layers";
-    //    pDesc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
-    //    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
     qmlRegisterType<AircraftTableModel>("Crystal", 1, 0, "AircraftTableModel");
     qmlRegisterType<ContextMenumodel>("Crystal", 1, 0, "ContextMenumodel");
@@ -76,115 +68,151 @@ bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDe
     qmlRegisterType<StationInfoModel>("Crystal", 1, 0, "StationInfoModel");
     qmlRegisterType<SystemInfoModel>("Crystal", 1, 0, "SystemInfoModel");
     qmlRegisterType<SystemTableModel>("Crystal", 1, 0, "SystemTableModel");
-
-    pDesc->toolboxItemsList.push_back(new ItemDesc{AIRCRAFT, CATEGORY, "qrc:/resources/plane.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{SYSTEM, CATEGORY, "qrc:/resources/systems.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{STATION, CATEGORY, "qrc:/resources/stations.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
-    pDesc->toolboxItemsList.push_back(new ItemDesc{KILL_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
-    return true;
 }
 
-void DefenseModelLayer::onSideItemCreated(int /*index*/, QObject */*pSideItem*/)
-{
-}
+//bool DefenseModelLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc)
+//{
+//    //    pDesc->pluginHasSideItem = true;
+//    //    pDesc->sideItemMenuBarTitle = "Layers";
+//    //    pDesc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
+//    //    pDesc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
-void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString &category)
-{
-    if(CATEGORY == category && name == AIRCRAFT)
-    {
-        AircraftInfo aircraftInfo;
-        aircraftInfo.TN = 0;
-        aircraftInfo.Longitude = 52.8601;
-        aircraftInfo.Latitude = 35.277;
-        aircraftInfo.Altitude = 9100;
-        aircraftInfo.Heading = 30;
-        aircraftInfo.IFFCode = "a12345";
-        aircraftInfo.CallSign = "cls";
-        aircraftInfo.Type = AircraftInfo::AircraftType::Fighter;
-        aircraftInfo.MasterRadar = "radar2";
-        aircraftInfo.Identification = AircraftInfo::Identify::Z;
-        aircraftInfo.IdentificationMethod = "mtd";
-        aircraftInfo.Time = 16675478754;
-        aircraftInfo.Pos = "pos1";
-        mDataManager->onAircraftInfoChanged(aircraftInfo);
-        //addUpdateAircraft(aircraftInfo);
-        //demo();
-    }
-    if(CATEGORY == category && name == ADD_ROCKET)
-    {
-//        for(auto modelNode:mModelNodes[AIRCRAFT])
-//        {
-//            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
-//            if(aircrafModelNode)
-//            {
-//                if(aircrafModelNode->getAssignments().size() > 0)
-//                {
-//                    auto systemModelNode = aircrafModelNode->getAssignments().first();
-//                    if(systemModelNode){
-//                        SystemCombatInfo CombatInfo;
-//                        CombatInfo.Phase = SystemCombatInfo::Fire;
-//                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
-//                        systemModelNode->setCombatInfo(CombatInfo);
-//                    }
-//                }
-//            }
-//        }
-    }
-    else if(CATEGORY == category && name == KILL_ROCKET)
-    {
-//        for(auto modelNode:mModelNodes[AIRCRAFT])
-//        {
-//            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
-//            if(aircrafModelNode)
-//            {
-//                if(aircrafModelNode->getAssignments().size() > 0)
-//                {
-//                    auto systemModelNode = aircrafModelNode->getAssignments().first();
-//                    if(systemModelNode){
-//                        SystemCombatInfo CombatInfo;
-//                        CombatInfo.Phase = SystemCombatInfo::Kill;
-//                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
-//                        systemModelNode->setCombatInfo(CombatInfo);
-//                    }
-//                }
-//            }
-//        }
-    }
-    else if(CATEGORY == category && name == SYSTEM)
-    {
-        SystemInfo systemInfo;
-        systemInfo.Name = SYSTEM + QString::number(0);
-        systemInfo.Longitude = 54.2;
-        systemInfo.Latitude = 35.3;
-        systemInfo.Number = 1234567;
-//        addUpdateSystem(systemInfo);
-        mDataManager->onSystemInfoChanged(systemInfo);
+//    qmlRegisterType<AircraftTableModel>("Crystal", 1, 0, "AircraftTableModel");
+//    qmlRegisterType<ContextMenumodel>("Crystal", 1, 0, "ContextMenumodel");
+//    qmlRegisterType<AircraftInfoModel>("Crystal", 1, 0, "AircraftInfoModel");
+//    qmlRegisterType<StationTableModel>("Crystal", 1, 0, "StationTableModel");
+//    qmlRegisterType<StationInfoModel>("Crystal", 1, 0, "StationInfoModel");
+//    qmlRegisterType<SystemInfoModel>("Crystal", 1, 0, "SystemInfoModel");
+//    qmlRegisterType<SystemTableModel>("Crystal", 1, 0, "SystemTableModel");
 
-        SystemStatusInfo systemStatusInfo;
-        systemStatusInfo.Number = systemInfo.Number;
-        systemStatusInfo.BCCStatus = SystemStatusInfo::S;
-        systemStatusInfo.RadarSearchStatus = SystemStatusInfo::US;
-        systemStatusInfo.MissileCount = 3;
-        mDataManager->onSystemStatusInfoChanged(systemStatusInfo);
+//    pDesc->toolboxItemsList.push_back(new ItemDesc{AIRCRAFT, CATEGORY, "qrc:/resources/plane.png", false, false, ""});
+//    pDesc->toolboxItemsList.push_back(new ItemDesc{SYSTEM, CATEGORY, "qrc:/resources/systems.png", false, false, ""});
+//    pDesc->toolboxItemsList.push_back(new ItemDesc{STATION, CATEGORY, "qrc:/resources/stations.png", false, false, ""});
+//    pDesc->toolboxItemsList.push_back(new ItemDesc{ADD_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
+//    pDesc->toolboxItemsList.push_back(new ItemDesc{KILL_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false, false, ""});
+//    return true;
+//}
 
-    }
-    else if(CATEGORY == category && name == STATION)
-    {
-        StationInfo stationInfo;
-        stationInfo.Name = STATION + QString::number(0);
-        stationInfo.Longitude = 52;
-        stationInfo.Latitude = 35.2;
-        stationInfo.Number = 1234567;
-        stationInfo.PrimSec = "primary";
-        stationInfo.CycleTime = 10000;
-        mDataManager->onStationInfoChanged(stationInfo);
-//        addUpdateStation(stationInfo);
-    }
-}
+//void DefenseModelLayer::onSideItemCreated(int /*index*/, QObject */*pSideItem*/)
+//{
+//}
+
+//void DefenseModelLayer::onToolboxItemClicked(const QString &name, const QString &category)
+//{
+//    if(CATEGORY == category && name == AIRCRAFT)
+//    {
+//        AircraftInfo aircraftInfo;
+//        aircraftInfo.TN = 0;
+//        aircraftInfo.Longitude = 52.8601;
+//        aircraftInfo.Latitude = 35.277;
+//        aircraftInfo.Altitude = 9100;
+//        aircraftInfo.Heading = 30;
+//        aircraftInfo.IFFCode = "a12345";
+//        aircraftInfo.CallSign = "cls";
+//        aircraftInfo.Type = AircraftInfo::AircraftType::Fighter;
+//        aircraftInfo.MasterRadar = "radar2";
+//        aircraftInfo.Identification = AircraftInfo::Identify::Z;
+//        aircraftInfo.IdentificationMethod = "mtd";
+//        aircraftInfo.Time = 16675478754;
+//        aircraftInfo.Pos = "pos1";
+//        mDataManager->onAircraftInfoChanged(aircraftInfo);
+//        //addUpdateAircraft(aircraftInfo);
+//        //demo();
+//    }
+//    if(CATEGORY == category && name == ADD_ROCKET)
+//    {
+////        for(auto modelNode:mModelNodes[AIRCRAFT])
+////        {
+////            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+////            if(aircrafModelNode)
+////            {
+////                if(aircrafModelNode->getAssignments().size() > 0)
+////                {
+////                    auto systemModelNode = aircrafModelNode->getAssignments().first();
+////                    if(systemModelNode){
+////                        SystemCombatInfo CombatInfo;
+////                        CombatInfo.Phase = SystemCombatInfo::Fire;
+////                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+////                        systemModelNode->setCombatInfo(CombatInfo);
+////                    }
+////                }
+////            }
+////        }
+//    }
+//    else if(CATEGORY == category && name == KILL_ROCKET)
+//    {
+////        for(auto modelNode:mModelNodes[AIRCRAFT])
+////        {
+////            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+////            if(aircrafModelNode)
+////            {
+////                if(aircrafModelNode->getAssignments().size() > 0)
+////                {
+////                    auto systemModelNode = aircrafModelNode->getAssignments().first();
+////                    if(systemModelNode){
+////                        SystemCombatInfo CombatInfo;
+////                        CombatInfo.Phase = SystemCombatInfo::Kill;
+////                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+////                        systemModelNode->setCombatInfo(CombatInfo);
+////                    }
+////                }
+////            }
+////        }
+//    }
+//    else if(CATEGORY == category && name == SYSTEM)
+//    {
+//        SystemInfo systemInfo;
+//        systemInfo.Name = SYSTEM + QString::number(0);
+//        systemInfo.Longitude = 54.2;
+//        systemInfo.Latitude = 35.3;
+//        systemInfo.Number = 1234567;
+////        addUpdateSystem(systemInfo);
+//        mDataManager->onSystemInfoChanged(systemInfo);
+
+//        SystemStatusInfo systemStatusInfo;
+//        systemStatusInfo.Number = systemInfo.Number;
+//        systemStatusInfo.BCCStatus = SystemStatusInfo::S;
+//        systemStatusInfo.RadarSearchStatus = SystemStatusInfo::US;
+//        systemStatusInfo.MissileCount = 3;
+//        mDataManager->onSystemStatusInfoChanged(systemStatusInfo);
+
+//    }
+//    else if(CATEGORY == category && name == STATION)
+//    {
+//        StationInfo stationInfo;
+//        stationInfo.Name = STATION + QString::number(0);
+//        stationInfo.Longitude = 52;
+//        stationInfo.Latitude = 35.2;
+//        stationInfo.Number = 1234567;
+//        stationInfo.PrimSec = "primary";
+//        stationInfo.CycleTime = 10000;
+//        mDataManager->onStationInfoChanged(stationInfo);
+////        addUpdateStation(stationInfo);
+//    }
+//}
 
 bool DefenseModelLayer::setup()
 {
+    auto toolboxItemAircraft =  new ToolboxItem{AIRCRAFT, CATEGORY, "qrc:/resources/plane.png", false};
+    QObject::connect(toolboxItemAircraft, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onAircraftItemClick);
+    toolbox()->addItem(toolboxItemAircraft);
+
+    auto toolboxItemSystem =  new ToolboxItem{SYSTEM, CATEGORY, "qrc:/resources/systems.png", false};
+    QObject::connect(toolboxItemSystem, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onSystemItemClick);
+    toolbox()->addItem(toolboxItemSystem);
+
+    auto toolboxItemStation =  new ToolboxItem{STATION, CATEGORY, "qrc:/resources/stations.png", false};
+    QObject::connect(toolboxItemStation, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onStationItemClick);
+    toolbox()->addItem(toolboxItemStation);
+
+    auto toolboxItemFire =  new ToolboxItem{ADD_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false};
+    QObject::connect(toolboxItemFire, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onFireItemClick);
+    toolbox()->addItem(toolboxItemFire);
+
+    auto toolboxItemKill =  new ToolboxItem{KILL_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false};
+    QObject::connect(toolboxItemKill, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onKillItemClick);
+    toolbox()->addItem(toolboxItemKill);
+
     connect(mapItem(), &MapItem::mapCleared, this, &DefenseModelLayer::onMapClear);
 
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
@@ -606,5 +634,96 @@ osgEarth::Symbology::Style &DefenseModelLayer::getDefaultStyle()
     }
 
     return _style;
+}
+
+void DefenseModelLayer::onAircraftItemClick()
+{
+    AircraftInfo aircraftInfo;
+    aircraftInfo.TN = 0;
+    aircraftInfo.Longitude = 52.8601;
+    aircraftInfo.Latitude = 35.277;
+    aircraftInfo.Altitude = 9100;
+    aircraftInfo.Heading = 30;
+    aircraftInfo.IFFCode = "a12345";
+    aircraftInfo.CallSign = "cls";
+    aircraftInfo.Type = AircraftInfo::AircraftType::Fighter;
+    aircraftInfo.MasterRadar = "radar2";
+    aircraftInfo.Identification = AircraftInfo::Identify::Z;
+    aircraftInfo.IdentificationMethod = "mtd";
+    aircraftInfo.Time = 16675478754;
+    aircraftInfo.Pos = "pos1";
+    mDataManager->onAircraftInfoChanged(aircraftInfo);
+}
+
+void DefenseModelLayer::onSystemItemClick()
+{
+    SystemInfo systemInfo;
+    systemInfo.Name = SYSTEM + QString::number(0);
+    systemInfo.Longitude = 54.2;
+    systemInfo.Latitude = 35.3;
+    systemInfo.Number = 1234567;
+    //        addUpdateSystem(systemInfo);
+    mDataManager->onSystemInfoChanged(systemInfo);
+
+    SystemStatusInfo systemStatusInfo;
+    systemStatusInfo.Number = systemInfo.Number;
+    systemStatusInfo.BCCStatus = SystemStatusInfo::S;
+    systemStatusInfo.RadarSearchStatus = SystemStatusInfo::US;
+    systemStatusInfo.MissileCount = 3;
+    mDataManager->onSystemStatusInfoChanged(systemStatusInfo);
+}
+
+void DefenseModelLayer::onStationItemClick()
+{
+    StationInfo stationInfo;
+    stationInfo.Name = STATION + QString::number(0);
+    stationInfo.Longitude = 52;
+    stationInfo.Latitude = 35.2;
+    stationInfo.Number = 1234567;
+    stationInfo.PrimSec = "primary";
+    stationInfo.CycleTime = 10000;
+    mDataManager->onStationInfoChanged(stationInfo);
+}
+
+void DefenseModelLayer::onFireItemClick()
+{
+    //        for(auto modelNode:mModelNodes[AIRCRAFT])
+    //        {
+    //            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+    //            if(aircrafModelNode)
+    //            {
+    //                if(aircrafModelNode->getAssignments().size() > 0)
+    //                {
+    //                    auto systemModelNode = aircrafModelNode->getAssignments().first();
+    //                    if(systemModelNode){
+    //                        SystemCombatInfo CombatInfo;
+    //                        CombatInfo.Phase = SystemCombatInfo::Fire;
+    //                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+    //                        systemModelNode->setCombatInfo(CombatInfo);
+    //                    }
+    //                }
+    //            }
+    //        }
+}
+
+void DefenseModelLayer::onKillItemClick()
+{
+    //        for(auto modelNode:mModelNodes[AIRCRAFT])
+    //        {
+    //            auto aircrafModelNode = dynamic_cast<AircraftModelNode*>(modelNode.get());
+    //            if(aircrafModelNode)
+    //            {
+    //                if(aircrafModelNode->getAssignments().size() > 0)
+    //                {
+    //                    auto systemModelNode = aircrafModelNode->getAssignments().first();
+    //                    if(systemModelNode){
+    //                        SystemCombatInfo CombatInfo;
+    //                        CombatInfo.Phase = SystemCombatInfo::Kill;
+    //                        CombatInfo.TN = aircrafModelNode->getInformation().TN;
+    //                        systemModelNode->setCombatInfo(CombatInfo);
+    //                    }
+    //                }
+    //            }
+    //        }
 }
 

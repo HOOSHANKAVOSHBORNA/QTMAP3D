@@ -27,44 +27,65 @@ ImageLayer::ImageLayer(QWidget *parent)
     : PluginInterface(parent)
 {
 }
-bool ImageLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
-    Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false});
-    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false});
-    desc->toolboxItemsList.push_back(new ItemDesc{WMS, CATEGORY, "qrc:/resources/wms.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "qrc:/resources/tms.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{XYZ, CATEGORY, "qrc:/resources/xyz.png", false, false, ""});
+//bool ImageLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    Q_UNUSED(engine)
+//    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false});
+//    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false});
+//    desc->toolboxItemsList.push_back(new ItemDesc{WMS, CATEGORY, "qrc:/resources/wms.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "qrc:/resources/tms.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{XYZ, CATEGORY, "qrc:/resources/xyz.png", false, false, ""});
 
-    return true;
-}
+//    return true;
+//}
 
-void ImageLayer::onToolboxItemClicked(const QString &name, const QString &category)
-{
-    if(CATEGORY == category && name == GDAL)
-    {
-        addGDAL();
-    }
-    if(CATEGORY == category && name == ARCGIS)
-    {
-        addArcGIS();
-    }
-    if(CATEGORY == category && name == WMS)
-    {
-        addWMS();
-    }
-    if(CATEGORY == category && name == TMS)
-    {
-        addTMS();
-    }
-    if(CATEGORY == category && name == XYZ)
-    {
-        addXYZ();
-    }
-}
+//void ImageLayer::onToolboxItemClicked(const QString &name, const QString &category)
+//{
+//    if(CATEGORY == category && name == GDAL)
+//    {
+//        addGDAL();
+//    }
+//    if(CATEGORY == category && name == ARCGIS)
+//    {
+//        addArcGIS();
+//    }
+//    if(CATEGORY == category && name == WMS)
+//    {
+//        addWMS();
+//    }
+//    if(CATEGORY == category && name == TMS)
+//    {
+//        addTMS();
+//    }
+//    if(CATEGORY == category && name == XYZ)
+//    {
+//        addXYZ();
+//    }
+//}
 
 bool ImageLayer::setup()
 {
+    auto toolboxItemGDAL =  new ToolboxItem{GDAL, CATEGORY, "qrc:/resources/gdal.png", false};
+    QObject::connect(toolboxItemGDAL, &ToolboxItem::itemClicked, this, &ImageLayer::addGDAL);
+    toolbox()->addItem(toolboxItemGDAL);
+
+    auto toolboxItemArcGIS =  new ToolboxItem{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false};
+    QObject::connect(toolboxItemArcGIS, &ToolboxItem::itemClicked, this, &ImageLayer::addArcGIS);
+    toolbox()->addItem(toolboxItemArcGIS);
+
+    auto toolboxItemWMS =  new ToolboxItem{WMS, CATEGORY, "qrc:/resources/wms.png", false};
+    QObject::connect(toolboxItemWMS, &ToolboxItem::itemClicked, this, &ImageLayer::addWMS);
+    toolbox()->addItem(toolboxItemWMS);
+
+    auto toolboxItemTMS =  new ToolboxItem{TMS, CATEGORY, "qrc:/resources/tms.png", false};
+    QObject::connect(toolboxItemTMS, &ToolboxItem::itemClicked, this, &ImageLayer::addTMS);
+    toolbox()->addItem(toolboxItemTMS);
+
+    auto toolboxItemXYZ =  new ToolboxItem{XYZ, CATEGORY, "qrc:/resources/xyz.png", false};
+    QObject::connect(toolboxItemXYZ, &ToolboxItem::itemClicked, this, &ImageLayer::addXYZ);
+    toolbox()->addItem(toolboxItemXYZ);
+
+
     return true;
 }
 

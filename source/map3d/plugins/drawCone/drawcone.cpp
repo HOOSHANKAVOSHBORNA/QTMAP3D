@@ -6,19 +6,24 @@ const QString CONE = "Cone";
 
 DrawCone::DrawCone(QObject *parent): PluginInterface(parent)
 {
-}
-
-bool DrawCone::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<ConePropertiesModel>("Crystal", 1, 0, "ConeProperties");
-
-    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true,  false, ""});
-
-    return true;
 }
+
+//bool DrawCone::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<ConePropertiesModel>("Crystal", 1, 0, "ConeProperties");
+
+//    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true,  false, ""});
+
+//    return true;
+//}
 
 bool DrawCone::setup()
 {
+    auto toolboxItem =  new ToolboxItem{CONE, CATEGORY, "qrc:/resources/circle.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCone::onConeItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -29,28 +34,28 @@ bool DrawCone::setup()
     return true;
 }
 
-void DrawCone::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == CONE) {
-            if (checked) {
-                mEnterConeZone = true;
-                mDrawingState = DrawingState::START;
-                mConeProperties = new ConeProperties(mCone, qmlEngine(), uiHandle(), mapItem());
-                mConeProperties->show();
-                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//void DrawCone::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == CONE) {
+//            if (checked) {
+//                mEnterConeZone = true;
+//                mDrawingState = DrawingState::START;
+//                mConeProperties = new ConeProperties(mCone, qmlEngine(), uiHandle(), mapItem());
+//                mConeProperties->show();
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
-            }
-            else {
-                mEnterConeZone = false;
-                mDrawingState = DrawingState::FINISH;
-                mCone = nullptr;
-                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
-                mConeProperties->hide();
-            }
-        }
-    }
-}
+//            }
+//            else {
+//                mEnterConeZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                mCone = nullptr;
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//                mConeProperties->hide();
+//            }
+//        }
+//    }
+//}
 
 bool DrawCone::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
@@ -80,6 +85,25 @@ bool DrawCone::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
         mIconNode->setPosition(geoPos);
     }
     return false;
+}
+
+void DrawCone::onConeItemCheck(bool check)
+{
+    if (check) {
+        mEnterConeZone = true;
+        mDrawingState = DrawingState::START;
+        mConeProperties = new ConeProperties(mCone, qmlEngine(), uiHandle(), mapItem());
+        mConeProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterConeZone = false;
+        mDrawingState = DrawingState::FINISH;
+        mCone = nullptr;
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+        mConeProperties->hide();
+    }
 }
 
 bool DrawCone::startDraw(const osgGA::GUIEventAdapter &event)

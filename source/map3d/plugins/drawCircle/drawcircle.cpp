@@ -12,21 +12,24 @@ const QString CIRCLE = "Circle";
 DrawCircle::DrawCircle(QObject *parent)
     : PluginInterface(parent)
 {
-
-}
-
-bool DrawCircle::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
-    desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true,  false, ""});
-
-    return true;
 }
+
+//bool DrawCircle::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
+//    desc->toolboxItemsList.push_back(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true,  false, ""});
+
+//    return true;
+//}
 
 
 bool DrawCircle::setup()
 {
-//    toolbox()->addItem(new ItemDesc{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true,  false, ""});
+    auto toolboxItem =  new ToolboxItem{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCircle::onCircleItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -38,28 +41,28 @@ bool DrawCircle::setup()
 }
 
 
-void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == CIRCLE) {
-            if (checked) {
-                mEnterCircleZone = true;
-                mCircleProperties = new CircleProperties(mCircle, qmlEngine(), uiHandle(), mapItem());
-                mCircleProperties->show();
-                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
-                mDrawingState = DrawingState::START;
+//void DrawCircle::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == CIRCLE) {
+//            if (checked) {
+//                mEnterCircleZone = true;
+//                mCircleProperties = new CircleProperties(mCircle, qmlEngine(), uiHandle(), mapItem());
+//                mCircleProperties->show();
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//                mDrawingState = DrawingState::START;
 
-            }
-            else {
-                mEnterCircleZone = false;
-                mDrawingState = DrawingState::FINISH;
-                mCircle = nullptr;
-                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
-                mCircleProperties->hide();
-            }
-        }
-    }
-}
+//            }
+//            else {
+//                mEnterCircleZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                mCircle = nullptr;
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//                mCircleProperties->hide();
+//            }
+//        }
+//    }
+//}
 
 
 bool DrawCircle::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -90,6 +93,25 @@ bool DrawCircle::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActi
         mIconNode->setPosition(geoPos);
     }
     return false;
+}
+
+void DrawCircle::onCircleItemCheck(bool check)
+{
+    if (check) {
+        mEnterCircleZone = true;
+        mCircleProperties = new CircleProperties(mCircle, qmlEngine(), uiHandle(), mapItem());
+        mCircleProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+        mDrawingState = DrawingState::START;
+
+    }
+    else {
+        mEnterCircleZone = false;
+        mDrawingState = DrawingState::FINISH;
+        mCircle = nullptr;
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+        mCircleProperties->hide();
+    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawCircle::makeIconNode()

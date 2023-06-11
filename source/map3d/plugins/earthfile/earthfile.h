@@ -11,10 +11,12 @@ class EarthFile : public PluginInterface
 
 public:
     explicit EarthFile(QWidget *parent = nullptr);
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    void onFileItemClicked(const QString &name, const QString &category) override;
+//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    void onFileItemClicked(const QString &name, const QString &category) override;
     bool setup() override;
-private:
+private slots:
+    void onImportItemClick();
+    void onExportItemClick();
 };
 
 #endif // EARTHFILE_H

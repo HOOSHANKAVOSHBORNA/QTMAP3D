@@ -12,41 +12,45 @@ const QString RECT = "Rect";
 DrawRect::DrawRect(QObject *parent)
     : PluginInterface(parent)
 {
-
-}
-bool DrawRect::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<RectPropertiesModel>("Crystal", 1, 0, "RectProperties");
-
-    desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/resources/rectangle.png", true,  false, ""});
-    return true;
 }
+//bool DrawRect::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<RectPropertiesModel>("Crystal", 1, 0, "RectProperties");
 
-void DrawRect::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == RECT) {
-            if (checked) {
-                mEnterRectZone = true;
-                mDrawingState = DrawingState::START;
-                addNodeToLayer(mIconNode);
-                mRectProperties = new RectProperties(mRect, qmlEngine(), uiHandle());
-                mRectProperties->show();
+//    desc->toolboxItemsList.push_back(new ItemDesc{RECT, CATEGORY, "qrc:/resources/rectangle.png", true,  false, ""});
+//    return true;
+//}
 
-            }
-            else {
-                mEnterRectZone = false;
-                mDrawingState = DrawingState::FINISH;
-                mRect = nullptr;
-                removeNodeFromLayer(mIconNode);
-                mRectProperties->hide();
-            }
-        }
-    }
-}
+//void DrawRect::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == RECT) {
+//            if (checked) {
+//                mEnterRectZone = true;
+//                mDrawingState = DrawingState::START;
+//                addNodeToLayer(mIconNode);
+//                mRectProperties = new RectProperties(mRect, qmlEngine(), uiHandle());
+//                mRectProperties->show();
+
+//            }
+//            else {
+//                mEnterRectZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                mRect = nullptr;
+//                removeNodeFromLayer(mIconNode);
+//                mRectProperties->hide();
+//            }
+//        }
+//    }
+//}
 
 bool DrawRect::setup()
 {
+    auto toolboxItem =  new ToolboxItem{RECT, CATEGORY, "qrc:/resources/rectangle.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawRect::onRectItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
     osgEarth::ModelLayer *rectLayer = new osgEarth::ModelLayer();
@@ -94,6 +98,25 @@ bool DrawRect::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
         mIconNode->setPosition(geoPos);
     }
     return false;
+}
+
+void DrawRect::onRectItemCheck(bool check)
+{
+    if (check) {
+        mEnterRectZone = true;
+        mDrawingState = DrawingState::START;
+        addNodeToLayer(mIconNode);
+        mRectProperties = new RectProperties(mRect, qmlEngine(), uiHandle());
+        mRectProperties->show();
+
+    }
+    else {
+        mEnterRectZone = false;
+        mDrawingState = DrawingState::FINISH;
+        mRect = nullptr;
+        removeNodeFromLayer(mIconNode);
+        mRectProperties->hide();
+    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawRect::makeIconNode()

@@ -6,19 +6,24 @@ const QString CYLINDER = "Cylinder";
 
 DrawCylinder::DrawCylinder(QObject *parent): PluginInterface(parent)
 {
-}
-
-bool DrawCylinder::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<CylinderPropertiesModel>("Crystal", 1, 0, "CylinderProperties");
-
-    desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true,  false, ""});
-
-    return true;
 }
+
+//bool DrawCylinder::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<CylinderPropertiesModel>("Crystal", 1, 0, "CylinderProperties");
+
+//    desc->toolboxItemsList.push_back(new ItemDesc{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true,  false, ""});
+
+//    return true;
+//}
 
 bool DrawCylinder::setup()
 {
+    auto toolboxItem =  new ToolboxItem{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCylinder::onCylinderItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -29,28 +34,28 @@ bool DrawCylinder::setup()
     return true;
 }
 
-void DrawCylinder::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == CYLINDER) {
-            if (checked) {
-                mEnterCylinderZone = true;
-                mDrawingState = DrawingState::START;
-                mCylinderProperties = new CylinderProperties(mCylinder, qmlEngine(), uiHandle(), mapItem());
-                mCylinderProperties->show();
-                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//void DrawCylinder::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == CYLINDER) {
+//            if (checked) {
+//                mEnterCylinderZone = true;
+//                mDrawingState = DrawingState::START;
+//                mCylinderProperties = new CylinderProperties(mCylinder, qmlEngine(), uiHandle(), mapItem());
+//                mCylinderProperties->show();
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
-            }
-            else {
-                mEnterCylinderZone = false;
-                mDrawingState = DrawingState::FINISH;
-                mCylinder = nullptr;
-                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
-                mCylinderProperties->hide();
-            }
-        }
-    }
-}
+//            }
+//            else {
+//                mEnterCylinderZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                mCylinder = nullptr;
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//                mCylinderProperties->hide();
+//            }
+//        }
+//    }
+//}
 
 bool DrawCylinder::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
@@ -80,6 +85,25 @@ bool DrawCylinder::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAc
         mIconNode->setPosition(geoPos);
     }
     return false;
+}
+
+void DrawCylinder::onCylinderItemCheck(bool check)
+{
+    if (check) {
+        mEnterCylinderZone = true;
+        mDrawingState = DrawingState::START;
+        mCylinderProperties = new CylinderProperties(mCylinder, qmlEngine(), uiHandle(), mapItem());
+        mCylinderProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterCylinderZone = false;
+        mDrawingState = DrawingState::FINISH;
+        mCylinder = nullptr;
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+        mCylinderProperties->hide();
+    }
 }
 
 bool DrawCylinder::startDraw(const osgGA::GUIEventAdapter& event)

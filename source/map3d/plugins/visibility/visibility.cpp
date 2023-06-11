@@ -10,39 +10,39 @@ Visibility::Visibility(QObject *parent): PluginInterface(parent)
     Q_INIT_RESOURCE(visibility);
 }
 
-bool Visibility::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
-    Q_UNUSED(engine)
-//    desc->pluginHasSideItem = true;
-//    desc->sideItemMenuBarTitle = "Layers";
-//    desc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
-//    desc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
+//bool Visibility::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    Q_UNUSED(engine)
+////    desc->pluginHasSideItem = true;
+////    desc->sideItemMenuBarTitle = "Layers";
+////    desc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
+////    desc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
 
-    desc->toolboxItemsList.push_back(new ItemDesc{VISIBILITY, CATEGORY, "qrc:/resources/visibility.png", true, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{VISIBILITY, CATEGORY, "qrc:/resources/visibility.png", true, false, ""});
 
-    return true;
-}
+//    return true;
+//}
 
-void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if(CATEGORY == category && name == VISIBILITY)
-    {
-        if(checked)
-        {
-            //QObject::connect(mapItem(),&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
-            mapItem()->addNode(mIconNode);
-        }
-        else
-        {
-            //QObject::disconnect(mapItem(),&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
+//void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if(CATEGORY == category && name == VISIBILITY)
+//    {
+//        if(checked)
+//        {
+//            //QObject::connect(mapItem(),&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
+//            mapItem()->addNode(mIconNode);
+//        }
+//        else
+//        {
+//            //QObject::disconnect(mapItem(),&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
 
-            mapItem()->removeNode(mBackVisibilityNode);
-            mapItem()->removeNode(mVisibilityNode);
+//            mapItem()->removeNode(mBackVisibilityNode);
+//            mapItem()->removeNode(mVisibilityNode);
 
-            mapItem()->removeNode(mIconNode);
-        }
-    }
-}
+//            mapItem()->removeNode(mIconNode);
+//        }
+//    }
+//}
 
 bool Visibility::setup()
 {

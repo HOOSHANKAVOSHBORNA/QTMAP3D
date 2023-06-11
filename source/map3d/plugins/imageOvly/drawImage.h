@@ -34,13 +34,14 @@ class DrawImage : public PluginInterface
 
 public:
     DrawImage(QObject *parent = nullptr);
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     bool setup() override;
     void loadImage();
-    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+//    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
 //    void mousePressEvent(QMouseEvent *event) override;
 //    void mouseMoveEvent(QMouseEvent *event) override;
-
+private slots:
+    void onImageItemCheck(bool check);
 
 private:
     void startDraw(QMouseEvent* event);
