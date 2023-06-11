@@ -55,7 +55,6 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
 void LayersModel::updateLayers(osgEarth::Map *map)
 {
 //        beginResetModel();
-
 //        mLayersList.clear();
         this->clear();
 

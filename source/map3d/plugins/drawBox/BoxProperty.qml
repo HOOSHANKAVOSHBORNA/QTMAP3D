@@ -142,9 +142,10 @@ Item {
                                 ColorDialog {
                                     visible: false
                                     id:  fillColorDialog
+                                    selectedColor:  fillColor
                                     title: "Please choose a color"
                                     onAccepted: {
-                                        fillColor = fillColorDialog.color
+                                        fillColor = fillColorDialog.selectedColor
                                         boxProperties.color= fillColor.toString()
                                     }
 

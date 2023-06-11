@@ -2,7 +2,7 @@ import QtQuick 2.13
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
-import QtQuick.Dialogs 1.2
+import QtQuick.Dialogs
 import Crystal 1.0
 
 Item {
@@ -136,7 +136,7 @@ Item {
                                     id:  lineColorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
-                                        lColor = lineColorDialog.color
+                                        lColor = lineColorDialog.selectedColor
                                         lineProperties.color = lColor.toString()
                                     }
 
@@ -819,7 +819,7 @@ Item {
                                         title: "Please choose a color"
                                         onAccepted: {
                                             //                                    lineColor = lineColorDialog.color
-                                            pColor = pointColorDialog.color
+                                            pColor = pointColorDialog.selectedColor
                                             lineProperties.pointColor = pColor
                                         }
 
