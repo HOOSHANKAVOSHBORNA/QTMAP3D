@@ -640,5 +640,8 @@ void MapItem::wheelEvent(QWheelEvent *event)
 
 void MapItem::hoverMoveEvent(QHoverEvent *event)
 {
+    if (mOSGRenderNode) {
+        mOSGRenderNode->hoverMoveEvent(event);
+    }
     mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
 }

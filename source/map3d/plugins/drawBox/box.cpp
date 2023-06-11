@@ -4,10 +4,6 @@
 #include <osg/LightModel>
 #include <osg/CullFace>
 #include <osg/Depth>
-#include "osgEarth/ModelLayer"
-#include "osgEarth/Layer"
-#include "osgEarthAnnotation/AnnotationEditing"
-#include "mapItem.h"
 #include <QDebug>
 
 Box::Box()
@@ -102,6 +98,7 @@ osgEarth::Color Box::getColor()
     {
        return  mShapeDrawable->getColor();
     }
+    return mColor;
 }
 
 osg::Vec3f Box::getCenter()

@@ -234,7 +234,10 @@ void Toolbox::addItem(ToolboxItem *toolboxItem)
 void Toolbox::onItemClicked(QString name)
 {
     if(mToolboxItems.contains(name)){
-        emit mToolboxItems[name]->itemClicked();
+        if(mToolboxItems[name]->checkable)
+            emit mToolboxItems[name]->itemChecked(true);
+        else
+            emit mToolboxItems[name]->itemClicked();
     }
 //    for (auto& v: mItems.values())
 //    emit toolBoxItemClicked()

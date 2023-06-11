@@ -6,22 +6,25 @@ const QString BOX = "Box";
 
 DrawBox::DrawBox(QObject *parent): PluginInterface(parent)
 {
-}
-
-bool DrawBox::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
+//    Q_INIT_RESOURCE(drawBox);
     qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
-
-    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true,  false, ""});
-
-    return true;
 }
+
+//bool DrawBox::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+////    qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
+
+////    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true,  false, ""});
+
+//    return true;
+//}
 
 bool DrawBox::setup()
 {
     auto toolboxItem =  new ToolboxItem{BOX, CATEGORY, "qrc:/resources/box.png", true};
-    QObject::connect(toolboxItem, &ToolboxItem::itemClicked, this, &DrawBox::onBoxClick);
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawBox::onBoxItemCheck);
     toolbox()->addItem(toolboxItem);
+
     mIconNode = makeIconNode();
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -32,28 +35,28 @@ bool DrawBox::setup()
     return true;
 }
 
-void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == BOX) {
-            if (checked) {
-                mEnterBoxZone = true;
-                mDrawingState = DrawingState::START;
-                mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
-                mBoxProperties->show();
-                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//void DrawBox::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == BOX) {
+//            if (checked) {
+//                mEnterBoxZone = true;
+//                mDrawingState = DrawingState::START;
+//                mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
+//                mBoxProperties->show();
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
-            }
-            else {
-                mEnterBoxZone = false;
-                mDrawingState = DrawingState::FINISH;
-                mBox = nullptr;
-                mBoxProperties->hide();
-                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
-            }
-        }
-    }
-}
+//            }
+//            else {
+//                mEnterBoxZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                mBox = nullptr;
+//                mBoxProperties->hide();
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//            }
+//        }
+//    }
+//}
 
 bool DrawBox::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
@@ -88,15 +91,13 @@ bool DrawBox::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
     return false;
 }
 
-void DrawBox::onBoxClick()
+void DrawBox::onBoxItemCheck(bool check)
 {
-    qDebug()<<"onBoxClick()";
-    bool checked = true;
-    if (checked) {
+    if (check) {
         mEnterBoxZone = true;
         mDrawingState = DrawingState::START;
-//        mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
-//        mBoxProperties->show();
+        mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
+        mBoxProperties->show();
         mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
     }
@@ -109,13 +110,14 @@ void DrawBox::onBoxClick()
     }
 }
 
+
 bool DrawBox::startDraw(const osgGA::GUIEventAdapter &ea)
 {
     mBox = new Box();
     mBox->setHeight(100000);
     mBox->setWidth(100000);
     mBox->setLength(100000);
-//    mBoxProperties->setBox(mBox);
+    mBoxProperties->setBox(mBox);
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
 

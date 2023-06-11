@@ -80,6 +80,8 @@ private:
     QQuickItem* mItem;
     BoxPropertiesModel* mBoxProperties;
     UIHandle* mUiHandle;
+    Box* mBox;
+    MapItem *mMapItem;
 };
 
 #endif // BOXPROPERTIESMODEL_H

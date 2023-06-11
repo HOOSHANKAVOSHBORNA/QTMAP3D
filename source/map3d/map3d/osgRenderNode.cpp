@@ -434,7 +434,14 @@ void OSGRenderNode::mouseMoveEvent(QMouseEvent* event)
 {
     setKeyboardModifiers(event);
     mosgWinEmb->getEventQueue()->mouseMotion(event->position().x() * mwindowScale,
-                                              event->position().y() * mwindowScale);
+                                             event->position().y() * mwindowScale);
+}
+
+void OSGRenderNode::hoverMoveEvent(QHoverEvent *event)
+{
+    setKeyboardModifiers(event);
+    mosgWinEmb->getEventQueue()->mouseMotion(event->position().x() * mwindowScale,
+                                             event->position().y() * mwindowScale);
 }
 
 void OSGRenderNode::wheelEvent(QWheelEvent* event)

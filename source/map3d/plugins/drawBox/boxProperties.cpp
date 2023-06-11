@@ -154,7 +154,9 @@ void BoxPropertiesModel::setBox(Box *box)
 BoxProperties::BoxProperties(Box* box, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mQmlEngine(qmlEngine),
-    mUiHandle(uiHandle)
+    mUiHandle(uiHandle),
+    mBox(box),
+    mMapItem(mapItem)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, box](){
@@ -163,13 +165,18 @@ BoxProperties::BoxProperties(Box* box, QQmlEngine *qmlEngine, UIHandle *uiHandle
             mBoxProperties = new BoxPropertiesModel(box, mapItem);
             mItem->setProperty("boxProperties", QVariant::fromValue<BoxPropertiesModel*>(mBoxProperties));
         }
+        if (comp->status() == QQmlComponent::Error){
+            qDebug()<<"error:" <<comp->errorString();
+            qDebug()<<comp->errors();
+        }
     });
     comp->loadUrl(QUrl("qrc:/BoxProperty.qml"));
 }
 
 void BoxProperties::show()
 {
-    mUiHandle->propertiesShow(mItem);
+    if(mItem)
+        mUiHandle->propertiesShow(mItem);
 }
 
 void BoxProperties::hide()

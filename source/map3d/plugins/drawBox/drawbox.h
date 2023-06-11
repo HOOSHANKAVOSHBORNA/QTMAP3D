@@ -22,14 +22,14 @@ class DrawBox : public PluginInterface
 
 public:
     DrawBox(QObject *parent = nullptr);
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+    //bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     bool setup() override;
 
-    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+//    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private slots:
-    void onBoxClick();
+    void onBoxItemCheck (bool check);
 private:
     bool startDraw(const osgGA::GUIEventAdapter &ea);
     bool finishDrawing(const osgGA::GUIEventAdapter &ea);
