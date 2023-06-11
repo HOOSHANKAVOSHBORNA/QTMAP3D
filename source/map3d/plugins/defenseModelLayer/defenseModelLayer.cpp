@@ -212,8 +212,10 @@ bool DefenseModelLayer::setup()
     auto toolboxItemKill =  new ToolboxItem{KILL_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false};
     QObject::connect(toolboxItemKill, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onKillItemClick);
     toolbox()->addItem(toolboxItemKill);
-
+    //-----------------------------------------------------
+    mDataManager = new DataManager(defenseDataManager(), this);
     connect(mapItem(), &MapItem::mapCleared, this, &DefenseModelLayer::onMapClear);
+    //-----------------------------------------------------
 
     osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
     systemsModelLayer->setName(SYSTEMS_LAYER_NAME);
