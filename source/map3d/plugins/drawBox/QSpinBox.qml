@@ -201,15 +201,11 @@ Item {
                     }
                 }
                 MultiEffect{
-
                     id:spindownColor
                     anchors.fill: spinDown
                     source: spinDown
                     colorization: 1.0
                     colorizationColor: "red"
-                    visible: true
-
-
                 }
             }
             Rectangle{
