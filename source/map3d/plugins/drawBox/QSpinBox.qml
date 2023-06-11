@@ -1,6 +1,6 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import QtQuick.Effects
 
 
@@ -89,10 +89,11 @@ Item {
                 }
                 MultiEffect{
                     id:upColor
-                    anchors.fill: parent
-                    source: stepDown
+                    anchors.fill: stepUp
+                    source: stepUp
                     colorizationColor: btntxtColor
-                    colorization:  1
+                    colorization:  1.0
+                    visible: true
                 }
             }
             Image {
@@ -113,10 +114,11 @@ Item {
                 }
                 MultiEffect{
                     id:downColor
-                    anchors.fill: parent
+                    anchors.fill: stepDown
                     source: stepDown
                     colorizationColor: btntxtColor
-                    colorization:  1
+                    colorization:  1.0
+                    visible: true
                 }
             }
         }
@@ -141,27 +143,27 @@ Item {
                     anchors.fill: parent
                     cursorShape: "PointingHandCursor"
                     hoverEnabled: true
-                    onEntered: spinupColor.color = secondaryColor
-                    onExited: spinupColor.color = primaryColor
+                    onEntered: spinupColor.colorizationColor = secondaryColor
+                    onExited: spinupColor.colorizationColor = primaryColor
                     onPressed:  {
                         if(value < from){value = from}
                         else if(value > to){value = to}
                         else if(value >= from && value <to){
-                            spinupColor.color = btntxtColor
+                            spinupColor.colorizationColor = btntxtColor
                             value += steps[index]
                         }
                     }
                     onPressAndHold: timerUp.start();
                     onReleased: {
-                        spinupColor.color = secondaryColor
+                        spinupColor.colorizationColor = secondaryColor
                         timerUp.stop();
                     }
                 }
                 MultiEffect{
                     id:spinupColor
-                    anchors.fill: parent
-                    source: stepDown
-                    colorization: 1
+                    anchors.fill: spinUp
+                    source: spinUp
+                    colorization: 1.0
                     colorizationColor: primaryColor
                     visible: true
                 }
@@ -178,13 +180,13 @@ Item {
                     anchors.fill: parent
                     cursorShape: "PointingHandCursor"
                     hoverEnabled: true
-                    onEntered: spindownColor.color = secondaryColor
-                    onExited: spindownColor.color = primaryColor
+                    onEntered: spindownColor.colorizationColor = secondaryColor
+                    onExited: spindownColor.colorizationColor = primaryColor
                     onPressed:  {
                         if(value < from){value = from}
                         else if(value > to){value = to}
                         else if(value > from && value <= to && value > steps[index]){
-                            spindownColor.color = btntxtColor
+                            spindownColor.colorizationColor = btntxtColor
                             value -= steps[index]
                         }
                         else if (steps[index] > value){
@@ -194,17 +196,20 @@ Item {
                     }
                     onPressAndHold: timerDown.start();
                     onReleased: {
-                        spindownColor.color = secondaryColor
+                        spindownColor.colorizationColor = secondaryColor
                         timerDown.stop();
                     }
                 }
                 MultiEffect{
+
                     id:spindownColor
-                    anchors.fill: parent
-                    source: stepDown
-                    colorization: 1
-                    colorizationColor: primaryColor
+                    anchors.fill: spinDown
+                    source: spinDown
+                    colorization: 1.0
+                    colorizationColor: "red"
                     visible: true
+
+
                 }
             }
             Rectangle{
