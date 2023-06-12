@@ -73,6 +73,7 @@ void LayersModel::updateLayers(osgEarth::Map *map)
                 for(int i = 0; i < group->getNumChildren(); i++){
                     auto node = group->getChild(i);
                     QStandardItem *lv2Items = new QStandardItem(QString(node->getName().c_str()));
+                    qDebug() << lv2Items;
                     lv1Items->appendRow(lv2Items);
                 }
             }
