@@ -169,7 +169,6 @@ Item {
                 }
             }
 
-
             Item {
                 Layout.alignment: Qt.AlignCenter
                 Layout.preferredWidth: 64

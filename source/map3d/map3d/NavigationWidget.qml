@@ -2,6 +2,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
+import QtQuick.Effects
 
 Item {
     id:rootItem
@@ -12,18 +13,18 @@ Item {
     property bool showRecMov: true
     property real myDuration: 300.0
     // signal Button
-//    signal btnUpClicked()
-//    signal btnDownClicked()
-//    signal btnLeftClicked()
-//    signal btnRightClicked()
-//
-//    signal btnRotateUpClicked()
-//    signal btnRotateDownClicked()
-//    signal btnRotateLeftClicked()
-//    signal btnRotateRightClicked()
-//
-//    signal btnZoomInClicked()
-//    signal btnZoomOutClicked()
+    //    signal btnUpClicked()
+    //    signal btnDownClicked()
+    //    signal btnLeftClicked()
+    //    signal btnRightClicked()
+    //
+    //    signal btnRotateUpClicked()
+    //    signal btnRotateDownClicked()
+    //    signal btnRotateLeftClicked()
+    //    signal btnRotateRightClicked()
+    //
+    //    signal btnZoomInClicked()
+    //    signal btnZoomOutClicked()
 
     property bool zoomInButtonPressed: positive.pressed
     property bool zoomOutButtonPressed: negative.pressed
@@ -44,103 +45,94 @@ Item {
 
     RowLayout {
         id: mainRowLayout
-        anchors.fill: parent
-
+        spacing: 5
         Rectangle {
             id: control
             color: "transparent"
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.minimumWidth: 100
-            Layout.maximumWidth: 100
-            Layout.maximumHeight: 180
-            anchors.rightMargin: 10
+            Layout.minimumWidth: 70
+            Layout.minimumHeight: 150
+            anchors.rightMargin: 5
             clip: true
             ControlCamera{
                 id: rotationControlCamera
-                width: 100
-                radius: _radius
-                anchors.leftMargin: _margin
+                width: 70
+                height: 70
+                //radius: _radius
                 anchors.top: parent.top
-                //anchors.rightMargin: 0
-                x: positionFactor * 215
-//                anchors.top: parent.bottom
-                //anchors.bottomMargin: 1
-               // anchors.top: parent.top
-                anchors.topMargin: 35
-                color: "transparent"
+                x: positionFactor * 70
+                anchors.topMargin: 11
+                //color: "transparent"
                 buttonIcon: "qrc:/Resources/rotate.png"
-
             }
 
             ControlCamera{
                 id: moveControlCamera
-                width: 100
-                x: positionFactor * 215
-                anchors.rightMargin: _margin
+                width: 70
+                height: 70
+                x: positionFactor * 70
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 35
-//                anchors.top:
-//                anchors.topMargin: 3
-                color: "transparent"
+                anchors.bottomMargin: 11
+                //color: "transparent"
             }
         }
 
 
-        Button {
-            id: sliderMenuBtn
-            Layout.preferredWidth: 32
-            Layout.preferredHeight: 32
-            Layout.alignment: Qt.AlignCenter
+        //        Button {
+        //            id: sliderMenuBtn
+        //            Layout.preferredWidth: 5
+        //            Layout.preferredHeight: 75
+        //            Layout.alignment: Qt.AlignCenter
 
-            display: AbstractButton.IconOnly
-            icon.source: "qrc:/Resources/chevron.png"
-            icon.width : 64
-            icon.height : 64
-            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                   (pressed ? _colorHover : "#FFFFFF");
-            background: Rectangle{
-                radius: _radius
-                color: "transparent"
-            }
-            checkable: true
-            states: [
-                State {
-                    name: "rotated"
-                    PropertyChanges { target: sliderMenuBtn; rotation: 180; }
-                },
-                State {
-                    name: "default"
-                    PropertyChanges { target: sliderMenuBtn; rotation: 0 }
-                }
+        //            display: AbstractButton.IconOnly
+        //            icon.source: "qrc:/Resources/chevron.png"
+        ////            icon.width : 32
+        ////            icon.height : 32
+        //            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+        //                                   (pressed ? _colorHover : "#FFFFFF");
+        //            background: Rectangle{
+        //                radius: _radius
+        //                color: "green"
+        //            }
+        //            checkable: true
+        //            states: [
+        //                State {
+        //                    name: "rotated"
+        //                    PropertyChanges { target: sliderMenuBtn; rotation: 180; }
+        //                },
+        //                State {
+        //                    name: "default"
+        //                    PropertyChanges { target: sliderMenuBtn; rotation: 0 }
+        //                }
 
-            ]
+        //            ]
 
-            onClicked: function() {
-                sliderMenuBtn.state = showRecMov ? "rotated" : "default"
-                if(showRecMov){
-                    showSlider.stop()
-                    hideSlider.start()
-                    showRecMov = false
-                } else {
-                    hideSlider.stop()
-                    showSlider.start()
-                    showRecMov = true
-                }
-            }
+        //            onClicked: function() {
+        //                sliderMenuBtn.state = showRecMov ? "rotated" : "default"
+        //                if(showRecMov){
+        //                    showSlider.stop()
+        //                    hideSlider.start()
+        //                    showRecMov = false
+        //                } else {
+        //                    hideSlider.stop()
+        //                    showSlider.start()
+        //                    showRecMov = true
+        //                }
+        //            }
 
-            transitions: Transition {
-                RotationAnimation { duration: myDuration; direction: RotationAnimation.Counterclockwise }
-            }
-        }
+        //            transitions: Transition {
+        //                RotationAnimation { duration: myDuration; direction: RotationAnimation.Counterclockwise }
+        //            }
+        //        }
 
 
         GridLayout {
             id:grL
             columns:  1
-            rows: 4
+            rows: 5
             rowSpacing: 3
-            columnSpacing: 5
+            columnSpacing: 0
 
             Layout.preferredWidth: implicitWidth
             Layout.preferredHeight: implicitHeight
@@ -173,12 +165,68 @@ Item {
                                        (pressed ? _colorHover : "#FFFFFF");
                 background:Rectangle {
                     color:_colorRec
-                    //opacity: 0.8
-                    //radius: _radius
                 }
             }
+            Rectangle {
+                id: sliderMenuBtn
+                width: 32
+                height: 30
+                color: _colorRec
 
+                MultiEffect{
+                    id:chevronRecolor
+                    source: chevron
+                    anchors.fill: chevron
+                    colorization: 1
+                    colorizationColor: "#FFFFFF"
+                }
 
+                Image {
+                    id: chevron
+                    source: "./Resources/chevron.png"
+                    sourceSize: ("24 x 24")
+                    anchors.centerIn: parent
+                    MouseArea{
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onEntered: chevronRecolor.colorizationColor =_colorHover
+                        onExited: chevronRecolor.colorizationColor ="#FFFFFF"
+                    }
+                }
+                states: [
+                    State {
+                        name: "rotated"
+                        PropertyChanges { target: chevron; rotation: 180; }
+                        PropertyChanges { target: chevronRecolor; rotation: 180; }
+                    },
+                    State {
+                        name: "default"
+                        PropertyChanges { target: chevron; rotation: 0 }
+                        PropertyChanges { target: chevronRecolor; rotation: 0 }
+                    }
+
+                ]
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: function() {
+                        sliderMenuBtn.state = showRecMov ? "rotated" : "default"
+                        if(showRecMov){
+                            showSlider.stop()
+                            hideSlider.start()
+                            showRecMov = false
+                        } else {
+                            hideSlider.stop()
+                            showSlider.start()
+                            showRecMov = true
+                        }
+                    }
+                }
+
+                transitions: Transition {
+                    RotationAnimation { duration: myDuration; direction: RotationAnimation.Counterclockwise }
+                }
+
+            }
             Button {
                 id: home
                 hoverEnabled: true
