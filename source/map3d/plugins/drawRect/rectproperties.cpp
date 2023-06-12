@@ -184,16 +184,19 @@ RectProperties::RectProperties(Rect* rect, QQmlEngine *engine, UIHandle *uiHandl
 
 void RectProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
 }
 
 void RectProperties::hide()
 {
+    if(mItem)
     mUiHandle->propertiesHide(mItem);
 }
 
 void RectProperties::setRect(Rect *rect)
 {
+    if(mItem)
     mRectProperties->setRect(rect);
 }
 

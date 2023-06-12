@@ -170,12 +170,14 @@ PolygonProperties::PolygonProperties(QQmlEngine *engine, UIHandle *uiHandle,  QO
 
 Q_INVOKABLE void PolygonProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
 }
 
 void PolygonProperties::hide()
 {
 
+    if(mItem)
         mUiHandle->propertiesHide(mItem);
 
 }
@@ -183,6 +185,7 @@ void PolygonProperties::hide()
 void PolygonProperties::setPolygon(Polygon *polygon)
 {
 
+    if(mItem)
     mPolygonProperties->setPolygon(polygon);
 
 }

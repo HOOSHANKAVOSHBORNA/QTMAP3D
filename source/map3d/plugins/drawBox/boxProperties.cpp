@@ -181,11 +181,13 @@ void BoxProperties::show()
 
 void BoxProperties::hide()
 {
+    if(mItem)
     mUiHandle->propertiesHide(mItem);
 }
 
 void BoxProperties::setBox(Box *box)
 {
+    if(mItem)
     mBoxProperties->setBox(box);
 }
 
@@ -196,6 +198,7 @@ void BoxProperties::setLocation(osgEarth::GeoPoint location)
     tmp.setY(static_cast<float>(location.y()));
     tmp.setZ(static_cast<float>(location.z()+mBoxProperties->getHeight()/2));
 
+    if(mItem)
     mBoxProperties->setLocation(tmp);
 }
 

@@ -170,16 +170,19 @@ SphereProperties::SphereProperties(QQmlEngine *engine, UIHandle *uiHandle, MapIt
 
 void SphereProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
 }
 
 void SphereProperties::hide()
 {
+    if(mItem)
     mUiHandle->propertiesHide(mItem);
 }
 
 void SphereProperties::setSphere(SphereNode *sphere)
 {
+    if(mItem)
     mSphereProperties->setSphere(sphere);
 }
 

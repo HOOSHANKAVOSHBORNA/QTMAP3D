@@ -259,16 +259,19 @@ CircleProperties::CircleProperties(Circle* circle, QQmlEngine *engine, UIHandle 
 
 void CircleProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
 }
 
 void CircleProperties::hide()
 {
+    if(mItem)
     mUiHandle->propertiesHide(mItem);
 }
 
 void CircleProperties::setCircle(Circle *circle)
 {
+    if(mItem)
     mCircleProperties->setCircle(circle);
 }
 
@@ -279,6 +282,7 @@ void CircleProperties::setLocation(osgEarth::GeoPoint location)
     tmp.setY(static_cast<float>(location.y()));
     tmp.setZ(static_cast<float>(location.z()));
 
+    if(mItem)
     mCircleProperties->setLocation(tmp);
 }
 

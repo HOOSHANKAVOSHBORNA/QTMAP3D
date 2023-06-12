@@ -1,7 +1,7 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import Qt5Compat.GraphicalEffects
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Effects
 
 
 Item {
@@ -83,15 +83,15 @@ Item {
                     anchors.fill: parent
                     cursorShape: "PointingHandCursor"
                     hoverEnabled: true
-                    onEntered: upColor.color = secondaryColor
-                    onExited: upColor.color = btntxtColor
+                    onEntered: upColor.colorizationColor = secondaryColor
+                    onExited: upColor.colorizationColor = btntxtColor
                     onPressed: if(index >0){index --}
                 }
-                ColorOverlay{
+                MultiEffect{
                     id:upColor
-                    anchors.fill: parent
-                    source: stepDown
-                    color: btntxtColor
+                    anchors.fill: stepUp
+                    source: stepUp
+                    colorizationColor: btntxtColor
                     visible: true
                 }
             }
@@ -107,15 +107,15 @@ Item {
                     anchors.fill: parent
                     cursorShape: "PointingHandCursor"
                     hoverEnabled: true
-                    onEntered: downColor.color = secondaryColor
-                    onExited: downColor.color = btntxtColor
+                    onEntered: downColor.colorizationColor = secondaryColor
+                    onExited: downColor.colorizationColor = btntxtColor
                     onPressed: if(index < steps.length-1){index ++}
                 }
-                ColorOverlay{
+                MultiEffect{
                     id:downColor
-                    anchors.fill: parent
+                    anchors.fill: stepDown
                     source: stepDown
-                    color: btntxtColor
+                    colorizationColor: btntxtColor
                     visible: true
                 }
             }
@@ -126,8 +126,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width * 0.65 -4
             anchors.right: parent.right
-//            border.width: 1
-//            border.color: primaryColor
+            //            border.width: 1
+            //            border.color: primaryColor
             color: btntxtColor
             radius: round ? height/4 : 0
             Image {
@@ -141,27 +141,28 @@ Item {
                     anchors.fill: parent
                     cursorShape: "PointingHandCursor"
                     hoverEnabled: true
-                    onEntered: spinupColor.color = secondaryColor
-                    onExited: spinupColor.color = primaryColor
+                    onEntered: spinupColor.colorizationColor = secondaryColor
+                    onExited: spinupColor.colorizationColor = primaryColor
                     onPressed:  {
                         if(value < from){value = from}
                         else if(value > to){value = to}
                         else if(value >= from && value <to){
-                            spinupColor.color = btntxtColor
+                            spinupColor.colorizationColor = btntxtColor
                             value += steps[index]
                         }
                     }
                     onPressAndHold: timerUp.start();
                     onReleased: {
-                        spinupColor.color = secondaryColor
+                        spinupColor.colorizationColor = secondaryColor
                         timerUp.stop();
                     }
                 }
-                ColorOverlay{
+                MultiEffect{
                     id:spinupColor
-                    anchors.fill: parent
-                    source: stepDown
-                    color: primaryColor
+                    anchors.fill: spinUp
+                    source: spinUp
+                    colorizationColor: primaryColor
+                    colorization: 1.0
                     visible: true
                 }
             }
@@ -177,13 +178,13 @@ Item {
                     anchors.fill: parent
                     cursorShape: "PointingHandCursor"
                     hoverEnabled: true
-                    onEntered: spindownColor.color = secondaryColor
-                    onExited: spindownColor.color = primaryColor
+                    onEntered: spindownColor.colorizationColor = secondaryColor
+                    onExited: spindownColor.colorizationColor = primaryColor
                     onPressed:  {
                         if(value < from){value = from}
                         else if(value > to){value = to}
                         else if(value > from && value <= to && value > steps[index]){
-                            spindownColor.color = btntxtColor
+                            spindownColor.colorizationColor = btntxtColor
                             value -= steps[index]
                         }
                         else if (steps[index] > value){
@@ -193,15 +194,16 @@ Item {
                     }
                     onPressAndHold: timerDown.start();
                     onReleased: {
-                        spindownColor.color = secondaryColor
+                        spindownColor.colorizationColor = secondaryColor
                         timerDown.stop();
                     }
                 }
-                ColorOverlay{
+                MultiEffect{
                     id:spindownColor
-                    anchors.fill: parent
-                    source: stepDown
-                    color: primaryColor
+                    anchors.fill: spinDown
+                    source: spinDown
+                    colorizationColor: primaryColor
+                    colorization: 1.0
                     visible: true
                 }
             }

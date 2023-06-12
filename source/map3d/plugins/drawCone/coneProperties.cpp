@@ -146,16 +146,19 @@ ConeProperties::ConeProperties(Cone* cone, QQmlEngine *qmlEngine, UIHandle *uiHa
 
 void ConeProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
 }
 
 void ConeProperties::hide()
 {
+    if(mItem)
     mUiHandle->propertiesHide(mItem);
 }
 
 void ConeProperties::setCone(Cone *cone)
 {
+    if(mItem)
     mConeProperties->setCone(cone);
 }
 
@@ -166,6 +169,7 @@ void ConeProperties::setLocation(osgEarth::GeoPoint location)
     tmp.setY(static_cast<float>(location.y()));
     tmp.setZ(static_cast<float>(location.z()));
 
+    if(mItem)
     mConeProperties->setLocation(tmp);
 }
 

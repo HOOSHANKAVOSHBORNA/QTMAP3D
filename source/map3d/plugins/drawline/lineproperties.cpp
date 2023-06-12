@@ -324,6 +324,7 @@ LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *
 
 Q_INVOKABLE void LineProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
     mLineProperties->setRuler(mIsRuler);
 }
@@ -331,6 +332,7 @@ Q_INVOKABLE void LineProperties::show()
 void LineProperties::hide()
 {
 
+    if(mItem)
         mUiHandle->propertiesHide(mItem);
 
 }
@@ -338,16 +340,19 @@ void LineProperties::hide()
 void LineProperties::setLine(LineNode *line )
 {
 
+    if(mItem)
     mLineProperties->setLine(line);
 
 }
 
 void LineProperties::setMeasureHeight(MeasureHeight *measureHeight)
 {
+    if(mItem)
     mLineProperties->setMeasureHeight(measureHeight);
 }
 
 void LineProperties::setIsRuler(int value)
 {
+
     mIsRuler = value;
 }
