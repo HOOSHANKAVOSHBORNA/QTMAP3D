@@ -1,7 +1,6 @@
 #include "systemModelNode.h"
 #include "polygon.h"
 #include "systemDataManager.h"
-#include "aircraftDataManager.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
@@ -362,7 +361,7 @@ void SystemModelNode::setSelectionMode(SelectionMode sm)
 	}
 }
 
-void SystemModelNode::frameEvent()
+bool SystemModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
 	mStatusNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 
@@ -373,11 +372,12 @@ void SystemModelNode::frameEvent()
 		mTruckF->aimTarget(mTargetModelNode->getPosition());
 		mTruckL->lockOnTarget(mTargetModelNode->getPosition());
 	}
+    return false;
 }
 
-void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
+bool SystemModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel)
 {
-	DefenseModelNode::mousePressEvent(event, onModel);
+    return DefenseModelNode::mousePressEvent(ea, aa, onModel);
 
 	//    if(event->button() == Qt::LeftButton)
 	//    {

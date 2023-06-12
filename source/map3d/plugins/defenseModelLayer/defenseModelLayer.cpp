@@ -240,17 +240,18 @@ bool DefenseModelLayer::setup()
 
 void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 {
-	QMouseEvent* event = new QMouseEvent(QEvent::Type::Enter, QPointF(0,0), Qt::MouseButton::LeftButton,
-										 Qt::MouseButton::LeftButton, Qt::KeyboardModifier::NoModifier);
-	if(defenseModelNode)
-	{
-		defenseModelNode->mousePressEvent(event, true);
-		defenseModelNode->goOn();
-	}
-	if(mSelectedModelNode && mSelectedModelNode != defenseModelNode)
-		mSelectedModelNode->mousePressEvent(event, false);
-	if(defenseModelNode)
-		mSelectedModelNode = defenseModelNode;
+//	QMouseEvent* event = new QMouseEvent(QEvent::Type::Enter, QPointF(0,0), Qt::MouseButton::LeftButton,
+//										 Qt::MouseButton::LeftButton, Qt::KeyboardModifier::NoModifier);
+    mapItem()->getViewer()->getEventQueue()->mouseButtonPress(0,0, 1);
+//	if(defenseModelNode)
+//	{
+//		defenseModelNode->mousePressEvent(event, true);
+//		defenseModelNode->goOn();
+//	}
+//	if(mSelectedModelNode && mSelectedModelNode != defenseModelNode)
+//		mSelectedModelNode->mousePressEvent(event, false);
+//	if(defenseModelNode)
+//		mSelectedModelNode = defenseModelNode;
 }
 
 void DefenseModelLayer::modelNodeDeleted(DefenseModelNode *defenseModelNode)
@@ -459,97 +460,102 @@ void DefenseModelLayer::onMapClear()
     mapItem()->addLayer(aircraftsModelLayer);
 }
 
-//void DefenseModelLayer::frameEvent()
-//{
-//    //    findSceneModels(mapItem()->getViewer());
-//    for(auto data: mDataManager->aircraftDataManager()->getAircraftsData())
-//        if(data->modelNode.valid())
-//            data->modelNode->frameEvent();
-//    for(auto data: mDataManager->systemDataManager()->getSystemsData())
-//        if(data->systemModelNode.valid())
-//            data->systemModelNode->frameEvent();
-//}
+bool DefenseModelLayer::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    //    findSceneModels(mapItem()->getViewer());
+    for(auto data: mDataManager->aircraftDataManager()->getAircraftsData())
+        if(data->modelNode.valid())
+            data->modelNode->frameEvent(ea, aa);
+    for(auto data: mDataManager->systemDataManager()->getSystemsData())
+        if(data->systemModelNode.valid())
+            data->systemModelNode->frameEvent(ea, aa);
+    return false;
+}
 
-//void DefenseModelLayer::mousePressEvent(QMouseEvent *event)
-//{
+bool DefenseModelLayer::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    bool res = false;
+    DefenseModelNode* modelNode = pick(ea.getX(), ea.getY());
+    if(modelNode)
+    {
+        res = modelNode->mousePressEvent(ea, aa, true);
+    }
+    if(mSelectedModelNode && mSelectedModelNode != modelNode)
+        res = mSelectedModelNode->mousePressEvent(ea, aa, false);
+    if(modelNode)
+        mSelectedModelNode = modelNode;
+    //--drag aircraft---------------------------------------
+    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON)
+    {
+        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
+        if(aircraftModelNode)
+        {
+            mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
+            mapItem()->addNode(mDragAircraftModelNode);
+        }
+    }
+    return res;
+}
 
-//    DefenseModelNode* modelNode = pick(event->x(), event->y());
-//	if(modelNode)
-//    {
-//		modelNode->mousePressEvent(event, true);
-//    }
-//	if(mSelectedModelNode && mSelectedModelNode != modelNode)
-//        mSelectedModelNode->mousePressEvent(event, false);
-//	if(modelNode)
-//		mSelectedModelNode = modelNode;
-//	//--drag aircraft---------------------------------------
-//    if(event->button() == Qt::LeftButton)
-//    {
-//        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
-//        if(aircraftModelNode)
-//        {
-//			mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
-//			mapItem()->addNode(mDragAircraftModelNode);
-//        }
-//    }
+bool DefenseModelLayer::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    //--drag aircraft--------------------------------------------
+    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON && mDragAircraftModelNode)
+    {
+        auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
+        if(systemModelNode)
+        {
+            auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
+            mDataManager->assignAircraft2System(aircraftModelNode->getData().info.TN, systemModelNode->getData()->information->systemInfo.Number);
+        }
+        mapItem()->removeNode(mDragAircraftModelNode);
+        mDragAircraftModelNode = nullptr;
+    }
+    return false;
+}
 
-//}
+bool DefenseModelLayer::mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON)
+    {
+        auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
+        if(aircraftModelNode /*&& aircraftModelNode->hasAssignment()*/)
+        {
+            mDataManager->cancelAircraftAssignments(aircraftModelNode->getData().info.TN);
+            return true;
+        }
+    }
+    return false;
+}
 
-//void DefenseModelLayer::mouseReleaseEvent(QMouseEvent *event)
-//{
-//    //--drag aircraft--------------------------------------------
-//    if(event->button() == Qt::LeftButton && mDragAircraftModelNode)
-//    {
-//		auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
-//        if(systemModelNode)
-//        {
-//			auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
-//            mDataManager->assignAircraft2System(aircraftModelNode->getData().info.TN, systemModelNode->getData()->information->systemInfo.Number);
-//        }
-//        mapItem()->removeNode(mDragAircraftModelNode);
-//        mDragAircraftModelNode = nullptr;
-//    }
-//}
-
-//void DefenseModelLayer::mouseDoubleClickEvent(QMouseEvent *event)
-//{
-//    if(event->button() == Qt::LeftButton)
-//    {
-//		auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
-//        if(aircraftModelNode /*&& aircraftModelNode->hasAssignment()*/)
-//        {
-//            mDataManager->cancelAircraftAssignments(aircraftModelNode->getData().info.TN);
-//            event->accept();
-//        }
-//    }
-//}
-
-//void DefenseModelLayer::mouseMoveEvent(QMouseEvent *event)
-//{
-//    DefenseModelNode* modelNode = pick(event->x(), event->y());
-//    if(modelNode)
-//    {
-//        modelNode->mouseMoveEvent(event, true);
-//    }
-//    if(mOnMoveModelNode && mOnMoveModelNode != modelNode)
-//        mOnMoveModelNode->mouseMoveEvent(event, false);
-//    if(modelNode)
-//        mOnMoveModelNode = modelNode;
-//    //--drag aircraft---------------------------------------
-//    if(mDragAircraftModelNode)
-//    {
-//        osgEarth::GeoPoint mouseGeoPoint = mapItem()->screenToGeoPoint(event->x(), event->y());
-//        mDragAircraftModelNode->setPosition(mouseGeoPoint);
-//    }
-//}
+bool DefenseModelLayer::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    bool res = false;
+    DefenseModelNode* modelNode = pick(ea.getX(), ea.getY());
+    if(modelNode)
+    {
+        res = modelNode->mouseMoveEvent(ea, aa, true);
+    }
+    if(mOnMoveModelNode && mOnMoveModelNode != modelNode)
+        res = mOnMoveModelNode->mouseMoveEvent(ea, aa, false);
+    if(modelNode)
+        mOnMoveModelNode = modelNode;
+    //--drag aircraft---------------------------------------
+    if(mDragAircraftModelNode)
+    {
+        osgEarth::GeoPoint mouseGeoPoint = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+        mDragAircraftModelNode->setPosition(mouseGeoPoint);
+    }
+    return res;
+}
 
 DefenseModelNode *DefenseModelLayer::pick(float x, float y)
 {
 	DefenseModelNode *defenseModelNode = nullptr;
     osgViewer::Viewer *viewer = mapItem()->getViewer();
-    float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
+//    float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
     osgUtil::LineSegmentIntersector::Intersections intersections;
-    if (viewer->computeIntersections(x, height - y, intersections))
+    if (viewer->computeIntersections(x, /*height -*/ y, intersections))
     {
         for(osgUtil::LineSegmentIntersector::Intersection hit : intersections)
         {
