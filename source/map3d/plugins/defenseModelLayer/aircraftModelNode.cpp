@@ -372,7 +372,7 @@ void AircraftModelNode::setSelectionMode(SelectionMode sm)
 	}
 }
 
-void AircraftModelNode::frameEvent()
+bool AircraftModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mDefenseModelLayer->mapItem()->getViewpoint().getHeading())
 												 + mData->info.Heading),
@@ -395,36 +395,39 @@ void AircraftModelNode::frameEvent()
 	if(mTempLine->getSize() > 1)
 		mTempLine->removePoint();
 	mTempLine->addPoint(getPosition());
+
+    return false;
 }
 
-void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
+bool AircraftModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel)
 {
-
-	DefenseModelNode::mousePressEvent(event, onModel);
+    bool res = false;
+    res = DefenseModelNode::mousePressEvent(ea, aa, onModel);
 //	if(event->button() == Qt::LeftButton)
 //	{
 //		onLeftButtonClicked(onModel);
 //		if(onModel)
 //			event->accept();
 //	}
-	if(event->button() == Qt::RightButton) {
-        mCurrentContextMenu = new ContextMenu(mDefenseModelLayer->qmlEngine(), mDefenseModelLayer->uiHandle(), this);
-		for(auto detectSystem: mData->info.DetectionSystems)
-			mCurrentContextMenu->addRow(detectSystem);
+    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::RIGHT_MOUSE_BUTTON) {
+//        mCurrentContextMenu = new ContextMenu(mDefenseModelLayer->qmlEngine(), mDefenseModelLayer->uiHandle(), this);
+//		for(auto detectSystem: mData->info.DetectionSystems)
+//			mCurrentContextMenu->addRow(detectSystem);
 
-		connect(mCurrentContextMenu->getModel(), &ContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
-		osg::Vec3d wordPos;
-		getPosition().toWorld(wordPos);
-		float x, y;
-        mDefenseModelLayer->mapItem()->worldToScreen(wordPos,x, y);
-		mCurrentContextMenu->show(static_cast<int>(x), static_cast<int>(y));
-		event->accept();
+//		connect(mCurrentContextMenu->getModel(), &ContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
+//		osg::Vec3d wordPos;
+//		getPosition().toWorld(wordPos);
+//		float x, y;
+//        mDefenseModelLayer->mapItem()->worldToScreen(wordPos,x, y);
+//		mCurrentContextMenu->show(static_cast<int>(x), static_cast<int>(y));
+//        return true;
 	}
 	if(!onModel && mCurrentContextMenu){
 		mCurrentContextMenu->hideMenu();
 		mCurrentContextMenu = nullptr;
 	}
 
+    return res;
 }
 
 void AircraftModelNode::updateColors()

@@ -1,10 +1,8 @@
 ﻿#include "stationModelNode.h"
-#include "systemModelNode.h"
-#include "truck.h"
-
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
 #include <osg/Material>
+#include <QPainter>
 #include "defenseModelNodeAutoScaler.h"
 #include "stationDataManager.h"
 
@@ -184,15 +182,15 @@ void StationModelNode::dataChanged()
 
 }
 
-void StationModelNode::frameEvent()
+bool StationModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     mStatusNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+    return false;
 }
 
-void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
+bool StationModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel)
 {
-    DefenseModelNode::mousePressEvent(event, onModel);
-
+    return DefenseModelNode::mousePressEvent(ea, aa, onModel);
 }
 
 void StationModelNode::updateColors()

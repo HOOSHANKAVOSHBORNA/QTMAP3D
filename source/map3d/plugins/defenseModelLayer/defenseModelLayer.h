@@ -57,11 +57,11 @@ public slots:
 
     static osgEarth::Symbology::Style& getDefaultStyle();
 protected:
-//    virtual void frameEvent() override;
-//    virtual void mousePressEvent(QMouseEvent* event)override;
-//    virtual void mouseReleaseEvent(QMouseEvent *event) override;
-//    virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
-//    virtual void mouseMoveEvent(QMouseEvent* event)override;
+    virtual bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
+    virtual bool mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
+    virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
 
 private slots:
     void onAircraftItemClick();

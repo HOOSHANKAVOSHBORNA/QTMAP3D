@@ -22,8 +22,8 @@ public:
 
     void dataChanged();
 public:
-    virtual void frameEvent()override;
-    void mousePressEvent(QMouseEvent *event, bool onModel) override;
+    virtual bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
+    bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel) override;
     virtual void updateColors() override;
 
 protected:

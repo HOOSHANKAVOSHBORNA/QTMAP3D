@@ -1,5 +1,4 @@
 #include "linenode.h"
-#include "drawshapeautoscaler.h"
 #include <osgEarth/GeoMath>
 #include <osgEarthAnnotation/LabelNode>
 #include <osg/Point>

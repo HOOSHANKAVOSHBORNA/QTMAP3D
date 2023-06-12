@@ -397,17 +397,18 @@ void DefenseModelNode::setHoverMode(DefenseModelNode::HoverMode hm)
     }
 }
 
-void DefenseModelNode::mousePressEvent(QMouseEvent* event, bool onModel)
+bool DefenseModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel)
 {
-	if(event->button() == Qt::LeftButton)
+    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON)
 	{
 		setSelectionMode(onModel ? SELECTED : UNSELECTED);
 		if(onModel)
-			event->accept();
+            return true;
 	}
+    return false;
 }
 
-void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
+bool DefenseModelNode::mouseMoveEvent(const osgGA::GUIEventAdapter & /*event*/, osgGA::GUIActionAdapter &/*aa*/, bool onModel)
 {
     //if(!mIsSelected)
     //{
@@ -415,6 +416,7 @@ void DefenseModelNode::mouseMoveEvent(QMouseEvent* /*event*/, bool onModel)
     //}
 
     setHoverMode(onModel ? HOVERED : UNHOVERED);
+    return false;
 }
 //void DefenseModelNode::curentPosition(osgEarth::GeoPoint pos)
 //{
