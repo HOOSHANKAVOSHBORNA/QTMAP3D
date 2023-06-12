@@ -66,8 +66,8 @@ Item {
             anchors.top:parent.top
             anchors.bottom: parent.bottom
             x: 0
-            width: 300
-
+            width: 250
+            height: parent.height
 //            Rectangle {
 //                anchors.fill: parent
 //                color: "#404040"

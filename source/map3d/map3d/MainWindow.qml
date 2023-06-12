@@ -213,7 +213,7 @@ CMainWindow {
             y: menuWidget.height + (widgetsMargins * 2.0)
             width: implicitWidth + (widgetsMargins * 2)
 //            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
-            height: parent.height - menuWidget.height - (widgetsMargins * 3)/* - navigationWidget.height*/
+            height: parent.height
             sideItemsModel: wnd.sideItemsModel
 
             onSideItemCreated: function(index, item) {

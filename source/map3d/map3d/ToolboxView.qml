@@ -7,25 +7,31 @@ import Crystal 1.0
 
 Rectangle {
     property var listModel
-    color: "red"
-    height: 600
-    width: 100
+    readonly property color     _colorHover : "#FFCC00"
+    readonly property color     _colorPresed : "#908000"
+    readonly property color     _colorRec   : "#404040"
+//    width: 300
+    height: Math.max(parent.height, 500)
+
+//    clip: true
+//    visible: true
 
     TreeView {
         id: treeView
-        //    anchors.fill: parent
+//        anchors.fill: parent
+        clip: true
         model: parent.listModel
-        height: 300
-        width: 100
+        height: Math.max(parent.height, 500)
+        width: parent.width
         signal toolboxItemClicked(string category, string name)
         delegate: Item {
             id: treeDelegate
 
-            implicitWidth: padding + label.x + label.implicitWidth + padding
-            implicitHeight: label.implicitHeight * 1.5
+            implicitWidth: 250
+            implicitHeight: 35
 
-            readonly property real indent: 20
-            readonly property real padding: 5
+            readonly property real indent: 30
+            readonly property real padding: 15
             required property TreeView treeView
             required property bool isTreeNode
             required property bool expanded
@@ -34,14 +40,20 @@ Rectangle {
 
             Rectangle{
                 id: container
-                width: parent.width
+                width: parent.width - (treeDelegate.depth - 1)* treeDelegate.indent
                 height: parent.height
-                color: "#454545"
+                color: "transparent"
+                Rectangle {
+                    anchors.fill: parent
+                    color: _colorRec
+                    opacity: 0.8
+                }
+
                 //                color: "transparent"
                 //                                            border.color: "#ffffff"
                 //                                            border.width: 1
                 radius: height/10
-                x: padding + (treeDelegate.depth * treeDelegate.indent)
+                x: padding + ((treeDelegate.depth - 1) * treeDelegate.indent)
                 //                RowLayout {
                 //                anchors.fill: parent
 
@@ -49,22 +61,35 @@ Rectangle {
                 //                    source: imageSource
                 //                }
 
-                Label {
+                Text {
                     id: label
                     x: padding + (treeDelegate.isTreeNode ? (treeDelegate.depth + 1) * treeDelegate.indent : 0)
-                    width: treeDelegate.width - treeDelegate.padding - x
+//                    width: implicitWidth
                     clip: true
                     font.pixelSize: 14
                     anchors.verticalCenter: container.verticalCenter
                     color: "#ffffff"
                     text: display
                 }
+
+                IconImage {
+                    id: img
+                    source: imageSource ?? ""
+                    width: 32
+                    height: 32
+                    x: container.x - width + (treeDelegate.depth)*indent
+                    anchors.verticalCenter: container.verticalCenter
+                }
                 //                }
             }
 
             HoverHandler{
                 //                                            onHoveredChanged: hovered ? container.color = "#808080" : container.color = "#454545"
-                onHoveredChanged: hovered ? label.color = "#999999" : label.color = "#ffffff"
+                onHoveredChanged: function() {
+                    label.color = hovered ? _colorHover : "#ffffff"
+                    img.color = hovered ? _colorHover : "transparent"
+                }
+
             }
 
             TapHandler {
@@ -75,8 +100,10 @@ Rectangle {
                     treeView.toggleExpanded(row)
                 }
 
-                onPressedChanged: pressed ? label.color = "orange" : !pressed ? label.color = "#ffffff" : "#ffffff"
-
+                onPressedChanged: function() {
+                    label.color = pressed ? _colorPresed : "#ffffff"
+                    img.color = img.color == _colorPresed ? "transparent" : _colorPresed
+                }
             }
 
 
