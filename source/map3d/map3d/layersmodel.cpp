@@ -63,7 +63,7 @@ void LayersModel::updateLayers(osgEarth::Map *map)
         osgEarth::LayerVector layers;
         map->getLayers(layers);
 
-        for(auto layer : layers) {
+        for(const auto& layer : layers) {
 //            mLayersList.push_back(layer);
             QStandardItem *lv1Items = new QStandardItem(QString(layer->getName().c_str()));
             rootItem->appendRow(lv1Items);
@@ -123,7 +123,6 @@ void LayersModel::toggleLayerEnabled(int layerIndex)
 
 //            break;
 //        }
-
 //        case LayerIndexRole:
 //        {
 //            return index.row();

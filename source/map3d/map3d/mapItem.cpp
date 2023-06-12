@@ -230,6 +230,8 @@ bool MapItem::addNodeToLayer(osg::Node *node, std::string layerName)
             group->addChild(node);
         }
     }
+
+    emit layerChanged();
     return true;
 }
 
@@ -242,6 +244,7 @@ bool MapItem::removeNodeFromLayer(osg::Node *node, std::string layerName)
             group->removeChild(node);
         }
     }
+    emit layerChanged();
     return true;
 }
 
@@ -345,7 +348,7 @@ void MapItem::setGeocentric(bool isGeocentric)
 
     createMapNode(mIsGeocentric);
     emit mapCleared();
-    for(auto layer: layers)
+    for(const auto &layer: layers)
         addLayer(layer);
 
     osgEarth::Viewpoint vp = getEarthManipulator()->getViewpoint();
