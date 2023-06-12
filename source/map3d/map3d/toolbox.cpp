@@ -206,7 +206,7 @@ void Toolbox::addItem(ToolboxItem *toolboxItem)
     }
     auto subItem = new QStandardItem(toolboxItem->name);
     subItem->setData(toolboxItem->iconUrl, imageSource);
-    mItems[toolboxItem->category]->appendRow(new QStandardItem(toolboxItem->name));
+    mItems[toolboxItem->category]->appendRow(subItem);
     mToolboxItems[toolboxItem->name] = toolboxItem;
 }
 

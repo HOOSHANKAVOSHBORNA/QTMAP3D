@@ -35,17 +35,17 @@ Item {
             Repeater {
                 id: repeater
                 model: rootItem.listModel
-                delegate: DelegateItem{
-                    Layout.fillWidth: true
-                    width: tmp.width
-                    height: 30
-                    onItemClicked: function(itemname, category_name) {
-                        rootItem.itemClicked(itemname, category_name)
-                    }
-                    onChangeCheckable: {
-                        rootItem.changeCheckable(itemname, category_name, check)
-                    }
-                }
+//                delegate: DelegateItem{
+//                    Layout.fillWidth: true
+//                    width: tmp.width
+//                    height: 30
+//                    onItemClicked: function(itemname, category_name) {
+//                        rootItem.itemClicked(itemname, category_name)
+//                    }
+//                    onChangeCheckable: {
+//                        rootItem.changeCheckable(itemname, category_name, check)
+//                    }
+//                }
             }
         }
     }

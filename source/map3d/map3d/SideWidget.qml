@@ -80,6 +80,7 @@ Item {
                 source: side_itemurl
                 onLoaded: function() {
                     rootItem.sideItemCreated(index, item);
+                    print(index)
 //                    wnd.sideItemCreated(index, item);
 
 //                    if (index == 2) {

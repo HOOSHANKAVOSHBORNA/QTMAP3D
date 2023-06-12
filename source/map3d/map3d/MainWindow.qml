@@ -10,20 +10,20 @@ import Crystal 1.0
 
 CMainWindow {
 
-    ToolboxView {
-        id: toolboxModel
-        model: toolbox
-//        anchors.top: parent.top
-//        anchors.left: parent.left
-        property real widgetsPositionFactor: 1
-        x: 0
-//        x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*2.0)))
-//        y: menuWidget.height + (widgetsMargins * 2.0)
-//        width: implicitWidth + (widgetsMargins * 2)
-//            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
-//        height: parent.height - menuWidget.height - (widgetsMargins * 3)/* - navigationWidget.height*/
+//    ToolboxView {
+//        id: toolboxModel
+//        model: toolbox
+////        anchors.top: parent.top
+////        anchors.left: parent.left
+//        property real widgetsPositionFactor: 1
+//        x: 0
+////        x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*2.0)))
+////        y: menuWidget.height + (widgetsMargins * 2.0)
+////        width: implicitWidth + (widgetsMargins * 2)
+////            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
+////        height: parent.height - menuWidget.height - (widgetsMargins * 3)/* - navigationWidget.height*/
 
-    }
+//    }
     PropertyAnimation {
         id: toolboxAnimation
         target: toolboxModel
@@ -119,11 +119,11 @@ CMainWindow {
 
 
 
-//        ListElement {
-//            title_text:   "Toolbox"
-//            icon_url:     "qrc:///Resources/Toolbox.png"
-//            side_itemurl: "qrc:/ToolboxView.qml"
-//        }
+        ListElement {
+            title_text:   "Toolbox"
+            icon_url:     "qrc:///Resources/Toolbox.png"
+            side_itemurl: "qrc:/ToolboxView.qml"
+        }
 
         ListElement {
             title_text:   "Location"
@@ -144,9 +144,7 @@ CMainWindow {
         //        }
     }
 
-    property var toolboxModel: ListModel {
-
-    }
+    property var toolboxModel: toolbox
     property var fileModel: ListModel {
 
     }
@@ -203,6 +201,7 @@ CMainWindow {
             }
             onToolboxItemClicked: function() {
                 toolboxAnimation.start();
+                print("ddf")
             }
         }
 
@@ -221,11 +220,11 @@ CMainWindow {
                 print(item);
                 switch(index) {
                 case 0:
-                    item.listModel = wnd.fileModel;
+                    item.listModel = wnd.toolboxModel;
                     item.itemClicked.connect(wnd.fileItemClicked);
                     break
                 case 1:
-//                    item.model = toolboxModel.model;
+                    item.listModel = wnd.toolboxModel;
 //                    item.itemClicked.connect(wnd.toolboxItemClicked);
 //                    item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                     break;
