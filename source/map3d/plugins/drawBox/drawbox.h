@@ -8,7 +8,6 @@
 #include <osg/ClipNode>
 #include <osg/ClipPlane>
 
-#include "mapItem.h"
 #include "plugininterface.h"
 #include "box.h"
 #include "boxProperties.h"
@@ -23,23 +22,21 @@ class DrawBox : public PluginInterface
 
 public:
     DrawBox(QObject *parent = nullptr);
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    bool setup(MapItem *mapItem, UIHandle *uiHandle) override;
+    //bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+    bool setup() override;
 
-    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-//    void mousePressEvent(QMouseEvent *event) override;
-//    void mouseMoveEvent(QMouseEvent *event) override;
-
+//    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+    bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+private slots:
+    void onBoxItemCheck (bool check);
 private:
-    void startDraw(QMouseEvent* event);
-    void finishDrawing(QMouseEvent* event);
-    void cancelDrawing(QMouseEvent* event);
+    bool startDraw(const osgGA::GUIEventAdapter &ea);
+    bool finishDrawing(const osgGA::GUIEventAdapter &ea);
+    bool cancelDrawing(const osgGA::GUIEventAdapter &ea);
     osgEarth::Annotation::PlaceNode* makeIconNode();
 
 private:
-    QQmlEngine *mQmlEngine;
-    UIHandle *mUiHandle;
-    MapItem *mMapcontroller;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     Box* mBox{nullptr};

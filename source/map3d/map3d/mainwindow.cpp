@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWindow *parent) :
 
 //    setClearBeforeRendering(false);
     setColor(Qt::black);
+    Toolbox *toolbox = new Toolbox();
+    setToolbox(toolbox);
 
 
 
@@ -226,6 +228,11 @@ LayersModel *MainWindow::layersModel() const
     return mLayersModel;
 }
 
+Toolbox *MainWindow::toolbox() const
+{
+    return mToolbox;
+}
+
 UIHandle *MainWindow::uiHandle() const
 {
     return mUIHandle;
@@ -235,50 +242,50 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
 {
 
 
-    for (auto& item : pluginsInfoList) {
+//    for (auto& item : pluginsInfoList) {
 
-        if (item.qmlDesc->pluginHasSideItem) {
-            QVariant ret;
-            QMetaObject::invokeMethod(this,
-                                      "addSideItem",
-                                      Qt::DirectConnection,
-                                      Q_RETURN_ARG(QVariant, ret),
-                                      Q_ARG(QVariant, QVariant::fromValue<QString>(item.qmlDesc->sideItemMenuBarTitle)),
-                                      Q_ARG(QVariant, QVariant::fromValue<QString>(item.qmlDesc->sideItemMenuBarIconUrl)),
-                                      Q_ARG(QVariant, QVariant::fromValue<QString>(item.qmlDesc->sideItemUrl))
-                                      );
+//        if (item.qmlDesc->pluginHasSideItem) {
+//            QVariant ret;
+//            QMetaObject::invokeMethod(this,
+//                                      "addSideItem",
+//                                      Qt::DirectConnection,
+//                                      Q_RETURN_ARG(QVariant, ret),
+//                                      Q_ARG(QVariant, QVariant::fromValue<QString>(item.qmlDesc->sideItemMenuBarTitle)),
+//                                      Q_ARG(QVariant, QVariant::fromValue<QString>(item.qmlDesc->sideItemMenuBarIconUrl)),
+//                                      Q_ARG(QVariant, QVariant::fromValue<QString>(item.qmlDesc->sideItemUrl))
+//                                      );
 
-            bool bOk = false;
-            const int idx = ret.toInt(&bOk);
-            if (bOk) {
-                item.sideItemIndex = idx;
-            }
-        }
+//            bool bOk = false;
+//            const int idx = ret.toInt(&bOk);
+//            if (bOk) {
+//                item.sideItemIndex = idx;
+//            }
+//        }
 
-        for (auto toolboxItemDesc : item.qmlDesc->toolboxItemsList)
-        {
-//            qDebug() <<"item name:"<<toolboxItemDesc->name;
-            QVariant ret;
-            ItemDescProxy proxy(*toolboxItemDesc, item.interface);
-            QMetaObject::invokeMethod(this,
-                                      "addToolboxItem",
-                                      Qt::DirectConnection,
-                                      Q_RETURN_ARG(QVariant, ret),
-                                      Q_ARG(QVariant, QVariant::fromValue<ItemDescProxy*>(&proxy))
-                                      );
-        }
-        for (auto fileItem : item.qmlDesc->fileItemsList)
-        {
-            QVariant ret;
-            ItemDescProxy proxy(*fileItem, item.interface);
-            QMetaObject::invokeMethod(this,
-                                      "addFileItem",
-                                      Qt::DirectConnection,
-                                      Q_RETURN_ARG(QVariant, ret),
-                                      Q_ARG(QVariant, QVariant::fromValue<ItemDescProxy*>(&proxy))
-                                      );
-        }
-    }
+//        for (auto toolboxItemDesc : item.qmlDesc->toolboxItemsList)
+//        {
+////            qDebug() <<"item name:"<<toolboxItemDesc->name;
+//            QVariant ret;
+//            ItemDescProxy proxy(*toolboxItemDesc, item.interface);
+//            QMetaObject::invokeMethod(this,
+//                                      "addToolboxItem",
+//                                      Qt::DirectConnection,
+//                                      Q_RETURN_ARG(QVariant, ret),
+//                                      Q_ARG(QVariant, QVariant::fromValue<ItemDescProxy*>(&proxy))
+//                                      );
+//        }
+//        for (auto fileItem : item.qmlDesc->fileItemsList)
+//        {
+//            QVariant ret;
+//            ItemDescProxy proxy(*fileItem, item.interface);
+//            QMetaObject::invokeMethod(this,
+//                                      "addFileItem",
+//                                      Qt::DirectConnection,
+//                                      Q_RETURN_ARG(QVariant, ret),
+//                                      Q_ARG(QVariant, QVariant::fromValue<ItemDescProxy*>(&proxy))
+//                                      );
+//        }
+//    }
 }
 
 //void MainWindow::setHeadingAngle(qreal angle)
@@ -485,6 +492,11 @@ void MainWindow::setLayersModel(LayersModel *layersModel)
     }
 }
 
+void MainWindow::setToolbox(Toolbox *toolbox)
+{
+    mToolbox = toolbox;
+}
+
 void MainWindow::onFrameSwapped()
 {
 
@@ -637,6 +649,7 @@ void MainWindow::initializeGL()
     //----------------------------------------------------------
     LayersModel *layersModel = new LayersModel(getMapItem());
     setLayersModel(layersModel);
+
     QObject::connect(this, &MainWindow::toggleLayerEnabled,
                      layersModel, &LayersModel::toggleLayerEnabled);
     //----------------------------------------------------------

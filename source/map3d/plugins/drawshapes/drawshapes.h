@@ -7,9 +7,6 @@
 #include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
 
-#include "spherenodeeditor.h"
-
-#include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
 #include <osgEarthAnnotation/PlaceNode>
@@ -26,10 +23,9 @@ class DrawShapes : public PluginInterface
 
 public:
     explicit DrawShapes(QWidget *parent = nullptr);
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    bool setup(MapItem *mapController,
-               UIHandle *UIHandle) override;
+//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+    bool setup() override;
 protected:
     virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
     virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
@@ -47,9 +43,6 @@ private slots:
 
 
 private:
-
-    MapItem* mMapItem{nullptr};
-    QQmlEngine *mQmlEngine = nullptr;
     QQuickItem *mItem = nullptr;
 
     bool mEnterShapeZone{false};

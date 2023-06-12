@@ -11,17 +11,15 @@ class ImageLayer : public PluginInterface
 public:
     ImageLayer(QWidget *parent = nullptr);
     ~ImageLayer()override{}
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    void onToolboxItemClicked(const QString &name, const QString &category) override;
-    bool setup(MapItem *mapItem,
-               UIHandle *UIHandle) override;
-private:
+//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    void onToolboxItemClicked(const QString &name, const QString &category) override;
+    bool setup() override;
+private slots:
     void addXYZ();
     void addArcGIS();
     void addGDAL();
     void addTMS();
     void addWMS();
 private:
-    MapItem* mMapItem{nullptr};
 };
 #endif // IMAGELAYER_H

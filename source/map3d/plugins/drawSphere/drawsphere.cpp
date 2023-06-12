@@ -3,60 +3,62 @@
 const QString CATEGORY = "Draw";
 const QString SPHERE = "Sphere";
 
-drawSphere::drawSphere(QObject *parent)
+DrawSphere::DrawSphere(QObject *parent)
     : PluginInterface(parent)
 {
-
-}
-
-bool drawSphere::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<SpherePropertiesModel>("Crystal", 1, 0, "SphereProperties");
-    mQmlEngine = engine;
-    desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true,  false, ""});
-
-    return true;
 }
 
-void drawSphere::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == SPHERE) {
-            if (checked) {
-                mEnterSphereZone = true;
-                mDrawingState = DrawingState::START;
-                mSphereProperties = new SphereProperties(mQmlEngine, mUiHandle, mMapcontroller);
-                mSphereProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//bool DrawSphere::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<SpherePropertiesModel>("Crystal", 1, 0, "SphereProperties");
+//    desc->toolboxItemsList.push_back(new ItemDesc{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true,  false, ""});
 
-            }
-            else {
-                mEnterSphereZone = false;
-                mDrawingState = DrawingState::FINISH;
-                mSphere = nullptr;
-                mSphereProperties->hide();
-                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
-            }
-        }
-    }
-}
+//    return true;
+//}
 
-bool drawSphere::setup(MapItem *mapItem, UIHandle *uiHandle)
+//void DrawSphere::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == SPHERE) {
+//            if (checked) {
+//                mEnterSphereZone = true;
+//                mDrawingState = DrawingState::START;
+//                mSphereProperties = new SphereProperties(qmlEngine(), uiHandle(), mapItem());
+//                mSphereProperties->show();
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+//            }
+//            else {
+//                mEnterSphereZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                mSphere = nullptr;
+//                mSphereProperties->hide();
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//            }
+//        }
+//    }
+//}
+
+bool DrawSphere::setup()
 {
-    mUiHandle = uiHandle;
-    mMapcontroller = mapItem;
+    auto toolboxItem =  new ToolboxItem{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawSphere::onSphereItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *sphereLayer = new osgEarth::ModelLayer();
     sphereLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(sphereLayer);
+    mapItem()->addLayer(sphereLayer);
 
     return true;
 }
 
-bool drawSphere::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+bool DrawSphere::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+
     if (mEnterSphereZone) {
         if (ea.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON) {
             if (mDrawingState == DrawingState::START) {
@@ -76,33 +78,52 @@ bool drawSphere::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
     return false;
 }
 
-bool drawSphere::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+bool DrawSphere::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterSphereZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
         return true;
     }
     return false;
 }
 
-bool drawSphere::startDraw( const osgGA::GUIEventAdapter &event)
+void DrawSphere::onSphereItemCheck(bool check)
+{
+    if (check) {
+        mEnterSphereZone = true;
+        mDrawingState = DrawingState::START;
+        mSphereProperties = new SphereProperties(qmlEngine(), uiHandle(), mapItem());
+        mSphereProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterSphereZone = false;
+        mDrawingState = DrawingState::FINISH;
+        mSphere = nullptr;
+        mSphereProperties->hide();
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+    }
+}
+
+bool DrawSphere::startDraw( const osgGA::GUIEventAdapter &event)
 {
     mSphere = new SphereNode();
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(event.getX(), event.getY(), worldPos);
+    mapItem()->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
-    mSphere->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    //mSphereProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
+    mSphere->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    //mSphereProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
     mSphereProperties->setSphere(mSphere);
 
-    mMapcontroller->addNodeToLayer(mSphere, DRAW_LAYER_NAME);
+    mapItem()->addNodeToLayer(mSphere, DRAW_LAYER_NAME);
     return true;
 }
 
-bool drawSphere::finishDrawing(const osgGA::GUIEventAdapter &event)
+bool DrawSphere::finishDrawing(const osgGA::GUIEventAdapter &event)
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mDrawingState = DrawingState::START;
@@ -111,10 +132,10 @@ bool drawSphere::finishDrawing(const osgGA::GUIEventAdapter &event)
     return false;
 }
 
-bool drawSphere::cancelDrawing(const osgGA::GUIEventAdapter &event)
+bool DrawSphere::cancelDrawing(const osgGA::GUIEventAdapter &event)
 {
     if(mDrawingState == DrawingState::DRAWING){
-        mMapcontroller->removeNodeFromLayer(mSphere, DRAW_LAYER_NAME);
+        mapItem()->removeNodeFromLayer(mSphere, DRAW_LAYER_NAME);
         mSphere = nullptr;
         mSphereProperties->setSphere(mSphere);
         mDrawingState = DrawingState::START;
@@ -123,7 +144,7 @@ bool drawSphere::cancelDrawing(const osgGA::GUIEventAdapter &event)
     return false;
 }
 
-osgEarth::Annotation::PlaceNode *drawSphere::makeIconNode()
+osgEarth::Annotation::PlaceNode *DrawSphere::makeIconNode()
 {
     osg::ref_ptr<osg::Image> icon = osgDB::readImageFile("../data/images/draw/sphere.png");
     icon->scaleImage(24, 24, icon->r());

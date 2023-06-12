@@ -21,7 +21,7 @@ void SystemDataManager::upsertInfo(SystemInfo &systemInfo)
     }
     //--model node-----------------------------------------------------
     osg::ref_ptr<SystemModelNode> systemModelNode;
-    osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mMapController->getMapSRS()->getGeographicSRS(),
+    osgEarth::GeoPoint geographicPosition(mDefenseModelLayer->mapItem()->getMapSRS()->getGeographicSRS(),
                                           systemInfo.Longitude, systemInfo.Latitude, 0, osgEarth::AltitudeMode::ALTMODE_RELATIVE);
     if(mSystemData[systemInfo.Number]->systemModelNode.valid())
     {
@@ -36,7 +36,7 @@ void SystemDataManager::upsertInfo(SystemInfo &systemInfo)
         //add to container---------------------------------------------------
         mSystemData[systemInfo.Number]->systemModelNode = systemModelNode;
         //add to map --------------------------------------------------------
-        mDefenseModelLayer->mMapController->addNodeToLayer(systemModelNode, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(systemModelNode, SYSTEMS_LAYER_NAME);
     }
     //update information-----------------------------------------------------
     systemModelNode->informationChanged();
@@ -77,7 +77,7 @@ void SystemDataManager::addAssignment(int systemNo, System::Assignment* assignme
     if (mSystemData.contains(systemNo) &&
             mSystemData[systemNo]->findAssignment(assignment->info->TN) < 0)
     {
-        assignment->line = new LineNode(mDefenseModelLayer->mMapController);
+        assignment->line = new LineNode(mDefenseModelLayer->mapItem());
         assignment->line->setPointVisible(true);
         assignment->line->setColor(osgEarth::Color::White);
         assignment->line->setPointColor(osgEarth::Color::Olive);
@@ -87,7 +87,7 @@ void SystemDataManager::addAssignment(int systemNo, System::Assignment* assignme
         assignment->line->setShowBearing(true);
 		assignment->line->setShowDistance(true);
 		assignment->line->setShowSlope(true);
-        mDefenseModelLayer->mMapController->addNodeToLayer(assignment->line, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(assignment->line, SYSTEMS_LAYER_NAME);
 
         mSystemData[systemNo]->assignments.push_back(assignment);
         //----------------------------------------------------
@@ -127,7 +127,7 @@ void SystemDataManager::removeAssignment(int tn, int systemNo)
     if(mSystemData.contains(systemNo)){
         auto index = mSystemData[systemNo]->findAssignment(tn);
         if(index >= 0){
-            mDefenseModelLayer->mMapController->removeNodeFromLayer(mSystemData[systemNo]->assignments.at(index)->line, SYSTEMS_LAYER_NAME);
+            mDefenseModelLayer->mapItem()->removeNodeFromLayer(mSystemData[systemNo]->assignments.at(index)->line, SYSTEMS_LAYER_NAME);
             mSystemData[systemNo]->assignments.removeAt(index);
             mSystemData[systemNo]->systemModelNode->assignmentChanged();
 

@@ -25,11 +25,9 @@
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
 #include "mapItem.h"
-#include "osg/Group"
 #include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
 #include <QQuickItem>
-#include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 
 using namespace osgEarth::Annotation;
@@ -42,47 +40,43 @@ DrawShapes::DrawShapes(QWidget *parent)
 {
     Q_INIT_RESOURCE(drawShapes);
 }
-bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
+//bool DrawShapes::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true});
+//    return true;
+//}
 
-    mQmlEngine = engine;
-    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true});
-    return true;
-}
+//void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if(CATEGORY == category)
+//    {
+//        mEnterShapeZone = checked;
+//        if(name == IMAGE_OVERLAY)
+//        {
+//            if(checked)
+//            {
+//                mShape = Shape::IMGOVLY;
+//            }
+//            else
+//            {
+//                mShape = Shape::NONE;
+//                mDrawingState = DrawingState::NONE;
+//                if (mImageOverlay && mDrawingState != DrawingState::FINISH){
+//                    mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+//                    mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+//                }
+//            }
+//        }
+//    }
+//}
 
-void DrawShapes::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+bool DrawShapes::setup()
 {
-    if(CATEGORY == category)
-    {
-        mEnterShapeZone = checked;
-        if(name == IMAGE_OVERLAY)
-        {
-            if(checked)
-            {
-                mShape = Shape::IMGOVLY;
-            }
-            else
-            {
-                mShape = Shape::NONE;
-                mDrawingState = DrawingState::NONE;
-                if (mImageOverlay && mDrawingState != DrawingState::FINISH){
-                    mMapItem->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-                    mMapItem->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
-                }
-            }
-        }
-    }
-}
-
-bool DrawShapes::setup(MapItem *mapItem,
-                       UIHandle */*UIHandle*/)
-{
-    mMapItem = mapItem;
-    osgEarth::GLUtils::setGlobalDefaults(mMapItem->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *drawShapeLayer = new osgEarth::ModelLayer();
     drawShapeLayer->setName(DRAW_LAYER_NAME);
-    mMapItem->addLayer(drawShapeLayer);
+    mapItem()->addLayer(drawShapeLayer);
     return true;
 }
 
@@ -121,9 +115,9 @@ bool DrawShapes::mouseDoubleClickEvent(const osgGA::GUIEventAdapter &/*event*/, 
 bool DrawShapes::onImgOvlyBtnClick(const osgGA::GUIEventAdapter &event)
 {
     osg::Vec3d worldPos;
-    mMapItem->screenToWorld(event.getX(), event.getY(), worldPos);
+    mapItem()->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapItem->getMapSRS(), worldPos);
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
 
     if(event.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON && !(mDrawingState==DrawingState::START))
     {
@@ -131,14 +125,14 @@ bool DrawShapes::onImgOvlyBtnClick(const osgGA::GUIEventAdapter &event)
         if (image)
         {
             mDrawingState = DrawingState::START;
-            mImageOverlay = new osgEarth::Annotation::ImageOverlay(mMapItem->getMapNode(), image);
+            mImageOverlay = new osgEarth::Annotation::ImageOverlay(mapItem()->getMapNode(), image);
             //imageOverlay->setBounds(osgEarth::Bounds(-100.0, 35.0, -90.0, 40.0));
             mImageOverlay->setCenter(geoPos.x(),geoPos.y());
-            mMapItem->addNodeToLayer(mImageOverlay, DRAW_LAYER_NAME);
-            //mMapItem->addNode(mImageOverlay);
+            mapItem()->addNodeToLayer(mImageOverlay, DRAW_LAYER_NAME);
+            //mapItem()->addNode(mImageOverlay);
             mImgOvlEditor = new osgEarth::Annotation::ImageOverlayEditor(mImageOverlay, false);
-            //mMapItem->getMapNode()->addChild(mImgOvlEditor);
-            mMapItem->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+            //mapItem()->getMapNode()->addChild(mImgOvlEditor);
+            mapItem()->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
 
             return true;
         }
@@ -148,10 +142,10 @@ bool DrawShapes::onImgOvlyBtnClick(const osgGA::GUIEventAdapter &event)
     if(event.getButton() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::DELETE;
-        mMapItem->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-        //mMapItem->removeNode(mImageOverlay);
-        mMapItem->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
-        //mMapItem->removeNode(mImgOvlEditor);
+        mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+        //mapItem()->removeNode(mImageOverlay);
+        mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+        //mapItem()->removeNode(mImgOvlEditor);
         mImageOverlay = nullptr;
         mImgOvlEditor = nullptr;
     }
@@ -159,8 +153,8 @@ bool DrawShapes::onImgOvlyBtnClick(const osgGA::GUIEventAdapter &event)
     if(event.getButton() == osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON && mDrawingState==DrawingState::START)
     {
         mDrawingState = DrawingState::FINISH;
-        mMapItem->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
-        //mMapItem->removeNode(mImgOvlEditor);
+        mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+        //mapItem()->removeNode(mImgOvlEditor);
         mImageOverlay = nullptr;
         mImgOvlEditor = nullptr;
     }

@@ -107,7 +107,7 @@ Item {
             ScrollView {
                 anchors.fill: parent
 
-                CustomTreeView{
+                LayerTreeView{
                     anchors.fill: parent
                     model: layersModel
                 }

@@ -11,7 +11,7 @@
 
 #include "plugininterface.h"
 
-class MapController;
+//class MapController;
 class PluginInterface;
 
 class ItemDescProxy : public QObject
@@ -27,17 +27,17 @@ class ItemDescProxy : public QObject
 
 
 public:
-    ItemDescProxy(const ItemDesc& desc, PluginInterface *interface = nullptr) :
-        _name     (desc.name     ),
-        _category (desc.category ),
-        _iconUrl  (desc.iconUrl  ),
-        _checkable(desc.checkable),
-        _hasMenu  (desc.hasMenu  ),
-        _menuUrl  (desc.menuUrl  ),
-        _pluginInterface(interface)
-    {
+//    ItemDescProxy(const ItemDesc& desc, PluginInterface *interface = nullptr) :
+//        _name     (desc.name     ),
+//        _category (desc.category ),
+//        _iconUrl  (desc.iconUrl  ),
+//        _checkable(desc.checkable),
+//        _hasMenu  (desc.hasMenu  ),
+//        _menuUrl  (desc.menuUrl  ),
+//        _pluginInterface(interface)
+//    {
 
-    }
+//    }
 
     QString name     (){return _name;     }
     QString category (){return _category; }
@@ -60,8 +60,17 @@ private:
 struct PluginInfo
 {
     PluginInterface *interface = nullptr;
-    PluginQMLDesc   *qmlDesc    = nullptr;
+//    PluginQMLDesc   *qmlDesc    = nullptr;
     int              sideItemIndex      = -1;
+};
+
+class PluginManager;
+class EventHandler: public osgGA::GUIEventHandler{
+public:
+    EventHandler(PluginManager *pluginManager);
+    virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+private:
+    PluginManager *mPluginManager;
 };
 
 class PluginManager : public QObject
@@ -73,22 +82,24 @@ public:
 
 public:
     void loadPlugins();
-    void performPluginsInitQMLDesc(QQmlEngine *qmlEngine);
-    void performPluginsSetup(MapItem *mapController);
+//    void setQmlEngine(QQmlEngine *qmlEngine);
+//    void setMapItem(MapItem *mapItem);
+    void setup();
+//    void setDefenseDataManager(DefenseDataManager *defenseDataManager);
 
-    std::list<PluginInfo>& pluginsInfoList();
+//    std::list<PluginInfo>& pluginsInfoList();
 
 public slots:
-    void onSideItemCreated(int index, QObject *sideItem);
-    void onToolboxItemCreated(ItemDescProxy *itemProxy);
-    void onFileItemCreated(ItemDescProxy *itemProxy);
-    void onToolboxItemClicked(const QString& name,
-                              const QString& category);
-    void onToolboxItemCheckedChanged(const QString& name,
-                                     const QString& category,
-                                     bool checked);
-    void onFileItemClicked(const QString& name,
-                           const QString& category);
+//    void onSideItemCreated(int index, QObject *sideItem);
+//    void onToolboxItemCreated(ItemDescProxy *itemProxy);
+//    void onFileItemCreated(ItemDescProxy *itemProxy);
+//    void onToolboxItemClicked(const QString& name,
+//                              const QString& category);
+//    void onToolboxItemCheckedChanged(const QString& name,
+//                                     const QString& category,
+//                                     bool checked);
+//    void onFileItemClicked(const QString& name,
+//                           const QString& category);
 
 
 public:
@@ -103,6 +114,7 @@ public:
 
 
 private:
+    friend EventHandler;
     std::list<PluginInfo> mPluginsInfoList;
     QMap<QString, QMap<QString, PluginInterface*>> mToolboxItemsMap;
     QMap<QString, QMap<QString, PluginInterface*>> mFileItemsMap;

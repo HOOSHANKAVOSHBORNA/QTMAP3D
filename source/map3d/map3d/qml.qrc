@@ -23,6 +23,7 @@
         <file>StatusBar.qml</file>
         <file>RightContainer.qml</file>
         <file>MapControllerItem.qml</file>
-        <file>CustomTreeView.qml</file>
+        <file>LayerTreeView.qml</file>
+        <file>ToolboxView.qml</file>
     </qresource>
 </RCC>

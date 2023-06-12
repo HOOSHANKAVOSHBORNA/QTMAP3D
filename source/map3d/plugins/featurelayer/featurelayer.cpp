@@ -23,36 +23,47 @@ FeatureLayer::FeatureLayer(QWidget *parent)
     : PluginInterface(parent)
 {
 }
-bool FeatureLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//bool FeatureLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    Q_UNUSED(engine)
+//    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{WFS, CATEGORY, "qrc:/resources/wfs.png", false, false, ""});
+
+//    return true;
+//}
+
+//void FeatureLayer::onToolboxItemClicked(const QString &name, const QString &category)
+//{
+//    if(CATEGORY == category && name == GDAL)
+//    {
+//        addGDAL();
+//    }
+//    if(CATEGORY == category && name == ARCGIS)
+//    {
+//        addArcGIS();
+//    }
+//    if(CATEGORY == category && name == WFS)
+//    {
+//        addWFS();
+//    }
+//}
+
+bool FeatureLayer::setup()
 {
-    Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{WFS, CATEGORY, "qrc:/resources/wfs.png", false, false, ""});
+    auto toolboxItemGDAL =  new ToolboxItem{GDAL, CATEGORY, "qrc:/resources/gdal.png", false};
+    QObject::connect(toolboxItemGDAL, &ToolboxItem::itemClicked, this, &FeatureLayer::addGDAL);
+    toolbox()->addItem(toolboxItemGDAL);
+
+    auto toolboxItemArcGIS =  new ToolboxItem{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false};
+    QObject::connect(toolboxItemArcGIS, &ToolboxItem::itemClicked, this, &FeatureLayer::addArcGIS);
+    toolbox()->addItem(toolboxItemArcGIS);
+
+    auto toolboxItemWFS =  new ToolboxItem{WFS, CATEGORY, "qrc:/resources/wfs.png", false};
+    QObject::connect(toolboxItemWFS, &ToolboxItem::itemClicked, this, &FeatureLayer::addWFS);
+    toolbox()->addItem(toolboxItemWFS);
 
     return true;
-}
-
-void FeatureLayer::onToolboxItemClicked(const QString &name, const QString &category)
-{
-    if(CATEGORY == category && name == GDAL)
-    {
-        addGDAL();
-    }
-    if(CATEGORY == category && name == ARCGIS)
-    {
-        addArcGIS();
-    }
-    if(CATEGORY == category && name == WFS)
-    {
-        addWFS();
-    }
-}
-
-bool FeatureLayer::setup(MapItem *mapItem,
-                         UIHandle *UIHandle)
-{
-    mMapItem = mapItem;
 }
 
 void FeatureLayer::addGDAL()
@@ -86,7 +97,7 @@ void FeatureLayer::addGDAL()
 
         osgEarth::Drivers::ModelLayerOptions *options = new osgEarth::Drivers::ModelLayerOptions(nodeName, geomOptions);
         osg::ref_ptr<osgEarth::ModelLayer>    layer   = new osgEarth::Drivers::ModelLayer(*options);
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
 
     }
 
@@ -117,7 +128,7 @@ void FeatureLayer::addWFS()
         //        geomOptions.styles()->addStyle(style);
         geomOptions.enableLighting() = false;
         osg::ref_ptr<osgEarth::ModelLayer>  layer = new osgEarth::Drivers::ModelLayer(osgEarth::Drivers::ModelLayerOptions(nodeName, geomOptions));
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
 
     }
 }
@@ -143,7 +154,7 @@ void FeatureLayer::addArcGIS()
         arcGeomOptions.enableLighting() = false;
         osg::ref_ptr<osgEarth::ModelLayer>  layer = new osgEarth::ModelLayer(osgEarth::ModelLayerOptions(nodeName, arcGeomOptions));
 
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
     }
 }
 

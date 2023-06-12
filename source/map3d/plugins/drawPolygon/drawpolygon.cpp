@@ -12,56 +12,57 @@ const QString POLYGON = "Polygon";
 DrawPolygon::DrawPolygon(QObject *parent)
     : PluginInterface(parent)
 {
-
-}
-
-bool DrawPolygon::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
     qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
-    mQmlEngine = engine;
-    desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true,  false, ""});
-    return true;
 }
 
-void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//bool DrawPolygon::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
+//    desc->toolboxItemsList.push_back(new ItemDesc{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true,  false, ""});
+//    return true;
+//}
+
+//void DrawPolygon::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == POLYGON) {
+//            if (checked) {
+//                mEnterPolygonZone = true;
+//                mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle());
+//                if(/*mUiHandle &&*/ mPolygonProperties){
+//                    mPolygonProperties->show();
+//                }
+//                mDrawingState = DrawingState::START;
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+//            }
+//            else {
+//                mEnterPolygonZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                if(mPolygonProperties){
+//                        mPolygonProperties->hide();
+//                    }
+
+//                mPolygonProperties->deleteLater();
+//                mPolygonProperties = nullptr;
+//                mPolygon = nullptr;
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//            }
+//        }
+//    }
+//}
+
+bool DrawPolygon::setup()
 {
-    if (CATEGORY == category) {
-        if (name == POLYGON) {
-            if (checked) {
-                mEnterPolygonZone = true;
-                mPolygonProperties = new PolygonProperties(mQmlEngine, mUiHandle);
-                if(mUiHandle && mPolygonProperties){
-                    mPolygonProperties->show();
-                }
-                mDrawingState = DrawingState::START;
-                mMapItem->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+    auto toolboxItem =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawPolygon::onPolygonItemCheck);
+    toolbox()->addItem(toolboxItem);
 
-            }
-            else {
-                mEnterPolygonZone = false;
-                mDrawingState = DrawingState::FINISH;
-                if(mPolygonProperties){
-                        mPolygonProperties->hide();
-                    }
-
-                mPolygonProperties->deleteLater();
-                mPolygonProperties = nullptr;
-                mPolygon = nullptr;
-                mMapItem->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
-            }
-        }
-    }
-}
-
-bool DrawPolygon::setup(MapItem *mapItem, UIHandle *uIHandle)
-{
-    mUiHandle = uIHandle;
-    mMapItem = mapItem;
-    osgEarth::GLUtils::setGlobalDefaults(mMapItem->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
     osgEarth::ModelLayer *polygonLayer = new osgEarth::ModelLayer();
     polygonLayer->setName(DRAW_LAYER_NAME);
-    mMapItem->addLayer(polygonLayer);
+    mapItem()->addLayer(polygonLayer);
     return true;
 }
 
@@ -107,13 +108,39 @@ bool DrawPolygon::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAc
 bool DrawPolygon::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterPolygonZone){
-        osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
         if (mDrawingState == DrawingState::DRAWING){
             mouseMoveDrawing(ea);
         }
     }
     return false;
+}
+
+void DrawPolygon::onPolygonItemCheck(bool check)
+{
+    if (check) {
+        mEnterPolygonZone = true;
+        mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle());
+        if(/*mUiHandle &&*/ mPolygonProperties){
+            mPolygonProperties->show();
+        }
+        mDrawingState = DrawingState::START;
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterPolygonZone = false;
+        mDrawingState = DrawingState::FINISH;
+        if(mPolygonProperties){
+            mPolygonProperties->hide();
+        }
+
+        mPolygonProperties->deleteLater();
+        mPolygonProperties = nullptr;
+        mPolygon = nullptr;
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+    }
 }
 
 osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
@@ -132,20 +159,20 @@ osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
 
 void DrawPolygon::startDraw(const osgGA::GUIEventAdapter &event)
 {
-    mPolygon = new Polygon(mMapItem);
-    mMapItem->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
+    mPolygon = new Polygon(mapItem());
+    mapItem()->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::DRAWING;
     mPolygonProperties->setPolygon(mPolygon);
 }
 void DrawPolygon::drawing(const osgGA::GUIEventAdapter &event)
 {
-    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event.getX(), event.getY());
+    osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
 }
 
 void DrawPolygon::cancelDraw()
 {
-    mMapItem->removeNodeFromLayer(mPolygon, DRAW_LAYER_NAME);
+    mapItem()->removeNodeFromLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::START;
     if(mPolygonProperties)
         mPolygonProperties->setPolygon(nullptr);
@@ -165,7 +192,7 @@ void DrawPolygon::mouseMoveDrawing(const osgGA::GUIEventAdapter &event)
         mPolygon->removePoint();
 
     }
-    osgEarth::GeoPoint geoPos = mMapItem->screenToGeoPoint(event.getX(), event.getY());
+    osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
 
 }

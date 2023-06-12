@@ -52,7 +52,8 @@ public:
 //    QHash<int,QByteArray> roleNames() const override;
 
 private:
-//    QList<osgEarth::Layer*> mLayersList;
+    QList<osgEarth::Layer*> mLayersList;
+    MapItem *mMapItem;
 };
 
 

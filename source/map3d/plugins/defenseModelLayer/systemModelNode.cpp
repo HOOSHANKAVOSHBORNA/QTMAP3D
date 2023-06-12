@@ -1,7 +1,6 @@
 #include "systemModelNode.h"
 #include "polygon.h"
 #include "systemDataManager.h"
-#include "aircraftDataManager.h"
 
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
@@ -18,11 +17,11 @@
 const float RANGE3D = 600;//std::numeric_limits<float>::max();;
 
 SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::Data* systemData, QObject* parent)
-	:DefenseModelNode(defenseModelLayer->mMapController, parent),
+    :DefenseModelNode(defenseModelLayer->mapItem(), parent),
 	  mDefenseModelLayer(defenseModelLayer),
 	  mData(systemData)
 {
-	mIs3D = mDefenseModelLayer->mMapController->getMode();
+    mIs3D = mDefenseModelLayer->mapItem()->getMode();
 	//--create root node--------------------------------------------------------------------------
 	mRootNode = new osg::LOD;
 
@@ -113,13 +112,13 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
 	at->addChild(mNode2D);
 	at->setAutoRotateMode(osg::AutoTransform::AutoRotateMode::ROTATE_TO_CAMERA);
 
-	mTruckF = new TruckF(mDefenseModelLayer->mMapController);
+    mTruckF = new TruckF(mDefenseModelLayer->mapItem());
 	mTruckF->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,2.0,0));
-	mTruckS = new TruckS(mDefenseModelLayer->mMapController);
+    mTruckS = new TruckS(mDefenseModelLayer->mapItem());
 	mTruckS->stopSearch();
 	mTruckS->getPositionAttitudeTransform()->setPosition(osg::Vec3d(-4.0 * std::sin(qDegreesToRadians(60.0)), -4.0 * std::cos(qDegreesToRadians(60.0)),0));
 
-	mTruckL = new TruckL(mDefenseModelLayer->mMapController);
+    mTruckL = new TruckL(mDefenseModelLayer->mapItem());
 	mTruckL->getPositionAttitudeTransform()->setPosition(osg::Vec3d(4.0 * std::sin(qDegreesToRadians(60.0)), -4.0 * std::cos(qDegreesToRadians(60.0)),0));
 
 	mNode3D = new Group;
@@ -151,7 +150,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
 		mRootNode->addChild(mNode3D, 0, 0);
 		mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
 	}
-	mBackCircleNode = new Circle(mDefenseModelLayer->mMapController);
+    mBackCircleNode = new Circle(mDefenseModelLayer->mapItem());
 	mBackCircleNode->setRadius(6.5);
 	//	mBackCircleNode->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 	mBackCircleNode->setColor(osgEarth::Color(0.2f, 0.2f, 0.2f, 0.05f));
@@ -177,9 +176,9 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
 
 
     //map mode changed-----------------------------------------------------------------------
-    connect(mDefenseModelLayer->mMapController, &MapItem::modeChanged, this, &SystemModelNode::onModeChanged);
+    connect(mDefenseModelLayer->mapItem(), &MapItem::modeChanged, this, &SystemModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------
-    mRangeCircle = new Circle(mDefenseModelLayer->mMapController);
+    mRangeCircle = new Circle(mDefenseModelLayer->mapItem());
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
 	mRangeCircle->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 
@@ -187,12 +186,12 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
 	mMezSphere->setColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
 	mMezSphere->setSphereShape(SphereNode::SphereShape::SphereTopHalf);
 
-    mWezPolygon = new Polygon(mDefenseModelLayer->mMapController);
+    mWezPolygon = new Polygon(mDefenseModelLayer->mapItem());
     mWezPolygon->setLineColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
 	if (!mSystemInfoItem) {
-		mSystemInfoItem = new SystemInfoItem(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, mData, this);
+        mSystemInfoItem = new SystemInfoItem(mDefenseModelLayer->qmlEngine(), mDefenseModelLayer->uiHandle(), mData, this);
 		connect(mSystemInfoItem->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
 		connect(mSystemInfoItem->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
 		connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);
@@ -283,11 +282,11 @@ void SystemModelNode::statusInfoChanged()
 //        return;
 //    if(!mAssignmentMap.contains(tn))
 //    {
-//        Assignment* assignmentModel = new  Assignment(mMapController);
+//        Assignment* assignmentModel = new  Assignment(mapItem());
 //        assignmentModel->mModelNode = assignModelNode;
 //        mAssignmentMap[tn] = assignmentModel;
 //        mSystemInfoItem->addAssignment(tn, assignModelNode);
-//        mMapController->addNodeToLayer(assignmentModel->mLine, SYSTEMS_LAYER_NAME);
+//        mapItem()->addNodeToLayer(assignmentModel->mLine, SYSTEMS_LAYER_NAME);
 //    }
 //    updateOrCreateLabelImage();
 //    mLabelNode->setStyle(mLabelNode->getStyle());
@@ -316,7 +315,7 @@ void SystemModelNode::statusInfoChanged()
 //{
 //    if(mAssignmentMap.contains(tn))
 //    {
-//        mMapController->removeNodeFromLayer(mAssignmentMap[tn]->mLine, SYSTEMS_LAYER_NAME);
+//        mapItem()->removeNodeFromLayer(mAssignmentMap[tn]->mLine, SYSTEMS_LAYER_NAME);
 //        mAssignmentMap.remove(tn);
 //        mSystemInfoItem->removeAssignment(tn);
 //    }
@@ -355,14 +354,14 @@ void SystemModelNode::setSelectionMode(SelectionMode sm)
 	}
 	else
 	{
-//		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+//		mDefenseModelLayer->mapItem()->untrackNode(getGeoTransform());
 		//        onRangeButtonToggled(val);
 		//        onWezButtonToggled(val);
 		//        onMezButtonToggled(val);
 	}
 }
 
-void SystemModelNode::frameEvent()
+bool SystemModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
 	mStatusNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
 
@@ -373,11 +372,12 @@ void SystemModelNode::frameEvent()
 		mTruckF->aimTarget(mTargetModelNode->getPosition());
 		mTruckL->lockOnTarget(mTargetModelNode->getPosition());
 	}
+    return false;
 }
 
-void SystemModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
+bool SystemModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel)
 {
-	DefenseModelNode::mousePressEvent(event, onModel);
+    return DefenseModelNode::mousePressEvent(ea, aa, onModel);
 
 	//    if(event->button() == Qt::LeftButton)
 	//    {
@@ -444,7 +444,7 @@ void SystemModelNode::onModeChanged(bool is3DView)
 
 void SystemModelNode::onGotoButtonClicked()
 {
-	mDefenseModelLayer->mMapController->goToPosition(getPosition(), 200);
+    mDefenseModelLayer->mapItem()->goToPosition(getPosition(), 200);
 }
 
 void SystemModelNode::onRangeButtonToggled(bool check)
@@ -454,11 +454,11 @@ void SystemModelNode::onRangeButtonToggled(bool check)
 		mRangeCircle->setPosition(getPosition());
 		mRangeCircle->setRadius(osgEarth::Distance(mData->information->systemInfo.ViewRange, osgEarth::Units::METERS));
 
-		mDefenseModelLayer->mMapController->addNodeToLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
 	}
 	else
 	{
-		mDefenseModelLayer->mMapController->removeNodeFromLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
 	}
 }
 
@@ -468,7 +468,7 @@ void SystemModelNode::onWezButtonToggled(bool checked)
 	{
 		mWezPolygon->clearPoints();
 		osg::Vec3d worldPosition;
-		getPosition().toWorld(worldPosition, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
+        getPosition().toWorld(worldPosition, mDefenseModelLayer->mapItem()->getMapNode()->getTerrain());
 		osgEarth::GeoPoint geoPoint;
 		double radius = mData->information->systemInfo.MezRange;
 
@@ -478,21 +478,21 @@ void SystemModelNode::onWezButtonToggled(bool checked)
 		osg::Vec3d v4 = osg::Vec3d(worldPosition.x() + radius*2/4, worldPosition.y() - radius*2/4, worldPosition.z());
 
 		osgEarth::GeoPoint geoPoint1;
-		geoPoint1.fromWorld(mDefenseModelLayer->mMapController->getMapSRS(), v1);
+        geoPoint1.fromWorld(mDefenseModelLayer->mapItem()->getMapSRS(), v1);
 		geoPoint1.z() = 0;
-		geoPoint1.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
+        geoPoint1.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mapItem()->getMapNode()->getTerrain());
 		osgEarth::GeoPoint geoPoint2;
-		geoPoint2.fromWorld(mDefenseModelLayer->mMapController->getMapSRS(), v2);
+        geoPoint2.fromWorld(mDefenseModelLayer->mapItem()->getMapSRS(), v2);
 		geoPoint2.z() = 0;
-		geoPoint2.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
+        geoPoint2.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mapItem()->getMapNode()->getTerrain());
 		osgEarth::GeoPoint geoPoint3;
-		geoPoint3.fromWorld(mDefenseModelLayer->mMapController->getMapSRS(), v3);
+        geoPoint3.fromWorld(mDefenseModelLayer->mapItem()->getMapSRS(), v3);
 		geoPoint3.z() = 0;
-		geoPoint3.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
+        geoPoint3.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mapItem()->getMapNode()->getTerrain());
 		osgEarth::GeoPoint geoPoint4;
-		geoPoint4.fromWorld(mDefenseModelLayer->mMapController->getMapSRS(), v4);
+        geoPoint4.fromWorld(mDefenseModelLayer->mapItem()->getMapSRS(), v4);
 		geoPoint4.z() = 0;
-		geoPoint4.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
+        geoPoint4.transformZ(osgEarth::AltitudeMode::ALTMODE_RELATIVE, mDefenseModelLayer->mapItem()->getMapNode()->getTerrain());
 
 		mWezPolygon->addPoints(geoPoint1);
 		mWezPolygon->addPoints(geoPoint2);
@@ -502,11 +502,11 @@ void SystemModelNode::onWezButtonToggled(bool checked)
 		float height = static_cast<float>(radius/3);
 		mWezPolygon->setHeight(height);
 
-		mDefenseModelLayer->mMapController->addNodeToLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
 
 	}
 	else {
-		mDefenseModelLayer->mMapController->removeNodeFromLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
 	}
 }
 
@@ -516,11 +516,11 @@ void SystemModelNode::onMezButtonToggled(bool checked)
 	{
 		mMezSphere->setPosition(getPosition());
 		mMezSphere->setRadius(mData->information->systemInfo.MezRange);
-		mDefenseModelLayer->mMapController->addNodeToLayer(mMezSphere, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mMezSphere, SYSTEMS_LAYER_NAME);
 	}
 	else
 	{
-		mDefenseModelLayer->mMapController->removeNodeFromLayer(mMezSphere, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mMezSphere, SYSTEMS_LAYER_NAME);
 	}
 }
 
@@ -580,7 +580,7 @@ void SystemModelNode::firePhase(int tn)
 		{
 			mFiredRocket->setAutoScale();
 			mTruckF->shoot(mTargetModelNode->getPosition().vec3d(), 2000);//1000 m/s
-			mDefenseModelLayer->mMapController->setTrackNode(mFiredRocket->getGeoTransform(), 400);
+            mDefenseModelLayer->mapItem()->setTrackNode(mFiredRocket->getGeoTransform(), 400);
 		}
 	}
 }
@@ -592,7 +592,7 @@ void SystemModelNode::killPhase(int tn)
 	if(index != -1)
 	{
 		auto assignment = mData->assignments.at(index);
-		mDefenseModelLayer->mMapController->untrack();
+        mDefenseModelLayer->mapItem()->untrack();
 		assignment->line->setColor(osgEarth::Color::Black);
 		assignment->modelNode->collision();
 
@@ -610,7 +610,7 @@ void SystemModelNode::noKillPhase(int tn)
 	if(index != -1)
 	{
 		auto assignment = mData->assignments.at(index);
-		mDefenseModelLayer->mMapController->untrack();
+        mDefenseModelLayer->mapItem()->untrack();
 		assignment->line->setColor(osgEarth::Color::Brown);
 		if(mFiredRocket)
 			mFiredRocket->stop();

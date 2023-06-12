@@ -3,6 +3,8 @@
 #define PluginInterface_H
 
 
+#include "toolbox.h"
+
 #include <QObject>
 #include <QString>
 #include <QEvent>
@@ -76,21 +78,58 @@ private:
 
 };
 
-struct ItemDesc
+//struct ItemDesc
+//{
+//    ItemDesc(
+//            QString _name      = QString(),
+//            QString _category  = QString(),
+//            QString _iconUrl   = QString(),
+//            bool    _checkable = false,
+//            bool    _hasMenu   = false,
+//            QString _menuUrl   = QString()) :
+//        name     (_name     ),
+//        category (_category ),
+//        iconUrl  (_iconUrl  ),
+//        checkable(_checkable),
+//        hasMenu  (_hasMenu  ),
+//        menuUrl  (_menuUrl  )
+//    {
+
+//    }
+
+//    QString name;
+//    QString category;
+//    QString iconUrl;
+//    bool    checkable = false;
+//    bool    hasMenu   = false;
+//    QString menuUrl;
+//};
+
+
+//struct PluginQMLDesc
+//{
+//    bool           pluginHasSideItem = false;
+//    QString        sideItemMenuBarTitle;
+//    QString        sideItemMenuBarIconUrl;
+//    QString        sideItemUrl;
+
+//    QList<ItemDesc*> toolboxItemsList;
+//    QList<ItemDesc*> fileItemsList;
+//};
+
+struct ToolboxItem: public QObject
 {
-    ItemDesc(
-            QString _name      = QString(),
-            QString _category  = QString(),
-            QString _iconUrl   = QString(),
-            bool    _checkable = false,
-            bool    _hasMenu   = false,
-            QString _menuUrl   = QString()) :
+    Q_OBJECT
+public:
+    ToolboxItem(
+        QString _name      = QString(),
+        QString _category  = QString(),
+        QString _iconUrl   = QString(),
+        bool    _checkable = false):
         name     (_name     ),
         category (_category ),
         iconUrl  (_iconUrl  ),
-        checkable(_checkable),
-        hasMenu  (_hasMenu  ),
-        menuUrl  (_menuUrl  )
+        checkable(_checkable)
     {
 
     }
@@ -99,23 +138,12 @@ struct ItemDesc
     QString category;
     QString iconUrl;
     bool    checkable = false;
-    bool    hasMenu   = false;
-    QString menuUrl;
+signals:
+    void itemClicked();
+    void itemChecked(bool check);
 };
 
-
-struct PluginQMLDesc
-{
-    bool           pluginHasSideItem = false;
-    QString        sideItemMenuBarTitle;
-    QString        sideItemMenuBarIconUrl;
-    QString        sideItemUrl;
-
-    QList<ItemDesc*> toolboxItemsList;
-    QList<ItemDesc*> fileItemsList;
-};
-
-class PluginInterface : public QObject, public osgGA::GUIEventHandler
+class PluginInterface : public QObject
 {
     friend class PluginManager;
     Q_OBJECT
@@ -123,32 +151,48 @@ class PluginInterface : public QObject, public osgGA::GUIEventHandler
 public:
     PluginInterface(QObject *parent = nullptr);
     virtual ~PluginInterface() { }
+
     MapItem *mapItem() const;
-    void setMapItem(MapItem *mapItem);
+    static void setMapItem(MapItem *mapItem);
+
+    QQmlEngine *qmlEngine() const;
+    static void setQmlEngine(QQmlEngine *newQmlEngine);
+
     UIHandle *uiHandle() const;
-    void setUiHandle(UIHandle *newUiHandle);
+    static void setUiHandle(UIHandle *newUiHandle);
 
-    virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
-    virtual void onSideItemCreated(int index, QObject *sideItem) {}
-    virtual void onToolboxItemClicked(const QString& name,
-                                      const QString& category) {}
-    virtual void onToolboxItemCheckedChanged(const QString& name,
-                                             const QString& category,
-                                             bool checked) {}
-    virtual void onFileItemClicked(const QString& name,
-                                      const QString& category) {}
+    DefenseDataManager *defenseDataManager() const;
+    static void setDefenseDataManager(DefenseDataManager* defenseDataManager);
 
-    virtual bool setup(MapItem *mapController,
-                       UIHandle *uiHandle) {return false;}
-    virtual void setDefenseDataManager(DefenseDataManager* defenseDataManager){}
+//    virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
+//    virtual void onSideItemCreated(int index, QObject *sideItem) {}
+//    virtual void onToolboxItemClicked(const QS//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
+    //    virtual void onSideItemCreated(int index, QObject *sideItem) {}
+    //    virtual void onToolboxItemClicked(const QString& name,
+    //                                      const QString& category) {}
+    //    virtual void onToolboxItemCheckedChanged(const QString& name,
+    //                                             const QString& category,
+    //                                             bool checked) {}
+    //    virtual void onFileItemClicked(const QString& name,
+    //                                      const QString& category) {}tring& name,
+//                                      const QString& category) {}
+//    virtual void onToolboxItemCheckedChanged(const QString& name,
+//                                             const QString& category,
+//                                             bool checked) {}
+//    virtual void onFileItemClicked(const QString& name,
+//                                      const QString& category) {}
+
+    virtual bool setup() {return false;}
 
     QString name() const;
     void setName(const QString &newName);
 
 
+    Toolbox *toolbox() const;
+    static void setToolbox(Toolbox *newToolbox);
 
-protected:
+public:
     virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool keyPressEvent        (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool keyReleaseEvent      (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
@@ -157,10 +201,16 @@ protected:
     virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
+
 private:
-    MapItem *mMapItem;
-    UIHandle *mUiHandle;
+    static MapItem *mMapItem;
+    static QQmlEngine *mQmlEngine;
+    static UIHandle *mUiHandle;
+    static DefenseDataManager *mDefenseDataManager;
+    static Toolbox *mToolbox;
+
     QString mName;
+
 };
 
 

@@ -13,15 +13,12 @@
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthSymbology/GeometryFactory>
-
-#include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
 #include <osgEarthAnnotation/PlaceNode>
 #include <QQmlEngine>
 #include <QQmlComponent>
 
-#include "mapItem.h"
 #include "plugininterface.h"
 
 
@@ -35,27 +32,25 @@ class DrawImage : public PluginInterface
 
 public:
     DrawImage(QObject *parent = nullptr);
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    bool setup(MapItem *mapItem, UIHandle *uiHandle) override;
+//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+    bool setup() override;
     void loadImage();
-    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-//    void mousePressEvent(QMouseEvent *event) override;
-//    void mouseMoveEvent(QMouseEvent *event) override;
-
+//    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+    bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+private slots:
+    void onImageItemCheck(bool check);
 
 private:
-    void startDraw(QMouseEvent* event);
-    void finishDrawing(QMouseEvent* event);
-    void cancelDrawing(QMouseEvent* event);
+    bool startDraw(const osgGA::GUIEventAdapter &ea);
+    bool finishDrawing(const osgGA::GUIEventAdapter &ea);
+    bool cancelDrawing(const osgGA::GUIEventAdapter &ea);
     osgEarth::Annotation::PlaceNode* makeIconNode();
     ImageProperties *mImageProperties{nullptr};
 
 
 private:
     osg::Image *mImage{nullptr};
-    QQmlEngine *mQmlEngine;
-    UIHandle *mUiHandle;
-    MapItem *mMapcontroller;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     bool mEnterImageZone{false};

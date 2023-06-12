@@ -182,9 +182,10 @@ qreal MapItem::headingAngle() const
 
 void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
 {
-    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
+//    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
+    float height = 0;
     osgUtil::LineSegmentIntersector::Intersections intersections;
-    if (mOSGRenderNode->computeIntersections(x, height - y, intersections))
+    if (mOSGRenderNode->computeIntersections(x, /*height - */y, intersections))
     {
         for (const auto &intersection : intersections)
         {
@@ -229,6 +230,8 @@ bool MapItem::addNodeToLayer(osg::Node *node, std::string layerName)
             group->addChild(node);
         }
     }
+
+    emit layerChanged();
     return true;
 }
 
@@ -241,6 +244,7 @@ bool MapItem::removeNodeFromLayer(osg::Node *node, std::string layerName)
             group->removeChild(node);
         }
     }
+    emit layerChanged();
     return true;
 }
 
@@ -344,7 +348,7 @@ void MapItem::setGeocentric(bool isGeocentric)
 
     createMapNode(mIsGeocentric);
     emit mapCleared();
-    for(auto layer: layers)
+    for(const auto &layer: layers)
         addLayer(layer);
 
     osgEarth::Viewpoint vp = getEarthManipulator()->getViewpoint();
@@ -639,5 +643,8 @@ void MapItem::wheelEvent(QWheelEvent *event)
 
 void MapItem::hoverMoveEvent(QHoverEvent *event)
 {
+    if (mOSGRenderNode) {
+        mOSGRenderNode->hoverMoveEvent(event);
+    }
     mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
 }

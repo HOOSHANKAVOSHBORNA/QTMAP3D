@@ -1,4 +1,5 @@
 #include "terrainlayer.h"
+#include "mapItem.h"
 #include "urldialog.h"
 
 #include <osgEarthDrivers/gdal/GDALOptions>
@@ -22,41 +23,56 @@ TerrainLayer::TerrainLayer(QWidget *parent)
 {
 }
 
-bool TerrainLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//bool TerrainLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    Q_UNUSED(engine)
+//    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{WCS, CATEGORY, "qrc:/resources/wcs.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "qrc:/resources/tms.png", false, false, ""});
+
+//    return true;
+//}
+
+//void TerrainLayer::onToolboxItemClicked(const QString &name, const QString &category)
+//{
+//    if(CATEGORY == category && name == GDAL)
+//    {
+//        addGDAL();
+//    }
+//    if(CATEGORY == category && name == ARCGIS)
+//    {
+//        addArcGIS();
+//    }
+//    if(CATEGORY == category && name == WCS)
+//    {
+//        addWCS();
+//    }
+//    if(CATEGORY == category && name == TMS)
+//    {
+//        addTMS();
+//    }
+//}
+
+bool TerrainLayer::setup()
 {
-    Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{WCS, CATEGORY, "qrc:/resources/wcs.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "qrc:/resources/tms.png", false, false, ""});
+    auto toolboxItemGDAL =  new ToolboxItem{GDAL, CATEGORY, "qrc:/resources/gdal.png", false};
+    QObject::connect(toolboxItemGDAL, &ToolboxItem::itemClicked, this, &TerrainLayer::addGDAL);
+    toolbox()->addItem(toolboxItemGDAL);
+
+    auto toolboxItemArcGIS =  new ToolboxItem{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false};
+    QObject::connect(toolboxItemArcGIS, &ToolboxItem::itemClicked, this, &TerrainLayer::addArcGIS);
+    toolbox()->addItem(toolboxItemArcGIS);
+
+    auto toolboxItemWCS =  new ToolboxItem{WCS, CATEGORY, "qrc:/resources/wcs.png", false};
+    QObject::connect(toolboxItemWCS, &ToolboxItem::itemClicked, this, &TerrainLayer::addWCS);
+    toolbox()->addItem(toolboxItemWCS);
+
+    auto toolboxItemTMS =  new ToolboxItem{TMS, CATEGORY, "qrc:/resources/tms.png", false};
+    QObject::connect(toolboxItemTMS, &ToolboxItem::itemClicked, this, &TerrainLayer::addTMS);
+    toolbox()->addItem(toolboxItemTMS);
 
     return true;
-}
-
-void TerrainLayer::onToolboxItemClicked(const QString &name, const QString &category)
-{
-    if(CATEGORY == category && name == GDAL)
-    {
-        addGDAL();
-    }
-    if(CATEGORY == category && name == ARCGIS)
-    {
-        addArcGIS();
-    }
-    if(CATEGORY == category && name == WCS)
-    {
-        addWCS();
-    }
-    if(CATEGORY == category && name == TMS)
-    {
-        addTMS();
-    }
-}
-
-bool TerrainLayer::setup(MapItem *mapItem,
-                         UIHandle *UIHandle)
-{
-    mMapItem = mapItem;
 }
 
 void TerrainLayer::addGDAL()
@@ -70,7 +86,7 @@ void TerrainLayer::addGDAL()
         osgEarth::Drivers::GDALOptions  opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
     }
 }
 
@@ -93,7 +109,7 @@ void TerrainLayer::addArcGIS()
         opt.url() = nodeName;
 
         osg::ref_ptr<osgEarth::ElevationLayer> layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
     }
 }
 
@@ -119,7 +135,7 @@ void TerrainLayer::addWCS()
         opt.identifier() = "DEP3ElevationPrototype";
 
         osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
     }
 }
 
@@ -141,6 +157,6 @@ void TerrainLayer::addTMS()
         osgEarth::Drivers::TMSOptions opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ElevationLayer> layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
     }
 }

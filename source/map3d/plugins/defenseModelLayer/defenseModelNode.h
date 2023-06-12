@@ -78,9 +78,9 @@ protected:
 protected:
     virtual void playExplosionEffect(float scale);
 public:
-    virtual void frameEvent() {}
-    virtual void mousePressEvent(QMouseEvent* event, bool onModel);
-    virtual void mouseMoveEvent(QMouseEvent* event, bool onModel);
+    virtual bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
+    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel);
+    virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel);
     //void select(bool val);
     //virtual void hover(bool val);
     virtual void updateColors();

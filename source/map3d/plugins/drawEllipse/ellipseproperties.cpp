@@ -170,16 +170,19 @@ EllipseProperties::EllipseProperties(Ellipse* ellipse, QQmlEngine *engine, UIHan
 
 void EllipseProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
 }
 
 void EllipseProperties::hide()
 {
+    if(mItem)
     mUiHandle->propertiesHide(mItem);
 }
 
 void EllipseProperties::setEllipse(Ellipse *ellipse)
 {
+    if(mItem)
     mEllipseProperties->setEllipse(ellipse);
 }
 

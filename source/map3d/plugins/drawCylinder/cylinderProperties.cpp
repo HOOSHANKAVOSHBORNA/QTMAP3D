@@ -146,16 +146,19 @@ CylinderProperties::CylinderProperties(Cylinder* Cylinder, QQmlEngine *qmlEngine
 
 void CylinderProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
 }
 
 void CylinderProperties::hide()
 {
+    if(mItem)
     mUiHandle->propertiesHide(mItem);
 }
 
 void CylinderProperties::setCylinder(Cylinder *Cylinder)
 {
+    if(mItem)
     mCylinderProperties->setCylinder(Cylinder);
 }
 
@@ -166,6 +169,7 @@ void CylinderProperties::setLocation(osgEarth::GeoPoint location)
     tmp.setY(static_cast<float>(location.y()));
     tmp.setZ(static_cast<float>(location.z()));
 
+    if(mItem)
     mCylinderProperties->setLocation(tmp);
 }
 

@@ -10,44 +10,42 @@ Visibility::Visibility(QObject *parent): PluginInterface(parent)
     Q_INIT_RESOURCE(visibility);
 }
 
-bool Visibility::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//bool Visibility::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    Q_UNUSED(engine)
+////    desc->pluginHasSideItem = true;
+////    desc->sideItemMenuBarTitle = "Layers";
+////    desc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
+////    desc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
+
+//    desc->toolboxItemsList.push_back(new ItemDesc{VISIBILITY, CATEGORY, "qrc:/resources/visibility.png", true, false, ""});
+
+//    return true;
+//}
+
+//void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if(CATEGORY == category && name == VISIBILITY)
+//    {
+//        if(checked)
+//        {
+//            //QObject::connect(mapItem(),&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
+//            mapItem()->addNode(mIconNode);
+//        }
+//        else
+//        {
+//            //QObject::disconnect(mapItem(),&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
+
+//            mapItem()->removeNode(mBackVisibilityNode);
+//            mapItem()->removeNode(mVisibilityNode);
+
+//            mapItem()->removeNode(mIconNode);
+//        }
+//    }
+//}
+
+bool Visibility::setup()
 {
-    Q_UNUSED(engine)
-//    desc->pluginHasSideItem = true;
-//    desc->sideItemMenuBarTitle = "Layers";
-//    desc->sideItemMenuBarIconUrl = "qrc:///test1plugin/resources/Layers.png";
-//    desc->sideItemUrl = "qrc:///test1plugin/Layers.qml";
-
-    desc->toolboxItemsList.push_back(new ItemDesc{VISIBILITY, CATEGORY, "qrc:/resources/visibility.png", true, false, ""});
-
-    return true;
-}
-
-void Visibility::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if(CATEGORY == category && name == VISIBILITY)
-    {
-        if(checked)
-        {
-            //QObject::connect(mMapItem,&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
-            mMapItem->addNode(mIconNode);
-        }
-        else
-        {
-            //QObject::disconnect(mMapItem,&MapItem::mouseEvent, this, &Visibility::onMouseEvent);
-
-            mMapItem->removeNode(mBackVisibilityNode);
-            mMapItem->removeNode(mVisibilityNode);
-
-            mMapItem->removeNode(mIconNode);
-        }
-    }
-}
-
-bool Visibility::setup(MapItem *mapItem,
-                       UIHandle *UIHandle)
-{
-    mMapItem = mapItem;
     mIconNode = makeIconNode();
     return true;
 }
@@ -57,8 +55,8 @@ void Visibility::onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos)
     if(event->button() == Qt::MouseButton::LeftButton && event->type() ==  QEvent::Type::MouseButtonPress)
     {
 
-        mMapItem->removeNode(mBackVisibilityNode);
-        mMapItem->removeNode(mVisibilityNode);
+        mapItem()->removeNode(mBackVisibilityNode);
+        mapItem()->removeNode(mVisibilityNode);
 
         geoPos.makeGeographic();
 //        mMainWindow->webSocket()->sendMessage(QString::fromStdString(geoPos.toString()));
@@ -66,7 +64,7 @@ void Visibility::onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos)
         mBackVisibilityNode = makeBackground(20000.0f);
         //osgEarth::GeoPoint  point(osgEarth::SpatialReference::get("wgs84"), 52.859, 35.461);
         mBackVisibilityNode->setPosition(geoPos);
-        mMapItem->addNode(mBackVisibilityNode);
+        mapItem()->addNode(mBackVisibilityNode);
         ///////////
         QVector<osg::Vec3d> vertices;
         vertices.push_back( osg::Vec3d(geoPos.x() - 0.089,geoPos.y() + 0.059, 0));
@@ -86,10 +84,10 @@ void Visibility::onMouseEvent(QMouseEvent* event, osgEarth::GeoPoint geoPos)
         vertices.push_back( osg::Vec3d(geoPos.x() - 0.119,geoPos.y() + 0.029, 0));
 
         mVisibilityNode = makepolygan(vertices);
-        mMapItem->addNode(mVisibilityNode);
+        mapItem()->addNode(mVisibilityNode);
 
         //Set view point------------------------------------------------------------------
-//        mMapItem->goToPosition(geoPos.x(), geoPos.y(), 100000);
+//        mapItem()->goToPosition(geoPos.x(), geoPos.y(), 100000);
     }
 
     if(event->type() ==  QEvent::Type::MouseMove)
@@ -106,7 +104,7 @@ osgEarth::Annotation::FeatureNode* Visibility::makepolygan(QVector<osg::Vec3d> v
         geom->push_back(vertices[i]);
     }
 
-    osg::ref_ptr<osgEarth::Features::Feature> feature = new osgEarth::Features::Feature(geom, mMapItem->getMapSRS());
+    osg::ref_ptr<osgEarth::Features::Feature> feature = new osgEarth::Features::Feature(geom, mapItem()->getMapSRS());
     feature->geoInterp() = osgEarth::GEOINTERP_RHUMB_LINE;
     osgEarth::Symbology::Style geomStyle;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::Green;
@@ -145,7 +143,7 @@ osgEarth::Annotation::ModelNode *Visibility::makeBackground(float radius)
     style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(geode);
 
     osg::ref_ptr<osgEarth::Annotation::ModelNode>  model;
-    model = new osgEarth::Annotation::ModelNode(mMapItem->getMapNode(), style);
+    model = new osgEarth::Annotation::ModelNode(mapItem()->getMapNode(), style);
 
     return model.release();
 }

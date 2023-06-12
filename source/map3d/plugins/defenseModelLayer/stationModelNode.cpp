@@ -1,10 +1,8 @@
 ﻿#include "stationModelNode.h"
-#include "systemModelNode.h"
-#include "truck.h"
-
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
 #include <osg/Material>
+#include <QPainter>
 #include "defenseModelNodeAutoScaler.h"
 #include "stationDataManager.h"
 
@@ -14,13 +12,13 @@ osg::ref_ptr<osg::Node> StationModelNode::mNode3DRef;
 
 
 StationModelNode::StationModelNode(DefenseModelLayer *defenseModelLayer, Station::Data *data, QObject *parent)
-	:DefenseModelNode(defenseModelLayer->mMapController, parent),
+    :DefenseModelNode(defenseModelLayer->mapItem(), parent),
 	  mDefenseModelLayer(defenseModelLayer),
       mData(data)
 {
-    connect(mDefenseModelLayer->mMapController, &MapItem::modeChanged, this, &StationModelNode::onModeChanged);
+    connect(mDefenseModelLayer->mapItem(), &MapItem::modeChanged, this, &StationModelNode::onModeChanged);
 
-	mIs3D = mDefenseModelLayer->mMapController->getMode();
+    mIs3D = mDefenseModelLayer->mapItem()->getMode();
 
     mRootNode = new osg::LOD;
     osgEarth::Symbology::Style  rootStyle;
@@ -140,7 +138,7 @@ StationModelNode::StationModelNode(DefenseModelLayer *defenseModelLayer, Station
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
 
-	mBackCircleNode = new Circle(mDefenseModelLayer->mMapController);
+    mBackCircleNode = new Circle(mDefenseModelLayer->mapItem());
 	mBackCircleNode->setRadius(6.5);
 	mBackCircleNode->setColor(osgEarth::Color(0.2f, 0.2f, 0.2f, 0.05f));
 	mBackCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.08));
@@ -162,12 +160,12 @@ StationModelNode::StationModelNode(DefenseModelLayer *defenseModelLayer, Station
 
 	mNode3D->addChild(mBackCircleNode);
 
-	mRangeCircle = new Circle(mDefenseModelLayer->mMapController);
+    mRangeCircle = new Circle(mDefenseModelLayer->mapItem());
 	mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.3f));
 	mRangeCircle->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 
 
-	mVisiblePolygon = new Polygon(mDefenseModelLayer->mMapController);
+    mVisiblePolygon = new Polygon(mDefenseModelLayer->mapItem());
 	mVisiblePolygon->setLineColor(osg::Vec4(1.0, 0.0, 0.0, 0.3f));
 	mVisiblePolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mVisiblePolygon->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
@@ -184,15 +182,15 @@ void StationModelNode::dataChanged()
 
 }
 
-void StationModelNode::frameEvent()
+bool StationModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     mStatusNode->getPositionAttitudeTransform()->setPosition(osg::Vec3( 0, 0, 0));
+    return false;
 }
 
-void StationModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
+bool StationModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel)
 {
-    DefenseModelNode::mousePressEvent(event, onModel);
-
+    return DefenseModelNode::mousePressEvent(ea, aa, onModel);
 }
 
 void StationModelNode::updateColors()
@@ -234,7 +232,7 @@ void StationModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
 	}
 	else
 	{
-//		mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+//		mDefenseModelLayer->mapItem()->untrackNode(getGeoTransform());
 //        onRangeButtonToggled(val);
 //        onVisibleButtonToggled(val);
 	}
@@ -242,7 +240,7 @@ void StationModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
 
 void StationModelNode::onGotoButtonClicked()
 {
-	mDefenseModelLayer->mMapController->goToPosition(getPosition(), 200);
+    mDefenseModelLayer->mapItem()->goToPosition(getPosition(), 200);
 }
 
 void StationModelNode::onRangeButtonToggled(bool check)
@@ -252,7 +250,7 @@ void StationModelNode::onRangeButtonToggled(bool check)
         mRangeCircle->setPosition(getPosition());
 		mRangeCircle->setRadius(osgEarth::Distance(mData->info.Radius, osgEarth::Units::METERS));
 
-		auto layer = mDefenseModelLayer->mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             if (group) {
@@ -262,7 +260,7 @@ void StationModelNode::onRangeButtonToggled(bool check)
     }
     else
     {
-		auto layer = mDefenseModelLayer->mMapController->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
         if (layer) {
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             if (group) {
@@ -280,7 +278,7 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         {
         mVisiblePolygon->clearPoints();
         osg::Vec3d worldPosition;
-		getPosition().toWorld(worldPosition, mDefenseModelLayer->mMapController->getMapNode()->getTerrain());
+        getPosition().toWorld(worldPosition, mDefenseModelLayer->mapItem()->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint;
 		double radius = mData->info.Radius;
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
@@ -298,11 +296,11 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         }
 
 
-		mDefenseModelLayer->mMapController->addNodeToLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
     }
     else
     {
-		mDefenseModelLayer->mMapController->removeNodeFromLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
     }
 }
 

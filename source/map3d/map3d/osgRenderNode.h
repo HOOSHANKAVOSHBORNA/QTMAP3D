@@ -11,6 +11,8 @@ class QInputEvent;
 class QKeyEvent;
 class QMouseEvent;
 class QWheelEvent;
+class QHoverEvent;
+
 namespace eveBIM
 {
     class ViewerWidget;
@@ -43,6 +45,7 @@ public:
     virtual void mouseReleaseEvent(QMouseEvent* event);
     virtual void mouseDoubleClickEvent(QMouseEvent* event);
     virtual void mouseMoveEvent(QMouseEvent* event);
+    virtual void hoverMoveEvent(QHoverEvent *event);
     virtual void wheelEvent(QWheelEvent* event);
 
     virtual void resize(int windowX, int windowY, int windowWidth, int windowHeight, float windowScale);

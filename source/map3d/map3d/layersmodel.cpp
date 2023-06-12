@@ -7,7 +7,7 @@
 LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
     QStandardItemModel(parent)
 {
-
+    mMapItem = mapItem;
         updateLayers(mapItem->getMapNode()->getMap());
         connect(mapItem, &MapItem::layerChanged,[this, mapItem](){
             updateLayers(mapItem->getMapNode()->getMap());
@@ -55,7 +55,6 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
 void LayersModel::updateLayers(osgEarth::Map *map)
 {
 //        beginResetModel();
-
 //        mLayersList.clear();
         this->clear();
 
@@ -64,9 +63,8 @@ void LayersModel::updateLayers(osgEarth::Map *map)
         osgEarth::LayerVector layers;
         map->getLayers(layers);
 
-        for(auto layer : layers) {
+        for(const auto& layer : layers) {
 //            mLayersList.push_back(layer);
-//            rootItem->appendRows(mLayersList);
             QStandardItem *lv1Items = new QStandardItem(QString(layer->getName().c_str()));
             rootItem->appendRow(lv1Items);
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
@@ -78,9 +76,6 @@ void LayersModel::updateLayers(osgEarth::Map *map)
                     lv1Items->appendRow(lv2Items);
                 }
             }
-
-
-
         }
 
 //        endResetModel();
@@ -95,17 +90,18 @@ void LayersModel::updateLayers(osgEarth::Map *map)
 
 void LayersModel::toggleLayerEnabled(int layerIndex)
 {
-//        if (layerIndex < mLayersList.size()) {
-//            auto layer = mLayersList[layerIndex];
-//            auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
-//            if (visibleLayer) {
-//                visibleLayer->setVisible(!visibleLayer->getVisible());
-//            } else {
-//                layer->setEnabled(!layer->getEnabled());
-//            }
-//            emit dataChanged(index(layerIndex),
-//                             index(layerIndex),
-//                             {LayerEnabledRole});
+//        qDebug() << layerIndex;
+//        if (layerIndex /*< mLayersList.size()*/) {
+            auto layer = mMapItem->getMapNode()->getMap()->getLayerAt(layerIndex);
+            auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+            if (visibleLayer) {
+                visibleLayer->setVisible(!visibleLayer->getVisible());
+            } else {
+                layer->setEnabled(!layer->getEnabled());
+            }
+            emit dataChanged(index(layerIndex,0),
+                             index(layerIndex,0),
+                             {LayerEnabledRole});
 //        }
 }
 
@@ -126,7 +122,6 @@ void LayersModel::toggleLayerEnabled(int layerIndex)
 
 //            break;
 //        }
-
 //        case LayerIndexRole:
 //        {
 //            return index.row();

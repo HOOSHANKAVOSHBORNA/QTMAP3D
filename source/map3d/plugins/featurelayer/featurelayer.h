@@ -11,16 +11,14 @@ class FeatureLayer : public PluginInterface
 public:
     FeatureLayer(QWidget *parent = nullptr);
     ~FeatureLayer()override{}
-    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    void onToolboxItemClicked(const QString &name, const QString &category) override;
-    bool setup(MapItem *mapItem,
-               UIHandle *UIHandle) override;
-private:
+//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    void onToolboxItemClicked(const QString &name, const QString &category) override;
+    bool setup() override;
+private slots:
     void addGDAL();
     void addWFS();
     void addArcGIS();
 private:
-    MapItem* mMapItem{nullptr};
 };
 
 #endif // FEATURELAYER_H

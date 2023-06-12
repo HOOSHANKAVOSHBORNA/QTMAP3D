@@ -15,7 +15,7 @@ AssignmentTableModel::AssignmentTableModel(AircraftDataManager *aircraftDatamana
     mSystemTableModel->setSystemInfos(mSystemDataManager->getSystemsData());
     mSystemTableModel->setAircraftInfos(mAircraftDataManager->getAircraftsData());
 
-    QQmlComponent *comp4 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
+    QQmlComponent *comp4 = new QQmlComponent(mDefenseModelLayer->qmlEngine());
     QObject::connect(comp4, &QQmlComponent::statusChanged, [this, comp4](){
         //        qDebug() << comp3->errorString();
 
@@ -39,7 +39,7 @@ AssignmentTableModel::AssignmentTableModel(AircraftDataManager *aircraftDatamana
             connect(mAircraftDataManager, &AircraftDataManager::assignmentChanged, mSystemTableModel, &SystemTableModel::updateAssignment);
             assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
             assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
-            mDefenseModelLayer->mUIHandle->lwAddTab("Assignments", assignTab);
+            mDefenseModelLayer->uiHandle()->lwAddTab("Assignments", assignTab);
         }
 
     });

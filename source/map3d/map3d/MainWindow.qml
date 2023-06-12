@@ -9,10 +9,32 @@ import Crystal 1.0
 
 
 CMainWindow {
-    CListWindow{
-        width: 100
-        height: 100
+
+    ToolboxView {
+        id: toolboxModel
+        model: toolbox
+//        anchors.top: parent.top
+//        anchors.left: parent.left
+        property real widgetsPositionFactor: 1
+        x: 0
+//        x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*2.0)))
+//        y: menuWidget.height + (widgetsMargins * 2.0)
+//        width: implicitWidth + (widgetsMargins * 2)
+//            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
+//        height: parent.height - menuWidget.height - (widgetsMargins * 3)/* - navigationWidget.height*/
+
     }
+    PropertyAnimation {
+        id: toolboxAnimation
+        target: toolboxModel
+        property: "widgetsPositionFactor"
+        from: toolboxModel.widgetsPositionFactor
+        to: toolboxModel.widgetsPositionFactor < 0.01 ? 1 : 0
+        duration: toolboxModel.widgetsPositionFactor == 0 ? 200 * Math.abs(1.0 - toolboxModel.widgetsPositionFactor) : 200 * Math.abs(toolboxModel.widgetsPositionFactor)
+
+        easing.type: Easing.OutQuint
+    }
+
     readonly property int       _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
@@ -53,7 +75,7 @@ CMainWindow {
     MapControllerItem {
         anchors.fill: parent
         objectName: "MainMap"
-
+        z: -1
     }
 
     //flags: Qt.FramelessWindowHint
@@ -97,11 +119,11 @@ CMainWindow {
 
 
 
-        ListElement {
-            title_text:   "Toolbox"
-            icon_url:     "qrc:///Resources/Toolbox.png"
-            side_itemurl: "qrc:/toolbox/Toolbox.qml"
-        }
+//        ListElement {
+//            title_text:   "Toolbox"
+//            icon_url:     "qrc:///Resources/Toolbox.png"
+//            side_itemurl: "qrc:/ToolboxView.qml"
+//        }
 
         ListElement {
             title_text:   "Location"
@@ -179,6 +201,9 @@ CMainWindow {
             onLayersButtonClicked: function() {
                 leftContainerHolder.menuLayersButtonClicked();
             }
+            onToolboxItemClicked: function() {
+                toolboxAnimation.start();
+            }
         }
 
         SideWidget {
@@ -200,9 +225,9 @@ CMainWindow {
                     item.itemClicked.connect(wnd.fileItemClicked);
                     break
                 case 1:
-                    item.listModel = wnd.toolboxModel;
-                    item.itemClicked.connect(wnd.toolboxItemClicked);
-                    item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
+//                    item.model = toolboxModel.model;
+//                    item.itemClicked.connect(wnd.toolboxItemClicked);
+//                    item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                     break;
 
 
@@ -376,6 +401,7 @@ CMainWindow {
                                                                           'itemCheckable' : itemDesc.checkable
                                                                       });
                 wnd.toolboxItemCreated(itemDesc);
+                print("kkkkkkkkkkkkkkkkkkk")
             } else {
                 return false;
             }
@@ -466,7 +492,7 @@ CMainWindow {
             widgetsShowAnimation.stop();
             widgetsHideAnimation.start();
             wnd.widgetsVisible = false;
-            infoo.hideItem()
+//            infoo.hideItem()
 
 
         } else {
@@ -508,7 +534,7 @@ CMainWindow {
         }
 
     function showRightContainer(item) {
-        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+//        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
         leftContainerHolder.showProp(item);
     }
 

@@ -2,11 +2,9 @@
 #define DRAWCIRCLE_H
 
 #include <osgEarthAnnotation/ModelNode>
-#include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/ImageOverlay>
 #include <osgEarthAnnotation/ImageOverlayEditor>
-#include "mapItem.h"
 #include "plugininterface.h"
 #include "circle.h"
 #include "circleproperties.h"
@@ -21,15 +19,15 @@ class DrawCircle : public PluginInterface
 
 public:
     explicit DrawCircle(QObject *parent = nullptr);
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    bool setup(MapItem *mapController,
-               UIHandle *UIHandle) override;
+//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+    bool setup() override;
 
     virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
     virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 
-
+private slots:
+    void onCircleItemCheck(bool check);
 private:
     bool startDraw(const osgGA::GUIEventAdapter& event);
     bool finishDrawing(const osgGA::GUIEventAdapter& event);
@@ -38,12 +36,9 @@ private:
     osgEarth::Annotation::PlaceNode* makeIconNode();
 
 private:
-    MapItem* mMapcontroller {nullptr};
-    QQmlEngine* mQmlEngine {nullptr};
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     Circle* mCircle{nullptr};
-    UIHandle* mUiHandle{nullptr};
     CircleProperties* mCircleProperties{nullptr};
 
 

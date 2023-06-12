@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 //    qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
 //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
 
 //    QQmlApplicationEngine engine;

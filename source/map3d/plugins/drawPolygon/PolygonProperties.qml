@@ -2,7 +2,7 @@ import QtQuick 2.13
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
-import QtQuick.Dialogs 1.2
+import QtQuick.Dialogs
 import Crystal 1.0
 
 Item {
@@ -141,7 +141,7 @@ Item {
                                     id:  fillColorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
-                                        fillColor = fillColorDialog.color
+                                        fillColor = fillColorDialog.selectedColor
                                         polygonProperties.fillcolor = fillColor.toString()
                                     }
 
@@ -254,7 +254,7 @@ Item {
                                     title: "Please choose a color"
                                     onAccepted: {
                                         //                                    lineColor = lineColorDialog.color
-                                        lineColor = lineColorDialog.color
+                                        lineColor = lineColorDialog.selectedColor
                                         polygonProperties.linecolor = lineColor
                                     }
 

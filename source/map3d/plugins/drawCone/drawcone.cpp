@@ -6,54 +6,56 @@ const QString CONE = "Cone";
 
 DrawCone::DrawCone(QObject *parent): PluginInterface(parent)
 {
-}
-
-bool DrawCone::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
-    mQmlEngine = engine;
     qmlRegisterType<ConePropertiesModel>("Crystal", 1, 0, "ConeProperties");
-
-    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true,  false, ""});
-
-    return true;
 }
 
-bool DrawCone::setup(MapItem *mapItem, UIHandle *uiHandle)
+//bool DrawCone::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<ConePropertiesModel>("Crystal", 1, 0, "ConeProperties");
+
+//    desc->toolboxItemsList.push_back(new ItemDesc{CONE, CATEGORY, "qrc:/resources/cone.png", true,  false, ""});
+
+//    return true;
+//}
+
+bool DrawCone::setup()
 {
-    mUiHandle = uiHandle;
-    mMapcontroller = mapItem;
+    auto toolboxItem =  new ToolboxItem{CONE, CATEGORY, "qrc:/resources/circle.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCone::onConeItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *circleLayer = new osgEarth::ModelLayer();
     circleLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(circleLayer);
+    mapItem()->addLayer(circleLayer);
 
     return true;
 }
 
-void DrawCone::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == CONE) {
-            if (checked) {
-                mEnterConeZone = true;
-                mDrawingState = DrawingState::START;
-                mConeProperties = new ConeProperties(mCone, mQmlEngine, mUiHandle, mMapcontroller);
-                mConeProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//void DrawCone::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
+//{
+//    if (CATEGORY == category) {
+//        if (name == CONE) {
+//            if (checked) {
+//                mEnterConeZone = true;
+//                mDrawingState = DrawingState::START;
+//                mConeProperties = new ConeProperties(mCone, qmlEngine(), uiHandle(), mapItem());
+//                mConeProperties->show();
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
-            }
-            else {
-                mEnterConeZone = false;
-                mDrawingState = DrawingState::FINISH;
-                mCone = nullptr;
-                mMapcontroller->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
-                mConeProperties->hide();
-            }
-        }
-    }
-}
+//            }
+//            else {
+//                mEnterConeZone = false;
+//                mDrawingState = DrawingState::FINISH;
+//                mCone = nullptr;
+//                mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//                mConeProperties->hide();
+//            }
+//        }
+//    }
+//}
 
 bool DrawCone::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
@@ -79,10 +81,29 @@ bool DrawCone::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
 bool DrawCone::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (mEnterConeZone) {
-        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(ea.getX(), ea.getY());
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
     }
     return false;
+}
+
+void DrawCone::onConeItemCheck(bool check)
+{
+    if (check) {
+        mEnterConeZone = true;
+        mDrawingState = DrawingState::START;
+        mConeProperties = new ConeProperties(mCone, qmlEngine(), uiHandle(), mapItem());
+        mConeProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterConeZone = false;
+        mDrawingState = DrawingState::FINISH;
+        mCone = nullptr;
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+        mConeProperties->hide();
+    }
 }
 
 bool DrawCone::startDraw(const osgGA::GUIEventAdapter &event)
@@ -92,13 +113,13 @@ bool DrawCone::startDraw(const osgGA::GUIEventAdapter &event)
 
     mDrawingState = DrawingState::DRAWING;
     osg::Vec3d worldPos;
-    mMapcontroller->screenToWorld(event.getX(), event.getY(), worldPos);
+    mapItem()->screenToWorld(event.getX(), event.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
-    mCone->setPosition(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
+    mCone->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
 
-    mConeProperties->setLocation(osgEarth::GeoPoint(mMapcontroller->getMapSRS(), geoPos.x(), geoPos.y()));
-    mMapcontroller->addNodeToLayer(mCone, DRAW_LAYER_NAME);
+    mConeProperties->setLocation(osgEarth::GeoPoint(mapItem()->getMapSRS(), geoPos.x(), geoPos.y()));
+    mapItem()->addNodeToLayer(mCone, DRAW_LAYER_NAME);
     return true;
 }
 
@@ -114,7 +135,7 @@ bool DrawCone::finishDrawing(const osgGA::GUIEventAdapter& event)
 bool DrawCone::cancelDrawing(const osgGA::GUIEventAdapter &event)
 {
     if(mDrawingState == DrawingState::DRAWING){
-    mMapcontroller->removeNodeFromLayer(mCone, DRAW_LAYER_NAME);
+    mapItem()->removeNodeFromLayer(mCone, DRAW_LAYER_NAME);
     mCone = nullptr;
     mConeProperties->setCone(mCone);
     mDrawingState = DrawingState::START;

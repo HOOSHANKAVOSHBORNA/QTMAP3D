@@ -6,7 +6,6 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
-#include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
 #include <QQmlEngine>
@@ -18,24 +17,27 @@
 
 #define DRAW_LAYER_NAME "Line"
 
-class drawLine: public PluginInterface
+class DrawLine: public PluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawline.json")
     Q_INTERFACES(PluginInterface)
 
 public:
-    explicit drawLine(QWidget *parent = nullptr);
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
-    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    bool setup(MapItem *mapItem,
-               UIHandle *UIHandle) override;
+    explicit DrawLine(QWidget *parent = nullptr);
+//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
+//    virtual void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
+    bool setup() override;
 
 protected:
     virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
     virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-
+//    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+private slots:
+    void onLineItemCheck(bool check);
+    void onRulerItemCheck(bool check);
+    void onHeightItemCheck(bool check);
+    void onSlopeItemCheck(bool check);
 private:
     void startDrawLine();
     void startDrawMeasureHeight();
@@ -49,8 +51,6 @@ private:
 
 
 private:
-    MapItem* mMapItem{nullptr};
-    QQmlEngine *mQmlEngine = nullptr;
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     enum class Type{NONE, LINE, RULER, HEIGHT, SLOPE};
@@ -58,7 +58,6 @@ private:
     LineNode* mLine{nullptr};
     MeasureHeight* mMeasureHeight{nullptr};
     LineProperties *mLineProperties = nullptr;
-    UIHandle *muiHandle;
     bool mEnterLineZone{false};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<osg::Image> mIcon;

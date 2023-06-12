@@ -1,8 +1,6 @@
 ﻿#include "aircraftModelNode.h"
 #include "contextMenu.h"
 #include "aircraftInfoItem.h"
-#include "draw.h"
-#include "systemModelNode.h"
 #include "defenseModelLayer.h"
 #include "aircraftDataManager.h"
 #include "systemDataManager.h"
@@ -143,15 +141,15 @@ VisualData::Image2D VisualData::get2DImage(AircraftInfo::AircraftType type, Airc
 }
 //-------------------------------------------------------------------------------------------
 AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const Aircraft::Data& data, QObject *parent)
-	:DefenseModelNode(defenseModelLayer->mMapController, parent)
+    :DefenseModelNode(defenseModelLayer->mapItem(), parent)
 {
 	//--init----------------------------------------------------------------------------------------
 	mData = &data;
 	mDefenseModelLayer = defenseModelLayer;
-	mIs3D = mDefenseModelLayer->mMapController->getMode();
+    mIs3D = mDefenseModelLayer->mapItem()->getMode();
 	mType = mData->info.Type;
     mIdentification = mData->info.Identification;
-    connect(mDefenseModelLayer->mMapController, &MapItem::modeChanged, this, &AircraftModelNode::onModeChanged);
+    connect(mDefenseModelLayer->mapItem(), &MapItem::modeChanged, this, &AircraftModelNode::onModeChanged);
 
 	//----------------------------------------------------------------------------------------------
 	this->setCullingActive(false);
@@ -218,13 +216,13 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 	mSmoke->setUseLocalParticleSystem(false);
 
 	//--lines-----------------------------------------------------------------------
-	mRouteLine = new LineNode(defenseModelLayer->mMapController);
+    mRouteLine = new LineNode(defenseModelLayer->mapItem());
 	mRouteLine->setPointVisible(false);
 	mRouteLine->setTessellation(10);
 	mRouteLine->setColor(osgEarth::Color::Purple);
 	mRouteLine->setWidth(5);
 
-	mLatestPointLine = new LineNode(defenseModelLayer->mMapController);
+    mLatestPointLine = new LineNode(defenseModelLayer->mapItem());
 	mLatestPointLine->setPointVisible(true);
 	mLatestPointLine->setPointColor(osgEarth::Color::Blue);
 	mLatestPointLine->setColor(osgEarth::Color::Purple);
@@ -232,7 +230,7 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 	mLatestPointLine->setPointWidth(15);
 	mLatestPointLine->setSmooth(true);
 
-	mTempLine = new LineNode(defenseModelLayer->mMapController);
+    mTempLine = new LineNode(defenseModelLayer->mapItem());
 	mTempLine->setPointVisible(false);
 	mTempLine->setColor(osgEarth::Color::Purple);
 	mTempLine->setWidth(5);
@@ -241,11 +239,11 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
 AircraftModelNode::~AircraftModelNode()
 {
 //	qDebug()<<"~tn"<<mData->info.TN;
-//	mDefenseModelLayer->mMapController->untrackNode(getGeoTransform());
+//	mDefenseModelLayer->mapItem()->untrackNode(getGeoTransform());
 
-	mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-	mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-	mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
 
 	delete mRenderStatusImage;
 }
@@ -253,7 +251,7 @@ AircraftModelNode::~AircraftModelNode()
 void AircraftModelNode::flyTo(osgEarth::GeoPoint posGeo, double heading, double /*speed*/)
 {
 
-	posGeo.transformInPlace(mDefenseModelLayer->mMapController->getMapSRS());
+    posGeo.transformInPlace(mDefenseModelLayer->mapItem()->getMapSRS());
 	osg::Vec3d currentPosW;
 	getPosition().toWorld(currentPosW);
 
@@ -348,8 +346,8 @@ const Aircraft::Data& AircraftModelNode::getData() const
 //void AircraftModelNode::select()
 //{
 //	setSelectionMode(SELECTED);
-//	double range = mDefenseModelLayer->mMapController->getViewpoint().range()->getValue();
-//	mDefenseModelLayer->mMapController->goToPosition(getPosition(), range, 0);
+//	double range = mDefenseModelLayer->mapItem()->getViewpoint().range()->getValue();
+//	mDefenseModelLayer->mapItem()->goToPosition(getPosition(), range, 0);
 //}
 
 void AircraftModelNode::setSelectionMode(SelectionMode sm)
@@ -361,10 +359,10 @@ void AircraftModelNode::setSelectionMode(SelectionMode sm)
 	}
 	else
 	{
-		mDefenseModelLayer->mMapController->untrack();
-		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-		//        mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->untrack();
+        //        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        //        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        //        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
 		if(mAircraftInfoItem)
 			mAircraftInfoItem->setTrackOff();
 	}
@@ -374,9 +372,9 @@ void AircraftModelNode::setSelectionMode(SelectionMode sm)
 	}
 }
 
-void AircraftModelNode::frameEvent()
+bool AircraftModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-	mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mDefenseModelLayer->mMapController->getViewpoint().getHeading())
+    mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mDefenseModelLayer->mapItem()->getViewpoint().getHeading())
 												 + mData->info.Heading),
 								  -osg::Z_AXIS));
 
@@ -386,7 +384,7 @@ void AircraftModelNode::frameEvent()
 		osg::Vec3d wordPos;
 		getPosition().toWorld(wordPos);
 		float x, y;
-		mDefenseModelLayer->mMapController->worldToScreen(wordPos,x, y);
+        mDefenseModelLayer->mapItem()->worldToScreen(wordPos,x, y);
 		mCurrentContextMenu->updatePosition(static_cast<int>(x), static_cast<int>(y));
 	}
 
@@ -397,36 +395,39 @@ void AircraftModelNode::frameEvent()
 	if(mTempLine->getSize() > 1)
 		mTempLine->removePoint();
 	mTempLine->addPoint(getPosition());
+
+    return false;
 }
 
-void AircraftModelNode::mousePressEvent(QMouseEvent *event, bool onModel)
+bool AircraftModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel)
 {
-
-	DefenseModelNode::mousePressEvent(event, onModel);
+    bool res = false;
+    res = DefenseModelNode::mousePressEvent(ea, aa, onModel);
 //	if(event->button() == Qt::LeftButton)
 //	{
 //		onLeftButtonClicked(onModel);
 //		if(onModel)
 //			event->accept();
 //	}
-	if(event->button() == Qt::RightButton) {
-		mCurrentContextMenu = new ContextMenu(mDefenseModelLayer->mQmlEngine, mDefenseModelLayer->mUIHandle, this);
-		for(auto detectSystem: mData->info.DetectionSystems)
-			mCurrentContextMenu->addRow(detectSystem);
+    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::RIGHT_MOUSE_BUTTON) {
+//        mCurrentContextMenu = new ContextMenu(mDefenseModelLayer->qmlEngine(), mDefenseModelLayer->uiHandle(), this);
+//		for(auto detectSystem: mData->info.DetectionSystems)
+//			mCurrentContextMenu->addRow(detectSystem);
 
-		connect(mCurrentContextMenu->getModel(), &ContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
-		osg::Vec3d wordPos;
-		getPosition().toWorld(wordPos);
-		float x, y;
-		mDefenseModelLayer->mMapController->worldToScreen(wordPos,x, y);
-		mCurrentContextMenu->show(static_cast<int>(x), static_cast<int>(y));
-		event->accept();
+//		connect(mCurrentContextMenu->getModel(), &ContextMenumodel::itemClicked, this, &AircraftModelNode::onContextmenuItemClicked);
+//		osg::Vec3d wordPos;
+//		getPosition().toWorld(wordPos);
+//		float x, y;
+//        mDefenseModelLayer->mapItem()->worldToScreen(wordPos,x, y);
+//		mCurrentContextMenu->show(static_cast<int>(x), static_cast<int>(y));
+//        return true;
 	}
 	if(!onModel && mCurrentContextMenu){
 		mCurrentContextMenu->hideMenu();
 		mCurrentContextMenu = nullptr;
 	}
 
+    return res;
 }
 
 void AircraftModelNode::updateColors()
@@ -446,22 +447,22 @@ void AircraftModelNode::updateColors()
 void AircraftModelNode::onGotoButtonClicked()
 {
 	//    goOnTrack();
-	mDefenseModelLayer->mMapController->goToPosition(getPosition(), 500, 0);
+    mDefenseModelLayer->mapItem()->goToPosition(getPosition(), 500, 0);
 	if(mIsTrack)
-		mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform(), 400);
+        mDefenseModelLayer->mapItem()->setTrackNode(getGeoTransform(), 400);
 }
 
 void AircraftModelNode::onRouteButtonToggled(bool check)
 {
 	if(check)
 	{
-		mDefenseModelLayer->mMapController->addNodeToLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-		mDefenseModelLayer->mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
 	}
 	else
 	{
-		mDefenseModelLayer->mMapController->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-		mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
 	}
 
 }
@@ -469,13 +470,13 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 void AircraftModelNode::onLatestPointsToggled(bool check) {
 	if (check)
 	{
-		mDefenseModelLayer->mMapController->addNodeToLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-		mDefenseModelLayer->mMapController->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
 	}
 	else
 	{
-		mDefenseModelLayer->mMapController->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-		mDefenseModelLayer->mMapController->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
 	}
 }
 
@@ -484,9 +485,9 @@ void AircraftModelNode::onTrackButtonToggled(bool check)
 	//std::cout << check << std::endl;
 	mIsTrack = check;
 	if(check)
-		mDefenseModelLayer->mMapController->setTrackNode(getGeoTransform(), 400);
+        mDefenseModelLayer->mapItem()->setTrackNode(getGeoTransform(), 400);
 	else
-		mDefenseModelLayer->mMapController->untrack();
+        mDefenseModelLayer->mapItem()->untrack();
 }
 
 void AircraftModelNode::onModeChanged(bool is3DView)
@@ -598,23 +599,23 @@ void AircraftModelNode::addEffect(double emitterDuration)
 	mFire->setEmitterDuration(emitterDuration);
 	mFire->setParticleDuration(0.2);
 	osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());// for textures or lighting
-	mDefenseModelLayer->mMapController->addNodeToLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->addNodeToLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
 	//add smoke----------------------------------------------------------------------------------------------------
 	osgEarth::Registry::shaderGenerator().run(mSmoke);// for textures or lighting
 	getPositionAttitudeTransform()->addChild(mSmoke);
 	mSmoke->setEmitterDuration(emitterDuration);
 	mSmoke->setParticleDuration(5);
 	osgEarth::Registry::shaderGenerator().run(mSmoke->getParticleSystem());// for textures or lighting
-	mDefenseModelLayer->mMapController->addNodeToLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->addNodeToLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
 }
 
 void AircraftModelNode::removeEffect()
 {
 	//remove fire---------------------------------------------
-	mDefenseModelLayer->mMapController->removeNodeFromLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
 	getPositionAttitudeTransform()->removeChild(mFire);
 	//remove smoke--------------------------------------------
-	mDefenseModelLayer->mMapController->removeNodeFromLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
 	getPositionAttitudeTransform()->removeChild(mSmoke);
 }
 

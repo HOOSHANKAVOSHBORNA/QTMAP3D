@@ -154,7 +154,7 @@ StationTable::StationTable(StationDataManager *stationDataManager, DefenseModelL
     mStationDataManager(stationDataManager),
     mDefenseModelLayer(defenseModelLayer)
 {
-    QQmlComponent *comp2 = new QQmlComponent(mDefenseModelLayer->mQmlEngine);
+    QQmlComponent *comp2 = new QQmlComponent(mDefenseModelLayer->qmlEngine());
     QObject::connect(comp2, &QQmlComponent::statusChanged, [this, comp2](){
         if (comp2->status() == QQmlComponent::Ready) {
             QQuickItem *stationTab = static_cast<QQuickItem*>(comp2->create(nullptr));
@@ -173,7 +173,7 @@ StationTable::StationTable(StationDataManager *stationDataManager, DefenseModelL
 
 
             stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
-            mDefenseModelLayer->mUIHandle->lwAddTab("Stations", stationTab);
+            mDefenseModelLayer->uiHandle()->lwAddTab("Stations", stationTab);
         }
 
     });

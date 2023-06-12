@@ -35,90 +35,89 @@ const QString IMAGE_OVERLAY = "Add Image Overlay";
 
 DrawImage::DrawImage(QObject *parent): PluginInterface(parent)
 {
-
-
-
-}
-
-bool DrawImage::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-{
-
-    mQmlEngine = engine;
     qmlRegisterType<ImagePropertiesModel>("Crystal", 1, 0, "ImageProperties");
-    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true,  false, ""});
-    return true;
 }
 
+//bool DrawImage::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    qmlRegisterType<ImagePropertiesModel>("Crystal", 1, 0, "ImageProperties");
+//    desc->toolboxItemsList.push_back(new ItemDesc{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true,  false, ""});
+//    return true;
+//}
 
-bool DrawImage::setup(MapItem *mapItem, UIHandle *uIHandle)
+
+bool DrawImage::setup()
 {
-    mUiHandle = uIHandle;
-    mMapcontroller = mapItem;
+    auto toolboxItem =  new ToolboxItem{IMAGE_OVERLAY, CATEGORY, "qrc:/resources/image.png", true,};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawImage::onImageItemCheck);
+    toolbox()->addItem(toolboxItem);
+
     mIconNode = makeIconNode();
-    osgEarth::GLUtils::setGlobalDefaults(mMapcontroller->getViewer()->getCamera()->getOrCreateStateSet());
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     osgEarth::ModelLayer *drawImageLayer = new osgEarth::ModelLayer();
     drawImageLayer->setName(DRAW_LAYER_NAME);
-    mMapcontroller->addLayer(drawImageLayer);
+    mapItem()->addLayer(drawImageLayer);
     return true;
 }
 
 
-void DrawImage::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
-{
-    if (CATEGORY == category) {
-        if (name == IMAGE_OVERLAY) {
-            if (checked) {
-                mEnterImageZone = true;
-                mDrawingState = DrawingState::START;
-                loadImage();
-                mImageProperties = new ImageProperties(mImageOverlay, mQmlEngine, mUiHandle, mMapcontroller);
-                mImageProperties->show();
-                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
-
-            }
-            else {
-                mEnterImageZone = false;
-                mDrawingState = DrawingState::FINISH;
-//                mMapcontroller->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
-                mMapcontroller->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-//                mMapcontroller->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
-                mImageProperties->hide();
-                mMapcontroller->removeNodeFromLayer(mIconNode,DRAW_LAYER_NAME);
-            }
-        }
-    }
-}
-
-//void DrawImage::mousePressEvent(QMouseEvent *event)
+//void DrawImage::onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked)
 //{
+//    if (CATEGORY == category) {
+//        if (name == IMAGE_OVERLAY) {
+//            if (checked) {
+//                mEnterImageZone = true;
+//                mDrawingState = DrawingState::START;
+//                loadImage();
+//                mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
+//                mImageProperties->show();
+//                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
-
-//    if (mEnterImageZone) {
-//        if (event->button() == Qt::MouseButton::LeftButton) {
-//            if (mDrawingState == DrawingState::START) {
-//                mDrawingState = DrawingState::DRAWING;
-//                startDraw(event);
-//                finishDrawing(event);
-//                event->accept();
+//            }
+//            else {
+//                mEnterImageZone = false;
+//                mDrawingState = DrawingState::FINISH;
+////                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//                mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+////                mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+//                mImageProperties->hide();
+//                mapItem()->removeNodeFromLayer(mIconNode,DRAW_LAYER_NAME);
 //            }
 //        }
-//        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
-//            cancelDrawing(event);
-//        }
-//        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-//            finishDrawing(event);
-//        }
 //    }
 //}
 
-//void DrawImage::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (mEnterImageZone) {
-//        osgEarth::GeoPoint geoPos = mMapcontroller->screenToGeoPoint(event->x(), event->y());
-//        mIconNode->setPosition(geoPos);
-//    }
-//}
+bool DrawImage::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    bool res = false;
+    if (mEnterImageZone) {
+        if (ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON) {
+            if (mDrawingState == DrawingState::START) {
+                mDrawingState = DrawingState::DRAWING;
+                startDraw(ea);
+                finishDrawing(ea);
+                res = true;
+            }
+        }
+        else if (ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::RIGHT_MOUSE_BUTTON && mDrawingState == DrawingState::START) {
+            res = cancelDrawing(ea);
+        }
+        else if (ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::MIDDLE_MOUSE_BUTTON && mDrawingState == DrawingState::DRAWING) {
+            res = finishDrawing(ea);
+        }
+    }
+    return res;
+}
+
+bool DrawImage::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterImageZone) {
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+        mIconNode->setPosition(geoPos);
+    }
+    return false;
+}
 
 
 void DrawImage::loadImage()
@@ -127,19 +126,41 @@ void DrawImage::loadImage()
     imageAddr = osgDB::readImageFile(fileDialog.toLocalFile().toStdString());
 }
 
-void DrawImage::startDraw(QMouseEvent *event)
+void DrawImage::onImageItemCheck(bool check)
+{
+    if (check) {
+        mEnterImageZone = true;
+        mDrawingState = DrawingState::START;
+        loadImage();
+        mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
+        mImageProperties->show();
+        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+
+    }
+    else {
+        mEnterImageZone = false;
+        mDrawingState = DrawingState::FINISH;
+        //                mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+        mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+        //                mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+        mImageProperties->hide();
+        mapItem()->removeNodeFromLayer(mIconNode,DRAW_LAYER_NAME);
+    }
+}
+
+bool DrawImage::startDraw(const osgGA::GUIEventAdapter &ea)
 {
 
     osg::Vec3d worldPos;
 
-    mMapcontroller->screenToWorld(event->x(), event->y(), worldPos);
+    mapItem()->screenToWorld(ea.getX(), ea.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
-    geoPos.fromWorld(mMapcontroller->getMapSRS(), worldPos);
+    geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
 
     if (imageAddr)
     {
         mDrawingState = DrawingState::START;
-        mImageOverlay = new osgEarth::Annotation::ImageOverlay(mMapcontroller->getMapNode(), imageAddr);
+        mImageOverlay = new osgEarth::Annotation::ImageOverlay(mapItem()->getMapNode(), imageAddr);
         mImageOverlay->setCenter(geoPos.x(),geoPos.y());
         mImageProperties->setImage(mImageOverlay);
         mImageProperties->setLocation(mImageOverlay->getCenter());
@@ -147,39 +168,39 @@ void DrawImage::startDraw(QMouseEvent *event)
         mImageProperties->setTR(mImageOverlay->getUpperRight());
         mImageProperties->setBR(mImageOverlay->getLowerRight());
         mImageProperties->setBL(mImageOverlay->getLowerLeft());
-        mMapcontroller->addNodeToLayer(mImageOverlay, DRAW_LAYER_NAME);
+        mapItem()->addNodeToLayer(mImageOverlay, DRAW_LAYER_NAME);
 //        mImgOvlEditor = new osgEarth::Annotation::ImageOverlayEditor(mImageOverlay, false);
-//        mMapcontroller->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+//        mapItem()->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
 
     }
+    return false;
 }
 
-void DrawImage::finishDrawing(QMouseEvent *event)
+bool DrawImage::finishDrawing(const osgGA::GUIEventAdapter &ea)
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mDrawingState = DrawingState::START;
-        event->accept();
+        return true;
         mImageProperties->setImage(mImageOverlay);
-//        mMapcontroller->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
-//        mMapcontroller->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+//        mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
+//        mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
         mImageOverlay = nullptr;
-
-
     }
+    return false;
 }
 
-void DrawImage::cancelDrawing(QMouseEvent *event)
+bool DrawImage::cancelDrawing(const osgGA::GUIEventAdapter &ea)
 {
 
-//    mMapcontroller->addNodeToLayer(mImage, DRAW_LAYER_NAME);
+//    mapItem()->addNodeToLayer(mImage, DRAW_LAYER_NAME);
     mImageProperties->setImage(mImageOverlay);
     mDrawingState = DrawingState::START;
-    mMapcontroller->removeNodeFromLayer(mImageOverlay , DRAW_LAYER_NAME);
-//    mMapcontroller->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
+    mapItem()->removeNodeFromLayer(mImageOverlay , DRAW_LAYER_NAME);
+//    mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
     mImageOverlay = nullptr;
 //    mImgOvlEditor = nullptr;
 
-    event->accept();
+    return false;
 }
 
 osgEarth::Annotation::PlaceNode *DrawImage::makeIconNode()

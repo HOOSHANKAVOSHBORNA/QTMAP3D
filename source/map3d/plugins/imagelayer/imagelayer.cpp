@@ -27,46 +27,66 @@ ImageLayer::ImageLayer(QWidget *parent)
     : PluginInterface(parent)
 {
 }
-bool ImageLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//bool ImageLayer::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
+//{
+//    Q_UNUSED(engine)
+//    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false});
+//    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false});
+//    desc->toolboxItemsList.push_back(new ItemDesc{WMS, CATEGORY, "qrc:/resources/wms.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "qrc:/resources/tms.png", false, false, ""});
+//    desc->toolboxItemsList.push_back(new ItemDesc{XYZ, CATEGORY, "qrc:/resources/xyz.png", false, false, ""});
+
+//    return true;
+//}
+
+//void ImageLayer::onToolboxItemClicked(const QString &name, const QString &category)
+//{
+//    if(CATEGORY == category && name == GDAL)
+//    {
+//        addGDAL();
+//    }
+//    if(CATEGORY == category && name == ARCGIS)
+//    {
+//        addArcGIS();
+//    }
+//    if(CATEGORY == category && name == WMS)
+//    {
+//        addWMS();
+//    }
+//    if(CATEGORY == category && name == TMS)
+//    {
+//        addTMS();
+//    }
+//    if(CATEGORY == category && name == XYZ)
+//    {
+//        addXYZ();
+//    }
+//}
+
+bool ImageLayer::setup()
 {
-    Q_UNUSED(engine)
-    desc->toolboxItemsList.push_back(new ItemDesc{GDAL, CATEGORY, "qrc:/resources/gdal.png", false});
-    desc->toolboxItemsList.push_back(new ItemDesc{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false});
-    desc->toolboxItemsList.push_back(new ItemDesc{WMS, CATEGORY, "qrc:/resources/wms.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{TMS, CATEGORY, "qrc:/resources/tms.png", false, false, ""});
-    desc->toolboxItemsList.push_back(new ItemDesc{XYZ, CATEGORY, "qrc:/resources/xyz.png", false, false, ""});
+    auto toolboxItemGDAL =  new ToolboxItem{GDAL, CATEGORY, "qrc:/resources/gdal.png", false};
+    QObject::connect(toolboxItemGDAL, &ToolboxItem::itemClicked, this, &ImageLayer::addGDAL);
+    toolbox()->addItem(toolboxItemGDAL);
+
+    auto toolboxItemArcGIS =  new ToolboxItem{ARCGIS, CATEGORY, "qrc:/resources/arcgis.png", false};
+    QObject::connect(toolboxItemArcGIS, &ToolboxItem::itemClicked, this, &ImageLayer::addArcGIS);
+    toolbox()->addItem(toolboxItemArcGIS);
+
+    auto toolboxItemWMS =  new ToolboxItem{WMS, CATEGORY, "qrc:/resources/wms.png", false};
+    QObject::connect(toolboxItemWMS, &ToolboxItem::itemClicked, this, &ImageLayer::addWMS);
+    toolbox()->addItem(toolboxItemWMS);
+
+    auto toolboxItemTMS =  new ToolboxItem{TMS, CATEGORY, "qrc:/resources/tms.png", false};
+    QObject::connect(toolboxItemTMS, &ToolboxItem::itemClicked, this, &ImageLayer::addTMS);
+    toolbox()->addItem(toolboxItemTMS);
+
+    auto toolboxItemXYZ =  new ToolboxItem{XYZ, CATEGORY, "qrc:/resources/xyz.png", false};
+    QObject::connect(toolboxItemXYZ, &ToolboxItem::itemClicked, this, &ImageLayer::addXYZ);
+    toolbox()->addItem(toolboxItemXYZ);
+
 
     return true;
-}
-
-void ImageLayer::onToolboxItemClicked(const QString &name, const QString &category)
-{
-    if(CATEGORY == category && name == GDAL)
-    {
-        addGDAL();
-    }
-    if(CATEGORY == category && name == ARCGIS)
-    {
-        addArcGIS();
-    }
-    if(CATEGORY == category && name == WMS)
-    {
-        addWMS();
-    }
-    if(CATEGORY == category && name == TMS)
-    {
-        addTMS();
-    }
-    if(CATEGORY == category && name == XYZ)
-    {
-        addXYZ();
-    }
-}
-
-bool ImageLayer::setup(MapItem *mapItem,
-                       UIHandle *UIHandle)
-{
-    mMapItem = mapItem;
 }
 
 void ImageLayer::addXYZ()
@@ -107,7 +127,7 @@ void ImageLayer::addXYZ()
             auto imageLayerOptions = osgEarth::ImageLayerOptions(nodeName, opt);
             osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
             layer->setName(it->toStdString());
-            mMapItem->addLayer(layer);
+            mapItem()->addLayer(layer);
 
         }
 
@@ -133,7 +153,7 @@ void ImageLayer::addArcGIS()
         opt.url() = nodeName;
 
         osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
     }
 }
 
@@ -148,7 +168,7 @@ void ImageLayer::addGDAL()
         osgEarth::Drivers::GDALOptions  opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
     }
 }
 
@@ -170,7 +190,7 @@ void ImageLayer::addTMS()
         osgEarth::Drivers::TMSOptions opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mMapItem->addLayer(layer);
+        mapItem()->addLayer(layer);
     }
 }
 
@@ -311,7 +331,7 @@ void ImageLayer::addWMS()
             opt.profile()     = { "EPSG:4326" };
 
             osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-            mMapItem->addLayer(layer);
+            mapItem()->addLayer(layer);
 
         }
     }

@@ -2,8 +2,6 @@
 #define AIRCRAFTMODELNODE_H
 
 #include "defenseModelNode.h"
-#include "mapItem.h"
-#include "plugininterface.h"
 #include "aircraftInfoItem.h"
 #include "linenode.h"
 #include "contextMenu.h"
@@ -61,8 +59,8 @@ public:
 protected:
 	void setSelectionMode(SelectionMode sm) override;
 public:
-    void frameEvent()override;
-    void mousePressEvent(QMouseEvent *event, bool onModel) override;
+    bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
+    bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa, bool onModel) override;
     virtual void updateColors() override;
 
 private slots:

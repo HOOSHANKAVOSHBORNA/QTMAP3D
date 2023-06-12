@@ -1,10 +1,8 @@
 ﻿#ifndef MODEL_H
 #define MODEL_H
 
+#include "defenseModelNode.h"
 #include "plugininterface.h"
-#include "aircraftModelNode.h"
-#include "stationModelNode.h"
-
 #include<osg/Array>
 #include <osg/AnimationPath>
 #include <osgAnimation/EaseMotion>
@@ -38,12 +36,11 @@ class DefenseModelLayer :public PluginInterface
 public:
     explicit DefenseModelLayer(QObject *parent = nullptr);
 public:
-    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
-    virtual void onSideItemCreated(int index, QObject *pSideItem) override;
-    virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
-    virtual bool setup(MapItem *mapController,
-                       UIHandle *UIHandle) override;
-    virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
+//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *pDesc) override;
+//    virtual void onSideItemCreated(int index, QObject *pSideItem) override;
+//    virtual void onToolboxItemClicked(const QString& name, const QString& category) override;
+    virtual bool setup() override;
+//    virtual void setDefenseDataManager(DefenseDataManager *defenseDataManager) override;
 
     //void addUpdateAircraft(AircraftInfo aircraftInfo);
 //    void addUpdateSystem(SystemInfo systemInfo);
@@ -60,15 +57,18 @@ public slots:
 
     static osgEarth::Symbology::Style& getDefaultStyle();
 protected:
-//    virtual void frameEvent() override;
-//    virtual void mousePressEvent(QMouseEvent* event)override;
-//    virtual void mouseReleaseEvent(QMouseEvent *event) override;
-//    virtual void mouseDoubleClickEvent(QMouseEvent* event)override;
-//    virtual void mouseMoveEvent(QMouseEvent* event)override;
-public:
-    MapItem *mMapController{nullptr};
-	UIHandle* mUIHandle{nullptr};
-    QQmlEngine *mQmlEngine{nullptr};
+    virtual bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
+    virtual bool mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
+    virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
+
+private slots:
+    void onAircraftItemClick();
+    void onSystemItemClick();
+    void onStationItemClick();
+    void onFireItemClick();
+    void onKillItemClick();
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);

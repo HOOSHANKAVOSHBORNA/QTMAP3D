@@ -146,16 +146,19 @@ CapsuleProperties::CapsuleProperties(Capsule* Capsule, QQmlEngine *qmlEngine, UI
 
 void CapsuleProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
 }
 
 void CapsuleProperties::hide()
 {
+    if(mItem)
     mUiHandle->propertiesHide(mItem);
 }
 
 void CapsuleProperties::setCapsule(Capsule *Capsule)
 {
+    if(mItem)
     mCapsuleProperties->setCapsule(Capsule);
 }
 
@@ -166,6 +169,7 @@ void CapsuleProperties::setLocation(osgEarth::GeoPoint location)
     tmp.setY(static_cast<float>(location.y()));
     tmp.setZ(static_cast<float>(location.z()));
 
+    if(mItem)
     mCapsuleProperties->setLocation(tmp);
 }
 

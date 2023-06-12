@@ -171,16 +171,19 @@ ImageProperties::ImageProperties(osgEarth::Annotation::ImageOverlay* image, QQml
 
 void ImageProperties::show()
 {
+    if(mItem)
     mUiHandle->propertiesShow(mItem);
 }
 
 void ImageProperties::hide()
 {
+    if(mItem)
     mUiHandle->propertiesHide(mItem);
 }
 
 void ImageProperties::setImage(osgEarth::Annotation::ImageOverlay *image)
 {
+    if(mItem)
     mImageProperties->setImage(image);
 }
 
