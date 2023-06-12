@@ -87,14 +87,16 @@ Item {
                     onExited: upColor.colorizationColor = btntxtColor
                     onPressed: if(index >0){index --}
                 }
-                MultiEffect{
-                    id:upColor
-                    anchors.fill: stepUp
-                    source: stepUp
-                    colorizationColor: btntxtColor
-                    visible: true
-                }
             }
+            MultiEffect{
+                id:upColor
+                anchors.fill: stepUp
+                source: stepUp
+                colorizationColor: btntxtColor
+                colorization: 1
+                visible: true
+            }
+
             Image {
                 id: stepDown
                 source: "./resources/arrow.png"
@@ -111,15 +113,18 @@ Item {
                     onExited: downColor.colorizationColor = btntxtColor
                     onPressed: if(index < steps.length-1){index ++}
                 }
-                MultiEffect{
-                    id:downColor
-                    anchors.fill: stepDown
-                    source: stepDown
-                    colorizationColor: btntxtColor
-                    visible: true
-                }
+            }
+            MultiEffect{
+                id:downColor
+                anchors.fill: stepDown
+                source: stepDown
+                colorizationColor: btntxtColor
+                colorization: 1
+                visible: true
+                rotation: stepDown.rotation
             }
         }
+
         Rectangle {
             id: spinnerContainer
             height: parent.height -2
@@ -157,15 +162,17 @@ Item {
                         timerUp.stop();
                     }
                 }
-                MultiEffect{
-                    id:spinupColor
-                    anchors.fill: spinUp
-                    source: spinUp
-                    colorizationColor: primaryColor
-                    colorization: 1.0
-                    visible: true
-                }
             }
+            MultiEffect{
+                id:spinupColor
+                anchors.fill: spinUp
+                source: spinUp
+                colorizationColor: primaryColor
+                colorization: 1
+                visible: true
+
+            }
+
             Image {
                 id: spinDown
                 source: "./resources/arrow.png"
@@ -198,14 +205,16 @@ Item {
                         timerDown.stop();
                     }
                 }
-                MultiEffect{
-                    id:spindownColor
-                    anchors.fill: spinDown
-                    source: spinDown
-                    colorizationColor: primaryColor
-                    colorization: 1.0
-                    visible: true
-                }
+            }
+            MultiEffect{
+                id:spindownColor
+                anchors.fill: spinDown
+                source: spinDown
+                colorizationColor: primaryColor
+                colorization: 1
+                visible: true
+                rotation: spinDown.rotation
+
             }
             Rectangle{
                 height: parent.height -2
