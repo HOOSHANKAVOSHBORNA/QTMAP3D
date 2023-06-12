@@ -88,35 +88,36 @@ bool DrawImage::setup()
 //    }
 //}
 
-//void DrawImage::mousePressEvent(QMouseEvent *event)
-//{
+bool DrawImage::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    bool res = false;
+    if (mEnterImageZone) {
+        if (ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON) {
+            if (mDrawingState == DrawingState::START) {
+                mDrawingState = DrawingState::DRAWING;
+                startDraw(ea);
+                finishDrawing(ea);
+                res = true;
+            }
+        }
+        else if (ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::RIGHT_MOUSE_BUTTON && mDrawingState == DrawingState::START) {
+            res = cancelDrawing(ea);
+        }
+        else if (ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::MIDDLE_MOUSE_BUTTON && mDrawingState == DrawingState::DRAWING) {
+            res = finishDrawing(ea);
+        }
+    }
+    return res;
+}
 
-
-//    if (mEnterImageZone) {
-//        if (event->button() == Qt::MouseButton::LeftButton) {
-//            if (mDrawingState == DrawingState::START) {
-//                mDrawingState = DrawingState::DRAWING;
-//                startDraw(event);
-//                finishDrawing(event);
-//                event->accept();
-//            }
-//        }
-//        else if (event->button() == Qt::MouseButton::RightButton && mDrawingState == DrawingState::START) {
-//            cancelDrawing(event);
-//        }
-//        else if (event->button() == Qt::MouseButton::MiddleButton && mDrawingState == DrawingState::DRAWING) {
-//            finishDrawing(event);
-//        }
-//    }
-//}
-
-//void DrawImage::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (mEnterImageZone) {
-//        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event->x(), event->y());
-//        mIconNode->setPosition(geoPos);
-//    }
-//}
+bool DrawImage::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mEnterImageZone) {
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+        mIconNode->setPosition(geoPos);
+    }
+    return false;
+}
 
 
 void DrawImage::loadImage()
@@ -147,12 +148,12 @@ void DrawImage::onImageItemCheck(bool check)
     }
 }
 
-void DrawImage::startDraw(QMouseEvent *event)
+bool DrawImage::startDraw(const osgGA::GUIEventAdapter &ea)
 {
 
     osg::Vec3d worldPos;
 
-    mapItem()->screenToWorld(event->x(), event->y(), worldPos);
+    mapItem()->screenToWorld(ea.getX(), ea.getY(), worldPos);
     osgEarth::GeoPoint geoPos;
     geoPos.fromWorld(mapItem()->getMapSRS(), worldPos);
 
@@ -172,23 +173,23 @@ void DrawImage::startDraw(QMouseEvent *event)
 //        mapItem()->addNodeToLayer(mImgOvlEditor, DRAW_LAYER_NAME);
 
     }
+    return false;
 }
 
-void DrawImage::finishDrawing(QMouseEvent *event)
+bool DrawImage::finishDrawing(const osgGA::GUIEventAdapter &ea)
 {
     if (mDrawingState == DrawingState::DRAWING) {
         mDrawingState = DrawingState::START;
-        event->accept();
+        return true;
         mImageProperties->setImage(mImageOverlay);
 //        mapItem()->removeNodeFromLayer(mImageOverlay, DRAW_LAYER_NAME);
 //        mapItem()->removeNodeFromLayer(mImgOvlEditor, DRAW_LAYER_NAME);
         mImageOverlay = nullptr;
-
-
     }
+    return false;
 }
 
-void DrawImage::cancelDrawing(QMouseEvent *event)
+bool DrawImage::cancelDrawing(const osgGA::GUIEventAdapter &ea)
 {
 
 //    mapItem()->addNodeToLayer(mImage, DRAW_LAYER_NAME);
@@ -199,7 +200,7 @@ void DrawImage::cancelDrawing(QMouseEvent *event)
     mImageOverlay = nullptr;
 //    mImgOvlEditor = nullptr;
 
-    event->accept();
+    return false;
 }
 
 osgEarth::Annotation::PlaceNode *DrawImage::makeIconNode()

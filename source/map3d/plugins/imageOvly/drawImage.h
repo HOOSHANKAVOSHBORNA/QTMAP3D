@@ -13,8 +13,6 @@
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthSymbology/GeometryFactory>
-
-#include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
 #include <osgEarthAnnotation/PlaceNode>
@@ -38,15 +36,15 @@ public:
     bool setup() override;
     void loadImage();
 //    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-//    void mousePressEvent(QMouseEvent *event) override;
-//    void mouseMoveEvent(QMouseEvent *event) override;
+    bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private slots:
     void onImageItemCheck(bool check);
 
 private:
-    void startDraw(QMouseEvent* event);
-    void finishDrawing(QMouseEvent* event);
-    void cancelDrawing(QMouseEvent* event);
+    bool startDraw(const osgGA::GUIEventAdapter &ea);
+    bool finishDrawing(const osgGA::GUIEventAdapter &ea);
+    bool cancelDrawing(const osgGA::GUIEventAdapter &ea);
     osgEarth::Annotation::PlaceNode* makeIconNode();
     ImageProperties *mImageProperties{nullptr};
 
