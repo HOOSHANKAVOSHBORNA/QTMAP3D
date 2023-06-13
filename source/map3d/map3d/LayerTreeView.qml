@@ -4,12 +4,15 @@ import QtQuick.Controls 2.15
 import QtQuick.Effects
 
 
+
+
 TreeView{
     id:rootItem
     anchors.fill: parent
     model: layersModel
 
     signal toggleLayerEnabled(int layerIndex)
+//    signal clickedItem(QStandardItem itemIndex)
 
     delegate: Item {
         id: treeDelegate
@@ -44,7 +47,11 @@ TreeView{
         }
 
         TapHandler {
-            onTapped: treeView.toggleExpanded(row)
+            onTapped: {
+//                console.log(rowAtIndex(treeView.index(row , column)))
+//                treeView.currentIndex.parent.row
+                treeView.toggleExpanded(row)
+            }
             onPressedChanged: pressed ? label.color = "orange" : !pressed ? label.color = "#ffffff" : "#ffffff"
 
 
@@ -110,7 +117,11 @@ TreeView{
                         hideContainer.isEnabled = true
                         hideContainer.border.color = "#111111"
                     }
+
                     rootItem.model.toggleLayerEnabled(row);
+//                    console.log(row,column , treeView.model)
+                    rootItem.model.clickedItem( treeView.index(row , column))
+//                    rootItem.model.clickedItem(modelIndex())
                 }
             }
         }

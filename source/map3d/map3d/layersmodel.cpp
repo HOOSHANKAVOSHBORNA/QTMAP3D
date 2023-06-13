@@ -72,6 +72,7 @@ void LayersModel::updateLayers(osgEarth::Map *map)
                 group->getNumChildren();
                 for(int i = 0; i < group->getNumChildren(); i++){
                     auto node = group->getChild(i);
+//                    node->setNodeMask()
                     QStandardItem *lv2Items = new QStandardItem(QString(node->getName().c_str()));
                     qDebug() << lv2Items;
                     lv1Items->appendRow(lv2Items);
@@ -91,9 +92,11 @@ void LayersModel::updateLayers(osgEarth::Map *map)
 
 void LayersModel::toggleLayerEnabled(int layerIndex)
 {
-//        qDebug() << layerIndex;
+
+//        qDebug() <<"index:"<<  layerIndex<< "depth" << depth;
 //        if (layerIndex /*< mLayersList.size()*/) {
             auto layer = mMapItem->getMapNode()->getMap()->getLayerAt(layerIndex);
+            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
             if (visibleLayer) {
                 visibleLayer->setVisible(!visibleLayer->getVisible());
@@ -103,7 +106,12 @@ void LayersModel::toggleLayerEnabled(int layerIndex)
             emit dataChanged(index(layerIndex,0),
                              index(layerIndex,0),
                              {LayerEnabledRole});
-//        }
+            //        }
+}
+
+void LayersModel::clickedItem(QModelIndex itemIndex)
+{
+            qDebug() << itemFromIndex(itemIndex)->text() ;
 }
 
 //int LayersModel::rowCount(const QModelIndex &parent) const

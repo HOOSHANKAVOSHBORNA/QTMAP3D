@@ -30,7 +30,8 @@ public:
 
 
 public slots:
-    void toggleLayerEnabled(int layerIndex);
+    void toggleLayerEnabled(int layerIndex );
+    void clickedItem(QModelIndex itemIndex);
 
 public:
 //    QStandardItem *rootItem = invisibleRootItem();
