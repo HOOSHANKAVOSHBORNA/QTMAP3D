@@ -109,64 +109,6 @@ Item {
                 }
             }
 
-            Item {
-                Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: 64
-                Layout.preferredHeight: 64
-
-                ColumnLayout {
-                    id: col10
-                    anchors.centerIn: parent
-                    Image {
-                        id: img10
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 24
-                        Layout.preferredHeight: 24
-                        source: "qrc:///Resources/Toolbox.png"
-                        width: 24
-                        height: 24
-                    }
-
-                    Label {
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: implicitWidth
-                        Layout.preferredHeight: implicitHeight
-                        text: "ToolBox"
-                        color: "white"
-                        font.family: _fontFamily
-                        font.pointSize: _fontPointSize
-                    }
-                    visible: false
-                }
-
-                MouseArea {
-                    id: mouseArea10
-                    anchors.fill: col10
-                    hoverEnabled: true
-
-                    property bool isMouseOnItem: false
-
-                    onEntered: function() {
-                        isMouseOnItem = true;
-                    }
-                    onExited: function() {
-                        isMouseOnItem = false;
-                    }
-
-                    onClicked: function() {
-                        rootItem.toolboxItemClicked();
-                    }
-                }
-
-                MultiEffect {
-                    anchors.fill: col10
-                    source: col10
-                    colorization: 1
-                    colorizationColor: mouseArea10.isMouseOnItem ?
-                               (mouseArea10.pressed ? _colorPresed: _colorHover) :
-                               (mouseArea10.pressed ? _colorHover : "#FFFFFF");
-                }
-            }
 
             // independent buttons
             Item {
