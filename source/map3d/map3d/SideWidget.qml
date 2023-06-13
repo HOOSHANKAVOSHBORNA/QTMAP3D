@@ -1,6 +1,7 @@
 
 import QtQuick 2.13
-
+import QtQuick.Controls
+import QtQuick.Layouts
 Item {
     id: rootItem
     property ListModel sideItemsModel
@@ -63,29 +64,17 @@ Item {
         id: sideItemsRepeater
         model: rootItem.sideItemsModel
         delegate: Item {
+            id: delegate
             anchors.top:parent.top
             anchors.bottom: parent.bottom
             x: 0
             width: 250
-            height: parent.height
-//            Rectangle {
-//                anchors.fill: parent
-//                color: "#404040"
-//                opacity: 0.8
-//                radius: 10
-//            }
-
             Loader {
                 anchors.fill: parent
+                id: loader
                 source: side_itemurl
                 onLoaded: function() {
                     rootItem.sideItemCreated(index, item);
-                    print(index)
-//                    wnd.sideItemCreated(index, item);
-
-//                    if (index == 2) {
-//                        item.toolboxModel = toolboxModel;
-//                    }
                 }
             }
         }
