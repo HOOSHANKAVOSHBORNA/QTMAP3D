@@ -51,7 +51,7 @@ Item {
         height: parent.height - header.height - footer.height
         width: 300
         color: _colorRec
-        border.color: "#000000"
+        border.color: "#202020"
         border.width: 5
         ScrollView {
             anchors.fill: parent
@@ -59,7 +59,7 @@ Item {
             TreeView {
                 id: treeView
                 anchors.fill: parent
-                anchors.rightMargin: 10
+//                anchors.rightMargin: 10
                 clip: true
                 model: rootItem.listModel
                 signal toolboxItemClicked(string category, string name)
@@ -77,7 +77,7 @@ Item {
                     required property bool expanded
                     required property int hasChildren
                     required property int depth
-                    anchors.margins: 5
+                    anchors.margins: 10
                     Rectangle{
                         id: container
                         width: parent.width - (treeDelegate.depth - 1)* treeDelegate.indent
