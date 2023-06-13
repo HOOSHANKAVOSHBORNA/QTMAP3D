@@ -51,29 +51,30 @@ Item {
             color: "transparent"
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.minimumWidth: 70
+            Layout.minimumWidth: 65
             Layout.minimumHeight: 150
             anchors.rightMargin: 5
             clip: true
             ControlCamera{
                 id: rotationControlCamera
-                width: 70
-                height: 70
+                width: 65
+                height: 65
                 //radius: _radius
                 anchors.top: parent.top
-                x: positionFactor * 70
-                anchors.topMargin: 11
+                x: positionFactor * 65
+                anchors.topMargin: 17
+                centerIcon: "qrc:/Resources/eye.png"
                 //color: "transparent"
-                buttonIcon: "qrc:/Resources/rotate.png"
+                //buttonIcon: "qrc:/Resources/rotate.png"
             }
 
             ControlCamera{
                 id: moveControlCamera
-                width: 70
-                height: 70
-                x: positionFactor * 70
+                width: 65
+                height: 65
+                x: positionFactor * 65
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 11
+                anchors.bottomMargin: 17
                 //color: "transparent"
             }
         }
@@ -183,7 +184,7 @@ Item {
 
                 Image {
                     id: chevron
-                    source: "./Resources/chevron.png"
+                    source: "qrc:/Resources/direction.png"
                     sourceSize: ("24 x 24")
                     anchors.centerIn: parent
                     MouseArea{
