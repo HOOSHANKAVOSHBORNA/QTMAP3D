@@ -10,31 +10,6 @@ import Crystal 1.0
 
 CMainWindow {
 
-    ToolboxView {
-        id: toolboxModel
-        model: toolbox
-//        anchors.top: parent.top
-//        anchors.left: parent.left
-        property real widgetsPositionFactor: 1
-        x: 0
-//        x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*2.0)))
-//        y: menuWidget.height + (widgetsMargins * 2.0)
-//        width: implicitWidth + (widgetsMargins * 2)
-//            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
-//        height: parent.height - menuWidget.height - (widgetsMargins * 3)/* - navigationWidget.height*/
-
-    }
-    PropertyAnimation {
-        id: toolboxAnimation
-        target: toolboxModel
-        property: "widgetsPositionFactor"
-        from: toolboxModel.widgetsPositionFactor
-        to: toolboxModel.widgetsPositionFactor < 0.01 ? 1 : 0
-        duration: toolboxModel.widgetsPositionFactor == 0 ? 200 * Math.abs(1.0 - toolboxModel.widgetsPositionFactor) : 200 * Math.abs(toolboxModel.widgetsPositionFactor)
-
-        easing.type: Easing.OutQuint
-    }
-
     readonly property int       _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
@@ -68,7 +43,7 @@ CMainWindow {
     id: wnd
     visible: true
     width: 800
-    height: 600
+//    height: 600
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("MAP3D")
@@ -119,11 +94,11 @@ CMainWindow {
 
 
 
-//        ListElement {
-//            title_text:   "Toolbox"
-//            icon_url:     "qrc:///Resources/Toolbox.png"
-//            side_itemurl: "qrc:/ToolboxView.qml"
-//        }
+        ListElement {
+            title_text:   "Toolbox"
+            icon_url:     "qrc:///Resources/Toolbox.png"
+            side_itemurl: "qrc:/ToolboxView.qml"
+        }
 
         ListElement {
             title_text:   "Location"
@@ -144,9 +119,7 @@ CMainWindow {
         //        }
     }
 
-    property var toolboxModel: ListModel {
-
-    }
+    property var toolboxModel: toolbox
     property var fileModel: ListModel {
 
     }
@@ -203,6 +176,7 @@ CMainWindow {
             }
             onToolboxItemClicked: function() {
                 toolboxAnimation.start();
+                print("ddf")
             }
         }
 
@@ -213,19 +187,19 @@ CMainWindow {
             x:  -(implicitWidth + (widgetsMargins*3)) + (wnd.widgetsPositionFactor * ((implicitWidth * 0.5) + (widgetsMargins*2.0)))
             y: menuWidget.height + (widgetsMargins * 2.0)
             width: implicitWidth + (widgetsMargins * 2)
-//            height: parent.height -  (menuWidget.height *2.5) - navigationWidget.height - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
-            height: parent.height - menuWidget.height - (widgetsMargins * 3)/* - navigationWidget.height*/
+            height: wnd.height -  (menuWidget.height *2.5)  - (widgetsMargins * 5) //menuWidget.height - (widgetsMargins * 3) -
+//            height: parent.height
             sideItemsModel: wnd.sideItemsModel
 
             onSideItemCreated: function(index, item) {
                 print(item);
                 switch(index) {
                 case 0:
-                    item.listModel = wnd.fileModel;
+                    item.listModel = wnd.toolboxModel;
                     item.itemClicked.connect(wnd.fileItemClicked);
                     break
                 case 1:
-//                    item.model = toolboxModel.model;
+                    item.listModel = wnd.toolboxModel;
 //                    item.itemClicked.connect(wnd.toolboxItemClicked);
 //                    item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                     break;
@@ -547,7 +521,7 @@ CMainWindow {
         anchors.left: parent.left
         anchors.leftMargin: _margin
         anchors.topMargin: widgetsMargins
-        height: rowl.implicitHeight + 15
+        height: rowl.impliitemClickedcitHeight + 15
         width: rowl.implicitWidth + 20
         visible: false
         color: "transparent"

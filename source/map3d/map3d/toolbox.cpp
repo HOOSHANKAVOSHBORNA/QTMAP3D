@@ -1,5 +1,6 @@
 #include "toolbox.h"
 
+#include <QHeaderView>
 #include <QQmlComponent>
 #include <QQuickItem>
 
@@ -206,30 +207,22 @@ void Toolbox::addItem(ToolboxItem *toolboxItem)
     }
     auto subItem = new QStandardItem(toolboxItem->name);
     subItem->setData(toolboxItem->iconUrl, imageSource);
-    mItems[toolboxItem->category]->appendRow(new QStandardItem(toolboxItem->name));
+//    subItem->setIcon(QIcon(toolboxItem->iconUrl));
+    mItems[toolboxItem->category]->appendRow(subItem);
     mToolboxItems[toolboxItem->name] = toolboxItem;
 }
 
-//QVariant Toolbox::data(const QModelIndex &index, int role) const
-//{
-//    switch (role) {
-//    case Qt::DisplayRole:
-//        return QStandardItemModel::data(index, role);
-//        break;
-//    case imageSource:
-//        qDebug() <<index.row()<<":" << index.column() << QStandardItemModel::data(index, role);
-//        return QStandardItemModel::data(index, role);
-//    default:
-//        break;
-//    }
-//}
+QVariant Toolbox::data(const QModelIndex &index, int role) const
+{
+    return QStandardItemModel::data(index, role);
+}
 
-//QHash<int, QByteArray> Toolbox::roleNames() const
-//{
-//    QHash<int, QByteArray> hash = QStandardItemModel::roleNames();
-//    hash[imageSource] = "imageSource";
-//    return hash;
-//}
+QHash<int, QByteArray> Toolbox::roleNames() const
+{
+    QHash<int, QByteArray> hash = QStandardItemModel::roleNames();
+    hash[imageSource] = "imageSource";
+    return hash;
+}
 
 void Toolbox::onItemClicked(QString name)
 {

@@ -78,8 +78,8 @@ public:
     Toolbox(QObject *parent = nullptr);
 
     void addItem(ToolboxItem *item);
-//    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-//    QHash<int,QByteArray> roleNames() const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QHash<int,QByteArray> roleNames() const override;
 public slots:
     void onItemClicked(QString name);
 private:
