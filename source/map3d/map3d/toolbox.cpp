@@ -207,6 +207,7 @@ void Toolbox::addItem(ToolboxItem *toolboxItem)
     }
     auto subItem = new QStandardItem(toolboxItem->name);
     subItem->setData(toolboxItem->iconUrl, imageSource);
+    subItem->setData(toolboxItem->checked, checked);
 //    subItem->setIcon(QIcon(toolboxItem->iconUrl));
     mItems[toolboxItem->category]->appendRow(subItem);
     mToolboxItems[toolboxItem->name] = toolboxItem;
@@ -221,18 +222,29 @@ QHash<int, QByteArray> Toolbox::roleNames() const
 {
     QHash<int, QByteArray> hash = QStandardItemModel::roleNames();
     hash[imageSource] = "imageSource";
+    hash[checked] = "checkedd";
     return hash;
 }
 
 void Toolbox::onItemClicked(QString name)
 {
+    if (mToolboxItems.contains(currentItem) ) {
+        if(mToolboxItems[currentItem]->checkable){
+            mToolboxItems[currentItem]->checked = false;
+            emit mToolboxItems[currentItem]->itemChecked(false);
+        }
+        if (name == currentItem) {
+            currentItem = "";
+            return;
+        }
+    }
     if(mToolboxItems.contains(name)){
-        if(mToolboxItems[name]->checkable)
+        if(mToolboxItems[name]->checkable){
+            mToolboxItems[name]->checked = true;
             emit mToolboxItems[name]->itemChecked(true);
+        }
         else
             emit mToolboxItems[name]->itemClicked();
     }
-//    for (auto& v: mItems.values())
-//    emit toolBoxItemClicked()
-    qDebug() << ", " << name;
+    currentItem = name;
 }
