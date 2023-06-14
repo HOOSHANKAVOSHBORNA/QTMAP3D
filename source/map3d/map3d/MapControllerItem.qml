@@ -154,6 +154,7 @@ MapController {
 
         Compass{
             anchors.bottom: parent.bottom
+            anchors.bottomMargin: 10
             id:compassWidget
             headingAngle: rootItem.headingAngle
             //            anchors.left: parent.left
