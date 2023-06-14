@@ -71,7 +71,8 @@ class Toolbox : public QStandardItemModel
 {
     Q_OBJECT
     enum CustomRoles {
-        imageSource = Qt::UserRole + 100
+        imageSource = Qt::UserRole + 100,
+        checked = Qt::UserRole + 101
     };
 
 public:
@@ -84,6 +85,7 @@ public slots:
     void onItemClicked(QString name);
 private:
     QMap<QString, QStandardItem*> mItems;
+    QString currentItem;
     QMap<QString, ToolboxItem*> mToolboxItems;
 };
 

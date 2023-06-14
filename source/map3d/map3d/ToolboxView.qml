@@ -52,7 +52,7 @@ Item {
         width: 300
         color: _colorRec
         border.color: "#202020"
-        border.width: 5
+        border.width: 10
         ScrollView {
             anchors.fill: parent
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
@@ -60,14 +60,17 @@ Item {
                 id: treeView
                 anchors.fill: parent
 //                anchors.rightMargin: 10
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                anchors.topMargin: 3
                 clip: true
                 model: rootItem.listModel
                 signal toolboxItemClicked(string category, string name)
-
+                selectionModel: ItemSelectionModel {}
                 delegate: Item {
                     id: treeDelegate
 
-                    implicitWidth: 300
+                    implicitWidth: treeRect.width
                     implicitHeight:  treeDelegate.hasChildren ? categorySize : itemSize
 
                     readonly property real indent: 30
@@ -77,6 +80,8 @@ Item {
                     required property bool expanded
                     required property int hasChildren
                     required property int depth
+                    required property bool selected
+                    required property bool current
                     anchors.margins: 10
                     Rectangle{
                         id: container
@@ -89,6 +94,7 @@ Item {
                             id: rect
                             anchors.fill: parent
                             color: treeDelegate.hasChildren ? sectionColor : _colorRec
+
                             //                    opacity: 0.8
                             border.color: "#202020"
                             border.width: treeDelegate.hasChildren ? 2 : 0
@@ -128,8 +134,10 @@ Item {
 
                     HoverHandler{
                         onHoveredChanged: function() {
-                            label.color = hovered ? _colorHover : "#ffffff"
-                            img.color = hovered ? _colorHover : "transparent"
+                            if (!checkedd){
+                                label.color = hovered ? _colorHover : "#ffffff"
+                                img.color = hovered ? _colorHover : "transparent"
+                            }
                         }
 
                     }
@@ -143,10 +151,11 @@ Item {
                         }
 
                         onPressedChanged: function() {
-                            label.color = pressed ? _colorPresed : "#ffffff"
-                            img.color = img.color == _colorPresed ? "transparent" : _colorPresed
+                            label.color = checkedd ? _colorPresed :  pressed ? _colorPresed : "#ffffff"
+                            img.color = checkedd ? _colorPresed : img.color == _colorPresed ? "transparent" : _colorPresed
                         }
                     }
+
                 }
             }
         }

@@ -138,6 +138,7 @@ public:
     QString category;
     QString iconUrl;
     bool    checkable = false;
+    bool    checked = false;
 signals:
     void itemClicked();
     void itemChecked(bool check);
