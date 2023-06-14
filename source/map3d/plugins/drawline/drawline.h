@@ -55,7 +55,7 @@ private:
     DrawingState mDrawingState;
     enum class Type{NONE, LINE, RULER, HEIGHT, SLOPE};
     Type mType;
-    LineNode* mLine{nullptr};
+    osg::ref_ptr<LineNode> mLine{nullptr};
     MeasureHeight* mMeasureHeight{nullptr};
     LineProperties *mLineProperties = nullptr;
     bool mEnterLineZone{false};

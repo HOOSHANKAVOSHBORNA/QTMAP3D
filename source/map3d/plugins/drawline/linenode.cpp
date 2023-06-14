@@ -143,6 +143,7 @@ void LineNode::removeFirstPoint()
 
 void LineNode::clear()
 {
+
 	mLineGeometry->clear();
 	for(auto labelData: mVecLabelData){
 		if(labelData.qImage)
@@ -153,6 +154,7 @@ void LineNode::clear()
 	mLabelGroup->removeChildren(0,mLabelGroup->getNumChildren());
 
 	addChild(mLabelGroup);
+
 }
 
 int LineNode::getSize()
