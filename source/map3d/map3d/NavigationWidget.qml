@@ -174,35 +174,36 @@ Item {
                 height: 30
                 color: _colorRec
 
-                MultiEffect{
-                    id:chevronRecolor
-                    source: chevron
-                    anchors.fill: chevron
-                    colorization: 1
-                    colorizationColor: "#FFFFFF"
-                }
-
                 Image {
-                    id: chevron
-                    source: "qrc:/Resources/direction.png"
+                    id: direction
+                    source: "./Resources/direction.png"
                     sourceSize: ("24 x 24")
                     anchors.centerIn: parent
                     MouseArea{
                         anchors.fill: parent
                         hoverEnabled: true
-                        onEntered: chevronRecolor.colorizationColor =_colorHover
-                        onExited: chevronRecolor.colorizationColor ="#FFFFFF"
+                        onEntered:
+                            chevronRecolor.colorizationColor = _colorHover
+                        onExited:
+                            chevronRecolor.colorizationColor = "#FFFFFF"
                     }
+                }
+                MultiEffect{
+                    id:chevronRecolor
+                    source: direction
+                    anchors.fill: direction
+                    colorization: 1
+                    colorizationColor: "#FFFFFF"
                 }
                 states: [
                     State {
                         name: "rotated"
-                        PropertyChanges { target: chevron; rotation: 180; }
+                        PropertyChanges { target: direction; rotation: 180; }
                         PropertyChanges { target: chevronRecolor; rotation: 180; }
                     },
                     State {
                         name: "default"
-                        PropertyChanges { target: chevron; rotation: 0 }
+                        PropertyChanges { target: direction; rotation: 0 }
                         PropertyChanges { target: chevronRecolor; rotation: 0 }
                     }
 
