@@ -139,6 +139,7 @@ public:
     QString iconUrl;
     bool    checkable = false;
     bool    checked = false;
+    void changeCheck(bool check){checked = checkable ? check : checked;}
 signals:
     void itemClicked();
     void itemChecked(bool check);

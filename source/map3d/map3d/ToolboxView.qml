@@ -66,16 +66,17 @@ Item {
                 clip: true
                 model: rootItem.listModel
                 signal toolboxItemClicked(string category, string name)
+
                 selectionModel: ItemSelectionModel {
                     id: selectionM
                     onCurrentChanged: function(cur, pre){
-                        if (pre)
-                            print("previous: ", treeView.model.data(pre))
-//                        print("current: ", treeView.model.data(cur))
-                        select(currentIndex, ItemSelectionModel.Select)
+                        print("previous: ", treeView.model.data(pre))
+                        print("current: ", treeView.model.data(cur))
+                        select(cur, ItemSelectionModel.Select)
+                        treeView.model.onItemClicked(cur)
                     }
                     onSelectionChanged: function(sel, des){
-                        treeView.model.test(sel, des)
+                        reset()
                     }
                 }
                 delegate: Item {
@@ -83,7 +84,6 @@ Item {
 
                     implicitWidth: treeRect.width
                     implicitHeight:  treeDelegate.hasChildren ? categorySize : itemSize
-
                     readonly property real indent: 30
                     readonly property real padding: 15
                     required property TreeView treeView
@@ -112,6 +112,17 @@ Item {
                             radius: treeDelegate.hasChildren ? 5 : 0
 
                         }
+                        MouseArea {
+                            id: mouseArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+
+                            onPressed: function(mouse) {
+                                mouse.accepted = false
+                            }
+                            propagateComposedEvents: true
+
+                        }
                         radius: height/10
                         x: padding + ((treeDelegate.depth - 1) * treeDelegate.indent)
 
@@ -122,7 +133,7 @@ Item {
                             font.pixelSize: 14
                             font.bold: treeDelegate.hasChildren
                             anchors.verticalCenter: container.verticalCenter
-                            color: "#ffffff"
+                            color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "#ffffff"
                             text: display
                         }
 
@@ -140,34 +151,15 @@ Item {
                             height: 24
                             x: container.x - width + (treeDelegate.depth)*indent
                             anchors.verticalCenter: container.verticalCenter
-                            color: checkedd ? _colorPresed : "transparent"
+                            color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"
                         }
-                    }
-
-                    HoverHandler{
-                        onHoveredChanged: function() {
-                            if (!checkedd){
-                                label.color = hovered ? _colorHover : "#ffffff"
-                                img.color = hovered ? _colorHover : "transparent"
-                            }
-                        }
-
                     }
 
                     TapHandler {
                         onTapped: function() {
-                            if (!treeDelegate.hasChildren){
-                                treeView.model.onItemClicked(display)
-                            }
                             treeView.toggleExpanded(row)
                         }
-
-                        onPressedChanged: function() {
-                            label.color =  pressed ? _colorPresed : "#ffffff"
-                            img.color = pressed ? _colorPresed : "#ffffff"
-                        }
                     }
-
                 }
             }
         }

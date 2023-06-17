@@ -373,7 +373,7 @@ Item {
                                     }
                                     contentItem: Text {
                                         text: relative.text
-                                        font: relative.font
+                                        font: 10
                                         opacity: enabled ? 1.0 : 0.3
                                         color: relative.down ? "#black" : "white"
                                         verticalAlignment: Text.AlignVCenter

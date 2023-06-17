@@ -5,258 +5,218 @@
 #include <QQuickItem>
 
 #include "plugininterface.h"
-//ToolboxModel::ToolboxModel(QObject *parent):
-//    QAbstractItemModel(parent)
-//{
-//    QList<QVariant> rootData;
-//    rootData << "Title" << "Summary";
-//    rootItem = new TreeItem(rootData);
-//    QList<TreeItem*> parents;
-//    QList<QVariant> vars;
-//    vars << "dddd" << "ddd";
-//    rootItem->appendChild(new TreeItem(vars));
-//    rootItem->appendChild(new TreeItem(vars));
-//    rootItem->appendChild(new TreeItem(vars));
-//}
 
-//QVariant ToolboxModel::data(const QModelIndex &index, int role) const
-//{
-//    if (!index.isValid())
-//        return QVariant();
+TreeItem::TreeItem(const QList<QVariant> &data, ToolboxItem *toolbox, TreeItem *parent)
+    : m_itemData(data), m_parentItem(parent), mToolboxItem(toolbox)
+{}
 
-////    if (role != TreeModelRoleName && role != TreeModelRoleDescription)
-////        return QVariant();
+TreeItem::~TreeItem()
+{
+    qDeleteAll(m_childItems);
+}
 
-//    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+void TreeItem::appendChild(TreeItem *item)
+{
+    m_childItems.append(item);
+}
 
-//    return item->data(role - Qt::UserRole - 1);
-//}
+TreeItem *TreeItem::child(int row)
+{
+    if (row < 0 || row >= m_childItems.size())
+        return nullptr;
+    return m_childItems.at(row);
+}
 
-//Qt::ItemFlags ToolboxModel::flags(const QModelIndex &index) const
-//{
-//    if (!index.isValid())
-//        return QAbstractItemModel::flags(QModelIndex());
+int TreeItem::childCount() const
+{
+    return m_childItems.count();
+}
 
-//    return QAbstractItemModel::flags(index);
-//}
+int TreeItem::columnCount() const
+{
+    return m_itemData.count();
+}
 
-//QVariant ToolboxModel::headerData(int section, Qt::Orientation orientation, int role) const
-//{
-//    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-//        return rootItem->data(section);
+QVariant TreeItem::data(int column) const
+{
+    if (column < 0 || column >= m_itemData.size())
+        return QVariant();
+    return mToolboxItem->name;
+}
 
-//    return QVariant();
-//}
+TreeItem *TreeItem::parentItem()
+{
+    return m_parentItem;
+}
 
-//QModelIndex ToolboxModel::index(int row, int column, const QModelIndex &parent) const
-//{
-//    if (!hasIndex(row, column, parent))
-//        return QModelIndex();
+ToolboxItem *TreeItem::getToolboxItem() const
+{
+    return mToolboxItem;
+}
 
-//    TreeItem *parentItem;
+TreeItem *TreeItem::child(TreeItem *row)
+{
+    auto it = std::find_if(m_childItems.begin(), m_childItems.end(), [&](const TreeItem *temp){
+        return temp->mToolboxItem->category == row->mToolboxItem->category;
+    });
+    if (it == m_childItems.end())
+        return nullptr;
+    return *it;
+}
 
-//    if (!parent.isValid())
-//        parentItem = rootItem;
-//    else
-//        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+QString TreeItem::imageSource()
+{
+    return mToolboxItem->iconUrl;
+}
 
-//    TreeItem *childItem = parentItem->child(row);
-//    if (childItem)
-//        return createIndex(row, column, childItem);
-//    else
-//        return QModelIndex();
-//}
+int TreeItem::row() const
+{
+    if (m_parentItem)
+        return m_parentItem->m_childItems.indexOf(const_cast<TreeItem*>(this));
 
-//QModelIndex ToolboxModel::parent(const QModelIndex &index) const
-//{
-//    if (!index.isValid())
-//        return QModelIndex();
-
-//    TreeItem *childItem = static_cast<TreeItem*>(index.internalPointer());
-//    TreeItem *parentItem = childItem->parentItem();
-
-//    if (parentItem == rootItem)
-//        return QModelIndex();
-
-//    return createIndex(parentItem->row(), 0, parentItem);
-//}
-
-//int ToolboxModel::rowCount(const QModelIndex &parent) const
-//{
-//    TreeItem *parentItem;
-//    if (parent.column() > 0)
-//        return 0;
-
-//    if (!parent.isValid())
-//        parentItem = rootItem;
-//    else
-//        parentItem = static_cast<TreeItem*>(parent.internalPointer());
-
-//    return parentItem->childCount();
-//}
-
-//int ToolboxModel::columnCount(const QModelIndex &parent) const
-//{
-//    if (parent.isValid())
-//        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
-//    else
-//        return rootItem->columnCount();
-//}
-
-//QVariant ToolboxModel::newCustomType(const QString &text, int position)
-//{
-
-//}
-
-//TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
-//{
-//    m_parentItem = parent;
-//    m_itemData = data;
-//}
-////! [0]
-
-////! [1]
-//TreeItem::~TreeItem()
-//{
-//    qDeleteAll(m_childItems);
-//}
-////! [1]
-
-////! [2]
-//void TreeItem::appendChild(TreeItem *item)
-//{
-//    m_childItems.append(item);
-//}
-////! [2]
-
-////! [3]
-//TreeItem *TreeItem::child(int row)
-//{
-//    return m_childItems.value(row);
-//}
-////! [3]
-
-////! [4]
-//int TreeItem::childCount() const
-//{
-//    return m_childItems.count();
-//}
-////! [4]
-
-////! [5]
-//int TreeItem::columnCount() const
-//{
-//    return m_itemData.count();
-//}
-////! [5]
-
-////! [6]
-//QVariant TreeItem::data(int column) const
-//{
-//    return m_itemData.value(column);
-//}
-////! [6]
-
-////! [7]
-//TreeItem *TreeItem::parentItem()
-//{
-//    return m_parentItem;
-//}
-////! [7]
-
-////! [8]
-//int TreeItem::row() const
-//{
-//    if (m_parentItem)
-//        return m_parentItem->m_childItems.indexOf(const_cast<TreeItem*>(this));
-
-//    return 0;
-//}
-////! [8]
-
-//Toolbox::Toolbox(QQmlEngine *engine, QObject *parent)
-//{
-//    QQmlComponent *comp = new QQmlComponent(engine);
-//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-//        if (comp->status() == QQmlComponent::Ready) {
-//            QQuickItem *item = static_cast<QQuickItem*>(comp->create(nullptr));
-//            model = new ToolboxModel;
-//            item->setProperty("toolModel", QVariant::fromValue<ToolboxModel*>(model));
-//        }
-
-//    });
-//    comp->loadUrl(QUrl("qrc:/CustomTreeView.qml"));
-
-
-//}
-
+    return 0;
+}
 
 Toolbox::Toolbox(QObject *parent):
-    QStandardItemModel(parent)
+    QAbstractItemModel(parent)
 {
-
+    rootItem = new TreeItem({tr("Title")});
 }
 
 void Toolbox::addItem(ToolboxItem *toolboxItem)
 {
-    bool s = mItems.contains(toolboxItem->category);
-    if (!s){
-        QStandardItem* catItem = new QStandardItem(toolboxItem->category);
-        mItems[toolboxItem->category] = catItem;
-        QStandardItem *rootItem = invisibleRootItem();
-        rootItem->appendRow(catItem);
-    }
-    auto subItem = new QStandardItem(toolboxItem->name);
-    subItem->setData(toolboxItem->iconUrl, imageSource);
-    subItem->setData(toolboxItem->checked, checked);
-    subItem->setData(toolboxItem->checkable, checkable);
-//    subItem->setIcon(QIcon(toolboxItem->iconUrl));
-    mItems[toolboxItem->category]->appendRow(subItem);
-    mToolboxItems[toolboxItem->name] = toolboxItem;
+    beginResetModel();
+    TreeItem* cat = new TreeItem({toolboxItem->category}, new ToolboxItem(toolboxItem->category, toolboxItem->category), rootItem);
+    if (!rootItem->child(cat))
+        rootItem->appendChild(cat);
+    rootItem->child(cat)->appendChild(new TreeItem({toolboxItem->name}, toolboxItem, rootItem->child(cat)));
+    endResetModel();
 }
 
 QVariant Toolbox::data(const QModelIndex &index, int role) const
 {
-    return QStandardItemModel::data(index, role);
+    if (!index.isValid())
+        return QVariant();
+    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+    switch (role) {
+    case Qt::DisplayRole:
+        return item->data(index.column());
+        break;
+    case imageSource:
+        return item->imageSource();
+        break;
+    case checked:
+        return item->getToolboxItem()->checked;
+        break;
+    default:
+        break;
+    }
+    return QVariant();
 }
 
 QHash<int, QByteArray> Toolbox::roleNames() const
 {
-    QHash<int, QByteArray> hash = QStandardItemModel::roleNames();
+    QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
     hash[imageSource] = "imageSource";
     hash[checked] = "checkedd";
     hash[checkable] = "checkable";
     return hash;
 }
 
-void Toolbox::onItemClicked(QString name)
+Qt::ItemFlags Toolbox::flags(const QModelIndex &index) const
 {
+    if (!index.isValid())
+        return Qt::NoItemFlags;
 
-    if (mToolboxItems.contains(currentItem) ) {
-        if(mToolboxItems[currentItem]->checkable){
-//            mItems[]
-            emit mToolboxItems[currentItem]->itemChecked(false);
-        }
-        if (name == currentItem) {
-            currentItem = "";
-            return;
-        }
-    }
-    if(mToolboxItems.contains(name)){
-        if(mToolboxItems[name]->checkable){
-            mToolboxItems[name]->checked = true;
-            emit mToolboxItems[name]->itemChecked(true);
-        }
-        else
-            emit mToolboxItems[name]->itemClicked();
-    }
-    currentItem = name;
+    return QAbstractItemModel::flags(index);
 }
 
-void Toolbox::test(QItemSelection sel, QItemSelection des)
+QVariant Toolbox::headerData(int section, Qt::Orientation orientation,
+                             int role) const
 {
-//    if (!sel.isEmpty())
-//    qDebug() << "select: " << data(sel.indexes()[0]);
-//    if (!des.empty())
-    //    qDebug() << "deselected: " << data(des.indexes()[0]);
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+        return rootItem->data(section);
+
+    return QVariant();
+}
+
+QModelIndex Toolbox::index(int row, int column, const QModelIndex &parent) const
+{
+    if (!hasIndex(row, column, parent))
+        return QModelIndex();
+
+    TreeItem *parentItem;
+
+    if (!parent.isValid())
+        parentItem = rootItem;
+    else
+        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+
+    TreeItem *childItem = parentItem->child(row);
+    if (childItem)
+        return createIndex(row, column, childItem);
+    return QModelIndex();
+}
+
+QModelIndex Toolbox::parent(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return QModelIndex();
+
+    TreeItem *childItem = static_cast<TreeItem*>(index.internalPointer());
+    TreeItem *parentItem = childItem->parentItem();
+
+    if (parentItem == rootItem)
+        return QModelIndex();
+
+    return createIndex(parentItem->row(), 0, parentItem);
+}
+
+int Toolbox::rowCount(const QModelIndex &parent) const
+{
+    TreeItem *parentItem;
+    if (parent.column() > 0)
+        return 0;
+
+    if (!parent.isValid())
+        parentItem = rootItem;
+    else
+        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+
+    return parentItem->childCount();
+}
+
+int Toolbox::columnCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
+    return rootItem->columnCount();
+}
+
+void Toolbox::onItemClicked(const QModelIndex &current)
+{
+    if (previous.isValid()){
+        TreeItem *previousItem = static_cast<TreeItem*>(previous.internalPointer());
+        previousItem->getToolboxItem()->changeCheck(false);
+        if (previousItem->getToolboxItem()->checkable)
+            emit previousItem->getToolboxItem()->itemChecked(false);
+        else
+            emit previousItem->getToolboxItem()->itemClicked();
+        emit dataChanged(previous, previous);
+    }
+
+    if (current.isValid() && current != previous){
+        TreeItem *currentItem = static_cast<TreeItem*>(current.internalPointer());
+        currentItem->getToolboxItem()->changeCheck(true);
+        if (currentItem->getToolboxItem()->checkable){
+            emit currentItem->getToolboxItem()->itemChecked(true);
+        }else
+            emit currentItem->getToolboxItem()->itemClicked();
+
+        emit dataChanged(current, current);
+    }
+    if (previous == current)
+        previous = QModelIndex();
+    else
+        previous = current;
 }
