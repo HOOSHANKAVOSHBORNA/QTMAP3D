@@ -1,6 +1,7 @@
 #ifndef TOOLBOX_H
 #define TOOLBOX_H
 
+#include "qitemselectionmodel.h"
 #include <QAbstractItemModel>
 #include <QQmlEngine>
 #include <QStandardItemModel>
@@ -72,7 +73,8 @@ class Toolbox : public QStandardItemModel
     Q_OBJECT
     enum CustomRoles {
         imageSource = Qt::UserRole + 100,
-        checked = Qt::UserRole + 101
+        checked = Qt::UserRole + 101,
+        checkable = Qt::UserRole + 102
     };
 
 public:
@@ -83,6 +85,7 @@ public:
     QHash<int,QByteArray> roleNames() const override;
 public slots:
     void onItemClicked(QString name);
+    void test(QItemSelection sel, QItemSelection des);
 private:
     QMap<QString, QStandardItem*> mItems;
     QString currentItem;

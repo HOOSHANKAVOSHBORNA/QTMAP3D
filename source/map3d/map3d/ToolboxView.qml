@@ -66,7 +66,18 @@ Item {
                 clip: true
                 model: rootItem.listModel
                 signal toolboxItemClicked(string category, string name)
-                selectionModel: ItemSelectionModel {}
+                selectionModel: ItemSelectionModel {
+                    id: selectionM
+                    onCurrentChanged: function(cur, pre){
+                        if (pre)
+                            print("previous: ", treeView.model.data(pre))
+//                        print("current: ", treeView.model.data(cur))
+                        select(currentIndex, ItemSelectionModel.Select)
+                    }
+                    onSelectionChanged: function(sel, des){
+                        treeView.model.test(sel, des)
+                    }
+                }
                 delegate: Item {
                     id: treeDelegate
 
@@ -129,6 +140,7 @@ Item {
                             height: 24
                             x: container.x - width + (treeDelegate.depth)*indent
                             anchors.verticalCenter: container.verticalCenter
+                            color: checkedd ? _colorPresed : "transparent"
                         }
                     }
 
@@ -151,8 +163,8 @@ Item {
                         }
 
                         onPressedChanged: function() {
-                            label.color = checkedd ? _colorPresed :  pressed ? _colorPresed : "#ffffff"
-                            img.color = checkedd ? _colorPresed : img.color == _colorPresed ? "transparent" : _colorPresed
+                            label.color =  pressed ? _colorPresed : "#ffffff"
+                            img.color = pressed ? _colorPresed : "#ffffff"
                         }
                     }
 

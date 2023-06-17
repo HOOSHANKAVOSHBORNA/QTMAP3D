@@ -190,6 +190,7 @@
 
 //}
 
+
 Toolbox::Toolbox(QObject *parent):
     QStandardItemModel(parent)
 {
@@ -208,6 +209,7 @@ void Toolbox::addItem(ToolboxItem *toolboxItem)
     auto subItem = new QStandardItem(toolboxItem->name);
     subItem->setData(toolboxItem->iconUrl, imageSource);
     subItem->setData(toolboxItem->checked, checked);
+    subItem->setData(toolboxItem->checkable, checkable);
 //    subItem->setIcon(QIcon(toolboxItem->iconUrl));
     mItems[toolboxItem->category]->appendRow(subItem);
     mToolboxItems[toolboxItem->name] = toolboxItem;
@@ -223,14 +225,16 @@ QHash<int, QByteArray> Toolbox::roleNames() const
     QHash<int, QByteArray> hash = QStandardItemModel::roleNames();
     hash[imageSource] = "imageSource";
     hash[checked] = "checkedd";
+    hash[checkable] = "checkable";
     return hash;
 }
 
 void Toolbox::onItemClicked(QString name)
 {
+
     if (mToolboxItems.contains(currentItem) ) {
         if(mToolboxItems[currentItem]->checkable){
-            mToolboxItems[currentItem]->checked = false;
+//            mItems[]
             emit mToolboxItems[currentItem]->itemChecked(false);
         }
         if (name == currentItem) {
@@ -247,4 +251,12 @@ void Toolbox::onItemClicked(QString name)
             emit mToolboxItems[name]->itemClicked();
     }
     currentItem = name;
+}
+
+void Toolbox::test(QItemSelection sel, QItemSelection des)
+{
+//    if (!sel.isEmpty())
+//    qDebug() << "select: " << data(sel.indexes()[0]);
+//    if (!des.empty())
+    //    qDebug() << "deselected: " << data(des.indexes()[0]);
 }
