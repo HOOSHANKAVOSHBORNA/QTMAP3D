@@ -26,6 +26,7 @@ public:
 
 public:
     void updateLayers(osgEarth::Map *map);
+//    int rowCount(const QModelIndex& parent) const;
 //    void clear();
 
 
@@ -53,7 +54,9 @@ public:
 //    QHash<int,QByteArray> roleNames() const override;
 
 private:
-    QList<osgEarth::Layer*> mLayersList;
+
+//    QList<osgEarth::Layer*> mLayersList;
+    QStandardItem mLayerList;
     MapItem *mMapItem;
 };
 

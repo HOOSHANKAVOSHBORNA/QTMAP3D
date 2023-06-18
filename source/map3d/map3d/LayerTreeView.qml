@@ -118,8 +118,8 @@ TreeView{
                         hideContainer.border.color = "#111111"
                     }
 
-                    rootItem.model.toggleLayerEnabled(row);
-//                    console.log(row,column , treeView.model)
+//                    rootItem.model.toggleLayerEnabled(treeView.index(row , column));
+//                    console.log(row,column )
                     rootItem.model.clickedItem( treeView.index(row , column))
 //                    rootItem.model.clickedItem(modelIndex())
                 }
