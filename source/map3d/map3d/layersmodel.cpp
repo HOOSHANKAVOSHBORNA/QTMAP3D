@@ -16,7 +16,6 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
         clear();
         updateLayers(mapItem->getMapNode()->getMap());
     });
-
 }
 
 //int LayersModel::columnCount(const QModelIndex &parent) const
@@ -40,7 +39,7 @@ void LayersModel::updateLayers(osgEarth::Map *map)
         //            mLayersList.push_back(layer);
         QStandardItem *lv1Items = new QStandardItem(QString(layer->getName().c_str()));
         rootItem->appendRow(lv1Items);
-        mLayerList.appendRow(lv1Items);
+//        mLayerList.appendRow(lv1Items);
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {
             group->getNumChildren();
@@ -48,9 +47,9 @@ void LayersModel::updateLayers(osgEarth::Map *map)
                 auto node = group->getChild(i);
                 //                    node->setNodeMask()
                 QStandardItem *lv2Items = new QStandardItem(QString(node->getName().c_str()));
-//                qDebug() << lv2Items;
+                //                qDebug() << lv2Items;
                 lv1Items->appendRow(lv2Items);
-//                mLayerList.appendRow(lv2Items);
+                //                mLayerList.appendRow(lv2Items);
             }
         }
     }
@@ -96,41 +95,26 @@ void LayersModel::toggleLayerEnabled(int layerIndex)
 
 void LayersModel::clickedItem(QModelIndex itemIndex)
 {
-    qDebug() << itemIndex.row() << itemIndex;
+//    qDebug() << itemIndex.row() << itemIndex;
 
-        auto layer = mMapItem->getMapNode()->getMap()->getLayerAt(itemIndex.row());
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if(itemIndex.parent().row() == -1){
-            layer = mMapItem->getMapNode()->getMap()->getLayerAt(itemIndex.row());
-            auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
-            if (visibleLayer) {
-                visibleLayer->setVisible(!visibleLayer->getVisible());
-            } else {
-                layer->setEnabled(!layer->getEnabled());
-            }
-        } else{
-            layer = mMapItem->getMapNode()->getMap()->getLayerAt(itemIndex.parent().row());
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            auto node = group->getChild(itemIndex.row());
-            if (node) {
-                node->setNodeMask(!node->getNodeMask());
-//            } else {
-//                layer->setEnabled(!layer->getEnabled());
-
-            }
+    auto layer = mMapItem->getMapNode()->getMap()->getLayerAt(itemIndex.row());
+    osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+    if(itemIndex.parent().row() == -1){
+        layer = mMapItem->getMapNode()->getMap()->getLayerAt(itemIndex.row());
+        auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+        if (visibleLayer) {
+            visibleLayer->setVisible(!visibleLayer->getVisible());
+        } else {
+            layer->setEnabled(!layer->getEnabled());
         }
-
-//    auto layer = mMapItem->getMapNode()->getMap()->getLayerAt(itemIndex.row());
-//    osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-//    group->getChild()
-//    auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
-////    auto groupVisible = group.
-//    if (visibleLayer) {
-//        visibleLayer->setVisible(!visibleLayer->getVisible());
-//    } else {
-//        layer->setEnabled(!layer->getEnabled());
-//    }
-
+    } else{
+        layer = mMapItem->getMapNode()->getMap()->getLayerAt(itemIndex.parent().row());
+        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+        auto node = group->getChild(itemIndex.row());
+        if (node) {
+            node->setNodeMask(!node->getNodeMask());
+        }
+    }
 }
 
 
