@@ -1,6 +1,6 @@
-import QtQuick.Layouts 1.13
+import QtQuick.Layouts
 import QtQuick
-import QtQuick.Controls 2.15
+import QtQuick.Controls
 import QtQuick.Effects
 
 
@@ -10,6 +10,8 @@ TreeView{
     id:rootItem
     anchors.fill: parent
     model: layersModel
+
+
 
     signal toggleLayerEnabled(int layerIndex)
 //    signal clickedItem(QStandardItem itemIndex)
@@ -27,6 +29,8 @@ TreeView{
         required property bool expanded
         required property int hasChildren
         required property int depth
+
+
 
         Rectangle{
             id: container
@@ -48,6 +52,7 @@ TreeView{
 
         TapHandler {
             onTapped: {
+
 //                console.log(rowAtIndex(treeView.index(row , column)))
 //                treeView.currentIndex.parent.row
                 treeView.toggleExpanded(row)

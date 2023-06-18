@@ -17,34 +17,6 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
         updateLayers(mapItem->getMapNode()->getMap());
     });
 
-
-    //    rootItem->appendRow(group1);
-    //    rootItem->appendRow(group2);
-    //    rootItem->appendRow(group3);
-
-    //    group1->appendRow(value1);
-    //    group1->appendRow(value2);
-    //    group1->appendRow(value3);
-    //    group2->appendRow(value4);
-    //    group2->appendRow(value5);
-    //    group2->appendRow(value6);
-    //    group3->appendRow(value7);
-    //    group3->appendRow(value8);
-    //    group3->appendRow(value9);
-
-    //    group1->setText("Branch1");
-    //    group2->setText("Branch2");
-    //    group3->setText("Branch3");
-
-    //    value1->setText("value1");
-    //    value2->setText("value2");
-    //    value3->setText("value3");
-    //    value4->setText("value4");
-    //    value5->setText("value5");
-    //    value6->setText("value6");
-    //    value7->setText("value7");
-    //    value8->setText("value8");
-    //    value9->setText("value9");
 }
 
 //int LayersModel::columnCount(const QModelIndex &parent) const
@@ -60,6 +32,7 @@ void LayersModel::updateLayers(osgEarth::Map *map)
 
 
     QStandardItem *rootItem = invisibleRootItem();
+    rootItem->clearData();
     osgEarth::LayerVector layers;
     map->getLayers(layers);
 
@@ -75,9 +48,9 @@ void LayersModel::updateLayers(osgEarth::Map *map)
                 auto node = group->getChild(i);
                 //                    node->setNodeMask()
                 QStandardItem *lv2Items = new QStandardItem(QString(node->getName().c_str()));
-                qDebug() << lv2Items;
+//                qDebug() << lv2Items;
                 lv1Items->appendRow(lv2Items);
-                mLayerList.appendRow(lv2Items);
+//                mLayerList.appendRow(lv2Items);
             }
         }
     }
