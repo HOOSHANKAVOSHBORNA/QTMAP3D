@@ -69,13 +69,25 @@ void LayersModel::updateLayers(osgEarth::Map *map)
             rootItem->appendRow(lv1Items);
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             if (group) {
-                group->getNumChildren();
                 for(int i = 0; i < group->getNumChildren(); i++){
                     auto node = group->getChild(i);
-//                    node->setNodeMask()
-                    QStandardItem *lv2Items = new QStandardItem(QString(node->getName().c_str()));
-                    qDebug() << lv2Items;
-                    lv1Items->appendRow(lv2Items);
+                    if(node->asGroup())
+                    {
+                        auto group1 = node->asGroup();
+                        QStandardItem *lv2Items = new QStandardItem(QString(group1->getName().c_str()));
+                        lv1Items->appendRow(lv2Items);
+
+                        for(int j = 0; j < group1->getNumChildren(); j++){
+                            auto node1 = group1->getChild(j);
+                            QStandardItem *lv3Items = new QStandardItem(QString(node1->getName().c_str()));
+                            lv2Items->appendRow(lv3Items);
+                        }
+                    }
+                    else{
+                        QStandardItem *lv2Items = new QStandardItem(QString(node->getName().c_str()));
+//                        qDebug() << lv2Items;
+                        lv1Items->appendRow(lv2Items);
+                    }
                 }
             }
         }

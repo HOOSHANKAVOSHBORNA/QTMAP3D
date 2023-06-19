@@ -16,6 +16,7 @@
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
+#include <osgEarthAnnotation/AnnotationLayer>
 
 class MainMapCallback;
 
@@ -50,6 +51,7 @@ public:
     void worldToScreen(osg::Vec3d worldPoint, float& outX, float& outY) const;
     bool addNodeToLayer(osg::Node *node, std::string layerName);
     bool removeNodeFromLayer(osg::Node *node, std::string layerName);
+    bool addLayerToLayer(osgEarth::Layer *layer, std::string layerName);
 
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 public slots:

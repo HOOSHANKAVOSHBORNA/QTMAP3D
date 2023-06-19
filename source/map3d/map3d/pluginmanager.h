@@ -65,6 +65,7 @@ struct PluginInfo
 };
 
 class PluginManager;
+class QDir;
 class EventHandler: public osgGA::GUIEventHandler{
 public:
     EventHandler(PluginManager *pluginManager);
@@ -81,14 +82,17 @@ public:
     explicit PluginManager(QObject *parent = nullptr);
 
 public:
+    void extracted(QDir &pluginsDir);
     void loadPlugins();
-//    void setQmlEngine(QQmlEngine *qmlEngine);
-//    void setMapItem(MapItem *mapItem);
+    //    void setQmlEngine(QQmlEngine *qmlEngine);
+    //    void setMapItem(MapItem *mapItem);
     void setup();
-//    void setDefenseDataManager(DefenseDataManager *defenseDataManager);
+    //    void setDefenseDataManager(DefenseDataManager *defenseDataManager);
 
-//    std::list<PluginInfo>& pluginsInfoList();
-
+    //    std::list<PluginInfo>& pluginsInfoList();
+private:
+    void parsePlugin(const QString &pluginFileName, const QDir &pluginsDir);
+    void loadPlugin(const QString &pluginFileName, const QDir &pluginsDir);
 public slots:
 //    void onSideItemCreated(int index, QObject *sideItem);
 //    void onToolboxItemCreated(ItemDescProxy *itemProxy);
@@ -116,6 +120,8 @@ public:
 private:
     friend EventHandler;
     std::list<PluginInfo> mPluginsInfoList;
+    QStringList mPluginFileNameList;
+    QStringList mLoadedPluginList;
     QMap<QString, QMap<QString, PluginInterface*>> mToolboxItemsMap;
     QMap<QString, QMap<QString, PluginInterface*>> mFileItemsMap;
 };
