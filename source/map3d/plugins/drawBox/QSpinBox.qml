@@ -67,7 +67,7 @@ Item {
                     text: steps[index]
                     anchors.margins: 1
                     color: btntxtColor
-                    font.pointSize:  parent.height/2.5
+                    font.pixelSize:   parent.height ? parent.height/2.5 : 0
                     anchors.centerIn: parent
                     rotation: 0
                 }
@@ -237,7 +237,7 @@ Item {
                     selectByMouse: true
                     selectionColor: secondaryColor
                     selectedTextColor: primaryColor
-                    font.pointSize: parent.height *0.4
+                    font.pixelSize: parent.height ? parent.height*0.6 : 0
                     onTextEdited: value = parseFloat(text)
                     mouseSelectionMode: TextInput.SelectCharacters
                     autoScroll: true
