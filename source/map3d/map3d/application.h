@@ -30,7 +30,7 @@ signals:
     void uiCreated();
 //    void  mainWindowCreated();
 //    void  listWindowCreated();
-//    void defenseDataManagerInitialized(DefenseDataManager *defenseDataManager);
+    void defenseDataManagerInitialized(DefenseDataManager *defenseDataManager);
 
 
 private:
@@ -44,9 +44,9 @@ private:
 
 private slots:
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
-//    void onMainWindowCreated();
-//    void onListWindowCreated();
-//    void onAllWindowsCreated();
+    void onMainWindowCreated();
+    void onListWindowCreated();
+    void onAllWindowsCreated();
     void setup();
     void onUICreated();
 
@@ -73,8 +73,8 @@ private:
     DefenseDataManager *mDefenseDataManager{nullptr};
 
 
-//    bool mMainWindowIsReady = false;
-//    bool mListWindowIsReady = false;
+    bool mMainWindowIsReady = false;
+    bool mListWindowIsReady = false;
     bool mUIIsReady{false};
 };
 
