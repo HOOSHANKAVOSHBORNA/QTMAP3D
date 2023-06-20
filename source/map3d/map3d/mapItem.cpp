@@ -95,6 +95,8 @@ void MapItem::addLayer(osgEarth::Layer *layer)
     auto node = layer->getNode();
     if(node)
         node->setName(layer->getName());
+//    else
+//        qDebug()<<layer->getName();
     mMapNode->getMap()->addLayer(layer);
     // Check if the layer is added successfully
     auto added = mMapNode->getMap()->getLayerByName(layer->getName());
@@ -262,6 +264,7 @@ bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
     if(destinationLayer){
         osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
         if(group){
+            layer->setUserValue("parent", true);
             group->addChild(layer->getNode());
             addLayer(layer);
             emit layerChanged();

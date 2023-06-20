@@ -34,7 +34,8 @@ public slots:
     void toggleLayerEnabled(int layerIndex );
     void clickedItem(QModelIndex itemIndex);
 
-public:
+private:
+    void addChildItem(osg::Group *parentGroup, QStandardItem *parentItem);
 private:
 
 //    QList<osgEarth::Layer*> mLayersList;
