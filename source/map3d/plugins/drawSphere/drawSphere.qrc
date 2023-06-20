@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>resources/sphere.png</file>
         <file>SphereProperty.qml</file>
+        <file>resources/globe.png</file>
+        <file>resources/botHalf.png</file>
+        <file>resources/topHalf.png</file>
     </qresource>
 </RCC>

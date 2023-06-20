@@ -92,6 +92,9 @@ const osgEarth::SpatialReference *MapItem::getMapSRS() const
 void MapItem::addLayer(osgEarth::Layer *layer)
 {
 
+    auto node = layer->getNode();
+    if(node)
+        node->setName(layer->getName());
     mMapNode->getMap()->addLayer(layer);
     // Check if the layer is added successfully
     auto added = mMapNode->getMap()->getLayerByName(layer->getName());
@@ -228,11 +231,12 @@ bool MapItem::addNodeToLayer(osg::Node *node, std::string layerName)
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {
             group->addChild(node);
+            emit layerChanged();
+            return true;
         }
     }
 
-    emit layerChanged();
-    return true;
+    return false;
 }
 
 bool MapItem::removeNodeFromLayer(osg::Node *node, std::string layerName)
@@ -242,10 +246,29 @@ bool MapItem::removeNodeFromLayer(osg::Node *node, std::string layerName)
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {
             group->removeChild(node);
+
+            emit layerChanged();
+            return true;
         }
     }
-    emit layerChanged();
-    return true;
+
+    return false;
+}
+
+bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
+{
+    auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
+//    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
+    if(destinationLayer){
+        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
+        if(group){
+            group->addChild(layer->getNode());
+            addLayer(layer);
+            emit layerChanged();
+            return true;
+        }
+    }
+    return false;
 }
 
 QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
