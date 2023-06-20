@@ -220,3 +220,43 @@ void Toolbox::onItemClicked(const QModelIndex &current)
     else
         previous = current;
 }
+
+ToolboxProxyModel::ToolboxProxyModel(QObject *parent):
+    QSortFilterProxyModel(parent)
+{
+    setDynamicSortFilter(true);
+}
+
+bool ToolboxProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+    // check if item name or its children contain filter string (case insensitive)
+    if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive))
+        return true;
+    for (int i = 0; i < sourceModel()->rowCount(index); ++i) {
+        if (filterAcceptsRow(i, index))
+            return true;
+    }
+    // show its children if its name contains filter string
+    if (source_parent.isValid() && source_parent.data().toString().contains(mFilterString, Qt::CaseInsensitive))
+        return true;
+    return false;
+}
+
+QString ToolboxProxyModel::filterString() const
+{
+    return mFilterString;
+}
+
+void ToolboxProxyModel::setFilterString(const QString &filterString)
+{
+    mFilterString = filterString;
+    invalidateFilter();
+}
+
+void ToolboxProxyModel::onItemClicked(const QModelIndex &current)
+{
+    // call mapped item in toolbox model
+    QModelIndex index = mapToSource(current);
+    static_cast<Toolbox*>(sourceModel())->onItemClicked(index);
+}
