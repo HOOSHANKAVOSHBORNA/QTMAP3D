@@ -54,5 +54,7 @@
         <file>Resources/hand.png</file>
         <file>Resources/eye.png</file>
         <file>Resources/direction.png</file>
+        <file>Resources/sear.svg</file>
+        <file>Resources/back.svg</file>
     </qresource>
 </RCC>

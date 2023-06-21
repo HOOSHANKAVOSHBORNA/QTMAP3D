@@ -27,19 +27,6 @@ CMainWindow {
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
 
-
-//    zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
-//    zoomOutButtonPressed:     navigationWidget.zoomOutButtonPressed
-//    upButtonPressed:          navigationWidget.upButtonPressed
-//    downButtonPressed:        navigationWidget.downButtonPressed
-//    leftButtonPressed:        navigationWidget.leftButtonPressed
-//    rightButtonPressed:       navigationWidget.rightButtonPressed
-//    rotateUpButtonPressed:    navigationWidget.rotateUpButtonPressed
-//    rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
-//    rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
-//    rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
-
-
     id: wnd
     visible: true
     width: 800
@@ -82,6 +69,13 @@ CMainWindow {
 //    }
 
 //    onWidthChanged: leftContainerHolder.adjustRightContainer(wnd.width);
+
+    SearchBar {
+        anchors.top: parent.top
+        anchors.topMargin: widgetsMargins
+        anchors.rightMargin: fpsLabel.width + widgetsMargins*3
+        anchors.right: parent.right
+    }
 
     property var sideItemsModel: ListModel {
 

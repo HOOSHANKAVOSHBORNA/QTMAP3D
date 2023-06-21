@@ -25,5 +25,6 @@
         <file>MapControllerItem.qml</file>
         <file>LayerTreeView.qml</file>
         <file>ToolboxView.qml</file>
+        <file>SearchBar.qml</file>
     </qresource>
 </RCC>
