@@ -14,14 +14,17 @@ find_package(Qt6 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(drawSphere SHARED
     drawSphere.json
-    drawsphere.cpp
+    drawSphere.cpp
     drawSphere.qrc
-    sphereproperties.cpp
+    sphereProperties.cpp
     sphereNode.cpp
 )
 
 target_include_directories(drawSphere PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
 target_link_libraries(drawSphere PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
+target_include_directories(drawSphere PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
+
+target_link_libraries(drawSphere PRIVATE drawShape)
 
 target_compile_definitions(drawSphere PRIVATE CPTEST_LIBRARY)
 
