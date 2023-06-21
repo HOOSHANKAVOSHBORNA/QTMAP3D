@@ -1,8 +1,6 @@
 #ifndef STATION_H
 #define STATION_H
 
-
-#include "mapItem.h"
 #include "defenseModelNode.h"
 #include "stationInformation.h"
 #include "circle.h"

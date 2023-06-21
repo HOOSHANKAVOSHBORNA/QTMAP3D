@@ -37,6 +37,7 @@ void LayersModel::updateLayers(osgEarth::Map *map)
     for(const auto& layer : layers) {
         bool hasParent;
         layer->getUserValue("parent", hasParent);
+        qDebug()<<layer->getName()<<", "<< hasParent;
         if(!hasParent){
             QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
             rootItem->appendRow(treeItem);

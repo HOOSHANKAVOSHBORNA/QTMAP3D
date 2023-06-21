@@ -207,7 +207,7 @@ void MapItem::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) con
 
 void MapItem::addLayer(osgEarth::Layer *layer)
 {
-
+    layer->setUserValue("parent", false);
     auto node = layer->getNode();
     if(node)
         node->setName(layer->getName());
@@ -270,9 +270,9 @@ bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
         osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
         if(group){
             if(!group->containsNode(layer->getNode())){
-                layer->setUserValue("parent", true);
                 group->addChild(layer->getNode());
                 addLayer(layer);
+                layer->setUserValue("parent", true);
                 emit layerChanged();
             }
             return true;
@@ -288,9 +288,9 @@ bool MapItem::removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName
     if(destinationLayer){
         osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
         if(group){
-            layer->setUserValue("parent", false);
             group->removeChild(layer->getNode());
             removeLayer(layer);
+            layer->setUserValue("parent", false);
             emit layerChanged();
             return true;
         }
