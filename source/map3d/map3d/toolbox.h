@@ -11,6 +11,7 @@ struct ToolboxItem;
 
 #include <QVariant>
 #include <QList>
+#include <QSortFilterProxyModel>
 
 class TreeItem
 {
@@ -69,6 +70,28 @@ private:
     QModelIndex previous;
     QMap<QString, ToolboxItem*> mToolboxItems;
     TreeItem *rootItem;
+};
+
+// define proxy model
+class ToolboxProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+public:
+    ToolboxProxyModel(QObject *parent = nullptr);
+
+    QString filterString() const;
+
+public slots:
+    void onItemClicked(const QModelIndex &current);
+    void setFilterString(const QString &filterString);
+signals:
+    void filterStringChanged();
+
+protected:
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+
+private:
+    QString mFilterString = "";
 };
 
 #endif // TOOLBOX_H

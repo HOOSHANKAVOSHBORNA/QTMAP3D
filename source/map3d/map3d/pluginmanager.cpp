@@ -123,7 +123,7 @@ void PluginManager::setup()
     UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
     PluginInterface::setUiHandle(uiHandle);
     auto toolbox = Application::instance()->mainWindow()->toolbox();
-    PluginInterface::setToolbox(toolbox);
+    PluginInterface::setToolbox(static_cast<Toolbox*>(toolbox->sourceModel()));
     //-------------------------------------
     for (const auto& item : mPluginsInfoList) {
         item.interface->setup();

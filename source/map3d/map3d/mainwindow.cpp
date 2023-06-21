@@ -30,8 +30,10 @@ MainWindow::MainWindow(QWindow *parent) :
 
 //    setClearBeforeRendering(false);
     setColor(Qt::black);
+    mToolbox = new ToolboxProxyModel();
     Toolbox *toolbox = new Toolbox();
-    setToolbox(toolbox);
+    mToolbox->setSourceModel(toolbox);
+//    setToolbox(toolbox);
 
 
 
@@ -228,7 +230,7 @@ LayersModel *MainWindow::layersModel() const
     return mLayersModel;
 }
 
-Toolbox *MainWindow::toolbox() const
+ToolboxProxyModel *MainWindow::toolbox() const
 {
     return mToolbox;
 }
@@ -492,7 +494,7 @@ void MainWindow::setLayersModel(LayersModel *layersModel)
     }
 }
 
-void MainWindow::setToolbox(Toolbox *toolbox)
+void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
 {
     mToolbox = toolbox;
 }

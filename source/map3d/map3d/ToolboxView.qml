@@ -37,7 +37,6 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
         }
-
         Rectangle {
             width: header.width
             height: 10
@@ -46,8 +45,39 @@ Item {
         }
     }
     Rectangle {
-        id: treeRect
+        id: search
+        width: header.width
+        height: 30
         anchors.top: header.bottom
+        color: "#202020"
+        TextField {
+            function sendToSearch() {
+                rootItem.listModel.setFilterString(text)
+                if (text.length == 0) {
+                    treeView.collapseRecursively()
+                }
+                treeView.expandRecursively()
+            }
+
+            anchors.fill: parent
+            color: "white"
+            placeholderText: "search toolbox"
+            placeholderTextColor: "#656565"
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+            onAccepted: {
+                sendToSearch()
+            }
+            onTextChanged: function() {
+                sendToSearch()
+            }
+
+        }
+    }
+
+    Rectangle {
+        id: treeRect
+        anchors.top: search.bottom
         height: parent.height - header.height - footer.height
         width: 300
         color: _colorRec
@@ -70,8 +100,8 @@ Item {
                 selectionModel: ItemSelectionModel {
                     id: selectionM
                     onCurrentChanged: function(cur, pre){
-                        print("previous: ", treeView.model.data(pre))
-                        print("current: ", treeView.model.data(cur))
+//                        print("previous: ", treeView.model.data(pre))
+//                        print("current: ", treeView.model.data(cur))
                         select(cur, ItemSelectionModel.Select)
                         treeView.model.onItemClicked(cur)
                     }
