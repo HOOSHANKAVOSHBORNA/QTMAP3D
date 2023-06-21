@@ -10,7 +10,7 @@ DrawCylinder::DrawCylinder(QObject *parent): DrawShape(parent)
 bool DrawCylinder::setup()
 {
     auto toolboxItem =  new ToolboxItem{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true};
-    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCylinder::onConeItemCheck);
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCylinder::onCylinderItemCheck);
     toolbox()->addItem(toolboxItem);
 
     makeIconNode("../data/images/draw/cylinder.png");
@@ -25,35 +25,35 @@ bool DrawCylinder::setup()
 void DrawCylinder::onCylinderItemCheck(bool check)
 {
     if (check) {
-        mapItem()->addLayerToLayer(mConeLayer, CATEGORY);
+        mapItem()->addLayerToLayer(mCylinderLayer, CATEGORY);
         setState(State::READY);
-        mConeProperties = new ConeProperties(mCone, qmlEngine(), uiHandle(), mapItem());
-        mConeProperties->show();
+        mCylinderProperties = new CylinderProperties(mCylinder, qmlEngine(), uiHandle(), mapItem());
+        mCylinderProperties->show();
         mapItem()->addNode(iconNode());
 
     }
     else {
-        if(mConeLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mConeLayer, CATEGORY);
+        if(mCylinderLayer->getGroup()->getNumChildren() <= 0)
+            mapItem()->removeLayerFromLayer(mCylinderLayer, CATEGORY);
         if(state() == State::EDIT)
             cancelDraw();
         setState(State::NONE);
-        mCone = nullptr;
-        mConeProperties->hide();
+        mCylinder = nullptr;
+        mCylinderProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
 
 void DrawCylinder::initDraw(const osgEarth::GeoPoint &geoPos)
 {
-    QString name = "Cone" + QString::number(mCount);
-    mCone = new Cone();
-    mCone->setName(name.toStdString());
+    QString name = "Cylinder" + QString::number(mCount);
+    mCylinder = new Cylinder();
+    mCylinder->setName(name.toStdString());
 
-    mCone->setPosition(geoPos);
+    mCylinder->setPosition(geoPos);
 
-    mapItem()->addNodeToLayer(mCone, CONE);
-    mConeProperties->setCone(mCone);
+    mapItem()->addNodeToLayer(mCylinder, CYLINDER);
+    mCylinderProperties->setCylinder(mCylinder);
 
     setState(State::EDIT);
     mCount++;
@@ -62,9 +62,9 @@ void DrawCylinder::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawCylinder::cancelDraw()
 {
     if(state() == State::EDIT){
-        mapItem()->removeNodeFromLayer(mCone, CONE);
-        mCone = nullptr;
-        mConeProperties->setCone(mCone);
+        mapItem()->removeNodeFromLayer(mCylinder, CYLINDER);
+        mCylinder = nullptr;
+        mCylinderProperties->setCylinder(mCylinder);
         setState(State::READY);
         mCount--;
     }
