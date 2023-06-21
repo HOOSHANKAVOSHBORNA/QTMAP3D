@@ -44,7 +44,7 @@ void DrawCapsule::onCapsuleItemCheck(bool check)
 
 void DrawCapsule::initDraw(const osgEarth::GeoPoint &geoPos)
 {
-    QString name = "box" + QString::number(mCount);
+    QString name = "Capsule" + QString::number(mCount);
     mCapsule = new Capsule();
     mCapsule->setName(name.toStdString());
 
