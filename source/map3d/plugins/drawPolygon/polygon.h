@@ -21,12 +21,15 @@ public:
     void removePoint();
     void setHeight(float height);
     float getHeight();
+    double CalculateAreaOfPolygon();
+    double CalculateAreaOfPolygon_I();
 
 
 
 private:
     MapItem* mMapItem{nullptr};
     osg::ref_ptr<osgEarth::Features::Geometry> mPolygonGeom;
+
 };
 
 

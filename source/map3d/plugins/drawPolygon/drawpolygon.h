@@ -29,10 +29,10 @@ private slots:
     void onPolygonItemCheck(bool check);
 private:
     void startDraw(const osgGA::GUIEventAdapter& event);
-    void drawing(const osgGA::GUIEventAdapter& event);
+    bool drawing(const osgGA::GUIEventAdapter& event);
     void cancelDraw();
     void finishDraw();
-    void mouseMoveDrawing(const osgGA::GUIEventAdapter& event);
+    bool mouseMoveDrawing(const osgGA::GUIEventAdapter& event);
 
     osgEarth::Annotation::PlaceNode* makeIconNode();
 
