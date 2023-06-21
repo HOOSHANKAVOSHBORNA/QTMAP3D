@@ -1,6 +1,6 @@
 import QtQuick.Layouts 1.13
 import QtQuick
-import QtQuick.Controls 2.15
+import QtQuick.Controls
 import QtQuick.Effects
 import Crystal 1.0
 
@@ -59,6 +59,14 @@ Item {
                 treeView.expandRecursively()
             }
 
+            background: Rectangle {
+                radius: 2
+                implicitWidth: 100
+                implicitHeight: 24
+                border.color: "#333"
+                border.width: 1
+                color: "#454545"
+            }
             anchors.fill: parent
             color: "white"
             placeholderText: "search toolbox"
