@@ -23,10 +23,11 @@ class DrawShape : public PluginInterface
 public:
     enum class State{
         NONE,
-        START,
+        READY,
         DRAWING,
-        FINISH,
-        DELETE
+        EDIT,
+        CANCEL,
+        CONFIRM
     };
 public:
     explicit DrawShape(QObject *parent = nullptr);
@@ -35,7 +36,7 @@ public:
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> iconNode() const;
     DrawShape::State state() const;
     void setState(DrawShape::State newState);
-    void addLayer();
+//    void addLayer();
 //    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> shapeLayer() const;
 
     virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override {return false;}
@@ -47,9 +48,9 @@ public:
     virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
     virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override {return false;}
 protected:
-    virtual void startDraw(const osgEarth::GeoPoint &geoPos){};
-    virtual void finishDrawing(){};
-    virtual void cancelDrawing(){};
+    virtual void initDraw(const osgEarth::GeoPoint &geoPos){};
+    virtual void confirmDraw();
+    virtual void cancelDraw(){};
 private:
     State mState{State::NONE};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};

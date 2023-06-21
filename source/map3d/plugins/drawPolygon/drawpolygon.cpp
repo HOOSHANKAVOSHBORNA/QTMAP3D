@@ -164,10 +164,11 @@ void DrawPolygon::startDraw(const osgGA::GUIEventAdapter &event)
     mDrawingState = DrawingState::DRAWING;
     mPolygonProperties->setPolygon(mPolygon);
 }
-void DrawPolygon::drawing(const osgGA::GUIEventAdapter &event)
+bool DrawPolygon::drawing(const osgGA::GUIEventAdapter &event)
 {
     osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
+    return false;
 }
 
 void DrawPolygon::cancelDraw()
@@ -185,7 +186,7 @@ void DrawPolygon::finishDraw()
         mDrawingState = DrawingState::START;
     }
 }
-void DrawPolygon::mouseMoveDrawing(const osgGA::GUIEventAdapter &event)
+bool DrawPolygon::mouseMoveDrawing(const osgGA::GUIEventAdapter &event)
 {
     if (mPolygon->getSize() >= 2)
     {
@@ -194,5 +195,9 @@ void DrawPolygon::mouseMoveDrawing(const osgGA::GUIEventAdapter &event)
     }
     osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
+    if (mPolygon->getSize() > 4){
+        qDebug()<<"Area is: "<<mPolygon->CalculateAreaOfPolygon();
+    }
+    return false;
 
 }

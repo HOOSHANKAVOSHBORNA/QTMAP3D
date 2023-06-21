@@ -39,6 +39,12 @@ DrawShape::DrawShape(QObject *parent)
 bool DrawShape::setup()
 {
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+    if(!mHasLayer){
+        auto shapeLayer = new osgEarth::Annotation::AnnotationLayer();
+        shapeLayer->setName(CATEGORY);
+        mapItem()->addLayer(shapeLayer);
+        mHasLayer = true;
+    }
     return true;
 }
 
@@ -67,15 +73,15 @@ void DrawShape::setState(DrawShape::State newState)
     mState = newState;
 }
 
-void DrawShape::addLayer()
-{
-    if(!mHasLayer){
-        auto shapeLayer = new osgEarth::Annotation::AnnotationLayer();
-        shapeLayer->setName(CATEGORY);
-        mapItem()->addLayer(shapeLayer);
-        mHasLayer = true;
-    }
-}
+//void DrawShape::addLayer()
+//{
+//    if(!mHasLayer){
+//        auto shapeLayer = new osgEarth::Annotation::AnnotationLayer();
+//        shapeLayer->setName(CATEGORY);
+//        mapItem()->addLayer(shapeLayer);
+//        mHasLayer = true;
+//    }
+//}
 
 //osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> DrawShape::shapeLayer() const
 //{
@@ -88,18 +94,18 @@ bool DrawShape::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActi
         return false;
 
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
-        if (mState == State::START) {
+        if (mState == State::READY) {
            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-            startDraw(geoPos);
+            initDraw(geoPos);
             return true;
         }
     }
-    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && mState == State::DRAWING) {
-        cancelDrawing();
+    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && mState == State::EDIT) {
+        cancelDraw();
         return false;
     }
-    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && mState == State::DRAWING) {
-        finishDrawing();
+    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && mState == State::EDIT) {
+        confirmDraw();
         return false;
     }
     return false;
@@ -116,5 +122,12 @@ bool DrawShape::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
     }
     //--------------------------------
     return false;
+}
+
+void DrawShape::confirmDraw()
+{
+    if (state() == State::EDIT) {
+        setState(State::READY);
+    }
 }
 

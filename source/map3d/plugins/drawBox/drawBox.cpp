@@ -1,4 +1,4 @@
-#include "drawbox.h"
+#include "drawBox.h"
 
 int DrawBox::mCount{0};
 
@@ -28,10 +28,9 @@ bool DrawBox::setup()
     makeIconNode("../data/images/draw/box.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    addLayer();
+//    addLayer();
     mBoxLayer = new osgEarth::Annotation::AnnotationLayer();
     mBoxLayer->setName(BOX);
-    mapItem()->addLayerToLayer(mBoxLayer, CATEGORY);
 //    mBoxLayer->getGroup()->setName(BOX);
 //    shapeLayer()->getGroup()->addChild(mBoxLayer->getGroup());
 //    emit mapItem()->layerChanged();
@@ -43,13 +42,18 @@ bool DrawBox::setup()
 void DrawBox::onBoxItemCheck(bool check)
 {
     if (check) {
-        setState(State::START);
+        mapItem()->addLayerToLayer(mBoxLayer, CATEGORY);
+        setState(State::READY);
         mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
         mBoxProperties->show();
         mapItem()->addNode(iconNode());
 
     }
     else {
+        if(mBoxLayer->getGroup()->getNumChildren() <= 0)
+            mapItem()->removeLayerFromLayer(mBoxLayer, CATEGORY);
+        if(state() == State::EDIT)
+            cancelDraw();
         setState(State::NONE);
         mBox = nullptr;
         mBoxProperties->hide();
@@ -57,8 +61,7 @@ void DrawBox::onBoxItemCheck(bool check)
     }
 }
 
-
-void DrawBox::startDraw(const osgEarth::GeoPoint &geoPos)
+void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
 {
     QString name = "box" + QString::number(mCount);
     mBox = new Box();
@@ -74,24 +77,18 @@ void DrawBox::startDraw(const osgEarth::GeoPoint &geoPos)
 
     mBoxProperties->setBox(mBox);
 
-    setState(State::DRAWING);
+    setState(State::EDIT);
     mCount++;
 }
 
-void DrawBox::finishDrawing()
+void DrawBox::cancelDraw()
 {
-    if (state() == State::DRAWING) {
-        setState(State::START);
-    }
-}
-
-void DrawBox::cancelDrawing()
-{
-    if(state() == State::DRAWING){
+    if(state() == State::EDIT){
         mapItem()->removeNodeFromLayer(mBox, BOX);
         mBox = nullptr;
         mBoxProperties->setBox(mBox);
-        setState(State::START);
+        setState(State::READY);
+        mCount--;
     }
 }
 

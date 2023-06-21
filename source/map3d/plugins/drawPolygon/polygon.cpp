@@ -15,11 +15,11 @@ Polygon::Polygon(MapItem *mapItem)
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() /*= osgEarth::Color::Purple*/;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() /*= 2.0f*/;
     geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
-    geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = 200;
+    //geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = 10;
     geomStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() /*= osg::Vec4f(1,1,1,1)*/;
     geomStyle.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
 
-    //geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 80000;
+    //geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 800000;
 
 //    geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 100000;
 
@@ -93,6 +93,80 @@ float Polygon::getHeight()
 {
     auto style = this->getStyle();
     return style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
+}
+
+double Polygon::CalculateAreaOfPolygon()
+{
+    double totalArea = 0.0;
+    double numPoints = getSize();
+    qDebug()<<numPoints;
+    if (getSize()>2){
+    for (int i = 0; i < numPoints; i++)
+    {
+        osg::Vec3d p1 = mPolygonGeom->at(i);
+        osg::Vec3d p2 = mPolygonGeom->at(fmod((i + 1) , numPoints));
+
+        //use Shoelace formula to calculate area of polygon
+        totalArea += (p1.x() * p2.y()) - (p2.x() * p1.y());
+
+//        double lat1 = osg::DegreesToRadians(p1.x());
+//        double lon1 = osg::DegreesToRadians(p1.y());
+//        double lat2 = osg::DegreesToRadians(p2.x());
+//        double lon2 = osg::DegreesToRadians(p2.y());
+
+
+
+//        double dlon = lon2 - lon1;
+//        double dlat = lat2 - lat1;
+
+//        //double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
+//        double a = pow(sin(dlat / 2), 2) +
+//            pow(sin(dlon / 2), 2) *
+//                cos(lat1) * cos(lat2);
+//        double c = 2 * asin(sqrt(a));
+//        //double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+//        double distance = 6371000 * c;
+//        totalArea += (distance * distance) * osg::PI;
+    }
+    return 10000000000*(std::abs(totalArea / 2.0));
+    }
+    return 0;
+
+}
+
+inline float  computeTriangleArea(float a, float b, float c)
+{
+    float  p = (a + b + c) / 2;
+    float  s = sqrt(p * (p - a) * (p - b) * (p - c));
+
+    return s;
+}
+
+double Polygon::CalculateAreaOfPolygon_I()
+{
+    double totalArea = 0.0;
+    double numPoints = getSize();
+    qDebug()<<numPoints;
+    if (getSize()>3){
+    for (unsigned int i = 1; i < numPoints-1; i++)
+    {
+
+
+        osg::Vec3  pos1 = mPolygonGeom->at(0);
+
+        osg::Vec3  pos2 = mPolygonGeom->at(i);
+        osg::Vec3  pos3 = mPolygonGeom->at(i+1);
+
+        float  length1 = (pos1 - pos2).length();
+        float  length2 = (pos3 - pos2).length();
+        float  length3 = (pos1 - pos3).length();
+
+        totalArea += computeTriangleArea(length1, length2, length3);
+    }
+    return totalArea;
+
+}
+    return 0;
 }
 
 void Polygon::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)

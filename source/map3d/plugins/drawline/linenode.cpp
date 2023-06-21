@@ -23,6 +23,7 @@ LineNode::LineNode(MapItem *mapItem)
 	//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
 
 	pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = mColor;
+    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->lineCap() = osgEarth::Symbology::Stroke::LINECAP_ROUND;
 	pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
 	pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = mTessellation;
 

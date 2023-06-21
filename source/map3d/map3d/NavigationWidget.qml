@@ -153,8 +153,6 @@ Item {
             }
 
 
-
-
             Button {
                 id: negative
                 text: qsTr("Button")
