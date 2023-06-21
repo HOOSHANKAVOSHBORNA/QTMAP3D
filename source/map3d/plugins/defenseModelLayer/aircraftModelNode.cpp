@@ -241,9 +241,9 @@ AircraftModelNode::~AircraftModelNode()
 //	qDebug()<<"~tn"<<mData->info.TN;
 //	mDefenseModelLayer->mapItem()->untrackNode(getGeoTransform());
 
-    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRouteLine, AIRCRAFT_LAYER);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mLatestPointLine, AIRCRAFT_LAYER);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFT_LAYER);
 
 	delete mRenderStatusImage;
 }
@@ -320,7 +320,7 @@ void AircraftModelNode::stop()
 	mIsStop = true;
 	if(mAnimationPathCallback != nullptr)
 		mAnimationPathCallback->getAnimationPath()->clear();
-	removeEffect();
+//	removeEffect();
 }
 
 void AircraftModelNode::dataChanged()
@@ -456,13 +456,13 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 {
 	if(check)
 	{
-        mDefenseModelLayer->mapItem()->addNodeToLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-        mDefenseModelLayer->mapItem()->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mRouteLine, AIRCRAFT_LAYER);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mTempLine, AIRCRAFT_LAYER);
 	}
 	else
 	{
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRouteLine, AIRCRAFT_LAYER);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFT_LAYER);
 	}
 
 }
@@ -470,13 +470,13 @@ void AircraftModelNode::onRouteButtonToggled(bool check)
 void AircraftModelNode::onLatestPointsToggled(bool check) {
 	if (check)
 	{
-        mDefenseModelLayer->mapItem()->addNodeToLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-        mDefenseModelLayer->mapItem()->addNodeToLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mLatestPointLine, AIRCRAFT_LAYER);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mTempLine, AIRCRAFT_LAYER);
 	}
 	else
 	{
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mLatestPointLine, AIRCRAFT_LAYER);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFT_LAYER);
 	}
 }
 
@@ -599,23 +599,23 @@ void AircraftModelNode::addEffect(double emitterDuration)
 	mFire->setEmitterDuration(emitterDuration);
 	mFire->setParticleDuration(0.2);
 	osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());// for textures or lighting
-    mDefenseModelLayer->mapItem()->addNodeToLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->addNodeToLayer(mFire->getParticleSystem(), AIRCRAFT_LAYER);
 	//add smoke----------------------------------------------------------------------------------------------------
 	osgEarth::Registry::shaderGenerator().run(mSmoke);// for textures or lighting
 	getPositionAttitudeTransform()->addChild(mSmoke);
 	mSmoke->setEmitterDuration(emitterDuration);
 	mSmoke->setParticleDuration(5);
 	osgEarth::Registry::shaderGenerator().run(mSmoke->getParticleSystem());// for textures or lighting
-    mDefenseModelLayer->mapItem()->addNodeToLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->addNodeToLayer(mSmoke->getParticleSystem(), AIRCRAFT_LAYER);
 }
 
 void AircraftModelNode::removeEffect()
 {
 	//remove fire---------------------------------------------
-    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mFire->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mFire->getParticleSystem(), AIRCRAFT_LAYER);
 	getPositionAttitudeTransform()->removeChild(mFire);
 	//remove smoke--------------------------------------------
-    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mSmoke->getParticleSystem(), AIRCRAFTS_LAYER_NAME);
+    mDefenseModelLayer->mapItem()->removeNodeFromLayer(mSmoke->getParticleSystem(), AIRCRAFT_LAYER);
 	getPositionAttitudeTransform()->removeChild(mSmoke);
 }
 

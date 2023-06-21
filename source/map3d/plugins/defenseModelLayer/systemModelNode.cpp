@@ -454,11 +454,11 @@ void SystemModelNode::onRangeButtonToggled(bool check)
 		mRangeCircle->setPosition(getPosition());
 		mRangeCircle->setRadius(osgEarth::Distance(mData->information->systemInfo.ViewRange, osgEarth::Units::METERS));
 
-        mDefenseModelLayer->mapItem()->addNodeToLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mRangeCircle, SYSTEM_LAYER);
 	}
 	else
 	{
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRangeCircle, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRangeCircle, SYSTEM_LAYER);
 	}
 }
 
@@ -502,11 +502,11 @@ void SystemModelNode::onWezButtonToggled(bool checked)
 		float height = static_cast<float>(radius/3);
 		mWezPolygon->setHeight(height);
 
-        mDefenseModelLayer->mapItem()->addNodeToLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mWezPolygon, SYSTEM_LAYER);
 
 	}
 	else {
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mWezPolygon, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mWezPolygon, SYSTEM_LAYER);
 	}
 }
 
@@ -516,11 +516,11 @@ void SystemModelNode::onMezButtonToggled(bool checked)
 	{
 		mMezSphere->setPosition(getPosition());
 		mMezSphere->setRadius(mData->information->systemInfo.MezRange);
-        mDefenseModelLayer->mapItem()->addNodeToLayer(mMezSphere, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mMezSphere, SYSTEM_LAYER);
 	}
 	else
 	{
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mMezSphere, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mMezSphere, SYSTEM_LAYER);
 	}
 }
 

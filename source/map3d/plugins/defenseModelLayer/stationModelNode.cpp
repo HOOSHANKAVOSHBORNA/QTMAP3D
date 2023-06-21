@@ -250,7 +250,7 @@ void StationModelNode::onRangeButtonToggled(bool check)
         mRangeCircle->setPosition(getPosition());
 		mRangeCircle->setRadius(osgEarth::Distance(mData->info.Radius, osgEarth::Units::METERS));
 
-        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATION_LAYER);
         if (layer) {
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             if (group) {
@@ -260,7 +260,7 @@ void StationModelNode::onRangeButtonToggled(bool check)
     }
     else
     {
-        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATIONS_LAYER_NAME);
+        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATION_LAYER);
         if (layer) {
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             if (group) {
@@ -296,11 +296,11 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         }
 
 
-        mDefenseModelLayer->mapItem()->addNodeToLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(mVisiblePolygon, STATION_LAYER);
     }
     else
     {
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mVisiblePolygon, STATIONS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mVisiblePolygon, STATION_LAYER);
     }
 }
 
