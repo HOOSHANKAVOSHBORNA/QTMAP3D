@@ -26,6 +26,7 @@ public:
 
 public:
     void updateLayers(osgEarth::Map *map);
+//    int rowCount(const QModelIndex& parent) const;
 //    void clear();
 
 
@@ -33,27 +34,12 @@ public slots:
     void toggleLayerEnabled(int layerIndex );
     void clickedItem(QModelIndex itemIndex);
 
-public:
-//    QStandardItem *rootItem = invisibleRootItem();
-//    QStandardItem *group1 = new QStandardItem;
-//    QStandardItem *group2 = new QStandardItem;
-//    QStandardItem *group3 = new QStandardItem;
-
-//    QStandardItem *value1 = new QStandardItem;
-//    QStandardItem *value2 = new QStandardItem;
-//    QStandardItem *value3 = new QStandardItem;
-//    QStandardItem *value4 = new QStandardItem;
-//    QStandardItem *value5 = new QStandardItem;
-//    QStandardItem *value6 = new QStandardItem;
-//    QStandardItem *value7 = new QStandardItem;
-//    QStandardItem *value8 = new QStandardItem;
-//    QStandardItem *value9 = new QStandardItem;
-//    int rowCount(const QModelIndex &parent) const override;
-//    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-//    QHash<int,QByteArray> roleNames() const override;
-
 private:
-    QList<osgEarth::Layer*> mLayersList;
+    void addChildItem(osg::Group *parentGroup, QStandardItem *parentItem);
+private:
+
+//    QList<osgEarth::Layer*> mLayersList;
+    QStandardItem mLayerList;
     MapItem *mMapItem;
 };
 

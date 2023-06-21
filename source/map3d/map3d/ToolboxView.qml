@@ -37,7 +37,6 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
         }
-
         Rectangle {
             width: header.width
             height: 10
@@ -46,8 +45,39 @@ Item {
         }
     }
     Rectangle {
-        id: treeRect
+        id: search
+        width: header.width
+        height: 30
         anchors.top: header.bottom
+        color: "#202020"
+        TextField {
+            function sendToSearch() {
+                rootItem.listModel.setFilterString(text)
+                if (text.length == 0) {
+                    treeView.collapseRecursively()
+                }
+                treeView.expandRecursively()
+            }
+
+            anchors.fill: parent
+            color: "white"
+            placeholderText: "search toolbox"
+            placeholderTextColor: "#656565"
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+            onAccepted: {
+                sendToSearch()
+            }
+            onTextChanged: function() {
+                sendToSearch()
+            }
+
+        }
+    }
+
+    Rectangle {
+        id: treeRect
+        anchors.top: search.bottom
         height: parent.height - header.height - footer.height
         width: 300
         color: _colorRec
@@ -66,13 +96,24 @@ Item {
                 clip: true
                 model: rootItem.listModel
                 signal toolboxItemClicked(string category, string name)
-                selectionModel: ItemSelectionModel {}
+
+                selectionModel: ItemSelectionModel {
+                    id: selectionM
+                    onCurrentChanged: function(cur, pre){
+//                        print("previous: ", treeView.model.data(pre))
+//                        print("current: ", treeView.model.data(cur))
+                        select(cur, ItemSelectionModel.Select)
+                        treeView.model.onItemClicked(cur)
+                    }
+                    onSelectionChanged: function(sel, des){
+                        reset()
+                    }
+                }
                 delegate: Item {
                     id: treeDelegate
 
                     implicitWidth: treeRect.width
                     implicitHeight:  treeDelegate.hasChildren ? categorySize : itemSize
-
                     readonly property real indent: 30
                     readonly property real padding: 15
                     required property TreeView treeView
@@ -101,6 +142,17 @@ Item {
                             radius: treeDelegate.hasChildren ? 5 : 0
 
                         }
+                        MouseArea {
+                            id: mouseArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+
+                            onPressed: function(mouse) {
+                                mouse.accepted = false
+                            }
+                            propagateComposedEvents: true
+
+                        }
                         radius: height/10
                         x: padding + ((treeDelegate.depth - 1) * treeDelegate.indent)
 
@@ -111,7 +163,7 @@ Item {
                             font.pixelSize: 14
                             font.bold: treeDelegate.hasChildren
                             anchors.verticalCenter: container.verticalCenter
-                            color: "#ffffff"
+                            color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "#ffffff"
                             text: display
                         }
 
@@ -129,33 +181,15 @@ Item {
                             height: 24
                             x: container.x - width + (treeDelegate.depth)*indent
                             anchors.verticalCenter: container.verticalCenter
+                            color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"
                         }
-                    }
-
-                    HoverHandler{
-                        onHoveredChanged: function() {
-                            if (!checkedd){
-                                label.color = hovered ? _colorHover : "#ffffff"
-                                img.color = hovered ? _colorHover : "transparent"
-                            }
-                        }
-
                     }
 
                     TapHandler {
                         onTapped: function() {
-                            if (!treeDelegate.hasChildren){
-                                treeView.model.onItemClicked(display)
-                            }
                             treeView.toggleExpanded(row)
                         }
-
-                        onPressedChanged: function() {
-                            label.color = checkedd ? _colorPresed :  pressed ? _colorPresed : "#ffffff"
-                            img.color = checkedd ? _colorPresed : img.color == _colorPresed ? "transparent" : _colorPresed
-                        }
                     }
-
                 }
             }
         }

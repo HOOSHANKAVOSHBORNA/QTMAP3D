@@ -16,6 +16,7 @@
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
+#include <osgEarthAnnotation/AnnotationLayer>
 
 class MainMapCallback;
 
@@ -31,7 +32,6 @@ public:
     const osg::Group *getRoot() const;
     osgEarth::MapNode *getMapNode() const;
     const osgEarth::SpatialReference* getMapSRS() const;
-    void addLayer(osgEarth::Layer* layer);
 //    LayersModel *getLayersModel() const;
     bool addNode(osg::Node *node);
     bool removeNode(osg::Node *node);
@@ -48,8 +48,13 @@ public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;
     osgEarth::GeoPoint screenToGeoPoint(float x, float y) const;
     void worldToScreen(osg::Vec3d worldPoint, float& outX, float& outY) const;
+    //--layer function---------------------------------
+    void addLayer(osgEarth::Layer* layer);
+    void removeLayer(osgEarth::Layer* layer);
     bool addNodeToLayer(osg::Node *node, std::string layerName);
     bool removeNodeFromLayer(osg::Node *node, std::string layerName);
+    bool addLayerToLayer(osgEarth::Layer *layer, std::string layerName);
+    bool removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName);
 
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 public slots:

@@ -131,10 +131,12 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
         mMainWindow = mainWnd;
         if(mListWindow)
             onUICreated();
+        onMainWindowCreated();
 //        emit mainWindowCreated();
     }
     if (listWnd && !mListWindow) {
         mListWindow = listWnd;
+        mMainWindow->setListWindow(mListWindow);
         if(mMainWindow)
             onUICreated();
 
@@ -152,26 +154,26 @@ void Application::onUICreated()
     emit uiCreated();
 }
 
-//void Application::onMainWindowCreated()
-//{
+void Application::onMainWindowCreated()
+{
 //    mMainWindowIsReady = true;
 
 //    if (mMainWindowIsReady && mListWindowIsReady) {
 //        onAllWindowsCreated();
 //    }
-//}
+}
 
-//void Application::onListWindowCreated()
-//{
+void Application::onListWindowCreated()
+{
 //    mListWindowIsReady = true;
 
 //    if (mMainWindowIsReady && mListWindowIsReady) {
 //        onAllWindowsCreated();
 //    }
-//}
+}
 
-//void Application::onAllWindowsCreated()
-//{
+void Application::onAllWindowsCreated()
+{
 //    if (mMainWindow && mListWindow) {
 //        static bool bFirst = true;
 //        if (bFirst) {
@@ -179,6 +181,7 @@ void Application::onUICreated()
 //            bFirst = false;
 //        }
 //    }
+//}
 
 
 
@@ -211,7 +214,7 @@ void Application::onUICreated()
 
 //    setup();
 
-//}
+}
 
 void Application::setup()
 {
@@ -221,6 +224,6 @@ void Application::setup()
     mPluginManager->setup();
 
 //    mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
-//    emit defenseDataManagerInitialized(mDefenseDataManager);
+    emit defenseDataManagerInitialized(mDefenseDataManager);
 }
 

@@ -566,7 +566,7 @@ Item {
                                         Image {
                                             id: globe
                                             source: "qrc:/resources/globe.png"
-                                            sourceSize: "20 x 20"
+                                            sourceSize: "15 x 15"
                                             anchors.centerIn: parent
                                         }
                                         MouseArea{
@@ -592,7 +592,7 @@ Item {
                                         Image {
                                             id: tophalf
                                             source: "qrc:/resources/topHalf.png"
-                                            sourceSize: "20 x 20"
+                                            sourceSize: "15 x 15"
                                             anchors.centerIn: parent
                                         }
                                         MouseArea{
@@ -618,7 +618,7 @@ Item {
                                         Image {
                                             id: bothalf
                                             source: "qrc:/resources/botHalf.png"
-                                            sourceSize: "20 x 20"
+                                            sourceSize: "15 x 15"
                                             anchors.centerIn: parent
                                         }
                                         MouseArea{

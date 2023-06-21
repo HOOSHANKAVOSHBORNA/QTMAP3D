@@ -89,22 +89,6 @@ const osgEarth::SpatialReference *MapItem::getMapSRS() const
     return mMapNode->getMapSRS();
 }
 
-void MapItem::addLayer(osgEarth::Layer *layer)
-{
-
-    mMapNode->getMap()->addLayer(layer);
-    // Check if the layer is added successfully
-    auto added = mMapNode->getMap()->getLayerByName(layer->getName());
-    if (added && added->getEnabled())
-    {
-
-    }
-    else
-    {
-        QMessageBox::warning(nullptr, tr("Error"), tr("Data loading failed!"));
-    }
-}
-
 bool MapItem::addNode(osg::Node *node)
 {
     //osgEarth::Registry::shaderGenerator().run(node);// for textures or lighting
@@ -182,7 +166,7 @@ qreal MapItem::headingAngle() const
 
 void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
 {
-//    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
+    //    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
     float height = 0;
     osgUtil::LineSegmentIntersector::Intersections intersections;
     if (mOSGRenderNode->computeIntersections(x, /*height - */y, intersections))
@@ -221,6 +205,32 @@ void MapItem::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) con
 
 }
 
+void MapItem::addLayer(osgEarth::Layer *layer)
+{
+
+    auto node = layer->getNode();
+    if(node)
+        node->setName(layer->getName());
+    //    else
+    //        qDebug()<<layer->getName();
+    mMapNode->getMap()->addLayer(layer);
+    // Check if the layer is added successfully
+    auto added = mMapNode->getMap()->getLayerByName(layer->getName());
+    if (added && added->getEnabled())
+    {
+
+    }
+    else
+    {
+        QMessageBox::warning(nullptr, tr("Error"), tr("Data loading failed!"));
+    }
+}
+
+void MapItem::removeLayer(osgEarth::Layer *layer)
+{
+    mMapNode->getMap()->removeLayer(layer);
+}
+
 bool MapItem::addNodeToLayer(osg::Node *node, std::string layerName)
 {
     auto layer = getMapNode()->getMap()->getLayerByName(layerName);
@@ -228,11 +238,12 @@ bool MapItem::addNodeToLayer(osg::Node *node, std::string layerName)
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {
             group->addChild(node);
+            emit layerChanged();
+            return true;
         }
     }
 
-    emit layerChanged();
-    return true;
+    return false;
 }
 
 bool MapItem::removeNodeFromLayer(osg::Node *node, std::string layerName)
@@ -242,10 +253,49 @@ bool MapItem::removeNodeFromLayer(osg::Node *node, std::string layerName)
         osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
         if (group) {
             group->removeChild(node);
+
+            emit layerChanged();
+            return true;
         }
     }
-    emit layerChanged();
-    return true;
+
+    return false;
+}
+
+bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
+{
+    auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
+    //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
+    if(destinationLayer){
+        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
+        if(group){
+            if(!group->containsNode(layer->getNode())){
+                layer->setUserValue("parent", true);
+                group->addChild(layer->getNode());
+                addLayer(layer);
+                emit layerChanged();
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+bool MapItem::removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName)
+{
+    auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
+    //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
+    if(destinationLayer){
+        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
+        if(group){
+            layer->setUserValue("parent", false);
+            group->removeChild(layer->getNode());
+            removeLayer(layer);
+            emit layerChanged();
+            return true;
+        }
+    }
+    return false;
 }
 
 QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)

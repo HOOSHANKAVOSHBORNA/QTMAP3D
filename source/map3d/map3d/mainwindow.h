@@ -50,7 +50,7 @@ class MainWindow : public QQuickWindow
 
 
     Q_PROPERTY(LayersModel* layersModel READ layersModel WRITE setLayersModel NOTIFY layersModelChanged)
-    Q_PROPERTY(Toolbox* toolbox READ toolbox WRITE setToolbox NOTIFY layersModelChanged)
+    Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox WRITE setToolbox NOTIFY layersModelChanged)
 
     enum class InfoWidgetType {
         Airplane,
@@ -87,7 +87,7 @@ public:
 
 
     LayersModel *layersModel() const;
-    Toolbox *toolbox() const;
+    ToolboxProxyModel *toolbox() const;
 
     UIHandle *uiHandle() const;
 
@@ -178,7 +178,7 @@ public slots:
     void showListWindow();
 
     void setLayersModel(LayersModel *layersModel);
-    void setToolbox(Toolbox* toolbox);
+    void setToolbox(ToolboxProxyModel* toolbox);
     void onFrameSwapped();
 
 //    void orientCameraToNorth();
@@ -270,7 +270,7 @@ private:
     UIHandle *mUIHandle = nullptr;
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
-    Toolbox *mToolbox = nullptr;
+    ToolboxProxyModel *mToolbox = nullptr;
 };
 
 #endif // MainWindow_H

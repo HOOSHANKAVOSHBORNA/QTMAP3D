@@ -98,38 +98,9 @@ void PluginManager::loadPlugins()
 {
     QDir pluginsDir = QCoreApplication::applicationDirPath();
     pluginsDir.cd("../plugins/bin");
-
-    for (const QString& fileName : pluginsDir.entryList(QDir::Files)) {
-
-        if ((fileName.split('.').back() == "so") || (fileName.split('.').back() == "dll"))
-        {
-            qDebug() << fileName;
-
-            const QString filePath = pluginsDir.absoluteFilePath(fileName);
-            QPluginLoader pluginLoader(filePath);
-
-            QObject* instance = pluginLoader.instance();
-
-            if (!instance)
-            {
-//                QString errStr = pluginLoader.errorString();
-                qWarning() << "Plugin loading failed: [" << fileName
-                           << "] " << pluginLoader.errorString();
-                continue;
-            }
-
-            PluginInterface *pluginInterface =
-                            dynamic_cast<PluginInterface*>(instance);
-
-            if (pluginInterface) {
-                pluginInterface->setName(fileName);
-                PluginInfo cpi;
-                cpi.interface = pluginInterface;
-//                cpi.qmlDesc    = new PluginQMLDesc;
-                cpi.sideItemIndex = -1;
-                mPluginsInfoList.push_back(std::move(cpi));
-            }
-        }
+    mPluginFileNameList = pluginsDir.entryList(QDir::Files);
+    for (const QString& pluginFileName : mPluginFileNameList) {
+            parsePlugin(pluginFileName, pluginsDir);
     }
 }
 
@@ -152,10 +123,87 @@ void PluginManager::setup()
     UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
     PluginInterface::setUiHandle(uiHandle);
     auto toolbox = Application::instance()->mainWindow()->toolbox();
-    PluginInterface::setToolbox(toolbox);
+    PluginInterface::setToolbox(static_cast<Toolbox*>(toolbox->sourceModel()));
     //-------------------------------------
     for (const auto& item : mPluginsInfoList) {
         item.interface->setup();
+    }
+}
+
+void PluginManager::parsePlugin(const QString &pluginFileName, const QDir &pluginsDir)
+{
+    try
+    {
+        if(mLoadedPluginList.contains(pluginFileName))
+            return;
+        // Get plugin info
+        QString        path = pluginsDir.absoluteFilePath(pluginFileName);
+        QPluginLoader  pluginLoader(path);
+//        bool           debug      = pluginLoader.metaData()["debug"].toBool();
+        QJsonObject    metaData   = pluginLoader.metaData()["MetaData"].toObject();
+//        QString        pluginName = metaData["Name"].toString();
+
+//        if (debug)
+//        {
+//            pluginName += 'd';
+//        }
+
+        // Resolve dependencies
+        QJsonValue  deps = metaData["Dependencies"];
+
+        if (deps.isArray() && !deps.toArray().isEmpty())
+        {
+            for (const QJsonValue& plugin : deps.toArray())
+            {
+                // Register info for parent
+                QString  dependName = plugin.toObject()["Name"].toString();
+                dependName = "lib" + dependName+".so";
+                int index = mPluginFileNameList.indexOf(dependName);
+                if(index != -1){
+                    QString dependFileName = mPluginFileNameList[index];
+                    parsePlugin(dependFileName, pluginsDir);
+                }
+            }
+        }
+        loadPlugin(pluginFileName, pluginsDir);
+        mLoadedPluginList.append(pluginFileName);
+    }
+    catch (...)
+    {
+        qWarning() << "Plugin meta not valid: " << pluginFileName;
+    }
+}
+
+void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &pluginsDir)
+{
+    if ((pluginFileName.split('.').back() == "so") || (pluginFileName.split('.').back() == "dll"))
+    {
+        qDebug() << pluginFileName;
+
+        const QString filePath = pluginsDir.absoluteFilePath(pluginFileName);
+        QPluginLoader pluginLoader(filePath);
+
+        QObject* instance = pluginLoader.instance();
+
+        if (!instance)
+        {
+            //                QString errStr = pluginLoader.errorString();
+            qWarning() << "Plugin loading failed: [" << pluginFileName
+                       << "] " << pluginLoader.errorString();
+            return;
+        }
+
+        PluginInterface *pluginInterface =
+            dynamic_cast<PluginInterface*>(instance);
+
+        if (pluginInterface) {
+            pluginInterface->setName(pluginFileName);
+            PluginInfo cpi;
+            cpi.interface = pluginInterface;
+            //                cpi.qmlDesc    = new PluginQMLDesc;
+            cpi.sideItemIndex = -1;
+            mPluginsInfoList.push_back(std::move(cpi));
+        }
     }
 }
 
