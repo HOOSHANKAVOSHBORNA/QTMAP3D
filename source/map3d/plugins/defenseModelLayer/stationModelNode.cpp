@@ -138,7 +138,7 @@ StationModelNode::StationModelNode(DefenseModelLayer *defenseModelLayer, Station
         mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
     }
 
-    mBackCircleNode = new Circle(mDefenseModelLayer->mapItem());
+    mBackCircleNode = new Circle();
 	mBackCircleNode->setRadius(6.5);
 	mBackCircleNode->setColor(osgEarth::Color(0.2f, 0.2f, 0.2f, 0.05f));
 	mBackCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.08));
@@ -160,7 +160,7 @@ StationModelNode::StationModelNode(DefenseModelLayer *defenseModelLayer, Station
 
 	mNode3D->addChild(mBackCircleNode);
 
-    mRangeCircle = new Circle(mDefenseModelLayer->mapItem());
+    mRangeCircle = new Circle();
 	mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.3f));
 	mRangeCircle->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 

@@ -1,28 +1,27 @@
-#include "drawCylinder.h"
+#include "drawCone.h"
 
-
-int DrawCylinder::mCount{0};
-DrawCylinder::DrawCylinder(QObject *parent): DrawShape(parent)
+int DrawCone::mCount{0};
+DrawCone::DrawCone(QObject *parent): DrawShape(parent)
 {
-    qmlRegisterType<CylinderPropertiesModel>("Crystal", 1, 0, "CylinderProperties");
+    qmlRegisterType<ConePropertiesModel>("Crystal", 1, 0, "ConeProperties");
 }
 
-bool DrawCylinder::setup()
+bool DrawCone::setup()
 {
-    auto toolboxItem =  new ToolboxItem{CYLINDER, CATEGORY, "qrc:/resources/cylinder.png", true};
-    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCylinder::onConeItemCheck);
+    auto toolboxItem =  new ToolboxItem{CONE, CATEGORY, "qrc:/resources/cone.png", true};
+    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCone::onConeItemCheck);
     toolbox()->addItem(toolboxItem);
 
-    makeIconNode("../data/images/draw/cylinder.png");
+    makeIconNode("../data/images/draw/cone.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    mCylinderLayer = new osgEarth::Annotation::AnnotationLayer();
-    mCylinderLayer->setName(CYLINDER);
+    mConeLayer = new osgEarth::Annotation::AnnotationLayer();
+    mConeLayer->setName(CONE);
 
     return true;
 }
 
-void DrawCylinder::onCylinderItemCheck(bool check)
+void DrawCone::onConeItemCheck(bool check)
 {
     if (check) {
         mapItem()->addLayerToLayer(mConeLayer, CATEGORY);
@@ -44,7 +43,7 @@ void DrawCylinder::onCylinderItemCheck(bool check)
     }
 }
 
-void DrawCylinder::initDraw(const osgEarth::GeoPoint &geoPos)
+void DrawCone::initDraw(const osgEarth::GeoPoint &geoPos)
 {
     QString name = "Cone" + QString::number(mCount);
     mCone = new Cone();
@@ -59,7 +58,7 @@ void DrawCylinder::initDraw(const osgEarth::GeoPoint &geoPos)
     mCount++;
 }
 
-void DrawCylinder::cancelDraw()
+void DrawCone::cancelDraw()
 {
     if(state() == State::EDIT){
         mapItem()->removeNodeFromLayer(mCone, CONE);

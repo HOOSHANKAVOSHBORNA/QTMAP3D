@@ -150,7 +150,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
 		mRootNode->addChild(mNode3D, 0, 0);
 		mRootNode->addChild(at, 0, std::numeric_limits<float>::max());
 	}
-    mBackCircleNode = new Circle(mDefenseModelLayer->mapItem());
+    mBackCircleNode = new Circle();
 	mBackCircleNode->setRadius(6.5);
 	//	mBackCircleNode->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 	mBackCircleNode->setColor(osgEarth::Color(0.2f, 0.2f, 0.2f, 0.05f));
@@ -178,7 +178,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     //map mode changed-----------------------------------------------------------------------
     connect(mDefenseModelLayer->mapItem(), &MapItem::modeChanged, this, &SystemModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------
-    mRangeCircle = new Circle(mDefenseModelLayer->mapItem());
+    mRangeCircle = new Circle();
     mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
 	mRangeCircle->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 
