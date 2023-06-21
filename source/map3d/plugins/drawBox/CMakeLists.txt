@@ -15,8 +15,8 @@ find_package(Qt6 COMPONENTS Gui Quick Widgets REQUIRED)
 add_library(drawBox SHARED
 box.cpp
 box.h
-drawbox.cpp
-drawbox.h
+drawBox.cpp
+drawBox.h
 drawBox.json
 drawBox.qrc
 boxProperties.cpp
