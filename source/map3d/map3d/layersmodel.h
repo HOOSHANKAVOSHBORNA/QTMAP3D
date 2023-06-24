@@ -35,7 +35,9 @@ public slots:
     void clickedItem(QModelIndex itemIndex);
 
 private:
+    void setLayerVisible(osgEarth::VisibleLayer *layer);
     void addChildItem(osg::Group *parentGroup, QStandardItem *parentItem);
+    void addChildItem(osgEarth::Layer *layer, QStandardItem *parentItem);
 private:
 
 //    QList<osgEarth::Layer*> mLayersList;
