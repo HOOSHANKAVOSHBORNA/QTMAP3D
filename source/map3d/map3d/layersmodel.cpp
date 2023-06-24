@@ -1,7 +1,45 @@
 #include "layersmodel.h"
 #include <osgEarth/Map>
 #include <osgEarth/ModelLayer>
+#include <QHeaderView>
+#include <QQmlComponent>
+#include <QQuickItem>
 
+
+//TreeItem::TreeItem(const QList<QVariant> &data, ToolboxItem *toolbox, TreeItem *parent)
+//    : m_itemData(data), m_parentItem(parent), mToolboxItem(toolbox)
+//{}
+
+//TreeItem::~TreeItem()
+//{
+//    qDeleteAll(m_childItems);
+//}
+
+//void TreeItem::appendChild(TreeItem *item)
+//{
+//    m_childItems.append(item);
+//}
+
+//TreeItem *TreeItem::child(int row)
+//{
+//    if (row < 0 || row >= m_childItems.size())
+//        return nullptr;
+//    return m_childItems.at(row);
+//}
+
+//int TreeItem::childCount() const
+//{
+//    return m_childItems.count();
+//}
+
+//int TreeItem::columnCount() const
+//{
+//    return m_itemData.count();
+//}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 
 
 LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
@@ -16,6 +54,7 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
         clear();
         updateLayers(mapItem->getMapNode()->getMap());
     });
+
 }
 
 //int LayersModel::columnCount(const QModelIndex &parent) const
@@ -151,8 +190,10 @@ void LayersModel::clickedItem(QModelIndex itemIndex)
 //        if (node) {
 //            node->setNodeMask(!node->getNodeMask());
 //        }
-//    }
+    //    }
 }
+
+
 
 void LayersModel::addChildItem(osg::Group *parentGroup, QStandardItem *parentItem)
 {
@@ -217,3 +258,48 @@ void LayersModel::addChildItem(osg::Group *parentGroup, QStandardItem *parentIte
 //        hash[LayerEnabledRole] = "layer_enabled";
 //        return hash;
 //}
+
+
+
+
+LayersProxyModel::LayersProxyModel(QObject *parent):
+    QSortFilterProxyModel(parent)
+{
+    setDynamicSortFilter(true);
+}
+
+bool LayersProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+    // check if item name or its children contain filter string (case insensitive)
+    if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive))
+        return true;
+    for (int i = 0; i < sourceModel()->rowCount(index); ++i) {
+        if (filterAcceptsRow(i, index))
+            return true;
+    }
+    // show its children if its name contains filter string
+    if (source_parent.isValid() && source_parent.data().toString().contains(mFilterString, Qt::CaseInsensitive))
+        return true;
+    return false;
+}
+
+QString LayersProxyModel::filterString() const
+{
+    return mFilterString;
+}
+
+void LayersProxyModel::setFilterString(const QString &filterString)
+{
+    qDebug() << mFilterString;
+    mFilterString = filterString;
+
+    invalidateFilter();
+}
+
+void LayersProxyModel::onItemClicked(const QModelIndex &current)
+{
+    // call mapped item in toolbox model
+    QModelIndex index = mapToSource(current);
+    static_cast<LayersModel*>(sourceModel())->clickedItem(index);
+}

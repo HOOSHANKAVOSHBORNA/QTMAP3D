@@ -12,6 +12,32 @@
 #include <QAbstractTableModel>
 #include <QAbstractItemModel>
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
+
+//class TreeItem
+//{
+//public:
+//    explicit TreeItem(const QList<QVariant> &data, ToolboxItem *toolbox = nullptr, TreeItem *parentItem = nullptr);
+//    ~TreeItem();
+
+//    void appendChild(TreeItem *child);
+
+//    TreeItem *child(int row);
+//    int childCount() const;
+//    int columnCount() const;
+//    QVariant data(int column) const;
+//    int row() const;
+//    TreeItem *parentItem();
+//    ToolboxItem* getToolboxItem() const;
+//    TreeItem *child(TreeItem* row);
+//    QString imageSource();
+
+//private:
+//    QList<TreeItem *> m_childItems;
+//    QList<QVariant> m_itemData;
+////    ToolboxItem *mToolboxItem;
+//    TreeItem *m_parentItem;
+//};
 
 class LayersModel : public QStandardItemModel
 {
@@ -34,6 +60,15 @@ public slots:
     void toggleLayerEnabled(int layerIndex );
     void clickedItem(QModelIndex itemIndex);
 
+//public slots:
+//    void onItemClicked(const QModelIndex &current);
+
+//private:
+//    QMap<QString, QStandardItem*> mItems;
+//    QModelIndex previous;
+//    QMap<QString, ToolboxItem*> mToolboxItems;
+//    TreeItem *rootItem;
+
 private:
     void addChildItem(osg::Group *parentGroup, QStandardItem *parentItem);
 private:
@@ -43,5 +78,28 @@ private:
     MapItem *mMapItem;
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+// define proxy model
+class LayersProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+public:
+    LayersProxyModel(QObject *parent = nullptr);
+
+    QString filterString() const;
+
+public slots:
+    void onItemClicked(const QModelIndex &current);
+    void setFilterString(const QString &filterString);
+
+signals:
+    void filterStringChanged();
+
+protected:
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+
+private:
+    QString mFilterString = "";
+};
 
 #endif // LAYERSMODEL_H

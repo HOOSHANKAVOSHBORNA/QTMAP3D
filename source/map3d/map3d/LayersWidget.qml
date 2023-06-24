@@ -109,7 +109,7 @@ Item {
 
                 LayerTreeView{
                     anchors.fill: parent
-                    model: layersModel
+//                    model: layersModel
                 }
 
 //                ColumnLayout {
