@@ -21,9 +21,8 @@ float Circle::getCircleHeight()
     return style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
 }
 
-Circle::Circle(MapItem *mapItem)
+Circle::Circle()
 {
-    mMapItem = mapItem;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() ;
     circleStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = true;
     circleStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;

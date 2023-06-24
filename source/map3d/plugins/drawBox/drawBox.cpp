@@ -4,23 +4,11 @@ int DrawBox::mCount{0};
 
 DrawBox::DrawBox(QObject *parent): DrawShape(parent)
 {
-//    Q_INIT_RESOURCE(drawBox);
     qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
 }
 
-//bool DrawBox::initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc)
-//{
-////    qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
-
-////    desc->toolboxItemsList.push_back(new ItemDesc{BOX, CATEGORY, "qrc:/resources/box.png", true,  false, ""});
-
-//    return true;
-//}
-
 bool DrawBox::setup()
 {
-//    DrawShape::setup();
-
     auto toolboxItem =  new ToolboxItem{BOX, CATEGORY, "qrc:/resources/box.png", true};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawBox::onBoxItemCheck);
     toolbox()->addItem(toolboxItem);
@@ -31,11 +19,6 @@ bool DrawBox::setup()
 //    addLayer();
     mBoxLayer = new osgEarth::Annotation::AnnotationLayer();
     mBoxLayer->setName(BOX);
-//    mBoxLayer->getGroup()->setName(BOX);
-//    shapeLayer()->getGroup()->addChild(mBoxLayer->getGroup());
-//    emit mapItem()->layerChanged();
-//    mapItem()->addLayer(boxLayer);
-
     return true;
 }
 
@@ -72,9 +55,6 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mBox->setPosition(geoPos);
 
     mapItem()->addNodeToLayer(mBox, BOX);
-//    mBoxLayer->addChild(mBox);
-//    emit mapItem()->layerChanged();
-
     mBoxProperties->setBox(mBox);
 
     setState(State::EDIT);

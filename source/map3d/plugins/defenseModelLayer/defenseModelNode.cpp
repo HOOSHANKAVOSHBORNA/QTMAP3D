@@ -1,12 +1,10 @@
+#include "defenseModelLayer.h"
 #include "defenseModelNode.h"
-#include "draw.h"
-#include "systemModelNode.h"
+#include "defenseModelNodeAutoScaler.h"
 
 #include <QDebug>
 
 #include <osgEarthUtil/EarthManipulator>
-#include "defenseModelNodeAutoScaler.h"
-
 #include <osg/Material>
 #include <osgFX/Outline>
 
@@ -16,7 +14,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
 {
     DefenseModelNode* defenseModelNode;
     //bool hit = false;
-    bool positionCanged = false;
+//    bool positionCanged = false;
     osgEarth::GeoPoint geoPoint;
 
     if (_animationPath.valid() &&
@@ -74,7 +72,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 //                pm.getOrCreate<osgEarth::Symbology::IconSymbol>()->heading() = osg::RadiansToDegrees(angel);
                 //                baseModel->getPlaceNode()->setStyle(pm);
                 //emit current position----------------------------------------------------------------------
-                positionCanged = true;
+//                positionCanged = true;
                 //if(static_cast<int>(animatTime) % 3 == 0)
 //                defenseModelNode->curentPosition(geoPoint);
             }

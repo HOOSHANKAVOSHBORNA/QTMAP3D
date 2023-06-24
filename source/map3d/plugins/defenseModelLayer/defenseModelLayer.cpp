@@ -46,13 +46,10 @@
 #include "systemTableModel.h"
 #include "dataManager.h"
 
-const QString AIRCRAFT = "Aircraft";
-const QString SYSTEM = "System";
-const QString STATION = "Station";
-//----------------------------------------------
-const QString CATEGORY = "Defense Model";
-const QString ADD_ROCKET = "Fire";
-const QString KILL_ROCKET = "Kill";
+
+int DefenseModelLayer::mAircraftCount = 0;
+int DefenseModelLayer::mSystemCount = 0;
+int DefenseModelLayer::mStationCount = 0;
 
 DefenseModelLayer::DefenseModelLayer(QObject *parent)
     : PluginInterface(parent)
@@ -193,41 +190,30 @@ DefenseModelLayer::DefenseModelLayer(QObject *parent)
 
 bool DefenseModelLayer::setup()
 {
-    auto toolboxItemAircraft =  new ToolboxItem{AIRCRAFT, CATEGORY, "qrc:/resources/plane.png", false};
+    auto toolboxItemAircraft =  new ToolboxItem{"Aircraft", "Defense", "qrc:/resources/plane.png", false};
     QObject::connect(toolboxItemAircraft, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onAircraftItemClick);
     toolbox()->addItem(toolboxItemAircraft);
 
-    auto toolboxItemSystem =  new ToolboxItem{SYSTEM, CATEGORY, "qrc:/resources/systems.png", false};
+    auto toolboxItemSystem =  new ToolboxItem{"System", "Defense", "qrc:/resources/systems.png", false};
     QObject::connect(toolboxItemSystem, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onSystemItemClick);
     toolbox()->addItem(toolboxItemSystem);
 
-    auto toolboxItemStation =  new ToolboxItem{STATION, CATEGORY, "qrc:/resources/stations.png", false};
+    auto toolboxItemStation =  new ToolboxItem{"Station", "Defense", "qrc:/resources/stations.png", false};
     QObject::connect(toolboxItemStation, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onStationItemClick);
     toolbox()->addItem(toolboxItemStation);
 
-    auto toolboxItemFire =  new ToolboxItem{ADD_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false};
+    auto toolboxItemFire =  new ToolboxItem{"Fire", "Defense", "qrc:/resources/system_1.png", false};
     QObject::connect(toolboxItemFire, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onFireItemClick);
     toolbox()->addItem(toolboxItemFire);
 
-    auto toolboxItemKill =  new ToolboxItem{KILL_ROCKET, CATEGORY, "qrc:/resources/system_1.png", false};
+    auto toolboxItemKill =  new ToolboxItem{"Kill", "Defense", "qrc:/resources/system_1.png", false};
     QObject::connect(toolboxItemKill, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onKillItemClick);
     toolbox()->addItem(toolboxItemKill);
     //-----------------------------------------------------
     mDataManager = new DataManager(defenseDataManager(), this);
     connect(mapItem(), &MapItem::mapCleared, this, &DefenseModelLayer::onMapClear);
     //-----------------------------------------------------
-
-    osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
-    systemsModelLayer->setName(SYSTEMS_LAYER_NAME);
-    mapItem()->addLayer(systemsModelLayer);
-
-    osgEarth::ModelLayer *stationsModelLayer = new osgEarth::ModelLayer();
-    stationsModelLayer->setName(STATIONS_LAYER_NAME);
-    mapItem()->addLayer(stationsModelLayer);
-
-    osgEarth::ModelLayer *aircraftsModelLayer = new osgEarth::ModelLayer();
-    aircraftsModelLayer->setName(AIRCRAFTS_LAYER_NAME);
-    mapItem()->addLayer(aircraftsModelLayer);
+    initLayers();
 
     return true;
 }
@@ -240,26 +226,26 @@ bool DefenseModelLayer::setup()
 
 void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 {
-//	QMouseEvent* event = new QMouseEvent(QEvent::Type::Enter, QPointF(0,0), Qt::MouseButton::LeftButton,
-//										 Qt::MouseButton::LeftButton, Qt::KeyboardModifier::NoModifier);
+    //	QMouseEvent* event = new QMouseEvent(QEvent::Type::Enter, QPointF(0,0), Qt::MouseButton::LeftButton,
+    //										 Qt::MouseButton::LeftButton, Qt::KeyboardModifier::NoModifier);
     mapItem()->getViewer()->getEventQueue()->mouseButtonPress(0,0, 1);
-//	if(defenseModelNode)
-//	{
-//		defenseModelNode->mousePressEvent(event, true);
-//		defenseModelNode->goOn();
-//	}
-//	if(mSelectedModelNode && mSelectedModelNode != defenseModelNode)
-//		mSelectedModelNode->mousePressEvent(event, false);
-//	if(defenseModelNode)
-//		mSelectedModelNode = defenseModelNode;
+    //	if(defenseModelNode)
+    //	{
+    //		defenseModelNode->mousePressEvent(event, true);
+    //		defenseModelNode->goOn();
+    //	}
+    //	if(mSelectedModelNode && mSelectedModelNode != defenseModelNode)
+    //		mSelectedModelNode->mousePressEvent(event, false);
+    //	if(defenseModelNode)
+    //		mSelectedModelNode = defenseModelNode;
 }
 
 void DefenseModelLayer::modelNodeDeleted(DefenseModelNode *defenseModelNode)
 {
-	if(mSelectedModelNode == defenseModelNode)
-		mSelectedModelNode = nullptr;
-	if(mOnMoveModelNode == defenseModelNode)
-		mOnMoveModelNode = nullptr;
+    if(mSelectedModelNode == defenseModelNode)
+        mSelectedModelNode = nullptr;
+    if(mOnMoveModelNode == defenseModelNode)
+        mOnMoveModelNode = nullptr;
 }
 
 //void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
@@ -441,23 +427,13 @@ void DefenseModelLayer::modelNodeDeleted(DefenseModelNode *defenseModelNode)
 
 void DefenseModelLayer::onMapClear()
 {
-//    mModelNodes.clear();
+    //    mModelNodes.clear();
     mOnMoveModelNode = nullptr;
     mSelectedModelNode = nullptr;
     //--clear list-----------------------------------------
     mDataManager->clear();
     //--add layer------------------------------------------
-    osgEarth::ModelLayer *systemsModelLayer = new osgEarth::ModelLayer();
-    systemsModelLayer->setName(SYSTEMS_LAYER_NAME);
-    mapItem()->addLayer(systemsModelLayer);
-
-    osgEarth::ModelLayer *stationsModelLayer = new osgEarth::ModelLayer();
-    stationsModelLayer->setName(STATIONS_LAYER_NAME);
-    mapItem()->addLayer(stationsModelLayer);
-
-    osgEarth::ModelLayer *aircraftsModelLayer = new osgEarth::ModelLayer();
-    aircraftsModelLayer->setName(AIRCRAFTS_LAYER_NAME);
-    mapItem()->addLayer(aircraftsModelLayer);
+    initLayers();
 }
 
 bool DefenseModelLayer::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -551,18 +527,18 @@ bool DefenseModelLayer::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::
 
 DefenseModelNode *DefenseModelLayer::pick(float x, float y)
 {
-	DefenseModelNode *defenseModelNode = nullptr;
+    DefenseModelNode *defenseModelNode = nullptr;
     osgViewer::Viewer *viewer = mapItem()->getViewer();
-//    float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
+    //    float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
     osgUtil::LineSegmentIntersector::Intersections intersections;
     if (viewer->computeIntersections(x, /*height -*/ y, intersections))
     {
-        for(osgUtil::LineSegmentIntersector::Intersection hit : intersections)
+        for(const osgUtil::LineSegmentIntersector::Intersection& hit : intersections)
         {
             const osg::NodePath& nodePath = hit.nodePath;
             for(osg::NodePath::const_iterator nitr=nodePath.begin();
-                nitr!=nodePath.end();
-                ++nitr)
+                 nitr!=nodePath.end();
+                 ++nitr)
             {
                 defenseModelNode = dynamic_cast<DefenseModelNode*>(*nitr);
                 if (defenseModelNode)
@@ -577,58 +553,77 @@ void DefenseModelLayer::findSceneModels(osgViewer::Viewer *viewer)
     osgEarth::Util::EarthManipulator*camera = dynamic_cast<osgEarth::Util::EarthManipulator*>(viewer->getCameraManipulator());
     if(!camera)
         return;
-//    int range = static_cast<int>(camera->getViewpoint().getRange());
-//    if(range != mPreCameraRange && range < 12000)
-//    {
-//        mPreCameraRange = range;
-        osg::Viewport* viewport = viewer->getCamera()->getViewport();
-        osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
-        intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
-                                                       viewport->x() + viewport->width(), viewport->y() + viewport->height());
+    //    int range = static_cast<int>(camera->getViewpoint().getRange());
+    //    if(range != mPreCameraRange && range < 12000)
+    //    {
+    //        mPreCameraRange = range;
+    osg::Viewport* viewport = viewer->getCamera()->getViewport();
+    osg::ref_ptr<osgUtil::PolytopeIntersector> intersector{nullptr};
+    intersector = new osgUtil::PolytopeIntersector(osgUtil::Intersector::WINDOW, viewport->x(), viewport->y(),
+                                                   viewport->x() + viewport->width(), viewport->y() + viewport->height());
 
-        intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::TRIANGLE_PRIMITIVES);
-        intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
+    intersector->setPrimitiveMask(osgUtil::PolytopeIntersector::TRIANGLE_PRIMITIVES);
+    intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
 
-        osgUtil::IntersectionVisitor iv(intersector);
-        //        iv.setTraversalMask(NODE_MASK);
-        //        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-        //        iv.setTraversalNumber(1000);
-        viewer->getCamera()->accept(iv);
+    osgUtil::IntersectionVisitor iv(intersector);
+    //        iv.setTraversalMask(NODE_MASK);
+    //        iv.setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
+    //        iv.setTraversalNumber(1000);
+    viewer->getCamera()->accept(iv);
 
-        if(intersector->containsIntersections())
+    if(intersector->containsIntersections())
+    {
+        auto intersections = intersector->getIntersections();
+        //qDebug() <<"intersections: "<<intersections.size();
+        for(const auto& hit : intersections)
         {
-            auto intersections = intersector->getIntersections();
-            //qDebug() <<"intersections: "<<intersections.size();
-            for(auto hit : intersections)
-            {
 
-                const osg::NodePath& nodePath = hit.nodePath;
-                //qDebug() <<"nodePath: "<<nodePath.size();
-                for(osg::NodePath::const_iterator nitr=nodePath.begin();
-                    nitr!=nodePath.end();
-                    ++nitr)
+            const osg::NodePath& nodePath = hit.nodePath;
+            //qDebug() <<"nodePath: "<<nodePath.size();
+            for(osg::NodePath::const_iterator nitr=nodePath.begin();
+                 nitr!=nodePath.end();
+                 ++nitr)
+            {
+                DefenseModelNode* defenseModelNode = dynamic_cast<DefenseModelNode*>(*nitr);
+                if (defenseModelNode)
                 {
-                    DefenseModelNode* defenseModelNode = dynamic_cast<DefenseModelNode*>(*nitr);
-                    if (defenseModelNode)
-                    {
-                        //qDebug() <<model->getQStringName();
-                        //qDebug() <<"range: "<<camera->getViewpoint().getRange();
-                        //qDebug() <<"z: "<<model->getPosition().z();
-//                        double distance = 0;
-//                        if(camera->getViewpoint().getRange() < defenseModelNode->getPosition().z())///for track node
-//                            distance = camera->getViewpoint().getRange();
-//                        else
-//                            distance = camera->getViewpoint().getRange() - defenseModelNode->getPosition().z();
-                        //                        model->cameraRangeChanged(distance);
-                        //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
-                        //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
-                        qDebug()<<defenseModelNode->getQStringName();
-                    }
+                    //qDebug() <<model->getQStringName();
+                    //qDebug() <<"range: "<<camera->getViewpoint().getRange();
+                    //qDebug() <<"z: "<<model->getPosition().z();
+                    //                        double distance = 0;
+                    //                        if(camera->getViewpoint().getRange() < defenseModelNode->getPosition().z())///for track node
+                    //                            distance = camera->getViewpoint().getRange();
+                    //                        else
+                    //                            distance = camera->getViewpoint().getRange() - defenseModelNode->getPosition().z();
+                    //                        model->cameraRangeChanged(distance);
+                    //qDebug() <<"camera->getViewpoint().getRange(): "<<camera->getViewpoint().getRange();
+                    //qDebug() <<"model.getRange(): "<<camera->getViewpoint().getRange() - model->getPosition().z();
+                    qDebug()<<defenseModelNode->getQStringName();
                 }
             }
-
         }
-//    }
+
+    }
+    //    }
+}
+
+void DefenseModelLayer::initLayers()
+{
+    osgEarth::Annotation::AnnotationLayer *defenseModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    defenseModelLayer->setName(DEFENSE_LAYER);
+    mapItem()->addLayer(defenseModelLayer);
+
+    osgEarth::Annotation::AnnotationLayer *systemsModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    systemsModelLayer->setName(SYSTEM_LAYER);
+    mapItem()->addLayerToLayer(systemsModelLayer, DEFENSE_LAYER);
+
+    osgEarth::Annotation::AnnotationLayer *stationsModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    stationsModelLayer->setName(STATION_LAYER);
+    mapItem()->addLayerToLayer(stationsModelLayer, DEFENSE_LAYER);
+
+    osgEarth::Annotation::AnnotationLayer *aircraftsModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    aircraftsModelLayer->setName(AIRCRAFT_LAYER);
+    mapItem()->addLayerToLayer(aircraftsModelLayer, DEFENSE_LAYER);
 }
 
 osgEarth::Symbology::Style &DefenseModelLayer::getDefaultStyle()
@@ -646,11 +641,15 @@ osgEarth::Symbology::Style &DefenseModelLayer::getDefaultStyle()
 
 void DefenseModelLayer::onAircraftItemClick()
 {
+    double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
+    double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
+    double altitude = (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));
+
     AircraftInfo aircraftInfo;
-    aircraftInfo.TN = 0;
-    aircraftInfo.Longitude = 52.8601;
-    aircraftInfo.Latitude = 35.277;
-    aircraftInfo.Altitude = 9100;
+    aircraftInfo.TN = mAircraftCount++;
+    aircraftInfo.Longitude = longitude;
+    aircraftInfo.Latitude = latitude;
+    aircraftInfo.Altitude = altitude;
     aircraftInfo.Heading = 30;
     aircraftInfo.IFFCode = "a12345";
     aircraftInfo.CallSign = "cls";
@@ -665,11 +664,16 @@ void DefenseModelLayer::onAircraftItemClick()
 
 void DefenseModelLayer::onSystemItemClick()
 {
+    double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
+    double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
+    double altitude = (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));
+
     SystemInfo systemInfo;
-    systemInfo.Name = SYSTEM + QString::number(0);
-    systemInfo.Longitude = 54.2;
-    systemInfo.Latitude = 35.3;
-    systemInfo.Number = 1234567;
+    systemInfo.Name = "System" + QString::number(mSystemCount);
+    systemInfo.Longitude = longitude;
+    systemInfo.Latitude = latitude;
+    systemInfo.Altitude = altitude;
+    systemInfo.Number = mSystemCount++;
     //        addUpdateSystem(systemInfo);
     mDataManager->onSystemInfoChanged(systemInfo);
 
@@ -683,11 +687,16 @@ void DefenseModelLayer::onSystemItemClick()
 
 void DefenseModelLayer::onStationItemClick()
 {
+    double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
+    double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
+    double altitude = (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));
+
     StationInfo stationInfo;
-    stationInfo.Name = STATION + QString::number(0);
-    stationInfo.Longitude = 52;
-    stationInfo.Latitude = 35.2;
-    stationInfo.Number = 1234567;
+    stationInfo.Name = "Station" + QString::number(mStationCount);
+    stationInfo.Longitude = longitude;
+    stationInfo.Latitude = latitude;
+    stationInfo.Altitude = altitude;
+    stationInfo.Number = mStationCount++;
     stationInfo.PrimSec = "primary";
     stationInfo.CycleTime = 10000;
     mDataManager->onStationInfoChanged(stationInfo);

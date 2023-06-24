@@ -1,5 +1,4 @@
 #include "systemDataManager.h"
-#include "aircraftDataManager.h"
 
 SystemDataManager::SystemDataManager(DefenseModelLayer* defenseModelLayer)
 {
@@ -36,7 +35,7 @@ void SystemDataManager::upsertInfo(SystemInfo &systemInfo)
         //add to container---------------------------------------------------
         mSystemData[systemInfo.Number]->systemModelNode = systemModelNode;
         //add to map --------------------------------------------------------
-        mDefenseModelLayer->mapItem()->addNodeToLayer(systemModelNode, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(systemModelNode, SYSTEM_LAYER);
     }
     //update information-----------------------------------------------------
     systemModelNode->informationChanged();
@@ -87,7 +86,7 @@ void SystemDataManager::addAssignment(int systemNo, System::Assignment* assignme
         assignment->line->setShowBearing(true);
 		assignment->line->setShowDistance(true);
 		assignment->line->setShowSlope(true);
-        mDefenseModelLayer->mapItem()->addNodeToLayer(assignment->line, SYSTEMS_LAYER_NAME);
+        mDefenseModelLayer->mapItem()->addNodeToLayer(assignment->line, SYSTEM_LAYER);
 
         mSystemData[systemNo]->assignments.push_back(assignment);
         //----------------------------------------------------
@@ -116,7 +115,7 @@ void SystemDataManager::assignmentResponse(int tn, int systemNo, bool accept)
 
 void SystemDataManager::clearAssignments(int tn)
 {
-    for(auto data: mSystemData)
+    for(const auto& data: mSystemData)
     {
         removeAssignment(tn, data->information->systemInfo.Number);
     }
@@ -127,7 +126,7 @@ void SystemDataManager::removeAssignment(int tn, int systemNo)
     if(mSystemData.contains(systemNo)){
         auto index = mSystemData[systemNo]->findAssignment(tn);
         if(index >= 0){
-            mDefenseModelLayer->mapItem()->removeNodeFromLayer(mSystemData[systemNo]->assignments.at(index)->line, SYSTEMS_LAYER_NAME);
+            mDefenseModelLayer->mapItem()->removeNodeFromLayer(mSystemData[systemNo]->assignments.at(index)->line, SYSTEM_LAYER);
             mSystemData[systemNo]->assignments.removeAt(index);
             mSystemData[systemNo]->systemModelNode->assignmentChanged();
 

@@ -16,8 +16,8 @@ add_library(drawEllipse SHARED
 ellipse.json
 ellipse.cpp
 ellipse.h
-drawellipse.cpp
-drawellipse.h
+drawEllipse.cpp
+drawEllipse.h
 ellipseproperties.cpp
 ellipseproperties.h
 drawEllipse.qrc
@@ -25,6 +25,8 @@ drawEllipse.qrc
 
 target_include_directories(drawEllipse PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
 target_link_libraries(drawEllipse PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
+target_include_directories(drawEllipse PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
+target_link_libraries(drawEllipse PRIVATE drawShape)
 
 target_compile_definitions(drawEllipse PRIVATE CPTEST_LIBRARY)
 

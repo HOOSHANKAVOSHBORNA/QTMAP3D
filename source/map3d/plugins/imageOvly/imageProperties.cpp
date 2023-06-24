@@ -12,7 +12,6 @@ ImagePropertiesModel::ImagePropertiesModel(osgEarth::Annotation::ImageOverlay *i
 
 }
 
-
 QVector2D ImagePropertiesModel::getLocation()
 {
     return mLocation;
@@ -159,11 +158,11 @@ ImageProperties::ImageProperties(osgEarth::Annotation::ImageOverlay* image, QQml
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, image](){
-        if (comp->status() == QQmlComponent::Ready) {
+//        if (comp->status() == QQmlComponent::Ready) {
             mItem = static_cast<QQuickItem*>(comp->create(nullptr));
             mImageProperties = new ImagePropertiesModel(image, mapItem);
             mItem->setProperty("imageProperties", QVariant::fromValue<ImagePropertiesModel*>(mImageProperties));
-        }
+//        }
     });
     comp->loadUrl(QUrl("qrc:/ImageProperty.qml"));
 }

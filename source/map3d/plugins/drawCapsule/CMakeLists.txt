@@ -15,13 +15,16 @@ find_package(Qt6 COMPONENTS Gui Quick Widgets REQUIRED)
 add_library(drawCapsule SHARED
     drawCapsule.json
     drawCapsule.qrc
-    drawcapsule.cpp
+    drawCapsule.cpp
     capsule.cpp
     capsuleProperties.cpp
 )
 
 target_include_directories(drawCapsule PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
 target_link_libraries(drawCapsule PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
+target_include_directories(drawCapsule PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
+
+target_link_libraries(drawCapsule PRIVATE drawShape)
 
 target_compile_definitions(drawCapsule PRIVATE CPTEST_LIBRARY)
 

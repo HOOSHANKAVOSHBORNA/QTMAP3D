@@ -22,6 +22,8 @@ add_library(drawCylinder SHARED
 
 target_include_directories(drawCylinder PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
 target_link_libraries(drawCylinder PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
+target_include_directories(drawCylinder PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
+target_link_libraries(drawCylinder PRIVATE drawShape)
 
 target_compile_definitions(drawCylinder PRIVATE CPTEST_LIBRARY)
 

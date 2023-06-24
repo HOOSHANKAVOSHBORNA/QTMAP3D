@@ -1,4 +1,4 @@
-#include "sphereproperties.h"
+#include "sphereProperties.h"
 #include <QtDebug>
 #include <QVector3D>
 #include <QQmlComponent>
