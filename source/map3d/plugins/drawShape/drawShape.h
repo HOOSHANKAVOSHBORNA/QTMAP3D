@@ -31,9 +31,10 @@ public:
     };
 public:
     explicit DrawShape(QObject *parent = nullptr);
+    ~DrawShape()override;
     virtual bool setup() override;
     void makeIconNode(const QString &fileName);
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> iconNode() const;
+    osgEarth::Annotation::PlaceNode *iconNode() const;
     DrawShape::State state() const;
     void setState(DrawShape::State newState);
 //    void addLayer();
@@ -49,6 +50,7 @@ public:
     virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override {return false;}
 protected:
     virtual void initDraw(const osgEarth::GeoPoint &geoPos){};
+    virtual void drawing(const osgEarth::GeoPoint &geoPos){};
     virtual void confirmDraw();
     virtual void cancelDraw(){};
 private:
