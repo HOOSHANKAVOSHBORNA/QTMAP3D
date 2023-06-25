@@ -27,6 +27,7 @@ private slots:
     void onBoxItemCheck (bool check);
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
+    void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
 private:
     osg::ref_ptr<Box> mBox{nullptr};

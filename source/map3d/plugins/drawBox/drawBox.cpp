@@ -61,6 +61,11 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mCount++;
 }
 
+void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
+{
+    mBox->setPosition(geoPos);
+}
+
 void DrawBox::cancelDraw()
 {
     if(state() == State::EDIT){
