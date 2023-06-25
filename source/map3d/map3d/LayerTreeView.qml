@@ -10,13 +10,13 @@ Item{
     id:root
     width: parent.width
 //    property var listModel
-    readonly property color     _colorHover : "#FFCC00"
-    readonly property color     _colorPresed : "#908000"
-    readonly property color     _colorRec   : "#363739"
-    readonly property color     sectionColor:  "#00587A"
-    readonly property real      categorySize: 30
-    readonly property real      itemSize: 30
-    property CLayerProxyModel   proxyModel;
+    readonly property color        _colorHover : "#FFCC00"
+    readonly property color        _colorPresed : "#908000"
+    readonly property color        _colorRec   : "#363739"
+    readonly property color        sectionColor:  "#00587A"
+    readonly property real         categorySize: 30
+    readonly property real         itemSize: 30
+    property CLayerProxyModel      proxyModel;
 
 
     Rectangle {
@@ -25,7 +25,9 @@ Item{
         height: 30
         y : 0
 //        anchors.bottom: rootItem.top
-        color: "#202020"
+        color: "#353535"
+        anchors.leftMargin: 15
+        anchors.rightMargin: 15
         TextField {
             function sendToSearch() {
                 proxyModel.setFilterString(text)
@@ -37,7 +39,7 @@ Item{
 
             background: Rectangle {
                 radius: 2
-                implicitWidth: 100
+                implicitWidth: search.width
                 implicitHeight: 24
                 border.color: "#333"
                 border.width: 1
@@ -46,9 +48,9 @@ Item{
             anchors.fill: parent
             color: "white"
             placeholderText: "Search Layers"
-            placeholderTextColor: "#656565"
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
+            placeholderTextColor: "#757575"
+            anchors.leftMargin: 2
+            anchors.rightMargin: 2
             onAccepted: {
                 sendToSearch()
             }
@@ -65,13 +67,14 @@ Item{
 
 
     TreeView{
-        id:rootItem
+        id:treeView
         anchors.top: search.bottom
+        anchors.topMargin: 15
         width: parent.width
         height: parent.height - 30
 //        anchors.fill: parent
 
-        model: layersModel
+        model: proxyModel
 
 
 

@@ -8,7 +8,7 @@ Item {
     id: root
     x: parent.x
     clip: false
-
+    property var m
 //    function adjustRightContainer(screenwidth){ if(nowItem || layers.visible){
 //            if(isMinimized === true){
 //                root.x = screenwidth
@@ -101,7 +101,7 @@ Item {
 
         LayersWidget{
             id:layers
-            layersModel: wnd.layersModel
+            layersModel: root.m
             SplitView.minimumHeight: root.height/4
             onToggleLayerEnabled: function(layerIndex) {
                 wnd.toggleLayerEnabled(layerIndex);

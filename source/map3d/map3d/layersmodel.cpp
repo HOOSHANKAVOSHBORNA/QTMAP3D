@@ -54,7 +54,6 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
         clear();
         updateLayers(mapItem->getMapNode()->getMap());
     });
-
 }
 
 //int LayersModel::columnCount(const QModelIndex &parent) const
