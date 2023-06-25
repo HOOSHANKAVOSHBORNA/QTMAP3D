@@ -23,9 +23,10 @@ class Node;
 
 class DataManager;
 
-#define AIRCRAFTS_LAYER_NAME "Aircrafts"
-#define SYSTEMS_LAYER_NAME "Systems"
-#define STATIONS_LAYER_NAME "Stations"
+#define AIRCRAFT_LAYER "Aircraft"
+#define SYSTEM_LAYER "System"
+#define STATION_LAYER "Station"
+#define DEFENSE_LAYER "Defense"
 
 class DefenseModelLayer :public PluginInterface
 {
@@ -72,6 +73,7 @@ private slots:
 private:
     DefenseModelNode* pick(float x, float y);
     void findSceneModels(osgViewer::Viewer *viewer);
+    void initLayers();
 private:
     //QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
 	DefenseModelNode* mSelectedModelNode{nullptr};//do not define as ref_ptr
@@ -83,6 +85,9 @@ private:
 
     //DefenseDataManager *mDefenseDataManager;
     DataManager *mDataManager;
+    static int mAircraftCount;
+    static int mSystemCount;
+    static int mStationCount;
 
 };
 

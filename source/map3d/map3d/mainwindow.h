@@ -17,6 +17,7 @@ class PluginInterface;
 class UIHandle;
 class ListWindow;
 class LayersModel;
+class LayersProxyModel;
 
 Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QQuickWindow
@@ -51,6 +52,7 @@ class MainWindow : public QQuickWindow
 
     Q_PROPERTY(LayersModel* layersModel READ layersModel WRITE setLayersModel NOTIFY layersModelChanged)
     Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox WRITE setToolbox NOTIFY layersModelChanged)
+    Q_PROPERTY(LayersProxyModel* layersProxyModel READ layersProxyModel WRITE setLayersProxyModel NOTIFY layersModelChanged)
 
     enum class InfoWidgetType {
         Airplane,
@@ -87,6 +89,7 @@ public:
 
 
     LayersModel *layersModel() const;
+    LayersProxyModel *layersProxyModel() const ;
     ToolboxProxyModel *toolbox() const;
 
     UIHandle *uiHandle() const;
@@ -178,6 +181,7 @@ public slots:
     void showListWindow();
 
     void setLayersModel(LayersModel *layersModel);
+    void setLayersProxyModel(LayersProxyModel *layerProxyModel);
     void setToolbox(ToolboxProxyModel* toolbox);
     void onFrameSwapped();
 
@@ -271,6 +275,7 @@ private:
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
     ToolboxProxyModel *mToolbox = nullptr;
+    LayersProxyModel *mLayersProxyModel = nullptr;
 };
 
 #endif // MainWindow_H

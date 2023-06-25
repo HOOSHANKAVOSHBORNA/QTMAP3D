@@ -15,13 +15,15 @@ find_package(Qt6 COMPONENTS Gui Quick Widgets REQUIRED)
 add_library(drawCone SHARED
     drawCone.json
     drawCone.qrc
-    drawcone.cpp
+    drawCone.cpp
     cone.cpp
     coneProperties.cpp
 )
 
 target_include_directories(drawCone PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
 target_link_libraries(drawCone PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
+target_include_directories(drawCone PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
+target_link_libraries(drawCone PRIVATE drawShape)
 
 target_compile_definitions(drawCone PRIVATE CPTEST_LIBRARY)
 

@@ -16,8 +16,8 @@ add_library(drawRect SHARED
 drawRect.json
 rect.cpp
 rect.h
-drawrect.cpp
-drawrect.h
+drawRect.cpp
+drawRect.h
 rectproperties.cpp
 rectproperties.h
 drawRect.qrc
@@ -25,6 +25,8 @@ drawRect.qrc
 
 target_include_directories(drawRect PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
 target_link_libraries(drawRect PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
+target_include_directories(drawRect PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
+target_link_libraries(drawRect PRIVATE drawShape)
 
 target_compile_definitions(drawRect PRIVATE CPTEST_LIBRARY)
 

@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(drawCircle SHARED
-    drawcircle.cpp
+    drawCircle.cpp
     drawCircle.json
     circle.cpp
     drawCircle.qrc
@@ -22,6 +22,8 @@ add_library(drawCircle SHARED
 
 target_include_directories(drawCircle PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
 target_link_libraries(drawCircle PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
+target_include_directories(drawCircle PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
+target_link_libraries(drawCircle PRIVATE drawShape)
 
 target_compile_definitions(drawCircle PRIVATE CPTEST_LIBRARY)
 

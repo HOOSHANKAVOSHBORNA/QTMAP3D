@@ -27,6 +27,7 @@ public:
 //    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private slots:
     void onPolygonItemCheck(bool check);
+    void onMeasureAreaItemCheck(bool check);
 private:
     void startDraw(const osgGA::GUIEventAdapter& event);
     bool drawing(const osgGA::GUIEventAdapter& event);
@@ -40,6 +41,7 @@ private:
     enum class DrawingState{START, DRAWING, FINISH};
     DrawingState mDrawingState;
     Polygon* mPolygon{nullptr};
+    bool mAreaMode{false};
 
     PolygonProperties* mPolygonProperties{nullptr};
 

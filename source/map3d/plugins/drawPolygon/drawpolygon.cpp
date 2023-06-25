@@ -8,6 +8,8 @@
 
 const QString CATEGORY = "Draw";
 const QString POLYGON = "Polygon";
+const QString M_CATEGORY = "Measurement";
+const QString MEASUREAREA = "Measure Area";
 
 DrawPolygon::DrawPolygon(QObject *parent)
     : PluginInterface(parent)
@@ -55,8 +57,11 @@ DrawPolygon::DrawPolygon(QObject *parent)
 bool DrawPolygon::setup()
 {
     auto toolboxItem =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
+    auto toolboxItemArea =  new ToolboxItem{MEASUREAREA, M_CATEGORY, "qrc:/resources/polygon.png", true};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawPolygon::onPolygonItemCheck);
     toolbox()->addItem(toolboxItem);
+    QObject::connect(toolboxItemArea, &ToolboxItem::itemChecked, this, &DrawPolygon::onMeasureAreaItemCheck);
+    toolbox()->addItem(toolboxItemArea);
 
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     mIconNode = makeIconNode();
@@ -143,6 +148,14 @@ void DrawPolygon::onPolygonItemCheck(bool check)
     }
 }
 
+void DrawPolygon::onMeasureAreaItemCheck(bool check)
+{
+    if(check){
+        mAreaMode = true;
+        onPolygonItemCheck(true);
+    }
+}
+
 osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
 {
     osg::ref_ptr<osg::Image> icon = osgDB::readImageFile("../data/images/draw/polygon.png");
@@ -195,7 +208,7 @@ bool DrawPolygon::mouseMoveDrawing(const osgGA::GUIEventAdapter &event)
     }
     osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
-    if (mPolygon->getSize() > 4){
+    if (mPolygon->getSize() > 4 && mAreaMode){
         qDebug()<<"Area is: "<<mPolygon->CalculateAreaOfPolygon();
     }
     return false;

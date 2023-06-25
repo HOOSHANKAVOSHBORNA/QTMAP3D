@@ -207,7 +207,7 @@ void MapItem::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) con
 
 void MapItem::addLayer(osgEarth::Layer *layer)
 {
-
+    layer->setUserValue("parent", false);
     auto node = layer->getNode();
     if(node)
         node->setName(layer->getName());
@@ -267,16 +267,20 @@ bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
     auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
     //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
     if(destinationLayer){
-        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
-        if(group){
-            if(!group->containsNode(layer->getNode())){
-                layer->setUserValue("parent", true);
-                group->addChild(layer->getNode());
-                addLayer(layer);
-                emit layerChanged();
-            }
-            return true;
-        }
+        auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
+        dataContainer->addUserObject(layer);
+        //        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
+        //        if(group){
+        //            if(!group->containsNode(layer->getNode())){
+        //group->addChild(layer->getNode());
+        addLayer(layer);
+        layer->setUserValue("parent", destinationLayer->getName());
+        //                qDebug()<<"num parent"<<layer->getNode()->getNumParents();
+        //                qDebug()<<"parent 0"<<layer->getNode()->getParent(0)->getName();
+        //                qDebug()<<"parent 1"<<layer->getNode()->getParent(1)->getName();
+        emit layerChanged();
+        //            }
+        return true;
     }
     return false;
 }
@@ -286,14 +290,23 @@ bool MapItem::removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName
     auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
     //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
     if(destinationLayer){
-        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
-        if(group){
-            layer->setUserValue("parent", false);
-            group->removeChild(layer->getNode());
+        auto dataContainer = destinationLayer->getUserDataContainer();
+        if(!dataContainer){
+            unsigned int index = dataContainer->getUserObjectIndex(layer);
+            dataContainer->removeUserObject(index);
             removeLayer(layer);
             emit layerChanged();
             return true;
         }
+
+//        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
+//        if(group){
+//            group->removeChild(layer->getNode());
+//            removeLayer(layer);
+//            layer->setUserValue("parent", false);
+//            emit layerChanged();
+//            return true;
+//        }
     }
     return false;
 }

@@ -1,14 +1,11 @@
 #ifndef DRAWIMAGE_H
 #define DRAWIMAGE_H
-
-
 #include "imageProperties.h"
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
 #include <osg/ShapeDrawable>
 #include <osg/ClipNode>
 #include <osg/ClipPlane>
-
 #include <QMouseEvent>
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
@@ -19,12 +16,11 @@
 #include <QQmlEngine>
 #include <QQmlComponent>
 
-#include "plugininterface.h"
+#include "drawShape.h"
 
-
-#define DRAW_LAYER_NAME "image"
+#define IMGOVERLAY "ImgOverlay"
 class ImageProperties;
-class DrawImage : public PluginInterface
+class DrawImage : public DrawShape
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawImage.json")
@@ -35,32 +31,22 @@ public:
 //    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     bool setup() override;
     void loadImage();
-//    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-    bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private slots:
     void onImageItemCheck(bool check);
 
 private:
-    bool startDraw(const osgGA::GUIEventAdapter &ea);
-    bool finishDrawing(const osgGA::GUIEventAdapter &ea);
-    bool cancelDrawing(const osgGA::GUIEventAdapter &ea);
-    osgEarth::Annotation::PlaceNode* makeIconNode();
+    void initDraw(const osgEarth::GeoPoint &geoPos) override;
+    void cancelDraw()override;
+    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mImgLayer;
+    static int mCount;
     ImageProperties *mImageProperties{nullptr};
 
 
 private:
-    osg::Image *mImage{nullptr};
-    enum class DrawingState{START, DRAWING, FINISH};
-    DrawingState mDrawingState;
-    bool mEnterImageZone{false};
-    osg::Image* imageAddr{nullptr};
-    osgEarth::Annotation::ImageOverlay* mImageOverlay{nullptr};
-    osgEarth::Annotation::ImageOverlayEditor* mImgOvlEditor{nullptr};
-
-
-
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
+    osg::ref_ptr<osg::Image> mImage{nullptr};
+    osg::ref_ptr<osg::Image> imageAddr{nullptr};
+    osg::ref_ptr<osgEarth::Annotation::ImageOverlay> mImageOverlay{nullptr};
+    osg::ref_ptr<osgEarth::Annotation::ImageOverlayEditor> mImgOvlEditor{nullptr};
 };
 
 #endif // DRAWIMAGE_H

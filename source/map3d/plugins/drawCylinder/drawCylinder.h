@@ -5,13 +5,13 @@
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/PlaceNode>
 
-#include "plugininterface.h"
+#include "drawShape.h"
 #include "cylinder.h"
 #include "cylinderProperties.h"
 
-#define DRAW_LAYER_NAME "Cylinder"
+#define CYLINDER "Cylinder"
 
-class DrawCylinder : public PluginInterface
+class DrawCylinder : public DrawShape
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawCylinder.json")
@@ -19,30 +19,17 @@ class DrawCylinder : public PluginInterface
 
 public:
     DrawCylinder(QObject *parent = nullptr);
-//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     bool setup() override;
-
-//    void onToolboxItemCheckedChanged(const QString &name, const QString &category, bool checked) override;
-    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-    virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private slots:
-    void onCylinderItemCheck(bool check);
+    void onCylinderItemCheck (bool check);
 private:
-    bool startDraw(const osgGA::GUIEventAdapter& event);
-    bool finishDrawing(const osgGA::GUIEventAdapter& event);
-    bool cancelDrawing(const osgGA::GUIEventAdapter& event);
-
-    osgEarth::Annotation::PlaceNode* makeIconNode();
+    void initDraw(const osgEarth::GeoPoint &geoPos) override;
+    void cancelDraw()override;
 
 private:
-    enum class DrawingState{START, DRAWING, FINISH};
-    DrawingState mDrawingState;
-    Cylinder* mCylinder{nullptr};
-    bool mEnterCylinderZone{false};
-
+    osg::ref_ptr<Cylinder> mCylinder{nullptr};
     CylinderProperties *mCylinderProperties{nullptr};
-
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
+    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mCylinderLayer;
+    static int mCount;
 };
-
 #endif // DRAWCylinder_H

@@ -3,13 +3,12 @@
 #include "osgEarth/Layer"
 #include "osgEarthAnnotation/AnnotationEditing"
 
-Ellipse::Ellipse(MapItem *mapItem){
-    mMapItem = mapItem;
+Ellipse::Ellipse(){
     osgEarth::Symbology::Style ellipseStyle;
     ellipseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() ;
     ellipseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() ;
     ellipseStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() ;
-    this->setRadiusMajor(osgEarth::Distance(250, osgEarth::Units::MILES));
+    this->setRadiusMajor(osgEarth::Distance(300, osgEarth::Units::MILES));
     this->setRadiusMinor(osgEarth::Distance(100, osgEarth::Units::MILES));
     this->setRotationAngle(osgEarth::Angle(0, osgEarth::Units::DEGREES));
     this->setArcStart(osgEarth::Angle(0, osgEarth::Units::DEGREES));

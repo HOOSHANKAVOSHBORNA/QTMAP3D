@@ -14,7 +14,7 @@ Item {
 
 
     implicitWidth: 300
-    property CLayersModel layersModel
+    property CLayerProxyModel layersModel
 
     property bool layersItemVisible: false
 
@@ -109,7 +109,7 @@ Item {
 
                 LayerTreeView{
                     anchors.fill: parent
-                    model: layersModel
+                    proxyModel: rootItem.layersModel
                 }
 
 //                ColumnLayout {

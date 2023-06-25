@@ -29,7 +29,7 @@ private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
 private:
-    Box* mBox{nullptr};
+    osg::ref_ptr<Box> mBox{nullptr};
     BoxProperties *mBoxProperties{nullptr};
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mBoxLayer;
     static int mCount;
