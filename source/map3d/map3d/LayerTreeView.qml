@@ -9,7 +9,7 @@ import Crystal 1.0
 Item{
     id:root
     width: parent.width
-//    property var listModel
+    //    property var listModel
     readonly property color        _colorHover : "#FFCC00"
     readonly property color        _colorPresed : "#908000"
     readonly property color        _colorRec   : "#363739"
@@ -25,7 +25,8 @@ Item{
         width: parent.width
         height: 30
         y : 0
-//        anchors.bottom: rootItem.top
+        clip: true
+        //        anchors.bottom: rootItem.top
         color: "#353535"
         anchors.leftMargin: 15
         anchors.rightMargin: 15
@@ -44,13 +45,13 @@ Item{
                 implicitHeight: 24
                 border.color: "#333"
                 border.width: 1
-                color: "#454545"
+                color: "#808080"
             }
             anchors.fill: parent
             color: "white"
             placeholderText: "Search Layers"
-            placeholderTextColor: "#757575"
-            anchors.leftMargin: 2
+            placeholderTextColor: "#495866"
+            anchors.leftMargin: 5
             anchors.rightMargin: 2
             onAccepted: {
                 sendToSearch()
@@ -70,12 +71,13 @@ Item{
     TreeView{
         id:treeView
         anchors.top: search.bottom
-        anchors.topMargin: 15
+        anchors.topMargin: 10
         width: parent.width
-        height: parent.height - 30
-//        anchors.fill: parent
+        height: parent.height - 40
+        //        anchors.fill: parent
 
         model: root.proxyModel
+        clip: true
 
 
 
@@ -86,7 +88,7 @@ Item{
             id: treeDelegate
 
             implicitWidth: padding + label.x + label.implicitWidth + padding
-            implicitHeight: label.implicitHeight * 1.5
+            implicitHeight: label.implicitHeight * 1.8
 
             readonly property real indent: 20
             readonly property real padding: 5
@@ -100,20 +102,21 @@ Item{
 
             Rectangle{
                 id: container
-                width: parent.width
-                height: parent.height
-                //            color: "#454545"
-                color: "transparent"
+                width: parent.parent.parent.width - x
+                height: parent.height -3
+                anchors.verticalCenter: parent.verticalCenter
+                color: sectionColor
+                //                color: "transparent"
                 //border.color: "#ffffff"
                 //border.width: 1
-                radius: height/10
+                radius: height/6
                 x: padding + (treeDelegate.depth * treeDelegate.indent)
 
             }
 
             HoverHandler{
                 //onHoveredChanged: hovered ? container.color = "#808080" : container.color = "#454545"
-                onHoveredChanged: hovered ? label.color = "#999999" : label.color = "#ffffff"
+                onHoveredChanged: hovered ? label.color = _colorHover : label.color = "#ffffff"
             }
 
             TapHandler {
@@ -130,17 +133,18 @@ Item{
             Text {
                 id: indicator
                 visible: treeDelegate.isTreeNode && treeDelegate.hasChildren
-                x: padding + (treeDelegate.depth * treeDelegate.indent)
-                anchors.verticalCenter: label.verticalCenter
+                x:  (treeDelegate.depth * treeDelegate.indent) +3
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: 20
                 text: "▸"
                 rotation: treeDelegate.expanded ? 90 : 0
-                padding: 4
-                color: "#ffffff"
+                padding: 5
+                color: "#ffa32b"
             }
 
             Text {
                 id: label
-                x: padding + (treeDelegate.isTreeNode ? (treeDelegate.depth + 1) * treeDelegate.indent : 0) + hideContainer.width
+                x: padding+ 5 + (treeDelegate.isTreeNode ? (treeDelegate.depth + 1) * treeDelegate.indent : 0) + hideContainer.width
                 width: treeDelegate.width - treeDelegate.padding - x
                 clip: true
                 font.pixelSize: 14
@@ -154,7 +158,7 @@ Item{
                 id: hideContainer
                 width: container.height/1.35
                 height: container.height/1.35
-                color: "transparent"
+                color: "#21201f"
                 border.color: "#111111"
                 radius: 5
                 anchors.verticalCenter: parent.verticalCenter
@@ -169,12 +173,16 @@ Item{
                 MouseArea{
                     hoverEnabled: true
                     anchors.fill: hideContainer
-                    onEntered: hideContainer.border.color = "orange"
+                    onEntered: {
+                        hideContainer.color = sectionColor
+                        hideContainer.border.color = _colorHover
+                    }
                     onExited: {
                         if(hideContainer.isEnabled){
+                            hideContainer.color = "#21201f"
                             hideContainer.border.color = "#111111"
                         } else{
-
+                            hideContainer.color = "#21201f"
                             hideContainer.border.color = "red"
                         }
                     }
@@ -182,6 +190,7 @@ Item{
                         if(hideContainer.isEnabled ){
                             hideContainer.isEnabled = false
                             hideContainer.border.color = "red"
+
                         } else{
                             hideContainer.isEnabled = true
                             hideContainer.border.color = "#111111"

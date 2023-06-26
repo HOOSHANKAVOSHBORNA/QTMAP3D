@@ -1,5 +1,3 @@
-//import QtQuick 2.13
-//import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import Crystal 1.0
 import QtQuick
@@ -74,7 +72,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: 10
-        color: "#404040"
+        color: "#202020"
         opacity: 0.8
         anchors.margins: 6
     }
