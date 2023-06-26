@@ -18,8 +18,6 @@
 #include <osgEarthUtil/Sky>
 #include <osgEarthAnnotation/AnnotationLayer>
 
-class MainMapCallback;
-
 class MapItem : public QQuickItem
 {
     Q_OBJECT

@@ -30,6 +30,7 @@ add_executable(Map3d
         layersmodel.cpp layersmodel.h
         osgRenderNode.cpp   osgRenderNode.h
         mapControllerItem.cpp mapControllerItem.h
+        customMap.cpp customMap.h
         toolbox.h toolbox.cpp
         treeModel.h treeModel.cpp
         qml.qrc
