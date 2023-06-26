@@ -32,6 +32,7 @@ class CustomMap: public QObject, public osgEarth::Map
     Q_OBJECT
 public:
     CustomMap(QObject *parent = nullptr);
+    CustomMap(const osgEarth::MapOptions& options, QObject *parent = nullptr);
     bool addNodeToExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
     bool removeNodeFromExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
     bool addExistLayerToExistLayer(osgEarth::Layer *layer, osgEarth::Layer* destlayer);

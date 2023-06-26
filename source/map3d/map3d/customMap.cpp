@@ -46,6 +46,13 @@ CustomMap::CustomMap(QObject *parent):
     addMapCallback(new MainMapCallback(this));
 }
 
+CustomMap::CustomMap(const osgEarth::MapOptions &options, QObject *parent):
+    osgEarth::Map(options),
+    QObject(parent)
+{
+    addMapCallback(new MainMapCallback(this));
+}
+
 bool CustomMap::addNodeToExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
 {
     if (!layer)
