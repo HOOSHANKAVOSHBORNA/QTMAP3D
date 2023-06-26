@@ -27,7 +27,7 @@ add_executable(Map3d
         pluginmanager.cpp   pluginmanager.h
         defenseDataManager.cpp  defenseDataManager.h
         listwindow.cpp  listwindow.h
-        layersmodel.cpp layersmodel.h
+        layerModel.cpp layerModel.h
         osgRenderNode.cpp   osgRenderNode.h
         mapControllerItem.cpp mapControllerItem.h
         toolbox.h toolbox.cpp

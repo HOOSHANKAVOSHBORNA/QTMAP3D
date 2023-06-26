@@ -16,7 +16,8 @@ Item{
     readonly property color        sectionColor:  "#00587A"
     readonly property real         categorySize: 30
     readonly property real         itemSize: 30
-    property CLayerProxyModel      proxyModel;
+    property CLayersModel      proxyModel;
+
 
 
     Rectangle {
@@ -30,7 +31,7 @@ Item{
         anchors.rightMargin: 15
         TextField {
             function sendToSearch() {
-                proxyModel.setFilterString(text)
+                root.proxyModel.setFilterString(text)
                 if (text.length == 0) {
                     treeView.collapseRecursively()
                 }
@@ -74,7 +75,7 @@ Item{
         height: parent.height - 30
 //        anchors.fill: parent
 
-        model: proxyModel
+        model: root.proxyModel
 
 
 

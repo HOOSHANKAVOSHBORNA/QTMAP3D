@@ -14,7 +14,7 @@ Item {
 
 
     implicitWidth: 300
-    property CLayerProxyModel layersModel
+    property CLayersModel layersModel
 
     property bool layersItemVisible: false
 
@@ -85,6 +85,7 @@ Item {
         Label {
             color: "white"
             text: "Layers"
+//            text: layersModel.rowCount()
             font.family: "SourceSansPro"
             font.pointSize: 14
             Layout.fillWidth: true

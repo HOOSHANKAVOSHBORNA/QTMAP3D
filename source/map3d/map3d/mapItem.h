@@ -2,7 +2,7 @@
 #define MapController_H
 
 #include "osgRenderNode.h"
-//#include "layersmodel.h"
+//#include "layerModel.h"
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QObject>
