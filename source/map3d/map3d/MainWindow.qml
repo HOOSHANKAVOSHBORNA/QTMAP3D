@@ -34,10 +34,55 @@ CMainWindow {
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("MAP3D")
-    MapControllerItem {
+//    MapControllerItem {
+//        id: mapController
+//        anchors.fill: parent
+//        objectName: "MainMap"
+//        z: -1
+//    }
+    property Component dockableItemComp: Qt.createComponent("DockableItem.qml");
+
+    property DockableItem dockItem: null
+    property DockArea defaultDockArea: mainDockArea
+    function setCentralDockItemImpl(item) {
+        wnd.defaultDockArea.setDefaultDockableItemIfIsDefault(item);
+    }
+
+    function attachToCentralDockItemImpl(item, horizontalAttach, attachAsFirst, splitScale) {
+        wnd.defaultDockArea.attachDockItemIfIsDefault(horizontalAttach, attachAsFirst, item, splitScale);
+
+    }
+
+    function wrapItemWithDockableImpl(_item, _title) {
+        var obj = wnd.dockableItemComp.createObject(wnd, {attachWindow: wnd, tmpColor:"#104020", title: _title});
+        obj.wrapItem(_item);
+        return obj;
+    }
+
+
+    function startTabDrag(item) {
+        wnd.dockItem = item;
+    }
+
+    function finishTabDrag() {
+        wnd.dockItem = null;
+    }
+    DockArea     {
+        id: mainDockArea
         anchors.fill: parent
-        objectName: "MainMap"
-        z: -1
+        parentMainWindow: wnd
+        isDefaultDockArea: true
+
+        Component.onCompleted: function() {
+            var obj = wnd.dockableItemComp.createObject(wnd, {x: 300, y: 300, attachWindow: wnd, tmpColor:"#104020", title: "def"});
+            wnd.defaultDockArea.setDefaultDockableItemIfIsDefault(obj);
+
+            var dock1 = wnd.dockableItemComp.createObject(wnd, {x: 100, y: 100, attachWindow: wnd, tmpColor:"#102040", title: "First"});
+            wnd.defaultDockArea.attachDockItemIfIsDefault(true, true, dock1, 0.25);
+
+            var dock2 = wnd.dockableItemComp.createObject(wnd, {x: 100, y: 100, attachWindow: wnd, tmpColor:"#402010", title: "Second"});
+            wnd.defaultDockArea.attachDockItemIfIsDefault(true, false, dock2, 0.35);
+        }
     }
 
     //flags: Qt.FramelessWindowHint

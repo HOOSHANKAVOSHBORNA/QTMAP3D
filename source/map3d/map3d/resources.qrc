@@ -56,5 +56,7 @@
         <file>Resources/direction.png</file>
         <file>Resources/sear.svg</file>
         <file>Resources/back.svg</file>
+        <file>Resources/up_direction.png</file>
+        <file>Resources/drag2.png</file>
     </qresource>
 </RCC>

@@ -328,7 +328,7 @@ QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
         ////        setNode(mSource);
         //        initializeOsgEarth();
 
-        mOSGRenderNode->setupOSG(x(), y(), width(), height(), 1);
+        mOSGRenderNode->setupOSG(0, 0, 800, 620, 1);
 
         n = mOSGRenderNode;
     }

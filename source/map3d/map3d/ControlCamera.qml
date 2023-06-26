@@ -13,6 +13,18 @@ Rectangle {
     property bool downButtonPressed: btn_down.pressed
     property bool leftButtonPressed: btn_left.pressed
     property bool rightButtonPressed: btn_right.pressed
+    readonly property int       _iconSize   : 24
+    readonly property int       _margin     : 15
+    readonly property int       _radius     : 10
+    readonly property color     _colorRec   : "#404040"
+    readonly property color     _colorHover : "#FFCC00"
+    readonly property color     _colorPresed : "#908000"
+    readonly property color     _colorIcon  : "#FFFFFF"
+    readonly property color     _colorButton: "#55FFFFFF"
+    readonly property string    _fontFamily : "Srouce Sans Pro"
+    readonly property int       _fontPointSize : 11
+    readonly property color     itemColor: "#404040"
+    readonly property real      widgetsMargins: 10
 
     Rectangle{
         anchors.fill: parent
