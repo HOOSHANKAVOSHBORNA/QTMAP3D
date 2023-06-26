@@ -31,6 +31,7 @@ add_executable(Map3d
         osgRenderNode.cpp   osgRenderNode.h
         mapControllerItem.cpp mapControllerItem.h
         toolbox.h toolbox.cpp
+        treeModel.h treeModel.cpp
         qml.qrc
         resources.qrc)
 

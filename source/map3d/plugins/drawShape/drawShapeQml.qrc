@@ -1,3 +1,5 @@
 <RCC>
-    <qresource prefix="/"/>
+    <qresource prefix="/">
+        <file>QSpinBox.qml</file>
+    </qresource>
 </RCC>

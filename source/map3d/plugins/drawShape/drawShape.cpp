@@ -36,6 +36,16 @@ DrawShape::DrawShape(QObject *parent)
     Q_INIT_RESOURCE(drawShape);
 }
 
+DrawShape::~DrawShape()
+{
+    mIconNode.release();
+//    qDebug()<<name();
+//    if(mIconNode.valid()){
+//    qDebug()<<mIconNode->referenceCount();
+//    qDebug()<<mIconNode->referenceCount();
+//    }
+}
+
 bool DrawShape::setup()
 {
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
@@ -50,17 +60,17 @@ bool DrawShape::setup()
 
 void DrawShape::makeIconNode(const QString &fileName)
 {
-    osg::ref_ptr<osg::Image> icon = osgDB::readImageFile(fileName.toStdString());
-    if(icon.valid()){
+    osg::Image* icon = osgDB::readImageFile(fileName.toStdString());
+    if(icon){
         icon->scaleImage(24, 24, icon->r());
         mIconNode = new osgEarth::Annotation::PlaceNode();
         mIconNode->setIconImage(icon);
     }
 }
 
-osg::ref_ptr<osgEarth::Annotation::PlaceNode> DrawShape::iconNode() const
+osgEarth::Annotation::PlaceNode *DrawShape::iconNode() const
 {
-    return mIconNode;
+    return mIconNode.get();
 }
 
 DrawShape::State DrawShape::state() const
@@ -99,6 +109,11 @@ bool DrawShape::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActi
             initDraw(geoPos);
             return true;
         }
+        if (mState == State::EDIT) {
+            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+            drawing(geoPos);
+            return true;
+        }
     }
     else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && mState == State::EDIT) {
         cancelDraw();
@@ -116,7 +131,7 @@ bool DrawShape::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
     if(mState == State::NONE)
         return false;
     //move icon-----------------------
-    if(mIconNode.valid()){
+    if(mIconNode){
         osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
     }
