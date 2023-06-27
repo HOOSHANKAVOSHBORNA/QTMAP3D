@@ -3,7 +3,7 @@
 #include <osgEarthDrivers/model_feature_geom/FeatureGeomModelOptions>
 #include <osgEarthFeatures/GeometryCompiler>
 #include "osgEarthAnnotation/AnnotationEditing"
-#include "osgEarth/Tessellator"
+#include "qpainter.h"
 
 Polygon::Polygon(MapItem *mapItem)
 {
@@ -28,6 +28,10 @@ Polygon::Polygon(MapItem *mapItem)
 
     geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
+    //mLabelGroup = new osg::Group;
+    //addChild(mLabelGroup);
+    //mLabelGroup->setNodeMask(false);
+    addChild(mPlaceNode);
 
     _options = osgEarth::Features::GeometryCompilerOptions();
     _needsRebuild = true;
@@ -43,6 +47,14 @@ Polygon::Polygon(MapItem *mapItem)
         style = *feature->style();
     }
     setStyle(style);
+}
+
+Polygon::~Polygon()
+{
+//    for(auto labelData: mVecLabelData){
+//        if(labelData.qImage)
+//            delete labelData.qImage;
+//    }
 }
 
 double Polygon::getSize()
@@ -150,10 +162,7 @@ double Polygon::CalculateAreaOfPolygon_I()
     if (getSize()>3){
     for (unsigned int i = 1; i < numPoints-1; i++)
     {
-
-
         osg::Vec3  pos1 = mPolygonGeom->at(0);
-
         osg::Vec3  pos2 = mPolygonGeom->at(i);
         osg::Vec3  pos3 = mPolygonGeom->at(i+1);
 
@@ -169,6 +178,122 @@ double Polygon::CalculateAreaOfPolygon_I()
     return 0;
 }
 
+bool Polygon::showArea() const
+{
+    return mShowArea;
+}
+
+void Polygon::setShowArea(bool newShowArea)
+{
+    if (mShowArea == newShowArea)
+    return;
+
+//    if(newShowArea)
+//    mCount++;
+//    else if(mCount > 0)
+//    mCount--;
+
+    mShowArea = newShowArea;
+
+//    if (mCount > 0){
+//    mLabelGroup->setNodeMask(true);
+//    for(auto& data:mVecLabelData)
+//    {
+//        if(data.qImage)
+//            delete data.qImage;
+//        QImage* qImage = createOrUpdateLabelImg(data.image, data.area, data.volume);
+//        data.qImage = qImage;
+//        data.placeNode->setIconImage(data.image);
+//        data.placeNode->setStyle(data.placeNode->getStyle());
+//    }
+//    }
+//    else
+    //mLabelGroup->setNodeMask(false);
+
+}
+
+bool Polygon::showVolume() const
+{
+    return mShowVolume;
+}
+
+void Polygon::setShowVolume(bool newShowVolume)
+{
+    mShowVolume = newShowVolume;
+}
+
+void Polygon::createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double area)
+{
+//    int imageHeight = 23;
+//    if (mCount > 0)
+//    imageHeight = mCount*23;
+//    else
+//    return nullptr;
+    int areaPos = 5;
+    int volumePos = 5;
+
+    QImage* lblImage = new QImage(
+        LABEL_IMAGE_WIDTH,
+        LABEL_IMAGE_HEIGHT,
+        QImage::Format_RGBA8888);
+    if(!image->valid())
+    image = new osg::Image;
+    {
+
+    lblImage->fill(QColor(Qt::transparent));
+    QPainter painter(lblImage);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+    static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+    static const QFont textFont("SourceSansPro", 10, QFont::Normal);
+    static const QPen  textPen(QColor(255, 255, 255));
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(backgroundBrush);
+    painter.drawRoundedRect(
+        lblImage->rect(),
+        8,8);
+
+    painter.setPen(textPen);
+    painter.setFont(textFont);
+
+    if (mShowArea){
+        volumePos += 22;
+        if (area >= 1000000){
+            area/=1000000;
+            QString str = QObject::tr("a: %1 km2").arg(area,0,'f',2);
+            painter.drawText(8, areaPos, LABEL_IMAGE_WIDTH, 20,
+                             Qt::AlignLeft|Qt::AlignVCenter,
+                             str);
+        }
+        else{
+            QString str = QObject::tr("a: %1 m2").arg(area,0,'f',2);
+            painter.drawText(8, areaPos, LABEL_IMAGE_WIDTH, 20,
+                             Qt::AlignLeft|Qt::AlignVCenter,
+                             str);
+        }
+    }
+//    if (mShowVolume){
+//        QString vStr= QString::number(volume, 'f', 2);
+//        painter.drawText(QRect(8, volumePos, LABEL_IMAGE_WIDTH, 20),
+//                         Qt::AlignLeft|Qt::AlignVCenter,
+//                         "v: "+vStr+"°");
+
+
+
+//    }
+    }
+    *lblImage = lblImage->mirrored(false, true);
+    image->setImage(LABEL_IMAGE_WIDTH,
+                    LABEL_IMAGE_HEIGHT,
+                    1,
+                    GL_RGBA,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    lblImage->bits(),
+                    osg::Image::AllocationMode::NO_DELETE);
+
+}
+
 void Polygon::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)
 {
     auto style = this->getStyle();
@@ -178,21 +303,87 @@ void Polygon::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)
 
 void Polygon::addPoints(osgEarth::GeoPoint point)
 {
+
+
+//    mPoints.push_back(point);
+
+
+//    double x_sum = 0.0;
+//    double y_sum = 0.0;
+//    for (auto point : mPoints) {
+//    x_sum += point.x();
+//    y_sum += point.y();
+//    }
+
+//    mCenter.x() = x_sum / mPoints.size();
+//    mCenter.y() = y_sum / mPoints.size();
+
     auto fea = this->getFeature();
     mPolygonGeom->push_back(point.vec3d());
     dirty();
     fea->setGeometry(mPolygonGeom);
+
+    auto area = CalculateAreaOfPolygon();
+    osg::ref_ptr<osg::Image> image = new osg::Image;
+    createOrUpdateLabelImg(image, area);
+    mPlaceNode = new osgEarth::Annotation::PlaceNode();
+//    LabelData data;
+//    data.qImage = qImage;
+//    data.image = image;
+//    data.area = area;
+//    data.volume = 0;
+//    data.placeNode = placeNode;
+//    mVecLabelData.push_back(data);
+    if(mPolygonGeom->size() >2){
+        osgEarth::GeoPoint midPoint(mMapItem->getMapSRS(),
+                                (mPolygonGeom->at(mPolygonGeom->size() - 2)
+                                 + mPolygonGeom->at(mPolygonGeom->size() -1 )) / 2);
+        mPlaceNode->setPosition(midPoint);
+    }
+
+    mPlaceNode->setIconImage(image);
+    mPlaceNode->setStyle(mPlaceNode->getStyle());
+    mPlaceNode->setNodeMask(true);
+
+    addChild(mPlaceNode);
+    //mLabelGroup->addChild(placeNode);
+    //addChild(mLabelGroup);
 }
 void Polygon::clearPoints()
 {
     mPolygonGeom->clear();
+//    for(auto labelData: mVecLabelData){
+//    if(labelData.qImage)
+//        delete labelData.qImage;
+//    if(mPlaceNode){
+//        removeChild(mPlaceNode);
+//    }
+//    }
+//    mVecLabelData.clear();
+    dirty();
+    //mLabelGroup->removeChildren(0,mLabelGroup->getNumChildren());
+
+
+
 //    dirty();
 }
 
 void Polygon::removePoint()
 {
     mPolygonGeom->pop_back();
+
+
+//    auto qImage = mVecLabelData[getSize()-1].qImage;
+//    if(qImage)
+//        delete  qImage;
+//    mLabelGroup->removeChild(getSize()-1);
+
+
+//    mVecLabelData.pop_back();
     dirty();
+    //mLabelGroup->removeChild(getSize()-1);
+
+//    addChild(mLabelGroup);
 }
 
 void Polygon::setHeight(float height)

@@ -10,19 +10,21 @@
 class LayersModel : public TreeProxyModel
 {
     Q_OBJECT
+//    Q_PROPERTY(QString   color          READ getColor         WRITE setColor        )
+
+
 public:
     LayersModel(MapItem *mapController = nullptr, QObject *parent = nullptr);
 
-    enum {
-        LayerIndexRole = Qt::UserRole + 300,
-        LayerEnabledRole = Qt::UserRole + 301
-    };
+
 
 public:
     void updateLayers(osgEarth::Map *map);
 
+
 public slots:
     void clickedItem(QModelIndex itemIndex);
+    bool getLayerVisible(QModelIndex itemIndex);
 
 private:
     void setLayerVisible(osgEarth::VisibleLayer *layer);
