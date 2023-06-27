@@ -1,19 +1,13 @@
-
 #ifndef LAYERSMODEL_H
 #define LAYERSMODEL_H
 
 #include "mapItem.h"
-
-#include <QAbstractListModel>
-#include <QHash>
-#include <QByteArray>
-#include <QList>
+#include "treeModel.h"
 #include <osgEarth/Layer>
-#include <QAbstractTableModel>
-#include <QAbstractItemModel>
-#include <QStandardItemModel>
 
-class LayersModel : public QStandardItemModel
+
+
+class LayersModel : public TreeProxyModel
 {
     Q_OBJECT
 public:
@@ -26,21 +20,21 @@ public:
 
 public:
     void updateLayers(osgEarth::Map *map);
-//    int rowCount(const QModelIndex& parent) const;
-//    void clear();
-
 
 public slots:
-    void toggleLayerEnabled(int layerIndex );
     void clickedItem(QModelIndex itemIndex);
 
 private:
-    void addChildItem(osg::Group *parentGroup, QStandardItem *parentItem);
+    void setLayerVisible(osgEarth::VisibleLayer *layer);
+//    void addChildItem(osg::Group *parentGroup, QStandardItem *parentItem);
+//    void addChildItem(osgEarth::Layer *layer, QStandardItem *parentItem);
 private:
 
 //    QList<osgEarth::Layer*> mLayersList;
     QStandardItem mLayerList;
     MapItem *mMapItem;
+    TreeModel *mTreeModel;
+//    TreeProxyModel *mTreeProxyModel;
 };
 
 

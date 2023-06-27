@@ -505,6 +505,7 @@ CMainWindow {
         y: menuWidget.height + (widgetsMargins*2 )
         width: 250
         height: parent.height - menuWidget.height - (widgetsMargins * 6) /*- navigationWidget.height*/
+        m: layersModel
         }
 
     function showRightContainer(item) {

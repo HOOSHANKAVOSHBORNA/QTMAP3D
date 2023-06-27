@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWindow *parent) :
     mToolbox->setSourceModel(toolbox);
 //    setToolbox(toolbox);
 
+//    LayersModel *layerModel = new LayersModel;
+
+
 
 
 
@@ -229,6 +232,11 @@ LayersModel *MainWindow::layersModel() const
 {
     return mLayersModel;
 }
+
+//LayersProxyModel *MainWindow::layersProxyModel() const
+//{
+//    return mLayersProxyModel;
+//}
 
 ToolboxProxyModel *MainWindow::toolbox() const
 {
@@ -499,6 +507,12 @@ void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
     mToolbox = toolbox;
 }
 
+//void MainWindow::setLayersProxyModel(LayersProxyModel *layer)
+//{
+//    mLayersProxyModel = layer;
+//    emit layersModelChanged();
+//}
+
 void MainWindow::onFrameSwapped()
 {
 
@@ -649,11 +663,19 @@ void MainWindow::initializeGL()
 //    restoreContext();
 //    emit osgInitialized();
     //----------------------------------------------------------
+
     LayersModel *layersModel = new LayersModel(getMapItem());
     setLayersModel(layersModel);
 
-    QObject::connect(this, &MainWindow::toggleLayerEnabled,
-                     layersModel, &LayersModel::toggleLayerEnabled);
+//    mLayersProxyModel = new LayersProxyModel();
+//    mLayersProxyModel->setSourceModel(layersModel);
+//    setLayersProxyModel(mLayersProxyModel);
+
+
+
+//    QObject::connect(this, &MainWindow::toggleLayerEnabled,
+//                     layersModel, &LayersModel::toggleLayerEnabled);
+
     //----------------------------------------------------------
     restoreContext();
 

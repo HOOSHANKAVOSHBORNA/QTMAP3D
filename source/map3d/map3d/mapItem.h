@@ -2,7 +2,7 @@
 #define MapController_H
 
 #include "osgRenderNode.h"
-//#include "layersmodel.h"
+//#include "layerModel.h"
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QObject>
@@ -17,8 +17,6 @@
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
 #include <osgEarthAnnotation/AnnotationLayer>
-
-class MainMapCallback;
 
 class MapItem : public QQuickItem
 {

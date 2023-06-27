@@ -49,9 +49,9 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "box" + QString::number(mCount);
     mBox = new Box();
     mBox->setName(name.toStdString());
-    mBox->setHeight(100000);
-    mBox->setWidth(100000);
-    mBox->setLength(100000);
+//    mBox->setHeight(100000);
+//    mBox->setWidth(100000);
+//    mBox->setLength(100000);
     mBox->setPosition(geoPos);
 
     mapItem()->addNodeToLayer(mBox, BOX);
@@ -59,6 +59,11 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
 
     setState(State::EDIT);
     mCount++;
+}
+
+void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
+{
+    mBox->setPosition(geoPos);
 }
 
 void DrawBox::cancelDraw()

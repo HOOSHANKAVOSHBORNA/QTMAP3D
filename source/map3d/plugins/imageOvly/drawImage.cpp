@@ -21,6 +21,8 @@
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
 #include "mapItem.h"
+//#include "osg/Group"
+#include "osgEarth/ModelLayer"
 #include "osg/Group"
 #include "osgEarth/Layer"
 #include <QQuickItem>

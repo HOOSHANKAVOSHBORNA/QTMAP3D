@@ -10,7 +10,7 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "listwindow.h"
-#include "layersmodel.h"
+#include "layerModel.h"
 #include "mapControllerItem.h"
 
 Application::Application() :
@@ -78,6 +78,7 @@ void Application::registerTypes()
     qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
     qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
+//    qmlRegisterType<LayersProxyModel>("Crystal", 1, 0, "CLayerProxyModel");
     qmlRegisterType<MapItem>("Crystal",1,0,"MapItem");
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
 

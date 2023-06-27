@@ -1,5 +1,4 @@
 #include "imageProperties.h"
-#include "drawImage.h"
 
 #include <QQmlComponent>
 #include <QQuickItem>
