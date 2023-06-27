@@ -16,7 +16,7 @@ MapController {
     rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
     rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
     rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
-    anchors.fill: parent
+//    anchors.fill: parent
     objectName: "MainMap"
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
@@ -32,6 +32,7 @@ MapController {
     readonly property int       _fontPointSize : 11
     readonly property color     itemColor: "#404040"
     readonly property real      widgetsMargins: 10
+    clip: true
     DropArea {
         id: dragTarget
 

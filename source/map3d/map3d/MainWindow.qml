@@ -77,11 +77,11 @@ CMainWindow {
             var obj = wnd.dockableItemComp.createObject(wnd, {x: 300, y: 300, attachWindow: wnd, tmpColor:"#104020", title: "def"});
             wnd.defaultDockArea.setDefaultDockableItemIfIsDefault(obj);
 
-            var dock1 = wnd.dockableItemComp.createObject(wnd, {x: 100, y: 100, attachWindow: wnd, tmpColor:"#102040", title: "First"});
-            wnd.defaultDockArea.attachDockItemIfIsDefault(true, true, dock1, 0.25);
+//            var dock1 = wnd.dockableItemComp.createObject(wnd, {x: 100, y: 100, attachWindow: wnd, tmpColor:"#102040", title: "First"});
+//            wnd.defaultDockArea.attachDockItemIfIsDefault(true, true, dock1, 0.25);
 
-            var dock2 = wnd.dockableItemComp.createObject(wnd, {x: 100, y: 100, attachWindow: wnd, tmpColor:"#402010", title: "Second"});
-            wnd.defaultDockArea.attachDockItemIfIsDefault(true, false, dock2, 0.35);
+//            var dock2 = wnd.dockableItemComp.createObject(wnd, {x: 100, y: 100, attachWindow: wnd, tmpColor:"#402010", title: "Second"});
+//            wnd.defaultDockArea.attachDockItemIfIsDefault(true, false, dock2, 0.35);
         }
     }
 
@@ -527,10 +527,12 @@ CMainWindow {
     }
 
     function showInfoView(item, title) {
-        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
-        sideWidget.hideAllItems();
-        infoo.showInfo(item)
-        infoo.titleText = title;
+//        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+//        sideWidget.hideAllItems();
+//        infoo.showInfo(item)
+//        infoo.titleText = title;
+        var dock = wnd.wrapItemWithDockable(item, title);
+        wnd.attachToCentralDockItem(dock, true, true, 0.3);
     }
 
     function hideInfoView() {
