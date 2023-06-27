@@ -151,8 +151,20 @@ void DrawPolygon::onPolygonItemCheck(bool check)
 void DrawPolygon::onMeasureAreaItemCheck(bool check)
 {
     if(check){
-        mAreaMode = true;
         onPolygonItemCheck(true);
+        mShowArea = true;
+    }
+    else {
+        mEnterPolygonZone = false;
+        mDrawingState = DrawingState::FINISH;
+        if(mPolygonProperties){
+            mPolygonProperties->hide();
+        }
+
+        mPolygonProperties->deleteLater();
+        mPolygonProperties = nullptr;
+        mPolygon = nullptr;
+        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
     }
 }
 
@@ -173,6 +185,10 @@ osgEarth::Annotation::PlaceNode *DrawPolygon::makeIconNode()
 void DrawPolygon::startDraw(const osgGA::GUIEventAdapter &event)
 {
     mPolygon = new Polygon(mapItem());
+    if (mShowArea){
+        mPolygon->setShowArea(true);
+        mPolygon->clearPoints();
+    }
     mapItem()->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::DRAWING;
     mPolygonProperties->setPolygon(mPolygon);
@@ -208,9 +224,7 @@ bool DrawPolygon::mouseMoveDrawing(const osgGA::GUIEventAdapter &event)
     }
     osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(event.getX(), event.getY());
     mPolygon->addPoints(geoPos);
-    if (mPolygon->getSize() > 4 && mAreaMode){
-        qDebug()<<"Area is: "<<mPolygon->CalculateAreaOfPolygon();
-    }
+
     return false;
 
 }
