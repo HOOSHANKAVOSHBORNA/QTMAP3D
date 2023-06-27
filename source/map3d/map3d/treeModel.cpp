@@ -78,7 +78,9 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
 
 void TreeModel::addItem(QStandardItem *item, const QString parent)
 {
+
     beginResetModel();
+
         if(treeMap.contains(parent)){
             treeMap[parent]->appendRow(item);
             treeMap[item->text()] = item;

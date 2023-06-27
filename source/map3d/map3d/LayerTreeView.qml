@@ -4,21 +4,26 @@ import QtQuick.Controls
 import QtQuick.Effects
 import Crystal 1.0
 
-
+//#000814, #001d3d, #003566, #ffc300, #ffd60a
 
 Item{
     id:root
     width: parent.width
     //    property var listModel
-    readonly property color        _colorHover : "#FFCC00"
-    readonly property color        _colorPresed : "#908000"
-    readonly property color        _colorRec   : "#363739"
-    readonly property color        sectionColor:  "#00587A"
+    readonly property color        _colorHover : "#ffd60a"
+    readonly property color        _colorPresed : "#ffc300"
+    readonly property color        _colorRec   : "#001d3d"
+    readonly property color        sectionColor:  "#003566"
+    readonly property color        _darkColor: "#000814"
     readonly property real         categorySize: 30
     readonly property real         itemSize: 30
+
     property CLayersModel      proxyModel;
+    property bool isEnabled: root.proxyModel.getLayerVisible(treeView.index(row , column))
 
+    onIsEnabledChanged: {
 
+    }
 
     Rectangle {
         id: search
@@ -76,13 +81,21 @@ Item{
         height: parent.height - 40
         //        anchors.fill: parent
 
-        model: root.proxyModel
+        model: selectionModel.model
         clip: true
 
-
+        selectionModel: ItemSelectionModel {
+            id: selectionModel
+            model: root.proxyModel
+            onCurrentChanged: {
+            }
+            onSelectionChanged:{
+            }
+        }
 
         signal toggleLayerEnabled(int layerIndex)
         //    signal clickedItem(QStandardItem itemIndex)
+
 
         delegate: Item {
             id: treeDelegate
@@ -100,16 +113,18 @@ Item{
 
 
 
+
+
             Rectangle{
                 id: container
-                width: parent.parent.parent.width - x
-                height: parent.height -3
+                width: depth < 1 ? parent.parent.parent.width - x  : parent.parent.parent.width - x - height/6
+                height:  depth < 1 ? parent.height -3 : parent.height
                 anchors.verticalCenter: parent.verticalCenter
-                color: sectionColor
+                color: depth < 1 ? sectionColor : _colorRec
                 //                color: "transparent"
                 //border.color: "#ffffff"
                 //border.width: 1
-                radius: height/6
+                radius:   depth < 1 ? height/6 : 0
                 x: padding + (treeDelegate.depth * treeDelegate.indent)
 
             }
@@ -154,7 +169,8 @@ Item{
             }
 
             Rectangle{
-                property bool isEnabled: true
+
+
                 id: hideContainer
                 width: container.height/1.35
                 height: container.height/1.35
@@ -165,7 +181,8 @@ Item{
                 anchors.right:  label.left
                 anchors.margins: 5
                 Image {
-                    source: hideContainer.isEnabled ? "./Resources/eye_open.png" : "./Resources/eye_close.png"
+                    id:eye
+                    source: "./Resources/eye_open.png"
                     width: parent.width * 0.9
                     height: parent.height * 0.9
                     anchors.centerIn: parent
@@ -178,28 +195,32 @@ Item{
                         hideContainer.border.color = _colorHover
                     }
                     onExited: {
-                        if(hideContainer.isEnabled){
+                        if(isEnabled){
+                            eye.source = "./Resources/eye_open.png"
                             hideContainer.color = "#21201f"
                             hideContainer.border.color = "#111111"
                         } else{
                             hideContainer.color = "#21201f"
                             hideContainer.border.color = "red"
+                            eye.source = "./Resources/eye_close.png"
                         }
                     }
                     onClicked: function() {
-                        if(hideContainer.isEnabled ){
-                            hideContainer.isEnabled = false
+                        if(isEnabled ){
+//                            hideContainer.isEnabled = false
                             hideContainer.border.color = "red"
 
                         } else{
-                            hideContainer.isEnabled = true
+//                            hideContainer.isEnabled = true
                             hideContainer.border.color = "#111111"
                         }
 
                         //                    rootItem.model.toggleLayerEnabled(treeView.index(row , column));
-                        //                    console.log(row,column )
-                        rootItem.model.clickedItem( treeView.index(row , column))
+//                                            console.log(treeView.index(row , column))
+//                        rootItem.model.clickedItem( treeView.index(row , column))
                         //                    rootItem.model.clickedItem(modelIndex())
+                        root.proxyModel.clickedItem(treeView.index(row , column))
+                        console.log(isEnabled)
                     }
                 }
             }
