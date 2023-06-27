@@ -10,13 +10,13 @@ class AnnotationLayer;
 }
 
 }
-class CustomMap;
+class MapObject;
 //--------------------------------------------
 class MainMapCallback : public QObject, public osgEarth::MapCallback
 {
     Q_OBJECT
 public:
-    MainMapCallback(CustomMap *customMap);
+    MainMapCallback(MapObject *mapObject);
     void onLayerAdded(osgEarth::Layer* layer, unsigned index) override;
     void onLayerRemoved(osgEarth::Layer* layer, unsigned index) override;
     void onLayerMoved(osgEarth::Layer* layer, unsigned oldIndex, unsigned newIndex) override;
@@ -24,15 +24,15 @@ public:
     void onLayerDisabled(osgEarth::Layer* layer) override;
 
 private:
-    CustomMap *mCustomMap{nullptr};
+    MapObject *mMapObject{nullptr};
 };
 //--------------------------------------------
-class CustomMap: public QObject, public osgEarth::Map
+class MapObject: public QObject, public osgEarth::Map
 {
     Q_OBJECT
 public:
-    CustomMap(QObject *parent = nullptr);
-    CustomMap(const osgEarth::MapOptions& options, QObject *parent = nullptr);
+    MapObject(QObject *parent = nullptr);
+    MapObject(const osgEarth::MapOptions& options, QObject *parent = nullptr);
     bool addNodeToExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
     bool removeNodeFromExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
     bool addExistLayerToExistLayer(osgEarth::Layer *layer, osgEarth::Layer* destlayer);

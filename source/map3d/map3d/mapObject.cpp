@@ -1,59 +1,59 @@
-#include "customMap.h"
+#include "mapObject.h"
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/AnnotationLayer>
 
-MainMapCallback::MainMapCallback(CustomMap *customMap) :
-    mCustomMap(customMap)
+MainMapCallback::MainMapCallback(MapObject *mapObject) :
+    mMapObject(mapObject)
 {
 
 }
 
 void MainMapCallback::onLayerAdded  (osgEarth::Layer* layer, unsigned index)
 {
-    if(mCustomMap)
-        emit mCustomMap->layerAdded(layer, index);
+    if(mMapObject)
+        emit mMapObject->layerAdded(layer, index);
 }
 
 void MainMapCallback::onLayerRemoved(osgEarth::Layer* layer, unsigned index)
 {
-    if(mCustomMap)
-        emit mCustomMap->layerRemoved(layer, index);
+    if(mMapObject)
+        emit mMapObject->layerRemoved(layer, index);
 }
 
 void MainMapCallback::onLayerMoved(osgEarth::Layer* layer, unsigned oldIndex, unsigned newIndex)
 {
-    if(mCustomMap)
-        emit mCustomMap->layerMoved(layer, oldIndex, newIndex);
+    if(mMapObject)
+        emit mMapObject->layerMoved(layer, oldIndex, newIndex);
 }
 
 void MainMapCallback::onLayerEnabled(osgEarth::Layer* layer)
 {
-    if(mCustomMap)
-        emit mCustomMap->layerEnabled(layer);
+    if(mMapObject)
+        emit mMapObject->layerEnabled(layer);
 }
 
 void MainMapCallback::onLayerDisabled(osgEarth::Layer* layer)
 {
-    if(mCustomMap)
-        emit mCustomMap->layerDisabled(layer);
+    if(mMapObject)
+        emit mMapObject->layerDisabled(layer);
 }
 
 //----------------------------------------------------------------------------------------------
-CustomMap::CustomMap(QObject *parent):
+MapObject::MapObject(QObject *parent):
     osgEarth::Map(),
     QObject(parent)
 {
     addMapCallback(new MainMapCallback(this));
 }
 
-CustomMap::CustomMap(const osgEarth::MapOptions &options, QObject *parent):
+MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):
     osgEarth::Map(options),
     QObject(parent)
 {
     addMapCallback(new MainMapCallback(this));
 }
 
-bool CustomMap::addNodeToExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
+bool MapObject::addNodeToExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
 {
     if (!layer)
         return false;
@@ -67,7 +67,7 @@ bool CustomMap::addNodeToExistLayer(osg::Node *node, osgEarth::Annotation::Annot
     return true;
 }
 
-bool CustomMap::removeNodeFromExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
+bool MapObject::removeNodeFromExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
 {
     if (!layer)
         return false;
@@ -81,7 +81,7 @@ bool CustomMap::removeNodeFromExistLayer(osg::Node *node, osgEarth::Annotation::
     return true;
 }
 
-bool CustomMap::addExistLayerToExistLayer(osgEarth::Layer *layer, osgEarth::Layer *destlayer)
+bool MapObject::addExistLayerToExistLayer(osgEarth::Layer *layer, osgEarth::Layer *destlayer)
 {
     if (!layer || destlayer)
         return false;
@@ -99,7 +99,7 @@ bool CustomMap::addExistLayerToExistLayer(osgEarth::Layer *layer, osgEarth::Laye
     return true;
 }
 
-bool CustomMap::removeExistLayerFromExistLayer(osgEarth::Layer *layer, osgEarth::Layer *destlayer)
+bool MapObject::removeExistLayerFromExistLayer(osgEarth::Layer *layer, osgEarth::Layer *destlayer)
 {
     if (!layer || destlayer)
         return false;
@@ -112,7 +112,7 @@ bool CustomMap::removeExistLayerFromExistLayer(osgEarth::Layer *layer, osgEarth:
     auto dataContainer = destlayer->getOrCreateUserDataContainer();
     unsigned int indexChild = dataContainer->getUserObjectIndex(layer);
     dataContainer->removeUserObject(indexChild);
-    layer->getUserData();
+    layer->setUserData(nullptr);
 
     emit layerFromLayerRemoved(layer, destlayer);
     return true;

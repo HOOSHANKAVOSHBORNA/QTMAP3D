@@ -2,6 +2,7 @@
 #define MapController_H
 
 #include "osgRenderNode.h"
+#include "mapObject.h"
 //#include "layerModel.h"
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -11,12 +12,12 @@
 #include <GL/gl.h>
 
 #include <osgEarth/MapNode>
-#include <osgEarth/Map>
 #include <osgEarthUtil/EarthManipulator>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
 #include <osgEarthAnnotation/AnnotationLayer>
+
 
 class MapItem : public QQuickItem
 {
@@ -29,6 +30,7 @@ public:
     osgViewer::Viewer *getViewer()const;
     const osg::Group *getRoot() const;
     osgEarth::MapNode *getMapNode() const;
+    MapObject *mapObject() const;
     const osgEarth::SpatialReference* getMapSRS() const;
 //    LayersModel *getLayersModel() const;
     bool addNode(osg::Node *node);
@@ -102,6 +104,7 @@ private:
     osg::ref_ptr<osgEarth::MapNode> mMapNode{nullptr};
     osg::ref_ptr<osgEarth::Util::SkyNode> mSkyNode{nullptr};
     osg::ref_ptr<osg::Group> mMapRoot{nullptr};
+    osg::ref_ptr<MapObject> mMapObject;
 
 private:
     bool mIsFirstFrame{true};

@@ -10,7 +10,6 @@
 #include <chrono>
 #include <QQuickOpenGLUtils>
 #include <osgGA/TrackballManipulator>
-#include "customMap.h"
 #include "mapItem.h"
 
 //class MainMapCallback : public osgEarth::MapCallback
@@ -83,6 +82,11 @@ const osg::Group *MapItem::getRoot() const
 osgEarth::MapNode *MapItem::getMapNode() const
 {
     return mMapNode;
+}
+
+MapObject *MapItem::mapObject() const
+{
+    return mMapObject;
 }
 
 const osgEarth::SpatialReference *MapItem::getMapSRS() const
@@ -494,13 +498,15 @@ void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
         {
             mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_GEOCENTRIC;
             mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
-            mMapNode = new osgEarth::MapNode(new CustomMap(mapOpt));
+            mMapObject = new MapObject(mapOpt);
+            mMapNode = new osgEarth::MapNode(mMapObject);
         }
         else
         {
             mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_PROJECTED;
             mapOpt.profile() = osgEarth::ProfileOptions();
-            mMapNode = new osgEarth::MapNode(new CustomMap(mapOpt));
+            mMapObject = new MapObject(mapOpt);
+            mMapNode = new osgEarth::MapNode(mMapObject);
         }
     }
     else
