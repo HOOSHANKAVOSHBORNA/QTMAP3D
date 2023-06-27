@@ -10,31 +10,32 @@
 #include <chrono>
 #include <QQuickOpenGLUtils>
 #include <osgGA/TrackballManipulator>
+#include "customMap.h"
 #include "mapItem.h"
 
-class MainMapCallback : public osgEarth::MapCallback
-{
-public:
-    MainMapCallback(MapItem *MapItem) :
-        mMapItem(MapItem)
-    {
+//class MainMapCallback : public osgEarth::MapCallback
+//{
+//public:
+//    MainMapCallback(MapItem *MapItem) :
+//        mMapItem(MapItem)
+//    {
 
-    }
+//    }
 
-    void onLayerAdded  (osgEarth::Layer* layer, unsigned index) override
-    {
-        if(mMapItem)
-            mMapItem->layerAdded(layer, index);
-    }
-    void onLayerRemoved(osgEarth::Layer* layer, unsigned index) override
-    {
-        if(mMapItem)
-            mMapItem->layerRemoved(layer, index);
-    }
+//    void onLayerAdded  (osgEarth::Layer* layer, unsigned index) override
+//    {
+//        if(mMapItem)
+//            mMapItem->layerAdded(layer, index);
+//    }
+//    void onLayerRemoved(osgEarth::Layer* layer, unsigned index) override
+//    {
+//        if(mMapItem)
+//            mMapItem->layerRemoved(layer, index);
+//    }
 
-private:
-    MapItem *mMapItem{nullptr};
-};
+//private:
+//    MapItem *mMapItem{nullptr};
+//};
 
 //--MapItem---------------------------------------------------------------------------------------------------------
 const double MAX_CAM_DISTANCE = 30000000.0;
@@ -290,23 +291,21 @@ bool MapItem::removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName
     auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
     //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
     if(destinationLayer){
-        auto dataContainer = destinationLayer->getUserDataContainer();
-        if(!dataContainer){
-            unsigned int index = dataContainer->getUserObjectIndex(layer);
-            dataContainer->removeUserObject(index);
-            removeLayer(layer);
-            emit layerChanged();
-            return true;
-        }
+        auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
+        unsigned int index = dataContainer->getUserObjectIndex(layer);
+        dataContainer->removeUserObject(index);
+        removeLayer(layer);
+        emit layerChanged();
+        return true;
 
-//        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
-//        if(group){
-//            group->removeChild(layer->getNode());
-//            removeLayer(layer);
-//            layer->setUserValue("parent", false);
-//            emit layerChanged();
-//            return true;
-//        }
+        //        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
+        //        if(group){
+        //            group->removeChild(layer->getNode());
+        //            removeLayer(layer);
+        //            layer->setUserValue("parent", false);
+        //            emit layerChanged();
+        //            return true;
+        //        }
     }
     return false;
 }
@@ -495,13 +494,13 @@ void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
         {
             mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_GEOCENTRIC;
             mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
-            mMapNode = new osgEarth::MapNode(new osgEarth::Map(mapOpt));
+            mMapNode = new osgEarth::MapNode(new CustomMap(mapOpt));
         }
         else
         {
             mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_PROJECTED;
             mapOpt.profile() = osgEarth::ProfileOptions();
-            mMapNode = new osgEarth::MapNode(new osgEarth::Map(mapOpt));
+            mMapNode = new osgEarth::MapNode(new CustomMap(mapOpt));
         }
     }
     else
@@ -512,7 +511,7 @@ void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
     mMapRoot->addChild(mSkyNode);
     //    mMapRoot->addChild(mMapNode);
 
-    mMapNode->getMap()->addMapCallback(new MainMapCallback(this));
+//    mMapNode->getMap()->addMapCallback(new MainMapCallback(this));
 }
 
 void MapItem::createCameraManipulator()
