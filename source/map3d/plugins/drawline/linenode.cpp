@@ -42,7 +42,7 @@ LineNode::LineNode(MapItem *mapItem)
 
 LineNode::~LineNode()
 {
-	for(auto labelData: mVecLabelData){
+    for(auto labelData: mVecLabelData){
 		if(labelData.qImage)
 			delete labelData.qImage;
 	}

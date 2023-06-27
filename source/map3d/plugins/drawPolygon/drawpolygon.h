@@ -45,7 +45,8 @@ private:
 
     PolygonProperties* mPolygonProperties{nullptr};
 
-    bool mEnterPolygonZone{false};    
+    bool mEnterPolygonZone{false};
+    bool mShowArea{false};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
 
 };
