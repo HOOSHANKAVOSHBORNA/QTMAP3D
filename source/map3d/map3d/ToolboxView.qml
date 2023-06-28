@@ -196,7 +196,7 @@ Item {
                         }
                         IconImage {
                             id: img2
-                            source: "qrc:/Resources/chevron.png"
+                            source: "qrc:/Resources/arrow.png"
                             width: 18
                             height: 18
 
