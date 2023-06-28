@@ -14,13 +14,11 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
     mMapItem = mapItem;
     updateLayers(mapItem->getMapNode()->getMap());
     connect(mapItem, &MapItem::layerChanged,[this, mapItem](){
-        //        mTreeModel->clear();
         mTreeModel->removeRows(0,mTreeModel->rowCount());
         updateLayers(mapItem->getMapNode()->getMap());
     });
     connect(mapItem, &MapItem::mapCleared,[this, mapItem](){
         mTreeModel->removeRows(0,mTreeModel->rowCount());
-        //        mTreeModel->clear();
         updateLayers(mapItem->getMapNode()->getMap());
     });
     setSourceModel(mTreeModel);
@@ -30,20 +28,20 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
 
 void LayersModel::updateLayers(osgEarth::Map *map)
 {
-    //    mTreeModel->removeRows(0,mTreeModel->rowCount());
-    //    mTreeModel->clear();
     osgEarth::LayerVector layers;
     map->getLayers(layers);
     for(const auto& layer : layers) {
         std::string parent;
         layer->getUserValue("parent", parent);
         QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
+        treeItem->setData(true,visibleLayerRole);///////////////
         mTreeModel->addItem(treeItem,QString(parent.c_str()));
         if(layer->getNode() && layer->getNode()->asGroup()){
             auto group = layer->getNode()->asGroup();
             for (int i = 0; i < group->getNumChildren(); ++i) {
                 auto child = group->getChild(i);
                 QStandardItem *treeItemChild = new QStandardItem(QString(child->getName().c_str()));
+                treeItemChild->setData(true,visibleLayerRole);///////////////
                 mTreeModel->addItem(treeItemChild , QString(layer->getName().c_str()));
             }
         }
@@ -52,22 +50,32 @@ void LayersModel::updateLayers(osgEarth::Map *map)
 
 
 
-void LayersModel::clickedItem(QModelIndex itemIndex)
-{
-//    qDebug() << itemIndex.row() << itemIndex<<"name:"<< data(itemIndex);
 
-    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(itemIndex).toString().toStdString());
+QHash<int, QByteArray> LayersModel::roleNames() const
+{
+    QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
+    hash[visibleLayerRole] = "isVisible";
+    return hash;
+}
+
+
+void LayersModel::onItemClicked(const QModelIndex &current)
+{
+    QModelIndex indexSource = mapToSource(current);
+    bool visibleRoleSet = mTreeModel->data(indexSource,visibleLayerRole).toBool();
+    mTreeModel->setData(indexSource,!visibleRoleSet,visibleLayerRole);
+    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(indexSource).toString().toStdString());
     auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
     if(visibleLayer)
     {
         setLayerVisible(visibleLayer);
     }
     else{
-        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(itemIndex.parent()).toString().toStdString());
+        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(indexSource.parent()).toString().toStdString());
         if(layer){
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             if(group){
-                auto node = group->getChild(itemIndex.row());
+                auto node = group->getChild(indexSource.row());
                 node->setNodeMask(!node->getNodeMask());
             }
         }
@@ -90,11 +98,12 @@ void LayersModel::setLayerVisible(osgEarth::VisibleLayer *layer)
     }
 }
 
-bool LayersModel::getLayerVisible(QModelIndex itemIndex)
+bool LayersModel::getLayerVisible(QModelIndex itemIndex) const
 {
     auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(itemIndex).toString().toStdString());
-    auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
-    bool visible = visibleLayer->getVisible();
+    auto visLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+    bool visible = visLayer->getVisible();
+//    mTreeModel->setData(itemIndex,visible,visibleLayerRole);////////////
     return visible;
 }
 

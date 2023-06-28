@@ -40,7 +40,7 @@ public:
     TreeProxyModel(QObject *parent = nullptr);
     QString filterString() const;
 public slots:
-    void onItemClicked(const QModelIndex &current);
+    virtual void onItemClicked(const QModelIndex &current);
     void setFilterString(const QString &filterString);
 signals:
     void filterStringChanged();
