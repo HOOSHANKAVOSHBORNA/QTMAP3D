@@ -10,19 +10,24 @@
 class LayersModel : public TreeProxyModel
 {
     Q_OBJECT
+
+    enum CustomRoles{
+        visibleLayerRole =Qt::UserRole + 100
+    };
+
+
 public:
     LayersModel(MapItem *mapController = nullptr, QObject *parent = nullptr);
-
-    enum {
-        LayerIndexRole = Qt::UserRole + 300,
-        LayerEnabledRole = Qt::UserRole + 301
-    };
+    QHash<int,QByteArray> roleNames() const override;
 
 public:
     void updateLayers(osgEarth::Map *map);
 
+
 public slots:
-    void clickedItem(QModelIndex itemIndex);
+//    void clickedItem(QModelIndex itemIndex);
+    void onItemClicked(const QModelIndex &current)override;
+    bool getLayerVisible(QModelIndex itemIndex) const;
 
 private:
     void setLayerVisible(osgEarth::VisibleLayer *layer);

@@ -54,5 +54,6 @@
         <file>Resources/hand.png</file>
         <file>Resources/eye.png</file>
         <file>Resources/direction.png</file>
+        <file>Resources/search.png</file>
     </qresource>
 </RCC>
