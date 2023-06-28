@@ -127,7 +127,7 @@ void ImageLayer::addXYZ()
             auto imageLayerOptions = osgEarth::ImageLayerOptions(nodeName, opt);
             osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
             layer->setName(it->toStdString());
-            mapItem()->addLayer(layer);
+            mapItem()->getMapObject()->addLayer(layer);
 
         }
 
@@ -153,7 +153,7 @@ void ImageLayer::addArcGIS()
         opt.url() = nodeName;
 
         osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
     }
 }
 
@@ -168,7 +168,7 @@ void ImageLayer::addGDAL()
         osgEarth::Drivers::GDALOptions  opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
     }
 }
 
@@ -331,7 +331,7 @@ void ImageLayer::addWMS()
             opt.profile()     = { "EPSG:4326" };
 
             osg::ref_ptr<osgEarth::ImageLayer>  layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-            mapItem()->addLayer(layer);
+            mapItem()->getMapObject()->addLayer(layer);
 
         }
     }

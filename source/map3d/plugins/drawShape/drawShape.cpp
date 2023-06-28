@@ -29,7 +29,7 @@
 #include <osgEarthAnnotation/AnnotationLayer>
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
-bool DrawShape::mHasLayer = false;
+
 DrawShape::DrawShape(QObject *parent)
     : PluginInterface(parent)
 {
@@ -49,12 +49,10 @@ DrawShape::~DrawShape()
 bool DrawShape::setup()
 {
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-    if(!mHasLayer){
-        auto shapeLayer = new osgEarth::Annotation::AnnotationLayer();
-        shapeLayer->setName(CATEGORY);
-        mapItem()->addLayer(shapeLayer);
-        mHasLayer = true;
-    }
+
+    mShapeLayer = new osgEarth::Annotation::AnnotationLayer();
+    mShapeLayer->setName(CATEGORY);
+    mapItem()->getMapObject()->addLayer(mShapeLayer);
     return true;
 }
 
@@ -93,10 +91,12 @@ void DrawShape::setState(DrawShape::State newState)
 //    }
 //}
 
-//osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> DrawShape::shapeLayer() const
-//{
-//    return mShapeLayer;
-//}
+osgEarth::Annotation::AnnotationLayer *DrawShape::shapeLayer()
+{
+    if(!mShapeLayer)
+        mShapeLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(CATEGORY));
+    return mShapeLayer;
+}
 
 bool DrawShape::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {

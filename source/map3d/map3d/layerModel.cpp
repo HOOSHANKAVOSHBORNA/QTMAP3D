@@ -35,10 +35,19 @@ void LayersModel::updateLayers(osgEarth::Map *map)
     osgEarth::LayerVector layers;
     map->getLayers(layers);
     for(const auto& layer : layers) {
-        std::string parent;
-        layer->getUserValue("parent", parent);
+
+//        std::string parent;
+//        layer->getUserValue("parent", parent);
         QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
-        mTreeModel->addItem(treeItem,QString(parent.c_str()));
+        qDebug()<<"userLayer:"<<layer->getUserData();
+        qDebug()<<"layer:"<<layer;
+        auto parentLayer = dynamic_cast<osgEarth::Layer*>(layer->getUserData());
+        if(parentLayer)
+            mTreeModel->addItem(treeItem,QString(parentLayer->getName().c_str()));
+        else
+            mTreeModel->addItem(treeItem,"");
+
+
         if(layer->getNode() && layer->getNode()->asGroup()){
             auto group = layer->getNode()->asGroup();
             for (int i = 0; i < group->getNumChildren(); ++i) {

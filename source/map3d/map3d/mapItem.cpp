@@ -84,7 +84,12 @@ osgEarth::MapNode *MapItem::getMapNode() const
     return mMapNode;
 }
 
-MapObject *MapItem::mapObject() const
+MapObject *MapItem::getMapObject()
+{
+    return mMapObject;
+}
+
+const MapObject *MapItem::getMapObject() const
 {
     return mMapObject;
 }
@@ -278,7 +283,7 @@ bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
         //        if(group){
         //            if(!group->containsNode(layer->getNode())){
         //group->addChild(layer->getNode());
-        addLayer(layer);
+        mMapObject->addLayer(layer);
         layer->setUserValue("parent", destinationLayer->getName());
         //                qDebug()<<"num parent"<<layer->getNode()->getNumParents();
         //                qDebug()<<"parent 0"<<layer->getNode()->getParent(0)->getName();
@@ -298,7 +303,7 @@ bool MapItem::removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName
         auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
         unsigned int index = dataContainer->getUserObjectIndex(layer);
         dataContainer->removeUserObject(index);
-        removeLayer(layer);
+        mMapObject->removeLayer(layer);
         emit layerChanged();
         return true;
 
@@ -415,7 +420,7 @@ void MapItem::setGeocentric(bool isGeocentric)
     createMapNode(mIsGeocentric);
     emit mapCleared();
     for(const auto &layer: layers)
-        addLayer(layer);
+        mMapObject->addLayer(layer);
 
     osgEarth::Viewpoint vp = getEarthManipulator()->getViewpoint();
 
@@ -479,7 +484,7 @@ void MapItem::initializeOsgEarth()
     gdal.L2CacheSize() = 2048;
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
-    addLayer(imlayer);
+    mMapObject->addLayer(imlayer);
     //create camera after create map node
     createCameraManipulator();
     mOSGRenderNode->setCameraManipulator(mEarthManipulator);

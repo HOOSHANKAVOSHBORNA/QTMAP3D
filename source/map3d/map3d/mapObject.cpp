@@ -1,4 +1,5 @@
 #include "mapObject.h"
+#include "qdebug.h"
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/AnnotationLayer>
 
@@ -53,7 +54,7 @@ MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):
     addMapCallback(new MainMapCallback(this));
 }
 
-bool MapObject::addNodeToExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
+bool MapObject::addNodeToLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
 {
     if (!layer)
         return false;
@@ -67,7 +68,7 @@ bool MapObject::addNodeToExistLayer(osg::Node *node, osgEarth::Annotation::Annot
     return true;
 }
 
-bool MapObject::removeNodeFromExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
+bool MapObject::removeNodeFromLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
 {
     if (!layer)
         return false;
@@ -81,39 +82,37 @@ bool MapObject::removeNodeFromExistLayer(osg::Node *node, osgEarth::Annotation::
     return true;
 }
 
-bool MapObject::addExistLayerToExistLayer(osgEarth::Layer *layer, osgEarth::Layer *destlayer)
+bool MapObject::setParentLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
 {
-    if (!layer || destlayer)
+    if (!layer)
         return false;
     //--layers are not in map----------------
-    unsigned int indexDest = getIndexOfLayer(destlayer);
     unsigned int index = getIndexOfLayer(layer);
-    if(index >= getNumLayers() || indexDest >= getNumLayers())
+    if(index >= getNumLayers())
         return false;
     //-----------------------------------------
-    auto dataContainer = destlayer->getOrCreateUserDataContainer();
-    dataContainer->addUserObject(layer);
-    layer->setUserData(destlayer);
+    if(parentLayer && getIndexOfLayer(parentLayer)>= getNumLayers())
+        return false;
+    if(parentLayer){
+        auto dataContainer = parentLayer->getOrCreateUserDataContainer();
+        dataContainer->addUserObject(layer);
+    }
+    auto oldParent = getParentLayer(layer);
+    if(oldParent){
+        auto dataContainer = oldParent->getOrCreateUserDataContainer();
+        auto objectIndex = dataContainer->getUserObjectIndex(layer);
+        dataContainer->removeUserObject(objectIndex);
+    }
+    layer->setUserData(parentLayer);
 
-    emit layerToLayerAdded(layer, destlayer);
+    emit parentLayerChanged(layer, oldParent, parentLayer);
     return true;
 }
 
-bool MapObject::removeExistLayerFromExistLayer(osgEarth::Layer *layer, osgEarth::Layer *destlayer)
+osgEarth::Layer *MapObject::getParentLayer(osgEarth::Layer *layer)
 {
-    if (!layer || destlayer)
-        return false;
-    //--layers are not in map----------------
-    unsigned int indexDest = getIndexOfLayer(destlayer);
-    unsigned int index = getIndexOfLayer(layer);
-    if(index >= getNumLayers() || indexDest >= getNumLayers())
-        return false;
-    //-----------------------------------------
-    auto dataContainer = destlayer->getOrCreateUserDataContainer();
-    unsigned int indexChild = dataContainer->getUserObjectIndex(layer);
-    dataContainer->removeUserObject(indexChild);
-    layer->setUserData(nullptr);
-
-    emit layerFromLayerRemoved(layer, destlayer);
-    return true;
+    if (layer)
+        return dynamic_cast<osgEarth::Layer*>(layer->getUserData());
+    return nullptr;
 }
+

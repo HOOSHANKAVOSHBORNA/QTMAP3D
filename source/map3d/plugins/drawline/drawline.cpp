@@ -267,7 +267,7 @@ void DrawLine::onLineItemCheck(bool check)
     if (!layer) {
         osgEarth::ModelLayer *lineLayer = new osgEarth::ModelLayer();
         lineLayer->setName(DRAW_LAYER_NAME);
-        mapItem()->addLayer(lineLayer);
+        mapItem()->getMapObject()->addLayer(lineLayer);
 
     }
     if(check)
@@ -302,7 +302,7 @@ void DrawLine::onRulerItemCheck(bool check)
     if (!layer) {
         osgEarth::ModelLayer *lineLayer = new osgEarth::ModelLayer();
         lineLayer->setName(DRAW_LAYER_NAME);
-        mapItem()->addLayer(lineLayer);
+        mapItem()->getMapObject()->addLayer(lineLayer);
 
     }
     if(check)
@@ -337,7 +337,7 @@ void DrawLine::onHeightItemCheck(bool check)
     if (!layer) {
         osgEarth::ModelLayer *lineLayer = new osgEarth::ModelLayer();
         lineLayer->setName(DRAW_LAYER_NAME);
-        mapItem()->addLayer(lineLayer);
+        mapItem()->getMapObject()->addLayer(lineLayer);
 
     }
     if(check)
@@ -371,7 +371,7 @@ void DrawLine::onSlopeItemCheck(bool check)
     if (!layer) {
         osgEarth::ModelLayer *lineLayer = new osgEarth::ModelLayer();
         lineLayer->setName(DRAW_LAYER_NAME);
-        mapItem()->addLayer(lineLayer);
+        mapItem()->getMapObject()->addLayer(lineLayer);
 
     }
     if(check)

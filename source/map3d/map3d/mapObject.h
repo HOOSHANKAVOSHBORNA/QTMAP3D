@@ -33,10 +33,10 @@ class MapObject: public QObject, public osgEarth::Map
 public:
     MapObject(QObject *parent = nullptr);
     MapObject(const osgEarth::MapOptions& options, QObject *parent = nullptr);
-    bool addNodeToExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
-    bool removeNodeFromExistLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
-    bool addExistLayerToExistLayer(osgEarth::Layer *layer, osgEarth::Layer* destlayer);
-    bool removeExistLayerFromExistLayer(osgEarth::Layer *layer, osgEarth::Layer *destlayer);
+    bool addNodeToLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
+    bool removeNodeFromLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
+    bool setParentLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer);
+    osgEarth::Layer *getParentLayer(osgEarth::Layer *layer);
 signals:
     void layerAdded(osgEarth::Layer* layer, unsigned index);
     void layerRemoved(osgEarth::Layer* layer, unsigned index);
@@ -44,10 +44,9 @@ signals:
     void layerEnabled(osgEarth::Layer* layer);
     void layerDisabled(osgEarth::Layer* layer);
 
-    void nodeToLayerAdded(osg::Node *node, osgEarth::Layer* layer);
-    void nodeFromLayerRemoved(osg::Node *node, osgEarth::Layer* layer);
-    void layerToLayerAdded(osgEarth::Layer *layer, osgEarth::Layer* destlayer);
-    void layerFromLayerRemoved(osgEarth::Layer *layer, osgEarth::Layer *destlayer);
+    void nodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer);
+    void nodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer);
+    void parentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
 
 private:
 };
