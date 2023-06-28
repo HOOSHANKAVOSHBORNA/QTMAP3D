@@ -84,7 +84,7 @@ void TreeModel::addItem(QStandardItem *item, const QString parent)
         if(treeMap.contains(parent)){
             treeMap[parent]->appendRow(item);
             treeMap[item->text()] = item;
-            qDebug() << "Added to Tree!  parent:" << parent << "item:" << item->text() ;
+//            qDebug() << "Added to Tree!  parent:" << parent << "item:" << item->text() ;
 
         }else{
             qDebug() << "error while adding Item to Tree !!!  parent:" << parent << "item:" << item->text() ;

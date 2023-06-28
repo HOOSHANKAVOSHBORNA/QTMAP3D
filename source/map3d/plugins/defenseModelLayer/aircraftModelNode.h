@@ -3,7 +3,7 @@
 
 #include "defenseModelNode.h"
 #include "aircraftInfoItem.h"
-#include "linenode.h"
+#include "lineNode.h"
 #include "contextMenu.h"
 
 
