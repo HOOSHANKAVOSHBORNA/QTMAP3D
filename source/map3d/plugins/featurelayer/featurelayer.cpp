@@ -97,7 +97,7 @@ void FeatureLayer::addGDAL()
 
         osgEarth::Drivers::ModelLayerOptions *options = new osgEarth::Drivers::ModelLayerOptions(nodeName, geomOptions);
         osg::ref_ptr<osgEarth::ModelLayer>    layer   = new osgEarth::Drivers::ModelLayer(*options);
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
 
     }
 
@@ -128,7 +128,7 @@ void FeatureLayer::addWFS()
         //        geomOptions.styles()->addStyle(style);
         geomOptions.enableLighting() = false;
         osg::ref_ptr<osgEarth::ModelLayer>  layer = new osgEarth::Drivers::ModelLayer(osgEarth::Drivers::ModelLayerOptions(nodeName, geomOptions));
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
 
     }
 }
@@ -154,7 +154,7 @@ void FeatureLayer::addArcGIS()
         arcGeomOptions.enableLighting() = false;
         osg::ref_ptr<osgEarth::ModelLayer>  layer = new osgEarth::ModelLayer(osgEarth::ModelLayerOptions(nodeName, arcGeomOptions));
 
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
     }
 }
 

@@ -67,7 +67,7 @@ bool DrawPolygon::setup()
     mIconNode = makeIconNode();
     osgEarth::ModelLayer *polygonLayer = new osgEarth::ModelLayer();
     polygonLayer->setName(DRAW_LAYER_NAME);
-    mapItem()->addLayer(polygonLayer);
+    mapItem()->getMapObject()->addLayer(polygonLayer);
     return true;
 }
 
@@ -131,7 +131,7 @@ void DrawPolygon::onPolygonItemCheck(bool check)
             mPolygonProperties->show();
         }
         mDrawingState = DrawingState::START;
-        mapItem()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
+//        mapItem()->getMapObject()->addNodeToLayer(mIconNode, DRAW_LAYER_NAME);
 
     }
     else {
@@ -144,7 +144,7 @@ void DrawPolygon::onPolygonItemCheck(bool check)
         mPolygonProperties->deleteLater();
         mPolygonProperties = nullptr;
         mPolygon = nullptr;
-        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//        mapItem()->getMapObject()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
     }
 }
 
@@ -164,7 +164,7 @@ void DrawPolygon::onMeasureAreaItemCheck(bool check)
         mPolygonProperties->deleteLater();
         mPolygonProperties = nullptr;
         mPolygon = nullptr;
-        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
+//        mapItem()->removeNodeFromLayer(mIconNode, DRAW_LAYER_NAME);
     }
 }
 
@@ -189,7 +189,7 @@ void DrawPolygon::startDraw(const osgGA::GUIEventAdapter &event)
         mPolygon->setShowArea(true);
         mPolygon->clearPoints();
     }
-    mapItem()->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
+//    mapItem()->getMapObject()->addNodeToLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::DRAWING;
     mPolygonProperties->setPolygon(mPolygon);
 }
@@ -202,7 +202,7 @@ bool DrawPolygon::drawing(const osgGA::GUIEventAdapter &event)
 
 void DrawPolygon::cancelDraw()
 {
-    mapItem()->removeNodeFromLayer(mPolygon, DRAW_LAYER_NAME);
+//    mapItem()->removeNodeFromLayer(mPolygon, DRAW_LAYER_NAME);
     mDrawingState = DrawingState::START;
     if(mPolygonProperties)
         mPolygonProperties->setPolygon(nullptr);

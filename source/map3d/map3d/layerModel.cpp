@@ -31,11 +31,17 @@ void LayersModel::updateLayers(osgEarth::Map *map)
     osgEarth::LayerVector layers;
     map->getLayers(layers);
     for(const auto& layer : layers) {
-        std::string parent;
-        layer->getUserValue("parent", parent);
+
+//        std::string parent;
+//        layer->getUserValue("parent", parent);
         QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
-        treeItem->setData(true,visibleLayerRole);///////////////
-        mTreeModel->addItem(treeItem,QString(parent.c_str()));
+        auto parentLayer = mMapItem->getMapObject()->getParentLayer(layer);
+        if(parentLayer)
+            mTreeModel->addItem(treeItem,QString(parentLayer->getName().c_str()));
+        else
+            mTreeModel->addItem(treeItem,"");
+
+        treeItem->setData(true,visibleLayerRole);
         if(layer->getNode() && layer->getNode()->asGroup()){
             auto group = layer->getNode()->asGroup();
             for (int i = 0; i < group->getNumChildren(); ++i) {
@@ -64,18 +70,18 @@ void LayersModel::onItemClicked(const QModelIndex &current)
     QModelIndex indexSource = mapToSource(current);
     bool visibleRoleSet = mTreeModel->data(indexSource,visibleLayerRole).toBool();
     mTreeModel->setData(indexSource,!visibleRoleSet,visibleLayerRole);
-    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(indexSource).toString().toStdString());
+    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current).toString().toStdString());
     auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
     if(visibleLayer)
     {
         setLayerVisible(visibleLayer);
     }
     else{
-        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(indexSource.parent()).toString().toStdString());
+        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current.parent()).toString().toStdString());
         if(layer){
             osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
             if(group){
-                auto node = group->getChild(indexSource.row());
+                auto node = group->getChild(current.row());
                 node->setNodeMask(!node->getNodeMask());
             }
         }

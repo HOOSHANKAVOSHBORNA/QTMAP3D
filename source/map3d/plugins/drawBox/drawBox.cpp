@@ -25,7 +25,11 @@ bool DrawBox::setup()
 void DrawBox::onBoxItemCheck(bool check)
 {
     if (check) {
-        mapItem()->addLayerToLayer(mBoxLayer, CATEGORY);
+        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
+            mapItem()->getMapObject()->addLayer(mBoxLayer);
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->setParentLayer(mBoxLayer, shapeLayer);
+        }
         setState(State::READY);
         mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
         mBoxProperties->show();
@@ -33,9 +37,11 @@ void DrawBox::onBoxItemCheck(bool check)
 
     }
     else {
-        if(mBoxLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mBoxLayer, CATEGORY);
-        if(state() == State::EDIT)
+        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
+            mapItem()->getMapObject()->setParentLayer(mBoxLayer, nullptr);
+            mapItem()->getMapObject()->removeLayer(mBoxLayer);
+        }
+        if(state() == State::DRAWING)
             cancelDraw();
         setState(State::NONE);
         mBox = nullptr;
@@ -57,7 +63,7 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mapItem()->addNodeToLayer(mBox, BOX);
     mBoxProperties->setBox(mBox);
 
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
@@ -68,7 +74,7 @@ void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 
 void DrawBox::cancelDraw()
 {
-    if(state() == State::EDIT){
+    if(state() == State::DRAWING){
         mapItem()->removeNodeFromLayer(mBox, BOX);
         mBox = nullptr;
         mBoxProperties->setBox(mBox);

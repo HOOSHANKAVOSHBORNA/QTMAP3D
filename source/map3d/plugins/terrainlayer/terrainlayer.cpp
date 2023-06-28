@@ -86,7 +86,7 @@ void TerrainLayer::addGDAL()
         osgEarth::Drivers::GDALOptions  opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
     }
 }
 
@@ -109,7 +109,7 @@ void TerrainLayer::addArcGIS()
         opt.url() = nodeName;
 
         osg::ref_ptr<osgEarth::ElevationLayer> layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
     }
 }
 
@@ -135,7 +135,7 @@ void TerrainLayer::addWCS()
         opt.identifier() = "DEP3ElevationPrototype";
 
         osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
     }
 }
 
@@ -157,6 +157,6 @@ void TerrainLayer::addTMS()
         osgEarth::Drivers::TMSOptions opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ElevationLayer> layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions(nodeName, opt));
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
     }
 }
