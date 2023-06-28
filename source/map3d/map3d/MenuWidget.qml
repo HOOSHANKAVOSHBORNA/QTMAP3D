@@ -28,12 +28,13 @@ Item {
 
         Rectangle {
             anchors.fill: parent
-            color: "#404040"
-            opacity: 0.8
+            color: "#24242b"
+//            opacity: 0.8
             radius: 10
         }
 
         MouseArea {
+            id: t
             anchors.fill: parent
         }
 
@@ -41,11 +42,11 @@ Item {
         RowLayout {
             id: rowLayout
             anchors.fill: parent
-            anchors.margins: 5
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
-            anchors.topMargin: 10
-            spacing: 15
+            anchors.margins: 0
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
+            anchors.topMargin: 0
+//            spacing: 15
 
             Repeater {
                 model: rootItem.itemsModel
@@ -53,10 +54,16 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: 64
                     Layout.preferredHeight: 64
+                    Rectangle {
+                        id: ter
+                        anchors.fill: parent
+                        color: "transparent"
+                    }
 
                     ColumnLayout {
                         id: col
                         anchors.centerIn: parent
+
                         Image {
                             id: img
                             Layout.alignment: Qt.AlignCenter
@@ -88,9 +95,11 @@ Item {
 
                         onEntered: function() {
                             isMouseOnItem = true;
+//                            ter.color = "#0dc2df"
                         }
                         onExited: function() {
                             isMouseOnItem = false;
+//                            ter.color = "transparent"
                         }
 
                         onClicked: function() {
@@ -103,8 +112,8 @@ Item {
                         source: col
                         colorization: 1
                         colorizationColor: mouseArea.isMouseOnItem ?
-                                   (mouseArea.pressed ? _colorPresed: _colorHover) :
-                                   (mouseArea.pressed ? _colorHover : "#FFFFFF");
+                                   (mouseArea.pressed ? _colorPresed: "#85b8dc") :
+                                   (mouseArea.pressed ? "#85b8dc" : "#FFFFFF");
                     }
                 }
             }

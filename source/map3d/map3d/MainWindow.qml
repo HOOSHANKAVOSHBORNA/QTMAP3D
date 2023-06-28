@@ -14,7 +14,7 @@ CMainWindow {
     readonly property int       _radius     : 10
     readonly property color     _colorRec   : "#404040"
     readonly property color     _colorHover : "#FFCC00"
-    readonly property color     _colorPresed : "#908000"
+    readonly property color     _colorPresed : "#0dc2df"
     readonly property color     _colorIcon  : "#FFFFFF"
     readonly property color     _colorButton: "#55FFFFFF"
     readonly property string    _fontFamily : "Srouce Sans Pro"

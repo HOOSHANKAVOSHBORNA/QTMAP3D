@@ -11,7 +11,8 @@ Item {
     readonly property color     _colorPresed : "#908000"
     readonly property color     _colorRec   : "#363739"
 //    readonly property color     sectionColor:  "#00587A"
-    readonly property color     sectionColor:  "#2f528d"
+//    readonly property color     sectionColor:  "#2f528d"
+    readonly property color     sectionColor:  "#3c507a"
     readonly property real      categorySize: 40
     readonly property real      itemSize: 40
 
