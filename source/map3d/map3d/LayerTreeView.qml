@@ -206,26 +206,25 @@ Item{
                 MouseArea{
                     hoverEnabled: true
                     anchors.fill: hideContainer
-//                    onEntered: {
-//                        hideContainer.color = _colorPresed
-//                        hideContainer.border.color = "red"
-//                    }
-//                    onExited: {
-//                        if(isVisible){
-//                            hideContainer.color = _darkColor
-//                            hideContainer.border.color = _colorRec
-//                        } else{
-//                            hideContainer.color = _darkColor
-//                            hideContainer.border.color = "red"
-//                        }
-//                    }
+                    onEntered: {
+                        hideContainer.color = _colorPresed
+                        hideContainer.border.color = "red"
+                    }
+                    onExited: {
+                        if(isVisible){
+                            hideContainer.color = _darkColor
+                            hideContainer.border.color = _colorRec
+                        } else{
+                            hideContainer.color = _darkColor
+                            hideContainer.border.color = "red"
+                        }
+                    }
                     onClicked: function() {
-//                        if(isVisible ){
-//                            hideContainer.border.color = "red"
-
-//                        } else{
-//                            hideContainer.border.color = "#111111"
-//                        }
+                        if(isVisible ){
+                            hideContainer.border.color = "red"
+                        } else{
+                            hideContainer.border.color = "#111111"
+                        }
 
 //                        root.proxyModel.clickedItem(treeView.index(row , column))
                         root.proxyModel.onItemClicked(treeView.index(row , column))
