@@ -14,13 +14,15 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
     mMapItem = mapItem;
     updateLayers(mapItem->getMapNode()->getMap());
     connect(mapItem, &MapItem::layerChanged,[this, mapItem](){
+        //        mTreeModel->clear();
+        mTreeModel->removeRows(0,mTreeModel->rowCount());
         updateLayers(mapItem->getMapNode()->getMap());
     });
     connect(mapItem, &MapItem::mapCleared,[this, mapItem](){
-//        clear();
+        mTreeModel->removeRows(0,mTreeModel->rowCount());
+        //        mTreeModel->clear();
         updateLayers(mapItem->getMapNode()->getMap());
     });
-//    mTreeProxyModel = new TreeProxyModel;
     setSourceModel(mTreeModel);
 }
 
@@ -28,20 +30,31 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
 
 void LayersModel::updateLayers(osgEarth::Map *map)
 {
+    //    mTreeModel->removeRows(0,mTreeModel->rowCount());
+    //    mTreeModel->clear();
     osgEarth::LayerVector layers;
     map->getLayers(layers);
     for(const auto& layer : layers) {
-        std::string parent ;
+        std::string parent;
         layer->getUserValue("parent", parent);
         QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
         mTreeModel->addItem(treeItem,QString(parent.c_str()));
+        if(layer->getNode() && layer->getNode()->asGroup()){
+            auto group = layer->getNode()->asGroup();
+            for (int i = 0; i < group->getNumChildren(); ++i) {
+                auto child = group->getChild(i);
+                QStandardItem *treeItemChild = new QStandardItem(QString(child->getName().c_str()));
+                mTreeModel->addItem(treeItemChild , QString(layer->getName().c_str()));
+            }
+        }
     }
 }
 
 
+
 void LayersModel::clickedItem(QModelIndex itemIndex)
 {
-    qDebug() << itemIndex.row() << itemIndex<<"name:"<< data(itemIndex);
+//    qDebug() << itemIndex.row() << itemIndex<<"name:"<< data(itemIndex);
 
     auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(itemIndex).toString().toStdString());
     auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
@@ -63,7 +76,7 @@ void LayersModel::clickedItem(QModelIndex itemIndex)
 
 void LayersModel::setLayerVisible(osgEarth::VisibleLayer *layer)
 {
-    qDebug()<<layer->getName();
+//    qDebug()<<layer->getName();
     bool visible = layer->getVisible();
     layer->setVisible(!visible);
     auto containerData = layer->getUserDataContainer();
@@ -75,6 +88,14 @@ void LayersModel::setLayerVisible(osgEarth::VisibleLayer *layer)
             setLayerVisible(childLayer);
         }
     }
+}
+
+bool LayersModel::getLayerVisible(QModelIndex itemIndex)
+{
+    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(itemIndex).toString().toStdString());
+    auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+    bool visible = visibleLayer->getVisible();
+    return visible;
 }
 
 //void LayersModel::addChildItem(osg::Group *parentGroup, QStandardItem *parentItem)
