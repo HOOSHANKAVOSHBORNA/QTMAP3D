@@ -1,4 +1,4 @@
-#include "lineproperties.h"
+#include "lineProperties.h"
 #include <QtDebug>
 #include <QQmlComponent>
 #include <QQmlEngine>
