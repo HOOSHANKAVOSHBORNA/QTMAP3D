@@ -18,7 +18,8 @@ Item {
 
     property color tmpColor: "red"
 
-    Layout.fillWidth: true
+    width: 300
+//    Layout.fillWidth: true
     Layout.fillHeight: true
 
     visible: false

@@ -63,11 +63,10 @@ Item {
 
     function attachDockItemIfIsDefault(horizontalAttach, attachAsFirst, attachItem, splitScale) {
         if (rootItem.isDefaultDockArea === true) {
+
             if (rootItem.selfComp.status === Component.Ready) {
                 var sprite1 = rootItem.selfComp.createObject(rootItem, {parentMainWindow: rootItem.parentMainWindow});
                 var sprite2 = rootItem.selfComp.createObject(rootItem, {parentMainWindow: rootItem.parentMainWindow});
-
-
                 sprite1.parentDockArea = rootItem;
                 sprite2.parentDockArea = rootItem;
                 sprite1.siblingDockArea = sprite2;
@@ -76,6 +75,7 @@ Item {
                 sprite1.stackContainer.hasHeader = containerItemStack.hasHeader;
                 const len = containerItemStack.data.length;
                 const ci1 = containerItemStack.currentIndex;
+
                 for (var i = 0; i < len; i++) {
                     const itm = containerItemStack.data[0];
                     itm.detachDockArea = sprite1;

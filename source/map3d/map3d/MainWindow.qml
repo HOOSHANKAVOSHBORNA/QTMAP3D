@@ -3,13 +3,12 @@ import QtQuick 2.13
 import QtQuick.Window 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
-
+import QtQuick.Controls.Material 2.12
 import QtQuick.Effects
 import Crystal 1.0
 
 
 CMainWindow {
-
     readonly property int       _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
@@ -74,8 +73,8 @@ CMainWindow {
         isDefaultDockArea: true
 
         Component.onCompleted: function() {
-            var obj = wnd.dockableItemComp.createObject(wnd, {x: 300, y: 300, attachWindow: wnd, tmpColor:"#104020", title: "def"});
-            wnd.defaultDockArea.setDefaultDockableItemIfIsDefault(obj);
+//            var obj = wnd.dockableItemComp.createObject(wnd, {x: 300, y: 300, attachWindow: wnd, tmpColor:"#104020", title: "def"});
+//            wnd.defaultDockArea.setDefaultDockableItemIfIsDefault(obj);
 
 //            var dock1 = wnd.dockableItemComp.createObject(wnd, {x: 100, y: 100, attachWindow: wnd, tmpColor:"#102040", title: "First"});
 //            wnd.defaultDockArea.attachDockItemIfIsDefault(true, true, dock1, 0.25);
@@ -239,6 +238,8 @@ CMainWindow {
                     break
                 case 1:
                     item.listModel = wnd.toolboxModel;
+                    var dock2 = wnd.wrapItemWithDockableImpl(item, "Toobox");
+                    wnd.attachToCentralDockItemImpl(dock2, true, true, 0.2);
 //                    item.itemClicked.connect(wnd.toolboxItemClicked);
 //                    item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                     break;
@@ -414,7 +415,6 @@ CMainWindow {
                                                                           'itemCheckable' : itemDesc.checkable
                                                                       });
                 wnd.toolboxItemCreated(itemDesc);
-                print("kkkkkkkkkkkkkkkkkkk")
             } else {
                 return false;
             }
@@ -531,8 +531,8 @@ CMainWindow {
 //        sideWidget.hideAllItems();
 //        infoo.showInfo(item)
 //        infoo.titleText = title;
-        var dock = wnd.wrapItemWithDockable(item, title);
-        wnd.attachToCentralDockItem(dock, true, true, 0.3);
+        var dock = wnd.wrapItemWithDockable(item, "title");
+        wnd.attachToCentralDockItem(dock, true, true, 0.2);
     }
 
     function hideInfoView() {

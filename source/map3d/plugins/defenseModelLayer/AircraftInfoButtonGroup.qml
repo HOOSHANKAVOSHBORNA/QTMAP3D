@@ -95,13 +95,13 @@ Item {
                         width: 24
                         height:24
                     }
-                    MultiEffect {
-                        id: glowimg
-                        anchors.fill: img
-                        colorization: 1
-                        colorizationColor: txt.color
-                        source: img
-                    }
+//                    MultiEffect {
+//                        id: glowimg
+//                        anchors.fill: img
+//                        colorization: 1
+//                        colorizationColor: txt.color
+//                        source: img
+//                    }
 
                     Text {
                         id: txt
