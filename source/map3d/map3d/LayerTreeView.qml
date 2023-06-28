@@ -5,25 +5,31 @@ import QtQuick.Effects
 import Crystal 1.0
 
 //#000814, #001d3d, #003566, #ffc300, #ffd60a
+//#3d5a80, #98c1d9, #e0fbfc, #ee6c4d, #293241
 
 Item{
     id:root
     width: parent.width
     //    property var listModel
-    readonly property color        _colorHover : "#ffd60a"
-    readonly property color        _colorPresed : "#ffc300"
-    readonly property color        _colorRec   : "#001d3d"
-    readonly property color        sectionColor:  "#003566"
-    readonly property color        _darkColor: "#000814"
+    readonly property color        _color1 : "#c0cdd8" //almost white
+    readonly property color        _color2 : "#8c98ae" //light bluegray
+    readonly property color        _color3 : "#85b8dc" //light cyan
+    readonly property color        _color4 : "#59759d" //light navyblue
+    readonly property color        _color5 : "#59657d" //dirty navyblue
+    readonly property color        _color6 : "#4f9fd8" //brilliant cyan light
+    readonly property color        _color7 : "#3578b3" //brilliant cyan
+    readonly property color        _color8 : "#0e77bf" //real cyan
+    readonly property color        _color9 : "#3c507a" //almost navyblue
+    readonly property color        _color10: "#454b5d" //elephant
+    readonly property color        _color11: "#212f52" //navy blue
+    readonly property color        _color12: "#24242b" //almost black
+
+
     readonly property real         categorySize: 30
     readonly property real         itemSize: 30
+    property CLayersModel          proxyModel;
 
-    property CLayersModel      proxyModel;
-    property bool isEnabled: root.proxyModel.getLayerVisible(treeView.index(row , column))
 
-    onIsEnabledChanged: {
-
-    }
 
     Rectangle {
         id: search
@@ -32,7 +38,7 @@ Item{
         y : 0
         clip: true
         //        anchors.bottom: rootItem.top
-        color: "#353535"
+        color: "transparent"
         anchors.leftMargin: 15
         anchors.rightMargin: 15
         TextField {
@@ -44,19 +50,36 @@ Item{
                 treeView.expandRecursively()
             }
 
+
             background: Rectangle {
-                radius: 2
+                radius: height/3
                 implicitWidth: search.width
                 implicitHeight: 24
-                border.color: "#333"
-                border.width: 1
-                color: "#808080"
+                border.color: sectionColor
+                border.width: 2
+                color: _color9
             }
             anchors.fill: parent
             color: "white"
+//            IconImage : "./Resources/search.png"
+            IconImage{
+                anchors.verticalCenter: parent.verticalCenter
+                height: parent.height * 0.6
+                width: height
+                anchors.right: parent.right
+                anchors.rightMargin: 10
+                Image {
+                    id: searchIcon
+                    source: "./Resources/search.png"
+                    anchors.fill: parent
+                }
+            }
+
             placeholderText: "Search Layers"
-            placeholderTextColor: "#495866"
-            anchors.leftMargin: 5
+
+//            placeholderTextColor: "#495866"
+            placeholderTextColor: _color4
+            anchors.leftMargin: 2
             anchors.rightMargin: 2
             onAccepted: {
                 sendToSearch()
@@ -76,10 +99,12 @@ Item{
     TreeView{
         id:treeView
         anchors.top: search.bottom
-        anchors.topMargin: 10
-        width: parent.width
-        height: parent.height - 40
+        anchors.topMargin: 2
+        width: parent.width - 24
+        height: parent.height - 35
+        anchors.horizontalCenter: parent.horizontalCenter
         //        anchors.fill: parent
+
 
         model: selectionModel.model
         clip: true
@@ -87,13 +112,15 @@ Item{
         selectionModel: ItemSelectionModel {
             id: selectionModel
             model: root.proxyModel
+
             onCurrentChanged: {
+
             }
             onSelectionChanged:{
             }
         }
 
-        signal toggleLayerEnabled(int layerIndex)
+//        signal toggleLayerEnabled(int layerIndex)
         //    signal clickedItem(QStandardItem itemIndex)
 
 
@@ -110,6 +137,8 @@ Item{
             required property bool expanded
             required property int hasChildren
             required property int depth
+//            property bool visibleLayer: true
+
 
 
 
@@ -120,25 +149,20 @@ Item{
                 width: depth < 1 ? parent.parent.parent.width - x  : parent.parent.parent.width - x - height/6
                 height:  depth < 1 ? parent.height -3 : parent.height
                 anchors.verticalCenter: parent.verticalCenter
-                color: depth < 1 ? sectionColor : _colorRec
-                //                color: "transparent"
-                //border.color: "#ffffff"
-                //border.width: 1
+                color: depth < 1 ? _color2 : _color5
                 radius:   depth < 1 ? height/6 : 0
-                x: padding + (treeDelegate.depth * treeDelegate.indent)
+                x:  (treeDelegate.depth * treeDelegate.indent)
 
             }
 
             HoverHandler{
                 //onHoveredChanged: hovered ? container.color = "#808080" : container.color = "#454545"
-                onHoveredChanged: hovered ? label.color = _colorHover : label.color = "#ffffff"
+                onHoveredChanged: hovered ? label.color = _color2 : label.color = "#ffffff"
             }
 
             TapHandler {
                 onTapped: {
 
-                    //                console.log(rowAtIndex(treeView.index(row , column)))
-                    //                treeView.currentIndex.parent.row
                     treeView.toggleExpanded(row)
                 }
                 onPressedChanged: pressed ? label.color = "orange" : !pressed ? label.color = "#ffffff" : "#ffffff"
@@ -154,7 +178,7 @@ Item{
                 text: "▸"
                 rotation: treeDelegate.expanded ? 90 : 0
                 padding: 5
-                color: "#ffa32b"
+                color: _color8
             }
 
             Text {
@@ -168,21 +192,22 @@ Item{
                 text: display
             }
 
+
             Rectangle{
 
 
                 id: hideContainer
                 width: container.height/1.35
                 height: container.height/1.35
-                color: "#21201f"
-                border.color: "#111111"
+                color: _color11
+                border.color: _color6
                 radius: 5
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right:  label.left
                 anchors.margins: 5
                 Image {
                     id:eye
-                    source: "./Resources/eye_open.png"
+                    source: isVisible ?  "./Resources/eye_open.png" : "./Resources/eye_close.png"
                     width: parent.width * 0.9
                     height: parent.height * 0.9
                     anchors.centerIn: parent
@@ -191,36 +216,28 @@ Item{
                     hoverEnabled: true
                     anchors.fill: hideContainer
                     onEntered: {
-                        hideContainer.color = sectionColor
-                        hideContainer.border.color = _colorHover
+                        hideContainer.color = _color2
+                        hideContainer.border.color = "red"
                     }
                     onExited: {
-                        if(isEnabled){
-                            eye.source = "./Resources/eye_open.png"
-                            hideContainer.color = "#21201f"
-                            hideContainer.border.color = "#111111"
+                        if(isVisible){
+                            hideContainer.color = _color11
+                            hideContainer.border.color = _color6
                         } else{
-                            hideContainer.color = "#21201f"
+                            hideContainer.color = _color11
                             hideContainer.border.color = "red"
-                            eye.source = "./Resources/eye_close.png"
                         }
                     }
                     onClicked: function() {
-                        if(isEnabled ){
-//                            hideContainer.isEnabled = false
+                        if(isVisible ){
                             hideContainer.border.color = "red"
-
                         } else{
-//                            hideContainer.isEnabled = true
                             hideContainer.border.color = "#111111"
                         }
 
-                        //                    rootItem.model.toggleLayerEnabled(treeView.index(row , column));
-//                                            console.log(treeView.index(row , column))
-//                        rootItem.model.clickedItem( treeView.index(row , column))
-                        //                    rootItem.model.clickedItem(modelIndex())
-                        root.proxyModel.clickedItem(treeView.index(row , column))
-                        console.log(isEnabled)
+//                        root.proxyModel.clickedItem(treeView.index(row , column))
+                        root.proxyModel.onItemClicked(treeView.index(row , column))
+//                        console.log(isVisible)
                     }
                 }
             }

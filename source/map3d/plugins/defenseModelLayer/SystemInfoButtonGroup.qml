@@ -93,13 +93,13 @@ Item {
 
 
                     }
-                    MultiEffect {
-                        id: glowimg
-                        colorization: 1
-                        colorizationColor: txt.color
-                        source: img
-                        anchors.fill: img
-                    }
+//                    MultiEffect {
+//                        id: glowimg
+//                        colorization: 1
+//                        colorizationColor: txt.color
+//                        source: img
+//                        anchors.fill: img
+//                    }
                     Text {
                         id: txt
                         anchors.horizontalCenter: parent.horizontalCenter

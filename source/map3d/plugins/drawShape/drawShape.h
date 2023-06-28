@@ -14,6 +14,7 @@
 #include <QQmlComponent>
 
 #define CATEGORY "Draw"
+#define M_CATEGORY "Measurement"
 
 class DrawShape : public PluginInterface
 {
@@ -51,6 +52,7 @@ public:
 protected:
     virtual void initDraw(const osgEarth::GeoPoint &geoPos){};
     virtual void drawing(const osgEarth::GeoPoint &geoPos){};
+    virtual void tempDrawing(const osgEarth::GeoPoint &geoPos){};
     virtual void confirmDraw();
     virtual void cancelDraw(){};
 private:

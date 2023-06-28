@@ -1,7 +1,7 @@
 #ifndef LINEPROPERTIES_H
 #define LINEPROPERTIES_H
 
-#include "linenode.h"
+#include "lineNode.h"
 #include "measureHeight.h"
 #include "mapItem.h"
 #include "plugininterface.h"

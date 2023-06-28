@@ -41,7 +41,7 @@ void DrawBox::onBoxItemCheck(bool check)
             mapItem()->getMapObject()->setParentLayer(mBoxLayer, nullptr);
             mapItem()->getMapObject()->removeLayer(mBoxLayer);
         }
-        if(state() == State::EDIT)
+        if(state() == State::DRAWING)
             cancelDraw();
         setState(State::NONE);
         mBox = nullptr;
@@ -63,7 +63,7 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mapItem()->addNodeToLayer(mBox, BOX);
     mBoxProperties->setBox(mBox);
 
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
@@ -74,7 +74,7 @@ void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 
 void DrawBox::cancelDraw()
 {
-    if(state() == State::EDIT){
+    if(state() == State::DRAWING){
         mapItem()->removeNodeFromLayer(mBox, BOX);
         mBox = nullptr;
         mBoxProperties->setBox(mBox);

@@ -177,6 +177,9 @@ public slots:
     void updateInfoWidgetData(const QString& dataJSON);
 //    void setStatusBarText(const QString message, int time);
 
+    QQuickItem* wrapItemWithDockable(QQuickItem* item,const QString& title);
+    void setCentralDockItem(QQuickItem* dockItem);
+    void attachToCentralDockItem(QQuickItem* dockItem, bool horizontalAttach, bool attachAsFirst, qreal splitScale);
 
     void showListWindow();
 
@@ -190,7 +193,7 @@ public slots:
 public:
 
     MapItem* getMapItem();
-//    void setMapItem(MapItem& mapItem);
+    void setMapItem(MapItem& mapItem);
 
 
 public slots:

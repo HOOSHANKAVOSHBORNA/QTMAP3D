@@ -200,8 +200,8 @@ void Toolbox::onItemClicked(const QModelIndex &current)
         previousItem->getToolboxItem()->changeCheck(false);
         if (previousItem->getToolboxItem()->checkable)
             emit previousItem->getToolboxItem()->itemChecked(false);
-        else
-            emit previousItem->getToolboxItem()->itemClicked();
+//        else
+//            emit previousItem->getToolboxItem()->itemClicked();
         emit dataChanged(previous, previous);
     }
 

@@ -72,8 +72,8 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: 10
-        color: "#202020"
-        opacity: 0.8
+        color: "#24242b"
+        opacity: 1
         anchors.margins: 6
     }
 

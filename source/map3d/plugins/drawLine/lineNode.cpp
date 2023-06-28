@@ -1,4 +1,4 @@
-#include "linenode.h"
+#include "lineNode.h"
 #include <osgEarth/GeoMath>
 #include <osgEarthAnnotation/LabelNode>
 #include <osg/Point>

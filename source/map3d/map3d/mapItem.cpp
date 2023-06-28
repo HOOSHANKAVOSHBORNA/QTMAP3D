@@ -189,7 +189,7 @@ void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
         }
     }
     else
-        mEarthManipulator->screenToWorld(x, height - y,mOSGRenderNode, outWorldPoint);
+        mEarthManipulator->screenToWorld(x, y,mOSGRenderNode, outWorldPoint);
 }
 
 osgEarth::GeoPoint MapItem::screenToGeoPoint(float x, float y) const
@@ -336,7 +336,7 @@ QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
         ////        setNode(mSource);
         //        initializeOsgEarth();
 
-        mOSGRenderNode->setupOSG(x(), y(), width(), height(), 1);
+        mOSGRenderNode->setupOSG(0, 0, 800, 620, 1);
 
         n = mOSGRenderNode;
     }
@@ -702,6 +702,8 @@ void MapItem::mouseDoubleClickEvent(QMouseEvent *event)
 
 void MapItem::mouseMoveEvent(QMouseEvent *event)
 {
+//    QPointF point(event->scenePosition());
+//    mapToScene()
     if (mOSGRenderNode) {
         mOSGRenderNode->mouseMoveEvent(event);
     }

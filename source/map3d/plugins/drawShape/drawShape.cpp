@@ -107,19 +107,22 @@ bool DrawShape::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActi
         if (mState == State::READY) {
            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initDraw(geoPos);
+
             return true;
         }
-        if (mState == State::EDIT) {
+
+        if (mState == State::DRAWING) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             drawing(geoPos);
             return true;
         }
+
     }
-    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && mState == State::EDIT) {
+    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::EDIT || mState == State::DRAWING)) {
         cancelDraw();
         return false;
     }
-    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && mState == State::EDIT) {
+    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::EDIT || mState == State::DRAWING)) {
         confirmDraw();
         return false;
     }
@@ -135,13 +138,22 @@ bool DrawShape::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
         osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
     }
+
+
+    if(mState == State::DRAWING){
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+        tempDrawing(geoPos);
+        return true;
+    }
     //--------------------------------
     return false;
+
+
 }
 
 void DrawShape::confirmDraw()
 {
-    if (state() == State::EDIT) {
+    if (state() == State::EDIT || state() == State::DRAWING) {
         setState(State::READY);
     }
 }

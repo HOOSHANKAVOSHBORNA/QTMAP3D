@@ -3,7 +3,7 @@
 
 #include <osg/Group>
 #include <osgEarth/GeoTransform>
-#include <linenode.h>
+#include <lineNode.h>
 #include "mapItem.h"
 #include <osgEarthAnnotation/PlaceNode>
 

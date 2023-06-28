@@ -6,13 +6,14 @@
 #include <QPluginLoader>
 #include <QDir>
 #include <QQuickItem>
+#include <QQmlComponent>
 
 #include "application.h"
 #include "mainwindow.h"
 #include "listwindow.h"
 #include "layerModel.h"
 #include "mapControllerItem.h"
-
+#include "mapItem.h"
 Application::Application() :
     mPluginManager(new PluginManager)
 {
@@ -132,6 +133,13 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
         mMainWindow = mainWnd;
         if(mListWindow)
             onUICreated();
+        QQmlComponent* comp = new QQmlComponent(mQmlEngine);
+        comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
+        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+        MapItem *mapitem = static_cast<MapItem*>(item);
+        mainWnd->setMapItem(*mapitem);
+        QQuickItem* dock = mainWnd->wrapItemWithDockable(item, "Viewport");
+        mainWnd->setCentralDockItem(dock);
         onMainWindowCreated();
 //        emit mainWindowCreated();
     }
