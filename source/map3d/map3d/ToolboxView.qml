@@ -3,40 +3,41 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
 import Crystal 1.0
-
-
+import "style"
 Item {
     id: rootItem
     property var listModel
     readonly property color     _colorHover : "#FFCC00"
     readonly property color     _colorPresed : "#908000"
     readonly property color     _colorRec   : "#363739"
-    readonly property color     sectionColor:  "#00587A"
-    readonly property real      categorySize: 30
-    readonly property real      itemSize: 30
+//    readonly property color     sectionColor:  "#00587A"
+    readonly property color     sectionColor:  "#2f528d"
+    readonly property real      categorySize: 40
+    readonly property real      itemSize: 40
 
-    width: 300
+//    width: 350
+    anchors.fill: parent
     Rectangle{
         anchors.top: parent.top
-        height: 40
+        height: 0
         width: 300
         id: header
         radius: 10
         color: "#202020"
-        Label {
-            Text {
-                id: headerType
-                text: "Toolbox"
-                color:"white"
-                font.pointSize: 16
-                anchors.centerIn: parent
-            }
-            id:headerTypeLbl
-            width: parent.width/2
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
+//        Label {
+//            Text {
+//                id: headerType
+//                text: "Toolbox"
+//                color:"white"
+//                font.pointSize: 16
+//                anchors.centerIn: parent
+//            }
+//            id:headerTypeLbl
+//            width: parent.width/2
+//            anchors.verticalCenter: parent.verticalCenter
+//            anchors.horizontalCenter: parent.horizontalCenter
 
-        }
+//        }
         Rectangle {
             width: header.width
             height: 10
@@ -46,7 +47,7 @@ Item {
     }
     Rectangle {
         id: search
-        width: header.width
+        width: parent.width
         height: 30
         anchors.top: header.bottom
         color: "#202020"
@@ -87,7 +88,7 @@ Item {
         id: treeRect
         anchors.top: search.bottom
         height: parent.height - header.height - footer.height
-        width: 300
+        width: parent.width
         color: _colorRec
         border.color: "#202020"
         border.width: 10
@@ -176,6 +177,7 @@ Item {
                             anchors.verticalCenter: container.verticalCenter
                             color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "#ffffff"
                             text: display
+//                            color: Style.textColor
                         }
 
                         Rectangle {
@@ -188,8 +190,8 @@ Item {
                         IconImage {
                             id: img
                             source: imageSource ?? ""
-                            width: 24
-                            height: 24
+                            width: 28
+                            height: 28
                             x: container.x - width + (treeDelegate.depth)*indent
                             anchors.verticalCenter: container.verticalCenter
                             color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"

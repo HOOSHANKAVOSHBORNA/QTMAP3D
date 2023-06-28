@@ -25,5 +25,12 @@
         <file>MapControllerItem.qml</file>
         <file>LayerTreeView.qml</file>
         <file>ToolboxView.qml</file>
+        <file>SearchBar.qml</file>
+        <file>DockArea.qml</file>
+        <file>DockableItem.qml</file>
+        <file>DockSplitView.qml</file>
+        <file>LightingItem.qml</file>
+        <file>style/Style.qml</file>
+        <file>style/qmldir</file>
     </qresource>
 </RCC>

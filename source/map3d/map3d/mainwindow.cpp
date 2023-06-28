@@ -131,6 +131,36 @@ MainWindow::~MainWindow()
 //    mMapItem->deleteLater();
 }
 
+
+QQuickItem *MainWindow::wrapItemWithDockable(QQuickItem *item, const QString& title)
+{
+    QVariant dockableItemVariant;
+    QMetaObject::invokeMethod(this, "wrapItemWithDockableImpl",
+                              Q_RETURN_ARG(QVariant, dockableItemVariant),
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
+                              Q_ARG(QVariant, QVariant::fromValue<QString>(title)));
+
+    QQuickItem *dockableItem = dockableItemVariant.value<QQuickItem*>();
+
+    return dockableItem;
+}
+
+void MainWindow::setCentralDockItem(QQuickItem *dockItem)
+{
+    QMetaObject::invokeMethod(this, "setCentralDockItemImpl",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(dockItem)));
+}
+
+void MainWindow::attachToCentralDockItem(QQuickItem *dockItem, bool horizontalAttach, bool attachAsFirst, qreal splitScale)
+{
+    QMetaObject::invokeMethod(this, "attachToCentralDockItemImpl",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(dockItem)),
+                              Q_ARG(QVariant, QVariant::fromValue<bool>(horizontalAttach)),
+                              Q_ARG(QVariant, QVariant::fromValue<bool>(attachAsFirst)),
+                              Q_ARG(QVariant, QVariant::fromValue<qreal>(splitScale))
+                              );
+}
+
 //qreal MainWindow::headingAngle() const
 //{
 //    return mheadingAngle;
@@ -556,17 +586,19 @@ void MainWindow::onFrameSwapped()
 
 MapItem *MainWindow::getMapItem()
 {
-    if(!mMapItem)
-        mMapItem = findChild<MapItem*>("MainMap");
+    if(!mMapItem){
+//        mMapItem = findChild<MapItem*>("MainMap");
+
+    }
 //    if (mapItem)
 //        qDebug()<<"mapitem"<<mapItem->getMode();
     return mMapItem;
 }
 
-//void MainWindow::setMapItem(MapItem &mapItem)
-//{
-//    mMapItem = &mapItem;
-//}
+void MainWindow::setMapItem(MapItem &mapItem)
+{
+    mMapItem = &mapItem;
+}
 
 
 //void MainWindow::cleanup()

@@ -3,7 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 
 Item {
-
+    id: root
     property real longitude : 0.0
     property real latitude : 0.0
     property real altitude : 0.0
@@ -16,6 +16,7 @@ Item {
     property var _lat_color: "#353535"
     property var _map_color: "#353535"
 
+    property string modeMap: "geocentric"
     property var timer: 0
     property var message: ""
 
@@ -98,7 +99,7 @@ Item {
                         color: "white"
                         anchors.right: t2.right
                         anchors.rightMargin: 6
-                        text: Number(modelData).toLocaleString(Qt.locale(), fe[index], 3)
+                        text: Number(modelData).toLocaleString(Qt.locale(), root.fe[index], 3)
                         font.family: _font
                     }
                 }
@@ -125,7 +126,7 @@ Item {
             id: msg
             anchors.left: statusbar.left
             anchors.leftMargin: 5
-            width: wnd.width - coordinateText.width*9
+            width: statusbar.width - coordinateText.width*9
             Timer {
                 id: time
                 interval: timer === -1 ? 100000: timer; repeat: false
