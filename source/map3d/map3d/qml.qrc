@@ -30,6 +30,7 @@
         <file>DockableItem.qml</file>
         <file>DockSplitView.qml</file>
         <file>LightingItem.qml</file>
-        <file>Style.qml</file>
+        <file>style/Style.qml</file>
+        <file>style/qmldir</file>
     </qresource>
 </RCC>

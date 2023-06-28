@@ -8,7 +8,7 @@
 #include "sphereNode.h"
 #include "polygon.h"
 #include "aircraftModelNode.h"
-#include "linenode.h"
+#include "lineNode.h"
 #include "truck.h"
 
 #include <osgEarthAnnotation/ModelNode>

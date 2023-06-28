@@ -3,8 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
 import Crystal 1.0
-
-
+import "style"
 Item {
     id: rootItem
     property var listModel
@@ -117,6 +116,7 @@ Item {
                     }
                     onSelectionChanged: function(sel, des){
                         reset()
+//                        img2.rotation : treeDelegate.hasChildren ? -90 : 180
                     }
                 }
                 delegate: Item {
@@ -136,11 +136,12 @@ Item {
                     anchors.margins: 10
                     Rectangle{
                         id: container
-                        width: parent.width - (treeDelegate.depth - 1)* treeDelegate.indent
+                        width: parent.width - (treeDelegate.depth - 1)* treeDelegate.indent - 30
                         height: parent.height
                         border.width: 5
                         border.color: "#202020"
                         color: "transparent"
+
                         Rectangle {
                             id: rect
                             anchors.fill: parent
@@ -159,6 +160,7 @@ Item {
 
                             onPressed: function(mouse) {
                                 mouse.accepted = false
+
                             }
                             propagateComposedEvents: true
 
@@ -175,6 +177,7 @@ Item {
                             anchors.verticalCenter: container.verticalCenter
                             color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "#ffffff"
                             text: display
+//                            color: Style.textColor
                         }
 
                         Rectangle {
@@ -192,6 +195,20 @@ Item {
                             x: container.x - width + (treeDelegate.depth)*indent
                             anchors.verticalCenter: container.verticalCenter
                             color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"
+                        }
+                        IconImage {
+                            id: img2
+                            source: "qrc:/Resources/chevron.png"
+                            width: 18
+                            height: 18
+
+                            anchors.rightMargin: 5
+//                            anchors.top :parent.top
+                            anchors.right: parent.right
+                            visible: treeDelegate.hasChildren
+                            rotation: treeDelegate.expanded ? -90 : 180
+                            anchors.verticalCenter: parent.verticalCenter
+
                         }
                     }
 
