@@ -7,12 +7,12 @@ import "style"
 Item {
     id: rootItem
     property var listModel
-    readonly property color     _colorHover : "#FFCC00"
+    readonly property color     _colorHover : "#0dc2df"
     readonly property color     _colorPresed : "#908000"
     readonly property color     _colorRec   : "#363739"
 //    readonly property color     sectionColor:  "#00587A"
 //    readonly property color     sectionColor:  "#2f528d"
-    readonly property color     sectionColor:  "#3c507a"
+    readonly property color     sectionColor:  "#213f72"//0dc2df
     readonly property real      categorySize: 40
     readonly property real      itemSize: 40
 
@@ -24,7 +24,7 @@ Item {
         width: 300
         id: header
         radius: 10
-        color: "#202020"
+        color: "#24242b"
 //        Label {
 //            Text {
 //                id: headerType
@@ -51,7 +51,7 @@ Item {
         width: parent.width
         height: 30
         anchors.top: header.bottom
-        color: "#202020"
+        color: "#24242b"
         TextField {
             function sendToSearch() {
                 rootItem.listModel.setFilterString(text)
@@ -91,7 +91,7 @@ Item {
         height: parent.height - header.height - footer.height
         width: parent.width
         color: _colorRec
-        border.color: "#202020"
+        border.color: "#24242b"
         border.width: 10
         ScrollView {
             anchors.fill: parent
@@ -176,23 +176,39 @@ Item {
                             font.pixelSize: 14
                             font.bold: treeDelegate.hasChildren
                             anchors.verticalCenter: container.verticalCenter
-                            color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "#ffffff"
+                            color: checkedd ? _colorPresed : mouseArea.containsMouse ? "#8c98ae" : "#ffffff"
                             text: display
 //                            color: Style.textColor
+                        }
+                        property color s: "#9b9ca0"
+                        Rectangle {
+                            width: indent-20
+                            height: parent.height
+                            color: container.s
+                            x: -indent+8
                         }
 
                         Rectangle {
                             width: indent
                             height: parent.height
-                            color: "#9b9ca0"
-                            x: -indent
+                            color: container.s
+                            x: -indent + parent.width + 22
+                            visible: !treeDelegate.hasChildren
+                        }
+                        Rectangle {
+                            width: parent.width
+                            height: 2
+                            color: container.s
+//                            x: -indent + parent.width + 22
+                            visible: treeDelegate.hasChildren && treeDelegate.expanded
+                            anchors.topMargin: 3
                         }
 
                         IconImage {
                             id: img
                             source: imageSource ?? ""
-                            width: 28
-                            height: 28
+                            width: 32
+                            height: 32
                             x: container.x - width + (treeDelegate.depth)*indent
                             anchors.verticalCenter: container.verticalCenter
                             color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"

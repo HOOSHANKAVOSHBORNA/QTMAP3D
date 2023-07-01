@@ -112,8 +112,8 @@ Item {
                         source: col
                         colorization: 1
                         colorizationColor: mouseArea.isMouseOnItem ?
-                                   (mouseArea.pressed ? _colorPresed: "#85b8dc") :
-                                   (mouseArea.pressed ? "#85b8dc" : "#FFFFFF");
+                                   (mouseArea.pressed ? _colorPresed: "#0dc2df") :
+                                   (mouseArea.pressed ? "#0dc2df" : "#FFFFFF");
                     }
                 }
             }

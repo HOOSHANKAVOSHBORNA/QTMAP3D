@@ -11,7 +11,7 @@ SplitView {
         id: handleDelegate
         implicitWidth: 4
         implicitHeight: 4
-        color: SplitHandle.pressed ? "#81e889" : "#101010"
+        color: SplitHandle.pressed ? "#81e889" : "#24242b"
 
         SplitHandle.onPressedChanged: function() {
             if (handleDelegate.SplitHandle.pressed === false) {

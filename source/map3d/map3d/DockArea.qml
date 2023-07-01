@@ -515,7 +515,7 @@ Item {
                     anchors.centerIn: parent
                     width:48
                     height:48
-                    color: "black"
+                    color: "#24242b"
                     radius: 24
                     visible: containerItemStack.hasHeader
                     scale: rootItem.dropLoc === DockArea.DropLocCenter ? 1.5 : 1.0

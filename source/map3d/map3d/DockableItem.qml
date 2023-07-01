@@ -93,7 +93,7 @@ Item {
         width: 640
         height: 480
         visible: false
-        color: "#303030"
+        color: "#24242b"
         //flags: Qt.FramelessWindowHint
 
         Component.onCompleted: function() {
