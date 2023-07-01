@@ -9,7 +9,7 @@
 const QString CATEGORY = "Draw";
 const QString POLYGON = "Polygon";
 const QString M_CATEGORY = "Measurement";
-const QString MEASUREAREA = "Measure Area";
+const QString MEASUREAREA = "Area";
 
 DrawPolygon::DrawPolygon(QObject *parent)
     : PluginInterface(parent)

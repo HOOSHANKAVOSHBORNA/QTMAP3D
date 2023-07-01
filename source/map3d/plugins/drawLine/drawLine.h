@@ -17,7 +17,7 @@
 
 #define POLYLINE "PolyLine"
 #define RULER "Ruler"
-#define MEASUREHEIGHT "Measure Height"
+#define MEASUREHEIGHT "Height"
 #define SLOPE "Slope"
 
 class DrawLine: public DrawShape
@@ -65,6 +65,7 @@ private:
     MeasureHeight* mMeasureHeight{nullptr};
     LineProperties *mLineProperties = nullptr;
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mLineLayer;
+    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mRulerLayer;
     static int mCount;
 //    bool mEnterLineZone{false};
 //    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
