@@ -16,7 +16,7 @@ QtObject {
     readonly property color     hoverColor:     "#0dc2df"
 //    readonly property color     backgroundColor: ""
 //    readonly property color     textColor:      ""
-//    readonly property color     borderColor:    ""
+    readonly property color     borderColor:    "#c9c9c9"
 //    readonly property int       borderwidth:    0
 //    readonly property int       radiusSize:     ""
 //    readonly property int       radius:         ""

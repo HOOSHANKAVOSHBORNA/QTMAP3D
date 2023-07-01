@@ -23,7 +23,8 @@ boxProperties.cpp
 boxProperties.h
 )
 
-target_include_directories(drawBox PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
+target_include_directories(drawBox PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d/style")
 target_link_libraries(drawBox PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
 target_include_directories(drawBox PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
 
