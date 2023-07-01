@@ -9,6 +9,7 @@ Item {
     width: mainRowLayout.implicitWidth
     height: mainRowLayout.implicitHeight
 
+    property string modeMap: "geocentric"
     property real positionFactor: 1.0
     property bool showRecMov: true
     property real myDuration: 300.0

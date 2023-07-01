@@ -2,6 +2,7 @@
 #define MapController_H
 
 #include "osgRenderNode.h"
+#include "mapObject.h"
 //#include "layerModel.h"
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -11,12 +12,12 @@
 #include <GL/gl.h>
 
 #include <osgEarth/MapNode>
-#include <osgEarth/Map>
 #include <osgEarthUtil/EarthManipulator>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
 #include <osgEarthAnnotation/AnnotationLayer>
+
 
 class MapItem : public QQuickItem
 {
@@ -29,8 +30,15 @@ public:
     osgViewer::Viewer *getViewer()const;
     const osg::Group *getRoot() const;
     osgEarth::MapNode *getMapNode() const;
+
+    MapObject *getMapObject();
+    const MapObject* getMapObject() const;
+//    MapObject *operator->(){return mMapObject.get();}
+//    const MapObject *operator->()const {return mMapObject;}
+
     const osgEarth::SpatialReference* getMapSRS() const;
-//    LayersModel *getLayersModel() const;
+
+    //    LayersModel *getLayersModel() const;
     bool addNode(osg::Node *node);
     bool removeNode(osg::Node *node);
 
@@ -38,9 +46,9 @@ public://camera functions
     osgEarth::Util::EarthManipulator *getEarthManipulator() const;
     void setViewpoint(const osgEarth::Viewpoint& vp, double duration_s = 0.0);
     osgEarth::Viewpoint getViewpoint() const;
-	void setTrackNode(osg::Node *node, double minDistance);
-//    void untrackNode(osg::Node *node);
-	void untrack();
+    void setTrackNode(osg::Node *node, double minDistance);
+    //    void untrackNode(osg::Node *node);
+    void untrack();
     qreal headingAngle() const;
 public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;
@@ -63,7 +71,7 @@ public slots:
     void changeMode();
     bool getMode() const;
     void setGeocentric(bool isGeocentric);
-//    void toggle3DView();
+    //    void toggle3DView();
     void pan(double xVal, double yVal);
     void rotate(double xVal, double yVal);
     void travelToViewpoint(qreal latitude,
@@ -85,7 +93,7 @@ signals:
     void layerChanged();
     void mapCleared();
     void frameChanged();
-//    void mapSRSChanged();
+    //    void mapSRSChanged();
     void mouseLocationChanged();
 
 private:
@@ -102,6 +110,7 @@ private:
     osg::ref_ptr<osgEarth::MapNode> mMapNode{nullptr};
     osg::ref_ptr<osgEarth::Util::SkyNode> mSkyNode{nullptr};
     osg::ref_ptr<osg::Group> mMapRoot{nullptr};
+    osg::ref_ptr<MapObject> mMapObject;
 
 private:
     bool mIsFirstFrame{true};
@@ -110,13 +119,13 @@ private:
     bool mIsGeocentric{true};
     bool mIs3DView{true};
     osgEarth::GeoPoint mCurrentMouseGeoPoint;
-//--renderer------------------------------------------------------------------------------------------------------
+    //--renderer------------------------------------------------------------------------------------------------------
 public:
-//    void cleanup();
-//    void initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId);
-//    void resizeGL(int width, int height, QScreen *screen);
-//    void paintGL();
-//    void createOsgRenderer();
+    //    void cleanup();
+    //    void initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId);
+    //    void resizeGL(int width, int height, QScreen *screen);
+    //    void paintGL();
+    //    void createOsgRenderer();
     virtual void frame();
     //events------------------------------
     virtual void keyPressEvent(QKeyEvent* event) override;
@@ -130,7 +139,7 @@ public:
 
 private:
     OSGRenderNode *mOSGRenderNode{nullptr};
-//    QQuickWindow *mWindow{nullptr};
+    //    QQuickWindow *mWindow{nullptr};
 };
 
 #endif // MapController_H

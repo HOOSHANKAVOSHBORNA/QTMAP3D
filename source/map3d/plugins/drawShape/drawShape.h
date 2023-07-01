@@ -39,7 +39,7 @@ public:
     DrawShape::State state() const;
     void setState(DrawShape::State newState);
 //    void addLayer();
-//    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> shapeLayer() const;
+    osgEarth::Annotation::AnnotationLayer *shapeLayer();
 
     virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override {return false;}
     virtual bool keyPressEvent        (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override {return false;}
@@ -58,9 +58,7 @@ protected:
 private:
     State mState{State::NONE};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
-
-    static bool mHasLayer;
-//    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mShapeLayer;
+    osgEarth::Annotation::AnnotationLayer* mShapeLayer{nullptr};
 
 };
 

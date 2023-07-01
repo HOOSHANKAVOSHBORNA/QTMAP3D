@@ -1,8 +1,11 @@
-import QtQuick 2.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import Crystal 1.0
 
+
 MapController {
-    id: rootItem
+    id: map
     zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
     zoomOutButtonPressed:     navigationWidget.zoomOutButtonPressed
     upButtonPressed:          navigationWidget.upButtonPressed
@@ -13,9 +16,23 @@ MapController {
     rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
     rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
     rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
-
+//    anchors.fill: parent
+    objectName: "MainMap"
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
+    readonly property int       _iconSize   : 24
+    readonly property int       _margin     : 15
+    readonly property int       _radius     : 10
+    readonly property color     _colorRec   : "#404040"
+    readonly property color     _colorHover : "#FFCC00"
+    readonly property color     _colorPresed : "#908000"
+    readonly property color     _colorIcon  : "#FFFFFF"
+    readonly property color     _colorButton: "#55FFFFFF"
+    readonly property string    _fontFamily : "Srouce Sans Pro"
+    readonly property int       _fontPointSize : 11
+    readonly property color     itemColor: "#404040"
+    readonly property real      widgetsMargins: 10
+    clip: true
     DropArea {
         id: dragTarget
 
@@ -77,35 +94,35 @@ MapController {
     }
 
     function toggleWidgetsVisible() {
-        if (rootItem.widgetsVisible === true) {
+        if (map.widgetsVisible === true) {
             widgetsShowAnimation.stop();
             widgetsHideAnimation.start();
-            rootItem.widgetsVisible = false;
+            map.widgetsVisible = false;
         } else {
 
             widgetsHideAnimation.stop();
             widgetsShowAnimation.start();
-            rootItem.widgetsVisible = true;
+            map.widgetsVisible = true;
         }
     }
 
     PropertyAnimation {
         id: widgetsShowAnimation
-        target: rootItem
+        target: map
         property: "widgetsPositionFactor"
-        from: rootItem.widgetsPositionFactor
+        from: map.widgetsPositionFactor
         to: 1.0
-        duration: 200 * Math.abs(1.0 - rootItem.widgetsPositionFactor)
+        duration: 200 * Math.abs(1.0 - map.widgetsPositionFactor)
 
         easing.type: Easing.OutQuint
     }
     PropertyAnimation {
         id: widgetsHideAnimation
-        target: rootItem
+        target: map
         property: "widgetsPositionFactor"
-        from: rootItem.widgetsPositionFactor
+        from: map.widgetsPositionFactor
         to: 0.0
-        duration: 200 * Math.abs(rootItem.widgetsPositionFactor)
+        duration: 200 * Math.abs(map.widgetsPositionFactor)
 
         easing.type: Easing.InQuint
     }
@@ -156,14 +173,14 @@ MapController {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 10
             id:compassWidget
-            headingAngle: rootItem.headingAngle
+            headingAngle: map.headingAngle
             //            anchors.left: parent.left
             //            anchors.leftMargin: widgetsMargins
             //            anchors.bottomMargin: widgetsMargins
             //            y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins) + statusBar.height)
 
             onCompassDoubleClicked: function() {
-                rootItem.orientCameraToNorth();
+                map.orientCameraToNorth();
             }
         }
     }
@@ -179,10 +196,10 @@ MapController {
         y: parent.height/2
         x:parent.width - widgetsPositionFactor * (width + widgetsMargins)
         onBtnHomeClicked: function() {
-            rootItem.goToHome();
+            map.goToHome();
         }
         onBtnProjectionClicked: function() {
-            rootItem.changeMode();
+            map.changeMode();
         }
     }
 
@@ -196,12 +213,12 @@ MapController {
         anchors.rightMargin: 0
         width: parent.width
         height: childrenRect.height
-        latitude: rootItem.mapMouseGeoLocation.x
-        longitude: rootItem.mapMouseGeoLocation.y
-        altitude: rootItem.mapMouseGeoLocation.z
-        coordinate1: rootItem.mapMouseLocation.x
-        coordinate2: rootItem.mapMouseLocation.y
-        coordinate3: rootItem.mapMouseLocation.z
+        latitude: map.mapMouseGeoLocation.x
+        longitude: map.mapMouseGeoLocation.y
+        altitude: map.mapMouseGeoLocation.z
+        coordinate1: map.mapMouseLocation.x
+        coordinate2: map.mapMouseLocation.y
+        coordinate3: map.mapMouseLocation.z
         message: "Ready"
         timer: -1
 
@@ -209,3 +226,4 @@ MapController {
 
     //    }
 }
+

@@ -10,7 +10,6 @@
 #include <chrono>
 #include <QQuickOpenGLUtils>
 #include <osgGA/TrackballManipulator>
-#include "customMap.h"
 #include "mapItem.h"
 
 //class MainMapCallback : public osgEarth::MapCallback
@@ -83,6 +82,16 @@ const osg::Group *MapItem::getRoot() const
 osgEarth::MapNode *MapItem::getMapNode() const
 {
     return mMapNode;
+}
+
+MapObject *MapItem::getMapObject()
+{
+    return mMapObject;
+}
+
+const MapObject *MapItem::getMapObject() const
+{
+    return mMapObject;
 }
 
 const osgEarth::SpatialReference *MapItem::getMapSRS() const
@@ -180,7 +189,7 @@ void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
         }
     }
     else
-        mEarthManipulator->screenToWorld(x, height - y,mOSGRenderNode, outWorldPoint);
+        mEarthManipulator->screenToWorld(x, y,mOSGRenderNode, outWorldPoint);
 }
 
 osgEarth::GeoPoint MapItem::screenToGeoPoint(float x, float y) const
@@ -274,7 +283,7 @@ bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
         //        if(group){
         //            if(!group->containsNode(layer->getNode())){
         //group->addChild(layer->getNode());
-        addLayer(layer);
+        mMapObject->addLayer(layer);
         layer->setUserValue("parent", destinationLayer->getName());
         //                qDebug()<<"num parent"<<layer->getNode()->getNumParents();
         //                qDebug()<<"parent 0"<<layer->getNode()->getParent(0)->getName();
@@ -294,7 +303,7 @@ bool MapItem::removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName
         auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
         unsigned int index = dataContainer->getUserObjectIndex(layer);
         dataContainer->removeUserObject(index);
-        removeLayer(layer);
+        mMapObject->removeLayer(layer);
         emit layerChanged();
         return true;
 
@@ -327,7 +336,7 @@ QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
         ////        setNode(mSource);
         //        initializeOsgEarth();
 
-        mOSGRenderNode->setupOSG(x(), y(), width(), height(), 1);
+        mOSGRenderNode->setupOSG(0, 0, 800, 620, 1);
 
         n = mOSGRenderNode;
     }
@@ -411,7 +420,7 @@ void MapItem::setGeocentric(bool isGeocentric)
     createMapNode(mIsGeocentric);
     emit mapCleared();
     for(const auto &layer: layers)
-        addLayer(layer);
+        mMapObject->addLayer(layer);
 
     osgEarth::Viewpoint vp = getEarthManipulator()->getViewpoint();
 
@@ -475,7 +484,7 @@ void MapItem::initializeOsgEarth()
     gdal.L2CacheSize() = 2048;
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
-    addLayer(imlayer);
+    mMapObject->addLayer(imlayer);
     //create camera after create map node
     createCameraManipulator();
     mOSGRenderNode->setCameraManipulator(mEarthManipulator);
@@ -494,13 +503,15 @@ void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
         {
             mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_GEOCENTRIC;
             mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
-            mMapNode = new osgEarth::MapNode(new CustomMap(mapOpt));
+            mMapObject = new MapObject(mapOpt);
+            mMapNode = new osgEarth::MapNode(mMapObject);
         }
         else
         {
             mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_PROJECTED;
             mapOpt.profile() = osgEarth::ProfileOptions();
-            mMapNode = new osgEarth::MapNode(new CustomMap(mapOpt));
+            mMapObject = new MapObject(mapOpt);
+            mMapNode = new osgEarth::MapNode(mMapObject);
         }
     }
     else
@@ -691,6 +702,8 @@ void MapItem::mouseDoubleClickEvent(QMouseEvent *event)
 
 void MapItem::mouseMoveEvent(QMouseEvent *event)
 {
+//    QPointF point(event->scenePosition());
+//    mapToScene()
     if (mOSGRenderNode) {
         mOSGRenderNode->mouseMoveEvent(event);
     }

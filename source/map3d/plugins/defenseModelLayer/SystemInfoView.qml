@@ -195,12 +195,12 @@ Item {
                                 width: 16
                                 height: 16
                                 rotation: 180
-                                MultiEffect {
-                                    source: imgm
-                                    anchors.fill: imgm
-                                    colorization: 1
-                                    colorizationColor: "white"
-                                }
+//                                MultiEffect {
+//                                    source: imgm
+//                                    anchors.fill: imgm
+//                                    colorization: 1
+//                                    colorizationColor: "white"
+//                                }
                                 anchors.right: parent.right
                                 anchors.rightMargin: 5
                                 anchors.verticalCenter: parent.verticalCenter
@@ -309,12 +309,12 @@ Item {
                                 width: 16
                                 height: 16
                                 rotation: 180
-                                MultiEffect {
-                                    source: imgl
-                                    anchors.fill: imgl
-                                    colorization: 1
-                                    colorizationColor: "white"
-                                }
+//                                MultiEffect {
+//                                    source: imgl
+//                                    anchors.fill: imgl
+//                                    colorization: 1
+//                                    colorizationColor: "white"
+//                                }
                                 anchors.right: parent.right
                                 anchors.rightMargin: 5
                                 anchors.verticalCenter: parent.verticalCenter
@@ -421,12 +421,12 @@ Item {
                                 width: 16
                                 height: 16
                                 rotation: 180
-                                MultiEffect {
-                                    source: imga
-                                    anchors.fill: imga
-                                    colorization: 1
-                                    colorizationColor: "white"
-                                }
+//                                MultiEffect {
+//                                    source: imga
+//                                    anchors.fill: imga
+//                                    colorization: 1
+//                                    colorizationColor: "white"
+//                                }
                                 anchors.right: parent.right
                                 anchors.rightMargin: 5
                                 anchors.verticalCenter: parent.verticalCenter
@@ -564,12 +564,12 @@ Item {
                                 width: 16
                                 height: 16
                                 rotation: 180
-                                MultiEffect {
-                                    source: imgd
-                                    anchors.fill: imgd
-                                    colorization: 1
-                                    colorizationColor: "white"
-                                }
+//                                MultiEffect {
+//                                    source: imgd
+//                                    anchors.fill: imgd
+//                                    colorization: 1
+//                                    colorizationColor: "white"
+//                                }
                                 anchors.right: parent.right
                                 anchors.rightMargin: 5
                                 anchors.verticalCenter: parent.verticalCenter
@@ -677,12 +677,12 @@ Item {
                                 width: 16
                                 height: 16
                                 rotation: 180
-                                MultiEffect {
-                                    source: imgs
-                                    anchors.fill: imgs
-                                    colorization: 1
-                                    colorizationColor: "white"
-                                }
+//                                MultiEffect {
+//                                    source: imgs
+//                                    anchors.fill: imgs
+//                                    colorization: 1
+//                                    colorizationColor: "white"
+//                                }
                                 anchors.right: parent.right
                                 anchors.rightMargin: 5
                                 anchors.verticalCenter: parent.verticalCenter

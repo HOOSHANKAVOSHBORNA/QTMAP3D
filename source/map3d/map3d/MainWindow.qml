@@ -3,19 +3,18 @@ import QtQuick 2.13
 import QtQuick.Window 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
-
+import QtQuick.Controls.Material 2.12
 import QtQuick.Effects
 import Crystal 1.0
 
 
 CMainWindow {
-
     readonly property int       _iconSize   : 24
     readonly property int       _margin     : 15
     readonly property int       _radius     : 10
     readonly property color     _colorRec   : "#404040"
     readonly property color     _colorHover : "#FFCC00"
-    readonly property color     _colorPresed : "#908000"
+    readonly property color     _colorPresed : "#0dc2df"
     readonly property color     _colorIcon  : "#FFFFFF"
     readonly property color     _colorButton: "#55FFFFFF"
     readonly property string    _fontFamily : "Srouce Sans Pro"
@@ -27,19 +26,6 @@ CMainWindow {
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
 
-
-//    zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
-//    zoomOutButtonPressed:     navigationWidget.zoomOutButtonPressed
-//    upButtonPressed:          navigationWidget.upButtonPressed
-//    downButtonPressed:        navigationWidget.downButtonPressed
-//    leftButtonPressed:        navigationWidget.leftButtonPressed
-//    rightButtonPressed:       navigationWidget.rightButtonPressed
-//    rotateUpButtonPressed:    navigationWidget.rotateUpButtonPressed
-//    rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
-//    rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
-//    rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
-
-
     id: wnd
     visible: true
     width: 800
@@ -47,10 +33,55 @@ CMainWindow {
     minimumWidth: 800
     minimumHeight: 600
     title: qsTr("MAP3D")
-    MapControllerItem {
+//    MapControllerItem {
+//        id: mapController
+//        anchors.fill: parent
+//        objectName: "MainMap"
+//        z: -1
+//    }
+    property Component dockableItemComp: Qt.createComponent("DockableItem.qml");
+
+    property DockableItem dockItem: null
+    property DockArea defaultDockArea: mainDockArea
+    function setCentralDockItemImpl(item) {
+        wnd.defaultDockArea.setDefaultDockableItemIfIsDefault(item);
+    }
+
+    function attachToCentralDockItemImpl(item, horizontalAttach, attachAsFirst, splitScale) {
+        wnd.defaultDockArea.attachDockItemIfIsDefault(horizontalAttach, attachAsFirst, item, splitScale);
+
+    }
+
+    function wrapItemWithDockableImpl(_item, _title) {
+        var obj = wnd.dockableItemComp.createObject(wnd, {attachWindow: wnd, tmpColor:"#104020", title: _title});
+        obj.wrapItem(_item);
+        return obj;
+    }
+
+
+    function startTabDrag(item) {
+        wnd.dockItem = item;
+    }
+
+    function finishTabDrag() {
+        wnd.dockItem = null;
+    }
+    DockArea     {
+        id: mainDockArea
         anchors.fill: parent
-        objectName: "MainMap"
-        z: -1
+        parentMainWindow: wnd
+        isDefaultDockArea: true
+
+        Component.onCompleted: function() {
+//            var obj = wnd.dockableItemComp.createObject(wnd, {x: 300, y: 300, attachWindow: wnd, tmpColor:"#104020", title: "def"});
+//            wnd.defaultDockArea.setDefaultDockableItemIfIsDefault(obj);
+
+//            var dock1 = wnd.dockableItemComp.createObject(wnd, {x: 100, y: 100, attachWindow: wnd, tmpColor:"#102040", title: "First"});
+//            wnd.defaultDockArea.attachDockItemIfIsDefault(true, true, dock1, 0.25);
+
+//            var dock2 = wnd.dockableItemComp.createObject(wnd, {x: 100, y: 100, attachWindow: wnd, tmpColor:"#402010", title: "Second"});
+//            wnd.defaultDockArea.attachDockItemIfIsDefault(true, false, dock2, 0.35);
+        }
     }
 
     //flags: Qt.FramelessWindowHint
@@ -82,6 +113,13 @@ CMainWindow {
 //    }
 
 //    onWidthChanged: leftContainerHolder.adjustRightContainer(wnd.width);
+
+    SearchBar {
+        anchors.top: parent.top
+        anchors.topMargin: widgetsMargins
+        anchors.rightMargin: fpsLabel.width + widgetsMargins*3
+        anchors.right: parent.right
+    }
 
     property var sideItemsModel: ListModel {
 
@@ -200,6 +238,8 @@ CMainWindow {
                     break
                 case 1:
                     item.listModel = wnd.toolboxModel;
+                    var dock2 = wnd.wrapItemWithDockableImpl(item, "Toobox");
+                    wnd.attachToCentralDockItemImpl(dock2, true, true, 0.2);
 //                    item.itemClicked.connect(wnd.toolboxItemClicked);
 //                    item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                     break;
@@ -375,7 +415,6 @@ CMainWindow {
                                                                           'itemCheckable' : itemDesc.checkable
                                                                       });
                 wnd.toolboxItemCreated(itemDesc);
-                print("kkkkkkkkkkkkkkkkkkk")
             } else {
                 return false;
             }
@@ -488,10 +527,12 @@ CMainWindow {
     }
 
     function showInfoView(item, title) {
-        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
-        sideWidget.hideAllItems();
-        infoo.showInfo(item)
-        infoo.titleText = title;
+//        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+//        sideWidget.hideAllItems();
+//        infoo.showInfo(item)
+//        infoo.titleText = title;
+        var dock = wnd.wrapItemWithDockable(item, "title");
+        wnd.attachToCentralDockItem(dock, true, true, 0.2);
     }
 
     function hideInfoView() {
