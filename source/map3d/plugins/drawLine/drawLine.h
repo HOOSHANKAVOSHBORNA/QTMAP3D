@@ -68,6 +68,8 @@ private:
     LineProperties *mLineProperties = nullptr;
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mLineLayer;
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mRulerLayer;
+    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mHeightLayer;
+    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mSlopeLayer;
     static int mCount;
 //    bool mEnterLineZone{false};
 //    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};

@@ -205,9 +205,13 @@ void DrawLine::onRulerItemCheck(bool check)
 //    }
     if(check)
     {
+        if(mRulerLayer->getGroup()->getNumChildren() <= 0){
+            mapItem()->getMapObject()->addLayer(mRulerLayer);
+            auto measureLayer = DrawShape::measureLayer();
+            mapItem()->getMapObject()->setParentLayer(mRulerLayer, measureLayer);
+        }
         makeIconNode("../data/images/draw/ruler.png");
         setState(State::READY);
-        mapItem()->addLayerToLayer(mRulerLayer, M_CATEGORY);
         mType = Type::RULERR;
         mLineProperties = new LineProperties(qmlEngine(),uiHandle() );
         mLineProperties->setIsRuler(1);
@@ -216,8 +220,10 @@ void DrawLine::onRulerItemCheck(bool check)
     }
     else
     {
-        if(mLineLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mRulerLayer, M_CATEGORY);
+        if(mRulerLayer->getGroup()->getNumChildren() <= 0){
+            mapItem()->getMapObject()->setParentLayer(mRulerLayer, nullptr);
+            mapItem()->getMapObject()->removeLayer(mRulerLayer);
+        }
         if(state() == State::DRAWING)
             cancelDraw();
         setState(State::NONE);
@@ -311,12 +317,12 @@ void DrawLine::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name;
     switch (mType) {
     case Type::LINE:
-        name = "PolyLine" + QString::number(mCount);
+        name = POLYLINE + QString::number(mCount);
         mapItem()->getMapObject()->addNodeToLayer(mLine, mLineLayer);
         break;
     case Type::RULERR:
         name = "Ruler" + QString::number(mCount);
-//        mapItem()->addNodeToLayer(mLine, RULER);
+        mapItem()->getMapObject()->addNodeToLayer(mLine, mRulerLayer);
         break;
     case Type::HEIGHT:
         name = "Height" + QString::number(mCount);
@@ -325,7 +331,7 @@ void DrawLine::initDraw(const osgEarth::GeoPoint &geoPos)
         name = "Slope" + QString::number(mCount);
         break;
     default:
-        name = "PolyLine" + QString::number(mCount);
+        name = POLYLINE + QString::number(mCount);
         break;
     }
     mLine->setName(name.toStdString());
@@ -346,11 +352,12 @@ void DrawLine::tempDrawing(const osgEarth::GeoPoint &geoPos)
 
 void DrawLine::drawing(const osgEarth::GeoPoint &geoPos)
 {
-    mLine->addPoint(geoPos);
-//    qDebug()<<"size is: "<<mLine->getSize();
-    if(mType == Type::RULERR && mLine->getSize()==3){
+    if(mType == Type::RULERR && mLine->getSize()>=2){
+        mLine->removePoint();
         confirmDraw();
     }
+    mLine->addPoint(geoPos);
+//    qDebug()<<"size is: "<<mLine->getSize();
 }
 
 void DrawLine::cancelDraw()

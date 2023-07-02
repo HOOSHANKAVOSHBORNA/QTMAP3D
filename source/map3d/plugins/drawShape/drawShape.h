@@ -40,6 +40,7 @@ public:
     void setState(DrawShape::State newState);
 //    void addLayer();
     osgEarth::Annotation::AnnotationLayer *shapeLayer();
+    osgEarth::Annotation::AnnotationLayer *measureLayer();
 
     virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override {return false;}
     virtual bool keyPressEvent        (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override {return false;}

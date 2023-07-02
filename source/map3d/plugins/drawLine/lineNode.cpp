@@ -13,522 +13,526 @@
 LineNode::LineNode(MapItem *mapItem)
 {
     mMapItem = mapItem;
-	mLineGeometry = new osgEarth::Symbology::Geometry();
+    mLineGeometry = new osgEarth::Symbology::Geometry();
     osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLineGeometry, mMapItem->getMapSRS());
     pathFeature->geoInterp() = osgEarth::GEOINTERP_GREAT_CIRCLE;
 
-	osgEarth::Symbology::Style pathStyle;
-	//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
-	//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
-	//    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+    osgEarth::Symbology::Style pathStyle;
+    //    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
+    //    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
+    //    pathStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
 
-	pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = mColor;
+    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = mColor;
     pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->lineCap() = osgEarth::Symbology::Stroke::LINECAP_ROUND;
-	pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
-	pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = mTessellation;
+    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
+    pathStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = mTessellation;
 
-	_options = osgEarth::Features::GeometryCompilerOptions();
-	_needsRebuild = true;
-	_styleSheet = nullptr;
-	_clampDirty = false;
-	_index = nullptr;
+    _options = osgEarth::Features::GeometryCompilerOptions();
+    _needsRebuild = true;
+    _styleSheet = nullptr;
+    _clampDirty = false;
+    _index = nullptr;
 
-	setFeature(pathFeature);
-	setStyle(pathStyle);
-	mLabelGroup = new osg::Group;
-	addChild(mLabelGroup);
-	mLabelGroup->setNodeMask(false);
+    setFeature(pathFeature);
+    setStyle(pathStyle);
+    mLabelGroup = new osg::Group;
+    addChild(mLabelGroup);
+    mLabelGroup->setNodeMask(false);
 }
 
 LineNode::~LineNode()
 {
     for(auto labelData: mVecLabelData){
-		if(labelData.qImage)
-			delete labelData.qImage;
-	}
+        if(labelData.qImage)
+            delete labelData.qImage;
+    }
 }
 
 void LineNode::addPoint(osgEarth::GeoPoint point)
 {
-	mLineGeometry->push_back(point.vec3d());
-	dirty();
+    mLineGeometry->push_back(point.vec3d());
+    dirty();
 
     if(getSize() >= 2)
-	{
-		std::vector<osg::Vec3d> distanceVectorPoint;
-		distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 2));
-		distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 1));
-		auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
+    {
+        std::vector<osg::Vec3d> distanceVectorPoint;
+        distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 2));
+        distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 1));
+        auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
 
-		double bearingRadian = osgEarth::GeoMath().bearing(osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 2).y()),
-														   osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 2).x()),
-														   osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).y()),
-														   osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).x()));
-		auto bearing = osg::RadiansToDegrees(bearingRadian);
-		if (bearing < 0){
-			bearing += 360;
-		}
-		// Calculate the slope between the two points.
+        double bearingRadian = osgEarth::GeoMath().bearing(osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 2).y()),
+                                                           osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 2).x()),
+                                                           osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).y()),
+                                                           osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).x()));
+        auto bearing = osg::RadiansToDegrees(bearingRadian);
+        if (bearing < 0){
+            bearing += 360;
+        }
+        // Calculate the slope between the two points.
         osgEarth::GeoPoint p1(mMapItem->getMapSRS() ,mLineGeometry->at(mLineGeometry->size() - 2).x(),
-							  mLineGeometry->at(mLineGeometry->size() - 2).y()
-							  , mLineGeometry->at(mLineGeometry->size() - 2).z());
+                              mLineGeometry->at(mLineGeometry->size() - 2).y()
+                              , mLineGeometry->at(mLineGeometry->size() - 2).z());
         osgEarth::GeoPoint p2(mMapItem->getMapSRS(),mLineGeometry->at(mLineGeometry->size() - 1).x(),
-							  mLineGeometry->at(mLineGeometry->size() - 1).y(),
-							  mLineGeometry->at(mLineGeometry->size() - 1).z());
-		double slope = (mLineGeometry->at(mLineGeometry->size() - 1).z() - mLineGeometry->at(mLineGeometry->size() - 2).z()) / p1.distanceTo(p2);
-		slope = std::asin(slope);
-		slope = osg::RadiansToDegrees(slope);
+                              mLineGeometry->at(mLineGeometry->size() - 1).y(),
+                              mLineGeometry->at(mLineGeometry->size() - 1).z());
+        double slope = (mLineGeometry->at(mLineGeometry->size() - 1).z() - mLineGeometry->at(mLineGeometry->size() - 2).z()) / p1.distanceTo(p2);
+        slope = std::asin(slope);
+        slope = osg::RadiansToDegrees(slope);
 
-		osg::ref_ptr<osg::Image> image = new osg::Image;
-		QImage* qImage = createOrUpdateLabelImg(image, lenght, bearing, slope);
-		osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode = new osgEarth::Annotation::PlaceNode();
+        osg::ref_ptr<osg::Image> image = new osg::Image;
 
-		LabelData data;
-		data.qImage = qImage;
-		data.image = image;
-		data.lenght = lenght;
-		data.bearing = bearing;
-		data.slope = slope;
-		data.placeNode = placeNode;
-		mVecLabelData.push_back(data);
-		placeNode->setIconImage(image);
+        QImage* qImage = createOrUpdateLabelImg(image, lenght, bearing, slope);
+        osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode = new osgEarth::Annotation::PlaceNode();
 
-                double latMidP;
-                double lonMidP;
+        LabelData data;
+        data.qImage = qImage;
+        data.image = image;
+        data.lenght = lenght;
+        data.bearing = bearing;
+        data.slope = slope;
+        data.placeNode = placeNode;
+        mVecLabelData.push_back(data);
+        placeNode->setIconImage(image);
+
+
+
+        double latMidP;
+        double lonMidP;
         double zMidP = ((mLineGeometry->at(mLineGeometry->size() - 2).z())+(mLineGeometry->at(mLineGeometry->size() - 1).z()))/2;
-//		osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
-//									(mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
+        //		osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
+        //									(mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
 
         osgEarth::GeoMath().midpoint(osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 2).x())),
-                                             osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 2).y())),
-                                             osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).x())),
-                                             osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).y())),
-                                             latMidP, lonMidP);
+                                     osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 2).y())),
+                                     osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).x())),
+                                     osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).y())),
+                                     latMidP, lonMidP);
 
         osgEarth::GeoPoint midpoint(mMapItem->getMapSRS()->getGeographicSRS(),osg::RadiansToDegrees(latMidP),osg::RadiansToDegrees(lonMidP),zMidP);
         placeNode->setPosition(midpoint);
 
 
-		placeNode->setStyle(placeNode->getStyle());
-		mLabelGroup->addChild(placeNode);
-	}
+        placeNode->setStyle(placeNode->getStyle());
+        mLabelGroup->addChild(placeNode);
+    }
     addChild(mLabelGroup);
+
 }
 
 void LineNode::removePoint()
 {
-	mLineGeometry->pop_back();
+    mLineGeometry->pop_back();
     auto qImage = mVecLabelData[mVecLabelData.size()-1 ].qImage;
-	if(qImage)
-		delete  qImage;
+    if(qImage)
+        delete  qImage;
 
-	mVecLabelData.pop_back();
-	dirty();
-	mLabelGroup->removeChild(getSize()-1);
+    mVecLabelData.pop_back();
+    dirty();
+    mLabelGroup->removeChild(getSize()-1);
 
-	addChild(mLabelGroup);
+    addChild(mLabelGroup);
 }
 
 void LineNode::removeFirstPoint()
 {
-	mLineGeometry->erase(mLineGeometry->begin());
-	auto qImage = mVecLabelData[0].qImage;
-	if(qImage)
-		delete  qImage;
-	mVecLabelData.erase(mVecLabelData.begin());
-	dirty();
-	mLabelGroup->removeChild(0, 1);
+    mLineGeometry->erase(mLineGeometry->begin());
+    auto qImage = mVecLabelData[0].qImage;
+    if(qImage)
+        delete  qImage;
+    mVecLabelData.erase(mVecLabelData.begin());
+    dirty();
+    mLabelGroup->removeChild(0, 1);
 
-	addChild(mLabelGroup);
+    addChild(mLabelGroup);
 }
 
 void LineNode::clear()
 {
 
-	mLineGeometry->clear();
-	for(auto labelData: mVecLabelData){
-		if(labelData.qImage)
-			delete labelData.qImage;
-	}
-	mVecLabelData.clear();
-	dirty();
-	mLabelGroup->removeChildren(0,mLabelGroup->getNumChildren());
+    mLineGeometry->clear();
+    for(auto labelData: mVecLabelData){
+        if(labelData.qImage)
+            delete labelData.qImage;
+    }
+    mVecLabelData.clear();
+    dirty();
+    mLabelGroup->removeChildren(0,mLabelGroup->getNumChildren());
 
-	addChild(mLabelGroup);
+    addChild(mLabelGroup);
 
 }
 
 int LineNode::getSize()
 {
-	return static_cast<int>(mLineGeometry->size());
+    return static_cast<int>(mLineGeometry->size());
 }
 
 osgEarth::Color LineNode::getColor() const
 {
-	return mColor;
+    return mColor;
 }
 
 void LineNode::setColor(const osgEarth::Color &color)
 {
-	if(mColor == color)
-		return;
-	mColor = color;
-	auto style = getStyle();
-	style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color()= mColor;
-	setStyle(style);
-	addChild(mLabelGroup);
+    if(mColor == color)
+        return;
+    mColor = color;
+    auto style = getStyle();
+    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color()= mColor;
+    setStyle(style);
+    addChild(mLabelGroup);
 }
 
 float LineNode::getWidth() const
 {
-	return mWidth;
+    return mWidth;
 }
 
 void LineNode::setWidth(float width)
 {
-	mWidth = width;
-	auto style = getStyle();
-	style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
-	setStyle(style);
-	addChild(mLabelGroup);
+    mWidth = width;
+    auto style = getStyle();
+    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = mWidth;
+    setStyle(style);
+    addChild(mLabelGroup);
 }
 
 float LineNode::getHeight() const
 {
-	return mHeight;
+    return mHeight;
 }
 
 void LineNode::setHeight(float height)
 {
-	mHeight = height;
-	auto style = getStyle();
-	style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = mHeight;
-	if (height<=0){
-		style.remove<osgEarth::Symbology::ExtrusionSymbol>();
-	}
-	setStyle(style);
-	addChild(mLabelGroup);
+    mHeight = height;
+    auto style = getStyle();
+    style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = mHeight;
+    if (height<=0){
+        style.remove<osgEarth::Symbology::ExtrusionSymbol>();
+    }
+    setStyle(style);
+    addChild(mLabelGroup);
 }
 
 osgEarth::Symbology::AltitudeSymbol::Clamping LineNode::getClamp() const
 {
-	return mClamp;
+    return mClamp;
 }
 
 void LineNode::setClamp(const osgEarth::Symbology::AltitudeSymbol::Clamping &clamp)
 {
-	if(mClamp == clamp)
-		return;
+    if(mClamp == clamp)
+        return;
 
-	mClamp = clamp;
-	auto style = this->getStyle();
-	style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = clamp;
-	setStyle(style);
-	addChild(mLabelGroup);
+    mClamp = clamp;
+    auto style = this->getStyle();
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->clamping() = clamp;
+    setStyle(style);
+    addChild(mLabelGroup);
 }
 
 unsigned LineNode::getTessellation() const
 {
-	return mTessellation;
+    return mTessellation;
 }
 
 void LineNode::setTessellation(const unsigned &tessellation)
 {
-	if(mTessellation == tessellation)
-		return;
-	mTessellation = tessellation;
-	auto style = this->getStyle();
-	style.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = tessellation;
-	setStyle(style);
-	addChild(mLabelGroup);
+    if(mTessellation == tessellation)
+        return;
+    mTessellation = tessellation;
+    auto style = this->getStyle();
+    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = tessellation;
+    setStyle(style);
+    addChild(mLabelGroup);
 }
 
 //--------------------------------------------------------------
 bool LineNode::getPointVisible() const
 {
-	return mPointVisible;
+    return mPointVisible;
 }
 
 void LineNode::setPointVisible(bool value)
 {
-	if(mPointVisible == value)
-		return;
+    if(mPointVisible == value)
+        return;
 
-	mPointVisible = value;
-	auto style = getStyle();
-	if(mPointVisible)
-	{
-		style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
-		style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
-		style.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
-	}
-	else
-		style.remove<osgEarth::Symbology::PointSymbol>();
-	setStyle(style);
-	addChild(mLabelGroup);
+    mPointVisible = value;
+    auto style = getStyle();
+    if(mPointVisible)
+    {
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+    }
+    else
+        style.remove<osgEarth::Symbology::PointSymbol>();
+    setStyle(style);
+    addChild(mLabelGroup);
 }
 
 bool LineNode::getShowBearing() const
 {
-	return mShowBearing;
+    return mShowBearing;
 }
 
 void LineNode::setShowBearing(const bool &bearing)
 {
-	if (mShowBearing == bearing)
-		return;
+    if (mShowBearing == bearing)
+        return;
 
-	if(bearing)
-		mCount++;
-	else if(mCount > 0)
-		mCount--;
+    if(bearing)
+        mCount++;
+    else if(mCount > 0)
+        mCount--;
 
-	mShowBearing = bearing;
+    mShowBearing = bearing;
 
-	if (mCount > 0){
-		mLabelGroup->setNodeMask(true);
-		for(auto& data:mVecLabelData)
-		{
-			if(data.qImage)
-				delete data.qImage;
-			QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
-			data.qImage = qImage;
-			data.placeNode->setIconImage(data.image);
-			data.placeNode->setStyle(data.placeNode->getStyle());
-		}
-	}
-	else
-		mLabelGroup->setNodeMask(false);
+    if (mCount > 0){
+        mLabelGroup->setNodeMask(true);
+        for(auto& data:mVecLabelData)
+        {
+            if(data.qImage)
+                delete data.qImage;
+            QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
+            data.qImage = qImage;
+            data.placeNode->setIconImage(data.image);
+            data.placeNode->setStyle(data.placeNode->getStyle());
+        }
+    }
+    else
+        mLabelGroup->setNodeMask(false);
 }
 
 void LineNode::setShowDistance(const bool &show)
 {
-	if (mShowDistance == show)
-		return;
+    if (mShowDistance == show)
+        return;
 
-	if(show)
-		mCount++;
-	else if(mCount > 0)
-		mCount--;
+    if(show)
+        mCount++;
+    else if(mCount > 0)
+        mCount--;
 
-	mShowDistance = show;
+    mShowDistance = show;
 
-	if (mCount > 0){
-		mLabelGroup->setNodeMask(true);
-		for(auto& data:mVecLabelData)
-		{
-			if(data.qImage)
-				delete data.qImage;
-			QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
-			data.qImage = qImage;
-			data.placeNode->setIconImage(data.image);
-			data.placeNode->setStyle(data.placeNode->getStyle());
-		}
-	}
-	else
-		mLabelGroup->setNodeMask(false);
+    if (mCount > 0){
+        mLabelGroup->setNodeMask(true);
+        for(auto& data:mVecLabelData)
+        {
+            if(data.qImage)
+                delete data.qImage;
+            QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
+            data.qImage = qImage;
+            data.placeNode->setIconImage(data.image);
+            data.placeNode->setStyle(data.placeNode->getStyle());
+        }
+    }
+    else
+        mLabelGroup->setNodeMask(false);
 
 }
 
 bool LineNode::getShowDistance() const
 {
-	return  mShowDistance;
+    return  mShowDistance;
 }
 
 bool LineNode::getShowSlope() const
 {
-	return mShowSlope;
+    return mShowSlope;
 }
 
 void LineNode::setShowSlope(bool showSlope)
 {
 
-	if (mShowSlope == showSlope)
-		return;
+    if (mShowSlope == showSlope)
+        return;
 
-	if(showSlope)
-		mCount++;
-	else if(mCount > 0)
-		mCount--;
+    if(showSlope)
+        mCount++;
+    else if(mCount > 0)
+        mCount--;
 
-	mShowSlope = showSlope;
+    mShowSlope = showSlope;
 
-	if (mCount > 0){
-		mLabelGroup->setNodeMask(true);
-		for(auto& data:mVecLabelData)
-		{
-			if(data.qImage)
-				delete data.qImage;
-			QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
-			data.qImage = qImage;
-			data.placeNode->setIconImage(data.image);
-//			osgEarth::Annotation::Style style;
-//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
-//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill() = osgEarth::Color::Black;
-//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->haloBackdropType() = osgText::Text::BackdropType::OUTLINE;
-//			osgEarth::Symbology::Stroke strok;
-//			strok.color() = osgEarth::Color::White;
-//			strok.width() = 0;
-//			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->halo() = strok;
-//			data.placeNode->setText(std::to_string(data.slope));
-			data.placeNode->setStyle(getStyle());
-		}
-	}
-	else
-		mLabelGroup->setNodeMask(false);
+    if (mCount > 0){
+        mLabelGroup->setNodeMask(true);
+        for(auto& data:mVecLabelData)
+        {
+            if(data.qImage)
+                delete data.qImage;
+            QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
+            data.qImage = qImage;
+            data.placeNode->setIconImage(data.image);
+            //			osgEarth::Annotation::Style style;
+            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
+            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
+            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill() = osgEarth::Color::Black;
+            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->haloBackdropType() = osgText::Text::BackdropType::OUTLINE;
+            //			osgEarth::Symbology::Stroke strok;
+            //			strok.color() = osgEarth::Color::White;
+            //			strok.width() = 0;
+            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->halo() = strok;
+            //			data.placeNode->setText(std::to_string(data.slope));
+            data.placeNode->setStyle(getStyle());
+        }
+    }
+    else
+        mLabelGroup->setNodeMask(false);
 }
 
 osgEarth::Color LineNode::getPointColor() const
 {
-	return mPointColor;
+    return mPointColor;
 }
 
 void LineNode::setPointColor(const osgEarth::Color &pointColor)
 {
-	if(mPointColor == pointColor)
-		return;
-	mPointColor = pointColor;
-	if(mPointVisible)
-	{
-		auto style = getStyle();
-		style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
-		setStyle(style);
-		addChild(mLabelGroup);
-	}
+    if(mPointColor == pointColor)
+        return;
+    mPointColor = pointColor;
+    if(mPointVisible)
+    {
+        auto style = getStyle();
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = mPointColor;
+        setStyle(style);
+        addChild(mLabelGroup);
+    }
 }
 
 float LineNode::getPointWidth() const
 {
-	return mPointWidth;
+    return mPointWidth;
 }
 
 void LineNode::setPointWidth(float pointWidth)
 {
-	mPointWidth = pointWidth;
-	auto style = getStyle();
-	if(mPointVisible)
-	{
-		style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
-		setStyle(style);
-		addChild(mLabelGroup);
-	}
+    mPointWidth = pointWidth;
+    auto style = getStyle();
+    if(mPointVisible)
+    {
+        style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = mPointWidth;
+        setStyle(style);
+        addChild(mLabelGroup);
+    }
 }
 
 bool LineNode::getSmooth() const
 {
-	return mSmooth;
+    return mSmooth;
 }
 
 void LineNode::setSmooth(bool smooth)
 {
-	mSmooth = smooth;
-	auto sStyle = getStyle();
-	if(mPointVisible)
-	{
-		sStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
-		setStyle(sStyle);
-		addChild(mLabelGroup);
+    mSmooth = smooth;
+    auto sStyle = getStyle();
+    if(mPointVisible)
+    {
+        sStyle.getOrCreate<osgEarth::Symbology::PointSymbol>()->smooth() = mSmooth;
+        setStyle(sStyle);
+        addChild(mLabelGroup);
 
-	}
+    }
 }
 //---------------------------------------------------------------
 QImage *LineNode::createOrUpdateLabelImg(osg::ref_ptr<osg::Image>& image, double lenght, double bearing, double slope)
 {
-	int imageHeight = 0;
-	if (mCount > 0)
-		imageHeight = mCount*23;
-	else
-		return nullptr;
-	int distancePos = 5;
-	int slopePos = 5;
-	int bearingPos = 5;
+    int imageHeight = 0;
+    if (mCount > 0)
+        imageHeight = mCount*23;
+    else
+        return nullptr;
+    int distancePos = 5;
+    int slopePos = 5;
+    int bearingPos = 5;
 
-	QImage* lblImage = new QImage(
-				LABEL_IMAGE_WIDTH,
-				imageHeight,
-				QImage::Format_RGBA8888);
-	if(!image->valid())
-		image = new osg::Image;
-	{
+    QImage* lblImage = new QImage(
+        LABEL_IMAGE_WIDTH,
+        imageHeight,
+        QImage::Format_RGBA8888);
+    if(!image->valid())
+        image = new osg::Image;
+    {
 
-		lblImage->fill(QColor(Qt::transparent));
-		QPainter painter(lblImage);
-		painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+        lblImage->fill(QColor(Qt::transparent));
+        QPainter painter(lblImage);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
-		static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
-		static const QFont textFont("SourceSansPro", 10, QFont::Normal);
-		static const QPen  textPen(QColor(255, 255, 255));
-		painter.setPen(Qt::NoPen);
-		painter.setBrush(backgroundBrush);
-		painter.drawRoundedRect(
-					lblImage->rect(),
-					8,8);
-
-
-		painter.setPen(textPen);
-		painter.setFont(textFont);
-
-		if (mShowDistance){
-			bearingPos += 22;
-			slopePos += 22;
-			if (lenght >= 1000){
-				lenght/=1000;
-				QString str = QObject::tr("d: %1 km").arg(lenght,0,'f',2);
-				painter.drawText(8, distancePos, LABEL_IMAGE_WIDTH, 15,
-								 Qt::AlignLeft|Qt::AlignVCenter,
-								 str);
-			}
-			else{
-				QString str = QObject::tr("d: %1 m").arg(lenght,0,'f',2);
-				painter.drawText(8, distancePos, LABEL_IMAGE_WIDTH, 15,
-								 Qt::AlignLeft|Qt::AlignVCenter,
-								 str);
-			}
-		}
-		if (mShowBearing){
-			slopePos += 22;
-			QString bearStr= QString::number(bearing, 'f', 2);
-			painter.drawText(QRect(8, bearingPos, LABEL_IMAGE_WIDTH, 15),
-							 Qt::AlignLeft|Qt::AlignVCenter,
-							 "b: "+bearStr+"°");
-			qDebug()<<"bPos: "<< bearingPos;
+        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+        static const QFont textFont("SourceSansPro", 10, QFont::Normal);
+        static const QPen  textPen(QColor(255, 255, 255));
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(backgroundBrush);
+        painter.drawRoundedRect(
+            lblImage->rect(),
+            8,8);
 
 
-		}
+        painter.setPen(textPen);
+        painter.setFont(textFont);
 
-		if (mShowSlope){
-			QString slopeStr= QString::number(slope, 'f', 2);
-			painter.drawText(QRect(8, slopePos, LABEL_IMAGE_WIDTH, 15),
-							 Qt::AlignLeft|Qt::AlignVCenter,
-							 "s: "+slopeStr+"°");
+        if (mShowDistance){
+            bearingPos += 22;
+            slopePos += 22;
+            if (lenght >= 1000){
+                lenght/=1000;
+                QString str = QObject::tr("d: %1 km").arg(lenght,0,'f',2);
+                painter.drawText(8, distancePos, LABEL_IMAGE_WIDTH, 15,
+                                 Qt::AlignLeft|Qt::AlignVCenter,
+                                 str);
+            }
+            else{
+                QString str = QObject::tr("d: %1 m").arg(lenght,0,'f',2);
+                painter.drawText(8, distancePos, LABEL_IMAGE_WIDTH, 15,
+                                 Qt::AlignLeft|Qt::AlignVCenter,
+                                 str);
+            }
+        }
+        if (mShowBearing){
+            slopePos += 22;
+            QString bearStr= QString::number(bearing, 'f', 2);
+            painter.drawText(QRect(8, bearingPos, LABEL_IMAGE_WIDTH, 15),
+                             Qt::AlignLeft|Qt::AlignVCenter,
+                             "b: "+bearStr+"°");
+                qDebug()<<"bPos: "<< bearingPos;
 
 
-		}
+        }
+
+        if (mShowSlope){
+            QString slopeStr= QString::number(slope, 'f', 2);
+            painter.drawText(QRect(8, slopePos, LABEL_IMAGE_WIDTH, 15),
+                             Qt::AlignLeft|Qt::AlignVCenter,
+                             "s: "+slopeStr+"°");
 
 
-	}
-	*lblImage = lblImage->mirrored(false, true);
-	//    QDialog *dlg = new QDialog();
-	//    QLabel *label = new QLabel;
-	//    label->setPixmap(QPixmap::fromImage(*lblImage));
-	//    QVBoxLayout *lay = new QVBoxLayout;
-	//    lay->addWidget(label);
-	//    lay->setStretch(0, 1000);
-	//    dlg->setLayout(lay);
-
-	//    dlg->exec();
+        }
 
 
-	image->setImage(LABEL_IMAGE_WIDTH,
-					imageHeight,
-					1,
-					GL_RGBA,
-					GL_RGBA,
-					GL_UNSIGNED_BYTE,
-					lblImage->bits(),
-					osg::Image::AllocationMode::NO_DELETE);
-	return lblImage;
+    }
+    *lblImage = lblImage->mirrored(false, true);
+    //    QDialog *dlg = new QDialog();
+    //    QLabel *label = new QLabel;
+    //    label->setPixmap(QPixmap::fromImage(*lblImage));
+    //    QVBoxLayout *lay = new QVBoxLayout;
+    //    lay->addWidget(label);
+    //    lay->setStretch(0, 1000);
+    //    dlg->setLayout(lay);
+
+    //    dlg->exec();
+
+
+    image->setImage(LABEL_IMAGE_WIDTH,
+                    imageHeight,
+                    1,
+                    GL_RGBA,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    lblImage->bits(),
+                    osg::Image::AllocationMode::NO_DELETE);
+    return lblImage;
 
 }
 

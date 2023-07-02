@@ -104,6 +104,13 @@ osgEarth::Annotation::AnnotationLayer *DrawShape::shapeLayer()
     return mShapeLayer;
 }
 
+osgEarth::Annotation::AnnotationLayer *DrawShape::measureLayer()
+{
+    if(!mMeasureLayer)
+        mMeasureLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(M_CATEGORY));
+    return mMeasureLayer;
+}
+
 bool DrawShape::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if(mState == State::NONE)
