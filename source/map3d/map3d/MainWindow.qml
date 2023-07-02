@@ -25,6 +25,18 @@ CMainWindow {
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
+    property bool init
+    property var layerDock
+    property var layeritem
+    property Component layersWidget
+    Component.onCompleted: function() {
+//        print(layersModel.columnCount())
+//        var layeritem = wnd.layersWidget.createObject(wnd, {layersModell: layersModel});
+//        layerDock = wnd.wrapItemWithDockableImpl(layeritem, "Layers");
+//        var layeritem = wnd.layersWidget.createObject(wnd, {layersModell: layersModel});
+//        var layerDock = wnd.wrapItemWithDockableImpl(layeritem, "Layers");
+//        wnd.attachToCentralDockItemImpl(layerDock, true, false, 0.3);
+    }
 
     id: wnd
     visible: true
@@ -210,7 +222,31 @@ CMainWindow {
             }
 
             onLayersButtonClicked: function() {
-                leftContainerHolder.menuLayersButtonClicked();
+//                leftContainerHolder.menuLayersButtonClicked();
+//                if (layersModel && !init) {
+//                    if (wnd.layersWidget.status === Component.Ready) {
+//                        print(layersModel.rowCount())
+//                        wnd.layeritem = wnd.layersWidget.createObject(wnd, {layersModell: layersModel});
+//                        wnd.layerDock = wnd.wrapItemWithDockableImpl(wnd.layeritem, "Layers");
+//                        init = true
+//                    }
+//                }
+//                print(layersModel.columnCount())
+//                wnd.attachToCentralDockItemImpl(wnd.layerDock, true, false, 0.3);
+                if (!init) {
+                    layersWidget = Qt.createComponent("LayersWidget.qml");
+                    if (layersWidget.status == Component.Ready && layersModel) {
+                        var layeritem = wnd.layersWidget.createObject(null, {});
+                        layeritem.layersModell = layersModel
+                        var layerDock = wnd.wrapItemWithDockableImpl(layeritem, "Layers");
+                        init= true
+                    }
+//                    if (layeritem.status == Component.Ready)
+//                        print(layeritem.errorString)
+                    wnd.attachToCentralDockItemImpl(layerDock, true, false, 0.3);
+                }
+
+
             }
             onToolboxItemClicked: function() {
                 toolboxAnimation.start();
@@ -546,11 +582,11 @@ CMainWindow {
         y: menuWidget.height + (widgetsMargins*2 )
         width: 250
         height: parent.height - menuWidget.height - (widgetsMargins * 6) /*- navigationWidget.height*/
-        m: layersModel
+//        m: layersModel
         }
 
     function showRightContainer(item) {
-//        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
+        if (wnd.widgetsVisible === false) toggleWidgetsVisible();
         leftContainerHolder.showProp(item);
     }
 
