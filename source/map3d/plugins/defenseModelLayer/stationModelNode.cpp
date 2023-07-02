@@ -240,7 +240,7 @@ void StationModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
 
 void StationModelNode::onGotoButtonClicked()
 {
-    mDefenseModelLayer->mapItem()->goToPosition(getPosition(), 200);
+    mDefenseModelLayer->mapItem()->getCameraController()->goToPosition(getPosition(), 200);
 }
 
 void StationModelNode::onRangeButtonToggled(bool check)

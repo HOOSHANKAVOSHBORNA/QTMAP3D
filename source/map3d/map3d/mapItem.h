@@ -3,6 +3,7 @@
 
 #include "osgRenderNode.h"
 #include "mapObject.h"
+#include "cameraController.h"
 //#include "layerModel.h"
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -12,7 +13,7 @@
 #include <GL/gl.h>
 
 #include <osgEarth/MapNode>
-#include <osgEarthUtil/EarthManipulator>
+//#include <osgEarthUtil/EarthManipulator>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
@@ -33,6 +34,9 @@ public:
 
     MapObject *getMapObject();
     const MapObject* getMapObject() const;
+
+    CameraController *getCameraController();
+    const CameraController *getCameraController() const;
 //    MapObject *operator->(){return mMapObject.get();}
 //    const MapObject *operator->()const {return mMapObject;}
 
@@ -43,13 +47,13 @@ public:
     bool removeNode(osg::Node *node);
 
 public://camera functions
-    osgEarth::Util::EarthManipulator *getEarthManipulator() const;
-    void setViewpoint(const osgEarth::Viewpoint& vp, double duration_s = 0.0);
-    osgEarth::Viewpoint getViewpoint() const;
-    void setTrackNode(osg::Node *node, double minDistance);
+//    osgEarth::Util::EarthManipulator *getEarthManipulator() const;
+//    void setViewpoint(const osgEarth::Viewpoint& vp, double duration_s = 0.0);
+//    osgEarth::Viewpoint getViewpoint() const;
+//    void setTrackNode(osg::Node *node, double minDistance);
     //    void untrackNode(osg::Node *node);
-    void untrack();
-    qreal headingAngle() const;
+//    void untrack();
+//    qreal headingAngle() const;
 public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;
     osgEarth::GeoPoint screenToGeoPoint(float x, float y) const;
@@ -64,37 +68,37 @@ public:
 
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 public slots:
-    void zoom(double);
-    void goToHome();
-    void goToPosition(double latitude, double longitude, double range);
-    void goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration = 3.0);
+//    void zoom(double);
+//    void goToHome();
+//    void goToPosition(double latitude, double longitude, double range);
+//    void goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration = 3.0);
     void changeMode();
     bool getMode() const;
     void setGeocentric(bool isGeocentric);
     //    void toggle3DView();
-    void pan(double xVal, double yVal);
-    void rotate(double xVal, double yVal);
-    void travelToViewpoint(qreal latitude,
-                           qreal longitude,
-                           qreal range,
-                           qreal pitch,
-                           qreal heading);
+    //void pan(double xVal, double yVal);
+//    void rotate(double xVal, double yVal);
+//    void travelToViewpoint(qreal latitude,
+//                           qreal longitude,
+//                           qreal range,
+//                           qreal pitch,
+//                           qreal heading);
 
-    void orientCameraToNorth();
+//    void orientCameraToNorth();
 
 signals:
-    void focalPointLatChanged  (qreal focalPointLat);
-    void focalPointLongChanged (qreal focalPointLong);
-    void focalPointRangeChanged(qreal focalPointRange);
-    void focalPointPitchChanged(qreal focalPointPitch);
-    void focalPointHeadChanged(qreal focalPointHead);
+//    void focalPointLatChanged  (qreal focalPointLat);
+//    void focalPointLongChanged (qreal focalPointLong);
+//    void focalPointRangeChanged(qreal focalPointRange);
+//    void focalPointPitchChanged(qreal focalPointPitch);
+//    void focalPointHeadChanged(qreal focalPointHead);
 
     void modeChanged(bool is3DView);
     void layerChanged();
     void mapCleared();
-    void frameChanged();
+//    void frameChanged();
     //    void mapSRSChanged();
-    void mouseLocationChanged();
+//    void mouseLocationChanged();
 
 private:
     void initializeOsgEarth();
@@ -115,7 +119,8 @@ private:
 private:
     bool mIsFirstFrame{true};
     GLuint mRenderTargetId{0};
-    osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
+//    osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
+    osg::ref_ptr<CameraController> mCameraController{nullptr};
     bool mIsGeocentric{true};
     bool mIs3DView{true};
     osgEarth::GeoPoint mCurrentMouseGeoPoint;
