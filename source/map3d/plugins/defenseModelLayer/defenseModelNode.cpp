@@ -185,7 +185,7 @@ osg::Vec3d DefenseModelNode::getGeographicPosition() const
 
 void DefenseModelNode::goOn()
 {
-	mMapControler->goToPosition(getPosition(), mMapControler->getViewpoint().getRange(), 0);
+    mMapControler->getCameraController()->goToPosition(getPosition(), mMapControler->getCameraController()->getViewpoint().getRange(), 0);
 }
 
 void DefenseModelNode::playExplosionEffect(float scale)

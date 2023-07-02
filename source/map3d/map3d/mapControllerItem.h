@@ -36,7 +36,10 @@ public:
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void hoverMoveEvent(QHoverEvent *event) override;
 //    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
+    qreal headingAngle() const;
 public slots:
+    void home();
+    void setHeadingToNorth();
     void setZoomInButtonPressed(bool pressed);
     void setZoomOutButtonPressed(bool pressed);
     void setUpButtonPressed(bool pressed);

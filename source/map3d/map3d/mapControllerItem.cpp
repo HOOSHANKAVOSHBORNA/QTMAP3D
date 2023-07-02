@@ -84,29 +84,29 @@ void MapControllerItem::setrotateRightButtonPressed(bool pressed)
 void MapControllerItem::tickNavigation(double deltaTime)
 {
     if (mZoomInButtonPressed) {
-       zoom(0.0018 * deltaTime);
+       getCameraController()->zoom(0.0018 * deltaTime);
     } else if (mZoomOutButtonPressed) {
-        zoom(-0.0018 * deltaTime);
+        getCameraController()->zoom(-0.0018 * deltaTime);
     }
 
     if (mUpButtonPressed) {
-        pan(0.0, -0.0015 * deltaTime);
+        getCameraController()->pan(0.0, -0.0015 * deltaTime);
     } else if (mDownButtonPressed) {
-        pan(0.0, 0.0015 * deltaTime);
+        getCameraController()->pan(0.0, 0.0015 * deltaTime);
     } else if (mLeftButtonPressed) {
-        pan(0.0015 * deltaTime, 0.0);
+        getCameraController()->pan(0.0015 * deltaTime, 0.0);
     } else if (mRightButtonPressed) {
-        pan(-0.0015 * deltaTime, 0.0);
+        getCameraController()->pan(-0.0015 * deltaTime, 0.0);
     }
 
     if (mRotateUpButtonPressed) {
-        rotate(0.0, 0.001 * deltaTime);
+        getCameraController()->rotate(0.0, 0.001 * deltaTime);
     } else if (mRotateDownButtonPressed) {
-        rotate(0.0, -0.001 * deltaTime);
+        getCameraController()->rotate(0.0, -0.001 * deltaTime);
     } else if (mRotateLeftButtonPressed) {
-        rotate(-0.001 * deltaTime, 0.0);
+        getCameraController()->rotate(-0.001 * deltaTime, 0.0);
     } else if (mRotateRightButtonPressed) {
-        rotate(0.001 * deltaTime, 0.0);
+        getCameraController()->rotate(0.001 * deltaTime, 0.0);
     }
 }
 
@@ -188,4 +188,19 @@ void MapControllerItem::hoverMoveEvent(QHoverEvent *event)
     mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
     emit mouseLocationChanged();
     event->ignore();
+}
+
+qreal MapControllerItem::headingAngle() const
+{
+    return -getCameraController()->getViewpoint().heading()->as(osgEarth::Units::DEGREES);
+}
+
+void MapControllerItem::home()
+{
+    getCameraController()->home(0);
+}
+
+void MapControllerItem::setHeadingToNorth()
+{
+    getCameraController()->setHeadingToNorth();
 }

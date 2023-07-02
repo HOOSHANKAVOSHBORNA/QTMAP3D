@@ -444,7 +444,7 @@ void SystemModelNode::onModeChanged(bool is3DView)
 
 void SystemModelNode::onGotoButtonClicked()
 {
-    mDefenseModelLayer->mapItem()->goToPosition(getPosition(), 200);
+    mDefenseModelLayer->mapItem()->getCameraController()->goToPosition(getPosition(), 200);
 }
 
 void SystemModelNode::onRangeButtonToggled(bool check)
@@ -580,7 +580,7 @@ void SystemModelNode::firePhase(int tn)
 		{
 			mFiredRocket->setAutoScale();
 			mTruckF->shoot(mTargetModelNode->getPosition().vec3d(), 2000);//1000 m/s
-            mDefenseModelLayer->mapItem()->setTrackNode(mFiredRocket->getGeoTransform(), 400);
+            mDefenseModelLayer->mapItem()->getCameraController()->setTrackNode(mFiredRocket->getGeoTransform(), 400);
 		}
 	}
 }
@@ -592,7 +592,7 @@ void SystemModelNode::killPhase(int tn)
 	if(index != -1)
 	{
 		auto assignment = mData->assignments.at(index);
-        mDefenseModelLayer->mapItem()->untrack();
+        mDefenseModelLayer->mapItem()->getCameraController()->untrack();
 		assignment->line->setColor(osgEarth::Color::Black);
 		assignment->modelNode->collision();
 
@@ -610,7 +610,7 @@ void SystemModelNode::noKillPhase(int tn)
 	if(index != -1)
 	{
 		auto assignment = mData->assignments.at(index);
-        mDefenseModelLayer->mapItem()->untrack();
+        mDefenseModelLayer->mapItem()->getCameraController()->untrack();
 		assignment->line->setColor(osgEarth::Color::Brown);
 		if(mFiredRocket)
 			mFiredRocket->stop();

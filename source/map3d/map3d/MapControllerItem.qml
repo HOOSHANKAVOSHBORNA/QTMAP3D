@@ -180,7 +180,7 @@ MapController {
             //            y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins) + statusBar.height)
 
             onCompassDoubleClicked: function() {
-                map.orientCameraToNorth();
+                map.setHeadingToNorth();
             }
         }
     }
@@ -196,7 +196,7 @@ MapController {
         y: parent.height/2
         x:parent.width - widgetsPositionFactor * (width + widgetsMargins)
         onBtnHomeClicked: function() {
-            map.goToHome();
+            map.home();
         }
         onBtnProjectionClicked: function() {
             map.changeMode();

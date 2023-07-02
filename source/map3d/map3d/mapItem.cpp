@@ -37,7 +37,6 @@
 //};
 
 //--MapItem---------------------------------------------------------------------------------------------------------
-const double MAX_CAM_DISTANCE = 30000000.0;
 MapItem::MapItem(QQuickItem *parent) :
     QQuickItem(parent)
 {
@@ -62,11 +61,11 @@ void MapItem::setMap(osgEarth::Map *map)
     createMapNode(mIsGeocentric, map);
 
     createCameraManipulator();
-    getViewer()->setCameraManipulator(getEarthManipulator());
+    getViewer()->setCameraManipulator(mCameraController);
     //    mMapNode->getMap()->clear();
     emit mapCleared();
     //    mMapNode->getMap()->setLayersFromMap(map);
-    goToHome();
+    mCameraController->home(0);
 }
 
 osgViewer::Viewer *MapItem::getViewer() const
@@ -94,6 +93,16 @@ const MapObject *MapItem::getMapObject() const
     return mMapObject;
 }
 
+CameraController *MapItem::getCameraController()
+{
+    return mCameraController;
+}
+
+const CameraController *MapItem::getCameraController() const
+{
+    return mCameraController;
+}
+
 const osgEarth::SpatialReference *MapItem::getMapSRS() const
 {
     return mMapNode->getMapSRS();
@@ -110,69 +119,69 @@ bool MapItem::removeNode(osg::Node *node)
     return mMapNode->removeChild(node);
 }
 
-osgEarth::Util::EarthManipulator *MapItem::getEarthManipulator() const
-{
-    return mEarthManipulator;
-}
+//osgEarth::Util::EarthManipulator *MapItem::getEarthManipulator() const
+//{
+//    return mCameraController;
+//}
 
-void MapItem::setViewpoint(const osgEarth::Viewpoint &vp, double duration_s)
-{
-    getEarthManipulator()->setViewpoint(vp,duration_s);
-}
+//void MapItem::setViewpoint(const osgEarth::Viewpoint &vp, double duration_s)
+//{
+//    mCameraController->setViewpoint(vp,duration_s);
+//}
 
-osgEarth::Viewpoint MapItem::getViewpoint() const
-{
-    if (mEarthManipulator)
-        return mEarthManipulator->getViewpoint();
-    return osgEarth::Viewpoint();
-}
+//osgEarth::Viewpoint MapItem::getViewpoint() const
+//{
+//    if (mCameraController)
+//        return mCameraController->getViewpoint();
+//    return osgEarth::Viewpoint();
+//}
 
-void MapItem::setTrackNode(osg::Node *node, double minDistance)
-{
-    auto vp = getEarthManipulator()->getViewpoint();
-    if(vp.getNode() == node)
-        return;
+//void MapItem::setTrackNode(osg::Node *node, double minDistance)
+//{
+//    auto vp = mCameraController->getViewpoint();
+//    if(vp.getNode() == node)
+//        return;
 
-    vp.setNode(node);
-    getEarthManipulator()->setViewpoint(vp);
-    auto camSet = getEarthManipulator()->getSettings();
-    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
-    camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
-    getEarthManipulator()->applySettings(camSet);
-}
+//    vp.setNode(node);
+//    mCameraController->setViewpoint(vp);
+//    auto camSet = mCameraController->getSettings();
+//    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
+//    camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
+//    mCameraController->applySettings(camSet);
+//}
 
 //void MapController::untrackNode(osg::Node *node)
 //{
-//    auto vp = getEarthManipulator()->getViewpoint();
+//    auto vp = mCameraController->getViewpoint();
 //    if(vp.getNode() == nullptr)
 //        return;
 //    if(vp.getNode() != node)
 //        return;
 //    vp.setNode(nullptr);
-//    getEarthManipulator()->setViewpoint(vp);
-//    auto camSet = getEarthManipulator()->getSettings();
+//    mCameraController->setViewpoint(vp);
+//    auto camSet = mCameraController->getSettings();
 //    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
-//	getEarthManipulator()->applySettings(camSet);
+//	mCameraController->applySettings(camSet);
 //}
 
-void MapItem::untrack()
-{
-    auto vp = getEarthManipulator()->getViewpoint();
-    //    if(vp.getNode() == nullptr)
-    //        return;
-    vp.setNode(nullptr);
-    getEarthManipulator()->setViewpoint(vp);
+//void MapItem::untrack()
+//{
+//    auto vp = mCameraController->getViewpoint();
+//    //    if(vp.getNode() == nullptr)
+//    //        return;
+//    vp.setNode(nullptr);
+//    mCameraController->setViewpoint(vp);
 
-    auto camSet = getEarthManipulator()->getSettings();
-    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
-    getEarthManipulator()->applySettings(camSet);
+//    auto camSet = mCameraController->getSettings();
+//    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
+//    mCameraController->applySettings(camSet);
 
-}
+//}
 
-qreal MapItem::headingAngle() const
-{
-    return -getViewpoint().getHeading();
-}
+//qreal MapItem::headingAngle() const
+//{
+//    return -getViewpoint().getHeading();
+//}
 
 void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
 {
@@ -189,7 +198,7 @@ void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
         }
     }
     else
-        mEarthManipulator->screenToWorld(x, y,mOSGRenderNode, outWorldPoint);
+        mCameraController->screenToWorld(x, y,mOSGRenderNode, outWorldPoint);
 }
 
 osgEarth::GeoPoint MapItem::screenToGeoPoint(float x, float y) const
@@ -348,57 +357,57 @@ QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
     return n;
 }
 
-void MapItem::zoom(double val)
-{
-    getEarthManipulator()->zoom(0, -val, getViewer());
-}
+//void MapItem::zoom(double val)
+//{
+//    mCameraController->zoom(0, -val, getViewer());
+//}
 
-void MapItem::goToHome()
-{
-    getEarthManipulator()->home(0);
-    auto camSet = getEarthManipulator()->getSettings();
-    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
-    getEarthManipulator()->applySettings(camSet);
-}
+//void MapItem::goToHome()
+//{
+//    mCameraController->home(0);
+//    auto camSet = mCameraController->getSettings();
+//    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
+//    mCameraController->applySettings(camSet);
+//}
 
-void MapItem::goToPosition(double latitude, double longitude, double range)
-{
-    osgEarth::GeoPoint  geoPoint(getMapSRS()->getGeographicSRS(), latitude, longitude, 0);
-    geoPoint.transformInPlace(getMapSRS());
+//void MapItem::goToPosition(double latitude, double longitude, double range)
+//{
+//    osgEarth::GeoPoint  geoPoint(getMapSRS()->getGeographicSRS(), latitude, longitude, 0);
+//    geoPoint.transformInPlace(getMapSRS());
 
-    osgEarth::Viewpoint vp;
-    vp.focalPoint() = geoPoint;
-    vp.range()= range;
-    setViewpoint(vp, 3.0);
-}
+//    osgEarth::Viewpoint vp;
+//    vp.focalPoint() = geoPoint;
+//    vp.range()= range;
+//    setViewpoint(vp, 3.0);
+//}
 
-void MapItem::goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration)
-{
-    if(mapPoint.isRelative())
-        mapPoint.makeAbsolute(mMapNode->getTerrain());
-    osgEarth::Viewpoint vp;
-    vp.focalPoint() = mapPoint;
-    vp.range()= range;
-    setViewpoint(vp, duration);
+//void MapItem::goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration)
+//{
+//    if(mapPoint.isRelative())
+//        mapPoint.makeAbsolute(mMapNode->getTerrain());
+//    osgEarth::Viewpoint vp;
+//    vp.focalPoint() = mapPoint;
+//    vp.range()= range;
+//    setViewpoint(vp, duration);
 
-    //    auto minDistance = range/2;
-    //    getEarthManipulator()->setViewpoint(vp);
-    //    auto camSet = getEarthManipulator()->getSettings();
-    //    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
-    //    getEarthManipulator()->applySettings(camSet);
-}
+//    //    auto minDistance = range/2;
+//    //    mCameraController->setViewpoint(vp);
+//    //    auto camSet = mCameraController->getSettings();
+//    //    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
+//    //    mCameraController->applySettings(camSet);
+//}
 
 void MapItem::changeMode()
 {
     mIs3DView = !mIs3DView;
-    auto  settings = mEarthManipulator->getSettings();
+    auto  settings = mCameraController->getSettings();
     if(mIs3DView) {
         settings->setMinMaxPitch(-90, 0);
     }
     else
     {
         settings->setMinMaxPitch(-90, -90);
-        mEarthManipulator->setRotation(osg::Quat());
+        mCameraController->setRotation(osg::Quat());
     }
     emit modeChanged(mIs3DView);
 }
@@ -422,11 +431,11 @@ void MapItem::setGeocentric(bool isGeocentric)
     for(const auto &layer: layers)
         mMapObject->addLayer(layer);
 
-    osgEarth::Viewpoint vp = getEarthManipulator()->getViewpoint();
+    osgEarth::Viewpoint vp = mCameraController->getViewpoint();
 
     createCameraManipulator();
-    getViewer()->setCameraManipulator(getEarthManipulator());
-    getEarthManipulator()->setViewpoint(vp);
+    getViewer()->setCameraManipulator(mCameraController);
+    mCameraController->setViewpoint(vp);
 }
 
 //void MapItem::toggle3DView()
@@ -435,39 +444,39 @@ void MapItem::setGeocentric(bool isGeocentric)
 //    setMode(!mIs3DView);
 //}
 
-void MapItem::pan(double xVal, double yVal)
-{
-    getEarthManipulator()->pan(xVal, yVal);
-}
+//void MapItem::pan(double xVal, double yVal)
+//{
+//    mCameraController->pan(xVal, yVal);
+//}
 
-void MapItem::rotate(double xVal, double yVal)
-{
-    getEarthManipulator()->rotate(xVal, yVal);
-}
+//void MapItem::rotate(double xVal, double yVal)
+//{
+//    mCameraController->rotate(xVal, yVal);
+//}
 
-void MapItem::travelToViewpoint(qreal latitude,
-                                qreal longitude,
-                                qreal range,
-                                qreal pitch,
-                                qreal heading)
-{
+//void MapItem::travelToViewpoint(qreal latitude,
+//                                qreal longitude,
+//                                qreal range,
+//                                qreal pitch,
+//                                qreal heading)
+//{
 
-    osgEarth::GeoPoint  pt(getMapSRS()->getGeographicSRS(), latitude, longitude, 0);
-    pt.transformInPlace(getMapSRS());
-    osgEarth::Viewpoint vp;
-    vp.focalPoint() = pt;
-    vp.range() = range;
-    vp.pitch() = pitch;
-    vp.heading() = heading;
-    mEarthManipulator->setViewpoint(vp, 3.0);
-}
+//    osgEarth::GeoPoint  pt(getMapSRS()->getGeographicSRS(), latitude, longitude, 0);
+//    pt.transformInPlace(getMapSRS());
+//    osgEarth::Viewpoint vp;
+//    vp.focalPoint() = pt;
+//    vp.range() = range;
+//    vp.pitch() = pitch;
+//    vp.heading() = heading;
+//    mCameraController->setViewpoint(vp, 3.0);
+//}
 
-void MapItem::orientCameraToNorth()
-{
-    osgEarth::Viewpoint vp = mEarthManipulator->getViewpoint();
-    vp.heading() = 0;
-    mEarthManipulator->setViewpoint(vp, 0.3);
-}
+//void MapItem::orientCameraToNorth()
+//{
+//    osgEarth::Viewpoint vp = mCameraController->getViewpoint();
+//    vp.heading() = 0;
+//    mCameraController->setViewpoint(vp, 0.3);
+//}
 
 void MapItem::initializeOsgEarth()
 {
@@ -487,7 +496,7 @@ void MapItem::initializeOsgEarth()
     mMapObject->addLayer(imlayer);
     //create camera after create map node
     createCameraManipulator();
-    mOSGRenderNode->setCameraManipulator(mEarthManipulator);
+    mOSGRenderNode->setCameraManipulator(mCameraController);
 }
 
 void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
@@ -527,8 +536,8 @@ void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
 
 void MapItem::createCameraManipulator()
 {
-    mEarthManipulator = new osgEarth::Util::EarthManipulator;
-    auto  settings = mEarthManipulator->getSettings();
+    mCameraController = new CameraController(this);
+    auto  settings = mCameraController->getSettings();
     //    settings->setSingleAxisRotation(true);
 
     settings->setMinMaxDistance(0.0, MAX_CAM_DISTANCE);
@@ -549,7 +558,7 @@ void MapItem::createCameraManipulator()
     vp.range()= 5000000;
     vp.pitch() = -90;
     vp.heading() = 0;
-    getEarthManipulator()->setHomeViewpoint(vp, 0);
+    mCameraController->setHomeViewpoint(vp, 0);
 
     settings->setMinMaxPitch(-90, 0);
 }
@@ -566,7 +575,7 @@ void MapItem::layerRemoved(osgEarth::Layer */*layer*/, unsigned /*index*/)
 
 void MapItem::frame()
 {
-    const auto vp = mEarthManipulator->getViewpoint();
+    const auto vp = mCameraController->getViewpoint();
     const auto fp = vp.focalPoint();
     if (fp.isSet()) {
         const osgEarth::GeoPoint mapPoint = fp.get();
@@ -575,11 +584,11 @@ void MapItem::frame()
         mapPoint.transform(getMapSRS()->getGeographicSRS(), pointLatLong);
 
 
-        emit focalPointLatChanged(pointLatLong.x());
-        emit focalPointLongChanged(pointLatLong.y());
-        emit focalPointRangeChanged(vp.range().get().getValue());
-        emit focalPointPitchChanged(vp.pitch().get().getValue());
-        emit focalPointHeadChanged(vp.heading().get().getValue());
+//        emit focalPointLatChanged(pointLatLong.x());
+//        emit focalPointLongChanged(pointLatLong.y());
+//        emit focalPointRangeChanged(vp.range().get().getValue());
+//        emit focalPointPitchChanged(vp.pitch().get().getValue());
+//        emit focalPointHeadChanged(vp.heading().get().getValue());
 
     }
 
@@ -595,7 +604,7 @@ void MapItem::frame()
     sunLight->setSpecular(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
 
     float splen = sunLight->getPosition().length();
-    osg::Vec3 spos = mEarthManipulator->getMatrix().getTrans();
+    osg::Vec3 spos = mCameraController->getMatrix().getTrans();
     spos.normalize();
     spos *= splen;
 
