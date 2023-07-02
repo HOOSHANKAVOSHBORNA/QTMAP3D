@@ -54,12 +54,14 @@ bool DrawLine::setup()
 
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    makeIconNode("../data/images/draw/line.png");
-    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+
 
     //    addLayer();
     mLineLayer = new osgEarth::Annotation::AnnotationLayer();
     mLineLayer->setName(POLYLINE);
+
+    mRulerLayer = new osgEarth::Annotation::AnnotationLayer();
+    mRulerLayer->setName(RULER);
     return true;
 }
 //bool DrawLine::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -161,21 +163,29 @@ void DrawLine::onLineItemCheck(bool check)
 //    }
 
     if (check) {
-        mapItem()->addLayerToLayer(mLineLayer, CATEGORY);
+        if(mLineLayer->getGroup()->getNumChildren() <= 0){
+            mapItem()->getMapObject()->addLayer(mLineLayer);
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->setParentLayer(mLineLayer, shapeLayer);
+        }
+        mType = Type::LINE;
         setState(State::READY);
         mLineProperties = new LineProperties( qmlEngine(), uiHandle(), mapItem());
-         mLineProperties->setIsRuler(0);
+        mLineProperties->setIsRuler(0);
         mLineProperties->show();
         mapItem()->addNode(iconNode());
 
     }
     else {
-        if(mLineLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mLineLayer, CATEGORY);
+        if(mLineLayer->getGroup()->getNumChildren() <= 0){
+            mapItem()->getMapObject()->setParentLayer(mLineLayer, nullptr);
+            mapItem()->getMapObject()->removeLayer(mLineLayer);
+        }
         if(state() == State::DRAWING)
             cancelDraw();
         setState(State::NONE);
         mLineProperties->deleteLater();
+        mType = Type::NONE;
         mLine = nullptr;
         mLineProperties->hide();
         mapItem()->removeNode(iconNode());
@@ -195,14 +205,14 @@ void DrawLine::onRulerItemCheck(bool check)
 //    }
     if(check)
     {
+        makeIconNode("../data/images/draw/ruler.png");
+        setState(State::READY);
         mapItem()->addLayerToLayer(mRulerLayer, M_CATEGORY);
         mType = Type::RULERR;
         mLineProperties = new LineProperties(qmlEngine(),uiHandle() );
         mLineProperties->setIsRuler(1);
         mLineProperties->show();
         mapItem()->addNode(iconNode());
-
-
     }
     else
     {
@@ -211,11 +221,11 @@ void DrawLine::onRulerItemCheck(bool check)
         if(state() == State::DRAWING)
             cancelDraw();
         setState(State::NONE);
+        mType = Type::NONE;
         mLineProperties->deleteLater();
         mLine = nullptr;
         mLineProperties->hide();
         mapItem()->removeNode(iconNode());
-
     }
 }
 
@@ -296,31 +306,31 @@ void DrawLine::onSlopeItemCheck(bool check)
 
 void DrawLine::initDraw(const osgEarth::GeoPoint &geoPos)
 {
+//    QString name = "PolyLine" + QString::number(mCount);
+    mLine = new LineNode(mapItem());
     QString name;
     switch (mType) {
     case Type::LINE:
-         name = "PolyLine" + QString::number(mCount);
+        name = "PolyLine" + QString::number(mCount);
+        mapItem()->getMapObject()->addNodeToLayer(mLine, mLineLayer);
         break;
     case Type::RULERR:
-         name = "Ruler" + QString::number(mCount);
+        name = "Ruler" + QString::number(mCount);
+//        mapItem()->addNodeToLayer(mLine, RULER);
         break;
     case Type::HEIGHT:
-         name = "Height" + QString::number(mCount);
-         break;
+        name = "Height" + QString::number(mCount);
+        break;
     case Type::SLOPEE:
-         name = "Slope" + QString::number(mCount);
-         break;
+        name = "Slope" + QString::number(mCount);
+        break;
     default:
         name = "PolyLine" + QString::number(mCount);
         break;
     }
-//    QString name = "PolyLine" + QString::number(mCount);
-    mLine = new LineNode(mapItem());
     mLine->setName(name.toStdString());
     mLine->addPoint(geoPos);
-    mapItem()->addNodeToLayer(mLine, POLYLINE);
     mLineProperties->setLine(mLine);
-
     setState(State::DRAWING);
     mCount++;
 }
@@ -336,16 +346,17 @@ void DrawLine::tempDrawing(const osgEarth::GeoPoint &geoPos)
 
 void DrawLine::drawing(const osgEarth::GeoPoint &geoPos)
 {
-    if(mType == Type::RULERR && mLine->getSize()>2){
+    mLine->addPoint(geoPos);
+//    qDebug()<<"size is: "<<mLine->getSize();
+    if(mType == Type::RULERR && mLine->getSize()==3){
         confirmDraw();
     }
-    mLine->addPoint(geoPos);
 }
 
 void DrawLine::cancelDraw()
 {
     if(state() == State::DRAWING){
-        mapItem()->removeNodeFromLayer(mLine, POLYLINE);
+        mapItem()->getMapObject()->removeNodeFromLayer(mLine, mLineLayer);
         mLine = nullptr;
         mLineProperties->setLine(mLine);
         setState(State::READY);

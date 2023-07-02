@@ -60,7 +60,7 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
 //    mBox->setLength(100000);
     mBox->setPosition(geoPos);
 
-    mapItem()->addNodeToLayer(mBox, BOX);
+    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
     mBoxProperties->setBox(mBox);
 
     setState(State::DRAWING);
@@ -75,7 +75,7 @@ void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 void DrawBox::cancelDraw()
 {
     if(state() == State::DRAWING){
-        mapItem()->removeNodeFromLayer(mBox, BOX);
+        mapItem()->getMapObject()->removeNodeFromLayer(mBox, mBoxLayer);
         mBox = nullptr;
         mBoxProperties->setBox(mBox);
         setState(State::READY);

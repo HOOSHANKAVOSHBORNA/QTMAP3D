@@ -59,6 +59,7 @@ private:
     State mState{State::NONE};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osgEarth::Annotation::AnnotationLayer* mShapeLayer{nullptr};
+    osgEarth::Annotation::AnnotationLayer* mMeasureLayer{nullptr};
 
 };
 

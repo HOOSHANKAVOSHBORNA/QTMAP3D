@@ -15,7 +15,7 @@
 #include <lineProperties.h>
 #include <measureHeight.h>
 
-#define POLYLINE "PolyLine"
+#define POLYLINE "Polyline"
 #define RULER "Ruler"
 #define MEASUREHEIGHT "Height"
 #define SLOPE "Slope"
@@ -59,6 +59,8 @@ private:
 private:
 //    enum class DrawingState{START, DRAWING, FINISH};
 //    DrawingState mDrawingState;
+
+
     enum class Type{NONE, LINE, RULERR, HEIGHT, SLOPEE};
     Type mType;
     osg::ref_ptr<LineNode> mLine{nullptr};

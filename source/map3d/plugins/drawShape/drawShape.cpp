@@ -53,6 +53,12 @@ bool DrawShape::setup()
     mShapeLayer = new osgEarth::Annotation::AnnotationLayer();
     mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
+
+    mMeasureLayer = new osgEarth::Annotation::AnnotationLayer();
+    mMeasureLayer->setName(M_CATEGORY);
+    mapItem()->getMapObject()->addLayer(mMeasureLayer);
+
+
     return true;
 }
 
