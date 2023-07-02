@@ -3,6 +3,7 @@ import Crystal 1.0
 import QtQuick
 import QtQuick.Controls 2.15
 import QtQuick.Effects
+import "style"
 
 
 
@@ -12,7 +13,7 @@ Item {
 
 
     implicitWidth: 300
-    property CLayersModel layersModel
+    property CLayersModel layersModell
 
     property bool layersItemVisible: false
 
@@ -71,10 +72,10 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 10
-        color: "#24242b"
+//        radius: 10
+        color: Style.backgroundColor
         opacity: 1
-        anchors.margins: 6
+//        anchors.margins: 6
     }
 
     ColumnLayout {
@@ -100,7 +101,7 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             id: containerItem
-            Layout.margins: 10
+//            Layout.margins: 10
 
 
             ScrollView {
@@ -108,7 +109,7 @@ Item {
 
                 LayerTreeView{
                     anchors.fill: parent
-                    proxyModel: rootItem.layersModel
+                    proxyModel: rootItem.layersModell
                 }
 
 //                ColumnLayout {

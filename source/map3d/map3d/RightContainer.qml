@@ -8,7 +8,7 @@ Item {
     id: root
     x: parent.x
     clip: false
-    property var m
+//    property var m
 //    function adjustRightContainer(screenwidth){ if(nowItem || layers.visible){
 //            if(isMinimized === true){
 //                root.x = screenwidth
@@ -34,9 +34,7 @@ Item {
             leftObjects.visible = false
             nowItem.parent = null
             nowItem = null
-            if(layers.visible === false){
                 menuRightContainerHide();
-            }
             leftObjects.visible = false
         }
     }
@@ -99,21 +97,21 @@ Item {
         anchors.fill:containerHolder
         orientation: Qt.Vertical
 
-        LayersWidget{
-            id:layers
-            layersModel: root.m
-            SplitView.minimumHeight: root.height/4
-            onToggleLayerEnabled: function(layerIndex) {
-                wnd.toggleLayerEnabled(layerIndex);
-            }
-            visible: false
-        }
+//        LayersWidget{
+//            id:layers
+//            layersModel: root.m
+//            SplitView.minimumHeight: root.height/4
+//            onToggleLayerEnabled: function(layerIndex) {
+//                wnd.toggleLayerEnabled(layerIndex);
+//            }
+//            visible: false
+//        }
 
         Item {
             id: leftObjects
             width: parent.width
             SplitView.minimumHeight: root.height/4
-            visible: false
+            visible: true
 
         }
     }
