@@ -33,6 +33,7 @@ add_executable(Map3d
         mapObject.cpp mapObject.h
         toolbox.h toolbox.cpp
         treeModel.h treeModel.cpp
+        compositeLayer.h compositeLayer.cpp
         qml.qrc
         resources.qrc)
 
