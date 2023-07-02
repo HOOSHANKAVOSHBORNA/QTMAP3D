@@ -7,7 +7,7 @@ import "style"
 Item {
     id: rootItem
     property var listModel
-    readonly property color     _colorHover : "#0dc2df"
+    readonly property color     _colorHover : Style.hoverColor
     readonly property color     _colorPresed : "#908000"
     readonly property color     _colorRec   : "#363739"
 //    readonly property color     sectionColor:  "#00587A"

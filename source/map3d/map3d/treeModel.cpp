@@ -79,7 +79,7 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
 void TreeModel::addItem(QStandardItem *item, const QString parent)
 {
 
-    beginResetModel();
+//    beginResetModel();
 
         if(treeMap.contains(parent)){
             treeMap[parent]->appendRow(item);
@@ -89,7 +89,20 @@ void TreeModel::addItem(QStandardItem *item, const QString parent)
         }else{
             qDebug() << "error while adding Item to Tree !!!  parent:" << parent << "item:" << item->text() ;
         }
-    endResetModel();
+//        endResetModel();
+}
+
+void TreeModel::removeItem(QString item, const QString parent)
+{
+    if(treeMap.contains(item)){
+        QStandardItem *parentItem =  treeMap.take(parent);
+        for (int i = 0; i < parentItem->rowCount(); ++i){
+            if (parentItem->child(i)->data() == item){
+                parentItem->removeRow(i);
+                break;
+            }
+        }
+    }
 }
 
 

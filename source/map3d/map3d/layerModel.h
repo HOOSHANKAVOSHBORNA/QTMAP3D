@@ -10,36 +10,31 @@
 class LayersModel : public TreeProxyModel
 {
     Q_OBJECT
-
     enum CustomRoles{
         visibleLayerRole =Qt::UserRole + 100
     };
 
-
 public:
     LayersModel(MapItem *mapController = nullptr, QObject *parent = nullptr);
     QHash<int,QByteArray> roleNames() const override;
-
-public:
-    void updateLayers(osgEarth::Map *map);
+    void initializeModel(osgEarth::Map *map);
+    bool getLayerVisible(QModelIndex itemIndex) const;
 
 
 public slots:
-//    void clickedItem(QModelIndex itemIndex);
     void onItemClicked(const QModelIndex &current)override;
-    bool getLayerVisible(QModelIndex itemIndex) const;
+
+    void onLayerAdded(osgEarth::Layer* layer);
+    void onLayerRemoved(osgEarth::Layer* layer);
+    void onNodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer);
+    void onNodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer);
+    void onParentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
 
 private:
     void setLayerVisible(osgEarth::VisibleLayer *layer);
-//    void addChildItem(osg::Group *parentGroup, QStandardItem *parentItem);
-//    void addChildItem(osgEarth::Layer *layer, QStandardItem *parentItem);
-private:
-
-//    QList<osgEarth::Layer*> mLayersList;
     QStandardItem mLayerList;
     MapItem *mMapItem;
     TreeModel *mTreeModel;
-//    TreeProxyModel *mTreeProxyModel;
 };
 
 
