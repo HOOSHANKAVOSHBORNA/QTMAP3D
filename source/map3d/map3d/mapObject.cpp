@@ -1,5 +1,4 @@
 #include "mapObject.h"
-#include "qdebug.h"
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/AnnotationLayer>
 
