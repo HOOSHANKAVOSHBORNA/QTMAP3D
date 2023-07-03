@@ -53,6 +53,12 @@ bool DrawShape::setup()
     mShapeLayer = new osgEarth::Annotation::AnnotationLayer();
     mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
+
+    mMeasureLayer = new osgEarth::Annotation::AnnotationLayer();
+    mMeasureLayer->setName(M_CATEGORY);
+    mapItem()->getMapObject()->addLayer(mMeasureLayer);
+
+
     return true;
 }
 
@@ -96,6 +102,13 @@ osgEarth::Annotation::AnnotationLayer *DrawShape::shapeLayer()
     if(!mShapeLayer)
         mShapeLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(CATEGORY));
     return mShapeLayer;
+}
+
+osgEarth::Annotation::AnnotationLayer *DrawShape::measureLayer()
+{
+    if(!mMeasureLayer)
+        mMeasureLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(M_CATEGORY));
+    return mMeasureLayer;
 }
 
 bool DrawShape::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)

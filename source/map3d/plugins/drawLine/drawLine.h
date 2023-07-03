@@ -15,7 +15,7 @@
 #include <lineProperties.h>
 #include <measureHeight.h>
 
-#define POLYLINE "PolyLine"
+#define POLYLINE "Polyline"
 #define RULER "Ruler"
 #define MEASUREHEIGHT "Height"
 #define SLOPE "Slope"
@@ -59,6 +59,8 @@ private:
 private:
 //    enum class DrawingState{START, DRAWING, FINISH};
 //    DrawingState mDrawingState;
+
+
     enum class Type{NONE, LINE, RULERR, HEIGHT, SLOPEE};
     Type mType;
     osg::ref_ptr<LineNode> mLine{nullptr};
@@ -66,6 +68,8 @@ private:
     LineProperties *mLineProperties = nullptr;
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mLineLayer;
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mRulerLayer;
+    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mHeightLayer;
+    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mSlopeLayer;
     static int mCount;
 //    bool mEnterLineZone{false};
 //    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};

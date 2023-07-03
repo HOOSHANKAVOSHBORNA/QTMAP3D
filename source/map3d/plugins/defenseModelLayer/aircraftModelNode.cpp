@@ -359,7 +359,7 @@ void AircraftModelNode::setSelectionMode(SelectionMode sm)
 	}
 	else
 	{
-        mDefenseModelLayer->mapItem()->untrack();
+        mDefenseModelLayer->mapItem()->getCameraController()->untrack();
         //        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mRouteLine, AIRCRAFTS_LAYER_NAME);
         //        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mLatestPointLine, AIRCRAFTS_LAYER_NAME);
         //        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mTempLine, AIRCRAFTS_LAYER_NAME);
@@ -374,7 +374,7 @@ void AircraftModelNode::setSelectionMode(SelectionMode sm)
 
 bool AircraftModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mDefenseModelLayer->mapItem()->getViewpoint().getHeading())
+    mPat2D->setAttitude(osg::Quat(osg::inDegrees(-double(mDefenseModelLayer->mapItem()->getCameraController()->getViewpoint().getHeading())
 												 + mData->info.Heading),
 								  -osg::Z_AXIS));
 
@@ -447,9 +447,9 @@ void AircraftModelNode::updateColors()
 void AircraftModelNode::onGotoButtonClicked()
 {
 	//    goOnTrack();
-    mDefenseModelLayer->mapItem()->goToPosition(getPosition(), 500, 0);
+    mDefenseModelLayer->mapItem()->getCameraController()->goToPosition(getPosition(), 500, 0);
 	if(mIsTrack)
-        mDefenseModelLayer->mapItem()->setTrackNode(getGeoTransform(), 400);
+        mDefenseModelLayer->mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
 }
 
 void AircraftModelNode::onRouteButtonToggled(bool check)
@@ -485,9 +485,9 @@ void AircraftModelNode::onTrackButtonToggled(bool check)
 	//std::cout << check << std::endl;
 	mIsTrack = check;
 	if(check)
-        mDefenseModelLayer->mapItem()->setTrackNode(getGeoTransform(), 400);
+        mDefenseModelLayer->mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
 	else
-        mDefenseModelLayer->mapItem()->untrack();
+        mDefenseModelLayer->mapItem()->getCameraController()->untrack();
 }
 
 void AircraftModelNode::onModeChanged(bool is3DView)
