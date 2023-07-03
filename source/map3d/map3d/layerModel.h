@@ -18,14 +18,14 @@ public:
     LayersModel(MapItem *mapController = nullptr, QObject *parent = nullptr);
     QHash<int,QByteArray> roleNames() const override;
     void initializeModel(osgEarth::Map *map);
-    bool getLayerVisible(QModelIndex itemIndex) const;
+    bool getLayerVisible(osgEarth::Layer *layer) const;
 
 
 public slots:
     void onItemClicked(const QModelIndex &current)override;
 
-    void onLayerAdded(osgEarth::Layer* layer);
-    void onLayerRemoved(osgEarth::Layer* layer);
+    void onLayerAdded(osgEarth::Layer* layer ,   unsigned index);
+    void onLayerRemoved(osgEarth::Layer* layer , unsigned index);
     void onNodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer);
     void onNodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer);
     void onParentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
@@ -35,6 +35,8 @@ private:
     QStandardItem mLayerList;
     MapItem *mMapItem;
     TreeModel *mTreeModel;
+
+
 };
 
 

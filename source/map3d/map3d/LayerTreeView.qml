@@ -4,16 +4,13 @@ import QtQuick.Controls
 import QtQuick.Effects
 import Crystal 1.0
 import "style"
-//#000814, #001d3d, #003566, #ffc300, #ffd60a
-//#3d5a80, #98c1d9, #e0fbfc, #ee6c4d, #293241
+
 
 Item{
     id:root
     width: parent.width
 
 
-    readonly property real         categorySize: 30
-    readonly property real         itemSize: 30
     property CLayersModel          proxyModel;
 
 
@@ -31,7 +28,7 @@ Item{
             function sendToSearch() {
                 if( root.proxyModel){
                 root.proxyModel.setFilterString(text)
-                if (text.length == 0) {
+                if (text.length === 0) {
                     treeView.collapseRecursively()
                 }
                 treeView.expandRecursively()
@@ -48,7 +45,6 @@ Item{
             }
             anchors.fill: parent
             color: Style.textColor
-//            IconImage : "./Resources/search.png"
             IconImage{
                 anchors.verticalCenter: parent.verticalCenter
                 height: parent.height * 0.6
@@ -117,7 +113,7 @@ Item{
             id: treeDelegate
 
             implicitWidth: padding + label.x + label.implicitWidth + padding
-            implicitHeight: label.implicitHeight * 1.8
+            implicitHeight: label.implicitHeight * 2
 
             readonly property real indent: 20
             readonly property real padding: 5
@@ -145,8 +141,7 @@ Item{
             }
 
             HoverHandler{
-                //onHoveredChanged: hovered ? container.color = "#808080" : container.color = "#454545"
-                onHoveredChanged: hovered ? label.color = Style.hoverColor : label.color = Style.textColor
+                onHoveredChanged: hovered ? label.color = Style.textHoverColor : label.color = Style.textColor
             }
 
             TapHandler {
@@ -154,20 +149,35 @@ Item{
 
                     treeView.toggleExpanded(row)
                 }
-                onPressedChanged: pressed ? label.color = "orange" : !pressed ? label.color = "#ffffff" : "#ffffff"
+                onPressedChanged: pressed ? label.color = Style.hoverColor : !pressed ? label.color = Style.textColor : Style.textColor
             }
 
 
-            Text {
+//            Text{
+//                id: indicator
+//                visible: treeDelegate.isTreeNode && treeDelegate.hasChildren
+//                x:  (treeDelegate.depth * treeDelegate.indent) +3
+//                anchors.verticalCenter: parent.verticalCenter
+//                font.pixelSize: 20
+//                text: "▸"
+//                rotation: treeDelegate.expanded ? 90 : 0
+//                padding: 5
+//                color: Style.textColor
+//            }
+
+            IconImage {
                 id: indicator
-                visible: treeDelegate.isTreeNode && treeDelegate.hasChildren
-                x:  (treeDelegate.depth * treeDelegate.indent) +3
+                source: "qrc:/Resources/arrow.png"
+                width: 10
+                height: 15
+
+                anchors.leftMargin: 3
+//                            anchors.top :parent.top
+                anchors.left: parent.left
+                visible: treeDelegate.hasChildren
+                rotation: treeDelegate.expanded ? -90 : 180
                 anchors.verticalCenter: parent.verticalCenter
-                font.pixelSize: 20
-                text: "▸"
-                rotation: treeDelegate.expanded ? 90 : 0
-                padding: 5
-                color: Style.textColor
+
             }
 
             Text {
@@ -183,13 +193,11 @@ Item{
 
 
             Rectangle{
-
-
                 id: hideContainer
                 width: container.height/1.35
                 height: container.height/1.35
                 color: Style.secondaryColor
-                border.color: Style.borderColor
+                border.color: isVisible ? Style.borderColor : "red"
                 radius: Style.radius
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right:  label.left
@@ -205,28 +213,17 @@ Item{
                     hoverEnabled: true
                     anchors.fill: hideContainer
                     onEntered: {
-                        hideContainer.color = Style.hoverColor
-                        hideContainer.border.color = "red"
+                        hideContainer.color = Style.selectionColor
                     }
                     onExited: {
                         if(isVisible){
                             hideContainer.color = Style.secondaryColor
-                            hideContainer.border.color = Style.borderColor
                         } else{
-                            hideContainer.color = _color11
-                            hideContainer.border.color = "red"
+                            hideContainer.color = Style.secondaryColor
                         }
                     }
                     onClicked: function() {
-                        if(isVisible ){
-                            hideContainer.border.color = "red"
-                        } else{
-                            hideContainer.border.color = "#111111"
-                        }
-
-//                        root.proxyModel.clickedItem(treeView.index(row , column))
                         root.proxyModel.onItemClicked(treeView.index(row , column))
-//                        console.log(isVisible)
                     }
                 }
             }
