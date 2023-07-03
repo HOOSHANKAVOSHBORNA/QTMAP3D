@@ -37,13 +37,14 @@ void DrawBox::onBoxItemCheck(bool check)
 
     }
     else {
+        if(state() == State::DRAWING)
+            cancelDraw();
+
         if(mBoxLayer->getGroup()->getNumChildren() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
 //            mapItem()->getMapObject()->setParentLayer(mBoxLayer, nullptr);
             mapItem()->getMapObject()->removeLayer(mBoxLayer, shapeLayer);
         }
-        if(state() == State::DRAWING)
-            cancelDraw();
         setState(State::NONE);
         mBox = nullptr;
         //mBoxProperties->hide();

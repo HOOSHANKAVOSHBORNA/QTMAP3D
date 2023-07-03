@@ -11,13 +11,13 @@ MainMapCallback::MainMapCallback(MapObject *mapObject) :
 void MainMapCallback::onLayerAdded  (osgEarth::Layer* layer, unsigned index)
 {
     if(mMapObject)
-        emit mMapObject->layerAdded(layer, nullptr, index);
+        emit mMapObject->layerAdded(layer, mMapObject->getParentLayer(layer), index);
 }
 
 void MainMapCallback::onLayerRemoved(osgEarth::Layer* layer, unsigned index)
 {
     if(mMapObject)
-        emit mMapObject->layerRemoved(layer, nullptr, index);
+        emit mMapObject->layerRemoved(layer, mMapObject->getParentLayer(layer), index);
 }
 
 void MainMapCallback::onLayerMoved(osgEarth::Layer* layer, unsigned oldIndex, unsigned newIndex)
@@ -57,15 +57,15 @@ bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
 {
     if (!layer)
         return false;
-    beginUpdate();
-    osgEarth::Map::addLayer(layer);
-    endUpdate();
+//    beginUpdate();
+//    endUpdate();
     if(parentLayer){
         auto dataContainer = parentLayer->getOrCreateUserDataContainer();
         dataContainer->addUserObject(layer);
     }
     layer->setUserData(parentLayer);
-    emit layerAdded(layer, parentLayer, getIndexOfLayer(layer));
+    osgEarth::Map::addLayer(layer);
+//    emit layerAdded(layer, parentLayer, getIndexOfLayer(layer));
     return true;
 }
 
@@ -73,16 +73,17 @@ bool MapObject::removeLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer
 {
     if (!layer)
         return false;
-    auto index = getIndexOfLayer(layer);
-    beginUpdate();
-    osgEarth::Map::removeLayer(layer);
-    endUpdate();
+//    auto index = getIndexOfLayer(layer);
+//    beginUpdate();
+//    osgEarth::Map::removeLayer(layer);
+//    endUpdate();
     if(parentLayer){
         auto dataContainer = parentLayer->getOrCreateUserDataContainer();
         auto objectIndex = dataContainer->getUserObjectIndex(layer);
         dataContainer->removeUserObject(objectIndex);
     }
-    emit layerRemoved(layer, parentLayer, index);
+    osgEarth::Map::removeLayer(layer);
+//    emit layerRemoved(layer, parentLayer, index);
     return true;
 }
 
