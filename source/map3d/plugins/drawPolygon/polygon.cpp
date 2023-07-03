@@ -256,7 +256,7 @@ void Polygon::createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double are
     painter.setPen(textPen);
     painter.setFont(textFont);
 
-    if (mShowArea){
+
         volumePos += 22;
         if (area >= 1000000){
             area/=1000000;
@@ -271,7 +271,7 @@ void Polygon::createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double are
                              Qt::AlignLeft|Qt::AlignVCenter,
                              str);
         }
-    }
+
 //    if (mShowVolume){
 //        QString vStr= QString::number(volume, 'f', 2);
 //        painter.drawText(QRect(8, volumePos, LABEL_IMAGE_WIDTH, 20),
@@ -322,7 +322,7 @@ void Polygon::addPoints(osgEarth::GeoPoint point)
     mPolygonGeom->push_back(point.vec3d());
     dirty();
     fea->setGeometry(mPolygonGeom);
-
+    if(mShowArea){
     auto area = CalculateAreaOfPolygon();
     osg::ref_ptr<osg::Image> image = new osg::Image;
     createOrUpdateLabelImg(image, area);
@@ -346,6 +346,7 @@ void Polygon::addPoints(osgEarth::GeoPoint point)
     mPlaceNode->setNodeMask(true);
 
     addChild(mPlaceNode);
+    }
     //mLabelGroup->addChild(placeNode);
     //addChild(mLabelGroup);
 }

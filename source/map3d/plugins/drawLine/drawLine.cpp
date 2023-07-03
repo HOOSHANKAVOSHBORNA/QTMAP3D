@@ -17,13 +17,12 @@
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
 #include "mapItem.h"
-#include "osgEarth/ModelLayer"
 #include "osgEarth/Layer"
 #include <QQuickItem>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarth/GeoMath>
 
-using namespace osgEarth::Annotation;
+//using namespace osgEarth::Annotation;
 int DrawLine::mCount{0};
 DrawLine::DrawLine(QWidget *parent)
     : DrawShape(parent)
