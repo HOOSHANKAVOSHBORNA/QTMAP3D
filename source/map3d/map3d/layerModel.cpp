@@ -113,11 +113,19 @@ void LayersModel::onLayerRemoved(osgEarth::Layer *layer , unsigned index)
 void LayersModel::onParentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer)
 {
     QString treeItem = QString(layer->getName().c_str());
-    QString oldParent = QString(oldParentLayer->getName().c_str());
-    QString newParent = QString(newParentLayer->getName().c_str());
-    mTreeModel->removeItem(treeItem , oldParent);
+    if(oldParentLayer){
+        QString oldParent = QString(oldParentLayer->getName().c_str());
+        mTreeModel->removeItem(treeItem , oldParent);
+    }else{
+        mTreeModel->removeItem(treeItem , "");
+    }
     QStandardItem *item = new QStandardItem(treeItem);
-    mTreeModel->addItem(item,newParent);
+    if(newParentLayer){
+        QString newParent = QString(newParentLayer->getName().c_str());
+        mTreeModel->addItem(item,newParent);
+    }else{
+        mTreeModel->addItem(item,"");
+    }
 }
 
 
