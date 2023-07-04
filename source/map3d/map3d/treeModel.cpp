@@ -4,7 +4,6 @@ TreeModel::TreeModel(QObject *parent):
     QStandardItemModel(parent)
 {
     rootItem = invisibleRootItem();
-    //    treeMap["root"] = rootItem;
     treeMap["root"] = rootItem;
 }
 
@@ -50,23 +49,24 @@ void TreeModel::removeItem(QString item, const QString parent)
             }
         }
         treeMap.remove(item);
-        //        if(){
-        //            QStandardItem *parentItem =  treeMap.take(parent);
-        //            for (int i = 0; i < parentItem->rowCount(); ++i){
-        //                if (parentItem->child(i)->data() == item){
-        //                    parentItem->removeRow(i);
-        //                }
-        //            }
-        //        }else{
-        //            qDebug() << rootItem->rowCount();
-        //            for (int i = 0; i < rootItem->rowCount(); ++i){
-        //                if (rootItem->child(i)->data() == item){
-        //                    rootItem->removeRow(i);
-        //                }
-        //            }
-        //        }
     }
 }
+
+
+//set data of a role for parent and all its children
+void TreeModel::updateData(QModelIndex itemIndex,bool isVisible, int role)
+{
+    QStandardItem  *parentItem = treeMap[itemIndex.data().toString()];
+    parentItem->setData(isVisible,role);
+    for(int i = 0 ; i < parentItem->rowCount() ; i++){
+        QStandardItem *childItem = parentItem->child(i);
+        childItem->setData(isVisible,role);
+        if(childItem->hasChildren()){
+            updateData(childItem->index(),isVisible,role);
+        }
+    }
+}
+
 
 
 

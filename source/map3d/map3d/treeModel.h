@@ -21,11 +21,13 @@ public:
                         int role = Qt::DisplayRole) const override;
     void addItem(QStandardItem *item , const QString parent = "root");
     void removeItem(QString item , const QString parent = "root");
+    void updateData(QModelIndex itemIndex , bool isVisible, int role);
 
 private:
     QModelIndex previous;
     QStandardItem *rootItem;
     QMap<QString , QStandardItem*> treeMap;
+
 };
 
 class TreeProxyModel : public QSortFilterProxyModel

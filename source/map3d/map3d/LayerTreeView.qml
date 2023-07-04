@@ -122,8 +122,6 @@ Item{
             required property bool expanded
             required property int hasChildren
             required property int depth
-//            property bool visibleLayer: true
-
 
 
 
@@ -210,6 +208,8 @@ Item{
                     anchors.centerIn: parent
                 }
                 MouseArea{
+                    id:hideBtn
+//                    enabled: isVisible
                     hoverEnabled: true
                     anchors.fill: hideContainer
                     onEntered: {
@@ -224,6 +224,9 @@ Item{
                     }
                     onClicked: function() {
                         root.proxyModel.onItemClicked(treeView.index(row , column))
+
+
+
                     }
                 }
             }
