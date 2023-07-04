@@ -272,15 +272,6 @@ void Polygon::createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double are
                              str);
         }
 
-//    if (mShowVolume){
-//        QString vStr= QString::number(volume, 'f', 2);
-//        painter.drawText(QRect(8, volumePos, LABEL_IMAGE_WIDTH, 20),
-//                         Qt::AlignLeft|Qt::AlignVCenter,
-//                         "v: "+vStr+"°");
-
-
-
-//    }
     }
     *lblImage = lblImage->mirrored(false, true);
     image->setImage(LABEL_IMAGE_WIDTH,
