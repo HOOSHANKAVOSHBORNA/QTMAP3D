@@ -41,11 +41,11 @@ void TreeModel::removeItem(QString item, const QString parent)
 {
     if(treeMap.contains(item) && treeMap.contains(parent)){
         QStandardItem *parentItem =  treeMap[parent];
-        qDebug()<<parentItem->data();
+        qDebug()<<parentItem->text();
         qDebug()<<parentItem->rowCount();
         for (int i = 0; i < parentItem->rowCount(); ++i){
-            qDebug()<<parentItem->child(i)->data();
-            if (parentItem->child(i)->data() == item){
+            qDebug()<<parentItem->child(i)->text();
+            if (parentItem->child(i)->text() == item){
                 parentItem->removeRow(i);
             }
         }

@@ -93,6 +93,7 @@ void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentL
     qDebug()<<"addLayer:"<<QString(layer->getName().c_str());
 
     QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
+    treeItem->setData(getLayerVisible(layer),visibleLayerRole);
     if(parentLayer){
         QString parentName = parentLayer->getName().c_str();
         mTreeModel->addItem(treeItem,parentName);
