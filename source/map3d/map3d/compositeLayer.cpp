@@ -22,8 +22,8 @@ void CompositeAnnotationLayer::init()
 void CompositeAnnotationLayer::addLayer(osgEarth::Annotation::AnnotationLayer *layer)
 {
     mChilds.append(layer);
-
     _root->addChild(layer->getNode());
+    fireCallback(&CompositeCallback::onLayerAdded, layer);
 }
 
 void CompositeAnnotationLayer::removeLayer(osgEarth::Annotation::AnnotationLayer *layer)
@@ -32,6 +32,7 @@ void CompositeAnnotationLayer::removeLayer(osgEarth::Annotation::AnnotationLayer
         return l == layer;
     });
     _root->removeChild(layer->getNode());
+    fireCallback(&CompositeCallback::onLayerRemoved, layer);
 }
 
 //void CompositeAnnotationLayer::addParent(CompositeAnnotationLayer *layer)
@@ -39,12 +40,12 @@ void CompositeAnnotationLayer::removeLayer(osgEarth::Annotation::AnnotationLayer
 
 //}
 
-void CompositeAnnotationLayer::fireCallback(CompositeCallback::MethodPtr method)
+void CompositeAnnotationLayer::fireCallback(CompositeCallback::MethodPtr method, AnnotationLayer *layer)
 {
     for (CallbackVector::iterator i = _callbacks.begin(); i != _callbacks.end(); ++i)
     {
         CompositeCallback* cb = dynamic_cast<CompositeCallback*>(i->get());
-        if (cb) (cb->*method)(this);
+        if (cb) (cb->*method)(layer);
     }
 }
 
@@ -53,17 +54,12 @@ CompositeCallback::CompositeCallback()
 
 }
 
-void CompositeCallback::onVisibleChanged(osgEarth::VisibleLayer *layer)
+void CompositeCallback::onLayerAdded(osgEarth::Annotation::AnnotationLayer *layer)
 {
 
 }
 
-void CompositeCallback::onOpacityChanged(osgEarth::VisibleLayer *layer)
-{
-
-}
-
-void CompositeCallback::onVisibleRangeChanged(osgEarth::VisibleLayer *layer)
+void CompositeCallback::onLayerRemoved(osgEarth::Annotation::AnnotationLayer *layer)
 {
 
 }

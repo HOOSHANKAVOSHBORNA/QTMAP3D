@@ -13,15 +13,9 @@ class CompositeCallback : public QObject, public osgEarth::VisibleLayerCallback
     Q_OBJECT
 public:
     CompositeCallback();
-    void onVisibleChanged(osgEarth::VisibleLayer* layer) override;
-    void onOpacityChanged(osgEarth::VisibleLayer* layer) override;
-    void onVisibleRangeChanged(osgEarth::VisibleLayer* layer) override;
-//    void onLayerAdded(osgEarth::Layer* layer, unsigned index) override;
-//    void onLayerRemoved(osgEarth::Layer* layer, unsigned index) override;
-//    void onLayerMoved(osgEarth::Layer* layer, unsigned oldIndex, unsigned newIndex) override;
-//    void onLayerEnabled(osgEarth::Layer* layer) override;
-//    void onLayerDisabled(osgEarth::Layer* layer) override;
-    typedef void (CompositeCallback::*MethodPtr)(class osgEarth::VisibleLayer* layer);
+    virtual void onLayerAdded(osgEarth::Annotation::AnnotationLayer* layer);
+    virtual void onLayerRemoved(osgEarth::Annotation::AnnotationLayer* layer);
+    typedef void (CompositeCallback::*MethodPtr)(class osgEarth::Annotation::AnnotationLayer* layer);
 
 private:
     MapObject *mMapObject{nullptr};
@@ -39,7 +33,7 @@ public:
 public:
     void addLayer(osgEarth::Annotation::AnnotationLayer *layer);
     void removeLayer(osgEarth::Annotation::AnnotationLayer *layer);
-    void fireCallback(CompositeCallback::MethodPtr);
+    void fireCallback(CompositeCallback::MethodPtr, osgEarth::Annotation::AnnotationLayer *layer);
 //    void addParent(CompositeAnnotationLayer *layer);
 
 private:
