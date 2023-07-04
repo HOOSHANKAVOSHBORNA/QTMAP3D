@@ -3,9 +3,9 @@
 TreeModel::TreeModel(QObject *parent):
     QStandardItemModel(parent)
 {
-    QStandardItem *rootItem = invisibleRootItem();
-//    treeMap["root"] = rootItem;
-    treeMap[""] = rootItem;
+    rootItem = invisibleRootItem();
+    //    treeMap["root"] = rootItem;
+    treeMap["root"] = rootItem;
 }
 
 
@@ -23,85 +23,48 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
     return QVariant();
 }
 
-//QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) const
-//{
-//    if (!hasIndex(row, column, parent))
-//        return QModelIndex();
-
-//    QStandardItem *parentItem;
-
-//    if (!parent.isValid())
-//        parentItem = rootItem;
-//    else
-//        parentItem = static_cast<QStandardItem*>(parent.internalPointer());
-
-//    QStandardItem *childItem = parentItem->child(row);
-//    if (childItem)
-//        return createIndex(row, column, childItem);
-//    return QModelIndex();
-//}
-
-//QModelIndex TreeModel::parent(const QModelIndex &index) const
-//{
-//    if (!index.isValid())
-//        return QModelIndex();
-
-//    QStandardItem *childItem = static_cast<QStandardItem*>(index.internalPointer());
-//    QStandardItem *parentItem = childItem->parent();
-//    if (parentItem == rootItem)
-//        return QModelIndex();
-
-//    return createIndex(parentItem->row(), 0, parentItem);
-//}
-
-//int TreeModel::rowCount(const QModelIndex &parent) const
-//{
-//    QStandardItem *parentItem;
-//    if (parent.column() > 0)
-//        return 0;
-
-//    if (!parent.isValid())
-//        parentItem = rootItem;
-//    else
-//        parentItem = static_cast<QStandardItem*>(parent.internalPointer());
-
-//        return parentItem->rowCount();
-
-//}
-
-//int TreeModel::columnCount(const QModelIndex &parent) const
-//{
-//    if (parent.isValid())
-//        return static_cast<QStandardItem*>(parent.internalPointer())->columnCount();
-//    return 0;
-//}
 
 void TreeModel::addItem(QStandardItem *item, const QString parent)
 {
 
-//    beginResetModel();
+    //    beginResetModel();
 
-        if(treeMap.contains(parent)){
-            treeMap[parent]->appendRow(item);
-            treeMap[item->text()] = item;
-//            qDebug() << "Added to Tree!  parent:" << parent << "item:" << item->text() ;
-
-        }else{
-            qDebug() << "error while adding Item to Tree !!!  parent:" << parent << "item:" << item->text() ;
-        }
-//        endResetModel();
+    if(treeMap.contains(parent)){
+        treeMap[parent]->appendRow(item);
+        treeMap[item->text()] = item;
+    }else{
+        qDebug() << "error while adding Item to Tree !!!  parent:" << parent << "item:" << item->text() ;
+    }
 }
 
 void TreeModel::removeItem(QString item, const QString parent)
 {
-    if(treeMap.contains(item)){
-        QStandardItem *parentItem =  treeMap.take(parent);
+    if(treeMap.contains(item) && treeMap.contains(parent)){
+        QStandardItem *parentItem =  treeMap[parent];
+        qDebug()<<parentItem->data();
+        qDebug()<<parentItem->rowCount();
         for (int i = 0; i < parentItem->rowCount(); ++i){
+            qDebug()<<parentItem->child(i)->data();
             if (parentItem->child(i)->data() == item){
                 parentItem->removeRow(i);
-                break;
             }
         }
+        treeMap.remove(item);
+        //        if(){
+        //            QStandardItem *parentItem =  treeMap.take(parent);
+        //            for (int i = 0; i < parentItem->rowCount(); ++i){
+        //                if (parentItem->child(i)->data() == item){
+        //                    parentItem->removeRow(i);
+        //                }
+        //            }
+        //        }else{
+        //            qDebug() << rootItem->rowCount();
+        //            for (int i = 0; i < rootItem->rowCount(); ++i){
+        //                if (rootItem->child(i)->data() == item){
+        //                    rootItem->removeRow(i);
+        //                }
+        //            }
+        //        }
     }
 }
 
@@ -142,5 +105,5 @@ void TreeProxyModel::setFilterString(const QString &filterString)
 void TreeProxyModel::onItemClicked(const QModelIndex &current)
 {
     QModelIndex index = mapToSource(current);
-//        static_cast<TreeModel*>(sourceModel())->onItemClicked(index);
+    //        static_cast<TreeModel*>(sourceModel())->onItemClicked(index);
 }

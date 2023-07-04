@@ -6,7 +6,6 @@
 #include <QQuickItem>
 
 
-
 LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
     TreeProxyModel(parent)
 {
@@ -23,11 +22,12 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
         mTreeModel->removeRows(0,mTreeModel->rowCount());
         initializeModel(mapItem->getMapNode()->getMap());
     });
-//    connect(mapItem, &MapObject::layerAdded,this, onLayerAdded());
-//    connect(myButton, SIGNAL(clicked()),
-//            this, SIGNAL(buttonClicked()));
+    connect(mapItem->getMapObject(), &MapObject::layerAdded,this ,&LayersModel::onLayerAdded);
+    connect(mapItem->getMapObject(), &MapObject::layerRemoved,this ,&LayersModel::onLayerRemoved);
+    connect(mapItem->getMapObject(), &MapObject::nodeToLayerAdded,this ,&LayersModel::onNodeToLayerAdded);
+    connect(mapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,this ,&LayersModel::onNodeFromLayerRemoved);
+    connect(mapItem->getMapObject(), &MapObject::parentLayerChanged,this ,&LayersModel::onParentLayerChanged);
 }
-
 
 
 void LayersModel::initializeModel(osgEarth::Map *map)
@@ -35,23 +35,24 @@ void LayersModel::initializeModel(osgEarth::Map *map)
     osgEarth::LayerVector layers;
     map->getLayers(layers);
     for(const auto& layer : layers) {
-
-        QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
         auto parentLayer = mMapItem->getMapObject()->getParentLayer(layer);
-        if(parentLayer)
-            mTreeModel->addItem(treeItem,QString(parentLayer->getName().c_str()));
-        else
-            mTreeModel->addItem(treeItem,"");
-        treeItem->setData(true,visibleLayerRole);
-        if(layer->getNode() && layer->getNode()->asGroup()){
-            auto group = layer->getNode()->asGroup();
-            for (int i = 0; i < group->getNumChildren(); ++i) {
-                auto child = group->getChild(i);
-                QStandardItem *treeItemChild = new QStandardItem(QString(child->getName().c_str()));
-                treeItemChild->setData(true,visibleLayerRole);///////////////
-                mTreeModel->addItem(treeItemChild , QString(layer->getName().c_str()));
-            }
-        }
+        onLayerAdded(layer, parentLayer, map->getIndexOfLayer(layer));
+//        QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
+//        auto parentLayer = mMapItem->getMapObject()->getParentLayer(layer);
+//        if(parentLayer)
+//            mTreeModel->addItem(treeItem,QString(parentLayer->getName().c_str()));
+//        else
+//            mTreeModel->addItem(treeItem,"");
+//        treeItem->setData(getLayerVisible(layer),visibleLayerRole);
+//        if(layer->getNode() && layer->getNode()->asGroup()){
+//            auto group = layer->getNode()->asGroup();
+//            for (int i = 0; i < group->getNumChildren(); ++i) {
+//                auto child = group->getChild(i);
+//                QStandardItem *treeItemChild = new QStandardItem(QString(child->getName().c_str()));
+//                treeItemChild->setData(true,visibleLayerRole);///////////////
+//                mTreeModel->addItem(treeItemChild , QString(layer->getName().c_str()));
+//            }
+//        }
     }
 }
 
@@ -87,41 +88,64 @@ void LayersModel::onItemClicked(const QModelIndex &current)
     }
 }
 
-void LayersModel::onLayerAdded(osgEarth::Layer *layer)
+void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLayer , unsigned index)
 {
+    qDebug()<<"addLayer:"<<QString(layer->getName().c_str());
 
     QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
-    QString parentLayer = mMapItem->getMapObject()->getParentLayer(layer)->getName().c_str();
-    mTreeModel->addItem(treeItem,parentLayer);
+    if(parentLayer){
+        QString parentName = parentLayer->getName().c_str();
+        mTreeModel->addItem(treeItem,parentName);
+        qDebug()<<"addLayer parent:"<<parentName;
+    }else{
+        mTreeModel->addItem(treeItem);
+    }
 }
 
-void LayersModel::onLayerRemoved(osgEarth::Layer *layer)
+void LayersModel::onLayerRemoved(osgEarth::Layer *layer , osgEarth::Layer *parentLayer, unsigned index)
 {
+    qDebug()<<"removeLayer:"<<QString(layer->getName().c_str());
     QString treeItem = QString(layer->getName().c_str());
-    QString parentLayer = mMapItem->getMapObject()->getParentLayer(layer)->getName().c_str();
-    mTreeModel->removeItem(treeItem , parentLayer);
-
+    if(parentLayer){
+        QString parentName = parentLayer->getName().c_str();
+        mTreeModel->removeItem(treeItem , parentName);
+        qDebug()<<"removeLayer parent:"<<parentName;
+    }else{
+        mTreeModel->removeItem(treeItem);
+    }
 }
 
 void LayersModel::onParentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer)
 {
     QString treeItem = QString(layer->getName().c_str());
-    QString oldParent = QString(oldParentLayer->getName().c_str());
-    QString newParent = QString(newParentLayer->getName().c_str());
-    mTreeModel->removeItem(treeItem , oldParent);
+    if(oldParentLayer){
+        QString oldParent = QString(oldParentLayer->getName().c_str());
+        mTreeModel->removeItem(treeItem , oldParent);
+    }else{
+        mTreeModel->removeItem(treeItem);
+    }
     QStandardItem *item = new QStandardItem(treeItem);
-    mTreeModel->addItem(item,newParent);
+    if(newParentLayer){
+        QString newParent = QString(newParentLayer->getName().c_str());
+        mTreeModel->addItem(item,newParent);
+    }else{
+        mTreeModel->addItem(item);
+    }
 }
 
 
 void LayersModel::onNodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer)
 {
-
+    QStandardItem *treeItem = new QStandardItem(QString(node->getName().c_str()));
+    QString parentLayer = layer->getName().c_str();
+    mTreeModel->addItem(treeItem,parentLayer);
 }
 
 void LayersModel::onNodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer)
 {
-
+    QString treeItem = QString(node->getName().c_str());
+    QString parentLayer = QString(layer->getName().c_str());
+    mTreeModel->removeItem(treeItem , parentLayer);
 }
 
 void LayersModel::setLayerVisible(osgEarth::VisibleLayer *layer)
@@ -141,9 +165,8 @@ void LayersModel::setLayerVisible(osgEarth::VisibleLayer *layer)
     }
 }
 
-bool LayersModel::getLayerVisible(QModelIndex itemIndex) const
+bool LayersModel::getLayerVisible(osgEarth::Layer *layer) const
 {
-    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(itemIndex).toString().toStdString());
     auto visLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
     bool visible = visLayer->getVisible();
     return visible;

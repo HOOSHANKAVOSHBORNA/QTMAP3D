@@ -12,7 +12,7 @@ Item {
     readonly property color     _colorRec   : "#363739"
 //    readonly property color     sectionColor:  "#00587A"
 //    readonly property color     sectionColor:  "#2f528d"
-    readonly property color     sectionColor:  "#213f72"//0dc2df
+    readonly property color     sectionColor:  /*"#213f72"//0dc2df*/ Style.primaryColor
     readonly property real      categorySize: 40
     readonly property real      itemSize: 40
 
@@ -23,7 +23,7 @@ Item {
         height: 0
         width: 300
         id: header
-        radius: 10
+        radius: Style.radius
         color: "#24242b"
 //        Label {
 //            Text {
@@ -62,17 +62,17 @@ Item {
             }
 
             background: Rectangle {
-                radius: 2
+                radius: Style.radius
                 implicitWidth: 100
                 implicitHeight: 24
-                border.color: "#333"
+                border.color: Style.borderColor
                 border.width: 1
-                color: "#454545"
+                color: Style.secondaryColor
             }
             anchors.fill: parent
-            color: "white"
+            color: Style.textColor
             placeholderText: "search toolbox"
-            placeholderTextColor: "#656565"
+            placeholderTextColor: Style.selectionColor
             anchors.leftMargin: 10
             anchors.rightMargin: 10
             onAccepted: {
@@ -151,7 +151,7 @@ Item {
                             //                    opacity: 0.8
                             border.color: "#202020"
                             border.width: treeDelegate.hasChildren ? 2 : 0
-                            radius: treeDelegate.hasChildren ? 5 : 0
+                            radius: treeDelegate.hasChildren ? Style.radius : 0
 
                         }
                         MouseArea {
@@ -166,7 +166,7 @@ Item {
                             propagateComposedEvents: true
 
                         }
-                        radius: height/10
+                        radius: Style.radius
                         x: padding + ((treeDelegate.depth - 1) * treeDelegate.indent)
 
                         Text {
@@ -248,7 +248,7 @@ Item {
         id: footer
         width: header.width
         height: header.height/2
-        radius: 5
+        radius: Style.radius
         anchors.top: treeRect.bottom
         color: header.color
     }

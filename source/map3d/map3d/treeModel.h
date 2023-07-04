@@ -20,7 +20,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
     void addItem(QStandardItem *item , const QString parent = "root");
-    void removeItem(QString item , const QString parent);
+    void removeItem(QString item , const QString parent = "root");
 
 private:
     QModelIndex previous;

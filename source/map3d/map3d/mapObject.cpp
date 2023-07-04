@@ -11,13 +11,13 @@ MainMapCallback::MainMapCallback(MapObject *mapObject) :
 void MainMapCallback::onLayerAdded  (osgEarth::Layer* layer, unsigned index)
 {
     if(mMapObject)
-        emit mMapObject->layerAdded(layer, index);
+        emit mMapObject->layerAdded(layer, mMapObject->getParentLayer(layer), index);
 }
 
 void MainMapCallback::onLayerRemoved(osgEarth::Layer* layer, unsigned index)
 {
     if(mMapObject)
-        emit mMapObject->layerRemoved(layer, index);
+        emit mMapObject->layerRemoved(layer, mMapObject->getParentLayer(layer), index);
 }
 
 void MainMapCallback::onLayerMoved(osgEarth::Layer* layer, unsigned oldIndex, unsigned newIndex)
@@ -51,6 +51,40 @@ MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):
     QObject(parent)
 {
     addMapCallback(new MainMapCallback(this));
+}
+
+bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
+{
+    if (!layer)
+        return false;
+//    beginUpdate();
+//    endUpdate();
+    if(parentLayer){
+        auto dataContainer = parentLayer->getOrCreateUserDataContainer();
+        dataContainer->addUserObject(layer);
+    }
+    layer->setUserData(parentLayer);
+    osgEarth::Map::addLayer(layer);
+//    emit layerAdded(layer, parentLayer, getIndexOfLayer(layer));
+    return true;
+}
+
+bool MapObject::removeLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
+{
+    if (!layer)
+        return false;
+//    auto index = getIndexOfLayer(layer);
+//    beginUpdate();
+//    osgEarth::Map::removeLayer(layer);
+//    endUpdate();
+    if(parentLayer){
+        auto dataContainer = parentLayer->getOrCreateUserDataContainer();
+        auto objectIndex = dataContainer->getUserObjectIndex(layer);
+        dataContainer->removeUserObject(objectIndex);
+    }
+    osgEarth::Map::removeLayer(layer);
+//    emit layerRemoved(layer, parentLayer, index);
+    return true;
 }
 
 bool MapObject::addNodeToLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)

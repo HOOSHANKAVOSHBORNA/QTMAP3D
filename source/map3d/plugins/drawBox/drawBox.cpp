@@ -25,10 +25,10 @@ bool DrawBox::setup()
 void DrawBox::onBoxItemCheck(bool check)
 {
     if (check) {
-        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->addLayer(mBoxLayer);
+        if(mBoxLayer->getGroup()->getNumChildren() <= 0){ 
             auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->setParentLayer(mBoxLayer, shapeLayer);
+            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
+//            mapItem()->getMapObject()->setParentLayer(mBoxLayer, shapeLayer);
         }
         setState(State::READY);
 //        mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
@@ -37,12 +37,14 @@ void DrawBox::onBoxItemCheck(bool check)
 
     }
     else {
-        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->setParentLayer(mBoxLayer, nullptr);
-            mapItem()->getMapObject()->removeLayer(mBoxLayer);
-        }
         if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+//            mapItem()->getMapObject()->setParentLayer(mBoxLayer, nullptr);
+            mapItem()->getMapObject()->removeLayer(mBoxLayer, shapeLayer);
+        }
         setState(State::NONE);
         mBox = nullptr;
         //mBoxProperties->hide();
