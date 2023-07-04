@@ -120,7 +120,6 @@ bool DrawShape::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActi
         if (mState == State::READY) {
            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initDraw(geoPos);
-
             return true;
         }
 

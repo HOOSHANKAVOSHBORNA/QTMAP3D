@@ -16,6 +16,7 @@
 #define CATEGORY "Draw"
 #define M_CATEGORY "Measurement"
 
+
 class DrawShape : public PluginInterface
 {
     Q_OBJECT
@@ -38,7 +39,6 @@ public:
     osgEarth::Annotation::PlaceNode *iconNode() const;
     DrawShape::State state() const;
     void setState(DrawShape::State newState);
-//    void addLayer();
     osgEarth::Annotation::AnnotationLayer *shapeLayer();
     osgEarth::Annotation::AnnotationLayer *measureLayer();
 
