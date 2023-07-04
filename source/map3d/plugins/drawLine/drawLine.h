@@ -30,10 +30,6 @@ public:
     explicit DrawLine(QWidget *parent = nullptr);
     bool setup() override;
 
-protected:
-//    virtual bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-//    virtual bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-//    virtual bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private slots:
     void onLineItemCheck(bool check);
     void onRulerItemCheck(bool check);
@@ -44,22 +40,7 @@ private:
     void tempDrawing(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-
-//    void startDrawLine();
-//    void startDrawMeasureHeight();
-//    bool drawingMeasureHeight(const osgGA::GUIEventAdapter& event);
-//    bool mouseMoveMeasureHeightDrawing(const osgGA::GUIEventAdapter& event);
-//    bool drawingLine(const osgGA::GUIEventAdapter& event);
-//    bool cancelDrawingLine(const osgGA::GUIEventAdapter& event);
-//    bool mouseMoveDrawing(const osgGA::GUIEventAdapter& event);
-//    bool finishDrawing(const osgGA::GUIEventAdapter& event, osg::Node *nodeEditor = nullptr);
-//    osgEarth::Annotation::PlaceNode *makeIconNode();
-
-
 private:
-//    enum class DrawingState{START, DRAWING, FINISH};
-//    DrawingState mDrawingState;
-
 
     enum class Type{NONE, LINE, RULERR, HEIGHT, SLOPEE};
     Type mType;
@@ -71,9 +52,6 @@ private:
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mHeightLayer;
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mSlopeLayer;
     static int mCount;
-//    bool mEnterLineZone{false};
-//    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
-//    osg::ref_ptr<osg::Image> mIcon;
 };
 
 #endif // LINE_H

@@ -96,7 +96,8 @@ bool MapObject::addNodeToLayer(osg::Node *node, osgEarth::Annotation::Annotation
     if(index >= getNumLayers())
         return false;
     //-------------------------------------
-    layer->getGroup()->addChild(node);
+    if(!layer->getGroup()->addChild(node))
+        return false;
     emit nodeToLayerAdded(node, layer);
     return true;
 }
@@ -110,7 +111,8 @@ bool MapObject::removeNodeFromLayer(osg::Node *node, osgEarth::Annotation::Annot
     if(index >= getNumLayers())
         return false;
     //-------------------------------------
-    layer->getGroup()->removeChild(node);
+    if(!layer->getGroup()->removeChild(node))
+        return false;
     emit nodeFromLayerRemoved(node, layer);
     return true;
 }

@@ -23,6 +23,7 @@
 #include <osgEarth/GeoMath>
 
 int DrawLine::mCount{0};
+
 DrawLine::DrawLine(QWidget *parent)
     : DrawShape(parent)
 {
@@ -31,7 +32,9 @@ DrawLine::DrawLine(QWidget *parent)
 }
 
 bool DrawLine::setup()
-{   
+{
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+
     auto toolboxItemLine =  new ToolboxItem{POLYLINE, CATEGORY, "qrc:/resources/line.png", true};
     QObject::connect(toolboxItemLine, &ToolboxItem::itemChecked, this, &DrawLine::onLineItemCheck);
     toolbox()->addItem(toolboxItemLine);
@@ -48,8 +51,6 @@ bool DrawLine::setup()
     QObject::connect(toolboxItemSlope, &ToolboxItem::itemChecked, this, &DrawLine::onSlopeItemCheck);
     toolbox()->addItem(toolboxItemSlope);
 
-    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-
     mLineLayer = new osgEarth::Annotation::AnnotationLayer();
     mLineLayer->setName(POLYLINE);
 
@@ -63,13 +64,13 @@ bool DrawLine::setup()
     mSlopeLayer->setName(SLOPE);
     return true;
 }
+
 void DrawLine::onLineItemCheck(bool check)
 {
     if (check) {
         if(mLineLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->addLayer(mLineLayer);
             auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->setParentLayer(mLineLayer, shapeLayer);
+            mapItem()->getMapObject()->addLayer(mLineLayer, shapeLayer);
         }
         mType = Type::LINE;
         setState(State::READY);
@@ -79,12 +80,14 @@ void DrawLine::onLineItemCheck(bool check)
         mapItem()->addNode(iconNode());
     }
     else {
-        if(mLineLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->setParentLayer(mLineLayer, nullptr);
-            mapItem()->getMapObject()->removeLayer(mLineLayer);
-        }
         if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mLineLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->removeLayer(shapeLayer);
+        }
+
         setState(State::NONE);
         mLineProperties->deleteLater();
         mType = Type::NONE;
@@ -95,12 +98,11 @@ void DrawLine::onLineItemCheck(bool check)
 }
 void DrawLine::onRulerItemCheck(bool check)
 {
+    auto measureLayer = DrawShape::measureLayer();
     if(check)
     {
         if(mRulerLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->addLayer(mRulerLayer);
-            auto measureLayer = DrawShape::measureLayer();
-            mapItem()->getMapObject()->setParentLayer(mRulerLayer, measureLayer);
+            mapItem()->getMapObject()->addLayer(mRulerLayer, measureLayer);
         }
         makeIconNode("../data/images/draw/ruler.png");
         setState(State::READY);
@@ -112,12 +114,12 @@ void DrawLine::onRulerItemCheck(bool check)
     }
     else
     {
-        if(mRulerLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->setParentLayer(mRulerLayer, nullptr);
-            mapItem()->getMapObject()->removeLayer(mRulerLayer);
-        }
         if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mRulerLayer->getGroup()->getNumChildren() <= 0){
+            mapItem()->getMapObject()->removeLayer(mRulerLayer, measureLayer);
+        }
         setState(State::NONE);
         mType = Type::NONE;
         mLineProperties->deleteLater();
@@ -129,12 +131,11 @@ void DrawLine::onRulerItemCheck(bool check)
 
 void DrawLine::onHeightItemCheck(bool check)
 {
+    auto measureLayer = DrawShape::measureLayer();
     if(check)
     {
         if(mHeightLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->addLayer(mHeightLayer);
-            auto measureLayer = DrawShape::measureLayer();
-            mapItem()->getMapObject()->setParentLayer(mHeightLayer, measureLayer);
+            mapItem()->getMapObject()->addLayer(mHeightLayer, measureLayer);
         }
         makeIconNode("../data/images/draw/height.png");
         setState(State::READY);
@@ -146,12 +147,12 @@ void DrawLine::onHeightItemCheck(bool check)
     }
     else
     {
-        if(mHeightLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->setParentLayer(mHeightLayer, nullptr);
-            mapItem()->getMapObject()->removeLayer(mHeightLayer);
-        }
         if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mHeightLayer->getGroup()->getNumChildren() <= 0){
+            mapItem()->getMapObject()->removeLayer(mHeightLayer, measureLayer);
+        }
         setState(State::NONE);
         mType = Type::NONE;
         mLineProperties->deleteLater();
@@ -163,12 +164,11 @@ void DrawLine::onHeightItemCheck(bool check)
 
 void DrawLine::onSlopeItemCheck(bool check)
 {
+    auto measureLayer = DrawShape::measureLayer();
     if(check)
     {
         if(mSlopeLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->addLayer(mSlopeLayer);
-            auto measureLayer = DrawShape::measureLayer();
-            mapItem()->getMapObject()->setParentLayer(mSlopeLayer, measureLayer);
+            mapItem()->getMapObject()->addLayer(mSlopeLayer, measureLayer);
         }
         makeIconNode("../data/images/draw/slope.png");
         setState(State::READY);
@@ -180,12 +180,12 @@ void DrawLine::onSlopeItemCheck(bool check)
     }
     else
     {
-        if(mSlopeLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->setParentLayer(mSlopeLayer, nullptr);
-            mapItem()->getMapObject()->removeLayer(mSlopeLayer);
-        }
         if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mSlopeLayer->getGroup()->getNumChildren() <= 0){
+            mapItem()->getMapObject()->removeLayer(mSlopeLayer, measureLayer);
+        }
         setState(State::NONE);
         mType = Type::NONE;
         mLineProperties->deleteLater();
@@ -203,31 +203,31 @@ void DrawLine::initDraw(const osgEarth::GeoPoint &geoPos)
     switch (mType) {
     case Type::LINE:
         name = POLYLINE + QString::number(mCount);
+        mLine->setName(name.toStdString());
         mapItem()->getMapObject()->addNodeToLayer(mLine, mLineLayer);
         mLineProperties->setLine(mLine);
-        mLine->setName(name.toStdString());
         mLine->addPoint(geoPos);
         break;
     case Type::RULERR:
         name = RULER + QString::number(mCount);
+        mLine->setName(name.toStdString());
         mapItem()->getMapObject()->addNodeToLayer(mLine, mRulerLayer);
         mLineProperties->setLine(mLine);
-        mLine->setName(name.toStdString());
         mLine->addPoint(geoPos);
         break;
     case Type::HEIGHT:
         mMeasureHeight = new MeasureHeight(mapItem());
         mLineProperties->setMeasureHeight(mMeasureHeight);
         name = MEASUREHEIGHT + QString::number(mCount);
-        mapItem()->getMapObject()->addNodeToLayer(mMeasureHeight, mHeightLayer);
         mMeasureHeight->setName(name.toStdString());
+        mapItem()->getMapObject()->addNodeToLayer(mMeasureHeight, mHeightLayer);
         mMeasureHeight->setFirstPoint(geoPos);
         break;
     case Type::SLOPEE:
         name = SLOPE + QString::number(mCount);
+        mLine->setName(name.toStdString());
         mapItem()->getMapObject()->addNodeToLayer(mLine, mSlopeLayer);
         mLineProperties->setLine(mLine);
-        mLine->setName(name.toStdString());
         mLine->addPoint(geoPos);
         break;
     default:
@@ -240,7 +240,7 @@ void DrawLine::initDraw(const osgEarth::GeoPoint &geoPos)
 
 void DrawLine::tempDrawing(const osgEarth::GeoPoint &geoPos)
 {
-    if (mLine->getSize() >= 2)
+    if (mLine->getSize() > 1)
     {
         mLine->removePoint();
     }
@@ -254,8 +254,9 @@ void DrawLine::tempDrawing(const osgEarth::GeoPoint &geoPos)
 void DrawLine::drawing(const osgEarth::GeoPoint &geoPos)
 {
     if(mType == Type::RULERR || mType == Type::SLOPEE  && mLine->getSize()>=2){
-        mLine->removePoint();
-        confirmDraw();
+//        mLine->removePoint();
+//        confirmDraw();
+        return;
     }
         mLine->addPoint(geoPos);
 }
@@ -275,4 +276,3 @@ void DrawLine::cancelDraw()
         mCount--;
     }
 }
-
