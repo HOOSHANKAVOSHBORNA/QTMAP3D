@@ -58,9 +58,9 @@ bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
 {
     if (!layer)
         return false;
-    CompositeAnnotationLayer* c = dynamic_cast<CompositeAnnotationLayer*>(layer);
-    if (c){
-        c->addCallback(new CompositeCallback(this));
+    CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
+    if (compositeLayer){
+        compositeLayer->addCallback(new CompositeCallback(this, compositeLayer));
     }
 //    beginUpdate();
 //    endUpdate();
@@ -157,18 +157,18 @@ osgEarth::Layer *MapObject::getParentLayer(osgEarth::Layer *layer)
 }
 
 
-CompositeCallback::CompositeCallback(MapObject *mapObject):
-    mMapObject(mapObject)
+CompositeCallback::CompositeCallback(MapObject *mapObject, CompositeAnnotationLayer *parent):
+    mMapObject(mapObject), mParent(parent)
 {
 
 }
 
 void CompositeCallback::onLayerAdded(osgEarth::Annotation::AnnotationLayer *layer){
     if(mMapObject)
-        emit mMapObject->layerAdded(layer, mMapObject->getParentLayer(layer), mMapObject->getIndexOfLayer(layer));
+        emit mMapObject->layerAdded(layer, mParent, mMapObject->getIndexOfLayer(mParent));
 }
 
 void CompositeCallback::onLayerRemoved(osgEarth::Annotation::AnnotationLayer *layer){
     if(mMapObject)
-        emit mMapObject->layerRemoved(layer, mMapObject->getParentLayer(layer), mMapObject->getIndexOfLayer(layer));
+        emit mMapObject->layerRemoved(layer, mParent, mMapObject->getIndexOfLayer(mParent));
 }

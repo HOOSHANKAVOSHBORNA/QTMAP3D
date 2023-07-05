@@ -16,12 +16,13 @@ class CompositeCallback: public CompositeLayerCallback
 {
     Q_OBJECT
 public:
-    CompositeCallback(MapObject *mapObject);
+    CompositeCallback(MapObject *mapObject, CompositeAnnotationLayer *parent);
     virtual void onLayerAdded(osgEarth::Annotation::AnnotationLayer* layer);
     virtual void onLayerRemoved(osgEarth::Annotation::AnnotationLayer* layer);
 
 private:
     MapObject *mMapObject{nullptr};
+    CompositeAnnotationLayer *mParent;
 };
 
 //class
