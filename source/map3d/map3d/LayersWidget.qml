@@ -247,16 +247,16 @@ Item {
                             //                    enabled: isVisible
                             hoverEnabled: true
                             anchors.fill: hideContainer
-                            onEntered: {
-                                eye.color = Style._mainYellow
-                            }
-                            onExited: {
-                                if(isVisible){
-                                    eye.color = "green"
-                                } else{
-                                    eye.color = "red"
-                                }
-                            }
+//                            onEntered: {
+//                                eye.color = Style._mainYellow
+//                            }
+//                            onExited: {
+//                                if(isVisible){
+//                                    eye.color = "green"
+//                                } else{
+//                                    eye.color = "red"
+//                                }
+//                            }
                             onClicked: function() {
                                 rootItem.layersModell.onItemClicked(treeView.index(row , column))
 
