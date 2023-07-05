@@ -31,6 +31,16 @@ QtObject {
 //    readonly property color     borderColor:    "#F6AE2D"
 //    readonly property color     primaryColor:   "#2F4858"
 //    readonly property color     secondaryColor: "#33658A"
+
+
+    readonly property color     _darkestGray:   "#252935"
+    readonly property color     _darkGray:      "#384250"
+    readonly property color     _mainGray:      "#6C737F"
+    readonly property color     _darkestBlue:   "#164C63"
+    readonly property color     _darkBlue:      "#0E7090"
+    readonly property color     _mainBlue:      "#06AED4"
+    readonly property color     _mainYellow:    "#F79009"
+    readonly property color     _persianGreen:  "#15B79E"
 }
 
 
