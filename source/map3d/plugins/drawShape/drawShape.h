@@ -16,6 +16,7 @@
 #define CATEGORY "Draw"
 #define M_CATEGORY "Measurement"
 
+
 class DrawShape : public PluginInterface
 {
     Q_OBJECT

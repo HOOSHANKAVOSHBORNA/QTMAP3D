@@ -78,7 +78,6 @@ void DrawLine::onLineItemCheck(bool check)
         mLineProperties->setIsRuler(0);
         mLineProperties->show();
         mapItem()->addNode(iconNode());
-
     }
     else {
         if(state() == State::DRAWING)
@@ -96,10 +95,7 @@ void DrawLine::onLineItemCheck(bool check)
         mLineProperties->hide();
         mapItem()->removeNode(iconNode());
     }
-
-
 }
-
 void DrawLine::onRulerItemCheck(bool check)
 {
     auto measureLayer = DrawShape::measureLayer();
@@ -201,7 +197,7 @@ void DrawLine::onSlopeItemCheck(bool check)
 
 void DrawLine::initDraw(const osgEarth::GeoPoint &geoPos)
 {
-//    QString name = "PolyLine" + QString::number(mCount);
+
     mLine = new LineNode(mapItem());
     QString name;
     switch (mType) {
@@ -262,7 +258,6 @@ void DrawLine::drawing(const osgEarth::GeoPoint &geoPos)
 //        confirmDraw();
         return;
     }
-
         mLine->addPoint(geoPos);
 }
 

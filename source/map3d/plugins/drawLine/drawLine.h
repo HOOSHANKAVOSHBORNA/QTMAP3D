@@ -45,7 +45,7 @@ private:
     enum class Type{NONE, LINE, RULERR, HEIGHT, SLOPEE};
     Type mType;
     osg::ref_ptr<LineNode> mLine{nullptr};
-    MeasureHeight* mMeasureHeight{nullptr};
+    MeasureHeight *mMeasureHeight{nullptr};
     LineProperties *mLineProperties = nullptr;
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mLineLayer;
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mRulerLayer;
