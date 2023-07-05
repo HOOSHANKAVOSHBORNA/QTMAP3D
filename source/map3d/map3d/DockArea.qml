@@ -576,9 +576,9 @@ Item {
                             sprite2.stackContainer.currentIndex = 0;
                             sprite2.stackContainer.updateHeaderModel();
 
-                            sprite1.splitWidthScale = 0.5;
+                            sprite1.splitWidthScale = 0.8;
                             sprite1.splitHeightScale = 0.5;
-                            sprite2.splitWidthScale = 0.5;
+                            sprite2.splitWidthScale = 0.2;
                             sprite2.splitHeightScale = 0.5;
 
 

@@ -1,7 +1,8 @@
 #include "mapObject.h"
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/AnnotationLayer>
-
+#include <QDebug>
+#include "compositeLayer.h"
 MainMapCallback::MainMapCallback(MapObject *mapObject) :
     mMapObject(mapObject)
 {
@@ -57,6 +58,10 @@ bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
 {
     if (!layer)
         return false;
+    CompositeAnnotationLayer* c = dynamic_cast<CompositeAnnotationLayer*>(layer);
+    if (c){
+        c->addCallback(new CompositeCallback(this));
+    }
 //    beginUpdate();
 //    endUpdate();
     if(parentLayer){
@@ -151,3 +156,19 @@ osgEarth::Layer *MapObject::getParentLayer(osgEarth::Layer *layer)
     return nullptr;
 }
 
+
+CompositeCallback::CompositeCallback(MapObject *mapObject):
+    mMapObject(mapObject)
+{
+
+}
+
+void CompositeCallback::onLayerAdded(osgEarth::Annotation::AnnotationLayer *layer){
+    if(mMapObject)
+        emit mMapObject->layerAdded(layer, mMapObject->getParentLayer(layer), mMapObject->getIndexOfLayer(layer));
+}
+
+void CompositeCallback::onLayerRemoved(osgEarth::Annotation::AnnotationLayer *layer){
+    if(mMapObject)
+        emit mMapObject->layerRemoved(layer, mMapObject->getParentLayer(layer), mMapObject->getIndexOfLayer(layer));
+}
