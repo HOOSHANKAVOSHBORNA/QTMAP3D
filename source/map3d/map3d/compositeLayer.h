@@ -4,24 +4,21 @@
 #include <osgEarthAnnotation/AnnotationLayer>
 
 #include <QObject>
-#include "mapObject.h"
+//#include "mapObject.h"
 #include <osgEarth/MapCallback>
 #include <osgEarth/VisibleLayer>
 
-class CompositeCallback : public QObject, public osgEarth::VisibleLayerCallback
+class CompositeLayerCallback : public QObject, public osgEarth::VisibleLayerCallback
 {
     Q_OBJECT
 public:
-    CompositeCallback();
-    virtual void onLayerAdded(osgEarth::Annotation::AnnotationLayer* layer);
-    virtual void onLayerRemoved(osgEarth::Annotation::AnnotationLayer* layer);
-    typedef void (CompositeCallback::*MethodPtr)(class osgEarth::Annotation::AnnotationLayer* layer);
-
-private:
-    MapObject *mMapObject{nullptr};
+    CompositeLayerCallback();
+    virtual void onLayerAdded(osgEarth::Annotation::AnnotationLayer* layer){}
+    virtual void onLayerRemoved(osgEarth::Annotation::AnnotationLayer* layer){}
+    typedef void (CompositeLayerCallback::*MethodPtr)(class osgEarth::Annotation::AnnotationLayer* layer);
 };
 
-class CompositeAnnotationLayer: public QObject, osgEarth::Annotation::AnnotationLayer
+class CompositeAnnotationLayer: public QObject, public osgEarth::Annotation::AnnotationLayer
 {
     Q_OBJECT
 public:
@@ -33,7 +30,7 @@ public:
 public:
     void addLayer(osgEarth::Annotation::AnnotationLayer *layer);
     void removeLayer(osgEarth::Annotation::AnnotationLayer *layer);
-    void fireCallback(CompositeCallback::MethodPtr, osgEarth::Annotation::AnnotationLayer *layer);
+    void fireCallback(CompositeLayerCallback::MethodPtr, osgEarth::Annotation::AnnotationLayer *layer);
 //    void addParent(CompositeAnnotationLayer *layer);
 
 private:

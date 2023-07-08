@@ -4,7 +4,7 @@ CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent):
     osgEarth::Annotation::AnnotationLayer(),
     QObject(parent)
 {
-    addCallback(new CompositeCallback());
+    addCallback(new CompositeLayerCallback());
 }
 
 osg::Node *CompositeAnnotationLayer::getNode() const
@@ -23,7 +23,7 @@ void CompositeAnnotationLayer::addLayer(osgEarth::Annotation::AnnotationLayer *l
 {
     mChilds.append(layer);
     _root->addChild(layer->getNode());
-    fireCallback(&CompositeCallback::onLayerAdded, layer);
+    fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
 }
 
 void CompositeAnnotationLayer::removeLayer(osgEarth::Annotation::AnnotationLayer *layer)
@@ -32,7 +32,7 @@ void CompositeAnnotationLayer::removeLayer(osgEarth::Annotation::AnnotationLayer
         return l == layer;
     });
     _root->removeChild(layer->getNode());
-    fireCallback(&CompositeCallback::onLayerRemoved, layer);
+    fireCallback(&CompositeLayerCallback::onLayerRemoved, layer);
 }
 
 //void CompositeAnnotationLayer::addParent(CompositeAnnotationLayer *layer)
@@ -40,26 +40,17 @@ void CompositeAnnotationLayer::removeLayer(osgEarth::Annotation::AnnotationLayer
 
 //}
 
-void CompositeAnnotationLayer::fireCallback(CompositeCallback::MethodPtr method, AnnotationLayer *layer)
+void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr method, AnnotationLayer *layer)
 {
     for (CallbackVector::iterator i = _callbacks.begin(); i != _callbacks.end(); ++i)
     {
-        CompositeCallback* cb = dynamic_cast<CompositeCallback*>(i->get());
+        CompositeLayerCallback* cb = dynamic_cast<CompositeLayerCallback*>(i->get());
         if (cb) (cb->*method)(layer);
     }
 }
 
-CompositeCallback::CompositeCallback()
+CompositeLayerCallback::CompositeLayerCallback()
 {
 
 }
 
-void CompositeCallback::onLayerAdded(osgEarth::Annotation::AnnotationLayer *layer)
-{
-
-}
-
-void CompositeCallback::onLayerRemoved(osgEarth::Annotation::AnnotationLayer *layer)
-{
-
-}

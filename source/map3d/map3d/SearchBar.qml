@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "style"
 
 
 TextField {
@@ -9,10 +10,10 @@ TextField {
 //    property string A: ["0","1"]
 
 
-    property  color colorDefault: "#282c34"
-    property  color colorOnFocus: "#202225"
-    property  color colorMouseOver: "#ffcc00"
-    property  color colorBorderOnFocus: "#ffcc00"
+    property  color colorDefault: Style.backgroundColor
+    property  color colorOnFocus: Style.secondaryColor
+    property  color colorMouseOver: Style.textHoverColor
+    property  color colorBorderOnFocus: Style.hoverColor
 
     placeholderText:  qsTr("Search By")
     color: "#ffffff"
