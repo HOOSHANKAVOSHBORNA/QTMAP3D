@@ -23,21 +23,27 @@ bool DrawCapsule::setup()
 void DrawCapsule::onCapsuleItemCheck(bool check)
 {
     if (check) {
-        mapItem()->addLayerToLayer(mCapsuleLayer, CATEGORY);
+        if(mCapsuleLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->addLayer(mCapsuleLayer, shapeLayer);
+        }
         setState(State::READY);
-        mCapsuleProperties = new CapsuleProperties(mCapsule, qmlEngine(), uiHandle(), mapItem());
-        mCapsuleProperties->show();
+        mapItem()->addNode(iconNode());
+        //mCapsuleProperties = new CapsuleProperties(mCapsule, qmlEngine(), uiHandle(), mapItem());
+        //mCapsuleProperties->show();
         mapItem()->addNode(iconNode());
 
     }
     else {
-        if(mCapsuleLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mCapsuleLayer, CATEGORY);
-        if(state() == State::EDIT)
+        if(state() == State::DRAWING)
             cancelDraw();
+        if(mCapsuleLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->removeLayer(mCapsuleLayer, shapeLayer);
+        }
         setState(State::NONE);
         mCapsule = nullptr;
-        mCapsuleProperties->hide();
+        //mCapsuleProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -47,22 +53,21 @@ void DrawCapsule::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "Capsule" + QString::number(mCount);
     mCapsule = new Capsule();
     mCapsule->setName(name.toStdString());
-
+    mCapsule->setRadius(20000);
     mCapsule->setPosition(geoPos);
+    mapItem()->getMapObject()->addNodeToLayer(mCapsule, mCapsuleLayer);
+    //mCapsuleProperties->setCapsule(mCapsule);
 
-    mapItem()->addNodeToLayer(mCapsule, CAPSULE);
-    mCapsuleProperties->setCapsule(mCapsule);
-
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
 void DrawCapsule::cancelDraw()
 {
-    if(state() == State::EDIT){
-        mapItem()->removeNodeFromLayer(mCapsule, CAPSULE);
+    if(state() == State::DRAWING){
+        mapItem()->getMapObject()->removeNodeFromLayer(mCapsule, mCapsuleLayer);
         mCapsule = nullptr;
-        mCapsuleProperties->setCapsule(mCapsule);
+        //mCapsuleProperties->setCapsule(mCapsule);
         setState(State::READY);
         mCount--;
     }

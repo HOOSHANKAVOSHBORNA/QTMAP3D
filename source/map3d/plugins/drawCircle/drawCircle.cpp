@@ -30,18 +30,24 @@ bool DrawCircle::setup()
 void DrawCircle::onCircleItemCheck(bool check)
 {
     if (check) {
-        mapItem()->addLayerToLayer(mCircleLayer, CATEGORY);
+        if(mCircleLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->addLayer(mCircleLayer, shapeLayer);
+        }
         setState(State::READY);
-        mCircleProperties = new CircleProperties(mCircle, qmlEngine(), uiHandle(), mapItem());
-        mCircleProperties->show();
+//        mCircleProperties = new CircleProperties(mCircle, qmlEngine(), uiHandle(), mapItem());
+//        mCircleProperties->show();
         mapItem()->addNode(iconNode());
 
     }
     else {
-        if(mCircleLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mCircleLayer, CATEGORY);
-        if(state() == State::EDIT)
+        if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mCircleLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->removeLayer(mCircleLayer, shapeLayer);
+        }
         setState(State::NONE);
         mCircle = nullptr;
         mCircleProperties->hide();
@@ -54,20 +60,21 @@ void DrawCircle::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "Circle" + QString::number(mCount);
     mCircle = new Circle();
     mCircle->setName(name.toStdString());
+    mCircle->setRadius(200000);
 
     mCircle->setPosition(geoPos);
 
-    mapItem()->addNodeToLayer(mCircle, CIRCLE);
-    mCircleProperties->setCircle(mCircle);
+    mapItem()->getMapObject()->addNodeToLayer(mCircle, mCircleLayer);
+//    mCircleProperties->setCircle(mCircle);
 
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
 void DrawCircle::cancelDraw()
 {
-    if(state() == State::EDIT){
-        mapItem()->removeNodeFromLayer(mCircle, CIRCLE);
+    if(state() == State::DRAWING){
+        mapItem()->getMapObject()->removeNodeFromLayer(mCircle, mCircleLayer);
         mCircle = nullptr;
         mCircleProperties->setCircle(mCircle);
         setState(State::READY);

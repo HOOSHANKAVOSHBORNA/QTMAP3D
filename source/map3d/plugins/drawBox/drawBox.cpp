@@ -28,11 +28,8 @@ void DrawBox::onBoxItemCheck(bool check)
         if(mBoxLayer->getGroup()->getNumChildren() <= 0){ 
             auto shapeLayer = DrawShape::shapeLayer();
             mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
-//            mapItem()->getMapObject()->setParentLayer(mBoxLayer, shapeLayer);
         }
         setState(State::READY);
-//        mBoxProperties = new BoxProperties(mBox, qmlEngine(), uiHandle(), mapItem());
-//        mBoxProperties->show();
         mapItem()->addNode(iconNode());
 
     }

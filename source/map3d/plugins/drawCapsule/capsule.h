@@ -4,7 +4,6 @@
 #include <osgEarth/Color>
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
-#include "plugininterface.h"
 #include <osg/ShapeDrawable>
 #include <osg/ClipNode>
 #include <osg/ClipPlane>

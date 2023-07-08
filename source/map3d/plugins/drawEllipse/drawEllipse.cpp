@@ -24,7 +24,10 @@ bool DrawEllipse::setup()
 void DrawEllipse::onEllipseItemCheck(bool check)
 {
     if (check) {
-        mapItem()->addLayerToLayer(mEllipseLayer, CATEGORY);
+        if(mEllipseLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->addLayer(mEllipseLayer, shapeLayer);
+        }
         setState(State::READY);
         mEllipseProperties = new EllipseProperties(mEllipse, qmlEngine(), uiHandle(), mapItem());
         mEllipseProperties->show();
@@ -32,10 +35,13 @@ void DrawEllipse::onEllipseItemCheck(bool check)
 
     }
     else {
-        if(mEllipseLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mEllipseLayer, CATEGORY);
-        if(state() == State::EDIT)
+        if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mEllipseLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->removeLayer(mEllipseLayer, shapeLayer);
+        }
         setState(State::NONE);
         mEllipse = nullptr;
         mEllipseProperties->hide();
@@ -51,17 +57,17 @@ void DrawEllipse::initDraw(const osgEarth::GeoPoint &geoPos)
 
     mEllipse->setPosition(geoPos);
 
-    mapItem()->addNodeToLayer(mEllipse, ELLIPSE);
+    mapItem()->getMapObject()->addNodeToLayer(mEllipse, mEllipseLayer);
     mEllipseProperties->setEllipse(mEllipse);
 
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
 void DrawEllipse::cancelDraw()
 {
-    if(state() == State::EDIT){
-        mapItem()->removeNodeFromLayer(mEllipse, ELLIPSE);
+    if(state() == State::DRAWING){
+        mapItem()->getMapObject()->removeNodeFromLayer(mEllipse, mEllipseLayer);
         mEllipse = nullptr;
         mEllipseProperties->setEllipse(mEllipse);
         setState(State::READY);

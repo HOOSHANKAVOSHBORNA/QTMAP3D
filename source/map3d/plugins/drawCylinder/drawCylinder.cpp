@@ -25,7 +25,10 @@ bool DrawCylinder::setup()
 void DrawCylinder::onCylinderItemCheck(bool check)
 {
     if (check) {
-        mapItem()->addLayerToLayer(mCylinderLayer, CATEGORY);
+        if(mCylinderLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->addLayer(mCylinderLayer, shapeLayer);
+        }
         setState(State::READY);
         mCylinderProperties = new CylinderProperties(mCylinder, qmlEngine(), uiHandle(), mapItem());
         mCylinderProperties->show();
@@ -33,10 +36,13 @@ void DrawCylinder::onCylinderItemCheck(bool check)
 
     }
     else {
-        if(mCylinderLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mCylinderLayer, CATEGORY);
-        if(state() == State::EDIT)
+        if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mCylinderLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->removeLayer(mCylinderLayer, shapeLayer);
+        }
         setState(State::NONE);
         mCylinder = nullptr;
         mCylinderProperties->hide();
@@ -52,17 +58,17 @@ void DrawCylinder::initDraw(const osgEarth::GeoPoint &geoPos)
 
     mCylinder->setPosition(geoPos);
 
-    mapItem()->addNodeToLayer(mCylinder, CYLINDER);
+    mapItem()->getMapObject()->addNodeToLayer(mCylinder, mCylinderLayer);
     mCylinderProperties->setCylinder(mCylinder);
 
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
 void DrawCylinder::cancelDraw()
 {
-    if(state() == State::EDIT){
-        mapItem()->removeNodeFromLayer(mCylinder, CYLINDER);
+    if(state() == State::DRAWING){
+        mapItem()->getMapObject()->removeNodeFromLayer(mCylinder, mCylinderLayer);
         mCylinder = nullptr;
         mCylinderProperties->setCylinder(mCylinder);
         setState(State::READY);
