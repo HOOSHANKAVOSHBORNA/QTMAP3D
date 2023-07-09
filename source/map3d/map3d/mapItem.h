@@ -123,7 +123,7 @@ private:
     osg::ref_ptr<CameraController> mCameraController{nullptr};
     bool mIsGeocentric{true};
     bool mIs3DView{true};
-    osgEarth::GeoPoint mCurrentMouseGeoPoint;
+//    osgEarth::GeoPoint mCurrentMouseGeoPoint;
     //--renderer------------------------------------------------------------------------------------------------------
 public:
     //    void cleanup();

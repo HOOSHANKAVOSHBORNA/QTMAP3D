@@ -35,8 +35,8 @@ void LayersModel::initializeModel(osgEarth::Map *map)
     osgEarth::LayerVector layers;
     map->getLayers(layers);
     for(const auto& layer : layers) {
-        auto parentLayer = mMapItem->getMapObject()->getParentLayer(layer);
-        onLayerAdded(layer, parentLayer, map->getIndexOfLayer(layer));
+        //        auto parentLayer = mMapItem->getMapObject()->getParentLayer(layer);
+        onLayerAdded(layer, nullptr, map->getIndexOfLayer(layer));
     }
 }
 
@@ -74,27 +74,33 @@ void LayersModel::onItemClicked(const QModelIndex &current)
 
 void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLayer , unsigned index)
 {
-//    qDebug()<<"addLayer:"<<QString(layer->getName().c_str());
+    //    qDebug()<<"addLayer:"<<QString(layer->getName().c_str());
 
     QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
     treeItem->setData(getLayerVisible(layer),visibleLayerRole);
     if(parentLayer){
         QString parentName = parentLayer->getName().c_str();
         mTreeModel->addItem(treeItem,parentName);
-//        qDebug()<<"addLayer parent:"<<parentName;
+        //        qDebug()<<"addLayer parent:"<<parentName;
     }else{
         mTreeModel->addItem(treeItem);
+    }
+    //--------------------------------------
+    CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
+    if (compositeLayer){
+        for(int i = 0; i < compositeLayer->getNumChildren(); i++)
+            onLayerAdded(compositeLayer->getChild(i), layer, index);
     }
 }
 
 void LayersModel::onLayerRemoved(osgEarth::Layer *layer , osgEarth::Layer *parentLayer, unsigned index)
 {
-//    qDebug()<<"removeLayer:"<<QString(layer->getName().c_str());
+    //    qDebug()<<"removeLayer:"<<QString(layer->getName().c_str());
     QString treeItem = QString(layer->getName().c_str());
     if(parentLayer){
         QString parentName = parentLayer->getName().c_str();
         mTreeModel->removeItem(treeItem , parentName);
-//        qDebug()<<"removeLayer parent:"<<parentName;
+        //        qDebug()<<"removeLayer parent:"<<parentName;
     }else{
         mTreeModel->removeItem(treeItem);
     }
@@ -138,17 +144,17 @@ void LayersModel::setLayerVisible(osgEarth::VisibleLayer *layer)
 {
     bool visible = layer->getVisible();
     layer->setVisible(!visible);
-    auto containerData = layer->getUserDataContainer();
-    if(containerData){
-        for(int i = 0; i < containerData->getNumUserObjects(); ++i){
-            auto userObject = containerData->getUserObject(i);
-            osgEarth::VisibleLayer *childLayer = dynamic_cast<osgEarth::VisibleLayer*>(userObject);
-            if(childLayer){
-//                qDebug()<<childLayer->getVisible()<< childLayer->getName();
-                setLayerVisible(childLayer);
-            }
-        }
-    }
+//    auto containerData = layer->getUserDataContainer();
+//    if(containerData){
+//        for(int i = 0; i < containerData->getNumUserObjects(); ++i){
+//            auto userObject = containerData->getUserObject(i);
+//            osgEarth::VisibleLayer *childLayer = dynamic_cast<osgEarth::VisibleLayer*>(userObject);
+//            if(childLayer){
+//                //                qDebug()<<childLayer->getVisible()<< childLayer->getName();
+//                setLayerVisible(childLayer);
+//            }
+//        }
+//    }
 }
 
 bool LayersModel::getLayerVisible(osgEarth::Layer *layer) const

@@ -27,7 +27,8 @@ void DrawBox::onBoxItemCheck(bool check)
     if (check) {
         if(mBoxLayer->getGroup()->getNumChildren() <= 0){ 
             auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
+//            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
+            shapeLayer->addLayer(mBoxLayer);
         }
         setState(State::READY);
         mapItem()->addNode(iconNode());
@@ -39,8 +40,8 @@ void DrawBox::onBoxItemCheck(bool check)
 
         if(mBoxLayer->getGroup()->getNumChildren() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
-//            mapItem()->getMapObject()->setParentLayer(mBoxLayer, nullptr);
-            mapItem()->getMapObject()->removeLayer(mBoxLayer, shapeLayer);
+//            mapItem()->getMapObject()->removeLayer(mBoxLayer, shapeLayer);
+            shapeLayer->removeLayer(mBoxLayer);
         }
         setState(State::NONE);
         mBox = nullptr;

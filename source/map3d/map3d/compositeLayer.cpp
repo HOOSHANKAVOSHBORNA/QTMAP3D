@@ -4,25 +4,33 @@ CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent):
     osgEarth::Annotation::AnnotationLayer(),
     QObject(parent)
 {
-    addCallback(new CompositeLayerCallback());
+    //addCallback(new CompositeLayerCallback());
+    init();
 }
 
 osg::Node *CompositeAnnotationLayer::getNode() const
 {
-    return _root.get();
+    return mRoot.get();
 }
 
 void CompositeAnnotationLayer::init()
 {
     osgEarth::Annotation::AnnotationLayer::init();
 
-    _root = new osg::Group();
+    mRoot = new osg::Group();
+}
+
+void CompositeAnnotationLayer::setVisible(bool value)
+{
+    osgEarth::Annotation::AnnotationLayer::setVisible(value);
+    for(auto& layer:mChilds)
+        layer->setVisible(value);
 }
 
 void CompositeAnnotationLayer::addLayer(osgEarth::Annotation::AnnotationLayer *layer)
 {
     mChilds.append(layer);
-    _root->addChild(layer->getNode());
+    mRoot->addChild(layer->getNode());
     fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
 }
 
@@ -31,7 +39,7 @@ void CompositeAnnotationLayer::removeLayer(osgEarth::Annotation::AnnotationLayer
     mChilds.removeIf([&](osgEarth::Annotation::AnnotationLayer* l){
         return l == layer;
     });
-    _root->removeChild(layer->getNode());
+    mRoot->removeChild(layer->getNode());
     fireCallback(&CompositeLayerCallback::onLayerRemoved, layer);
 }
 
@@ -40,17 +48,16 @@ void CompositeAnnotationLayer::removeLayer(osgEarth::Annotation::AnnotationLayer
 
 //}
 
-void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr method, AnnotationLayer *layer)
+void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr method, osgEarth::Annotation::AnnotationLayer *layer)
 {
     for (CallbackVector::iterator i = _callbacks.begin(); i != _callbacks.end(); ++i)
     {
         CompositeLayerCallback* cb = dynamic_cast<CompositeLayerCallback*>(i->get());
-        if (cb) (cb->*method)(layer);
+        if (cb) (cb->*method)(layer, this);
     }
 }
 
-CompositeLayerCallback::CompositeLayerCallback()
+int CompositeAnnotationLayer::getNumChildren() const
 {
-
+    return mChilds.length();
 }
-

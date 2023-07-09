@@ -39,22 +39,22 @@ DrawShape::DrawShape(QObject *parent)
 DrawShape::~DrawShape()
 {
     mIconNode.release();
-//    qDebug()<<name();
-//    if(mIconNode.valid()){
-//    qDebug()<<mIconNode->referenceCount();
-//    qDebug()<<mIconNode->referenceCount();
-//    }
+    //    qDebug()<<name();
+    //    if(mIconNode.valid()){
+    //    qDebug()<<mIconNode->referenceCount();
+    //    qDebug()<<mIconNode->referenceCount();
+    //    }
 }
 
 bool DrawShape::setup()
 {
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    mShapeLayer = new osgEarth::Annotation::AnnotationLayer();
+    mShapeLayer = new CompositeAnnotationLayer();
     mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
 
-    mMeasureLayer = new osgEarth::Annotation::AnnotationLayer();
+    mMeasureLayer = new CompositeAnnotationLayer();
     mMeasureLayer->setName(M_CATEGORY);
     mapItem()->getMapObject()->addLayer(mMeasureLayer);
 
@@ -87,27 +87,17 @@ void DrawShape::setState(DrawShape::State newState)
     mState = newState;
 }
 
-//void DrawShape::addLayer()
-//{
-//    if(!mHasLayer){
-//        auto shapeLayer = new osgEarth::Annotation::AnnotationLayer();
-//        shapeLayer->setName(CATEGORY);
-//        mapItem()->addLayer(shapeLayer);
-//        mHasLayer = true;
-//    }
-//}
-
-osgEarth::Annotation::AnnotationLayer *DrawShape::shapeLayer()
+CompositeAnnotationLayer *DrawShape::shapeLayer()
 {
     if(!mShapeLayer)
-        mShapeLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(CATEGORY));
+        mShapeLayer = dynamic_cast<CompositeAnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(CATEGORY));
     return mShapeLayer;
 }
 
-osgEarth::Annotation::AnnotationLayer *DrawShape::measureLayer()
+CompositeAnnotationLayer *DrawShape::measureLayer()
 {
     if(!mMeasureLayer)
-        mMeasureLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(M_CATEGORY));
+        mMeasureLayer = dynamic_cast<CompositeAnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(M_CATEGORY));
     return mMeasureLayer;
 }
 
@@ -118,14 +108,16 @@ bool DrawShape::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActi
 
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         if (mState == State::READY) {
-           osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initDraw(geoPos);
+            ea.setHandled(true);
             return true;
         }
 
         if (mState == State::DRAWING) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             drawing(geoPos);
+            ea.setHandled(true);
             return true;
         }
 
