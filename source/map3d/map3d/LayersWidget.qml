@@ -19,24 +19,6 @@ Item {
         color: Style._darkestGray
         opacity: 1
 
-//        Rectangle{
-//            width: parent.width
-//            height: 40
-//            gradient: Gradient {
-//                    GradientStop { position: 0.0; color: Style.backgroundColor }
-//                    GradientStop { position: 1.0; color: Style._darkestGray }
-//                }
-
-//        }
-
-//        Label {
-//            color: "white"
-//            text: "Layers"
-//            font.family: "SourceSansPro"
-//            font.pointSize: 14
-//            anchors.horizontalCenter: parent.horizontalCenter
-//            y:10
-//        }
 
         Item{
             anchors.horizontalCenter: parent.horizontalCenter
@@ -48,7 +30,7 @@ Item {
             Rectangle {
                 id: search
                 width: parent.width
-                height: 35
+                height: 40
                 y : -1
                 clip: true
                 //        anchors.bottom: rootItem.top
@@ -66,9 +48,9 @@ Item {
 
 
                     background: Rectangle {
-//                        radius: Style.radius
+                        //                        radius: Style.radius
                         implicitWidth: search.width
-                        implicitHeight: 24
+                        implicitHeight: 35
                         border.color: "black"
                         border.width: Style.borderwidth
                         color: Style.backgroundColor
@@ -149,16 +131,23 @@ Item {
                         color:  Style._darkestGray
                         radius:   Style.radius
                         x:  ((treeDelegate.depth ) * treeDelegate.indent)
+                        MouseArea{
+                            id: containerMouse
+                            anchors.fill: parent
+                            acceptedButtons: Qt.RightButton;
+                            onClicked: {
+                                contextMenu.popup()
 
+                            }
+                        }
                     }
 
                     HoverHandler{
-
                         onHoveredChanged: {
                             if(hovered){
                                 container.color = Style._darkGray
                                 label.color = Style.textHoverColor
-                             }else{
+                            }else{
                                 container.color = Style._darkestGray
                                 label.color = Style.textColor
                             }
@@ -167,7 +156,6 @@ Item {
 
                     TapHandler {
                         onTapped: {
-
                             treeView.toggleExpanded(row)
                         }
                         onPressedChanged: pressed ? label.color = Style.hoverColor : !pressed ? label.color = Style.textColor : Style.textColor
@@ -231,7 +219,7 @@ Item {
                             width: parent.width
                             height: parent.height
                             anchors.centerIn: parent
-                            color: isVisible ?  "green" : "red"
+                            color: isVisible ?  Style._mainBlue : "red"
 
                         }
                         MouseArea{
@@ -239,13 +227,41 @@ Item {
                             //                    enabled: isVisible
                             hoverEnabled: true
                             anchors.fill: hideContainer
-//                            onEntered: eye.color = Style._mainYellow
-//                            onExited: isVisible ? eye.color = "green" : eye.color = "red"
+                            onEntered: eye.color = Style._mainYellow
+                            onExited: isVisible ? eye.color = Style._mainBlue : eye.color = "red"
 
                             onClicked: function() {
                                 rootItem.layersModell.onItemClicked(treeView.index(row , column))
+                            }
+
+                        }
+                        Menu {
+                            id: contextMenu
+                            MenuItem{ text: "Delete Layer"
+                                   icon.source: "./Resources/48/delete.png"
+                                   icon.color: "red"
+                                   onClicked: function() {
+                                       rootItem.layersModell.onDeleteLayerClicked(treeView.index(row , column))
+                                   }
+                            }
+                            MenuSeparator{}
+                            MenuItem { text: "Show On Map"
+                                icon.source: "./Resources/48/location.png"
+                                icon.color: Style._mainYellow
+                            }
+                            MenuSeparator{}
+                            MenuItem { text: "Shift Up"
+                                icon.source: "./Resources/48/arrow-outline-up.png"
+                                icon.color: Style._persianGreen
 
                             }
+                            MenuSeparator{}
+                            MenuItem { text: "Shift Down"
+                                icon.source: "./Resources/48/arrow-outline-down.png"
+                                icon.color: Style._persianGreen
+
+                            }
+
                         }
                     }
                 }

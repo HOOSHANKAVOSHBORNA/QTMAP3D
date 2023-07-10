@@ -43,6 +43,24 @@ void CompositeAnnotationLayer::removeLayer(osgEarth::Annotation::AnnotationLayer
     fireCallback(&CompositeLayerCallback::onLayerRemoved, layer);
 }
 
+void CompositeAnnotationLayer::removeLayerByName(const QString &layerName)
+{
+    auto layer = getLayerByName(layerName);
+    if (!layer)
+        return;
+    removeLayer(layer);
+}
+
+osgEarth::Annotation::AnnotationLayer *CompositeAnnotationLayer::getLayerByName(const QString &layerName)
+{
+    auto it = std::find_if(mChilds.begin(), mChilds.end(), [&](const osgEarth::Annotation::AnnotationLayer *layer){
+        return layer->getName() == layerName.toStdString();
+    });
+    if (it == mChilds.end())
+        return nullptr;
+    return *it;
+}
+
 //void CompositeAnnotationLayer::addParent(CompositeAnnotationLayer *layer)
 //{
 

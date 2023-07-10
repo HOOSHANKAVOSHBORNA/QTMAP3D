@@ -151,8 +151,8 @@ Item {
                         id: container
                         width: parent.width  - treeDelegate.indent * ( 0.5 * treeDelegate.depth ) - treeDelegate.padding -3
                         height: parent.height
-                        border.width: 1
-                        border.color: "#202020"
+//                        border.width: 1
+//                        border.color: "#202020"
                         color: "transparent"
                         clip: true
                         anchors.horizontalCenter: parent.horizontalCenter
@@ -164,7 +164,7 @@ Item {
                             color: treeDelegate.hasChildren ? Style._darkGray : Style._darkestGray
                             width:  parent.width
                             height: parent.height
-                            border.color: "#202020"
+                            border.color: Style.backgroundColor
                             border.width: treeDelegate.hasChildren ? 2 : 0
                             radius: treeDelegate.hasChildren ? Style.radius : 0
 
