@@ -60,7 +60,10 @@ void DrawImage::onImageItemCheck(bool check)
 {
     if (check) {
         loadImage();
-        mapItem()->addLayerToLayer(mImgLayer, CATEGORY);
+        if(mImgLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->addLayer(mImgLayer, shapeLayer);
+        }
         setState(State::READY);
         mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
         mImageProperties->show();
@@ -68,10 +71,13 @@ void DrawImage::onImageItemCheck(bool check)
 
     }
     else {
-        if(mImgLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mImgLayer, CATEGORY);
-        if(state() == State::EDIT)
+        if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mImgLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->removeLayer(mImgLayer, shapeLayer);
+        }
         setState(State::NONE);
         mImageOverlay = nullptr;
         mImageProperties->hide();
@@ -87,7 +93,7 @@ void DrawImage::initDraw(const osgEarth::GeoPoint &geoPos)
 
     mImageOverlay->setCenter(geoPos.x(),geoPos.y());
 
-    mapItem()->addNodeToLayer(mImageOverlay, IMGOVERLAY);
+    mapItem()->getMapObject()->addNodeToLayer(mImageOverlay, mImgLayer);
     mImageProperties->setImage(mImageOverlay);
 
     mImageProperties->setLocation(mImageOverlay->getCenter());
@@ -96,14 +102,14 @@ void DrawImage::initDraw(const osgEarth::GeoPoint &geoPos)
     mImageProperties->setBR(mImageOverlay->getLowerRight());
     mImageProperties->setBL(mImageOverlay->getLowerLeft());
 
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
 void DrawImage::cancelDraw()
 {
-    if(state() == State::EDIT){
-        mapItem()->removeNodeFromLayer(mImageOverlay, IMGOVERLAY);
+    if(state() == State::DRAWING){
+        mapItem()->getMapObject()->removeNodeFromLayer(mImageOverlay, mImgLayer);
         mImageOverlay = nullptr;
         mImageProperties->setImage(mImageOverlay);
         setState(State::READY);

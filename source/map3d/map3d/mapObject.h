@@ -1,9 +1,11 @@
 #ifndef CUSTOMMAP_H
 #define CUSTOMMAP_H
 
+#include <QMap>
 #include <QObject>
 #include <osgEarth/Map>
 #include "compositeLayer.h"
+
 namespace osgEarth {
 namespace Annotation {
 class AnnotationLayer;
@@ -16,13 +18,12 @@ class CompositeCallback: public CompositeLayerCallback
 {
     Q_OBJECT
 public:
-    CompositeCallback(MapObject *mapObject, CompositeAnnotationLayer *parent);
-    virtual void onLayerAdded(osgEarth::Annotation::AnnotationLayer* layer);
-    virtual void onLayerRemoved(osgEarth::Annotation::AnnotationLayer* layer);
+    CompositeCallback(MapObject *mapObject);
+    virtual void onLayerAdded(osgEarth::Annotation::AnnotationLayer* layer, CompositeAnnotationLayer *parentLayer);
+    virtual void onLayerRemoved(osgEarth::Annotation::AnnotationLayer* layer, CompositeAnnotationLayer *parentLayer);
 
 private:
     MapObject *mMapObject{nullptr};
-    CompositeAnnotationLayer *mParent;
 };
 
 //class
@@ -66,6 +67,7 @@ signals:
     void parentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
 
 private:
+    QMap<osgEarth::Layer*, CompositeCallback*> mCompositeCallbacks;
 };
 
 #endif // CUSTOMMAP_H

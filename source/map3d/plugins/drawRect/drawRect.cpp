@@ -30,7 +30,10 @@ bool DrawRect::setup()
 void DrawRect::onRectItemCheck(bool check)
 {
     if (check) {
-        mapItem()->addLayerToLayer(mRectLayer, CATEGORY);
+        if(mRectLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->addLayer(mRectLayer, shapeLayer);
+        }
         setState(State::READY);
         mRectProperties = new RectProperties(mRect, qmlEngine(), uiHandle(), mapItem());
         mRectProperties->show();
@@ -38,10 +41,13 @@ void DrawRect::onRectItemCheck(bool check)
 
     }
     else {
-        if(mRectLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mRectLayer, CATEGORY);
-        if(state() == State::EDIT)
+        if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mRectLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->removeLayer(mRectLayer, shapeLayer);
+        }
         setState(State::NONE);
         mRect = nullptr;
         mRectProperties->hide();
@@ -57,17 +63,17 @@ void DrawRect::initDraw(const osgEarth::GeoPoint &geoPos)
 
     mRect->setPosition(geoPos);
 
-    mapItem()->addNodeToLayer(mRect, RECT);
+    mapItem()->getMapObject()->addNodeToLayer(mRect, mRectLayer);
     mRectProperties->setRect(mRect);
 
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
 void DrawRect::cancelDraw()
 {
-    if(state() == State::EDIT){
-        mapItem()->removeNodeFromLayer(mRect, RECT);
+    if(state() == State::DRAWING){
+        mapItem()->getMapObject()->removeNodeFromLayer(mRect, mRectLayer);
         mRect = nullptr;
         mRectProperties->setRect(mRect);
         setState(State::READY);

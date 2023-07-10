@@ -24,7 +24,10 @@ bool DrawCone::setup()
 void DrawCone::onConeItemCheck(bool check)
 {
     if (check) {
-        mapItem()->addLayerToLayer(mConeLayer, CATEGORY);
+        if(mConeLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->addLayer(mConeLayer, shapeLayer);
+        }
         setState(State::READY);
         mConeProperties = new ConeProperties(mCone, qmlEngine(), uiHandle(), mapItem());
         mConeProperties->show();
@@ -32,10 +35,13 @@ void DrawCone::onConeItemCheck(bool check)
 
     }
     else {
-        if(mConeLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mConeLayer, CATEGORY);
-        if(state() == State::EDIT)
+        if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mConeLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->removeLayer(mConeLayer, shapeLayer);
+        }
         setState(State::NONE);
         mCone = nullptr;
         mConeProperties->hide();
@@ -48,20 +54,18 @@ void DrawCone::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "Cone" + QString::number(mCount);
     mCone = new Cone();
     mCone->setName(name.toStdString());
-
     mCone->setPosition(geoPos);
-
-    mapItem()->addNodeToLayer(mCone, CONE);
+    mapItem()->getMapObject()->addNodeToLayer(mCone, mConeLayer);
     mConeProperties->setCone(mCone);
 
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
 void DrawCone::cancelDraw()
 {
-    if(state() == State::EDIT){
-        mapItem()->removeNodeFromLayer(mCone, CONE);
+    if(state() == State::DRAWING){
+        mapItem()->getMapObject()->removeNodeFromLayer(mCone, mConeLayer);
         mCone = nullptr;
         mConeProperties->setCone(mCone);
         setState(State::READY);

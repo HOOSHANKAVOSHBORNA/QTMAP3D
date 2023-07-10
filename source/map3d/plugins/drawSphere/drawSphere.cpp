@@ -25,7 +25,10 @@ bool DrawSphere::setup()
 void DrawSphere::onSphereItemCheck(bool check)
 {
     if (check) {
-        mapItem()->addLayerToLayer(mSphereLayer, CATEGORY);
+        if(mSphereLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->addLayer(mSphereLayer, shapeLayer);
+        }
         setState(State::READY);
         mSphereProperties = new SphereProperties(qmlEngine(), uiHandle(), mapItem());
         mSphereProperties->show();
@@ -33,10 +36,13 @@ void DrawSphere::onSphereItemCheck(bool check)
 
     }
     else {
-        if(mSphereLayer->getGroup()->getNumChildren() <= 0)
-            mapItem()->removeLayerFromLayer(mSphereLayer, CATEGORY);
-        if(state() == State::EDIT)
+        if(state() == State::DRAWING)
             cancelDraw();
+
+        if(mSphereLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            mapItem()->getMapObject()->removeLayer(mSphereLayer, shapeLayer);
+        }
         setState(State::NONE);
         mSphere = nullptr;
         mSphereProperties->hide();
@@ -51,17 +57,17 @@ void DrawSphere::initDraw(const osgEarth::GeoPoint &geoPos)
     mSphere->setName(name.toStdString());
     mSphere->setPosition(geoPos);
 
-    mapItem()->addNodeToLayer(mSphere, SPHERE);
+    mapItem()->getMapObject()->addNodeToLayer(mSphere, mSphereLayer);
     mSphereProperties->setSphere(mSphere);
 
-    setState(State::EDIT);
+    setState(State::DRAWING);
     mCount++;
 }
 
 void DrawSphere::cancelDraw()
 {
-    if(state() == State::EDIT){
-        mapItem()->removeNodeFromLayer(mSphere, SPHERE);
+    if(state() == State::DRAWING){
+        mapItem()->getMapObject()->removeNodeFromLayer(mSphere, mSphereLayer);
         mSphere = nullptr;
         mSphereProperties->setSphere(mSphere);
         setState(State::READY);

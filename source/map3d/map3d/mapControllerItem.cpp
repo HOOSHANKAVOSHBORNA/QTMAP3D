@@ -144,7 +144,13 @@ void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
 
 void MapControllerItem::mousePressEvent(QMouseEvent *event)
 {
+    //qDebug()<<event->isAccepted();
     MapItem::mousePressEvent(event);
+    //qDebug()<<event->isAccepted();
+
+//    if (event->isAccepted())
+//        return;
+
     if (event->button() == Qt::LeftButton) {
         mLastMousePressTime = QTime::currentTime();
         mLastPressPoint = event->pos();
