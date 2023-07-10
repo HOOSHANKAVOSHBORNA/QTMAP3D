@@ -1,4 +1,4 @@
-#include "compositeLayer.h"
+#include "compositeAnnotationLayer.h"
 
 CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent):
     osgEarth::Annotation::AnnotationLayer(),
@@ -25,6 +25,13 @@ void CompositeAnnotationLayer::setVisible(bool value)
     osgEarth::Annotation::AnnotationLayer::setVisible(value);
     for(auto& layer:mChilds)
         layer->setVisible(value);
+}
+
+void CompositeAnnotationLayer::setOpacity(float value)
+{
+    osgEarth::Annotation::AnnotationLayer::setOpacity(value);
+    for (auto& layer:mChilds)
+        layer->setOpacity(value);
 }
 
 void CompositeAnnotationLayer::addLayer(osgEarth::Annotation::AnnotationLayer *layer)

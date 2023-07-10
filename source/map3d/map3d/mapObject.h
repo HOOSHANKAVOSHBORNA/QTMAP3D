@@ -4,7 +4,7 @@
 #include <QMap>
 #include <QObject>
 #include <osgEarth/Map>
-#include "compositeLayer.h"
+#include "compositeAnnotationLayer.h"
 
 namespace osgEarth {
 namespace Annotation {

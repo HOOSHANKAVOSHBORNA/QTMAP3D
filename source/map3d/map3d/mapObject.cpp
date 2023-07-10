@@ -2,7 +2,7 @@
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <QDebug>
-#include "compositeLayer.h"
+#include "compositeAnnotationLayer.h"
 
 //------------------------------------------------------------------------------
 CompositeCallback::CompositeCallback(MapObject *mapObject):

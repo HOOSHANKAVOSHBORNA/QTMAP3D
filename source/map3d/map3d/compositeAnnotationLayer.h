@@ -30,6 +30,7 @@ public:
 
 public:
     virtual void setVisible(bool value) override;
+    virtual void setOpacity(float value) override;
     void addLayer(osgEarth::Annotation::AnnotationLayer *layer);
     void removeLayer(osgEarth::Annotation::AnnotationLayer *layer);
     void fireCallback(CompositeLayerCallback::MethodPtr, osgEarth::Annotation::AnnotationLayer *layer);
