@@ -19,37 +19,37 @@ Item {
         color: Style._darkestGray
         opacity: 1
 
-        Rectangle{
-            width: parent.width
-            height: 80
-            gradient: Gradient {
-                    GradientStop { position: 0.0; color: Style._darkGray }
-                    GradientStop { position: 1.0; color: Style._darkestGray }
-                }
+//        Rectangle{
+//            width: parent.width
+//            height: 40
+//            gradient: Gradient {
+//                    GradientStop { position: 0.0; color: Style.backgroundColor }
+//                    GradientStop { position: 1.0; color: Style._darkestGray }
+//                }
 
-        }
+//        }
 
-        Label {
-            color: "white"
-            text: "Layers"
-            font.family: "SourceSansPro"
-            font.pointSize: 14
-            anchors.horizontalCenter: parent.horizontalCenter
-            y:10
-        }
+//        Label {
+//            color: "white"
+//            text: "Layers"
+//            font.family: "SourceSansPro"
+//            font.pointSize: 14
+//            anchors.horizontalCenter: parent.horizontalCenter
+//            y:10
+//        }
 
         Item{
             anchors.horizontalCenter: parent.horizontalCenter
-            y : 45
+            y : 0
             id:treerootItem
             width: parent.width
             height: parent.height - 40
 
             Rectangle {
                 id: search
-                width: parent.width -20
-                height: 30
-                y : 0
+                width: parent.width
+                height: 35
+                y : -1
                 clip: true
                 //        anchors.bottom: rootItem.top
                 color: "transparent"
@@ -66,12 +66,12 @@ Item {
 
 
                     background: Rectangle {
-                        radius: Style.radius
+//                        radius: Style.radius
                         implicitWidth: search.width
                         implicitHeight: 24
-                        border.color: Style.borderColor
+                        border.color: "black"
                         border.width: Style.borderwidth
-                        color: Style.secondaryColor
+                        color: Style.backgroundColor
                     }
                     anchors.fill: parent
                     color: Style.textColor
@@ -82,20 +82,11 @@ Item {
                         anchors.right: parent.right
                         anchors.rightMargin: 10
                         color: Style.textColor
-                        Image {
-                            id: searchIcon
-                            source: "./Resources/search.png"
-                            anchors.fill: parent
-
-                        }
+                        source: "./Resources/48/search.png"
                     }
 
                     placeholderText: "Search Layers"
-
-                    //            placeholderTextColor: "#495866"
                     placeholderTextColor: Style.selectionColor
-                    anchors.leftMargin: 2
-                    anchors.rightMargin: 2
                     onAccepted: {
                         sendToSearch()
                     }
@@ -138,7 +129,7 @@ Item {
                     //            implicitWidth: padding + label.x + label.implicitWidth + padding
                     implicitHeight: label.implicitHeight * 2 - 4*depth
 
-                    readonly property real indent: 20
+                    readonly property real indent: 25
                     readonly property real padding: 5
                     required property TreeView treeView
                     required property bool isTreeNode
@@ -215,7 +206,7 @@ Item {
                         //                anchors.left: cont
                         //                width: treeDelegate.width - treeDelegate.padding - x
                         clip: true
-                        font.pixelSize: 14 - depth
+                        font.pixelSize: 16 - depth
                         anchors.verticalCenter: container.verticalCenter
                         color: Style.textColor
                         text: display
@@ -241,22 +232,16 @@ Item {
                             height: parent.height
                             anchors.centerIn: parent
                             color: isVisible ?  "green" : "red"
+
                         }
                         MouseArea{
                             id:hideBtn
                             //                    enabled: isVisible
                             hoverEnabled: true
                             anchors.fill: hideContainer
-//                            onEntered: {
-//                                eye.color = Style._mainYellow
-//                            }
-//                            onExited: {
-//                                if(isVisible){
-//                                    eye.color = "green"
-//                                } else{
-//                                    eye.color = "red"
-//                                }
-//                            }
+//                            onEntered: eye.color = Style._mainYellow
+//                            onExited: isVisible ? eye.color = "green" : eye.color = "red"
+
                             onClicked: function() {
                                 rootItem.layersModell.onItemClicked(treeView.index(row , column))
 
