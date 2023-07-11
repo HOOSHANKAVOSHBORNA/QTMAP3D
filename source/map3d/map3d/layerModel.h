@@ -24,6 +24,7 @@ public:
 public slots:
     void onItemClicked(const QModelIndex &current)override;
     void onDeleteLayerClicked(const QModelIndex &current);
+    void onGoToClicked(const QModelIndex &current);
 
     void onLayerAdded(osgEarth::Layer* layer , osgEarth::Layer *parentLayer,   unsigned index);
     void onLayerRemoved(osgEarth::Layer* layer ,osgEarth::Layer *parentLayer, unsigned index);

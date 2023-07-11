@@ -4,6 +4,10 @@
 #include <QHeaderView>
 #include <QQmlComponent>
 #include <QQuickItem>
+#include <osgEarthAnnotation/AnnotationNode>
+#include <osgEarthAnnotation/AnnotationNode>
+#include <osgEarthAnnotation/FeatureNode>
+#include <osgEarthAnnotation/GeoPositionNode>
 
 
 LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
@@ -89,6 +93,32 @@ void LayersModel::onDeleteLayerClicked(const QModelIndex &current)
     }
 
 
+}
+
+void LayersModel::onGoToClicked(const QModelIndex &current)
+{
+    QModelIndex indexSource = mapToSource(current);
+    QStandardItem *item =  mTreeModel->itemFromIndex(indexSource);
+    QString layerItem = item->text();
+    QString parentLayerItem = item->parent()->text();
+    QString grandpaLayerItem = item->parent()->parent()->text();
+    auto grandpaLayer = mMapItem->getMapNode()->getMap()->getLayerByName(grandpaLayerItem.toStdString());
+    CompositeAnnotationLayer *grandpaCompositeLayer = dynamic_cast<CompositeAnnotationLayer*>(grandpaLayer);
+    osgEarth::Annotation::AnnotationLayer *parentAnnotationlayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(grandpaCompositeLayer->getLayerByName(parentLayerItem));
+    for(int i=0 ;i < parentAnnotationlayer->getGroup()->getNumChildren(); i++ ){
+        if(parentAnnotationlayer->getGroup()->getChild(i)->getName() == layerItem.toStdString()){
+            auto layer = parentAnnotationlayer->getGroup()->getChild(i);
+            auto anotationNode = dynamic_cast<osgEarth::Annotation::GeoPositionNode*>(layer);
+            osgEarth::GeoPoint location(mMapItem->getMapSRS(), 0,0,0);
+            if(anotationNode)
+                location = anotationNode->getPosition();
+            else{
+                auto featureNode = dynamic_cast<osgEarth::Annotation::FeatureNode*>(layer);
+                location.vec3d() = featureNode->getFeature()->getGeometry()->at(0);
+            }
+            mMapItem->getCameraController()->goToPosition(location,mMapItem->getCameraController()->getDistance());
+        }
+    }
 }
 
 void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLayer , unsigned index)

@@ -237,26 +237,33 @@ Item {
                         }
                         Menu {
                             id: contextMenu
-                            MenuItem{ text: "Delete Layer"
+                            MenuItem{height: 30
+                                   text: "Delete Layer"
                                    icon.source: "./Resources/48/delete.png"
                                    icon.color: "red"
                                    onClicked: function() {
                                        rootItem.layersModell.onDeleteLayerClicked(treeView.index(row , column))
                                    }
                             }
-                            MenuSeparator{}
-                            MenuItem { text: "Show On Map"
+                            MenuItem { visible: (depth === 2)
+                                height: (depth === 2) ? 30 : 0
+                                text: "Show On Map"
                                 icon.source: "./Resources/48/location.png"
                                 icon.color: Style._mainYellow
+                                onClicked: {
+                                    rootItem.layersModell.onGoToClicked(treeView.index(row , column))
+                                }
                             }
-                            MenuSeparator{}
-                            MenuItem { text: "Shift Up"
+                            MenuItem { visible: (depth === 2)
+                                height: (depth === 2) ? 30 : 0
+                                text: "Shift Up"
                                 icon.source: "./Resources/48/arrow-outline-up.png"
                                 icon.color: Style._persianGreen
 
                             }
-                            MenuSeparator{}
-                            MenuItem { text: "Shift Down"
+                            MenuItem { visible: (depth === 2)
+                                height: (depth === 2) ? 30 : 0
+                                text: "Shift Down"
                                 icon.source: "./Resources/48/arrow-outline-down.png"
                                 icon.color: Style._persianGreen
 
