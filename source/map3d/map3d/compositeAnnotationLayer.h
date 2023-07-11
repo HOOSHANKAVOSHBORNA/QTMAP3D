@@ -41,7 +41,6 @@ public:
 private:
     osg::ref_ptr<osg::Group> mRoot;
     QList<osg::ref_ptr<osgEarth::Annotation::AnnotationLayer>> mChilds;
-//    QList<osg::ref_ptr<CompositeAnnotationLayer>> mParents;
 };
 
 #endif // COMPOSITELAYER_H
