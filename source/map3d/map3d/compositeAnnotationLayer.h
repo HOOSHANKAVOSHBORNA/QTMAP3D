@@ -7,7 +7,7 @@
 //#include "mapObject.h"
 #include <osgEarth/MapCallback>
 #include <osgEarth/VisibleLayer>
-
+#include "parenticAnnotationLayer.h"
 class CompositeAnnotationLayer;
 class CompositeLayerCallback : public QObject, public osgEarth::VisibleLayerCallback
 {
@@ -19,7 +19,7 @@ public:
     typedef void (CompositeLayerCallback::*MethodPtr)(class osgEarth::Annotation::AnnotationLayer* layer, class CompositeAnnotationLayer* parentLayer);
 };
 
-class CompositeAnnotationLayer: public QObject, public osgEarth::Annotation::AnnotationLayer
+class CompositeAnnotationLayer: public ParenticAnnotationLayer
 {
     Q_OBJECT
 public:

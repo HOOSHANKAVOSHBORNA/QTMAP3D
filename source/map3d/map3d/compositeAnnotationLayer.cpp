@@ -1,8 +1,7 @@
 #include "compositeAnnotationLayer.h"
 
 CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent):
-    osgEarth::Annotation::AnnotationLayer(),
-    QObject(parent)
+    ParenticAnnotationLayer(parent)
 {
     //addCallback(new CompositeLayerCallback());
     init();
