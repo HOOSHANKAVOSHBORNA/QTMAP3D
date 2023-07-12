@@ -21,6 +21,12 @@ void CompositeCallback::onLayerRemoved(ParenticAnnotationLayer *layer, Composite
         emit mMapObject->layerRemoved(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
 }
 
+void CompositeCallback::onLayerMoved(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer, unsigned int oldIndex, unsigned int newIndex)
+{
+    if (mMapObject)
+        emit mMapObject->layerMoved(layer, oldIndex, newIndex);
+}
+
 //-------------------------------------------------------------------------------------
 MainMapCallback::MainMapCallback(MapObject *mapObject) :
     mMapObject(mapObject)

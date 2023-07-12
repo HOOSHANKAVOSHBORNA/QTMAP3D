@@ -21,6 +21,7 @@ public:
     CompositeCallback(MapObject *mapObject);
     void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
     void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
+    void onLayerMoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned oldIndex, unsigned newIndex) override;
 
 private:
     MapObject *mMapObject{nullptr};
