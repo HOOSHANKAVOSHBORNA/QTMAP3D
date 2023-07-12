@@ -116,9 +116,22 @@ void LayersModel::onGoToClicked(const QModelIndex &current)
                 auto featureNode = dynamic_cast<osgEarth::Annotation::FeatureNode*>(layer);
                 location.vec3d() = featureNode->getFeature()->getGeometry()->at(0);
             }
-            mMapItem->getCameraController()->goToPosition(location,mMapItem->getCameraController()->getDistance());
+            mMapItem->getCameraController()->goToPosition(location,mMapItem->getCameraController()->getDistance(),1.0);
         }
     }
+}
+
+void LayersModel::onShiftUpClicked(const QModelIndex &current)
+{
+    QModelIndex indexSource = mapToSource(current);
+    QString itemName =  mTreeModel->itemFromIndex(indexSource)->text();
+
+}
+
+void LayersModel::onShiftDownCliced(const QModelIndex &current)
+{
+    QModelIndex indexSource = mapToSource(current);
+    QString itemName =  mTreeModel->itemFromIndex(indexSource)->text();
 }
 
 void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLayer , unsigned index)

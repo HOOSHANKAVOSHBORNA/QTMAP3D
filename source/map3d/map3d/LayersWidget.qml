@@ -12,6 +12,9 @@ Item {
     id: rootItem
     implicitWidth: 230
     property CLayersModel layersModell
+//    property bool destroyCalled: false
+
+//    onDestroyCalledChanged: rootItem.destroy()
 
 
     Rectangle {
@@ -254,18 +257,25 @@ Item {
                                     rootItem.layersModell.onGoToClicked(treeView.index(row , column))
                                 }
                             }
-                            MenuItem { visible: (depth === 2)
-                                height: (depth === 2) ? 30 : 0
+                            MenuItem {
+//                                height: (depth === 2) ? 30 : 0
                                 text: "Shift Up"
                                 icon.source: "./Resources/48/arrow-outline-up.png"
                                 icon.color: Style._persianGreen
+                                onClicked: {
+                                    rootItem.layersModell.onShiftUpClicked(treeView.index(row , column))
+                                }
 
                             }
-                            MenuItem { visible: (depth === 2)
-                                height: (depth === 2) ? 30 : 0
+                            MenuItem {
+//                                visible: (depth === 2)
+//                                height: (depth === 2) ? 30 : 0
                                 text: "Shift Down"
                                 icon.source: "./Resources/48/arrow-outline-down.png"
                                 icon.color: Style._persianGreen
+                                onClicked: {
+                                    rootItem.layersModell.onShiftDownCliced(treeView.index(row , column))
+                                }
 
                             }
 
