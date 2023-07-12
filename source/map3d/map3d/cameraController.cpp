@@ -94,3 +94,16 @@ void CameraController::untrack()
     camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
     applySettings(camSet);
 }
+
+bool CameraController::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &us)
+{
+    if(ea.getEventType() == osgGA::GUIEventAdapter::PUSH){
+        eventHandled = ea.getHandled();
+    }
+    return osgEarth::Util::EarthManipulator::handle(ea, us);
+}
+
+bool CameraController::getEventHandled() const
+{
+    return eventHandled;
+}
