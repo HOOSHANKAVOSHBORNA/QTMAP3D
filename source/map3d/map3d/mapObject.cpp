@@ -11,12 +11,12 @@ CompositeCallback::CompositeCallback(MapObject *mapObject):
 
 }
 
-void CompositeCallback::onLayerAdded(osgEarth::Annotation::AnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
+void CompositeCallback::onLayerAdded(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
     if(mMapObject)
         emit mMapObject->layerAdded(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
 }
 
-void CompositeCallback::onLayerRemoved(osgEarth::Annotation::AnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
+void CompositeCallback::onLayerRemoved(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
     if(mMapObject)
         emit mMapObject->layerRemoved(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
 }

@@ -32,7 +32,7 @@ private:
 private:
     osg::ref_ptr<Box> mBox{nullptr};
     BoxProperties *mBoxProperties{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mBoxLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mBoxLayer;
     static int mCount;
 };
 

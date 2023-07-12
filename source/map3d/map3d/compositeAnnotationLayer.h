@@ -14,9 +14,9 @@ class CompositeLayerCallback : public QObject, public osgEarth::VisibleLayerCall
     Q_OBJECT
 public:
 //    CompositeLayerCallback();
-    virtual void onLayerAdded(osgEarth::Annotation::AnnotationLayer* layer, CompositeAnnotationLayer* parentLayer){}
-    virtual void onLayerRemoved(osgEarth::Annotation::AnnotationLayer* layer, CompositeAnnotationLayer* parentLayer){}
-    typedef void (CompositeLayerCallback::*MethodPtr)(class osgEarth::Annotation::AnnotationLayer* layer, class CompositeAnnotationLayer* parentLayer);
+    virtual void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer){}
+    virtual void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer){}
+    typedef void (CompositeLayerCallback::*MethodPtr)(class ParenticAnnotationLayer* layer, class CompositeAnnotationLayer* parentLayer);
 };
 
 class CompositeAnnotationLayer: public ParenticAnnotationLayer
@@ -31,16 +31,16 @@ public:
 public:
     virtual void setVisible(bool value) override;
     virtual void setOpacity(float value) override;
-    void addLayer(osgEarth::Annotation::AnnotationLayer *layer);
-    void removeLayer(osgEarth::Annotation::AnnotationLayer *layer);
-    void fireCallback(CompositeLayerCallback::MethodPtr, osgEarth::Annotation::AnnotationLayer *layer);
+    void addLayer(ParenticAnnotationLayer *layer);
+    void removeLayer(ParenticAnnotationLayer *layer);
+    void fireCallback(CompositeLayerCallback::MethodPtr, ParenticAnnotationLayer *layer);
 //    void addParent(CompositeAnnotationLayer *layer);
     int getNumChildren() const;
-    inline osgEarth::Annotation::AnnotationLayer* getChild(int i ) { return mChilds[i].get(); }
+    inline ParenticAnnotationLayer* getChild(int i ) { return mChilds[i].get(); }
 
 private:
     osg::ref_ptr<osg::Group> mRoot;
-    QList<osg::ref_ptr<osgEarth::Annotation::AnnotationLayer>> mChilds;
+    std::vector<osg::ref_ptr<ParenticAnnotationLayer>> mChilds;
 };
 
 #endif // COMPOSITELAYER_H

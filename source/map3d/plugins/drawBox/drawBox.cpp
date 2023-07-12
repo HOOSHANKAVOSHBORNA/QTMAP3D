@@ -17,7 +17,7 @@ bool DrawBox::setup()
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
 //    addLayer();
-    mBoxLayer = new osgEarth::Annotation::AnnotationLayer();
+    mBoxLayer = new ParenticAnnotationLayer();
     mBoxLayer->setName(BOX);
     return true;
 }
