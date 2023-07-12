@@ -32,6 +32,8 @@ public:
     virtual void setVisible(bool value) override;
     void addLayer(osgEarth::Annotation::AnnotationLayer *layer);
     void removeLayer(osgEarth::Annotation::AnnotationLayer *layer);
+    void removeLayerByName(const QString& layerName);
+    osgEarth::Annotation::AnnotationLayer *getLayerByName(const QString& layerName);
     void fireCallback(CompositeLayerCallback::MethodPtr, osgEarth::Annotation::AnnotationLayer *layer);
 //    void addParent(CompositeAnnotationLayer *layer);
     int getNumChildren() const;

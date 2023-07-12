@@ -18,13 +18,14 @@ Item {
 
 //    width: 350
     anchors.fill: parent
+
     Rectangle{
         anchors.top: parent.top
-        height: 0
-        width: 300
+//        height: 0
+//        width: 300
         id: header
-        radius: Style.radius
-        color: "#24242b"
+//        radius: Style.radius
+//        color: Style._darkestGray
 //        Label {
 //            Text {
 //                id: headerType
@@ -39,19 +40,20 @@ Item {
 //            anchors.horizontalCenter: parent.horizontalCenter
 
 //        }
-        Rectangle {
-            width: header.width
-            height: 10
-            anchors.bottom: header.bottom
-            color: header.color
-        }
+//        Rectangle {
+//            width: header.width
+//            height: 10
+//            anchors.bottom: header.bottom
+//            color: header.color
+//        }
     }
     Rectangle {
         id: search
         width: parent.width
-        height: 30
+        height: 40
         anchors.top: header.bottom
-        color: "#24242b"
+        color: Style._darkestGray
+        clip: true
         TextField {
             function sendToSearch() {
                 rootItem.listModel.setFilterString(text)
@@ -62,19 +64,28 @@ Item {
             }
 
             background: Rectangle {
-                radius: Style.radius
-                implicitWidth: 100
-                implicitHeight: 24
-                border.color: Style.borderColor
+//                radius: Style.radius
+                width: parent.width + 4
+                height: 35
+                border.color: "black"
                 border.width: 1
-                color: Style.secondaryColor
+                color: Style.backgroundColor
+                anchors.centerIn: parent
+                IconImage{
+                    source: "./Resources/48/search.png"
+                    color: "white"
+                    height: parent.height * 0.6
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: 5
+                }
             }
             anchors.fill: parent
             color: Style.textColor
-            placeholderText: "search toolbox"
+            placeholderText: "Search Toolbox"
             placeholderTextColor: Style.selectionColor
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
+//            anchors.leftMargin: 10
+//            anchors.rightMargin: 10
             onAccepted: {
                 sendToSearch()
             }
@@ -90,9 +101,10 @@ Item {
         anchors.top: search.bottom
         height: parent.height - header.height - footer.height
         width: parent.width
-        color: _colorRec
+        color: Style._darkestGray
         border.color: "#24242b"
-        border.width: 10
+//        border.width: 10
+//        anchors.topMargin: 10
         ScrollView {
             anchors.fill: parent
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
@@ -100,8 +112,8 @@ Item {
                 id: treeView
                 anchors.fill: parent
 //                anchors.rightMargin: 10
-                anchors.leftMargin: 10
-                anchors.rightMargin: 10
+//                anchors.leftMargin: 5
+//                anchors.rightMargin: 5
                 anchors.topMargin: 3
                 clip: true
                 model: rootItem.listModel
@@ -134,22 +146,25 @@ Item {
                     required property int depth
                     required property bool selected
                     required property bool current
-                    anchors.margins: 10
+//                    anchors.margins: 5
                     Rectangle{
                         id: container
-                        width: parent.width - (treeDelegate.depth - 1)* treeDelegate.indent - 30
+                        width: parent.width  - treeDelegate.indent * ( 0.5 * treeDelegate.depth ) - treeDelegate.padding -3
                         height: parent.height
-                        border.width: 5
-                        border.color: "#202020"
+//                        border.width: 1
+//                        border.color: "#202020"
                         color: "transparent"
+                        clip: true
+                        anchors.horizontalCenter: parent.horizontalCenter
+//                        radius: Style.radius
+//                        x: treeDelegate.indent * (0.68 * treeDelegate.depth ) - (treeDelegate.depth) * treeDelegate.padding
 
                         Rectangle {
                             id: rect
-                            anchors.fill: parent
-                            color: treeDelegate.hasChildren ? sectionColor : _colorRec
-
-                            //                    opacity: 0.8
-                            border.color: "#202020"
+                            color: treeDelegate.hasChildren ? Style._darkGray : Style._darkestGray
+                            width:  parent.width
+                            height: parent.height
+                            border.color: Style.backgroundColor
                             border.width: treeDelegate.hasChildren ? 2 : 0
                             radius: treeDelegate.hasChildren ? Style.radius : 0
 
@@ -166,8 +181,7 @@ Item {
                             propagateComposedEvents: true
 
                         }
-                        radius: Style.radius
-                        x: padding + ((treeDelegate.depth - 1) * treeDelegate.indent)
+
 
                         Text {
                             id: label
@@ -176,42 +190,45 @@ Item {
                             font.pixelSize: 14
                             font.bold: treeDelegate.hasChildren
                             anchors.verticalCenter: container.verticalCenter
-                            color: checkedd ? _colorPresed : mouseArea.containsMouse ? "#8c98ae" : "#ffffff"
+                            color: checkedd ? Style._darkBlue : mouseArea.containsMouse ? Style._mainBlue : "#ffffff"
                             text: display
 //                            color: Style.textColor
                         }
-                        property color s: "#9b9ca0"
                         Rectangle {
-                            width: indent-20
+                            width: 5
                             height: parent.height
-                            color: container.s
-                            x: -indent+8
+                            color: Style._darkGray
+                            visible: !treeDelegate.hasChildren
+                            x: 0
                         }
 
                         Rectangle {
-                            width: indent
+                            width: 5
+                            id: rightBar
                             height: parent.height
-                            color: container.s
-                            x: -indent + parent.width + 22
+                            color: Style._darkGray
+                            anchors.right: container.right
+//                            x: container.width
                             visible: !treeDelegate.hasChildren
                         }
-                        Rectangle {
-                            width: parent.width
-                            height: 2
-                            color: container.s
-//                            x: -indent + parent.width + 22
-                            visible: treeDelegate.hasChildren && treeDelegate.expanded
-                            anchors.topMargin: 3
-                        }
+//                        Rectangle {
+//                            width: container.width
+//                            height: 5
+//                            color: Style._darkestBlue
+//                            x: 0
+//                            visible: treeDelegate.hasChildren && treeDelegate.expanded
+////                            anchors.topMargin: 3
+////                            anchors.bottom: container.bottom
+//                        }
 
                         IconImage {
                             id: img
                             source: imageSource ?? ""
                             width: 32
                             height: 32
-                            x: container.x - width + (treeDelegate.depth)*indent
+                            x: treeDelegate.indent * (1 * treeDelegate.depth ) - (treeDelegate.depth) * treeDelegate.padding
                             anchors.verticalCenter: container.verticalCenter
-                            color: checkedd ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"
+                            color: checkedd ? Style._darkBlue : mouseArea.containsMouse ? _colorHover : "transparent"
                         }
                         IconImage {
                             id: img2

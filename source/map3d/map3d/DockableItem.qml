@@ -5,6 +5,7 @@ import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
 import Crystal 1.0
+import "style"
 
 Item {
     id: rootItem
@@ -12,7 +13,7 @@ Item {
     property bool attached: false
     readonly property Window detachWindow: wndItem
     property var attachWindow: null
-    property string title: "Ali Askari"
+    property string title: "Dock Item"
 
     property DockArea detachDockArea: null
 
@@ -90,11 +91,11 @@ Item {
 
         x: (Math.random() * 300) + 300
         y: (Math.random() * 300) + 300
-        width: 640
-        height: 480
+        width: 480
+        height: 640
         visible: false
         color: "#24242b"
-        //flags: Qt.FramelessWindowHint
+//        flags: Qt.FramelessWindowHint
 
         Component.onCompleted: function() {
             wndItem.isComplete = true;
@@ -111,7 +112,7 @@ Item {
 
         ColumnLayout {
             anchors.fill: parent
-            spacing: 1
+            spacing: -1
 
             Item {
                 id: headerItem
@@ -135,10 +136,10 @@ Item {
 
                     Rectangle {
                         id: rect1
-                        implicitWidth: text1.implicitWidth + (implicitHeight * 2)
-                        implicitHeight: text1.implicitHeight * 2
+                        implicitWidth: text1.implicitWidth + (implicitHeight * 3)
+                        implicitHeight: text1.implicitHeight * 1.5
                         radius: 5
-                        color: "#404040"
+                        color: Style._darkBlue
 
                         Rectangle {
                             id: rect2
@@ -146,13 +147,13 @@ Item {
                             anchors.right: parent.right
                             anchors.bottom: parent.bottom
                             height: parent.height / 2
-                            color: "#404040"
+                            color: rect1.color
                         }
 
                         Text {
                             id: text1
                             anchors.centerIn: parent
-                            color: "white"
+                            color: Style.textColor
                         }
 
                         MouseArea {
@@ -187,8 +188,8 @@ Item {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 2
-                color: "#808080"
+                Layout.preferredHeight: 3
+                color: Style._darkBlue
             }
 
             Item {

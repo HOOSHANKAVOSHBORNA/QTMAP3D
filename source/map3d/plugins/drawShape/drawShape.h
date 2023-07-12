@@ -13,7 +13,7 @@
 #include <QQmlEngine>
 #include <QQmlComponent>
 
-#include "compositeLayer.h"
+#include "compositeAnnotationLayer.h"
 
 #define CATEGORY "Draw"
 #define M_CATEGORY "Measurement"

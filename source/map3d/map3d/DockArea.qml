@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Crystal 1.0
+import "style"
 
 Item {
     id: rootItem
@@ -344,50 +345,50 @@ Item {
                                 Item {
                                     id: hdrBackItem
                                     implicitWidth: text1.implicitWidth + (implicitHeight * 2)
-                                    implicitHeight: text1.implicitHeight * 2
+                                    implicitHeight: text1.implicitHeight * 1.5
 
                                     Rectangle {
                                         id: rect1
                                         anchors.fill: parent
                                         radius: 5
-                                        color: "#404040"
+                                        color: Style._darkBlue
                                         visible: containerItemStack.currentIndex === _index
-                                    }
-
-                                    Rectangle {
-                                        id: rect2
-                                        anchors.left: parent.left
-                                        anchors.right: parent.right
-                                        anchors.bottom: parent.bottom
-                                        height: parent.height / 2
-                                        color: "#404040"
-                                        visible: containerItemStack.currentIndex === _index
-                                    }
-
-                                    Text {
-                                        id: text1
-                                        anchors.centerIn: parent
-                                        color: "white"
-                                        text: _text
-                                    }
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onDoubleClicked: function() {
-                                            _dockableItem.detach();
-                                            containerItemStack.updateHeaderModel();
+                                        Rectangle {
+                                            id: rect2
+                                            anchors.left: parent.left
+                                            anchors.right: parent.right
+                                            anchors.bottom: parent.bottom
+                                            height: parent.height / 2
+                                            color: rect1.color
+                                            visible: containerItemStack.currentIndex === _index
                                         }
+                                        Text {
+                                            id: text1
+                                            anchors.centerIn: parent
+                                            color: Style.textColor
+                                            text: _text
+                                        }
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            onDoubleClicked: function() {
+                                                _dockableItem.detach();
+                                                containerItemStack.updateHeaderModel();
+                                            }
 
-                                        onClicked: function() {
-                                            containerItemStack.currentIndex = _index;
+                                            onClicked: function() {
+                                                containerItemStack.currentIndex = _index;
+                                            }
                                         }
                                     }
+
+
+
+
+
 
                                 }
                             }
                         }
-
-
                     }
 
                     MouseArea {
@@ -421,7 +422,7 @@ Item {
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 2
-                    color: "#808080"
+                    color: Style._darkBlue
 
                     visible: containerItemStack.hasHeader
                 }
@@ -464,52 +465,56 @@ Item {
             Rectangle {
                 id: dropRect
                 anchors.fill: parent
-                color: "#606060"
-                opacity: 0.8
+                color: Style._darkestBlue
+                opacity: 0.5
                 visible:false
 
-                Image {
+                IconImage {
                     anchors.top: parent.top
                     anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.margins: 10
+                    anchors.margins: 20
                     sourceSize: Qt.size(48, 48)
                     width: 48
                     height: 48
                     source: "qrc:/Resources/up_direction.png"
                     scale: rootItem.dropLoc === DockArea.DropLocTop ? 1.5 : 1.0
+                    color: Style._darkestGray
                 }
-                Image {
+                IconImage {
                     anchors.bottom: parent.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.margins: 10
+                    anchors.margins: 20
                     sourceSize: Qt.size(48, 48)
                     width: 48
                     height: 48
                     source: "qrc:/Resources/up_direction.png"
                     rotation: 180
                     scale: rootItem.dropLoc === DockArea.DropLocBottom ? 1.5 : 1.0
+                    color: Style._darkestGray
                 }
-                Image {
+                IconImage {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.margins: 10
+                    anchors.margins: 20
                     sourceSize: Qt.size(48, 48)
                     width: 48
                     height: 48
                     source: "qrc:/Resources/up_direction.png"
                     rotation: -90
                     scale: rootItem.dropLoc === DockArea.DropLocLeft ? 1.5 : 1.0
+                    color: Style._darkestGray
                 }
-                Image {
+                IconImage {
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.margins: 10
+                    anchors.margins: 20
                     sourceSize: Qt.size(48, 48)
                     width: 48
                     height: 48
                     source: "qrc:/Resources/up_direction.png"
                     rotation: 90
                     scale: rootItem.dropLoc === DockArea.DropLocRight ? 1.5 : 1.0
+                    color: Style._darkestGray
                 }
                 Rectangle {
                     anchors.centerIn: parent

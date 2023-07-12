@@ -4,7 +4,7 @@
 #include <QMap>
 #include <QObject>
 #include <osgEarth/Map>
-#include "compositeLayer.h"
+#include "compositeAnnotationLayer.h"
 
 namespace osgEarth {
 namespace Annotation {
@@ -19,8 +19,8 @@ class CompositeCallback: public CompositeLayerCallback
     Q_OBJECT
 public:
     CompositeCallback(MapObject *mapObject);
-    virtual void onLayerAdded(osgEarth::Annotation::AnnotationLayer* layer, CompositeAnnotationLayer *parentLayer);
-    virtual void onLayerRemoved(osgEarth::Annotation::AnnotationLayer* layer, CompositeAnnotationLayer *parentLayer);
+    void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
+    void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
 
 private:
     MapObject *mMapObject{nullptr};

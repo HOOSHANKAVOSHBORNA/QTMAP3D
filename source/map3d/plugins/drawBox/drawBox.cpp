@@ -17,7 +17,7 @@ bool DrawBox::setup()
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
 //    addLayer();
-    mBoxLayer = new osgEarth::Annotation::AnnotationLayer();
+    mBoxLayer = new ParenticAnnotationLayer();
     mBoxLayer->setName(BOX);
     return true;
 }
@@ -25,8 +25,13 @@ bool DrawBox::setup()
 void DrawBox::onBoxItemCheck(bool check)
 {
     if (check) {
-        if(mBoxLayer->getGroup()->getNumChildren() <= 0){ 
-            auto shapeLayer = DrawShape::shapeLayer();
+        auto shapeLayer = DrawShape::shapeLayer();
+        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mBoxLayer->getName()));
+        if(!layer){
+            mBoxLayer->getGroup()->removeChildren(0, mBoxLayer->getGroup()->getNumChildren());
+        }
+        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
+
 //            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
             shapeLayer->addLayer(mBoxLayer);
         }
