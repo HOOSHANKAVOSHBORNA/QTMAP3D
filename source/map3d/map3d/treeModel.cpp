@@ -64,6 +64,11 @@ void TreeModel::updateData(QModelIndex itemIndex,bool isVisible, int role)
     }
 }
 
+//QStandardItem TreeModel::getRootItem()
+//{
+//    return *rootItem;
+//}
+
 
 
 
