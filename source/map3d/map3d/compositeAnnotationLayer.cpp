@@ -50,6 +50,30 @@ void CompositeAnnotationLayer::removeLayer(ParenticAnnotationLayer *layer)
     fireCallback(&CompositeLayerCallback::onLayerRemoved, layer);
 }
 
+void CompositeAnnotationLayer::removeLayerByName(const QString &layerName)
+{
+    auto layer = getLayerByName(layerName);
+    if (!layer)
+        return;
+    removeLayer(layer);
+}
+
+ParenticAnnotationLayer *CompositeAnnotationLayer::getLayerByName(const QString &layerName)
+{
+    auto it = std::find_if(mChilds.begin(), mChilds.end(), [&](const osgEarth::Annotation::AnnotationLayer *layer){
+        return layer->getName() == layerName.toStdString();
+    });
+    if (it == mChilds.end())
+        return nullptr;
+    return *it;
+}
+
+//void CompositeAnnotationLayer::addParent(CompositeAnnotationLayer *layer)
+//{
+
+//}
+
+
 void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr method, ParenticAnnotationLayer *layer)
 {
     for (CallbackVector::iterator i = _callbacks.begin(); i != _callbacks.end(); ++i)

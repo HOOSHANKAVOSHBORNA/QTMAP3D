@@ -33,6 +33,8 @@ public:
     virtual void setOpacity(float value) override;
     void addLayer(ParenticAnnotationLayer *layer);
     void removeLayer(ParenticAnnotationLayer *layer);
+    void removeLayerByName(const QString& layerName);
+    ParenticAnnotationLayer *getLayerByName(const QString& layerName);
     void fireCallback(CompositeLayerCallback::MethodPtr, ParenticAnnotationLayer *layer);
 //    void addParent(CompositeAnnotationLayer *layer);
     int getNumChildren() const;
