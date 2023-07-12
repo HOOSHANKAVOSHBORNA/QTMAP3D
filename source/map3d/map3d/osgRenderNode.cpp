@@ -316,7 +316,10 @@ void OSGRenderNode::keyPressEvent(QKeyEvent* event)
 {
     setKeyboardModifiers(event);
     int value = s_QtKeyboardMap.remapKey(event);
-    mosgWinEmb->getEventQueue()->keyPress(value);
+    auto eventAdapter = mosgWinEmb->getEventQueue()->keyPress(value);
+    //--run event immediately---
+    eventTraversal();
+    event->setAccepted(eventAdapter->getHandled());
 }
 
 void OSGRenderNode::keyReleaseEvent(QKeyEvent* event)
@@ -329,7 +332,11 @@ void OSGRenderNode::keyReleaseEvent(QKeyEvent* event)
     {
         setKeyboardModifiers(event);
         int value = s_QtKeyboardMap.remapKey(event);
-        mosgWinEmb->getEventQueue()->keyRelease(value);
+        auto eventAdapter = mosgWinEmb->getEventQueue()->keyRelease(value);
+        //--run event immediately---
+        eventTraversal();
+        event->setAccepted(eventAdapter->getHandled());
+
     }
 }
 
@@ -363,7 +370,10 @@ void OSGRenderNode::mousePressEvent(QMouseEvent* event)
     setKeyboardModifiers(event);
     auto eventAdapter = mosgWinEmb->getEventQueue()->mouseButtonPress(event->scenePosition().x() * mwindowScale,
                                                   event->scenePosition().y() * mwindowScale, button);
-    qDebug()<<"eventAdapter:"<<eventAdapter->getHandled();
+    //--run event immediately---
+    eventTraversal();
+//    qDebug()<< eventAdapter->getHandled();
+    event->setAccepted(eventAdapter->getHandled());
 }
 
 void OSGRenderNode::mouseReleaseEvent(QMouseEvent* event)
@@ -394,9 +404,12 @@ void OSGRenderNode::mouseReleaseEvent(QMouseEvent* event)
     }
 
     setKeyboardModifiers(event);
-    mosgWinEmb->getEventQueue()->mouseButtonRelease(event->scenePosition().x() * mwindowScale,
+    auto eventAdapter = mosgWinEmb->getEventQueue()->mouseButtonRelease(event->scenePosition().x() * mwindowScale,
                                                     event->scenePosition().y() * mwindowScale,
                                                      button);
+    //--run event immediately---
+    eventTraversal();
+    event->setAccepted(eventAdapter->getHandled());
 }
 
 void OSGRenderNode::mouseDoubleClickEvent(QMouseEvent* event)
@@ -427,8 +440,11 @@ void OSGRenderNode::mouseDoubleClickEvent(QMouseEvent* event)
     }
 
     setKeyboardModifiers(event);
-    mosgWinEmb->getEventQueue()->mouseDoubleButtonPress(event->scenePosition().x() * mwindowScale,
+    auto eventAdapter = mosgWinEmb->getEventQueue()->mouseDoubleButtonPress(event->scenePosition().x() * mwindowScale,
                                                         event->scenePosition().y() * mwindowScale, button);
+    //--run event immediately---
+    eventTraversal();
+    event->setAccepted(eventAdapter->getHandled());
 }
 
 void OSGRenderNode::mouseMoveEvent(QMouseEvent* event)
@@ -436,15 +452,21 @@ void OSGRenderNode::mouseMoveEvent(QMouseEvent* event)
     setKeyboardModifiers(event);
 //    mosgWinEmb->getEventQueue()->mouseMotion(event->position().x() * mwindowScale,
 //                                             event->position().y() * mwindowScale);
-    mosgWinEmb->getEventQueue()->mouseMotion(event->scenePosition().x() * mwindowScale,
+    auto eventAdapter = mosgWinEmb->getEventQueue()->mouseMotion(event->scenePosition().x() * mwindowScale,
                                              event->scenePosition().y() * mwindowScale);
+    //--run event immediately---
+    eventTraversal();
+    event->setAccepted(eventAdapter->getHandled());
 }
 
 void OSGRenderNode::hoverMoveEvent(QHoverEvent *event)
 {
     setKeyboardModifiers(event);
-    mosgWinEmb->getEventQueue()->mouseMotion(event->scenePosition().x() * mwindowScale,
+    auto eventAdapter = mosgWinEmb->getEventQueue()->mouseMotion(event->scenePosition().x() * mwindowScale,
                                              event->scenePosition().y() * mwindowScale);
+    //--run event immediately---
+    eventTraversal();
+    event->setAccepted(eventAdapter->getHandled());
 }
 
 void OSGRenderNode::wheelEvent(QWheelEvent* event)
@@ -452,8 +474,11 @@ void OSGRenderNode::wheelEvent(QWheelEvent* event)
     setKeyboardModifiers(event);
     mosgWinEmb->getEventQueue()->mouseMotion(event->scenePosition().x() * mwindowScale,
                                              event->scenePosition().y() * mwindowScale);
-    mosgWinEmb->getEventQueue()->mouseScroll(
+    auto eventAdapter = mosgWinEmb->getEventQueue()->mouseScroll(
         event->angleDelta().y() > 0 ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN);
+    //--run event immediately---
+    eventTraversal();
+    event->setAccepted(eventAdapter->getHandled());
 }
 
 bool OSGRenderNode::checkEvents()

@@ -51,8 +51,12 @@ public:
 //    void setTrackNode(osg::Node *node, double minDistance);
 //    //    void untrackNode(osg::Node *node);
 //    void untrack();
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us) override;
+    bool getEventHandled() const;
+
 private:
     MapItem* mMapItem{nullptr};
+    bool eventHandled{false};
 };
 
 #endif // CAMERACONTROLLER_H
