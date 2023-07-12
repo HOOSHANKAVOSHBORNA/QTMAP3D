@@ -48,7 +48,9 @@ void LayersModel::initializeModel(osgEarth::Map *map)
 QHash<int, QByteArray> LayersModel::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
-    hash[visibleLayerRole] = "isVisible";
+    hash[visibleRole] = "isVisible";
+    hash[locatableRole] = "isLocatable";
+    hash[layerRole] = "layerRole";
     return hash;
 }
 
@@ -56,8 +58,13 @@ QHash<int, QByteArray> LayersModel::roleNames() const
 void LayersModel::onItemClicked(const QModelIndex &current)
 {
     QModelIndex indexSource = mapToSource(current);
-    bool visibleRoleData = mTreeModel->data(indexSource,visibleLayerRole).toBool();
-    mTreeModel->updateData(indexSource,!visibleRoleData,visibleLayerRole);
+//    osgEarth::Layer *layerData = mTreeModel->data(indexSource,layerRole).value<osgEarth::Layer*>();
+//    if(layerData)
+//        qDebug()<<layerData->getName() << " " << layerData->getTypeName();
+//    bool locata = mTreeModel->data(indexSource , locatableRole).toBool();
+//    qDebug() << locata ;
+    bool visibleRoleData = mTreeModel->data(indexSource,visibleRole).toBool();
+    mTreeModel->updateData(indexSource,!visibleRoleData,visibleRole);
     auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current).toString().toStdString());
     auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
     if(visibleLayer)
@@ -137,7 +144,16 @@ void LayersModel::onShiftDownCliced(const QModelIndex &current)
 void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLayer , unsigned index)
 {
     QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
-    treeItem->setData(getLayerVisible(layer),visibleLayerRole);
+    treeItem->setData(getLayerVisible(layer),visibleRole);
+    QVariant layerVariant;
+    layerVariant.setValue(layer);
+    treeItem->setData(layerVariant,layerRole);
+    CompositeAnnotationLayer* checkComposite = dynamic_cast<CompositeAnnotationLayer*>(layer);
+    if(!checkComposite){
+        treeItem->setData(true,locatableRole);
+    }else{
+        treeItem->setData(false,locatableRole);
+    }
     if(parentLayer){
         QString parentName = parentLayer->getName().c_str();
         mTreeModel->addItem(treeItem,parentName);
@@ -185,7 +201,7 @@ void LayersModel::onParentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *
 void LayersModel::onNodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer)
 {
     QStandardItem *treeItem = new QStandardItem(QString(node->getName().c_str()));
-    treeItem->setData(getLayerVisible(layer),visibleLayerRole);
+    treeItem->setData(getLayerVisible(layer),visibleRole);
     QString parentLayer = layer->getName().c_str();
     mTreeModel->addItem(treeItem,parentLayer);
 }

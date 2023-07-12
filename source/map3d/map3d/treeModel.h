@@ -22,6 +22,7 @@ public:
     void addItem(QStandardItem *item , const QString parent = "root");
     void removeItem(QString item , const QString parent = "root");
     void updateData(QModelIndex itemIndex , bool isVisible, int role);
+    QStandardItem getRootItem();
 
 private:
     QModelIndex previous;

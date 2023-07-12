@@ -248,8 +248,9 @@ Item {
                                        rootItem.layersModell.onDeleteLayerClicked(treeView.index(row , column))
                                    }
                             }
-                            MenuItem { visible: (depth === 2)
-                                height: (depth === 2) ? 30 : 0
+                            MenuItem {
+                                visible: isLocatable
+                                height: (isLocatable) ? 30 : 0
                                 text: "Show On Map"
                                 icon.source: "./Resources/48/location.png"
                                 icon.color: Style._mainYellow
