@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import 'style'
 
 SplitView {
 
@@ -9,9 +10,9 @@ SplitView {
 
     handle: Rectangle {
         id: handleDelegate
-        implicitWidth: 4
-        implicitHeight: 4
-        color: SplitHandle.pressed ? "#81e889" : "#24242b"
+        implicitWidth: 3
+        implicitHeight: 3
+        color: SplitHandle.pressed ? Style._darkBlue : Style._darkestBlue
 
         SplitHandle.onPressedChanged: function() {
             if (handleDelegate.SplitHandle.pressed === false) {

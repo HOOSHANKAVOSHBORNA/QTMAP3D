@@ -244,6 +244,9 @@ CMainWindow {
 //                    if (layeritem.status == Component.Ready)
 //                        print(layeritem.errorString)
                     wnd.attachToCentralDockItemImpl(layerDock, true, false, 0.3);
+//                } else{
+//                    layeritem.destroyCalled = true
+//                    init = false
                 }
 
 
