@@ -14,14 +14,14 @@ class ParenticAnnotationLayer: public QObject, public osgEarth::Annotation::Anno
 public:
     ParenticAnnotationLayer(QObject *parent = nullptr);
 
-    osgEarth::Annotation::AnnotationNode *node() const;
-    void setNode(osgEarth::Annotation::AnnotationNode *newNode);
-    virtual osg::Node* getNode() const;
+//    osgEarth::Annotation::AnnotationNode *node() const;
+//    void setNode(osgEarth::Annotation::AnnotationNode *newNode);
+//    virtual osg::Node* getNode() const;
 
-    bool getIsNode() const;
-    ParenticAnnotationLayer *getParentAtIndex(unsigned index);
+    CompositeAnnotationLayer *getParentAtIndex(unsigned index);
     unsigned getIndexOfparent(const ParenticAnnotationLayer* layer) const;
     unsigned getNumParents() const;
+    virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() { return nullptr; }
 
 protected:
     virtual void addParent(CompositeAnnotationLayer* parent);
@@ -30,9 +30,7 @@ protected:
 
 private:
     std::vector<osg::ref_ptr<CompositeAnnotationLayer>> mParents;
-    osg::ref_ptr<osgEarth::Annotation::AnnotationNode> mNode;
-    void setIsNode(bool newIsNode);
-    bool isNode{true};
+//    osg::ref_ptr<osgEarth::Annotation::AnnotationNode> mNode;
     friend class CompositeAnnotationLayer;
 };
 
@@ -68,8 +66,14 @@ public:
     void removeLayerByName(const QString& layerName);
     ParenticAnnotationLayer *getLayerByName(const QString& layerName);
     void fireCallback(CompositeLayerCallback::MethodPtr, ParenticAnnotationLayer *layer);
-    int getNumChildren() const;
+//    int getNumChildren() const;
     inline ParenticAnnotationLayer* getChild(int i ) { return mChilds[i].get(); }
+    //! Adds a property notification callback to this layer
+    void addCallback(osgEarth::LayerCallback* cb);
+
+    //! Removes a property notification callback from this layer
+    void removeCallback(osgEarth::LayerCallback* cb);
+    virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() override { return this; }
 
 private:
     osg::ref_ptr<osg::Group> mRoot;

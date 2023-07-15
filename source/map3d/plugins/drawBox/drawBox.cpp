@@ -65,7 +65,7 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mBox->setLength(100000);
     mBox->setPosition(geoPos);
     mBoxLayer = new ParenticAnnotationLayer();
-    mBoxLayer->setNode(mBox);
+    mBoxLayer->addChild(mBox);
     mBoxLayer->setName(mBox->getName());
 //    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
     mCompositeBoxLayer->addLayer(mBoxLayer);

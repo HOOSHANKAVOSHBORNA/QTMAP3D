@@ -47,42 +47,16 @@ void ParenticAnnotationLayer::insertParent(CompositeAnnotationLayer *parent, uns
         mParents.insert(mParents.begin() + index, parent);
 }
 
-ParenticAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int index)
+CompositeAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int index)
 {
     if (index >= getNumParents())
         return nullptr;
     return mParents[index].get();
 }
 
-bool ParenticAnnotationLayer::getIsNode() const
-{
-    return isNode;
-}
-
-void ParenticAnnotationLayer::setIsNode(bool newIsNode)
-{
-    isNode = newIsNode;
-}
-
-osgEarth::Annotation::AnnotationNode* ParenticAnnotationLayer::node() const
-{
-    return mNode;
-}
-
-void ParenticAnnotationLayer::setNode(osgEarth::Annotation::AnnotationNode *newNode)
-{
-    mNode = osg::ref_ptr<osgEarth::Annotation::AnnotationNode>(newNode);
-}
-
-osg::Node *ParenticAnnotationLayer::getNode() const
-{
-    return mNode.get();
-}
-
 CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent):
     ParenticAnnotationLayer(parent)
 {
-    setIsNode(false);
     init();
 }
 
@@ -133,7 +107,13 @@ void CompositeAnnotationLayer::addLayer(ParenticAnnotationLayer *layer)
     mChilds.push_back(layer);
     layer->addParent(this);
     mRoot->addChild(layer->getNode());
+    for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
+        layer->addCallback(it->get());
+    }
+
     fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
+
+
 }
 
 void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsigned int index)
@@ -144,21 +124,39 @@ void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsig
         mChilds.push_back(layer);
     else
         mChilds.insert(mChilds.begin() + index, layer);
+
+    layer->addParent(this);
+    for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
+        layer->addCallback(it->get());
+    }
+
     fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
 }
 
 void CompositeAnnotationLayer::removeLayer(ParenticAnnotationLayer *layer)
 {
+    layer->removeParent(this);
+    for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
+        layer->removeCallback(it->get());
+    }
+    mRoot->removeChild(layer->getNode());
+
     auto it = std::remove_if(mChilds.begin(), mChilds.end(), [&](ParenticAnnotationLayer* l){
         return l == layer;
     });
     if (it != mChilds.end()) mChilds.erase(it);
-    mRoot->removeChild(layer->getNode());
+
     fireCallback(&CompositeLayerCallback::onLayerRemoved, layer);
 }
 
 void CompositeAnnotationLayer::clearLayers()
 {
+    for(auto& layer: mChilds){
+        layer->removeParent(this);
+        for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
+            layer->removeCallback(it->get());
+        }
+    }
     mChilds.clear();
     mRoot->removeChildren(0, mRoot->getNumChildren());
 }
@@ -168,20 +166,24 @@ void CompositeAnnotationLayer::moveLayer(ParenticAnnotationLayer *layer, unsigne
     unsigned int oldIndex = 0;
     unsigned int actualIndex = 0;
     osg::ref_ptr<ParenticAnnotationLayer> layerToMove( layer );
-    auto i_oldIndex = mChilds.end();
-    for(auto i = mChilds.begin(); i != mChilds.end(); i++, actualIndex++ )
-    {
-        if ( i->get() == layer )
-        {
-            i_oldIndex = i;
-            oldIndex = actualIndex;
-            break;
-        }
-    }
-    if ( i_oldIndex == mChilds.end() )
+    oldIndex = getIndexOfLayer(layer);
+    if (oldIndex == getNumLayers())
         return; // layer not found in list
-    mChilds.erase( i_oldIndex );
+//    auto i_oldIndex = mChilds.end();
+//    for(auto i = mChilds.begin(); i != mChilds.end(); i++, actualIndex++ )
+//    {
+//        if ( i->get() == layer )
+//        {
+//            i_oldIndex = i;
+//            oldIndex = actualIndex;
+//            break;
+//        }
+//    }
+//    if ( i_oldIndex == mChilds.end() )
+//        return; // layer not found in list
+    mChilds.erase( mChilds.begin() + oldIndex );
     mChilds.insert(mChilds.begin() + index, layerToMove);
+
     for (CallbackVector::iterator i = _callbacks.begin(); i != _callbacks.end(); ++i){
         CompositeLayerCallback* cb = dynamic_cast<CompositeLayerCallback*>(i->get());
         if (cb) cb->onLayerMoved(layer, this, oldIndex, index);
@@ -215,7 +217,23 @@ void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr me
     }
 }
 
-int CompositeAnnotationLayer::getNumChildren() const
+void CompositeAnnotationLayer::addCallback(osgEarth::LayerCallback *cb)
 {
-    return mChilds.size();
+    ParenticAnnotationLayer::addCallback(cb);
+    for (auto& layer: mChilds) {
+        layer->addCallback(cb);
+    }
 }
+
+void CompositeAnnotationLayer::removeCallback(osgEarth::LayerCallback *cb)
+{
+    ParenticAnnotationLayer::removeCallback(cb);
+    for (auto& layer: mChilds) {
+        layer->removeCallback(cb);
+    }
+}
+
+//int CompositeAnnotationLayer::getNumChildren() const
+//{
+//    return mChilds.size();
+//}

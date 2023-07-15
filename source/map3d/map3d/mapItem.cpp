@@ -40,6 +40,7 @@
 MapItem::MapItem(QQuickItem *parent) :
     QQuickItem(parent)
 {
+//    setMouseTracking()
     setAcceptHoverEvents(true);
     setFlag(ItemHasContents);
     setAcceptedMouseButtons(Qt::MouseButton::AllButtons);
@@ -730,5 +731,10 @@ void MapItem::hoverMoveEvent(QHoverEvent *event)
     if (mOSGRenderNode) {
         mOSGRenderNode->hoverMoveEvent(event);
     }
-//    mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
+    //    mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
+}
+
+void MapItem::dragEnterEvent(QDragEnterEvent *)
+{
+    qDebug()<<"dragEnterEvent";
 }

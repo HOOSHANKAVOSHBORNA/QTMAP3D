@@ -13,23 +13,23 @@ CompositeCallback::CompositeCallback(MapObject *mapObject):
 
 void CompositeCallback::onLayerAdded(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
     if(mMapObject){
-        CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
-        if (compositeLayer){
-            auto compositCallback = new CompositeCallback(mMapObject);
-            mMapObject->addCompositeCallback(layer, compositCallback);
-            compositeLayer->addCallback(compositCallback);
-        }
+//        CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
+//        if (compositeLayer){
+//            auto compositCallback = new CompositeCallback(mMapObject);
+//            mMapObject->addCompositeCallback(layer, compositCallback);
+//            compositeLayer->addCallback(compositCallback);
+//        }
         emit mMapObject->layerAdded(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
     }
 }
 
 void CompositeCallback::onLayerRemoved(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
     if(mMapObject){
-        CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
-        if (compositeLayer){
-            mMapObject->removeCompositeCallback(layer);
-            compositeLayer->removeCallback(mMapObject->getCompositeCallback(layer));
-        }
+//        CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
+//        if (compositeLayer){
+//            mMapObject->removeCompositeCallback(layer);
+//            compositeLayer->removeCallback(mMapObject->getCompositeCallback(layer));
+//        }
         emit mMapObject->layerRemoved(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
     }
 }
