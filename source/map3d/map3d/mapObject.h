@@ -21,6 +21,7 @@ public:
     CompositeCallback(MapObject *mapObject);
     void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
     void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
+    void onLayerMoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned oldIndex, unsigned newIndex) override;
 
 private:
     MapObject *mMapObject{nullptr};
@@ -55,6 +56,9 @@ public:
     bool removeNodeFromLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
     bool setParentLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer);
     osgEarth::Layer *getParentLayer(osgEarth::Layer *layer);
+    void addCompositeCallback(osgEarth::Layer* layer, CompositeCallback* callback);
+    void removeCompositeCallback(osgEarth::Layer* layer);
+    CompositeCallback* getCompositeCallback(osgEarth::Layer* layer);
 signals:
     void layerAdded(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
     void layerRemoved(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);

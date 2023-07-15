@@ -34,7 +34,6 @@ add_executable(Map3d
         cameraController.cpp cameraController.h
         toolbox.h toolbox.cpp
         treeModel.h treeModel.cpp
-        parenticAnnotationLayer.h parenticAnnotationLayer.cpp
         compositeAnnotationLayer.h compositeAnnotationLayer.cpp
         qml.qrc
         resources.qrc)

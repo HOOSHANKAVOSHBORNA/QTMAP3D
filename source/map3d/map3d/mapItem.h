@@ -142,6 +142,11 @@ public:
     virtual void wheelEvent(QWheelEvent* event) override;
     virtual void hoverMoveEvent(QHoverEvent *event) override;
 
+    virtual void dragEnterEvent(QDragEnterEvent *)override;
+    virtual void dragMoveEvent(QDragMoveEvent *)override{qDebug()<<"dragMoveEvent";}
+    virtual void dragLeaveEvent(QDragLeaveEvent *)override{qDebug()<<"dragLeaveEvent";}
+    virtual void dropEvent(QDropEvent *)override{qDebug()<<"dropEvent";}
+
 private:
     OSGRenderNode *mOSGRenderNode{nullptr};
     //    QQuickWindow *mWindow{nullptr};

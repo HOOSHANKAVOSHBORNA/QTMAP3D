@@ -31,8 +31,9 @@ private:
     void cancelDraw()override;
 private:
     osg::ref_ptr<Box> mBox{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mBoxLayer{nullptr};
     BoxProperties *mBoxProperties{nullptr};
-    osg::ref_ptr<ParenticAnnotationLayer> mBoxLayer;
+    osg::ref_ptr<CompositeAnnotationLayer> mCompositeBoxLayer;
     static int mCount;
 };
 

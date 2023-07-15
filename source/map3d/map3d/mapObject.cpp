@@ -12,13 +12,32 @@ CompositeCallback::CompositeCallback(MapObject *mapObject):
 }
 
 void CompositeCallback::onLayerAdded(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
-    if(mMapObject)
+    if(mMapObject){
+//        CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
+//        if (compositeLayer){
+//            auto compositCallback = new CompositeCallback(mMapObject);
+//            mMapObject->addCompositeCallback(layer, compositCallback);
+//            compositeLayer->addCallback(compositCallback);
+//        }
         emit mMapObject->layerAdded(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
+    }
 }
 
 void CompositeCallback::onLayerRemoved(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
-    if(mMapObject)
+    if(mMapObject){
+//        CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
+//        if (compositeLayer){
+//            mMapObject->removeCompositeCallback(layer);
+//            compositeLayer->removeCallback(mMapObject->getCompositeCallback(layer));
+//        }
         emit mMapObject->layerRemoved(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
+    }
+}
+
+void CompositeCallback::onLayerMoved(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer, unsigned int oldIndex, unsigned int newIndex)
+{
+    if (mMapObject)
+        emit mMapObject->layerMoved(layer, oldIndex, newIndex);
 }
 
 //-------------------------------------------------------------------------------------
@@ -182,4 +201,19 @@ osgEarth::Layer *MapObject::getParentLayer(osgEarth::Layer *layer)
     if (layer)
         return dynamic_cast<osgEarth::Layer*>(layer->getUserData());
     return nullptr;
+}
+
+void MapObject::addCompositeCallback(osgEarth::Layer* layer, CompositeCallback* callback)
+{
+    mCompositeCallbacks[layer] = callback;
+}
+
+void MapObject::removeCompositeCallback(osgEarth::Layer* layer)
+{
+    mCompositeCallbacks.remove(layer);
+}
+
+CompositeCallback *MapObject::getCompositeCallback(osgEarth::Layer *layer)
+{
+    return mCompositeCallbacks[layer];
 }
