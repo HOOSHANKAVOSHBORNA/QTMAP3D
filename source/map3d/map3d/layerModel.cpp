@@ -65,38 +65,44 @@ void LayersModel::onItemClicked(const QModelIndex &current)
 //    qDebug() << locata ;
     bool visibleRoleData = mTreeModel->data(indexSource,visibleRole).toBool();
     mTreeModel->updateData(indexSource,!visibleRoleData,visibleRole);
-    auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current).toString().toStdString());
+    auto layer = data(current, layerRole).value<osgEarth::Layer*>();
     auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
     if(visibleLayer)
     {
         setLayerVisible(visibleLayer);
     }
-    else{
-        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current.parent()).toString().toStdString());
-        if(layer){
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if(group){
-                auto node = group->getChild(current.row());
-                node->setNodeMask(!node->getNodeMask());
-            }
-        }
-    }
+//    else{
+//        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current.parent()).toString().toStdString());
+//        if(layer){
+//            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+//            if(group){
+//                auto node = group->getChild(current.row());
+//                node->setNodeMask(!node->getNodeMask());
+//            }
+//        }
+//    }
 }
 
 void LayersModel::onDeleteLayerClicked(const QModelIndex &current)
 {
     QModelIndex indexSource = mapToSource(current);
     QStandardItem *item =  mTreeModel->itemFromIndex(indexSource);
-    QString layerItem = item->text();
-    QString parentLayerItem = item->parent()->text();
-    mTreeModel->removeItem(layerItem , parentLayerItem);
-    auto parentLayer = mMapItem->getMapNode()->getMap()->getLayerByName(parentLayerItem.toStdString());
-    CompositeAnnotationLayer *parentAnnotationlayer = dynamic_cast<CompositeAnnotationLayer*>(parentLayer);
-    if (parentAnnotationlayer){
-        parentAnnotationlayer->removeLayerByName(layerItem);
+    QStandardItem *parentItem = item->parent();
+    osgEarth::Layer *itemLayer = item->data(layerRole).value<osgEarth::Layer*>();
+    osgEarth::Layer *parentLayer = parentItem->data(layerRole).value<osgEarth::Layer*>();
+
+//    QString layerItem = item->text();
+//    QString parentLayerItem = item->parent()->text();
+//    mTreeModel->removeItem(layerItem , parentLayerItem);
+//    auto layer = data(current, layerRole).value<osgEarth::Layer*>();
+    ParenticAnnotationLayer *layerParentic = dynamic_cast<ParenticAnnotationLayer*>(itemLayer);
+    if (layerParentic){
+        auto parentAnoLayer = dynamic_cast<CompositeAnnotationLayer*>(parentLayer);
+        auto parenticItemLayer = dynamic_cast<ParenticAnnotationLayer*>(itemLayer);
+        parentAnoLayer->removeLayer(parenticItemLayer);
     }else{
-        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current).toString().toStdString());
-        mMapItem->getMapObject()->removeLayer(layer,parentLayer);
+//        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current).toString().toStdString());
+        mMapItem->getMapObject()->removeLayer(itemLayer,parentLayer);
     }
 
 
@@ -145,11 +151,13 @@ void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentL
 {
     QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
     treeItem->setData(getLayerVisible(layer),visibleRole);
+
     QVariant layerVariant;
     layerVariant.setValue(layer);
     treeItem->setData(layerVariant,layerRole);
-    CompositeAnnotationLayer* checkComposite = dynamic_cast<CompositeAnnotationLayer*>(layer);
-    if(!checkComposite){
+
+    ParenticAnnotationLayer* checkParentic = dynamic_cast<ParenticAnnotationLayer*>(layer);
+    if(checkParentic && checkParentic->getIsNode()){
         treeItem->setData(true,locatableRole);
     }else{
         treeItem->setData(false,locatableRole);
@@ -161,11 +169,11 @@ void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentL
         mTreeModel->addItem(treeItem);
     }
     //--------------------------------------
-    CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
-    if (compositeLayer){
-        for(int i = 0; i < compositeLayer->getNumChildren(); i++)
-            onLayerAdded(compositeLayer->getChild(i), layer, index);
-    }
+//    CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
+//    if (compositeLayer){
+//        for(int i = 0; i < compositeLayer->getNumChildren(); i++)
+//            onLayerAdded(compositeLayer->getChild(i), layer, index);
+//    }
 }
 
 void LayersModel::onLayerRemoved(osgEarth::Layer *layer , osgEarth::Layer *parentLayer, unsigned index)

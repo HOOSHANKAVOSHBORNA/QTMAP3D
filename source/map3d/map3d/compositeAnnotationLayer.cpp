@@ -21,9 +21,68 @@ void ParenticAnnotationLayer::removeParent(CompositeAnnotationLayer *parent)
     if (it != mParents.end()) mParents.erase(it);
 }
 
+unsigned int ParenticAnnotationLayer::getIndexOfparent(const ParenticAnnotationLayer *layer) const
+{
+    unsigned index = 0;
+    for (; index < mParents.size(); ++index)
+    {
+        if (mParents[index] == layer)
+            break;
+    }
+    return index;
+}
+
+unsigned int ParenticAnnotationLayer::getNumParents() const
+{
+    return mParents.size();
+}
+
+void ParenticAnnotationLayer::insertParent(CompositeAnnotationLayer *parent, unsigned int index)
+{
+    if (getIndexOfparent(parent) != getNumParents())
+        return;
+    if (index == mParents.size())
+        mParents.push_back(parent);
+    else
+        mParents.insert(mParents.begin() + index, parent);
+}
+
+ParenticAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int index)
+{
+    if (index >= getNumParents())
+        return nullptr;
+    return mParents[index].get();
+}
+
+bool ParenticAnnotationLayer::getIsNode() const
+{
+    return isNode;
+}
+
+void ParenticAnnotationLayer::setIsNode(bool newIsNode)
+{
+    isNode = newIsNode;
+}
+
+osgEarth::Annotation::AnnotationNode* ParenticAnnotationLayer::node() const
+{
+    return mNode;
+}
+
+void ParenticAnnotationLayer::setNode(osgEarth::Annotation::AnnotationNode *newNode)
+{
+    mNode = osg::ref_ptr<osgEarth::Annotation::AnnotationNode>(newNode);
+}
+
+osg::Node *ParenticAnnotationLayer::getNode() const
+{
+    return mNode.get();
+}
+
 CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent):
     ParenticAnnotationLayer(parent)
 {
+    setIsNode(false);
     init();
 }
 
@@ -85,6 +144,7 @@ void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsig
         mChilds.push_back(layer);
     else
         mChilds.insert(mChilds.begin() + index, layer);
+    fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
 }
 
 void CompositeAnnotationLayer::removeLayer(ParenticAnnotationLayer *layer)
@@ -95,6 +155,12 @@ void CompositeAnnotationLayer::removeLayer(ParenticAnnotationLayer *layer)
     if (it != mChilds.end()) mChilds.erase(it);
     mRoot->removeChild(layer->getNode());
     fireCallback(&CompositeLayerCallback::onLayerRemoved, layer);
+}
+
+void CompositeAnnotationLayer::clearLayers()
+{
+    mChilds.clear();
+    mRoot->removeChildren(0, mRoot->getNumChildren());
 }
 
 void CompositeAnnotationLayer::moveLayer(ParenticAnnotationLayer *layer, unsigned int index)
