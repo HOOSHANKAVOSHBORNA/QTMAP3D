@@ -1,4 +1,4 @@
-#ifndef ELLIPSEPROPERTIES_H
+﻿#ifndef ELLIPSEPROPERTIES_H
 #define ELLIPSEPROPERTIES_H
 
 #include "ellipse.h"

@@ -269,7 +269,7 @@ void CircleProperties::setFillColor(const QColor &color)
 {
     setFillColorStatus(true);
     Property::setFillColor(color);
-    mCircle->setColor(color);
+//    mCircle->setColor(color);
 }
 
 void CircleProperties::setRadius(const double &radius)

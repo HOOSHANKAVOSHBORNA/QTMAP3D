@@ -154,7 +154,7 @@ void CapsuleProperties::setFillColor(const QColor &color)
 {
     setFillColorStatus(true);
     Property::setFillColor(color);
-    mCapsule->setColor(color);
+//    mCapsule->setColor(color);
 }
 
 void CapsuleProperties::setRadius(const double &radius)
@@ -190,8 +190,8 @@ Capsule *CapsuleProperties::getCapsule() const
     return mCapsule;
 }
 
-void CapsuleProperties::setCapsule(Capsule *newCapsule)
-{
-    mCapsule = newCapsule;
-}
+//void CapsuleProperties::setCapsule(Capsule *newCapsule)
+//{
+//    mCapsule = newCapsule;
+//}
 

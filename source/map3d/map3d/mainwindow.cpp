@@ -118,9 +118,9 @@ MainWindow::MainWindow(QWindow *parent) :
 
 
 
-    QObject::connect(this, &MainWindow::frameSwapped,
-                     this, &MainWindow::onFrameSwapped,
-                     Qt::DirectConnection);
+//    QObject::connect(this, &MainWindow::frameSwapped,
+//                     this, &MainWindow::onFrameSwapped,
+//                     Qt::DirectConnection);
 
 }
 
@@ -159,6 +159,17 @@ void MainWindow::attachToCentralDockItem(QQuickItem *dockItem, bool horizontalAt
                               Q_ARG(QVariant, QVariant::fromValue<bool>(attachAsFirst)),
                               Q_ARG(QVariant, QVariant::fromValue<qreal>(splitScale))
                               );
+}
+
+void MainWindow::showInRightDock(QQuickItem *item)
+{
+    QQuickItem* dockItem = wrapItemWithDockable(item, "Property");
+    attachToCentralDockItem(dockItem, true, false, 0.2);
+}
+
+void MainWindow::addDockItem(QQuickItem *item, int position)
+{
+
 }
 
 //qreal MainWindow::headingAngle() const
@@ -203,10 +214,10 @@ void MainWindow::attachToCentralDockItem(QQuickItem *dockItem, bool horizontalAt
 //    return mFocalPointHead;
 //}
 
-qreal MainWindow::fps() const
-{
-    return mFps;
-}
+//qreal MainWindow::fps() const
+//{
+//    return mFps;
+//}
 
 //bool MainWindow::zoomInButtonPressed() const
 //{
@@ -394,13 +405,13 @@ void MainWindow::initializePluginsUI(std::list<PluginInfo>& pluginsInfoList)
 //    }
 //}
 
-void MainWindow::setFps(qreal fps)
-{
-    if (mFps != fps) {
-        mFps = fps;
-        emit fpsChanged();
-    }
-}
+//void MainWindow::setFps(qreal fps)
+//{
+//    if (mFps != fps) {
+//        mFps = fps;
+//        emit fpsChanged();
+//    }
+//}
 
 //void MainWindow::setZoomInButtonPressed(bool pressed)
 //{
@@ -543,34 +554,34 @@ void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
 //    emit layersModelChanged();
 //}
 
-void MainWindow::onFrameSwapped()
-{
+//void MainWindow::onFrameSwapped()
+//{
 
-    //
-    // Calculate FPS
-    //
-    static std::deque<std::chrono::high_resolution_clock::time_point> timepoint_list;
-    const auto now_timepoint = std::chrono::high_resolution_clock::now();
+//    //
+//    // Calculate FPS
+//    //
+//    static std::deque<std::chrono::high_resolution_clock::time_point> timepoint_list;
+//    const auto now_timepoint = std::chrono::high_resolution_clock::now();
 
-    timepoint_list.push_back(now_timepoint);
-    while (timepoint_list.size() > 2) {
-        if (std::chrono::duration_cast<std::chrono::milliseconds>
-                (now_timepoint - timepoint_list.front()).count() > 2000) {
-            timepoint_list.pop_front();
-        } else {
-            break;
-        }
-    }
+//    timepoint_list.push_back(now_timepoint);
+//    while (timepoint_list.size() > 2) {
+//        if (std::chrono::duration_cast<std::chrono::milliseconds>
+//                (now_timepoint - timepoint_list.front()).count() > 2000) {
+//            timepoint_list.pop_front();
+//        } else {
+//            break;
+//        }
+//    }
 
-    if (timepoint_list.size() >= 2) {
-        const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timepoint_list.back() - timepoint_list.front()).count());
-        if (duration > 0) {
-            const qreal fps = qreal((timepoint_list.size()-1) * 1000) / duration;
-            setFps(fps);
-        }
-    }
+//    if (timepoint_list.size() >= 2) {
+//        const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timepoint_list.back() - timepoint_list.front()).count());
+//        if (duration > 0) {
+//            const qreal fps = qreal((timepoint_list.size()-1) * 1000) / duration;
+//            setFps(fps);
+//        }
+//    }
 
-}
+//}
 
 //void MainWindow::orientCameraToNorth()
 //{
@@ -606,62 +617,62 @@ void MainWindow::setMapItem(MapItem &mapItem)
 ////    mMapItem->cleanup();
 //}
 
-void MainWindow::frame()
-{
-//    static auto lastFrameTimePoint = std::chrono::high_resolution_clock::now() - std::chrono::milliseconds(10);
-//    auto now = std::chrono::high_resolution_clock::now();
+//void MainWindow::frame()
+//{
+////    static auto lastFrameTimePoint = std::chrono::high_resolution_clock::now() - std::chrono::milliseconds(10);
+////    auto now = std::chrono::high_resolution_clock::now();
 
 
-//    const double deltaTime =
-//            static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrameTimePoint).count())
-//            * 0.001;
+////    const double deltaTime =
+////            static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrameTimePoint).count())
+////            * 0.001;
 
 
-//    if (mResized) {
-////        resizeGL();
-//        mResized = false;
-//    }
+////    if (mResized) {
+//////        resizeGL();
+////        mResized = false;
+////    }
 
-//    tickNavigation(deltaTime);
-////    paintGL();
+////    tickNavigation(deltaTime);
+//////    paintGL();
 
-//    const auto pluginManager = Application::instance()->pluginManager();
-//    if (pluginManager) {
-//        pluginManager->frameEvent();
-//    }
+////    const auto pluginManager = Application::instance()->pluginManager();
+////    if (pluginManager) {
+////        pluginManager->frameEvent();
+////    }
 
-//    lastFrameTimePoint = now;
+////    lastFrameTimePoint = now;
 
-}
+//}
 
-void MainWindow::tickNavigation(double deltaTime)
-{
-//    if (mZoomInButtonPressed) {
-//        mMapItem->zoom(0.0018 * deltaTime);
-//    } else if (mZoomOutButtonPressed) {
-//        mMapItem->zoom(-0.0018 * deltaTime);
-//    }
+//void MainWindow::tickNavigation(double deltaTime)
+//{
+////    if (mZoomInButtonPressed) {
+////        mMapItem->zoom(0.0018 * deltaTime);
+////    } else if (mZoomOutButtonPressed) {
+////        mMapItem->zoom(-0.0018 * deltaTime);
+////    }
 
-//    if (mUpButtonPressed) {
-//        mMapItem->pan(0.0, -0.0015 * deltaTime);
-//    } else if (mDownButtonPressed) {
-//        mMapItem->pan(0.0, 0.0015 * deltaTime);
-//    } else if (mLeftButtonPressed) {
-//        mMapItem->pan(0.0015 * deltaTime, 0.0);
-//    } else if (mRightButtonPressed) {
-//        mMapItem->pan(-0.0015 * deltaTime, 0.0);
-//    }
+////    if (mUpButtonPressed) {
+////        mMapItem->pan(0.0, -0.0015 * deltaTime);
+////    } else if (mDownButtonPressed) {
+////        mMapItem->pan(0.0, 0.0015 * deltaTime);
+////    } else if (mLeftButtonPressed) {
+////        mMapItem->pan(0.0015 * deltaTime, 0.0);
+////    } else if (mRightButtonPressed) {
+////        mMapItem->pan(-0.0015 * deltaTime, 0.0);
+////    }
 
-//    if (mRotateUpButtonPressed) {
-//        mMapItem->rotate(0.0, 0.001 * deltaTime);
-//    } else if (mRotateDownButtonPressed) {
-//        mMapItem->rotate(0.0, -0.001 * deltaTime);
-//    } else if (mRotateLeftButtonPressed) {
-//        mMapItem->rotate(-0.001 * deltaTime, 0.0);
-//    } else if (mRotateRightButtonPressed) {
-//        mMapItem->rotate(0.001 * deltaTime, 0.0);
-//    }
-}
+////    if (mRotateUpButtonPressed) {
+////        mMapItem->rotate(0.0, 0.001 * deltaTime);
+////    } else if (mRotateDownButtonPressed) {
+////        mMapItem->rotate(0.0, -0.001 * deltaTime);
+////    } else if (mRotateLeftButtonPressed) {
+////        mMapItem->rotate(-0.001 * deltaTime, 0.0);
+////    } else if (mRotateRightButtonPressed) {
+////        mMapItem->rotate(0.001 * deltaTime, 0.0);
+////    }
+//}
 
 void MainWindow::restoreContext()
 {

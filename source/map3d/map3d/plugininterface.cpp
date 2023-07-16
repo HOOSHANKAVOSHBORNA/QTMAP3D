@@ -18,6 +18,7 @@ UIHandle *PluginInterface::mUiHandle;
 DefenseDataManager *PluginInterface::mDefenseDataManager;
 QQmlEngine *PluginInterface::mQmlEngine;
 Toolbox *PluginInterface::mToolbox;
+MainWindow *PluginInterface::mMainWindow;
 
 PluginInterface::PluginInterface(QObject *parent):
     QObject(parent)
@@ -62,6 +63,16 @@ UIHandle *PluginInterface::uiHandle() const
 void PluginInterface::setUiHandle(UIHandle *newUiHandle)
 {
     mUiHandle = newUiHandle;
+}
+
+MainWindow *PluginInterface::mainWindow() const
+{
+    return mMainWindow;
+}
+
+void PluginInterface::setMainWindow(MainWindow *mainWindow)
+{
+    mMainWindow = mainWindow;
 }
 
 DefenseDataManager *PluginInterface::defenseDataManager() const

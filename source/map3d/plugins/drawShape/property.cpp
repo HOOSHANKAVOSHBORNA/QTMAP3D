@@ -53,7 +53,7 @@ double Property::getStrokeWidth() const
     return mStrokeWidth;
 }
 
-void Property::setStrokeWidth(double opacity)
+void Property::setStrokeWidth(const double &opacity)
 {
     mStrokeWidth = opacity;
     emit propretyChanged();
@@ -67,7 +67,7 @@ QColor Property::getStroke() const
     return mStroke;
 }
 
-void Property::setStroke(QColor strok)
+void Property::setStroke(const QColor &strok)
 {
     mStroke = strok;
     emit propretyChanged();
@@ -92,7 +92,7 @@ QVector3D Property::getLocation() const
     return mLocation;
 }
 
-void Property::setLocation(QVector3D location)
+void Property::setLocation(const QVector3D &location)
 {
     mLocation = location;
     emit propretyChanged();
@@ -104,7 +104,7 @@ bool Property::getLocationRelative() const
     return mRelative;
 }
 
-void Property::setLocationRelative(bool relative)
+void Property::setLocationRelative(const bool &relative)
 {
     mRelative = relative;
     emit propretyChanged();
@@ -130,7 +130,7 @@ QVector3D Property::getCenter() const
     return mCenter;
 }
 
-void Property::setCenter(QVector3D center)
+void Property::setCenter(const QVector3D &center)
 {
     mCenter = center;
     emit propretyChanged();
@@ -154,7 +154,7 @@ QVector2D Property::getArc() const
     return mArc;
 }
 
-void Property::setArc(QVector2D arc)
+void Property::setArc(const QVector2D &arc)
 {
     mArc=arc;
     emit propretyChanged();
@@ -180,7 +180,7 @@ double Property::getRadius() const
     return mRadius;
 }
 
-void Property::setRadius(double radius)
+void Property::setRadius(const double &radius)
 {
     mRadius = radius;
     emit propretyChanged();
@@ -192,7 +192,7 @@ bool Property::getHeightStatus() const
     return mHeightStatus;
 }
 
-void Property::setHeightStatus(bool height)
+void Property::setHeightStatus( bool height)
 {
     mHeightStatus = height;
     emit propretyChanged();
@@ -204,7 +204,7 @@ double Property::getHeight() const
     return mHeight;
 }
 
-void Property::setHeight(double height)
+void Property::setHeight(const double &height)
 {
     mHeight = height;
     emit propretyChanged();
@@ -230,7 +230,7 @@ double Property::getLenght() const
     return mLenght;
 }
 
-void Property::setLenght(double lenght)
+void Property::setLenght(const double &lenght)
 {
     mLenght = lenght;
     emit propretyChanged();
@@ -282,7 +282,7 @@ double Property::getTesselation() const
     return mTesselation;
 }
 
-void Property::setTesselation(double tesselation)
+void Property::setTesselation(const double &tesselation)
 {
     mTesselation = tesselation;
     emit propretyChanged();
@@ -307,7 +307,7 @@ double Property::getClamp() const
     return mClamp;
 }
 
-void Property::setClamp(double clamp)
+void Property::setClamp(const double &clamp)
 {
     mClamp = clamp;
     emit propretyChanged();
@@ -334,7 +334,7 @@ bool Property::getShowLen() const
     return mShowLen;
 }
 
-void Property::setShowLen(bool len)
+void Property::setShowLen(const bool &len)
 {
     mShowLen = len;
     emit propretyChanged();
@@ -360,7 +360,7 @@ bool Property::getBearing() const
     return mBearing;
 }
 
-void Property::setBearing(bool bearing)
+void Property::setBearing(const bool &bearing)
 {
     mBearing = bearing;
     emit propretyChanged();
@@ -387,7 +387,7 @@ bool Property::getShowSlop() const
     return mShowSlop;
 }
 
-void Property::setShowSlop(bool slop)
+void Property::setShowSlop(const bool &slop)
 {
     mShowSlop = slop;
     emit propretyChanged();
@@ -414,7 +414,7 @@ QColor Property::getPoints() const
     return mPoints;
 }
 
-void Property::setPoints(QColor point)
+void Property::setPoints(const QColor &point)
 {
     mPoints = point;
     emit propretyChanged();
@@ -426,7 +426,7 @@ bool Property::getPointsSmooth() const
     return mPointsSmooth;
 }
 
-void Property::setPointsSmooth(bool point)
+void Property::setPointsSmooth(const bool &point)
 {
     mPointsSmooth = point;
     emit propretyChanged();
@@ -438,7 +438,7 @@ double Property::getPointsWidth() const
     return mPointsWidth;
 }
 
-void Property::setPointsWidth(double point)
+void Property::setPointsWidth(const double &point)
 {
     mPointsWidth = point;
     emit propretyChanged();

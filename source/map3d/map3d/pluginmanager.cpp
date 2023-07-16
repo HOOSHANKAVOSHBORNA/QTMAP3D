@@ -106,6 +106,8 @@ void PluginManager::loadPlugins()
 
 void PluginManager::setup()
 {
+    auto mainWindow = Application::instance()->mainWindow();
+    PluginInterface::setMainWindow(mainWindow);
     auto mapItem = Application::instance()->mainWindow()->getMapItem();
     PluginInterface::setMapItem(mapItem);
     mapItem->getViewer()->addEventHandler(new EventHandler(this));

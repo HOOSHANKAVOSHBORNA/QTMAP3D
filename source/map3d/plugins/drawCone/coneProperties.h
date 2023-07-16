@@ -8,6 +8,7 @@
 #include "cone.h"
 #include "property.h"
 
+class MainWindow;
 class ConePropertiesModel: public QObject
 {
     Q_OBJECT

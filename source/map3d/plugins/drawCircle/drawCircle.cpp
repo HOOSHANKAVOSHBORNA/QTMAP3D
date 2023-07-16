@@ -50,7 +50,7 @@ void DrawCircle::onCircleItemCheck(bool check)
         }
         setState(State::NONE);
         mCircle = nullptr;
-        mCircleProperties->hide();
+        //mCircleProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -76,7 +76,7 @@ void DrawCircle::cancelDraw()
     if(state() == State::DRAWING){
         mapItem()->getMapObject()->removeNodeFromLayer(mCircle, mCircleLayer);
         mCircle = nullptr;
-        mCircleProperties->setCircle(mCircle);
+        //mCircleProperties->setCircle(mCircle);
         setState(State::READY);
         mCount--;
     }

@@ -157,7 +157,7 @@ void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentL
     treeItem->setData(layerVariant,layerRole);
 
     ParenticAnnotationLayer* checkParentic = dynamic_cast<ParenticAnnotationLayer*>(layer);
-    if(checkParentic && checkParentic->getIsNode()){
+    if(checkParentic && !checkParentic->asCompositeAnnotationLayer()){
         treeItem->setData(true,locatableRole);
     }else{
         treeItem->setData(false,locatableRole);

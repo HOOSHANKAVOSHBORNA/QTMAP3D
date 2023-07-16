@@ -277,9 +277,7 @@ Item {
                                 onClicked: {
                                     rootItem.layersModell.onShiftDownCliced(treeView.index(row , column))
                                 }
-
                             }
-
                         }
                     }
                 }

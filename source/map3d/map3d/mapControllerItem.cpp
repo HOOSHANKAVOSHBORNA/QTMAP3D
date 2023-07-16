@@ -110,6 +110,41 @@ void MapControllerItem::tickNavigation(double deltaTime)
     }
 }
 
+void MapControllerItem::calculateNavigationStep()
+{
+    static auto lastFrameTimePoint = std::chrono::high_resolution_clock::now() - std::chrono::milliseconds(10);
+    auto now = std::chrono::high_resolution_clock::now();
+    const double deltaTime =
+        static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrameTimePoint).count())
+        * 0.001;
+    lastFrameTimePoint = now;
+    tickNavigation(deltaTime);
+}
+
+void MapControllerItem::calculateFps()
+{
+    static std::deque<std::chrono::high_resolution_clock::time_point> timePointList;
+    const auto nowTimePoint = std::chrono::high_resolution_clock::now();
+
+    timePointList.push_back(nowTimePoint);
+    while (timePointList.size() > 2) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>
+            (nowTimePoint - timePointList.front()).count() > 2000) {
+            timePointList.pop_front();
+        } else {
+            break;
+        }
+    }
+
+    if (timePointList.size() >= 2) {
+        const qreal duration = qreal(std::chrono::duration_cast<std::chrono::milliseconds>(timePointList.back() - timePointList.front()).count());
+        if (duration > 0) {
+            const qreal fps = qreal((timePointList.size()-1) * 1000) / duration;
+            setFps(fps);
+        }
+    }
+}
+
 QVector3D MapControllerItem::mapMouseGeoLocation() const
 {
     osgEarth::GeoPoint geoPos = mCurrentMouseGeoPoint;
@@ -125,13 +160,10 @@ QVector3D MapControllerItem::mapMouseLocation() const
 void MapControllerItem::frame()
 {
     MapItem::frame();
-    static auto lastFrameTimePoint = std::chrono::high_resolution_clock::now() - std::chrono::milliseconds(10);
-    auto now = std::chrono::high_resolution_clock::now();
-    const double deltaTime =
-        static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(now - lastFrameTimePoint).count())
-        * 0.001;
-    lastFrameTimePoint = now;
-    tickNavigation(deltaTime);
+
+    calculateFps();
+    calculateNavigationStep();
+
     emit headingAngleChanged();
 }
 
@@ -194,9 +226,22 @@ void MapControllerItem::hoverMoveEvent(QHoverEvent *event)
     event->ignore();
 }
 
-qreal MapControllerItem::headingAngle() const
+double MapControllerItem::headingAngle() const
 {
     return -getCameraController()->getViewpoint().heading()->as(osgEarth::Units::DEGREES);
+}
+
+double MapControllerItem::fps() const
+{
+    return mFps;
+}
+
+void MapControllerItem::setFps(double fps)
+{
+    if (mFps != fps) {
+        mFps = fps;
+        emit fpsChanged();
+    }
 }
 
 void MapControllerItem::home()

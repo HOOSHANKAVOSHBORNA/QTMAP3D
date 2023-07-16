@@ -178,7 +178,7 @@ void EllipseProperties::setFillColor(const QColor &color)
 {
     setFillColorStatus(true);
     Property::setFillColor(color);
-    mEllipse->setColor(color);
+//    mEllipse->setColor(color);
 }
 
 
@@ -220,8 +220,8 @@ Ellipse *EllipseProperties::getEllipse() const
     return mEllipse;
 }
 
-void EllipseProperties::setEllipse(Ellipse *newEllipse)
-{
-    mEllipse = newEllipse;
-}
+//void EllipseProperties::setEllipse(Ellipse *newEllipse)
+//{
+//    mEllipse = newEllipse;
+//}
 

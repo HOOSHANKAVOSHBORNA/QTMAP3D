@@ -86,10 +86,10 @@ public:
     void setStrokeStatus(bool status);
 
     double getStrokeWidth () const;
-    virtual void setStrokeWidth(double opacity);
+    virtual void setStrokeWidth(const double &opacity);
 
     QColor getStroke() const;
-    virtual void setStroke(QColor color);
+    virtual void setStroke(const QColor &color);
 
 
     // ---------- Location  --------- //
@@ -97,10 +97,10 @@ public:
     void setLocationStatus (bool status);
 
     QVector3D getLocation() const;
-    virtual void setLocation(QVector3D status);
+    virtual void setLocation(const QVector3D &status);
 
     bool getLocationRelative() const;
-    virtual void setLocationRelative(bool relative);
+    virtual void setLocationRelative(const bool &relative);
 
 
     // ---------- Center --------- //
@@ -109,7 +109,7 @@ public:
     void setCenterStatus(bool center);
 
     QVector3D getCenter() const;
-    virtual void setCenter(QVector3D center);
+    virtual void setCenter(const QVector3D &center);
 
     // ---------- arc --------- //
 
@@ -117,7 +117,7 @@ public:
     void setArcStatus(bool arc);
 
     QVector2D getArc() const;
-    virtual void setArc(QVector2D arc);
+    virtual void setArc(const QVector2D &arc);
 
 
     // ---------- radius  --------- //
@@ -126,7 +126,7 @@ public:
     void setRadiusStatus(bool radius);
 
     double getRadius() const;
-    virtual void setRadius(double radius);
+    virtual void setRadius(const double &radius);
 
     // ---------- height  --------- //
 
@@ -134,7 +134,7 @@ public:
     void setHeightStatus(bool height);
 
     double getHeight() const;
-    virtual void setHeight(double height);
+    virtual void setHeight(const double &height);
 
 
     // ---------- Lenght  --------- //
@@ -143,7 +143,7 @@ public:
     void setLenghtStatus(bool lenght);
 
     double getLenght() const;
-    virtual void setLenght(double lenght);
+    virtual void setLenght(const double &lenght);
 
 
     // ---------- Width  --------- //
@@ -161,7 +161,7 @@ public:
     void setTesselationStatus(bool tesselation);
 
     double getTesselation() const;
-    virtual void setTesselation(double tesselation);
+    virtual void setTesselation(const double &tesselation);
 
 
     // ---------- Clamp  --------- //
@@ -170,7 +170,7 @@ public:
     void setClampStatus(bool clamp);
 
     double getClamp() const;
-    virtual void setClamp(double clamp);
+    virtual void setClamp(const double &clamp);
 
 
     // ---------- showlen  --------- //
@@ -179,7 +179,7 @@ public:
     void setShowLenStatus(bool clamp);
 
     bool getShowLen() const;
-    virtual void setShowLen(bool clamp);
+    virtual void setShowLen(const bool &clamp);
 
 
     // ---------- Bearing  --------- //
@@ -188,7 +188,7 @@ public:
     void setBearingStatus(bool bearing);
 
     bool getBearing() const;
-    virtual void setBearing(bool bearing);
+    virtual void setBearing(const bool &bearing);
 
 
     // ---------- showSlop  --------- //
@@ -197,7 +197,7 @@ public:
     void setShowSlopStatus(bool slop);
 
     bool getShowSlop() const;
-    virtual void setShowSlop(bool slop);
+    virtual void setShowSlop(const bool &slop);
 
 
     // ---------- Points --------- //
@@ -206,13 +206,13 @@ public:
     void setPointsStatus(bool point);
 
     QColor getPoints() const;
-    virtual void setPoints(QColor point);
+    virtual void setPoints(const QColor &point);
 
     double getPointsWidth() const;
-    virtual void setPointsWidth(double point);
+    virtual void setPointsWidth(const double &point);
 
     bool getPointsSmooth() const;
-    virtual void setPointsSmooth(bool point);
+    virtual void setPointsSmooth(const bool &point);
 
 
 signals:

@@ -197,20 +197,20 @@ void BoxProperties::setFillColor(const QColor &color)
 {
     setFillColorStatus(true);
     Property::setFillColor(color);
-    mBox->setColor(color);
+//    mBox->setColor(color);
 }
 
-void BoxProperties::setLenght(const QVector3D &len)
-{
-    setLenghtStatus(true);
-    Property::setLenght(len);
-}
+//void BoxProperties::setLenght(const QVector3D &len)
+//{
+//    setLenghtStatus(true);
+//    Property::setLenght(len);
+//}
 
-void BoxProperties::setWidth(const double &width)
-{
-    setWidthStatus(true);
-    Property::setWidth(width);
-}
+//void BoxProperties::setWidth(const double &width)
+//{
+//    setWidthStatus(true);
+//    Property::setWidth(width);
+//}
 
 void BoxProperties::setLocationRelative(const bool &relative)
 {

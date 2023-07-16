@@ -154,7 +154,7 @@ void CylinderProperties::setFillColor(const QColor &color)
 {
     setFillColorStatus(true);
     Property::setFillColor(color);
-    mCylinder->setColor(color);
+//    mCylinder->setColor(color);
 }
 
 void CylinderProperties::setRadius(const double &radius)
@@ -170,11 +170,11 @@ void CylinderProperties::setLocationRelative(const bool &relative)
 
 
 
-void CylinderProperties::setStrokeWidth(const double &opacity)
-{
-    setStrokeStatus(true);
-    Property::setStrokeWidth(opacity);
-}
+//void CylinderProperties::setStrokeWidth(const double &opacity)
+//{
+//    setStrokeStatus(true);
+//    Property::setStrokeWidth(opacity);
+//}
 
 
 void CylinderProperties::setLocation(const QVector3D &status)
@@ -197,9 +197,9 @@ Cylinder *CylinderProperties::getCylinder() const
     return mCylinder;
 }
 
-void CylinderProperties::setCylinder(Cylinder *newCylinder)
-{
-    mCylinder = newCylinder;
-}
+//void CylinderProperties::setCylinder(Cylinder *newCylinder)
+//{
+//    mCylinder = newCylinder;
+//}
 
 

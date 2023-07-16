@@ -1,5 +1,5 @@
 #include "coneProperties.h"
-
+#include "mainwindow.h"
 #include <QQmlComponent>
 #include <QQuickItem>
 
@@ -155,7 +155,7 @@ void ConeProperties::setFillColor(const QColor &color)
 {
     setFillColorStatus(true);
     Property::setFillColor(color);
-    mCone->setColor(color);
+//    mCone->setColor(color);
 }
 
 void ConeProperties::setRadius(const double &radius)
@@ -189,8 +189,8 @@ Cone *ConeProperties::getCone() const
     return mCone;
 }
 
-void ConeProperties::setCone(Cone *newCone)
-{
-    mCone = newCone;
-}
+//void ConeProperties::setCone(Cone *newCone)
+//{
+//    mCone = newCone;
+//}
 

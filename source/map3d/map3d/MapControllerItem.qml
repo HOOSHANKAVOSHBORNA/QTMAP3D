@@ -126,6 +126,26 @@ MapController {
 
         easing.type: Easing.InQuint
     }
+    //
+    Label {
+        id: fpsLabel
+        text: map.fps.toLocaleString(Qt.locale(), 'f', 2)
+        color: 'springgreen'
+        style: Text.Outline;
+        styleColor: "black"
+        font.pointSize: 20
+        font.weight: Font.Bold
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        anchors.leftMargin: 20
+    }
+    SearchBar {
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        anchors.rightMargin: 20
+        anchors.right: parent.right
+    }
     //        id:mapItem
     Rectangle {
         color: "transparent"

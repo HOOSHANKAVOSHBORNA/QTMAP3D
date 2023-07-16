@@ -114,6 +114,7 @@ public:
     void setHeight(const double &height) override;
     void setClamp(const double &clamp) override;
     Circle *getCircle() const;
+    void setCircle(Circle* circle);
 
 private:
     Circle *mCircle = nullptr;

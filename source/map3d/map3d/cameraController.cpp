@@ -99,7 +99,11 @@ bool CameraController::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 {
     if(ea.getEventType() == osgGA::GUIEventAdapter::PUSH){
         eventHandled = ea.getHandled();
+//        qDebug()<<"push";
     }
+//    if(ea.getEventType() == osgGA::GUIEventAdapter::DRAG){
+//        qDebug()<<"drag";
+//    }
     return osgEarth::Util::EarthManipulator::handle(ea, us);
 }
 
