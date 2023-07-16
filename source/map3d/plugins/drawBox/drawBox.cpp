@@ -17,17 +17,23 @@ bool DrawBox::setup()
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
 //    addLayer();
-    mBoxLayer = new osgEarth::Annotation::AnnotationLayer();
-    mBoxLayer->setName(BOX);
+    mCompositeBoxLayer = new CompositeAnnotationLayer();
+    mCompositeBoxLayer->setName(BOX);
     return true;
 }
 
 void DrawBox::onBoxItemCheck(bool check)
 {
     if (check) {
-        if(mBoxLayer->getGroup()->getNumChildren() <= 0){ 
-            auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
+        auto shapeLayer = DrawShape::shapeLayer();
+        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositeBoxLayer->getName()));
+        if(!layer){
+            mCompositeBoxLayer->clearLayers();
+        }
+        if(mCompositeBoxLayer->getNumLayers() <= 0){
+
+//            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
+            shapeLayer->addLayer(mCompositeBoxLayer);
         }
         setState(State::READY);
         mapItem()->addNode(iconNode());
@@ -37,10 +43,10 @@ void DrawBox::onBoxItemCheck(bool check)
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
+        if(mCompositeBoxLayer->getNumLayers() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
-//            mapItem()->getMapObject()->setParentLayer(mBoxLayer, nullptr);
-            mapItem()->getMapObject()->removeLayer(mBoxLayer, shapeLayer);
+//            mapItem()->getMapObject()->removeLayer(mBoxLayer, shapeLayer);
+            shapeLayer->removeLayer(mCompositeBoxLayer);
         }
         setState(State::NONE);
         mBox = nullptr;
@@ -58,8 +64,12 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mBox->setWidth(100000);
     mBox->setLength(100000);
     mBox->setPosition(geoPos);
+    mBoxLayer = new ParenticAnnotationLayer();
+    mBoxLayer->addChild(mBox);
+    mBoxLayer->setName(mBox->getName());
+//    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
+    mCompositeBoxLayer->addLayer(mBoxLayer);
 
-    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
 //    mBoxProperties->setBox(mBox);
 
     setState(State::DRAWING);
@@ -74,8 +84,11 @@ void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 void DrawBox::cancelDraw()
 {
     if(state() == State::DRAWING){
-        mapItem()->getMapObject()->removeNodeFromLayer(mBox, mBoxLayer);
+//        mapItem()->getMapObject()->removeNodeFromLayer(mBox, mCompositeBoxLayer);
+//        mapItem()->getMapObject()->removeLayer(mBoxLayer, mCompositeBoxLayer);
+        mCompositeBoxLayer->removeLayer(mBoxLayer);
         mBox = nullptr;
+        mBoxLayer = nullptr;
         //mBoxProperties->setBox(mBox);
         setState(State::READY);
         mCount--;

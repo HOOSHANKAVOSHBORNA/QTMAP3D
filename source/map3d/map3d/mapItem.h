@@ -123,7 +123,7 @@ private:
     osg::ref_ptr<CameraController> mCameraController{nullptr};
     bool mIsGeocentric{true};
     bool mIs3DView{true};
-    osgEarth::GeoPoint mCurrentMouseGeoPoint;
+//    osgEarth::GeoPoint mCurrentMouseGeoPoint;
     //--renderer------------------------------------------------------------------------------------------------------
 public:
     //    void cleanup();
@@ -141,6 +141,11 @@ public:
     virtual void mouseMoveEvent(QMouseEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
     virtual void hoverMoveEvent(QHoverEvent *event) override;
+
+    virtual void dragEnterEvent(QDragEnterEvent *)override;
+    virtual void dragMoveEvent(QDragMoveEvent *)override{qDebug()<<"dragMoveEvent";}
+    virtual void dragLeaveEvent(QDragLeaveEvent *)override{qDebug()<<"dragLeaveEvent";}
+    virtual void dropEvent(QDropEvent *)override{qDebug()<<"dropEvent";}
 
 private:
     OSGRenderNode *mOSGRenderNode{nullptr};

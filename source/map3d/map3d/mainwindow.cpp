@@ -845,6 +845,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
+    //qDebug()<<event->isAccepted();
     QQuickWindow::mousePressEvent(event);
 
     if (event->isAccepted())

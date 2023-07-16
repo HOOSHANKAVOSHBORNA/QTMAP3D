@@ -5,13 +5,17 @@
 #include "treeModel.h"
 #include <osgEarth/Layer>
 
-
+Q_DECLARE_METATYPE(osgEarth::Layer);
 
 class LayersModel : public TreeProxyModel
 {
     Q_OBJECT
+
     enum CustomRoles{
-        visibleLayerRole =Qt::UserRole + 100
+        visibleRole =Qt::UserRole + 100 ,
+        locatableRole =Qt::UserRole + 101 ,
+        layerRole = Qt::UserRole + 102
+
     };
 
 public:
@@ -23,6 +27,10 @@ public:
 
 public slots:
     void onItemClicked(const QModelIndex &current)override;
+    void onDeleteLayerClicked(const QModelIndex &current);
+    void onGoToClicked(const QModelIndex &current);
+    void onShiftUpClicked(const QModelIndex &current);
+    void onShiftDownCliced(const QModelIndex &current);
 
     void onLayerAdded(osgEarth::Layer* layer , osgEarth::Layer *parentLayer,   unsigned index);
     void onLayerRemoved(osgEarth::Layer* layer ,osgEarth::Layer *parentLayer, unsigned index);
@@ -35,6 +43,7 @@ private:
     QStandardItem mLayerList;
     MapItem *mMapItem;
     TreeModel *mTreeModel;
+    QMap<QStandardItem , osgEarth::Layer*> treeLayerMap;
 
 
 };

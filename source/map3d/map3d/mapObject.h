@@ -1,9 +1,11 @@
 #ifndef CUSTOMMAP_H
 #define CUSTOMMAP_H
 
+#include <QMap>
 #include <QObject>
 #include <osgEarth/Map>
-#include "compositeLayer.h"
+#include "compositeAnnotationLayer.h"
+
 namespace osgEarth {
 namespace Annotation {
 class AnnotationLayer;
@@ -16,13 +18,13 @@ class CompositeCallback: public CompositeLayerCallback
 {
     Q_OBJECT
 public:
-    CompositeCallback(MapObject *mapObject, CompositeAnnotationLayer *parent);
-    virtual void onLayerAdded(osgEarth::Annotation::AnnotationLayer* layer);
-    virtual void onLayerRemoved(osgEarth::Annotation::AnnotationLayer* layer);
+    CompositeCallback(MapObject *mapObject);
+    void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
+    void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
+    void onLayerMoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned oldIndex, unsigned newIndex) override;
 
 private:
     MapObject *mMapObject{nullptr};
-    CompositeAnnotationLayer *mParent;
 };
 
 //class
@@ -54,6 +56,9 @@ public:
     bool removeNodeFromLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
     bool setParentLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer);
     osgEarth::Layer *getParentLayer(osgEarth::Layer *layer);
+    void addCompositeCallback(osgEarth::Layer* layer, CompositeCallback* callback);
+    void removeCompositeCallback(osgEarth::Layer* layer);
+    CompositeCallback* getCompositeCallback(osgEarth::Layer* layer);
 signals:
     void layerAdded(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
     void layerRemoved(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
@@ -66,6 +71,7 @@ signals:
     void parentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
 
 private:
+    QMap<osgEarth::Layer*, CompositeCallback*> mCompositeCallbacks;
 };
 
 #endif // CUSTOMMAP_H

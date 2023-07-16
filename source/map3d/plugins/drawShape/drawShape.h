@@ -2,16 +2,18 @@
 #define DRAWSHAPE_H
 
 #include <QMouseEvent>
-#include <osgEarthAnnotation/FeatureNode>
-#include <osgEarthAnnotation/ModelNode>
-#include <osgEarthSymbology/GeometryFactory>
+//#include <osgEarthAnnotation/FeatureNode>
+//#include <osgEarthAnnotation/ModelNode>
+//#include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
 
-#include <osgEarthAnnotation/AnnotationLayer>
-#include <osgEarthAnnotation/ImageOverlayEditor>
+//#include <osgEarthAnnotation/AnnotationLayer>
+//#include <osgEarthAnnotation/ImageOverlayEditor>
 #include <osgEarthAnnotation/PlaceNode>
 #include <QQmlEngine>
 #include <QQmlComponent>
+
+#include "compositeAnnotationLayer.h"
 
 #define CATEGORY "Draw"
 #define M_CATEGORY "Measurement"
@@ -39,8 +41,8 @@ public:
     osgEarth::Annotation::PlaceNode *iconNode() const;
     DrawShape::State state() const;
     void setState(DrawShape::State newState);
-    osgEarth::Annotation::AnnotationLayer *shapeLayer();
-    osgEarth::Annotation::AnnotationLayer *measureLayer();
+    CompositeAnnotationLayer *shapeLayer();
+    CompositeAnnotationLayer *measureLayer();
 
     virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override {return false;}
     virtual bool keyPressEvent        (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override {return false;}
@@ -59,8 +61,8 @@ protected:
 private:
     State mState{State::NONE};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
-    osgEarth::Annotation::AnnotationLayer* mShapeLayer{nullptr};
-    osgEarth::Annotation::AnnotationLayer* mMeasureLayer{nullptr};
+    CompositeAnnotationLayer* mShapeLayer{nullptr};
+    CompositeAnnotationLayer* mMeasureLayer{nullptr};
 
 };
 

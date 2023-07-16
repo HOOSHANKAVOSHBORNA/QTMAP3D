@@ -39,13 +39,13 @@ int main(int argc, char *argv[])
 
 //    MainWindow mainWindow;
     Application *const map3DApp = Application::instance();
-    map3DApp->initialize();
-    map3DApp->show();
     //--run demo------------------------
 //    QObject::connect(map3DApp, &Application::defenseDataManagerInitialized, [](DefenseDataManager *defenseDataManager) {
 //        Demo* demo = new Demo(defenseDataManager);
 //    });
     //---------------------------------
+    map3DApp->initialize();
+    map3DApp->show();
 
 //    if (map3DApp->isMainWindowReady()) {
 //        map3DApp->mainWindow()->show();

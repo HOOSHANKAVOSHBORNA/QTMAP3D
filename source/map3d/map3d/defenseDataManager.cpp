@@ -24,10 +24,10 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 	createSystemInfo();
 
 	QObject::connect(timerSystem, &QTimer::timeout, [this](){
-		for(auto station:mStations)
+        for(auto& station: mStations)
 			emit mDefenseDataManager->stationInfoChanged(station);
 		//-------------------
-		for(auto system:mSystems){
+        for(auto& system: mSystems){
 			emit mDefenseDataManager->systemInfoChanged(system.info);
 			emit mDefenseDataManager->systemStatusInfoChanged(system.statusInfo);
 		}
@@ -37,7 +37,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 	QTimer *timerUpdateCombat = new QTimer();
 	QObject::connect(timerUpdateCombat, &QTimer::timeout, [this](){
 		updateSystemCombatInfo();
-		for(auto system:mSystems)
+        for(auto& system:mSystems)
 			emit mDefenseDataManager->systemCombatInfoChanged(system.combatInfo);
 	});
 	timerUpdateCombat->start(20000);
@@ -47,7 +47,7 @@ Demo::Demo(DefenseDataManager *defenseDataManager)
 	QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
 		createAircraftInfo();
 		updateAircraftInfo();
-		for(auto aircraft:mAircrafts)
+        for(auto& aircraft:mAircrafts)
 			emit mDefenseDataManager->aircraftInfoChanged(aircraft);
 	});
 	timerUpdateAircraft->start(1000);

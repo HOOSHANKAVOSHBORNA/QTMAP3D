@@ -145,6 +145,10 @@ void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
 void MapControllerItem::mousePressEvent(QMouseEvent *event)
 {
     MapItem::mousePressEvent(event);
+
+    if (getCameraController()->getEventHandled())
+        return;
+
     if (event->button() == Qt::LeftButton) {
         mLastMousePressTime = QTime::currentTime();
         mLastPressPoint = event->pos();
