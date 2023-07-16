@@ -151,39 +151,77 @@ void EllipsePropertiesModel::setEllipse(Ellipse *ellipse)
 
 }
 
-EllipseProperties::EllipseProperties(Ellipse* ellipse, QQmlEngine *engine, UIHandle *uiHandle, QObject *parent) :
-    QObject(parent),
-    mQmlEngine(engine),
-    mUiHandle(uiHandle)
+//EllipseProperties::EllipseProperties(Ellipse* ellipse, QQmlEngine *engine, UIHandle *uiHandle, QObject *parent) :
+//    QObject(parent),
+//    mQmlEngine(engine),
+//    mUiHandle(uiHandle)
+//{
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, ellipse](){
+//        if (comp->status() == QQmlComponent::Ready) {
+//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//            mEllipseProperties = new EllipsePropertiesModel(ellipse);
+//            mItem->setProperty("ellipseProperties", QVariant::fromValue<EllipsePropertiesModel*>(mEllipseProperties));
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/EllipseProperty.qml"));
+
+//}
+
+EllipseProperties::EllipseProperties(QQuickItem *parent):
+    Property(parent)
 {
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, ellipse](){
-        if (comp->status() == QQmlComponent::Ready) {
-            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mEllipseProperties = new EllipsePropertiesModel(ellipse);
-            mItem->setProperty("ellipseProperties", QVariant::fromValue<EllipsePropertiesModel*>(mEllipseProperties));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/EllipseProperty.qml"));
 
 }
 
-void EllipseProperties::show()
+void EllipseProperties::setFillColor(const QColor &color)
 {
-    if(mItem)
-    mUiHandle->propertiesShow(mItem);
+    setFillColorStatus(true);
+    Property::setFillColor(color);
+    mEllipse->setColor(color);
 }
 
-void EllipseProperties::hide()
+
+
+
+
+void EllipseProperties::setStrokeWidth(const double &opacity)
 {
-    if(mItem)
-    mUiHandle->propertiesHide(mItem);
+    setStrokeStatus(true);
+    Property::setStrokeWidth(opacity);
 }
 
-void EllipseProperties::setEllipse(Ellipse *ellipse)
+void EllipseProperties::setStroke(const QColor &color)
 {
-    if(mItem)
-    mEllipseProperties->setEllipse(ellipse);
+    setStrokeStatus(true);
+    Property::setStroke(color);
+
 }
 
+
+
+
+
+void EllipseProperties::setHeight(const double &height)
+{
+    setHeightStatus(true);
+    Property::setHeight(height);
+}
+
+void EllipseProperties::setClamp(const double &clamp)
+{
+    setClampStatus(true);
+    Property::setClamp(clamp);
+}
+
+
+Ellipse *EllipseProperties::getEllipse() const
+{
+    return mEllipse;
+}
+
+void EllipseProperties::setEllipse(Ellipse *newEllipse)
+{
+    mEllipse = newEllipse;
+}
 

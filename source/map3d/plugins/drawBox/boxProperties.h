@@ -6,6 +6,7 @@
 #include "plugininterface.h"
 #include "mapItem.h"
 #include "box.h"
+#include "property.h"
 
 class BoxPropertiesModel: public QObject
 {
@@ -63,25 +64,24 @@ private:
 
 };
 
-class BoxProperties: public QObject
+class BoxProperties: public Property
 {
     Q_OBJECT
-
 public:
-    BoxProperties(Box *box, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent = nullptr);
+    BoxProperties(QQuickItem *parent=nullptr);
+    void setFillColor(const QColor &color) override;
+    void setLenght(const QVector3D &status) override;
+    void setLocationRelative(const bool &relative) override;
+    void setLocation(const QVector3D &status);
+    void setHeight(const double &height) override;
+    void setLenght(const double &lenght) override;
+    void setWidth( const double &width)  override;
 
-    void show();
-    void hide();
-    void setBox(Box *box);
-    void setLocation(osgEarth::GeoPoint location);
+    Box *getBox() const;
+    void setBox(Box *newBox);
 
 private:
-    QQmlEngine* mQmlEngine;
-    QQuickItem* mItem;
-    BoxPropertiesModel* mBoxProperties;
-    UIHandle* mUiHandle;
-    Box* mBox;
-    MapItem *mMapItem;
+    Box *mBox = nullptr;
 };
 
 #endif // BOXPROPERTIESMODEL_H

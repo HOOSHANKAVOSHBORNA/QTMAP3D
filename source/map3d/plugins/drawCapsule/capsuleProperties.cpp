@@ -128,48 +128,70 @@ void CapsulePropertiesModel::setRelative(const bool &value){
 }
 
 
-CapsuleProperties::CapsuleProperties(Capsule* Capsule, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
-    QObject(parent),
-    mQmlEngine(qmlEngine),
-    mUiHandle(uiHandle)
+//CapsuleProperties::CapsuleProperties(Capsule* Capsule, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
+//    QObject(parent),
+//    mQmlEngine(qmlEngine),
+//    mUiHandle(uiHandle)
+//{
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, Capsule](){
+//        if (comp->status() == QQmlComponent::Ready) {
+//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//            mCapsuleProperties = new CapsulePropertiesModel(Capsule, mapItem);
+//            mItem->setProperty("capsuleProperties", QVariant::fromValue<CapsulePropertiesModel*>(mCapsuleProperties));
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/CapsuleProperty.qml"));
+//}
+
+CapsuleProperties::CapsuleProperties(QQuickItem *parent):
+    Property(parent)
 {
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, Capsule](){
-        if (comp->status() == QQmlComponent::Ready) {
-            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mCapsuleProperties = new CapsulePropertiesModel(Capsule, mapItem);
-            mItem->setProperty("capsuleProperties", QVariant::fromValue<CapsulePropertiesModel*>(mCapsuleProperties));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/CapsuleProperty.qml"));
+
 }
 
-void CapsuleProperties::show()
+void CapsuleProperties::setFillColor(const QColor &color)
 {
-    if(mItem)
-    mUiHandle->propertiesShow(mItem);
+    setFillColorStatus(true);
+    Property::setFillColor(color);
+    mCapsule->setColor(color);
 }
 
-void CapsuleProperties::hide()
+void CapsuleProperties::setRadius(const double &radius)
 {
-    if(mItem)
-    mUiHandle->propertiesHide(mItem);
+    setRadiusStatus(true);
+    Property::setRadius(radius);
+}
+void CapsuleProperties::setLocationRelative(const bool &relative)
+{
+    setLocationRelative(true);
+    Property::setLocationRelative(relative);
 }
 
-void CapsuleProperties::setCapsule(Capsule *Capsule)
+
+
+void CapsuleProperties::setLocation(const QVector3D &status)
 {
-    if(mItem)
-    mCapsuleProperties->setCapsule(Capsule);
+    setLocationStatus(true);
+    Property::setLocation(status);
+
+
 }
 
-void CapsuleProperties::setLocation(osgEarth::GeoPoint location)
+void CapsuleProperties::setHeight(const double &height)
 {
-    QVector3D tmp;
-    tmp.setX(static_cast<float>(location.x()));
-    tmp.setY(static_cast<float>(location.y()));
-    tmp.setZ(static_cast<float>(location.z()));
+    setHeightStatus(true);
+    Property::setHeight(height);
+}
 
-    if(mItem)
-    mCapsuleProperties->setLocation(tmp);
+
+Capsule *CapsuleProperties::getCapsule() const
+{
+    return mCapsule;
+}
+
+void CapsuleProperties::setCapsule(Capsule *newCapsule)
+{
+    mCapsule = newCapsule;
 }
 

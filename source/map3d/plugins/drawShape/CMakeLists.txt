@@ -18,6 +18,8 @@ add_library(drawShape SHARED
   spherenodeeditor.cpp
   drawShape.json
   drawshapeautoscaler.cpp
+  property.cpp
+
 )
 
 target_include_directories(drawShape PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

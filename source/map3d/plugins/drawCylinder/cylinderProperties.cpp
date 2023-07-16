@@ -128,48 +128,78 @@ void CylinderPropertiesModel::setRelative(const bool &value){
 }
 
 
-CylinderProperties::CylinderProperties(Cylinder* Cylinder, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
-    QObject(parent),
-    mQmlEngine(qmlEngine),
-    mUiHandle(uiHandle)
+//CylinderProperties::CylinderProperties(Cylinder* Cylinder, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
+//    QObject(parent),
+//    mQmlEngine(qmlEngine),
+//    mUiHandle(uiHandle)
+//{
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, Cylinder](){
+//        if (comp->status() == QQmlComponent::Ready) {
+//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//            mCylinderProperties = new CylinderPropertiesModel(Cylinder, mapItem);
+//            mItem->setProperty("cylinderProperties", QVariant::fromValue<CylinderPropertiesModel*>(mCylinderProperties));
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/CylinderProperty.qml"));
+//}
+
+CylinderProperties::CylinderProperties(QQuickItem *parent):
+    Property(parent)
 {
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, Cylinder](){
-        if (comp->status() == QQmlComponent::Ready) {
-            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mCylinderProperties = new CylinderPropertiesModel(Cylinder, mapItem);
-            mItem->setProperty("cylinderProperties", QVariant::fromValue<CylinderPropertiesModel*>(mCylinderProperties));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/CylinderProperty.qml"));
+
 }
 
-void CylinderProperties::show()
+void CylinderProperties::setFillColor(const QColor &color)
 {
-    if(mItem)
-    mUiHandle->propertiesShow(mItem);
+    setFillColorStatus(true);
+    Property::setFillColor(color);
+    mCylinder->setColor(color);
 }
 
-void CylinderProperties::hide()
+void CylinderProperties::setRadius(const double &radius)
 {
-    if(mItem)
-    mUiHandle->propertiesHide(mItem);
+    setRadiusStatus(true);
+    Property::setRadius(radius);
+}
+void CylinderProperties::setLocationRelative(const bool &relative)
+{
+    setLocationRelative(true);
+    Property::setLocationRelative(relative);
 }
 
-void CylinderProperties::setCylinder(Cylinder *Cylinder)
+
+
+void CylinderProperties::setStrokeWidth(const double &opacity)
 {
-    if(mItem)
-    mCylinderProperties->setCylinder(Cylinder);
+    setStrokeStatus(true);
+    Property::setStrokeWidth(opacity);
 }
 
-void CylinderProperties::setLocation(osgEarth::GeoPoint location)
-{
-    QVector3D tmp;
-    tmp.setX(static_cast<float>(location.x()));
-    tmp.setY(static_cast<float>(location.y()));
-    tmp.setZ(static_cast<float>(location.z()));
 
-    if(mItem)
-    mCylinderProperties->setLocation(tmp);
+void CylinderProperties::setLocation(const QVector3D &status)
+{
+    setLocationStatus(true);
+    Property::setLocation(status);
+
+
 }
+
+void CylinderProperties::setHeight(const double &height)
+{
+    setHeightStatus(true);
+    Property::setHeight(height);
+}
+
+
+Cylinder *CylinderProperties::getCylinder() const
+{
+    return mCylinder;
+}
+
+void CylinderProperties::setCylinder(Cylinder *newCylinder)
+{
+    mCylinder = newCylinder;
+}
+
 
