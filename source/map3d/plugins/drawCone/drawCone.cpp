@@ -29,7 +29,7 @@ void DrawCone::onConeItemCheck(bool check)
             mapItem()->getMapObject()->addLayer(mConeLayer, shapeLayer);
         }
         setState(State::READY);
-        mConeProperties = new ConeProperties(mCone, qmlEngine(), uiHandle(), mapItem());
+        mConeProperties = new ConeProperties(mCone, mainWindow(), qmlEngine(), uiHandle(), mapItem());
         mConeProperties->show();
         mapItem()->addNode(iconNode());
 

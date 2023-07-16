@@ -161,6 +161,12 @@ void MainWindow::attachToCentralDockItem(QQuickItem *dockItem, bool horizontalAt
                               );
 }
 
+void MainWindow::showInRightDock(QQuickItem *item)
+{
+    auto dockItem = wrapItemWithDockable(item, "Property");
+    attachToCentralDockItem(dockItem, true, false, 0.2);
+}
+
 //qreal MainWindow::headingAngle() const
 //{
 //    return mheadingAngle;

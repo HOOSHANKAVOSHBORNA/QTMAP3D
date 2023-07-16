@@ -6,7 +6,7 @@
 #include "plugininterface.h"
 #include "mapItem.h"
 #include "cone.h"
-
+class MainWindow;
 class ConePropertiesModel: public QObject
 {
     Q_OBJECT
@@ -63,7 +63,7 @@ class ConeProperties: public QObject
     Q_OBJECT
 
 public:
-    ConeProperties(Cone *cone, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
+    ConeProperties(Cone *cone, MainWindow *mainwindow, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
 
     void show();
     void hide();
@@ -75,6 +75,7 @@ private:
     QQuickItem* mItem;
     ConePropertiesModel* mConeProperties;
     UIHandle* mUiHandle;
+    MainWindow *mMainWindow;
 };
 
 #endif // CONEPROPERTIESMODEL_H

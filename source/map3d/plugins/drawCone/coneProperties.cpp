@@ -1,5 +1,5 @@
 #include "coneProperties.h"
-
+#include "mainwindow.h"
 #include <QQmlComponent>
 #include <QQuickItem>
 
@@ -128,8 +128,9 @@ void ConePropertiesModel::setRelative(const bool &value){
 }
 
 
-ConeProperties::ConeProperties(Cone* cone, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
+ConeProperties::ConeProperties(Cone* cone, MainWindow *mainwindow, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
+    mMainWindow(mainwindow),
     mQmlEngine(qmlEngine),
     mUiHandle(uiHandle)
 {
@@ -147,13 +148,16 @@ ConeProperties::ConeProperties(Cone* cone, QQmlEngine *qmlEngine, UIHandle *uiHa
 void ConeProperties::show()
 {
     if(mItem)
-    mUiHandle->propertiesShow(mItem);
+        mMainWindow->showInRightDock(mItem);
+//    mUiHandle->propertiesShow(mItem);
 }
 
 void ConeProperties::hide()
 {
-    if(mItem)
-    mUiHandle->propertiesHide(mItem);
+    if(mItem) {
+
+    }
+//    mUiHandle->propertiesHide(mItem);
 }
 
 void ConeProperties::setCone(Cone *cone)
