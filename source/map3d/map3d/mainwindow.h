@@ -23,21 +23,28 @@ Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QQuickWindow
 {
     Q_OBJECT
-    Q_PROPERTY(qreal fps READ fps WRITE setFps NOTIFY fpsChanged)
     Q_PROPERTY(LayersModel* layersModel READ layersModel WRITE setLayersModel NOTIFY layersModelChanged)
     Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox WRITE setToolbox NOTIFY layersModelChanged)
-
+public:
     enum class InfoWidgetType {
         Airplane,
         Station,
         System
+    };
+    enum DockPosition{
+        Left = 0x1,
+        Right = 0x2,
+        Top = 0x3,
+        Bottom = 0x4
     };
 
 public:
     MainWindow(QWindow *parent = nullptr);
     ~MainWindow();
 
-    qreal fps() const;
+
+
+//    qreal fps() const;
 
     LayersModel *layersModel() const;
     ToolboxProxyModel *toolbox() const;
@@ -54,13 +61,12 @@ signals:
                                    const QString& categoryName,
                                    bool checked);
 
-    void fpsChanged();
     void layersModelChanged();
 
 public slots:
     void initializePluginsUI(std::list<PluginInfo>& pluginsInfoList);
 
-    void setFps(qreal fps);
+//    void setFps(qreal fps);
 
     void showInfoWidget(InfoWidgetType infoWidgetType);
     void updateInfoWidgetData(const QString& dataJSON);
@@ -70,12 +76,14 @@ public slots:
     void setCentralDockItem(QQuickItem* dockItem);
     void attachToCentralDockItem(QQuickItem* dockItem, bool horizontalAttach, bool attachAsFirst, qreal splitScale);
     void showInRightDock(QQuickItem *item);
+    void addDockItem(QQuickItem* item, int position = DockPosition::Right);
     void showListWindow();
+
 
     void setLayersModel(LayersModel *layersModel);
 //    void setLayersProxyModel(LayersProxyModel *layerProxyModel);
     void setToolbox(ToolboxProxyModel* toolbox);
-    void onFrameSwapped();
+//    void onFrameSwapped();
 
 public:
 
@@ -85,8 +93,8 @@ public:
 
 public slots:
 //    void cleanup();
-    void frame();
-    void tickNavigation(double deltaTime);
+//    void frame();
+//    void tickNavigation(double deltaTime);
 
     void restoreContext();
     void setListWindow(ListWindow *listWindow);

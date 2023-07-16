@@ -155,7 +155,7 @@ void ConeProperties::show()
 void ConeProperties::hide()
 {
     if(mItem) {
-
+//        mConeProperties
     }
 //    mUiHandle->propertiesHide(mItem);
 }
@@ -163,7 +163,7 @@ void ConeProperties::hide()
 void ConeProperties::setCone(Cone *cone)
 {
     if(mItem)
-    mConeProperties->setCone(cone);
+        mConeProperties->setCone(cone);
 }
 
 void ConeProperties::setLocation(osgEarth::GeoPoint location)

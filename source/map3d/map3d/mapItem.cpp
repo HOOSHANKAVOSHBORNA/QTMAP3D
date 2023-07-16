@@ -40,9 +40,10 @@
 MapItem::MapItem(QQuickItem *parent) :
     QQuickItem(parent)
 {
-//    setMouseTracking()
+//    setMouseTracking(true);
+//    setFlag(QQuickItem::ItemAcceptsDrops, true);
     setAcceptHoverEvents(true);
-    setFlag(ItemHasContents);
+    setFlags(ItemHasContents/*|ItemAcceptsDrops*/);
     setAcceptedMouseButtons(Qt::MouseButton::AllButtons);
     mOSGRenderNode = new OSGRenderNode(this);
     mOSGRenderNode->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
@@ -576,22 +577,22 @@ void MapItem::layerRemoved(osgEarth::Layer */*layer*/, unsigned /*index*/)
 
 void MapItem::frame()
 {
-    const auto vp = mCameraController->getViewpoint();
-    const auto fp = vp.focalPoint();
-    if (fp.isSet()) {
-        const osgEarth::GeoPoint mapPoint = fp.get();
-        //        mapPoint.makeGeographic();
-        osgEarth::GeoPoint  pointLatLong;
-        mapPoint.transform(getMapSRS()->getGeographicSRS(), pointLatLong);
+//    const auto vp = mCameraController->getViewpoint();
+//    const auto fp = vp.focalPoint();
+//    if (fp.isSet()) {
+//        const osgEarth::GeoPoint mapPoint = fp.get();
+//        //        mapPoint.makeGeographic();
+//        osgEarth::GeoPoint  pointLatLong;
+//        mapPoint.transform(getMapSRS()->getGeographicSRS(), pointLatLong);
 
 
-//        emit focalPointLatChanged(pointLatLong.x());
-//        emit focalPointLongChanged(pointLatLong.y());
-//        emit focalPointRangeChanged(vp.range().get().getValue());
-//        emit focalPointPitchChanged(vp.pitch().get().getValue());
-//        emit focalPointHeadChanged(vp.heading().get().getValue());
+////        emit focalPointLatChanged(pointLatLong.x());
+////        emit focalPointLongChanged(pointLatLong.y());
+////        emit focalPointRangeChanged(vp.range().get().getValue());
+////        emit focalPointPitchChanged(vp.pitch().get().getValue());
+////        emit focalPointHeadChanged(vp.heading().get().getValue());
 
-    }
+//    }
 
 
 
@@ -615,8 +616,6 @@ void MapItem::frame()
     spos.normalize();
     spos *= -1.0f;
     sunLight->setDirection(spos);
-
-
 }
 
 //--renderer---------------------------------------------------------------------------------------------------
@@ -695,6 +694,7 @@ void MapItem::mousePressEvent(QMouseEvent *event)
     if (mOSGRenderNode) {
         mOSGRenderNode->mousePressEvent(event);
     }
+
 }
 
 void MapItem::mouseReleaseEvent(QMouseEvent *event)
@@ -712,12 +712,9 @@ void MapItem::mouseDoubleClickEvent(QMouseEvent *event)
 
 void MapItem::mouseMoveEvent(QMouseEvent *event)
 {
-//    QPointF point(event->scenePosition());
-//    mapToScene()
     if (mOSGRenderNode) {
         mOSGRenderNode->mouseMoveEvent(event);
     }
-//    mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
 }
 
 void MapItem::wheelEvent(QWheelEvent *event)
@@ -731,10 +728,4 @@ void MapItem::hoverMoveEvent(QHoverEvent *event)
     if (mOSGRenderNode) {
         mOSGRenderNode->hoverMoveEvent(event);
     }
-    //    mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
-}
-
-void MapItem::dragEnterEvent(QDragEnterEvent *)
-{
-    qDebug()<<"dragEnterEvent";
 }
