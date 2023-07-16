@@ -101,50 +101,21 @@ Item {
                                 color: "#404040"
                                 height: 35
 
-
-                                Rectangle{
-                                    height: 20
-                                    width: 20
-                                    color: fillColor
-                                    border.width: 2
-                                    border.color: "#c9c9c9"
-                                    x: 5
-                                    radius: 5
-                                    anchors.verticalCenter: parent.verticalCenter
-
-                                    MouseArea{
-                                        anchors.fill: parent
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: fillColorDialog.visible = true
-
+                                ColorBox{
+                                    id: fillColorBox
+                                    anchors.centerIn:  parent
+                                    colorValue: "#AA05FF"
+                                    opacityValue: 0.5
+                                    onColorValueChanged: {
+                                        if(coneProperties){
+//                                            console.log(colorBoxValue)
+//                                            console.log(colorValue)
+//                                            coneProperties.fillcolor = colorBoxValue.rgb
+                                        }
                                     }
                                 }
-                                Rectangle{
-                                    height: 20
-                                    width: 100
-                                    color: "#c9c9c9"
-                                    x: 30
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    radius: 5
 
-                                    Text {
-                                        id: fillolorField
-                                        text: fillColor
-                                        anchors.centerIn: parent
-                                        font.pointSize: 10
 
-                                    }
-                                }
-                                ColorDialog {
-                                    visible: false
-                                    id:  fillColorDialog
-                                    title: "Please choose a color"
-                                    onAccepted: {
-                                        fillColor = fillColorDialog.selectedColor
-                                        coneProperties.fillcolor= fillColor.toString()
-                                    }
-
-                                }
                             }
                             Rectangle{
                                 Layout.fillWidth: true
