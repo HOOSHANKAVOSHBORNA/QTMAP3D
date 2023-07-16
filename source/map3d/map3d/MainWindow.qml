@@ -126,12 +126,12 @@ CMainWindow {
 
 //    onWidthChanged: leftContainerHolder.adjustRightContainer(wnd.width);
 
-    SearchBar {
-        anchors.top: parent.top
-        anchors.topMargin: widgetsMargins
-        anchors.rightMargin: fpsLabel.width + widgetsMargins*3
-        anchors.right: parent.right
-    }
+//    SearchBar {
+//        anchors.top: parent.top
+//        anchors.topMargin: widgetsMargins
+//        anchors.rightMargin: /*fpsLabel.width +*/ widgetsMargins*3
+//        anchors.right: parent.right
+//    }
 
     property var sideItemsModel: ListModel {
 
@@ -394,19 +394,19 @@ CMainWindow {
 //    }
 
 
-    Label {
-        id: fpsLabel
-        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
-        color: 'springgreen'
-        style: Text.Outline;
-        styleColor: "black"
-        font.pointSize: 20
-        font.weight: Font.Bold
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.topMargin: 20
-        anchors.rightMargin: 20
-    }
+//    Label {
+//        id: fpsLabel
+//        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
+//        color: 'springgreen'
+//        style: Text.Outline;
+//        styleColor: "black"
+//        font.pointSize: 20
+//        font.weight: Font.Bold
+//        anchors.right: parent.right
+//        anchors.top: parent.top
+//        anchors.topMargin: 20
+//        anchors.rightMargin: 20
+//    }
     ContextmenuWidget {
         id: contextmenu
     }

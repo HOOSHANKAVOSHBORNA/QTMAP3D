@@ -9,7 +9,8 @@ class MapControllerItem : public MapItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(qreal headingAngle READ headingAngle NOTIFY headingAngleChanged)
+    Q_PROPERTY(double headingAngle READ headingAngle NOTIFY headingAngleChanged)
+    Q_PROPERTY(double fps READ fps WRITE setFps NOTIFY fpsChanged)
 
     Q_PROPERTY(bool zoomInButtonPressed       WRITE setZoomInButtonPressed      )
     Q_PROPERTY(bool zoomOutButtonPressed      WRITE setZoomOutButtonPressed     )
@@ -35,9 +36,10 @@ public:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void hoverMoveEvent(QHoverEvent *event) override;
-//    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
-    qreal headingAngle() const;
+    double headingAngle() const;
+    double fps() const;
 public slots:
+    void setFps(double fps);
     void home();
     void setHeadingToNorth();
     void setZoomInButtonPressed(bool pressed);
@@ -52,15 +54,15 @@ public slots:
     void setrotateRightButtonPressed(bool pressed);
 
 signals:
+    void fpsChanged();
     void headingAngleChanged();
     void mouseLocationChanged();
     void mousePointingLocationChanged(QVector3D location);
     void clicked();
 private:
     void tickNavigation(double deltaTime);
-private:
-//    MapItem *mMapItem = nullptr;
-
+    void calculateNavigationStep();
+    void calculateFps();
 private:
     bool mZoomInButtonPressed{false};
     bool mZoomOutButtonPressed{false};
@@ -78,6 +80,7 @@ private:
     QPoint mLastPressPoint = QPoint();
     bool mMousePressOusideClickProcess = false;
     bool mInClickProcess = false;
+    double mFps = 0.0f;
 };
 
 #endif // MAPCONTROLLERITEM_H

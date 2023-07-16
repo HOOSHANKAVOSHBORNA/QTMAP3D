@@ -35,7 +35,7 @@ class MainWindow : public QQuickWindow
 //    Q_PROPERTY(qreal focalPointRange READ focalPointRange WRITE setFocalPointRange NOTIFY focalPointRangeChanged)
 //    Q_PROPERTY(qreal focalPointPitch READ focalPointPitch WRITE setFocalPointPitch NOTIFY focalPointPitchChanged)
 //    Q_PROPERTY(qreal focalPointHead READ focalPointHead WRITE setFocalPointHead NOTIFY focalPointHeadChanged)
-    Q_PROPERTY(qreal fps READ fps WRITE setFps NOTIFY fpsChanged)
+//    Q_PROPERTY(qreal fps READ fps WRITE setFps NOTIFY fpsChanged)
 
 
 //    Q_PROPERTY(bool zoomInButtonPressed      READ zoomInButtonPressed      WRITE setZoomInButtonPressed      NOTIFY zoomInButtonPressedChanged)
@@ -74,7 +74,7 @@ public:
 //    qreal focalPointPitch() const;
 //    qreal focalPointHead() const;
 
-    qreal fps() const;
+//    qreal fps() const;
 
 //    bool zoomInButtonPressed() const;
 //    bool zoomOutButtonPressed() const;
@@ -124,7 +124,7 @@ signals:
 //    void focalPointPitchChanged();
 //    void focalPointHeadChanged();
 
-    void fpsChanged();
+//    void fpsChanged();
 
 
 //    void zoomInButtonPressedChanged();
@@ -154,7 +154,7 @@ public slots:
 //    void setFocalPointPitch(qreal focalPointPitch) ;
 //    void setFocalPointHead(qreal focalPointHead) ;
 
-    void setFps(qreal fps);
+//    void setFps(qreal fps);
 
 //    void setZoomInButtonPressed(bool pressed);
 //    void setZoomOutButtonPressed(bool pressed);
@@ -186,7 +186,7 @@ public slots:
     void setLayersModel(LayersModel *layersModel);
 //    void setLayersProxyModel(LayersProxyModel *layerProxyModel);
     void setToolbox(ToolboxProxyModel* toolbox);
-    void onFrameSwapped();
+//    void onFrameSwapped();
 
 //    void orientCameraToNorth();
 
@@ -198,8 +198,8 @@ public:
 
 public slots:
 //    void cleanup();
-    void frame();
-    void tickNavigation(double deltaTime);
+//    void frame();
+//    void tickNavigation(double deltaTime);
 
     void restoreContext();
     void setListWindow(ListWindow *listWindow);
