@@ -4,7 +4,7 @@ import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs
 import Crystal 1.0
-import "style"
+
 Item {
     id: rootItem
     implicitHeight: parent ? parent.height : 0
@@ -111,7 +111,7 @@ Item {
                                     width: 20
                                     color: fillColor
                                     border.width: 2
-                                    border.color: Style.borderColor
+                                    border.color: "#c9c9c9"
                                     x: 5
                                     radius: 5
                                     anchors.verticalCenter: parent.verticalCenter

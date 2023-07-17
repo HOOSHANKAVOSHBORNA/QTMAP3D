@@ -924,7 +924,7 @@ Item {
                                             visible:  smooth.hovered
                                         }
                                         onToggled: function() {
-                                            lineProperties.smooth = smooth.checked
+                                            lineProperties._smooth = smooth.checked
                                         }
 
                                         Layout.alignment: Qt.AlignRight

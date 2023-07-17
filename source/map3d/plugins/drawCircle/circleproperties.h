@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
+#include "property.h"
 
 class CirclePropertiesModel : public QObject
 {
@@ -98,23 +99,25 @@ private:
 
 public slots:
 };
-
-class CircleProperties : public QObject
+class CircleProperties: public Property
 {
     Q_OBJECT
 public:
-    CircleProperties(Circle *circle, QQmlEngine *engine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
-    void show();
-    void hide();
+    CircleProperties(QQuickItem *parent=nullptr);
+    void setFillColor(const QColor &color) override;
+    void setRadius(const double &radius) override;
+    void setLocationRelative(const bool &relative) override;
+    void setArc(const QVector2D &arc) override;
+    void setStrokeWidth(const double &opacity);
+    void setStroke(const QColor &color);
+    void setLocation(const QVector3D &status) override;
+    void setHeight(const double &height) override;
+    void setClamp(const double &clamp) override;
+    Circle *getCircle() const;
     void setCircle(Circle* circle);
-    void setLocation(osgEarth::GeoPoint location);
 
 private:
-    QQmlEngine* mQmlEngine;
-    QQuickItem* mItem;
-    CirclePropertiesModel* mCircleProperties;
-    UIHandle* mUiHandle;
-
+    Circle *mCircle = nullptr;
 };
 
 #endif // CIRCLEPROPERTIES_H

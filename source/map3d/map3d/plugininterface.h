@@ -163,6 +163,9 @@ public:
     UIHandle *uiHandle() const;
     static void setUiHandle(UIHandle *newUiHandle);
 
+    MainWindow *mainWindow() const;
+    static void setMainWindow(MainWindow* mainWindow);
+
     DefenseDataManager *defenseDataManager() const;
     static void setDefenseDataManager(DefenseDataManager* defenseDataManager);
 
@@ -209,6 +212,7 @@ private:
     static QQmlEngine *mQmlEngine;
     static UIHandle *mUiHandle;
     static DefenseDataManager *mDefenseDataManager;
+    static MainWindow *mMainWindow;
     static Toolbox *mToolbox;
 
     QString mName;

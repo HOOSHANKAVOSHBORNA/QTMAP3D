@@ -52,7 +52,8 @@ CMainWindow {
 //        z: -1
 //    }
     property Component dockableItemComp: Qt.createComponent("DockableItem.qml");
-
+    property var toolboxDock
+    property var toolboxx
     property DockableItem dockItem: null
     property DockArea defaultDockArea: mainDockArea
     function setCentralDockItemImpl(item) {
@@ -126,12 +127,12 @@ CMainWindow {
 
 //    onWidthChanged: leftContainerHolder.adjustRightContainer(wnd.width);
 
-    SearchBar {
-        anchors.top: parent.top
-        anchors.topMargin: widgetsMargins
-        anchors.rightMargin: fpsLabel.width + widgetsMargins*3
-        anchors.right: parent.right
-    }
+//    SearchBar {
+//        anchors.top: parent.top
+//        anchors.topMargin: widgetsMargins
+//        anchors.rightMargin: /*fpsLabel.width +*/ widgetsMargins*3
+//        anchors.right: parent.right
+//    }
 
     property var sideItemsModel: ListModel {
 
@@ -276,9 +277,10 @@ CMainWindow {
                     item.itemClicked.connect(wnd.fileItemClicked);
                     break
                 case 1:
-                    item.listModel = wnd.toolboxModel;
-                    var dock2 = wnd.wrapItemWithDockableImpl(item, "Toobox");
-                    wnd.attachToCentralDockItemImpl(dock2, true, true, 0.2);
+                    toolboxx = item
+                    toolboxx.listModel = wnd.toolboxModel;
+                    toolboxDock = wnd.wrapItemWithDockableImpl(toolboxx, "Toobox");
+                    wnd.attachToCentralDockItemImpl(toolboxDock, true, true, 0.2);
 //                    item.itemClicked.connect(wnd.toolboxItemClicked);
 //                    item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
                     break;
@@ -394,19 +396,19 @@ CMainWindow {
 //    }
 
 
-    Label {
-        id: fpsLabel
-        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
-        color: 'springgreen'
-        style: Text.Outline;
-        styleColor: "black"
-        font.pointSize: 20
-        font.weight: Font.Bold
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.topMargin: 20
-        anchors.rightMargin: 20
-    }
+//    Label {
+//        id: fpsLabel
+//        text: wnd.fps.toLocaleString(Qt.locale(), 'f', 2)
+//        color: 'springgreen'
+//        style: Text.Outline;
+//        styleColor: "black"
+//        font.pointSize: 20
+//        font.weight: Font.Bold
+//        anchors.right: parent.right
+//        anchors.top: parent.top
+//        anchors.topMargin: 20
+//        anchors.rightMargin: 20
+//    }
     ContextmenuWidget {
         id: contextmenu
     }
@@ -415,6 +417,9 @@ CMainWindow {
     function menuWidgetClickCallback(index) {
         infoo.hideItem();
         sideWidget.menuWidgetItemClicked(index);
+        if (index == 1){
+            toolboxx.visible = !toolboxx.visible
+        }
     }
 
 

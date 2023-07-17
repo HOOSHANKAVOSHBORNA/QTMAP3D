@@ -151,54 +151,96 @@ void BoxPropertiesModel::setBox(Box *box)
 
 
 
-BoxProperties::BoxProperties(Box* box, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
-    QObject(parent),
-    mQmlEngine(qmlEngine),
-    mUiHandle(uiHandle),
-    mBox(box),
-    mMapItem(mapItem)
+//BoxProperties::BoxProperties(Box* box, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
+//    QObject(parent),
+//    mQmlEngine(qmlEngine),
+//    mUiHandle(uiHandle),
+//    mBox(box),
+//    mMapItem(mapItem)
+//{
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, box](){
+//        if (comp->status() == QQmlComponent::Ready) {
+//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//            mBoxProperties = new BoxPropertiesModel(box, mapItem);
+//            mItem->setProperty("boxProperties", QVariant::fromValue<BoxPropertiesModel*>(mBoxProperties));
+//        }
+//        if (comp->status() == QQmlComponent::Error){
+//            qDebug()<<"error:" <<comp->errorString();
+//            qDebug()<<comp->errors();
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/BoxProperty.qml"));
+//}
+
+//bool getLocationStatus() const;
+//void setLocationStatus (bool status);
+
+//QVector3D getLocation() const;
+//;
+
+//bool getLocationRelative() const;
+//virtual void setLocationRelative(bool relative);
+
+
+
+
+
+
+BoxProperties::BoxProperties(QQuickItem *parent):
+    Property(parent)
 {
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, box](){
-        if (comp->status() == QQmlComponent::Ready) {
-            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mBoxProperties = new BoxPropertiesModel(box, mapItem);
-            mItem->setProperty("boxProperties", QVariant::fromValue<BoxPropertiesModel*>(mBoxProperties));
-        }
-        if (comp->status() == QQmlComponent::Error){
-            qDebug()<<"error:" <<comp->errorString();
-            qDebug()<<comp->errors();
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/BoxProperty.qml"));
+
 }
 
-void BoxProperties::show()
+void BoxProperties::setFillColor(const QColor &color)
 {
-    if(mItem)
-        mUiHandle->propertiesShow(mItem);
+    setFillColorStatus(true);
+    Property::setFillColor(color);
+//    mBox->setColor(color);
 }
 
-void BoxProperties::hide()
+//void BoxProperties::setLenght(const QVector3D &len)
+//{
+//    setLenghtStatus(true);
+//    Property::setLenght(len);
+//}
+
+//void BoxProperties::setWidth(const double &width)
+//{
+//    setWidthStatus(true);
+//    Property::setWidth(width);
+//}
+
+void BoxProperties::setLocationRelative(const bool &relative)
 {
-    if(mItem)
-    mUiHandle->propertiesHide(mItem);
+    setLocationRelative(true);
+    Property::setLocationRelative(relative);
 }
 
-void BoxProperties::setBox(Box *box)
+
+
+void BoxProperties::setLocation(const QVector3D &status)
 {
-    if(mItem)
-    mBoxProperties->setBox(box);
+    setLocationStatus(true);
+    Property::setLocation(status);
+
+
 }
 
-void BoxProperties::setLocation(osgEarth::GeoPoint location)
+void BoxProperties::setHeight(const double &height)
 {
-    QVector3D tmp;
-    tmp.setX(static_cast<float>(location.x()));
-    tmp.setY(static_cast<float>(location.y()));
-    tmp.setZ(static_cast<float>(location.z()+mBoxProperties->getHeight()/2));
-
-    if(mItem)
-    mBoxProperties->setLocation(tmp);
+    setHeightStatus(true);
+    Property::setHeight(height);
 }
 
+
+Box *BoxProperties::getBox() const
+{
+    return mBox;
+}
+
+void BoxProperties::setBox(Box *newBox)
+{
+    mBox = newBox;
+}

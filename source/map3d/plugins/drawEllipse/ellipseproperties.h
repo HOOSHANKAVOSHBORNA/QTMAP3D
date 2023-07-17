@@ -1,4 +1,4 @@
-#ifndef ELLIPSEPROPERTIES_H
+﻿#ifndef ELLIPSEPROPERTIES_H
 #define ELLIPSEPROPERTIES_H
 
 #include "ellipse.h"
@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
+#include "property.h"
 
 class EllipsePropertiesModel : public QObject
 {
@@ -73,21 +74,20 @@ private:
 public slots:
 };
 
-class EllipseProperties : public QObject
+class EllipseProperties: public Property
 {
     Q_OBJECT
 public:
-    EllipseProperties(Ellipse *ellipse, QQmlEngine *engine, UIHandle *uiHandle, QObject *parent = nullptr);
-    void show();
-    void hide();
-    void setEllipse(Ellipse* ellipse);
+    EllipseProperties(QQuickItem *parent=nullptr);
+    void setFillColor(const QColor &color) override;
+    void setStrokeWidth(const double &opacity);
+    void setStroke(const QColor &color);
+    void setHeight(const double &height) override;
+    void setClamp(const double &clamp) override;
+    Ellipse *getEllipse() const;
 
 private:
-    QQmlEngine* mQmlEngine;
-    QQuickItem* mItem;
-    EllipsePropertiesModel* mEllipseProperties;
-    UIHandle* mUiHandle;
-
+    Ellipse *mEllipse = nullptr;
 };
 
 #endif // ELLIPSEPROPERTIES_H

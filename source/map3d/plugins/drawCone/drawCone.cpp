@@ -29,8 +29,8 @@ void DrawCone::onConeItemCheck(bool check)
             mapItem()->getMapObject()->addLayer(mConeLayer, shapeLayer);
         }
         setState(State::READY);
-        mConeProperties = new ConeProperties(mCone, qmlEngine(), uiHandle(), mapItem());
-        mConeProperties->show();
+//        mConeProperties = new ConeProperties(mCone, mainWindow(), qmlEngine(), uiHandle(), mapItem());
+//        mConeProperties->show();
         mapItem()->addNode(iconNode());
 
     }
@@ -44,7 +44,7 @@ void DrawCone::onConeItemCheck(bool check)
         }
         setState(State::NONE);
         mCone = nullptr;
-        mConeProperties->hide();
+//        mConeProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -56,7 +56,7 @@ void DrawCone::initDraw(const osgEarth::GeoPoint &geoPos)
     mCone->setName(name.toStdString());
     mCone->setPosition(geoPos);
     mapItem()->getMapObject()->addNodeToLayer(mCone, mConeLayer);
-    mConeProperties->setCone(mCone);
+//    mConeProperties->setCone(mCone);
 
     setState(State::DRAWING);
     mCount++;
@@ -67,7 +67,7 @@ void DrawCone::cancelDraw()
     if(state() == State::DRAWING){
         mapItem()->getMapObject()->removeNodeFromLayer(mCone, mConeLayer);
         mCone = nullptr;
-        mConeProperties->setCone(mCone);
+//        mConeProperties->setCone(mCone);
         setState(State::READY);
         mCount--;
     }
