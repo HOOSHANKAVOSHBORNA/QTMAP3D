@@ -2,7 +2,6 @@
 #define MODEL_H
 
 #include <QObject>
-#include "moveableModel.h"
 #include "plugininterface.h"
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
