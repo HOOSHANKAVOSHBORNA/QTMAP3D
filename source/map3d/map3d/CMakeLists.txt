@@ -35,6 +35,7 @@ add_executable(Map3d
         toolbox.h toolbox.cpp
         treeModel.h treeModel.cpp
         compositeAnnotationLayer.h compositeAnnotationLayer.cpp
+        utility.h utility.cpp
         qml.qrc
         resources.qrc)
 

@@ -74,7 +74,7 @@ public:
     // ----------  fill color -------- //
 
 
-    bool getFillColorStatus() const;
+    Q_INVOKABLE bool getFillColorStatus() const;
     void setFillColorStatus(bool status);
 
     QColor getFillColor() const;
@@ -222,7 +222,7 @@ signals:
 
 private:
     // ----------  fill color -------- //
-    bool mFillColorStatus            {false};
+    bool mFillColorStatus            {true};
     QColor mFillColor;
 
 

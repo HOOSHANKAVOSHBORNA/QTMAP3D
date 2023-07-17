@@ -46,7 +46,7 @@ Visibility::Visibility(QObject *parent): PluginInterface(parent)
 
 bool Visibility::setup()
 {
-    mIconNode = makeIconNode();
+//    mIconNode = makeIconNode();
     return true;
 }
 

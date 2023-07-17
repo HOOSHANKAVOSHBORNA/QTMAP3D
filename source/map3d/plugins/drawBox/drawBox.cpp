@@ -2,13 +2,15 @@
 #include "mainwindow.h"
 #include "plugininterface.h"
 #include "mapItem.h"
+
+#include <QQmlContext>
 int DrawBox::mCount{0};
 
 DrawBox::DrawBox(QObject *parent): DrawShape(parent)
 {
 //    qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
 
-    qmlRegisterType<BoxProperties>("Crystal", 1, 0, "CProperty");
+    qmlRegisterType<BoxProperty>("Crystal", 1, 0, "CProperty");
 
 }
 
@@ -47,11 +49,15 @@ void DrawBox::onBoxItemCheck(bool check)
             if (comp->status() == QQmlComponent::Status::Error) {
                 qDebug() << comp->errorString();
             }
+//            QQmlContext *context = new QQmlContext(qmlEngine(), this);
             QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-            BoxProperties *mBoxProperties = static_cast<BoxProperties*>(item);
+            mBoxProperty = static_cast<BoxProperty*>(item);
+//            mBoxProperties->setFillColorStatus(false);
+//            mBoxProperties->setFillColor(QColor());
+//            mBoxProperty->setStatuses();
 
             //        mBoxProperties = new BoxProperties();
-            mainWindow()->addDockItem(mBoxProperties);
+            mainWindow()->addDockItem(mBoxProperty);
         });
 
 
@@ -90,7 +96,7 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
 //    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
     mCompositeBoxLayer->addLayer(mBoxLayer);
 
-//    mBoxProperties->setBox(mBox);
+    mBoxProperty->setBox(mBox);
 
     setState(State::DRAWING);
     mCount++;
