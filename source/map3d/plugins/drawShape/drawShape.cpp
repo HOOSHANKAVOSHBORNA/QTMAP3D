@@ -1,4 +1,5 @@
 #include "drawShape.h"
+#include "property.h"
 
 #include <osgEarthSymbology/Style>
 #include <osgEarth/ModelLayer>
@@ -34,6 +35,8 @@ DrawShape::DrawShape(QObject *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(drawShape);
+    Q_INIT_RESOURCE(drawShapeQml);
+    qmlRegisterType<Property>("Crystal", 1, 0, "CProperty");
 }
 
 DrawShape::~DrawShape()

@@ -190,7 +190,7 @@ void BoxPropertiesModel::setBox(Box *box)
 BoxProperties::BoxProperties(QQuickItem *parent):
     Property(parent)
 {
-
+    setFillColorStatus(true);
 }
 
 void BoxProperties::setFillColor(const QColor &color)

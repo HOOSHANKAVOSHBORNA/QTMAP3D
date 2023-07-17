@@ -3,14 +3,15 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs
-import "Style"
+import Crystal 1.0
+//import "Style"
 
-Item {
-    implicitHeight: parent ? parent.height : 0
+//Item {
+//    implicitHeight: parent ? parent.height : 0
 
     CProperty {
         anchors.fill: parent
-        width: parent.width
+//        width: parent.width
         id: rootItem
         implicitHeight: parent ? parent.height : 0
 
@@ -157,7 +158,7 @@ Item {
 
                                     QSpinBox {
                                         id: opacityValue
-                                        showText: rootItem.fillColor.a*100
+//                                        showText: rootItem.fillColor.a*100
                                         to : 100
                                         from : 0
                                         Layout.fillWidth: true
@@ -787,7 +788,7 @@ Item {
 
                                     QSpinBox {
                                         id: radiusspinbox
-                                        value: rootItem.radius
+//                                        value: rootItem.radius
                                         to : 10000000
                                         from : 0
                                         Layout.fillWidth: true
@@ -835,7 +836,7 @@ Item {
 
                                     QSpinBox {
                                         id: hsphere
-                                        value:rootItem.heighT
+//                                        value:rootItem.heighT
                                         to : 1000000
                                         from : 0
                                         Layout.fillWidth: true
@@ -890,7 +891,7 @@ Item {
                                         Layout.preferredHeight: 28
                                         Layout.leftMargin: 25
 
-                                        value: rootItem.lenghT
+//                                        value: rootItem.lenghT
 
 
 
@@ -941,7 +942,7 @@ Item {
                                     QSpinBox {
                                         id:widthValue
 
-                                        value: rootItem.widtH
+//                                        value: rootItem.widtH
                                         from : 0
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 28
@@ -1044,7 +1045,7 @@ Item {
                                             border.color: control.pressed ? "#5f5f5f" : "#404040"
                                             border.width: control.visualFocus ? 2 : 1
                                             radius: 5
-                                            color:Style.borderColor
+//                                            color:Style.borderColor
 
                                         }
 
@@ -1107,7 +1108,7 @@ Item {
 
                                     QSpinBox {
 
-                                        value: rootItem.tesselation
+//                                        value: rootItem.tesselation
                                         to: 100000
                                         from : 0
                                         Layout.fillWidth: true
@@ -1461,5 +1462,4 @@ Item {
             }
         }
     }
-}
-
+//}

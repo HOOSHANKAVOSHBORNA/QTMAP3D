@@ -11,7 +11,7 @@
 #include "drawShape.h"
 #include "box.h"
 #include "boxProperties.h"
-
+#include "property.h"
 #define BOX "Box"
 
 class DrawBox : public DrawShape

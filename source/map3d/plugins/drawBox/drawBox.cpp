@@ -1,10 +1,15 @@
 #include "drawBox.h"
-
+#include "mainwindow.h"
+#include "plugininterface.h"
+#include "mapItem.h"
 int DrawBox::mCount{0};
 
 DrawBox::DrawBox(QObject *parent): DrawShape(parent)
 {
-    qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
+//    qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
+
+    qmlRegisterType<BoxProperties>("Crystal", 1, 0, "CProperty");
+
 }
 
 bool DrawBox::setup()
@@ -36,6 +41,21 @@ void DrawBox::onBoxItemCheck(bool check)
             shapeLayer->addLayer(mCompositeBoxLayer);
         }
         setState(State::READY);
+
+        QQmlComponent* comp = new QQmlComponent(qmlEngine());
+        connect(comp, &QQmlComponent::statusChanged, [comp, this](){
+            if (comp->status() == QQmlComponent::Status::Error) {
+                qDebug() << comp->errorString();
+            }
+            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+            BoxProperties *mBoxProperties = static_cast<BoxProperties*>(item);
+
+            //        mBoxProperties = new BoxProperties();
+            mainWindow()->addDockItem(mBoxProperties);
+        });
+
+
+        comp->loadUrl(QUrl("qrc:/Properties.qml"));
         mapItem()->addNode(iconNode());
 
     }

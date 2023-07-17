@@ -72,9 +72,9 @@ public:
     void setFillColor(const QColor &color) override;
 //    void setLenght(const QVector3D &status) override;
     void setLocationRelative(const bool &relative) override;
-    void setLocation(const QVector3D &status);
+    void setLocation(const QVector3D &status) override;
     void setHeight(const double &height) override;
-    void setLenght(const double &lenght) override;
+//    void setLenght(const double &lenght) override;
 //    void setWidth( const double &width)  override;
 
     Box *getBox() const;
