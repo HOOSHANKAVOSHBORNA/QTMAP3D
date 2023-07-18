@@ -29,6 +29,7 @@ CMainWindow {
     property var layerDock
     property var layeritem
     property Component layersWidget
+    property var itemsInDocks: ({})
     Component.onCompleted: function() {
 //        print(layersModel.columnCount())
 //        var layeritem = wnd.layersWidget.createObject(wnd, {layersModell: layersModel});
@@ -281,6 +282,7 @@ CMainWindow {
                     toolboxx = item
                     toolboxx.listModel = wnd.toolboxModel;
                     toolboxDock = wnd.wrapItemWithDockableImpl(toolboxx, "Toobox");
+                    itemsInDocks[toolboxx] = toolboxDock
                     wnd.attachToCentralDockItemImpl(toolboxDock, true, true, 0.2);
 //                    item.itemClicked.connect(wnd.toolboxItemClicked);
 //                    item.changeCheckable.connect(wnd.toolboxItemCheckedChanged);
@@ -576,14 +578,25 @@ CMainWindow {
 //        sideWidget.hideAllItems();
 //        infoo.showInfo(item)
 //        infoo.titleText = title;
-        if (infoItem){
-            infoItem.detachHidden()
-            print("----------")
+
+        if (itemsInDocks[item]){
+            if (!itemsInDocks[item].isShowed){
+                wnd.attachToCentralDockItem(itemsInDocks[item], true, true, 0.2);
+                itemsInDocks[item].isShowed = true
+            }
+//            item.destroy()
+//            print("----------")
+//            infoItem = null
+        }
+        else {
+            infoItem = wnd.wrapItemWithDockable(item, "title");
+            itemsInDocks[item] = infoItem
+            itemsInDocks[item].isShowed = true
+    //        wnd.defaultDockArea.setDefaultDockableItemIfIsDefault()
+            wnd.attachToCentralDockItem(itemsInDocks[item], true, true, 0.2);
         }
 
-        infoItem = wnd.wrapItemWithDockable(item, "title");
-//        wnd.defaultDockArea.setDefaultDockableItemIfIsDefault()
-        wnd.attachToCentralDockItem(infoItem, true, true, 0.2);
+        print(itemsInDocks[item].isShowed)
     }
 
     function hideInfoView() {
