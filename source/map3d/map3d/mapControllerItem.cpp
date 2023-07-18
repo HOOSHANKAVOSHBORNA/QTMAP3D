@@ -169,6 +169,7 @@ void MapControllerItem::frame()
 
 void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
 {
+//    qDebug()<<"mouseMoveEvent";
     MapItem::mouseMoveEvent(event);
     mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
     emit mouseLocationChanged();
@@ -176,6 +177,7 @@ void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
 
 void MapControllerItem::mousePressEvent(QMouseEvent *event)
 {
+//    qDebug()<<"mousePressEvent";
     MapItem::mousePressEvent(event);
 
     if (getCameraController()->getEventHandled())
@@ -197,6 +199,7 @@ void MapControllerItem::mousePressEvent(QMouseEvent *event)
 
 void MapControllerItem::mouseReleaseEvent(QMouseEvent *event)
 {
+//    qDebug()<<"mouseReleaseEvent";
     MapItem::mouseReleaseEvent(event);
     if (event->button() == Qt::LeftButton) {
         if (mLastMousePressTime.msecsTo(QTime::currentTime()) < 400) {
@@ -219,6 +222,7 @@ void MapControllerItem::mouseReleaseEvent(QMouseEvent *event)
 
 void MapControllerItem::hoverMoveEvent(QHoverEvent *event)
 {
+//    qDebug()<<"hoverMoveEvent";
     MapItem::hoverMoveEvent(event);
 //    qDebug() << event->position().x() << ", " << event->position().y() ;
     mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());

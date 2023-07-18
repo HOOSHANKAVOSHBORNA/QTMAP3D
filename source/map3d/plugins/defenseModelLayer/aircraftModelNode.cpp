@@ -580,15 +580,15 @@ void AircraftModelNode::updateOrCreateNodes()
 
 void AircraftModelNode::showInfoWidget()
 {
-	if (!mAircraftInfoItem)
-	{
-		mAircraftInfoItem = new AircraftInfoItem(mDefenseModelLayer, *mData, this);
-		connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
-		connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
-		connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
-		connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::latestPointsClicked, this, &AircraftModelNode::onLatestPointsToggled);
-	}
-	mAircraftInfoItem->show();
+    if (!mAircraftInfoItem)
+    {
+        mAircraftInfoItem = new AircraftInfoItem(mDefenseModelLayer, *mData, this);
+        connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::gotoButtonClicked, this, &AircraftModelNode::onGotoButtonClicked);
+        connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::routeButtonClicked, this, &AircraftModelNode::onRouteButtonToggled);
+        connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::trackButtonClicked, this, &AircraftModelNode::onTrackButtonToggled);
+        connect(mAircraftInfoItem->getInfo(), &AircraftInfoModel::latestPointsClicked, this, &AircraftModelNode::onLatestPointsToggled);
+    }
+    mAircraftInfoItem->show();
 }
 
 void AircraftModelNode::addEffect(double emitterDuration)

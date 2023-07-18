@@ -56,6 +56,13 @@ bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdap
                 return true;
         }
         return false;
+    case (osgGA::GUIEventAdapter::DRAG):
+        for (auto& item : mPluginManager->mPluginsInfoList) {
+            bool res = item.interface->mouseDragEvent(ea, aa);
+            if(res)
+                return true;
+        }
+        return false;
     case (osgGA::GUIEventAdapter::RELEASE):
         for (auto& item : mPluginManager->mPluginsInfoList) {
             bool res = item.interface->mouseReleaseEvent(ea, aa);
