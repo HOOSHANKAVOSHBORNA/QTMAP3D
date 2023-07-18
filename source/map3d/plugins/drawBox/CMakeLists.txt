@@ -19,8 +19,8 @@ drawBox.cpp
 drawBox.h
 drawBox.json
 drawBox.qrc
-boxProperties.cpp
-boxProperties.h
+boxProperty.cpp
+boxProperty.h
 )
 
 target_include_directories(drawBox PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d"

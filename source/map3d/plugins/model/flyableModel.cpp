@@ -20,3 +20,8 @@ void flyableModel::setSpeed(double newSpeed)
 {
 
 }
+
+simpleModelNode *flyableModel::getNewModel()
+{
+    return new flyableModel(mMapItem, mModelUrl);
+}

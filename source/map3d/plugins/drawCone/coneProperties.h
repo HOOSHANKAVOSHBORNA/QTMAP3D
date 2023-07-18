@@ -6,6 +6,8 @@
 #include "plugininterface.h"
 #include "mapItem.h"
 #include "cone.h"
+#include "property.h"
+
 class MainWindow;
 class ConePropertiesModel: public QObject
 {
@@ -58,24 +60,20 @@ private:
 
 };
 
-class ConeProperties: public QObject
+class ConeProperties: public Property
 {
     Q_OBJECT
-
 public:
-    ConeProperties(Cone *cone, MainWindow *mainwindow, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
-
-    void show();
-    void hide();
-    void setCone(Cone *cone);
-    void setLocation(osgEarth::GeoPoint location);
+    ConeProperties(QQuickItem *parent=nullptr);
+    void setFillColor(const QColor &color) override;
+    void setRadius(const double &radius) override;
+    void setLocationRelative(const bool &relative) override;
+    void setLocation(const QVector3D &status) override;
+    void setHeight(const double &height) override;
+    Cone *getCone() const;
 
 private:
-    QQmlEngine* mQmlEngine;
-    QQuickItem* mItem;
-    ConePropertiesModel* mConeProperties;
-    UIHandle* mUiHandle;
-    MainWindow *mMainWindow;
+    Cone *mCone = nullptr;
 };
 
 #endif // CONEPROPERTIESMODEL_H

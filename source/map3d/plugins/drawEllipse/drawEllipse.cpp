@@ -29,8 +29,8 @@ void DrawEllipse::onEllipseItemCheck(bool check)
             mapItem()->getMapObject()->addLayer(mEllipseLayer, shapeLayer);
         }
         setState(State::READY);
-        mEllipseProperties = new EllipseProperties(mEllipse, qmlEngine(), uiHandle(), mapItem());
-        mEllipseProperties->show();
+//        mEllipseProperties = new EllipseProperties(mEllipse, qmlEngine(), uiHandle(), mapItem());
+//        mEllipseProperties->show();
         mapItem()->addNode(iconNode());
 
     }
@@ -44,7 +44,7 @@ void DrawEllipse::onEllipseItemCheck(bool check)
         }
         setState(State::NONE);
         mEllipse = nullptr;
-        mEllipseProperties->hide();
+//        mEllipseProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -58,7 +58,7 @@ void DrawEllipse::initDraw(const osgEarth::GeoPoint &geoPos)
     mEllipse->setPosition(geoPos);
 
     mapItem()->getMapObject()->addNodeToLayer(mEllipse, mEllipseLayer);
-    mEllipseProperties->setEllipse(mEllipse);
+//    mEllipseProperties->setEllipse(mEllipse);
 
     setState(State::DRAWING);
     mCount++;
@@ -69,7 +69,7 @@ void DrawEllipse::cancelDraw()
     if(state() == State::DRAWING){
         mapItem()->getMapObject()->removeNodeFromLayer(mEllipse, mEllipseLayer);
         mEllipse = nullptr;
-        mEllipseProperties->setEllipse(mEllipse);
+//        mEllipseProperties->setEllipse(mEllipse);
         setState(State::READY);
         mCount--;
     }

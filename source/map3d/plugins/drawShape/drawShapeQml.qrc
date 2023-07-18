@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>QSpinBox.qml</file>
+        <file>Properties.qml</file>
         <file>ColorBox.qml</file>
     </qresource>
 </RCC>

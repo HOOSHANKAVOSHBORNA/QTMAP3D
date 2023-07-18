@@ -6,6 +6,8 @@
 
 
 
+
+
 CirclePropertiesModel::CirclePropertiesModel(Circle *circle, MapItem *mapItem, QObject *parent) :
     QObject(parent),
     mCircle(circle),
@@ -240,50 +242,101 @@ void CirclePropertiesModel::setCircle(Circle *circle)
     mCircle->setRadius(mRadius);
 }
 
-CircleProperties::CircleProperties(Circle* circle, QQmlEngine *engine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
-    QObject(parent),
-    mQmlEngine(engine),
-    mUiHandle(uiHandle)
+//CircleProperties::CircleProperties(Circle* circle, QQmlEngine *engine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
+//    QObject(parent),
+//    mQmlEngine(engine),
+//    mUiHandle(uiHandle)
+//{
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, circle](){
+//        if (comp->status() == QQmlComponent::Ready) {
+//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//            mCircleProperties = new CirclePropertiesModel(circle, mapItem);
+//            mItem->setProperty("circleProperties", QVariant::fromValue<CirclePropertiesModel*>(mCircleProperties));
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/CircleProperty.qml"));
+
+//}
+
+CircleProperties::CircleProperties(QQuickItem *parent):
+    Property(parent)
 {
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, circle](){
-        if (comp->status() == QQmlComponent::Ready) {
-            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mCircleProperties = new CirclePropertiesModel(circle, mapItem);
-            mItem->setProperty("circleProperties", QVariant::fromValue<CirclePropertiesModel*>(mCircleProperties));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/CircleProperty.qml"));
 
 }
 
-void CircleProperties::show()
+void CircleProperties::setFillColor(const QColor &color)
 {
-    if(mItem)
-    mUiHandle->propertiesShow(mItem);
+    setFillColorStatus(true);
+    Property::setFillColor(color);
+//    mCircle->setColor(color);
 }
 
-void CircleProperties::hide()
+void CircleProperties::setRadius(const double &radius)
 {
-    if(mItem)
-    mUiHandle->propertiesHide(mItem);
+    setRadiusStatus(true);
+    Property::setRadius(radius);
+}
+void CircleProperties::setLocationRelative(const bool &relative)
+{
+    setLocationRelative(true);
+    Property::setLocationRelative(relative);
 }
 
-void CircleProperties::setCircle(Circle *circle)
+void CircleProperties::setArc(const QVector2D &arc)
 {
-    if(mItem)
-    mCircleProperties->setCircle(circle);
+    setArcStatus(true);
+    Property::setArc(arc);
+
 }
 
-void CircleProperties::setLocation(osgEarth::GeoPoint location)
+void CircleProperties::setStrokeWidth(const double &opacity)
 {
-    QVector3D tmp;
-    tmp.setX(static_cast<float>(location.x()));
-    tmp.setY(static_cast<float>(location.y()));
-    tmp.setZ(static_cast<float>(location.z()));
-
-    if(mItem)
-    mCircleProperties->setLocation(tmp);
+    setStrokeStatus(true);
+    Property::setStrokeWidth(opacity);
 }
+
+void CircleProperties::setStroke(const QColor &color)
+{
+    setStrokeStatus(true);
+    Property::setStroke(color);
+
+}
+
+
+
+void CircleProperties::setLocation(const QVector3D &status)
+{
+    setLocationStatus(true);
+    Property::setLocation(status);
+
+
+}
+
+void CircleProperties::setHeight(const double &height)
+{
+    setHeightStatus(true);
+    Property::setHeight(height);
+}
+
+void CircleProperties::setClamp(const double &clamp)
+{
+    setClampStatus(true);
+    Property::setClamp(clamp);
+}
+
+
+Circle *CircleProperties::getCircle() const
+{
+    return mCircle;
+}
+
+void CircleProperties::setCircle(Circle *newCircle)
+{
+    mCircle = newCircle;
+}
+
+
+
 
 

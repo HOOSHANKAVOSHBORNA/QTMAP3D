@@ -14,7 +14,7 @@ Item {
     readonly property Window detachWindow: wndItem
     property var attachWindow: null
     property string title: "Dock Item"
-
+    property bool isShowed: false
     property DockArea detachDockArea: null
 
     property color tmpColor: "red"
@@ -70,6 +70,8 @@ Item {
         if (rootItem.detachDockArea) {
             rootItem.detachDockArea.itemDetached();
         }
+        rootItem.parent = null
+        rootItem.isShowed = false
     }
 
 
@@ -88,6 +90,9 @@ Item {
     Window {
         id: wndItem
         property bool isComplete: false
+        onClosing: {
+            rootItem.isShowed = false
+        }
 
         x: (Math.random() * 300) + 300
         y: (Math.random() * 300) + 300

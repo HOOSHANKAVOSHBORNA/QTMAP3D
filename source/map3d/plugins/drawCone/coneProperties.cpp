@@ -128,52 +128,69 @@ void ConePropertiesModel::setRelative(const bool &value){
 }
 
 
-ConeProperties::ConeProperties(Cone* cone, MainWindow *mainwindow, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
-    QObject(parent),
-    mMainWindow(mainwindow),
-    mQmlEngine(qmlEngine),
-    mUiHandle(uiHandle)
+//ConeProperties::ConeProperties(Cone* cone, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
+//    QObject(parent),
+//    mQmlEngine(qmlEngine),
+//    mUiHandle(uiHandle)
+//{
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, cone](){
+//        if (comp->status() == QQmlComponent::Ready) {
+//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//            mConeProperties = new ConePropertiesModel(cone, mapItem);
+//            mItem->setProperty("coneProperties", QVariant::fromValue<ConePropertiesModel*>(mConeProperties));
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/ConeProperty.qml"));
+//}
+
+
+ConeProperties::ConeProperties(QQuickItem *parent):
+    Property(parent)
 {
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, cone](){
-        if (comp->status() == QQmlComponent::Ready) {
-            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mConeProperties = new ConePropertiesModel(cone, mapItem);
-            mItem->setProperty("coneProperties", QVariant::fromValue<ConePropertiesModel*>(mConeProperties));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/ConeProperty.qml"));
+
 }
 
-void ConeProperties::show()
+void ConeProperties::setFillColor(const QColor &color)
 {
-    if(mItem)
-        mMainWindow->showInRightDock(mItem);
-//    mUiHandle->propertiesShow(mItem);
+    setFillColorStatus(true);
+    Property::setFillColor(color);
+//    mCone->setColor(color);
 }
 
-void ConeProperties::hide()
+void ConeProperties::setRadius(const double &radius)
 {
-    if(mItem) {
-//        mConeProperties
-    }
-//    mUiHandle->propertiesHide(mItem);
+    setRadiusStatus(true);
+    Property::setRadius(radius);
 }
 
-void ConeProperties::setCone(Cone *cone)
+
+void ConeProperties::setHeight(const double &height)
 {
-    if(mItem)
-        mConeProperties->setCone(cone);
+    setHeightStatus(true);
+    Property::setHeight(height);
 }
 
-void ConeProperties::setLocation(osgEarth::GeoPoint location)
+void ConeProperties::setLocationRelative(const bool &relative)
 {
-    QVector3D tmp;
-    tmp.setX(static_cast<float>(location.x()));
-    tmp.setY(static_cast<float>(location.y()));
-    tmp.setZ(static_cast<float>(location.z()));
-
-    if(mItem)
-    mConeProperties->setLocation(tmp);
+    setLocationRelative(true);
+    Property::setLocationRelative(relative);
 }
+void ConeProperties::setLocation(const QVector3D &status)
+{
+    setLocationStatus(true);
+    Property::setLocation(status);
+
+
+}
+
+Cone *ConeProperties::getCone() const
+{
+    return mCone;
+}
+
+//void ConeProperties::setCone(Cone *newCone)
+//{
+//    mCone = newCone;
+//}
 

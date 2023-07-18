@@ -6,6 +6,7 @@
 #include "plugininterface.h"
 #include "mapItem.h"
 #include "cylinder.h"
+#include "property.h"
 
 class CylinderPropertiesModel: public QObject
 {
@@ -58,23 +59,21 @@ private:
 
 };
 
-class CylinderProperties: public QObject
+class CylinderProperties: public Property
 {
     Q_OBJECT
-
 public:
-    CylinderProperties(Cylinder *Cylinder, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
-
-    void show();
-    void hide();
-    void setCylinder(Cylinder *Cylinder);
-    void setLocation(osgEarth::GeoPoint location);
+    CylinderProperties(QQuickItem *parent=nullptr);
+    void setFillColor(const QColor &color) override;
+    void setRadius(const double &radius) override;
+    void setLocationRelative(const bool &relative) override;
+    void setLocation(const QVector3D &status) override;
+    void setHeight(const double &height) override;
+    Cylinder *getCylinder() const;
 
 private:
-    QQmlEngine* mQmlEngine;
-    QQuickItem* mItem;
-    CylinderPropertiesModel* mCylinderProperties;
-    UIHandle* mUiHandle;
+    Cylinder *mCylinder = nullptr;
 };
+
 
 #endif // CylinderPROPERTIESMODEL_H

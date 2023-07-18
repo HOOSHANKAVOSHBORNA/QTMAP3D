@@ -6,6 +6,7 @@
 #include "plugininterface.h"
 #include "mapItem.h"
 #include "capsule.h"
+#include "property.h"
 
 class CapsulePropertiesModel: public QObject
 {
@@ -58,23 +59,43 @@ private:
 
 };
 
-class CapsuleProperties: public QObject
+//class CapsuleProperties: public QObject
+//{
+//    Q_OBJECT
+
+//public:
+//    CapsuleProperties(Capsule *Capsule, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
+
+//    void show();
+//    void hide();
+//    void setCapsule(Capsule *Capsule);
+//    void setLocation(osgEarth::GeoPoint location);
+
+//private:
+//    QQmlEngine* mQmlEngine;
+//    QQuickItem* mItem;
+//    CapsulePropertiesModel* mCapsuleProperties;
+//    UIHandle* mUiHandle;
+//};
+
+
+class CapsuleProperties: public Property
 {
     Q_OBJECT
-
 public:
-    CapsuleProperties(Capsule *Capsule, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapcontroller, QObject *parent = nullptr);
+    CapsuleProperties(QQuickItem *parent=nullptr);
+    void setFillColor(const QColor &color) override;
 
-    void show();
-    void hide();
-    void setCapsule(Capsule *Capsule);
-    void setLocation(osgEarth::GeoPoint location);
+    void setRadius(const double &radius) override;
+    void setLocationRelative(const bool &relative) override;
+    void setLocation(const QVector3D &status) override;
+    void setHeight(const double &height) override;
+    Capsule *getCapsule() const;
 
 private:
-    QQmlEngine* mQmlEngine;
-    QQuickItem* mItem;
-    CapsulePropertiesModel* mCapsuleProperties;
-    UIHandle* mUiHandle;
+    Capsule *mCapsule = nullptr;
 };
 
 #endif // CapsulePROPERTIESMODEL_H
+
+
