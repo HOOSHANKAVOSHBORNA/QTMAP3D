@@ -200,15 +200,16 @@ void Toolbox::onItemClicked(const QModelIndex &current)
         previousItem->getToolboxItem()->changeCheck(false);
         if (previousItem->getToolboxItem()->checkable)
             emit previousItem->getToolboxItem()->itemChecked(false);
-//        else
+        else
+            previous = QModelIndex();
 //            emit previousItem->getToolboxItem()->itemClicked();
         emit dataChanged(previous, previous);
     }
 
     if (current.isValid() && current != previous){
         TreeItem *currentItem = static_cast<TreeItem*>(current.internalPointer());
-        currentItem->getToolboxItem()->changeCheck(true);
         if (currentItem->getToolboxItem()->checkable){
+            currentItem->getToolboxItem()->changeCheck(true);
             emit currentItem->getToolboxItem()->itemChecked(true);
         }else
             emit currentItem->getToolboxItem()->itemClicked();

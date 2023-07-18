@@ -37,6 +37,12 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
 void LayersModel::initializeModel(osgEarth::Map *map)
 {
     osgEarth::LayerVector layers;
+//    map.
+//    QStandardItem *rootItem = mTreeModel->getRootItem();
+//    osgEarth::Layer rootLayer = mMapItem->getRoot();
+//    QVariant rootLayerVariant;
+//    rootLayerVariant.setValue(rootLayer);
+//    rootItem->setData(rootLayerVariant,layerRole);
     map->getLayers(layers);
     for(const auto& layer : layers) {
         //        auto parentLayer = mMapItem->getMapObject()->getParentLayer(layer);
@@ -88,6 +94,9 @@ void LayersModel::onDeleteLayerClicked(const QModelIndex &current)
     QModelIndex indexSource = mapToSource(current);
     QStandardItem *item =  mTreeModel->itemFromIndex(indexSource);
     QStandardItem *parentItem = item->parent();
+    if(!parentItem){
+        parentItem = mTreeModel->getRootItem();
+    }
     osgEarth::Layer *itemLayer = item->data(layerRole).value<osgEarth::Layer*>();
     osgEarth::Layer *parentLayer = parentItem->data(layerRole).value<osgEarth::Layer*>();
 
@@ -134,18 +143,7 @@ void LayersModel::onGoToClicked(const QModelIndex &current)
     }
 }
 
-void LayersModel::onShiftUpClicked(const QModelIndex &current)
-{
-    QModelIndex indexSource = mapToSource(current);
-    QString itemName =  mTreeModel->itemFromIndex(indexSource)->text();
 
-}
-
-void LayersModel::onShiftDownCliced(const QModelIndex &current)
-{
-    QModelIndex indexSource = mapToSource(current);
-    QString itemName =  mTreeModel->itemFromIndex(indexSource)->text();
-}
 
 void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLayer , unsigned index)
 {
@@ -232,4 +230,41 @@ bool LayersModel::getLayerVisible(osgEarth::Layer *layer) const
     auto visLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
     bool visible = visLayer->getVisible();
     return visible;
+}
+
+QModelIndex LayersModel::getDropIndex()
+{
+    return mDropIndex;
+}
+
+void LayersModel::setDropIndex(QModelIndex dropValue)
+{
+    mDropIndex = dropValue;
+//    qDebug() << mDropIndex;
+}
+
+void LayersModel::onReplaceItem(QModelIndex fromIndex)
+{
+    QModelIndex fromIndexSource = mapToSource(fromIndex);
+    QModelIndex toIndexSource = mapToSource(mDropIndex);
+
+
+    QStandardItem *item =  mTreeModel->itemFromIndex(fromIndexSource);
+    osgEarth::Layer *itemLayer = item->data(layerRole).value<osgEarth::Layer*>();
+
+    QStandardItem *parentItem = item->parent();
+    if(!parentItem){
+        mMapItem->getMapObject()->moveLayer(itemLayer,toIndexSource.row());
+    }
+    else{
+        osgEarth::Layer *parentLayer = parentItem->data(layerRole).value<osgEarth::Layer*>();
+        ParenticAnnotationLayer *layerParentic = dynamic_cast<ParenticAnnotationLayer*>(itemLayer);
+        if (layerParentic){
+            auto parentAnoLayer = dynamic_cast<CompositeAnnotationLayer*>(parentLayer);
+            parentAnoLayer->moveLayer(layerParentic,toIndexSource.row());
+        }
+    }
+
+    mTreeModel->replaceItems(fromIndexSource,toIndexSource);
+
 }

@@ -63,7 +63,8 @@ public slots:
     void setCentralDockItem(QQuickItem* dockItem);
     void attachToCentralDockItem(QQuickItem* dockItem, bool horizontalAttach, bool attachAsFirst, qreal splitScale);
     void showInRightDock(QQuickItem *item);
-    void addDockItem(QQuickItem* item, int position = DockPosition::Right);
+    void addDockItem(QQuickItem* item, float scale, int position = DockPosition::Right);
+    void hideDockItem(QQuickItem* item);
     void showListWindow();
 
     void setLayersModel(LayersModel *layersModel);
