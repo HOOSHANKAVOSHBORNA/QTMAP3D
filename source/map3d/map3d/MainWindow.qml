@@ -54,6 +54,7 @@ CMainWindow {
     property Component dockableItemComp: Qt.createComponent("DockableItem.qml");
     property var toolboxDock
     property var toolboxx
+    property var infoItem
     property DockableItem dockItem: null
     property DockArea defaultDockArea: mainDockArea
     function setCentralDockItemImpl(item) {
@@ -575,8 +576,14 @@ CMainWindow {
 //        sideWidget.hideAllItems();
 //        infoo.showInfo(item)
 //        infoo.titleText = title;
-        var dock = wnd.wrapItemWithDockable(item, "title");
-        wnd.attachToCentralDockItem(dock, true, true, 0.2);
+        if (infoItem){
+            infoItem.detachHidden()
+            print("----------")
+        }
+
+        infoItem = wnd.wrapItemWithDockable(item, "title");
+//        wnd.defaultDockArea.setDefaultDockableItemIfIsDefault()
+        wnd.attachToCentralDockItem(infoItem, true, true, 0.2);
     }
 
     function hideInfoView() {
