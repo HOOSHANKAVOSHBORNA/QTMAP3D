@@ -64,11 +64,25 @@ void TreeModel::updateData(QModelIndex itemIndex,bool isVisible, int role)
     }
 }
 
-//QStandardItem TreeModel::getRootItem()
-//{
-//    return *rootItem;
-//}
+void TreeModel::replaceItems(QModelIndex from, QModelIndex to)
+{
+    if(from.parent() == to.parent()){
+//        qDebug() << from.parent().data() <<" "<< to.parent().data(); /*<<" "<< itemFromIndex(from.parent())->text();*/
+        QStandardItem *ItemToBeMoved = itemFromIndex(from);
+        QStandardItem *ItemsParent = ItemToBeMoved->parent();
+        if(!ItemsParent){
+            ItemsParent  = rootItem;
+        }
+//        qDebug() << "ItemToBeMoved:" << ItemToBeMoved->text() << "ItemsParent:" << ItemsParent->text() << "MoveTo:" << to.data();
+        ItemsParent->takeRow(from.row());
+        ItemsParent->insertRow(to.row(), ItemToBeMoved);
+    }
+}
 
+QStandardItem *TreeModel::getRootItem()
+{
+    return rootItem;
+}
 
 
 
