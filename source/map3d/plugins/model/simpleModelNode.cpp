@@ -1,5 +1,6 @@
 #include "simpleModelNode.h"
 #include "model.h"
+#include "modelAutoScaler.h"
 //osg::ref_ptr<osg::Node> simpleNode;
 simpleModelNode::simpleModelNode(MapItem *mapControler, const std::string &modelUrl, QObject *parent)
     : QObject{parent},
@@ -9,7 +10,8 @@ simpleModelNode::simpleModelNode(MapItem *mapControler, const std::string &model
 
 {
     osg::ref_ptr<osg::Node> simpleNode = osgDB::readRefNodeFile(modelUrl);
-    qDebug()<< simpleNode.valid();
+    setCullingActive(false);
+    addCullCallback(new ModelAutoScaler(2.5, 1, 1000));
     osgEarth::Symbology::Style  modelStyle;
     modelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(simpleNode);
     setStyle(modelStyle);
