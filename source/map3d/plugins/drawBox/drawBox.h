@@ -10,8 +10,8 @@
 
 #include "drawShape.h"
 #include "box.h"
-#include "boxProperties.h"
-
+#include "boxProperty.h"
+#include "property.h"
 #define BOX "Box"
 
 class DrawBox : public DrawShape
@@ -32,7 +32,7 @@ private:
 private:
     osg::ref_ptr<Box> mBox{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mBoxLayer{nullptr};
-    BoxProperties *mBoxProperties{nullptr};
+    BoxProperty *mBoxProperty{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mCompositeBoxLayer;
     static int mCount;
 };

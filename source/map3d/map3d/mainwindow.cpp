@@ -72,7 +72,8 @@ void MainWindow::showInRightDock(QQuickItem *item)
 
 void MainWindow::addDockItem(QQuickItem *item, int position)
 {
-
+    QQuickItem* dockItem = wrapItemWithDockable(item, "Property");
+    attachToCentralDockItem(dockItem, true, false, 0.2);
 }
 
 LayersModel *MainWindow::layersModel() const

@@ -3,13 +3,14 @@
 Property::Property(QQuickItem *parent)
     : QQuickItem{parent}
 {
-    QColor color1(0,0, 150, 128 );
-    QColor color2(51,102, 164, 128 );
-    QVector3D location1(85.0,85.0,85.0);
-    setFillColor(color1);
-    setStroke(color2);
-    setLocation(location1);
-    setPoints(color1);
+    qDebug()<<"Property construct";
+//    QColor color1(0,0, 150, 128 );
+//    QColor color2(51,102, 164, 128 );
+//    QVector3D location1(85.0,85.0,85.0);
+//    setFillColor(color1);
+//    setStroke(color2);
+//    setLocation(location1);
+//    setPoints(color1);
 
 }
 //---------------------- fillcolor ---------------------//

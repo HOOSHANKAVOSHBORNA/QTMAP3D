@@ -1,10 +1,17 @@
 #include "drawBox.h"
-
+#include "mainwindow.h"
+#include "plugininterface.h"
+#include "mapItem.h"
+#include "utility.h"
+#include <QQmlContext>
 int DrawBox::mCount{0};
 
 DrawBox::DrawBox(QObject *parent): DrawShape(parent)
 {
-    qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
+//    qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
+
+    qmlRegisterType<BoxProperty>("Crystal", 1, 0, "CProperty");
+
 }
 
 bool DrawBox::setup()
@@ -36,6 +43,25 @@ void DrawBox::onBoxItemCheck(bool check)
             shapeLayer->addLayer(mCompositeBoxLayer);
         }
         setState(State::READY);
+
+        QQmlComponent* comp = new QQmlComponent(qmlEngine());
+        connect(comp, &QQmlComponent::statusChanged, [comp, this](){
+            if (comp->status() == QQmlComponent::Status::Error) {
+                qDebug() << comp->errorString();
+            }
+//            QQmlContext *context = new QQmlContext(qmlEngine(), this);
+            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+            mBoxProperty = static_cast<BoxProperty*>(item);
+//            mBoxProperties->setFillColorStatus(false);
+//            mBoxProperties->setFillColor(QColor());
+//            mBoxProperty->setStatuses();
+
+            //        mBoxProperties = new BoxProperties();
+            mainWindow()->addDockItem(mBoxProperty);
+        });
+
+
+        comp->loadUrl(QUrl("qrc:/Properties.qml"));
         mapItem()->addNode(iconNode());
 
     }
@@ -70,7 +96,7 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
 //    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
     mCompositeBoxLayer->addLayer(mBoxLayer);
 
-//    mBoxProperties->setBox(mBox);
+    mBoxProperty->setBox(mBox);
 
     setState(State::DRAWING);
     mCount++;
@@ -89,7 +115,7 @@ void DrawBox::cancelDraw()
         mCompositeBoxLayer->removeLayer(mBoxLayer);
         mBox = nullptr;
         mBoxLayer = nullptr;
-        //mBoxProperties->setBox(mBox);
+        mBoxProperty->setBox(mBox);
         setState(State::READY);
         mCount--;
     }
