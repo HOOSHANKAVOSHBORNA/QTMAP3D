@@ -1,6 +1,7 @@
 #include "model.h"
 #include "mapItem.h"
 #include "moveableModel.h"
+#include "flyableModel.h"
 #include <osgEarth/GLUtils>
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 int model::mCount{0};
@@ -199,7 +200,29 @@ void model::onCarItemCheck(bool check)
 
 void model::onAirplanItemCheck(bool check)
 {
+    if (check) {
+        makeIconNode("../data/images/model/car.png");
+        mModelNode = new flyableModel(mapItem(),"../data/models/aircraft/boeing-747.osgb");
+        if(mAirplanelLayer->getGroup()->getNumChildren() <= 0){
+            auto sModelLayer = modelLayer();
+            mapItem()->getMapObject()->addLayer(mAirplanelLayer, sModelLayer);
+        }
+        setState(State::READY);
+        mapItem()->addNode(iconNode());
 
+    }
+    else {
+        if(state() == State::MOVING)
+            cancel();
+
+        if(mAirplanelLayer->getGroup()->getNumChildren() <= 0){
+            auto sModelLayer = modelLayer();
+            mapItem()->getMapObject()->removeLayer(mAirplanelLayer, sModelLayer);
+        }
+        setState(State::NONE);
+        //        mModelNode.release();
+        mapItem()->removeNode(iconNode());
+    }
 }
 
 void model::initModel(const osgEarth::GeoPoint &geoPos){
