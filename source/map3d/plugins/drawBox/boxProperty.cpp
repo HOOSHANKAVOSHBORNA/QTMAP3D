@@ -38,10 +38,11 @@ void BoxProperty::setLocationRelative(const bool &relative)
 
 
 
-void BoxProperty::setLocation(const QVector3D &status)
+void BoxProperty::setLocation(const QVector3D &position)
 {
-    Property::setLocation(status);
-//    mBox->setPosition()
+    Property::setLocation(position);
+    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(position);
+    mBox->setPosition(temp);
 }
 
 void BoxProperty::setHeight(const double &height)

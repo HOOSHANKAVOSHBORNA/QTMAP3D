@@ -388,10 +388,11 @@ import Crystal 1.0
                                         Layout.leftMargin: 25
                                         Layout.rightMargin: -9
                                         decimals: 4
-                                        showText:  rootItem._object ? rootItem._locationx : 0
+                                        showText:  rootItem.location.x ?? 0
                                         onValueChanged: {
                                             rootItem._locationx = value
-                                            rootItem.location.x =value
+                                            rootItem.location.x = value
+                                            print(value)
                                         }
 
 

@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 #include "plugininterface.h"
 #include "mapItem.h"
-
+#include "utility.h"
 #include <QQmlContext>
 int DrawBox::mCount{0};
 
@@ -115,7 +115,7 @@ void DrawBox::cancelDraw()
         mCompositeBoxLayer->removeLayer(mBoxLayer);
         mBox = nullptr;
         mBoxLayer = nullptr;
-        //mBoxProperties->setBox(mBox);
+        mBoxProperty->setBox(mBox);
         setState(State::READY);
         mCount--;
     }
