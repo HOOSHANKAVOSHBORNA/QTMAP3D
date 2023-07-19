@@ -127,52 +127,69 @@ Item {
                     required property int depth
 
                     property real dropPositionRow
+                    property bool dragStatus: false
+
+                    //                    DragHandler{
+                    //                        id: dragHand
+                    //                        target: treeDelegate
+                    //                        dragThreshold: 1
+                    //                        yAxis.enabled: true
+                    //                        xAxis.enabled: false
+                    //                        onActiveChanged:{
+                    //                            if(!active)
+                    //                                layersModell.onReplaceItem(treeView.index(row , column))
+                    //                        }
+                    //                    }
 
 
-//                    MouseArea {
-//                        id: mouseArea
-//                        anchors.fill: parent
-//                        drag {
-//                            target: treeDelegate
-//                            axis: Drag.YAxis
-//                        }
+                    //                    MouseArea {
+                    //                        id: mouseArea
+                    //                        anchors.fill: parent
+                    //                        drag {
+                    //                            target: treeDelegate
+                    //                            axis: Drag.YAxis
+                    //                        }
 
-//                        property bool dragActive: drag.active
+                    //                        property bool dragActive: drag.active
 
-//                        onDragActiveChanged: {
-//                            if(drag.active) { //
-//                                console.log("Active at " + treeView.index(row , column))
-//                            } else {
-//                                console.log("InActive at " + treeView.index(row , column))
-//                            }
-//                        }
-//                    }
+                    //                        onDragActiveChanged: {
+                    //                            if(drag.active) { //
+                    //                                console.log("Active at " + treeView.index(row , column))
+                    //                            } else {
+                    //                                console.log("InActive at " + treeView.index(row , column))
+                    //                            }
+                    //                        }
+                    //                    }
 
 
 
-//                    Rectangle{
-//                        width: parent.width
-//                        height: parent.height
-//                        color: Style._darkGray
-//                        opacity: 0
-//                        z:3
-//                        Text {
-//                            text: display
-//                            anchors.centerIn: parent
-//                        }
-//                    }
+                    //                    Rectangle{
+                    //                        width: parent.width
+                    //                        height: parent.height
+                    //                        color: Style._darkGray
+                    //                        opacity: 0
+                    //                        z:3
+                    //                        Text {
+                    //                            text: display
+                    //                            anchors.centerIn: parent
+                    //                        }
+                    //                    }
 
                     DropArea{
                         anchors.fill: parent
                         id:dropArea
                         onEntered: {
+                            //                            var from = (drag.source as Example.ThingTile).visualIndex
+                            //                            var to = thingTile.visualIndex
+                            //                            visualModel.items.move(from, to)
+                            //                            console.log(drag.source).index(row,column)
+                            //                        {
                             layersModell.dropIndex = treeView.index(row , column)
-
-                        }
-                        onDropped: {
-                            console.log("dropped here:" + treeView.index(row , column))
+                            console.log(treeView.index(row , column))
                         }
                     }
+
+
 
                     Drag.active: dragArea.drag.active
 
@@ -181,12 +198,11 @@ Item {
                         anchors.fill: parent
                         drag.target: parent
                         drag.axis: Drag.YAxis
-                        onPressAndHold: {
-                            drag.dragStarted();
-                        }
-
+                        //                        onPressAndHold: {
+                        //                            drag.dragStarted();
+                        //                        }
                         onReleased:  {
-                            //                            console.log(treeView.index(row , column)+ "onrelease")
+                            console.log(treeView.index(row , column)+ "onrelease")
                             layersModell.onReplaceItem(treeView.index(row , column))
                             drag.dragFinished()
                         }

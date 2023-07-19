@@ -240,7 +240,7 @@ QModelIndex LayersModel::getDropIndex()
 void LayersModel::setDropIndex(QModelIndex dropValue)
 {
     mDropIndex = dropValue;
-//    qDebug() << mDropIndex;
+    qDebug() << mDropIndex;
 }
 
 void LayersModel::onReplaceItem(QModelIndex fromIndex)
