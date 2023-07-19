@@ -34,7 +34,7 @@ void Property::setFillColor(const QColor &color)
 {
     mFillColor = color;
     emit propretyChanged();
-    qDebug() <<color;
+
 }
 //-------------------- stroke -------------------- //
 
@@ -58,7 +58,7 @@ void Property::setStrokeWidth(const double &opacity)
 {
     mStrokeWidth = opacity;
     emit propretyChanged();
-    qDebug() << opacity;
+
 }
 
 
@@ -72,7 +72,7 @@ void Property::setStroke(const QColor &strok)
 {
     mStroke = strok;
     emit propretyChanged();
-    qDebug() <<strok;
+
 }
 //------------------- location --------------------//
 
@@ -85,7 +85,7 @@ void Property::setLocationStatus(bool status)
 {
     mLocationStatus = status;
     emit propretyChanged();
-    qDebug () << status;
+
 }
 
 QVector3D Property::getLocation() const
@@ -97,7 +97,7 @@ void Property::setLocation(const QVector3D &location)
 {
     mLocation = location;
     emit propretyChanged();
-    qDebug() << location;
+
 }
 
 bool Property::getLocationRelative() const
@@ -109,7 +109,7 @@ void Property::setLocationRelative(const bool &relative)
 {
     mRelative = relative;
     emit propretyChanged();
-    qDebug() << relative;
+
 }
 
 //------------------ center -------------------//
@@ -123,7 +123,7 @@ void Property::setCenterStatus(bool center)
 {
     mCenterStatus = center;
     emit propretyChanged();
-    qDebug() << center;
+
 }
 
 QVector3D Property::getCenter() const
@@ -135,7 +135,6 @@ void Property::setCenter(const QVector3D &center)
 {
     mCenter = center;
     emit propretyChanged();
-    qDebug() << center;
 }
 //-------------------Arc ---------------//
 bool Property::getArcStatus() const
@@ -147,7 +146,7 @@ void Property::setArcStatus(bool arc)
 {
     mArcStatus = arc;
     emit propretyChanged();
-    qDebug () << arc ;
+
 }
 
 QVector2D Property::getArc() const
@@ -159,7 +158,7 @@ void Property::setArc(const QVector2D &arc)
 {
     mArc=arc;
     emit propretyChanged();
-    qDebug() << arc  ;
+
 }
 
 //------------------radius ---------------//
@@ -173,7 +172,7 @@ void Property::setRadiusStatus(bool radius)
 {
     mRadiusStatus = radius;
     emit propretyChanged();
-    qDebug()<<radius;
+
 }
 
 double Property::getRadius() const
@@ -185,7 +184,7 @@ void Property::setRadius(const double &radius)
 {
     mRadius = radius;
     emit propretyChanged();
-    qDebug()<<radius;
+
 }
 //------------------height---------------//
 bool Property::getHeightStatus() const
@@ -197,7 +196,7 @@ void Property::setHeightStatus( bool height)
 {
     mHeightStatus = height;
     emit propretyChanged();
-    qDebug()<< height;
+
 }
 
 double Property::getHeight() const
@@ -209,7 +208,7 @@ void Property::setHeight(const double &height)
 {
     mHeight = height;
     emit propretyChanged();
-    qDebug()<<height;
+
 }
 
 
@@ -223,7 +222,7 @@ void Property::setLenghtStatus(bool lenght)
 {
     mLenghtStatus = lenght;
     emit propretyChanged();
-    qDebug()<< lenght;
+
 }
 
 double Property::getLenght() const
@@ -235,7 +234,7 @@ void Property::setLenght(const double &lenght)
 {
     mLenght = lenght;
     emit propretyChanged();
-    qDebug()<<lenght;
+
 }
 
 
@@ -250,7 +249,6 @@ void Property::setWidthStatus(bool width)
 {
     mWidthStatus = width;
     emit propretyChanged();
-    qDebug()<< width;
 }
 
 double Property::getWidth() const
@@ -262,7 +260,6 @@ void Property::setWidth(const double &width)
 {
     mWidth = width;
     emit propretyChanged();
-    qDebug()<< width;
 }
 
 //------------------Tesselation---------------//
@@ -275,7 +272,6 @@ void Property::setTesselationStatus(bool tesselation)
 {
     mTesselationStatus = tesselation;
     emit propretyChanged();
-    qDebug()<< tesselation;
 }
 
 double Property::getTesselation() const
@@ -287,7 +283,7 @@ void Property::setTesselation(const double &tesselation)
 {
     mTesselation = tesselation;
     emit propretyChanged();
-    qDebug()<<tesselation;
+
 }
 
 //------------------Clamp---------------//
@@ -300,7 +296,7 @@ void Property::setClampStatus(bool clamp)
 {
     mClampStatus = clamp;
     emit propretyChanged();
-    qDebug()<< clamp;
+
 }
 
 double Property::getClamp() const
@@ -312,7 +308,7 @@ void Property::setClamp(const double &clamp)
 {
     mClamp = clamp;
     emit propretyChanged();
-    qDebug()<<clamp;
+
 }
 
 //-----------------showlen-------------//
@@ -326,7 +322,7 @@ void Property::setShowLenStatus(bool len)
 {
     mShowLenStatus = len;
     emit propretyChanged();
-    qDebug() << len;
+
 
 }
 
@@ -339,7 +335,7 @@ void Property::setShowLen(const bool &len)
 {
     mShowLen = len;
     emit propretyChanged();
-    qDebug () << len;
+
 }
 //------------------Bearing---------------//
 bool Property::getBearingStatus() const
@@ -353,7 +349,6 @@ void Property::setBearingStatus(bool bearin)
 {
     mBearingStatus = bearin;
     emit propretyChanged();
-    qDebug()<< bearin;
 }
 
 bool Property::getBearing() const
@@ -365,7 +360,7 @@ void Property::setBearing(const bool &bearing)
 {
     mBearing = bearing;
     emit propretyChanged();
-    qDebug()<<bearing;
+
 }
 
 //-----------------showSlop-------------//
@@ -379,7 +374,7 @@ void Property::setShowSlopStatus(bool slop)
 {
     mShowSlopStatus = slop;
     emit propretyChanged();
-    qDebug() << slop;
+
 
 }
 
@@ -392,7 +387,6 @@ void Property::setShowSlop(const bool &slop)
 {
     mShowSlop = slop;
     emit propretyChanged();
-    qDebug () << slop;
 }
 
 
@@ -407,7 +401,7 @@ void Property::setPointsStatus(bool point)
 {
     mPointsStatus = point;
     emit propretyChanged();
-    qDebug() << point;
+
 }
 
 QColor Property::getPoints() const
@@ -419,7 +413,7 @@ void Property::setPoints(const QColor &point)
 {
     mPoints = point;
     emit propretyChanged();
-    qDebug() << point;
+
 }
 
 bool Property::getPointsSmooth() const
@@ -431,7 +425,7 @@ void Property::setPointsSmooth(const bool &point)
 {
     mPointsSmooth = point;
     emit propretyChanged();
-    qDebug() << point;
+
 }
 
 double Property::getPointsWidth() const
@@ -443,5 +437,5 @@ void Property::setPointsWidth(const double &point)
 {
     mPointsWidth = point;
     emit propretyChanged();
-    qDebug() << point;
+
 }

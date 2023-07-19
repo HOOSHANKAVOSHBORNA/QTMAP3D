@@ -23,10 +23,12 @@ public:
     void setLocation(const QVector3D &status) override;
     void setHeight(const double &height) override;
     Capsule *getCapsule() const;
-    void setCapsule(Capsule *Capsule);
+    void setCapsule(Capsule *Capsule , const osgEarth::SpatialReference *srs);
 
 private:
     Capsule *mCapsule = nullptr;
+    const osgEarth::SpatialReference *mSRS;
+
 };
 
 #endif // CapsulePROPERTIESMODEL_H

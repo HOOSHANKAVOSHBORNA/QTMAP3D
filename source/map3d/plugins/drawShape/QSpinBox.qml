@@ -19,7 +19,8 @@ Item {
     property double to            : 9999999999999
     property bool round: true
 
-    onShowTextChanged: value = showText
+//    onShowTextChanged: value = showText
+
 
     implicitHeight: 35
     implicitWidth: 200
