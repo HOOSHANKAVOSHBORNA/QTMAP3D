@@ -85,6 +85,7 @@ public:
     void setHeight(const double &height) override;
     void setClamp(const double &clamp) override;
     Ellipse *getEllipse() const;
+    void setEllipse(Ellipse* ellipse);
 
 private:
     Ellipse *mEllipse = nullptr;

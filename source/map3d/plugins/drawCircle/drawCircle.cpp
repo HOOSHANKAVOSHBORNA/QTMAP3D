@@ -9,7 +9,8 @@
 int DrawCircle::mCount{0};
 DrawCircle::DrawCircle(QObject *parent): DrawShape(parent)
 {
-    qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
+//    qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
+//    qmlRegisterType<CircleProperties>("Crystal", 1, 0, "CProperty");
 }
 
 bool DrawCircle::setup()
@@ -29,12 +30,14 @@ bool DrawCircle::setup()
 
 void DrawCircle::onCircleItemCheck(bool check)
 {
+
     if (check) {
         if(mCircleLayer->getGroup()->getNumChildren() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
             mapItem()->getMapObject()->addLayer(mCircleLayer, shapeLayer);
         }
         setState(State::READY);
+
 //        mCircleProperties = new CircleProperties(mCircle, qmlEngine(), uiHandle(), mapItem());
 //        mCircleProperties->show();
         mapItem()->addNode(iconNode());

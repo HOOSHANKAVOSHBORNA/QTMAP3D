@@ -189,8 +189,8 @@ Cone *ConeProperties::getCone() const
     return mCone;
 }
 
-//void ConeProperties::setCone(Cone *newCone)
-//{
-//    mCone = newCone;
-//}
+void ConeProperties::setCone(Cone *newCone)
+{
+    mCone = newCone;
+}
 
