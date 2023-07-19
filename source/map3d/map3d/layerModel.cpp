@@ -37,12 +37,12 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
 void LayersModel::initializeModel(osgEarth::Map *map)
 {
     osgEarth::LayerVector layers;
-//    map.
-//    QStandardItem *rootItem = mTreeModel->getRootItem();
-//    osgEarth::Layer rootLayer = mMapItem->getRoot();
-//    QVariant rootLayerVariant;
-//    rootLayerVariant.setValue(rootLayer);
-//    rootItem->setData(rootLayerVariant,layerRole);
+    //    map.
+    //    QStandardItem *rootItem = mTreeModel->getRootItem();
+    //    osgEarth::Layer rootLayer = mMapItem->getRoot();
+    //    QVariant rootLayerVariant;
+    //    rootLayerVariant.setValue(rootLayer);
+    //    rootItem->setData(rootLayerVariant,layerRole);
     map->getLayers(layers);
     for(const auto& layer : layers) {
         //        auto parentLayer = mMapItem->getMapObject()->getParentLayer(layer);
@@ -64,11 +64,11 @@ QHash<int, QByteArray> LayersModel::roleNames() const
 void LayersModel::onItemClicked(const QModelIndex &current)
 {
     QModelIndex indexSource = mapToSource(current);
-//    osgEarth::Layer *layerData = mTreeModel->data(indexSource,layerRole).value<osgEarth::Layer*>();
-//    if(layerData)
-//        qDebug()<<layerData->getName() << " " << layerData->getTypeName();
-//    bool locata = mTreeModel->data(indexSource , locatableRole).toBool();
-//    qDebug() << locata ;
+    //    osgEarth::Layer *layerData = mTreeModel->data(indexSource,layerRole).value<osgEarth::Layer*>();
+    //    if(layerData)
+    //        qDebug()<<layerData->getName() << " " << layerData->getTypeName();
+    //    bool locata = mTreeModel->data(indexSource , locatableRole).toBool();
+    //    qDebug() << locata ;
     bool visibleRoleData = mTreeModel->data(indexSource,visibleRole).toBool();
     mTreeModel->updateData(indexSource,!visibleRoleData,visibleRole);
     auto layer = data(current, layerRole).value<osgEarth::Layer*>();
@@ -77,16 +77,16 @@ void LayersModel::onItemClicked(const QModelIndex &current)
     {
         setLayerVisible(visibleLayer);
     }
-//    else{
-//        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current.parent()).toString().toStdString());
-//        if(layer){
-//            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-//            if(group){
-//                auto node = group->getChild(current.row());
-//                node->setNodeMask(!node->getNodeMask());
-//            }
-//        }
-//    }
+    //    else{
+    //        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current.parent()).toString().toStdString());
+    //        if(layer){
+    //            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+    //            if(group){
+    //                auto node = group->getChild(current.row());
+    //                node->setNodeMask(!node->getNodeMask());
+    //            }
+    //        }
+    //    }
 }
 
 void LayersModel::onDeleteLayerClicked(const QModelIndex &current)
@@ -100,17 +100,17 @@ void LayersModel::onDeleteLayerClicked(const QModelIndex &current)
     osgEarth::Layer *itemLayer = item->data(layerRole).value<osgEarth::Layer*>();
     osgEarth::Layer *parentLayer = parentItem->data(layerRole).value<osgEarth::Layer*>();
 
-//    QString layerItem = item->text();
-//    QString parentLayerItem = item->parent()->text();
-//    mTreeModel->removeItem(layerItem , parentLayerItem);
-//    auto layer = data(current, layerRole).value<osgEarth::Layer*>();
+    //    QString layerItem = item->text();
+    //    QString parentLayerItem = item->parent()->text();
+    //    mTreeModel->removeItem(layerItem , parentLayerItem);
+    //    auto layer = data(current, layerRole).value<osgEarth::Layer*>();
     ParenticAnnotationLayer *layerParentic = dynamic_cast<ParenticAnnotationLayer*>(itemLayer);
     if (layerParentic){
         auto parentAnoLayer = dynamic_cast<CompositeAnnotationLayer*>(parentLayer);
         auto parenticItemLayer = dynamic_cast<ParenticAnnotationLayer*>(itemLayer);
         parentAnoLayer->removeLayer(parenticItemLayer);
     }else{
-//        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current).toString().toStdString());
+        //        auto layer = mMapItem->getMapNode()->getMap()->getLayerByName(data(current).toString().toStdString());
         mMapItem->getMapObject()->removeLayer(itemLayer,parentLayer);
     }
 
@@ -167,11 +167,11 @@ void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentL
         mTreeModel->addItem(treeItem);
     }
     //--------------------------------------
-//    CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
-//    if (compositeLayer){
-//        for(int i = 0; i < compositeLayer->getNumChildren(); i++)
-//            onLayerAdded(compositeLayer->getChild(i), layer, index);
-//    }
+    //    CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
+    //    if (compositeLayer){
+    //        for(int i = 0; i < compositeLayer->getNumChildren(); i++)
+    //            onLayerAdded(compositeLayer->getChild(i), layer, index);
+    //    }
 }
 
 void LayersModel::onLayerRemoved(osgEarth::Layer *layer , osgEarth::Layer *parentLayer, unsigned index)
@@ -245,26 +245,29 @@ void LayersModel::setDropIndex(QModelIndex dropValue)
 
 void LayersModel::onReplaceItem(QModelIndex fromIndex)
 {
+
     QModelIndex fromIndexSource = mapToSource(fromIndex);
     QModelIndex toIndexSource = mapToSource(mDropIndex);
 
+    if((fromIndexSource != toIndexSource) && (mDropIndex.isValid())){
 
-    QStandardItem *item =  mTreeModel->itemFromIndex(fromIndexSource);
-    osgEarth::Layer *itemLayer = item->data(layerRole).value<osgEarth::Layer*>();
+        QStandardItem *item =  mTreeModel->itemFromIndex(fromIndexSource);
+        osgEarth::Layer *itemLayer = item->data(layerRole).value<osgEarth::Layer*>();
 
-    QStandardItem *parentItem = item->parent();
-    if(!parentItem){
-        mMapItem->getMapObject()->moveLayer(itemLayer,toIndexSource.row());
-    }
-    else{
-        osgEarth::Layer *parentLayer = parentItem->data(layerRole).value<osgEarth::Layer*>();
-        ParenticAnnotationLayer *layerParentic = dynamic_cast<ParenticAnnotationLayer*>(itemLayer);
-        if (layerParentic){
-            auto parentAnoLayer = dynamic_cast<CompositeAnnotationLayer*>(parentLayer);
-            parentAnoLayer->moveLayer(layerParentic,toIndexSource.row());
+        QStandardItem *parentItem = item->parent();
+        if(!parentItem){
+            mMapItem->getMapObject()->moveLayer(itemLayer,toIndexSource.row());
         }
-    }
+        else{
+            osgEarth::Layer *parentLayer = parentItem->data(layerRole).value<osgEarth::Layer*>();
+            ParenticAnnotationLayer *layerParentic = dynamic_cast<ParenticAnnotationLayer*>(itemLayer);
+            if (layerParentic){
+                auto parentAnoLayer = dynamic_cast<CompositeAnnotationLayer*>(parentLayer);
+                parentAnoLayer->moveLayer(layerParentic,toIndexSource.row());
+            }
+        }
 
-    mTreeModel->replaceItems(fromIndexSource,toIndexSource);
+        mTreeModel->replaceItems(fromIndexSource,toIndexSource);
+    }
 
 }
