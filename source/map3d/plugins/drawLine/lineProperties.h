@@ -5,7 +5,7 @@
 #include "measureHeight.h"
 #include "mapItem.h"
 #include "plugininterface.h"
-
+#include "property.h"
 #include <QAbstractListModel>
 #include <QObject>
 #include <QVariant>
@@ -20,7 +20,7 @@ class LinePropertiesModel : public QObject
     Q_PROPERTY(int       lineOpacity    READ getLineOpacity   WRITE setLineOpacity  )
     Q_PROPERTY(QString   pointColor     READ getPointColor    WRITE setPointColor   )
     Q_PROPERTY(int       pointOpacity   READ getPointOpacity  WRITE setPointOpacity )
-    Q_PROPERTY(int   width          READ getWidth         WRITE setWidth        )
+    Q_PROPERTY(int   width          READ getWidth             WRITE setWidth        )
     Q_PROPERTY(float     pointwidth     READ getPointwidth    WRITE setPointwidth   )
     Q_PROPERTY(float     height         READ getHeight        WRITE setHeight       )
     Q_PROPERTY(unsigned  tesselation    READ getTesselation   WRITE setTesselation  )
@@ -122,25 +122,30 @@ private:
 public slots:
 };
 
-class LineProperties :public QObject
+class LineProperties: public Property
 {
     Q_OBJECT
 public:
-    LineProperties(QQmlEngine *engine, UIHandle *muiHandle, QObject *parent = nullptr);
-    void show();
-    void hide();
+    LineProperties(QQuickItem *parent=nullptr);
+    void setFillColor(const QColor &color) override;
+    void setWidth(const double &width) override;
+    void setStrokeWidth(const double &opacity) override;
+    void setStroke(const QColor &color) override;
+    void setPoints(const QColor &point) override;
+    void setPointsWidth(const double &point) override;
+    void setPointsSmooth(const bool &point) override;
+    void setBearing(const bool &bearing) override;
+    void setShowSlop(const bool &slop)override;
+    void setTesselation(const double &tesselation)override;
+    void setClamp(const double &clamp) override;
+    void setShowLen(const bool &clamp)override;
 
-    void setLine(LineNode *line);
-    void setMeasureHeight(MeasureHeight *measureHeight);
-    void setIsRuler(int value);
+
+    LineNode *getLine() const;
+
+    void setLine(LineNode *mLineNode) ;
 
 private:
-    QQmlEngine* mQmlEngine;
-    QQuickItem* mItem;
-    LinePropertiesModel *mLineProperties;
-    UIHandle *mUiHandle = nullptr;
-    int mIsRuler;
-
+    LineNode *mLineNode = nullptr;
 };
-
 #endif // LINEPROPERTIES_H

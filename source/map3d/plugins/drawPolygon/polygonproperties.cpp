@@ -4,6 +4,8 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 #include "plugininterface.h"
+#include "property.h"
+
 
 
 
@@ -149,45 +151,76 @@ void PolygonPropertiesModel::setPolygon(Polygon *polygon)
     mPolygon->setClamp(mClamp);
 }
 
-PolygonProperties::PolygonProperties(QQmlEngine *engine, UIHandle *uiHandle,  QObject *parent) :
-    QObject(parent),
-    mQmlEngine(engine),
-    mUiHandle(uiHandle)
+//PolygonProperties::PolygonProperties(QQmlEngine *engine, UIHandle *uiHandle,  QObject *parent) :
+//    QObject(parent),
+//    mQmlEngine(engine),
+//    mUiHandle(uiHandle)
+//{
+//    //--show property window---------------------------------------------------------------------------------
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+//        if (comp->status() == QQmlComponent::Ready) {
+//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//            mPolygonProperties = new PolygonPropertiesModel();
+//            mItem->setProperty("polygonProperties", QVariant::fromValue<PolygonPropertiesModel*>(mPolygonProperties));
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/PolygonProperties.qml"));
+//    //--------------------------------------------------------------------------------------------------
+
+//}
+
+PolygonProperties::PolygonProperties(QQuickItem *parent):
+    Property(parent)
 {
-    //--show property window---------------------------------------------------------------------------------
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        if (comp->status() == QQmlComponent::Ready) {
-            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mPolygonProperties = new PolygonPropertiesModel();
-            mItem->setProperty("polygonProperties", QVariant::fromValue<PolygonPropertiesModel*>(mPolygonProperties));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/PolygonProperties.qml"));
-    //--------------------------------------------------------------------------------------------------
 
 }
 
-Q_INVOKABLE void PolygonProperties::show()
+void PolygonProperties::setFillColor(const QColor &color)
 {
-    if(mItem)
-    mUiHandle->propertiesShow(mItem);
+    setFillColorStatus(true);
+    Property::setFillColor(color);
+    //    mPolygon->setColor(color);
 }
 
-void PolygonProperties::hide()
-{
 
-    if(mItem)
-        mUiHandle->propertiesHide(mItem);
+
+
+
+void PolygonProperties::setStrokeWidth(const double &opacity)
+{
+    setStrokeStatus(true);
+    Property::setStrokeWidth(opacity);
+}
+
+void PolygonProperties::setStroke(const QColor &color)
+{
+    setStrokeStatus(true);
+    Property::setStroke(color);
 
 }
 
-void PolygonProperties::setPolygon(Polygon *polygon)
+void PolygonProperties::setClamp(const double &clamp)
+{
+    setClampStatus(true);
+    Property::setClamp(clamp);
+}
+
+void PolygonProperties::setHeight(const double &height)
 {
 
-    if(mItem)
-    mPolygonProperties->setPolygon(polygon);
+}
 
+
+
+Polygon *PolygonProperties::getPolygon() const
+{
+    return mPolygon;
+}
+
+void PolygonProperties::setPolygon(Polygon *newPolygon)
+{
+    mPolygon = newPolygon;
 }
 
 

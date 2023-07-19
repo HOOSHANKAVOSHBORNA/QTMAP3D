@@ -152,7 +152,7 @@ public:
     void setWidthStatus(bool width);
 
     double getWidth() const;
-    virtual void setWidth(double width);
+    virtual void setWidth(const double &width);
 
 
     // ---------- Tesselation  --------- //
@@ -223,7 +223,7 @@ signals:
 private:
     // ----------  fill color -------- //
     bool mFillColorStatus            {true};
-    QColor mFillColor;
+    QColor mFillColor = QColor(0, 0, 250, 255);
 
 
     // ----------  stroke //

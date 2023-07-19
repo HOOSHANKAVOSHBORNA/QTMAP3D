@@ -4,6 +4,7 @@
 #include <QQmlEngine>
 #include <QQuickItem>
 #include "plugininterface.h"
+#include "property.h"
 
 
 
@@ -303,56 +304,121 @@ void LinePropertiesModel::setShowSlope(bool showSlope)
     }
 }
 
-LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):
-    QObject(parent),
-    mQmlEngine(engine),
-    mUiHandle(muiHandle)
+//LineProperties::LineProperties(QQmlEngine *engine,UIHandle *muiHandle, QObject *parent ):
+//    QObject(parent),
+//    mQmlEngine(engine),
+//    mUiHandle(muiHandle)
+//{
+//    //--show property window---------------------------------------------------------------------------------
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
+//        if (comp->status() == QQmlComponent::Ready) {
+//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//            mLineProperties = new LinePropertiesModel();
+//            mItem->setProperty("lineProperties", QVariant::fromValue<LinePropertiesModel*>(mLineProperties));
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/LineProperty.qml"));
+//    //--------------------------------------------------------------------------------------------------
+
+//}
+
+LineProperties::LineProperties(QQuickItem *parent):
+    Property(parent)
 {
-    //--show property window---------------------------------------------------------------------------------
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
-        if (comp->status() == QQmlComponent::Ready) {
-            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mLineProperties = new LinePropertiesModel();
-            mItem->setProperty("lineProperties", QVariant::fromValue<LinePropertiesModel*>(mLineProperties));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/LineProperty.qml"));
-    //--------------------------------------------------------------------------------------------------
 
 }
 
-Q_INVOKABLE void LineProperties::show()
+void LineProperties::setFillColor(const QColor &color)
 {
-    if(mItem)
-    mUiHandle->propertiesShow(mItem);
-    mLineProperties->setRuler(mIsRuler);
+    setFillColorStatus(true);
+    Property::setFillColor(color);
+    //    mLine->setColor(color);
 }
 
-void LineProperties::hide()
-{
 
-    if(mItem)
-        mUiHandle->propertiesHide(mItem);
+
+
+
+void LineProperties::setStrokeWidth(const double &opacity)
+{
+    setStrokeStatus(true);
+    Property::setStrokeWidth(opacity);
+}
+
+void LineProperties::setStroke(const QColor &color)
+{
+    setStrokeStatus(true);
+    Property::setStroke(color);
 
 }
 
-void LineProperties::setLine(LineNode *line )
+void LineProperties::setPoints(const QColor &point)
 {
-
-    if(mItem)
-    mLineProperties->setLine(line);
+    setPointsStatus(true);
+    Property::setPoints(point);
 
 }
 
-void LineProperties::setMeasureHeight(MeasureHeight *measureHeight)
+void LineProperties::setPointsWidth(const double &point)
 {
-    if(mItem)
-    mLineProperties->setMeasureHeight(measureHeight);
+    setPointsStatus(true);
+    Property::setPointsWidth(point);
 }
 
-void LineProperties::setIsRuler(int value)
+void LineProperties::setPointsSmooth(const bool &point)
 {
+    setPointsStatus(true);
+    Property::setPointsSmooth(point);
+}
 
-    mIsRuler = value;
+void LineProperties::setBearing(const bool &bearing)
+{
+    setBearingStatus(true);
+    Property::setBearing(bearing);
+}
+
+void LineProperties::setShowSlop(const bool &slop)
+{
+    setShowSlopStatus(true);
+    Property::setShowSlop(slop);
+}
+
+void LineProperties::setTesselation(const double &tesselation)
+{
+    setTesselationStatus(true);
+    Property::setTesselation(tesselation);
+}
+
+
+
+
+
+void LineProperties::setWidth(const double &width)
+{
+    setWidthStatus(true);
+    Property::setWidth(width);
+}
+
+void LineProperties::setClamp(const double &clamp)
+{
+    setClampStatus(true);
+    Property::setClamp(clamp);
+}
+
+void LineProperties::setShowLen(const bool &clamp)
+{
+    setShowLenStatus(true);
+    Property::setShowLen(clamp);
+}
+
+
+LineNode *LineProperties::getLine() const
+{
+    return mLineNode;
+}
+
+void LineProperties::setLine(LineNode *newLine)
+{
+    mLineNode = newLine;
 }

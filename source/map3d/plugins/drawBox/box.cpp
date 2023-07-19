@@ -122,6 +122,22 @@ void Box::setHeight(double height)
         compile();
     }
 }
+
+const osgEarth::Linear &Box::getHeight() const
+{
+    return mHeight;
+}
+
+const osgEarth::Linear &Box::getWidth() const
+{
+    return mWidth;
+}
+
+const osgEarth::Linear &Box::getLength() const
+{
+    return mLength;
+}
+
 void Box::setWidth(double width)
 {
     if(mWidth != width)

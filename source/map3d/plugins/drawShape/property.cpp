@@ -258,7 +258,7 @@ double Property::getWidth() const
     return mWidth;
 }
 
-void Property::setWidth(double width)
+void Property::setWidth(const double &width)
 {
     mWidth = width;
     emit propretyChanged();
