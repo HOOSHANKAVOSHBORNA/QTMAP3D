@@ -70,6 +70,7 @@ public:
     void setLocation(const QVector3D &status) override;
     void setHeight(const double &height) override;
     Cylinder *getCylinder() const;
+    void setCylinder(Cylinder *Cylinder);
 
 private:
     Cylinder *mCylinder = nullptr;

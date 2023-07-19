@@ -2,7 +2,7 @@
 int DrawCapsule::mCount{0};
 DrawCapsule::DrawCapsule(QObject *parent): DrawShape(parent)
 {
-    qmlRegisterType<CapsulePropertiesModel>("Crystal", 1, 0, "CapsuleProperties");
+    qmlRegisterType<CapsuleProperties>("Crystal", 1, 0, "CapsuleProperties");
 }
 
 bool DrawCapsule::setup()

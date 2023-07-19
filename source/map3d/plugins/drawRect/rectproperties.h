@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
+#include "property.h"
 
 class RectPropertiesModel : public QObject
 {
@@ -78,21 +79,22 @@ private:
 public slots:
 };
 
-class RectProperties : public QObject
+class RectProperties: public Property
 {
     Q_OBJECT
 public:
-    RectProperties(Rect *rect, QQmlEngine *engine, UIHandle *uiHandle, QObject *parent = nullptr);
-    void show();
-    void hide();
-    void setRect(Rect* rect);
+    RectProperties(QQuickItem *parent=nullptr);
+    void setFillColor(const QColor &color) override;
+    void setHeight(const double &height) override;
+    void setStrokeWidth(const double &opacity) override;
+    void setStroke(const QColor &color) override;
+    void setWidth(const double &width) override;
+    void setClamp(const double &clamp);
+    Rect *getRect() const;
+    void setRect(Rect *Rect);
 
 private:
-    QQmlEngine* mQmlEngine;
-    QQuickItem* mItem;
-    RectPropertiesModel* mRectProperties;
-    UIHandle* mUiHandle;
-
+    Rect *mRect = nullptr;
 };
 
 #endif // RECTPROPERTIES_H

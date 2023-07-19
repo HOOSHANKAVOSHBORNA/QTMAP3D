@@ -220,8 +220,8 @@ Ellipse *EllipseProperties::getEllipse() const
     return mEllipse;
 }
 
-//void EllipseProperties::setEllipse(Ellipse *newEllipse)
-//{
-//    mEllipse = newEllipse;
-//}
+void EllipseProperties::setEllipse(Ellipse *newEllipse)
+{
+    mEllipse = newEllipse;
+}
 

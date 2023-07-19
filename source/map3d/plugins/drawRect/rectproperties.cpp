@@ -3,6 +3,7 @@
 #include <QVector3D>
 #include <QQmlComponent>
 #include <QQuickItem>
+#include "property.h"
 
 
 
@@ -165,39 +166,76 @@ void RectPropertiesModel::setRect(Rect *rect)
 
 }
 
-RectProperties::RectProperties(Rect* rect, QQmlEngine *engine, UIHandle *uiHandle, QObject *parent) :
-    QObject(parent),
-    mQmlEngine(engine),
-    mUiHandle(uiHandle)
+//RectProperties::RectProperties(Rect* rect, QQmlEngine *engine, UIHandle *uiHandle, QObject *parent) :
+//    QObject(parent),
+//    mQmlEngine(engine),
+//    mUiHandle(uiHandle)
+//{
+//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, rect](){
+//        if (comp->status() == QQmlComponent::Ready) {
+//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
+//            mRectProperties = new RectPropertiesModel(rect);
+//            mItem->setProperty("rectProperties", QVariant::fromValue<RectPropertiesModel*>(mRectProperties));
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/RectProperty.qml"));
+
+//}
+
+RectProperties::RectProperties(QQuickItem *parent):
+    Property(parent)
 {
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, rect](){
-        if (comp->status() == QQmlComponent::Ready) {
-            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-            mRectProperties = new RectPropertiesModel(rect);
-            mItem->setProperty("rectProperties", QVariant::fromValue<RectPropertiesModel*>(mRectProperties));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/RectProperty.qml"));
 
 }
 
-void RectProperties::show()
+void RectProperties::setFillColor(const QColor &color)
 {
-    if(mItem)
-    mUiHandle->propertiesShow(mItem);
+    setFillColorStatus(true);
+    Property::setFillColor(color);
+    //    mRect->setColor(color);
 }
 
-void RectProperties::hide()
+
+
+
+
+void RectProperties::setStrokeWidth(const double &opacity)
 {
-    if(mItem)
-    mUiHandle->propertiesHide(mItem);
+    setStrokeStatus(true);
+    Property::setStrokeWidth(opacity);
 }
 
-void RectProperties::setRect(Rect *rect)
+void RectProperties::setStroke(const QColor &color)
 {
-    if(mItem)
-    mRectProperties->setRect(rect);
+    setStrokeStatus(true);
+    Property::setStroke(color);
+
 }
 
+void RectProperties::setClamp(const double &clamp)
+{
+    setClampStatus(true);
+    Property::setClamp(clamp);
+}
+
+void RectProperties::setHeight(const double &height)
+{
+
+    setHeightStatus(true);
+    Property::setHeight(height);
+
+}
+
+
+
+Rect *RectProperties::getRect() const
+{
+    return mRect;
+}
+
+void RectProperties::setRect(Rect *newRect)
+{
+    mRect = newRect;
+}
 

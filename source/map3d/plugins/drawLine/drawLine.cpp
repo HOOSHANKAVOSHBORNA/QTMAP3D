@@ -74,9 +74,9 @@ void DrawLine::onLineItemCheck(bool check)
         }
         mType = Type::LINE;
         setState(State::READY);
-        mLineProperties = new LineProperties( qmlEngine(), uiHandle(), mapItem());
-        mLineProperties->setIsRuler(0);
-        mLineProperties->show();
+//        mLineProperties = new LineProperties( qmlEngine(), uiHandle(), mapItem());
+//        mLineProperties->setIsRuler(0);
+//        mLineProperties->show();
         mapItem()->addNode(iconNode());
     }
     else {
@@ -92,7 +92,7 @@ void DrawLine::onLineItemCheck(bool check)
         mLineProperties->deleteLater();
         mType = Type::NONE;
         mLine = nullptr;
-        mLineProperties->hide();
+//        mLineProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -107,9 +107,9 @@ void DrawLine::onRulerItemCheck(bool check)
         makeIconNode("../data/images/draw/ruler.png");
         setState(State::READY);
         mType = Type::RULERR;
-        mLineProperties = new LineProperties(qmlEngine(),uiHandle() );
-        mLineProperties->setIsRuler(1);
-        mLineProperties->show();
+//        mLineProperties = new LineProperties(qmlEngine(),uiHandle() );
+//        mLineProperties->setIsRuler(1);
+//        mLineProperties->show();
         mapItem()->addNode(iconNode());
     }
     else
@@ -124,7 +124,7 @@ void DrawLine::onRulerItemCheck(bool check)
         mType = Type::NONE;
         mLineProperties->deleteLater();
         mLine = nullptr;
-        mLineProperties->hide();
+//        mLineProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -140,9 +140,9 @@ void DrawLine::onHeightItemCheck(bool check)
         makeIconNode("../data/images/draw/height.png");
         setState(State::READY);
         mType = Type::HEIGHT;
-        mLineProperties = new LineProperties(qmlEngine(),uiHandle() );
-        mLineProperties->setIsRuler(2);
-        mLineProperties->show();
+//        mLineProperties = new LineProperties(qmlEngine(),uiHandle() );
+//        mLineProperties->setIsRuler(2);
+//        mLineProperties->show();
         mapItem()->addNode(iconNode());
     }
     else
@@ -157,7 +157,7 @@ void DrawLine::onHeightItemCheck(bool check)
         mType = Type::NONE;
         mLineProperties->deleteLater();
         mLine = nullptr;
-        mLineProperties->hide();
+//        mLineProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -173,9 +173,9 @@ void DrawLine::onSlopeItemCheck(bool check)
         makeIconNode("../data/images/draw/slope.png");
         setState(State::READY);
         mType = Type::SLOPEE;
-        mLineProperties = new LineProperties(qmlEngine(),uiHandle() );
-        mLineProperties->setIsRuler(3);
-        mLineProperties->show();
+//        mLineProperties = new LineProperties(qmlEngine(),uiHandle() );
+//        mLineProperties->setIsRuler(3);
+//        mLineProperties->show();
         mapItem()->addNode(iconNode());
     }
     else
@@ -190,7 +190,7 @@ void DrawLine::onSlopeItemCheck(bool check)
         mType = Type::NONE;
         mLineProperties->deleteLater();
         mLine = nullptr;
-        mLineProperties->hide();
+//        mLineProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -217,7 +217,7 @@ void DrawLine::initDraw(const osgEarth::GeoPoint &geoPos)
         break;
     case Type::HEIGHT:
         mMeasureHeight = new MeasureHeight(mapItem());
-        mLineProperties->setMeasureHeight(mMeasureHeight);
+//        mLineProperties->setMeasureHeight(mMeasureHeight);
         name = MEASUREHEIGHT + QString::number(mCount);
         mMeasureHeight->setName(name.toStdString());
         mapItem()->getMapObject()->addNodeToLayer(mMeasureHeight, mHeightLayer);
@@ -270,8 +270,8 @@ void DrawLine::cancelDraw()
         mapItem()->getMapObject()->removeNodeFromLayer(mMeasureHeight, mHeightLayer);
         mLine = nullptr;
         mMeasureHeight = nullptr;
-        mLineProperties->setLine(mLine);
-        mLineProperties->setMeasureHeight(mMeasureHeight);
+//        mLineProperties->setLine(mLine);
+//        mLineProperties->setMeasureHeight(mMeasureHeight);
         setState(State::READY);
         mCount--;
     }

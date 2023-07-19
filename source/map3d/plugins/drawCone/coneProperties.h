@@ -71,6 +71,7 @@ public:
     void setLocation(const QVector3D &status) override;
     void setHeight(const double &height) override;
     Cone *getCone() const;
+    void setCone(Cone *cone);
 
 private:
     Cone *mCone = nullptr;

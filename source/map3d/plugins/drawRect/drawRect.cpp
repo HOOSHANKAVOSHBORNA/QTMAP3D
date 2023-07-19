@@ -35,8 +35,8 @@ void DrawRect::onRectItemCheck(bool check)
             mapItem()->getMapObject()->addLayer(mRectLayer, shapeLayer);
         }
         setState(State::READY);
-        mRectProperties = new RectProperties(mRect, qmlEngine(), uiHandle(), mapItem());
-        mRectProperties->show();
+//        /*mRectProperties*/ = new RectProperties(mRect, qmlEngine(), uiHandle(), mapItem());
+//        mRectProperties->show();
         mapItem()->addNode(iconNode());
 
     }
@@ -50,7 +50,7 @@ void DrawRect::onRectItemCheck(bool check)
         }
         setState(State::NONE);
         mRect = nullptr;
-        mRectProperties->hide();
+//        mRectProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }

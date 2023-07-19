@@ -197,9 +197,9 @@ Cylinder *CylinderProperties::getCylinder() const
     return mCylinder;
 }
 
-//void CylinderProperties::setCylinder(Cylinder *newCylinder)
-//{
-//    mCylinder = newCylinder;
-//}
+void CylinderProperties::setCylinder(Cylinder *newCylinder)
+{
+    mCylinder = newCylinder;
+}
 
 

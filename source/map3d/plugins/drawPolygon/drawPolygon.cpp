@@ -44,8 +44,8 @@ void DrawPolygon::onPolygonItemCheck(bool check)
         mType = Type::POLYGONN;
         setState(State::READY);
 
-        mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle(), mapItem());
-        mPolygonProperties->show();
+//        mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle(), mapItem());
+//        mPolygonProperties->show();
         mapItem()->addNode(iconNode());
     }
     else {
@@ -57,10 +57,10 @@ void DrawPolygon::onPolygonItemCheck(bool check)
         }
 
         setState(State::NONE);
-        mPolygonProperties->deleteLater();
+//        mPolygonProperties->deleteLater();
         mType = Type::NONE;
         mPolygon = nullptr;
-        mPolygonProperties->hide();
+//        mPolygonProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -77,8 +77,8 @@ void DrawPolygon::onMeasureAreaItemCheck(bool check)
         makeIconNode("../data/images/draw/polygon.png");
         setState(State::READY);
 
-        mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle(), mapItem());
-        mPolygonProperties->show();
+//        mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle(), mapItem());
+//        mPolygonProperties->show();
         mapItem()->addNode(iconNode());
     }
     else
@@ -90,9 +90,9 @@ void DrawPolygon::onMeasureAreaItemCheck(bool check)
             mapItem()->getMapObject()->removeLayer(mAreaLayer, measureLayer);
         }
         mType = Type::NONE;
-        mPolygonProperties->deleteLater();
+//        mPolygonProperties->deleteLater();
         mPolygon = nullptr;
-        mPolygonProperties->hide();
+//        mPolygonProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -113,7 +113,7 @@ void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)
         mPolygon->setName(name.toStdString());
         mapItem()->getMapObject()->addNodeToLayer(mPolygon, mPolygonLayer);
     }
-    mPolygonProperties->setPolygon(mPolygon);
+//    mPolygonProperties->setPolygon(mPolygon);
     setState(State::DRAWING);
     mCount++;
 }
@@ -141,7 +141,7 @@ void DrawPolygon::cancelDraw()
         mapItem()->getMapObject()->removeNodeFromLayer(mPolygon, mPolygonLayer);
         mapItem()->getMapObject()->removeNodeFromLayer(mPolygon, mAreaLayer);
         mPolygon = nullptr;
-        mPolygonProperties->setPolygon(mPolygon);
+//        mPolygonProperties->setPolygon(mPolygon);
         setState(State::READY);
         mCount--;
     }

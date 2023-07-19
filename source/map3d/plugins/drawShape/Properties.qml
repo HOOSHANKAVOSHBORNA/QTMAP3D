@@ -155,20 +155,36 @@ import Crystal 1.0
 
                                         }
                                     }
+//                                    SpinBox {
+//                                        id: spi
+//                                        from: 0
+//                                        to: 100
+////                                        value: rootItem.fillColor.a * 100
+//                                        onValueChanged: function(){
+//                                            rootItem.fillColor.a = value /100
+//                                        }
+
+//                                    }
 
                                     QSpinBox {
                                         id: opacityValue
-//                                        showText: rootItem.fillColor.a*100
+
                                         to : 100
                                         from : 0
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 28
-
+//                                        value:rootItem.fillColor.a /255 * 100
                                         onValueChanged: {
                                             if(rootItem._object){
                                                 rootItem.fillColor.a = value/100
                                             }
                                         }
+                                    }
+                                    Binding{
+                                        target: opacityValue
+
+                                        property: "value"
+                                        value: rootItem.fillColor.a * 100
                                     }
 
 
@@ -419,7 +435,7 @@ import Crystal 1.0
                                         Layout.leftMargin: 25
                                         Layout.rightMargin: -9
                                         decimals: 4
-                                        showText:  rootItem._object ? rootItem._locationy : 0
+                                        showText:rootItem.location.y ?? 0
                                         onValueChanged: {
                                             rootItem._locationy = value
                                             rootItem.location.y =value
@@ -448,7 +464,7 @@ import Crystal 1.0
                                         Layout.leftMargin: 25
                                         Layout.rightMargin: -9
                                         decimals: 4
-                                        showText:  rootItem._object ? rootItem._locationz : 0
+                                        showText: rootItem.location.z ?? 0
                                         onValueChanged: {
                                             rootItem._locationz = value
                                             rootItem.location.z =value
@@ -573,7 +589,7 @@ import Crystal 1.0
                                         Layout.rightMargin: -9
 
                                         decimals: 7
-                                        showText:  rootItem._object ? rootItem._centerx: 0
+                                        showText: rootItem.center.x?? 0
                                         onValueChanged: {
                                             rootItem._centerx = value
                                             rootItem.center.x =value
@@ -605,7 +621,7 @@ import Crystal 1.0
                                         Layout.rightMargin: -9
                                         decimals: 7
 
-                                        showText:  rootItem._object ? rootItem._centery: 0
+                                        showText: rootItem.center.y ?? 0
                                         onValueChanged: {
                                             rootItem._centery = value
                                             rootItem.center.y =value
@@ -636,10 +652,10 @@ import Crystal 1.0
                                         Layout.rightMargin: -9
                                         decimals: 7
 
-                                        showText:  rootItem._object ? rootItem._centerz: 0
+                                        showText: rootItem.center.z ?? 0
                                         onValueChanged: {
                                             rootItem._centerz = value
-                                            rootItem.center.y =value
+                                            rootItem.center.z =value
                                         }
 
 

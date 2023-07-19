@@ -13,23 +13,29 @@ BoxProperty::BoxProperty(QQuickItem *parent):
     setFillColorStatus(true);
     setWidthStatus(true);
     setLenghtStatus(true);
+//    setFillColor(getFillColor());
+//    setLocation(getLocation());
+
 }
 
 void BoxProperty::setFillColor(const QColor &color)
 {
     Property::setFillColor(color);
-    mBox->setColor(Utility::qColor2osgEarthColor(color));
+    if (mBox)
+        mBox->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-//void BoxProperties::setLenght(const QVector3D &len)
-//{
-//    Property::setLenght(len);
-//}
+void BoxProperty::setLenght(const double &lenght)
+{
+    Property::setLenght(lenght);
+    mBox->setLength(lenght);
+}
 
-//void BoxProperties::setWidth(const double &width)
-//{
-//    Property::setWidth(width);
-//}
+void BoxProperty::setWidth(const double &width)
+{
+    Property::setWidth(width);
+    mBox->setWidth(width);
+}
 
 void BoxProperty::setLocationRelative(const bool &relative)
 {
@@ -48,18 +54,8 @@ void BoxProperty::setLocation(const QVector3D &position)
 void BoxProperty::setHeight(const double &height)
 {
     Property::setHeight(height);
+    mBox->setHeight(height);
 }
-
-void BoxProperty::setStatuses()
-{
-//    setHeightStatus(true);
-//    setLocationStatus(true);
-//    setLocationRelative(true);
-//    setFillColorStatus(true);
-//    setWidthStatus(true);
-//    setLenghtStatus(true);
-}
-
 
 Box *BoxProperty::getBox() const
 {
@@ -69,4 +65,11 @@ Box *BoxProperty::getBox() const
 void BoxProperty::setBox(Box *newBox)
 {
     mBox = newBox;
+    if(mBox){
+        setFillColor(Utility::osgEarthColorToQColor(mBox->getColor()));
+        setLenght(mBox->getLength().getValue());
+        setWidth(mBox->getWidth().getValue());
+        setLocation(Utility::osgEarthGeoPointToQvector3D(mBox->getPosition()));
+        setHeight(mBox->getHeight().getValue());
+    }
 }
