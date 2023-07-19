@@ -583,6 +583,7 @@ CMainWindow {
             if (!itemsInDocks[item].isShowed){
                 wnd.attachToCentralDockItem(itemsInDocks[item], true, true, 0.2);
                 itemsInDocks[item].isShowed = true
+                print(itemsInDocks[item].type)
             }
 //            item.destroy()
 //            print("----------")
@@ -595,6 +596,7 @@ CMainWindow {
     //        wnd.defaultDockArea.setDefaultDockableItemIfIsDefault()
             wnd.attachToCentralDockItem(itemsInDocks[item], true, true, 0.2);
         }
+        print(itemsInDocks[item] instanceof DockArea)
 
         print(itemsInDocks[item].isShowed)
     }
