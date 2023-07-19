@@ -29,9 +29,9 @@ import Crystal 1.0
 
         property double _radius : 20000
         property double _opacity : 0.5
-        property double _lenght
-        property double _height
-        property double _width
+        property double _lenght:100
+        property double _height:100
+        property double _width:100
         property double _centerx
         property double _centery
         property double _centerz
@@ -175,9 +175,9 @@ import Crystal 1.0
                                         Layout.preferredHeight: 28
 //                                        value:rootItem.fillColor.a /255 * 100
                                         onValueChanged: {
-                                            if(rootItem._object){
+//                                            if(rootItem._object){
                                                 rootItem.fillColor.a = value/100
-                                            }
+//                                            }
                                         }
                                     }
                                     Binding{
@@ -293,6 +293,12 @@ import Crystal 1.0
                                                 }
                                             }
                                         }
+                                        Binding{
+                                            target: strkopacityValue
+
+                                            property: "value"
+                                            value: rootItem.stroke.a * 100
+                                        }
 
                                         ColorDialog {
                                             visible: false
@@ -334,6 +340,12 @@ import Crystal 1.0
                                         }
 
 
+                                    }
+                                    Binding{
+                                        target: strkWidth
+
+                                        property: "value"
+                                        value: rootItem.strokeWidth
                                     }
 
 
@@ -404,16 +416,19 @@ import Crystal 1.0
                                         Layout.leftMargin: 25
                                         Layout.rightMargin: -9
                                         decimals: 4
-                                        showText:  rootItem.location.x ?? 0
+//                                        showText:  rootItem.location.x ?? 0
                                         onValueChanged: {
-                                            rootItem._locationx = value
+//                                            rootItem._locationx = value
                                             rootItem.location.x = value
-                                            print(value)
+//                                            print(value)
                                         }
 
+                                    }
+                                    Binding{
+                                        target: mlocationX
 
-
-
+                                        property: "value"
+                                        value: rootItem.location.x
                                     }
 
 
@@ -440,10 +455,12 @@ import Crystal 1.0
                                             rootItem._locationy = value
                                             rootItem.location.y =value
                                         }
+                                    }
+                                    Binding{
+                                        target: mlocationY
 
-
-
-
+                                        property: "value"
+                                        value: rootItem.location.y
                                     }
 
                                     Text {
@@ -470,8 +487,12 @@ import Crystal 1.0
                                             rootItem.location.z =value
                                         }
 
+                                    }
+                                    Binding{
+                                        target: mlocationZ
 
-
+                                        property: "value"
+                                        value: rootItem.location.z
                                     }
 
 
@@ -599,6 +620,12 @@ import Crystal 1.0
 
 
                                     }
+                                    Binding{
+                                        target: mcenterX
+
+                                        property: "value"
+                                        value: rootItem.center.x
+                                    }
 
 
                                     Text {
@@ -631,6 +658,12 @@ import Crystal 1.0
 
 
                                     }
+                                    Binding{
+                                        target: mcenterY
+
+                                        property: "value"
+                                        value: rootItem.center.y
+                                    }
 
                                     Text {
                                         Layout.preferredWidth: 104
@@ -644,7 +677,7 @@ import Crystal 1.0
                                     }
                                     QSpinBox {
 
-                                        id: mcenterz
+                                        id: mcenterZ
 
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 28
@@ -661,6 +694,12 @@ import Crystal 1.0
 
 
 
+                                    }
+                                    Binding{
+                                        target: mcenterZ
+
+                                        property: "value"
+                                        value: rootItem.center.z
                                     }
 
 
@@ -852,18 +891,24 @@ import Crystal 1.0
 
 
                                     QSpinBox {
-                                        id: hsphere
-//                                        value:rootItem.heighT
+                                        id:mheight
+                                        value: rootItem._height
                                         to : 1000000
                                         from : 0
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 28
                                         Layout.leftMargin: 25
                                         onValueChanged: {
-                                            if(rootItem._object && hsphere && (hsphere.value === 0 || hsphere.value)){
+                                            if(rootItem._object && mheight && (mheight.value === 0 || mheight.value)){
                                                 rootItem.heighT = value
                                             }
                                         }
+                                    }
+                                    Binding{
+                                        target: mheight
+
+                                        property: "value"
+                                        value: rootItem.heighT
                                     }
 
 
@@ -901,8 +946,7 @@ import Crystal 1.0
 
                                     QSpinBox {
                                         id: lengthValue
-
-
+                                        value: rootItem._lenght
                                         from : 0
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 28
@@ -910,18 +954,19 @@ import Crystal 1.0
 
 //                                        value: rootItem.lenghT
 
-
-
                                         height: 28
-
-
-
 
                                         onValueChanged: {
                                             if(rootItem._object  && lengthValue && (lengthValue.value === 0 || lengthValue.value)){
                                                 rootItem.lenghT = value
                                             }
                                         }
+                                    }
+                                    Binding{
+                                        target: lengthValue
+
+                                        property: "value"
+                                        value: rootItem.lenghT
                                     }
 
 
@@ -959,7 +1004,7 @@ import Crystal 1.0
                                     QSpinBox {
                                         id:widthValue
 
-//                                        value: rootItem.widtH
+                                        value: rootItem._width
                                         from : 0
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 28
@@ -970,6 +1015,12 @@ import Crystal 1.0
                                             }
                                         }
 
+                                    }
+                                    Binding{
+                                        target: widthValue
+
+                                        property: "value"
+                                        value: rootItem.widtH
                                     }
 
 

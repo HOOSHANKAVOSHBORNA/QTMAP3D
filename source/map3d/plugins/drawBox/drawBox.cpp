@@ -71,16 +71,16 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "box" + QString::number(mCount);
     mBox = new Box();
     mBox->setName(name.toStdString());
-    mBox->setHeight(100000);
-    mBox->setWidth(100000);
-    mBox->setLength(100000);
+//    mBox->setHeight(100000);
+//    mBox->setWidth(100000);
+//    mBox->setLength(100000);
     mBox->setPosition(geoPos);
     mBoxLayer = new ParenticAnnotationLayer();
     mBoxLayer->addChild(mBox);
     mBoxLayer->setName(mBox->getName());
 //    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
     mCompositeBoxLayer->addLayer(mBoxLayer);
-    mBoxProperty->setBox(mBox);
+    mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
 
 
 
@@ -91,6 +91,7 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 {
     mBox->setPosition(geoPos);
+    mBoxProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }
 
 void DrawBox::cancelDraw()
@@ -101,7 +102,7 @@ void DrawBox::cancelDraw()
         mCompositeBoxLayer->removeLayer(mBoxLayer);
         mBox = nullptr;
         mBoxLayer = nullptr;
-        mBoxProperty->setBox(mBox);
+        mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
     }

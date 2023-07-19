@@ -25,11 +25,11 @@ QVector3D Utility::osgEarthGeoPointToQvector3D(const osgEarth::GeoPoint &positio
 
 }
 
-osgEarth::GeoPoint Utility::qVector3DToosgEarthGeoPoint(const QVector3D &position)
+osgEarth::GeoPoint Utility::qVector3DToosgEarthGeoPoint(const QVector3D &position, const osgEarth::SpatialReference* srs)
 {
-    osgEarth::GeoPoint tempLocation;
-    tempLocation.x() = static_cast<double>(position.x());
-    tempLocation.y() = static_cast<double>(position.y());
-    tempLocation.z() = static_cast<double>(position.z());
+    osgEarth::GeoPoint tempLocation(srs, position.x(), position.y(), position.z());
+//    tempLocation.x() = static_cast<double>(position.x());
+//    tempLocation.y() = static_cast<double>(position.y());
+//    tempLocation.z() = static_cast<double>(position.z());
     return tempLocation;
 }

@@ -22,10 +22,11 @@ public:
 
 
     Box *getBox() const;
-    void setBox(Box *newBox);
+    void setBox(Box *newBox, const osgEarth::SpatialReference *srs);
 
 private:
     Box *mBox = nullptr;
+    const osgEarth::SpatialReference *mSRS;
 };
 
 #endif // BOXPROPERTIESMODEL_H

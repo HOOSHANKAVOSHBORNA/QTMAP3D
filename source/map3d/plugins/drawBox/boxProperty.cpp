@@ -9,12 +9,12 @@ BoxProperty::BoxProperty(QQuickItem *parent):
     qDebug()<<"BoxProperty construct";
     setHeightStatus(true);
     setLocationStatus(true);
-    setLocationRelative(true);
+    //    setLocationRelative(true);
     setFillColorStatus(true);
     setWidthStatus(true);
     setLenghtStatus(true);
-//    setFillColor(getFillColor());
-//    setLocation(getLocation());
+    //    setFillColor(getFillColor());
+    //    setLocation(getLocation());
 
 }
 
@@ -28,13 +28,15 @@ void BoxProperty::setFillColor(const QColor &color)
 void BoxProperty::setLenght(const double &lenght)
 {
     Property::setLenght(lenght);
-    mBox->setLength(lenght);
+    if (mBox)
+        mBox->setLength(lenght);
 }
 
 void BoxProperty::setWidth(const double &width)
 {
     Property::setWidth(width);
-    mBox->setWidth(width);
+    if (mBox)
+        mBox->setWidth(width);
 }
 
 void BoxProperty::setLocationRelative(const bool &relative)
@@ -47,14 +49,16 @@ void BoxProperty::setLocationRelative(const bool &relative)
 void BoxProperty::setLocation(const QVector3D &position)
 {
     Property::setLocation(position);
-    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(position);
-    mBox->setPosition(temp);
+    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(position, mSRS);
+    if (mBox)
+        mBox->setPosition(temp);
 }
 
 void BoxProperty::setHeight(const double &height)
 {
     Property::setHeight(height);
-    mBox->setHeight(height);
+    if (mBox)
+        mBox->setHeight(height);
 }
 
 Box *BoxProperty::getBox() const
@@ -62,14 +66,15 @@ Box *BoxProperty::getBox() const
     return mBox;
 }
 
-void BoxProperty::setBox(Box *newBox)
+void BoxProperty::setBox(Box *newBox, const osgEarth::SpatialReference* srs)
 {
     mBox = newBox;
+    mSRS = srs;
     if(mBox){
-        setFillColor(Utility::osgEarthColorToQColor(mBox->getColor()));
-        setLenght(mBox->getLength().getValue());
-        setWidth(mBox->getWidth().getValue());
+        mBox->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mBox->setLength(getLenght());
+        mBox->setWidth(getWidth());
+        mBox->setHeight(getHeight());
         setLocation(Utility::osgEarthGeoPointToQvector3D(mBox->getPosition()));
-        setHeight(mBox->getHeight().getValue());
     }
 }
