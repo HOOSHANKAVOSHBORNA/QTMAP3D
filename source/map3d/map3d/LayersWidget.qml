@@ -167,11 +167,12 @@ Item {
                         id:dropArea
                         onEntered: {
                             layersModell.dropIndex = treeView.index(row , column)
+                            console.log("dropped here:" + treeView.index(row , column))
 
                         }
-                        onDropped: {
-                            console.log("dropped here:" + treeView.index(row , column))
-                        }
+//                        onDropped: {
+//                            console.log("dropped here:" + treeView.index(row , column))
+//                        }
                     }
 
                     Drag.active: dragArea.drag.active
@@ -181,14 +182,39 @@ Item {
                         anchors.fill: parent
                         drag.target: parent
                         drag.axis: Drag.YAxis
-                        onPressAndHold: {
-                            drag.dragStarted();
+                        propagateComposedEvents: true
+                        Timer {
+                            id: timer
+                            interval: 500
+                            repeat: false
+                            running: false
+                            onTriggered: {
+
+                            }
                         }
 
-                        onReleased:  {
+                        onPressAndHold: {
+//                            drag.dragStarted();
+                            print("presandhold")
+                        }
+                        onClicked: function(event){
+                            event.accepted = false
+                            print("clicked")
+                        }
+
+                        onReleased:  function(event){
+                            if (!timer.running){
+                                print("release")
+                                event.accepted = true
+                            }
                             //                            console.log(treeView.index(row , column)+ "onrelease")
-                            layersModell.onReplaceItem(treeView.index(row , column))
-                            drag.dragFinished()
+//                            layersModell.onReplaceItem(treeView.index(row , column))
+//                            drag.dragFinished()
+                        }
+
+                        onPressed: {
+                            timer.start()
+                            print("presseeeed")
                         }
                     }
 
@@ -201,15 +227,15 @@ Item {
                         color:  Style._darkestGray
                         radius:   Style.radius
                         x:  ((treeDelegate.depth ) * treeDelegate.indent)
-                        MouseArea{
-                            id: containerMouse
-                            anchors.fill: parent
-                            acceptedButtons: Qt.RightButton;
-                            onClicked: {
-                                contextMenu.popup()
+//                        MouseArea{
+//                            id: containerMouse
+//                            anchors.fill: parent
+//                            acceptedButtons: Qt.RightButton;
+//                            onClicked: {
+//                                contextMenu.popup()
 
-                            }
-                        }
+//                            }
+//                        }
                     }
 
 
