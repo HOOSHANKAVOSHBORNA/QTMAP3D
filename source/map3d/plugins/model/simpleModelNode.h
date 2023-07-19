@@ -14,6 +14,7 @@ public:
 protected:
     std::string mModelUrl;
     MapItem *mMapItem;
+
 private:
 
 

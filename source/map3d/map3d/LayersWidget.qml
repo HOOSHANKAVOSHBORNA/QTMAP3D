@@ -12,9 +12,9 @@ Item {
     id: rootItem
     implicitWidth: 230
     property CLayersModel layersModell
-//    property bool destroyCalled: false
+    //    property bool destroyCalled: false
 
-//    onDestroyCalledChanged: rootItem.destroy()
+    //    onDestroyCalledChanged: rootItem.destroy()
 
 
     Rectangle {
@@ -36,7 +36,6 @@ Item {
                 height: 40
                 y : -1
                 clip: true
-                //        anchors.bottom: rootItem.top
                 color: "transparent"
                 anchors.horizontalCenter: parent.horizontalCenter
                 TextField {
@@ -51,7 +50,6 @@ Item {
 
 
                     background: Rectangle {
-                        //                        radius: Style.radius
                         implicitWidth: search.width
                         implicitHeight: 35
                         border.color: "black"
@@ -107,12 +105,18 @@ Item {
                     onSelectionChanged:{
                     }
                 }
+                flickableDirection: Qt.Vertical
+
+                //                DropArea{
+                //                    id: dropAre
+                //                    anchors.fill: parent
+                //                }
 
                 delegate: Item {
                     id: treeDelegate
                     implicitWidth: treerootItem.width
-                    //            implicitWidth: padding + label.x + label.implicitWidth + padding
                     implicitHeight: label.implicitHeight * 2 - 4*depth
+
 
                     readonly property real indent: 25
                     readonly property real padding: 5
@@ -122,8 +126,97 @@ Item {
                     required property int hasChildren
                     required property int depth
 
+                    property real dropPositionRow
 
 
+//                    MouseArea {
+//                        id: mouseArea
+//                        anchors.fill: parent
+//                        drag {
+//                            target: treeDelegate
+//                            axis: Drag.YAxis
+//                        }
+
+//                        property bool dragActive: drag.active
+
+//                        onDragActiveChanged: {
+//                            if(drag.active) { //
+//                                console.log("Active at " + treeView.index(row , column))
+//                            } else {
+//                                console.log("InActive at " + treeView.index(row , column))
+//                            }
+//                        }
+//                    }
+
+
+
+//                    Rectangle{
+//                        width: parent.width
+//                        height: parent.height
+//                        color: Style._darkGray
+//                        opacity: 0
+//                        z:3
+//                        Text {
+//                            text: display
+//                            anchors.centerIn: parent
+//                        }
+//                    }
+
+                    DropArea{
+                        anchors.fill: parent
+                        id:dropArea
+                        onEntered: {
+                            layersModell.dropIndex = treeView.index(row , column)
+                            console.log("dropped here:" + treeView.index(row , column))
+
+                        }
+//                        onDropped: {
+//                            console.log("dropped here:" + treeView.index(row , column))
+//                        }
+                    }
+
+                    Drag.active: dragArea.drag.active
+
+                    MouseArea{
+                        id:dragArea
+                        anchors.fill: parent
+                        drag.target: parent
+                        drag.axis: Drag.YAxis
+                        propagateComposedEvents: true
+                        Timer {
+                            id: timer
+                            interval: 500
+                            repeat: false
+                            running: false
+                            onTriggered: {
+
+                            }
+                        }
+
+                        onPressAndHold: {
+//                            drag.dragStarted();
+                            print("presandhold")
+                        }
+                        onClicked: function(event){
+                            event.accepted = false
+                            print("clicked")
+                        }
+
+                        onReleased:  function(event){
+                            if (!timer.running){
+                                print("release")
+                                event.accepted = true
+                            }
+                            //                            console.log(treeView.index(row , column)+ "onrelease")
+//                            layersModell.onReplaceItem(treeView.index(row , column))
+//                            drag.dragFinished()
+                        }
+
+                        onPressed: {
+                            timer.start()
+                            print("presseeeed")
+                        }
+                    }
 
 
                     Rectangle{
@@ -134,16 +227,19 @@ Item {
                         color:  Style._darkestGray
                         radius:   Style.radius
                         x:  ((treeDelegate.depth ) * treeDelegate.indent)
-                        MouseArea{
-                            id: containerMouse
-                            anchors.fill: parent
-                            acceptedButtons: Qt.RightButton;
-                            onClicked: {
-                                contextMenu.popup()
+//                        MouseArea{
+//                            id: containerMouse
+//                            anchors.fill: parent
+//                            acceptedButtons: Qt.RightButton;
+//                            onClicked: {
+//                                contextMenu.popup()
 
-                            }
-                        }
+//                            }
+//                        }
                     }
+
+
+
 
                     HoverHandler{
                         onHoveredChanged: {
@@ -164,17 +260,7 @@ Item {
                         onPressedChanged: pressed ? label.color = Style.hoverColor : !pressed ? label.color = Style.textColor : Style.textColor
                     }
 
-                    //            Text{
-                    //                id: indicator
-                    //                visible: treeDelegate.isTreeNode && treeDelegate.hasChildren
-                    //                x:  (treeDelegate.depth * treeDelegate.indent) -3
-                    //                anchors.verticalCenter: parent.verticalCenter
-                    //                font.pixelSize: 20
-                    //                text: treeDelegate.expanded ? "--" : "+"
-                    ////                rotation: treeDelegate.expanded ? 90 : 0
-                    //                padding: 3
-                    //                color: Style.textColor
-                    //            }
+
 
                     IconImage {
                         id: indicator
@@ -210,9 +296,6 @@ Item {
                         width: container.height * 0.5
                         height: container.height* 0.5
                         color: "transparent"
-                        //                color: Style.secondaryColor
-                        //                border.color: isVisible ? Style.borderColor : "red"
-                        //                radius: Style.radius
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left:  container.left
                         anchors.margins: 5
@@ -241,12 +324,12 @@ Item {
                         Menu {
                             id: contextMenu
                             MenuItem{height: 30
-                                   text: "Delete Layer"
-                                   icon.source: "./Resources/48/delete.png"
-                                   icon.color: "red"
-                                   onClicked: function() {
-                                       rootItem.layersModell.onDeleteLayerClicked(treeView.index(row , column))
-                                   }
+                                text: "Delete Layer"
+                                icon.source: "./Resources/48/delete.png"
+                                icon.color: "red"
+                                onClicked: function() {
+                                    rootItem.layersModell.onDeleteLayerClicked(treeView.index(row , column))
+                                }
                             }
                             MenuItem {
                                 visible: isLocatable
@@ -259,28 +342,55 @@ Item {
                                 }
                             }
                             MenuItem {
-//                                height: (depth === 2) ? 30 : 0
                                 text: "Shift Up"
                                 icon.source: "./Resources/48/arrow-outline-up.png"
                                 icon.color: Style._persianGreen
                                 onClicked: {
-                                    rootItem.layersModell.onShiftUpClicked(treeView.index(row , column))
+                                    rootItem.layersModell.dropIndex = treeView.index(row-1 , column)
+                                    rootItem.layersModell.onReplaceItem(treeView.index(row , column))
                                 }
 
                             }
                             MenuItem {
-//                                visible: (depth === 2)
-//                                height: (depth === 2) ? 30 : 0
                                 text: "Shift Down"
                                 icon.source: "./Resources/48/arrow-outline-down.png"
                                 icon.color: Style._persianGreen
                                 onClicked: {
-                                    rootItem.layersModell.onShiftDownCliced(treeView.index(row , column))
+                                    rootItem.layersModell.dropIndex= treeView.index(row+1 , column)
+                                    rootItem.layersModell.onReplaceItem(treeView.index(row , column))
                                 }
                             }
                         }
                     }
                 }
+
+                //                DropArea {
+                //                    id: dropAre
+                //                    anchors.fill: parent
+
+                //                    onPositionChanged: {
+                //                        console.log(drag.source.TreeView.row)
+                //                    }
+
+
+                //                    onEntered: {
+                //                        drag.source.Drag.drop()
+                //                        var from = (drag.source).visualIndex
+                //                        console.log(drag.source , drag.x , drag.source.objectName)
+
+                //                    }
+
+
+
+                //                    onDropped: {
+                //                        console.log(drag.source , drag.x , drag.source.objectName)
+                //                        var dropRow = treeView.rowAt(drop.y)
+                //                        var draggedIndex = drag.source.TreeView.row
+
+                //                        treeView.model.remove(draggedIndex)
+                //                        treeView.model.insert(dropRow, draggedItem)
+                //                    }
+                //                }
             }
         }
     }

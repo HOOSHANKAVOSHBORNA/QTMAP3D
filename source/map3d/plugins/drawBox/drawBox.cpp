@@ -61,7 +61,7 @@ void DrawBox::onBoxItemCheck(bool check)
         }
         setState(State::NONE);
         mBox = nullptr;
-        //mBoxProperties->hide();
+        mBoxProperty->setProperty("visible", false);
         mapItem()->removeNode(iconNode());
     }
 }
@@ -122,7 +122,7 @@ void DrawBox::createProperty()
         //            mBoxProperty->setStatuses();
 
         //        mBoxProperties = new BoxProperties();
-        mainWindow()->addDockItem(mBoxProperty);
+        mainWindow()->addDockItem(mBoxProperty, 0.3);
     });
 
 

@@ -11,6 +11,8 @@ class LayersModel : public TreeProxyModel
 {
     Q_OBJECT
 
+    Q_PROPERTY(QModelIndex   dropIndex      READ getDropIndex     WRITE setDropIndex    )
+
     enum CustomRoles{
         visibleRole =Qt::UserRole + 100 ,
         locatableRole =Qt::UserRole + 101 ,
@@ -23,14 +25,15 @@ public:
     QHash<int,QByteArray> roleNames() const override;
     void initializeModel(osgEarth::Map *map);
     bool getLayerVisible(osgEarth::Layer *layer) const;
+    QModelIndex getDropIndex();
+    void setDropIndex(QModelIndex dropValue);
 
 
 public slots:
     void onItemClicked(const QModelIndex &current)override;
     void onDeleteLayerClicked(const QModelIndex &current);
     void onGoToClicked(const QModelIndex &current);
-    void onShiftUpClicked(const QModelIndex &current);
-    void onShiftDownCliced(const QModelIndex &current);
+    void onReplaceItem(QModelIndex fromIndex);
 
     void onLayerAdded(osgEarth::Layer* layer , osgEarth::Layer *parentLayer,   unsigned index);
     void onLayerRemoved(osgEarth::Layer* layer ,osgEarth::Layer *parentLayer, unsigned index);
@@ -44,6 +47,7 @@ private:
     MapItem *mMapItem;
     TreeModel *mTreeModel;
     QMap<QStandardItem , osgEarth::Layer*> treeLayerMap;
+    QModelIndex mDropIndex;
 
 
 };

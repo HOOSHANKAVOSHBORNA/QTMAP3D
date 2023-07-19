@@ -21,7 +21,7 @@ bool DrawPolygon::setup()
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawPolygon::onPolygonItemCheck);
     toolbox()->addItem(toolboxItem);
 
-    auto toolboxItemArea =  new ToolboxItem{MEASUREAREA, M_CATEGORY, "qrc:/resources/polygon.png", true};
+    auto toolboxItemArea =  new ToolboxItem{MEASUREAREA, M_CATEGORY, "qrc:/resources/measure_area.png", true};
     QObject::connect(toolboxItemArea, &ToolboxItem::itemChecked, this, &DrawPolygon::onMeasureAreaItemCheck);
     toolbox()->addItem(toolboxItemArea);
 
