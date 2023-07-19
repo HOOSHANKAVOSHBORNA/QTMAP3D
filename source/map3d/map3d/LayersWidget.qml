@@ -126,70 +126,36 @@ Item {
                     required property int hasChildren
                     required property int depth
 
-                    property real dropPositionRow
-                    property bool dragStatus: false
 
-                    //                    DragHandler{
-                    //                        id: dragHand
-                    //                        target: treeDelegate
-                    //                        dragThreshold: 1
-                    //                        yAxis.enabled: true
-                    //                        xAxis.enabled: false
-                    //                        onActiveChanged:{
-                    //                            if(!active)
-                    //                                layersModell.onReplaceItem(treeView.index(row , column))
-                    //                        }
-                    //                    }
-
-
-                    //                    MouseArea {
-                    //                        id: mouseArea
-                    //                        anchors.fill: parent
-                    //                        drag {
-                    //                            target: treeDelegate
-                    //                            axis: Drag.YAxis
-                    //                        }
-
-                    //                        property bool dragActive: drag.active
-
-                    //                        onDragActiveChanged: {
-                    //                            if(drag.active) { //
-                    //                                console.log("Active at " + treeView.index(row , column))
-                    //                            } else {
-                    //                                console.log("InActive at " + treeView.index(row , column))
-                    //                            }
-                    //                        }
-                    //                    }
-
-
-
-                    //                    Rectangle{
-                    //                        width: parent.width
-                    //                        height: parent.height
-                    //                        color: Style._darkGray
-                    //                        opacity: 0
-                    //                        z:3
-                    //                        Text {
-                    //                            text: display
-                    //                            anchors.centerIn: parent
-                    //                        }
-                    //                    }
 
                     DropArea{
                         anchors.fill: parent
                         id:dropArea
                         onEntered: {
-                            //                            var from = (drag.source as Example.ThingTile).visualIndex
-                            //                            var to = thingTile.visualIndex
-                            //                            visualModel.items.move(from, to)
-                            //                            console.log(drag.source).index(row,column)
-                            //                        {
                             layersModell.dropIndex = treeView.index(row , column)
-                            console.log(treeView.index(row , column))
+//                            console.log(treeView.index(row , column))
+                            dropEffectColor.color = Style._mainYellow
+                        }
+                        onExited: {
+                            dropEffectColor.color = Style._darkGray
                         }
                     }
 
+                    Rectangle{
+                        id: dropEffect
+                        gradient: Gradient{
+                            orientation: Qt.Horizontal
+                            GradientStop{color: "transparent" ; position: 0.0}
+                            GradientStop{id:dropEffectColor;color: Style._darkGray ; position: 0.5 }
+                            GradientStop{color: "transparent" ; position: 1.0}
+                        }
 
+                        width: container.width
+                        height: 1
+                        y:0
+                        x: container.x
+                        z:5
+                    }
 
                     Drag.active: dragArea.drag.active
 
@@ -198,13 +164,31 @@ Item {
                         anchors.fill: parent
                         drag.target: parent
                         drag.axis: Drag.YAxis
-                        //                        onPressAndHold: {
-                        //                            drag.dragStarted();
-                        //                        }
-                        onReleased:  {
-                            console.log(treeView.index(row , column)+ "onrelease")
-                            layersModell.onReplaceItem(treeView.index(row , column))
-                            drag.dragFinished()
+                        propagateComposedEvents: true
+                        Timer {
+                            id: timer
+                            interval: 500
+                            repeat: false
+                            running: false
+
+                        }
+
+                        onClicked: {
+                            treeView.toggleExpanded(row)
+                        }
+
+                        onReleased:  function(event){
+                            if (!timer.running){
+                                event.accepted = true
+                            }
+                            if((treeView.index(row , column) !== layersModell.dropIndex) && (layersModell.dropIndex.valid)){
+                                layersModell.onReplaceItem(treeView.index(row , column))
+//                                print("replacing " + treeView.index(row , column) + " with: " + layersModell.dropIndex)
+                            }
+                        }
+                        onPressedChanged: pressed ? label.color = Style.hoverColor : !pressed ? label.color = Style.textColor : Style.textColor
+                        onPressed: {
+                            timer.start()
                         }
                     }
 
@@ -244,9 +228,9 @@ Item {
                     }
 
                     TapHandler {
-                        onTapped: {
-                            treeView.toggleExpanded(row)
-                        }
+                        //                        onTapped: {
+
+                        //                        }
                         onPressedChanged: pressed ? label.color = Style.hoverColor : !pressed ? label.color = Style.textColor : Style.textColor
                     }
 
@@ -353,34 +337,6 @@ Item {
                         }
                     }
                 }
-
-                //                DropArea {
-                //                    id: dropAre
-                //                    anchors.fill: parent
-
-                //                    onPositionChanged: {
-                //                        console.log(drag.source.TreeView.row)
-                //                    }
-
-
-                //                    onEntered: {
-                //                        drag.source.Drag.drop()
-                //                        var from = (drag.source).visualIndex
-                //                        console.log(drag.source , drag.x , drag.source.objectName)
-
-                //                    }
-
-
-
-                //                    onDropped: {
-                //                        console.log(drag.source , drag.x , drag.source.objectName)
-                //                        var dropRow = treeView.rowAt(drop.y)
-                //                        var draggedIndex = drag.source.TreeView.row
-
-                //                        treeView.model.remove(draggedIndex)
-                //                        treeView.model.insert(dropRow, draggedItem)
-                //                    }
-                //                }
             }
         }
     }
