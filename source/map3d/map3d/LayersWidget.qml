@@ -133,7 +133,7 @@ Item {
                         id:dropArea
                         onEntered: {
                             layersModell.dropIndex = treeView.index(row , column)
-//                            console.log(treeView.index(row , column))
+                            //                            console.log(treeView.index(row , column))
                             dropEffectColor.color = Style._mainYellow
                         }
                         onExited: {
@@ -179,11 +179,15 @@ Item {
 
                         onReleased:  function(event){
                             if (!timer.running){
-                                event.accepted = true
-                            }
-                            if((treeView.index(row , column) !== layersModell.dropIndex) && (layersModell.dropIndex.valid)){
-                                layersModell.onReplaceItem(treeView.index(row , column))
-//                                print("replacing " + treeView.index(row , column) + " with: " + layersModell.dropIndex)
+                                //                                event.accepted = true
+                                //                            }
+                                if((treeView.index(row , column) !== layersModell.dropIndex) && (layersModell.dropIndex.valid)){
+                                    if(layersModell.dropIndex.parent === treeView.index(row , column).parent){
+                                        layersModell.onReplaceItem(treeView.index(row , column))
+                                        //                                print("replacing " + treeView.index(row , column) + " with: " + layersModell.dropIndex)
+                                    }
+                                }
+                                treeView.forceLayout()
                             }
                         }
                         onPressedChanged: pressed ? label.color = Style.hoverColor : !pressed ? label.color = Style.textColor : Style.textColor
