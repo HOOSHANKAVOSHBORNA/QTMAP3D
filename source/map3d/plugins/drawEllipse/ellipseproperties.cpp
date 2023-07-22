@@ -208,7 +208,7 @@ void EllipseProperties::setHeight(const double &height)
     Property::setHeight(height);
 }
 
-void EllipseProperties::setClamp(const double &clamp)
+void EllipseProperties::setClamp(const int &clamp)
 {
     setClampStatus(true);
     Property::setClamp(clamp);

@@ -8,11 +8,11 @@
 CapsuleProperties::CapsuleProperties(QQuickItem *parent):
     Property(parent)
 {
-    setFillColorStatus(true);
-    setRadiusStatus(true);
-    setLocationStatus(true);
-    setHeightStatus(true);
-//    setCenterStatus(true);
+    setFillColorStatus  (true);
+    setRadiusStatus     (true);
+    setLocationStatus   (true);
+    setHeightStatus     (true);
+    setCenterStatus     (true);
 
 }
 
@@ -26,8 +26,8 @@ void CapsuleProperties::setFillColor(const QColor &color)
 
 //void CapsuleProperties::setCenter(const QVector3D &center)
 //{
-//    Property::setLocation(center);
-//    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(position, mSRS);
+//    Property::setCenter(center);
+//    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(center, mSRS);
 //    if (mCapsule)
 //        mCapsule->setPosition(temp);
 //}
@@ -76,7 +76,13 @@ Capsule *CapsuleProperties::getCapsule() const
 void CapsuleProperties::setCapsule(Capsule *newCapsule, const osgEarth::SpatialReference *srs)
 {
     mCapsule = newCapsule;
-
+    mSRS = srs;
     setLocation(Utility::osgEarthGeoPointToQvector3D(mCapsule->getPosition()));
+    if(mCapsule){
+        mCapsule->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mCapsule->setRadius(getRadius());
+        mCapsule->setHeight(getHeight());
+        setLocation(Utility::osgEarthGeoPointToQvector3D(mCapsule->getPosition()));
+    }
 }
 

@@ -170,7 +170,7 @@ public:
     void setClampStatus(bool clamp);
 
     double getClamp() const;
-    virtual void setClamp(const double &clamp);
+    virtual void setClamp(const int &clamp);
 
 
     // ---------- showlen  --------- //

@@ -137,7 +137,7 @@ public:
     void setBearing(const bool &bearing) override;
     void setShowSlop(const bool &slop)override;
     void setTesselation(const double &tesselation)override;
-    void setClamp(const double &clamp) override;
+    void setClamp(const int &clamp) override;
     void setShowLen(const bool &clamp)override;
 
 

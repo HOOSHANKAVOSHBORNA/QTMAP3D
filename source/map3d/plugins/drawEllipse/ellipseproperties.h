@@ -81,9 +81,9 @@ public:
     EllipseProperties(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
     void setStrokeWidth(const double &opacity);
-    void setStroke(const QColor &color);
+    void setStroke(const QColor &color)override;
     void setHeight(const double &height) override;
-    void setClamp(const double &clamp) override;
+    void setClamp(const int &clamp) override;
     Ellipse *getEllipse() const;
     void setEllipse(Ellipse* ellipse);
 

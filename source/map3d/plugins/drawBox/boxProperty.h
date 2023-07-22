@@ -19,6 +19,8 @@ public:
     void setHeight(const double &height) override;
     void setLenght(const double &lenght) override;
     void setWidth( const double &width)  override;
+    void setClamp(const int &clamp) override;
+//    void setCenter(const QVector3D &center) override;
 
 
     Box *getBox() const;

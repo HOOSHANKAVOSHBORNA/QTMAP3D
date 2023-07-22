@@ -1,305 +1,75 @@
 #include "circleproperties.h"
 #include <QtDebug>
 #include <QVector3D>
+#include "utility.h"
 #include <QQmlComponent>
 #include <QQuickItem>
 
 
 
 
-
-CirclePropertiesModel::CirclePropertiesModel(Circle *circle, MapItem *mapItem, QObject *parent) :
-    QObject(parent),
-    mCircle(circle),
-    mMapItem(mapItem)
-{
-//       QObject::connect(this,&CirclePropertiesModel::circlePropertiesChanged,this,&CirclePropertiesModel::circlePropertiesChangedToQML);
-    if (mCircle) {
-        mLocation.setX(static_cast<float>(mCircle->getPosition().x()));
-        mLocation.setY(static_cast<float>(mCircle->getPosition().y()));
-        mLocation.setZ(static_cast<float>(mCircle->getPosition().z()));
-    }
-}
-
-QString CirclePropertiesModel::getFillcolor() const
-{
-    return mFillcolor;
-}
-
-void CirclePropertiesModel:: setFillColor(const QString &value){
-    if(value == mFillcolor)
-        return;
-    mFillcolor = value;
-    if(mCircle){
-        osgEarth::Color tmpColor = mCircle->getColor();
-        float A = tmpColor.a();
-        tmpColor  = value.toStdString();
-        tmpColor.a() = A;
-        mCircle->setColor(tmpColor);
-    }
-}
-
-
-QString CirclePropertiesModel::getLinecolor() const
-{
-    return mLinecolor;
-}
-
-void CirclePropertiesModel:: setLineColor(const QString &value){
-    if(value == mLinecolor)
-        return;
-    mLinecolor = value;
-    if(mCircle){
-        mCircle->setLineColor(mLinecolor.toStdString());
-    }
-}
-
-QVector3D CirclePropertiesModel::getLocation() const
-{
-    return mLocation;
-}
-
-void CirclePropertiesModel:: setLocation(const QVector3D  &value){
-    if(value == mLocation)
-        return;
-    mLocation = value;
-
-    if(mCircle){
-        osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
-        tempLocation.x() = static_cast<double>(value.x());
-        tempLocation.y() = static_cast<double>(value.y());
-        tempLocation.z() = static_cast<double>(value.z());
-        mCircle->setPosition(tempLocation);
-        emit positionToQmlChanged();
-    }
-}
-
-double CirclePropertiesModel::getRadius() const
-{
-    return mRadius;
-}
-
-void CirclePropertiesModel::setRadius(const double &value){
-    if(std::abs(value - mRadius) < 1)
-        return;
-    mRadius = value;
-
-    if(mCircle){
-        mCircle->setRadius(osgEarth::Distance(value));
-    }
-}
-
-double CirclePropertiesModel::getCircleheight() const
-{
-    return mCircleHeight;
-}
-
-void CirclePropertiesModel::setCircleHeight(const double &value){
-    if(std::abs(value - mCircleHeight) < 1)
-        return;
-    mCircleHeight = value;
-    if(mCircle){
-        mCircle->setCircleHeight(static_cast<float>(value));
-    }
-}
-
-int CirclePropertiesModel::getTransparency() const
-{
-    return mTransparency;
-}
-
-void CirclePropertiesModel::setTransparency(const int &value){
-//    if(value == mTransparency)
-//        return;
-    mTransparency = value;
-    if(mCircle){
-        float tempValue = value;
-        osg::Vec4f tempColor = mCircle->getColor();
-        tempColor.a() = tempValue /100;
-        mCircle->setColor(osg::Vec4f(tempColor));
-    }
-}
-
-
-int CirclePropertiesModel::getLineOpacity() const
-{
-    return mLineOpacity;
-}
-void CirclePropertiesModel::setLineOpacity(const int &value){
-    if(value == mLineOpacity)
-        return;
-    mLineOpacity = value;
-    if(mCircle){
-        float tempValue = value;
-        osg::Vec4f tempColor = mCircle->getLineColor();
-        tempColor.a() = tempValue /100;
-        mCircle->setLineColor(osg::Vec4f(tempColor));
-    }
-}
-
-
-double CirclePropertiesModel::getArcstart() const
-{
-    return mArcstart;
-}
-
-void CirclePropertiesModel::setArcstart(const double &value){
-    if(std::abs(value - mArcstart) < 0.5)
-        return;
-    mArcstart = value;
-    if(mCircle){
-        mCircle->setArcStart(value);
-    }
-}
-
-double CirclePropertiesModel::getArcend() const
-{
-    return mArcend;
-}
-
-void CirclePropertiesModel::setArcend(const double &value){
-    if(std::abs(value - mArcend) < 0.5)
-        return;
-    mArcend = value;
-    if(mCircle){
-        mCircle->setArcEnd(value);
-    }
-}
-
-int CirclePropertiesModel::getClamp() const
-{
-    return mClamp;
-}
-
-void CirclePropertiesModel::setClamp(int value){
-    if(value == mClamp)
-        return;
-    mClamp = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(value);
-    if(mCircle){
-        mCircle->setClamp(mClamp);
-    }
-}
-
-bool CirclePropertiesModel::getRelative() const
-{
-    return mRelative;
-}
-
-void CirclePropertiesModel::setRelative(const bool &value){
-    if(value == mRelative)
-        return;
-    mRelative = value;
-    if(mCircle){
-        osgEarth::GeoPoint tempLocation =  mCircle->getPosition();
-
-        if(value == true)
-        {
-            tempLocation.makeRelative(mMapItem->getMapNode()->getTerrain());
-            mCircle->setPosition(tempLocation);
-        }
-        else if(value == false)
-        {
-            tempLocation.makeAbsolute(mMapItem->getMapNode()->getTerrain());
-            mCircle->setPosition(tempLocation);
-        }
-    }
-}
-
-double CirclePropertiesModel::getLineWidth() const
-{
-    return mLineWidth;
-}
-
-void CirclePropertiesModel::setLineWidth(double line)
-{
-    mLineWidth = line;
-    if (mCircle)
-        mCircle->setLineWidth(static_cast<float>(mLineWidth));
-}
-
-void CirclePropertiesModel::setCircle(Circle *circle)
-{
-    mCircle = circle;
-    if(!circle){
-        return;
-    }
-    osgEarth::Color tmpColor = mCircle->getColor();
-    tmpColor  = mFillcolor.toStdString();
-    tmpColor.a() = mTransparency;
-    mCircle->setColor(tmpColor);
-    osgEarth::Color mpColor = mCircle->getLineColor();
-    mpColor  = mLinecolor.toStdString();
-    mpColor.a() = mLineOpacity;
-    mCircle->setLineColor(mpColor);
-
-
-    mCircle->setLineWidth(static_cast<float>(mLineWidth));
-    setTransparency(mTransparency);
-    mCircle->setCircleHeight(static_cast<float>(mCircleHeight));
-    mCircle->setClamp(mClamp);
-    mCircle->setArcStart(mArcstart);
-    mCircle->setArcEnd(mArcend);
-    mCircle->setRadius(mRadius);
-}
-
-//CircleProperties::CircleProperties(Circle* circle, QQmlEngine *engine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
-//    QObject(parent),
-//    mQmlEngine(engine),
-//    mUiHandle(uiHandle)
-//{
-//    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
-//    QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, circle](){
-//        if (comp->status() == QQmlComponent::Ready) {
-//            mItem = static_cast<QQuickItem*>(comp->create(nullptr));
-//            mCircleProperties = new CirclePropertiesModel(circle, mapItem);
-//            mItem->setProperty("circleProperties", QVariant::fromValue<CirclePropertiesModel*>(mCircleProperties));
-//        }
-//    });
-//    comp->loadUrl(QUrl("qrc:/CircleProperty.qml"));
-
-//}
-
 CircleProperties::CircleProperties(QQuickItem *parent):
     Property(parent)
 {
-
+    setFillColorStatus  (true);
+    setRadiusStatus     (true);
+    setArcStatus        (true);
+    setStrokeStatus     (true);
+    setStrokeStatus     (true);
+    setLocationStatus   (true);
+    setHeightStatus     (true);
+    setClampStatus      (true);
 }
 
 void CircleProperties::setFillColor(const QColor &color)
 {
-    setFillColorStatus(true);
+
     Property::setFillColor(color);
-//    mCircle->setColor(color);
+    if(mCircle)
+        mCircle->setColor(Utility::qColor2osgEarthColor(color));
 }
 
 void CircleProperties::setRadius(const double &radius)
 {
-    setRadiusStatus(true);
+
     Property::setRadius(radius);
+    if(mCircle)
+        mCircle->setRadius(radius);
 }
 void CircleProperties::setLocationRelative(const bool &relative)
 {
-    setLocationRelative(true);
+
     Property::setLocationRelative(relative);
 }
 
 void CircleProperties::setArc(const QVector2D &arc)
 {
-    setArcStatus(true);
+
     Property::setArc(arc);
+    if(mCircle){
+        mCircle->setArcEnd(arc.y());
+        mCircle->setArcStart(arc.x());
+    }
 
 }
 
 void CircleProperties::setStrokeWidth(const double &opacity)
 {
-    setStrokeStatus(true);
+
     Property::setStrokeWidth(opacity);
-}
+    if(mCircle)
+        mCircle->setLineWidth(opacity);
+
+    }
 
 void CircleProperties::setStroke(const QColor &color)
 {
-    setStrokeStatus(true);
+
     Property::setStroke(color);
+    if(mCircle)
+    {
+        mCircle->setLineColor(Utility::qColor2osgEarthColor(color));
+    }
 
 }
 
@@ -307,22 +77,44 @@ void CircleProperties::setStroke(const QColor &color)
 
 void CircleProperties::setLocation(const QVector3D &status)
 {
-    setLocationStatus(true);
-    Property::setLocation(status);
 
+    Property::setLocation(status);
+    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(status, mSRS);
+    if (mCircle)
+        mCircle->setPosition(temp);
 
 }
 
 void CircleProperties::setHeight(const double &height)
 {
-    setHeightStatus(true);
+
     Property::setHeight(height);
+    if(mCircle)
+        mCircle->setCircleHeight(height);
 }
 
-void CircleProperties::setClamp(const double &clamp)
+void CircleProperties::setClamp(const int &clamp)
 {
-    setClampStatus(true);
-    Property::setClamp(clamp);
+
+//    Property::setClamp(clamp);
+//    if(mCircle){
+//        switch(clamp){
+//        case 0:
+//            mCircle->setClamp(0);
+//            break;
+//        case 1:
+//            mCircle->setClamp(1);
+//            break;
+//        case 2:
+//            mCircle->setClamp(2);
+//            break;
+//        case 3:
+//            mCircle->setClamp(3);
+//            break;
+
+
+//        }
+//    }
 }
 
 

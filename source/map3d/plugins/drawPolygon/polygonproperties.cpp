@@ -200,7 +200,7 @@ void PolygonProperties::setStroke(const QColor &color)
 
 }
 
-void PolygonProperties::setClamp(const double &clamp)
+void PolygonProperties::setClamp(const int &clamp)
 {
     setClampStatus(true);
     Property::setClamp(clamp);

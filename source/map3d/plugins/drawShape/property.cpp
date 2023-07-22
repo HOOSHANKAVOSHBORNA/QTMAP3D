@@ -304,7 +304,7 @@ double Property::getClamp() const
     return mClamp;
 }
 
-void Property::setClamp(const double &clamp)
+void Property::setClamp(const int &clamp)
 {
     mClamp = clamp;
     emit propretyChanged();

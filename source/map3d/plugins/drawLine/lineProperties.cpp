@@ -400,7 +400,7 @@ void LineProperties::setWidth(const double &width)
     Property::setWidth(width);
 }
 
-void LineProperties::setClamp(const double &clamp)
+void LineProperties::setClamp(const int &clamp)
 {
     setClampStatus(true);
     Property::setClamp(clamp);

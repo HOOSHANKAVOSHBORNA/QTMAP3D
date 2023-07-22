@@ -13,6 +13,8 @@ BoxProperty::BoxProperty(QQuickItem *parent):
     setFillColorStatus(true);
     setWidthStatus(true);
     setLenghtStatus(true);
+    setClampStatus(true);
+    setCenterStatus(true);
     //    setFillColor(getFillColor());
     //    setLocation(getLocation());
 
@@ -38,6 +40,35 @@ void BoxProperty::setWidth(const double &width)
     if (mBox)
         mBox->setWidth(width);
 }
+
+void BoxProperty::setClamp(const int &clamp)
+{
+    if(mBox){
+    switch(clamp){
+    case 0:
+        mBox->setClamp(0);
+        break;
+    case 1:
+        mBox->setClamp(1);
+        break;
+    case 2:
+        mBox->setClamp(2);
+        break;
+    case 3:
+        mBox->setClamp(3);
+
+
+    }
+    }
+}
+
+//void BoxProperty::setCenter(const QVector3D &center)
+//{
+//    Property::setCenter(center);
+//    if(mBox)
+//        mBox->setCenter(center);
+//}
+
 
 void BoxProperty::setLocationRelative(const bool &relative)
 {

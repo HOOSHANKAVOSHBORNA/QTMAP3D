@@ -1,6 +1,7 @@
 #include "drawCapsule.h"
 #include "mainwindow.h"
 #include "utility.h"
+#include "compositeAnnotationLayer.h"
 int DrawCapsule::mCount{0};
 DrawCapsule::DrawCapsule(QObject *parent): DrawShape(parent)
 {
@@ -15,8 +16,8 @@ bool DrawCapsule::setup()
     makeIconNode("../data/images/draw/capsule.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    mCapsuleLayer = new osgEarth::Annotation::AnnotationLayer();
-    mCapsuleLayer->setName(CAPSULE);
+    mCompositeCapsuleLayer = new CompositeAnnotationLayer();
+    mCompositeCapsuleLayer->setName(CAPSULE);
 
     return true;
 }
@@ -26,9 +27,15 @@ void DrawCapsule::onCapsuleItemCheck(bool check)
     qmlRegisterType<CapsuleProperties>("Crystal", 1, 0, "CProperty");
 
     if (check) {
-        if(mCapsuleLayer->getGroup()->getNumChildren() <= 0){
-            auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->addLayer(mCapsuleLayer, shapeLayer);
+        auto shapeLayer = DrawShape::shapeLayer();
+        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositeCapsuleLayer->getName()));
+        if(!layer){
+            mCompositeCapsuleLayer->clearLayers();
+        }
+        if(mCompositeCapsuleLayer->getNumLayers() <= 0){
+
+            //            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
+            shapeLayer->addLayer(mCompositeCapsuleLayer);
         }
         setState(State::READY);
         mapItem()->addNode(iconNode());
@@ -46,13 +53,13 @@ void DrawCapsule::onCapsuleItemCheck(bool check)
     else {
         if(state() == State::DRAWING)
             cancelDraw();
-        if(mCapsuleLayer->getGroup()->getNumChildren() <= 0){
+        if(mCompositeCapsuleLayer->getNumLayers() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->removeLayer(mCapsuleLayer, shapeLayer);
+            shapeLayer->removeLayer(mCompositeCapsuleLayer);
         }
         setState(State::NONE);
         mCapsule = nullptr;
-        //mCapsuleProperties->hide();
+        mCapsuleProperties->setProperty("visible", false);
         mapItem()->removeNode(iconNode());
     }
 }
@@ -65,12 +72,14 @@ void DrawCapsule::initDraw(const osgEarth::GeoPoint &geoPos)
     mCapsule->setRadius(mCapsuleProperties->getRadius());
     mCapsule->setHeight(mCapsuleProperties->getHeight());
     mCapsule->setPosition(geoPos);
-    mapItem()->getMapObject()->addNodeToLayer(mCapsule, mCapsuleLayer);
+//    mapItem()->getMapObject()->addNodeToLayer(mCapsule, mCapsuleLayer);
 //    mCapsuleProperties->setCapsule(mCapsule, );
 
+    mCapsuleLayer = new ParenticAnnotationLayer();
+    mCapsuleLayer->addChild(mCapsule);
+    mCapsuleLayer->setName(mCapsule->getName());
+    mCompositeCapsuleLayer->addLayer(mCapsuleLayer);
     mCapsuleProperties->setCapsule(mCapsule, mapItem()->getMapSRS());
-    mCapsule->setColor(Utility::qColor2osgEarthColor(mCapsuleProperties->getFillColor()));
-
 
     setState(State::DRAWING);
     mCount++;
@@ -79,8 +88,10 @@ void DrawCapsule::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawCapsule::cancelDraw()
 {
     if(state() == State::DRAWING){
-        mapItem()->getMapObject()->removeNodeFromLayer(mCapsule, mCapsuleLayer);
+//        mapItem()->getMapObject()->removeNodeFromLayer(mCapsule, mCapsuleLayer);
+        mCompositeCapsuleLayer->removeLayer(mCapsuleLayer);
         mCapsule = nullptr;
+        mCapsuleLayer = nullptr;
         //mCapsuleProperties->setCapsule(mCapsule);
         mCapsuleProperties->setCapsule(mCapsule, mapItem()->getMapSRS());
         setState(State::READY);
@@ -115,4 +126,5 @@ void DrawCapsule::createProperty()
 
     comp->loadUrl(QUrl("qrc:/Properties.qml"));
 }
+
 
