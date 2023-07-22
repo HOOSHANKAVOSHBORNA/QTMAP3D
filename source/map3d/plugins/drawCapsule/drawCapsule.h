@@ -23,7 +23,9 @@ private slots:
     void onCapsuleItemCheck (bool check);
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
+    void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
+    void createProperty();
 
 private:
     osg::ref_ptr<Capsule> mCapsule{nullptr};

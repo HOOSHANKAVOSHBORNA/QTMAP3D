@@ -442,15 +442,15 @@ import Crystal 1.0
 
 
                                     }
-                                    QSpinBox {
+                                    SpinBox {
 
                                         id: mlocationY
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 28
                                         Layout.leftMargin: 25
                                         Layout.rightMargin: -9
-                                        decimals: 4
-                                        showText:rootItem.location.y ?? 0
+//                                        decimals: 4
+//                                        showText:rootItem.location.y ?? 0
                                         onValueChanged: {
                                             rootItem._locationy = value
                                             rootItem.location.y =value
@@ -481,7 +481,7 @@ import Crystal 1.0
                                         Layout.leftMargin: 25
                                         Layout.rightMargin: -9
                                         decimals: 4
-                                        showText: rootItem.location.z ?? 0
+//                                        showText: rootItem.location.z ?? 0
                                         onValueChanged: {
                                             rootItem._locationz = value
                                             rootItem.location.z =value
@@ -610,7 +610,7 @@ import Crystal 1.0
                                         Layout.rightMargin: -9
 
                                         decimals: 7
-                                        showText: rootItem.center.x?? 0
+//                                        showText: rootItem.center.x?? 0
                                         onValueChanged: {
                                             rootItem._centerx = value
                                             rootItem.center.x =value
@@ -648,7 +648,7 @@ import Crystal 1.0
                                         Layout.rightMargin: -9
                                         decimals: 7
 
-                                        showText: rootItem.center.y ?? 0
+//                                        showText: rootItem.center.y ?? 0
                                         onValueChanged: {
                                             rootItem._centery = value
                                             rootItem.center.y =value
@@ -685,7 +685,7 @@ import Crystal 1.0
                                         Layout.rightMargin: -9
                                         decimals: 7
 
-                                        showText: rootItem.center.z ?? 0
+//                                        showText: rootItem.center.z ?? 0
                                         onValueChanged: {
                                             rootItem._centerz = value
                                             rootItem.center.z =value
