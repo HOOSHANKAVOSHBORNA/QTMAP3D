@@ -167,7 +167,7 @@ Item {
                         propagateComposedEvents: true
                         Timer {
                             id: timer
-                            interval: 500
+                            interval: 100
                             repeat: false
                             running: false
 
