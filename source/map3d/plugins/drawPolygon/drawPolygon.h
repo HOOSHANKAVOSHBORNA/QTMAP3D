@@ -34,7 +34,7 @@ private:
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mPolygonLayer;
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mAreaLayer;
     static int mCount;
-    PolygonProperties* mPolygonProperties{nullptr};
+//    PolygonProperties* mPolygonProperties{nullptr};
 };
 
 #endif // DRAWPOLYGON_H

@@ -10,7 +10,6 @@ DrawBox::DrawBox(QObject *parent): DrawShape(parent)
 {
 //    qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
 
-    qmlRegisterType<BoxProperty>("Crystal", 1, 0, "CProperty");
 
 }
 
@@ -31,6 +30,8 @@ bool DrawBox::setup()
 
 void DrawBox::onBoxItemCheck(bool check)
 {
+
+    qmlRegisterType<BoxProperty>("Crystal", 1, 0, "CProperty");
     if (check) {
         auto shapeLayer = DrawShape::shapeLayer();
         auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositeBoxLayer->getName()));
@@ -44,25 +45,8 @@ void DrawBox::onBoxItemCheck(bool check)
         }
         setState(State::READY);
 
-        QQmlComponent* comp = new QQmlComponent(qmlEngine());
-        connect(comp, &QQmlComponent::statusChanged, [comp, this](){
-            if (comp->status() == QQmlComponent::Status::Error) {
-                qDebug() << comp->errorString();
-            }
-//            QQmlContext *context = new QQmlContext(qmlEngine(), this);
-            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-            mBoxProperty = static_cast<BoxProperty*>(item);
-//            mBoxProperties->setFillColorStatus(false);
-//            mBoxProperties->setFillColor(QColor());
-//            mBoxProperty->setStatuses();
-
-            //        mBoxProperties = new BoxProperties();
-            mainWindow()->addDockItem(mBoxProperty, 0.3);
-        });
-
-
-        comp->loadUrl(QUrl("qrc:/Properties.qml"));
-        mapItem()->addNode(iconNode());
+       createProperty();
+       mapItem()->addNode(iconNode());
 
     }
     else {
@@ -86,17 +70,16 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "box" + QString::number(mCount);
     mBox = new Box();
     mBox->setName(name.toStdString());
-    mBox->setHeight(100000);
-    mBox->setWidth(100000);
-    mBox->setLength(100000);
+
     mBox->setPosition(geoPos);
     mBoxLayer = new ParenticAnnotationLayer();
     mBoxLayer->addChild(mBox);
     mBoxLayer->setName(mBox->getName());
 //    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
     mCompositeBoxLayer->addLayer(mBoxLayer);
+    mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
 
-    mBoxProperty->setBox(mBox);
+
 
     setState(State::DRAWING);
     mCount++;
@@ -105,6 +88,7 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 {
     mBox->setPosition(geoPos);
+    mBoxProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }
 
 void DrawBox::cancelDraw()
@@ -115,9 +99,31 @@ void DrawBox::cancelDraw()
         mCompositeBoxLayer->removeLayer(mBoxLayer);
         mBox = nullptr;
         mBoxLayer = nullptr;
-        mBoxProperty->setBox(mBox);
+        mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
     }
+}
+
+void DrawBox::createProperty()
+{
+    QQmlComponent* comp = new QQmlComponent(qmlEngine());
+    connect(comp, &QQmlComponent::statusChanged, [comp, this](){
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
+        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+        mBoxProperty = static_cast<BoxProperty*>(item);
+        //            mBoxProperties->setFillColorStatus(false);
+        //            mBoxProperties->setFillColor(QColor());
+        //            mBoxProperty->setStatuses();
+
+        //        mBoxProperties = new BoxProperties();
+        mainWindow()->addDockItem(mBoxProperty, 0.3);
+    });
+
+
+    comp->loadUrl(QUrl("qrc:/Properties.qml"));
 }
 

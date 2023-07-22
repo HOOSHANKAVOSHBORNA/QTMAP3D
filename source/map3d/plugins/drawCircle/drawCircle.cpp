@@ -1,5 +1,6 @@
 #include "drawCircle.h"
-
+#include "utility.h"
+#include "mainwindow.h"
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 
@@ -9,7 +10,8 @@
 int DrawCircle::mCount{0};
 DrawCircle::DrawCircle(QObject *parent): DrawShape(parent)
 {
-    qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
+//    qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
+//    qmlRegisterType<CircleProperties>("Crystal", 1, 0, "CProperty");
 }
 
 bool DrawCircle::setup()
@@ -29,14 +31,18 @@ bool DrawCircle::setup()
 
 void DrawCircle::onCircleItemCheck(bool check)
 {
+    qmlRegisterType<CircleProperties>("Crystal", 1, 0, "CProperty");
     if (check) {
         if(mCircleLayer->getGroup()->getNumChildren() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
             mapItem()->getMapObject()->addLayer(mCircleLayer, shapeLayer);
         }
         setState(State::READY);
+
 //        mCircleProperties = new CircleProperties(mCircle, qmlEngine(), uiHandle(), mapItem());
 //        mCircleProperties->show();
+        createProperty();
+
         mapItem()->addNode(iconNode());
 
     }
@@ -69,6 +75,7 @@ void DrawCircle::initDraw(const osgEarth::GeoPoint &geoPos)
 
     setState(State::DRAWING);
     mCount++;
+
 }
 
 void DrawCircle::cancelDraw()
@@ -81,3 +88,23 @@ void DrawCircle::cancelDraw()
         mCount--;
     }
 }
+
+void DrawCircle::createProperty()
+{
+    QQmlComponent* comp = new QQmlComponent(qmlEngine());
+    connect(comp, &QQmlComponent::statusChanged, [comp, this](){
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+        mCircleProperties = static_cast<CircleProperties*>(item);
+
+
+        mainWindow()->addDockItem(mCircleProperties, 0.3);
+    });
+
+
+    comp->loadUrl(QUrl("qrc:/Properties.qml"));
+}
+
+

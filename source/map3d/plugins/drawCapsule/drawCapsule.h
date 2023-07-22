@@ -9,6 +9,7 @@
 #include "capsuleProperties.h"
 
 #define CAPSULE "Capsule"
+class ParenticAnnotationLayer;
 
 class DrawCapsule : public DrawShape
 {
@@ -23,13 +24,17 @@ private slots:
     void onCapsuleItemCheck (bool check);
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
+    void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
+    void createProperty();
 
 private:
     osg::ref_ptr<Capsule> mCapsule{nullptr};
     CapsuleProperties *mCapsuleProperties{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mCapsuleLayer;
+    osg::ref_ptr<CompositeAnnotationLayer> mCompositeCapsuleLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mCapsuleLayer = nullptr;
     static int mCount;
+
 };
 
 #endif // DRAWCapsule_H

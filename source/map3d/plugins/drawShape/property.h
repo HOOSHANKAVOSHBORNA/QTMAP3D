@@ -152,7 +152,7 @@ public:
     void setWidthStatus(bool width);
 
     double getWidth() const;
-    virtual void setWidth(double width);
+    virtual void setWidth(const double &width);
 
 
     // ---------- Tesselation  --------- //
@@ -170,7 +170,7 @@ public:
     void setClampStatus(bool clamp);
 
     double getClamp() const;
-    virtual void setClamp(const double &clamp);
+    virtual void setClamp(const int &clamp);
 
 
     // ---------- showlen  --------- //
@@ -223,7 +223,7 @@ signals:
 private:
     // ----------  fill color -------- //
     bool mFillColorStatus            {true};
-    QColor mFillColor;
+    QColor mFillColor = QColor(0, 0, 250, 255);
 
 
     // ----------  stroke //

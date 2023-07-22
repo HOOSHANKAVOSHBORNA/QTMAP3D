@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
+#include "property.h"
 
 class PolygonPropertiesModel : public QObject
 {
@@ -75,21 +76,24 @@ private:
 public slots:
 };
 
-class PolygonProperties : public QObject
+class PolygonProperties: public Property
 {
     Q_OBJECT
 public:
-    PolygonProperties(QQmlEngine *engine, UIHandle *uiHandle, QObject *parent = nullptr);
-    void show();
-    void hide();
-    void setPolygon(Polygon* polygon);
+    PolygonProperties(QQuickItem *parent=nullptr);
+    void setFillColor(const QColor &color) override;
+    void setStrokeWidth(const double &opacity) override;
+    void setStroke(const QColor &color) override;
+    void setClamp(const int &clamp) override;
+    void setHeight(const double &height) override;
+
+
+    Polygon *getPolygon() const;
+
+    void setPolygon(Polygon *mPolygon) ;
 
 private:
-    QQmlEngine* mQmlEngine;
-    QQuickItem* mItem;
-    PolygonPropertiesModel* mPolygonProperties;
-    UIHandle* mUiHandle;
-
+    Polygon* mPolygon = nullptr;
 };
 
 #endif // POLYGONPROPERTIES_H

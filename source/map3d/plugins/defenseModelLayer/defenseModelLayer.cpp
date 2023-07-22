@@ -463,22 +463,27 @@ bool DefenseModelLayer::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA:
     //--drag aircraft---------------------------------------
     if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON)
     {
+        //        qDebug()<<"selectet Nod:"<<mSelectedModelNode->getName();
         auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(modelNode);
         if(aircraftModelNode)
         {
             mDragAircraftModelNode = aircraftModelNode->getDragModelNode();
+//            qDebug()<<"drag node name"<<mDragAircraftModelNode->getName();
             mapItem()->addNode(mDragAircraftModelNode);
+//            qDebug()<<"drag aircraft";
+            return true;
         }
     }
-    return res;
+        return res;
 }
 
 bool DefenseModelLayer::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    //--drag aircraft--------------------------------------------
+    //--drap aircraft--------------------------------------------
     if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON && mDragAircraftModelNode)
     {
-        auto systemModelNode  = dynamic_cast<SystemModelNode*>(mOnMoveModelNode);
+        DefenseModelNode* modelNode = pick(ea.getX(), ea.getY());
+        auto systemModelNode  = dynamic_cast<SystemModelNode*>(modelNode);
         if(systemModelNode)
         {
             auto aircraftModelNode  = dynamic_cast<AircraftModelNode*>(mSelectedModelNode);
@@ -486,7 +491,21 @@ bool DefenseModelLayer::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgG
         }
         mapItem()->removeNode(mDragAircraftModelNode);
         mDragAircraftModelNode = nullptr;
+//        qDebug()<<"drop aircraft";
     }
+    return false;
+}
+
+bool DefenseModelLayer::mouseDragEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    //--drag aircraft---------------------------------------
+    if(mDragAircraftModelNode)
+    {
+        osgEarth::GeoPoint mouseGeoPoint = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+        mDragAircraftModelNode->setPosition(mouseGeoPoint);
+//        qDebug()<<"drag aircraft move";
+    }
+//    qDebug()<<"drg";
     return false;
 }
 
@@ -516,12 +535,6 @@ bool DefenseModelLayer::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::
         res = mOnMoveModelNode->mouseMoveEvent(ea, aa, false);
     if(modelNode)
         mOnMoveModelNode = modelNode;
-    //--drag aircraft---------------------------------------
-    if(mDragAircraftModelNode)
-    {
-        osgEarth::GeoPoint mouseGeoPoint = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-        mDragAircraftModelNode->setPosition(mouseGeoPoint);
-    }
     return res;
 }
 
@@ -653,7 +666,7 @@ void DefenseModelLayer::onAircraftItemClick()
     aircraftInfo.Heading = 30;
     aircraftInfo.IFFCode = "a12345";
     aircraftInfo.CallSign = "cls";
-    aircraftInfo.Type = AircraftInfo::AircraftType::Fighter;
+    aircraftInfo.Type = AircraftInfo::AircraftType::Aircraft;
     aircraftInfo.MasterRadar = "radar2";
     aircraftInfo.Identification = AircraftInfo::Identify::Z;
     aircraftInfo.IdentificationMethod = "mtd";
