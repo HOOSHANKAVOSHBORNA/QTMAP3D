@@ -62,12 +62,14 @@ void DrawCapsule::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "Capsule" + QString::number(mCount);
     mCapsule = new Capsule();
     mCapsule->setName(name.toStdString());
-    mCapsule->setRadius(20000);
+    mCapsule->setRadius(mCapsuleProperties->getRadius());
+    mCapsule->setHeight(mCapsuleProperties->getHeight());
     mCapsule->setPosition(geoPos);
     mapItem()->getMapObject()->addNodeToLayer(mCapsule, mCapsuleLayer);
 //    mCapsuleProperties->setCapsule(mCapsule, );
 
     mCapsuleProperties->setCapsule(mCapsule, mapItem()->getMapSRS());
+    mCapsule->setColor(Utility::qColor2osgEarthColor(mCapsuleProperties->getFillColor()));
 
 
     setState(State::DRAWING);

@@ -847,6 +847,7 @@ import Crystal 1.0
 //                                        value: rootItem.radius
                                         to : 10000000
                                         from : 0
+                                        value: rootItem._radius
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 28
                                         Layout.leftMargin: 25
