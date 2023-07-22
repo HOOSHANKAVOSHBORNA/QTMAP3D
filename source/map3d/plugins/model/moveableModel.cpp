@@ -2,8 +2,8 @@
 #include "mapItem.h"
 #include <QObject>
 
-moveableModel::moveableModel(MapItem *mapControler, const std::string &modelUrl, QObject *parent):
-    simpleModelNode(mapControler, modelUrl, parent)
+moveableModel::moveableModel(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent):
+    simpleModelNode(mapControler, modelUrl, iconUrl, parent)
 
 {
 
@@ -16,7 +16,7 @@ void moveableModel::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
 
 simpleModelNode *moveableModel::getNewModel()
 {
-    return new moveableModel(mMapItem, mModelUrl);
+    return new moveableModel(mMapItem, mModelUrl, mIconUrl);
 }
 
 double moveableModel::speed() const

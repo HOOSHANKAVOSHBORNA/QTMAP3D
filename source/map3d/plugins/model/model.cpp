@@ -149,7 +149,7 @@ void model::onTreeItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/tree.png");
-        mModelNode = new simpleModelNode(mapItem(),"../data/models/tree_I.osgb");
+        mModelNode = new simpleModelNode(mapItem(),"../data/models/tree_I.osgb", "../data/images/model/tree.png");
         if(mTreelLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
             mapItem()->getMapObject()->addLayer(mTreelLayer, sModelLayer);
@@ -175,7 +175,7 @@ void model::onCarItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/car.png");
-        mModelNode = new moveableModel(mapItem(),"../data/models/car.osgb");
+        mModelNode = new moveableModel(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
 
         if(mCarlLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
@@ -202,7 +202,7 @@ void model::onAirplanItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/airplane.png");
-        mModelNode = new flyableModel(mapItem(),"../data/models/aircraft/boeing-747.osgb");
+        mModelNode = new flyableModel(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
         if(mAirplanelLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
             mapItem()->getMapObject()->addLayer(mAirplanelLayer, sModelLayer);
