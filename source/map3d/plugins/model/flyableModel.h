@@ -5,7 +5,7 @@
 class flyableModel: public moveableModel
 {
 public:
-    flyableModel(MapItem *mapControler, const std::string &modelUrl, QObject *parent = nullptr);
+    flyableModel(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent = nullptr);
     void flyTo(osgEarth::GeoPoint destinationPoint, double velocity);
     double speed() const override;
     void setSpeed(double newSpeed) override;

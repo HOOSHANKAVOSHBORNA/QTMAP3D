@@ -5,7 +5,7 @@
 class moveableModel : public simpleModelNode
 {
 public:
-    explicit moveableModel(MapItem* mapControler, const std::string& modelUrl, QObject *parent = nullptr);
+    explicit moveableModel(MapItem* mapControler, const std::string& modelUrl, const std::string &iconUrl, QObject *parent = nullptr);
     void moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed);
     virtual simpleModelNode* getNewModel() override;
     virtual double speed() const;

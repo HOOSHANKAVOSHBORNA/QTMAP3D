@@ -75,6 +75,7 @@ void DrawPolygon::onMeasureAreaItemCheck(bool check)
             mapItem()->getMapObject()->addLayer(mAreaLayer, measureLayer);
         }
         makeIconNode("../data/images/draw/polygon.png");
+
         setState(State::READY);
 
 //        mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle(), mapItem());
@@ -103,6 +104,7 @@ void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)
     mPolygon = new Polygon(mapItem());
     if (mType == Type::AREA){
         name = MEASUREAREA + QString::number(mCount);
+        mPolygon->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
         mPolygon->setName(name.toStdString());
         mPolygon->setShowArea(true);
 //        mPolygon->clearPoints();
