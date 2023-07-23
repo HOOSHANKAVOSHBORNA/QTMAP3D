@@ -169,7 +169,7 @@ public:
     bool getClampStatus() const;
     void setClampStatus(bool clamp);
 
-    double getClamp() const;
+    int getClamp() const;
     virtual void setClamp(const int &clamp);
 
 
