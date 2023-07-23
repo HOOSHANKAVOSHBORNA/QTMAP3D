@@ -358,7 +358,7 @@ CProperty {
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25
                                     Layout.rightMargin: -9
-                                    decimals: 4
+                                    decimals: 6
                                     onValueChanged: {
                                         rootItem.location.z = realValue
                                     }

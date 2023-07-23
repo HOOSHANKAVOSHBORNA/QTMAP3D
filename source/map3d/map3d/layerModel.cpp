@@ -57,6 +57,7 @@ QHash<int, QByteArray> LayersModel::roleNames() const
     hash[visibleRole] = "isVisible";
     hash[locatableRole] = "isLocatable";
     hash[layerRole] = "layerRole";
+    hash[visibleDrop] = "isDropVisible";
     return hash;
 }
 
@@ -149,6 +150,7 @@ void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentL
 {
     QStandardItem *treeItem = new QStandardItem(QString(layer->getName().c_str()));
     treeItem->setData(getLayerVisible(layer),visibleRole);
+    treeItem->setData(false,visibleDrop);
 
     QVariant layerVariant;
     layerVariant.setValue(layer);
@@ -232,24 +234,74 @@ bool LayersModel::getLayerVisible(osgEarth::Layer *layer) const
     return visible;
 }
 
-QModelIndex LayersModel::getDropIndex()
+QModelIndex LayersModel::getDragIndex()
 {
-    return mDropIndex;
+    return mDragIndex;
 }
 
-void LayersModel::setDropIndex(QModelIndex dropValue)
+void LayersModel::setDragIndex(QModelIndex value)
 {
-    mDropIndex = dropValue;
-//    qDebug() << mDropIndex;
+//    beginResetModel();
+    //--set old to false------------------------
+    if(mDragIndex.isValid())
+    {
+        auto itemDrag = mTreeModel->itemFromIndex(mapToSource(mDragIndex));
+        QStandardItem *parentItem = itemDrag->parent();
+        if(!parentItem){
+            parentItem = mTreeModel->getRootItem();
+        }
+        for(int i = 0; i < parentItem->rowCount(); i++)
+        {
+            parentItem->child(i, 0)->setData(false, visibleDrop);
+        }
+    }
+    //--set new to true---------------------------
+    mDragIndex = value;
+    if(mDragIndex.isValid())
+    {
+        auto itemDrag = mTreeModel->itemFromIndex(mapToSource(mDragIndex));
+        QStandardItem *parentItem = itemDrag->parent();
+        if(!parentItem){
+            parentItem = mTreeModel->getRootItem();
+        }
+        for(int i = 0; i < parentItem->rowCount(); i++)
+        {
+            parentItem->child(i, 0)->setData(true, visibleDrop);
+        }
+    }
+//    endResetModel();
 }
 
-void LayersModel::onReplaceItem(QModelIndex fromIndex)
+//QVariant LayersModel::data(const QModelIndex &index, int role) const
+//{
+////    if(index.row() == -1)
+////        return QVariant();
+
+////    if(role == visibleDrop){
+////        if(mDragIndex.isValid() && index != mDragIndex){
+//////            auto item = mTreeModel->itemFromIndex(index);
+////            qDebug()<<" index: "<<index;
+//////            qDebug()<<" indexparent: "<<index.parent();
+////            qDebug()<<" dragindex: "<<mDragIndex;
+//////            qDebug()<<" dragindexparent: "<<mDragIndex.parent();
+//////            qDebug()<<"mapdrag: "<<mapToSource(mDragIndex);
+//////            auto itemDrag = mTreeModel->itemFromIndex(mDragIndex);
+//////            if(item->parent() == itemDrag->parent())
+//////                return true;
+////        }
+////        return false;
+////    }
+//    return TreeProxyModel::data(index, role);
+//}
+
+void LayersModel::onMoveItem(QModelIndex oldIndex, QModelIndex newIndex)
 {
+    if(!oldIndex.isValid() || !newIndex.isValid())
+        return;
+    QModelIndex fromIndexSource = mapToSource(oldIndex);
+    QModelIndex toIndexSource = mapToSource(newIndex);
 
-    QModelIndex fromIndexSource = mapToSource(fromIndex);
-    QModelIndex toIndexSource = mapToSource(mDropIndex);
-
-    if((fromIndexSource != toIndexSource) && (mDropIndex.isValid())){
+    if((fromIndexSource != toIndexSource)){
 
         QStandardItem *item =  mTreeModel->itemFromIndex(fromIndexSource);
         osgEarth::Layer *itemLayer = item->data(layerRole).value<osgEarth::Layer*>();
@@ -267,7 +319,7 @@ void LayersModel::onReplaceItem(QModelIndex fromIndex)
             }
         }
 
-        mTreeModel->replaceItems(fromIndexSource,toIndexSource);
+        mTreeModel->moveItem(fromIndexSource,toIndexSource);
     }
 
 }

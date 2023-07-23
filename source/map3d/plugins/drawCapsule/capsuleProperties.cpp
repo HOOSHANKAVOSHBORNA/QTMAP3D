@@ -77,11 +77,12 @@ void CapsuleProperties::setCapsule(Capsule *newCapsule, const osgEarth::SpatialR
 {
     mCapsule = newCapsule;
     mSRS = srs;
-    setLocation(Utility::osgEarthGeoPointToQvector3D(mCapsule->getPosition()));
+
     if(mCapsule){
         mCapsule->setColor(Utility::qColor2osgEarthColor(getFillColor()));
         mCapsule->setRadius(getRadius());
         mCapsule->setHeight(getHeight());
+
         setLocation(Utility::osgEarthGeoPointToQvector3D(mCapsule->getPosition()));
     }
 }

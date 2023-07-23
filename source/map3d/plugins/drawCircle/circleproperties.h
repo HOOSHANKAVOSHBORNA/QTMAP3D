@@ -25,7 +25,9 @@ public:
     void setHeight(const double &height) override;
     void setClamp(const int &clamp) override;
     Circle *getCircle() const;
-    void setCircle(Circle* circle);
+    void setCircle(Circle* circle, const osgEarth::SpatialReference *srs);
+
+
 
 private:
     Circle *mCircle = nullptr;
