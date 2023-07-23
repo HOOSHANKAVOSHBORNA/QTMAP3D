@@ -123,17 +123,21 @@ Circle *CircleProperties::getCircle() const
     return mCircle;
 }
 
-void CircleProperties::setCircle(Circle *newCircle)
+void CircleProperties::setCircle(Circle *newCircle, const osgEarth::SpatialReference *srs)
 {
     mCircle = newCircle;
 
 
-//    mSRS = srs;
-    setLocation(Utility::osgEarthGeoPointToQvector3D(mCircle->getPosition()));
+    mSRS = srs;
+
     if(mCircle){
         mCircle->setColor(Utility::qColor2osgEarthColor(getFillColor()));
         mCircle->setRadius(getRadius());
-//        mCircle->setHeight(getHeight());
+        mCircle->setCircleHeight(getHeight());
+        mCircle->setLineColor(Utility::qColor2osgEarthColor(getStroke()));
+        mCircle->setLineWidth(getStrokeWidth());
+        mCircle->setArcEnd(getArc().x());
+        mCircle->setArcStart(getArc().y());
         setLocation(Utility::osgEarthGeoPointToQvector3D(mCircle->getPosition()));
     }
 }
