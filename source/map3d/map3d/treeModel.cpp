@@ -64,7 +64,7 @@ void TreeModel::updateData(QModelIndex itemIndex,bool isVisible, int role)
     }
 }
 
-void TreeModel::replaceItems(QModelIndex from, QModelIndex to)
+void TreeModel::moveItem(QModelIndex from, QModelIndex to)
 {
     if(from.parent() == to.parent()){
 //        qDebug() << from.parent().data() <<" "<< to.parent().data(); /*<<" "<< itemFromIndex(from.parent())->text();*/

@@ -95,6 +95,7 @@ Item {
                 model: selectionModel.model
                 clip: true
 
+
                 selectionModel: ItemSelectionModel {
                     id: selectionModel
                     model: layersModell ?? null
@@ -105,17 +106,14 @@ Item {
                     onSelectionChanged:{
                     }
                 }
-                flickableDirection: Qt.Vertical
 
-                //                DropArea{
-                //                    id: dropAre
-                //                    anchors.fill: parent
-                //                }
+//                flickableDirection: Qt.Horizontal
 
                 delegate: Item {
                     id: treeDelegate
                     implicitWidth: treerootItem.width
                     implicitHeight: label.implicitHeight * 2 - 4*depth
+                    anchors.margins: 10
 
 
                     readonly property real indent: 25
@@ -131,68 +129,84 @@ Item {
                     DropArea{
                         anchors.fill: parent
                         id:dropArea
-                        onEntered: {
-                            layersModell.dropIndex = treeView.index(row , column)
-                            //                            console.log(treeView.index(row , column))
-                            dropEffectColor.color = Style._mainYellow
+                        visible: isDropVisible
+                        onDropped: {
+
+//                            console.log("onDropped")
+//                            console.log(treeView.index(row , column))
+                            if((treeView.index(row , column) !== layersModell.dragIndex) && (layersModell.dragIndex.valid)){
+                                if(layersModell.dragIndex.parent === treeView.index(row , column).parent){
+                                    layersModell.onMoveItem(layersModell.dragIndex, treeView.index(row , column))
+                                    //print("replacing " + treeView.index(row , column) + " with: " + layersModell.dropIndex)
+                                }
+                            }
+                            treeView.forceLayout()
                         }
-                        onExited: {
-                            dropEffectColor.color = Style._darkGray
+
+                        Rectangle{
+                            id: dropEffect
+                            anchors.fill: parent
+                            gradient: Gradient{
+                                orientation: Qt.Horizontal
+                                GradientStop{color: "transparent" ; position: 0.0}
+                                GradientStop{id:dropEffectColor;color: Style._darkGray ; position: 0.5 }
+                                GradientStop{color: "transparent" ; position: 1.0}
+                            }
+                            width: container.width
+                            height: 1
+                            y:0
+                            x: container.x
+                            z:5
+                            visible: parent.containsDrag
                         }
                     }
 
-                    Rectangle{
-                        id: dropEffect
-                        gradient: Gradient{
-                            orientation: Qt.Horizontal
-                            GradientStop{color: "transparent" ; position: 0.0}
-                            GradientStop{id:dropEffectColor;color: Style._darkGray ; position: 0.5 }
-                            GradientStop{color: "transparent" ; position: 1.0}
-                        }
 
-                        width: container.width
-                        height: 1
-                        y:0
-                        x: container.x
-                        z:5
+                    Drag.dragType: Drag.Automatic
+                    Drag.onDragStarted: {
+//                        console.log("drag started")
+//                        console.log(treeView.index(row , column))
+                        rootItem.layersModell.dragIndex = treeView.index(row, column)
+//                        console.log("drag start")
+
                     }
-
-                    Drag.active: dragArea.drag.active
+                    Drag.onDragFinished: {
+//                        console.log("drag finished")
+                        Drag.drop();
+                    }
+//                    Drag.active: dragHandler.active
+//                    DragHandler {
+//                        id: dragHandler
+//                        target: parent
+//                        xAxis.enabled: false
+//                        yAxis.enabled: true
+//                        //                onActiveChanged:
+//                        //                    console.log("drag");
+//                        onGrabChanged:(trans, point)=>{
+//                                          //drag
+//                                          if(trans === 16){
+//                                              console.log("drag")
+//                                          }
+//                                          if(trans === 32){
+//                                              if(!dropArea.containsDrag){
+//                                              }
+//                                              parent.Drag.drop();
+//                                              console.log("drop")
+//                                          }
+//                                      }
+//                    }
+                    Binding on Drag.active {
+                        value: dragArea.drag.active
+                        delayed: true
+                    }
 
                     MouseArea{
                         id:dragArea
                         anchors.fill: parent
                         drag.target: parent
                         drag.axis: Drag.YAxis
-                        propagateComposedEvents: true
-                        Timer {
-                            id: timer
-                            interval: 100
-                            repeat: false
-                            running: false
-
-                        }
-
                         onClicked: {
                             treeView.toggleExpanded(row)
-                        }
-
-                        onReleased:  function(event){
-                            if (!timer.running){
-                                //                                event.accepted = true
-                                //                            }
-                                if((treeView.index(row , column) !== layersModell.dropIndex) && (layersModell.dropIndex.valid)){
-                                    if(layersModell.dropIndex.parent === treeView.index(row , column).parent){
-                                        layersModell.onReplaceItem(treeView.index(row , column))
-                                        //                                print("replacing " + treeView.index(row , column) + " with: " + layersModell.dropIndex)
-                                    }
-                                }
-                                treeView.forceLayout()
-                            }
-                        }
-                        onPressedChanged: pressed ? label.color = Style.hoverColor : !pressed ? label.color = Style.textColor : Style.textColor
-                        onPressed: {
-                            timer.start()
                         }
                     }
 
@@ -200,7 +214,7 @@ Item {
                     Rectangle{
                         id: container
                         width:  parent.width - x - 10
-                        height:   parent.height
+                        height:   parent.height-10
                         anchors.verticalCenter: parent.verticalCenter
                         color:  Style._darkestGray
                         radius:   Style.radius
@@ -321,21 +335,23 @@ Item {
                             }
                             MenuItem {
                                 text: "Shift Up"
+//                                enabled: row === 0 ? false:true
                                 icon.source: "./Resources/48/arrow-outline-up.png"
                                 icon.color: Style._persianGreen
                                 onClicked: {
-                                    rootItem.layersModell.dropIndex = treeView.index(row-1 , column)
-                                    rootItem.layersModell.onReplaceItem(treeView.index(row , column))
+//                                    rootItem.layersModell.dropIndex = treeView.index(row-1 , column)
+                                    rootItem.layersModell.onMoveItem(treeView.index(row , column), treeView.index(row-1 , column))
                                 }
 
                             }
                             MenuItem {
                                 text: "Shift Down"
+//                                enabled: row === treeView.index(row , column).parent().rowCount() ? false:true
                                 icon.source: "./Resources/48/arrow-outline-down.png"
                                 icon.color: Style._persianGreen
                                 onClicked: {
-                                    rootItem.layersModell.dropIndex= treeView.index(row+1 , column)
-                                    rootItem.layersModell.onReplaceItem(treeView.index(row , column))
+//                                    rootItem.layersModell.dropIndex= treeView.index(row+1 , column)
+                                    rootItem.layersModell.onMoveItem(treeView.index(row , column), treeView.index(row+1 , column))
                                 }
                             }
                         }
