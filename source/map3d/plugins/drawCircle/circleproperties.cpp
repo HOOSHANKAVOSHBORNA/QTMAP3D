@@ -96,7 +96,7 @@ void CircleProperties::setHeight(const double &height)
 void CircleProperties::setClamp(const int &clamp)
 {
 
-//    Property::setClamp(clamp);
+    Property::setClamp(clamp);
 //    if(mCircle){
 //        switch(clamp){
 //        case 0:
@@ -126,6 +126,16 @@ Circle *CircleProperties::getCircle() const
 void CircleProperties::setCircle(Circle *newCircle)
 {
     mCircle = newCircle;
+
+
+//    mSRS = srs;
+    setLocation(Utility::osgEarthGeoPointToQvector3D(mCircle->getPosition()));
+    if(mCircle){
+        mCircle->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mCircle->setRadius(getRadius());
+//        mCircle->setHeight(getHeight());
+        setLocation(Utility::osgEarthGeoPointToQvector3D(mCircle->getPosition()));
+    }
 }
 
 

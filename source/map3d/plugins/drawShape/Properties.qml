@@ -29,9 +29,9 @@ import Crystal 1.0
 
         property double _radius : 20000
         property double _opacity : 0.5
-        property double _lenght:100
-        property double _height:100
-        property double _width:100
+        property double _lenght:70000
+        property double _height:70000
+        property double _width: 70000
         property double _centerx
         property double _centery
         property double _centerz
