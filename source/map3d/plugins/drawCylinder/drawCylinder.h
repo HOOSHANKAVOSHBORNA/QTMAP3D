@@ -11,6 +11,8 @@
 
 #define CYLINDER "Cylinder"
 
+class ParenticAnnotationLayer;
+
 class DrawCylinder : public DrawShape
 {
     Q_OBJECT
@@ -24,12 +26,16 @@ private slots:
     void onCylinderItemCheck (bool check);
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
+    void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
+    void createProperty();
 
 private:
     osg::ref_ptr<Cylinder> mCylinder{nullptr};
     CylinderProperties *mCylinderProperties{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mCylinderLayer;
+    osg::ref_ptr<CompositeAnnotationLayer> mCompositeCylinderLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mCylinderLayer = nullptr;
     static int mCount;
+
 };
 #endif // DRAWCylinder_H

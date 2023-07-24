@@ -5,149 +5,138 @@
 
 #include <osgEarth/GLUtils>
 
+#include "utility.h"
+#include "mainwindow.h"
 
 int DrawPolygon::mCount{0};
-DrawPolygon::DrawPolygon(QObject *parent)
-    : DrawShape(parent)
+DrawPolygon::DrawPolygon(QObject *parent): DrawShape(parent)
 {
-    qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
+    //    qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
+    //    qmlRegisterType<PolygonProperties>("Crystal", 1, 0, "CProperty");
 }
 
 bool DrawPolygon::setup()
 {
-    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-
     auto toolboxItem =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawPolygon::onPolygonItemCheck);
     toolbox()->addItem(toolboxItem);
 
-    auto toolboxItemArea =  new ToolboxItem{MEASUREAREA, M_CATEGORY, "qrc:/resources/measure_area.png", true};
-    QObject::connect(toolboxItemArea, &ToolboxItem::itemChecked, this, &DrawPolygon::onMeasureAreaItemCheck);
-    toolbox()->addItem(toolboxItemArea);
+    makeIconNode("../data/images/draw/polygon.png");
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    mPolygonLayer = new osgEarth::Annotation::AnnotationLayer();
-    mPolygonLayer->setName(POLYGON);
+    //    mPolygonLayer = new CompositeAnnotationLayer();
+    //    mPolygonLayer->setName(Polygon);
+    mCompositePolygonLayer = new CompositeAnnotationLayer();
+    mCompositePolygonLayer->setName(POLYGON);
 
-    mAreaLayer = new osgEarth::Annotation::AnnotationLayer();
-    mAreaLayer->setName(MEASUREAREA);
     return true;
 }
 
 void DrawPolygon::onPolygonItemCheck(bool check)
 {
-    auto shapeLayer = DrawShape::shapeLayer();
+
+    qmlRegisterType<PolygonProperties>("Crystal", 1, 0, "CProperty");
     if (check) {
-        if(mPolygonLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->addLayer(mPolygonLayer, shapeLayer);
+        auto shapeLayer = DrawShape::shapeLayer();
+        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositePolygonLayer->getName()));
+        if(!layer){
+            mCompositePolygonLayer->clearLayers();
         }
-        makeIconNode("../data/images/draw/polygon.png");
-        mType = Type::POLYGONN;
+        if(mCompositePolygonLayer->getNumLayers() <= 0){
+
+            //            mapItem()->getMapObject()->addLayer(mPolygonLayer, shapeLayer);
+            shapeLayer->addLayer(mCompositePolygonLayer);
+        }
         setState(State::READY);
 
-//        mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle(), mapItem());
-//        mPolygonProperties->show();
+        createProperty();
         mapItem()->addNode(iconNode());
+
     }
     else {
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mPolygonLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->removeLayer(mPolygonLayer, shapeLayer);
+        if(mCompositePolygonLayer->getNumLayers() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            //            mapItem()->getMapObject()->removeLayer(mPolygonLayer, shapeLayer);
+            shapeLayer->removeLayer(mCompositePolygonLayer);
         }
-
         setState(State::NONE);
-//        mPolygonProperties->deleteLater();
-        mType = Type::NONE;
         mPolygon = nullptr;
-//        mPolygonProperties->hide();
+        mPolygonProperties->setProperty("visible", false);
         mapItem()->removeNode(iconNode());
-    }
-}
-
-void DrawPolygon::onMeasureAreaItemCheck(bool check)
-{
-    auto measureLayer = DrawShape::measureLayer();
-    if(check)
-    {
-        mType = Type::AREA;
-        if(mAreaLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->addLayer(mAreaLayer, measureLayer);
-        }
-        makeIconNode("../data/images/draw/polygon.png");
-
-        setState(State::READY);
-
-//        mPolygonProperties = new PolygonProperties(qmlEngine(), uiHandle(), mapItem());
-//        mPolygonProperties->show();
-        mapItem()->addNode(iconNode());
-    }
-    else
-    {
-        if(state() == State::DRAWING)
-            cancelDraw();
-
-        if(mAreaLayer->getGroup()->getNumChildren() <= 0){
-            mapItem()->getMapObject()->removeLayer(mAreaLayer, measureLayer);
-        }
-        mType = Type::NONE;
-//        mPolygonProperties->deleteLater();
-        mPolygon = nullptr;
-//        mPolygonProperties->hide();
-        mapItem()->removeNode(iconNode());
-    }
-}
+    }}
 
 void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)
 {
-    QString name;
+    QString name = "Polygon" + QString::number(mCount);
     mPolygon = new Polygon(mapItem());
-    if (mType == Type::AREA){
-        name = MEASUREAREA + QString::number(mCount);
-        mPolygon->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
-        mPolygon->setName(name.toStdString());
-        mPolygon->setShowArea(true);
-//        mPolygon->clearPoints();
-        mapItem()->getMapObject()->addNodeToLayer(mPolygon, mAreaLayer);
-    }
-    else{
-        name = POLYGON + QString::number(mCount);
-        mPolygon->setName(name.toStdString());
-        mapItem()->getMapObject()->addNodeToLayer(mPolygon, mPolygonLayer);
-    }
-//    mPolygonProperties->setPolygon(mPolygon);
+    mPolygon->setName(name.toStdString());
+    //    mPolygon->setRadius(mPolygonProperties->getRadius());
+    mPolygon->setHeight(mPolygonProperties->getHeight());
+    mPolygon->setLineColor(Utility::qColor2osgEarthColor(mPolygonProperties->getStroke()));
+    mPolygon->setLineWidth(mPolygonProperties->getStrokeWidth());
+    osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mPolygonProperties->getClamp());
+    mPolygon->setClamp(clampEnum);
+
+
+
     setState(State::DRAWING);
+
+
     mCount++;
+    mPolygonLayer = new ParenticAnnotationLayer();
+    mPolygonLayer->addChild(mPolygon);
+    mPolygonLayer->setName(mPolygon->getName());
+    mCompositePolygonLayer->addLayer(mPolygonLayer);
+
+    mPolygonProperties->setPolygon(mPolygon, mapItem()->getMapSRS());
+    setState(State::DRAWING);
+
+
+
+    mCount++;
+
+
+
+
+
 }
-
-void DrawPolygon::tempDrawing(const osgEarth::GeoPoint &geoPos)
-{
-    if (mPolygon->getSize() >1)
-    {
-        mPolygon->removePoint();
-
-    }
-    mPolygon->addPoints(geoPos);
-
-}
-
-void DrawPolygon::drawing(const osgEarth::GeoPoint &geoPos)
-{
-    mPolygon->addPoints(geoPos);
-}
-
 
 void DrawPolygon::cancelDraw()
 {
+
+
+
     if(state() == State::DRAWING){
-        mapItem()->getMapObject()->removeNodeFromLayer(mPolygon, mPolygonLayer);
-        mapItem()->getMapObject()->removeNodeFromLayer(mPolygon, mAreaLayer);
+        //        mapItem()->getMapObject()->removeNodeFromLayer(mPolygon, mPolygonLayer);
+        mCompositePolygonLayer->removeLayer(mPolygonLayer);
         mPolygon = nullptr;
-//        mPolygonProperties->setPolygon(mPolygon);
+        mPolygonLayer = nullptr;
+        //mPolygonProperties->setPolygon(mPolygon);
+        mPolygonProperties->setPolygon(mPolygon, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
     }
-
 }
 
+
+void DrawPolygon::createProperty()
+{
+    QQmlComponent* comp = new QQmlComponent(qmlEngine());
+    connect(comp, &QQmlComponent::statusChanged, [comp, this](){
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+        mPolygonProperties = static_cast<PolygonProperties*>(item);
+
+
+        mainWindow()->addDockItem(mPolygonProperties, 0.3);
+    });
+
+
+    comp->loadUrl(QUrl("qrc:/Properties.qml"));
+}
 

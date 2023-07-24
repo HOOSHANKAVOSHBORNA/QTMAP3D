@@ -33,40 +33,6 @@ bool DrawCircle::setup()
 
 void DrawCircle::onCircleItemCheck(bool check)
 {
-    //    qmlRegisterType<CircleProperties>("Crystal", 1, 0, "CProperty");
-
-    //    if (check) {
-    //        if(mCircleLayer->getGroup()->getNumChildren() <= 0){
-    //            auto shapeLayer = DrawShape::shapeLayer();
-    //            auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositeCapsuleLayer->getName()));
-
-    //            mapItem()->getMapObject()->addLayer(mCircleLayer, shapeLayer);
-    //        }
-    //        setState(State::READY);
-
-    //        //        mCircleProperties = new CircleProperties(mCircle, qmlEngine(), uiHandle(), mapItem());
-    //        //        mCircleProperties->show();
-    //        createProperty();
-
-    //        mapItem()->addNode(iconNode());
-
-    //    }
-    //    else {
-    //        if(state() == State::DRAWING)
-    //            cancelDraw();
-
-    //        if(mCircleLayer->getGroup()->getNumChildren() <= 0){
-    //            auto shapeLayer = DrawShape::shapeLayer();
-    //            mapItem()->getMapObject()->removeLayer(mCircleLayer, shapeLayer);
-    //        }
-    //        setState(State::NONE);
-    //        mCircle = nullptr;
-    //        //mCircleProperties->hide();
-
-    //        mCircleProperties->setProperty("visible", false);
-    //        mapItem()->removeNode(iconNode());
-    //    }
-    //}
 
         qmlRegisterType<CircleProperties>("Crystal", 1, 0, "CProperty");
         if (check) {
@@ -112,6 +78,8 @@ void DrawCircle::onCircleItemCheck(bool check)
         mCircle->setArcStart(mCircleProperties->getArc().y());
         mCircle->setLineColor(Utility::qColor2osgEarthColor(mCircleProperties->getStroke()));
         mCircle->setLineWidth(mCircleProperties->getStrokeWidth());
+        osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mCircleProperties->getClamp());
+        mCircle->setClamp(clampEnum);
 
         mCircle->setPosition(geoPos);
 
@@ -138,12 +106,6 @@ void DrawCircle::onCircleItemCheck(bool check)
 
     void DrawCircle::cancelDraw()
     {
-        //    if(state() == State::DRAWING){
-        //        mapItem()->getMapObject()->removeNodeFromLayer(mCircle, mCircleLayer);
-        //        mCircle = nullptr;
-        //        //mCircleProperties->setCircle(mCircle);
-        //        setState(State::READY);
-        //        mCount--;
 
 
         if(state() == State::DRAWING){

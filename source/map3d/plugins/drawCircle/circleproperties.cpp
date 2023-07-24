@@ -97,24 +97,11 @@ void CircleProperties::setClamp(const int &clamp)
 {
 
     Property::setClamp(clamp);
-//    if(mCircle){
-//        switch(clamp){
-//        case 0:
-//            mCircle->setClamp(0);
-//            break;
-//        case 1:
-//            mCircle->setClamp(1);
-//            break;
-//        case 2:
-//            mCircle->setClamp(2);
-//            break;
-//        case 3:
-//            mCircle->setClamp(3);
-//            break;
+    if(mCircle){
+        osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(clamp);
+        mCircle->setClamp(clampEnum);
 
-
-//        }
-//    }
+    }
 }
 
 
@@ -138,6 +125,8 @@ void CircleProperties::setCircle(Circle *newCircle, const osgEarth::SpatialRefer
         mCircle->setLineWidth(getStrokeWidth());
         mCircle->setArcEnd(getArc().x());
         mCircle->setArcStart(getArc().y());
+        osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
+        mCircle->setClamp(clampEnum);
         setLocation(Utility::osgEarthGeoPointToQvector3D(mCircle->getPosition()));
     }
 }

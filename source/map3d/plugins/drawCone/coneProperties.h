@@ -29,3 +29,4 @@ private:
 };
 
 #endif // CONEPROPERTIESMODEL_H
+

@@ -51,6 +51,11 @@ void ConeProperties::setLocation(const QVector3D &status)
 {
 
     Property::setLocation(status);
+    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(status, mSRS);
+    if (mCone)
+        mCone->setPosition(temp);
+
+
 
 
 }

@@ -23,12 +23,17 @@ private slots:
     void onEllipseItemCheck (bool check);
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
+    void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
+    void createProperty();
 
 private:
     osg::ref_ptr<Ellipse> mEllipse{nullptr};
     EllipseProperties *mEllipseProperties{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mEllipseLayer;
+    osg::ref_ptr<CompositeAnnotationLayer> mCompositeEllipseLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mEllipseLayer;
     static int mCount;
+
+
 };
 #endif // DRAWELLIPSE_H
