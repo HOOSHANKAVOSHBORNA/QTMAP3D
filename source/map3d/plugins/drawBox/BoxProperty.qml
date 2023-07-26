@@ -251,7 +251,7 @@ Item {
                                                 //                                                value: xLoc
 
 
-                                                showText:  boxProperties ? boxProperties.location.x  : 0
+                                                value:  boxProperties ? boxProperties.location.x  : 0
                                                 onValueChanged: {
                                                     boxProperties.location.x = value
                                                 }
@@ -283,7 +283,7 @@ Item {
                                                 decimals: 4
 //                                                step: 0.01
                                                 //                                                value: yLoc
-                                                showText : boxProperties ? boxProperties.location.y  : 0
+                                                value : boxProperties ? boxProperties.location.y  : 0
                                                 onValueChanged: {
                                                     boxProperties.location.y = value
                                                 }
@@ -314,7 +314,7 @@ Item {
                                                 anchors.fill: parent
                                                 decimals: 4
 //                                                step: 10
-                                                showText : boxProperties ? boxProperties.location.z  : 0
+                                                value : boxProperties ? boxProperties.location.z  : 0
                                                 onValueChanged: {
                                                     boxProperties.location.z = value
                                                 }

@@ -299,7 +299,7 @@ void Property::setClampStatus(bool clamp)
 
 }
 
-double Property::getClamp() const
+int Property::getClamp() const
 {
     return mClamp;
 }

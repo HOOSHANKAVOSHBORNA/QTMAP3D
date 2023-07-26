@@ -22,14 +22,18 @@ private slots:
     void onCircleItemCheck (bool check);
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
+    void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
     void createProperty();
 
 private:
     osg::ref_ptr<Circle> mCircle{nullptr};
     CircleProperties *mCircleProperties{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mCircleLayer;
+    osg::ref_ptr<CompositeAnnotationLayer> mCompositeCircleLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mCircleLayer;
     static int mCount;
+
+
 };
 
 #endif // DRAWCIRCLE_H

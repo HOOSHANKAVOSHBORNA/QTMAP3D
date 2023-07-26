@@ -1,9 +1,12 @@
 #include "drawEllipse.h"
+#include "utility.h"
+#include "mainwindow.h"
 
 int DrawEllipse::mCount{0};
 DrawEllipse::DrawEllipse(QObject *parent): DrawShape(parent)
 {
-    qmlRegisterType<EllipsePropertiesModel>("Crystal", 1, 0, "EllipseProperties");
+    //    qmlRegisterType<EllipsePropertiesModel>("Crystal", 1, 0, "EllipseProperties");
+    //    qmlRegisterType<EllipseProperties>("Crystal", 1, 0, "CProperty");
 }
 
 bool DrawEllipse::setup()
@@ -15,22 +18,32 @@ bool DrawEllipse::setup()
     makeIconNode("../data/images/draw/ellipse.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    mEllipseLayer = new osgEarth::Annotation::AnnotationLayer();
-    mEllipseLayer->setName(ELLIPSE);
+    //    mEllipseLayer = new CompositeAnnotationLayer();
+    //    mEllipseLayer->setName(Ellipse);
+    mCompositeEllipseLayer = new CompositeAnnotationLayer();
+    mCompositeEllipseLayer->setName(ELLIPSE);
 
     return true;
 }
 
 void DrawEllipse::onEllipseItemCheck(bool check)
 {
+
+    qmlRegisterType<EllipseProperties>("Crystal", 1, 0, "CProperty");
     if (check) {
-        if(mEllipseLayer->getGroup()->getNumChildren() <= 0){
-            auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->addLayer(mEllipseLayer, shapeLayer);
+        auto shapeLayer = DrawShape::shapeLayer();
+        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositeEllipseLayer->getName()));
+        if(!layer){
+            mCompositeEllipseLayer->clearLayers();
+        }
+        if(mCompositeEllipseLayer->getNumLayers() <= 0){
+
+            //            mapItem()->getMapObject()->addLayer(mEllipseLayer, shapeLayer);
+            shapeLayer->addLayer(mCompositeEllipseLayer);
         }
         setState(State::READY);
-//        mEllipseProperties = new EllipseProperties(mEllipse, qmlEngine(), uiHandle(), mapItem());
-//        mEllipseProperties->show();
+
+        createProperty();
         mapItem()->addNode(iconNode());
 
     }
@@ -38,39 +51,88 @@ void DrawEllipse::onEllipseItemCheck(bool check)
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mEllipseLayer->getGroup()->getNumChildren() <= 0){
+        if(mCompositeEllipseLayer->getNumLayers() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->removeLayer(mEllipseLayer, shapeLayer);
+            //            mapItem()->getMapObject()->removeLayer(mEllipseLayer, shapeLayer);
+            shapeLayer->removeLayer(mCompositeEllipseLayer);
         }
         setState(State::NONE);
         mEllipse = nullptr;
-//        mEllipseProperties->hide();
+        mEllipseProperties->setProperty("visible", false);
         mapItem()->removeNode(iconNode());
-    }
-}
+    }}
 
 void DrawEllipse::initDraw(const osgEarth::GeoPoint &geoPos)
 {
     QString name = "Ellipse" + QString::number(mCount);
     mEllipse = new Ellipse();
     mEllipse->setName(name.toStdString());
+    //    mEllipse->setRadius(mEllipseProperties->getRadius());
+    mEllipse->setHeight(mEllipseProperties->getHeight());
+    mEllipse->setStrokeColor(Utility::qColor2osgEarthColor(mEllipseProperties->getStroke()));
+    mEllipse->setStrokeWidth(mEllipseProperties->getStrokeWidth());
+    osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mEllipseProperties->getClamp());
+    mEllipse->setClamp(clampEnum);
 
     mEllipse->setPosition(geoPos);
 
-    mapItem()->getMapObject()->addNodeToLayer(mEllipse, mEllipseLayer);
-//    mEllipseProperties->setEllipse(mEllipse);
+    //    mapItem()->getMapObject()->addNodeToLayer(mEllipse, mEllipseLayer);
+    //    mEllipseProperties->setEllipse(mEllipse);
 
     setState(State::DRAWING);
     mCount++;
+    //    mCompositeEllipseLayer->addLayer(mEllipseLayer);
+    mEllipseLayer = new ParenticAnnotationLayer();
+    mEllipseLayer->addChild(mEllipse);
+    mEllipseLayer->setName(mEllipse->getName());
+    mCompositeEllipseLayer->addLayer(mEllipseLayer);
+
+    mEllipseProperties->setEllipse(mEllipse, mapItem()->getMapSRS());
+
+    setState(State::DRAWING);
+    mCount++;
+
+
+
+
 }
 
 void DrawEllipse::cancelDraw()
 {
+
+
+
     if(state() == State::DRAWING){
-        mapItem()->getMapObject()->removeNodeFromLayer(mEllipse, mEllipseLayer);
+        //        mapItem()->getMapObject()->removeNodeFromLayer(mEllipse, mEllipseLayer);
+        mCompositeEllipseLayer->removeLayer(mEllipseLayer);
         mEllipse = nullptr;
-//        mEllipseProperties->setEllipse(mEllipse);
+        mEllipseLayer = nullptr;
+        //mEllipseProperties->setEllipse(mEllipse);
+        mEllipseProperties->setEllipse(mEllipse, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
     }
+}
+
+void DrawEllipse::drawing(const osgEarth::GeoPoint &geoPos)
+{
+    mEllipse->setPosition(geoPos);
+    mEllipseProperties->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+}
+void DrawEllipse::createProperty()
+{
+    QQmlComponent* comp = new QQmlComponent(qmlEngine());
+    connect(comp, &QQmlComponent::statusChanged, [comp, this](){
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+        mEllipseProperties = static_cast<EllipseProperties*>(item);
+
+
+        mainWindow()->addDockItem(mEllipseProperties, 0.3);
+    });
+
+
+    comp->loadUrl(QUrl("qrc:/Properties.qml"));
 }

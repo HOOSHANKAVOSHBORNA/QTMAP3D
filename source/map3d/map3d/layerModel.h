@@ -11,13 +11,13 @@ class LayersModel : public TreeProxyModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(QModelIndex   dropIndex      READ getDropIndex     WRITE setDropIndex    )
+    Q_PROPERTY(QModelIndex dragIndex READ getDragIndex WRITE setDragIndex)
 
     enum CustomRoles{
-        visibleRole =Qt::UserRole + 100 ,
-        locatableRole =Qt::UserRole + 101 ,
-        layerRole = Qt::UserRole + 102
-
+        visibleRole = Qt::UserRole + 100 ,
+        locatableRole = Qt::UserRole + 101,
+        layerRole = Qt::UserRole + 102,
+        visibleDrop = Qt::UserRole + 103
     };
 
 public:
@@ -25,15 +25,17 @@ public:
     QHash<int,QByteArray> roleNames() const override;
     void initializeModel(osgEarth::Map *map);
     bool getLayerVisible(osgEarth::Layer *layer) const;
-    QModelIndex getDropIndex();
-    void setDropIndex(QModelIndex dropValue);
+    QModelIndex getDragIndex();
+    void setDragIndex(QModelIndex value);
+
+//    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 
 public slots:
     void onItemClicked(const QModelIndex &current)override;
     void onDeleteLayerClicked(const QModelIndex &current);
     void onGoToClicked(const QModelIndex &current);
-    void onReplaceItem(QModelIndex fromIndex);
+    void onMoveItem(QModelIndex oldIndex, QModelIndex newIndex);
 
     void onLayerAdded(osgEarth::Layer* layer , osgEarth::Layer *parentLayer,   unsigned index);
     void onLayerRemoved(osgEarth::Layer* layer ,osgEarth::Layer *parentLayer, unsigned index);
@@ -47,7 +49,7 @@ private:
     MapItem *mMapItem;
     TreeModel *mTreeModel;
     QMap<QStandardItem , osgEarth::Layer*> treeLayerMap;
-    QModelIndex mDropIndex;
+    QModelIndex mDragIndex;
 
 
 };

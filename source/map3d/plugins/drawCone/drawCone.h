@@ -10,6 +10,7 @@
 #include "coneProperties.h"
 
 #define CONE "Cone"
+class ParenticAnnotationLayer;
 
 class DrawCone : public DrawShape
 {
@@ -25,11 +26,14 @@ private slots:
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
+    void createProperty();
+    void drawing(const osgEarth::GeoPoint &geoPos) override;
 
 private:
     osg::ref_ptr<Cone> mCone{nullptr};
     ConeProperties *mConeProperties{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mConeLayer;
+    osg::ref_ptr<CompositeAnnotationLayer> mCompositeConeLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mConeLayer = nullptr;
     static int mCount;
 };
 
