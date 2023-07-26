@@ -10,23 +10,26 @@ class simpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 public:
     simpleModelNode(MapItem* mapControler, const std::string& modelUrl, const std::string& iconUrl, QObject *parent = nullptr);
     virtual simpleModelNode* getNewModel();
-    osg::ref_ptr<osg::Image> getM2DImage() const;
-    void setM2DImage(const osg::ref_ptr<osg::Image> &newM2DImage);
 
-protected:
-    std::string mModelUrl;
-    std::string mIconUrl;
-    MapItem *mMapItem;
+    MapItem *mapItem() const;
+
+    std::string iconUrl() const;
+
+    std::string modelUrl() const;
     bool mIs3D{false};
-    osg::ref_ptr<osg::Geode> mImgGeod;
-
-private:
-    osg::ref_ptr<osg::Image> m2DImage;
-    osg::ref_ptr<osg::Switch> mMode;
 
 private slots:
     void onModeChanged(bool is3DView);
-signals:
+
+private:
+    osg::ref_ptr<osg::Switch> mSwitchNode;
+    osg::ref_ptr<osg::LOD> m3DNode;
+    osg::ref_ptr<osg::Geode> m2DNode;
+
+    std::string mModelUrl;
+    std::string mIconUrl;
+    MapItem *mMapItem;
+
 
 };
 

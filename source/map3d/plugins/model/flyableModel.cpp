@@ -1,7 +1,7 @@
 #include "flyableModel.h"
 
 flyableModel::flyableModel(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent):
-    moveableModel(mapControler, modelUrl, iconUrl, parent)
+    MoveableModel(mapControler, modelUrl, iconUrl, parent)
 {
 
 }
@@ -23,5 +23,5 @@ void flyableModel::setSpeed(double newSpeed)
 
 simpleModelNode *flyableModel::getNewModel()
 {
-    return new flyableModel(mMapItem, mModelUrl, mIconUrl);
+    return new flyableModel(mapItem(), modelUrl(), iconUrl());
 }

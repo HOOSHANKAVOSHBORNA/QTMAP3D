@@ -1,8 +1,8 @@
 #ifndef FLYABLEMODEL_H
 #define FLYABLEMODEL_H
-#include "moveableModel.h"
+#include "MoveableModel.h"
 
-class flyableModel: public moveableModel
+class flyableModel: public MoveableModel
 {
 public:
     flyableModel(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent = nullptr);

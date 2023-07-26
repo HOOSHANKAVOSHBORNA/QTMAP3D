@@ -1,6 +1,6 @@
 #include "model.h"
 #include "mapItem.h"
-#include "moveableModel.h"
+#include "MoveableModel.h"
 #include "flyableModel.h"
 #include <osgEarth/GLUtils>
 
@@ -175,7 +175,7 @@ void model::onCarItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/car.png");
-        mModelNode = new moveableModel(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
+        mModelNode = new MoveableModel(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
 
         if(mCarlLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
@@ -239,7 +239,12 @@ void model::initModel(const osgEarth::GeoPoint &geoPos){
 
 void model::moving(const osgEarth::GeoPoint &geoPos){
 
-    mCurrentModel->setPosition(geoPos);
+    //mCurrentModel->setPosition(geoPos);
+
+    auto moveableModell = dynamic_cast<MoveableModel*>(mCurrentModel.get());
+    if (moveableModell){
+        moveableModell->moveTo(geoPos,80000);
+    }
 }
 
 void model::confirm()

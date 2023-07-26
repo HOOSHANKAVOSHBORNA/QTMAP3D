@@ -4,7 +4,7 @@
 #include "mapItem.h"
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
-
+const float RANGE3D = 835;
 simpleModelNode::simpleModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent)
     : QObject{parent},
       osgEarth::Annotation::ModelNode(mapControler->getMapNode(), model::getDefaultStyle()),
@@ -13,26 +13,55 @@ simpleModelNode::simpleModelNode(MapItem *mapControler, const std::string &model
     mIconUrl(iconUrl)
 
 {
-    osg::ref_ptr<osg::Node> simpleNode = osgDB::readRefNodeFile(modelUrl);
+    connect(mMapItem, &MapItem::modeChanged, this, &simpleModelNode::onModeChanged);
+    mIs3D = mMapItem->getMode();
+
+    //--root ------------------------------------------------------------
+    mSwitchNode = new osg::Switch;
     setCullingActive(false);
     addCullCallback(new ModelAutoScaler(2.5, 1, 1000));
 
-    connect(mMapItem, &MapItem::modeChanged, this, &simpleModelNode::onModeChanged);
-    mIs3D = mMapItem->getMode();
+    //--3D node----------------------------------------------------------
+    m3DNode = new osg::LOD;
+    osg::ref_ptr<osg::Node> simpleNode = osgDB::readRefNodeFile(modelUrl);
+    m3DNode->addChild(simpleNode, 0, std::numeric_limits<float>::max());
+
+    //--2D node---------------------------------------------------------
+    m2DNode = new osg::Geode();
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
-    m2DImage = osgDB::readImageFile(mIconUrl);
-    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(m2DImage, osg::Vec2s(0,0), 0, 0, 0.2);
-    mImgGeod = new osg::Geode();
-    mImgGeod->setStateSet(geodeStateSet);
-    mImgGeod->addDrawable(imgGeom);
-    mMode = new osg::Switch;
-    mMode->addChild(simpleNode, true);
-    mMode->addChild(mImgGeod, false);
+    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(iconUrl);
+    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(image, osg::Vec2s(0,0), 0, 0, 0.2);
+    m2DNode->setStateSet(geodeStateSet);
+    m2DNode->addDrawable(imgGeom);
 
-    osgEarth::Symbology::Style  modelStyle;
-    modelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mMode);
-    setStyle(modelStyle);       
+    //--setting--------------------------------------------------------
+    if(mIs3D){
+        mSwitchNode->addChild(m3DNode, true);
+        mSwitchNode->addChild(m2DNode, false);
+    }
+    else{
+        mSwitchNode->addChild(m3DNode, false);
+        mSwitchNode->addChild(m2DNode, true);
+    }
+
+    osgEarth::Symbology::Style  rootStyle;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
+    setStyle(rootStyle);
+//    osg::AutoTransform *at = new osg::AutoTransform;
+//    //at->addChild(mMode);
+//    at->addChild(mImgGeod);
+//    at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
+//    if(mIs3D)
+//    {
+//        mBaseNode->addChild(simpleNode, 0, RANGE3D);
+//        mBaseNode->addChild(at, RANGE3D, std::numeric_limits<float>::max());
+//    }
+//    else
+//    {
+//        mBaseNode->addChild(simpleNode, 0, 0);
+//        mBaseNode->addChild(at, 0, std::numeric_limits<float>::max());
+//    }
 }
 
 simpleModelNode *simpleModelNode::getNewModel()
@@ -40,27 +69,30 @@ simpleModelNode *simpleModelNode::getNewModel()
     return new simpleModelNode(mMapItem, mModelUrl, mIconUrl);
 }
 
-osg::ref_ptr<osg::Image> simpleModelNode::getM2DImage() const
-{
-    return m2DImage;
-}
-
-void simpleModelNode::setM2DImage(const osg::ref_ptr<osg::Image> &newM2DImage)
-{
-    m2DImage = newM2DImage;
-}
-
 void simpleModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
-    if(mIs3D)
-    {
-        mMode->setValue(0,true);
-        mMode->setValue(1, false);
+    if(mIs3D){
+        mSwitchNode->setValue(0,true);
+        mSwitchNode->setValue(1, false);
     }
-    else
-    {
-        mMode->setValue(0, false);
-        mMode->setValue(1,true);
+    else{
+        mSwitchNode->setValue(0, false);
+        mSwitchNode->setValue(1,true);
     }
+}
+
+std::string simpleModelNode::modelUrl() const
+{
+    return mModelUrl;
+}
+
+std::string simpleModelNode::iconUrl() const
+{
+    return mIconUrl;
+}
+
+MapItem *simpleModelNode::mapItem() const
+{
+    return mMapItem;
 }
