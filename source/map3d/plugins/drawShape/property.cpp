@@ -1,4 +1,5 @@
 #include "property.h"
+#include <QDebug>
 
 Property::Property(QQuickItem *parent)
     : QQuickItem{parent}
@@ -35,6 +36,18 @@ void Property::setFillColor(const QColor &color)
     mFillColor = color;
     emit propretyChanged();
 
+}
+
+QString Property::getName() const
+{
+    return mName;
+}
+
+void Property::setName(const QString &name)
+{
+    mName = name;
+    emit propretyChanged();
+    qDebug() << "ssssssssssssssssssssssssssssssssssssssssssssssssssssss";
 }
 //-------------------- stroke -------------------- //
 

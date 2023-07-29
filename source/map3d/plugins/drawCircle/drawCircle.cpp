@@ -10,8 +10,7 @@
 int DrawCircle::mCount{0};
 DrawCircle::DrawCircle(QObject *parent): DrawShape(parent)
 {
-    //    qmlRegisterType<CirclePropertiesModel>("Crystal", 1, 0, "CircleProperties");
-    //    qmlRegisterType<CircleProperties>("Crystal", 1, 0, "CProperty");
+
 }
 
 bool DrawCircle::setup()
@@ -23,8 +22,7 @@ bool DrawCircle::setup()
     makeIconNode("../data/images/draw/circle.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    //    mCircleLayer = new CompositeAnnotationLayer();
-    //    mCircleLayer->setName(CIRCLE);
+
     mCompositeCircleLayer = new CompositeAnnotationLayer();
     mCompositeCircleLayer->setName(CIRCLE);
 
@@ -48,6 +46,8 @@ void DrawCircle::onCircleItemCheck(bool check)
             }
             setState(State::READY);
 
+
+            mapItem()->addNode(iconNode());
             createProperty();
             mapItem()->addNode(iconNode());
 
@@ -66,6 +66,11 @@ void DrawCircle::onCircleItemCheck(bool check)
             mCircleProperties->setProperty("visible", false);
             mapItem()->removeNode(iconNode());
         }}
+
+
+
+
+
 
     void DrawCircle::initDraw(const osgEarth::GeoPoint &geoPos)
     {
