@@ -243,7 +243,7 @@ void model::moving(const osgEarth::GeoPoint &geoPos){
 
     auto moveableModell = dynamic_cast<MoveableModel*>(mCurrentModel.get());
     if (moveableModell){
-        moveableModell->moveTo(geoPos,80000);
+        moveableModell->moveTo(geoPos,80);
     }
 }
 
