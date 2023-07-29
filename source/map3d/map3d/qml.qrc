@@ -31,5 +31,9 @@
         <file>LightingItem.qml</file>
         <file>style/Style.qml</file>
         <file>style/qmldir</file>
+        <file>SideContainer.qml</file>
+        <file>DockWindow.qml</file>
+        <file>ToolBar.qml</file>
+        <file>TabItem.qml</file>
     </qresource>
 </RCC>

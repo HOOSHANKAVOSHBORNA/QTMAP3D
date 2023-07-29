@@ -120,7 +120,7 @@ void DrawBox::createProperty()
         //            mBoxProperty->setStatuses();
 
         //        mBoxProperties = new BoxProperties();
-        mainWindow()->addDockItem(mBoxProperty, 0.3);
+        mainWindow()->addToRightContainer(mBoxProperty, "Box");
     });
 
 

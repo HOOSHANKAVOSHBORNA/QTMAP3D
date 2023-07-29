@@ -46,25 +46,10 @@ public:
     UIHandle *uiHandle() const;
 
 signals:
-    void sideItemCreated(int index, QObject *pSideItem);
-    void toolboxItemCreated(ItemDescProxy *itemProxy);
-    void fileItemCreated(ItemDescProxy *itemProxy);
-    void toolboxItemClicked(const QString& itemName, const QString& categoryName);
-    void fileItemClicked(const QString& itemName, const QString& categoryName);
-    void toolboxItemCheckedChanged(const QString& itemName,
-                                   const QString& categoryName,
-                                   bool checked);
-
     void layersModelChanged();
     void toolboxChanged();
 
 public slots:
-    QQuickItem* wrapItemWithDockable(QQuickItem* item,const QString& title);
-    void setCentralDockItem(QQuickItem* dockItem);
-    void attachToCentralDockItem(QQuickItem* dockItem, bool horizontalAttach, bool attachAsFirst, qreal splitScale);
-    void showInRightDock(QQuickItem *item);
-    void addDockItem(QQuickItem* item, float scale, int position = DockPosition::Right);
-    void hideDockItem(QQuickItem* item);
     void showListWindow();
 
     void setLayersModel(LayersModel *layersModel);
@@ -74,6 +59,9 @@ public:
     MapItem* getMapItem();
     void setMapItem(MapItem& mapItem);
 
+    void addToLeftContainer(QQuickItem *item, QString title);
+    void addToRightContainer(QQuickItem *item, QString title);
+    void addToCenterCenterContainer(QQuickItem *item);
 
 public slots:
     void setListWindow(ListWindow *listWindow);

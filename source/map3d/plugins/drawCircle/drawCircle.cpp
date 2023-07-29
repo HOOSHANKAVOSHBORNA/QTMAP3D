@@ -136,7 +136,7 @@ void DrawCircle::onCircleItemCheck(bool check)
             mCircleProperties = static_cast<CircleProperties*>(item);
 
 
-            mainWindow()->addDockItem(mCircleProperties, 0.3);
+            mainWindow()->addToRightContainer(mCircleProperties, "Circle");
         });
 
 

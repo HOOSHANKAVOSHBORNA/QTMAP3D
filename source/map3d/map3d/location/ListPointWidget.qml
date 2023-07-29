@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Qt.labs.platform 1.1
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.13
+import "../style"
 Item {
     id :rootItem
     signal goToView(string name, real latitude, real longitude,
@@ -11,8 +12,8 @@ Item {
 
     Rectangle{
         anchors.fill: parent
-        color: _colorRec
-        radius: _radius
+        color: Style.primaryColor
+        radius: Style.radius
         opacity: 0.8
     }
     ScrollView {

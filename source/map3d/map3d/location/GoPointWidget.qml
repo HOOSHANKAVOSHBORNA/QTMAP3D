@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 //import QtQuick.Effects
+import Crystal 1.0
+import "../style"
 
 Rectangle{
 
@@ -8,8 +10,8 @@ Rectangle{
 
 
     id:root
-    color: _colorRec
-    radius: _radius
+    color: Style.primaryColor
+    radius: Style.radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.3
     width: parent.width / 2
@@ -40,9 +42,9 @@ Rectangle{
             bottom: parent.bottom
             left: parent.left
             right: parent.right
-            leftMargin: _margin / 5
-            rightMargin: _margin / 5
-            topMargin : _margin
+            leftMargin: Style.marginSize / 5
+            rightMargin: Style.marginSize / 5
+            topMargin : Style.marginSize
         }
         Repeater{
             id:repeter
@@ -50,11 +52,11 @@ Rectangle{
             delegate: TextField{
                 height: 30
                 width: parent.width
-                anchors.topMargin: _margin
+                anchors.topMargin: Style.marginSize
                 placeholderText: placeholdername
                 hoverEnabled : true
-                font.family: _fontFamily
-                font.pointSize: _fontPointSize
+                font.family: Style.fontFamily
+                font.pointSize: Style.fontPointSize
                 color: "#FFFFFF"
                 onPressed:{
                     text = ""
@@ -62,8 +64,8 @@ Rectangle{
 
                 validator:  DoubleValidator {bottom:rangebottem ; top: rangetop ; decimals:5 }
                 background: Rectangle{
-                    color: _colorButton
-                    radius: _radius
+                    color: "#404040"
+                    radius: 10
                     opacity: 0.3
                 }
 
@@ -74,12 +76,12 @@ Rectangle{
             id:btnGo
             height: 30
             hoverEnabled: true
-            width: parent.width - (_margin * 2 )
+            width: parent.width - (5 * 2 )
             anchors.horizontalCenter: parent.horizontalCenter
 
             text: "Go To"
-            font.family: _fontFamily
-            font.pointSize: _fontPointSize
+            font.family: Style.fontFamily
+            font.pointSize: Style.fontPointSize
             onClicked:{
                 if(repeter.itemAt(0).text !=="" &&
                    repeter.itemAt(1).text !=="" &&
@@ -103,9 +105,9 @@ Rectangle{
                 opacity: 1
             }
             background:Rectangle {
-                color: _colorHover
+                color: Style.hoverColor
                 opacity: btnGo.hovered ? 0.8 : 1
-                radius: _radius
+                radius: Style.radius
                 layer.enabled: true
 //                layer.effect: DropShadow {
 //                    transparentBorder: true

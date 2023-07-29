@@ -120,7 +120,7 @@ void DrawCapsule::onCapsuleItemCheck(bool check)
                 //            mBoxProperty->setStatuses();
 
                 //        mBoxProperties = new BoxProperties();
-                mainWindow()->addDockItem(mCapsuleProperties, 0.3);
+                mainWindow()->addToRightContainer(mCapsuleProperties, "Capsule");
             });
 
 

@@ -121,7 +121,7 @@ void DrawCylinder::createProperty()
         //            mBoxProperty->setStatuses();
 
         //        mBoxProperties = new BoxProperties();
-        mainWindow()->addDockItem(mCylinderProperties, 0.3);
+        mainWindow()->addToRightContainer(mCylinderProperties, "Cylinder");
     });
 
 

@@ -138,8 +138,8 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
         QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
         MapItem *mapitem = static_cast<MapItem*>(item);
         mainWnd->setMapItem(*mapitem);
-        QQuickItem* dock = mainWnd->wrapItemWithDockable(item, "Viewport");
-        mainWnd->setCentralDockItem(dock);
+//        QQuickItem* dock = mainWnd->wrapItemWithDockable(item, "Viewport");
+        mainWnd->addToCenterCenterContainer(mapitem);
         onMainWindowCreated();
 //        emit mainWindowCreated();
     }

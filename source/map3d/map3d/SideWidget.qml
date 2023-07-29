@@ -28,21 +28,21 @@ Item {
             }
         }
 
-        if (index === rootItem.currentVisibleIndex) {
-            sideItemHideAnimation.target = sideItemsRepeater.itemAt(index);
-            sideItemHideAnimation.from = 300 + (widgetsMargins * 2.0);
-            sideItemHideAnimation.to = 0;
-            sideItemHideAnimation.duration = 200;
-            rootItem.currentVisibleIndex = -1;
-            sideItemHideAnimation.start();
-        } else {
-            sideItemShowAnimation.target = sideItemsRepeater.itemAt(index);
-            sideItemShowAnimation.from = 0;
-            sideItemShowAnimation.to = 300 + (widgetsMargins * 2.0);
-            sideItemShowAnimation.duration = 200;
-            rootItem.currentVisibleIndex = index;
-            sideItemShowAnimation.start();
-        }
+//        if (index === rootItem.currentVisibleIndex) {
+//            sideItemHideAnimation.target = sideItemsRepeater.itemAt(index);
+//            sideItemHideAnimation.from = 300 + (widgetsMargins * 2.0);
+//            sideItemHideAnimation.to = 0;
+//            sideItemHideAnimation.duration = 200;
+//            rootItem.currentVisibleIndex = -1;
+//            sideItemHideAnimation.start();
+//        } else {
+//            sideItemShowAnimation.target = sideItemsRepeater.itemAt(index);
+//            sideItemShowAnimation.from = 0;
+//            sideItemShowAnimation.to = 300 + (widgetsMargins * 2.0);
+//            sideItemShowAnimation.duration = 200;
+//            rootItem.currentVisibleIndex = index;
+//            sideItemShowAnimation.start();
+//        }
     }
 
 
