@@ -68,4 +68,3 @@ float Rect::getStrokeWidth()
      auto style = this->getStyle();
      return   style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width().get();
 }
-

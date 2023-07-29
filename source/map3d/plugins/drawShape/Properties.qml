@@ -55,6 +55,44 @@ CProperty {
                     width: parent.width - 18
                     x:5
                     spacing: 2
+                    ////////////////////////////////// Name ////////////////////////////////////////////////
+
+                    ColumnLayout{
+                        width:parent.width
+                        visible:true
+
+
+                        RowLayout{
+                            id:nM
+                            Layout.fillWidth: true
+                            Text {
+                                id: names1
+                                Layout.preferredWidth: 100
+                                text: "name : "
+                                font.pointSize: 10
+                                color: "white"
+                            }
+                            TextField {
+                                id: names
+                                Layout.preferredWidth: 100
+                                Layout.fillWidth: true
+                                Layout.leftMargin: 25
+                                text: rootItem.name
+                                font.pointSize: 10
+                                color: "white"
+                                onAccepted: {
+
+                                    var currentName = names.displayText
+
+                                    rootItem.name = currentName
+                                }
+                            }
+
+
+
+                        }
+
+                    }
 
                     ////////////////////////////////////fill Color Property//////////////////////////////////
 
@@ -587,6 +625,7 @@ CProperty {
                                         value: 0
                                         to : 360
                                         from : 0
+//                                        decimals: 0
                                         Layout.fillWidth: true
                                         Layout.topMargin: 30
                                         Layout.preferredHeight: 28
@@ -610,6 +649,7 @@ CProperty {
                                     id: endarc
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
+//                                    decimals: 0
                                     Layout.leftMargin: 25
                                     value: 360
                                     from: 0
@@ -648,7 +688,7 @@ CProperty {
                                 QSpinBox {
                                     id: radiusspinbox
                                     //                                        value: rootItem.radius
-                                    to : 10000000
+                                    realValue: rootItem.radius
                                     from : 0
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
@@ -689,22 +729,23 @@ CProperty {
 
                                 QSpinBox {
                                     id:mheight
-                                    to : 1000000
+                                    realValue: rootItem.heighT
                                     from : 0
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25
                                     onValueChanged: {
-                                        rootItem.heighT = realValue
+//                                        rootItem.heighT = realValue
+                                        rootItem.heighT= value
                                     }
                                 }
-                                Binding{
-                                    target: mheight
+//                                Binding{
+//                                    target: mheight
 
-                                    property: "realValue"
-                                    value: rootItem.heighT
-                                    delayed: true
-                                }
+//                                    property: "realValue"
+//                                    value: rootItem.heighT
+//                                    delayed: true
+//                                }
                             }
                         }
                     }
