@@ -130,7 +130,7 @@ void DrawEllipse::createProperty()
         mEllipseProperties = static_cast<EllipseProperties*>(item);
 
 
-        mainWindow()->addDockItem(mEllipseProperties, 0.3);
+        mainWindow()->addToRightContainer(mEllipseProperties, "Ellipse");
     });
 
 

@@ -123,7 +123,7 @@ void DrawCone::createProperty()
         //            mBoxProperty->setStatuses();
 
         //        mBoxProperties = new BoxProperties();
-        mainWindow()->addDockItem(mConeProperties, 0.3);
+        mainWindow()->addToRightContainer(mConeProperties, "Cone");
     });
 
 

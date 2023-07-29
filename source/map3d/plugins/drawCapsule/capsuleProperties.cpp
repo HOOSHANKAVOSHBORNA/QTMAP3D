@@ -12,7 +12,7 @@ CapsuleProperties::CapsuleProperties(QQuickItem *parent):
     setRadiusStatus     (true);
     setLocationStatus   (true);
     setHeightStatus     (true);
-    setCenterStatus     (true);
+//    setCenterStatus     (true);
 
 }
 
@@ -45,7 +45,16 @@ void CapsuleProperties::setLocationRelative(const bool &relative)
 
     Property::setLocationRelative(relative);
 }
+void CapsuleProperties::setName(const QString &name)
+{
 
+    Property::setName(name);
+    if(mCapsule)
+    {
+        mCapsule->setName(name.toStdString());
+
+    }
+}
 
 
 void CapsuleProperties::setLocation(const QVector3D &status)
@@ -82,6 +91,7 @@ void CapsuleProperties::setCapsule(Capsule *newCapsule, const osgEarth::SpatialR
         mCapsule->setColor(Utility::qColor2osgEarthColor(getFillColor()));
         mCapsule->setRadius(getRadius());
         mCapsule->setHeight(getHeight());
+        setName(QString::fromStdString(mCapsule->getName()));
 
         setLocation(Utility::osgEarthGeoPointToQvector3D(mCapsule->getPosition()));
     }

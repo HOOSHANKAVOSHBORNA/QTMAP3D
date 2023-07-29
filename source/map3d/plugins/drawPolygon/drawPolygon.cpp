@@ -133,7 +133,7 @@ void DrawPolygon::createProperty()
         mPolygonProperties = static_cast<PolygonProperties*>(item);
 
 
-        mainWindow()->addDockItem(mPolygonProperties, 0.3);
+        mainWindow()->addToRightContainer(mPolygonProperties, "Polygon");
     });
 
 

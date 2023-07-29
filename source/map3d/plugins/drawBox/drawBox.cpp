@@ -72,12 +72,14 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mBox->setName(name.toStdString());
 
     mBox->setPosition(geoPos);
+//    mBox->setCenter(geoPos);
     mBoxLayer = new ParenticAnnotationLayer();
     mBoxLayer->addChild(mBox);
     mBoxLayer->setName(mBox->getName());
 //    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
     mCompositeBoxLayer->addLayer(mBoxLayer);
     mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
+
 
 
 
@@ -88,7 +90,9 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 {
     mBox->setPosition(geoPos);
+//    mBox->setCenter(geoPos);
     mBoxProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+//    mBoxProperty->setCenter(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }
 
 void DrawBox::cancelDraw()
@@ -115,12 +119,10 @@ void DrawBox::createProperty()
         //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
         QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
         mBoxProperty = static_cast<BoxProperty*>(item);
-        //            mBoxProperties->setFillColorStatus(false);
-        //            mBoxProperties->setFillColor(QColor());
-        //            mBoxProperty->setStatuses();
 
         //        mBoxProperties = new BoxProperties();
-        mainWindow()->addDockItem(mBoxProperty, 0.3);
+        mainWindow()->addToRightContainer(mBoxProperty, "Box");
+
     });
 
 

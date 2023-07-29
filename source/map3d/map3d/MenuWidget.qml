@@ -4,6 +4,7 @@ import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import QtQuick.Effects
 import Crystal 1.0
+import "style"
 
 Item {
     id: rootItem
@@ -80,8 +81,8 @@ Item {
                             Layout.preferredHeight: implicitHeight
                             text: title_text
                             color: "white"
-                            font.family: _fontFamily
-                            font.pointSize: _fontPointSize
+                            font.family: Style.fontFamily
+                            font.pointSize: Style.fontPointSize
                         }
                         visible: false
                     }
@@ -112,7 +113,7 @@ Item {
                         source: col
                         colorization: 1
                         colorizationColor: mouseArea.isMouseOnItem ?
-                                   (mouseArea.pressed ? _colorPresed: "#0dc2df") :
+                                   (mouseArea.pressed ? Style.selectionColor: "#0dc2df") :
                                    (mouseArea.pressed ? "#0dc2df" : "#FFFFFF");
                     }
                 }
@@ -144,8 +145,8 @@ Item {
                         Layout.preferredHeight: implicitHeight
                         text: "Layers"
                         color: "white"
-                        font.family: _fontFamily
-                        font.pointSize: _fontPointSize
+                        font.family: Style.fontFamily
+                        font.pointSize: Style.fontPointSize
                     }
                     visible: false
                 }
@@ -203,8 +204,8 @@ Item {
                         Layout.preferredHeight: implicitHeight
                         text: "List"
                         color: "white"
-                        font.family: _fontFamily
-                        font.pointSize: _fontPointSize
+                        font.family: Style.fontFamily
+                        font.pointSize: Style.fontPointSize
                     }
                     visible: false
                 }
