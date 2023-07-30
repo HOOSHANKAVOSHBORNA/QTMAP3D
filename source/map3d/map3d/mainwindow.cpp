@@ -57,6 +57,13 @@ void MainWindow::addToCenterCenterContainer(QQuickItem *item)
                               );
 }
 
+void MainWindow::removeFromRightContainer(QQuickItem *item)
+{
+    QMetaObject::invokeMethod(this, "removeFromRightContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              );
+}
+
 void MainWindow::showListWindow()
 {
     if (mListWindow) {

@@ -47,7 +47,6 @@ void Property::setName(const QString &name)
 {
     mName = name;
     emit propretyChanged();
-    qDebug() << "ssssssssssssssssssssssssssssssssssssssssssssssssssssss";
 }
 //-------------------- stroke -------------------- //
 

@@ -29,13 +29,13 @@ private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-    void createProperty();
 private:
     osg::ref_ptr<Box> mBox{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mBoxLayer{nullptr};
     BoxProperty *mBoxProperty{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mCompositeBoxLayer;
     static int mCount;
+    QQuickItem *mItem;
 };
 
 #endif // DRAWBOX_H

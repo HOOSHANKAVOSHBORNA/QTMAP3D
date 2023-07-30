@@ -6,13 +6,13 @@ import QtQuick.Dialogs
 import Crystal 1.0
 import "style"
 
-CProperty {
+Item {
     anchors.fill: parent
     id: rootItem
     implicitHeight: parent ? parent.height : 0
 
     property string _headerTitleSTR: "Properties"
-
+    property CProperty model
     //////////////////////////Main Content////////////////////////
     Rectangle {
         id: item
@@ -77,14 +77,14 @@ CProperty {
                                 Layout.preferredWidth: 100
                                 Layout.fillWidth: true
                                 Layout.leftMargin: 25
-                                text: rootItem.name
+                                text: rootItem.model ? rootItem.model.name : ""
                                 font.pointSize: 10
                                 color: "white"
                                 onAccepted: {
 
                                     var currentName = names.displayText
 
-                                    rootItem.name = currentName
+                                    rootItem.model.name = currentName
                                 }
                             }
 
@@ -99,7 +99,7 @@ CProperty {
                     //---------------------------------fill colore----------------------------//////////
                     ColumnLayout{
                         width:parent.width
-                        visible: rootItem.fillColorStatus
+                        visible: rootItem.model ? rootItem.model.fillColorStatus : false
                         Rectangle{
                             color: "white"
                             Layout.fillWidth: true
@@ -124,14 +124,14 @@ CProperty {
                                     id: colorThumbnail
                                     Layout.preferredHeight: 20
                                     Layout.preferredWidth: 20
-                                    color: rootItem.fillColor
+                                    color: rootItem.model ? rootItem.model.fillColor : false
                                     border.width: 2
                                     border.color: "#c9c9c9"
                                     radius: 5
                                     MouseArea{
                                         anchors.fill: parent
                                         cursorShape: Qt.PointingHandCursor
-                                        onClicked: fillColorDialog.visible = true
+                                        onClicked: rootItem.model.visible = true
                                     }
                                 }
                                 SpinBox {
@@ -141,14 +141,15 @@ CProperty {
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     onValueChanged: {
-                                        rootItem.fillColor.a = value/100
+                                        rootItem.model.fillColor.a = value/100
                                     }
                                 }
                                 Binding{
                                     target: opacityValue
 
                                     property: "value"
-                                    value: rootItem.fillColor.a * 100
+                                    value: rootItem.model ? rootItem.model.fillColor.a * 100 : 0
+                                    delayed: true
                                 }
 
                                 ColorDialog {
@@ -158,7 +159,7 @@ CProperty {
                                     onAccepted: {
                                         var currentColor = fillColorDialog.selectedColor
                                         currentColor.a = opacityValue.value / 100
-                                        rootItem.fillColor = currentColor
+                                        rootItem.model.fillColor = currentColor
                                     }
                                 }
                             }
@@ -167,7 +168,7 @@ CProperty {
                     ///////////////////////////// Stroke ///////////////////////////////////
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.strokeStatus
+                        visible:rootItem.model ? rootItem.model.strokeStatus : false
                         Rectangle{
                             color: "white"
                             Layout.fillWidth: true
@@ -217,7 +218,7 @@ CProperty {
                                         id: colorThumbnail1
                                         Layout.preferredHeight: 20
                                         Layout.preferredWidth: 20
-                                        color: rootItem.stroke
+                                        color: rootItem.model ? rootItem.model.stroke : "#202020"
                                         border.width: 2
                                         border.color: "#c9c9c9"
                                         radius: 5
@@ -238,14 +239,14 @@ CProperty {
 
 
                                         onValueChanged: {
-                                            rootItem.stroke.a= realValue/100
+                                            rootItem.model.stroke.a= realValue/100
                                         }
                                     }
                                     Binding{
                                         target: strkopacityValue
 
                                         property: "realValue"
-                                        value: rootItem.stroke.a * 100
+                                        value: rootItem.model ? rootItem.model.stroke.a * 100 : 0
                                         delayed: true
                                     }
 
@@ -256,7 +257,7 @@ CProperty {
                                         onAccepted: {
                                             var currentstrkColor = lineColorDialog.selectedColor
                                             currentstrkColor.a = strkopacityValue.value / 100
-                                            rootItem.stroke = currentstrkColor
+                                            rootItem.model.stroke = currentstrkColor
                                         }
                                     }
                                 }
@@ -275,17 +276,17 @@ CProperty {
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 28
-                                    value: 1
                                     from: 0
+                                    to: 10000000
                                     onValueChanged: {
-                                        rootItem.strokeWidth = value
+                                        rootItem.model.strokeWidth = value
                                     }
                                 }
                                 Binding{
                                     target: strkWidth
 
                                     property: "value"
-                                    value: rootItem.strokeWidth
+                                    value: rootItem.model ? rootItem.model.strokeWidth : 0
                                 }
                             }
                         }
@@ -293,7 +294,7 @@ CProperty {
                     ////////////---------------------Location--------------------/////////////
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.locationStatus
+                        visible:rootItem.model ? rootItem.model.locationStatus : false
 
                         Rectangle{
                             color: "white"
@@ -343,15 +344,17 @@ CProperty {
                                     Layout.leftMargin: 25
                                     Layout.rightMargin: -9
                                     decimals: 6
+                                    from: 0
+                                    to: 100000000
                                     onValueChanged: {
-                                        rootItem.location.x = realValue
+                                        rootItem.model.location.x = realValue
                                     }
                                 }
                                 Binding{
                                     target: mlocationX
 
                                     property: "realValue"
-                                    value: rootItem.location.x
+                                    value: rootItem.model ? rootItem.model.location.x : 0
                                     delayed: true
                                 }
 
@@ -370,14 +373,16 @@ CProperty {
                                     Layout.leftMargin: 25
                                     Layout.rightMargin: -9
                                     decimals: 6
+                                    from: 0
+                                    to: 100000000
                                     onRealValueChanged: {
-                                        rootItem.location.y = realValue
+                                        rootItem.model.location.y = realValue
                                     }
                                 }
                                 Binding{
                                     target: mlocationY
                                     property: "realValue"
-                                    value: rootItem.location.y
+                                    value: rootItem.model ? rootItem.model.location.y : 0
                                     delayed: true
                                 }
 
@@ -397,15 +402,17 @@ CProperty {
                                     Layout.leftMargin: 25
                                     Layout.rightMargin: -9
                                     decimals: 6
+                                    from: 0
+                                    to: 100000000
                                     onValueChanged: {
-                                        rootItem.location.z = realValue
+                                        rootItem.model.location.z = realValue
                                     }
                                 }
                                 Binding{
                                     target: mlocationZ
 
                                     property: "realValue"
-                                    value: rootItem.location.z
+                                    value: rootItem.model ? rootItem.model.location.z : 0
                                     delayed: true
                                 }
                                 CheckBox {
@@ -415,10 +422,10 @@ CProperty {
                                     checked: false
 
                                     onCheckStateChanged: if(checked === true){
-                                                             rootItem.locationRelative =true
+                                                             rootItem.model.locationRelative =true
                                                          }
                                                          else{
-                                                             rootItem.locationRelative = false
+                                                             rootItem.model.locationRelative = false
                                                          }
 
                                     indicator: Rectangle {
@@ -455,7 +462,7 @@ CProperty {
 
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.centerStatus
+                        visible:rootItem.model ? rootItem.model.centerStatus : false
 
                         Rectangle{
                             color: "white"
@@ -507,15 +514,17 @@ CProperty {
                                     Layout.rightMargin: -9
 
                                     decimals: 7
+                                    from: 0
+                                    to: 10000000
                                     onValueChanged: {
-                                        rootItem.center.x = realValue
+                                        rootItem.model.center.x = realValue
                                     }
                                 }
                                 Binding{
                                     target: mcenterX
 
                                     property: "realValue"
-                                    value: rootItem.center.x
+                                    value: rootItem.model ? rootItem.model.center.x : 0
                                 }
 
                                 Text {
@@ -533,15 +542,17 @@ CProperty {
                                     Layout.leftMargin: 25
                                     Layout.rightMargin: -9
                                     decimals: 7
+                                    from: 0
+                                    to: 10000000
                                     onValueChanged: {
-                                        rootItem.center.y =realValue
+                                        rootItem.model.center.y =realValue
                                     }
                                 }
                                 Binding{
                                     target: mcenterY
 
                                     property: "realValue"
-                                    value: rootItem.center.y
+                                    value: rootItem.model ? rootItem.model.center.y : 0
                                 }
 
                                 Text {
@@ -559,15 +570,17 @@ CProperty {
                                     Layout.leftMargin: 25
                                     Layout.rightMargin: -9
                                     decimals: 7
+                                    from: 0
+                                    to: 10000000
                                     onValueChanged: {
-                                        rootItem.center.z =realValue
+                                        rootItem.model.center.z =realValue
                                     }
                                 }
                                 Binding{
                                     target: mcenterZ
 
                                     property: "realValue"
-                                    value: rootItem.center.z
+                                    value: rootItem.model ? rootItem.model.center.z : 0
                                 }
                             }
                         }
@@ -576,7 +589,7 @@ CProperty {
 
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.arcStatus
+                        visible:rootItem.model ? rootItem.model.arcStatus : false
 
                         Rectangle{
                             color: "white"
@@ -634,7 +647,7 @@ CProperty {
 
                                         onValueChanged: {
 
-                                            rootItem.arc.x =value
+                                            rootItem.model.arc.x =value
                                         }
                                     }
                                 }
@@ -655,7 +668,7 @@ CProperty {
                                     from: 0
                                     to: 360
                                     onValueChanged: {
-                                        rootItem.arc.y = value
+                                        rootItem.model.arc.y = value
                                     }
                                 }
                             }
@@ -665,7 +678,7 @@ CProperty {
 
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.radiusStatus
+                        visible:rootItem.model ? rootItem.model.radiusStatus : false
 
                         Rectangle{
                             color: "white"
@@ -688,13 +701,14 @@ CProperty {
                                 QSpinBox {
                                     id: radiusspinbox
                                     //                                        value: rootItem.radius
-                                    realValue: rootItem.radius
+                                    realValue: rootItem.model ? rootItem.model.radius : false
                                     from : 0
+                                    to: 10000000
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25
                                     onValueChanged: {
-                                        rootItem.radius = value
+                                        rootItem.model.radius = value
                                     }
                                 }
                             }
@@ -705,7 +719,7 @@ CProperty {
 
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.heightStatus
+                        visible:rootItem.model ? rootItem.model.heightStatus : false
 
                         Rectangle{
                             color: "white"
@@ -729,14 +743,15 @@ CProperty {
 
                                 QSpinBox {
                                     id:mheight
-                                    realValue: rootItem.heighT
+                                    realValue: rootItem.model ? rootItem.model.heighT : 0
                                     from : 0
+                                    to: 10000000
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25
                                     onValueChanged: {
 //                                        rootItem.heighT = realValue
-                                        rootItem.heighT= value
+                                        rootItem.model.heighT= value
                                     }
                                 }
 //                                Binding{
@@ -753,7 +768,7 @@ CProperty {
 
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.lenghtStatus
+                        visible:rootItem.model ? rootItem.model.lenghtStatus : false
 
                         Rectangle{
                             color: "white"
@@ -778,20 +793,21 @@ CProperty {
                                 QSpinBox {
                                     id: lengthValue
                                     from : 0
+                                    to: 10000000
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25
                                     height: 28
 
                                     onValueChanged: {
-                                        rootItem.lenghT = realValue
+                                        rootItem.model.lenghT = realValue
                                     }
                                 }
                                 Binding{
                                     target: lengthValue
 
                                     property: "realValue"
-                                    value: rootItem.lenghT
+                                    value: rootItem.model ? rootItem.model.lenghT : 0
                                     delayed: true
 
                                 }
@@ -802,7 +818,7 @@ CProperty {
 
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.widthStatus
+                        visible:rootItem.model ? rootItem.model.widthStatus : false
 
                         Rectangle{
                             color: "white"
@@ -828,15 +844,16 @@ CProperty {
                                 QSpinBox {
                                     id:widthValue
 
-                                    realValue: rootItem.widtH
+                                    realValue: rootItem.model ? rootItem.model.widtH : 0
                                     from : 0
+                                    to: 10000000
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25
 
                                 }
                                 Binding{
-                                    target: rootItem
+                                    target: rootItem.model
 
                                     property: "widtH"
                                     value: widthValue.realValue
@@ -850,7 +867,7 @@ CProperty {
                     // --------------------------------- clamp -----------------------////////////
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.clampStatus
+                        visible:rootItem.model ? rootItem.model.clampStatus : false
 
                         Rectangle{
                             color: "white"
@@ -880,7 +897,8 @@ CProperty {
                                     Layout.leftMargin: 25
 
                                     onCurrentIndexChanged: {
-                                        rootItem.clamp = currentIndex
+                                        if(rootItem.model)
+                                            rootItem.model.clamp = currentIndex
                                     }
 
                                     delegate: ItemDelegate {
@@ -958,7 +976,7 @@ CProperty {
 
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.tesselationStatus
+                        visible:rootItem.model ? rootItem.model.tesselationStatus : false
 
                         Rectangle{
                             color: "white"
@@ -985,7 +1003,7 @@ CProperty {
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25
                                     onValueChanged: {
-                                        rootItem.tesselation = value
+                                        rootItem.model.tesselation = value
                                     }
                                 }
                             }
@@ -994,7 +1012,7 @@ CProperty {
                     ////------------------------ Show lenght -------------------- ///////////////
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.showLenStatus
+                        visible:rootItem.model ? rootItem.model.showLenStatus : false
 
                         Rectangle{
                             color: "white"
@@ -1018,7 +1036,7 @@ CProperty {
                                 Layout.leftMargin: 25
                                 checked: false
                                 onToggled: function() {
-                                    rootItem.showLen = len.checked
+                                    rootItem.model.showLen = len.checked
                                 }
                             }
                         }
@@ -1027,7 +1045,7 @@ CProperty {
 
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.bearingStatus
+                        visible:rootItem.model ? rootItem.model.bearingStatus : false
 
                         Rectangle{
                             color: "white"
@@ -1052,7 +1070,7 @@ CProperty {
                                 Layout.leftMargin: 25
                                 checked: false
                                 onToggled: function() {
-                                    rootItem.bearing = bae.checked
+                                    rootItem.model.bearing = bae.checked
                                 }
                             }
                         }
@@ -1061,7 +1079,7 @@ CProperty {
                     ////------------------------ Show Slope -------------------- ///////////////
                     ColumnLayout{
                         width:parent.width
-                        visible:rootItem.showSlopStatus
+                        visible:rootItem.model ? rootItem.model.showSlopStatus : false
 
                         Rectangle{
                             color: "white"
@@ -1086,7 +1104,7 @@ CProperty {
                                 Layout.leftMargin: 25
                                 checked: false
                                 onToggled: function() {
-                                    rootItem.showSlop  = slp.checked
+                                    rootItem.model.showSlop  = slp.checked
                                 }
                             }
                         }
@@ -1095,13 +1113,13 @@ CProperty {
 
                     ////------------------------ Points  -------------------- ///////////////
                     Rectangle{
-                        visible: rootItem.pointsStatus
+                        visible: rootItem.model ? rootItem.model.pointsStatus : false
                         color: "white"
                         Layout.fillWidth: true
                         Layout.preferredHeight: 2
                     }
                     GroupBox{
-                        visible: rootItem.pointsStatus
+                        visible: rootItem.model ? rootItem.model.pointsStatus : false
                         id: pointColorSecR
                         padding: 0
                         Layout.fillWidth: true
@@ -1142,7 +1160,7 @@ CProperty {
                                     id: cptclr
                                     Layout.preferredHeight: 20
                                     Layout.preferredWidth: 20
-                                    color: rootItem.points
+                                    color: rootItem.model ? rootItem.model.points : "#202020"
                                     border.width: 2
                                     border.color: "#c9c9c9"
                                     radius: 5
@@ -1159,7 +1177,7 @@ CProperty {
                                     color: "#c9c9c9"
                                     radius: 5
                                     Text {
-                                        text: rootItem.points
+                                        text: rootItem.model ? rootItem.model.points : ""
                                         anchors.centerIn: parent
                                         font.pointSize: 10
                                     }
@@ -1169,7 +1187,7 @@ CProperty {
                                     id:  pointColorDialog
                                     title: "Please choose a color"
                                     onAccepted: {
-                                        rootItem.points = pointColorDialog.selectedColor
+                                        rootItem.model.points = pointColorDialog.selectedColor
                                     }
                                 }
                             }
@@ -1191,7 +1209,7 @@ CProperty {
                                 from: 0
                                 to: 360
                                 onValueChanged: {
-                                    rootItem.pointsWidth = value
+                                    rootItem.model.pointsWidth = value
                                 }
                             }
 
@@ -1208,7 +1226,7 @@ CProperty {
                                 Layout.leftMargin: 25
                                 checked: false
                                 onToggled: function() {
-                                    rootItem.pointsSmooth  = psmt.checked
+                                    rootItem.model.pointsSmooth  = psmt.checked
                                 }
                             }
                         }

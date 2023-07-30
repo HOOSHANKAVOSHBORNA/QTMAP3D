@@ -26,7 +26,6 @@ private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-    void createProperty();
 
 private:
     osg::ref_ptr<Capsule> mCapsule{nullptr};
@@ -34,6 +33,7 @@ private:
     osg::ref_ptr<CompositeAnnotationLayer> mCompositeCapsuleLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mCapsuleLayer = nullptr;
     static int mCount;
+    QQuickItem *mItem;
 
 };
 

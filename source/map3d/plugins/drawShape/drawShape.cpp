@@ -1,4 +1,5 @@
 #include "drawShape.h"
+#include "mainwindow.h"
 #include "property.h"
 
 #include <osgEarthSymbology/Style>
@@ -36,7 +37,7 @@ DrawShape::DrawShape(QObject *parent)
 {
     Q_INIT_RESOURCE(drawShape);
     Q_INIT_RESOURCE(drawShapeQml);
-//    qmlRegisterType<Property>("Crystal", 1, 0, "CProperty");
+    qmlRegisterType<Property>("Crystal", 1, 0, "CProperty");
 }
 
 DrawShape::~DrawShape()
@@ -163,5 +164,29 @@ void DrawShape::confirmDraw()
     if (state() == State::EDIT || state() == State::DRAWING) {
         setState(State::READY);
     }
+}
+
+void DrawShape::createProperty(QString name, QVariant property)
+{
+    QQmlComponent* comp = new QQmlComponent(qmlEngine());
+    connect(comp, &QQmlComponent::statusChanged, [comp, property, name, this](){
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
+        mItem = qobject_cast<QQuickItem*>(comp->create());
+        mItem->setProperty("model", property);
+
+        mainWindow()->addToRightContainer(mItem, name);
+
+    });
+
+
+    comp->loadUrl(QUrl("qrc:/Properties.qml"));
+}
+
+void DrawShape::hideProperty()
+{
+    mainWindow()->removeFromRightContainer(mItem);
 }
 

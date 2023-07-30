@@ -49,7 +49,7 @@ ColumnLayout{
                              var item = rootItem.model.get(index).item
                              var name = rootItem.model.get(index).name
                              var docItemCom = Qt.createComponent("DockWindow.qml");
-                             if (docItemCom.status == Component.Ready) {
+                             if (docItemCom.status === Component.Ready) {
                                  var docItem = docItemCom.createObject(tabBar, {});
                                  docItem.containerItem.push(item)
                                  docItem.name = name

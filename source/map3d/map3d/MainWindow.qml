@@ -166,9 +166,9 @@ CMainWindow {
                             Material.foreground: "white"
                         }
                         Button {
+                            id: layerButton
                             Layout.fillHeight: true
                             width: implicitWidth
-                            //                        Layout.fillWidth: true
                             icon {
                                 source: "qrc:/Resources/Layers.png"
                                 width: 21
@@ -179,8 +179,6 @@ CMainWindow {
                                 color: "transparent"
                             }
                             display: AbstractButton.TextUnderIcon
-
-                            //                            text: "Layers"
                             checkable: true
                             checked: false
                             Material.foreground: "white"
@@ -189,9 +187,9 @@ CMainWindow {
                                 if (checked && wnd.layersModel ) {
                                     var layersWidget = Qt.createComponent("LayersWidget.qml");
                                     if (layersWidget.status === Component.Ready) {
-                                        layeritem = layersWidget.createObject(wnd, {});
-                                        layeritem.layersModell = wnd.layersModel
-                                        addToRightContainer(layeritem, "Layers")
+                                        layerItem = layersWidget.createObject(wnd, {});
+                                        layerItem.layersModell = wnd.layersModel
+                                        addToRightContainer(layerItem, "Layers")
                                     }
                                 }
                                 else {
