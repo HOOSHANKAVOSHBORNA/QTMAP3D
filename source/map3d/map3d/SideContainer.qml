@@ -6,9 +6,9 @@ ColumnLayout{
 
     id: rootItem
     property ListModel model:ListModel{}
-
-    function addTabItem(item, name){
-
+    property int visibleCount : 0
+    function setCurrentIndex(index){
+        tabBar.currentIndex = index
     }
 
     //--tab-----------------------------------------------
@@ -31,8 +31,6 @@ ColumnLayout{
                     var docItem = stackLayout.data[index]
                     docItem.state = "undocked"
 
-                    tb.visible = Qt.binding(function() { return docItem.state === "docked" })
-
                     for(var i = 1; i<rootItem.model.count; i++){
                         var mindex = (i + index) % rootItem.model.count
                         if(repeater.itemAt(mindex).visible){
@@ -41,9 +39,14 @@ ColumnLayout{
                         }
                     }
                 }
+
                 onVisibleChanged: {
                     tabBar.currentIndex = visible ? index: tabBar.currentIndex
                 }
+            }
+
+            function changeVisibleCount(st) {
+                rootItem.visibleCount += st === "docked" ? 1 : -1
             }
             onItemAdded: (index, it)=>{
                              var item = rootItem.model.get(index).item
@@ -54,12 +57,18 @@ ColumnLayout{
                                  docItem.containerItem.push(item)
                                  docItem.name = name
                                  stackLayout.data.push(docItem)
+                                 tabBar.currentIndex = index
+                                 repeater.itemAt(index).visible = Qt.binding(function() { return docItem.state === "docked" })
+                                 rootItem.visibleCount += 1
+
+                                 docItem.stateChanged.connect(changeVisibleCount)
                              }
                              else
-                                 print("error load docItem")
+                             print("error load docItem")
                          }
             onItemRemoved: (index, item)=>{
                                var docItem = stackLayout.data[index]
+                               rootItem.visibleCount -= 1
                                docItem.destroy()
                            }
         }

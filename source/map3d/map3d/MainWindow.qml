@@ -60,11 +60,28 @@ CMainWindow {
     SplitView {
         anchors.fill: parent
         orientation: Qt.Horizontal
+        handle: Rectangle {
+            MouseArea {
+                id: test
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onPressed: function(mouse) {
+                    mouse.accepted = false
+                }
+                propagateComposedEvents: true
+                cursorShape: Qt.SizeHorCursor
+
+            }
+            implicitWidth: 4
+            height: 400
+            color: test.containsMouse ? Style.hoverColor : "transparent"
+        }
 
         //-------------------------------------left dock-----------------
         SideContainer {
             id: leftContainer
-            SplitView.preferredWidth: implicitWidth
+            SplitView.preferredWidth: visibleCount > 0 ?  implicitWidth : 0
             SplitView.maximumWidth: parent.width/3.5
         }
 
@@ -72,6 +89,9 @@ CMainWindow {
             SplitView.fillHeight: true
             SplitView.fillWidth: true
             orientation: Qt.Vertical
+            handle: Item {
+
+            }
 
             RowLayout {
                 id: upContainer
@@ -235,7 +255,7 @@ CMainWindow {
         }
         SideContainer {
             id: rightContainer
-            SplitView.preferredWidth: implicitWidth
+            SplitView.preferredWidth: visibleCount > 0 ?  implicitWidth : 0
             SplitView.maximumWidth: parent.width/3.5
         }
 
@@ -246,6 +266,13 @@ CMainWindow {
     }
 
     function showInfoView(item, title) {
+        var indx = -1
+        for (var i = 0; i < leftContainer.model.count; ++i){
+            if (leftContainer.model.get(i).item === item){
+                leftContainer.setCurrentIndex(i)
+                return
+            }
+        }
         leftContainer.model.append({item:item, name:title})
     }
 
