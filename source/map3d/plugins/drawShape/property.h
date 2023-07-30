@@ -222,12 +222,16 @@ public:
     virtual void setPointsSmooth(const bool &point);
 
 
+    QQuickItem *item() const;
+
 signals:
     void propretyChanged();
-
+protected:
+    void createProperty(QString name, QVariant property, QQmlEngine *qmlEngine);
 
 
 private:
+    QQuickItem *mItem;
     // ----------  fill color -------- //
     bool mFillColorStatus            {true};
     QColor mFillColor = QColor(0, 0, 250, 255);

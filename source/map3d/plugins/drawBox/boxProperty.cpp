@@ -6,7 +6,6 @@
 BoxProperty::BoxProperty(QQuickItem *parent):
     Property(parent)
 {
-    qDebug()<<"BoxProperty construct";
     setHeightStatus(true);
     setLocationStatus(true);
     //    setLocationRelative(true);
@@ -17,6 +16,7 @@ BoxProperty::BoxProperty(QQuickItem *parent):
     setCenterStatus(false);
     //    setFillColor(getFillColor());
     //    setLocation(getLocation());
+
 
 }
 
@@ -41,15 +41,15 @@ void BoxProperty::setWidth(const double &width)
         mBox->setWidth(width);
 }
 
-void BoxProperty::setClamp(const int &clamp)
-{
-    Property::setClamp(clamp);
-    if(mBox){
-        osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(clamp);
-        mBox->setClamp(clampEnum);
+//void BoxProperty::setClamp(const int &clamp)
+//{
+//    Property::setClamp(clamp);
+//    if(mBox){
+//        osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(clamp);
+//        mBox->setClamp(clampEnum);
 
-    }
-}
+//    }
+//}
 
 void BoxProperty::setName(const QString &name)
 {
