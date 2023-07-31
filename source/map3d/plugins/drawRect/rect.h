@@ -17,6 +17,11 @@ public:
     osgEarth::Color getStrokeColor();
     void setStrokeWidth(float Width);
     float getStrokeWidth();
+//    osgEarth::Distance height() const;
+//    void setHeight(const osgEarth::Distance &newHeight);
+
+//    osgEarth::Distance width() const;
+//    void setWidth(const osgEarth::Distance &newWidth);
 
 private:
     MapItem* mMapItem{nullptr};

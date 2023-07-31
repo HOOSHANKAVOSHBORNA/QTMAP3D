@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWindow *parent) :
 
     setColor(Qt::black);
     mToolbox = new ToolboxProxyModel();
-    Toolbox *toolbox = new Toolbox();
+    Toolbox *toolbox = new Toolbox(this);
     mToolbox->setSourceModel(toolbox);
 
     mUIHandle = new UIHandle(this);
@@ -30,56 +30,10 @@ MainWindow::MainWindow(QWindow *parent) :
 
 MainWindow::~MainWindow()
 {
-//    cleanup();
-//    mMapItem->deleteLater();
+    //    cleanup();
+    //    mMapItem->deleteLater();
 }
 
-
-QQuickItem *MainWindow::wrapItemWithDockable(QQuickItem *item, const QString& title)
-{
-    QVariant dockableItemVariant;
-    QMetaObject::invokeMethod(this, "wrapItemWithDockableImpl",
-                              Q_RETURN_ARG(QVariant, dockableItemVariant),
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
-                              Q_ARG(QVariant, QVariant::fromValue<QString>(title)));
-
-    QQuickItem *dockableItem = dockableItemVariant.value<QQuickItem*>();
-
-    return dockableItem;
-}
-
-void MainWindow::setCentralDockItem(QQuickItem *dockItem)
-{
-    QMetaObject::invokeMethod(this, "setCentralDockItemImpl",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(dockItem)));
-}
-
-void MainWindow::attachToCentralDockItem(QQuickItem *dockItem, bool horizontalAttach, bool attachAsFirst, qreal splitScale)
-{
-    QMetaObject::invokeMethod(this, "attachToCentralDockItemImpl",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(dockItem)),
-                              Q_ARG(QVariant, QVariant::fromValue<bool>(horizontalAttach)),
-                              Q_ARG(QVariant, QVariant::fromValue<bool>(attachAsFirst)),
-                              Q_ARG(QVariant, QVariant::fromValue<qreal>(splitScale))
-                              );
-}
-
-void MainWindow::showInRightDock(QQuickItem *item)
-{
-    QQuickItem* dockItem = wrapItemWithDockable(item, "Property");
-    attachToCentralDockItem(dockItem, true, false, 0.2);
-}
-
-void MainWindow::addDockItem(QQuickItem *item, float scale, int position)
-{
-    QQuickItem* dockItem = wrapItemWithDockable(item, "Property");
-    attachToCentralDockItem(dockItem, true, false, scale);
-}
-
-void MainWindow::hideDockItem(QQuickItem *item)
-{
-
-}
 
 LayersModel *MainWindow::layersModel() const
 {
@@ -94,6 +48,20 @@ ToolboxProxyModel *MainWindow::toolbox() const
 UIHandle *MainWindow::uiHandle() const
 {
     return mUIHandle;
+}
+
+void MainWindow::addToCenterCenterContainer(QQuickItem *item)
+{
+    QMetaObject::invokeMethod(this, "addToCenterCenterContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              );
+}
+
+void MainWindow::removeFromRightContainer(QQuickItem *item)
+{
+    QMetaObject::invokeMethod(this, "removeFromRightContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              );
 }
 
 void MainWindow::showListWindow()
@@ -129,6 +97,22 @@ void MainWindow::setMapItem(MapItem &mapItem)
 {
     mMapItem = &mapItem;
     mLayersModel = new LayersModel(mMapItem);
+}
+
+void MainWindow::addToLeftContainer(QQuickItem *item, QString title)
+{
+    QMetaObject::invokeMethod(this, "addToLeftContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
+                              Q_ARG(QVariant, QVariant::fromValue<QString>(title))
+                              );
+}
+
+void MainWindow::addToRightContainer(QQuickItem *item, QString title)
+{
+    QMetaObject::invokeMethod(this, "addToRightContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
+                              Q_ARG(QVariant, QVariant::fromValue<QString>(title))
+                              );
 }
 
 void MainWindow::setListWindow(ListWindow *listWindow)

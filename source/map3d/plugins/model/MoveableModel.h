@@ -1,6 +1,11 @@
 #ifndef MOVEABLEMODEL_H
 #define MOVEABLEMODEL_H
+
 #include "simpleModelNode.h"
+#include <osgAnimation/Keyframe>
+
+
+
 
 //class ModelAnimationPathCallback: public osg::AnimationPathCallback
 //{
@@ -21,6 +26,7 @@ public:
 private:
     double mSpeed;
     osg::ref_ptr<osg::AnimationPathCallback> mMoveAnimationPathCallback;
+
 };
 
 #endif // MOVEABLEMODEL_H

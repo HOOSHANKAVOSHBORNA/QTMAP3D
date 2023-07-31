@@ -6,7 +6,6 @@
 BoxProperty::BoxProperty(QQuickItem *parent):
     Property(parent)
 {
-    qDebug()<<"BoxProperty construct";
     setHeightStatus(true);
     setLocationStatus(true);
     //    setLocationRelative(true);
@@ -14,9 +13,10 @@ BoxProperty::BoxProperty(QQuickItem *parent):
     setWidthStatus(true);
     setLenghtStatus(true);
     setClampStatus(true);
-    setCenterStatus(true);
+    setCenterStatus(false);
     //    setFillColor(getFillColor());
     //    setLocation(getLocation());
+
 
 }
 
@@ -41,32 +41,47 @@ void BoxProperty::setWidth(const double &width)
         mBox->setWidth(width);
 }
 
-void BoxProperty::setClamp(const int &clamp)
+//void BoxProperty::setClamp(const int &clamp)
+//{
+//    Property::setClamp(clamp);
+//    if(mBox){
+//        osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(clamp);
+//        mBox->setClamp(clampEnum);
+
+//    }
+//}
+
+void BoxProperty::setName(const QString &name)
 {
-    if(mBox){
-    switch(clamp){
-    case 0:
-        mBox->setClamp(0);
-        break;
-    case 1:
-        mBox->setClamp(1);
-        break;
-    case 2:
-        mBox->setClamp(2);
-        break;
-    case 3:
-        mBox->setClamp(3);
 
+    Property::setName(name);
+    if(mBox)
+    {
+        mBox->setName(name.toStdString());
 
-    }
     }
 }
+
+//void BoxProperty::setName(const QString &name)
+//{
+//    Property::setName(name);
+//    if(mBox){
+//        mBox->setName(name.toStdString());
+
+
+//    }
+//}
 
 //void BoxProperty::setCenter(const QVector3D &center)
 //{
 //    Property::setCenter(center);
-//    if(mBox)
-//        mBox->setCenter(center);
+//    osg::Vec3 temp;
+//    temp = static_cast<osg::Vec3>(center);
+////    temp.y() = dynamic_cast<osg::Vec3fValueObject>(center.y);
+////    temp.z() = dynamic_cast<osg::Vec3fValueObject>(center.z);
+////    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(center, mSRS);
+//    if (mBox)
+//        mBox->setCenter(temp);
 //}
 
 
@@ -106,6 +121,9 @@ void BoxProperty::setBox(Box *newBox, const osgEarth::SpatialReference* srs)
         mBox->setLength(getLenght());
         mBox->setWidth(getWidth());
         mBox->setHeight(getHeight());
+
         setLocation(Utility::osgEarthGeoPointToQvector3D(mBox->getPosition()));
+        setName(QString::fromStdString(mBox->getName()));
+//        setCenter(QVector3D(mBox->getCenter());
     }
 }

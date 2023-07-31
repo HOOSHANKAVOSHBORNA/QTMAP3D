@@ -17,10 +17,12 @@ public:
     void setLocationRelative(const bool &relative) override;
     void setLocation(const QVector3D &position) override;
     void setHeight(const double &height) override;
+//    void setCenter(const QVector3D &center)override;
     void setLenght(const double &lenght) override;
     void setWidth( const double &width)  override;
-    void setClamp(const int &clamp) override;
-//    void setCenter(const QVector3D &center) override;
+//    void setClamp(const int &clamp) override;
+    void setName(const QString &name) override;
+
 
 
     Box *getBox() const;

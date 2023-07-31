@@ -8,6 +8,7 @@
 class Property :  public QQuickItem
 {
     Q_OBJECT
+    Q_PROPERTY(QString name          READ getName               WRITE setName               NOTIFY propretyChanged)
     Q_PROPERTY(bool fillColorStatus   READ getFillColorStatus WRITE setFillColorStatus    NOTIFY propretyChanged)
     Q_PROPERTY(QColor fillColor       READ getFillColor       WRITE setFillColor          NOTIFY propretyChanged)
 
@@ -71,6 +72,8 @@ class Property :  public QQuickItem
 
 public:
     explicit Property(QQuickItem *parent = nullptr);
+
+
     // ----------  fill color -------- //
 
 
@@ -80,6 +83,10 @@ public:
     QColor getFillColor() const;
     virtual void setFillColor(const QColor &color);
 
+
+    // -------- name --------------//
+    QString getName() const;
+    virtual void setName(const QString& name1);
 
     // ----------  stroke -------- //
     bool getStrokeStatus() const;
@@ -215,20 +222,25 @@ public:
     virtual void setPointsSmooth(const bool &point);
 
 
+    QQuickItem *item() const;
+
 signals:
     void propretyChanged();
-
+protected:
+    void createProperty(QString name, QVariant property, QQmlEngine *qmlEngine);
 
 
 private:
+    QQuickItem *mItem;
     // ----------  fill color -------- //
     bool mFillColorStatus            {true};
     QColor mFillColor = QColor(0, 0, 250, 255);
+    QString mName;
 
 
     // ----------  stroke //
     bool mStrokeStatus               {false};
-    QColor mStroke;
+    QColor mStroke =QColor(0, 0, 250, 255);
     double  mStrokeWidth;
 
     // ---------- Location- //
@@ -245,28 +257,28 @@ private:
     // ---------- Arc  //
 
     bool mArcStatus                  {false};
-    QVector2D mArc ;
+    QVector2D mArc= QVector2D(0,360) ;
 
     // ---------- radius //
 
     bool mRadiusStatus               {false};
-    double mRadius;
+    double mRadius{10};
 
     // ---------- height //
 
     bool mHeightStatus               {false};
-    double mHeight {700};
+    double mHeight {7000};
 
 
     // ---------- lenght //
 
     bool mLenghtStatus               {false};
-    double mLenght {70000};
+    double mLenght {7000};
 
     // ---------- width //
 
     bool mWidthStatus                {false};
-    double mWidth {70000};
+    double mWidth {7000};
 
     // ---------- tesselation //
 

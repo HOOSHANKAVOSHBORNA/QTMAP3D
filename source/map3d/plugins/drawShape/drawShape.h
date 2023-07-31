@@ -58,11 +58,15 @@ protected:
     virtual void tempDrawing(const osgEarth::GeoPoint &geoPos){};
     virtual void confirmDraw();
     virtual void cancelDraw(){};
+
+    void createProperty(QString name, QVariant property);
+    void hideProperty();
 private:
     State mState{State::NONE};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     CompositeAnnotationLayer* mShapeLayer{nullptr};
     CompositeAnnotationLayer* mMeasureLayer{nullptr};
+    QQuickItem *mItem{nullptr};
 
 };
 

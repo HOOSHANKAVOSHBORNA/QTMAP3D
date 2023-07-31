@@ -1,9 +1,10 @@
 #include "property.h"
+#include <QDebug>
 
 Property::Property(QQuickItem *parent)
     : QQuickItem{parent}
 {
-    qDebug()<<"Property construct";
+//    qDebug()<<"Property construct";
 //    QColor color1(0,0, 150, 128 );
 //    QColor color2(51,102, 164, 128 );
 //    QVector3D location1(85.0,85.0,85.0);
@@ -35,6 +36,17 @@ void Property::setFillColor(const QColor &color)
     mFillColor = color;
     emit propretyChanged();
 
+}
+
+QString Property::getName() const
+{
+    return mName;
+}
+
+void Property::setName(const QString &name)
+{
+    mName = name;
+    emit propretyChanged();
 }
 //-------------------- stroke -------------------- //
 
@@ -426,6 +438,28 @@ void Property::setPointsSmooth(const bool &point)
     mPointsSmooth = point;
     emit propretyChanged();
 
+}
+
+void Property::createProperty(QString name, QVariant property, QQmlEngine *qmlEngine)
+{
+    QQmlComponent* comp = new QQmlComponent(qmlEngine);
+    connect(comp, &QQmlComponent::statusChanged, [comp, property, name, this](){
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
+        mItem = qobject_cast<QQuickItem*>(comp->create());
+        mItem->setProperty("model", property);
+
+    });
+
+
+    comp->loadUrl(QUrl("qrc:/Properties.qml"));
+}
+
+QQuickItem *Property::item() const
+{
+    return mItem;
 }
 
 double Property::getPointsWidth() const

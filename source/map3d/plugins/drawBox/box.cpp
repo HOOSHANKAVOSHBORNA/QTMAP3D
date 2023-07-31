@@ -114,7 +114,7 @@ void Box::setCenter(osg::Vec3 center)
     }
 }
 
-void Box::setHeight(double height)
+void Box::setHeight(const osgEarth::Linear &height)
 {
     if(mHeight != height)
     {
@@ -138,7 +138,7 @@ const osgEarth::Linear &Box::getLength() const
     return mLength;
 }
 
-void Box::setWidth(double width)
+void Box::setWidth(const osgEarth::Linear &width)
 {
     if(mWidth != width)
     {
@@ -146,7 +146,7 @@ void Box::setWidth(double width)
         compile();
     }
 }
-void Box::setLength(double length)
+void Box::setLength(const osgEarth::Linear &length)
 {
     if(mLength != length)
     {

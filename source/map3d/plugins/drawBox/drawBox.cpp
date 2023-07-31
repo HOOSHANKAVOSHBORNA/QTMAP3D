@@ -1,16 +1,13 @@
 #include "drawBox.h"
-#include "mainwindow.h"
 #include "plugininterface.h"
 #include "mapItem.h"
 #include "utility.h"
 #include <QQmlContext>
+
 int DrawBox::mCount{0};
 
 DrawBox::DrawBox(QObject *parent): DrawShape(parent)
 {
-//    qmlRegisterType<BoxPropertiesModel>("Crystal", 1, 0, "BoxProperties");
-
-
 }
 
 bool DrawBox::setup()
@@ -22,45 +19,39 @@ bool DrawBox::setup()
     makeIconNode("../data/images/draw/box.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-//    addLayer();
-    mCompositeBoxLayer = new CompositeAnnotationLayer();
-    mCompositeBoxLayer->setName(BOX);
+    mBoxLayer = new ParenticAnnotationLayer();
+    mBoxLayer->setName(BOX);
     return true;
 }
 
 void DrawBox::onBoxItemCheck(bool check)
 {
-
-    qmlRegisterType<BoxProperty>("Crystal", 1, 0, "CProperty");
     if (check) {
         auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositeBoxLayer->getName()));
+        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mBoxLayer->getName()));
         if(!layer){
-            mCompositeBoxLayer->clearLayers();
+            mBoxLayer->getGroup()->removeChildren(0, mBoxLayer->getGroup()->getNumChildren());
         }
-        if(mCompositeBoxLayer->getNumLayers() <= 0){
-
-//            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
-            shapeLayer->addLayer(mCompositeBoxLayer);
+        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
+            shapeLayer->addLayer(mBoxLayer);
         }
         setState(State::READY);
-
-       createProperty();
-       mapItem()->addNode(iconNode());
+        mBoxProperty = new BoxProperty();
+        createProperty("Box", QVariant::fromValue<BoxProperty*>(mBoxProperty));
+        mapItem()->addNode(iconNode());
 
     }
     else {
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mCompositeBoxLayer->getNumLayers() <= 0){
+        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
-//            mapItem()->getMapObject()->removeLayer(mBoxLayer, shapeLayer);
-            shapeLayer->removeLayer(mCompositeBoxLayer);
+            shapeLayer->removeLayer(mBoxLayer);
         }
         setState(State::NONE);
         mBox = nullptr;
-        mBoxProperty->setProperty("visible", false);
+        hideProperty();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -72,14 +63,8 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mBox->setName(name.toStdString());
 
     mBox->setPosition(geoPos);
-    mBoxLayer = new ParenticAnnotationLayer();
     mBoxLayer->addChild(mBox);
-    mBoxLayer->setName(mBox->getName());
-//    mapItem()->getMapObject()->addNodeToLayer(mBox, mBoxLayer);
-    mCompositeBoxLayer->addLayer(mBoxLayer);
     mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
-
-
 
     setState(State::DRAWING);
     mCount++;
@@ -94,36 +79,11 @@ void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 void DrawBox::cancelDraw()
 {
     if(state() == State::DRAWING){
-//        mapItem()->getMapObject()->removeNodeFromLayer(mBox, mCompositeBoxLayer);
-//        mapItem()->getMapObject()->removeLayer(mBoxLayer, mCompositeBoxLayer);
-        mCompositeBoxLayer->removeLayer(mBoxLayer);
+        mBoxLayer->getGroup()->removeChild(mBox);
         mBox = nullptr;
-        mBoxLayer = nullptr;
         mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
     }
-}
-
-void DrawBox::createProperty()
-{
-    QQmlComponent* comp = new QQmlComponent(qmlEngine());
-    connect(comp, &QQmlComponent::statusChanged, [comp, this](){
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
-        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
-        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-        mBoxProperty = static_cast<BoxProperty*>(item);
-        //            mBoxProperties->setFillColorStatus(false);
-        //            mBoxProperties->setFillColor(QColor());
-        //            mBoxProperty->setStatuses();
-
-        //        mBoxProperties = new BoxProperties();
-        mainWindow()->addDockItem(mBoxProperty, 0.3);
-    });
-
-
-    comp->loadUrl(QUrl("qrc:/Properties.qml"));
 }
 

@@ -9,7 +9,7 @@ QtObject {
     readonly property color     tiltleColor:    "white"
     readonly property int       titleFontSize:  24
     readonly property string    fontFamily:     "Srouce Sans Pro"
-    readonly property int       _fontPointSize: 11
+    readonly property int       fontPointSize: 11
     readonly property real      widgetsMargins: 10
     readonly property int       borderwidth:    1
     readonly property int       radius:         4

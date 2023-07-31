@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 //import QtQuick.Effects
 import Qt.labs.platform 1.1
+import "../style"
 Rectangle{
     id : rootItem
     property real longitude: 0.0
@@ -13,8 +14,8 @@ Rectangle{
     signal saveLocation(string name, real latitude, real longitude,
                        real pitch ,real range, real head)
 
-    color: _colorRec
-    radius: _radius
+    color: Style.primaryColor
+    radius: Style.radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.2
     width: parent.width / 2
@@ -32,23 +33,23 @@ Rectangle{
             bottom: parent.bottom
             left: parent.left
             right: parent.right
-            leftMargin: _margin / 5
-            rightMargin: _margin / 5
-            topMargin : _margin
+            leftMargin: Style.marginSize / 5
+            rightMargin: Style.marginSize / 5
+            topMargin : Style.marginSize
         }
         TextField{
             id:nameTextfeild
             height: 30
             width: parent.width
-            anchors.topMargin: _margin
+            anchors.topMargin: Style.marginSize
             placeholderText: "name"
             hoverEnabled : true
-            font.family: _fontFamily
-            font.pointSize: _fontPointSize
+            font.family: Style.fontFamily
+            font.pointSize: Style.fontPointSize
             color: "#FFFFFF"
             background: Rectangle{
-                color: _colorButton
-                radius: _radius
+                color: Style.backgroundColor
+                radius: Style.radius
                 opacity: 0.3
                 width: parent.width
             }
@@ -59,9 +60,9 @@ Rectangle{
 
         }
         Rectangle{
-            color:Qt.lighter(_colorButton,.5) //_colorButton
+            color:Qt.lighter(Style.primaryColor,.5) //_colorButton
             //opacity: 0.3
-            radius: _radius
+            radius: Style.radius
             height: parent.width  / 1.2
             width: parent.width
             Column{
@@ -70,8 +71,8 @@ Rectangle{
                     bottom: parent.bottom
                     left: parent.left
                     right: parent.right
-                    topMargin: _margin / 2
-                    bottomMargin: _margin / 2
+                    topMargin: Style.marginSize / 2
+                    bottomMargin: Style.marginSize / 2
                     leftMargin: 2
                     rightMargin: 2
                 }
@@ -88,12 +89,12 @@ Rectangle{
                     delegate: Label{
                         height: 20
                         width: parent.width
-                        anchors.topMargin: _margin
+                        anchors.topMargin: Style.marginSize
                         text: modelData
                         color: "#EEFFFFFF"
                         padding: 1
-                        font.family: _fontFamily
-                        font.pointSize: _fontPointSize
+                        font.family: Style.fontFamily
+                        font.pointSize: Style.fontPointSize
                         verticalAlignment : Text.AlignVCenter
                         opacity: 1
                     }
@@ -108,11 +109,11 @@ Rectangle{
             id:btnGo
             height: 30
             hoverEnabled: true
-            width: parent.width - (_margin * 2)
+            width: parent.width - (5 * 2)
             text: "Save"
             anchors.horizontalCenter: nameTextfeild.horizontalCenter
-            font.family: _fontFamily
-            font.pointSize: _fontPointSize
+            font.family: Style.fontFamily
+            font.pointSize: Style.fontPointSize
 
             onClicked:{
                 if (nameTextfeild.text !== ""){
@@ -140,9 +141,9 @@ Rectangle{
                 opacity: 1
             }
             background:Rectangle {
-                color: _colorHover
+                color: Style.hoverColor
                 opacity: btnGo.hovered ? 0.8 : 1
-                radius: _radius
+                radius: Style.radius
                 layer.enabled: true
 //                layer.effect: DropShadow {
 //                    transparentBorder: true

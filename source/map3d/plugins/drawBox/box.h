@@ -22,19 +22,12 @@ public:
 
     void setColor(osgEarth::Color color);
     void setCenter(osg::Vec3 center);
-    const osgEarth::Linear& getRadius();
-    void setClamp(bool clamp);
-//    void setRotation(int rotation);
     osgEarth::Color getColor();
     osg::Vec3f getCenter();
 
-//    int getRotation();
-    void setHeight(double height);
-    void setWidth(double width);
-    void setLength(double length);
-
-
     void setHeight(const osgEarth::Linear &height);
+    void setWidth(const osgEarth::Linear &width);
+    void setLength(const osgEarth::Linear &length);
 
     const osgEarth::Linear &getHeight() const;
     const osgEarth::Linear &getWidth() const;

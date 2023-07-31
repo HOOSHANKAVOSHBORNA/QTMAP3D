@@ -10,19 +10,19 @@ SpinBox {
     editable: true
     width: 200
 
-    property int decimals: 4
+    property int decimals: 3
     readonly property int decimalFactor: Math.pow(10, decimals)
     property real realValue: value / decimalFactor
     Binding{
         target: spinbox
         property: "value"
-        value: spinbox.realValue * spinbox.decimalFactor
+        value: spinbox.realValue* spinbox.decimalFactor
         delayed: true
     }
 
     stepSize: stepCombobox.currentValue * decimalFactor
     from: 0
-    to: 10000 * decimalFactor
+    to: spinbox.to * decimalFactor
     value: 0
 
     validator: DoubleValidator {

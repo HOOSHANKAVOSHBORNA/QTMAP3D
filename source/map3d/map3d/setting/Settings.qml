@@ -5,9 +5,9 @@ import QtQuick.Layouts 1.13
 Item {
     Rectangle {
         id: rectangle
-        color: _colorRec
+        color: "#202020"
         anchors.fill: parent
-        radius: _radius
+        radius: 10
         opacity: 0.7
     }
     id: rootItem
@@ -55,14 +55,14 @@ Item {
                         background: Item {
                             Rectangle{
                                 id:roundRec
-                                color: btn.checked ? _colorHover : "#FFFFFF"
+                                color: btn.checked ? "yelow" : "#FFFFFF"
                                 width: 100
                                 height: 30
                                 radius: roundEdge == 0 ? 0 :10
                             }
                             Rectangle{
                                 id:leftRec
-                                color: btn.checked ? _colorHover : "#FFFFFF"
+                                color: btn.checked ? "yelow" : "#FFFFFF"
                                 visible: roundEdge == 2
                                 width: roundRec.width - roundRec.radius
                                 height: roundRec.height
@@ -71,7 +71,7 @@ Item {
                             }
                             Rectangle{
                                 id:rightRec
-                                color: btn.checked ? _colorHover : "#FFFFFF"
+                                color: btn.checked ? "yelow" : "#FFFFFF"
                                 visible: roundEdge == 1
                                 width: roundRec.width - roundRec.radius
                                 height: roundRec.height
