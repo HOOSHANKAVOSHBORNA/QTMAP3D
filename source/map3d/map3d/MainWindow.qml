@@ -74,7 +74,7 @@ CMainWindow {
 
             }
             implicitWidth: 4
-            height: 400
+            height: parent.height
             color: test.containsMouse ? Style.hoverColor : "transparent"
         }
 

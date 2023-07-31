@@ -1,11 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>MainWindow.qml</file>
-        <file>MenuWidget.qml</file>
-        <file>NavigationWidget.qml</file>
         <file>File.qml</file>
         <file>LayersWidget.qml</file>
-        <file>SideWidget.qml</file>
         <file>ControlCamera.qml</file>
         <file>Compass.qml</file>
         <file>LocationWidget.qml</file>
@@ -17,23 +14,18 @@
         <file>toolbox/Toolbox.qml</file>
         <file>ListWindow.qml</file>
         <file>ContextmenuWidget.qml</file>
-        <file>InformationView.qml</file>
         <file>setting/DelegateItem.qml</file>
         <file>setting/Settings.qml</file>
         <file>StatusBar.qml</file>
-        <file>RightContainer.qml</file>
         <file>MapControllerItem.qml</file>
         <file>ToolboxView.qml</file>
         <file>SearchBar.qml</file>
-        <file>DockArea.qml</file>
-        <file>DockableItem.qml</file>
-        <file>DockSplitView.qml</file>
-        <file>LightingItem.qml</file>
         <file>style/Style.qml</file>
         <file>style/qmldir</file>
         <file>SideContainer.qml</file>
         <file>DockWindow.qml</file>
         <file>ToolBar.qml</file>
         <file>TabItem.qml</file>
+        <file>NavigationWidget.qml</file>
     </qresource>
 </RCC>
