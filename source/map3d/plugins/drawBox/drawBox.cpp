@@ -3,7 +3,6 @@
 #include "mapItem.h"
 #include "utility.h"
 #include <QQmlContext>
-#include"mainwindow.h"
 
 int DrawBox::mCount{0};
 
@@ -64,9 +63,6 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mBox->setName(name.toStdString());
 
     mBox->setPosition(geoPos);
-//    mBoxLayer = new ParenticAnnotationLayer();
-//    mBoxLayer->addChild(mBox);
-//    mBoxLayer->setName(mBox->getName());
     mBoxLayer->addChild(mBox);
     mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
 
@@ -85,7 +81,6 @@ void DrawBox::cancelDraw()
     if(state() == State::DRAWING){
         mBoxLayer->getGroup()->removeChild(mBox);
         mBox = nullptr;
-//        mBoxLayer = nullptr;
         mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
