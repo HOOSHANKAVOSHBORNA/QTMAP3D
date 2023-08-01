@@ -77,6 +77,164 @@ CMainWindow {
             height: parent.height
             color: test.containsMouse ? Style.hoverColor : "transparent"
         }
+        ColumnLayout {
+            id: upContainer
+            SplitView.maximumWidth: 60
+            SplitView.minimumWidth: 60
+            SplitView.preferredWidth: 60
+//            SplitView.fillWidth: true
+            Rectangle {
+                id: toolBar
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                color: Style.backgroundColor
+                ColumnLayout{
+                    id: centerItemUp
+                    anchors.fill: parent
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    spacing: 0
+//                    Item {
+//                        // spacer item
+//                        Layout.fillWidth: true
+//                        Layout.fillHeight: true
+//                        Rectangle { anchors.fill: parent; color: "transparent" } // to visualize the spacer
+//                    }
+                    Button {
+                        width: implicitWidth
+                        Layout.fillWidth: true
+//                        Layout.fillHeight: true
+                        icon {
+                            source: "qrc:/Resources/Toolbox.png"
+                            width: 21
+                            height: 21
+                            color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
+
+                        }
+                        background: Rectangle {
+                            color: "transparent"
+                        }
+
+                        display: AbstractButton.TextUnderIcon
+
+                        //                            text: "ToolBox"
+                        checkable: true
+                        checked: false
+                        Material.foreground: "white"
+                        property var toolboxItem
+                        onReleased: {
+                            if (checked && wnd.toolbox ) {
+                                var toolboxx = Qt.createComponent("ToolboxView.qml");
+                                if (toolboxx.status === Component.Ready) {
+                                    toolboxItem = toolboxx.createObject(null, {});
+                                    toolboxItem.listModel = wnd.toolbox
+                                    wnd.addToLeftContainer(toolboxItem, "Toolbox")
+                                }
+                            }
+                            else {
+                                removeFromLeftContainer(toolboxItem)
+                            }
+                        }
+                    }
+                    Button {
+                        Layout.fillWidth: true
+//                        Layout.fillHeight: true
+                        width: implicitWidth
+                        icon {
+                            source: "qrc:/Resources/location.png"
+                            width: 21
+                            height: 21
+                            color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
+                        }
+                        background: Rectangle {
+                            color: "transparent"
+                        }
+                        display: AbstractButton.TextUnderIcon
+
+                        //                            text: "Location"
+                        Material.foreground: "white"
+                    }
+                    Button {
+                        Layout.fillWidth: true
+//                        Layout.fillHeight: true
+                        width: implicitWidth
+                        display: AbstractButton.TextUnderIcon
+                        icon {
+                            source: "qrc:/Resources/Settings.png"
+                            width: 21
+                            height: 21
+                            color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
+                        }
+                        background: Rectangle {
+                            color: "transparent"
+                        }
+
+                        //                            text: "Settings"
+                        Material.foreground: "white"
+                    }
+                    Button {
+                        id: layerButton
+                        Layout.fillWidth: true
+//                        Layout.fillHeight: true
+                        width: implicitWidth
+                        icon {
+                            source: "qrc:/Resources/Layers.png"
+                            width: 21
+                            height: 21
+                            color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
+                        }
+                        background: Rectangle {
+                            color: "transparent"
+                        }
+                        display: AbstractButton.TextUnderIcon
+                        checkable: true
+                        checked: false
+                        Material.foreground: "white"
+                        property var layerItem
+                        onReleased: {
+                            if (checked && wnd.layersModel ) {
+                                var layersWidget = Qt.createComponent("LayersWidget.qml");
+                                if (layersWidget.status === Component.Ready) {
+                                    layerItem = layersWidget.createObject(wnd, {});
+                                    layerItem.layersModell = wnd.layersModel
+                                    addToRightContainer(layerItem, "Layers")
+                                }
+                            }
+                            else {
+                                removeFromRightContainer(layerItem)
+                            }
+                        }
+                    }
+                    Button {
+                        Layout.fillWidth: true
+//                        Layout.fillHeight: true
+                        width: implicitWidth
+                        icon {
+                            source: "qrc:/Resources/Outliner.png"
+                            width: 21
+                            height: 21
+                            color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
+                        }
+                        background: Rectangle {
+                            color: "transparent"
+                        }
+                        display: AbstractButton.TextUnderIcon
+
+                        //                            text: "List"
+                        Material.foreground: "white"
+                        onReleased: {
+                            wnd.showListWindow()
+                        }
+                    }
+                    Item {
+                        // spacer item
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Rectangle { anchors.fill: parent; color: "transparent" } // to visualize the spacer
+                    }
+                }
+            }
+        }
 
         //-------------------------------------left dock-----------------
         SideContainer {
@@ -91,160 +249,6 @@ CMainWindow {
             orientation: Qt.Vertical
             handle: Item {
 
-            }
-
-            RowLayout {
-                id: upContainer
-                SplitView.maximumHeight: 50
-                SplitView.minimumHeight: 50
-                SplitView.preferredHeight: 50
-                SplitView.fillWidth: true
-                Rectangle {
-                    id: toolBar
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-
-                    color: Style.backgroundColor
-                    RowLayout{
-                        id: centerItemUp
-                        anchors.fill: parent
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        spacing: 0
-                        Item {
-                            // spacer item
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            Rectangle { anchors.fill: parent; color: "transparent" } // to visualize the spacer
-                        }
-                        Button {
-                            width: implicitWidth
-                            Layout.fillHeight: true
-                            icon {
-                                source: "qrc:/Resources/Toolbox.png"
-                                width: 21
-                                height: 21
-                                color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
-
-                            }
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-
-                            display: AbstractButton.TextUnderIcon
-
-                            //                            text: "ToolBox"
-                            checkable: true
-                            checked: false
-                            Material.foreground: "white"
-                            property var toolboxItem
-                            onReleased: {
-                                if (checked && wnd.toolbox ) {
-                                    var toolboxx = Qt.createComponent("ToolboxView.qml");
-                                    if (toolboxx.status === Component.Ready) {
-                                        toolboxItem = toolboxx.createObject(null, {});
-                                        toolboxItem.listModel = wnd.toolbox
-                                        wnd.addToLeftContainer(toolboxItem, "Toolbox")
-                                    }
-                                }
-                                else {
-                                    removeFromLeftContainer(toolboxItem)
-                                }
-                            }
-                        }
-                        Button {
-                            Layout.fillHeight: true
-                            width: implicitWidth
-                            icon {
-                                source: "qrc:/Resources/location.png"
-                                width: 21
-                                height: 21
-                                color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
-                            }
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-                            display: AbstractButton.TextUnderIcon
-
-                            //                            text: "Location"
-                            Material.foreground: "white"
-                        }
-                        Button {
-                            Layout.fillHeight: true
-                            width: implicitWidth
-                            display: AbstractButton.TextUnderIcon
-                            icon {
-                                source: "qrc:/Resources/Settings.png"
-                                width: 21
-                                height: 21
-                                color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
-                            }
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-
-                            //                            text: "Settings"
-                            Material.foreground: "white"
-                        }
-                        Button {
-                            id: layerButton
-                            Layout.fillHeight: true
-                            width: implicitWidth
-                            icon {
-                                source: "qrc:/Resources/Layers.png"
-                                width: 21
-                                height: 21
-                                color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
-                            }
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-                            display: AbstractButton.TextUnderIcon
-                            checkable: true
-                            checked: false
-                            Material.foreground: "white"
-                            property var layerItem
-                            onReleased: {
-                                if (checked && wnd.layersModel ) {
-                                    var layersWidget = Qt.createComponent("LayersWidget.qml");
-                                    if (layersWidget.status === Component.Ready) {
-                                        layerItem = layersWidget.createObject(wnd, {});
-                                        layerItem.layersModell = wnd.layersModel
-                                        addToRightContainer(layerItem, "Layers")
-                                    }
-                                }
-                                else {
-                                    removeFromRightContainer(layerItem)
-                                }
-                            }
-                        }
-                        Button {
-                            Layout.fillHeight: true
-                            width: implicitWidth
-                            icon {
-                                source: "qrc:/Resources/Outliner.png"
-                                width: 21
-                                height: 21
-                                color: hovered? Style.hoverColor : checked ? Style.selectionColor : "white"
-                            }
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-                            display: AbstractButton.TextUnderIcon
-
-                            //                            text: "List"
-                            Material.foreground: "white"
-                            onReleased: {
-                                wnd.showListWindow()
-                            }
-                        }
-                        Item {
-                            // spacer item
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            Rectangle { anchors.fill: parent; color: "transparent" } // to visualize the spacer
-                        }
-                    }
-                }
             }
 
             StackLayout {

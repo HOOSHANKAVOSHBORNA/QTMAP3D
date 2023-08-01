@@ -7,6 +7,7 @@ ColumnLayout{
     id: rootItem
     property ListModel model:ListModel{}
     property int visibleCount : 0
+    Layout.preferredWidth: implicitWidth
     function setCurrentIndex(index){
         tabBar.currentIndex = index
     }
