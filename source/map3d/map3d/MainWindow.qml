@@ -56,54 +56,36 @@ CMainWindow {
         if (indx > -1)
             rightContainer.model.remove(indx)
     }
-
-    SplitView {
+    RowLayout {
         anchors.fill: parent
-        orientation: Qt.Horizontal
-        handle: Rectangle {
-            MouseArea {
-                id: test
-                anchors.fill: parent
-                hoverEnabled: true
-
-                onPressed: function(mouse) {
-                    mouse.accepted = false
-                }
-                propagateComposedEvents: true
-                cursorShape: Qt.SizeHorCursor
-
-            }
-            implicitWidth: 4
-            height: parent.height
-            color: test.containsMouse ? Style.hoverColor : "transparent"
-        }
+        spacing: 0
         ColumnLayout {
             id: upContainer
-            SplitView.maximumWidth: 60
-            SplitView.minimumWidth: 60
-            SplitView.preferredWidth: 60
-//            SplitView.fillWidth: true
+            Layout.maximumWidth: 60
+            Layout.minimumWidth: 60
+            Layout.preferredWidth: 60
+            //            SplitView.fillWidth: true
             Rectangle {
                 id: toolBar
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-
+                Layout.alignment: Qt.AlignHCenter
                 color: Style.backgroundColor
                 ColumnLayout{
                     id: centerItemUp
                     anchors.fill: parent
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     spacing: 0
-//                    Item {
-//                        // spacer item
-//                        Layout.fillWidth: true
-//                        Layout.fillHeight: true
-//                        Rectangle { anchors.fill: parent; color: "transparent" } // to visualize the spacer
-//                    }
+                    //                    Item {
+                    //                        // spacer item
+                    //                        Layout.fillWidth: true
+                    //                        Layout.fillHeight: true
+                    //                        Rectangle { anchors.fill: parent; color: "transparent" } // to visualize the spacer
+                    //                    }
                     Button {
                         width: implicitWidth
                         Layout.fillWidth: true
-//                        Layout.fillHeight: true
+                        //                        Layout.fillHeight: true
                         icon {
                             source: "qrc:/Resources/Toolbox.png"
                             width: 21
@@ -138,7 +120,7 @@ CMainWindow {
                     }
                     Button {
                         Layout.fillWidth: true
-//                        Layout.fillHeight: true
+                        //                        Layout.fillHeight: true
                         width: implicitWidth
                         icon {
                             source: "qrc:/Resources/location.png"
@@ -156,7 +138,7 @@ CMainWindow {
                     }
                     Button {
                         Layout.fillWidth: true
-//                        Layout.fillHeight: true
+                        //                        Layout.fillHeight: true
                         width: implicitWidth
                         display: AbstractButton.TextUnderIcon
                         icon {
@@ -175,7 +157,7 @@ CMainWindow {
                     Button {
                         id: layerButton
                         Layout.fillWidth: true
-//                        Layout.fillHeight: true
+                        //                        Layout.fillHeight: true
                         width: implicitWidth
                         icon {
                             source: "qrc:/Resources/Layers.png"
@@ -207,7 +189,7 @@ CMainWindow {
                     }
                     Button {
                         Layout.fillWidth: true
-//                        Layout.fillHeight: true
+                        //                        Layout.fillHeight: true
                         width: implicitWidth
                         icon {
                             source: "qrc:/Resources/Outliner.png"
@@ -236,34 +218,60 @@ CMainWindow {
             }
         }
 
-        //-------------------------------------left dock-----------------
-        SideContainer {
-            id: leftContainer
-            SplitView.preferredWidth: visibleCount > 0 ?  implicitWidth : 0
-            SplitView.maximumWidth: parent.width/3.5
-        }
+
 
         SplitView {
-            SplitView.fillHeight: true
-            SplitView.fillWidth: true
-            orientation: Qt.Vertical
-            handle: Item {
+            //        anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            orientation: Qt.Horizontal
+            handle: Rectangle {
+                MouseArea {
+                    id: test
+                    anchors.fill: parent
+                    hoverEnabled: true
 
+                    onPressed: function(mouse) {
+                        mouse.accepted = false
+                    }
+                    propagateComposedEvents: true
+                    cursorShape: Qt.SizeHorCursor
+
+                }
+                implicitWidth: 3
+                height: parent.height
+                color: test.containsMouse ? Style.hoverColor : "transparent"
             }
 
-            StackLayout {
-                id: centerCenterContainer
+            //-------------------------------------left dock-----------------
+            SideContainer {
+                id: leftContainer
+                SplitView.preferredWidth: visibleCount > 0 ?  implicitWidth : 0
+                SplitView.maximumWidth: visibleCount > 0 ?  parent.width/3.5 : 0
+            }
+
+            SplitView {
                 SplitView.fillHeight: true
                 SplitView.fillWidth: true
+                orientation: Qt.Vertical
+                handle: Item {
+
+                }
+
+                StackLayout {
+                    id: centerCenterContainer
+                    SplitView.fillHeight: true
+                    SplitView.fillWidth: true
+                }
             }
-        }
-        SideContainer {
-            id: rightContainer
-            SplitView.preferredWidth: visibleCount > 0 ?  implicitWidth : 0
-            SplitView.maximumWidth: parent.width/3.5
-        }
+            SideContainer {
+                id: rightContainer
+                SplitView.preferredWidth: visibleCount > 0 ?  implicitWidth : 0
+                SplitView.maximumWidth: visibleCount > 0 ?  parent.width/3.5 : 0
+            }
 
 
+        }
     }
     ContextmenuWidget {
         id: contextmenu
