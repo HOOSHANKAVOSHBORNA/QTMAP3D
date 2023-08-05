@@ -204,14 +204,14 @@ void DrawLine::initDraw(const osgEarth::GeoPoint &geoPos)
     case Type::LINE:
         name = POLYLINE + QString::number(mCount);
         mLine->setName(name.toStdString());
-        mapItem()->getMapObject()->addNodeToLayer(mLine, mLineLayer);
+//        mapItem()->getMapObject()->addNodeToLayer(mLine, mLineLayer);
         mLineProperties->setLine(mLine);
         mLine->addPoint(geoPos);
         break;
     case Type::RULERR:
         name = RULER + QString::number(mCount);
         mLine->setName(name.toStdString());
-        mapItem()->getMapObject()->addNodeToLayer(mLine, mRulerLayer);
+//        mapItem()->getMapObject()->addNodeToLayer(mLine, mRulerLayer);
         mLineProperties->setLine(mLine);
         mLine->addPoint(geoPos);
         break;
@@ -220,13 +220,13 @@ void DrawLine::initDraw(const osgEarth::GeoPoint &geoPos)
 //        mLineProperties->setMeasureHeight(mMeasureHeight);
         name = MEASUREHEIGHT + QString::number(mCount);
         mMeasureHeight->setName(name.toStdString());
-        mapItem()->getMapObject()->addNodeToLayer(mMeasureHeight, mHeightLayer);
+//        mapItem()->getMapObject()->addNodeToLayer(mMeasureHeight, mHeightLayer);
         mMeasureHeight->setFirstPoint(geoPos);
         break;
     case Type::SLOPEE:
         name = SLOPE + QString::number(mCount);
         mLine->setName(name.toStdString());
-        mapItem()->getMapObject()->addNodeToLayer(mLine, mSlopeLayer);
+//        mapItem()->getMapObject()->addNodeToLayer(mLine, mSlopeLayer);
         mLineProperties->setLine(mLine);
         mLine->addPoint(geoPos);
         break;
@@ -264,10 +264,10 @@ void DrawLine::drawing(const osgEarth::GeoPoint &geoPos)
 void DrawLine::cancelDraw()
 {
     if(state() == State::DRAWING){
-        mapItem()->getMapObject()->removeNodeFromLayer(mLine, mLineLayer);
-        mapItem()->getMapObject()->removeNodeFromLayer(mLine, mRulerLayer);
-        mapItem()->getMapObject()->removeNodeFromLayer(mLine, mSlopeLayer);
-        mapItem()->getMapObject()->removeNodeFromLayer(mMeasureHeight, mHeightLayer);
+//        mapItem()->getMapObject()->removeNodeFromLayer(mLine, mLineLayer);
+//        mapItem()->getMapObject()->removeNodeFromLayer(mLine, mRulerLayer);
+//        mapItem()->getMapObject()->removeNodeFromLayer(mLine, mSlopeLayer);
+//        mapItem()->getMapObject()->removeNodeFromLayer(mMeasureHeight, mHeightLayer);
         mLine = nullptr;
         mMeasureHeight = nullptr;
 //        mLineProperties->setLine(mLine);

@@ -229,7 +229,7 @@ void model::initModel(const osgEarth::GeoPoint &geoPos){
     //mBox->setName(name.toStdString());
     mCurrentModel = mModelNode->getNewModel();
     mCurrentModel->setPosition(geoPos);
-    mapItem()->getMapObject()->addNodeToLayer(mCurrentModel, mModelLayer);
+//    mapItem()->getMapObject()->addNodeToLayer(mCurrentModel, mModelLayer);
     //    mBoxProperties->setBox(mBox);
 
     setState(State::MOVING);
@@ -257,7 +257,7 @@ void model::confirm()
 void model::cancel(){
 
     if(state() == State::MOVING){
-        mapItem()->getMapObject()->removeNodeFromLayer(mCurrentModel, mModelLayer);
+//        mapItem()->getMapObject()->removeNodeFromLayer(mCurrentModel, mModelLayer);
 //        mCurrentModel.release();
         setState(State::READY);
         mCount--;

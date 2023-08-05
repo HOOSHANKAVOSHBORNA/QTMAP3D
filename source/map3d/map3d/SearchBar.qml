@@ -109,13 +109,13 @@ TextField {
         if(txtid.focus){
 
             textonFocus.running =true
-            textwithFocus.running =true
+//            textwithFocus.running =true
             iconClearText.visible = true
             txtid2.border.color = colorBorderOnFocus
         }else {
 
             textlostFocus.running=true
-            textbitFocus.running =true
+//            textbitFocus.running =true
             iconClearText.visible=false
             txtid.text = ""
             txtid2.border.color = colorDefault}

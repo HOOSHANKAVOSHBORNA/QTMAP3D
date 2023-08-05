@@ -226,109 +226,109 @@ void MapItem::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) con
 
 }
 
-void MapItem::addLayer(osgEarth::Layer *layer)
-{
-    layer->setUserValue("parent", false);
-    auto node = layer->getNode();
-    if(node)
-        node->setName(layer->getName());
-    //    else
-    //        qDebug()<<layer->getName();
-    mMapNode->getMap()->addLayer(layer);
-    // Check if the layer is added successfully
-    auto added = mMapNode->getMap()->getLayerByName(layer->getName());
-    if (added && added->getEnabled())
-    {
+//void MapItem::addLayer(osgEarth::Layer *layer)
+//{
+//    layer->setUserValue("parent", false);
+//    auto node = layer->getNode();
+//    if(node)
+//        node->setName(layer->getName());
+//    //    else
+//    //        qDebug()<<layer->getName();
+//    mMapNode->getMap()->addLayer(layer);
+//    // Check if the layer is added successfully
+//    auto added = mMapNode->getMap()->getLayerByName(layer->getName());
+//    if (added && added->getEnabled())
+//    {
 
-    }
-    else
-    {
-        QMessageBox::warning(nullptr, tr("Error"), tr("Data loading failed!"));
-    }
-}
+//    }
+//    else
+//    {
+//        QMessageBox::warning(nullptr, tr("Error"), tr("Data loading failed!"));
+//    }
+//}
 
-void MapItem::removeLayer(osgEarth::Layer *layer)
-{
-    mMapNode->getMap()->removeLayer(layer);
-}
+//void MapItem::removeLayer(osgEarth::Layer *layer)
+//{
+//    mMapNode->getMap()->removeLayer(layer);
+//}
 
-bool MapItem::addNodeToLayer(osg::Node *node, std::string layerName)
-{
-    auto layer = getMapNode()->getMap()->getLayerByName(layerName);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->addChild(node);
-            emit layerChanged();
-            return true;
-        }
-    }
+//bool MapItem::addNodeToLayer(osg::Node *node, std::string layerName)
+//{
+//    auto layer = getMapNode()->getMap()->getLayerByName(layerName);
+//    if (layer) {
+//        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+//        if (group) {
+//            group->addChild(node);
+//            emit layerChanged();
+//            return true;
+//        }
+//    }
 
-    return false;
-}
+//    return false;
+//}
 
-bool MapItem::removeNodeFromLayer(osg::Node *node, std::string layerName)
-{
-    auto layer = getMapNode()->getMap()->getLayerByName(layerName);
-    if (layer) {
-        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-        if (group) {
-            group->removeChild(node);
+//bool MapItem::removeNodeFromLayer(osg::Node *node, std::string layerName)
+//{
+//    auto layer = getMapNode()->getMap()->getLayerByName(layerName);
+//    if (layer) {
+//        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+//        if (group) {
+//            group->removeChild(node);
 
-            emit layerChanged();
-            return true;
-        }
-    }
+//            emit layerChanged();
+//            return true;
+//        }
+//    }
 
-    return false;
-}
+//    return false;
+//}
 
-bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
-{
-    auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
-    //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
-    if(destinationLayer){
-        auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
-        dataContainer->addUserObject(layer);
-        //        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
-        //        if(group){
-        //            if(!group->containsNode(layer->getNode())){
-        //group->addChild(layer->getNode());
-        mMapObject->addLayer(layer);
-        layer->setUserValue("parent", destinationLayer->getName());
-        //                qDebug()<<"num parent"<<layer->getNode()->getNumParents();
-        //                qDebug()<<"parent 0"<<layer->getNode()->getParent(0)->getName();
-        //                qDebug()<<"parent 1"<<layer->getNode()->getParent(1)->getName();
-        emit layerChanged();
-        //            }
-        return true;
-    }
-    return false;
-}
+//bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
+//{
+//    auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
+//    //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
+//    if(destinationLayer){
+//        auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
+//        dataContainer->addUserObject(layer);
+//        //        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
+//        //        if(group){
+//        //            if(!group->containsNode(layer->getNode())){
+//        //group->addChild(layer->getNode());
+//        mMapObject->addLayer(layer);
+//        layer->setUserValue("parent", destinationLayer->getName());
+//        //                qDebug()<<"num parent"<<layer->getNode()->getNumParents();
+//        //                qDebug()<<"parent 0"<<layer->getNode()->getParent(0)->getName();
+//        //                qDebug()<<"parent 1"<<layer->getNode()->getParent(1)->getName();
+//        emit layerChanged();
+//        //            }
+//        return true;
+//    }
+//    return false;
+//}
 
-bool MapItem::removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName)
-{
-    auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
-    //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
-    if(destinationLayer){
-        auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
-        unsigned int index = dataContainer->getUserObjectIndex(layer);
-        dataContainer->removeUserObject(index);
-        mMapObject->removeLayer(layer);
-        emit layerChanged();
-        return true;
+//bool MapItem::removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName)
+//{
+//    auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
+//    //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
+//    if(destinationLayer){
+//        auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
+//        unsigned int index = dataContainer->getUserObjectIndex(layer);
+//        dataContainer->removeUserObject(index);
+//        mMapObject->removeLayer(layer);
+//        emit layerChanged();
+//        return true;
 
-        //        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
-        //        if(group){
-        //            group->removeChild(layer->getNode());
-        //            removeLayer(layer);
-        //            layer->setUserValue("parent", false);
-        //            emit layerChanged();
-        //            return true;
-        //        }
-    }
-    return false;
-}
+//        //        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
+//        //        if(group){
+//        //            group->removeChild(layer->getNode());
+//        //            removeLayer(layer);
+//        //            layer->setUserValue("parent", false);
+//        //            emit layerChanged();
+//        //            return true;
+//        //        }
+//    }
+//    return false;
+//}
 
 QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 {
@@ -565,15 +565,15 @@ void MapItem::createCameraManipulator()
     settings->setMinMaxPitch(-90, 0);
 }
 
-void MapItem::layerAdded(osgEarth::Layer */*layer*/, unsigned /*index*/)
-{
-    emit layerChanged();
-}
+//void MapItem::layerAdded(osgEarth::Layer */*layer*/, unsigned /*index*/)
+//{
+//    emit layerChanged();
+//}
 
-void MapItem::layerRemoved(osgEarth::Layer */*layer*/, unsigned /*index*/)
-{
-    emit layerChanged();
-}
+//void MapItem::layerRemoved(osgEarth::Layer */*layer*/, unsigned /*index*/)
+//{
+//    emit layerChanged();
+//}
 
 void MapItem::frame()
 {

@@ -34,7 +34,7 @@ void StationDataManager::upsertInfo(StationInfo &stationInfo)
         //add to container---------------------------------------------------
         mStationData[stationInfo.Number]->modelNode = stationModelNode;
         //add to map --------------------------------------------------------
-        mDefenseModelLayer->mapItem()->addNodeToLayer(stationModelNode,STATION_LAYER);
+//        mDefenseModelLayer->mapItem()->addNodeToLayer(stationModelNode,STATION_LAYER);
     }
     //update information-----------------------------------------------------
 	stationModelNode->dataChanged();

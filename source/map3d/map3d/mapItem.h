@@ -58,13 +58,15 @@ public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;
     osgEarth::GeoPoint screenToGeoPoint(float x, float y) const;
     void worldToScreen(osg::Vec3d worldPoint, float& outX, float& outY) const;
+
+    bool getMode() const;
     //--layer function---------------------------------
-    void addLayer(osgEarth::Layer* layer);
-    void removeLayer(osgEarth::Layer* layer);
-    bool addNodeToLayer(osg::Node *node, std::string layerName);
-    bool removeNodeFromLayer(osg::Node *node, std::string layerName);
-    bool addLayerToLayer(osgEarth::Layer *layer, std::string layerName);
-    bool removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName);
+//    void addLayer(osgEarth::Layer* layer);
+//    void removeLayer(osgEarth::Layer* layer);
+//    bool addNodeToLayer(osg::Node *node, std::string layerName);
+//    bool removeNodeFromLayer(osg::Node *node, std::string layerName);
+//    bool addLayerToLayer(osgEarth::Layer *layer, std::string layerName);
+//    bool removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName);
 
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 public slots:
@@ -73,7 +75,7 @@ public slots:
 //    void goToPosition(double latitude, double longitude, double range);
 //    void goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration = 3.0);
     void changeMode();
-    bool getMode() const;
+
     void setGeocentric(bool isGeocentric);
     //    void toggle3DView();
     //void pan(double xVal, double yVal);
@@ -94,7 +96,7 @@ signals:
 //    void focalPointHeadChanged(qreal focalPointHead);
 
     void modeChanged(bool is3DView);
-    void layerChanged();
+//    void layerChanged();
     void mapCleared();
 //    void frameChanged();
     //    void mapSRSChanged();
@@ -105,8 +107,8 @@ private:
     void createMapNode(bool geocentric, osgEarth::Map *map = nullptr);
     void createCameraManipulator();
 
-    void layerAdded(osgEarth::Layer* layer, unsigned index);
-    void layerRemoved(osgEarth::Layer* layer, unsigned index);
+//    void layerAdded(osgEarth::Layer* layer, unsigned index);
+//    void layerRemoved(osgEarth::Layer* layer, unsigned index);
 
     friend class MainWindow;
     friend class MainMapCallback;
@@ -118,7 +120,7 @@ private:
 
 private:
     bool mIsFirstFrame{true};
-    GLuint mRenderTargetId{0};
+//    GLuint mRenderTargetId{0};
 //    osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
     osg::ref_ptr<CameraController> mCameraController{nullptr};
     bool mIsGeocentric{true};

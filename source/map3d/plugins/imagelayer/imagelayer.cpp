@@ -190,7 +190,7 @@ void ImageLayer::addTMS()
         osgEarth::Drivers::TMSOptions opt;
         opt.url() = nodeName;
         osg::ref_ptr<osgEarth::ImageLayer> layer = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions(nodeName, opt));
-        mapItem()->addLayer(layer);
+        mapItem()->getMapObject()->addLayer(layer);
     }
 }
 

@@ -93,7 +93,7 @@ void DrawImage::initDraw(const osgEarth::GeoPoint &geoPos)
 
     mImageOverlay->setCenter(geoPos.x(),geoPos.y());
 
-    mapItem()->getMapObject()->addNodeToLayer(mImageOverlay, mImgLayer);
+//    mapItem()->getMapObject()->addNodeToLayer(mImageOverlay, mImgLayer);
     mImageProperties->setImage(mImageOverlay);
 
     mImageProperties->setLocation(mImageOverlay->getCenter());
@@ -109,7 +109,7 @@ void DrawImage::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawImage::cancelDraw()
 {
     if(state() == State::DRAWING){
-        mapItem()->getMapObject()->removeNodeFromLayer(mImageOverlay, mImgLayer);
+//        mapItem()->getMapObject()->removeNodeFromLayer(mImageOverlay, mImgLayer);
         mImageOverlay = nullptr;
         mImageProperties->setImage(mImageOverlay);
         setState(State::READY);

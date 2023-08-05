@@ -624,19 +624,19 @@ void DefenseModelLayer::initLayers()
 {
     osgEarth::Annotation::AnnotationLayer *defenseModelLayer = new osgEarth::Annotation::AnnotationLayer();
     defenseModelLayer->setName(DEFENSE_LAYER);
-    mapItem()->addLayer(defenseModelLayer);
+//    mapItem()->addLayer(defenseModelLayer);
 
     osgEarth::Annotation::AnnotationLayer *systemsModelLayer = new osgEarth::Annotation::AnnotationLayer();
     systemsModelLayer->setName(SYSTEM_LAYER);
-    mapItem()->addLayerToLayer(systemsModelLayer, DEFENSE_LAYER);
+//    mapItem()->addLayerToLayer(systemsModelLayer, DEFENSE_LAYER);
 
     osgEarth::Annotation::AnnotationLayer *stationsModelLayer = new osgEarth::Annotation::AnnotationLayer();
     stationsModelLayer->setName(STATION_LAYER);
-    mapItem()->addLayerToLayer(stationsModelLayer, DEFENSE_LAYER);
+//    mapItem()->addLayerToLayer(stationsModelLayer, DEFENSE_LAYER);
 
     osgEarth::Annotation::AnnotationLayer *aircraftsModelLayer = new osgEarth::Annotation::AnnotationLayer();
     aircraftsModelLayer->setName(AIRCRAFT_LAYER);
-    mapItem()->addLayerToLayer(aircraftsModelLayer, DEFENSE_LAYER);
+//    mapItem()->addLayerToLayer(aircraftsModelLayer, DEFENSE_LAYER);
 }
 
 osgEarth::Symbology::Style &DefenseModelLayer::getDefaultStyle()

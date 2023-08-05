@@ -63,7 +63,7 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 		//add to container-----------------------------------------------------
 		mAircraftData[aircraftInfo.TN]->modelNode = aircraftModelNode;
 		//add to map ---------------------------------------------------------
-        mDefenseModelLayer->mapItem()->addNodeToLayer(aircraftModelNode, AIRCRAFT_LAYER);
+//        mDefenseModelLayer->mapItem()->addNodeToLayer(aircraftModelNode, AIRCRAFT_LAYER);
 	}
 	//update information------------------------------------------------------------------
 	aircraftModelNode->dataChanged();
@@ -74,7 +74,7 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 void AircraftDataManager::remove(int tn)
 {
     if(mAircraftData.contains(tn)){
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mAircraftData[tn]->modelNode, AIRCRAFT_LAYER);
+//        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mAircraftData[tn]->modelNode, AIRCRAFT_LAYER);
 		mDefenseModelLayer->modelNodeDeleted(mAircraftData[tn]->modelNode);
         delete mAircraftData[tn];
         mAircraftData.remove(tn);

@@ -296,11 +296,11 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
         }
 
 
-        mDefenseModelLayer->mapItem()->addNodeToLayer(mVisiblePolygon, STATION_LAYER);
+//        mDefenseModelLayer->mapItem()->addNodeToLayer(mVisiblePolygon, STATION_LAYER);
     }
     else
     {
-        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mVisiblePolygon, STATION_LAYER);
+//        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mVisiblePolygon, STATION_LAYER);
     }
 }
 

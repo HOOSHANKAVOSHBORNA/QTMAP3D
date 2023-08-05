@@ -18,10 +18,10 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
 
     initializeModel(mapItem->getMapNode()->getMap());
     setSourceModel(mTreeModel);
-    connect(mapItem, &MapItem::layerChanged,[this, mapItem](){
-        mTreeModel->removeRows(0,mTreeModel->rowCount());
-        initializeModel(mapItem->getMapNode()->getMap());
-    });
+//    connect(mapItem, &MapItem::layerChanged,[this, mapItem](){
+//        mTreeModel->removeRows(0,mTreeModel->rowCount());
+//        initializeModel(mapItem->getMapNode()->getMap());
+//    });
     connect(mapItem, &MapItem::mapCleared,[this, mapItem](){
         mTreeModel->removeRows(0,mTreeModel->rowCount());
         initializeModel(mapItem->getMapNode()->getMap());
