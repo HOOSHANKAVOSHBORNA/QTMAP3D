@@ -267,18 +267,18 @@ private:
     // ---------- height //
 
     bool mHeightStatus               {false};
-    double mHeight {7000};
+    double mHeight {100};
 
 
     // ---------- lenght //
 
     bool mLenghtStatus               {false};
-    double mLenght {7000};
+    double mLenght {100};
 
     // ---------- width //
 
     bool mWidthStatus                {false};
-    double mWidth {7000};
+    double mWidth {100};
 
     // ---------- tesselation //
 

@@ -4,14 +4,15 @@
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/PlaceNode>
-
+#include <osg/ShapeDrawable>
+#include <osg/ClipNode>
+#include <osg/ClipPlane>
 #include "drawShape.h"
 #include "cylinder.h"
 #include "cylinderProperties.h"
 
 #define CYLINDER "Cylinder"
 
-class ParenticAnnotationLayer;
 
 class DrawCylinder : public DrawShape
 {
@@ -28,14 +29,14 @@ private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-    void createProperty();
+
 
 private:
     osg::ref_ptr<Cylinder> mCylinder{nullptr};
     CylinderProperties *mCylinderProperties{nullptr};
-    osg::ref_ptr<CompositeAnnotationLayer> mCompositeCylinderLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mCylinderLayer = nullptr;
     static int mCount;
+    QQuickItem *mItem;
 
 };
 #endif // DRAWCylinder_H

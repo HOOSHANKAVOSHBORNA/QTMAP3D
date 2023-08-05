@@ -11,9 +11,10 @@ ConeProperties::ConeProperties(QQuickItem *parent):
     Property(parent)
 {
     setFillColorStatus      (true);
-    setRadiusStatus          (true);
+    setRadiusStatus         (true);
     setHeightStatus         (true);
     setLocationStatus       (true);
+    setCenterStatus         (true);
 }
 
 void ConeProperties::setFillColor(const QColor &color)
@@ -42,6 +43,17 @@ void ConeProperties::setHeight(const double &height)
         mCone->setHeight(height);
 }
 
+
+
+void ConeProperties::setCenter(const QVector3D &center)
+{
+
+    osg::Vec3 temp(center.x(),center.y(),center.z());
+
+    if (mCone)
+        mCone->setCenter(temp);
+}
+
 void ConeProperties::setLocationRelative(const bool &relative)
 {
 
@@ -54,13 +66,19 @@ void ConeProperties::setLocation(const QVector3D &status)
     osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(status, mSRS);
     if (mCone)
         mCone->setPosition(temp);
-
-
-
-
 }
 
 
+void ConeProperties::setName(const QString &name)
+{
+
+    Property::setName(name);
+    if(mCone)
+    {
+        mCone->setName(name.toStdString());
+
+    }
+}
 
 Cone *ConeProperties::getCone() const
 {
@@ -76,6 +94,8 @@ void ConeProperties::setCone(Cone *newCone, const osgEarth::SpatialReference *sr
         mCone->setColor(Utility::qColor2osgEarthColor(getFillColor()));
         mCone->setRadius(getRadius());
         mCone->setHeight(getHeight());
+        setCenter(QVector3D(mCone->getCenter().x(),mCone->getCenter().y(),mCone->getCenter().z()));
         setLocation(Utility::osgEarthGeoPointToQvector3D(mCone->getPosition()));
+        setName(QString::fromStdString(mCone->getName()));
     }
 }

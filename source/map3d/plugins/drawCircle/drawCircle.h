@@ -1,6 +1,7 @@
 #ifndef DRAWCIRCLE_H
 #define DRAWCIRCLE_H
 
+
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include "drawShape.h"
@@ -24,14 +25,15 @@ private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-    void createProperty();
+
 
 private:
     osg::ref_ptr<Circle> mCircle{nullptr};
     CircleProperties *mCircleProperties{nullptr};
-    osg::ref_ptr<CompositeAnnotationLayer> mCompositeCircleLayer;
+
     osg::ref_ptr<ParenticAnnotationLayer> mCircleLayer;
     static int mCount;
+    QQuickItem *mItem;
 
 
 };

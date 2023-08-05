@@ -21,6 +21,8 @@ public:
     void setLocation();
     void setLocationRelative(const bool &relative) override;
     void setLocation(const QVector3D &status) override;
+    void setCenter(const QVector3D &center)override;
+    void setName(const QString &name) override;
     Cylinder *getCylinder() const;
     void setCylinder(Cylinder *Cylinder, const osgEarth::SpatialReference *srs);
 

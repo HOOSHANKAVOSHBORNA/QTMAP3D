@@ -22,8 +22,10 @@ public:
     void setLocationRelative(const bool &relative) override;
     void setLocation(const QVector3D &status) override;
     void setClamp(const int &clamp) override;
+    void setName(const QString &name) override;
+
+
     Ellipse *getEllipse() const;
-    void setEllipse(Ellipse* ellipse);
     void setEllipse(Ellipse *Ellipse , const osgEarth::SpatialReference *srs);
 
 private:

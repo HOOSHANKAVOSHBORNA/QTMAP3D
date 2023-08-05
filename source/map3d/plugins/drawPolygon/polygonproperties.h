@@ -24,6 +24,7 @@ public:
     void setStroke(const QColor &color)override;
     void setHeight(const double &height) override;
     void setClamp(const int &clamp) override;
+    void setName(const QString &name) override;
     Polygon *getPolygon() const;
 
     void setPolygon(Polygon *Polygon , const osgEarth::SpatialReference *srs);

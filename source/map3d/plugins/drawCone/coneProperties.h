@@ -19,6 +19,8 @@ public:
     void setLocationRelative(const bool &relative) override;
     void setLocation(const QVector3D &status) override;
     void setHeight(const double &height) override;
+    void setCenter(const QVector3D &center)override;
+    void setName(const QString &name) override;
     Cone *getCone() const;
     void setCone(Cone *cone, const osgEarth::SpatialReference *srs);
 

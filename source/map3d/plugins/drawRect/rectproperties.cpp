@@ -84,6 +84,16 @@ void RectProperties::setLocation(const QVector3D &status)
 
 }
 
+void RectProperties::setName(const QString &name)
+{
+    Property::setName(name);
+    if(mRect)
+    {
+        mRect->setName(name.toStdString());
+
+    }
+}
+
 
 
 
@@ -123,5 +133,6 @@ void RectProperties::setRect(Rect *newRect, const osgEarth::SpatialReference *sr
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
         mRect->setClamp(clampEnum);
         setLocation(Utility::osgEarthGeoPointToQvector3D(mRect->getPosition()));
+        setName(QString::fromStdString(mRect->getName()));
     }
 }

@@ -24,7 +24,7 @@ public:
     void setStroke(const QColor &color)override;
     void setHeight(const double &height) override;
     void setClamp(const int &clamp) override;
-//    void setName(const QString &name) override;
+    void setName(const QString &name) override;
     Circle *getCircle() const;
     void setCircle(Circle* circle, const osgEarth::SpatialReference *srs);
 

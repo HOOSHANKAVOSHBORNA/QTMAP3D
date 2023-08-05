@@ -7,10 +7,11 @@
 CylinderProperties::CylinderProperties(QQuickItem *parent):
     Property(parent)
 {
-    setFillColorStatus(true);
-    setRadiusStatus(true);
-    setLocationStatus(true);
-    setHeightStatus(true);
+    setFillColorStatus  (true);
+    setRadiusStatus     (true);
+    setLocationStatus   (true);
+    setHeightStatus     (true);
+    setCenterStatus     (true);
 }
 
 void CylinderProperties::setFillColor(const QColor &color)
@@ -53,7 +54,26 @@ void CylinderProperties::setLocationRelative(const bool &relative)
 
     Property::setLocationRelative(relative);
 }
+void CylinderProperties::setName(const QString &name)
+{
 
+    Property::setName(name);
+    if(mCylinder)
+    {
+        mCylinder->setName(name.toStdString());
+
+    }
+}
+
+
+void CylinderProperties::setCenter(const QVector3D &center)
+{
+
+    osg::Vec3 temp(center.x(),center.y(),center.z());
+
+    if (mCylinder)
+        mCylinder->setCenter(temp);
+}
 Cylinder *CylinderProperties::getCylinder() const
 {
     return mCylinder;
@@ -69,6 +89,8 @@ void CylinderProperties::setCylinder(Cylinder *newCylinder, const osgEarth::Spat
         mCylinder->setRadius(getRadius());
         mCylinder->setHeight(getHeight());
         setLocation(Utility::osgEarthGeoPointToQvector3D(mCylinder->getPosition()));
+        setCenter(QVector3D(mCylinder->getCenter().x(),mCylinder->getCenter().y(),mCylinder->getCenter().z()));
+        setName(QString::fromStdString(mCylinder->getName()));
     }
 }
 

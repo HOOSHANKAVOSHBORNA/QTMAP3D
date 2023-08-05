@@ -54,6 +54,16 @@ void EllipseProperties::setStroke(const QColor &color)
     }
 
 }
+void EllipseProperties::setName(const QString &name)
+{
+
+    Property::setName(name);
+    if(mEllipse)
+    {
+        mEllipse->setName(name.toStdString());
+
+    }
+}
 
 
 
@@ -107,6 +117,7 @@ void EllipseProperties::setEllipse(Ellipse *newEllipse, const osgEarth::SpatialR
         mEllipse->setStrokeWidth(getStrokeWidth());
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
         mEllipse->setClamp(clampEnum);
+        setName(QString::fromStdString(mEllipse->getName()));
         setLocation(Utility::osgEarthGeoPointToQvector3D(mEllipse->getPosition()));
     }
 }

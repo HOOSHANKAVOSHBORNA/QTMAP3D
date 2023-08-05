@@ -21,69 +21,56 @@ bool DrawCone::setup()
 
 
 
-    mCompositeConeLayer = new CompositeAnnotationLayer();
-    mCompositeConeLayer->setName(CONE);
-
-    return true;
+    mConeLayer = new ParenticAnnotationLayer();
+    mConeLayer->setName(CONE);
+    return true;    
 }
 
 void DrawCone::onConeItemCheck(bool check)
 {
-    qmlRegisterType<ConeProperties>("Crystal", 1, 0, "CProperty");
+
+
 
     if (check) {
         auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositeConeLayer->getName()));
+        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mConeLayer->getName()));
         if(!layer){
-            mCompositeConeLayer->clearLayers();
+            mConeLayer->getGroup()->removeChildren(0, mConeLayer->getGroup()->getNumChildren());
         }
-        if(mCompositeConeLayer->getNumLayers() <= 0){
-
-            //            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
-            shapeLayer->addLayer(mCompositeConeLayer);
+        if(mConeLayer->getGroup()->getNumChildren() <= 0){
+            shapeLayer->addLayer(mConeLayer);
         }
         setState(State::READY);
-        mapItem()->addNode(iconNode());
-
-
-        createProperty();
-
-
-
-
+        mConeProperties = new ConeProperties();
+        createProperty("Cone", QVariant::fromValue<ConeProperties*>(mConeProperties));
         mapItem()->addNode(iconNode());
 
     }
     else {
         if(state() == State::DRAWING)
             cancelDraw();
-        if(mCompositeConeLayer->getNumLayers() <= 0){
+
+        if(mConeLayer->getGroup()->getNumChildren() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
-            shapeLayer->removeLayer(mCompositeConeLayer);
+            shapeLayer->removeLayer(mConeLayer);
         }
         setState(State::NONE);
         mCone = nullptr;
-        mConeProperties->setProperty("visible", false);
+        hideProperty();
         mapItem()->removeNode(iconNode());
     }
 }
 
 void DrawCone::initDraw(const osgEarth::GeoPoint &geoPos)
 {
+
     QString name = "Cone" + QString::number(mCount);
     mCone = new Cone();
     mCone->setName(name.toStdString());
-    mCone->setRadius(mConeProperties->getRadius());
-    mCone->setHeight(mConeProperties->getHeight());
     mCone->setPosition(geoPos);
-
-
-    mConeLayer = new ParenticAnnotationLayer();
     mConeLayer->addChild(mCone);
-    mConeLayer->setName(mCone->getName());
-    mCompositeConeLayer->addLayer(mConeLayer);
     mConeProperties->setCone(mCone, mapItem()->getMapSRS());
-
+    mConeLayer->setName(mCone->getName());
     setState(State::DRAWING);
     mCount++;
 }
@@ -91,11 +78,8 @@ void DrawCone::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawCone::cancelDraw()
 {
     if(state() == State::DRAWING){
-        //        mapItem()->getMapObject()->removeNodeFromLayer(mCone, mConeLayer);
-        mCompositeConeLayer->removeLayer(mConeLayer);
+        mConeLayer->getGroup()->removeChild(mCone);
         mCone = nullptr;
-        mConeLayer = nullptr;
-        //mConeProperties->setCone(mCone);
         mConeProperties->setCone(mCone, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
@@ -108,24 +92,3 @@ void DrawCone::drawing(const osgEarth::GeoPoint &geoPos)
     mConeProperties->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }
 
-void DrawCone::createProperty()
-{
-    QQmlComponent* comp = new QQmlComponent(qmlEngine());
-    connect(comp, &QQmlComponent::statusChanged, [comp, this](){
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
-        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
-        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-        mConeProperties = static_cast<ConeProperties*>(item);
-        //            mBoxProperties->setFillColorStatus(false);
-        //            mBoxProperties->setFillColor(QColor());
-        //            mBoxProperty->setStatuses();
-
-        //        mBoxProperties = new BoxProperties();
-        mainWindow()->addToRightContainer(mConeProperties, "Cone");
-    });
-
-
-    comp->loadUrl(QUrl("qrc:/Properties.qml"));
-}

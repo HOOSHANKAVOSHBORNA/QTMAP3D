@@ -19,7 +19,7 @@ bool DrawBox::setup()
     makeIconNode("../data/images/draw/box.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    mBoxLayer = new ParenticAnnotationLayer();
+    mBoxLayer =  new ParenticAnnotationLayer();
     mBoxLayer->setName(BOX);
     return true;
 }
@@ -61,11 +61,10 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "box" + QString::number(mCount);
     mBox = new Box();
     mBox->setName(name.toStdString());
-
     mBox->setPosition(geoPos);
     mBoxLayer->addChild(mBox);
     mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
-
+    mBoxLayer->setName(mBox->getName());
     setState(State::DRAWING);
     mCount++;
 }
@@ -78,12 +77,12 @@ void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 
 void DrawBox::cancelDraw()
 {
-    if(state() == State::DRAWING){
-        mBoxLayer->getGroup()->removeChild(mBox);
-        mBox = nullptr;
-        mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
-        setState(State::READY);
-        mCount--;
-    }
+        if(state() == State::DRAWING){
+            mBoxLayer->getGroup()->removeChild(mBox);
+            mBox = nullptr;
+            mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
+            setState(State::READY);
+            mCount--;
+        }
 }
 

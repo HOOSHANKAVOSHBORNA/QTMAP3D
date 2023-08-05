@@ -23,6 +23,7 @@ public:
     void setClamp(const int &clamp) override;
     void setLocationRelative(const bool &relative) override;
     void setLocation(const QVector3D &status) override;
+    void setName(const QString &name) override;
     Rect *getRect() const;
     void setRect(Rect* Rect, const osgEarth::SpatialReference *srs);
 

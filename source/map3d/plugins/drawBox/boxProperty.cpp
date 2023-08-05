@@ -8,14 +8,13 @@ BoxProperty::BoxProperty(QQuickItem *parent):
 {
     setHeightStatus(true);
     setLocationStatus(true);
-    //    setLocationRelative(true);
+
     setFillColorStatus(true);
     setWidthStatus(true);
     setLenghtStatus(true);
-    setClampStatus(true);
-    setCenterStatus(false);
-    //    setFillColor(getFillColor());
-    //    setLocation(getLocation());
+
+    setCenterStatus(true);
+
 
 
 }
@@ -41,15 +40,6 @@ void BoxProperty::setWidth(const double &width)
         mBox->setWidth(width);
 }
 
-//void BoxProperty::setClamp(const int &clamp)
-//{
-//    Property::setClamp(clamp);
-//    if(mBox){
-//        osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(clamp);
-//        mBox->setClamp(clampEnum);
-
-//    }
-//}
 
 void BoxProperty::setName(const QString &name)
 {
@@ -62,27 +52,16 @@ void BoxProperty::setName(const QString &name)
     }
 }
 
-//void BoxProperty::setName(const QString &name)
-//{
-//    Property::setName(name);
-//    if(mBox){
-//        mBox->setName(name.toStdString());
 
 
-//    }
-//}
+void BoxProperty::setCenter(const QVector3D &center)
+{
 
-//void BoxProperty::setCenter(const QVector3D &center)
-//{
-//    Property::setCenter(center);
-//    osg::Vec3 temp;
-//    temp = static_cast<osg::Vec3>(center);
-////    temp.y() = dynamic_cast<osg::Vec3fValueObject>(center.y);
-////    temp.z() = dynamic_cast<osg::Vec3fValueObject>(center.z);
-////    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(center, mSRS);
-//    if (mBox)
-//        mBox->setCenter(temp);
-//}
+    osg::Vec3 temp(center.x(),center.y(),center.z());
+
+    if (mBox)
+        mBox->setCenter(temp);
+}
 
 
 void BoxProperty::setLocationRelative(const bool &relative)
@@ -124,6 +103,6 @@ void BoxProperty::setBox(Box *newBox, const osgEarth::SpatialReference* srs)
 
         setLocation(Utility::osgEarthGeoPointToQvector3D(mBox->getPosition()));
         setName(QString::fromStdString(mBox->getName()));
-//        setCenter(QVector3D(mBox->getCenter());
+        setCenter(QVector3D(mBox->getCenter().x(),mBox->getCenter().y(),mBox->getCenter().z()));
     }
 }

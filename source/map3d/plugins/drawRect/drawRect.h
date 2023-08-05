@@ -9,7 +9,7 @@
 
 
 #define RECT "Rect"
-class ParenticAnnotationLayer;
+
 class DrawRect : public DrawShape
 {
     Q_OBJECT
@@ -25,15 +25,14 @@ private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-    void createProperty();
 
 private:
     osg::ref_ptr<Rect> mRect{nullptr};
     RectProperties *mRectProperties{nullptr};
-    osg::ref_ptr<CompositeAnnotationLayer> mCompositeRectLayer;
+
     osg::ref_ptr<ParenticAnnotationLayer> mRectLayer;
     static int mCount;
-
+    QQuickItem *mItem;
 
 
 

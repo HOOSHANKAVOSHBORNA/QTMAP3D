@@ -11,8 +11,7 @@
 int DrawPolygon::mCount{0};
 DrawPolygon::DrawPolygon(QObject *parent): DrawShape(parent)
 {
-    //    qmlRegisterType<PolygonPropertiesModel>("Crystal", 1, 0, "PolygonProperties");
-    //    qmlRegisterType<PolygonProperties>("Crystal", 1, 0, "CProperty");
+
 }
 
 bool DrawPolygon::setup()
@@ -24,32 +23,30 @@ bool DrawPolygon::setup()
     makeIconNode("../data/images/draw/polygon.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    //    mPolygonLayer = new CompositeAnnotationLayer();
-    //    mPolygonLayer->setName(Polygon);
-    mCompositePolygonLayer = new CompositeAnnotationLayer();
-    mCompositePolygonLayer->setName(POLYGON);
+    mPolygonLayer = new ParenticAnnotationLayer();
+    mPolygonLayer->setName(POLYGON);
 
     return true;
+
+
 }
 
 void DrawPolygon::onPolygonItemCheck(bool check)
 {
 
-    qmlRegisterType<PolygonProperties>("Crystal", 1, 0, "CProperty");
+
     if (check) {
         auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositePolygonLayer->getName()));
+        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mPolygonLayer->getName()));
         if(!layer){
-            mCompositePolygonLayer->clearLayers();
+            mPolygonLayer->getGroup()->removeChildren(0, mPolygonLayer->getGroup()->getNumChildren());
         }
-        if(mCompositePolygonLayer->getNumLayers() <= 0){
-
-            //            mapItem()->getMapObject()->addLayer(mPolygonLayer, shapeLayer);
-            shapeLayer->addLayer(mCompositePolygonLayer);
+        if(mPolygonLayer->getGroup()->getNumChildren() <= 0){
+            shapeLayer->addLayer(mPolygonLayer);
         }
         setState(State::READY);
-
-        createProperty();
+        mPolygonProperties = new PolygonProperties();
+        createProperty("Polygon", QVariant::fromValue<PolygonProperties*>(mPolygonProperties));
         mapItem()->addNode(iconNode());
 
     }
@@ -57,16 +54,16 @@ void DrawPolygon::onPolygonItemCheck(bool check)
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mCompositePolygonLayer->getNumLayers() <= 0){
+        if(mPolygonLayer->getGroup()->getNumChildren() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
-            //            mapItem()->getMapObject()->removeLayer(mPolygonLayer, shapeLayer);
-            shapeLayer->removeLayer(mCompositePolygonLayer);
+            shapeLayer->removeLayer(mPolygonLayer);
         }
         setState(State::NONE);
         mPolygon = nullptr;
-        mPolygonProperties->setProperty("visible", false);
+        hideProperty();
         mapItem()->removeNode(iconNode());
-    }}
+    }
+}
 
 void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)
 {
@@ -80,26 +77,12 @@ void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)
     osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mPolygonProperties->getClamp());
     mPolygon->setClamp(clampEnum);
 
-
-
-    setState(State::DRAWING);
-
-
-    mCount++;
-    mPolygonLayer = new ParenticAnnotationLayer();
     mPolygonLayer->addChild(mPolygon);
-    mPolygonLayer->setName(mPolygon->getName());
-    mCompositePolygonLayer->addLayer(mPolygonLayer);
-
     mPolygonProperties->setPolygon(mPolygon, mapItem()->getMapSRS());
+    mPolygonLayer->setName(mPolygon->getName());
     setState(State::DRAWING);
 
-
-
     mCount++;
-
-
-
 
 
 }
@@ -109,12 +92,10 @@ void DrawPolygon::cancelDraw()
 
 
 
+
     if(state() == State::DRAWING){
-        //        mapItem()->getMapObject()->removeNodeFromLayer(mPolygon, mPolygonLayer);
-        mCompositePolygonLayer->removeLayer(mPolygonLayer);
+        mPolygonLayer->getGroup()->removeChild(mPolygon);
         mPolygon = nullptr;
-        mPolygonLayer = nullptr;
-        //mPolygonProperties->setPolygon(mPolygon);
         mPolygonProperties->setPolygon(mPolygon, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
@@ -122,21 +103,5 @@ void DrawPolygon::cancelDraw()
 }
 
 
-void DrawPolygon::createProperty()
-{
-    QQmlComponent* comp = new QQmlComponent(qmlEngine());
-    connect(comp, &QQmlComponent::statusChanged, [comp, this](){
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
-        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-        mPolygonProperties = static_cast<PolygonProperties*>(item);
 
-
-        mainWindow()->addToRightContainer(mPolygonProperties, "Polygon");
-    });
-
-
-    comp->loadUrl(QUrl("qrc:/Properties.qml"));
-}
 

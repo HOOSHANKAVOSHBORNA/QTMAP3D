@@ -6,7 +6,7 @@
 #include <QQuickItem>
 
 
-
+#include <QDebug>
 
 CircleProperties::CircleProperties(QQuickItem *parent):
     Property(parent)
@@ -14,7 +14,6 @@ CircleProperties::CircleProperties(QQuickItem *parent):
     setFillColorStatus  (true);
     setRadiusStatus     (true);
     setArcStatus        (true);
-    setStrokeStatus     (true);
     setStrokeStatus     (true);
     setLocationStatus   (true);
     setHeightStatus     (true);
@@ -49,9 +48,23 @@ void CircleProperties::setArc(const QVector2D &arc)
     if(mCircle){
         mCircle->setArcEnd(arc.y());
         mCircle->setArcStart(arc.x());
+        qDebug() << mCircle->getArcEnd().getValue();
     }
 
 }
+
+
+void CircleProperties::setName(const QString &name)
+{
+
+    Property::setName(name);
+    if(mCircle)
+    {
+        mCircle->setName(name.toStdString());
+
+    }
+}
+
 
 void CircleProperties::setStrokeWidth(const double &opacity)
 {
@@ -123,10 +136,11 @@ void CircleProperties::setCircle(Circle *newCircle, const osgEarth::SpatialRefer
         mCircle->setCircleHeight(getHeight());
         mCircle->setLineColor(Utility::qColor2osgEarthColor(getStroke()));
         mCircle->setLineWidth(getStrokeWidth());
-        mCircle->setArcEnd(getArc().x());
-        mCircle->setArcStart(getArc().y());
+        mCircle->setArcEnd(getArc().y());
+        mCircle->setArcStart(getArc().x());
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
         mCircle->setClamp(clampEnum);
+        setName(QString::fromStdString(mCircle->getName()));
         setLocation(Utility::osgEarthGeoPointToQvector3D(mCircle->getPosition()));
     }
 }

@@ -24,14 +24,14 @@ private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
 
     void cancelDraw()override;
-    void createProperty();
+
 
 private:
     osg::ref_ptr<Polygon> mPolygon{nullptr};
     PolygonProperties *mPolygonProperties{nullptr};
-    osg::ref_ptr<CompositeAnnotationLayer> mCompositePolygonLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mPolygonLayer;
     static int mCount;
+    QQuickItem *mItem;
 
 
 };

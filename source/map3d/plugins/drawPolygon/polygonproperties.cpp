@@ -15,6 +15,7 @@ PolygonProperties::PolygonProperties(QQuickItem *parent):
     setStrokeStatus     (true);
     setHeightStatus     (true);
     setClampStatus      (true);
+    setPointsStatus     (true);
 }
 
 void PolygonProperties::setFillColor(const QColor &color)
@@ -26,6 +27,16 @@ void PolygonProperties::setFillColor(const QColor &color)
 }
 
 
+void PolygonProperties::setName(const QString &name)
+{
+
+    Property::setName(name);
+    if(mPolygon)
+    {
+        mPolygon->setName(name.toStdString());
+
+    }
+}
 
 void PolygonProperties::setStrokeWidth(const double &opacity)
 {
@@ -86,6 +97,7 @@ void PolygonProperties::setPolygon(Polygon *newPolygon, const osgEarth::SpatialR
         mPolygon->setHeight(getHeight());
         mPolygon->setLineColor(Utility::qColor2osgEarthColor(getStroke()));
         mPolygon->setLineWidth(getStrokeWidth());
+        setName(QString::fromStdString(mPolygon->getName()));
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
         mPolygon->setClamp(clampEnum);
 

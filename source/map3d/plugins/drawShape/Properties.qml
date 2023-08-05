@@ -131,7 +131,7 @@ Item {
                                     MouseArea{
                                         anchors.fill: parent
                                         cursorShape: Qt.PointingHandCursor
-                                        onClicked: rootItem.model.visible = true
+                                        onClicked: fillColorDialog.visible = true
                                     }
                                 }
                                 SpinBox {
@@ -151,6 +151,9 @@ Item {
                                     value: rootItem.model ? rootItem.model.fillColor.a * 100 : 0
                                     delayed: true
                                 }
+
+
+
 
                                 ColorDialog {
                                     visible: false
@@ -279,13 +282,14 @@ Item {
                                     from: 0
                                     to: 10000000
                                     onValueChanged: {
-                                        rootItem.model.strokeWidth = value
+                                        if (rootItem.model)
+                                            rootItem.model.strokeWidth = value
                                     }
                                 }
                                 Binding{
                                     target: strkWidth
 
-                                    property: "value"
+                                    property: "realValue"
                                     value: rootItem.model ? rootItem.model.strokeWidth : 0
                                 }
                             }
@@ -638,7 +642,7 @@ Item {
                                         value: 0
                                         to : 360
                                         from : 0
-//                                        decimals: 0
+                                        decimals: 0
                                         Layout.fillWidth: true
                                         Layout.topMargin: 30
                                         Layout.preferredHeight: 28
@@ -646,8 +650,8 @@ Item {
                                         Layout.rightMargin: 0
 
                                         onValueChanged: {
-
-                                            rootItem.model.arc.x =value
+                                            if (rootItem.model)
+                                                rootItem.model.arc.x =realValue
                                         }
                                     }
                                 }
@@ -662,13 +666,16 @@ Item {
                                     id: endarc
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
-//                                    decimals: 0
+                                    decimals: 0
                                     Layout.leftMargin: 25
                                     value: 360
                                     from: 0
                                     to: 360
                                     onValueChanged: {
-                                        rootItem.model.arc.y = value
+                                        if (rootItem.model){
+                                            rootItem.model.arc.y = realValue
+                                            print(realValue)
+                                        }
                                     }
                                 }
                             }
@@ -743,27 +750,28 @@ Item {
 
                                 QSpinBox {
                                     id:mheight
-                                    realValue: rootItem.model ? rootItem.model.heighT : 0
+
                                     from : 0
-                                    to: 10000000
+                                    to: 1000000000
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25
                                     onValueChanged: {
-//                                        rootItem.heighT = realValue
-                                        rootItem.model.heighT= value
+                                        rootItem.model.heighT= realValue
                                     }
                                 }
-//                                Binding{
-//                                    target: mheight
+                                Binding{
+                                    target: mheight
 
-//                                    property: "realValue"
-//                                    value: rootItem.heighT
-//                                    delayed: true
-//                                }
+                                    property: "realValue"
+                                    value: rootItem.model? rootItem.model.heighT: 0
+                                    delayed: true
+                                }
+
                             }
                         }
                     }
+
                     ////////------------------------- lenght ------------------//////////////
 
                     ColumnLayout{
@@ -844,21 +852,26 @@ Item {
                                 QSpinBox {
                                     id:widthValue
 
-                                    realValue: rootItem.model ? rootItem.model.widtH : 0
+
                                     from : 0
                                     to: 10000000
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25
+                                    height: 28
+                                    onValueChanged: {
+                                        rootItem.model.widtH = realValue
+                                    }
 
                                 }
                                 Binding{
-                                    target: rootItem.model
+                                    target: widthValue
 
-                                    property: "widtH"
-                                    value: widthValue.realValue
+                                    property: "realValue"
+                                    value: rootItem.model ? rootItem.model.widtH : 0
                                     delayed: true
                                 }
+
                             }
                         }
                     }

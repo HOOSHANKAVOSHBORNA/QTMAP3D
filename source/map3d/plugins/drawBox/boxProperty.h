@@ -2,10 +2,11 @@
 #define BOXPROPERTIESMODEL_H
 
 #include <QObject>
-
+#include "plugininterface.h"
 #include "box.h"
 #include "property.h"
-
+#include <QVariant>
+#include <QVector3D>
 
 
 class BoxProperty: public Property
@@ -17,10 +18,9 @@ public:
     void setLocationRelative(const bool &relative) override;
     void setLocation(const QVector3D &position) override;
     void setHeight(const double &height) override;
-//    void setCenter(const QVector3D &center)override;
+    void setCenter(const QVector3D &center)override;
     void setLenght(const double &lenght) override;
     void setWidth( const double &width)  override;
-//    void setClamp(const int &clamp) override;
     void setName(const QString &name) override;
 
 

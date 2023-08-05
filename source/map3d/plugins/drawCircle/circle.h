@@ -3,6 +3,8 @@
 #include <osgEarthAnnotation/CircleNode>
 #include "mapItem.h"
 
+
+
 class Circle: public osgEarth::Annotation::CircleNode
 {
 public:
