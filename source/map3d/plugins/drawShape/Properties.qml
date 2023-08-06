@@ -60,8 +60,6 @@ Item {
                     ColumnLayout{
                         width:parent.width
                         visible:true
-
-
                         RowLayout{
                             id:nM
                             Layout.fillWidth: true
@@ -79,24 +77,16 @@ Item {
                                 Layout.leftMargin: 25
                                 text: rootItem.model ? rootItem.model.name : ""
                                 font.pointSize: 10
-                                color: "white"
                                 onAccepted: {
-
                                     var currentName = names.displayText
-
                                     rootItem.model.name = currentName
                                 }
                             }
-
-
-
                         }
-
                     }
-
                     ////////////////////////////////////fill Color Property//////////////////////////////////
 
-                    //---------------------------------fill colore----------------------------//////////
+                    //---------------------------------fill color----------------------------//////////
                     ColumnLayout{
                         width:parent.width
                         visible: rootItem.model ? rootItem.model.fillColorStatus : false
@@ -151,9 +141,6 @@ Item {
                                     value: rootItem.model ? rootItem.model.fillColor.a * 100 : 0
                                     delayed: true
                                 }
-
-
-
 
                                 ColorDialog {
                                     visible: false
@@ -233,22 +220,20 @@ Item {
                                         }
                                     }
 
-                                    FloatSpinBox {
+                                    SpinBox {
                                         id: strkopacityValue
                                         to : 100
                                         from : 0
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 28
-
-
                                         onValueChanged: {
-                                            rootItem.model.stroke.a= realValue/100
+                                            rootItem.model.stroke.a= value/100
                                         }
                                     }
                                     Binding{
                                         target: strkopacityValue
 
-                                        property: "realValue"
+                                        property: "value"
                                         value: rootItem.model ? rootItem.model.stroke.a * 100 : 0
                                         delayed: true
                                     }
@@ -268,14 +253,12 @@ Item {
                                 Text {
                                     Layout.preferredWidth: 100
                                     Layout.preferredHeight: 35
-                                    Layout.leftMargin: -3
                                     text: "Width: "
                                     font.pointSize: 10
                                     color: "white"
                                 }
-                                FloatSpinBox {
+                                SpinBox {
                                     id: strkWidth
-                                    Layout.topMargin: -12
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 28
@@ -288,8 +271,7 @@ Item {
                                 }
                                 Binding{
                                     target: strkWidth
-
-                                    property: "realValue"
+                                    property: "value"
                                     value: rootItem.model ? rootItem.model.strokeWidth : 0
                                 }
                             }
@@ -801,7 +783,7 @@ Item {
                                 FloatSpinBox {
                                     id: lengthValue
                                     from : 0
-                                    to: 10000000
+                                    to: 1000000000
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
                                     Layout.leftMargin: 25

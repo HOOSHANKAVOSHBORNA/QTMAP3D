@@ -44,11 +44,14 @@ SpinBox {
     contentItem: RowLayout {
         ComboBox {
             id:stepCombobox
-            Layout.preferredWidth: 65
+            Layout.preferredWidth: 45
             Layout.fillHeight: true
             model: [1000, 100, 10, 1, 0.1, 0.05, 0.01 ]
             currentIndex: 3
-//            onCurrentValueChanged: print(currentValue)
+            font.pointSize: 10
+            indicator: Item{
+
+            }
         }
         TextInput {
             Layout.fillHeight: true
@@ -62,6 +65,10 @@ SpinBox {
             selectedTextColor: "#ffffff"
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
+            onAccepted: {
+                print(text)
+                spinbox.value = spinbox.valueFromText(text, spinbox.locale)
+            }
 
             readOnly: !spinbox.editable
             validator: spinbox.validator
