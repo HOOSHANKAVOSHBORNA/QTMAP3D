@@ -22,6 +22,8 @@ public:
     void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
     void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
     void onLayerMoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned oldIndex, unsigned newIndex) override;
+    void onNodeAdded(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer) override;
+    void onNodeRemoved(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer) override;
 
 private:
     MapObject *mMapObject{nullptr};

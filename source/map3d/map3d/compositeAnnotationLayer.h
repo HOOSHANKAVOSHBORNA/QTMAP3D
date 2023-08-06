@@ -9,18 +9,29 @@
 #include <osgEarth/VisibleLayer>
 
 class CompositeAnnotationLayer;
+class ParenticAnnotationLayer;
+
+class ParenticLayerCallback : public QObject, public osgEarth::VisibleLayerCallback
+{
+    Q_OBJECT
+public:
+    virtual void onNodeAdded(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer){};
+    virtual void onNodeRemoved(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer){};
+    typedef void (ParenticLayerCallback::*MethodPtr)(class osgEarth::Annotation::AnnotationNode* node, ParenticAnnotationLayer *layer);
+};
 class ParenticAnnotationLayer: public QObject, public osgEarth::Annotation::AnnotationLayer
 {
 public:
     ParenticAnnotationLayer(QObject *parent = nullptr);
 
-//    osgEarth::Annotation::AnnotationNode *node() const;
-//    void setNode(osgEarth::Annotation::AnnotationNode *newNode);
-//    virtual osg::Node* getNode() const;
-
     CompositeAnnotationLayer *getParentAtIndex(unsigned index);
     unsigned getIndexOfparent(const ParenticAnnotationLayer* layer) const;
     unsigned getNumParents() const;
+    void addChild(osgEarth::Annotation::AnnotationNode* node);
+    void removeChild(osgEarth::Annotation::AnnotationNode* node);
+    bool hasNode() const;
+    int getNumberOfNodes() const;
+    void fireCallback(ParenticLayerCallback::MethodPtr, osgEarth::Annotation::AnnotationNode *node);
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() { return nullptr; }
 
 protected:
@@ -34,7 +45,7 @@ private:
     friend class CompositeAnnotationLayer;
 };
 
-class CompositeLayerCallback : public QObject, public osgEarth::VisibleLayerCallback
+class CompositeLayerCallback : public ParenticLayerCallback
 {
     Q_OBJECT
 public:

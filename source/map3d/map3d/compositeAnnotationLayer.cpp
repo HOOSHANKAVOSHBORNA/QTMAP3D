@@ -37,6 +37,37 @@ unsigned int ParenticAnnotationLayer::getNumParents() const
     return mParents.size();
 }
 
+void ParenticAnnotationLayer::addChild(osgEarth::Annotation::AnnotationNode *node)
+{
+    osgEarth::Annotation::AnnotationLayer::addChild(node);
+    fireCallback(&ParenticLayerCallback::onNodeAdded, node);
+}
+
+void ParenticAnnotationLayer::removeChild(osgEarth::Annotation::AnnotationNode *node)
+{
+    getGroup()->removeChild(node);
+    fireCallback(&ParenticLayerCallback::onNodeRemoved, node);
+}
+
+bool ParenticAnnotationLayer::hasNode() const
+{
+    return getGroup()->getNumChildren() > 0;
+}
+
+int ParenticAnnotationLayer::getNumberOfNodes() const
+{
+    return getGroup()->getNumChildren();
+}
+
+void ParenticAnnotationLayer::fireCallback(ParenticLayerCallback::MethodPtr method, osgEarth::Annotation::AnnotationNode *node)
+{
+    for (CallbackVector::iterator i = _callbacks.begin(); i != _callbacks.end(); ++i)
+    {
+        ParenticLayerCallback* cb = dynamic_cast<ParenticLayerCallback*>(i->get());
+        if (cb) (cb->*method)(node, this);
+    }
+}
+
 void ParenticAnnotationLayer::insertParent(CompositeAnnotationLayer *parent, unsigned int index)
 {
     if (getIndexOfparent(parent) != getNumParents())

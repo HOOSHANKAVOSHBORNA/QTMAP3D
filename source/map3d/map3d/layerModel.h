@@ -39,8 +39,8 @@ public slots:
 
     void onLayerAdded(osgEarth::Layer* layer , osgEarth::Layer *parentLayer,   unsigned index);
     void onLayerRemoved(osgEarth::Layer* layer ,osgEarth::Layer *parentLayer, unsigned index);
-    void onNodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer);
-    void onNodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer);
+//    void onNodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer);
+//    void onNodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer);
     void onParentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
 
 private:

@@ -28,8 +28,8 @@ LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
     });
     connect(mapItem->getMapObject(), &MapObject::layerAdded,this ,&LayersModel::onLayerAdded);
     connect(mapItem->getMapObject(), &MapObject::layerRemoved,this ,&LayersModel::onLayerRemoved);
-    connect(mapItem->getMapObject(), &MapObject::nodeToLayerAdded,this ,&LayersModel::onNodeToLayerAdded);
-    connect(mapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,this ,&LayersModel::onNodeFromLayerRemoved);
+//    connect(mapItem->getMapObject(), &MapObject::nodeToLayerAdded,this ,&LayersModel::onNodeToLayerAdded);
+//    connect(mapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,this ,&LayersModel::onNodeFromLayerRemoved);
     connect(mapItem->getMapObject(), &MapObject::parentLayerChanged,this ,&LayersModel::onParentLayerChanged);
 }
 
@@ -206,20 +206,20 @@ void LayersModel::onParentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *
 }
 
 
-void LayersModel::onNodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer)
-{
-    QStandardItem *treeItem = new QStandardItem(QString(node->getName().c_str()));
-    treeItem->setData(getLayerVisible(layer),visibleRole);
-    QString parentLayer = layer->getName().c_str();
-    mTreeModel->addItem(treeItem,parentLayer);
-}
+//void LayersModel::onNodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer)
+//{
+//    QStandardItem *treeItem = new QStandardItem(QString(node->getName().c_str()));
+//    treeItem->setData(getLayerVisible(layer),visibleRole);
+//    QString parentLayer = layer->getName().c_str();
+//    mTreeModel->addItem(treeItem,parentLayer);
+//}
 
-void LayersModel::onNodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer)
-{
-    QString treeItem = QString(node->getName().c_str());
-    QString parentLayer = QString(layer->getName().c_str());
-    mTreeModel->removeItem(treeItem , parentLayer);
-}
+//void LayersModel::onNodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer)
+//{
+//    QString treeItem = QString(node->getName().c_str());
+//    QString parentLayer = QString(layer->getName().c_str());
+//    mTreeModel->removeItem(treeItem , parentLayer);
+//}
 
 void LayersModel::setLayerVisible(osgEarth::VisibleLayer *layer)
 {

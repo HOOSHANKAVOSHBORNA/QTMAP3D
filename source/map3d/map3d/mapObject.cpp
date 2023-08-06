@@ -40,6 +40,18 @@ void CompositeCallback::onLayerMoved(ParenticAnnotationLayer *layer, CompositeAn
         emit mMapObject->layerMoved(layer, oldIndex, newIndex);
 }
 
+void CompositeCallback::onNodeAdded(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer)
+{
+    if (mMapObject)
+        emit mMapObject->nodeToLayerAdded(node, layer);
+}
+
+void CompositeCallback::onNodeRemoved(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer)
+{
+    if (mMapObject)
+        emit mMapObject->nodeFromLayerRemoved(node, layer);
+}
+
 //-------------------------------------------------------------------------------------
 MainMapCallback::MainMapCallback(MapObject *mapObject) :
     mMapObject(mapObject)
