@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>QSpinBox.qml</file>
+        <file>FloatSpinBox.qml</file>
         <file>Properties.qml</file>
         <file>ColorBox.qml</file>
     </qresource>

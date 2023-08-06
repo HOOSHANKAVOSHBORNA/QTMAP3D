@@ -233,7 +233,7 @@ Item {
                                         }
                                     }
 
-                                    QSpinBox {
+                                    FloatSpinBox {
                                         id: strkopacityValue
                                         to : 100
                                         from : 0
@@ -273,7 +273,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                 }
-                                QSpinBox {
+                                FloatSpinBox {
                                     id: strkWidth
                                     Layout.topMargin: -12
                                     Layout.fillWidth: true
@@ -341,7 +341,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                 }
-                                QSpinBox {
+                                FloatSpinBox {
                                     id: mlocationX
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
@@ -370,7 +370,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                 }
-                                QSpinBox {
+                                FloatSpinBox {
                                     id: mlocationY
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
@@ -398,7 +398,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                 }
-                                QSpinBox {
+                                FloatSpinBox {
 
                                     id: mlocationZ
                                     Layout.fillWidth: true
@@ -509,7 +509,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                 }
-                                QSpinBox {
+                                FloatSpinBox {
 
                                     id: mcenterX
                                     Layout.fillWidth: true
@@ -539,7 +539,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                 }
-                                QSpinBox {
+                                FloatSpinBox {
                                     id: mcenterY
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
@@ -567,7 +567,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                 }
-                                QSpinBox {
+                                FloatSpinBox {
                                     id: mcenterZ
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
@@ -637,7 +637,7 @@ Item {
                                 }
                                 RowLayout{
                                     Layout.fillWidth: true
-                                    QSpinBox {
+                                    FloatSpinBox {
                                         id: startarc
                                         value: 0
                                         to : 360
@@ -662,7 +662,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                 }
-                                QSpinBox {
+                                FloatSpinBox {
                                     id: endarc
                                     Layout.fillWidth: true
                                     Layout.preferredHeight: 28
@@ -705,7 +705,7 @@ Item {
 
                             RowLayout{
                                 Layout.fillWidth: true
-                                QSpinBox {
+                                FloatSpinBox {
                                     id: radiusspinbox
                                     //                                        value: rootItem.radius
                                     realValue: rootItem.model ? rootItem.model.radius : false
@@ -748,7 +748,7 @@ Item {
                                 Layout.fillWidth: true
 
 
-                                QSpinBox {
+                                FloatSpinBox {
                                     id:mheight
 
                                     from : 0
@@ -798,7 +798,7 @@ Item {
                                 Layout.fillWidth: true
 
 
-                                QSpinBox {
+                                FloatSpinBox {
                                     id: lengthValue
                                     from : 0
                                     to: 10000000
@@ -849,7 +849,7 @@ Item {
                                 Layout.fillWidth: true
 
 
-                                QSpinBox {
+                                FloatSpinBox {
                                     id:widthValue
 
 
@@ -1009,7 +1009,7 @@ Item {
 
                             RowLayout{
                                 Layout.fillWidth: true
-                                QSpinBox {
+                                FloatSpinBox {
                                     to: 100000
                                     from : 0
                                     Layout.fillWidth: true
@@ -1212,7 +1212,7 @@ Item {
                                 font.pointSize: 10
                                 color: "white"
                             }
-                            QSpinBox {
+                            FloatSpinBox {
                                 id: strkWidth1
                                 Layout.topMargin: -12
                                 Layout.fillWidth: true
