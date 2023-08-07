@@ -19,7 +19,6 @@
 #include <osgEarthUtil/Sky>
 #include <osgEarthAnnotation/AnnotationLayer>
 
-
 class MapItem : public QQuickItem
 {
     Q_OBJECT
