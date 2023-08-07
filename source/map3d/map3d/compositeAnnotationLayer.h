@@ -29,6 +29,7 @@ public:
     unsigned getNumParents() const;
     void addChild(osgEarth::Annotation::AnnotationNode* node);
     void removeChild(osgEarth::Annotation::AnnotationNode* node);
+    void clear();
     bool hasNode() const;
     int getNumberOfNodes() const;
     void fireCallback(ParenticLayerCallback::MethodPtr, osgEarth::Annotation::AnnotationNode *node);
@@ -75,6 +76,7 @@ public:
     void clearLayers();
     void moveLayer(ParenticAnnotationLayer *layer, unsigned index);
     void removeLayerByName(const QString& layerName);
+    bool containsLayer( const ParenticAnnotationLayer* layer ) const;
     ParenticAnnotationLayer *getLayerByName(const QString& layerName);
     void fireCallback(CompositeLayerCallback::MethodPtr, ParenticAnnotationLayer *layer);
 //    int getNumChildren() const;

@@ -27,14 +27,6 @@ bool DrawBox::setup()
 void DrawBox::onBoxItemCheck(bool check)
 {
     if (check) {
-        auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mBoxLayer->getName()));
-        if(!layer){
-            mBoxLayer->getGroup()->removeChildren(0, mBoxLayer->getGroup()->getNumChildren());
-        }
-        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
-            shapeLayer->addLayer(mBoxLayer);
-        }
         setState(State::READY);
         mBoxProperty = new BoxProperty();
         createProperty("Box", QVariant::fromValue<BoxProperty*>(mBoxProperty));
@@ -45,10 +37,6 @@ void DrawBox::onBoxItemCheck(bool check)
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mBoxLayer->getGroup()->getNumChildren() <= 0){
-            auto shapeLayer = DrawShape::shapeLayer();
-            shapeLayer->removeLayer(mBoxLayer);
-        }
         setState(State::NONE);
         mBox = nullptr;
         hideProperty();
@@ -62,15 +50,27 @@ void DrawBox::initDraw(const osgEarth::GeoPoint &geoPos)
     mBox = new Box();
     mBox->setName(name.toStdString());
     mBox->setPosition(geoPos);
+
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mBoxLayer)){
+        mBoxLayer->clear();
+        shapeLayer->addLayer(mBoxLayer);
+    }
+
     mBoxLayer->addChild(mBox);
+//    qDebug()<<"number of nods:"<<mBoxLayer->getNumberOfNodes();
     mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
-    mBoxLayer->setName(mBox->getName());
     setState(State::DRAWING);
     mCount++;
 }
 
 void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 {
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mBoxLayer)){
+        initDraw(geoPos);
+    }
+
     mBox->setPosition(geoPos);
     mBoxProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }
@@ -78,11 +78,14 @@ void DrawBox::drawing(const osgEarth::GeoPoint &geoPos)
 void DrawBox::cancelDraw()
 {
         if(state() == State::DRAWING){
-            mBoxLayer->getGroup()->removeChild(mBox);
+            mBoxLayer->removeChild(mBox);
             mBox = nullptr;
             mBoxProperty->setBox(mBox, mapItem()->getMapSRS());
             setState(State::READY);
             mCount--;
+
+            if(!mBoxLayer->hasNode())
+                DrawShape::shapeLayer()->removeLayer(mBoxLayer);
         }
 }
 

@@ -2,7 +2,6 @@
 #define BOXPROPERTIESMODEL_H
 
 #include <QObject>
-#include "plugininterface.h"
 #include "box.h"
 #include "property.h"
 #include <QVariant>

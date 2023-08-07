@@ -370,7 +370,7 @@ void OSGRenderNode::mousePressEvent(QMouseEvent* event)
     setKeyboardModifiers(event);
     auto eventAdapter = mosgWinEmb->getEventQueue()->mouseButtonPress(event->scenePosition().x() * mwindowScale,
                                                   event->position().y() * mwindowScale, button);
-    qDebug()<<event->scenePosition();
+//    qDebug()<<event->scenePosition();
     //--run event immediately---
     eventTraversal();
 //    qDebug()<< eventAdapter->getHandled();

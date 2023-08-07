@@ -49,6 +49,17 @@ void ParenticAnnotationLayer::removeChild(osgEarth::Annotation::AnnotationNode *
     fireCallback(&ParenticLayerCallback::onNodeRemoved, node);
 }
 
+void ParenticAnnotationLayer::clear()
+{
+    unsigned int numChild = getGroup()->getNumChildren();
+    unsigned int i = 0;
+    while(i < numChild){
+        auto node = static_cast<osgEarth::Annotation::AnnotationNode*>(getGroup()->getChild(0));
+        removeChild(node);
+        i++;
+    }
+}
+
 bool ParenticAnnotationLayer::hasNode() const
 {
     return getGroup()->getNumChildren() > 0;
@@ -143,8 +154,6 @@ void CompositeAnnotationLayer::addLayer(ParenticAnnotationLayer *layer)
     }
 
     fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
-
-
 }
 
 void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsigned int index)
@@ -227,6 +236,17 @@ void CompositeAnnotationLayer::removeLayerByName(const QString &layerName)
     if (!layer)
         return;
     removeLayer(layer);
+}
+
+bool CompositeAnnotationLayer::containsLayer(const ParenticAnnotationLayer *layer) const
+{
+    for (auto itr = mChilds.begin();
+         itr!=mChilds.end();
+         ++itr)
+    {
+        if (itr->get()== layer) return true;
+    }
+    return false;
 }
 
 ParenticAnnotationLayer *CompositeAnnotationLayer::getLayerByName(const QString &layerName)
