@@ -1,4 +1,5 @@
 #include "mapControllerItem.h"
+#include "searchNodeModel.h"
 
 #include <QTimer>
 
@@ -8,6 +9,7 @@ MapControllerItem::MapControllerItem():
 {
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
+    mSearchNodeModel = new SearchNodeModel(getMapObject());
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -238,6 +240,11 @@ double MapControllerItem::headingAngle() const
 double MapControllerItem::fps() const
 {
     return mFps;
+}
+
+SearchNodeModel *MapControllerItem::getSearchNodeModel() const
+{
+    return mSearchNodeModel;
 }
 
 void MapControllerItem::setFps(double fps)

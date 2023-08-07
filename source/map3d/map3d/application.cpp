@@ -84,6 +84,7 @@ void Application::registerTypes()
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
 
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
+    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
 }
 
 void Application::initializeQmlEngine()

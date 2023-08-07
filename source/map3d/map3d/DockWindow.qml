@@ -6,7 +6,7 @@ Item{
     id:rootItem
     property var containerItem: container.children
     property string name: ""
-
+    width: 300
     StackLayout {
         id: container
         anchors.fill: parent

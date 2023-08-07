@@ -11,7 +11,6 @@
 #include <QQuickOpenGLUtils>
 #include <osgGA/TrackballManipulator>
 #include "mapItem.h"
-
 //class MainMapCallback : public osgEarth::MapCallback
 //{
 //public:
@@ -532,7 +531,6 @@ void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
     mSkyNode->addChild(mMapNode);
     mMapRoot->addChild(mSkyNode);
     //    mMapRoot->addChild(mMapNode);
-
 //    mMapNode->getMap()->addMapCallback(new MainMapCallback(this));
 }
 
