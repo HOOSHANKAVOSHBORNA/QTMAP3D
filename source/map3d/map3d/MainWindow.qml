@@ -112,6 +112,9 @@ CMainWindow {
                                     toolboxItem.listModel = wnd.toolbox
                                     wnd.addToLeftContainer(toolboxItem, "Toolbox")
                                 }
+                                else{
+                                    print("can not load toolbox.");
+                                }
                             }
                             else {
                                 removeFromLeftContainer(toolboxItem)

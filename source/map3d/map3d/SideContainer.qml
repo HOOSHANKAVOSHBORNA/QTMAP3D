@@ -80,7 +80,7 @@ ColumnLayout{
         id: stackLayout
         Layout.fillHeight: true
         //        Layout.fillWidth: true
-        Layout.preferredWidth: childrenRect.width
+//        Layout.preferredWidth: childrenRect.width
         currentIndex: tabBar.currentIndex
     }
     //------------------------------------------

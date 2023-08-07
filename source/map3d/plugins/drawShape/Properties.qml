@@ -232,6 +232,7 @@ Item {
                             target: strkWidth
                             property: "value"
                             value: rootItem.model ? rootItem.model.strokeWidth : 0
+                            delayed: true
                         }
                     }
                 }
