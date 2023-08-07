@@ -7,7 +7,7 @@ ColumnLayout{
     id: rootItem
     property ListModel model:ListModel{}
     property int visibleCount : 0
-    Layout.preferredWidth: implicitWidth
+//    Layout.preferredWidth: implicitWidth
     function setCurrentIndex(index){
         tabBar.currentIndex = index
     }
@@ -80,7 +80,7 @@ ColumnLayout{
         id: stackLayout
         Layout.fillHeight: true
         //        Layout.fillWidth: true
-        Layout.preferredWidth: childrenRect.width > 0 ? 200 : childrenRect.width
+        Layout.preferredWidth: childrenRect.width
         currentIndex: tabBar.currentIndex
     }
     //------------------------------------------
