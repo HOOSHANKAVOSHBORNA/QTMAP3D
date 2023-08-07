@@ -57,6 +57,7 @@ ColumnLayout{
                                  var docItem = docItemCom.createObject(tabBar, {});
                                  docItem.containerItem.push(item)
                                  docItem.name = name
+                                 docItem.width = stackLayout.count > 0 ? stackLayout.childrenRect.width : 300
                                  stackLayout.data.push(docItem)
                                  tabBar.currentIndex = index
                                  repeater.itemAt(index).visible = Qt.binding(function() { return docItem.state === "docked" })
@@ -75,12 +76,11 @@ ColumnLayout{
         }
     }
 
-
     StackLayout {
         id: stackLayout
         Layout.fillHeight: true
-        //        Layout.fillWidth: true
-//        Layout.preferredWidth: childrenRect.width
+//                Layout.fillWidth: true
+//        Layout.preferredWidth: implicitWidth
         currentIndex: tabBar.currentIndex
     }
     //------------------------------------------
