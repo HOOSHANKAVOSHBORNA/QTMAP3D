@@ -19,5 +19,6 @@ add_subdirectory(drawCylinder)
 add_subdirectory(drawRect)
 add_subdirectory(imageOvly)
 add_subdirectory(model)
+add_subdirectory(screen)
 #add_subdirectory(uiComponents)
 
