@@ -21,8 +21,8 @@ lineNode.h
 drawshapeautoscaler.cpp
 drawshapeautoscaler.h
 drawLine.qrc
-lineProperties.cpp
-lineProperties.h
+lineProperty.cpp
+lineProperty.h
 measureHeight.cpp
 measureHeight.h
 )

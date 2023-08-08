@@ -2,8 +2,6 @@
 #define SPHEREPROPERTIES_H
 
 #include "sphereNode.h"
-#include "mapItem.h"
-#include "plugininterface.h"
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
@@ -18,9 +16,8 @@ class SphereProperties: public Property
 public:
     SphereProperties(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
-
-    void setRadius(const double &radius) override;
-    void setLocationRelative(const bool &relative) override;
+    void setRadius(double radius) override;
+    void setLocationRelative(bool relative) override;
     void setLocation(const QVector3D &status) override;
 //    void setCenter();
     SphereNode *getSphere() const;

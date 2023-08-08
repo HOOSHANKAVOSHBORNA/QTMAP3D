@@ -3,8 +3,6 @@
 
 #include <QObject>
 
-#include "plugininterface.h"
-#include "mapItem.h"
 #include "cone.h"
 #include "property.h"
 
@@ -15,10 +13,10 @@ class ConeProperties: public Property
 public:
     ConeProperties(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
-    void setRadius(const double &radius) override;
-    void setLocationRelative(const bool &relative) override;
+    void setRadius(double radius) override;
+    void setLocationRelative(bool relative) override;
     void setLocation(const QVector3D &status) override;
-    void setHeight(const double &height) override;
+    void setHeight(double height) override;
     void setCenter(const QVector3D &center)override;
     void setName(const QString &name) override;
     Cone *getCone() const;

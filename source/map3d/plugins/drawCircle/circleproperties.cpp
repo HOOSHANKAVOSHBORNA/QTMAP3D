@@ -28,16 +28,14 @@ void CircleProperties::setFillColor(const QColor &color)
         mCircle->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-void CircleProperties::setRadius(const double &radius)
+void CircleProperties::setRadius(double radius)
 {
-
     Property::setRadius(radius);
     if(mCircle)
         mCircle->setRadius(radius);
 }
-void CircleProperties::setLocationRelative(const bool &relative)
+void CircleProperties::setLocationRelative(bool relative)
 {
-
     Property::setLocationRelative(relative);
 }
 
@@ -65,20 +63,19 @@ void CircleProperties::setName(const QString &name)
     }
 }
 
-
-void CircleProperties::setStrokeWidth(const double &opacity)
+void CircleProperties::setStrokeWidth(double opacity)
 {
 
     Property::setStrokeWidth(opacity);
     if(mCircle)
         mCircle->setLineWidth(opacity);
 
-    }
+}
 
-void CircleProperties::setStroke(const QColor &color)
+void CircleProperties::setStrokeColor(const QColor &color)
 {
 
-    Property::setStroke(color);
+    Property::setStrokeColor(color);
     if(mCircle)
     {
         mCircle->setLineColor(Utility::qColor2osgEarthColor(color));
@@ -98,7 +95,7 @@ void CircleProperties::setLocation(const QVector3D &status)
 
 }
 
-void CircleProperties::setHeight(const double &height)
+void CircleProperties::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -106,7 +103,7 @@ void CircleProperties::setHeight(const double &height)
         mCircle->setCircleHeight(height);
 }
 
-void CircleProperties::setClamp(const int &clamp)
+void CircleProperties::setClamp(int clamp)
 {
 
     Property::setClamp(clamp);
@@ -134,7 +131,7 @@ void CircleProperties::setCircle(Circle *newCircle, const osgEarth::SpatialRefer
         mCircle->setColor(Utility::qColor2osgEarthColor(getFillColor()));
         mCircle->setRadius(getRadius());
         mCircle->setCircleHeight(getHeight());
-        mCircle->setLineColor(Utility::qColor2osgEarthColor(getStroke()));
+        mCircle->setLineColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mCircle->setLineWidth(getStrokeWidth());
         mCircle->setArcEnd(getArc().y());
         mCircle->setArcStart(getArc().x());

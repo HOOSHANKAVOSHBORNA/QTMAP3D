@@ -2,8 +2,6 @@
 #define POLYGONPROPERTIES_H
 
 #include "polygon.h"
-#include "mapItem.h"
-#include "plugininterface.h"
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
@@ -21,9 +19,9 @@ public:
     PolygonProperties(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
     void setStrokeWidth(const double &opacity);
-    void setStroke(const QColor &color)override;
-    void setHeight(const double &height) override;
-    void setClamp(const int &clamp) override;
+    void setStrokeColor(const QColor &color)override;
+    void setHeight(double height) override;
+    void setClamp(int clamp) override;
     void setName(const QString &name) override;
     Polygon *getPolygon() const;
 

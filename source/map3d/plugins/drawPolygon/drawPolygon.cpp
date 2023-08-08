@@ -72,7 +72,7 @@ void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)
     mPolygon->setName(name.toStdString());
     //    mPolygon->setRadius(mPolygonProperties->getRadius());
     mPolygon->setHeight(mPolygonProperties->getHeight());
-    mPolygon->setLineColor(Utility::qColor2osgEarthColor(mPolygonProperties->getStroke()));
+    mPolygon->setLineColor(Utility::qColor2osgEarthColor(mPolygonProperties->getStrokeColor()));
     mPolygon->setLineWidth(mPolygonProperties->getStrokeWidth());
     osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mPolygonProperties->getClamp());
     mPolygon->setClamp(clampEnum);

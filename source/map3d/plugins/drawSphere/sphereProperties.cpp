@@ -34,14 +34,14 @@ void SphereProperties::setFillColor(const QColor &color)
 //}
 
 
-void SphereProperties::setRadius(const double &radius)
+void SphereProperties::setRadius(double radius)
 {
 
     Property::setRadius(radius);
     if(mSphere)
         mSphere->setRadius(radius);
 }
-void SphereProperties::setLocationRelative(const bool &relative)
+void SphereProperties::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);

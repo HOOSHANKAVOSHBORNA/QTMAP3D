@@ -2,9 +2,6 @@
 #define CylinderPROPERTIESMODEL_H
 
 #include <QObject>
-
-#include "plugininterface.h"
-#include "mapItem.h"
 #include "cylinder.h"
 #include "property.h"
 
@@ -16,10 +13,10 @@ class CylinderProperties: public Property
 public:
     CylinderProperties(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
-    void setRadius(const double &radius) override;
-    void setHeight(const double &height) override;
+    void setRadius(double radius) override;
+    void setHeight(double height) override;
     void setLocation();
-    void setLocationRelative(const bool &relative) override;
+    void setLocationRelative(bool relative) override;
     void setLocation(const QVector3D &status) override;
     void setCenter(const QVector3D &center)override;
     void setName(const QString &name) override;
