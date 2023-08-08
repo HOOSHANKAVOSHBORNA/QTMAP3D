@@ -33,14 +33,14 @@ void CapsuleProperties::setCenter(const QVector3D &center)
         mCapsule->setCenter(temp);
 }
 
-void CapsuleProperties::setRadius(const double &radius)
+void CapsuleProperties::setRadius(double radius)
 {
 
     Property::setRadius(radius);
     if(mCapsule)
         mCapsule->setRadius(radius);
 }
-void CapsuleProperties::setLocationRelative(const bool &relative)
+void CapsuleProperties::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);
@@ -68,7 +68,7 @@ void CapsuleProperties::setLocation(const QVector3D &status)
 
 }
 
-void CapsuleProperties::setHeight(const double &height)
+void CapsuleProperties::setHeight(double height)
 {
 
     Property::setHeight(height);

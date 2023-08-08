@@ -169,7 +169,7 @@ Item {
                                 id: colorThumbnail1
                                 width: valHeight
                                 height: valHeight
-                                color: rootItem.model ? rootItem.model.stroke : "#202020"
+                                color: rootItem.model ? rootItem.model.strokeColor : "#202020"
                                 border.width: 2
                                 border.color: "#c9c9c9"
                                 radius: 5
@@ -189,13 +189,13 @@ Item {
                                 Layout.minimumWidth: 80
                                 height: valHeight
                                 onValueChanged: {
-                                    rootItem.model.stroke.a= value/100
+                                    rootItem.model.strokeColor.a= value/100
                                 }
                             }
                             Binding{
                                 target: strkopacityValue
                                 property: "value"
-                                value: rootItem.model ? rootItem.model.stroke.a * 100 : 0
+                                value: rootItem.model ? rootItem.model.strokeColor.a * 100 : 0
                                 delayed: true
                             }
 
@@ -987,7 +987,7 @@ Item {
                                 id: cptclr
                                 Layout.preferredHeight: 20
                                 Layout.preferredWidth: 20
-                                color: rootItem.model ? rootItem.model.points : "#202020"
+                                color: rootItem.model ? rootItem.model.pointsColor : "#202020"
                                 border.width: 2
                                 border.color: "#c9c9c9"
                                 radius: 5
@@ -1004,7 +1004,7 @@ Item {
                                 color: "#c9c9c9"
                                 radius: 5
                                 Text {
-                                    text: rootItem.model ? rootItem.model.points : ""
+                                    text: rootItem.model ? rootItem.model.pointsColor : ""
                                     anchors.centerIn: parent
                                     font.pointSize: 10
                                 }

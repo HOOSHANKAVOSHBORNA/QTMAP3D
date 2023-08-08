@@ -4,6 +4,7 @@
 #include "compositeAnnotationLayer.h"
 #include "utility.h"
 #include <QQmlContext>
+
 int DrawCapsule::mCount{0};
 
 DrawCapsule::DrawCapsule(QObject *parent): DrawShape(parent)

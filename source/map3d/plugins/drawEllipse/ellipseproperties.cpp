@@ -27,7 +27,7 @@ void EllipseProperties::setFillColor(const QColor &color)
 }
 
 
-void EllipseProperties::setLocationRelative(const bool &relative)
+void EllipseProperties::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);
@@ -44,10 +44,10 @@ void EllipseProperties::setStrokeWidth(const double &opacity)
 
 }
 
-void EllipseProperties::setStroke(const QColor &color)
+void EllipseProperties::setStrokeColor(const QColor &color)
 {
 
-    Property::setStroke(color);
+    Property::setStrokeColor(color);
     if(mEllipse)
     {
         mEllipse->setStrokeColor(Utility::qColor2osgEarthColor(color));
@@ -77,7 +77,7 @@ void EllipseProperties::setLocation(const QVector3D &status)
 
 }
 
-void EllipseProperties::setHeight(const double &height)
+void EllipseProperties::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -85,7 +85,7 @@ void EllipseProperties::setHeight(const double &height)
         mEllipse->setHeight(height);
 }
 
-void EllipseProperties::setClamp(const int &clamp)
+void EllipseProperties::setClamp(int clamp)
 {
 
     Property::setClamp(clamp);
@@ -113,7 +113,7 @@ void EllipseProperties::setEllipse(Ellipse *newEllipse, const osgEarth::SpatialR
         mEllipse->setColor(Utility::qColor2osgEarthColor(getFillColor()));
 
         mEllipse->setHeight(getHeight());
-        mEllipse->setStrokeColor(Utility::qColor2osgEarthColor(getStroke()));
+        mEllipse->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mEllipse->setStrokeWidth(getStrokeWidth());
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
         mEllipse->setClamp(clampEnum);

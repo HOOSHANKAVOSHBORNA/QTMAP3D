@@ -66,23 +66,23 @@ double Property::getStrokeWidth() const
     return mStrokeWidth;
 }
 
-void Property::setStrokeWidth(const double &opacity)
+void Property::setStrokeWidth(double width)
 {
-    mStrokeWidth = opacity;
+    mStrokeWidth = width;
     emit propretyChanged();
 
 }
 
 
 
-QColor Property::getStroke() const
+QColor Property::getStrokeColor() const
 {
     return mStroke;
 }
 
-void Property::setStroke(const QColor &strok)
+void Property::setStrokeColor(const QColor &color)
 {
-    mStroke = strok;
+    mStroke = color;
     emit propretyChanged();
 
 }
@@ -117,7 +117,7 @@ bool Property::getLocationRelative() const
     return mRelative;
 }
 
-void Property::setLocationRelative(const bool &relative)
+void Property::setLocationRelative(bool relative)
 {
     mRelative = relative;
     emit propretyChanged();
@@ -192,7 +192,7 @@ double Property::getRadius() const
     return mRadius;
 }
 
-void Property::setRadius(const double &radius)
+void Property::setRadius(double radius)
 {
     mRadius = radius;
     emit propretyChanged();
@@ -204,9 +204,9 @@ bool Property::getHeightStatus() const
     return mHeightStatus;
 }
 
-void Property::setHeightStatus( bool height)
+void Property::setHeightStatus(bool status)
 {
-    mHeightStatus = height;
+    mHeightStatus = status;
     emit propretyChanged();
 
 }
@@ -216,7 +216,7 @@ double Property::getHeight() const
     return mHeight;
 }
 
-void Property::setHeight(const double &height)
+void Property::setHeight(double height)
 {
     mHeight = height;
     emit propretyChanged();
@@ -230,9 +230,9 @@ bool Property::getLenghtStatus() const
     return mLenghtStatus;
 }
 
-void Property::setLenghtStatus(bool lenght)
+void Property::setLenghtStatus(bool status)
 {
-    mLenghtStatus = lenght;
+    mLenghtStatus = status;
     emit propretyChanged();
 
 }
@@ -242,7 +242,7 @@ double Property::getLenght() const
     return mLenght;
 }
 
-void Property::setLenght(const double &lenght)
+void Property::setLenght(double lenght)
 {
     mLenght = lenght;
     emit propretyChanged();
@@ -257,9 +257,9 @@ bool Property::getWidthStatus() const
     return mWidthStatus;
 }
 
-void Property::setWidthStatus(bool width)
+void Property::setWidthStatus(bool status)
 {
-    mWidthStatus = width;
+    mWidthStatus = status;
     emit propretyChanged();
 }
 
@@ -268,7 +268,7 @@ double Property::getWidth() const
     return mWidth;
 }
 
-void Property::setWidth(const double &width)
+void Property::setWidth(double width)
 {
     mWidth = width;
     emit propretyChanged();
@@ -280,9 +280,9 @@ bool Property::getTesselationStatus() const
     return mTesselationStatus;
 }
 
-void Property::setTesselationStatus(bool tesselation)
+void Property::setTesselationStatus(bool status)
 {
-    mTesselationStatus = tesselation;
+    mTesselationStatus = status;
     emit propretyChanged();
 }
 
@@ -291,7 +291,7 @@ double Property::getTesselation() const
     return mTesselation;
 }
 
-void Property::setTesselation(const double &tesselation)
+void Property::setTesselation(double tesselation)
 {
     mTesselation = tesselation;
     emit propretyChanged();
@@ -304,9 +304,9 @@ bool Property::getClampStatus() const
     return mClampStatus;
 }
 
-void Property::setClampStatus(bool clamp)
+void Property::setClampStatus(bool status)
 {
-    mClampStatus = clamp;
+    mClampStatus = status;
     emit propretyChanged();
 
 }
@@ -316,7 +316,7 @@ int Property::getClamp() const
     return mClamp;
 }
 
-void Property::setClamp(const int &clamp)
+void Property::setClamp(int clamp)
 {
     mClamp = clamp;
     emit propretyChanged();
@@ -330,9 +330,9 @@ bool Property::getShowLenStatus() const
     return mShowLenStatus;
 }
 
-void Property::setShowLenStatus(bool len)
+void Property::setShowLenStatus(bool status)
 {
-    mShowLenStatus = len;
+    mShowLenStatus = status;
     emit propretyChanged();
 
 
@@ -343,9 +343,9 @@ bool Property::getShowLen() const
     return mShowLen;
 }
 
-void Property::setShowLen(const bool &len)
+void Property::setShowLen(bool showLen)
 {
-    mShowLen = len;
+    mShowLen = showLen;
     emit propretyChanged();
 
 }
@@ -357,20 +357,20 @@ bool Property::getBearingStatus() const
 
 
 
-void Property::setBearingStatus(bool bearin)
+void Property::setBearingStatus(bool status)
 {
-    mBearingStatus = bearin;
+    mBearingStatus = status;
     emit propretyChanged();
 }
 
-bool Property::getBearing() const
+bool Property::getShowBearing() const
 {
-    return mBearing;
+    return mShowBearing;
 }
 
-void Property::setBearing(const bool &bearing)
+void Property::setShowBearing(bool showBearing)
 {
-    mBearing = bearing;
+    mShowBearing = showBearing;
     emit propretyChanged();
 
 }
@@ -382,9 +382,9 @@ bool Property::getShowSlopStatus() const
     return mShowSlopStatus;
 }
 
-void Property::setShowSlopStatus(bool slop)
+void Property::setShowSlopStatus(bool status)
 {
-    mShowSlopStatus = slop;
+    mShowSlopStatus = status;
     emit propretyChanged();
 
 
@@ -395,9 +395,9 @@ bool Property::getShowSlop() const
     return mShowSlop;
 }
 
-void Property::setShowSlop(const bool &slop)
+void Property::setShowSlop(bool showSlop)
 {
-    mShowSlop = slop;
+    mShowSlop = showSlop;
     emit propretyChanged();
 }
 
@@ -409,21 +409,21 @@ bool Property::getPointsStatus() const
     return mPointsStatus;
 }
 
-void Property::setPointsStatus(bool point)
+void Property::setPointsStatus(bool status)
 {
-    mPointsStatus = point;
+    mPointsStatus = status;
     emit propretyChanged();
 
 }
 
-QColor Property::getPoints() const
+QColor Property::getPointsColor() const
 {
-    return mPoints;
+    return mPointsColor;
 }
 
-void Property::setPoints(const QColor &point)
+void Property::setPointsColor(const QColor &pointColor)
 {
-    mPoints = point;
+    mPointsColor = pointColor;
     emit propretyChanged();
 
 }
@@ -433,7 +433,7 @@ bool Property::getPointsSmooth() const
     return mPointsSmooth;
 }
 
-void Property::setPointsSmooth(const bool &point)
+void Property::setPointsSmooth(bool point)
 {
     mPointsSmooth = point;
     emit propretyChanged();
@@ -467,9 +467,9 @@ double Property::getPointsWidth() const
     return mPointsWidth;
 }
 
-void Property::setPointsWidth(const double &point)
+void Property::setPointsWidth(double pointWidth)
 {
-    mPointsWidth = point;
+    mPointsWidth = pointWidth;
     emit propretyChanged();
 
 }

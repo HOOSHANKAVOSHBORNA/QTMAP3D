@@ -8,15 +8,10 @@ BoxProperty::BoxProperty(QQuickItem *parent):
 {
     setHeightStatus(true);
     setLocationStatus(true);
-
     setFillColorStatus(true);
     setWidthStatus(true);
     setLenghtStatus(true);
-
     setCenterStatus(true);
-
-
-
 }
 
 void BoxProperty::setFillColor(const QColor &color)
@@ -26,14 +21,14 @@ void BoxProperty::setFillColor(const QColor &color)
         mBox->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-void BoxProperty::setLenght(const double &lenght)
+void BoxProperty::setLenght(double lenght)
 {
     Property::setLenght(lenght);
     if (mBox)
         mBox->setLength(lenght);
 }
 
-void BoxProperty::setWidth(const double &width)
+void BoxProperty::setWidth(double width)
 {
     Property::setWidth(width);
     if (mBox)
@@ -64,7 +59,7 @@ void BoxProperty::setCenter(const QVector3D &center)
 }
 
 
-void BoxProperty::setLocationRelative(const bool &relative)
+void BoxProperty::setLocationRelative(bool relative)
 {
     Property::setLocationRelative(relative);
 }
@@ -79,7 +74,7 @@ void BoxProperty::setLocation(const QVector3D &position)
         mBox->setPosition(temp);
 }
 
-void BoxProperty::setHeight(const double &height)
+void BoxProperty::setHeight(double height)
 {
     Property::setHeight(height);
     if (mBox)

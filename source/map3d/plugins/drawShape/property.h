@@ -14,7 +14,7 @@ class Property :  public QQuickItem
 
 
     Q_PROPERTY(bool strokeStatus      READ getStrokeStatus     WRITE setStrokeStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(QColor stroke          READ getStroke           WRITE setStroke            NOTIFY propretyChanged)
+    Q_PROPERTY(QColor strokeColor     READ getStrokeColor      WRITE setStrokeColor       NOTIFY propretyChanged)
     Q_PROPERTY(double strokeWidth     READ getStrokeWidth      WRITE setStrokeWidth       NOTIFY propretyChanged)
 
 
@@ -58,16 +58,16 @@ class Property :  public QQuickItem
     Q_PROPERTY(bool   showLen                READ getShowLen           WRITE setShowLen           NOTIFY propretyChanged)
 
     Q_PROPERTY(bool   bearingStatus          READ getBearingStatus     WRITE setBearingStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(bool   bearing                READ getBearing           WRITE setBearing           NOTIFY propretyChanged)
+    Q_PROPERTY(bool   showBearing            READ getShowBearing       WRITE setShowBearing        NOTIFY propretyChanged)
 
     Q_PROPERTY(bool   showSlopStatus          READ getShowSlopStatus     WRITE setShowSlopStatus      NOTIFY propretyChanged)
     Q_PROPERTY(bool   showSlop                READ getShowSlop           WRITE setShowSlop           NOTIFY propretyChanged)
 
 
     Q_PROPERTY(bool pointsStatus      READ getPointsStatus     WRITE setPointsStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(QColor points       READ getPoints           WRITE setPoints            NOTIFY propretyChanged)
-    Q_PROPERTY(double pointsWidth                READ getPointsWidth                 WRITE setPointsWidth            NOTIFY propretyChanged)
-    Q_PROPERTY(bool pointsSmooth      READ getPointsSmooth       WRITE setPointsSmooth          NOTIFY propretyChanged)
+    Q_PROPERTY(QColor pointsColor     READ getPointsColor      WRITE setPointsColor       NOTIFY propretyChanged)
+    Q_PROPERTY(double pointsWidth     READ getPointsWidth      WRITE setPointsWidth       NOTIFY propretyChanged)
+    Q_PROPERTY(bool pointsSmooth      READ getPointsSmooth     WRITE setPointsSmooth      NOTIFY propretyChanged)
 
 
 public:
@@ -86,17 +86,17 @@ public:
 
     // -------- name --------------//
     QString getName() const;
-    virtual void setName(const QString& name1);
+    virtual void setName(const QString& name);
 
     // ----------  stroke -------- //
     bool getStrokeStatus() const;
     void setStrokeStatus(bool status);
 
     double getStrokeWidth () const;
-    virtual void setStrokeWidth(const double &opacity);
+    virtual void setStrokeWidth(double width);
 
-    QColor getStroke() const;
-    virtual void setStroke(const QColor &color);
+    QColor getStrokeColor() const;
+    virtual void setStrokeColor(const QColor &color);
 
 
     // ---------- Location  --------- //
@@ -104,10 +104,10 @@ public:
     void setLocationStatus (bool status);
 
     QVector3D getLocation() const;
-    virtual void setLocation(const QVector3D &status);
+    virtual void setLocation(const QVector3D &location);
 
     bool getLocationRelative() const;
-    virtual void setLocationRelative(const bool &relative);
+    virtual void setLocationRelative(bool relative);
 
 
     // ---------- Center --------- //
@@ -133,93 +133,93 @@ public:
     void setRadiusStatus(bool radius);
 
     double getRadius() const;
-    virtual void setRadius(const double &radius);
+    virtual void setRadius(double radius);
 
     // ---------- height  --------- //
 
     bool getHeightStatus() const;
-    void setHeightStatus(bool height);
+    void setHeightStatus(bool status);
 
     double getHeight() const;
-    virtual void setHeight(const double &height);
+    virtual void setHeight(double height);
 
 
     // ---------- Lenght  --------- //
 
     bool getLenghtStatus() const;
-    void setLenghtStatus(bool lenght);
+    void setLenghtStatus(bool status);
 
     double getLenght() const;
-    virtual void setLenght(const double &lenght);
+    virtual void setLenght(double lenght);
 
 
     // ---------- Width  --------- //
 
     bool getWidthStatus() const;
-    void setWidthStatus(bool width);
+    void setWidthStatus(bool status);
 
     double getWidth() const;
-    virtual void setWidth(const double &width);
+    virtual void setWidth(double width);
 
 
     // ---------- Tesselation  --------- //
 
     bool getTesselationStatus() const;
-    void setTesselationStatus(bool tesselation);
+    void setTesselationStatus(bool status);
 
     double getTesselation() const;
-    virtual void setTesselation(const double &tesselation);
+    virtual void setTesselation(double tesselation);
 
 
     // ---------- Clamp  --------- //
 
     bool getClampStatus() const;
-    void setClampStatus(bool clamp);
+    void setClampStatus(bool status);
 
     int getClamp() const;
-    virtual void setClamp(const int &clamp);
+    virtual void setClamp(int clamp);
 
 
     // ---------- showlen  --------- //
 
     bool getShowLenStatus() const;
-    void setShowLenStatus(bool clamp);
+    void setShowLenStatus(bool status);
 
     bool getShowLen() const;
-    virtual void setShowLen(const bool &clamp);
+    virtual void setShowLen(bool showLen);
 
 
     // ---------- Bearing  --------- //
 
     bool getBearingStatus() const;
-    void setBearingStatus(bool bearing);
+    void setBearingStatus(bool status);
 
-    bool getBearing() const;
-    virtual void setBearing(const bool &bearing);
+    bool getShowBearing() const;
+    virtual void setShowBearing(bool showBearing);
 
 
     // ---------- showSlop  --------- //
 
     bool getShowSlopStatus() const;
-    void setShowSlopStatus(bool slop);
+    void setShowSlopStatus(bool status);
 
     bool getShowSlop() const;
-    virtual void setShowSlop(const bool &slop);
+    virtual void setShowSlop(bool showSlop);
 
 
     // ---------- Points --------- //
 
     bool getPointsStatus() const;
-    void setPointsStatus(bool point);
+    void setPointsStatus(bool status);
 
-    QColor getPoints() const;
-    virtual void setPoints(const QColor &point);
+    QColor getPointsColor() const;
+    virtual void setPointsColor(const QColor &pointColor);
 
     double getPointsWidth() const;
-    virtual void setPointsWidth(const double &point);
+    virtual void setPointsWidth(double pointWidth);
 
     bool getPointsSmooth() const;
-    virtual void setPointsSmooth(const bool &point);
+    virtual void setPointsSmooth(bool point);
 
 
     QQuickItem *item() const;
@@ -298,8 +298,8 @@ private:
 
     //----------- Bearing  //
 
-    bool mBearingStatus              {false};
-    bool mBearing;
+    bool mBearingStatus          {false};
+    bool mShowBearing;
 
 
     //----------- showSlop  //
@@ -310,7 +310,7 @@ private:
     // ---------- Points  //
 
     bool mPointsStatus               {false};
-    QColor mPoints ;
+    QColor mPointsColor;
     bool mPointsSmooth;
     double mPointsWidth;
 

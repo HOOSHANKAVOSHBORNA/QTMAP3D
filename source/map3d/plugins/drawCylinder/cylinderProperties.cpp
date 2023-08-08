@@ -22,9 +22,7 @@ void CylinderProperties::setFillColor(const QColor &color)
         mCylinder->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-
-
-void CylinderProperties::setRadius(const double &radius)
+void CylinderProperties::setRadius(double radius)
 {
 
     Property::setRadius(radius);
@@ -32,14 +30,14 @@ void CylinderProperties::setRadius(const double &radius)
         mCylinder->setRadius(radius);
 }
 
-
-void CylinderProperties::setHeight(const double &height)
+void CylinderProperties::setHeight(double height)
 {
 
     Property::setHeight(height);
     if (mCylinder)
         mCylinder->setHeight(height);
 }
+
 void CylinderProperties::setLocation(const QVector3D &status)
 {
 
@@ -49,11 +47,13 @@ void CylinderProperties::setLocation(const QVector3D &status)
         mCylinder->setPosition(temp);
 
 }
-void CylinderProperties::setLocationRelative(const bool &relative)
+
+void CylinderProperties::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);
 }
+
 void CylinderProperties::setName(const QString &name)
 {
 
