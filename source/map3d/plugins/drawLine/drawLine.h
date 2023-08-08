@@ -1,19 +1,22 @@
 #ifndef LINE_H
 #define LINE_H
 
-#include <QMouseEvent>
+
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthSymbology/GeometryFactory>
-#include "drawShape.h"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
+
 #include <QQmlEngine>
 #include <QQmlComponent>
-#include <lineNode.h>
+#include <QMouseEvent>
 #include <QPainter>
-#include <lineProperties.h>
-#include <measureHeight.h>
+
+#include "drawShape.h"
+#include "lineNode.h"
+#include "lineProperty.h"
+#include "measureHeight.h"
 
 #define POLYLINE "Polyline"
 #define RULER "Ruler"
@@ -46,11 +49,11 @@ private:
     Type mType;
     osg::ref_ptr<LineNode> mLine{nullptr};
     MeasureHeight *mMeasureHeight{nullptr};
-    LineProperties *mLineProperties = nullptr;
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mLineLayer;
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mRulerLayer;
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mHeightLayer;
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mSlopeLayer;
+    LineProperty *mLineProperty = nullptr;
+    osg::ref_ptr<ParenticAnnotationLayer> mLineLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mRulerLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mHeightLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mSlopeLayer;
     static int mCount;
 };
 

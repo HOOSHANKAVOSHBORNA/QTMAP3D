@@ -14,12 +14,12 @@ class BoxProperty: public Property
 public:
     BoxProperty(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
-    void setLocationRelative(const bool &relative) override;
+    void setLocationRelative(bool relative) override;
     void setLocation(const QVector3D &position) override;
-    void setHeight(const double &height) override;
+    void setHeight(double height) override;
     void setCenter(const QVector3D &center)override;
-    void setLenght(const double &lenght) override;
-    void setWidth( const double &width)  override;
+    void setLenght(double lenght) override;
+    void setWidth(double width)  override;
     void setName(const QString &name) override;
 
 

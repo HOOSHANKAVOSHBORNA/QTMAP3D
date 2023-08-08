@@ -65,7 +65,7 @@ void DrawEllipse::initDraw(const osgEarth::GeoPoint &geoPos)
 
 //    mEllipse->setRadii(mEllipseProperties->getRadius());
     mEllipse->setHeight(mEllipseProperties->getHeight());
-    mEllipse->setStrokeColor(Utility::qColor2osgEarthColor(mEllipseProperties->getStroke()));
+    mEllipse->setStrokeColor(Utility::qColor2osgEarthColor(mEllipseProperties->getStrokeColor()));
     mEllipse->setStrokeWidth(mEllipseProperties->getStrokeWidth());
     osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mEllipseProperties->getClamp());
     mEllipse->setClamp(clampEnum);

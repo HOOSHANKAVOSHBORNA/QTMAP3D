@@ -4,7 +4,6 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 #include "property.h"
-#include "mainwindow.h"
 #include "utility.h"
 
 RectProperties::RectProperties(QQuickItem *parent):
@@ -26,8 +25,7 @@ void RectProperties::setFillColor(const QColor &color)
         mRect->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-
-void RectProperties::setHeight(const double &height)
+void RectProperties::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -36,7 +34,7 @@ void RectProperties::setHeight(const double &height)
         mRect->setHeight(height);
 }
 
-void RectProperties::setWidth(const double &width)
+void RectProperties::setWidth(double width)
 {
     Property::setWidth(width);
     if(mRect)
@@ -44,19 +42,18 @@ void RectProperties::setWidth(const double &width)
     mRect->setWidth(width);
 }
 
-
-void RectProperties::setStrokeWidth(const double &opacity)
+void RectProperties::setStrokeWidth(double strockWidth)
 {
 
-    Property::setStrokeWidth(opacity);
+    Property::setStrokeWidth(strockWidth);
     if(mRect)
-        mRect->setStrokeWidth(opacity);
+        mRect->setStrokeWidth(strockWidth);
 }
 
-void RectProperties::setStroke(const QColor &color)
+void RectProperties::setStrokeColor(const QColor &color)
 {
 
-    Property::setStroke(color);
+    Property::setStrokeColor(color);
     if(mRect)
     {
         mRect->setStrokeColor(Utility::qColor2osgEarthColor(color));
@@ -64,8 +61,7 @@ void RectProperties::setStroke(const QColor &color)
 
 }
 
-
-void RectProperties::setLocationRelative(const bool &relative)
+void RectProperties::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);
@@ -94,10 +90,7 @@ void RectProperties::setName(const QString &name)
     }
 }
 
-
-
-
-void RectProperties::setClamp(const int &clamp)
+void RectProperties::setClamp(int clamp)
 {
 
     Property::setClamp(clamp);
@@ -123,7 +116,7 @@ void RectProperties::setRect(Rect *newRect, const osgEarth::SpatialReference *sr
 
     if(mRect){
         mRect->setColor(Utility::qColor2osgEarthColor(getFillColor()));
-        mRect->setStrokeColor(Utility::qColor2osgEarthColor(getStroke()));
+        mRect->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mRect->setStrokeWidth(getStrokeWidth());
 
 //        mRect->setHeight(osgEarth::Distance(mRect->getHeight().getValue(), osgEarth::Units::METERS));

@@ -26,7 +26,7 @@ void ConeProperties::setFillColor(const QColor &color)
 
 }
 
-void ConeProperties::setRadius(const double &radius)
+void ConeProperties::setRadius(double radius)
 {
 
     Property::setRadius(radius);
@@ -35,7 +35,7 @@ void ConeProperties::setRadius(const double &radius)
 }
 
 
-void ConeProperties::setHeight(const double &height)
+void ConeProperties::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -54,7 +54,7 @@ void ConeProperties::setCenter(const QVector3D &center)
         mCone->setCenter(temp);
 }
 
-void ConeProperties::setLocationRelative(const bool &relative)
+void ConeProperties::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);

@@ -79,7 +79,7 @@ void DrawCircle::initDraw(const osgEarth::GeoPoint &geoPos)
     mCircle->setCircleHeight(mCircleProperties->getHeight());
     mCircle->setArcEnd(360);
     mCircle->setArcStart(0);
-    mCircle->setLineColor(Utility::qColor2osgEarthColor(mCircleProperties->getStroke()));
+    mCircle->setLineColor(Utility::qColor2osgEarthColor(mCircleProperties->getStrokeColor()));
     mCircle->setLineWidth(mCircleProperties->getStrokeWidth());
     osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mCircleProperties->getClamp());
     mCircle->setClamp(clampEnum);

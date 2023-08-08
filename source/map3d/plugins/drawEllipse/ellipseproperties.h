@@ -2,8 +2,6 @@
 #define ELLIPSEPROPERTIES_H
 
 #include "ellipse.h"
-#include "mapItem.h"
-#include "plugininterface.h"
 #include <QObject>
 #include <QVariant>
 #include <QVector3D>
@@ -17,11 +15,11 @@ public:
     EllipseProperties(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
     void setStrokeWidth(const double &opacity);
-    void setStroke(const QColor &color)override;
-    void setHeight(const double &height) override;
-    void setLocationRelative(const bool &relative) override;
+    void setStrokeColor(const QColor &color)override;
+    void setHeight(double height) override;
+    void setLocationRelative(bool relative) override;
     void setLocation(const QVector3D &status) override;
-    void setClamp(const int &clamp) override;
+    void setClamp(int clamp) override;
     void setName(const QString &name) override;
 
 
