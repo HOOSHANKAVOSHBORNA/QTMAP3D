@@ -16,8 +16,11 @@ add_library(drawSphere SHARED
     drawSphere.json
     drawSphere.cpp
     drawSphere.qrc
-    sphereProperties.cpp
+    sphereProperty.cpp
     sphereNode.cpp
+    drawSphere.h
+    sphereProperty.h
+    sphereNode.h
 )
 
 target_include_directories(drawSphere PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

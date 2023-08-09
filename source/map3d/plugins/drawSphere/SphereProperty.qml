@@ -12,15 +12,15 @@ Item {
 
 
 
-    property SphereProperties sphereProperties
-    property string headerTitleSTR: "sphere Properties"
+    property SphereProperty sphereProperty
+    property string headerTitleSTR: "sphere Property"
     property string fillColor: "#91001d"
 
 
     onVisibleChanged: {
-        sphereProperties.color = fillColor
-        sphereProperties.transparency = opacityValue.value
-        sphereProperties.radius = radiusValue.value
+        sphereProperty.color = fillColor
+        sphereProperty.transparency = opacityValue.value
+        sphereProperty.radius = radiusValue.value
     }
 
 
@@ -140,7 +140,7 @@ Item {
                                     title: "Please choose a color"
                                     onAccepted: {
                                         fillColor = fillColorDialog.selectedColor
-                                        sphereProperties.color = fillColor.toString()
+                                        sphereProperty.color = fillColor.toString()
                                     }
 
                                 }
@@ -180,8 +180,8 @@ Item {
                                     from : 0
                                     anchors.fill: parent
                                         onValueChanged: {
-                                            if(sphereProperties){
-                                                sphereProperties.transparency = value
+                                            if(sphereProperty){
+                                                sphereProperty.transparency = value
                                             }
                                         }
                                     }
@@ -223,8 +223,8 @@ Item {
                                     from : 0
                                     anchors.fill: parent
                                         onValueChanged: {
-                                            if(sphereProperties){
-                                                sphereProperties.radius = value
+                                            if(sphereProperty){
+                                                sphereProperty.radius = value
                                             }
                                         }
                                     }
@@ -284,9 +284,9 @@ Item {
                                                 //                                                value: xLoc
 
 
-                                                showText:  sphereProperties ? sphereProperties.location.x  : 0
+                                                showText:  sphereProperty ? sphereProperty.location.x  : 0
                                                 onValueChanged: {
-                                                    sphereProperties.location.x = value
+                                                    sphereProperty.location.x = value
                                                 }
                                             }
                                         }
@@ -316,9 +316,9 @@ Item {
                                                 decimals: 4
                                                 //                                                step: 0.01
                                                 //                                                value: yLoc
-                                                showText : sphereProperties ? sphereProperties.location.y  : 0
+                                                showText : sphereProperty ? sphereProperty.location.y  : 0
                                                 onValueChanged: {
-                                                    sphereProperties.location.y = value
+                                                    sphereProperty.location.y = value
                                                 }
                                             }
                                         }
@@ -347,9 +347,9 @@ Item {
                                                 anchors.fill: parent
                                                 decimals: 4
                                                 //                                                step: 10
-                                                showText : sphereProperties ? sphereProperties.location.z  : 0
+                                                showText : sphereProperty ? sphereProperty.location.z  : 0
                                                 onValueChanged: {
-                                                    sphereProperties.location.z = value
+                                                    sphereProperty.location.z = value
                                                 }
                                             }
                                         }
@@ -380,10 +380,10 @@ Item {
                                     checked: false
                                     anchors.bottom: locationTitle.bottom
                                     onCheckStateChanged: if(checked === true){
-                                                             sphereProperties.relative = true
+                                                             sphereProperty.relative = true
                                                          }
                                                          else{
-                                                             sphereProperties.relative = false
+                                                             sphereProperty.relative = false
                                                          }
 
                                     indicator: Rectangle {
@@ -453,9 +453,9 @@ Item {
                                                 //                                                value: xLoc
 
 
-                                                showText:  sphereProperties ? sphereProperties.center.x  : 0
+                                                showText:  sphereProperty ? sphereProperty.center.x  : 0
                                                 onValueChanged: {
-                                                    sphereProperties.center.x = value
+                                                    sphereProperty.center.x = value
                                                 }
                                             }
                                         }
@@ -485,9 +485,9 @@ Item {
                                                 decimals: 4
                                                 //                                                step: 0.01
                                                 //                                                value: yLoc
-                                                showText : sphereProperties ? sphereProperties.center.y  : 0
+                                                showText : sphereProperty ? sphereProperty.center.y  : 0
                                                 onValueChanged: {
-                                                    sphereProperties.center.y = value
+                                                    sphereProperty.center.y = value
                                                 }
                                             }
                                         }
@@ -516,9 +516,9 @@ Item {
                                                 anchors.fill: parent
                                                 decimals: 4
                                                 //                                                step: 10
-                                                showText : sphereProperties ? sphereProperties.center.z  : 0
+                                                showText : sphereProperty ? sphereProperty.center.z  : 0
                                                 onValueChanged: {
-                                                    sphereProperties.center.z = value
+                                                    sphereProperty.center.z = value
                                                 }
                                             }
                                         }
@@ -573,7 +573,7 @@ Item {
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
-                                                sphereProperties.shape = 0
+                                                sphereProperty.shape = 0
                                                 fullglobebtn.border.color = "dark green"
                                                 tophalfbtn.border.color = "gray"
                                                 bothalfbtn.border.color = "gray"
@@ -599,7 +599,7 @@ Item {
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
-                                                sphereProperties.shape = 1
+                                                sphereProperty.shape = 1
                                                 fullglobebtn.border.color = "gray"
                                                 tophalfbtn.border.color = "dark green"
                                                 bothalfbtn.border.color = "gray"
@@ -625,7 +625,7 @@ Item {
                                             anchors.fill: parent
                                             cursorShape: Qt.PointingHandCursor
                                             onClicked: {
-                                                sphereProperties.shape = 2
+                                                sphereProperty.shape = 2
                                                 fullglobebtn.border.color = "gray"
                                                 tophalfbtn.border.color = "gray"
                                                 bothalfbtn.border.color = "dark green"

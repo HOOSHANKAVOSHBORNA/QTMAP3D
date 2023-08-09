@@ -1,5 +1,5 @@
-#ifndef SPHEREPROPERTIES_H
-#define SPHEREPROPERTIES_H
+#ifndef SPHEREPROPERTY_H
+#define SPHEREPROPERTY_H
 
 #include "sphereNode.h"
 #include <QObject>
@@ -10,11 +10,11 @@
 
 
 
-class SphereProperties: public Property
+class SphereProperty: public Property
 {
     Q_OBJECT
 public:
-    SphereProperties(QQuickItem *parent=nullptr);
+    SphereProperty(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
     void setRadius(double radius) override;
     void setLocationRelative(bool relative) override;
@@ -28,4 +28,4 @@ private:
     const osgEarth::SpatialReference *mSRS;
 
 };
-#endif // SPHEREPROPERTIES_H
+#endif // SPHEREPROPERTY_H
