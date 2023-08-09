@@ -52,7 +52,7 @@ private slots:
 
 private:
     osg::Camera* mCamera;
-    ViewCaptureCallback* mViewCaptureCallback;
+    ViewCaptureCallback* mViewCaptureCallback{nullptr};
 };
 
 

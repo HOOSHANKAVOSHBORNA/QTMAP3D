@@ -265,8 +265,8 @@ Item {
                             Layout.minimumWidth: 100
                             height: valHeight
                             decimals: 4
-                            from: -100000000
-                            to: 100000000
+                            from: -2000000000
+                            to: 2000000000
                             onValueChanged: {
                                 rootItem.model.location.x = realValue
                             }
@@ -290,8 +290,8 @@ Item {
                             Layout.minimumWidth: 100
                             height: valHeight
                             decimals: 4
-                            from: -100000000
-                            to: 100000000
+                            from: -2000000000
+                            to: 2000000000
                             onRealValueChanged: {
                                 rootItem.model.location.y = realValue
                             }
@@ -316,8 +316,8 @@ Item {
                             Layout.minimumWidth: 100
                             height: valHeight
                             decimals: 4
-                            from: -100000000
-                            to: 100000000
+                            from: -2000000000
+                            to: 2000000000
                             onValueChanged: {
                                 rootItem.model.location.z = realValue
                             }
@@ -405,9 +405,9 @@ Item {
                             Layout.fillWidth: true
                             Layout.minimumWidth: 100
                             height: valHeight
-                            decimals: 4
-                            from: -100000000
-                            to: 100000000
+                            decimals: 2
+                            from: -2000000000
+                            to: 2000000000
                             onValueChanged: {
                                 rootItem.model.center.x = realValue
                             }
@@ -430,9 +430,9 @@ Item {
                             Layout.fillWidth: true
                             Layout.minimumWidth: 100
                             height: valHeight
-                            decimals: 4
-                            from: -100000000
-                            to: 10000000
+                            decimals: 2
+                            from: -2000000000
+                            to: 2000000000
                             onValueChanged: {
                                 rootItem.model.center.y =realValue
                             }
@@ -455,9 +455,9 @@ Item {
                             Layout.fillWidth: true
                             Layout.minimumWidth: 100
                             height: valHeight
-                            decimals: 4
-                            from: -100000000
-                            to: 10000000
+                            decimals: 2
+                            from: -2000000000
+                            to: 2000000000
                             onValueChanged: {
                                 rootItem.model.center.z =realValue
                             }
@@ -571,7 +571,7 @@ Item {
                         height: valHeight
                         decimals: 2
                         from : 0
-                        to: 1000000000
+                        to: 2000000000
                         onValueChanged: {
                             rootItem.model.radius = realValue
                         }
@@ -608,7 +608,7 @@ Item {
                         height: valHeight
                         decimals: 2
                         from : 0
-                        to: 1000000000
+                        to: 2000000000
                         onValueChanged: {
                             rootItem.model.heighT= realValue
                         }
@@ -646,7 +646,7 @@ Item {
                         height: valHeight
                         decimals: 2
                         from : 0
-                        to: 1000000000
+                        to: 2000000000
                         onValueChanged: {
                             rootItem.model.lenghT = realValue
                         }
@@ -683,7 +683,7 @@ Item {
                         height: valHeight
                         decimals: 2
                         from : 0
-                        to: 1000000000
+                        to: 2000000000
                         onValueChanged: {
                             rootItem.model.widtH = realValue
                         }
@@ -815,7 +815,7 @@ Item {
                     SpinBox {
                         id: tesselationValue
                         from : 0
-                        to: 1000000000
+                        to: 2000000000
                         Layout.fillWidth: true
                         Layout.minimumWidth: 100
                         height: valHeight
