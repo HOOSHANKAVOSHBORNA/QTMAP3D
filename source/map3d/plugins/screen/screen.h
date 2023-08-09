@@ -8,6 +8,7 @@
 #include <osgDB/FileUtils>
 #include <thread>
 #include <QFile>
+#include <QDateTime>
 
 class ViewCaptureCallback : public osg::Camera::DrawCallback
 {
@@ -19,10 +20,10 @@ public:
     virtual void operator () (osg::RenderInfo& renderInfo) const
     {
         std::string directory = "../SnapShots";
-        std::string filename = "SnapShot.png";
-//        if(QFile::exists(directory + "/" + filename))
+        std::string filename = "SnapShot";
+        QString timeNow = QDateTime::currentDateTime().toString();
         osgDB::makeDirectory(directory);
-        std::string fullpath = osgDB::getRealPath(directory + "/" + filename);
+        std::string fullpath = osgDB::getRealPath(directory + "/" + filename + timeNow.toStdString() + ".png");
         auto viewPort = renderInfo.getCurrentCamera()->getViewport();
         _image->readPixels(0, 0, viewPort->width(), viewPort->height(), GL_RGB, GL_UNSIGNED_BYTE);
         bool resultSnap = osgDB::writeImageFile(*_image, fullpath);
