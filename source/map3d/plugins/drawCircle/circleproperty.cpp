@@ -1,4 +1,4 @@
-#include "circleproperties.h"
+#include "circleproperty.h"
 #include <QtDebug>
 #include <QVector3D>
 #include "utility.h"
@@ -8,7 +8,7 @@
 
 #include <QDebug>
 
-CircleProperties::CircleProperties(QQuickItem *parent):
+CircleProperty::CircleProperty(QQuickItem *parent):
     Property(parent)
 {
     setFillColorStatus  (true);
@@ -20,7 +20,7 @@ CircleProperties::CircleProperties(QQuickItem *parent):
     setClampStatus      (true);
 }
 
-void CircleProperties::setFillColor(const QColor &color)
+void CircleProperty::setFillColor(const QColor &color)
 {
 
     Property::setFillColor(color);
@@ -28,18 +28,18 @@ void CircleProperties::setFillColor(const QColor &color)
         mCircle->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-void CircleProperties::setRadius(double radius)
+void CircleProperty::setRadius(double radius)
 {
     Property::setRadius(radius);
     if(mCircle)
         mCircle->setRadius(radius);
 }
-void CircleProperties::setLocationRelative(bool relative)
+void CircleProperty::setLocationRelative(bool relative)
 {
     Property::setLocationRelative(relative);
 }
 
-void CircleProperties::setArc(const QVector2D &arc)
+void CircleProperty::setArc(const QVector2D &arc)
 {
 
     Property::setArc(arc);
@@ -52,7 +52,7 @@ void CircleProperties::setArc(const QVector2D &arc)
 }
 
 
-void CircleProperties::setName(const QString &name)
+void CircleProperty::setName(const QString &name)
 {
 
     Property::setName(name);
@@ -63,7 +63,7 @@ void CircleProperties::setName(const QString &name)
     }
 }
 
-void CircleProperties::setStrokeWidth(double opacity)
+void CircleProperty::setStrokeWidth(double opacity)
 {
 
     Property::setStrokeWidth(opacity);
@@ -72,7 +72,7 @@ void CircleProperties::setStrokeWidth(double opacity)
 
 }
 
-void CircleProperties::setStrokeColor(const QColor &color)
+void CircleProperty::setStrokeColor(const QColor &color)
 {
 
     Property::setStrokeColor(color);
@@ -85,7 +85,7 @@ void CircleProperties::setStrokeColor(const QColor &color)
 
 
 
-void CircleProperties::setLocation(const QVector3D &status)
+void CircleProperty::setLocation(const QVector3D &status)
 {
 
     Property::setLocation(status);
@@ -95,7 +95,7 @@ void CircleProperties::setLocation(const QVector3D &status)
 
 }
 
-void CircleProperties::setHeight(double height)
+void CircleProperty::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -103,7 +103,7 @@ void CircleProperties::setHeight(double height)
         mCircle->setCircleHeight(height);
 }
 
-void CircleProperties::setClamp(int clamp)
+void CircleProperty::setClamp(int clamp)
 {
 
     Property::setClamp(clamp);
@@ -115,12 +115,12 @@ void CircleProperties::setClamp(int clamp)
 }
 
 
-Circle *CircleProperties::getCircle() const
+Circle *CircleProperty::getCircle() const
 {
     return mCircle;
 }
 
-void CircleProperties::setCircle(Circle *newCircle, const osgEarth::SpatialReference *srs)
+void CircleProperty::setCircle(Circle *newCircle, const osgEarth::SpatialReference *srs)
 {
     mCircle = newCircle;
 

@@ -1,17 +1,18 @@
-#ifndef CONEPROPERTIESMODEL_H
-#define CONEPROPERTIESMODEL_H
+#ifndef CAPSULEPROPERTIESMODEL_H
+#define CAPSULEPROPERTIESMODEL_H
 
 #include <QObject>
-
-#include "cone.h"
+#include "capsule.h"
 #include "property.h"
+#include <QVariant>
+#include <QVector3D>
 
-class MainWindow;
-class ConeProperties: public Property
+
+class CapsuleProperty: public Property
 {
     Q_OBJECT
 public:
-    ConeProperties(QQuickItem *parent=nullptr);
+    CapsuleProperty(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
     void setRadius(double radius) override;
     void setLocationRelative(bool relative) override;
@@ -19,14 +20,15 @@ public:
     void setHeight(double height) override;
     void setCenter(const QVector3D &center)override;
     void setName(const QString &name) override;
-    Cone *getCone() const;
-    void setCone(Cone *cone, const osgEarth::SpatialReference *srs);
-
+    Capsule *getCapsule() const;
+    void setCapsule(Capsule *Capsule , const osgEarth::SpatialReference *srs);
 
 private:
-    Cone *mCone = nullptr;
+    Capsule *mCapsule = nullptr;
     const osgEarth::SpatialReference *mSRS;
+
 };
 
-#endif // CONEPROPERTIESMODEL_H
+#endif // CapsulePROPERTIESMODEL_H
+
 

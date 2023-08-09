@@ -17,7 +17,7 @@ add_library(drawCircle SHARED
     drawCircle.json
     circle.cpp
     drawCircle.qrc
-    circleproperties.cpp
+    circleproperty.cpp
 )
 
 target_include_directories(drawCircle PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

@@ -8,11 +8,11 @@
 #include "property.h"
 
 
-class CircleProperties: public Property
+class CircleProperty: public Property
 {
     Q_OBJECT
 public:
-    CircleProperties(QQuickItem *parent=nullptr);
+    CircleProperty(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
     void setRadius(double radius) override;
     void setLocationRelative(bool relative) override;
