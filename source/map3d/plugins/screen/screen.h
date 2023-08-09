@@ -13,8 +13,9 @@
 class ViewCaptureCallback : public osg::Camera::DrawCallback
 {
 public:
-    ViewCaptureCallback(osg::Image* image) :
-        _image(image)
+    ViewCaptureCallback(osg::Image* image, QPointF sceneStartPoint) :
+        mImage(image),
+        mSceneStartPoint(sceneStartPoint)
     {}
 
     virtual void operator () (osg::RenderInfo& renderInfo) const
@@ -25,13 +26,14 @@ public:
         osgDB::makeDirectory(directory);
         std::string fullpath = osgDB::getRealPath(directory + "/" + filename + timeNow.toStdString() + ".png");
         auto viewPort = renderInfo.getCurrentCamera()->getViewport();
-        _image->readPixels(0, 0, viewPort->width(), viewPort->height(), GL_RGB, GL_UNSIGNED_BYTE);
-        bool resultSnap = osgDB::writeImageFile(*_image, fullpath);
+        mImage->readPixels(mSceneStartPoint.x(), mSceneStartPoint.y(), viewPort->width(), viewPort->height(), GL_RGB, GL_UNSIGNED_BYTE);
+        bool resultSnap = osgDB::writeImageFile(*mImage, fullpath);
         screenTaken = resultSnap;
     }
     mutable bool screenTaken = false;
 protected:
-    osg::ref_ptr<osg::Image> _image;
+    osg::ref_ptr<osg::Image> mImage;
+    QPointF mSceneStartPoint;
 
 };
 

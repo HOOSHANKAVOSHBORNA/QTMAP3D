@@ -37,8 +37,10 @@ bool Screen::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapte
 
 void Screen::takeSnapShot()
 {
+    auto point = mapItem()->mapToScene(QPoint(0,0));
+    qDebug()<<point;
     osg::ref_ptr<osg::Image> img = new osg::Image();
-    mViewCaptureCallback = new ViewCaptureCallback(img);
+    mViewCaptureCallback = new ViewCaptureCallback(img, point);
     mViewCaptureCallback->screenTaken = false;
     mCamera->setFinalDrawCallback(mViewCaptureCallback);
 }
