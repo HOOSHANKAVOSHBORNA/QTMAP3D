@@ -244,8 +244,8 @@ private:
 
     // ----------  stroke //
     bool mStrokeStatus{false};
-    QColor mStroke =QColor(0, 0, 250, 255);
-    double  mStrokeWidth;
+    QColor mStroke = QColor(0, 0, 250, 255);
+    double  mStrokeWidth{10};
 
     // ---------- Location- //
     bool mLocationStatus{false};
@@ -266,23 +266,23 @@ private:
     // ---------- radius //
 
     bool mRadiusStatus{false};
-    double mRadius{10};
+    double mRadius{1000};
 
     // ---------- height //
 
     bool mHeightStatus{false};
-    double mHeight {100};
+    double mHeight {1000};
 
 
     // ---------- lenght //
 
     bool mLenghtStatus{false};
-    double mLenght {100};
+    double mLenght {1000};
 
     // ---------- width //
 
     bool mWidthStatus{false};
-    double mWidth {100};
+    double mWidth {1000};
 
     // ---------- tesselation //
 
@@ -292,32 +292,32 @@ private:
     //----------- clamp  //
 
     bool mClampStatus{false};
-    int mClamp;
+    int mClamp{0};
 
 
     //----------- showlen  //
 
     bool mShowLenStatus{false};
-    bool  mShowLen;
+    bool  mShowLen{true};
 
     //----------- Bearing  //
 
     bool mBearingStatus{false};
-    bool mShowBearing;
+    bool mShowBearing{true};
 
 
     //----------- showSlop  //
 
     bool mShowSlopStatus{false};
-    bool mShowSlop;
+    bool mShowSlop{true};
 
     // ---------- Points  //
 
     bool mPointsStatus{false};
     bool mPointsVisible{false};
-    QColor mPointsColor;
-    bool mPointsSmooth;
-    double mPointsWidth;
+    QColor mPointsColor{QColor(0, 0, 250, 255)};
+    bool mPointsSmooth{true};
+    double mPointsWidth{10};
 
 
 

@@ -60,9 +60,6 @@ void SphereProperty::setLocation(const QVector3D &status)
 
 }
 
-
-
-
 SphereNode *SphereProperty::getSphere() const
 {
     return mSphere;
