@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>resource/image.png</file>
-        <file>ImageProperty.qml</file>
-    </qresource>
-</RCC>

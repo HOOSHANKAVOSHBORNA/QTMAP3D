@@ -26,13 +26,14 @@ void Box::compile()
     float height = static_cast<float>(mHeight.as(osgEarth::Units::METERS));
     float width = static_cast<float>(mWidth.as(osgEarth::Units::METERS));
     float length = static_cast<float>(mLength.as(osgEarth::Units::METERS));
-    osg::ref_ptr<osg::CompositeShape> compositeShape = new osg::CompositeShape;
+//    osg::ref_ptr<osg::CompositeShape> compositeShape = new osg::CompositeShape;
     osg::ref_ptr<osg::TessellationHints> tessellationHints = new osg::TessellationHints;
+//    tessellationHints->setCreateBody(false);
 
     osg::ref_ptr<osg::Box> boxShape = new osg::Box(mCenter, length, width, height);
-    compositeShape->addChild(boxShape);
+//    compositeShape->addChild(boxShape);
 
-    mShapeDrawable = new osg::ShapeDrawable(compositeShape.get(), tessellationHints);
+    mShapeDrawable = new osg::ShapeDrawable(boxShape.get(), tessellationHints);
     mShapeDrawable->setColor(mColor);
     mShapeDrawable->setUseVertexBufferObjects(true);
 

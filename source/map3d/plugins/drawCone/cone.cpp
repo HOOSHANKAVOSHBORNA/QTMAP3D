@@ -22,13 +22,14 @@ void Cone::compile()
 
     float radius = static_cast<float>(mRadius.as(osgEarth::Units::METERS));
     float height = static_cast<float>(mHeight.as(osgEarth::Units::METERS));
-    osg::ref_ptr<osg::CompositeShape> compositeShape = new osg::CompositeShape;
+//    osg::ref_ptr<osg::CompositeShape> compositeShape = new osg::CompositeShape;
     osg::ref_ptr<osg::TessellationHints> tessellationHints = new osg::TessellationHints;
+    tessellationHints->setCreateTop(false);
 
     osg::ref_ptr<osg::Cone> coneShape = new osg::Cone(mCenter, radius, height);
-    compositeShape->addChild(coneShape);
+//    compositeShape->addChild(coneShape);
 
-    mShapeDrawable = new osg::ShapeDrawable(compositeShape.get(), tessellationHints);
+    mShapeDrawable = new osg::ShapeDrawable(coneShape.get(), tessellationHints);
     mShapeDrawable->setColor(mColor);
     mShapeDrawable->setUseVertexBufferObjects(true);
 
