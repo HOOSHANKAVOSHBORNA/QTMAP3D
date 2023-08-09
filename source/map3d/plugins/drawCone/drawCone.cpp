@@ -1,8 +1,9 @@
 #include "drawCone.h"
-#include "mainwindow.h"
 #include "utility.h"
 #include "compositeAnnotationLayer.h"
 
+#include "cone.h"
+#include "coneProperty.h"
 
 int DrawCone::mCount{0};
 DrawCone::DrawCone(QObject *parent): DrawShape(parent)
@@ -19,8 +20,6 @@ bool DrawCone::setup()
     makeIconNode("../data/images/draw/cone.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-
-
     mConeLayer = new ParenticAnnotationLayer();
     mConeLayer->setName(CONE);
     return true;    
@@ -28,32 +27,16 @@ bool DrawCone::setup()
 
 void DrawCone::onConeItemCheck(bool check)
 {
-
-
-
     if (check) {
-        auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mConeLayer->getName()));
-        if(!layer){
-            mConeLayer->getGroup()->removeChildren(0, mConeLayer->getGroup()->getNumChildren());
-        }
-        if(mConeLayer->getGroup()->getNumChildren() <= 0){
-            shapeLayer->addLayer(mConeLayer);
-        }
         setState(State::READY);
-        mConeProperties = new ConeProperties();
-        createProperty("Cone", QVariant::fromValue<ConeProperties*>(mConeProperties));
+        mConeProperty = new ConeProperty();
+        createProperty("Cone", QVariant::fromValue<ConeProperty*>(mConeProperty));
         mapItem()->addNode(iconNode());
-
     }
     else {
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mConeLayer->getGroup()->getNumChildren() <= 0){
-            auto shapeLayer = DrawShape::shapeLayer();
-            shapeLayer->removeLayer(mConeLayer);
-        }
         setState(State::NONE);
         mCone = nullptr;
         hideProperty();
@@ -68,9 +51,14 @@ void DrawCone::initDraw(const osgEarth::GeoPoint &geoPos)
     mCone = new Cone();
     mCone->setName(name.toStdString());
     mCone->setPosition(geoPos);
+
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mConeLayer)){
+        mConeLayer->clear();
+        shapeLayer->addLayer(mConeLayer);
+    }
     mConeLayer->addChild(mCone);
-    mConeProperties->setCone(mCone, mapItem()->getMapSRS());
-    mConeLayer->setName(mCone->getName());
+    mConeProperty->setCone(mCone, mapItem()->getMapSRS());
     setState(State::DRAWING);
     mCount++;
 }
@@ -80,15 +68,22 @@ void DrawCone::cancelDraw()
     if(state() == State::DRAWING){
         mConeLayer->getGroup()->removeChild(mCone);
         mCone = nullptr;
-        mConeProperties->setCone(mCone, mapItem()->getMapSRS());
+        mConeProperty->setCone(mCone, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
+        if(!mConeLayer->hasNode())
+            DrawShape::shapeLayer()->removeLayer(mConeLayer);
+
     }
 }
 
 void DrawCone::drawing(const osgEarth::GeoPoint &geoPos)
 {
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mConeLayer)){
+        initDraw(geoPos);
+    }
     mCone->setPosition(geoPos);
-    mConeProperties->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+    mConeProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }
 

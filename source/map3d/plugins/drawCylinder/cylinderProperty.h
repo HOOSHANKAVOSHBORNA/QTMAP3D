@@ -7,11 +7,11 @@
 
 
 
-class CylinderProperties: public Property
+class CylinderProperty: public Property
 {
     Q_OBJECT
 public:
-    CylinderProperties(QQuickItem *parent=nullptr);
+    CylinderProperty(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
     void setRadius(double radius) override;
     void setHeight(double height) override;

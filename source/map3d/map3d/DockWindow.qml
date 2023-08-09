@@ -30,8 +30,10 @@ Item{
     Window {
         id:wnd
         visible: false
-        width: 200
-        height: 400
+        width: 300
+        height: 500
+        x: mapToGlobal(10, 30).x
+        y: mapToGlobal(10, 30).y
         Item {
             id: undockedContainer
             anchors.fill: parent

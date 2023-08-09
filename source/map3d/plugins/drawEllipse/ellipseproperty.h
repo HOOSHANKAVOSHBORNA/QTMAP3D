@@ -1,5 +1,5 @@
-﻿#ifndef ELLIPSEPROPERTIES_H
-#define ELLIPSEPROPERTIES_H
+#ifndef ELLIPSEPROPERTY_H
+#define ELLIPSEPROPERTY_H
 
 #include "ellipse.h"
 #include <QObject>
@@ -8,11 +8,11 @@
 #include "property.h"
 
 
-class EllipseProperties: public Property
+class EllipseProperty: public Property
 {
     Q_OBJECT
 public:
-    EllipseProperties(QQuickItem *parent=nullptr);
+    EllipseProperty(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
     void setStrokeWidth(const double &opacity);
     void setStrokeColor(const QColor &color)override;
@@ -31,4 +31,4 @@ private:
      const osgEarth::SpatialReference *mSRS;
 };
 
-#endif // ELLIPSEPROPERTIES_H
+#endif // ELLIPSEPROPERTY_H

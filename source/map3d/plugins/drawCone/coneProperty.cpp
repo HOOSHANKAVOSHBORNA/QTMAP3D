@@ -1,4 +1,4 @@
-#include "coneProperties.h"
+#include "coneProperty.h"
 #include "mainwindow.h"
 #include <QQmlComponent>
 #include <QQuickItem>
@@ -7,7 +7,7 @@
 
 
 
-ConeProperties::ConeProperties(QQuickItem *parent):
+ConeProperty::ConeProperty(QQuickItem *parent):
     Property(parent)
 {
     setFillColorStatus      (true);
@@ -17,7 +17,7 @@ ConeProperties::ConeProperties(QQuickItem *parent):
     setCenterStatus         (true);
 }
 
-void ConeProperties::setFillColor(const QColor &color)
+void ConeProperty::setFillColor(const QColor &color)
 {
 
     Property::setFillColor(color);
@@ -26,7 +26,7 @@ void ConeProperties::setFillColor(const QColor &color)
 
 }
 
-void ConeProperties::setRadius(double radius)
+void ConeProperty::setRadius(double radius)
 {
 
     Property::setRadius(radius);
@@ -35,7 +35,7 @@ void ConeProperties::setRadius(double radius)
 }
 
 
-void ConeProperties::setHeight(double height)
+void ConeProperty::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -45,7 +45,7 @@ void ConeProperties::setHeight(double height)
 
 
 
-void ConeProperties::setCenter(const QVector3D &center)
+void ConeProperty::setCenter(const QVector3D &center)
 {
 
     osg::Vec3 temp(center.x(),center.y(),center.z());
@@ -54,12 +54,12 @@ void ConeProperties::setCenter(const QVector3D &center)
         mCone->setCenter(temp);
 }
 
-void ConeProperties::setLocationRelative(bool relative)
+void ConeProperty::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);
 }
-void ConeProperties::setLocation(const QVector3D &status)
+void ConeProperty::setLocation(const QVector3D &status)
 {
 
     Property::setLocation(status);
@@ -69,7 +69,7 @@ void ConeProperties::setLocation(const QVector3D &status)
 }
 
 
-void ConeProperties::setName(const QString &name)
+void ConeProperty::setName(const QString &name)
 {
 
     Property::setName(name);
@@ -80,12 +80,12 @@ void ConeProperties::setName(const QString &name)
     }
 }
 
-Cone *ConeProperties::getCone() const
+Cone *ConeProperty::getCone() const
 {
     return mCone;
 }
 
-void ConeProperties::setCone(Cone *newCone, const osgEarth::SpatialReference *srs)
+void ConeProperty::setCone(Cone *newCone, const osgEarth::SpatialReference *srs)
 {
     mCone = newCone;
     mSRS = srs;

@@ -1,4 +1,4 @@
-#include "sphereProperties.h"
+#include "sphereProperty.h"
 #include <QtDebug>
 #include <QVector3D>
 #include <QQmlComponent>
@@ -6,7 +6,7 @@
 #include "utility.h"
 
 
-SphereProperties::SphereProperties(QQuickItem *parent):
+SphereProperty::SphereProperty(QQuickItem *parent):
     Property(parent)
 {
     setFillColorStatus  (true);
@@ -17,7 +17,7 @@ SphereProperties::SphereProperties(QQuickItem *parent):
 
 }
 
-void SphereProperties::setFillColor(const QColor &color)
+void SphereProperty::setFillColor(const QColor &color)
 {
 
     Property::setFillColor(color);
@@ -25,7 +25,7 @@ void SphereProperties::setFillColor(const QColor &color)
         mSphere->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-//void SphereProperties::setCenter(const QVector3D &center)
+//void SphereProperty::setCenter(const QVector3D &center)
 //{
 //    Property::setCenter(center);
 //    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(center, mSRS);
@@ -34,14 +34,14 @@ void SphereProperties::setFillColor(const QColor &color)
 //}
 
 
-void SphereProperties::setRadius(double radius)
+void SphereProperty::setRadius(double radius)
 {
 
     Property::setRadius(radius);
     if(mSphere)
         mSphere->setRadius(radius);
 }
-void SphereProperties::setLocationRelative(bool relative)
+void SphereProperty::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);
@@ -49,7 +49,7 @@ void SphereProperties::setLocationRelative(bool relative)
 
 
 
-void SphereProperties::setLocation(const QVector3D &status)
+void SphereProperty::setLocation(const QVector3D &status)
 {
 
     Property::setLocation(status);
@@ -63,12 +63,12 @@ void SphereProperties::setLocation(const QVector3D &status)
 
 
 
-SphereNode *SphereProperties::getSphere() const
+SphereNode *SphereProperty::getSphere() const
 {
     return mSphere;
 }
 
-void SphereProperties::setSphere(SphereNode *newSphere, const osgEarth::SpatialReference *srs)
+void SphereProperty::setSphere(SphereNode *newSphere, const osgEarth::SpatialReference *srs)
 {
     mSphere = newSphere;
     mSRS = srs;

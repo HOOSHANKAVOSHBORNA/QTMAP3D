@@ -21,7 +21,7 @@ public:
     virtual void operator () (osg::RenderInfo& renderInfo) const
     {
         std::string directory = "../SnapShots";
-        std::string filename = "SnapShot";
+        std::string filename = "SnapShot ";
         QString timeNow = QDateTime::currentDateTime().toString();
         osgDB::makeDirectory(directory);
         std::string fullpath = osgDB::getRealPath(directory + "/" + filename + timeNow.toStdString() + ".png");

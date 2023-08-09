@@ -17,8 +17,8 @@ drawImage.cpp
 drawImage.h
 drawImage.json
 drawImage.qrc
-imageProperties.cpp
-imageProperties.h
+imageProperty.cpp
+imageProperty.h
 )
 
 target_include_directories(drawImage PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

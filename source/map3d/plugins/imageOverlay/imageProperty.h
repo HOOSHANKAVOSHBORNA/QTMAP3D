@@ -1,5 +1,5 @@
-#ifndef IMAGEPROPERTIESMODEL_H
-#define IMAGEPROPERTIESMODEL_H
+#ifndef IMAGEPROPERTYMODEL_H
+#define IMAGEPROPERTYMODEL_H
 
 #include <QObject>
 #include "plugininterface.h"
@@ -9,12 +9,12 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthSymbology/GeometryFactory>
 
-#include "osgEarthAnnotation/AnnotationEditing"
+//#include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
 
 class DrawImage;
-class ImagePropertiesModel: public QObject
+class ImagePropertyModel: public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QVector2D  location    READ getLocation       WRITE setLocation       NOTIFY positionToQmlChanged)
@@ -22,12 +22,11 @@ class ImagePropertiesModel: public QObject
     Q_PROPERTY(QVector2D  tr          READ getTr             WRITE setTr             NOTIFY positionToQmlChanged)
     Q_PROPERTY(QVector2D  br          READ getBr             WRITE setBr             NOTIFY positionToQmlChanged)
     Q_PROPERTY(QVector2D  bl          READ getBl             WRITE setBl             NOTIFY positionToQmlChanged)
-    //    Q_PROPERTY(double     height         READ getHeight        WRITE setHeight       )
-    //    Q_PROPERTY(double     width          READ getWidth         WRITE setWidth        )
+
 
 
 public:
-    ImagePropertiesModel(osgEarth::Annotation::ImageOverlay *image = nullptr, MapItem *mapItem = nullptr, QObject *parent = nullptr);
+    ImagePropertyModel(osgEarth::Annotation::ImageOverlay *image = nullptr, MapItem *mapItem = nullptr, QObject *parent = nullptr);
 
     QVector2D getLocation();
     void setLocation(const QVector2D  &location);
@@ -39,18 +38,13 @@ public:
     void setBr(const QVector2D  &location);
     QVector2D getBl();
     void setBl(const QVector2D  &location);
-    //    //set height
-    //    double getHeight() const;
-    //    void setHeight(const double &imgHeight);
-    //    //set Width
-    //    double getWidth() const;
-    //    void setWidth(const double &imgWidth);
+
 
     void setImage(osgEarth::Annotation::ImageOverlay *image);
 
 signals:
 
-    void imagePropertiesChanged( QVariant );
+    void imagePropertyChanged( QVariant );
     void positionToQmlChanged();
 
 private:
@@ -60,8 +54,6 @@ private:
     QVector2D mBr ;
     QVector2D mBl ;
 
-    //    double    mHeight ;
-    //    double    mWidth  ;
 
 
     osgEarth::Annotation::ImageOverlay *mImage{nullptr};
@@ -70,12 +62,12 @@ private:
 
 };
 
-class ImageProperties: public QObject
+class ImageProperty: public QObject
 {
     Q_OBJECT
 
 public:
-    ImageProperties(osgEarth::Annotation::ImageOverlay *image, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent = nullptr);
+    ImageProperty(osgEarth::Annotation::ImageOverlay *image, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent = nullptr);
 
     void show();
     void hide();
@@ -90,8 +82,8 @@ private:
     QQmlEngine* mQmlEngine;
     QQuickItem* mItem{nullptr};
     osgEarth::Annotation::ImageOverlay mImage{nullptr};
-    ImagePropertiesModel* mImageProperties{nullptr};
+    ImagePropertyModel* mImageProperty{nullptr};
     UIHandle* mUiHandle;
 };
 
-#endif // IMAGEPROPERTIESMODEL_H
+#endif // IMAGEPROPERTYMODEL_H

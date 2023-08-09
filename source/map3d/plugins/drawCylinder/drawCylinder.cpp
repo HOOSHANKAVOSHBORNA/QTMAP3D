@@ -1,11 +1,12 @@
 #include "drawCylinder.h"
-#include "mainwindow.h"
 #include "utility.h"
 #include "compositeAnnotationLayer.h"
 
 #include "plugininterface.h"
 #include "mapItem.h"
 #include <QQmlContext>
+#include "cylinder.h"
+#include "cylinderProperty.h"
 
 int DrawCylinder::mCount{0};
 DrawCylinder::DrawCylinder(QObject *parent): DrawShape(parent)
@@ -31,17 +32,9 @@ void DrawCylinder::onCylinderItemCheck(bool check)
 {
 
     if (check) {
-        auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCylinderLayer->getName()));
-        if(!layer){
-            mCylinderLayer->getGroup()->removeChildren(0, mCylinderLayer->getGroup()->getNumChildren());
-        }
-        if(mCylinderLayer->getGroup()->getNumChildren() <= 0){
-            shapeLayer->addLayer(mCylinderLayer);
-        }
         setState(State::READY);
-        mCylinderProperties = new CylinderProperties();
-        createProperty("Cylinder", QVariant::fromValue<CylinderProperties*>(mCylinderProperties));
+        mCylinderProperty = new CylinderProperty();
+        createProperty("Cylinder", QVariant::fromValue<CylinderProperty*>(mCylinderProperty));
         mapItem()->addNode(iconNode());
 
     }
@@ -49,10 +42,6 @@ void DrawCylinder::onCylinderItemCheck(bool check)
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mCylinderLayer->getGroup()->getNumChildren() <= 0){
-            auto shapeLayer = DrawShape::shapeLayer();
-            shapeLayer->removeLayer(mCylinderLayer);
-        }
         setState(State::NONE);
         mCylinder = nullptr;
         hideProperty();
@@ -67,13 +56,18 @@ void DrawCylinder::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "Cylinder" + QString::number(mCount);
     mCylinder = new Cylinder();
     mCylinder->setName(name.toStdString());
-    mCylinder->setRadius(mCylinderProperties->getRadius());
-    mCylinder->setHeight(mCylinderProperties->getHeight());
+    mCylinder->setRadius(mCylinderProperty->getRadius());
+    mCylinder->setHeight(mCylinderProperty->getHeight());
     mCylinder->setPosition(geoPos);
-    mCylinderLayer->addChild(mCylinder);
 
-    mCylinderLayer->setName(mCylinder->getName());
-    mCylinderProperties->setCylinder(mCylinder, mapItem()->getMapSRS());
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mCylinderLayer)){
+        mCylinderLayer->clear();
+        shapeLayer->addLayer(mCylinderLayer);
+    }
+
+    mCylinderLayer->addChild(mCylinder);
+    mCylinderProperty->setCylinder(mCylinder, mapItem()->getMapSRS());
     setState(State::DRAWING);
     mCount++;
 
@@ -86,15 +80,22 @@ void DrawCylinder::cancelDraw()
     if(state() == State::DRAWING){
         mCylinderLayer->getGroup()->removeChild(mCylinder);
         mCylinder = nullptr;
-        mCylinderProperties->setCylinder(mCylinder, mapItem()->getMapSRS());
+        mCylinderProperty->setCylinder(mCylinder, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
+        if(!mCylinderLayer->hasNode())
+            DrawShape::shapeLayer()->removeLayer(mCylinderLayer);
+
     }
 }
 
 void DrawCylinder::drawing(const osgEarth::GeoPoint &geoPos)
 {
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mCylinderLayer)){
+        initDraw(geoPos);
+    }
     mCylinder->setPosition(geoPos);
-    mCylinderProperties->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+    mCylinderProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }
 

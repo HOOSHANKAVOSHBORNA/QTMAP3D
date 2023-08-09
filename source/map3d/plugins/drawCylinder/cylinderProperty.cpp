@@ -1,10 +1,10 @@
-#include "cylinderProperties.h"
+#include "cylinderProperty.h"
 #include "utility.h"
 #include <QQmlComponent>
 #include <QQuickItem>
 
 
-CylinderProperties::CylinderProperties(QQuickItem *parent):
+CylinderProperty::CylinderProperty(QQuickItem *parent):
     Property(parent)
 {
     setFillColorStatus  (true);
@@ -14,7 +14,7 @@ CylinderProperties::CylinderProperties(QQuickItem *parent):
     setCenterStatus     (true);
 }
 
-void CylinderProperties::setFillColor(const QColor &color)
+void CylinderProperty::setFillColor(const QColor &color)
 {
 
     Property::setFillColor(color);
@@ -22,7 +22,7 @@ void CylinderProperties::setFillColor(const QColor &color)
         mCylinder->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-void CylinderProperties::setRadius(double radius)
+void CylinderProperty::setRadius(double radius)
 {
 
     Property::setRadius(radius);
@@ -30,7 +30,7 @@ void CylinderProperties::setRadius(double radius)
         mCylinder->setRadius(radius);
 }
 
-void CylinderProperties::setHeight(double height)
+void CylinderProperty::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -38,7 +38,7 @@ void CylinderProperties::setHeight(double height)
         mCylinder->setHeight(height);
 }
 
-void CylinderProperties::setLocation(const QVector3D &status)
+void CylinderProperty::setLocation(const QVector3D &status)
 {
 
     Property::setLocation(status);
@@ -48,13 +48,13 @@ void CylinderProperties::setLocation(const QVector3D &status)
 
 }
 
-void CylinderProperties::setLocationRelative(bool relative)
+void CylinderProperty::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);
 }
 
-void CylinderProperties::setName(const QString &name)
+void CylinderProperty::setName(const QString &name)
 {
 
     Property::setName(name);
@@ -66,7 +66,7 @@ void CylinderProperties::setName(const QString &name)
 }
 
 
-void CylinderProperties::setCenter(const QVector3D &center)
+void CylinderProperty::setCenter(const QVector3D &center)
 {
 
     osg::Vec3 temp(center.x(),center.y(),center.z());
@@ -74,12 +74,12 @@ void CylinderProperties::setCenter(const QVector3D &center)
     if (mCylinder)
         mCylinder->setCenter(temp);
 }
-Cylinder *CylinderProperties::getCylinder() const
+Cylinder *CylinderProperty::getCylinder() const
 {
     return mCylinder;
 }
 
-void CylinderProperties::setCylinder(Cylinder *newCylinder, const osgEarth::SpatialReference *srs)
+void CylinderProperty::setCylinder(Cylinder *newCylinder, const osgEarth::SpatialReference *srs)
 {
     mCylinder = newCylinder;
     mSRS = srs;

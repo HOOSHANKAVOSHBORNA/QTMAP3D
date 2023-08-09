@@ -11,7 +11,7 @@ Item {
 
 
 
-    property ImageProperties imageProperties
+    property ImageProperty ImageProperty
     property string headerTitleSTR: "Image Properties"
 
 
@@ -113,13 +113,13 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 id: mcenterX
                                                 anchors.fill: parent
-                                                 showText: imageProperties ? imageProperties.location.x : 0
+                                                 showText: ImageProperty ? ImageProperty.location.x : 0
                                                 onValueChanged: {
-                                                    imageProperties.location.x = value
+                                                    ImageProperty.location.x = value
 
                                                 }
                                             }
@@ -143,13 +143,13 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 id: mcenterY
                                                 anchors.fill: parent
-                                                 showText: imageProperties ? imageProperties.location.y : 0
+                                                 showText: ImageProperty ? ImageProperty.location.y : 0
                                                 onValueChanged: {
-                                                    imageProperties.location.y = value
+                                                    ImageProperty.location.y = value
 
                                                 }
                                             }
@@ -206,12 +206,12 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: imageProperties ? imageProperties.tl.x : 0
+                                                 showText: ImageProperty ? ImageProperty.tl.x : 0
                                                 onValueChanged: {
-                                                    imageProperties.tl.x = value
+                                                    ImageProperty.tl.x = value
 
                                                 }
                                             }
@@ -235,12 +235,12 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: imageProperties ? imageProperties.tl.y : 0
+                                                 showText: ImageProperty ? ImageProperty.tl.y : 0
                                                 onValueChanged: {
-                                                    imageProperties.tl.y = value
+                                                    ImageProperty.tl.y = value
 
                                                 }
                                             }
@@ -297,12 +297,12 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: imageProperties ? imageProperties.tr.x : 0
+                                                 showText: ImageProperty ? ImageProperty.tr.x : 0
                                                 onValueChanged: {
-                                                    imageProperties.tr.x = value
+                                                    ImageProperty.tr.x = value
 
                                                 }
                                             }
@@ -326,12 +326,12 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: imageProperties ? imageProperties.tr.y : 0
+                                                 showText: ImageProperty ? ImageProperty.tr.y : 0
                                                 onValueChanged: {
-                                                    imageProperties.tr.y = value
+                                                    ImageProperty.tr.y = value
 
                                                 }
                                             }
@@ -388,12 +388,12 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: imageProperties ? imageProperties.br.x : 0
+                                                 showText: ImageProperty ? ImageProperty.br.x : 0
                                                 onValueChanged: {
-                                                    imageProperties.br.x = value
+                                                    ImageProperty.br.x = value
 
                                                 }
                                             }
@@ -417,12 +417,12 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: imageProperties ? imageProperties.br.y : 0
+                                                 showText: ImageProperty ? ImageProperty.br.y : 0
                                                 onValueChanged: {
-                                                    imageProperties.br.y = value
+                                                    ImageProperty.br.y = value
 
                                                 }
                                             }
@@ -480,12 +480,12 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 anchors.fill: parent
                                                 decimals: 5
-                                                 showText: imageProperties ? imageProperties.bl.x : 0
+                                                 showText: ImageProperty ? ImageProperty.bl.x : 0
                                                 onValueChanged: {
-                                                    imageProperties.bl.x = value
+                                                    ImageProperty.bl.x = value
 
                                                 }
                                             }
@@ -509,12 +509,12 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: imageProperties ? imageProperties.bl.y : 0
+                                                 showText: ImageProperty ? ImageProperty.bl.y : 0
                                                 onValueChanged: {
-                                                    imageProperties.bl.y = value
+                                                    ImageProperty.bl.y = value
 
                                                 }
                                             }

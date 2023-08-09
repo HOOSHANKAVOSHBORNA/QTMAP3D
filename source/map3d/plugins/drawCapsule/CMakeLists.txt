@@ -17,7 +17,7 @@ add_library(drawCapsule SHARED
     drawCapsule.qrc
     drawCapsule.cpp
     capsule.cpp
-    capsuleProperties.cpp
+    capsuleProperty.cpp
 )
 
 target_include_directories(drawCapsule PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
