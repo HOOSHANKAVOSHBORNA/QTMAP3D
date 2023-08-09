@@ -113,7 +113,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 id: mcenterX
                                                 anchors.fill: parent
@@ -143,7 +143,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 id: mcenterY
                                                 anchors.fill: parent
@@ -206,7 +206,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
                                                  showText: imageProperties ? imageProperties.tl.x : 0
@@ -235,7 +235,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
                                                  showText: imageProperties ? imageProperties.tl.y : 0
@@ -297,7 +297,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
                                                  showText: imageProperties ? imageProperties.tr.x : 0
@@ -326,7 +326,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
                                                  showText: imageProperties ? imageProperties.tr.y : 0
@@ -388,7 +388,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
                                                  showText: imageProperties ? imageProperties.br.x : 0
@@ -417,7 +417,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
                                                  showText: imageProperties ? imageProperties.br.y : 0
@@ -480,7 +480,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 anchors.fill: parent
                                                 decimals: 5
                                                  showText: imageProperties ? imageProperties.bl.x : 0
@@ -509,7 +509,7 @@ Item {
                                             clip:  true
                                             radius: 5
                                             Layout.fillWidth: true
-                                            QSpinBox {
+                                            FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
                                                  showText: imageProperties ? imageProperties.bl.y : 0

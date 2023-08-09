@@ -3,32 +3,6 @@
 #include <QFileDialog>
 
 
-#include <osgEarthSymbology/Style>
-#include <osgEarth/ModelLayer>
-#include <osgEarthDrivers/arcgis/ArcGISOptions>
-#include <osgEarthDrivers/feature_ogr/OGRFeatureOptions>
-#include <osgEarthDrivers/feature_wfs/WFSFeatureOptions>
-#include <osgEarthDrivers/model_feature_geom/FeatureGeomModelOptions>
-#include <QInputDialog>
-#include <QLabel>
-#include <QLineEdit>
-#include <osgEarth/GLUtils>
-#include <osgViewer/Viewer>
-#include <osgEarth/GLUtils>
-#include <osg/ShapeDrawable>
-#include <osgEarthAnnotation/ImageOverlay>
-#include <osgEarthAnnotation/LocalGeometryNode>
-#include <osgEarthAnnotation/FeatureNode>
-#include <osgEarthAnnotation/ModelNode>
-#include "mapItem.h"
-//#include "osg/Group"
-#include "osgEarth/ModelLayer"
-#include "osg/Group"
-#include "osgEarth/Layer"
-#include <QQuickItem>
-#include <osg/Image>
-
-
 int DrawImage::mCount{0};
 
 DrawImage::DrawImage(QObject *parent): DrawShape(parent)
@@ -38,15 +12,13 @@ DrawImage::DrawImage(QObject *parent): DrawShape(parent)
 
 bool DrawImage::setup()
 {
-    auto toolboxItem =  new ToolboxItem{IMGOVERLAY, CATEGORY, "qrc:/resources/image.png", true,};
+    auto toolboxItem =  new ToolboxItem{IMAGEOVERLAY, CATEGORY, "qrc:/resources/image.png", true,};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawImage::onImageItemCheck);
     toolbox()->addItem(toolboxItem);
     makeIconNode("../data/images/draw/image.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-
-    mImgLayer = new osgEarth::Annotation::AnnotationLayer();
-    mImgLayer->setName(IMGOVERLAY);
-
+    mImgLayer = new ParenticAnnotationLayer();
+    mImgLayer->setName(IMAGEOVERLAY);
     return true;
 }
 
@@ -60,48 +32,42 @@ void DrawImage::onImageItemCheck(bool check)
 {
     if (check) {
         loadImage();
-        if(mImgLayer->getGroup()->getNumChildren() <= 0){
-            auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->addLayer(mImgLayer, shapeLayer);
-        }
         setState(State::READY);
-        mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
-        mImageProperties->show();
+//        mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
+//        mImageProperties->show();
         mapItem()->addNode(iconNode());
 
     }
     else {
         if(state() == State::DRAWING)
-            cancelDraw();
-
-        if(mImgLayer->getGroup()->getNumChildren() <= 0){
-            auto shapeLayer = DrawShape::shapeLayer();
-            mapItem()->getMapObject()->removeLayer(mImgLayer, shapeLayer);
-        }
+        cancelDraw();
         setState(State::NONE);
         mImageOverlay = nullptr;
-        mImageProperties->hide();
+//        mImageProperties->hide();
         mapItem()->removeNode(iconNode());
     }
 }
 
 void DrawImage::initDraw(const osgEarth::GeoPoint &geoPos)
 {
-    QString name = "ImgOverlay" + QString::number(mCount);
+    QString name = "ImageOverlay" + QString::number(mCount);
     mImageOverlay = new osgEarth::Annotation::ImageOverlay(mapItem()->getMapNode(), imageAddr);
     mImageOverlay->setName(name.toStdString());
-
     mImageOverlay->setCenter(geoPos.x(),geoPos.y());
 
-//    mapItem()->getMapObject()->addNodeToLayer(mImageOverlay, mImgLayer);
-    mImageProperties->setImage(mImageOverlay);
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mImgLayer)){
+        mImgLayer->clear();
+        shapeLayer->addLayer(mImgLayer);
+    }
 
-    mImageProperties->setLocation(mImageOverlay->getCenter());
-    mImageProperties->setTL(mImageOverlay->getUpperLeft());
-    mImageProperties->setTR(mImageOverlay->getUpperRight());
-    mImageProperties->setBR(mImageOverlay->getLowerRight());
-    mImageProperties->setBL(mImageOverlay->getLowerLeft());
-
+//    mImageProperties->setImage(mImageOverlay);
+//    mImageProperties->setLocation(mImageOverlay->getCenter());
+//    mImageProperties->setTL(mImageOverlay->getUpperLeft());
+//    mImageProperties->setTR(mImageOverlay->getUpperRight());
+//    mImageProperties->setBR(mImageOverlay->getLowerRight());
+//    mImageProperties->setBL(mImageOverlay->getLowerLeft());
+    mImgLayer->addChild(mImageOverlay);
     setState(State::DRAWING);
     mCount++;
 }
@@ -109,10 +75,14 @@ void DrawImage::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawImage::cancelDraw()
 {
     if(state() == State::DRAWING){
-//        mapItem()->getMapObject()->removeNodeFromLayer(mImageOverlay, mImgLayer);
+        mImgLayer->removeChild(mImageOverlay);
         mImageOverlay = nullptr;
-        mImageProperties->setImage(mImageOverlay);
+//        mImageProperties->setImage(mImageOverlay);
         setState(State::READY);
         mCount--;
+
+        if(!mImgLayer->hasNode()){
+            DrawShape::shapeLayer()->removeLayer(mImgLayer);
+        }
     }
 }

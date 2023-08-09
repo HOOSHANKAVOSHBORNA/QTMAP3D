@@ -9,7 +9,7 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthSymbology/GeometryFactory>
 
-#include "osgEarthAnnotation/AnnotationEditing"
+//#include "osgEarthAnnotation/AnnotationEditing"
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ImageOverlayEditor>
 
@@ -39,12 +39,7 @@ public:
     void setBr(const QVector2D  &location);
     QVector2D getBl();
     void setBl(const QVector2D  &location);
-    //    //set height
-    //    double getHeight() const;
-    //    void setHeight(const double &imgHeight);
-    //    //set Width
-    //    double getWidth() const;
-    //    void setWidth(const double &imgWidth);
+
 
     void setImage(osgEarth::Annotation::ImageOverlay *image);
 
@@ -60,8 +55,6 @@ private:
     QVector2D mBr ;
     QVector2D mBl ;
 
-    //    double    mHeight ;
-    //    double    mWidth  ;
 
 
     osgEarth::Annotation::ImageOverlay *mImage{nullptr};

@@ -18,8 +18,9 @@
 
 #include "drawShape.h"
 
-#define IMGOVERLAY "ImgOverlay"
-class ImageProperties;
+#define IMAGEOVERLAY "ImageOverlay"
+//class ImageProperties;
+
 class DrawImage : public DrawShape
 {
     Q_OBJECT
@@ -28,7 +29,6 @@ class DrawImage : public DrawShape
 
 public:
     DrawImage(QObject *parent = nullptr);
-//    bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) override;
     bool setup() override;
     void loadImage();
 private slots:
@@ -37,8 +37,9 @@ private slots:
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mImgLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mImgLayer;
     static int mCount;
+    QQuickItem *mItem;
     ImageProperties *mImageProperties{nullptr};
 
 
