@@ -1,11 +1,11 @@
-#include "capsuleProperties.h"
+#include "capsuleProperty.h"
 
 #include <QQmlComponent>
 #include <QQuickItem>
 #include "utility.h"
 
 
-CapsuleProperties::CapsuleProperties(QQuickItem *parent):
+CapsuleProperty::CapsuleProperty(QQuickItem *parent):
     Property(parent)
 {
     setFillColorStatus  (true);
@@ -16,7 +16,7 @@ CapsuleProperties::CapsuleProperties(QQuickItem *parent):
 
 }
 
-void CapsuleProperties::setFillColor(const QColor &color)
+void CapsuleProperty::setFillColor(const QColor &color)
 {
 
     Property::setFillColor(color);
@@ -24,7 +24,7 @@ void CapsuleProperties::setFillColor(const QColor &color)
         mCapsule->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-void CapsuleProperties::setCenter(const QVector3D &center)
+void CapsuleProperty::setCenter(const QVector3D &center)
 {
 
     osg::Vec3 temp(center.x(),center.y(),center.z());
@@ -33,19 +33,19 @@ void CapsuleProperties::setCenter(const QVector3D &center)
         mCapsule->setCenter(temp);
 }
 
-void CapsuleProperties::setRadius(double radius)
+void CapsuleProperty::setRadius(double radius)
 {
 
     Property::setRadius(radius);
     if(mCapsule)
         mCapsule->setRadius(radius);
 }
-void CapsuleProperties::setLocationRelative(bool relative)
+void CapsuleProperty::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);
 }
-void CapsuleProperties::setName(const QString &name)
+void CapsuleProperty::setName(const QString &name)
 {
 
     Property::setName(name);
@@ -57,7 +57,7 @@ void CapsuleProperties::setName(const QString &name)
 }
 
 
-void CapsuleProperties::setLocation(const QVector3D &status)
+void CapsuleProperty::setLocation(const QVector3D &status)
 {
 
     Property::setLocation(status);
@@ -68,7 +68,7 @@ void CapsuleProperties::setLocation(const QVector3D &status)
 
 }
 
-void CapsuleProperties::setHeight(double height)
+void CapsuleProperty::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -77,12 +77,12 @@ void CapsuleProperties::setHeight(double height)
 }
 
 
-Capsule *CapsuleProperties::getCapsule() const
+Capsule *CapsuleProperty::getCapsule() const
 {
     return mCapsule;
 }
 
-void CapsuleProperties::setCapsule(Capsule *newCapsule, const osgEarth::SpatialReference *srs)
+void CapsuleProperty::setCapsule(Capsule *newCapsule, const osgEarth::SpatialReference *srs)
 {
     mCapsule = newCapsule;
     mSRS = srs;

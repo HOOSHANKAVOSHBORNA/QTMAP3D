@@ -5,10 +5,10 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include "drawShape.h"
-#include "circle.h"
-#include "circleproperties.h"
 
 #define CIRCLE "Circle"
+class Circle;
+class CircleProperty;
 
 class DrawCircle : public DrawShape
 {
@@ -29,7 +29,7 @@ private:
 
 private:
     osg::ref_ptr<Circle> mCircle{nullptr};
-    CircleProperties *mCircleProperties{nullptr};
+    CircleProperty *mCircleProperty{nullptr};
 
     osg::ref_ptr<ParenticAnnotationLayer> mCircleLayer;
     static int mCount;
