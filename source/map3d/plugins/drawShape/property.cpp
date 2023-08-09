@@ -416,6 +416,17 @@ void Property::setPointsStatus(bool status)
 
 }
 
+bool Property::getPointsVisible() const
+{
+    return mPointsVisible;
+}
+
+void Property::setPointsVisible(bool visible)
+{
+    mPointsVisible = visible;
+    emit propretyChanged();
+}
+
 QColor Property::getPointsColor() const
 {
     return mPointsColor;

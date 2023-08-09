@@ -65,6 +65,7 @@ class Property :  public QQuickItem
 
 
     Q_PROPERTY(bool pointsStatus      READ getPointsStatus     WRITE setPointsStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(bool pointsVisible     READ getPointsVisible    WRITE setPointsVisible     NOTIFY propretyChanged)
     Q_PROPERTY(QColor pointsColor     READ getPointsColor      WRITE setPointsColor       NOTIFY propretyChanged)
     Q_PROPERTY(double pointsWidth     READ getPointsWidth      WRITE setPointsWidth       NOTIFY propretyChanged)
     Q_PROPERTY(bool pointsSmooth      READ getPointsSmooth     WRITE setPointsSmooth      NOTIFY propretyChanged)
@@ -212,6 +213,9 @@ public:
     bool getPointsStatus() const;
     void setPointsStatus(bool status);
 
+    bool getPointsVisible() const;
+    virtual void setPointsVisible(bool visible);
+
     QColor getPointsColor() const;
     virtual void setPointsColor(const QColor &pointColor);
 
@@ -233,83 +237,84 @@ protected:
 private:
     QQuickItem *mItem;
     // ----------  fill color -------- //
-    bool mFillColorStatus            {true};
+    bool mFillColorStatus{true};
     QColor mFillColor = QColor(0, 0, 250, 255);
     QString mName;
 
 
     // ----------  stroke //
-    bool mStrokeStatus               {false};
+    bool mStrokeStatus{false};
     QColor mStroke =QColor(0, 0, 250, 255);
     double  mStrokeWidth;
 
     // ---------- Location- //
-    bool mLocationStatus             {false};
+    bool mLocationStatus{false};
     QVector3D mLocation;
     bool mRelative;
 
 
     // ---------- Center  //
 
-    bool mCenterStatus               {false};
+    bool mCenterStatus{false};
     QVector3D mCenter ;
 
     // ---------- Arc  //
 
-    bool mArcStatus                  {false};
+    bool mArcStatus{false};
     QVector2D mArc= QVector2D(0,360) ;
 
     // ---------- radius //
 
-    bool mRadiusStatus               {false};
+    bool mRadiusStatus{false};
     double mRadius{10};
 
     // ---------- height //
 
-    bool mHeightStatus               {false};
+    bool mHeightStatus{false};
     double mHeight {100};
 
 
     // ---------- lenght //
 
-    bool mLenghtStatus               {false};
+    bool mLenghtStatus{false};
     double mLenght {100};
 
     // ---------- width //
 
-    bool mWidthStatus                {false};
+    bool mWidthStatus{false};
     double mWidth {100};
 
     // ---------- tesselation //
 
-    bool mTesselationStatus          {false};
+    bool mTesselationStatus{false};
     double mTesselation;
 
     //----------- clamp  //
 
-    bool mClampStatus                {false};
+    bool mClampStatus{false};
     int mClamp;
 
 
     //----------- showlen  //
 
-    bool mShowLenStatus              {false};
+    bool mShowLenStatus{false};
     bool  mShowLen;
 
     //----------- Bearing  //
 
-    bool mBearingStatus          {false};
+    bool mBearingStatus{false};
     bool mShowBearing;
 
 
     //----------- showSlop  //
 
-    bool mShowSlopStatus             {false};
+    bool mShowSlopStatus{false};
     bool mShowSlop;
 
     // ---------- Points  //
 
-    bool mPointsStatus               {false};
+    bool mPointsStatus{false};
+    bool mPointsVisible{false};
     QColor mPointsColor;
     bool mPointsSmooth;
     double mPointsWidth;
