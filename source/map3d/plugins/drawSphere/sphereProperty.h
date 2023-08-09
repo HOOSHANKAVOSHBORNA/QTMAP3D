@@ -15,11 +15,12 @@ class SphereProperty: public Property
     Q_OBJECT
 public:
     SphereProperty(QQuickItem *parent=nullptr);
+    void setName(const QString& name) override;
     void setFillColor(const QColor &color) override;
     void setRadius(double radius) override;
     void setLocationRelative(bool relative) override;
     void setLocation(const QVector3D &status) override;
-//    void setCenter();
+    void setCenter(const QVector3D &center) override;
     SphereNode *getSphere() const;
     void setSphere(SphereNode *Sphere , const osgEarth::SpatialReference *srs);
 

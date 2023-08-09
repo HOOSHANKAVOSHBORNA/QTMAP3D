@@ -12,10 +12,18 @@ SphereProperty::SphereProperty(QQuickItem *parent):
     setFillColorStatus  (true);
     setRadiusStatus     (true);
     setLocationStatus   (true);
-
-    //    setCenterStatus     (true);
+    setCenterStatus     (true);
 
 }
+
+void SphereProperty::setName(const QString &name)
+{
+    Property::setName(name);
+        if(mSphere)
+        mSphere->setName(name.toStdString());
+
+}
+
 
 void SphereProperty::setFillColor(const QColor &color)
 {
@@ -25,13 +33,13 @@ void SphereProperty::setFillColor(const QColor &color)
         mSphere->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-//void SphereProperty::setCenter(const QVector3D &center)
-//{
-//    Property::setCenter(center);
-//    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(center, mSRS);
-//    if (mSphere)
-//        mSphere->setPosition(temp);
-//}
+void SphereProperty::setCenter(const QVector3D &center)
+{
+    Property::setCenter(center);
+    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(center, mSRS);
+    if (mSphere)
+        mSphere->setPosition(temp);
+}
 
 
 void SphereProperty::setRadius(double radius)
@@ -73,8 +81,10 @@ void SphereProperty::setSphere(SphereNode *newSphere, const osgEarth::SpatialRef
     if(mSphere){
         mSphere->setColor(Utility::qColor2osgEarthColor(getFillColor()));
         mSphere->setRadius(getRadius());
-//        mSphere->setHeight(getHeight());
-
+        mSphere->setSphereShape(SphereNode::Sphere);
+        setName(QString::fromStdString(mSphere->getName()));
         setLocation(Utility::osgEarthGeoPointToQvector3D(mSphere->getPosition()));
+        setCenter(QVector3D(mSphere->getCenter().x(),mSphere->getCenter().y(),mSphere->getCenter().z()));
+
     }
 }

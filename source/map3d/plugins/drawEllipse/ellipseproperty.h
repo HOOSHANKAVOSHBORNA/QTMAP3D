@@ -14,7 +14,7 @@ class EllipseProperty: public Property
 public:
     EllipseProperty(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
-    void setStrokeWidth(const double &opacity);
+    void setStrokeWidth(double width) override;
     void setStrokeColor(const QColor &color)override;
     void setHeight(double height) override;
     void setLocationRelative(bool relative) override;

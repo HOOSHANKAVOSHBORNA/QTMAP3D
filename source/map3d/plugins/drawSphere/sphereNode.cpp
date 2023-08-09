@@ -48,7 +48,7 @@ void SphereNode::setSphereShape(SphereNode::SphereShape sphereShape)
 void SphereNode::construct()
 {
     setName("Sphere");
-    mRadius.set(1.0, osgEarth::Units::KILOMETERS);
+//    mRadius.set(1.0, osgEarth::Units::KILOMETERS);
     mColor = osgEarth::Color::White;
     mSphereShape = SphereShape::Sphere;
 }

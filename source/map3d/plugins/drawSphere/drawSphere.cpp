@@ -36,6 +36,11 @@ void DrawSphere::onSphereItemCheck(bool check)
     else {
         if(state() == State::DRAWING)
             cancelDraw();
+        //-----------------------------------------------------
+        if(mSphereLayer->getGroup()->getNumChildren() <= 0){
+            auto shapeLayer = DrawShape::shapeLayer();
+            shapeLayer->removeLayer(mSphereLayer);
+        }
 
         setState(State::NONE);
         mSphere = nullptr;
@@ -49,7 +54,10 @@ void DrawSphere::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "Sphere" + QString::number(mCount);
     mSphere = new SphereNode();
     mSphere->setName(name.toStdString());
+    mSphere->setRadius(mSphereProperty->getRadius());
+    mSphere->setCenter(osg::Vec3d(mSphereProperty->getCenter().x(),mSphereProperty->getCenter().y(),mSphereProperty->getCenter().z()));
     mSphere->setPosition(geoPos);
+    mSphere->setSphereShape(SphereNode::Sphere);
 
     auto shapeLayer = DrawShape::shapeLayer();
     if(!shapeLayer->containsLayer(mSphereLayer)){
@@ -57,6 +65,8 @@ void DrawSphere::initDraw(const osgEarth::GeoPoint &geoPos)
         shapeLayer->addLayer(mSphereLayer);
     }
 
+//-----------------------------------
+    mSphereLayer->addChild(mSphere);
     mSphereProperty->setSphere(mSphere, mapItem()->getMapSRS());
     setState(State::DRAWING);
     mCount++;
@@ -65,7 +75,8 @@ void DrawSphere::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawSphere::cancelDraw()
 {
     if(state() == State::DRAWING){
-        mSphereLayer->removeChild(mSphere);
+        mSphereLayer->getGroup()->removeChild(mSphere);
+
         mSphere = nullptr;
         mSphereProperty->setSphere(mSphere, mapItem()->getMapSRS());
         setState(State::READY);

@@ -35,12 +35,12 @@ void EllipseProperty::setLocationRelative(bool relative)
 
 
 
-void EllipseProperty::setStrokeWidth(const double &opacity)
+void EllipseProperty::setStrokeWidth(double width)
 {
 
-    Property::setStrokeWidth(opacity);
+    Property::setStrokeWidth(width);
     if(mEllipse)
-        mEllipse->setStrokeWidth(opacity);
+        mEllipse->setStrokeWidth(width);
 
 }
 
@@ -111,7 +111,6 @@ void EllipseProperty::setEllipse(Ellipse *newEllipse, const osgEarth::SpatialRef
 
     if(mEllipse){
         mEllipse->setColor(Utility::qColor2osgEarthColor(getFillColor()));
-
         mEllipse->setHeight(getHeight());
         mEllipse->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mEllipse->setStrokeWidth(getStrokeWidth());
