@@ -1,4 +1,4 @@
-#include "ellipseproperties.h"
+#include "ellipseproperty.h"
 #include <QtDebug>
 #include <QVector3D>
 #include <QQmlComponent>
@@ -8,7 +8,7 @@
 
 
 
-EllipseProperties::EllipseProperties(QQuickItem *parent):
+EllipseProperty::EllipseProperty(QQuickItem *parent):
     Property(parent)
 {
     setFillColorStatus  (true);
@@ -18,7 +18,7 @@ EllipseProperties::EllipseProperties(QQuickItem *parent):
     setClampStatus      (true);
 }
 
-void EllipseProperties::setFillColor(const QColor &color)
+void EllipseProperty::setFillColor(const QColor &color)
 {
 
     Property::setFillColor(color);
@@ -27,7 +27,7 @@ void EllipseProperties::setFillColor(const QColor &color)
 }
 
 
-void EllipseProperties::setLocationRelative(bool relative)
+void EllipseProperty::setLocationRelative(bool relative)
 {
 
     Property::setLocationRelative(relative);
@@ -35,7 +35,7 @@ void EllipseProperties::setLocationRelative(bool relative)
 
 
 
-void EllipseProperties::setStrokeWidth(const double &opacity)
+void EllipseProperty::setStrokeWidth(const double &opacity)
 {
 
     Property::setStrokeWidth(opacity);
@@ -44,7 +44,7 @@ void EllipseProperties::setStrokeWidth(const double &opacity)
 
 }
 
-void EllipseProperties::setStrokeColor(const QColor &color)
+void EllipseProperty::setStrokeColor(const QColor &color)
 {
 
     Property::setStrokeColor(color);
@@ -54,7 +54,7 @@ void EllipseProperties::setStrokeColor(const QColor &color)
     }
 
 }
-void EllipseProperties::setName(const QString &name)
+void EllipseProperty::setName(const QString &name)
 {
 
     Property::setName(name);
@@ -67,7 +67,7 @@ void EllipseProperties::setName(const QString &name)
 
 
 
-void EllipseProperties::setLocation(const QVector3D &status)
+void EllipseProperty::setLocation(const QVector3D &status)
 {
 
     Property::setLocation(status);
@@ -77,7 +77,7 @@ void EllipseProperties::setLocation(const QVector3D &status)
 
 }
 
-void EllipseProperties::setHeight(double height)
+void EllipseProperty::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -85,7 +85,7 @@ void EllipseProperties::setHeight(double height)
         mEllipse->setHeight(height);
 }
 
-void EllipseProperties::setClamp(int clamp)
+void EllipseProperty::setClamp(int clamp)
 {
 
     Property::setClamp(clamp);
@@ -97,12 +97,12 @@ void EllipseProperties::setClamp(int clamp)
 }
 
 
-Ellipse *EllipseProperties::getEllipse() const
+Ellipse *EllipseProperty::getEllipse() const
 {
     return mEllipse;
 }
 
-void EllipseProperties::setEllipse(Ellipse *newEllipse, const osgEarth::SpatialReference *srs)
+void EllipseProperty::setEllipse(Ellipse *newEllipse, const osgEarth::SpatialReference *srs)
 {
     mEllipse = newEllipse;
 
