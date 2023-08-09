@@ -1,6 +1,6 @@
 #ifndef DRAWIMAGE_H
 #define DRAWIMAGE_H
-#include "imageProperties.h"
+#include "imageProperty.h"
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
 #include <osg/ShapeDrawable>
@@ -19,7 +19,7 @@
 #include "drawShape.h"
 
 #define IMAGEOVERLAY "ImageOverlay"
-//class ImageProperties;
+//class ImageProperty;
 
 class DrawImage : public DrawShape
 {
@@ -40,7 +40,7 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mImgLayer;
     static int mCount;
     QQuickItem *mItem;
-    ImageProperties *mImageProperties{nullptr};
+    ImageProperty *mImageProperty{nullptr};
 
 
 private:

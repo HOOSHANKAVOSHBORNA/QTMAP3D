@@ -1,5 +1,5 @@
 #include "drawImage.h"
-#include "imageProperties.h"
+#include "imageProperty.h"
 #include <QFileDialog>
 
 
@@ -7,7 +7,7 @@ int DrawImage::mCount{0};
 
 DrawImage::DrawImage(QObject *parent): DrawShape(parent)
 {
-    qmlRegisterType<ImagePropertiesModel>("Crystal", 1, 0, "ImageProperties");
+    qmlRegisterType<ImagePropertyModel>("Crystal", 1, 0, "ImageProperty");
 }
 
 bool DrawImage::setup()
@@ -33,8 +33,8 @@ void DrawImage::onImageItemCheck(bool check)
     if (check) {
         loadImage();
         setState(State::READY);
-//        mImageProperties = new ImageProperties(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
-//        mImageProperties->show();
+//        mImageProperty = new ImageProperty(mImageOverlay, qmlEngine(), uiHandle(), mapItem());
+//        mImageProperty->show();
         mapItem()->addNode(iconNode());
 
     }
@@ -43,7 +43,7 @@ void DrawImage::onImageItemCheck(bool check)
         cancelDraw();
         setState(State::NONE);
         mImageOverlay = nullptr;
-//        mImageProperties->hide();
+//        mImageProperty->hide();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -61,12 +61,12 @@ void DrawImage::initDraw(const osgEarth::GeoPoint &geoPos)
         shapeLayer->addLayer(mImgLayer);
     }
 
-//    mImageProperties->setImage(mImageOverlay);
-//    mImageProperties->setLocation(mImageOverlay->getCenter());
-//    mImageProperties->setTL(mImageOverlay->getUpperLeft());
-//    mImageProperties->setTR(mImageOverlay->getUpperRight());
-//    mImageProperties->setBR(mImageOverlay->getLowerRight());
-//    mImageProperties->setBL(mImageOverlay->getLowerLeft());
+//    mImageProperty->setImage(mImageOverlay);
+//    mImageProperty->setLocation(mImageOverlay->getCenter());
+//    mImageProperty->setTL(mImageOverlay->getUpperLeft());
+//    mImageProperty->setTR(mImageOverlay->getUpperRight());
+//    mImageProperty->setBR(mImageOverlay->getLowerRight());
+//    mImageProperty->setBL(mImageOverlay->getLowerLeft());
     mImgLayer->addChild(mImageOverlay);
     setState(State::DRAWING);
     mCount++;
@@ -77,7 +77,7 @@ void DrawImage::cancelDraw()
     if(state() == State::DRAWING){
         mImgLayer->removeChild(mImageOverlay);
         mImageOverlay = nullptr;
-//        mImageProperties->setImage(mImageOverlay);
+//        mImageProperty->setImage(mImageOverlay);
         setState(State::READY);
         mCount--;
 
