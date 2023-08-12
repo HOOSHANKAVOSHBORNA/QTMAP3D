@@ -55,7 +55,7 @@ void DrawSphere::initDraw(const osgEarth::GeoPoint &geoPos)
     mSphere = new SphereNode();
     mSphere->setName(name.toStdString());
     mSphere->setRadius(mSphereProperty->getRadius());
-    mSphere->setCenter(osg::Vec3d(mSphereProperty->getCenter().x(),mSphereProperty->getCenter().y(),mSphereProperty->getCenter().z()));
+//    mSphere->setCenter(osg::Vec3d(mSphereProperty->getCenter().x(),mSphereProperty->getCenter().y(),mSphereProperty->getCenter().z()));
     mSphere->setPosition(geoPos);
     mSphere->setSphereShape(SphereNode::Sphere);
 
