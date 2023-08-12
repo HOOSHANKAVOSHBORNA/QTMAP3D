@@ -145,6 +145,7 @@ MapController {
         anchors.topMargin: 20
         anchors.rightMargin: 20
         anchors.right: parent.right
+        model: map.getSearchNodeModel()
     }
     //        id:mapItem
     Rectangle {
