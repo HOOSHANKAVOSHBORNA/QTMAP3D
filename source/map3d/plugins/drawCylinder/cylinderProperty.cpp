@@ -68,7 +68,7 @@ void CylinderProperty::setName(const QString &name)
 
 void CylinderProperty::setCenter(const QVector3D &center)
 {
-
+    Property::setCenter(center);
     osg::Vec3 temp(center.x(),center.y(),center.z());
 
     if (mCylinder)
