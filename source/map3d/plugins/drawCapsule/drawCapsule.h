@@ -5,12 +5,11 @@
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/PlaceNode>
 #include "drawShape.h"
-#include "capsule.h"
-#include "capsuleProperties.h"
 
 #define CAPSULE "Capsule"
 
-
+class Capsule;
+class CapsuleProperty;
 class DrawCapsule : public DrawShape
 {
     Q_OBJECT
@@ -29,7 +28,7 @@ private:
 
 private:
     osg::ref_ptr<Capsule> mCapsule{nullptr};
-    CapsuleProperties *mCapsuleProperties{nullptr};
+    CapsuleProperty *mCapsuleProperty{nullptr};
 //    osg::ref_ptr<CompositeAnnotationLayer> mCompositeCapsuleLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mCapsuleLayer = nullptr;
     static int mCount;

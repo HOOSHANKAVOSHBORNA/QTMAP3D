@@ -1,10 +1,11 @@
 #include "drawSphere.h"
-
-
-#include "mainwindow.h"
+#include "plugininterface.h"
+#include "mapItem.h"
 #include "utility.h"
-#include "compositeAnnotationLayer.h"
+#include <QQmlContext>
+
 int DrawSphere::mCount{0};
+
 DrawSphere::DrawSphere(QObject *parent): DrawShape(parent)
 {
 }
@@ -18,50 +19,32 @@ bool DrawSphere::setup()
     makeIconNode("../data/images/draw/sphere.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    mCompositeSphereLayer = new CompositeAnnotationLayer();
-    mCompositeSphereLayer->setName(SPHERE);
-
+    mSphereLayer = new ParenticAnnotationLayer();
+    mSphereLayer->setName(SPHERE);
     return true;
 }
 
 void DrawSphere::onSphereItemCheck(bool check)
 {
-    qmlRegisterType<SphereProperties>("Crystal", 1, 0, "CProperty");
-
     if (check) {
-        auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCompositeSphereLayer->getName()));
-        if(!layer){
-            mCompositeSphereLayer->clearLayers();
-        }
-        if(mCompositeSphereLayer->getNumLayers() <= 0){
-
-            //            mapItem()->getMapObject()->addLayer(mBoxLayer, shapeLayer);
-            shapeLayer->addLayer(mCompositeSphereLayer);
-        }
         setState(State::READY);
-        mapItem()->addNode(iconNode());
-        //mSphereProperties = new SphereProperties(mSphere, qmlEngine(), uiHandle(), mapItem());
-        //mSphereProperties->show();
-
-        createProperty();
-
-
-
-
+        mSphereProperty = new SphereProperty;
+        createProperty("Sphere", QVariant::fromValue<SphereProperty*>(mSphereProperty));
         mapItem()->addNode(iconNode());
 
     }
     else {
         if(state() == State::DRAWING)
             cancelDraw();
-        if(mCompositeSphereLayer->getNumLayers() <= 0){
+        //-----------------------------------------------------
+        if(mSphereLayer->getGroup()->getNumChildren() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
-            shapeLayer->removeLayer(mCompositeSphereLayer);
+            shapeLayer->removeLayer(mSphereLayer);
         }
+
         setState(State::NONE);
         mSphere = nullptr;
-        mSphereProperties->setProperty("visible", false);
+        hideProperty();
         mapItem()->removeNode(iconNode());
     }
 }
@@ -71,18 +54,20 @@ void DrawSphere::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "Sphere" + QString::number(mCount);
     mSphere = new SphereNode();
     mSphere->setName(name.toStdString());
-    mSphere->setRadius(mSphereProperties->getRadius());
-//    mSphere->setHeight(mSphereProperties->getHeight());
+    mSphere->setRadius(mSphereProperty->getRadius());
+    mSphere->setCenter(osg::Vec3d(mSphereProperty->getCenter().x(),mSphereProperty->getCenter().y(),mSphereProperty->getCenter().z()));
     mSphere->setPosition(geoPos);
-    //    mapItem()->getMapObject()->addNodeToLayer(mSphere, mSphereLayer);
-    //    mSphereProperties->setSphere(mSphere, );
+    mSphere->setSphereShape(SphereNode::Sphere);
 
-    mSphereLayer = new ParenticAnnotationLayer();
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mSphereLayer)){
+        mSphereLayer->clear();
+        shapeLayer->addLayer(mSphereLayer);
+    }
+
+//-----------------------------------
     mSphereLayer->addChild(mSphere);
-    mSphereLayer->setName(mSphere->getName());
-    mCompositeSphereLayer->addLayer(mSphereLayer);
-    mSphereProperties->setSphere(mSphere, mapItem()->getMapSRS());
-
+    mSphereProperty->setSphere(mSphere, mapItem()->getMapSRS());
     setState(State::DRAWING);
     mCount++;
 }
@@ -90,44 +75,27 @@ void DrawSphere::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawSphere::cancelDraw()
 {
     if(state() == State::DRAWING){
-        //        mapItem()->getMapObject()->removeNodeFromLayer(mSphere, mSphereLayer);
-        mCompositeSphereLayer->removeLayer(mSphereLayer);
+        mSphereLayer->getGroup()->removeChild(mSphere);
+
         mSphere = nullptr;
-        mSphereLayer = nullptr;
-        //mSphereProperties->setSphere(mSphere);
-        mSphereProperties->setSphere(mSphere, mapItem()->getMapSRS());
+        mSphereProperty->setSphere(mSphere, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
+
+        if(!mSphereLayer->hasNode()){
+            DrawShape::shapeLayer()->removeLayer(mSphereLayer);
+        }
     }
 }
 
 void DrawSphere::drawing(const osgEarth::GeoPoint &geoPos)
 {
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mSphereLayer)){
+        initDraw(geoPos);
+    }
+
     mSphere->setPosition(geoPos);
-    mSphereProperties->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+    mSphereProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }
 
-void DrawSphere::createProperty()
-{
-    QQmlComponent* comp = new QQmlComponent(qmlEngine());
-    connect(comp, &QQmlComponent::statusChanged, [comp, this](){
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
-        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-        mSphereProperties = static_cast<SphereProperties*>(item);
-
-        mainWindow()->addToRightContainer(mSphereProperties, "Sphere");
-    });
-
-
-    comp->loadUrl(QUrl("qrc:/Properties.qml"));
-}
-
-//bool DrawSphere::setup()
-//{
-//    auto toolboxItem =  new ToolboxItem{SPHERE, CATEGORY, "qrc:/resources/sphere.png", true};
-//    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawSphere::onSphereItemCheck);
-//    toolbox()->addItem(toolboxItem);
-
-//    makeIconNode("../data/images/draw/sphere.png");

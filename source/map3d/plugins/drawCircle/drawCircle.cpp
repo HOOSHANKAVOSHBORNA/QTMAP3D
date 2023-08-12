@@ -1,13 +1,13 @@
 #include "drawCircle.h"
 #include "utility.h"
-#include "mainwindow.h"
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 #include <QQmlContext>
 #include "plugininterface.h"
 #include "mapItem.h"
 #include <osgEarth/GLUtils>
-#include "osgEarth/ModelLayer"
+#include "circle.h"
+#include "circleproperty.h"
 
 int DrawCircle::mCount{0};
 DrawCircle::DrawCircle(QObject *parent): DrawShape(parent)
@@ -36,17 +36,9 @@ void DrawCircle::onCircleItemCheck(bool check)
 {
 
     if (check) {
-        auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCircleLayer->getName()));
-        if(!layer){
-            mCircleLayer->getGroup()->removeChildren(0, mCircleLayer->getGroup()->getNumChildren());
-        }
-        if(mCircleLayer->getGroup()->getNumChildren() <= 0){
-            shapeLayer->addLayer(mCircleLayer);
-        }
         setState(State::READY);
-        mCircleProperties = new CircleProperties();
-        createProperty("Circle", QVariant::fromValue<CircleProperties*>(mCircleProperties));
+        mCircleProperty = new CircleProperty();
+        createProperty("Circle", QVariant::fromValue<CircleProperty*>(mCircleProperty));
         mapItem()->addNode(iconNode());
 
     }
@@ -54,10 +46,6 @@ void DrawCircle::onCircleItemCheck(bool check)
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mCircleLayer->getGroup()->getNumChildren() <= 0){
-            auto shapeLayer = DrawShape::shapeLayer();
-            shapeLayer->removeLayer(mCircleLayer);
-        }
         setState(State::NONE);
         mCircle = nullptr;
         hideProperty();
@@ -75,29 +63,24 @@ void DrawCircle::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "Circle" + QString::number(mCount);
     mCircle = new Circle();
     mCircle->setName(name.toStdString());
-    mCircle->setRadius(mCircleProperties->getRadius());
-    mCircle->setCircleHeight(mCircleProperties->getHeight());
+    mCircle->setRadius(mCircleProperty->getRadius());
+    mCircle->setCircleHeight(mCircleProperty->getHeight());
     mCircle->setArcEnd(360);
     mCircle->setArcStart(0);
-    mCircle->setLineColor(Utility::qColor2osgEarthColor(mCircleProperties->getStroke()));
-    mCircle->setLineWidth(mCircleProperties->getStrokeWidth());
-    osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mCircleProperties->getClamp());
+    mCircle->setLineColor(Utility::qColor2osgEarthColor(mCircleProperty->getStrokeColor()));
+    mCircle->setLineWidth(mCircleProperty->getStrokeWidth());
+    osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mCircleProperty->getClamp());
     mCircle->setClamp(clampEnum);
 
     mCircle->setPosition(geoPos);
 
-    //    mapItem()->getMapObject()->addNodeToLayer(mCircle, mCircleLayer);
-    //    mCircleProperties->setCircle(mCircle);
+    if(!shapeLayer()->containsLayer(mCircleLayer)){
+        mCircleLayer->clear();
+        shapeLayer()->addLayer(mCircleLayer);
+    }
 
-
-    //    mCompositeCircleLayer->addLayer(mCircleLayer);
     mCircleLayer->addChild(mCircle);
-    mCircleLayer->setName(mCircle->getName());
-
-
-
-    mCircleProperties->setCircle(mCircle, mapItem()->getMapSRS());
-
+    mCircleProperty->setCircle(mCircle, mapItem()->getMapSRS());
     setState(State::DRAWING);
     mCount++;
 
@@ -110,16 +93,22 @@ void DrawCircle::cancelDraw()
     if(state() == State::DRAWING){
         mCircleLayer->getGroup()->removeChild(mCircle);
         mCircle = nullptr;
-        mCircleProperties->setCircle(mCircle, mapItem()->getMapSRS());
+        mCircleProperty->setCircle(mCircle, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
+        if(!mCircleLayer->hasNode())
+            DrawShape::shapeLayer()->removeLayer(mCircleLayer);
     }
 }
 
 void DrawCircle::drawing(const osgEarth::GeoPoint &geoPos)
 {
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mCircleLayer)){
+        initDraw(geoPos);
+    }
     mCircle->setPosition(geoPos);
-    mCircleProperties->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+    mCircleProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }
 
 

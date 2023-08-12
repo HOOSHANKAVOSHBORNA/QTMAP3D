@@ -4,6 +4,8 @@
 #include "compositeAnnotationLayer.h"
 #include "utility.h"
 #include <QQmlContext>
+#include "capsuleProperty.h"
+
 int DrawCapsule::mCount{0};
 
 DrawCapsule::DrawCapsule(QObject *parent): DrawShape(parent)
@@ -27,17 +29,9 @@ bool DrawCapsule::setup()
 void DrawCapsule::onCapsuleItemCheck(bool check)
 {
     if (check) {
-        auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mCapsuleLayer->getName()));
-        if(!layer){
-            mCapsuleLayer->getGroup()->removeChildren(0, mCapsuleLayer->getGroup()->getNumChildren());
-        }
-        if(mCapsuleLayer->getGroup()->getNumChildren() <= 0){
-            shapeLayer->addLayer(mCapsuleLayer);
-        }
         setState(State::READY);
-        mCapsuleProperties = new CapsuleProperties();
-        createProperty("Capsule", QVariant::fromValue<CapsuleProperties*>(mCapsuleProperties));
+        mCapsuleProperty = new CapsuleProperty();
+        createProperty("Capsule", QVariant::fromValue<CapsuleProperty*>(mCapsuleProperty));
         mapItem()->addNode(iconNode());
 
 
@@ -59,18 +53,22 @@ void DrawCapsule::onCapsuleItemCheck(bool check)
 
 void DrawCapsule::initDraw(const osgEarth::GeoPoint &geoPos)
 {
+
     QString name = "Capsule" + QString::number(mCount);
     mCapsule = new Capsule();
     mCapsule->setName(name.toStdString());
-    mCapsule->setRadius(mCapsuleProperties->getRadius());
-    mCapsule->setHeight(mCapsuleProperties->getHeight());
+    mCapsule->setRadius(mCapsuleProperty->getRadius());
+    mCapsule->setHeight(mCapsuleProperty->getHeight());
     mCapsule->setPosition(geoPos);
 
-//    mCapsuleLayer = new ParenticAnnotationLayer();
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mCapsuleLayer)){
+        mCapsuleLayer->clear();
+        shapeLayer->addLayer(mCapsuleLayer);
+    }
+
     mCapsuleLayer->addChild(mCapsule);
-    mCapsuleLayer->setName(mCapsule->getName());
-//    mCompositeCapsuleLayer->addLayer(mCapsuleLayer);
-    mCapsuleProperties->setCapsule(mCapsule, mapItem()->getMapSRS());
+    mCapsuleProperty->setCapsule(mCapsule, mapItem()->getMapSRS());
 
     setState(State::DRAWING);
     mCount++;
@@ -81,16 +79,22 @@ void DrawCapsule::cancelDraw()
     if(state() == State::DRAWING){
         mCapsuleLayer->getGroup()->removeChild(mCapsule);
         mCapsule = nullptr;
-        mCapsuleProperties->setCapsule(mCapsule, mapItem()->getMapSRS());
+        mCapsuleProperty->setCapsule(mCapsule, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
+
+        if(!mCapsuleLayer->hasNode())
+            DrawShape::shapeLayer()->removeLayer(mCapsuleLayer);
     }
-
-
 }
 
 void DrawCapsule::drawing(const osgEarth::GeoPoint &geoPos)
 {
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mCapsuleLayer)){
+        initDraw(geoPos);
+    }
+
     mCapsule->setPosition(geoPos);
-    mCapsuleProperties->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+    mCapsuleProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
 }

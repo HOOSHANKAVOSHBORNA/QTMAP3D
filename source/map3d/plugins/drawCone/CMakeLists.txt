@@ -17,7 +17,7 @@ add_library(drawCone SHARED
     drawCone.qrc
     drawCone.cpp
     cone.cpp
-    coneProperties.cpp
+    coneProperty.cpp
 )
 
 target_include_directories(drawCone PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

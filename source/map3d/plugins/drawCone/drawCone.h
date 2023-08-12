@@ -6,11 +6,10 @@
 #include <osgEarthAnnotation/PlaceNode>
 
 #include "drawShape.h"
-#include "cone.h"
-#include "coneProperties.h"
 
 #define CONE "Cone"
-
+class Cone;
+class ConeProperty;
 
 class DrawCone : public DrawShape
 {
@@ -30,7 +29,7 @@ private:
 
 private:
     osg::ref_ptr<Cone> mCone{nullptr};
-    ConeProperties *mConeProperties{nullptr};
+    ConeProperty *mConeProperty{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mConeLayer = nullptr;
     static int mCount;
     QQuickItem *mItem;

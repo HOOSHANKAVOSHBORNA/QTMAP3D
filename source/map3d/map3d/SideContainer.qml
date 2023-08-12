@@ -79,8 +79,13 @@ ColumnLayout{
     StackLayout {
         id: stackLayout
         Layout.fillHeight: true
-//                Layout.fillWidth: true
-//        Layout.preferredWidth: implicitWidth
+//<<<<<<< HEAD
+//        //        Layout.fillWidth: true
+////        Layout.preferredWidth: childrenRect ? childrenRect.width : 250
+//=======
+////                Layout.fillWidth: true
+////        Layout.preferredWidth: implicitWidth
+//>>>>>>> 2cb79cb5b89e6c836bd9e0255a24bacbd233a804
         currentIndex: tabBar.currentIndex
     }
     //------------------------------------------
