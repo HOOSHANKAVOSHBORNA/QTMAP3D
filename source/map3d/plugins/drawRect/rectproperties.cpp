@@ -19,7 +19,6 @@ RectProperties::RectProperties(QQuickItem *parent):
 
 void RectProperties::setFillColor(const QColor &color)
 {
-
     Property::setFillColor(color);
     if(mRect)
         mRect->setColor(Utility::qColor2osgEarthColor(color));
@@ -27,10 +26,8 @@ void RectProperties::setFillColor(const QColor &color)
 
 void RectProperties::setHeight(double height)
 {
-
     Property::setHeight(height);
     if(mRect)
-//        mRect->setHeight(osgEarth::Distance(height, osgEarth::Units::METERS));
         mRect->setHeight(height);
 }
 
@@ -38,13 +35,11 @@ void RectProperties::setWidth(double width)
 {
     Property::setWidth(width);
     if(mRect)
-//        mRect->setWidth(osgEarth::Distance(width, osgEarth::Units::METERS));
     mRect->setWidth(width);
 }
 
 void RectProperties::setStrokeWidth(double strockWidth)
 {
-
     Property::setStrokeWidth(strockWidth);
     if(mRect)
         mRect->setStrokeWidth(strockWidth);
@@ -58,12 +53,10 @@ void RectProperties::setStrokeColor(const QColor &color)
     {
         mRect->setStrokeColor(Utility::qColor2osgEarthColor(color));
     }
-
 }
 
 void RectProperties::setLocationRelative(bool relative)
 {
-
     Property::setLocationRelative(relative);
 }
 
@@ -76,8 +69,6 @@ void RectProperties::setLocation(const QVector3D &status)
     osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(status, mSRS);
     if (mRect)
         mRect->setPosition(temp);
-
-
 }
 
 void RectProperties::setName(const QString &name)
@@ -86,18 +77,15 @@ void RectProperties::setName(const QString &name)
     if(mRect)
     {
         mRect->setName(name.toStdString());
-
     }
 }
 
 void RectProperties::setClamp(int clamp)
 {
-
     Property::setClamp(clamp);
     if(mRect){
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(clamp);
         mRect->setClamp(clampEnum);
-
     }
 }
 
@@ -118,10 +106,7 @@ void RectProperties::setRect(Rect *newRect, const osgEarth::SpatialReference *sr
         mRect->setColor(Utility::qColor2osgEarthColor(getFillColor()));
         mRect->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mRect->setStrokeWidth(getStrokeWidth());
-
-//        mRect->setHeight(osgEarth::Distance(mRect->getHeight().getValue(), osgEarth::Units::METERS));
         mRect->setHeight(getHeight());
-//        mRect->setWidth(osgEarth::Distance(mRect->getWidth().getValue(), osgEarth::Units::METERS));
         mRect->setWidth(getWidth());
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
         mRect->setClamp(clampEnum);
