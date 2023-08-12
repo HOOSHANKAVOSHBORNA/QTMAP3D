@@ -42,12 +42,12 @@ MapController {
         height: 64
         keys: [ colorKey ]
 
-        Rectangle {
-            id: dropRectangle
+//        Rectangle {
+//            id: dropRectangle
 
-            anchors.fill: parent
-            color: dragMouseArea.drag.active ? (dragTarget.containsDrag ? "grey" : dragTarget.colorKey) : "transparent"
-        }
+//            anchors.fill: parent
+//            color: dragMouseArea.drag.active ? (dragTarget.containsDrag ? "grey" : dragTarget.colorKey) : "transparent"
+//        }
     }
     //    MouseArea {
     //        id: mouseArea
@@ -157,38 +157,38 @@ MapController {
         height: compassWidget.height+10
         width: compassWidget.width
         y: parent.height  - widgetsPositionFactor * (compassWidget.height + (widgetsMargins) + statusBar.height)
-        Drag.active: dragMouseArea.drag.active
+//        Drag.active: dragMouseArea.drag.active
         Drag.hotSpot.x: 32
         Drag.hotSpot.y: 32
-        states: State {
-            when: dragMouseArea.drag.active
-            AnchorChanges {
-                target: compass
-                anchors {
-                    verticalCenter: undefined
-                    horizontalCenter: undefined
-                }
-            }
-        }
-        MouseArea {
-            id: dragMouseArea
+//        states: State {
+//            when: dragMouseArea.drag.active
+//            AnchorChanges {
+//                target: compass
+//                anchors {
+//                    verticalCenter: undefined
+//                    horizontalCenter: undefined
+//                }
+//            }
+//        }
+//        MouseArea {
+//            id: dragMouseArea
 
-            width: 64
-            height: 64
-            anchors.fill: dragImg
+//            width: 64
+//            height: 64
+//            anchors.fill: dragImg
 
-            drag.target: compass
+//            drag.target: compass
 
-            onReleased: parent = compass.Drag.target !== null ? compass.Drag.target : rootItem
-        }
-        Image {
-            id: dragImg
-            source: "qrc:/Resources/drag.png"
-            anchors.top: parent.top
-            anchors.left: parent.left
-            width: 14
-            height: 14
-        }
+//            onReleased: parent = compass.Drag.target !== null ? compass.Drag.target : rootItem
+//        }
+//        Image {
+//            id: dragImg
+//            source: "qrc:/Resources/drag.png"
+//            anchors.top: parent.top
+//            anchors.left: parent.left
+//            width: 14
+//            height: 14
+//        }
 
         Compass{
             anchors.bottom: parent.bottom
