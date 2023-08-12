@@ -5,6 +5,7 @@
 #include <QTime>
 #include "mapItem.h"
 #include "searchNodeModel.h"
+Q_DECLARE_METATYPE(SearchNodeModel)
 
 class MapControllerItem : public MapItem
 {
@@ -24,7 +25,7 @@ class MapControllerItem : public MapItem
     Q_PROPERTY(bool rotateLeftButtonPressed   WRITE setrotateLeftButtonPressed  )
     Q_PROPERTY(bool rotateRightButtonPressed  WRITE setrotateRightButtonPressed )
 
-    Q_PROPERTY(SearchNodeModel searchNodeModel   READ getSearchNodeModel)
+//    Q_PROPERTY(SearchNodeModel searchNodeModel   READ getSearchNodeModel NOTIFY searchChange)
     Q_PROPERTY(QVector3D mapMouseGeoLocation READ mapMouseGeoLocation NOTIFY mouseLocationChanged)
     Q_PROPERTY(QVector3D mapMouseLocation READ mapMouseLocation NOTIFY mouseLocationChanged)
 
@@ -40,7 +41,6 @@ public:
     virtual void hoverMoveEvent(QHoverEvent *event) override;
     double headingAngle() const;
     double fps() const;
-    SearchNodeModel* getSearchNodeModel() const;
 public slots:
     void setFps(double fps);
     void home();
@@ -55,6 +55,7 @@ public slots:
     void setrotateDownButtonPressed(bool pressed);
     void setrotateLeftButtonPressed(bool pressed);
     void setrotateRightButtonPressed(bool pressed);
+    SearchNodeModel* getSearchNodeModel() const;
 
 signals:
     void fpsChanged();
@@ -62,6 +63,7 @@ signals:
     void mouseLocationChanged();
     void mousePointingLocationChanged(QVector3D location);
     void clicked();
+    void searchChange();
 private:
     void tickNavigation(double deltaTime);
     void calculateNavigationStep();
