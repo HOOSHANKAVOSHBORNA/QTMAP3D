@@ -622,20 +622,24 @@ void DefenseModelLayer::findSceneModels(osgViewer::Viewer *viewer)
 
 void DefenseModelLayer::initLayers()
 {
-    osgEarth::Annotation::AnnotationLayer *defenseModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    CompositeAnnotationLayer *defenseModelLayer = new CompositeAnnotationLayer();
     defenseModelLayer->setName(DEFENSE_LAYER);
+    mapItem()->getMapObject()->addLayer(defenseModelLayer);
 //    mapItem()->addLayer(defenseModelLayer);
 
-    osgEarth::Annotation::AnnotationLayer *systemsModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    ParenticAnnotationLayer *systemsModelLayer = new ParenticAnnotationLayer();
     systemsModelLayer->setName(SYSTEM_LAYER);
+    defenseModelLayer->addLayer(systemsModelLayer);
 //    mapItem()->addLayerToLayer(systemsModelLayer, DEFENSE_LAYER);
 
-    osgEarth::Annotation::AnnotationLayer *stationsModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    ParenticAnnotationLayer *stationsModelLayer = new ParenticAnnotationLayer();
     stationsModelLayer->setName(STATION_LAYER);
+    defenseModelLayer->addLayer(stationsModelLayer);
 //    mapItem()->addLayerToLayer(stationsModelLayer, DEFENSE_LAYER);
 
-    osgEarth::Annotation::AnnotationLayer *aircraftsModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    ParenticAnnotationLayer *aircraftsModelLayer = new ParenticAnnotationLayer();
     aircraftsModelLayer->setName(AIRCRAFT_LAYER);
+    defenseModelLayer->addLayer(aircraftsModelLayer);
 //    mapItem()->addLayerToLayer(aircraftsModelLayer, DEFENSE_LAYER);
 }
 

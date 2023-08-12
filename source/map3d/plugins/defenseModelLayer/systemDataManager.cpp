@@ -35,6 +35,11 @@ void SystemDataManager::upsertInfo(SystemInfo &systemInfo)
         //add to container---------------------------------------------------
         mSystemData[systemInfo.Number]->systemModelNode = systemModelNode;
         //add to map --------------------------------------------------------
+        CompositeAnnotationLayer *composit = dynamic_cast<CompositeAnnotationLayer*>(mDefenseModelLayer->mapItem()->getMapObject()->getLayerByName("Defense"));
+        if(composit){
+            ParenticAnnotationLayer *parentic = dynamic_cast<ParenticAnnotationLayer*>(composit->getLayerByName("System"));
+            parentic->addChild(systemModelNode);
+        }
 //        mDefenseModelLayer->mapItem()->addNodeToLayer(systemModelNode, SYSTEM_LAYER);
     }
     //update information-----------------------------------------------------

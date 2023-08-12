@@ -34,6 +34,11 @@ void StationDataManager::upsertInfo(StationInfo &stationInfo)
         //add to container---------------------------------------------------
         mStationData[stationInfo.Number]->modelNode = stationModelNode;
         //add to map --------------------------------------------------------
+        CompositeAnnotationLayer *composit = dynamic_cast<CompositeAnnotationLayer*>(mDefenseModelLayer->mapItem()->getMapObject()->getLayerByName("Defense"));
+        if(composit){
+            ParenticAnnotationLayer *parentic = dynamic_cast<ParenticAnnotationLayer*>(composit->getLayerByName("Station"));
+            parentic->addChild(stationModelNode);
+        }
 //        mDefenseModelLayer->mapItem()->addNodeToLayer(stationModelNode,STATION_LAYER);
     }
     //update information-----------------------------------------------------
