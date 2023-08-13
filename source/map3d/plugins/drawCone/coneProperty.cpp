@@ -47,7 +47,7 @@ void ConeProperty::setHeight(double height)
 
 void ConeProperty::setCenter(const QVector3D &center)
 {
-
+    Property::setCenter(center);
     osg::Vec3 temp(center.x(),center.y(),center.z());
 
     if (mCone)

@@ -18,6 +18,10 @@ public:
     void setStrokeWidth(float Width);
     float getStrokeWidth();
 
+    void setRadius(const osgEarth::Linear &radius);
+    const osgEarth::Linear &getRadius() const;
+
+
 private:
     MapItem* mMapItem{nullptr};
 };

@@ -36,9 +36,10 @@ void SphereProperty::setFillColor(const QColor &color)
 void SphereProperty::setCenter(const QVector3D &center)
 {
     Property::setCenter(center);
-    osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(center, mSRS);
+    osg::Vec3 temp(center.x(),center.y(),center.z());
+
     if (mSphere)
-        mSphere->setPosition(temp);
+        mSphere->setCenter(temp);
 }
 
 

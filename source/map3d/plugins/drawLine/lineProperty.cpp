@@ -37,6 +37,13 @@ void LineProperty::setStrokeColor(const QColor &color)
 
 }
 
+void LineProperty::setPointsVisible(bool visible)
+{
+    Property::setPointsVisible(visible);
+    if(mLineNode)
+        mLineNode->setPointVisible(visible);
+}
+
 void LineProperty::setPointsColor(const QColor &point)
 {
     Property::setPointsColor(point);
@@ -112,7 +119,86 @@ void LineProperty::setLine(LineNode *newLine)
         mLineNode->setShowBearing(getShowBearing());
         mLineNode->setShowSlope(getShowSlop());
         mLineNode->setTessellation(getTesselation());
-
         mLineNode->setShowDistance(getShowLen());
+        mLineNode->setShowAltitude(true);
+        mLineNode->setPointVisible(getPointsVisible());
+
+        setName(QString::fromStdString(mLineNode->getName()));
+    }
+}
+
+void LineProperty::setRuler(LineNode *newLine)
+{
+    setShowLenStatus(false);
+    setBearingStatus(false);
+    setShowSlopStatus(false);
+    setTesselationStatus(false);
+    setClampStatus(false);
+
+    mLineNode = newLine;
+    if(mLineNode){
+        mLineNode->setWidth(getStrokeWidth());
+        mLineNode->setColor(Utility::qColor2osgEarthColor(getStrokeColor()));
+        mLineNode->setPointColor(Utility::qColor2osgEarthColor(getPointsColor()));
+        mLineNode->setPointWidth(getPointsWidth());
+        mLineNode->setSmooth(getPointsSmooth());
+        mLineNode->setShowBearing(false);
+        mLineNode->setShowSlope(false);
+        mLineNode->setTessellation(getTesselation());
+        mLineNode->setShowDistance(getShowLen());
+        mLineNode->setPointVisible(getPointsVisible());
+
+        setName(QString::fromStdString(mLineNode->getName()));
+    }
+}
+
+void LineProperty::setMeasureHeight(LineNode *newLine)
+{
+    setShowLenStatus(false);
+    setBearingStatus(false);
+    setShowSlopStatus(false);
+    setTesselationStatus(false);
+    setClampStatus(false);
+
+    mLineNode = newLine;
+    if(mLineNode){
+        mLineNode->setWidth(getStrokeWidth());
+        mLineNode->setColor(Utility::qColor2osgEarthColor(getStrokeColor()));
+        mLineNode->setPointColor(Utility::qColor2osgEarthColor(getPointsColor()));
+        mLineNode->setPointWidth(getPointsWidth());
+        mLineNode->setSmooth(getPointsSmooth());
+        mLineNode->setShowBearing(false);
+        mLineNode->setShowSlope(false);
+        mLineNode->setTessellation(getTesselation());
+        mLineNode->setShowDistance(false);
+        mLineNode->setShowAltitude(true);
+        mLineNode->setPointVisible(getPointsVisible());
+
+        setName(QString::fromStdString(mLineNode->getName()));
+    }
+}
+
+void LineProperty::setMesureSlope(LineNode *newLine)
+{
+    setShowLenStatus(false);
+    setBearingStatus(false);
+    setShowSlopStatus(false);
+    setTesselationStatus(false);
+    setClampStatus(false);
+
+    mLineNode = newLine;
+    if(mLineNode){
+        mLineNode->setWidth(getStrokeWidth());
+        mLineNode->setColor(Utility::qColor2osgEarthColor(getStrokeColor()));
+        mLineNode->setPointColor(Utility::qColor2osgEarthColor(getPointsColor()));
+        mLineNode->setPointWidth(getPointsWidth());
+        mLineNode->setSmooth(getPointsSmooth());
+        mLineNode->setShowBearing(false);
+        mLineNode->setShowSlope(getShowSlop());
+        mLineNode->setTessellation(getTesselation());
+        mLineNode->setShowDistance(false);
+        mLineNode->setPointVisible(getPointsVisible());
+
+        setName(QString::fromStdString(mLineNode->getName()));
     }
 }

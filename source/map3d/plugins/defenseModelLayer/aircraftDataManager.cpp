@@ -61,8 +61,13 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 		aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
 		//add to container-----------------------------------------------------
-		mAircraftData[aircraftInfo.TN]->modelNode = aircraftModelNode;
+        mAircraftData[aircraftInfo.TN]->modelNode = aircraftModelNode;
 		//add to map ---------------------------------------------------------
+        CompositeAnnotationLayer *composit = dynamic_cast<CompositeAnnotationLayer*>(mDefenseModelLayer->mapItem()->getMapObject()->getLayerByName("Defense"));
+        if(composit){
+            ParenticAnnotationLayer *parentic = dynamic_cast<ParenticAnnotationLayer*>(composit->getLayerByName("Aircraft"));
+            parentic->addChild(aircraftModelNode);
+        }
 //        mDefenseModelLayer->mapItem()->addNodeToLayer(aircraftModelNode, AIRCRAFT_LAYER);
 	}
 	//update information------------------------------------------------------------------

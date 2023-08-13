@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Effects
 import "style"
 
 
@@ -18,6 +19,7 @@ Rectangle {
         RowLayout{
             Layout.fillHeight: true
             Layout.fillWidth: true
+            //            Layout.rightMargin: 100
             layoutDirection: Qt.LeftToRight
 
             //------------------------------search-----------------------//
@@ -37,7 +39,7 @@ Rectangle {
                 }
                 onClicked: {
                     textonFocus.running =true
-                    closeButton.visible = true
+                    closeRect.visible = true
                     txtid.focus = true
 
                 }
@@ -56,7 +58,7 @@ Rectangle {
                 placeholderText:  qsTr("Search By" )
                 color: "black"
                 font.family:closeButton.font.family
-//                    "Segoe UI"
+                //                    "Segoe UI"
                 font.pointSize: 10
                 clip: true
                 selectByMouse: true
@@ -92,33 +94,61 @@ Rectangle {
                     duration: 150
                     easing.type: Easing.OutQuint
                     onFinished: {
-                        closeButton.visible = false
+                        closeRect.visible = false
                     }
                 }
             }
             // close botton ------------------------------------------------------
-            Button {
-                id: closeButton
-                visible: false
-                Layout.fillHeight: true
-                width: 0
-                clip: true
-                background: Rectangle{
-                    color: "transparent"
-                }
+            Rectangle {
+//                MultiEffect{
+//                    source: closeRect
+//                    anchors.fill: closeRect
+//                    //                                autoPaddingEnabled: false
+//                    paddingRect: Qt.rect(0, 0 , 40, 40)
+//                    shadowBlur: 1.0
+//                    shadowColor: 'black'
+//                    shadowEnabled: true
+//                    shadowHorizontalOffset: -8
 
-                icon{
-                    source: "qrc:/Resources/close-icon.png"
-                    width: 26
-                    height: 26
-                }
-                onClicked: {
-                    textlostFocus.running =true
-                    txtid.clear()
+//                }
+                id: closeRect
+                color: "#edf3f9"
+                height: 40
+                width: 40
+                radius: 20
+                visible: false
+                Layout.leftMargin: -5
+                //                border.color: "black"
+                //                border.width: 1
+                Button {
+                    id: closeButton
+//                    visible: false
+                    width: 40
+                    clip: true
+                    background: Rectangle{
+                        color: "transparent"
+                        radius: 20
+                    }
+                    anchors.centerIn: parent
+
+                    icon{
+                        source: "qrc:/Resources/close-icon.png"
+                        width: 26
+                        height: 26
+
+                    }
+                    onClicked: {
+                        textlostFocus.running =true
+                        txtid.clear()
+                    }
+
                 }
             }
         }
+
     }
+
+
     //-------------------- search list ----------------------//
     Rectangle{
         id:dropDown

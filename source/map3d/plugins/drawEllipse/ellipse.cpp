@@ -1,7 +1,7 @@
 #include "ellipse.h"
-#include "osgEarth/ModelLayer"
-#include "osgEarth/Layer"
-#include "osgEarthAnnotation/AnnotationEditing"
+//#include "osgEarth/ModelLayer"
+//#include "osgEarth/Layer"
+//#include "osgEarthAnnotation/AnnotationEditing"
 
 Ellipse::Ellipse(){
     osgEarth::Symbology::Style ellipseStyle;

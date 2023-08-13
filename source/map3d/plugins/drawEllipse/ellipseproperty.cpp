@@ -16,6 +16,9 @@ EllipseProperty::EllipseProperty(QQuickItem *parent):
     setLocationStatus   (true);
     setHeightStatus     (true);
     setClampStatus      (true);
+    setArcStatus        (true);
+    setRadiusStatus     (true);
+    setWidthStatus      (true);
 }
 
 void EllipseProperty::setFillColor(const QColor &color)
@@ -63,6 +66,32 @@ void EllipseProperty::setName(const QString &name)
         mEllipse->setName(name.toStdString());
 
     }
+}
+
+void EllipseProperty::setArc(const QVector2D &arc)
+{
+    Property::setArc(arc);
+    if(mEllipse){
+        mEllipse->setArcStart(arc.x());
+        mEllipse->setArcEnd(arc.y());
+    }
+}
+
+void EllipseProperty::setRadius(double radius)
+{
+    Property::setRadius(radius);
+    if(mEllipse){
+        mEllipse->setRadiusMajor(radius);
+    }
+}
+
+void EllipseProperty::setWidth(double width)
+{
+    Property::setWidth(width);
+    if(mEllipse){
+        mEllipse->setRadiusMinor(width);
+    }
+
 }
 
 
@@ -118,5 +147,9 @@ void EllipseProperty::setEllipse(Ellipse *newEllipse, const osgEarth::SpatialRef
         mEllipse->setClamp(clampEnum);
         setName(QString::fromStdString(mEllipse->getName()));
         setLocation(Utility::osgEarthGeoPointToQvector3D(mEllipse->getPosition()));
+        mEllipse->setArcEnd(getArc().y());
+        mEllipse->setArcStart(getArc().x());
+        mEllipse->setRadiusMajor(getRadius());
+        mEllipse->setRadiusMinor(getWidth());
     }
 }
