@@ -407,7 +407,7 @@ void OSGRenderNode::mouseReleaseEvent(QMouseEvent* event)
     setKeyboardModifiers(event);
     int y = mOSGItem->height() - event->position().y();
     auto eventAdapter = mosgWinEmb->getEventQueue()->mouseButtonRelease(event->scenePosition().x() * mwindowScale,
-                                                    y * mwindowScale,
+                                                    event->position().y() * mwindowScale,
                                                      button);
     //--run event immediately---
     eventTraversal();

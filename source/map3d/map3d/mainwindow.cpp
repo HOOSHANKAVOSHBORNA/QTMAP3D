@@ -64,6 +64,13 @@ void MainWindow::removeFromRightContainer(QQuickItem *item)
                               );
 }
 
+void MainWindow::removeFromLeftContainer(QQuickItem *item)
+{
+    QMetaObject::invokeMethod(this, "removeFromLeftContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              );
+}
+
 void MainWindow::showListWindow()
 {
     if (mListWindow) {

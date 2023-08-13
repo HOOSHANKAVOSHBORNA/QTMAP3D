@@ -42,7 +42,7 @@ public:
 
     void iwSetReceiverObject(QObject *receiverObject);
     void iwShow(QQuickItem* item, QString title);
-    void iwHide();
+    void iwHide(QQuickItem *item);
     void iwUpdateData(QObject *receiverObject, const QString& infoJSON);
 
 

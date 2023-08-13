@@ -77,7 +77,7 @@ public:
 
     SystemInfoModel *getInfo() {return mInfoModel;}
     void setInfo(const System::Data *systemInfo);
-
+    void hide();
     void show();
 private:
     SystemInfoModel* mInfoModel;

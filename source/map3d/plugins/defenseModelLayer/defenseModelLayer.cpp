@@ -248,6 +248,18 @@ void DefenseModelLayer::modelNodeDeleted(DefenseModelNode *defenseModelNode)
         mOnMoveModelNode = nullptr;
 }
 
+ParenticAnnotationLayer *DefenseModelLayer::getModelLayer(QString modelName) const
+{
+    CompositeAnnotationLayer* defenceModelNode = dynamic_cast<CompositeAnnotationLayer*>(
+        mapItem()->getMapObject()->getLayerByName("Defense"));
+    if(defenceModelNode){
+        return dynamic_cast<ParenticAnnotationLayer*>(
+            defenceModelNode->getLayerByName(modelName));
+    }
+    return nullptr;
+}
+
+
 //void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 //{
 ////    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
@@ -540,9 +552,10 @@ bool DefenseModelLayer::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::
 
 DefenseModelNode *DefenseModelLayer::pick(float x, float y)
 {
+//    qDebug() << x << ", " << y;
     DefenseModelNode *defenseModelNode = nullptr;
     osgViewer::Viewer *viewer = mapItem()->getViewer();
-    //    float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
+//        float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
     osgUtil::LineSegmentIntersector::Intersections intersections;
     if (viewer->computeIntersections(x, /*height -*/ y, intersections))
     {

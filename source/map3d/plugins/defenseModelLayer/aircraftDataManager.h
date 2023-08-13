@@ -41,7 +41,8 @@ public:
     void clearAssignments(int tn);
     void removeAssignment(int tn, int systemNo);
     const QMap<int, Aircraft::Data*> &getAircraftsData() const;
-
+private:
+    ParenticAnnotationLayer* getParenticLayer();
 signals:
     void infoChanged(int tn);
     void removed(int tn);

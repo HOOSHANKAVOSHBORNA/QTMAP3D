@@ -158,7 +158,7 @@ AircraftInfoItem::AircraftInfoItem(DefenseModelLayer *defenseModelLayer, const A
 AircraftInfoItem::~AircraftInfoItem()
 {
     if(mUiHandle)
-        mUiHandle->iwHide();
+        mUiHandle->iwHide(mItem);
     delete mInfomodel;
     delete mItem;
 }
@@ -174,6 +174,12 @@ void AircraftInfoItem::updateAircraft()
 }
 void AircraftInfoItem::show() {
     mUiHandle->iwShow(mItem, QString::number(mInformation->info.TN));
+}
+
+void AircraftInfoItem::hide()
+{
+    if (mItem)
+        mUiHandle->iwHide(mItem);
 }
 
 void AircraftInfoItem::setTrackOff()
