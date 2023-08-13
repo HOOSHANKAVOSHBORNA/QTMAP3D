@@ -135,6 +135,7 @@ Rectangle {
             id:bt
             anchors.fill: parent
             model: rootItem.model
+
             delegate: Button
             {
                 Layout.fillWidth: true
@@ -144,7 +145,7 @@ Rectangle {
                 onClicked:{}
                 contentItem: Text
                 {
-                    text: displayText
+                    text: model.display
                     color:"black"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter

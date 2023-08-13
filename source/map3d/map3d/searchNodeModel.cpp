@@ -22,7 +22,7 @@ int SearchNodeModel::rowCount(const QModelIndex &parent) const
 QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
 {
     switch (role) {
-    case displayTextt:
+    case Qt::DisplayRole:
         return QVariant::fromValue<QString>(QString::fromStdString(mNodes[index.row()].get()->getName()));
         break;
     default:
@@ -31,12 +31,6 @@ QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
     };
 }
 
-QHash<int, QByteArray> SearchNodeModel::roleNames() const
-{
-    QHash<int, QByteArray> hash = QAbstractListModel::roleNames();
-    hash[displayTextt] = "displayText";
-    return hash;
-}
 
 void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
 {
@@ -80,3 +74,36 @@ void SearchNodeModel::init()
         }
     }
 }
+
+
+
+
+/////////////////////////////////////////////////////////////////ProxyModel///////////////////////////////
+SortFilterProxyModel::SortFilterProxyModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+    setDynamicSortFilter(true);
+}
+
+bool SortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+    if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive))
+        return true;
+    return false;
+}
+
+QString SortFilterProxyModel::filterString() const
+{
+    return mFilterString;
+}
+
+void SortFilterProxyModel::setFilterString(const QString &filterString)
+{
+    mFilterString = filterString;
+    invalidateFilter();
+}
+
+
+
+
