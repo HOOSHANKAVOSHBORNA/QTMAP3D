@@ -79,13 +79,13 @@ void SearchNodeModel::init()
 
 
 /////////////////////////////////////////////////////////////////ProxyModel///////////////////////////////
-SortFilterProxyModel::SortFilterProxyModel(QObject *parent)
+SearchNodeProxyModel::SearchNodeProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
     setDynamicSortFilter(true);
 }
 
-bool SortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+bool SearchNodeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
     if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive))
@@ -93,12 +93,12 @@ bool SortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &s
     return false;
 }
 
-QString SortFilterProxyModel::filterString() const
+QString SearchNodeProxyModel::filterString() const
 {
     return mFilterString;
 }
 
-void SortFilterProxyModel::setFilterString(const QString &filterString)
+void SearchNodeProxyModel::setFilterString(const QString &filterString)
 {
     mFilterString = filterString;
     invalidateFilter();

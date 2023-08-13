@@ -10,6 +10,8 @@ MapControllerItem::MapControllerItem():
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
     mSearchNodeModel = new SearchNodeModel(getMapObject());
+    mSearchNodeProxyModel = new SearchNodeProxyModel();
+    mSearchNodeProxyModel->setSourceModel(mSearchNodeModel);
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -145,6 +147,11 @@ void MapControllerItem::calculateFps()
             setFps(fps);
         }
     }
+}
+
+SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
+{
+    return mSearchNodeProxyModel;
 }
 
 QVector3D MapControllerItem::mapMouseGeoLocation() const

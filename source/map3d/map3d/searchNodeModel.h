@@ -34,11 +34,11 @@ private:
 
 
 
-class SortFilterProxyModel : public QSortFilterProxyModel
+class SearchNodeProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
-    explicit SortFilterProxyModel(QObject *parent = nullptr);
+    explicit SearchNodeProxyModel(QObject *parent = nullptr);
     QString filterString() const;
 public slots:
     void setFilterString(const QString &filterString);

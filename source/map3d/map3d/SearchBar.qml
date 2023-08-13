@@ -68,13 +68,16 @@ Rectangle {
                 background: Rectangle{
                     color: "#edf3f9"
                 }
+                onTextChanged: {
+                    rootItem.model.setFilterString(text)
+                }
 
 
 
                 onFocusChanged: {
 
                     if(!txtid.focus){
-                        closeButton.clicked()
+//                        closeButton.clicked()
                     }
                 }
 
