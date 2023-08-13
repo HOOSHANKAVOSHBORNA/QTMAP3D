@@ -28,7 +28,8 @@ class DrawLine: public DrawShape
     Q_OBJECT
     Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "drawLine.json")
     Q_INTERFACES(PluginInterface)
-
+public:
+    enum class Type{NONE, LINE, RULERR, HEIGHT, SLOPEE};
 public:
     explicit DrawLine(QWidget *parent = nullptr);
     bool setup() override;
@@ -39,13 +40,12 @@ private slots:
     void onHeightItemCheck(bool check);
     void onSlopeItemCheck(bool check);
 private:
+    void onItemChecked(Type type, bool check);
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void tempDrawing(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
 private:
-
-    enum class Type{NONE, LINE, RULERR, HEIGHT, SLOPEE};
     Type mType;
     osg::ref_ptr<LineNode> mLine{nullptr};
     MeasureHeight *mMeasureHeight{nullptr};

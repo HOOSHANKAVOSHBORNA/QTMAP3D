@@ -2,7 +2,6 @@
 #define LINEPROPERTIES_H
 
 #include "lineNode.h"
-#include "measureHeight.h"
 #include "property.h"
 #include <QAbstractListModel>
 #include <QObject>
@@ -11,6 +10,7 @@
 #include <QQuickItem>
 #include <QQmlEngine>
 
+
 class LineProperty: public Property
 {
     Q_OBJECT
@@ -18,6 +18,7 @@ public:
     LineProperty(QQuickItem *parent=nullptr);
     void setStrokeWidth(double width) override;
     void setStrokeColor(const QColor &color) override;
+    void setPointsVisible(bool visible)override;
     void setPointsColor(const QColor &point) override;
     void setPointsWidth(double point) override;
     void setPointsSmooth(bool point) override;
@@ -30,7 +31,10 @@ public:
 
     LineNode *getLine() const;
 
-    void setLine(LineNode *mLineNode) ;
+    void setLine(LineNode *newLine);
+    void setRuler(LineNode *newLine);
+    void setMesureSlope(LineNode *newLine);
+    void setMeasureHeight(LineNode *newLine);
 
 private:
     LineNode *mLineNode = nullptr;

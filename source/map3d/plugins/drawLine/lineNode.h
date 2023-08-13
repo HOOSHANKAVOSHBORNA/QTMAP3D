@@ -16,6 +16,7 @@ public:
     LineNode(MapItem *mapItem);
     ~LineNode();
     void addPoint(osgEarth::GeoPoint point);
+    osgEarth::GeoPoint getPoint(int index);
     void removePoint();
     void removeFirstPoint();
     void clear();
@@ -57,14 +58,15 @@ public:
     bool getShowSlope() const;
     void setShowSlope(bool showSlope);
 
+    bool getShowAltitude() const;
+    void setShowAltitude(bool showAltitude);
+
 private:
-
-    QImage *createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double lenght, double bearing, double slope);
-
     struct LabelData {
         QImage *qImage{nullptr};
         osg::ref_ptr<osg::Image> image;
-        double lenght;
+        double distance;
+        double altitude;
         double bearing;
         double slope;
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode;
@@ -103,6 +105,8 @@ private:
 
     };
 
+    QImage *createOrUpdateLabelImg(osg::ref_ptr<osg::Image>& image, LabelData &lableData);
+
 private:
     MapItem* mMapItem{nullptr};
     osgEarth::Symbology::Geometry* mLineGeometry{nullptr};
@@ -114,6 +118,7 @@ private:
     bool mShowBearing{false};
     bool mShowSlope{false};
     bool mShowDistance{false};
+    bool mShowAltitude{false};
 
     bool mPointVisible{false};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;

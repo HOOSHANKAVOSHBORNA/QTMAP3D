@@ -121,5 +121,4 @@ void TreeProxyModel::setFilterString(const QString &filterString)
 void TreeProxyModel::onItemClicked(const QModelIndex &current)
 {
     QModelIndex index = mapToSource(current);
-    //        static_cast<TreeModel*>(sourceModel())->onItemClicked(index);
 }
