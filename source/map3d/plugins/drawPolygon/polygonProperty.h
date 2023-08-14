@@ -7,16 +7,11 @@
 #include <QVector3D>
 #include "property.h"
 
-
-
-
-
-
-class PolygonProperties: public Property
+class PolygonProperty: public Property
 {
     Q_OBJECT
 public:
-    PolygonProperties(QQuickItem *parent=nullptr);
+    PolygonProperty(QQuickItem *parent=nullptr);
     void setFillColor(const QColor &color) override;
     void setStrokeWidth(const double &opacity);
     void setStrokeColor(const QColor &color)override;

@@ -5,9 +5,6 @@
 
 #include <osgEarth/GLUtils>
 
-#include "utility.h"
-#include "mainwindow.h"
-
 int DrawPolygon::mCount{0};
 DrawPolygon::DrawPolygon(QObject *parent): DrawShape(parent)
 {
@@ -33,31 +30,16 @@ bool DrawPolygon::setup()
 
 void DrawPolygon::onPolygonItemCheck(bool check)
 {
-
-
     if (check) {
-        auto shapeLayer = DrawShape::shapeLayer();
-        auto layer = shapeLayer->getLayerByName(QString::fromStdString(mPolygonLayer->getName()));
-        if(!layer){
-            mPolygonLayer->getGroup()->removeChildren(0, mPolygonLayer->getGroup()->getNumChildren());
-        }
-        if(mPolygonLayer->getGroup()->getNumChildren() <= 0){
-            shapeLayer->addLayer(mPolygonLayer);
-        }
         setState(State::READY);
-        mPolygonProperties = new PolygonProperties();
-        createProperty("Polygon", QVariant::fromValue<PolygonProperties*>(mPolygonProperties));
+        mPolygonProperty = new PolygonProperty();
+        createProperty("Polygon", QVariant::fromValue<PolygonProperty*>(mPolygonProperty));
         mapItem()->addNode(iconNode());
-
     }
     else {
         if(state() == State::DRAWING)
             cancelDraw();
 
-        if(mPolygonLayer->getGroup()->getNumChildren() <= 0){
-            auto shapeLayer = DrawShape::shapeLayer();
-            shapeLayer->removeLayer(mPolygonLayer);
-        }
         setState(State::NONE);
         mPolygon = nullptr;
         hideProperty();
@@ -70,16 +52,15 @@ void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)
     QString name = "Polygon" + QString::number(mCount);
     mPolygon = new Polygon(mapItem());
     mPolygon->setName(name.toStdString());
-    //    mPolygon->setRadius(mPolygonProperties->getRadius());
-    mPolygon->setHeight(mPolygonProperties->getHeight());
-    mPolygon->setLineColor(Utility::qColor2osgEarthColor(mPolygonProperties->getStrokeColor()));
-    mPolygon->setLineWidth(mPolygonProperties->getStrokeWidth());
-    osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mPolygonProperties->getClamp());
-    mPolygon->setClamp(clampEnum);
+    mPolygonProperty->setPolygon(mPolygon, mapItem()->getMapSRS());
 
+    auto shapeLayer = DrawShape::shapeLayer();
+    if(!shapeLayer->containsLayer(mPolygonLayer)){
+        mPolygonLayer->clear();
+        shapeLayer->addLayer(mPolygonLayer);
+    }
     mPolygonLayer->addChild(mPolygon);
-    mPolygonProperties->setPolygon(mPolygon, mapItem()->getMapSRS());
-    mPolygonLayer->setName(mPolygon->getName());
+
     setState(State::DRAWING);
 
     mCount++;
@@ -87,18 +68,31 @@ void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)
 
 }
 
+void DrawPolygon::tempDrawing(const osgEarth::GeoPoint &geoPos)
+{
+    if (mPolygon->getSize() > 1)
+    {
+        mPolygon->removePoint();
+    }
+    mPolygon->addPoint(geoPos);
+}
+
+void DrawPolygon::drawing(const osgEarth::GeoPoint &geoPos)
+{
+    mPolygon->addPoint(geoPos);
+}
+
 void DrawPolygon::cancelDraw()
 {
-
-
-
-
     if(state() == State::DRAWING){
-        mPolygonLayer->getGroup()->removeChild(mPolygon);
+        mPolygonLayer->removeChild(mPolygon);
         mPolygon = nullptr;
-        mPolygonProperties->setPolygon(mPolygon, mapItem()->getMapSRS());
+        mPolygonProperty->setPolygon(mPolygon, mapItem()->getMapSRS());
         setState(State::READY);
         mCount--;
+
+        if(!mPolygonLayer->hasNode())
+            DrawShape::shapeLayer()->removeLayer(mPolygonLayer);
     }
 }
 

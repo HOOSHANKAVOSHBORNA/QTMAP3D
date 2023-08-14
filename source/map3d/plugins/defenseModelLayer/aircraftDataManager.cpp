@@ -61,8 +61,11 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 		aircraftModelNode->setGeographicPosition(geographicPosition, aircraftInfo.Heading);
 
 		//add to container-----------------------------------------------------
-		mAircraftData[aircraftInfo.TN]->modelNode = aircraftModelNode;
+        mAircraftData[aircraftInfo.TN]->modelNode = aircraftModelNode;
 		//add to map ---------------------------------------------------------
+        ParenticAnnotationLayer *parentic = getParenticLayer();
+        parentic->addChild(aircraftModelNode);
+
 //        mDefenseModelLayer->mapItem()->addNodeToLayer(aircraftModelNode, AIRCRAFT_LAYER);
 	}
 	//update information------------------------------------------------------------------
@@ -74,6 +77,8 @@ void AircraftDataManager::upsertInfo(AircraftInfo &aircraftInfo)
 void AircraftDataManager::remove(int tn)
 {
     if(mAircraftData.contains(tn)){
+        ParenticAnnotationLayer *parentic = getParenticLayer();
+        parentic->removeChild(mAircraftData[tn]->modelNode);
 //        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mAircraftData[tn]->modelNode, AIRCRAFT_LAYER);
 		mDefenseModelLayer->modelNodeDeleted(mAircraftData[tn]->modelNode);
         delete mAircraftData[tn];
@@ -133,4 +138,14 @@ void AircraftDataManager::removeAssignment(int tn, int systemNo)
 const QMap<int, Aircraft::Data *> &AircraftDataManager::getAircraftsData() const
 {
     return mAircraftData;
+}
+
+ParenticAnnotationLayer *AircraftDataManager::getParenticLayer()
+{
+    CompositeAnnotationLayer *composit = dynamic_cast<CompositeAnnotationLayer*>(mDefenseModelLayer->mapItem()->getMapObject()->getLayerByName("Defense"));
+    if(composit){
+        ParenticAnnotationLayer *parentic = dynamic_cast<ParenticAnnotationLayer*>(composit->getLayerByName("Aircraft"));
+        return parentic;
+    }
+    return nullptr;
 }

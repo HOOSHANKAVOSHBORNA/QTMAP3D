@@ -63,6 +63,7 @@ public:
     void addToRightContainer(QQuickItem *item, QString title);
     void addToCenterCenterContainer(QQuickItem *item);
     void removeFromRightContainer(QQuickItem *item);
+    void removeFromLeftContainer(QQuickItem *item);
 
 public slots:
     void setListWindow(ListWindow *listWindow);

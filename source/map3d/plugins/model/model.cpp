@@ -230,6 +230,7 @@ void model::initModel(const osgEarth::GeoPoint &geoPos){
     mCurrentModel = mModelNode->getNewModel();
     mCurrentModel->setPosition(geoPos);
 //    mapItem()->getMapObject()->addNodeToLayer(mCurrentModel, mModelLayer);
+    mModelLayer->addChild(mCurrentModel);
     //    mBoxProperties->setBox(mBox);
 
     setState(State::MOVING);
@@ -243,7 +244,7 @@ void model::moving(const osgEarth::GeoPoint &geoPos){
 
     auto moveableModell = dynamic_cast<MoveableModel*>(mCurrentModel.get());
     if (moveableModell){
-        moveableModell->moveTo(geoPos,80);
+        moveableModell->moveTo(geoPos,10);
     }
 }
 

@@ -10,34 +10,38 @@ class Polygon : public osgEarth::Annotation::FeatureNode
 public:
     Polygon(MapItem *mapItem);
     ~Polygon();
-    double getSize();
-    void setLineColor(osgEarth::Color color);
-    osgEarth::Color getLineColor();
-    void setFillColor(osgEarth::Color color);
-    osgEarth::Color getFillColor();
-    void setLineWidth(float width);
-    float getLineWidth();
-    void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
-    void addPoints(osgEarth::GeoPoint point);
+    void addPoint(osgEarth::GeoPoint point);
     void clearPoints();
     void removePoint();
+    double getSize()const;
+
+    void setFillColor(osgEarth::Color color);
+    osgEarth::Color getFillColor() const;
+
+    void setStrokeColor(osgEarth::Color color);
+    osgEarth::Color getStrokeColor() const;
+    void setStrokeWidth(float width);
+    float getStrokeWidth() const;
+
     void setHeight(float height);
-    float getHeight();
+    float getHeight() const;
+
+    osgEarth::Symbology::AltitudeSymbol::Clamping getClamp() const;
+    void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
+
+    bool getShowArea() const;
+    void setShowArea(bool newShowArea);
+    bool getShowVolume() const;
+    void setShowVolume(bool newShowVolume);
+
+private:
     double CalculateAreaOfPolygon();
     double CalculateAreaOfPolygon_I();
-
-    bool showArea() const;
-    void setShowArea(bool newShowArea);
-
-    bool showVolume() const;
-    void setShowVolume(bool newShowVolume);
+    void createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double area);
 
 private:
     MapItem* mMapItem{nullptr};
     osg::ref_ptr<osgEarth::Features::Geometry> mPolygonGeom;
-
-private:
-    void createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double area);
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mPlaceNode;
 
 //    struct LabelData {
@@ -49,8 +53,14 @@ private:
 //    };
     //osg::ref_ptr<osg::Group> mLabelGroup;
     //std::vector<LabelData> mVecLabelData;
+    osgEarth::Color mFillColor{osgEarth::Color::Green};
+    osgEarth::Color mStrokeColor{osgEarth::Color::Green};
+    float mStrokeWidth{5};
+    float mHeight{0};
+    osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;
     bool mShowArea{false};
     bool mShowVolume{false};
+
     static constexpr int LABEL_IMAGE_WIDTH = 125;
     static constexpr int LABEL_IMAGE_HEIGHT = 30;
     int mCount{0};

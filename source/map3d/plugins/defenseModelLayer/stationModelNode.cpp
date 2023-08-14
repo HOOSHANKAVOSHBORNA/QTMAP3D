@@ -166,7 +166,7 @@ StationModelNode::StationModelNode(DefenseModelLayer *defenseModelLayer, Station
 
 
     mVisiblePolygon = new Polygon(mDefenseModelLayer->mapItem());
-	mVisiblePolygon->setLineColor(osg::Vec4(1.0, 0.0, 0.0, 0.3f));
+    mVisiblePolygon->setStrokeColor(osg::Vec4(1.0, 0.0, 0.0, 0.3f));
 	mVisiblePolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mVisiblePolygon->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 }
@@ -235,6 +235,8 @@ void StationModelNode::setSelectionMode(DefenseModelNode::SelectionMode sm)
 //		mDefenseModelLayer->mapItem()->untrackNode(getGeoTransform());
 //        onRangeButtonToggled(val);
 //        onVisibleButtonToggled(val);
+        if (mStationInformation)
+            mStationInformation->hide();
 	}
 }
 
@@ -250,23 +252,25 @@ void StationModelNode::onRangeButtonToggled(bool check)
         mRangeCircle->setPosition(getPosition());
 		mRangeCircle->setRadius(osgEarth::Distance(mData->info.Radius, osgEarth::Units::METERS));
 
-        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATION_LAYER);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->addChild(mRangeCircle);
-            }
-        }
+//        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATION_LAYER);
+//        if (layer) {
+//            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+//            if (group) {
+//                group->addChild(mRangeCircle);
+//            }
+//        }
+        mDefenseModelLayer->getModelLayer(STATION_LAYER)->addChild(mRangeCircle);
     }
     else
     {
-        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATION_LAYER);
-        if (layer) {
-            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-            if (group) {
-                group->removeChild(mRangeCircle);
-            }
-        }
+//        auto layer = mDefenseModelLayer->mapItem()->getMapNode()->getMap()->getLayerByName(STATION_LAYER);
+//        if (layer) {
+//            osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
+//            if (group) {
+//                group->removeChild(mRangeCircle);
+//            }
+//        }
+        mDefenseModelLayer->getModelLayer(STATION_LAYER)->removeChild(mRangeCircle);
     }
 }
 
@@ -283,23 +287,24 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
 		double radius = mData->info.Radius;
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
         //geoPoint.z() = 0;
-        mVisiblePolygon->addPoints(geoPoint);
+        mVisiblePolygon->addPoint(geoPoint);
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() - radius*2/3, worldPosition.y() + radius*2/3, worldPosition.z()));
         //geoPoint.z() = 0;
-        mVisiblePolygon->addPoints(geoPoint);
+        mVisiblePolygon->addPoint(geoPoint);
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() + radius*2/3, worldPosition.y() + radius*2/3, worldPosition.z()));
         //geoPoint.z() = 0;
-        mVisiblePolygon->addPoints(geoPoint);
+        mVisiblePolygon->addPoint(geoPoint);
         geoPoint.fromWorld(getPosition().getSRS(), osg::Vec3d(worldPosition.x() + radius*2/3, worldPosition.y() - radius*2/3, worldPosition.z()));
         //geoPoint.z() = 0;
-        mVisiblePolygon->addPoints(geoPoint);
+        mVisiblePolygon->addPoint(geoPoint);
         }
 
-
+        mDefenseModelLayer->getModelLayer(STATION_LAYER)->addChild(mVisiblePolygon);
 //        mDefenseModelLayer->mapItem()->addNodeToLayer(mVisiblePolygon, STATION_LAYER);
     }
     else
     {
+        mDefenseModelLayer->getModelLayer(STATION_LAYER)->removeChild(mVisiblePolygon);
 //        mDefenseModelLayer->mapItem()->removeNodeFromLayer(mVisiblePolygon, STATION_LAYER);
     }
 }

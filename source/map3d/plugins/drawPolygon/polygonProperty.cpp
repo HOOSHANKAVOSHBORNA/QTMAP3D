@@ -1,4 +1,4 @@
-#include "polygonproperties.h"
+#include "polygonProperty.h"
 #include <QtDebug>
 #include <QVector3D>
 #include <QQmlComponent>
@@ -6,17 +6,16 @@
 #include "property.h"
 #include "utility.h"
 
-PolygonProperties::PolygonProperties(QQuickItem *parent):
+PolygonProperty::PolygonProperty(QQuickItem *parent):
     Property(parent)
 {
     setFillColorStatus  (true);
     setStrokeStatus     (true);
     setHeightStatus     (true);
     setClampStatus      (true);
-    setPointsStatus     (true);
 }
 
-void PolygonProperties::setFillColor(const QColor &color)
+void PolygonProperty::setFillColor(const QColor &color)
 {
 
     Property::setFillColor(color);
@@ -25,38 +24,36 @@ void PolygonProperties::setFillColor(const QColor &color)
 }
 
 
-void PolygonProperties::setName(const QString &name)
+void PolygonProperty::setName(const QString &name)
 {
 
     Property::setName(name);
     if(mPolygon)
-    {
         mPolygon->setName(name.toStdString());
 
-    }
 }
 
-void PolygonProperties::setStrokeWidth(const double &opacity)
+void PolygonProperty::setStrokeWidth(const double &opacity)
 {
 
     Property::setStrokeWidth(opacity);
     if(mPolygon)
-        mPolygon->setLineWidth(opacity);
+        mPolygon->setStrokeWidth(opacity);
 
 }
 
-void PolygonProperties::setStrokeColor(const QColor &color)
+void PolygonProperty::setStrokeColor(const QColor &color)
 {
 
     Property::setStrokeColor(color);
     if(mPolygon)
     {
-        mPolygon->setLineColor(Utility::qColor2osgEarthColor(color));
+        mPolygon->setStrokeColor(Utility::qColor2osgEarthColor(color));
     }
 
 }
 
-void PolygonProperties::setHeight(double height)
+void PolygonProperty::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -64,38 +61,37 @@ void PolygonProperties::setHeight(double height)
         mPolygon->setHeight(height);
 }
 
-void PolygonProperties::setClamp(int clamp)
+void PolygonProperty::setClamp(int clamp)
 {
 
     Property::setClamp(clamp);
     if(mPolygon){
+//        qDebug()<<"clamp:"<<clamp;
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(clamp);
+//        qDebug()<<"clampEnum:"<<clampEnum;
         mPolygon->setClamp(clampEnum);
 
     }
 }
 
 
-Polygon *PolygonProperties::getPolygon() const
+Polygon *PolygonProperty::getPolygon() const
 {
     return mPolygon;
 }
 
-void PolygonProperties::setPolygon(Polygon *newPolygon, const osgEarth::SpatialReference *srs)
+void PolygonProperty::setPolygon(Polygon *newPolygon, const osgEarth::SpatialReference *srs)
 {
     mPolygon = newPolygon;
-
-
     mSRS = srs;
 
     if(mPolygon){
         mPolygon->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mPolygon->setHeight(getHeight());
-        mPolygon->setLineColor(Utility::qColor2osgEarthColor(getStrokeColor()));
-        mPolygon->setLineWidth(getStrokeWidth());
+        mPolygon->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
+        mPolygon->setStrokeWidth(getStrokeWidth());
         setName(QString::fromStdString(mPolygon->getName()));
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
         mPolygon->setClamp(clampEnum);
-
     }
 }

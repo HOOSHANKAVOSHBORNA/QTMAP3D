@@ -41,6 +41,7 @@ public:
     virtual void hoverMoveEvent(QHoverEvent *event) override;
     double headingAngle() const;
     double fps() const;
+
 public slots:
     void setFps(double fps);
     void home();
@@ -55,7 +56,7 @@ public slots:
     void setrotateDownButtonPressed(bool pressed);
     void setrotateLeftButtonPressed(bool pressed);
     void setrotateRightButtonPressed(bool pressed);
-    SearchNodeModel* getSearchNodeModel() const;
+    SearchNodeProxyModel *searchNodeProxyModel() const;
 
 signals:
     void fpsChanged();
@@ -86,7 +87,7 @@ private:
     bool mMousePressOusideClickProcess = false;
     bool mInClickProcess = false;
     double mFps = 0.0f;
-    SearchNodeModel *mSearchNodeModel{nullptr};
+    SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
 };
 
 #endif // MAPCONTROLLERITEM_H

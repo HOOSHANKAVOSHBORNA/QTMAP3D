@@ -96,3 +96,8 @@ void StationInformtion::show()
 {
     mDefenseModelLayer->uiHandle()->iwShow(mItem, QString::number(mData->info.Number));
 }
+
+void StationInformtion::hide()
+{
+    mDefenseModelLayer->uiHandle()->iwHide(mItem);
+}

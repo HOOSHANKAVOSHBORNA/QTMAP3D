@@ -75,6 +75,7 @@ public:
     AircraftInfoModel* getInfo();
     void updateAircraft();
     void show();
+    void hide();
     void setTrackOff();
 
 private:

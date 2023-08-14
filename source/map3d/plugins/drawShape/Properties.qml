@@ -858,6 +858,12 @@ Item {
                             rootItem.model.showLen = showLenghtValue.checked
                         }
                     }
+                    Binding{
+                        target: showLenghtValue
+                        property: "checked"
+                        value: rootItem.model ? rootItem.model.showLen: 0
+                        delayed: true
+                    }
                 }
                 ////------------------------ Bearing -------------------- ///////////////
                 Rectangle{
@@ -884,8 +890,14 @@ Item {
                         height: valHeight
                         checked: false
                         onToggled: function() {
-                            rootItem.model.bearing = bearingValue.checked
+                            rootItem.model.showBearing = bearingValue.checked
                         }
+                    }
+                    Binding{
+                        target: bearingValue
+                        property: "checked"
+                        value: rootItem.model ? rootItem.model.showBearing: 0
+                        delayed: true
                     }
                 }
 
@@ -916,6 +928,12 @@ Item {
                         onToggled: function() {
                             rootItem.model.showSlop  = slopeValue.checked
                         }
+                    }
+                    Binding{
+                        target: slopeValue
+                        property: "checked"
+                        value: rootItem.model ? rootItem.model.showSlop: 0
+                        delayed: true
                     }
                 }
                 ////------------------------ Points  -------------------- ///////////////
@@ -954,6 +972,12 @@ Item {
                             onToggled: function() {
                                 rootItem.model.pointsVisible  = pointVisible.checked
                             }
+                        }
+                        Binding{
+                            target: pointVisible
+                            property: "checked"
+                            value: rootItem.model ? rootItem.model.pointsVisible: 0
+                            delayed: true
                         }
                     }
                     GridLayout{
@@ -1055,6 +1079,12 @@ Item {
                             onToggled: function() {
                                 rootItem.model.pointsSmooth  = pointSmoothValue.checked
                             }
+                        }
+                        Binding{
+                            target: pointSmoothValue
+                            property: "checked"
+                            value: rootItem.model ? rootItem.model.pointsSmooth: 0
+                            delayed: true
                         }
                     }
                 }

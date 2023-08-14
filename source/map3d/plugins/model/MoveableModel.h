@@ -3,15 +3,8 @@
 
 #include "simpleModelNode.h"
 #include <osgAnimation/Keyframe>
+#include "lineNode.h"
 
-
-
-
-//class ModelAnimationPathCallback: public osg::AnimationPathCallback
-//{
-//public:
-//    void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
-//};
 
 class MoveableModel : public simpleModelNode
 {
@@ -27,6 +20,17 @@ private:
     double mSpeed;
     osg::ref_ptr<osg::AnimationPathCallback> mMoveAnimationPathCallback;
 
+
+};
+
+class ModelAnimationPathCallback: public osg::AnimationPathCallback
+{
+private:
+    MoveableModel* mMoveableModel;
+    MapItem* mMapItem;
+public:
+    void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
+    ModelAnimationPathCallback(MapItem* mapControler, MoveableModel* moveableModel);
 };
 
 #endif // MOVEABLEMODEL_H
