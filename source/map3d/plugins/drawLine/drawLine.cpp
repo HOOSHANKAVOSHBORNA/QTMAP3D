@@ -66,18 +66,21 @@ bool DrawLine::setup()
 
 void DrawLine::onLineItemCheck(bool check)
 {
-    makeIconNode("../data/images/draw/line.png");
+    if (check)
+        makeIconNode("../data/images/draw/line.png");
     onItemChecked(Type::LINE, check);
 }
 void DrawLine::onRulerItemCheck(bool check)
 {
-    makeIconNode("../data/images/draw/ruler.png");
+    if (check)
+        makeIconNode("../data/images/draw/ruler.png");
     onItemChecked(Type::RULERR, check);
 }
 
 void DrawLine::onHeightItemCheck(bool check)
 {
-    makeIconNode("../data/images/draw/height.png");
+    if (check)
+        makeIconNode("../data/images/draw/height.png");
     onItemChecked(Type::HEIGHT, check);
 }
 
@@ -221,6 +224,8 @@ void DrawLine::cancelDraw()
             break;
         case Type::SLOPEE:
             mSlopeLayer->removeChild(mLine);
+            break;
+        case Type::NONE:
             break;
         }
         mLine = nullptr;

@@ -4,7 +4,7 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include "drawShape.h"
-#include "polygonproperties.h"
+#include "polygonProperty.h"
 #include "polygon.h"
 
 #define POLYGON "Polygon"
@@ -22,16 +22,16 @@ private slots:
     void onPolygonItemCheck (bool check);
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
-
+    void tempDrawing(const osgEarth::GeoPoint &geoPos) override;
+    void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-
 
 private:
     osg::ref_ptr<Polygon> mPolygon{nullptr};
-    PolygonProperties *mPolygonProperties{nullptr};
+    PolygonProperty *mPolygonProperty{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mPolygonLayer;
     static int mCount;
-    QQuickItem *mItem;
+//    QQuickItem *mItem;
 
 
 };

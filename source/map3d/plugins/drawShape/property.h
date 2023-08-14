@@ -244,8 +244,8 @@ private:
 
     // ----------  stroke //
     bool mStrokeStatus{false};
-    QColor mStroke = QColor(0, 0, 250, 255);
-    double  mStrokeWidth{10};
+    QColor mStroke = QColor(0, 250, 0, 255);
+    double  mStrokeWidth{7};
 
     // ---------- Location- //
     bool mLocationStatus{false};
@@ -287,7 +287,7 @@ private:
     // ---------- tesselation //
 
     bool mTesselationStatus{false};
-    double mTesselation;
+    double mTesselation{1};
 
     //----------- clamp  //
 
@@ -315,7 +315,7 @@ private:
 
     bool mPointsStatus{false};
     bool mPointsVisible{false};
-    QColor mPointsColor{QColor(0, 0, 250, 255)};
+    QColor mPointsColor{QColor(250, 0, 0, 255)};
     bool mPointsSmooth{true};
     double mPointsWidth{10};
 

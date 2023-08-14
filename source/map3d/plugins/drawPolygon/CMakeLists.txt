@@ -19,8 +19,8 @@ polygon.cpp
 polygon.h
 DrawPolygon.qrc
 drawPolygon.json
-polygonproperties.cpp
-polygonproperties.h
+polygonProperty.cpp
+polygonProperty.h
 )
 
 target_include_directories(drawPolygon PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
