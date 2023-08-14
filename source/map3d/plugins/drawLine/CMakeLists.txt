@@ -36,6 +36,7 @@ target_link_libraries(drawLine PRIVATE drawShape)
 
 
 
+
 add_custom_command(TARGET drawLine POST_BUILD
     COMMAND mkdir ARGS "-p" "${PLUGINS_OUTPUT_DIR}"
     COMMAND cp ARGS "${CMAKE_CURRENT_BINARY_DIR}/libdrawLine.so" "${PLUGINS_OUTPUT_DIR}")
