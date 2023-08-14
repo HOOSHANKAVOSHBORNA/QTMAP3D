@@ -56,7 +56,6 @@ public slots:
     void setrotateDownButtonPressed(bool pressed);
     void setrotateLeftButtonPressed(bool pressed);
     void setrotateRightButtonPressed(bool pressed);
-    SearchNodeModel* getSearchNodeModel() const;
     SearchNodeProxyModel *searchNodeProxyModel() const;
 
 signals:
@@ -88,7 +87,6 @@ private:
     bool mMousePressOusideClickProcess = false;
     bool mInClickProcess = false;
     double mFps = 0.0f;
-    SearchNodeModel *mSearchNodeModel{nullptr};
     SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
 };
 

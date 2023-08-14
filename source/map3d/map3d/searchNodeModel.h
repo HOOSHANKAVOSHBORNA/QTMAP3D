@@ -5,8 +5,8 @@
 #include <QObject>
 #include <osgEarthAnnotation/AnnotationNode>
 #include <QSortFilterProxyModel>
-#include "mapObject.h"
-
+#include "mapItem.h"
+Q_DECLARE_METATYPE(QModelIndex)
 class SearchNodeModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -14,19 +14,20 @@ public:
 //    enum myRoles {
 //        displayTextt = Qt::UserRole + 100
 //    };
-    SearchNodeModel(MapObject *mapObject, QObject *parent = nullptr);
+    SearchNodeModel(MapItem *mapItem, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 //    QHash<int, QByteArray> roleNames() const override;
-    void addNode(osg::Node *node,osgEarth::Layer *layer) ;
-    void removeNode( osg::Node *node,osgEarth::Layer *layer) ;
+    void addNode(osg::Node *node,osgEarth::Layer *layer);
+    void removeNode( osg::Node *node,osgEarth::Layer *layer);
+    void onNodeClicked(const QModelIndex &current);
 
 
 private:
     void init();
 private:
-    MapObject *mMapObject{nullptr};
+    MapItem *mMapItem{nullptr};
     std::vector<osg::ref_ptr<osg::Node>> mNodes;
 };
 
@@ -42,6 +43,7 @@ public:
     QString filterString() const;
 public slots:
     void setFilterString(const QString &filterString);
+    void onNodeClicked(const int current);
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
