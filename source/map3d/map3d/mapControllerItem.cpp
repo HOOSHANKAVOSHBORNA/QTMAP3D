@@ -9,9 +9,8 @@ MapControllerItem::MapControllerItem():
 {
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-    mSearchNodeModel = new SearchNodeModel(getMapObject());
     mSearchNodeProxyModel = new SearchNodeProxyModel();
-    mSearchNodeProxyModel->setSourceModel(mSearchNodeModel);
+    mSearchNodeProxyModel->setSourceModel(new SearchNodeModel(this));
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -247,11 +246,6 @@ double MapControllerItem::headingAngle() const
 double MapControllerItem::fps() const
 {
     return mFps;
-}
-
-SearchNodeModel *MapControllerItem::getSearchNodeModel() const
-{
-    return mSearchNodeModel;
 }
 
 void MapControllerItem::setFps(double fps)

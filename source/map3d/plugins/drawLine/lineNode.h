@@ -70,6 +70,7 @@ private:
         double bearing;
         double slope;
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode;
+
         //		LabelData() = default;
         //		LabelData(const LabelData& source){
         //			qImage = source.qImage;

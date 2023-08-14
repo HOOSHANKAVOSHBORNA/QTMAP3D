@@ -3,14 +3,15 @@
 
 #include <osgEarth/ModelLayer>
 #include <osg/Node>
+#include <osgEarthAnnotation/GeoPositionNode>
 
-SearchNodeModel::SearchNodeModel(MapObject *mapObject, QObject *parent):
-    QAbstractListModel(parent), mMapObject(mapObject)
+SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent):
+    QAbstractListModel(parent), mMapItem(mapItem)
 {
 //    init();
 
-    connect(mMapObject, &MapObject::nodeToLayerAdded, this , &SearchNodeModel::addNode);
-    connect(mMapObject, &MapObject::nodeFromLayerRemoved,  this , &SearchNodeModel::removeNode);
+    connect(mMapItem->getMapObject(), &MapObject::nodeToLayerAdded, this , &SearchNodeModel::addNode);
+    connect(mMapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,  this , &SearchNodeModel::removeNode);
 }
 
 int SearchNodeModel::rowCount(const QModelIndex &parent) const
@@ -54,10 +55,19 @@ void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
     endResetModel();
 }
 
+void SearchNodeModel::onNodeClicked(const QModelIndex &current)
+{
+    osgEarth::Annotation::GeoPositionNode *node = dynamic_cast<osgEarth::Annotation::GeoPositionNode*>(mNodes[current.row()].get());
+    if (node){
+        mMapItem->getCameraController()->goToPosition(node->getPosition(),
+                                                      mMapItem->getCameraController()->getViewpoint().getRange(), 0);
+    }
+}
+
 void SearchNodeModel::init()
 {
     std::vector< osg::ref_ptr<osgEarth::Layer>> layers;
-    mMapObject->getLayers(layers);
+    mMapItem->getMapObject()->getLayers(layers);
     for (auto& layer : layers){
         ParenticAnnotationLayer* l1 = dynamic_cast<ParenticAnnotationLayer*>(layer.get());
         osgEarth::Annotation::AnnotationLayer* l2 = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer.get());
@@ -102,6 +112,12 @@ void SearchNodeProxyModel::setFilterString(const QString &filterString)
 {
     mFilterString = filterString;
     invalidateFilter();
+}
+
+void SearchNodeProxyModel::onNodeClicked(const int current)
+{
+    QModelIndex mindex = mapToSource(index(current, 0));
+    static_cast<SearchNodeModel*>(sourceModel())->onNodeClicked(mindex);
 }
 
 
