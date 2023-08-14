@@ -14,6 +14,7 @@
 #include <QQmlComponent>
 
 #include "compositeAnnotationLayer.h"
+#include "mapItem.h"
 
 #define CATEGORY "Draw"
 #define M_CATEGORY "Measurement"

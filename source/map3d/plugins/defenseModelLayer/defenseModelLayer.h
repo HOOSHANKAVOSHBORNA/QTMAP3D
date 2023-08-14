@@ -53,6 +53,7 @@ public:
     //void clearAircraft(int tn);
 	void selectModelNode(DefenseModelNode* defenseModelNode);
 	void modelNodeDeleted(DefenseModelNode* defenseModelNode);
+    ParenticAnnotationLayer* getModelLayer(QString modelName) const;
 public slots:
     void onMapClear();
 

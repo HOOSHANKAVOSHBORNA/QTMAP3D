@@ -466,5 +466,9 @@
         <file>Resources/48/woman.png</file>
         <file>Resources/48/zoom-in.png</file>
         <file>Resources/48/zoom-out.png</file>
+        <file>Resources/search-icon.png</file>
+        <file>Resources/close-icon.png</file>
+        <file>Resources/close-white.jpeg</file>
+        <file>Resources/search-white.jpeg</file>
     </qresource>
 </RCC>

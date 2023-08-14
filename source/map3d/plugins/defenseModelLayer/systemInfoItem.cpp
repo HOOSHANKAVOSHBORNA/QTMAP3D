@@ -168,6 +168,12 @@ void SystemInfoItem::setInfo(const System::Data *systemInfo)
     mInfoModel->setInformtion(systemInfo);
 }
 
+void SystemInfoItem::hide()
+{
+    if(mItem)
+        mUiHandle->iwHide(mItem);
+}
+
 void SystemInfoItem::show()
 {
     mUiHandle->iwShow(mItem, QString::number(mInformation->information->systemInfo.Number));

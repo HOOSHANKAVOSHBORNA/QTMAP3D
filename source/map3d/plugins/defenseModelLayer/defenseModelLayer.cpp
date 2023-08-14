@@ -248,6 +248,18 @@ void DefenseModelLayer::modelNodeDeleted(DefenseModelNode *defenseModelNode)
         mOnMoveModelNode = nullptr;
 }
 
+ParenticAnnotationLayer *DefenseModelLayer::getModelLayer(QString modelName) const
+{
+    CompositeAnnotationLayer* defenceModelNode = dynamic_cast<CompositeAnnotationLayer*>(
+        mapItem()->getMapObject()->getLayerByName("Defense"));
+    if(defenceModelNode){
+        return dynamic_cast<ParenticAnnotationLayer*>(
+            defenceModelNode->getLayerByName(modelName));
+    }
+    return nullptr;
+}
+
+
 //void DefenseModelLayer::addUpdateAircraft(AircraftInfo aircraftInfo)
 //{
 ////    osg::ref_ptr<AircraftModelNode> aircraftModelNode;
@@ -540,9 +552,10 @@ bool DefenseModelLayer::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::
 
 DefenseModelNode *DefenseModelLayer::pick(float x, float y)
 {
+//    qDebug() << x << ", " << y;
     DefenseModelNode *defenseModelNode = nullptr;
     osgViewer::Viewer *viewer = mapItem()->getViewer();
-    //    float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
+//        float height = static_cast<float>(viewer->getCamera()->getViewport()->height());
     osgUtil::LineSegmentIntersector::Intersections intersections;
     if (viewer->computeIntersections(x, /*height -*/ y, intersections))
     {
@@ -622,20 +635,24 @@ void DefenseModelLayer::findSceneModels(osgViewer::Viewer *viewer)
 
 void DefenseModelLayer::initLayers()
 {
-    osgEarth::Annotation::AnnotationLayer *defenseModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    CompositeAnnotationLayer *defenseModelLayer = new CompositeAnnotationLayer();
     defenseModelLayer->setName(DEFENSE_LAYER);
+    mapItem()->getMapObject()->addLayer(defenseModelLayer);
 //    mapItem()->addLayer(defenseModelLayer);
 
-    osgEarth::Annotation::AnnotationLayer *systemsModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    ParenticAnnotationLayer *systemsModelLayer = new ParenticAnnotationLayer();
     systemsModelLayer->setName(SYSTEM_LAYER);
+    defenseModelLayer->addLayer(systemsModelLayer);
 //    mapItem()->addLayerToLayer(systemsModelLayer, DEFENSE_LAYER);
 
-    osgEarth::Annotation::AnnotationLayer *stationsModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    ParenticAnnotationLayer *stationsModelLayer = new ParenticAnnotationLayer();
     stationsModelLayer->setName(STATION_LAYER);
+    defenseModelLayer->addLayer(stationsModelLayer);
 //    mapItem()->addLayerToLayer(stationsModelLayer, DEFENSE_LAYER);
 
-    osgEarth::Annotation::AnnotationLayer *aircraftsModelLayer = new osgEarth::Annotation::AnnotationLayer();
+    ParenticAnnotationLayer *aircraftsModelLayer = new ParenticAnnotationLayer();
     aircraftsModelLayer->setName(AIRCRAFT_LAYER);
+    defenseModelLayer->addLayer(aircraftsModelLayer);
 //    mapItem()->addLayerToLayer(aircraftsModelLayer, DEFENSE_LAYER);
 }
 

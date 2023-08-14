@@ -64,6 +64,7 @@ public:
 	StationInformtion(DefenseModelLayer* defenseModelLayer, Station::Data* data, QObject *parent = nullptr);
     StationInfoModel *getInfo() {return mInfoModel;}
     void show();
+    void hide();
 private:
 //    StationInfo mInformation;
     StationInfoModel *mInfoModel;

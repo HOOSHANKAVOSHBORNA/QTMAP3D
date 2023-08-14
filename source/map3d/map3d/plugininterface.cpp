@@ -181,19 +181,20 @@ void UIHandle::iwShow(QQuickItem* item, QString title)
                               );
 }
 
-void UIHandle::iwHide()
+void UIHandle::iwHide(QQuickItem *item)
 {
-    QMetaObject::invokeMethod(mMainWindow,
-                              "hideInfoView"
-                              );
+//    QMetaObject::invokeMethod(mMainWindow,
+//                              "hideInfoView"
+//                              );
+    mMainWindow->removeFromLeftContainer(item);
 }
 
 void UIHandle::propertiesShow(QQuickItem *item)
 {
-    QMetaObject::invokeMethod(mMainWindow,
-                              "showRightContainer",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
-                              );
+//    QMetaObject::invokeMethod(mMainWindow,
+//                              "showRightContainer",
+//                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+//                              );
 }
 
 void UIHandle::propertiesHide(QQuickItem *item)

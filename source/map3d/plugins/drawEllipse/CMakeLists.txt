@@ -18,8 +18,8 @@ ellipse.cpp
 ellipse.h
 drawEllipse.cpp
 drawEllipse.h
-ellipseproperties.cpp
-ellipseproperties.h
+ellipseproperty.cpp
+ellipseproperty.h
 drawEllipse.qrc
 )
 

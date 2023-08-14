@@ -42,7 +42,7 @@ LineNode::LineNode(MapItem *mapItem)
 
 LineNode::~LineNode()
 {
-    for(auto labelData: mVecLabelData){
+    for(const auto &labelData: mVecLabelData){
         if(labelData.qImage)
             delete labelData.qImage;
     }
@@ -55,42 +55,41 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
 
     if(getSize() >= 2)
     {
-        std::vector<osg::Vec3d> distanceVectorPoint;
-        distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 2));
-        distanceVectorPoint.push_back(mLineGeometry->at(mLineGeometry->size() - 1));
-        auto lenght = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
+        osgEarth::GeoPoint p1(mMapItem->getMapSRS() ,mLineGeometry->at(mLineGeometry->size() - 2));
+        osgEarth::GeoPoint p2(mMapItem->getMapSRS(),mLineGeometry->at(mLineGeometry->size() - 1));
 
-        double bearingRadian = osgEarth::GeoMath().bearing(osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 2).y()),
-                                                           osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 2).x()),
-                                                           osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).y()),
-                                                           osg::DegreesToRadians(mLineGeometry->at(mLineGeometry->size() - 1).x()));
-        auto bearing = osg::RadiansToDegrees(bearingRadian);
+        std::vector<osg::Vec3d> distanceVectorPoint;
+        distanceVectorPoint.push_back(p1.vec3d());
+        distanceVectorPoint.push_back(p2.vec3d());
+        double distance = osgEarth::GeoMath().rhumbDistance(distanceVectorPoint);
+
+        double altitude = p2.z() - p1.z();
+
+        double bearingRadian = osgEarth::GeoMath().bearing(osg::DegreesToRadians(p1.y()),
+                                                           osg::DegreesToRadians(p1.x()),
+                                                           osg::DegreesToRadians(p2.y()),
+                                                           osg::DegreesToRadians(p2.x()));
+        double bearing = osg::RadiansToDegrees(bearingRadian);
         if (bearing < 0){
             bearing += 360;
         }
-        // Calculate the slope between the two points.
-        osgEarth::GeoPoint p1(mMapItem->getMapSRS() ,mLineGeometry->at(mLineGeometry->size() - 2).x(),
-                              mLineGeometry->at(mLineGeometry->size() - 2).y()
-                              , mLineGeometry->at(mLineGeometry->size() - 2).z());
-        osgEarth::GeoPoint p2(mMapItem->getMapSRS(),mLineGeometry->at(mLineGeometry->size() - 1).x(),
-                              mLineGeometry->at(mLineGeometry->size() - 1).y(),
-                              mLineGeometry->at(mLineGeometry->size() - 1).z());
+
         double slope = (mLineGeometry->at(mLineGeometry->size() - 1).z() - mLineGeometry->at(mLineGeometry->size() - 2).z()) / p1.distanceTo(p2);
         slope = std::asin(slope);
         slope = osg::RadiansToDegrees(slope);
 
         osg::ref_ptr<osg::Image> image = new osg::Image;
-
-        QImage* qImage = createOrUpdateLabelImg(image, lenght, bearing, slope);
         osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode = new osgEarth::Annotation::PlaceNode();
-
         LabelData data;
-        data.qImage = qImage;
-        data.image = image;
-        data.lenght = lenght;
+        data.distance = distance;
+        data.altitude = altitude;
         data.bearing = bearing;
         data.slope = slope;
         data.placeNode = placeNode;
+
+        QImage* qImage = createOrUpdateLabelImg(image, data);
+        data.image = image;
+        data.qImage = qImage;
         mVecLabelData.push_back(data);
         placeNode->setIconImage(image);
 
@@ -98,14 +97,14 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
 
         double latMidP;
         double lonMidP;
-        double zMidP = ((mLineGeometry->at(mLineGeometry->size() - 2).z())+(mLineGeometry->at(mLineGeometry->size() - 1).z()))/2;
+        double zMidP = (p1.z() + p2.z())/2;
         //		osgEarth::GeoPoint midPoint(mMapController->getMapSRS(),
         //									(mLineGeometry->at(mLineGeometry->size() - 2) + mLineGeometry->at(mLineGeometry->size() -1 )) / 2);
 
-        osgEarth::GeoMath().midpoint(osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 2).x())),
-                                     osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 2).y())),
-                                     osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).x())),
-                                     osg::DegreesToRadians((mLineGeometry->at(mLineGeometry->size() - 1).y())),
+        osgEarth::GeoMath().midpoint(osg::DegreesToRadians(p1.x()),
+                                     osg::DegreesToRadians(p1.y()),
+                                     osg::DegreesToRadians(p2.x()),
+                                     osg::DegreesToRadians(p2.y()),
                                      latMidP, lonMidP);
 
         osgEarth::GeoPoint midpoint(mMapItem->getMapSRS()->getGeographicSRS(),osg::RadiansToDegrees(latMidP),osg::RadiansToDegrees(lonMidP),zMidP);
@@ -117,6 +116,11 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
     }
     addChild(mLabelGroup);
 
+}
+
+osgEarth::GeoPoint LineNode::getPoint(int index)
+{
+    return osgEarth::GeoPoint(mMapItem->getMapSRS() ,mLineGeometry->at(index));
 }
 
 void LineNode::removePoint()
@@ -150,7 +154,7 @@ void LineNode::clear()
 {
 
     mLineGeometry->clear();
-    for(auto labelData: mVecLabelData){
+    for(const auto& labelData: mVecLabelData){
         if(labelData.qImage)
             delete labelData.qImage;
     }
@@ -295,7 +299,7 @@ void LineNode::setShowBearing(const bool &bearing)
         {
             if(data.qImage)
                 delete data.qImage;
-            QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
+            QImage* qImage = createOrUpdateLabelImg(data.image, data);
             data.qImage = qImage;
             data.placeNode->setIconImage(data.image);
             data.placeNode->setStyle(data.placeNode->getStyle());
@@ -323,7 +327,7 @@ void LineNode::setShowDistance(const bool &show)
         {
             if(data.qImage)
                 delete data.qImage;
-            QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
+            QImage* qImage = createOrUpdateLabelImg(data.image, data);
             data.qImage = qImage;
             data.placeNode->setIconImage(data.image);
             data.placeNode->setStyle(data.placeNode->getStyle());
@@ -363,7 +367,7 @@ void LineNode::setShowSlope(bool showSlope)
         {
             if(data.qImage)
                 delete data.qImage;
-            QImage* qImage = createOrUpdateLabelImg(data.image, data.lenght, data.bearing, data.slope );
+            QImage* qImage = createOrUpdateLabelImg(data.image, data);
             data.qImage = qImage;
             data.placeNode->setIconImage(data.image);
             //			osgEarth::Annotation::Style style;
@@ -377,6 +381,39 @@ void LineNode::setShowSlope(bool showSlope)
             //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->halo() = strok;
             //			data.placeNode->setText(std::to_string(data.slope));
             data.placeNode->setStyle(getStyle());
+        }
+    }
+    else
+        mLabelGroup->setNodeMask(false);
+}
+
+bool LineNode::getShowAltitude() const
+{
+    return mShowAltitude;
+}
+
+void LineNode::setShowAltitude(bool showAltitude)
+{
+    if (mShowAltitude == showAltitude)
+        return;
+
+    if(showAltitude)
+        mCount++;
+    else if(mCount > 0)
+        mCount--;
+
+    mShowAltitude = showAltitude;
+
+    if (mCount > 0){
+        mLabelGroup->setNodeMask(true);
+        for(auto& data:mVecLabelData)
+        {
+            if(data.qImage)
+                delete data.qImage;
+            QImage* qImage = createOrUpdateLabelImg(data.image, data);
+            data.qImage = qImage;
+            data.placeNode->setIconImage(data.image);
+            data.placeNode->setStyle(data.placeNode->getStyle());
         }
     }
     else
@@ -437,25 +474,27 @@ void LineNode::setSmooth(bool smooth)
     }
 }
 //---------------------------------------------------------------
-QImage *LineNode::createOrUpdateLabelImg(osg::ref_ptr<osg::Image>& image, double lenght, double bearing, double slope)
+QImage *LineNode::createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, LabelData &lableData)
 {
     int imageHeight = 0;
     if (mCount > 0)
         imageHeight = mCount*23;
     else
         return nullptr;
-    int distancePos = 5;
-    int slopePos = 5;
-    int bearingPos = 5;
+    //    int distancePos = 5;
+    //    int slopePos = 5;
+    //    int bearingPos = 5;
+    int pos = 5;
 
     QImage* lblImage = new QImage(
         LABEL_IMAGE_WIDTH,
         imageHeight,
         QImage::Format_RGBA8888);
+
     if(!image->valid())
         image = new osg::Image;
-    {
 
+    {
         lblImage->fill(QColor(Qt::transparent));
         QPainter painter(lblImage);
         painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
@@ -474,44 +513,51 @@ QImage *LineNode::createOrUpdateLabelImg(osg::ref_ptr<osg::Image>& image, double
         painter.setFont(textFont);
 
         if (mShowDistance){
-            bearingPos += 22;
-            slopePos += 22;
-            if (lenght >= 1000){
-                lenght/=1000;
-                QString str = QObject::tr("d: %1 km").arg(lenght,0,'f',2);
-                painter.drawText(8, distancePos, LABEL_IMAGE_WIDTH, 15,
+            if (lableData.distance >= 1000){
+                QString str = QObject::tr("d: %1 km").arg(lableData.distance/1000,0,'f',2);
+                painter.drawText(8, pos, LABEL_IMAGE_WIDTH, 15,
                                  Qt::AlignLeft|Qt::AlignVCenter,
                                  str);
             }
             else{
-                QString str = QObject::tr("d: %1 m").arg(lenght,0,'f',2);
-                painter.drawText(8, distancePos, LABEL_IMAGE_WIDTH, 15,
+                QString str = QObject::tr("d: %1 m").arg(lableData.distance,0,'f',2);
+                painter.drawText(8, pos, LABEL_IMAGE_WIDTH, 15,
                                  Qt::AlignLeft|Qt::AlignVCenter,
                                  str);
             }
+            pos += 22;
+        }
+        if (mShowAltitude){
+            if (lableData.altitude >= 1000){
+                QString str = QObject::tr("h: %1 km").arg(lableData.altitude/1000, 0, 'f', 2);
+                painter.drawText(8, pos, LABEL_IMAGE_WIDTH, 15,
+                                 Qt::AlignLeft|Qt::AlignVCenter,
+                                 str);
+            }
+            else{
+                QString str = QObject::tr("h: %1 m").arg(lableData.altitude,0,'f',2);
+                painter.drawText(8, pos, LABEL_IMAGE_WIDTH, 15,
+                                 Qt::AlignLeft|Qt::AlignVCenter,
+                                 str);
+            }
+            pos += 22;
         }
         if (mShowBearing){
-            slopePos += 22;
-            QString bearStr= QString::number(bearing, 'f', 2);
-            painter.drawText(QRect(8, bearingPos, LABEL_IMAGE_WIDTH, 15),
+            QString bearStr= QString::number(lableData.bearing, 'f', 2);
+            painter.drawText(QRect(8, pos, LABEL_IMAGE_WIDTH, 15),
                              Qt::AlignLeft|Qt::AlignVCenter,
                              "b: "+bearStr+"°");
-                qDebug()<<"bPos: "<< bearingPos;
-
-
+                pos += 22;
         }
 
         if (mShowSlope){
-            QString slopeStr= QString::number(slope, 'f', 2);
-            painter.drawText(QRect(8, slopePos, LABEL_IMAGE_WIDTH, 15),
+            QString slopeStr= QString::number(lableData.slope, 'f', 2);
+            painter.drawText(QRect(8, pos, LABEL_IMAGE_WIDTH, 15),
                              Qt::AlignLeft|Qt::AlignVCenter,
                              "s: "+slopeStr+"°");
-
-
         }
-
-
     }
+
     *lblImage = lblImage->mirrored(false, true);
     //    QDialog *dlg = new QDialog();
     //    QLabel *label = new QLabel;

@@ -9,7 +9,8 @@ MapControllerItem::MapControllerItem():
 {
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-    mSearchNodeModel = new SearchNodeModel(getMapObject());
+    mSearchNodeProxyModel = new SearchNodeProxyModel();
+    mSearchNodeProxyModel->setSourceModel(new SearchNodeModel(this));
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -147,6 +148,11 @@ void MapControllerItem::calculateFps()
     }
 }
 
+SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
+{
+    return mSearchNodeProxyModel;
+}
+
 QVector3D MapControllerItem::mapMouseGeoLocation() const
 {
     osgEarth::GeoPoint geoPos = mCurrentMouseGeoPoint;
@@ -240,11 +246,6 @@ double MapControllerItem::headingAngle() const
 double MapControllerItem::fps() const
 {
     return mFps;
-}
-
-SearchNodeModel *MapControllerItem::getSearchNodeModel() const
-{
-    return mSearchNodeModel;
 }
 
 void MapControllerItem::setFps(double fps)

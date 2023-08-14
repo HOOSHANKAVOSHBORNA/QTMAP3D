@@ -21,14 +21,14 @@ void Cylinder::compile()
     pat->removeChildren(0, pat->getNumChildren());
     float radius = static_cast<float>(mRadius.as(osgEarth::Units::METERS));
     float height = static_cast<float>(mHeight.as(osgEarth::Units::METERS));
-    mCenter = osg::Vec3(0.f, 0.f, height/2);
-    osg::ref_ptr<osg::CompositeShape> compositeShape = new osg::CompositeShape;
+//    mCenter = osg::Vec3(0.f, 0.f, height/2);
+//    osg::ref_ptr<osg::CompositeShape> compositeShape = new osg::CompositeShape;
     osg::ref_ptr<osg::TessellationHints> tessellationHints = new osg::TessellationHints;
 
     osg::ref_ptr<osg::Cylinder> CylinderShape = new osg::Cylinder(mCenter, radius, height);
-    compositeShape->addChild(CylinderShape);
+//    compositeShape->addChild(CylinderShape);
 
-    mShapeDrawable = new osg::ShapeDrawable(compositeShape.get(), tessellationHints);
+    mShapeDrawable = new osg::ShapeDrawable(CylinderShape.get(), tessellationHints);
     mShapeDrawable->setColor(mColor);
     mShapeDrawable->setUseVertexBufferObjects(true);
 

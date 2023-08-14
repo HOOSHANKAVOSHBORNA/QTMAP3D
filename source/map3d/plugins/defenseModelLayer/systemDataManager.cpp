@@ -35,6 +35,11 @@ void SystemDataManager::upsertInfo(SystemInfo &systemInfo)
         //add to container---------------------------------------------------
         mSystemData[systemInfo.Number]->systemModelNode = systemModelNode;
         //add to map --------------------------------------------------------
+        CompositeAnnotationLayer *composit = dynamic_cast<CompositeAnnotationLayer*>(mDefenseModelLayer->mapItem()->getMapObject()->getLayerByName("Defense"));
+        if(composit){
+            ParenticAnnotationLayer *parentic = dynamic_cast<ParenticAnnotationLayer*>(composit->getLayerByName("System"));
+            parentic->addChild(systemModelNode);
+        }
 //        mDefenseModelLayer->mapItem()->addNodeToLayer(systemModelNode, SYSTEM_LAYER);
     }
     //update information-----------------------------------------------------
@@ -86,6 +91,7 @@ void SystemDataManager::addAssignment(int systemNo, System::Assignment* assignme
         assignment->line->setShowBearing(true);
 		assignment->line->setShowDistance(true);
 		assignment->line->setShowSlope(true);
+        mDefenseModelLayer->getModelLayer(SYSTEM_LAYER)->addChild(assignment->line);
 //        mDefenseModelLayer->mapItem()->addNodeToLayer(assignment->line, SYSTEM_LAYER);
 
         mSystemData[systemNo]->assignments.push_back(assignment);
@@ -126,6 +132,7 @@ void SystemDataManager::removeAssignment(int tn, int systemNo)
     if(mSystemData.contains(systemNo)){
         auto index = mSystemData[systemNo]->findAssignment(tn);
         if(index >= 0){
+            mDefenseModelLayer->getModelLayer(SYSTEM_LAYER)->removeChild(mSystemData[systemNo]->assignments.at(index)->line);
 //            mDefenseModelLayer->mapItem()->removeNodeFromLayer(mSystemData[systemNo]->assignments.at(index)->line, SYSTEM_LAYER);
             mSystemData[systemNo]->assignments.removeAt(index);
             mSystemData[systemNo]->systemModelNode->assignmentChanged();

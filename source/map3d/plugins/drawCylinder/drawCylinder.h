@@ -8,12 +8,11 @@
 #include <osg/ClipNode>
 #include <osg/ClipPlane>
 #include "drawShape.h"
-#include "cylinder.h"
-#include "cylinderProperties.h"
 
 #define CYLINDER "Cylinder"
 
-
+class CylinderProperty;
+class Cylinder;
 class DrawCylinder : public DrawShape
 {
     Q_OBJECT
@@ -33,7 +32,7 @@ private:
 
 private:
     osg::ref_ptr<Cylinder> mCylinder{nullptr};
-    CylinderProperties *mCylinderProperties{nullptr};
+    CylinderProperty *mCylinderProperty{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mCylinderLayer = nullptr;
     static int mCount;
     QQuickItem *mItem;

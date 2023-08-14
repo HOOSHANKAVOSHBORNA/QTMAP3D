@@ -4,7 +4,6 @@
 #include <QQmlComponent>
 #include <QQuickItem>
 #include "property.h"
-#include "mainwindow.h"
 #include "utility.h"
 
 RectProperties::RectProperties(QQuickItem *parent):
@@ -20,54 +19,44 @@ RectProperties::RectProperties(QQuickItem *parent):
 
 void RectProperties::setFillColor(const QColor &color)
 {
-
     Property::setFillColor(color);
     if(mRect)
         mRect->setColor(Utility::qColor2osgEarthColor(color));
 }
 
-
-void RectProperties::setHeight(const double &height)
+void RectProperties::setHeight(double height)
 {
-
     Property::setHeight(height);
     if(mRect)
-//        mRect->setHeight(osgEarth::Distance(height, osgEarth::Units::METERS));
         mRect->setHeight(height);
 }
 
-void RectProperties::setWidth(const double &width)
+void RectProperties::setWidth(double width)
 {
     Property::setWidth(width);
     if(mRect)
-//        mRect->setWidth(osgEarth::Distance(width, osgEarth::Units::METERS));
     mRect->setWidth(width);
 }
 
-
-void RectProperties::setStrokeWidth(const double &opacity)
+void RectProperties::setStrokeWidth(double strockWidth)
 {
-
-    Property::setStrokeWidth(opacity);
+    Property::setStrokeWidth(strockWidth);
     if(mRect)
-        mRect->setStrokeWidth(opacity);
+        mRect->setStrokeWidth(strockWidth);
 }
 
-void RectProperties::setStroke(const QColor &color)
+void RectProperties::setStrokeColor(const QColor &color)
 {
 
-    Property::setStroke(color);
+    Property::setStrokeColor(color);
     if(mRect)
     {
         mRect->setStrokeColor(Utility::qColor2osgEarthColor(color));
     }
-
 }
 
-
-void RectProperties::setLocationRelative(const bool &relative)
+void RectProperties::setLocationRelative(bool relative)
 {
-
     Property::setLocationRelative(relative);
 }
 
@@ -80,8 +69,6 @@ void RectProperties::setLocation(const QVector3D &status)
     osgEarth::GeoPoint temp = Utility::qVector3DToosgEarthGeoPoint(status, mSRS);
     if (mRect)
         mRect->setPosition(temp);
-
-
 }
 
 void RectProperties::setName(const QString &name)
@@ -90,21 +77,15 @@ void RectProperties::setName(const QString &name)
     if(mRect)
     {
         mRect->setName(name.toStdString());
-
     }
 }
 
-
-
-
-void RectProperties::setClamp(const int &clamp)
+void RectProperties::setClamp(int clamp)
 {
-
     Property::setClamp(clamp);
     if(mRect){
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(clamp);
         mRect->setClamp(clampEnum);
-
     }
 }
 
@@ -123,12 +104,9 @@ void RectProperties::setRect(Rect *newRect, const osgEarth::SpatialReference *sr
 
     if(mRect){
         mRect->setColor(Utility::qColor2osgEarthColor(getFillColor()));
-        mRect->setStrokeColor(Utility::qColor2osgEarthColor(getStroke()));
+        mRect->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mRect->setStrokeWidth(getStrokeWidth());
-
-//        mRect->setHeight(osgEarth::Distance(mRect->getHeight().getValue(), osgEarth::Units::METERS));
         mRect->setHeight(getHeight());
-//        mRect->setWidth(osgEarth::Distance(mRect->getWidth().getValue(), osgEarth::Units::METERS));
         mRect->setWidth(getWidth());
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
         mRect->setClamp(clampEnum);

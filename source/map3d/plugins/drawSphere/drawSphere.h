@@ -1,12 +1,12 @@
-#ifndef DRAWCIRCLE_H
-#define DRAWCIRCLE_H
+#ifndef DRAWSPHERE_H
+#define DRAWSPHERE_H
 
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarth/GLUtils>
 #include <drawShape.h>
 
 #include "plugininterface.h"
-#include "sphereProperties.h"
+#include "sphereProperty.h"
 #include "sphereNode.h"
 
 #define SPHERE "Sphere"
@@ -27,14 +27,13 @@ private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-    void createProperty();
 
 private:
     osg::ref_ptr<SphereNode> mSphere{nullptr};
-    SphereProperties *mSphereProperties{nullptr};
-    osg::ref_ptr<CompositeAnnotationLayer> mCompositeSphereLayer;
-    osg::ref_ptr<ParenticAnnotationLayer> mSphereLayer = nullptr;
+    SphereProperty *mSphereProperty{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mSphereLayer ;
     static int mCount;
+    QQuickItem *mItem;
 
 };
-#endif // DRAWCIRCLE_H
+#endif // DRAWSPHERE_H

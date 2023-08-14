@@ -17,7 +17,7 @@ add_library(drawCylinder SHARED
     drawCylinder.qrc
     drawCylinder.cpp
     cylinder.cpp
-    cylinderProperties.cpp
+    cylinderProperty.cpp
 )
 
 target_include_directories(drawCylinder PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

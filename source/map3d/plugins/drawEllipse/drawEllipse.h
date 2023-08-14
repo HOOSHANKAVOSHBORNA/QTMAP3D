@@ -3,10 +3,11 @@
 
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
+#include <osg/ShapeDrawable>
 #include <osgEarth/GLUtils>
 #include "drawShape.h"
 #include "ellipse.h"
-#include "ellipseproperties.h"
+#include "ellipseproperty.h"
 
 #define ELLIPSE "Ellipse"
 
@@ -29,7 +30,7 @@ private:
 
 private:
     osg::ref_ptr<Ellipse> mEllipse{nullptr};
-    EllipseProperties *mEllipseProperties{nullptr};
+    EllipseProperty *mEllipseProperty{nullptr};
 
     osg::ref_ptr<ParenticAnnotationLayer> mEllipseLayer;
     static int mCount;

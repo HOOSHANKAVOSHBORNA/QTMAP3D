@@ -1,173 +1,178 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Effects
 import "style"
 
 
-TextField {
-    id : txtid
-    width : 40
-    implicitHeight: 40
-//    property string A: ["0","1"]
+Rectangle {
+    id: rootItem
+    property var model
+    width: 40 + txtid.implicitWidth + (closeButton.visible? closeButton.width : 0)
+    height: 40
+    radius: 20
+    color: Style.backgroundColor
+    opacity: 0.85
+    ColumnLayout{
 
+        anchors.fill: parent
+        //---------------------------searcbox---------------------------//
+        RowLayout{
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            //            Layout.rightMargin: 100
+            layoutDirection: Qt.LeftToRight
 
-    property  color colorDefault: Style.backgroundColor
-    property  color colorOnFocus: Style.secondaryColor
-    property  color colorMouseOver: Style.textHoverColor
-    property  color colorBorderOnFocus: Style.hoverColor
+            //------------------------------search-----------------------//
+            Button {
+                id:searchbtn
+                Layout.fillHeight: true
+                width: 40
+                background: Rectangle{
+                    color: "transparent"
+                }
+                Layout.leftMargin: 3
 
-    placeholderText:  qsTr("Search By")
-    color: "#ffffff"
-    font.family: "Segoe UI"
-    font.pointSize: 10
-    clip: true
-    leftPadding: 42
-    rightPadding: 35
+                icon{
+                    source: "qrc:/Resources/search-white.jpeg"
+                    width: 26
+                    height: 26
+                }
+                onClicked: {
+                    textonFocus.running =true
+                    closeRect.visible = true
+                    txtid.focus = true
 
-    QtObject{
-        id :internal
-        property var dynamicColor: if(txtid.focus){
-                                       txtid.focus? colorOnFocus : colorDefault
-                                   }else if(!txtid.focus && txtid.width > 40){
-                                       txtid.focus? colorOnFocus : colorDefault
-
-                                   }else{
-                                        txtid.hovered? colorMouseOver : colorDefault
-                                   }
-    }
-
-    background: Rectangle {
-        id :txtid2
-        radius: 8
-        color: internal.dynamicColor
-        opacity: 0.7
-        border.width :2
-
-        Image {
-            id: txtid3
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-//            anchors.bottom: parent.bottom
-            source: "qrc:/Resources/sear.svg"
-
-            ///images/sear.svg
-            fillMode: Image.PreserveAspectFit
-            anchors.leftMargin: 5
-            sourceSize.width: 25
-            sourceSize.height: 10
-//            opacity: 0.5
-        }
-        Image {
-
-            id: iconClearText
-            visible: false
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right:  parent.right
-//            anchors.bottom: parent.bottom
-            source: "qrc:/Resources/back.svg"
-            fillMode: Image.PreserveAspectFit
-            anchors.rightMargin: 10
-            sourceSize.width: 25
-            sourceSize.height: 10
-//            opacity: 0.5
-
-        }
-        MouseArea{
-            cursorShape: Qt.PointingHandCursor
-            anchors.fill: iconClearText
-            hoverEnabled: true
-
-            onEntered: iconClearText.opacity=0.75
-            onExited: iconClearText.opacity =0.5
-            onClicked: {
-                txtid.text=""
-//                comboBox.state = comboBox.state==="dropDown"?"":"dropDown"
+                }
             }
 
-            visible: iconClearText.visible
+            TextField {
+                id : txtid
+                implicitWidth : 0
+                Layout.fillHeight: true
 
+                property  color colorDefault       : Style.backgroundColor
+                property  color colorOnFocus       : Style.secondaryColor
+                property  color colorMouseOver     : Style.textHoverColor
+                property  color colorBorderOnFocus : Style.hoverColor
 
+                placeholderText:  qsTr("Search By" )
+                color: "black"
+                font.family:closeButton.font.family
+                //                    "Segoe UI"
+                font.pointSize: 10
+                clip: true
+                selectByMouse: true
+                selectedTextColor: "white"
+                selectionColor: "#ffcc00"
+                placeholderTextColor: "#81848c"
+                background: Rectangle{
+                    color: Style.backgroundColor
+                    opacity: 0.3
+                }
+                onTextChanged: {
+                    rootItem.model.setFilterString(text)
+                }
 
-
+                PropertyAnimation {
+                    id : textonFocus
+                    target: txtid
+                    properties: "implicitWidth"
+                    to:200
+                    duration: 150
+                    easing.type: Easing.OutQuint
+                }
+                PropertyAnimation {
+                    id : textlostFocus
+                    target: txtid
+                    properties: "implicitWidth"
+                    to:0
+                    duration: 150
+                    easing.type: Easing.OutQuint
+                    onFinished: {
+                        closeRect.visible = false
+                    }
+                }
             }
-        MouseArea{
-//            anchors.fill: txtid
-            onClicked: {
-                txtid.state = txtid.state==="dropDown"?"":"dropDown"
-                hoverEnabled : true
+            // close botton ------------------------------------------------------
+            Rectangle {
+//                MultiEffect{
+//                    source: closeRect
+//                    anchors.fill: closeRect
+//                    //                                autoPaddingEnabled: false
+//                    paddingRect: Qt.rect(0, 0 , 40, 40)
+//                    shadowBlur: 1.0
+//                    shadowColor: 'black'
+//                    shadowEnabled: true
+//                    shadowHorizontalOffset: -8
 
+//                }
+                id: closeRect
+                color: Style.backgroundColor
+                height: 40
+                width: 40
+                radius: 20
+                visible: false
+                Layout.leftMargin: -5
+                Button {
+                    id: closeButton
+                    width: 40
+                    clip: true
+                    background: Rectangle{
+                        color: "transparent"
+                        radius: 20
+                    }
+                    anchors.centerIn: parent
 
+                    icon{
+                        source: "qrc:/Resources/close-white.jpeg"
+                        width: 26
+                        height: 26
+
+                    }
+                    onClicked: {
+                        textlostFocus.running =true
+                        txtid.clear()
+                    }
+
+                }
             }
         }
-        }
-
-    selectByMouse: true
-    selectedTextColor: "#FFFFFF"
-    selectionColor: "#ff007f"
-    placeholderTextColor: "#81848c"
-
-    onFocusChanged: {
-        if(txtid.focus){
-
-            textonFocus.running =true
-//            textwithFocus.running =true
-            iconClearText.visible = true
-            txtid2.border.color = colorBorderOnFocus
-        }else {
-
-            textlostFocus.running=true
-//            textbitFocus.running =true
-            iconClearText.visible=false
-            txtid.text = ""
-            txtid2.border.color = colorDefault}
-        }
-
-//function onFchange(){ if(txtid.focus){
-//        textonFocus.running =true
-//        textwithFocus.running =true
-//        iconClearText.visible = true
-//        txtid2.border.color = colorBorderOnFocus
-//    }else {
-
-//            textlostFocus.running=true
-//            textbitFocus.running =true
-//            iconClearText.visible=false
-//            txtid.text = ""
-//        txtid2.border.color = colorDefault}
-//    };
-
-    PropertyAnimation {
-        id : textonFocus
-        target: txtid
-        properties: "width"
-        to:300
-        duration: 500
-        easing.type: Easing.OutQuint
     }
-    PropertyAnimation {
-        id : textlostFocus
-        target: txtid
-        properties: "width"
-        to:40
-        duration: 500
-        easing.type: Easing.OutQuint
+    //-------------------- search list ----------------------//
+    Rectangle{
+        id:dropDown
+        color: Style.backgroundColor
+        visible:true
+        width: closeButton.visible ? rootItem.width - 6: 0
+        height:Math.min(bt.count *35, 200);
+        clip:true
+        anchors.top:  rootItem.bottom;
+        anchors.left: rootItem.left
+        anchors.topMargin: 2
+        anchors.leftMargin: 2
+        radius: 12
+        ListView{
+            id:bt
+            anchors.fill: parent
+            model: rootItem.model
+            delegate: Button
+            {
+                width: bt.width
+                height: 35
+                text: model.display
+                id:textnew
+                hoverEnabled: true
+                onClicked:{
+                    rootItem.model.onNodeClicked(index)
+                }
+                background: Rectangle
+                {
+                    color: parent.hovered ? Style.hoverColor : "transparent"
+                }
+            }
+        }
     }
-//    PropertyAnimation {
-//        id : textwithFocus
-//        target: dropDown
-//        properties: "height"
-//        from:0
-//        to:150
-//        duration: 1000
-//        easing.type: Easing.OutQuint
-//    }
-//    PropertyAnimation {
-//        id : textbitFocus
-//        target: dropDown
-//        properties: "height"
-//        from : 150
-//        to:0
-//        duration: 1000
-//        easing.type: Easing.OutQuint
-//    }
-
 }
+
+

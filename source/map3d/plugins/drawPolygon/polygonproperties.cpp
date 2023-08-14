@@ -3,10 +3,8 @@
 #include <QVector3D>
 #include <QQmlComponent>
 #include <QQuickItem>
-#include "plugininterface.h"
 #include "property.h"
 #include "utility.h"
-#include "mainwindow.h"
 
 PolygonProperties::PolygonProperties(QQuickItem *parent):
     Property(parent)
@@ -47,10 +45,10 @@ void PolygonProperties::setStrokeWidth(const double &opacity)
 
 }
 
-void PolygonProperties::setStroke(const QColor &color)
+void PolygonProperties::setStrokeColor(const QColor &color)
 {
 
-    Property::setStroke(color);
+    Property::setStrokeColor(color);
     if(mPolygon)
     {
         mPolygon->setLineColor(Utility::qColor2osgEarthColor(color));
@@ -58,9 +56,7 @@ void PolygonProperties::setStroke(const QColor &color)
 
 }
 
-
-
-void PolygonProperties::setHeight(const double &height)
+void PolygonProperties::setHeight(double height)
 {
 
     Property::setHeight(height);
@@ -68,7 +64,7 @@ void PolygonProperties::setHeight(const double &height)
         mPolygon->setHeight(height);
 }
 
-void PolygonProperties::setClamp(const int &clamp)
+void PolygonProperties::setClamp(int clamp)
 {
 
     Property::setClamp(clamp);
@@ -95,7 +91,7 @@ void PolygonProperties::setPolygon(Polygon *newPolygon, const osgEarth::SpatialR
     if(mPolygon){
         mPolygon->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mPolygon->setHeight(getHeight());
-        mPolygon->setLineColor(Utility::qColor2osgEarthColor(getStroke()));
+        mPolygon->setLineColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mPolygon->setLineWidth(getStrokeWidth());
         setName(QString::fromStdString(mPolygon->getName()));
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());
