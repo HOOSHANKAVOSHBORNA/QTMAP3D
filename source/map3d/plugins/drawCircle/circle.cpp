@@ -1,7 +1,7 @@
 #include "circle.h"
-#include "osgEarth/ModelLayer"
-#include "osgEarth/Layer"
-#include "osgEarthAnnotation/AnnotationEditing"
+//#include "osgEarth/ModelLayer"
+//#include "osgEarth/Layer"
+//#include "osgEarthAnnotation/AnnotationEditing"
 
 
 void Circle::setCircleHeight(float height)

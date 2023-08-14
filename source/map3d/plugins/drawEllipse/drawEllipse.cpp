@@ -50,7 +50,8 @@ void DrawEllipse::initDraw(const osgEarth::GeoPoint &geoPos)
     mEllipse = new Ellipse();
     mEllipse->setName(name.toStdString());
     mEllipse->setPosition(geoPos);
-    mEllipse->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping(mEllipseProperty->getClamp()));
+    osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(mEllipseProperty->getClamp());
+    mEllipse->setClamp(clampEnum);
     mEllipse->setHeight(mEllipseProperty->getHeight());
     mEllipse->setStrokeWidth(mEllipseProperty->getStrokeWidth());
 

@@ -1,10 +1,8 @@
 #include "drawRect.h"
-#include "mainwindow.h"
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgEarthAnnotation/GeoPositionNodeAutoScaler>
 #include "utility.h"
 #include <osgEarth/GLUtils>
-#include "osgEarth/ModelLayer"
 #include "compositeAnnotationLayer.h"
 
 
@@ -19,13 +17,10 @@ bool DrawRect::setup()
     auto toolboxItem =  new ToolboxItem{RECT, CATEGORY, "qrc:/resources/rectangle.png", true};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawRect::onRectItemCheck);
     toolbox()->addItem(toolboxItem);
-
     makeIconNode("../data/images/draw/rectangle.png");
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-
     mRectLayer = new ParenticAnnotationLayer();
     mRectLayer->setName(RECT);
-
     return true;
 }
 
@@ -50,7 +45,6 @@ void DrawRect::onRectItemCheck(bool check)
     else {
         if(state() == State::DRAWING)
             cancelDraw();
-
         if(mRectLayer->getGroup()->getNumChildren() <= 0){
             auto shapeLayer = DrawShape::shapeLayer();
             shapeLayer->removeLayer(mRectLayer);
@@ -83,8 +77,6 @@ void DrawRect::initDraw(const osgEarth::GeoPoint &geoPos)
 
 void DrawRect::cancelDraw()
 {
-
-
     if(state() == State::DRAWING){
         mRectLayer->getGroup()->removeChild(mRect);
         mRect = nullptr;

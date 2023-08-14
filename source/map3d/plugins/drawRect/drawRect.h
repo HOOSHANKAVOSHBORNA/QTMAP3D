@@ -10,6 +10,8 @@
 
 #define RECT "Rect"
 
+
+
 class DrawRect : public DrawShape
 {
     Q_OBJECT
@@ -33,7 +35,6 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mRectLayer;
     static int mCount;
     QQuickItem *mItem;
-
 
 
 };
