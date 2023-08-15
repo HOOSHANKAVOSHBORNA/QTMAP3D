@@ -10,10 +10,8 @@
 
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
-//    MoveableModel* moveableModelNode;
-    //bool hit = false;
-    //    bool positionCanged = false;
     osgEarth::GeoPoint geoPoint;
+//    osgEarth::GeoPoint geoPointPre;
 
     if (_animationPath.valid() &&
         nv->getVisitorType()== osg::NodeVisitor::UPDATE_VISITOR &&
@@ -21,12 +19,8 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
     {
         double time = nv->getFrameStamp()->getSimulationTime();
         _latestTime = time;
-
-//        moveableModelNode = dynamic_cast<MoveableModel*>(node);
-
         if (!_pause)
         {
-            // Only update _firstTime the first time, when its value is still DBL_MAX
             if (_firstTime >= DBL_MAX) _firstTime = time;
             //------------------------------------------------------------------------------------------------
             osg::AnimationPath::ControlPoint cp;
@@ -34,23 +28,27 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
             if (getAnimationPath()->getInterpolatedControlPoint(animatTime,cp))
             {
                 geoPoint.fromWorld(mMapItem->getMapSRS(), cp.getPosition());
-
                 double *height;
-//                mMoveableModel->getGeoTransform()->setTerrain(mMoveableModel->getMapNode()->getTerrain());
-//                mMoveableModel->getGeoTransform()->setAutoRecomputeHeights(true);
-                auto train = mMapItem->getMapNode()->getTerrain();
-                train->getHeight(mMapItem->getMapNode()->getMapSRS(),geoPoint.x(),geoPoint.y(),height);
-//                osg::Vec3d ncp;
-//                ncp.x() = cp.getPosition().x();
-//                ncp.y() = cp.getPosition().y();
-//                ncp.z() = *height;
+                auto terrain = mMapItem->getMapNode()->getTerrain();
+                terrain->getHeight(mMapItem->getMapNode()->getMapSRS(),geoPoint.x(),geoPoint.y(),height);
                 geoPoint.z() = *height;
-                qDebug()<< "z: "<<geoPoint.z();
-//                geoPoint.fromWorld(mMapItem->getMapSRS(), ncp);
+//                if (geoPointPre.isValid()){
+
+
+//                }
+//                geoPointPre = geoPoint;
                 mMoveableModel->setPosition(geoPoint);
                 mMoveableModel->getPositionAttitudeTransform()->setScale(cp.getScale());
-                if(mMoveableModel->mIs3D)
-                    mMoveableModel->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
+                if(mMoveableModel->mIs3D){
+//                    mMoveableModel->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
+                    double angle;
+                    osg::Vec3 vec;
+                    cp.getRotation().getRotate(angle, vec);
+                    //vec.z() = 0;
+                    vec.y() = 0;
+                    //vec.x() = 0;
+                    mMoveableModel->getPositionAttitudeTransform()->setAttitude(osg::Quat(angle, vec));
+                }
                 else
                 {
                     double angle;
@@ -66,124 +64,113 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 mMoveableModel->stop();
         }
     }
-
-    // must call any nested node callbacks and continue subgraph traversal.
     NodeCallback::traverse(node,nv);
-    //    if(hit)
-    //        defenseModelNode->collision(defenseModelNode->getFollowModel());
-    //if(positionCanged)
-    //        baseModel->curentPosition(geoPoint);
 }
-
 ModelAnimationPathCallback::ModelAnimationPathCallback(MapItem *mapControler, MoveableModel *moveableModel)
 {
     mMoveableModel = moveableModel;
     mMapItem = mapControler;
 }
-class AnimtkUpdateCallback : public osg::NodeCallback
-{
-private:
-    osg::ref_ptr<LineNode> mTestLine;
-    MoveableModel* mMoveableModel;
-public:
-//    META_Object(osgAnimation, AnimtkUpdateCallback);
+//class AnimtkUpdateCallback : public osg::NodeCallback
+//{
+//private:
+//    osg::ref_ptr<LineNode> mTestLine;
+//    MoveableModel* mMoveableModel;
+//public:
 
-    AnimtkUpdateCallback(MapItem* mapControler, MoveableModel* moveableModel)
-    {
-        mMoveableModel = moveableModel;
-        _sampler = new osgAnimation::Vec3CubicBezierSampler;
-        _playing = false;
-        _lastUpdate = 0;
-        mTestLine = new LineNode(mapControler);
+//    AnimtkUpdateCallback(MapItem* mapControler, MoveableModel* moveableModel)
+//    {
+//        mMoveableModel = moveableModel;
+//        _sampler = new osgAnimation::Vec3CubicBezierSampler;
+//        _playing = false;
+//        _lastUpdate = 0;
+//        mTestLine = new LineNode(mapControler);
 
-    }
-    AnimtkUpdateCallback(const AnimtkUpdateCallback& val, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
-        osg::Object(val, copyop),
-        osg::Callback(val, copyop),
-        osg::NodeCallback(val, copyop),
-        _sampler(val._sampler),
-        _startTime(val._startTime),
-        _currentTime(val._currentTime),
-        _playing(val._playing),
-        _lastUpdate(val._lastUpdate)
+//    }
+//    AnimtkUpdateCallback(const AnimtkUpdateCallback& val, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+//        osg::Object(val, copyop),
+//        osg::Callback(val, copyop),
+//        osg::NodeCallback(val, copyop),
+//        _sampler(val._sampler),
+//        _startTime(val._startTime),
+//        _currentTime(val._currentTime),
+//        _playing(val._playing),
+//        _lastUpdate(val._lastUpdate)
 
-    {
-    }
+//    {
+//    }
 
-    /** Callback method called by the NodeVisitor when visiting a node.*/
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    {
-        if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR &&
-            nv->getFrameStamp() &&
-            nv->getFrameStamp()->getFrameNumber() != _lastUpdate)
-        {
+//    /** Callback method called by the NodeVisitor when visiting a node.*/
+//    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+//    {
+//        if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR &&
+//            nv->getFrameStamp() &&
+//            nv->getFrameStamp()->getFrameNumber() != _lastUpdate)
+//        {
 
-            _lastUpdate = nv->getFrameStamp()->getFrameNumber();
-            _currentTime = osg::Timer::instance()->tick();
+//            _lastUpdate = nv->getFrameStamp()->getFrameNumber();
+//            _currentTime = osg::Timer::instance()->tick();
 
-            if (_playing && _sampler.get() && _sampler->getKeyframeContainer())
-            {
-//                MoveableModel* changiz = dynamic_cast<MoveableModel*>(node);;
-//                osg::PositionAttitudeTransform* transform = dynamic_cast<osg::PositionAttitudeTransform*>(node);
-//                changiz = dynamic_cast<MoveableModel*>(transform);
-                if (mMoveableModel) {
-                    osg::Vec3 result;
-                    osgEarth::GeoPoint geoPoint;
-                    float t = osg::Timer::instance()->delta_s(_startTime, _currentTime);
-                    float duration = _sampler->getEndTime() - _sampler->getStartTime();
-                    t = fmod(t, duration);
-                    t += _sampler->getStartTime();
-                    _sampler->getValueAt(t, result);
-                    geoPoint.fromWorld(mMoveableModel->getMapNode()->getMapSRS(), result);
+//            if (_playing && _sampler.get() && _sampler->getKeyframeContainer())
+//            {
+////                MoveableModel* changiz = dynamic_cast<MoveableModel*>(node);;
+////                osg::PositionAttitudeTransform* transform = dynamic_cast<osg::PositionAttitudeTransform*>(node);
+////                changiz = dynamic_cast<MoveableModel*>(transform);
+//                if (mMoveableModel) {
+//                    osg::Vec3 result;
+//                    osgEarth::GeoPoint geoPoint;
+//                    float t = osg::Timer::instance()->delta_s(_startTime, _currentTime);
+//                    float duration = _sampler->getEndTime() - _sampler->getStartTime();
+//                    t = fmod(t, duration);
+//                    t += _sampler->getStartTime();
+//                    _sampler->getValueAt(t, result);
+//                    geoPoint.fromWorld(mMoveableModel->getMapNode()->getMapSRS(), result);
 
-                    mTestLine->addPoint(geoPoint);
-                    mMoveableModel->addChild(mTestLine);
-                    mMoveableModel->setPosition(geoPoint);
-                    double angleX;
-                    double angleY;
-                    double angleZ;
-                    double angle;
-                    mMoveableModel->getPositionAttitudeTransform()->getAttitude().getRotate(angle, angleX, angleY, angleZ);
-                    //qDebug()<< "angle: "<< angle<< "angleX: "<< angleX<<"angleY: "<< angleY<<"angleZ: "<< angleZ;
-                    osg::Vec3d rotVec =    result - lastPosition;
-                    osg::Vec3d headVec = osg::Vec3d(0,-1,0);
-                    //                    std::cout << rotVec << std::endl;
-                    rotVec = rotVec/rotVec.length();
-                    //                    if(rotVec.z() > 0.001){
-                    //                        rotVec.z() = 0.0009;
-                    //                    }
-                    //                    std::cout << rotVec << std::endl;
-                    osg::Quat headingRotate;
-                    //                    headingRotate.makeRotate(osg::inDegrees(), headVec);
-                    //                    rotVec.y() = 0;
-                    headingRotate.makeRotate(headVec, rotVec);
-                    //changiz->getPositionAttitudeTransform()->setAttitude(headingRotate);
-                    //                    std::cout << result << "   "<<lastPosition<< "    "<< rotVec <<std::endl;
-                    //                    transform->setMatrix(osg::Matrix::translate(result));
-                    lastPosition = result;
-                }
-            }
-        }
-        // note, callback is responsible for scenegraph traversal so
-        // they must call traverse(node,nv) to ensure that the
-        // scene graph subtree (and associated callbacks) are traversed.
-        traverse(node,nv);
-    }
+//                    mTestLine->addPoint(geoPoint);
+//                    mMoveableModel->addChild(mTestLine);
+//                    mMoveableModel->setPosition(geoPoint);
+//                    double angleX;
+//                    double angleY;
+//                    double angleZ;
+//                    double angle;
+//                    mMoveableModel->getPositionAttitudeTransform()->getAttitude().getRotate(angle, angleX, angleY, angleZ);
+//                    //qDebug()<< "angle: "<< angle<< "angleX: "<< angleX<<"angleY: "<< angleY<<"angleZ: "<< angleZ;
+//                    osg::Vec3d rotVec =    result - lastPosition;
+//                    osg::Vec3d headVec = osg::Vec3d(0,-1,0);
+//                    //                    std::cout << rotVec << std::endl;
+//                    rotVec = rotVec/rotVec.length();
+//                    //                    if(rotVec.z() > 0.001){
+//                    //                        rotVec.z() = 0.0009;
+//                    //                    }
+//                    //                    std::cout << rotVec << std::endl;
+//                    osg::Quat headingRotate;
+//                    //                    headingRotate.makeRotate(osg::inDegrees(), headVec);
+//                    //                    rotVec.y() = 0;
+//                    headingRotate.makeRotate(headVec, rotVec);
+//                    //changiz->getPositionAttitudeTransform()->setAttitude(headingRotate);
+//                    //                    std::cout << result << "   "<<lastPosition<< "    "<< rotVec <<std::endl;
+//                    //                    transform->setMatrix(osg::Matrix::translate(result));
+//                    lastPosition = result;
+//                }
+//            }
+//        }
+//        // note, callback is responsible for scenegraph traversal so
+//        // they must call traverse(node,nv) to ensure that the
+//        // scene graph subtree (and associated callbacks) are traversed.
+//        traverse(node,nv);
+//    }
 
-    void start() { _startTime = osg::Timer::instance()->tick(); _currentTime = _startTime; _playing = true;}
-    void stop() { _currentTime = _startTime; _playing = false;}
+//    void start() { _startTime = osg::Timer::instance()->tick(); _currentTime = _startTime; _playing = true;}
+//    void stop() { _currentTime = _startTime; _playing = false;}
 
-    osg::ref_ptr<osgAnimation::Vec3CubicBezierSampler> _sampler;
-    osg::Timer_t _startTime;
-    osg::Timer_t _currentTime;
-    bool _playing;
-    unsigned int _lastUpdate;
-    osg::Vec3 lastPosition;
-    osg::ref_ptr<osg::Geode> _geode;
-};
-
-
-
+//    osg::ref_ptr<osgAnimation::Vec3CubicBezierSampler> _sampler;
+//    osg::Timer_t _startTime;
+//    osg::Timer_t _currentTime;
+//    bool _playing;
+//    unsigned int _lastUpdate;
+//    osg::Vec3 lastPosition;
+//    osg::ref_ptr<osg::Geode> _geode;
+//};
 
 MoveableModel::MoveableModel(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent):
     simpleModelNode(mapControler, modelUrl, iconUrl, parent)
