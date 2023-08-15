@@ -7,6 +7,7 @@
 #include <QQuickView>
 #include <QTimer>
 #include <QStandardPaths>
+#include <QGuiApplication>
 
 
 const QString CATEGORY = "Screen";
@@ -30,7 +31,6 @@ bool Screen::setup()
 
 //bool Screen::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 //{
-
 //    return false;
 //}
 
@@ -48,11 +48,21 @@ void Screen::takeSnapShot()
     connect(mViewCaptureCallback,&ViewCaptureCallback::imageProcessComplete,this,&Screen::onImageProcessComplete);
     mCamera->setFinalDrawCallback(mViewCaptureCallback);
 
+
+//    QScreen *screen = QGuiApplication::primaryScreen();
+//    QRect  screenGeometry = screen->geometry();
+//    qDebug() << screenGeometry;
+
+//    auto frameSize = mapItem()->mapRectToScene(QRect(0,0,mapItem()->width(),mapItem()->height()));
+    auto screenPoint = mapItem()->mapToGlobal(0,0);
+    qDebug() << screenPoint;
     QQmlComponent component(&mEngine, QUrl("qrc:/resources/SnapShot.qml"));
     mObject = component.create();
     auto window = dynamic_cast<QQuickWindow*>(mObject);
-    if(window)
-        window->showFullScreen();
+    if(window){
+        window->setGeometry(QRect(screenPoint.x(), screenPoint.y(), mapItem()->width(), mapItem()->height()));
+        window->show();
+    }
 
     QTimer *timer = new QTimer(this);
     timer->singleShot(50, this, SLOT(takingProcessFinished()));
