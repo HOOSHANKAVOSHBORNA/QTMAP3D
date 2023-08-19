@@ -20,7 +20,6 @@ private:
     double mSpeed;
     osg::ref_ptr<osg::AnimationPathCallback> mMoveAnimationPathCallback;
 
-
 };
 
 class ModelAnimationPathCallback: public osg::AnimationPathCallback
@@ -30,8 +29,8 @@ private:
     MapItem* mMapItem;
     osgEarth::GeoPoint mPreGeoPoint;
 public:
+    ModelAnimationPathCallback(MapItem* mapItem, MoveableModel* moveableModel);
     void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
-    ModelAnimationPathCallback(MapItem* mapControler, MoveableModel* moveableModel);
 };
 
 #endif // MOVEABLEMODEL_H
