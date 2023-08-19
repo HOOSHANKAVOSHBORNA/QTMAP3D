@@ -451,22 +451,22 @@ void Property::setPointsSmooth(bool point)
 
 }
 
-void Property::createProperty(QString name, QVariant property, QQmlEngine *qmlEngine)
-{
-    QQmlComponent* comp = new QQmlComponent(qmlEngine);
-    connect(comp, &QQmlComponent::statusChanged, [comp, property, name, this](){
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
-        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
-        mItem = qobject_cast<QQuickItem*>(comp->create());
-        mItem->setProperty("model", property);
+//void Property::createProperty(QString name, QVariant property, QQmlEngine *qmlEngine)
+//{
+//    QQmlComponent* comp = new QQmlComponent(qmlEngine);
+//    connect(comp, &QQmlComponent::statusChanged, [comp, property, name, this](){
+//        if (comp->status() == QQmlComponent::Status::Error) {
+//            qDebug() << comp->errorString();
+//        }
+//        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
+//        mItem = qobject_cast<QQuickItem*>(comp->create());
+//        mItem->setProperty("model", property);
 
-    });
+//    });
 
 
-    comp->loadUrl(QUrl("qrc:/Properties.qml"));
-}
+//    comp->loadUrl(QUrl("qrc:/Properties.qml"));
+//}
 
 QQuickItem *Property::item() const
 {

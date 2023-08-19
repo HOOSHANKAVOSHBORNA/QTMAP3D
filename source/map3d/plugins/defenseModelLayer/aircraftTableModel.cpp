@@ -325,6 +325,6 @@ void AircraftTable::onDoubleClicked(const int &tn)
 {
     if (mAircraftDatamanager->getAircraftsData().contains(tn)){
 //		mAircraftDatamanager->getAircraftsData()[tn]->modelNode->select();
-		mDefenseModelLayer->selectModelNode(mAircraftDatamanager->getAircraftsData()[tn]->modelNode);
+        mDefenseModelLayer->selectModelNode(mAircraftDatamanager->getAircraftsData()[tn]->modelNode);
     }
 }
