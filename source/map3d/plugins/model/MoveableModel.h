@@ -28,6 +28,7 @@ class ModelAnimationPathCallback: public osg::AnimationPathCallback
 private:
     MoveableModel* mMoveableModel;
     MapItem* mMapItem;
+    osgEarth::GeoPoint mPreGeoPoint;
 public:
     void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
     ModelAnimationPathCallback(MapItem* mapControler, MoveableModel* moveableModel);

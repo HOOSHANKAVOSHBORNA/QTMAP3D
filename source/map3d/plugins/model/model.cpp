@@ -175,7 +175,7 @@ void model::onCarItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/car.png");
-        mModelNode = new MoveableModel(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
+        mModelNode = new MoveableModel(mapItem(),"../data/models/truck.osgb", "../data/images/model/car.png");
 
         if(mCarlLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
@@ -244,7 +244,7 @@ void model::moving(const osgEarth::GeoPoint &geoPos){
 
     auto moveableModell = dynamic_cast<MoveableModel*>(mCurrentModel.get());
     if (moveableModell){
-        moveableModell->moveTo(geoPos,10);
+        moveableModell->moveTo(geoPos,5);
     }
 }
 

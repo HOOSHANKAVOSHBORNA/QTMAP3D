@@ -8,6 +8,13 @@
 #include <osgEarth/GeoMath>
 #include <osgEarth/Viewpoint>
 
+
+ModelAnimationPathCallback::ModelAnimationPathCallback(MapItem *mapControler, MoveableModel *moveableModel)
+{
+    mMoveableModel = moveableModel;
+    mMapItem = mapControler;
+}
+
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
     osgEarth::GeoPoint geoPoint;
@@ -29,25 +36,46 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
             {
                 geoPoint.fromWorld(mMapItem->getMapSRS(), cp.getPosition());
                 double *height;
-                auto terrain = mMapItem->getMapNode()->getTerrain();
+                const osgEarth::Terrain* terrain = mMapItem->getMapNode()->getTerrain();
                 terrain->getHeight(mMapItem->getMapNode()->getMapSRS(),geoPoint.x(),geoPoint.y(),height);
                 geoPoint.z() = *height;
-//                if (geoPointPre.isValid()){
-
-
-//                }
-//                geoPointPre = geoPoint;
                 mMoveableModel->setPosition(geoPoint);
                 mMoveableModel->getPositionAttitudeTransform()->setScale(cp.getScale());
                 if(mMoveableModel->mIs3D){
-//                    mMoveableModel->getPositionAttitudeTransform()->setAttitude(cp.getRotation());
+                    osg::Vec3d geoPointW;
+                    geoPoint.toWorld(geoPointW);
+                    osg::Vec3d preGeoPointW;
+                    mPreGeoPoint.toWorld(preGeoPointW);
+                    osg::Vec3d slopeVec = geoPointW - preGeoPointW;
+                    slopeVec.normalize();
+
+//                    slopeVec.z() = 0;
+                    //transfer def vector to local----------------------------------------
+                    osg::Matrixd localTransfer;
+                    mMoveableModel->getPosition().createWorldToLocal(localTransfer);
+                    osg::Quat localRotation;
+                    localRotation = localTransfer.getRotate();
+                    osg::Matrixd rotateTransfer = osg::Matrixd::rotate(localRotation);
+                    osg::Vec3f localDef =  slopeVec * rotateTransfer;
+                    //-------------------------------------------------------------------
+                    osg::Quat rotate1;
+                    rotate1.makeRotate(-(osg::X_AXIS), localDef);
                     double angle;
                     osg::Vec3 vec;
-                    cp.getRotation().getRotate(angle, vec);
-                    //vec.z() = 0;
-                    vec.y() = 0;
-                    //vec.x() = 0;
-                    mMoveableModel->getPositionAttitudeTransform()->setAttitude(osg::Quat(angle, vec));
+                    rotate1.getRotate(angle, vec);
+                    osg::Quat rotate2 = osg::Quat(0, osg::Z_AXIS);
+
+                    if(angle > osg::PI/2.0 ){
+//                        qDebug()<<"angle: "<<angle;
+                        rotate1.makeRotate(-(osg::Y_AXIS), localDef);
+                        rotate2.makeRotate(osg::PI/2.0, osg::Z_AXIS);
+                    }
+
+                    osg::Quat rotate = rotate1 * rotate2;
+                    mMoveableModel->getPositionAttitudeTransform()->setAttitude(rotate);
+
+                    mPreGeoPoint = geoPoint;
+
                 }
                 else
                 {
@@ -60,117 +88,14 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                 }
             }
 
-            if(mMoveableModel && (_latestTime - _firstTime) > _animationPath->getPeriod())
-                mMoveableModel->stop();
+            if(mMoveableModel && (_latestTime - _firstTime) > _animationPath->getPeriod()){
+//                mMoveableModel->stop();
+                setPause(true);
+            }
         }
     }
     NodeCallback::traverse(node,nv);
 }
-ModelAnimationPathCallback::ModelAnimationPathCallback(MapItem *mapControler, MoveableModel *moveableModel)
-{
-    mMoveableModel = moveableModel;
-    mMapItem = mapControler;
-}
-//class AnimtkUpdateCallback : public osg::NodeCallback
-//{
-//private:
-//    osg::ref_ptr<LineNode> mTestLine;
-//    MoveableModel* mMoveableModel;
-//public:
-
-//    AnimtkUpdateCallback(MapItem* mapControler, MoveableModel* moveableModel)
-//    {
-//        mMoveableModel = moveableModel;
-//        _sampler = new osgAnimation::Vec3CubicBezierSampler;
-//        _playing = false;
-//        _lastUpdate = 0;
-//        mTestLine = new LineNode(mapControler);
-
-//    }
-//    AnimtkUpdateCallback(const AnimtkUpdateCallback& val, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
-//        osg::Object(val, copyop),
-//        osg::Callback(val, copyop),
-//        osg::NodeCallback(val, copyop),
-//        _sampler(val._sampler),
-//        _startTime(val._startTime),
-//        _currentTime(val._currentTime),
-//        _playing(val._playing),
-//        _lastUpdate(val._lastUpdate)
-
-//    {
-//    }
-
-//    /** Callback method called by the NodeVisitor when visiting a node.*/
-//    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-//    {
-//        if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR &&
-//            nv->getFrameStamp() &&
-//            nv->getFrameStamp()->getFrameNumber() != _lastUpdate)
-//        {
-
-//            _lastUpdate = nv->getFrameStamp()->getFrameNumber();
-//            _currentTime = osg::Timer::instance()->tick();
-
-//            if (_playing && _sampler.get() && _sampler->getKeyframeContainer())
-//            {
-////                MoveableModel* changiz = dynamic_cast<MoveableModel*>(node);;
-////                osg::PositionAttitudeTransform* transform = dynamic_cast<osg::PositionAttitudeTransform*>(node);
-////                changiz = dynamic_cast<MoveableModel*>(transform);
-//                if (mMoveableModel) {
-//                    osg::Vec3 result;
-//                    osgEarth::GeoPoint geoPoint;
-//                    float t = osg::Timer::instance()->delta_s(_startTime, _currentTime);
-//                    float duration = _sampler->getEndTime() - _sampler->getStartTime();
-//                    t = fmod(t, duration);
-//                    t += _sampler->getStartTime();
-//                    _sampler->getValueAt(t, result);
-//                    geoPoint.fromWorld(mMoveableModel->getMapNode()->getMapSRS(), result);
-
-//                    mTestLine->addPoint(geoPoint);
-//                    mMoveableModel->addChild(mTestLine);
-//                    mMoveableModel->setPosition(geoPoint);
-//                    double angleX;
-//                    double angleY;
-//                    double angleZ;
-//                    double angle;
-//                    mMoveableModel->getPositionAttitudeTransform()->getAttitude().getRotate(angle, angleX, angleY, angleZ);
-//                    //qDebug()<< "angle: "<< angle<< "angleX: "<< angleX<<"angleY: "<< angleY<<"angleZ: "<< angleZ;
-//                    osg::Vec3d rotVec =    result - lastPosition;
-//                    osg::Vec3d headVec = osg::Vec3d(0,-1,0);
-//                    //                    std::cout << rotVec << std::endl;
-//                    rotVec = rotVec/rotVec.length();
-//                    //                    if(rotVec.z() > 0.001){
-//                    //                        rotVec.z() = 0.0009;
-//                    //                    }
-//                    //                    std::cout << rotVec << std::endl;
-//                    osg::Quat headingRotate;
-//                    //                    headingRotate.makeRotate(osg::inDegrees(), headVec);
-//                    //                    rotVec.y() = 0;
-//                    headingRotate.makeRotate(headVec, rotVec);
-//                    //changiz->getPositionAttitudeTransform()->setAttitude(headingRotate);
-//                    //                    std::cout << result << "   "<<lastPosition<< "    "<< rotVec <<std::endl;
-//                    //                    transform->setMatrix(osg::Matrix::translate(result));
-//                    lastPosition = result;
-//                }
-//            }
-//        }
-//        // note, callback is responsible for scenegraph traversal so
-//        // they must call traverse(node,nv) to ensure that the
-//        // scene graph subtree (and associated callbacks) are traversed.
-//        traverse(node,nv);
-//    }
-
-//    void start() { _startTime = osg::Timer::instance()->tick(); _currentTime = _startTime; _playing = true;}
-//    void stop() { _currentTime = _startTime; _playing = false;}
-
-//    osg::ref_ptr<osgAnimation::Vec3CubicBezierSampler> _sampler;
-//    osg::Timer_t _startTime;
-//    osg::Timer_t _currentTime;
-//    bool _playing;
-//    unsigned int _lastUpdate;
-//    osg::Vec3 lastPosition;
-//    osg::ref_ptr<osg::Geode> _geode;
-//};
 
 MoveableModel::MoveableModel(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent):
     simpleModelNode(mapControler, modelUrl, iconUrl, parent)
@@ -181,28 +106,24 @@ MoveableModel::MoveableModel(MapItem *mapControler, const std::string &modelUrl,
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);
     mMoveAnimationPathCallback->setAnimationPath(path);
     getGeoTransform()->addUpdateCallback(mMoveAnimationPathCallback);
-
-//getGeoTransform()->setUpdateCallback(callback);
-
 }
 
 void MoveableModel::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
 {
-    //mMoveAnimationPathCallback->getAnimationPath()->clear();
+    mMoveAnimationPathCallback->reset();
+    mMoveAnimationPathCallback->getAnimationPath()->clear();
+    mMoveAnimationPathCallback->setPause(false);
+
     osg::Vec3d currentWPoint;
     getPosition().toWorld(currentWPoint);
-    osg::Vec3d wDesPos;
-    osgEarth::GeoPoint(mapItem()->getMapSRS(), destinationPoint).toWorld(wDesPos);
-    osg::Vec3d wDef = wDesPos - currentWPoint;
-    double distance = wDef.normalize();
-    //transfer def vector to local----------------------------------------
-    osg::Matrixd localTransfer;
-    getPosition().createWorldToLocal(localTransfer);
-    osg::Quat localRotation;
-    localRotation = localTransfer.getRotate();
-    osg::Matrixd rotateTransfer = osg::Matrixd::rotate(localRotation);
-    osg::Vec3f localDef =  wDef * rotateTransfer;
-    //-------------------------------------------------------------------
+    osg::Vec3d destinationWPoint;
+    destinationPoint.toWorld(destinationWPoint);
+
+    double distance = getPosition().distanceTo(destinationPoint);
+    double t = distance / mSpeed;
+
+    mMoveAnimationPathCallback->getAnimationPath()->insert(0, osg::AnimationPath::ControlPoint(currentWPoint));
+    mMoveAnimationPathCallback->getAnimationPath()->insert(t, osg::AnimationPath::ControlPoint(destinationWPoint));
 
 
 //    osg::Vec3d objectDirection  = osg::Vec3d(0,1,0);
@@ -240,9 +161,7 @@ void MoveableModel::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
 //        point2.y() = currentWPoint.y() + 10*objectLength ;
 //    }
 
-    osg::Quat rotate;
-    rotate.makeRotate(-(osg::Y_AXIS), localDef);
-    double t = distance / mSpeed;
+
 
 
 //    mMoveAnimationPathCallback->getAnimationPath()->insert(0, osg::AnimationPath::ControlPoint(currentWPoint, rotate));
@@ -274,13 +193,9 @@ void MoveableModel::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
 //    node->addChild(getGeoTransform());
 
     //getGeoTransform()->setTerrain(mapItem()->getMapNode()->getTerrain()->getHeight());
-    getGeoTransform()->setAutoRecomputeHeights(true);
+//    getGeoTransform()->setAutoRecomputeHeights(true);
 
-    mMoveAnimationPathCallback->getAnimationPath()->insert(0, osg::AnimationPath::ControlPoint(currentWPoint, rotate, osg::Vec3d(10,10,10)));
-//    mMoveAnimationPathCallback->getAnimationPath()->insert(2, osg::AnimationPath::ControlPoint(pI, rotate, osg::Vec3d(1,1,1)));
-//    mMoveAnimationPathCallback->getAnimationPath()->insert(5, osg::AnimationPath::ControlPoint(pII, rotate, osg::Vec3d(1,1,1)));
-    mMoveAnimationPathCallback->getAnimationPath()->insert(t,osg::AnimationPath::ControlPoint(wDesPos,rotate, osg::Vec3d(10,10,10)));
-    getGeoTransform()->setUpdateCallback(mMoveAnimationPathCallback);
+
 
 }
 
