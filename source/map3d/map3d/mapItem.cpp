@@ -226,6 +226,21 @@ void MapItem::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) con
 
 }
 
+void MapItem::worldToOSGScreen(osg::Vec3d worldPoint, float &outX, float &outY) const
+{
+    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
+    float width = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->width());
+
+    const osg::Matrixd pMatrix = mOSGRenderNode->getCamera()->getProjectionMatrix();
+    const osg::Matrixd vMatrix = mOSGRenderNode->getCamera()->getViewMatrix();
+    osg::Vec3f result =   (worldPoint * vMatrix) * pMatrix;
+    outX = result.x() * (width/2.0f) + width/2.0f;
+    outY = result.y() * (height/2.0f) + height/2.0f;
+    QPointF point = mapToScene(QPoint(outX, outY));
+    outX = point.x();
+    outY = point.y();
+}
+
 //void MapItem::addLayer(osgEarth::Layer *layer)
 //{
 //    layer->setUserValue("parent", false);

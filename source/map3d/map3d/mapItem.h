@@ -57,6 +57,7 @@ public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;
     osgEarth::GeoPoint screenToGeoPoint(float x, float y) const;
     void worldToScreen(osg::Vec3d worldPoint, float& outX, float& outY) const;
+    void worldToOSGScreen(osg::Vec3d worldPoint, float& outX, float& outY) const;
 
     bool getMode() const;
     //--layer function---------------------------------

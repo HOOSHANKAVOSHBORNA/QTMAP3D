@@ -79,7 +79,7 @@ private:
 private:
     //QMap<QString,QMap<int, osg::ref_ptr<DefenseModelNode>>>  mModelNodes;
 	DefenseModelNode* mSelectedModelNode{nullptr};//do not define as ref_ptr
-	DefenseModelNode* mOnMoveModelNode{nullptr};
+    DefenseModelNode* mOnMoveModelNode{nullptr};
     int mPreCameraRange{0};
 
 //    ListManager *mListManager = nullptr;

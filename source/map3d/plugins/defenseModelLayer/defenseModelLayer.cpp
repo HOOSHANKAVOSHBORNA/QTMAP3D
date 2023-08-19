@@ -1,7 +1,7 @@
 #include "defenseModelLayer.h"
 #include "mapItem.h"
 #include "defenseDataManager.h"
-
+#include "mainwindow.h"
 #include <QDebug>
 #include <QMainWindow>
 #include <QTimer>
@@ -226,9 +226,16 @@ bool DefenseModelLayer::setup()
 
 void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
 {
-    //	QMouseEvent* event = new QMouseEvent(QEvent::Type::Enter, QPointF(0,0), Qt::MouseButton::LeftButton,
-    //										 Qt::MouseButton::LeftButton, Qt::KeyboardModifier::NoModifier);
-    mapItem()->getViewer()->getEventQueue()->mouseButtonPress(0,0, 1);
+    float x, y;
+    osg::Vec3d worldPoint;
+    defenseModelNode->getPosition().toWorld(worldPoint);
+//    mapItem()->getCameraController()->goToPosition(defenseModelNode->getPosition(),
+//                                                   mapItem()->getCameraController()->getViewpoint().getRange(), 0.0);
+    mapItem()->hoverMoveEvent(new QHoverEvent(QEvent::Enter, QPointF(0, 0), QPointF(0, 0), QPointF(0, 1)));
+    mapItem()->worldToOSGScreen(worldPoint, x, y);
+    mapItem()->getViewer()->getEventQueue()->mouseButtonPress(x, y, 1);
+
+
     //	if(defenseModelNode)
     //	{
     //		defenseModelNode->mousePressEvent(event, true);
@@ -237,7 +244,7 @@ void DefenseModelLayer::selectModelNode(DefenseModelNode *defenseModelNode)
     //	if(mSelectedModelNode && mSelectedModelNode != defenseModelNode)
     //		mSelectedModelNode->mousePressEvent(event, false);
     //	if(defenseModelNode)
-    //		mSelectedModelNode = defenseModelNode;
+//            mSelectedModelNode = defenseModelNode;
 }
 
 void DefenseModelLayer::modelNodeDeleted(DefenseModelNode *defenseModelNode)
@@ -463,6 +470,7 @@ bool DefenseModelLayer::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIA
 bool DefenseModelLayer::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     bool res = false;
+    qDebug() << ea.getX() << ", " << ea.getY();
     DefenseModelNode* modelNode = pick(ea.getX(), ea.getY());
     if(modelNode)
     {
@@ -517,6 +525,7 @@ bool DefenseModelLayer::mouseDragEvent(const osgGA::GUIEventAdapter &ea, osgGA::
         mDragAircraftModelNode->setPosition(mouseGeoPoint);
 //        qDebug()<<"drag aircraft move";
     }
+
 //    qDebug()<<"drg";
     return false;
 }

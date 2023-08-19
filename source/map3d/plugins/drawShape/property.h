@@ -231,7 +231,7 @@ public:
 signals:
     void propretyChanged();
 protected:
-    void createProperty(QString name, QVariant property, QQmlEngine *qmlEngine);
+//    void createProperty(QString name, QVariant property, QQmlEngine *qmlEngine);
 
 
 private:
