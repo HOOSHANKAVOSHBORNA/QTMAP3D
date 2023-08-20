@@ -9,8 +9,8 @@ class Rect : public osgEarth::Annotation::RectangleNode
 {
 public:
     Rect();
-    void setColor(osgEarth::Color color);
-    osgEarth::Color getColor();
+    void setFillColor(osgEarth::Color color);
+    osgEarth::Color getFillColor();
     void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
     osgEarth::Symbology::AltitudeSymbol::Clamping getClamp();
     void setStrokeColor(osgEarth::Color color);

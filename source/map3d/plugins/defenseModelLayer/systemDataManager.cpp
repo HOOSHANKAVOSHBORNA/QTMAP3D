@@ -83,7 +83,7 @@ void SystemDataManager::addAssignment(int systemNo, System::Assignment* assignme
     {
         assignment->line = new LineNode(mDefenseModelLayer->mapItem());
         assignment->line->setPointVisible(true);
-        assignment->line->setColor(osgEarth::Color::White);
+        assignment->line->setFillColor(osgEarth::Color::White);
         assignment->line->setPointColor(osgEarth::Color::Olive);
         assignment->line->setWidth(1);
         assignment->line->setPointWidth(5);
@@ -112,7 +112,7 @@ void SystemDataManager::assignmentResponse(int tn, int systemNo, bool accept)
         auto index = mSystemData[systemNo]->findAssignment(tn);
         if (index >= 0){
             auto assignment = mSystemData[systemNo]->assignments.at(index);
-            assignment->line->setColor(osgEarth::Color::Olive);
+            assignment->line->setFillColor(osgEarth::Color::Olive);
             assignment->line->setPointVisible(false);
             assignment->line->setWidth(5);
         }

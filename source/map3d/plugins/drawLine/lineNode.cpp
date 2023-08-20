@@ -171,12 +171,12 @@ int LineNode::getSize()
     return static_cast<int>(mLineGeometry->size());
 }
 
-osgEarth::Color LineNode::getColor() const
+osgEarth::Color LineNode::getFillColor() const
 {
     return mColor;
 }
 
-void LineNode::setColor(const osgEarth::Color &color)
+void LineNode::setFillColor(const osgEarth::Color &color)
 {
     if(mColor == color)
         return;

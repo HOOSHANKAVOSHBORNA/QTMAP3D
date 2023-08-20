@@ -33,7 +33,7 @@ void LineProperty::setStrokeColor(const QColor &color)
 {
     Property::setStrokeColor(color);
     if(mLineNode)
-        mLineNode->setColor(Utility::qColor2osgEarthColor(color));
+        mLineNode->setFillColor(Utility::qColor2osgEarthColor(color));
 
 }
 
@@ -112,7 +112,7 @@ void LineProperty::setLine(LineNode *newLine)
     mLineNode = newLine;
     if(mLineNode){
         mLineNode->setWidth(getStrokeWidth());
-        mLineNode->setColor(Utility::qColor2osgEarthColor(getStrokeColor()));
+        mLineNode->setFillColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mLineNode->setPointColor(Utility::qColor2osgEarthColor(getPointsColor()));
         mLineNode->setPointWidth(getPointsWidth());
         mLineNode->setSmooth(getPointsSmooth());
@@ -138,7 +138,7 @@ void LineProperty::setRuler(LineNode *newLine)
     mLineNode = newLine;
     if(mLineNode){
         mLineNode->setWidth(getStrokeWidth());
-        mLineNode->setColor(Utility::qColor2osgEarthColor(getStrokeColor()));
+        mLineNode->setFillColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mLineNode->setPointColor(Utility::qColor2osgEarthColor(getPointsColor()));
         mLineNode->setPointWidth(getPointsWidth());
         mLineNode->setSmooth(getPointsSmooth());
@@ -163,7 +163,7 @@ void LineProperty::setMeasureHeight(LineNode *newLine)
     mLineNode = newLine;
     if(mLineNode){
         mLineNode->setWidth(getStrokeWidth());
-        mLineNode->setColor(Utility::qColor2osgEarthColor(getStrokeColor()));
+        mLineNode->setFillColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mLineNode->setPointColor(Utility::qColor2osgEarthColor(getPointsColor()));
         mLineNode->setPointWidth(getPointsWidth());
         mLineNode->setSmooth(getPointsSmooth());
@@ -189,7 +189,7 @@ void LineProperty::setMesureSlope(LineNode *newLine)
     mLineNode = newLine;
     if(mLineNode){
         mLineNode->setWidth(getStrokeWidth());
-        mLineNode->setColor(Utility::qColor2osgEarthColor(getStrokeColor()));
+        mLineNode->setFillColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mLineNode->setPointColor(Utility::qColor2osgEarthColor(getPointsColor()));
         mLineNode->setPointWidth(getPointsWidth());
         mLineNode->setSmooth(getPointsSmooth());

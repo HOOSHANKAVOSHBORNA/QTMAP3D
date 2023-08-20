@@ -78,7 +78,7 @@ osg::Node* Capsule::installTwoPassAlpha(osg::Node* node)
     return g1;
 }
 
-void Capsule::setColor(osgEarth::Color color)
+void Capsule::setFillColor(osgEarth::Color color)
 {
     mColor = color;
     if(mShapeDrawable)
@@ -88,7 +88,7 @@ void Capsule::setColor(osgEarth::Color color)
     }
 }
 
-osgEarth::Color Capsule::getColor()
+osgEarth::Color Capsule::getFillColor()
 {
     if(mShapeDrawable)
     {

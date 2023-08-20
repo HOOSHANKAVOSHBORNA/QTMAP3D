@@ -10,15 +10,15 @@ class Circle: public osgEarth::Annotation::CircleNode
 public:
     Circle();
 
-    void setCircleHeight(float hieght);
-    void setColor(osgEarth::Color color);
-    void setLineColor(osgEarth::Color color);
+    void setHeight(float hieght);
+    void setFillColor(osgEarth::Color color);
+    void setStrokeColor(osgEarth::Color color);
     void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
-    void setLineWidth(float width);
-    float getCircleHeight();
-    osgEarth::Color getColor();
-    osgEarth::Color getLineColor();
-    float getLineWidth();
+    void setStrokeWidth(float width);
+    float getHeight();
+    osgEarth::Color getFillColor();
+    osgEarth::Color getStrokeColor();
+    float getStrokeWidth();
 
 private:
     osgEarth::Symbology::Style circleStyle;

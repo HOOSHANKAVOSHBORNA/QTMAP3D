@@ -18,7 +18,7 @@ void BoxProperty::setFillColor(const QColor &color)
 {
     Property::setFillColor(color);
     if (mBox)
-        mBox->setColor(Utility::qColor2osgEarthColor(color));
+        mBox->setFillColor(Utility::qColor2osgEarthColor(color));
 }
 
 void BoxProperty::setLenght(double lenght)
@@ -91,7 +91,7 @@ void BoxProperty::setBox(Box *newBox, const osgEarth::SpatialReference* srs)
     mBox = newBox;
     mSRS = srs;
     if(mBox){
-        mBox->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mBox->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mBox->setLength(getLenght());
         mBox->setWidth(getWidth());
         mBox->setHeight(getHeight());

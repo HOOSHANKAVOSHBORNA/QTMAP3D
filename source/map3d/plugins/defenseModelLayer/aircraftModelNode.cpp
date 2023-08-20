@@ -219,20 +219,20 @@ AircraftModelNode::AircraftModelNode(DefenseModelLayer *defenseModelLayer, const
     mRouteLine = new LineNode(defenseModelLayer->mapItem());
     mRouteLine->setPointVisible(false);
     mRouteLine->setTessellation(10);
-    mRouteLine->setColor(osgEarth::Color::Purple);
+    mRouteLine->setFillColor(osgEarth::Color::Purple);
     mRouteLine->setWidth(5);
 
     mLatestPointLine = new LineNode(defenseModelLayer->mapItem());
     mLatestPointLine->setPointVisible(true);
     mLatestPointLine->setPointColor(osgEarth::Color::Blue);
-    mLatestPointLine->setColor(osgEarth::Color::Purple);
+    mLatestPointLine->setFillColor(osgEarth::Color::Purple);
     mLatestPointLine->setWidth(5);
     mLatestPointLine->setPointWidth(15);
     mLatestPointLine->setSmooth(true);
 
     mTempLine = new LineNode(defenseModelLayer->mapItem());
     mTempLine->setPointVisible(false);
-    mTempLine->setColor(osgEarth::Color::Purple);
+    mTempLine->setFillColor(osgEarth::Color::Purple);
     mTempLine->setWidth(5);
 }
 

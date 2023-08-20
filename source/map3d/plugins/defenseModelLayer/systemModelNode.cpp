@@ -153,7 +153,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     mBackCircleNode = new Circle();
 	mBackCircleNode->setRadius(6.5);
 	//	mBackCircleNode->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
-	mBackCircleNode->setColor(osgEarth::Color(0.2f, 0.2f, 0.2f, 0.05f));
+    mBackCircleNode->setFillColor(osgEarth::Color(0.2f, 0.2f, 0.2f, 0.05f));
 	mBackCircleNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.08));
 	//    mRectangleNode = new osgEarth::Annotation::RectangleNode();
 	//    mRectangleNode->setSize(16, 16);
@@ -179,11 +179,11 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     connect(mDefenseModelLayer->mapItem(), &MapItem::modeChanged, this, &SystemModelNode::onModeChanged);
     //--create shapes-----------------------------------------------------------------------------
     mRangeCircle = new Circle();
-    mRangeCircle->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
+    mRangeCircle->setFillColor(osg::Vec4(1.0, 0.0, 0.0, 0.4f));
 	mRangeCircle->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 
 	mMezSphere = new SphereNode();
-	mMezSphere->setColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
+    mMezSphere->setFillColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
 	mMezSphere->setSphereShape(SphereNode::SphereShape::SphereTopHalf);
 
     mWezPolygon = new Polygon(mDefenseModelLayer->mapItem());
@@ -545,7 +545,7 @@ void SystemModelNode::onActiveButtonToggled(bool checked)
 void SystemModelNode::searchPhase()
 {
 	for(auto assignment: mData->assignments)
-		assignment->line->setColor(osgEarth::Color::Yellow);
+        assignment->line->setFillColor(osgEarth::Color::Yellow);
 
 	mTruckS->startSearch();
 }
@@ -558,7 +558,7 @@ void SystemModelNode::lockPhase(int tn)
 	{
 		auto assignment = mData->assignments.at(index);
 		mTargetModelNode = assignment->modelNode;
-		assignment->line->setColor(osgEarth::Color::Orange);
+        assignment->line->setFillColor(osgEarth::Color::Orange);
 
 		mTruckL->lockOnTarget(mTargetModelNode->getPosition());
 		mTruckF->aimTarget(mTargetModelNode->getPosition());
@@ -581,7 +581,7 @@ void SystemModelNode::firePhase(int tn)
 	{
 		auto assignment = mData->assignments.at(index);
 		mTargetModelNode = assignment->modelNode;
-		assignment->line->setColor(osgEarth::Color::Red);
+        assignment->line->setFillColor(osgEarth::Color::Red);
 		mFiredRocket = mTruckF->getActiveRocket();
 		if(mFiredRocket)
 		{
@@ -600,7 +600,7 @@ void SystemModelNode::killPhase(int tn)
 	{
 		auto assignment = mData->assignments.at(index);
         mDefenseModelLayer->mapItem()->getCameraController()->untrack();
-		assignment->line->setColor(osgEarth::Color::Black);
+        assignment->line->setFillColor(osgEarth::Color::Black);
 		assignment->modelNode->collision();
 
 		if(mFiredRocket)
@@ -618,7 +618,7 @@ void SystemModelNode::noKillPhase(int tn)
 	{
 		auto assignment = mData->assignments.at(index);
         mDefenseModelLayer->mapItem()->getCameraController()->untrack();
-		assignment->line->setColor(osgEarth::Color::Brown);
+        assignment->line->setFillColor(osgEarth::Color::Brown);
 		if(mFiredRocket)
 			mFiredRocket->stop();
 		//        removeAssignment(tn);

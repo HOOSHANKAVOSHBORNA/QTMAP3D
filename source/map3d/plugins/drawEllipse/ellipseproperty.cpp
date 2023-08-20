@@ -26,7 +26,7 @@ void EllipseProperty::setFillColor(const QColor &color)
 
     Property::setFillColor(color);
     if(mEllipse)
-        mEllipse->setColor(Utility::qColor2osgEarthColor(color));
+        mEllipse->setFillColor(Utility::qColor2osgEarthColor(color));
 }
 
 
@@ -139,7 +139,7 @@ void EllipseProperty::setEllipse(Ellipse *newEllipse, const osgEarth::SpatialRef
     mSRS = srs;
 
     if(mEllipse){
-        mEllipse->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mEllipse->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mEllipse->setHeight(getHeight());
         mEllipse->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mEllipse->setStrokeWidth(getStrokeWidth());

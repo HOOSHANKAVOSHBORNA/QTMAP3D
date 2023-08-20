@@ -4,7 +4,7 @@
 //#include "osgEarthAnnotation/AnnotationEditing"
 
 
-void Circle::setCircleHeight(float height)
+void Circle::setHeight(float height)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = height;
@@ -15,7 +15,7 @@ void Circle::setCircleHeight(float height)
 
 }
 
-float Circle::getCircleHeight()
+float Circle::getHeight()
 {
     auto style = this->getStyle();
     return style.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height().get();
@@ -34,7 +34,7 @@ Circle::Circle()
     this->setPie(true);
 
 }
-void Circle::setColor(osgEarth::Color color)
+void Circle::setFillColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color);
@@ -42,26 +42,26 @@ void Circle::setColor(osgEarth::Color color)
     this->setStyle(style);
 }
 
-void Circle::setLineColor(osgEarth::Color color) {
+void Circle::setStrokeColor(osgEarth::Color color) {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = color;
     this->setStyle(style);
 }
 
-osgEarth::Color Circle::getColor()
+osgEarth::Color Circle::getFillColor()
 {
     auto style = this->getStyle();
     return style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color();
 }
 
-osgEarth::Color Circle::getLineColor()
+osgEarth::Color Circle::getStrokeColor()
 {
     auto style = this->getStyle();
     return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color();
 }
 
 
-float Circle::getLineWidth()
+float Circle::getStrokeWidth()
 {
     auto style = this->getStyle();
     return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width().get();
@@ -77,7 +77,7 @@ void Circle::setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp)
     this->setStyle(style);
 }
 
-void Circle::setLineWidth(float width)
+void Circle::setStrokeWidth(float width)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = width;

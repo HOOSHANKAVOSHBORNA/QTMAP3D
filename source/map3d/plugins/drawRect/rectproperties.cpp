@@ -21,7 +21,7 @@ void RectProperties::setFillColor(const QColor &color)
 {
     Property::setFillColor(color);
     if(mRect)
-        mRect->setColor(Utility::qColor2osgEarthColor(color));
+        mRect->setFillColor(Utility::qColor2osgEarthColor(color));
 }
 
 void RectProperties::setHeight(double height)
@@ -103,7 +103,7 @@ void RectProperties::setRect(Rect *newRect, const osgEarth::SpatialReference *sr
     mSRS = srs;
 
     if(mRect){
-        mRect->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mRect->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mRect->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mRect->setStrokeWidth(getStrokeWidth());
         mRect->setHeight(getHeight());

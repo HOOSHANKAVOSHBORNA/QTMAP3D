@@ -5,7 +5,7 @@ MeasureHeight::MeasureHeight(MapItem *mapItem)
     mMapItem = mapItem;
     mHLine = new LineNode(mMapItem);
     mVLine = new LineNode(mMapItem);
-    mHLine->setColor(osgEarth::Color::White);
+    mHLine->setFillColor(osgEarth::Color::White);
     mVLine->setWidth(5);
     mHLine->setWidth(5);
 	mHLine->setShowDistance(false);
@@ -160,8 +160,8 @@ osgEarth::Color MeasureHeight::getColor() const
 void MeasureHeight::setColor(const osgEarth::Color &value)
 {
     color = value;
-    mVLine->setColor(color);
-    mHLine->setColor(color);
+    mVLine->setFillColor(color);
+    mHLine->setFillColor(color);
 }
 
 bool MeasureHeight::started() const

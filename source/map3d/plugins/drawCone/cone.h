@@ -17,12 +17,12 @@ public:
 
     void compile();
 
-    void setColor(osgEarth::Color color);
+    void setFillColor(osgEarth::Color color);
     void setCenter(osg::Vec3f center);
     void setRadius(const osgEarth::Linear &radius);
     void setHeight(const osgEarth::Linear &height);
 
-    osgEarth::Color getColor();
+    osgEarth::Color getFillColor();
     osg::Vec3f getCenter();
     const osgEarth::Linear &getRadius() const;
     const osgEarth::Linear &getHeight() const;

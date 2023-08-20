@@ -84,7 +84,7 @@ osg::Node* Box::installTwoPassAlpha(osg::Node* node)
 
 
 
-void Box::setColor(osgEarth::Color color)
+void Box::setFillColor(osgEarth::Color color)
 {
     mColor = color;
     if(mShapeDrawable)
@@ -93,7 +93,7 @@ void Box::setColor(osgEarth::Color color)
     }
 }
 
-osgEarth::Color Box::getColor()
+osgEarth::Color Box::getFillColor()
 {
     if(mShapeDrawable)
     {
