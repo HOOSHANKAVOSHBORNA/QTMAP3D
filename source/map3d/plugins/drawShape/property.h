@@ -35,6 +35,14 @@ class Property :  public QQuickItem
     Q_PROPERTY(double radius          READ getRadius                     WRITE setRadius            NOTIFY propretyChanged)
 
 
+    Q_PROPERTY(bool radiusMinorStatus      READ getRadiusMinorStatus               WRITE setRadiusMinorStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(double radiusMinor          READ getRadiusMinor                     WRITE setRadiusMinor            NOTIFY propretyChanged)
+
+
+    Q_PROPERTY(bool radiusMajorStatus      READ getRadiusMajorStatus               WRITE setRadiusMajorStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(double radiusMajor          READ getRadiusMajor                     WRITE setRadiusMajor            NOTIFY propretyChanged)
+
+
     Q_PROPERTY(bool heightStatus      READ getHeightStatus               WRITE setHeightStatus      NOTIFY propretyChanged)
     Q_PROPERTY(double heighT          READ getHeight                     WRITE setHeight            NOTIFY propretyChanged)
 
@@ -135,6 +143,24 @@ public:
 
     double getRadius() const;
     virtual void setRadius(double radius);
+
+    // ---------- RadiusMinor  --------- //
+
+    bool getRadiusMinorStatus() const;
+    void setRadiusMinorStatus(bool radius);
+
+    double getRadiusMinor() const;
+    virtual void setRadiusMinor(double radius);
+
+
+    // ---------- RadiusMajor  --------- //
+
+    bool getRadiusMajorStatus() const;
+    void setRadiusMajorStatus(bool radius);
+
+    double getRadiusMajor() const;
+    virtual void setRadiusMajor(double radius);
+
 
     // ---------- height  --------- //
 
@@ -267,6 +293,16 @@ private:
 
     bool mRadiusStatus{false};
     double mRadius{1000};
+
+    // ---------- RadiusMinor //
+
+    bool mRadiusMinorStatus{false};
+    double mRadiusMinor{10};
+
+    // ---------- RadiusMajor //
+
+    bool mRadiusMajorStatus{false};
+    double mRadiusMajor{100};
 
     // ---------- height //
 

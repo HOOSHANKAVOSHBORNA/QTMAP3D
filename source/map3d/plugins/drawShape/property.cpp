@@ -198,6 +198,61 @@ void Property::setRadius(double radius)
     emit propretyChanged();
 
 }
+
+
+//------------------RadiusMinor ---------------//
+
+bool Property::getRadiusMinorStatus() const
+{
+    return mRadiusMinorStatus;
+}
+
+void Property::setRadiusMinorStatus(bool radius)
+{
+    mRadiusMinorStatus = radius;
+    emit propretyChanged();
+
+}
+
+double Property::getRadiusMinor() const
+{
+    return mRadiusMinor;
+}
+
+void Property::setRadiusMinor(double radius)
+{
+    mRadiusMinor = radius;
+    emit propretyChanged();
+
+}
+
+
+//------------------radiusMajor ---------------//
+
+bool Property::getRadiusMajorStatus() const
+{
+    return mRadiusMajorStatus;
+}
+
+void Property::setRadiusMajorStatus(bool radius)
+{
+    mRadiusMajorStatus = radius;
+    emit propretyChanged();
+
+}
+
+double Property::getRadiusMajor() const
+{
+    return mRadiusMajor;
+}
+
+void Property::setRadiusMajor(double radius)
+{
+    mRadiusMajor = radius;
+    emit propretyChanged();
+
+}
+
 //------------------height---------------//
 bool Property::getHeightStatus() const
 {

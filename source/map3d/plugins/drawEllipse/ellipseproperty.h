@@ -22,8 +22,8 @@ public:
     void setClamp(int clamp) override;
     void setName(const QString &name) override;
     void setArc(const QVector2D &arc) override;
-    void setRadius(double radius) override;
-    void setWidth(double width) override;
+    void setRadiusMajor(double radius) override;
+    void setRadiusMinor(double radius) override;
 
 
     Ellipse *getEllipse() const;
