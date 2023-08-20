@@ -430,6 +430,32 @@ void Property::setShowBearing(bool showBearing)
 
 }
 
+//------------------Altitude---------------//
+bool Property::getAltitudeStatus() const
+{
+    return mAltitudeStatus;
+}
+
+
+
+void Property::setAltitudeStatus(bool status)
+{
+    mAltitudeStatus = status;
+    emit propretyChanged();
+}
+
+bool Property::getShowAltitude() const
+{
+    return mShowAltitude;
+}
+
+void Property::setShowAltitude(bool showAltitude)
+{
+    mShowAltitude = showAltitude;
+    emit propretyChanged();
+
+}
+
 //-----------------showSlop-------------//
 
 bool Property::getShowSlopStatus() const

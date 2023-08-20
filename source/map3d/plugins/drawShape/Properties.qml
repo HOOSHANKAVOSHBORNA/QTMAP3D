@@ -596,7 +596,7 @@ Item {
                     Layout.fillWidth: true
                     Text {
                         Layout.preferredWidth: lblWidth
-                        text: "radiusMinor: "
+                        text: "Radius Minor: "
                         font.pointSize: 10
                         color: "white"
                     }
@@ -633,7 +633,7 @@ Item {
                     Layout.fillWidth: true
                     Text {
                         Layout.preferredWidth: lblWidth
-                        text: "radiusMajor: "
+                        text: "Radius Major: "
                         font.pointSize: 10
                         color: "white"
                     }
@@ -938,7 +938,7 @@ Item {
                         delayed: true
                     }
                 }
-                ////------------------------ Bearing -------------------- ///////////////
+                ////------------------------Show Bearing -------------------- ///////////////
                 Rectangle{
                     color: "white"
                     Layout.fillWidth: true
@@ -952,7 +952,7 @@ Item {
                     Layout.fillWidth: true
                     Text {
                         Layout.preferredWidth: lblWidth
-                        text: "Bearing: "
+                        text: "Show Bearing: "
                         font.pointSize: 10
                         color: "white"
                     }
@@ -973,6 +973,44 @@ Item {
                         delayed: true
                     }
                 }
+
+                ////------------------------  showAltitude -------------------- ///////////////
+                Rectangle{
+                    color: "white"
+                    Layout.fillWidth: true
+                    height: 2
+                    visible: showAltitudeSec.visible
+                }
+
+                RowLayout{
+                    id:showAltitudeSec
+                    visible:rootItem.model ? rootItem.model.altitudeStatus : false
+                    Layout.fillWidth: true
+                    Text {
+                        Layout.preferredWidth: lblWidth
+                        text: "Show Altitude: "
+                        font.pointSize: 10
+                        color: "white"
+                    }
+                    Switch {
+                        id: showAltitudeValue
+                        padding: 0
+                        width: 100
+                        height: valHeight
+                        checked: false
+                        onToggled: function() {
+                            rootItem.model.showAltitude = showAltitudeValue.checked
+                        }
+                    }
+                    Binding{
+                        target: showAltitudeValue
+                        property: "checked"
+                        value: rootItem.model ? rootItem.model.showAltitude: 0
+                        delayed: true
+                    }
+                }
+
+
 
                 ////------------------------ Show Slope -------------------- ///////////////
                 Rectangle{
