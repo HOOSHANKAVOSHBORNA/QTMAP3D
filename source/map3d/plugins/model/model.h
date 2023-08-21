@@ -13,7 +13,7 @@
 #define CAR "Car"
 #define AIRPLANE "Airplane"
 
-class model : public PluginInterface
+class Model : public PluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID PluginInterface_iid FILE  "model.json")
@@ -28,13 +28,13 @@ public:
         CONFIRM
     };
 public:
-    explicit model(QObject *parent = nullptr);
-    ~model();
+    explicit Model(QObject *parent = nullptr);
+    ~Model();
     bool setup();
     void makeIconNode(const QString &fileName);
     osgEarth::Annotation::PlaceNode *iconNode() const;
-    model::State state() const;
-    void setState(model::State newState);
+    Model::State state() const;
+    void setState(Model::State newState);
     osgEarth::Annotation::AnnotationLayer *modelLayer();
 
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
@@ -56,8 +56,8 @@ private:
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mTreelLayer{nullptr};
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mCarlLayer{nullptr};
     osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mAirplanelLayer{nullptr};
-    osg::ref_ptr<simpleModelNode> mModelNode{nullptr};
-    osg::ref_ptr<simpleModelNode> mCurrentModel {nullptr};
+    osg::ref_ptr<SimpleModelNode> mModelNode{nullptr};
+    osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
 
     static int mCount;
 

@@ -7,7 +7,6 @@
 #include <osgAnimation/Sampler>
 #include <osgEarth/GeoMath>
 #include <osgEarth/Viewpoint>
-#include "modelAutoScaler.h"
 
 
 ModelAnimationPathCallback::ModelAnimationPathCallback(MapItem *mapItem, MoveableModel *moveableModel)
@@ -104,7 +103,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
 }
 
 MoveableModel::MoveableModel(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent):
-    simpleModelNode(mapControler, modelUrl, iconUrl, parent)
+    SimpleModelNode(mapControler, modelUrl, iconUrl, parent)
 {
 
     mMoveAnimationPathCallback = new ModelAnimationPathCallback(mapItem(), this);
@@ -119,7 +118,6 @@ void MoveableModel::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
     mMoveAnimationPathCallback->reset();
     mMoveAnimationPathCallback->getAnimationPath()->clear();
     mMoveAnimationPathCallback->setPause(false);
-
     osg::Vec3d currentWPoint;
     getPosition().toWorld(currentWPoint);
     osg::Vec3d destinationWPoint;
@@ -205,7 +203,7 @@ void MoveableModel::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
 
 }
 
-simpleModelNode *MoveableModel::getNewModel()
+SimpleModelNode *MoveableModel::getNewModel()
 {
     return new MoveableModel(mapItem(), modelUrl(), iconUrl());
 }

@@ -4,12 +4,12 @@
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
 
-class simpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
+class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    simpleModelNode(MapItem* mapControler, const std::string& modelUrl, const std::string& iconUrl, QObject *parent = nullptr);
-    virtual simpleModelNode* getNewModel();
+    SimpleModelNode(MapItem* mapControler, const std::string& modelUrl, const std::string& iconUrl, QObject *parent = nullptr);
+    virtual SimpleModelNode* getNewModel();
 
     MapItem *mapItem() const;
 
@@ -18,6 +18,9 @@ public:
     std::string modelUrl() const;
     bool mIs3D{false};
 
+
+    bool getScalability() const;
+    void setScalability(bool newScalability);
 
 private slots:
     void onModeChanged(bool is3DView);
@@ -30,6 +33,7 @@ private:
     std::string mModelUrl;
     std::string mIconUrl;
     MapItem *mMapItem;
+    bool scalability{true};
 
 
 

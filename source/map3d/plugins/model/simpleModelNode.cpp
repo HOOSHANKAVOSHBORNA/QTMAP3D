@@ -5,15 +5,15 @@
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
 const float RANGE3D = 835;
-simpleModelNode::simpleModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent)
+SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent)
     : QObject{parent},
-      osgEarth::Annotation::ModelNode(mapControler->getMapNode(), model::getDefaultStyle()),
+      osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Model::getDefaultStyle()),
     mModelUrl(modelUrl),
     mMapItem(mapControler),
     mIconUrl(iconUrl)
 
 {
-    connect(mMapItem, &MapItem::modeChanged, this, &simpleModelNode::onModeChanged);
+    connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
 
     //--3D node----------------------------------------------------------
@@ -39,7 +39,9 @@ simpleModelNode::simpleModelNode(MapItem *mapControler, const std::string &model
     else {
         ScaleRatio = 2;
     }
-    addCullCallback(new ModelAutoScaler(ScaleRatio, 1, 1000));
+    if (scalability){
+        addCullCallback(new ModelAutoScaler(ScaleRatio, 1, 1000));
+    }
 
 
     //--2D node---------------------------------------------------------
@@ -80,12 +82,12 @@ simpleModelNode::simpleModelNode(MapItem *mapControler, const std::string &model
 //    }
 }
 
-simpleModelNode *simpleModelNode::getNewModel()
+SimpleModelNode *SimpleModelNode::getNewModel()
 {
-    return new simpleModelNode(mMapItem, mModelUrl, mIconUrl);
+    return new SimpleModelNode(mMapItem, mModelUrl, mIconUrl);
 }
 
-void simpleModelNode::onModeChanged(bool is3DView)
+void SimpleModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
     if(mIs3D){
@@ -98,17 +100,27 @@ void simpleModelNode::onModeChanged(bool is3DView)
     }
 }
 
-std::string simpleModelNode::modelUrl() const
+bool SimpleModelNode::getScalability() const
+{
+    return scalability;
+}
+
+void SimpleModelNode::setScalability(bool newScalability)
+{
+    scalability = newScalability;
+}
+
+std::string SimpleModelNode::modelUrl() const
 {
     return mModelUrl;
 }
 
-std::string simpleModelNode::iconUrl() const
+std::string SimpleModelNode::iconUrl() const
 {
     return mIconUrl;
 }
 
-MapItem *simpleModelNode::mapItem() const
+MapItem *SimpleModelNode::mapItem() const
 {
     return mMapItem;
 }

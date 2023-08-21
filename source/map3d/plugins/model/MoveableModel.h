@@ -3,15 +3,14 @@
 
 #include "simpleModelNode.h"
 #include <osgAnimation/Keyframe>
-#include "lineNode.h"
 
 
-class MoveableModel : public simpleModelNode
+class MoveableModel : public SimpleModelNode
 {
 public:
     explicit MoveableModel(MapItem* mapControler, const std::string& modelUrl, const std::string &iconUrl, QObject *parent = nullptr);
     void moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed);
-    virtual simpleModelNode* getNewModel() override;
+    virtual SimpleModelNode* getNewModel() override;
     virtual double speed() const;
     virtual void setSpeed(double newSpeed);
     virtual void stop(){}

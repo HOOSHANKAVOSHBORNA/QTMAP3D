@@ -5,19 +5,19 @@
 #include <osgEarth/GLUtils>
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
-int model::mCount{0};
-model::model(QObject *parent)
+int Model::mCount{0};
+Model::Model(QObject *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(model);
 }
 
-model::~model()
+Model::~Model()
 {
     mIconNode.release();
 }
 
-bool model::setup()
+bool Model::setup()
 {
 //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
@@ -27,15 +27,15 @@ bool model::setup()
 
 
     auto treeToolboxItem =  new ToolboxItem{TREE, MODEL, "qrc:/resources/tree.png", true};
-    QObject::connect(treeToolboxItem, &ToolboxItem::itemChecked, this, &model::onTreeItemCheck);
+    QObject::connect(treeToolboxItem, &ToolboxItem::itemChecked, this, &Model::onTreeItemCheck);
     toolbox()->addItem(treeToolboxItem);
 
     auto carToolboxItem =  new ToolboxItem{CAR, MODEL, "qrc:/resources/car.png", true};
-    QObject::connect(carToolboxItem, &ToolboxItem::itemChecked, this, &model::onCarItemCheck);
+    QObject::connect(carToolboxItem, &ToolboxItem::itemChecked, this, &Model::onCarItemCheck);
     toolbox()->addItem(carToolboxItem);
 
     auto airplaneToolboxItem =  new ToolboxItem{AIRPLANE, MODEL, "qrc:/resources/airplane.png", true};
-    QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &model::onAirplanItemCheck);
+    QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
     mTreelLayer = new osgEarth::Annotation::AnnotationLayer();
@@ -49,7 +49,7 @@ bool model::setup()
     return true;
 }
 
-void model::makeIconNode(const QString &fileName)
+void Model::makeIconNode(const QString &fileName)
 {
     osg::Image* icon = osgDB::readImageFile(fileName.toStdString());
     if(icon){
@@ -59,22 +59,22 @@ void model::makeIconNode(const QString &fileName)
     }
 }
 
-osgEarth::Annotation::PlaceNode *model::iconNode() const
+osgEarth::Annotation::PlaceNode *Model::iconNode() const
 {
     return mIconNode.get();
 }
 
-model::State model::state() const
+Model::State Model::state() const
 {
     return mState;
 }
 
-void model::setState(State newState)
+void Model::setState(State newState)
 {
     mState = newState;
 }
 
-osgEarth::Annotation::AnnotationLayer *model::modelLayer()
+osgEarth::Annotation::AnnotationLayer *Model::modelLayer()
 {
     if(!mModelLayer)
         mModelLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>
@@ -82,7 +82,7 @@ osgEarth::Annotation::AnnotationLayer *model::modelLayer()
     return mModelLayer;
 }
 
-bool model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if(mState == State::NONE)
         return false;
@@ -112,7 +112,7 @@ bool model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
     return false;
 }
 
-bool model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if(mState == State::NONE)
         return false;
@@ -132,7 +132,7 @@ bool model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
     return false;
 }
 
-osgEarth::Symbology::Style &model::getDefaultStyle()
+osgEarth::Symbology::Style &Model::getDefaultStyle()
 {
     static osgEarth::Symbology::Style _style;
     static bool bFirst = true;
@@ -145,11 +145,11 @@ osgEarth::Symbology::Style &model::getDefaultStyle()
     return _style;
 }
 
-void model::onTreeItemCheck(bool check)
+void Model::onTreeItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/tree.png");
-        mModelNode = new simpleModelNode(mapItem(),"../data/models/tree_I.osgb", "../data/images/model/tree.png");
+        mModelNode = new SimpleModelNode(mapItem(),"../data/models/tree_I.osgb", "../data/images/model/tree.png");
         if(mTreelLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
             mapItem()->getMapObject()->addLayer(mTreelLayer, sModelLayer);
@@ -171,7 +171,7 @@ void model::onTreeItemCheck(bool check)
     }
 }
 
-void model::onCarItemCheck(bool check)
+void Model::onCarItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/car.png");
@@ -198,11 +198,11 @@ void model::onCarItemCheck(bool check)
     }
 }
 
-void model::onAirplanItemCheck(bool check)
+void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/airplane.png");
-        mModelNode = new flyableModel(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
+        mModelNode = new FlyableModel(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
         if(mAirplanelLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
             mapItem()->getMapObject()->addLayer(mAirplanelLayer, sModelLayer);
@@ -224,7 +224,7 @@ void model::onAirplanItemCheck(bool check)
     }
 }
 
-void model::initModel(const osgEarth::GeoPoint &geoPos){
+void Model::initModel(const osgEarth::GeoPoint &geoPos){
     //QString name = "box" + QString::number(mCount);
     //mBox->setName(name.toStdString());
     mCurrentModel = mModelNode->getNewModel();
@@ -238,7 +238,7 @@ void model::initModel(const osgEarth::GeoPoint &geoPos){
 
 }
 
-void model::moving(const osgEarth::GeoPoint &geoPos){
+void Model::moving(const osgEarth::GeoPoint &geoPos){
 
     //mCurrentModel->setPosition(geoPos);
 
@@ -246,16 +246,21 @@ void model::moving(const osgEarth::GeoPoint &geoPos){
     if (moveableModell){
         moveableModell->moveTo(geoPos,5);
     }
+
+    auto flyableModell = dynamic_cast<FlyableModel*>(mCurrentModel.get());
+    if (flyableModell){
+        flyableModell->flyTo(geoPos,5);
+    }
 }
 
-void model::confirm()
+void Model::confirm()
 {
 //    if (state() == State::MOVING) {
 //        setState(State::READY);
 //    }
 }
 
-void model::cancel(){
+void Model::cancel(){
 
     if(state() == State::MOVING){
 //        mapItem()->getMapObject()->removeNodeFromLayer(mCurrentModel, mModelLayer);
