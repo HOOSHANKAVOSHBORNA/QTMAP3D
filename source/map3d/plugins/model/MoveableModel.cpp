@@ -62,10 +62,12 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                     osg::Vec3f carAxis = -(osg::Y_AXIS);
                     osg::Quat rotate1;
                     rotate1.makeRotate(carAxis, localMotionVecProject);
+                    osg::Quat rotate3;
+                    rotate3.makeRotate(localMotionVecProject, carAxis);
 
                     osg::Quat rotate2;
-                    localMotionVec = localMotionVec *  osg::Matrixd::rotate(rotate1);
-                    localMotionVecProject = localMotionVecProject *  osg::Matrixd::rotate(rotate1);
+                    localMotionVec = localMotionVec *  osg::Matrixd::rotate(rotate3);
+                    localMotionVecProject = localMotionVecProject *  osg::Matrixd::rotate(rotate3);
                     rotate2.makeRotate(localMotionVecProject, localMotionVec);
 
                     //-----------------------------------------------------------------
