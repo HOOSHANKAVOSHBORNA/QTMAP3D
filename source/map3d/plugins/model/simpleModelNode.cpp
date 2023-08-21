@@ -16,16 +16,31 @@ simpleModelNode::simpleModelNode(MapItem *mapControler, const std::string &model
     connect(mMapItem, &MapItem::modeChanged, this, &simpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
 
-    //--root ------------------------------------------------------------
-    mSwitchNode = new osg::Switch;
-    setCullingActive(false);
-    addCullCallback(new ModelAutoScaler(2.5, 1, 1000));
-
     //--3D node----------------------------------------------------------
     m3DNode = new osg::LOD;
     osg::ref_ptr<osg::Node> simpleNode = osgDB::readRefNodeFile(modelUrl);
-    setMlenght(simpleNode->getBound().radius() * 2);
     m3DNode->addChild(simpleNode, 0, std::numeric_limits<float>::max());
+    //--root ------------------------------------------------------------
+    mSwitchNode = new osg::Switch;
+    setCullingActive(false);
+
+
+    double modelLenght = simpleNode->getBound().radius() * 2;
+    qDebug()<<"modelLenght: "<<modelLenght;
+    int ScaleRatio;
+    if (3<modelLenght && modelLenght<7){
+        ScaleRatio = 20;
+    }
+
+    else if(modelLenght<10 && modelLenght<15){
+        ScaleRatio = 4;
+    }
+
+    else {
+        ScaleRatio = 2;
+    }
+    addCullCallback(new ModelAutoScaler(ScaleRatio, 1, 1000));
+
 
     //--2D node---------------------------------------------------------
     m2DNode = new osg::Geode();
@@ -81,16 +96,6 @@ void simpleModelNode::onModeChanged(bool is3DView)
         mSwitchNode->setValue(0, false);
         mSwitchNode->setValue(1,true);
     }
-}
-
-double simpleModelNode::getMlenght() const
-{
-    return mlenght;
-}
-
-void simpleModelNode::setMlenght(double newMlenght)
-{
-    mlenght = newMlenght;
 }
 
 std::string simpleModelNode::modelUrl() const

@@ -7,6 +7,7 @@
 #include <osgAnimation/Sampler>
 #include <osgEarth/GeoMath>
 #include <osgEarth/Viewpoint>
+#include "modelAutoScaler.h"
 
 
 ModelAnimationPathCallback::ModelAnimationPathCallback(MapItem *mapItem, MoveableModel *moveableModel)
