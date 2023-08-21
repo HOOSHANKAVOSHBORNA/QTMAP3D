@@ -175,7 +175,7 @@ void model::onCarItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/car.png");
-        mModelNode = new MoveableModel(mapItem(),"../data/models/truck.osgb", "../data/images/model/car.png");
+        mModelNode = new MoveableModel(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
 
         if(mCarlLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
@@ -250,9 +250,9 @@ void model::moving(const osgEarth::GeoPoint &geoPos){
 
 void model::confirm()
 {
-    if (state() == State::MOVING) {
-        setState(State::READY);
-    }
+//    if (state() == State::MOVING) {
+//        setState(State::READY);
+//    }
 }
 
 void model::cancel(){

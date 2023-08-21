@@ -59,7 +59,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                     localMotionVecProject.set(localMotionVec);
                     localMotionVecProject.z() = 0;
                     //-------------------------------------------------------------------
-                    osg::Vec3f carAxis = -(osg::X_AXIS);
+                    osg::Vec3f carAxis = -(osg::Y_AXIS);
                     osg::Quat rotate1;
                     rotate1.makeRotate(carAxis, localMotionVecProject);
 
@@ -68,10 +68,29 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                     localMotionVecProject = localMotionVecProject *  osg::Matrixd::rotate(rotate1);
                     rotate2.makeRotate(localMotionVecProject, localMotionVec);
 
+                    //-----------------------------------------------------------------
+//                    osg::Vec3f  sidePoint = osg::Y_AXIS * 20;
+//                    osg::Matrixd worldTransfer;
+//                    mMoveableModel->getPosition().createLocalToWorld(worldTransfer);
+////                    osg::Quat worldRotation = worldTransfer.getRotate();
+////                    osg::Matrixd rotateWorldTransfer = osg::Matrixd::rotate(worldRotation);
+//                    osg::Vec3d sidePointWorld =  sidePoint * worldTransfer;
+//                    osgEarth::GeoPoint sidePointGeo;
+//                    sidePointGeo.fromWorld(mMapItem->getMapSRS(), sidePointWorld);
+//                    terrain->getHeight(mMapItem->getMapNode()->getMapSRS(), sidePointGeo.x(), sidePointGeo.y(), &height);
+//                    sidePointGeo.z() = height;
+//                    sidePointGeo.toWorld(sidePointWorld);
+//                    osg::Vec3d sideVec = sidePointWorld - currentWorldPoint;
+//                    sideVec.normalize();
+//                    osg::Vec3f localSideVec =  sideVec * rotateTransfer;
+//                    localSideVec = localSideVec * osg::Matrixd::rotate(rotate2 * rotate1);
+//                    osg::Vec3f yRotate = osg::Y_AXIS * osg::Matrixd::rotate(rotate2 * rotate1);
+//                    osg::Quat rotate3;
+//                    rotate3.makeRotate( yRotate, localSideVec);
+                    //-----------------------------------------------------------------
                     osg::Quat rotate = rotate2 * rotate1;
                     mMoveableModel->getPositionAttitudeTransform()->setAttitude(rotate);
                 }
-
                 mPreGeoPoint = currentGeoPoint;
             }
 
