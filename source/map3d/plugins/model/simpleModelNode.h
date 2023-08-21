@@ -17,8 +17,7 @@ public:
 
     std::string modelUrl() const;
     bool mIs3D{false};
-    double getMlenght() const;
-    void setMlenght(double newMlenght);
+
 
 private slots:
     void onModeChanged(bool is3DView);
@@ -31,7 +30,7 @@ private:
     std::string mModelUrl;
     std::string mIconUrl;
     MapItem *mMapItem;
-    double mlenght;
+
 
 
 };

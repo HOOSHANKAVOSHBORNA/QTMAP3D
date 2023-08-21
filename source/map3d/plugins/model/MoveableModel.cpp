@@ -7,6 +7,7 @@
 #include <osgAnimation/Sampler>
 #include <osgEarth/GeoMath>
 #include <osgEarth/Viewpoint>
+#include "modelAutoScaler.h"
 
 void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
