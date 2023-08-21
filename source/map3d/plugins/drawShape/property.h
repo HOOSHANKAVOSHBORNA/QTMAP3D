@@ -8,57 +8,69 @@
 class Property :  public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(QString name          READ getName               WRITE setName               NOTIFY propretyChanged)
-    Q_PROPERTY(bool fillColorStatus   READ getFillColorStatus WRITE setFillColorStatus    NOTIFY propretyChanged)
-    Q_PROPERTY(QColor fillColor       READ getFillColor       WRITE setFillColor          NOTIFY propretyChanged)
+    Q_PROPERTY(QString name           READ getName                         WRITE setName                 NOTIFY propretyChanged)
+    Q_PROPERTY(bool fillColorStatus   READ getFillColorStatus              WRITE setFillColorStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(QColor fillColor       READ getFillColor                    WRITE setFillColor            NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool strokeStatus      READ getStrokeStatus     WRITE setStrokeStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(QColor strokeColor     READ getStrokeColor      WRITE setStrokeColor       NOTIFY propretyChanged)
-    Q_PROPERTY(double strokeWidth     READ getStrokeWidth      WRITE setStrokeWidth       NOTIFY propretyChanged)
+    Q_PROPERTY(bool strokeStatus      READ getStrokeStatus                 WRITE setStrokeStatus         NOTIFY propretyChanged)
+    Q_PROPERTY(QColor strokeColor     READ getStrokeColor                  WRITE setStrokeColor          NOTIFY propretyChanged)
+    Q_PROPERTY(double strokeWidth     READ getStrokeWidth                  WRITE setStrokeWidth          NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool locationStatus    READ getLocationStatus   WRITE setLocationStatus    NOTIFY propretyChanged)
-    Q_PROPERTY(QVector3D location     READ getLocation         WRITE setLocation          NOTIFY propretyChanged)
-    Q_PROPERTY(bool locationRelative  READ getLocationRelative WRITE setLocationRelative  NOTIFY propretyChanged)
+    Q_PROPERTY(bool locationStatus    READ getLocationStatus               WRITE setLocationStatus       NOTIFY propretyChanged)
+    Q_PROPERTY(QVector3D location     READ getLocation                     WRITE setLocation             NOTIFY propretyChanged)
+    Q_PROPERTY(bool locationRelative  READ getLocationRelative             WRITE setLocationRelative     NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool centerStatus      READ getCenterStatus     WRITE setCenterStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(QVector3D center       READ getCenter           WRITE setCenter            NOTIFY propretyChanged)
+    Q_PROPERTY(bool centerStatus      READ getCenterStatus                 WRITE setCenterStatus         NOTIFY propretyChanged)
+    Q_PROPERTY(QVector3D center       READ getCenter                       WRITE setCenter               NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool arcStatus         READ getArcStatus                  WRITE setArcStatus         NOTIFY propretyChanged)
-    Q_PROPERTY(QVector2D arc          READ getArc                        WRITE setArc               NOTIFY propretyChanged)
+    Q_PROPERTY(bool arcStatus         READ getArcStatus                    WRITE setArcStatus            NOTIFY propretyChanged)
+    Q_PROPERTY(QVector2D arc          READ getArc                          WRITE setArc                  NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool radiusStatus      READ getRadiusStatus               WRITE setRadiusStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(double radius          READ getRadius                     WRITE setRadius            NOTIFY propretyChanged)
+    Q_PROPERTY(bool radiusStatus      READ getRadiusStatus                 WRITE setRadiusStatus         NOTIFY propretyChanged)
+    Q_PROPERTY(double radius          READ getRadius                       WRITE setRadius               NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool heightStatus      READ getHeightStatus               WRITE setHeightStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(double heighT          READ getHeight                     WRITE setHeight            NOTIFY propretyChanged)
+    Q_PROPERTY(bool radiusMinorStatus      READ getRadiusMinorStatus       WRITE setRadiusMinorStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(double radiusMinor          READ getRadiusMinor             WRITE setRadiusMinor            NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool lenghtStatus           READ getLenghtStatus          WRITE setLenghtStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(double lenghT               READ getLenght                WRITE setLenght            NOTIFY propretyChanged)
+    Q_PROPERTY(bool radiusMajorStatus      READ getRadiusMajorStatus       WRITE setRadiusMajorStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(double radiusMajor          READ getRadiusMajor             WRITE setRadiusMajor            NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool widthStatus            READ getWidthStatus           WRITE setWidthStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(double widtH                READ getWidth                 WRITE setWidth            NOTIFY propretyChanged)
+    Q_PROPERTY(bool heightStatus           READ getHeightStatus            WRITE setHeightStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(double heighT               READ getHeight                  WRITE setHeight            NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool tesselationStatus      READ getTesselationStatus     WRITE setTesselationStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(double tesselation          READ getTesselation           WRITE setTesselation            NOTIFY propretyChanged)
+    Q_PROPERTY(bool lenghtStatus           READ getLenghtStatus            WRITE setLenghtStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(double lenghT               READ getLenght                  WRITE setLenght            NOTIFY propretyChanged)
 
 
-    Q_PROPERTY(bool clampStatus      READ getClampStatus     WRITE setClampStatus      NOTIFY propretyChanged)
-    Q_PROPERTY(double clamp          READ getClamp           WRITE setClamp            NOTIFY propretyChanged)
+    Q_PROPERTY(bool widthStatus            READ getWidthStatus             WRITE setWidthStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(double widtH                READ getWidth                   WRITE setWidth            NOTIFY propretyChanged)
+
+
+    Q_PROPERTY(bool tesselationStatus      READ getTesselationStatus             WRITE setTesselationStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(double tesselation          READ getTesselation                   WRITE setTesselation            NOTIFY propretyChanged)
+
+
+    Q_PROPERTY(bool clampStatus              READ getClampStatus        WRITE setClampStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(double clamp                  READ getClamp              WRITE setClamp            NOTIFY propretyChanged)
 
     Q_PROPERTY(bool   showLenStatus          READ getShowLenStatus     WRITE setShowLenStatus      NOTIFY propretyChanged)
     Q_PROPERTY(bool   showLen                READ getShowLen           WRITE setShowLen           NOTIFY propretyChanged)
 
     Q_PROPERTY(bool   bearingStatus          READ getBearingStatus     WRITE setBearingStatus      NOTIFY propretyChanged)
     Q_PROPERTY(bool   showBearing            READ getShowBearing       WRITE setShowBearing        NOTIFY propretyChanged)
+
+
+    Q_PROPERTY(bool   altitudeStatus          READ getAltitudeStatus     WRITE setAltitudeStatus      NOTIFY propretyChanged)
+    Q_PROPERTY(bool   showAltitude            READ getShowAltitude       WRITE setShowAltitude        NOTIFY propretyChanged)
 
     Q_PROPERTY(bool   showSlopStatus          READ getShowSlopStatus     WRITE setShowSlopStatus      NOTIFY propretyChanged)
     Q_PROPERTY(bool   showSlop                READ getShowSlop           WRITE setShowSlop           NOTIFY propretyChanged)
@@ -136,6 +148,24 @@ public:
     double getRadius() const;
     virtual void setRadius(double radius);
 
+    // ---------- RadiusMinor  --------- //
+
+    bool getRadiusMinorStatus() const;
+    void setRadiusMinorStatus(bool radius);
+
+    double getRadiusMinor() const;
+    virtual void setRadiusMinor(double radius);
+
+
+    // ---------- RadiusMajor  --------- //
+
+    bool getRadiusMajorStatus() const;
+    void setRadiusMajorStatus(bool radius);
+
+    double getRadiusMajor() const;
+    virtual void setRadiusMajor(double radius);
+
+
     // ---------- height  --------- //
 
     bool getHeightStatus() const;
@@ -198,6 +228,13 @@ public:
     bool getShowBearing() const;
     virtual void setShowBearing(bool showBearing);
 
+    // ---------- Altitude  --------- //
+
+    bool getAltitudeStatus() const;
+    void setAltitudeStatus(bool status);
+
+    bool getShowAltitude() const;
+    virtual void setShowAltitude(bool showAltitude);
 
     // ---------- showSlop  --------- //
 
@@ -231,7 +268,7 @@ public:
 signals:
     void propretyChanged();
 protected:
-    void createProperty(QString name, QVariant property, QQmlEngine *qmlEngine);
+//    void createProperty(QString name, QVariant property, QQmlEngine *qmlEngine);
 
 
 private:
@@ -267,6 +304,16 @@ private:
 
     bool mRadiusStatus{false};
     double mRadius{1000};
+
+    // ---------- RadiusMinor //
+
+    bool mRadiusMinorStatus{false};
+    double mRadiusMinor{10};
+
+    // ---------- RadiusMajor //
+
+    bool mRadiusMajorStatus{false};
+    double mRadiusMajor{100};
 
     // ---------- height //
 
@@ -304,6 +351,11 @@ private:
 
     bool mBearingStatus{false};
     bool mShowBearing{true};
+
+    //----------- Altitude  //
+
+    bool mAltitudeStatus{false};
+    bool mShowAltitude{true};
 
 
     //----------- showSlop  //

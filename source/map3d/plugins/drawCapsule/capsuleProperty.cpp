@@ -21,7 +21,7 @@ void CapsuleProperty::setFillColor(const QColor &color)
 
     Property::setFillColor(color);
     if (mCapsule)
-        mCapsule->setColor(Utility::qColor2osgEarthColor(color));
+        mCapsule->setFillColor(Utility::qColor2osgEarthColor(color));
 }
 
 void CapsuleProperty::setCenter(const QVector3D &center)
@@ -88,7 +88,7 @@ void CapsuleProperty::setCapsule(Capsule *newCapsule, const osgEarth::SpatialRef
     mSRS = srs;
 
     if(mCapsule){
-        mCapsule->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mCapsule->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mCapsule->setRadius(getRadius());
         mCapsule->setHeight(getHeight());
         setName(QString::fromStdString(mCapsule->getName()));

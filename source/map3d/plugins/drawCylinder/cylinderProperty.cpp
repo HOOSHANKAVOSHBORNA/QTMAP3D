@@ -19,7 +19,7 @@ void CylinderProperty::setFillColor(const QColor &color)
 
     Property::setFillColor(color);
     if (mCylinder)
-        mCylinder->setColor(Utility::qColor2osgEarthColor(color));
+        mCylinder->setFillColor(Utility::qColor2osgEarthColor(color));
 }
 
 void CylinderProperty::setRadius(double radius)
@@ -85,7 +85,7 @@ void CylinderProperty::setCylinder(Cylinder *newCylinder, const osgEarth::Spatia
     mSRS = srs;
 
     if(mCylinder){
-        mCylinder->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mCylinder->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mCylinder->setRadius(getRadius());
         mCylinder->setHeight(getHeight());
         setLocation(Utility::osgEarthGeoPointToQvector3D(mCylinder->getPosition()));

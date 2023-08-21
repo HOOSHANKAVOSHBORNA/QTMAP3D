@@ -30,7 +30,7 @@ void SphereProperty::setFillColor(const QColor &color)
 
     Property::setFillColor(color);
     if (mSphere)
-        mSphere->setColor(Utility::qColor2osgEarthColor(color));
+        mSphere->setFillColor(Utility::qColor2osgEarthColor(color));
 }
 
 void SphereProperty::setCenter(const QVector3D &center)
@@ -80,7 +80,7 @@ void SphereProperty::setSphere(SphereNode *newSphere, const osgEarth::SpatialRef
     mSRS = srs;
 
     if(mSphere){
-        mSphere->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mSphere->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mSphere->setRadius(getRadius());
         mSphere->setSphereShape(SphereNode::Sphere);
         setName(QString::fromStdString(mSphere->getName()));

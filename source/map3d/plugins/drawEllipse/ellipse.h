@@ -7,8 +7,8 @@ class Ellipse : public osgEarth::Annotation::EllipseNode
 {
 public:
     Ellipse();
-    void setColor(osgEarth::Color color);
-    osgEarth::Color getColor();
+    void setFillColor(osgEarth::Color color);
+    osgEarth::Color getFillColor();
     void setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping clamp);
     osgEarth::Symbology::AltitudeSymbol::Clamping getClamp();
     void setHeight(float height);

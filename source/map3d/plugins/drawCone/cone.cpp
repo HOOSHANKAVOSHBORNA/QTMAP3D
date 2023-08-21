@@ -79,7 +79,7 @@ osg::Node* Cone::installTwoPassAlpha(osg::Node* node)
     return g1;
 }
 
-void Cone::setColor(osgEarth::Color color)
+void Cone::setFillColor(osgEarth::Color color)
 {
     mColor = color;
     if(mShapeDrawable)
@@ -89,7 +89,7 @@ void Cone::setColor(osgEarth::Color color)
     }
 }
 
-osgEarth::Color Cone::getColor()
+osgEarth::Color Cone::getFillColor()
 {
     if(mShapeDrawable)
     {

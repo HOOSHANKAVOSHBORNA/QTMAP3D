@@ -21,8 +21,8 @@ public:
     void removeFirstPoint();
     void clear();
     int getSize();
-    osgEarth::Color getColor() const;
-    void setColor(const osgEarth::Color &color);
+    osgEarth::Color getFillColor() const;
+    void setFillColor(const osgEarth::Color &color);
 
     float getWidth() const;
     void setWidth(float width);

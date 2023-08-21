@@ -78,7 +78,7 @@ osg::Node* Cylinder::installTwoPassAlpha(osg::Node* node)
     return g1;
 }
 
-void Cylinder::setColor(osgEarth::Color color)
+void Cylinder::setFillColor(osgEarth::Color color)
 {
     mColor = color;
     if(mShapeDrawable)
@@ -88,7 +88,7 @@ void Cylinder::setColor(osgEarth::Color color)
     }
 }
 
-osgEarth::Color Cylinder::getColor()
+osgEarth::Color Cylinder::getFillColor()
 {
     if(mShapeDrawable)
     {

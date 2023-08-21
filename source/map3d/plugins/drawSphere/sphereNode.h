@@ -12,8 +12,8 @@ public:
     SphereNode();
    const osgEarth::Distance& getRadius() const;
    void setRadius(const osgEarth::Distance& radius);
-   void setColor(osgEarth::Color color);
-   osgEarth::Color getColor();
+   void setFillColor(osgEarth::Color color);
+   osgEarth::Color getFillColor();
    void setSphereShape(SphereShape sphereShape);
    SphereNode::SphereShape getSphereShape() const;
    void setCenter(osg::Vec3f center);

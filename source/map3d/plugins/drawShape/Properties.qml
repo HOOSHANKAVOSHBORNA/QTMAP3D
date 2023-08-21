@@ -583,6 +583,79 @@ Item {
                         delayed: true
                     }
                 }
+                ////////------------------------- radiusMinor------------------//////////////
+                Rectangle{
+                    color: "white"
+                    Layout.fillWidth: true
+                    height: 2
+                    visible: radiusMinorSec.visible
+                }
+                RowLayout{
+                    id:radiusMinorSec
+                    visible:rootItem.model ? rootItem.model.radiusMinorStatus : false
+                    Layout.fillWidth: true
+                    Text {
+                        Layout.preferredWidth: lblWidth
+                        text: "Radius Minor: "
+                        font.pointSize: 10
+                        color: "white"
+                    }
+                    FloatSpinBox {
+                        id: radiusMinorValue
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 100
+                        height: valHeight
+                        decimals: 2
+                        from : 0
+                        to: 2000000000
+                        onValueChanged: {
+                            rootItem.model.radiusMinor = realValue
+                        }
+                    }
+                    Binding{
+                        target: radiusMinorValue
+                        property: "realValue"
+                        value: rootItem.model ? rootItem.model.radiusMinor :0
+                        delayed: true
+                    }
+                }
+
+                ////////------------------------- radiusMajor------------------//////////////
+                Rectangle{
+                    color: "white"
+                    Layout.fillWidth: true
+                    height: 2
+                    visible: radiusMajorSec.visible
+                }
+                RowLayout{
+                    id:radiusMajorSec
+                    visible:rootItem.model ? rootItem.model.radiusMajorStatus : false
+                    Layout.fillWidth: true
+                    Text {
+                        Layout.preferredWidth: lblWidth
+                        text: "Radius Major: "
+                        font.pointSize: 10
+                        color: "white"
+                    }
+                    FloatSpinBox {
+                        id: radiusMajorValue
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 100
+                        height: valHeight
+                        decimals: 2
+                        from : 0
+                        to: 2000000000
+                        onValueChanged: {
+                            rootItem.model.radiusMajor = realValue
+                        }
+                    }
+                    Binding{
+                        target: radiusMajorValue
+                        property: "realValue"
+                        value: rootItem.model ? rootItem.model.radiusMajor :0
+                        delayed: true
+                    }
+                }
                 ////////------------------------- height------------------//////////////
                 Rectangle{
                     color: "white"
@@ -865,7 +938,7 @@ Item {
                         delayed: true
                     }
                 }
-                ////------------------------ Bearing -------------------- ///////////////
+                ////------------------------Show Bearing -------------------- ///////////////
                 Rectangle{
                     color: "white"
                     Layout.fillWidth: true
@@ -879,7 +952,7 @@ Item {
                     Layout.fillWidth: true
                     Text {
                         Layout.preferredWidth: lblWidth
-                        text: "Bearing: "
+                        text: "Show Bearing: "
                         font.pointSize: 10
                         color: "white"
                     }
@@ -900,6 +973,44 @@ Item {
                         delayed: true
                     }
                 }
+
+                ////------------------------  showAltitude -------------------- ///////////////
+                Rectangle{
+                    color: "white"
+                    Layout.fillWidth: true
+                    height: 2
+                    visible: showAltitudeSec.visible
+                }
+
+                RowLayout{
+                    id:showAltitudeSec
+                    visible:rootItem.model ? rootItem.model.altitudeStatus : false
+                    Layout.fillWidth: true
+                    Text {
+                        Layout.preferredWidth: lblWidth
+                        text: "Show Altitude: "
+                        font.pointSize: 10
+                        color: "white"
+                    }
+                    Switch {
+                        id: showAltitudeValue
+                        padding: 0
+                        width: 100
+                        height: valHeight
+                        checked: false
+                        onToggled: function() {
+                            rootItem.model.showAltitude = showAltitudeValue.checked
+                        }
+                    }
+                    Binding{
+                        target: showAltitudeValue
+                        property: "checked"
+                        value: rootItem.model ? rootItem.model.showAltitude: 0
+                        delayed: true
+                    }
+                }
+
+
 
                 ////------------------------ Show Slope -------------------- ///////////////
                 Rectangle{

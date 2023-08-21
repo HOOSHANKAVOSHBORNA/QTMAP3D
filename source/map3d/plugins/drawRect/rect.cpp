@@ -17,14 +17,14 @@ Rect::Rect(){
     this->setStyle(rectseStyle);
 }
 
-void Rect::setColor(osgEarth::Color color)
+void Rect::setFillColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = color;
     this->setStyle(style);
 }
 
-osgEarth::Color Rect::getColor(){
+osgEarth::Color Rect::getFillColor(){
 
     auto style = this->getStyle();
     return style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color();

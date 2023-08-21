@@ -17,7 +17,7 @@ SphereNode::SphereNode(): osgEarth::Annotation::GeoPositionNode()
     compile();
 }
 
-void SphereNode::setColor(osgEarth::Color color)
+void SphereNode::setFillColor(osgEarth::Color color)
 {
     mColor = color;
     if(mShapeDrawable)
@@ -27,7 +27,7 @@ void SphereNode::setColor(osgEarth::Color color)
     }
 }
 
-osgEarth::Color SphereNode::getColor()
+osgEarth::Color SphereNode::getFillColor()
 {
     if(mShapeDrawable)
     {

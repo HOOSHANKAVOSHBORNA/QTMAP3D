@@ -3,7 +3,6 @@
 #include <QVector3D>
 #include <QQmlComponent>
 #include <QQuickItem>
-
 #include "utility.h"
 
 
@@ -11,14 +10,14 @@
 EllipseProperty::EllipseProperty(QQuickItem *parent):
     Property(parent)
 {
-    setFillColorStatus  (true);
-    setStrokeStatus     (true);
-    setLocationStatus   (true);
-    setHeightStatus     (true);
-    setClampStatus      (true);
-    setArcStatus        (true);
-    setRadiusStatus     (true);
-    setWidthStatus      (true);
+    setFillColorStatus        (true);
+    setStrokeStatus           (true);
+    setLocationStatus         (true);
+    setHeightStatus           (true);
+    setClampStatus            (true);
+    setArcStatus              (true);
+    setRadiusMajorStatus      (true);
+    setRadiusMinorStatus      (true);
 }
 
 void EllipseProperty::setFillColor(const QColor &color)
@@ -26,7 +25,7 @@ void EllipseProperty::setFillColor(const QColor &color)
 
     Property::setFillColor(color);
     if(mEllipse)
-        mEllipse->setColor(Utility::qColor2osgEarthColor(color));
+        mEllipse->setFillColor(Utility::qColor2osgEarthColor(color));
 }
 
 
@@ -77,19 +76,19 @@ void EllipseProperty::setArc(const QVector2D &arc)
     }
 }
 
-void EllipseProperty::setRadius(double radius)
+void EllipseProperty::setRadiusMajor(double radius)
 {
-    Property::setRadius(radius);
+    Property::setRadiusMajor(radius);
     if(mEllipse){
         mEllipse->setRadiusMajor(radius);
     }
 }
 
-void EllipseProperty::setWidth(double width)
+void EllipseProperty::setRadiusMinor(double radius)
 {
-    Property::setWidth(width);
+    Property::setRadiusMinor(radius);
     if(mEllipse){
-        mEllipse->setRadiusMinor(width);
+        mEllipse->setRadiusMinor(radius);
     }
 
 }
@@ -139,7 +138,7 @@ void EllipseProperty::setEllipse(Ellipse *newEllipse, const osgEarth::SpatialRef
     mSRS = srs;
 
     if(mEllipse){
-        mEllipse->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mEllipse->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mEllipse->setHeight(getHeight());
         mEllipse->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
         mEllipse->setStrokeWidth(getStrokeWidth());
@@ -149,7 +148,7 @@ void EllipseProperty::setEllipse(Ellipse *newEllipse, const osgEarth::SpatialRef
         setLocation(Utility::osgEarthGeoPointToQvector3D(mEllipse->getPosition()));
         mEllipse->setArcEnd(getArc().y());
         mEllipse->setArcStart(getArc().x());
-        mEllipse->setRadiusMajor(getRadius());
-        mEllipse->setRadiusMinor(getWidth());
+        mEllipse->setRadiusMajor(getRadiusMajor());
+        mEllipse->setRadiusMinor(getRadiusMinor());
     }
 }

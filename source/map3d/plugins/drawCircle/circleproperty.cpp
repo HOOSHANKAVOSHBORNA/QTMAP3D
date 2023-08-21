@@ -25,7 +25,7 @@ void CircleProperty::setFillColor(const QColor &color)
 
     Property::setFillColor(color);
     if(mCircle)
-        mCircle->setColor(Utility::qColor2osgEarthColor(color));
+        mCircle->setFillColor(Utility::qColor2osgEarthColor(color));
 }
 
 void CircleProperty::setRadius(double radius)
@@ -68,7 +68,7 @@ void CircleProperty::setStrokeWidth(double opacity)
 
     Property::setStrokeWidth(opacity);
     if(mCircle)
-        mCircle->setLineWidth(opacity);
+        mCircle->setStrokeWidth(opacity);
 
 }
 
@@ -78,7 +78,7 @@ void CircleProperty::setStrokeColor(const QColor &color)
     Property::setStrokeColor(color);
     if(mCircle)
     {
-        mCircle->setLineColor(Utility::qColor2osgEarthColor(color));
+        mCircle->setStrokeColor(Utility::qColor2osgEarthColor(color));
     }
 
 }
@@ -100,7 +100,7 @@ void CircleProperty::setHeight(double height)
 
     Property::setHeight(height);
     if(mCircle)
-        mCircle->setCircleHeight(height);
+        mCircle->setHeight(height);
 }
 
 void CircleProperty::setClamp(int clamp)
@@ -128,11 +128,11 @@ void CircleProperty::setCircle(Circle *newCircle, const osgEarth::SpatialReferen
     mSRS = srs;
 
     if(mCircle){
-        mCircle->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mCircle->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mCircle->setRadius(getRadius());
-        mCircle->setCircleHeight(getHeight());
-        mCircle->setLineColor(Utility::qColor2osgEarthColor(getStrokeColor()));
-        mCircle->setLineWidth(getStrokeWidth());
+        mCircle->setHeight(getHeight());
+        mCircle->setStrokeColor(Utility::qColor2osgEarthColor(getStrokeColor()));
+        mCircle->setStrokeWidth(getStrokeWidth());
         mCircle->setArcEnd(getArc().y());
         mCircle->setArcStart(getArc().x());
         osgEarth::Symbology::AltitudeSymbol::Clamping clampEnum = static_cast<osgEarth::Symbology::AltitudeSymbol::Clamping>(getClamp());

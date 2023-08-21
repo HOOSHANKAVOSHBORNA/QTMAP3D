@@ -10,6 +10,7 @@
 #include <chrono>
 #include <QQuickOpenGLUtils>
 #include <osgGA/TrackballManipulator>
+#include <osgEarthDrivers/xyz/XYZOptions>
 #include "mapItem.h"
 //class MainMapCallback : public osgEarth::MapCallback
 //{
@@ -223,6 +224,21 @@ void MapItem::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) con
     outY = result.y() * (height/2.0f) + height/2.0f;
     outY = height - outY;
 
+}
+
+void MapItem::worldToOSGScreen(osg::Vec3d worldPoint, float &outX, float &outY) const
+{
+    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
+    float width = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->width());
+
+    const osg::Matrixd pMatrix = mOSGRenderNode->getCamera()->getProjectionMatrix();
+    const osg::Matrixd vMatrix = mOSGRenderNode->getCamera()->getViewMatrix();
+    osg::Vec3f result =   (worldPoint * vMatrix) * pMatrix;
+    outX = result.x() * (width/2.0f) + width/2.0f;
+    outY = result.y() * (height/2.0f) + height/2.0f;
+    QPointF point = mapToScene(QPoint(outX, outY));
+    outX = point.x();
+    outY = point.y();
 }
 
 //void MapItem::addLayer(osgEarth::Layer *layer)
@@ -495,6 +511,21 @@ void MapItem::initializeOsgEarth()
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
     mMapObject->addLayer(imlayer);
+
+
+    osgEarth::Drivers::GDALOptions  opt;
+    opt.url() = "/home/client110/Documents/projects/hooshan/QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif";
+    osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
+    getMapObject()->addLayer(layer);
+
+    osgEarth::Drivers::XYZOptions optxyz;
+    optxyz.url() = "https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg";
+    optxyz.profile() = { "spherical-mercator" };
+    auto imageLayerOptions = osgEarth::ImageLayerOptions("https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg", optxyz);
+    osg::ref_ptr<osgEarth::ImageLayer> layerImage2 = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions("https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg", optxyz));
+    layerImage2->setName("Gitanegaran");
+    getMapObject()->addLayer(layerImage2);
+
     //create camera after create map node
     createCameraManipulator();
     mOSGRenderNode->setCameraManipulator(mCameraController);

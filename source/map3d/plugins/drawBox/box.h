@@ -20,9 +20,9 @@ public:
     void compile();
 
 
-    void setColor(osgEarth::Color color);
+    void setFillColor(osgEarth::Color color);
     void setCenter(osg::Vec3 center);
-    osgEarth::Color getColor();
+    osgEarth::Color getFillColor();
     osg::Vec3f getCenter();
 
     void setHeight(const osgEarth::Linear &height);

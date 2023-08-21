@@ -22,7 +22,7 @@ void ConeProperty::setFillColor(const QColor &color)
 
     Property::setFillColor(color);
     if(mCone)
-        mCone->setColor(Utility::qColor2osgEarthColor(color));
+        mCone->setFillColor(Utility::qColor2osgEarthColor(color));
 
 }
 
@@ -91,7 +91,7 @@ void ConeProperty::setCone(Cone *newCone, const osgEarth::SpatialReference *srs)
     mSRS = srs;
 
     if(mCone){
-        mCone->setColor(Utility::qColor2osgEarthColor(getFillColor()));
+        mCone->setFillColor(Utility::qColor2osgEarthColor(getFillColor()));
         mCone->setRadius(getRadius());
         mCone->setHeight(getHeight());
         setCenter(QVector3D(mCone->getCenter().x(),mCone->getCenter().y(),mCone->getCenter().z()));

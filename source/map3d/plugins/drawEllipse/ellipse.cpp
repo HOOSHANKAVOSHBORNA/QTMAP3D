@@ -17,14 +17,14 @@ Ellipse::Ellipse(){
     this->setStyle(ellipseStyle);
 }
 
-void Ellipse::setColor(osgEarth::Color color)
+void Ellipse::setFillColor(osgEarth::Color color)
 {
     auto style = this->getStyle();
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(color, 0.5);
     this->setStyle(style);
 }
 
-osgEarth::Color Ellipse::getColor(){
+osgEarth::Color Ellipse::getFillColor(){
 
     auto style = this->getStyle();
     return style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color();

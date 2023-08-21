@@ -244,15 +244,15 @@ void model::moving(const osgEarth::GeoPoint &geoPos){
 
     auto moveableModell = dynamic_cast<MoveableModel*>(mCurrentModel.get());
     if (moveableModell){
-        moveableModell->moveTo(geoPos,10);
+        moveableModell->moveTo(geoPos,5);
     }
 }
 
 void model::confirm()
 {
-    if (state() == State::MOVING) {
-        setState(State::READY);
-    }
+//    if (state() == State::MOVING) {
+//        setState(State::READY);
+//    }
 }
 
 void model::cancel(){

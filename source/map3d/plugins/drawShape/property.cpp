@@ -198,6 +198,61 @@ void Property::setRadius(double radius)
     emit propretyChanged();
 
 }
+
+
+//------------------RadiusMinor ---------------//
+
+bool Property::getRadiusMinorStatus() const
+{
+    return mRadiusMinorStatus;
+}
+
+void Property::setRadiusMinorStatus(bool radius)
+{
+    mRadiusMinorStatus = radius;
+    emit propretyChanged();
+
+}
+
+double Property::getRadiusMinor() const
+{
+    return mRadiusMinor;
+}
+
+void Property::setRadiusMinor(double radius)
+{
+    mRadiusMinor = radius;
+    emit propretyChanged();
+
+}
+
+
+//------------------radiusMajor ---------------//
+
+bool Property::getRadiusMajorStatus() const
+{
+    return mRadiusMajorStatus;
+}
+
+void Property::setRadiusMajorStatus(bool radius)
+{
+    mRadiusMajorStatus = radius;
+    emit propretyChanged();
+
+}
+
+double Property::getRadiusMajor() const
+{
+    return mRadiusMajor;
+}
+
+void Property::setRadiusMajor(double radius)
+{
+    mRadiusMajor = radius;
+    emit propretyChanged();
+
+}
+
 //------------------height---------------//
 bool Property::getHeightStatus() const
 {
@@ -375,6 +430,32 @@ void Property::setShowBearing(bool showBearing)
 
 }
 
+//------------------Altitude---------------//
+bool Property::getAltitudeStatus() const
+{
+    return mAltitudeStatus;
+}
+
+
+
+void Property::setAltitudeStatus(bool status)
+{
+    mAltitudeStatus = status;
+    emit propretyChanged();
+}
+
+bool Property::getShowAltitude() const
+{
+    return mShowAltitude;
+}
+
+void Property::setShowAltitude(bool showAltitude)
+{
+    mShowAltitude = showAltitude;
+    emit propretyChanged();
+
+}
+
 //-----------------showSlop-------------//
 
 bool Property::getShowSlopStatus() const
@@ -451,22 +532,22 @@ void Property::setPointsSmooth(bool point)
 
 }
 
-void Property::createProperty(QString name, QVariant property, QQmlEngine *qmlEngine)
-{
-    QQmlComponent* comp = new QQmlComponent(qmlEngine);
-    connect(comp, &QQmlComponent::statusChanged, [comp, property, name, this](){
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
-        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
-        mItem = qobject_cast<QQuickItem*>(comp->create());
-        mItem->setProperty("model", property);
+//void Property::createProperty(QString name, QVariant property, QQmlEngine *qmlEngine)
+//{
+//    QQmlComponent* comp = new QQmlComponent(qmlEngine);
+//    connect(comp, &QQmlComponent::statusChanged, [comp, property, name, this](){
+//        if (comp->status() == QQmlComponent::Status::Error) {
+//            qDebug() << comp->errorString();
+//        }
+//        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
+//        mItem = qobject_cast<QQuickItem*>(comp->create());
+//        mItem->setProperty("model", property);
 
-    });
+//    });
 
 
-    comp->loadUrl(QUrl("qrc:/Properties.qml"));
-}
+//    comp->loadUrl(QUrl("qrc:/Properties.qml"));
+//}
 
 QQuickItem *Property::item() const
 {
