@@ -46,7 +46,7 @@ public slots:
     void onAirplanItemCheck (bool check);
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
-    void moving(const osgEarth::GeoPoint &geoPos);;
+    void moving(osgEarth::GeoPoint &geoPos);;
     void confirm();
     void cancel();;
 private:

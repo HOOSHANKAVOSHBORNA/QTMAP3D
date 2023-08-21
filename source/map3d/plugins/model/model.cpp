@@ -3,7 +3,7 @@
 #include "MoveableModel.h"
 #include "flyableModel.h"
 #include <osgEarth/GLUtils>
-
+#include <QRandomGenerator>
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 int Model::mCount{0};
 Model::Model(QObject *parent)
@@ -238,19 +238,24 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
 
 }
 
-void Model::moving(const osgEarth::GeoPoint &geoPos){
+void Model::moving(osgEarth::GeoPoint &geoPos){
 
     //mCurrentModel->setPosition(geoPos);
 
-    auto moveableModell = dynamic_cast<MoveableModel*>(mCurrentModel.get());
-    if (moveableModell){
-        moveableModell->moveTo(geoPos,5);
-    }
 
     auto flyableModell = dynamic_cast<FlyableModel*>(mCurrentModel.get());
     if (flyableModell){
-        flyableModell->flyTo(geoPos,5);
+        double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
+        geoPos.z() += randomHeight;
+        flyableModell->flyTo(geoPos,20);
+        return;
     }
+    auto moveableModell = dynamic_cast<MoveableModel*>(mCurrentModel.get());
+    if (moveableModell){
+        moveableModell->moveTo(geoPos,20);
+    }
+
+
 }
 
 void Model::confirm()

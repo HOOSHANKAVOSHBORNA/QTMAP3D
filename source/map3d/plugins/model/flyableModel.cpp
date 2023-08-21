@@ -1,5 +1,5 @@
 #include "flyableModel.h"
-#include <QRandomGenerator>
+
 
 FmodelAnimationPathCallback::FmodelAnimationPathCallback(MapItem *mapItem, FlyableModel *flyableModel)
 {
@@ -53,12 +53,14 @@ void FmodelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *
                     osg::Vec3f planeAxis = (osg::Y_AXIS);
                     osg::Quat rotate1;
                     rotate1.makeRotate(planeAxis, localMotionVecProject);
+                    osg::Quat rotate3;
+                    rotate3.makeRotate(localMotionVecProject, planeAxis);
 
                     osg::Quat rotate2;
-                    localMotionVec = localMotionVec *  osg::Matrixd::rotate(rotate1);
-                    localMotionVecProject = localMotionVecProject *  osg::Matrixd::rotate(rotate1);
+                    localMotionVec = localMotionVec *  osg::Matrixd::rotate(rotate3);
+                    localMotionVecProject = localMotionVecProject *  osg::Matrixd::rotate(rotate3);
                     rotate2.makeRotate(localMotionVecProject, localMotionVec);
-                    //-----------------------------------------------------------------
+
                     osg::Quat rotate = rotate2 * rotate1;
                     mFlyableModel->getPositionAttitudeTransform()->setAttitude(rotate);
                 }
@@ -85,8 +87,6 @@ FlyableModel::FlyableModel(MapItem *mapControler, const std::string &modelUrl, c
 
 void FlyableModel::flyTo(osgEarth::GeoPoint destinationPoint, double velocity)
 {
-    double randomHeight = 50 + (QRandomGenerator::global()->generate() % (600 - 50));
-    destinationPoint.z() = randomHeight;
     mMoveAnimationPathCallback->reset();
     mMoveAnimationPathCallback->getAnimationPath()->clear();
     mMoveAnimationPathCallback->setPause(false);
