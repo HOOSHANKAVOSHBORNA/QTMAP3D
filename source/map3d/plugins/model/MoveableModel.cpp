@@ -200,9 +200,6 @@ void MoveableModel::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
 
     //getGeoTransform()->setTerrain(mapItem()->getMapNode()->getTerrain()->getHeight());
     //    getGeoTransform()->setAutoRecomputeHeights(true);
-
-
-
 }
 
 SimpleModelNode *MoveableModel::getNewModel()

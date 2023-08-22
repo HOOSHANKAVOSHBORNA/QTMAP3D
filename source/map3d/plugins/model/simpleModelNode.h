@@ -3,6 +3,7 @@
 #include "mapItem.h"
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
+#include "modelAutoScaler.h"
 
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
@@ -29,11 +30,12 @@ private:
     osg::ref_ptr<osg::Switch> mSwitchNode;
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
+    osg::ref_ptr<ModelAutoScaler> mScaler;
 
     std::string mModelUrl;
     std::string mIconUrl;
     MapItem *mMapItem;
-    bool scalability{true};
+    bool mScalability{true};
 
 
 

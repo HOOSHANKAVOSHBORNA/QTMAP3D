@@ -106,6 +106,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         return false;
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
+        mModelNode->setScalability(false);
         confirm();
         return false;
     }
@@ -260,9 +261,9 @@ void Model::moving(osgEarth::GeoPoint &geoPos){
 
 void Model::confirm()
 {
-//    if (state() == State::MOVING) {
-//        setState(State::READY);
-//    }
+    if (state() == State::MOVING) {
+        setState(State::READY);
+    }
 }
 
 void Model::cancel(){
