@@ -27,6 +27,12 @@ public:
         CANCEL,
         CONFIRM
     };
+    enum class Type{
+        SIMPLE,
+        MOVEABLE,
+        FLYABLE
+    };
+
 public:
     explicit Model(QObject *parent = nullptr);
     ~Model();
@@ -35,7 +41,6 @@ public:
     osgEarth::Annotation::PlaceNode *iconNode() const;
     Model::State state() const;
     void setState(Model::State newState);
-    osgEarth::Annotation::AnnotationLayer *modelLayer();
 
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
@@ -52,12 +57,13 @@ protected:
 private:
     State mState{State::NONE};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mModelLayer{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mTreelLayer{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mCarlLayer{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::AnnotationLayer> mAirplanelLayer{nullptr};
-    osg::ref_ptr<SimpleModelNode> mModelNode{nullptr};
+    osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mSimpleNodeLayer{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
+
+    Type mType;
 
     static int mCount;
 

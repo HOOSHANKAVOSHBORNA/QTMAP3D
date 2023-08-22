@@ -83,11 +83,6 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
 //    }
 }
 
-SimpleModelNode *SimpleModelNode::getNewModel()
-{
-    return new SimpleModelNode(mMapItem, mModelUrl, mIconUrl);
-}
-
 void SimpleModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -113,12 +108,12 @@ void SimpleModelNode::setScalability(bool newScalability)
         setCullCallback(mScaler);
     }
     else{
-        removeCullCallback(mScaler);
-        mScaler->setDefaultScale(1);
-        mScaler->setMaxScale(1);
-        mScaler->setMinScale(1);
-//        setCullCallback(nullptr);
-//        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+//        removeCullCallback(mScaler);
+//        mScaler->setDefaultScale(1);
+//        mScaler->setMaxScale(1);
+//        mScaler->setMinScale(1);
+        setCullCallback(nullptr);
+        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
 
 
     }
