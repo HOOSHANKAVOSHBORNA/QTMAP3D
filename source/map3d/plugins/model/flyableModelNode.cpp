@@ -25,12 +25,6 @@ void FmodelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *
             {
                 osgEarth::GeoPoint currentGeoPoint;
                 currentGeoPoint.fromWorld(mMapItem->getMapSRS(), cp.getPosition());
-                //--terrain-----------------------------------------------------------------------
-//                double height = 0;
-//                const osgEarth::Terrain* terrain = mMapItem->getMapNode()->getTerrain();
-//                terrain->getHeight(mMapItem->getMapNode()->getMapSRS(), currentGeoPoint.x(), currentGeoPoint.y(), &height);
-//                double randomHeight = 200 + (QRandomGenerator::global()->generate() % (300 - 200));
-//                currentGeoPoint.z() = randomHeight;
                 //--set Position-----------------------------------------------------
                 mFlyableModel->setPosition(currentGeoPoint);
                 //--compute and set rotation-----------------------------------------------
