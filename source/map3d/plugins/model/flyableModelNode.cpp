@@ -1,4 +1,4 @@
-#include "flyableModel.h"
+#include "flyableModelNode.h"
 
 
 FmodelAnimationPathCallback::FmodelAnimationPathCallback(MapItem *mapItem, FlyableModel *flyableModel)

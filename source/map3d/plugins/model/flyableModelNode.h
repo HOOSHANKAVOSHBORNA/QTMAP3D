@@ -1,6 +1,6 @@
 #ifndef FLYABLEMODEL_H
 #define FLYABLEMODEL_H
-#include "MoveableModel.h"
+#include "MoveableModelNode.h"
 
 class FlyableModel: public MoveableModel
 {

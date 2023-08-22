@@ -4,6 +4,9 @@
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
 
+class MoveableModelNode;
+class FlyableModelNode;
+
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
@@ -21,6 +24,10 @@ public:
 
     bool getScalability() const;
     void setScalability(bool newScalability);
+
+    virtual SimpleModelNode* asSimpleModelNode(){return this;}
+    virtual MoveableModelNode* asMoveableModel(){return nullptr;}
+    virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
 private slots:
     void onModeChanged(bool is3DView);

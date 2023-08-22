@@ -1,7 +1,7 @@
 #include "model.h"
 #include "mapItem.h"
-#include "MoveableModel.h"
-#include "flyableModel.h"
+#include "MoveableModelNode.h"
+#include "flyableModelNode.h"
 #include <osgEarth/GLUtils>
 #include <QRandomGenerator>
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
