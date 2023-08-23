@@ -114,9 +114,9 @@ void SimpleModelNode::setScalability(bool newScalability)
     }
     else{
         removeCullCallback(mScaler);
-        mScaler->setDefaultScale(1);
-        mScaler->setMaxScale(1);
-        mScaler->setMinScale(1);
+//        mScaler->setDefaultScale(1);
+//        mScaler->setMaxScale(1);
+//        mScaler->setMinScale(1);
 //        setCullCallback(nullptr);
 //        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
 

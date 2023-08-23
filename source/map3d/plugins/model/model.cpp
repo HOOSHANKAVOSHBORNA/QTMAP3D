@@ -106,7 +106,6 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         return false;
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
-        mModelNode->setScalability(false);
         confirm();
         return false;
     }
@@ -151,6 +150,7 @@ void Model::onTreeItemCheck(bool check)
     if (check) {
         makeIconNode("../data/images/model/tree.png");
         mModelNode = new SimpleModelNode(mapItem(),"../data/models/tree_I.osgb", "../data/images/model/tree.png");
+        mModelNode->setScalability(true);
         if(mTreelLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
             mapItem()->getMapObject()->addLayer(mTreelLayer, sModelLayer);
@@ -204,6 +204,7 @@ void Model::onAirplanItemCheck(bool check)
     if (check) {
         makeIconNode("../data/images/model/airplane.png");
         mModelNode = new FlyableModel(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
+        mModelNode->setScalability(false);
         if(mAirplanelLayer->getGroup()->getNumChildren() <= 0){
             auto sModelLayer = modelLayer();
             mapItem()->getMapObject()->addLayer(mAirplanelLayer, sModelLayer);
