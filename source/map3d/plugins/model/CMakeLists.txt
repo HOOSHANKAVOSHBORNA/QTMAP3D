@@ -17,10 +17,10 @@ add_library(model SHARED
     model.cpp
     simpleModelNode.h
     simpleModelNode.cpp
-    MoveableModel.h
-    MoveableModel.cpp
-    flyableModel.h
-    flyableModel.cpp
+    MoveableModelNode.h
+    MoveableModelNode.cpp
+    flyableModelNode.h
+    flyableModelNode.cpp
     modelAutoScaler.h
     modelautoscaler.cpp
     model.json

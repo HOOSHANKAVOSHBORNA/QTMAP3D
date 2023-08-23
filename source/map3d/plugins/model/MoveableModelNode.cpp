@@ -1,4 +1,4 @@
-#include "MoveableModel.h"
+#include "MoveableModelNode.h"
 #include "mapItem.h"
 #include <QObject>
 #include <osg/Geode>
@@ -9,7 +9,7 @@
 #include <osgEarth/Viewpoint>
 
 
-ModelAnimationPathCallback::ModelAnimationPathCallback(MapItem *mapItem, MoveableModel *moveableModel)
+ModelAnimationPathCallback::ModelAnimationPathCallback(MapItem *mapItem, MoveableModelNode *moveableModel)
 {
     mMoveableModel = moveableModel;
     mMapItem = mapItem;
@@ -104,7 +104,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
     NodeCallback::traverse(node,nv);
 }
 
-MoveableModel::MoveableModel(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent):
+MoveableModelNode::MoveableModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent):
     SimpleModelNode(mapControler, modelUrl, iconUrl, parent)
 {
 
@@ -115,7 +115,7 @@ MoveableModel::MoveableModel(MapItem *mapControler, const std::string &modelUrl,
     getGeoTransform()->addUpdateCallback(mMoveAnimationPathCallback);
 }
 
-void MoveableModel::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
+void MoveableModelNode::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
 {
     mMoveAnimationPathCallback->reset();
     mMoveAnimationPathCallback->getAnimationPath()->clear();
@@ -202,17 +202,12 @@ void MoveableModel::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
     //    getGeoTransform()->setAutoRecomputeHeights(true);
 }
 
-SimpleModelNode *MoveableModel::getNewModel()
-{
-    return new MoveableModel(mapItem(), modelUrl(), iconUrl());
-}
-
-double MoveableModel::speed() const
+double MoveableModelNode::speed() const
 {
     return mSpeed;
 }
 
-void MoveableModel::setSpeed(double newSpeed)
+void MoveableModelNode::setSpeed(double newSpeed)
 {
     mSpeed = newSpeed;
 }

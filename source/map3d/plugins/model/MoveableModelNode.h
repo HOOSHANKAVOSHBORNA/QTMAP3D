@@ -5,12 +5,13 @@
 #include <osgAnimation/Keyframe>
 
 
-class MoveableModel : public SimpleModelNode
+class MoveableModelNode : public SimpleModelNode
 {
 public:
-    explicit MoveableModel(MapItem* mapControler, const std::string& modelUrl, const std::string &iconUrl, QObject *parent = nullptr);
+    explicit MoveableModelNode(MapItem* mapControler, const std::string& modelUrl, const std::string &iconUrl, QObject *parent = nullptr);
     void moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed);
-    virtual SimpleModelNode* getNewModel() override;
+    MoveableModelNode* asMoveableModelNode()override {return this;}
+
     virtual double speed() const;
     virtual void setSpeed(double newSpeed);
     virtual void stop(){}
@@ -24,11 +25,11 @@ private:
 class ModelAnimationPathCallback: public osg::AnimationPathCallback
 {
 private:
-    MoveableModel* mMoveableModel;
+    MoveableModelNode* mMoveableModel;
     MapItem* mMapItem;
     osgEarth::GeoPoint mPreGeoPoint;
 public:
-    ModelAnimationPathCallback(MapItem* mapItem, MoveableModel* moveableModel);
+    ModelAnimationPathCallback(MapItem* mapItem, MoveableModelNode* moveableModel);
     void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
 };
 
