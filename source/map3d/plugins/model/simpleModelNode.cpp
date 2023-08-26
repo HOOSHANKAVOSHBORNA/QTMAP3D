@@ -1,6 +1,6 @@
 #include "simpleModelNode.h"
 #include "model.h"
-#include "modelAutoScaler.h"
+
 #include "mapItem.h"
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
@@ -39,8 +39,9 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     else {
         ScaleRatio = 2;
     }
-    if (scalability){
-        addCullCallback(new ModelAutoScaler(ScaleRatio, 1, 1000));
+    mScaler = new ModelAutoScaler(ScaleRatio, 1, 1000);
+    if (mScalability){
+        setCullCallback(mScaler);
     }
 
 
@@ -82,11 +83,6 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
 //    }
 }
 
-SimpleModelNode *SimpleModelNode::getNewModel()
-{
-    return new SimpleModelNode(mMapItem, mModelUrl, mIconUrl);
-}
-
 void SimpleModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -102,12 +98,19 @@ void SimpleModelNode::onModeChanged(bool is3DView)
 
 bool SimpleModelNode::getScalability() const
 {
-    return scalability;
+    return mScalability;
 }
 
 void SimpleModelNode::setScalability(bool newScalability)
 {
-    scalability = newScalability;
+    mScalability = newScalability;
+    if (mScalability){
+        setCullCallback(mScaler);
+    }
+    else{
+        setCullCallback(nullptr);
+        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+    }
 }
 
 std::string SimpleModelNode::modelUrl() const

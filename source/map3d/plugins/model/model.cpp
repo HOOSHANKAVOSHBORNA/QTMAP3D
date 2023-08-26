@@ -1,7 +1,7 @@
 #include "model.h"
 #include "mapItem.h"
-#include "MoveableModel.h"
-#include "flyableModel.h"
+#include "MoveableModelNode.h"
+#include "flyableModelNode.h"
 #include <osgEarth/GLUtils>
 #include <QRandomGenerator>
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
@@ -19,11 +19,11 @@ Model::~Model()
 
 bool Model::setup()
 {
-//    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+    //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
-    mModelLayer = new osgEarth::Annotation::AnnotationLayer();
-    mModelLayer->setName(MODEL);
-    mapItem()->getMapObject()->addLayer(mModelLayer);
+    mModelNodeLayer = new CompositeAnnotationLayer();
+    mModelNodeLayer->setName(MODEL);
+    mapItem()->getMapObject()->addLayer(mModelNodeLayer);
 
 
     auto treeToolboxItem =  new ToolboxItem{TREE, MODEL, "qrc:/resources/tree.png", true};
@@ -38,14 +38,14 @@ bool Model::setup()
     QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
-    mTreelLayer = new osgEarth::Annotation::AnnotationLayer();
-    mTreelLayer->setName(TREE);
+    mSimpleNodeLayer = new ParenticAnnotationLayer();
+    mSimpleNodeLayer->setName(TREE);
 
-    mCarlLayer = new osgEarth::Annotation::AnnotationLayer();
-    mCarlLayer->setName(CAR);
+    mMoveableNodeLayer = new ParenticAnnotationLayer();
+    mMoveableNodeLayer->setName(CAR);
 
-    mAirplanelLayer = new osgEarth::Annotation::AnnotationLayer();
-    mAirplanelLayer->setName(AIRPLANE);
+    mFlyableNodelLayer = new ParenticAnnotationLayer();
+    mFlyableNodelLayer->setName(AIRPLANE);
     return true;
 }
 
@@ -74,14 +74,6 @@ void Model::setState(State newState)
     mState = newState;
 }
 
-osgEarth::Annotation::AnnotationLayer *Model::modelLayer()
-{
-    if(!mModelLayer)
-        mModelLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>
-            (mapItem()->getMapObject()->getLayerByName(MODEL));
-    return mModelLayer;
-}
-
 bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if(mState == State::NONE)
@@ -106,6 +98,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         return false;
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
+        mCurrentModel->setScalability(false);
         confirm();
         return false;
     }
@@ -123,11 +116,11 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
     }
 
 
-//    if(mState == State::MOVING){
-//        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-//        moving(geoPos);
-//        return true;
-//    }
+    //    if(mState == State::MOVING){
+    //        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+    //        moving(geoPos);
+    //        return true;
+    //    }
     //--------------------------------
     return false;
 }
@@ -149,11 +142,9 @@ void Model::onTreeItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/tree.png");
-        mModelNode = new SimpleModelNode(mapItem(),"../data/models/tree_I.osgb", "../data/images/model/tree.png");
-        if(mTreelLayer->getGroup()->getNumChildren() <= 0){
-            auto sModelLayer = modelLayer();
-            mapItem()->getMapObject()->addLayer(mTreelLayer, sModelLayer);
-        }
+
+        mType = Type::SIMPLE;
+
         setState(State::READY);
         mapItem()->addNode(iconNode());
 
@@ -162,10 +153,6 @@ void Model::onTreeItemCheck(bool check)
         if(state() == State::MOVING)
             cancel();
 
-        if(mTreelLayer->getGroup()->getNumChildren() <= 0){
-            auto sModelLayer = modelLayer();
-            mapItem()->getMapObject()->removeLayer(mTreelLayer, sModelLayer);
-        }
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
     }
@@ -175,12 +162,8 @@ void Model::onCarItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/car.png");
-        mModelNode = new MoveableModel(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
+        mType = Type::MOVEABLE;
 
-        if(mCarlLayer->getGroup()->getNumChildren() <= 0){
-            auto sModelLayer = modelLayer();
-            mapItem()->getMapObject()->addLayer(mCarlLayer, sModelLayer);
-        }
         setState(State::READY);
         mapItem()->addNode(iconNode());
 
@@ -189,10 +172,6 @@ void Model::onCarItemCheck(bool check)
         if(state() == State::MOVING)
             cancel();
 
-        if(mCarlLayer->getGroup()->getNumChildren() <= 0){
-            auto sModelLayer = modelLayer();
-            mapItem()->getMapObject()->removeLayer(mCarlLayer, sModelLayer);
-        }
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
     }
@@ -202,11 +181,8 @@ void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/images/model/airplane.png");
-        mModelNode = new FlyableModel(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
-        if(mAirplanelLayer->getGroup()->getNumChildren() <= 0){
-            auto sModelLayer = modelLayer();
-            mapItem()->getMapObject()->addLayer(mAirplanelLayer, sModelLayer);
-        }
+
+        mType = Type::FLYABLE;
         setState(State::READY);
         mapItem()->addNode(iconNode());
 
@@ -215,23 +191,47 @@ void Model::onAirplanItemCheck(bool check)
         if(state() == State::MOVING)
             cancel();
 
-        if(mAirplanelLayer->getGroup()->getNumChildren() <= 0){
-            auto sModelLayer = modelLayer();
-            mapItem()->getMapObject()->removeLayer(mAirplanelLayer, sModelLayer);
-        }
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
     }
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
-    //QString name = "box" + QString::number(mCount);
-    //mBox->setName(name.toStdString());
-    mCurrentModel = mModelNode->getNewModel();
+
+    QString name;
+    switch (mType) {
+    case Type::SIMPLE:
+        name = "Tree" + QString::number(mCount);
+        mCurrentModel = new SimpleModelNode(mapItem(),"../data/models/tree_I.osgb", "../data/images/model/tree.png");
+        if(!mModelNodeLayer->containsLayer(mSimpleNodeLayer)){
+            mSimpleNodeLayer->clear();
+            mModelNodeLayer->addLayer(mSimpleNodeLayer);
+        }
+        mSimpleNodeLayer->addChild(mCurrentModel);
+        break;
+    case Type::MOVEABLE:
+        name = "Car" + QString::number(mCount);
+        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
+        if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
+            mMoveableNodeLayer->clear();
+            mModelNodeLayer->addLayer(mMoveableNodeLayer);
+        }
+        mMoveableNodeLayer->addChild(mCurrentModel);
+        break;
+    case Type::FLYABLE:
+        name = "Airplane" + QString::number(mCount);
+        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
+        if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
+            mFlyableNodelLayer->clear();
+            mModelNodeLayer->addLayer(mFlyableNodelLayer);
+        }
+        mFlyableNodelLayer->addChild(mCurrentModel);
+        break;
+    default:
+        break;
+    }
+    mCurrentModel->setName(name.toStdString());
     mCurrentModel->setPosition(geoPos);
-//    mapItem()->getMapObject()->addNodeToLayer(mCurrentModel, mModelLayer);
-    mModelLayer->addChild(mCurrentModel);
-    //    mBoxProperties->setBox(mBox);
 
     setState(State::MOVING);
     mCount++;
@@ -240,36 +240,44 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
 
 void Model::moving(osgEarth::GeoPoint &geoPos){
 
-    //mCurrentModel->setPosition(geoPos);
-
-
-    auto flyableModell = dynamic_cast<FlyableModel*>(mCurrentModel.get());
-    if (flyableModell){
+    if (mCurrentModel->asFlyableModelNode()){
         double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
         geoPos.z() += randomHeight;
-        flyableModell->flyTo(geoPos,20);
+        mCurrentModel->asFlyableModelNode()->flyTo(geoPos,20);
         return;
     }
-    auto moveableModell = dynamic_cast<MoveableModel*>(mCurrentModel.get());
-    if (moveableModell){
-        moveableModell->moveTo(geoPos,20);
+    if (mCurrentModel->asMoveableModelNode()){
+        mCurrentModel->asMoveableModelNode()->moveTo(geoPos,20);
+        return;
     }
 
-
+    mCurrentModel->setPosition(geoPos);
 }
 
 void Model::confirm()
 {
-//    if (state() == State::MOVING) {
-//        setState(State::READY);
-//    }
+    if (state() == State::MOVING) {
+        setState(State::READY);
+    }
 }
 
 void Model::cancel(){
 
     if(state() == State::MOVING){
-//        mapItem()->getMapObject()->removeNodeFromLayer(mCurrentModel, mModelLayer);
-//        mCurrentModel.release();
+        switch (mType) {
+        case Type::SIMPLE:
+            mSimpleNodeLayer->removeChild(mCurrentModel);
+            break;
+        case Type::MOVEABLE:
+            mMoveableNodeLayer->removeChild(mCurrentModel);
+            break;
+        case Type::FLYABLE:
+            mFlyableNodelLayer->removeChild(mCurrentModel);
+            break;
+        default:
+            break;
+        }
+        mCurrentModel.release();
         setState(State::READY);
         mCount--;
     }
