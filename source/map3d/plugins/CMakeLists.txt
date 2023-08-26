@@ -20,5 +20,6 @@ add_subdirectory(drawRect)
 add_subdirectory(imageOverlay)
 add_subdirectory(model)
 add_subdirectory(screen)
+add_subdirectory(particle)
 #add_subdirectory(uiComponents)
 
