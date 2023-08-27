@@ -16,8 +16,8 @@ Explosion::Explosion(MapItem *map)
     explosion4->setParticleDuration(2.8);
 
     osg::ref_ptr<osgParticle::ExplosionDebrisEffect> debris1 = new osgParticle::ExplosionDebrisEffect(osg::Vec3(0,0,0), 10.0f * scale, 1.0f);
-    osg::ref_ptr<osgParticle::SmokeEffect> smoke = new osgParticle::SmokeEffect(osg::Vec3(0,0,0), 10.0f * scale ,2.0);
-    osg::ref_ptr<osgParticle::FireEffect> fire = new osgParticle::FireEffect(osg::Vec3(0,0,0),10.0f * scale , 2.0);
+    osg::ref_ptr<osgParticle::SmokeEffect> smoke = new osgParticle::SmokeEffect(osg::Vec3(0,0,scale), 18.0f * scale ,0.2);
+    osg::ref_ptr<osgParticle::FireEffect> fire = new osgParticle::FireEffect(osg::Vec3(0,0,0),9.0f * scale , 2.0);
 
     explosion1->setUseLocalParticleSystem(false);
     explosion2->setUseLocalParticleSystem(false);
@@ -40,8 +40,8 @@ Explosion::Explosion(MapItem *map)
     explosion4->setTextureFileName("../data/images/fire_p4.png");
 
     debris1->setTextureFileName("../data/images/debris_p1.png");
-    smoke->setTextureFileName("../data/images/smoke_p1.png");
-    fire->setTextureFileName("../data/images/fire_p1.png");
+    smoke->setTextureFileName("../data/images/smoke_p2.png");
+    fire->setTextureFileName("../data/images/fire_p5.png");
 
     pSphereGroup->addChild(explosion1);
     pSphereGroup->addChild(explosion2);

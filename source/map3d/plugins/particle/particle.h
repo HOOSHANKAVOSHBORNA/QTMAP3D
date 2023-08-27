@@ -5,6 +5,9 @@
 #include "compositeAnnotationLayer.h"
 #include "explosion.h"
 #include "fireSmoke.h"
+#include "snow.h"
+#include "rain.h"
+#include "fog.h"
 #include "plugininterface.h"
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/ModelNode>
@@ -30,7 +33,10 @@ public:
     enum class Mode{
         NONE,
         FIRE,
-        EXPLOSION
+        EXPLOSION,
+        SNOW,
+        RAIN,
+        FOG
     };
 
     Particle(QObject *parent = nullptr);
@@ -41,6 +47,9 @@ public:
 public slots:
     void onExplodeClicked(bool check);
     void onFireClicked(bool check);
+    void onSnowClicked(bool check);
+    void onRainClicked(bool check);
+    void onFogClicked(bool check);
 
 protected:
     void add(const osgEarth::GeoPoint &geoPos);
@@ -54,8 +63,10 @@ private:
     Mode mMode{Mode::NONE};
     Explosion *mExplosion;
     FireSmoke *mFire;
+    Snow *mSnow;
+    Rain *mRain;
+    Fog  *mFog;
     osg::ref_ptr<ParenticAnnotationLayer> mParticleLayer{nullptr};
-
 
 };
 

@@ -4,9 +4,12 @@
 #include <osgEarth/Registry>
 
 
-const QString CATEGORY = "Particle";
+const QString CATEGORY  = "Particle" ;
 const QString EXPLOSION = "Explosion";
-const QString FIRE = "Fire";
+const QString FIRE      = "Fire";
+const QString SNOW      = "Snow";
+const QString RAIN      = "Rain";
+const QString FOG       = "Fog" ;
 
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
@@ -33,6 +36,18 @@ bool Particle::setup()
     auto toolboxItemFire =  new ToolboxItem{FIRE, CATEGORY, "qrc:/resources/fire.png", true};
     QObject::connect(toolboxItemFire, &ToolboxItem::itemChecked, this, &Particle::onFireClicked);
     toolbox()->addItem(toolboxItemFire);
+    ///////////////////////////add snow/////////////////////////////////////
+    auto toolboxItemSnow =  new ToolboxItem{SNOW, CATEGORY, "qrc:/resources/snow.png", true};
+    QObject::connect(toolboxItemSnow, &ToolboxItem::itemChecked, this, &Particle::onSnowClicked);
+    toolbox()->addItem(toolboxItemSnow);
+    ///////////////////////////add rain/////////////////////////////////////
+    auto toolboxItemRain =  new ToolboxItem{RAIN, CATEGORY, "qrc:/resources/rain.png", true};
+    QObject::connect(toolboxItemRain, &ToolboxItem::itemChecked, this, &Particle::onRainClicked);
+    toolbox()->addItem(toolboxItemRain);
+    ///////////////////////////add fog/////////////////////////////////////
+    auto toolboxItemFog =  new ToolboxItem{FOG, CATEGORY, "qrc:/resources/fog.png", true};
+    QObject::connect(toolboxItemFog, &ToolboxItem::itemChecked, this, &Particle::onFogClicked);
+    toolbox()->addItem(toolboxItemFog);
 
 
     return true;
@@ -100,6 +115,51 @@ void Particle::onFireClicked(bool check)
         mMode = Mode::NONE;
     }
 }
+/////////////////////////////////////////////////////////////////////////
+void Particle::onSnowClicked(bool check)
+{
+    if (check) {
+
+        mState = (State::READY);
+        mMode = Mode::SNOW;
+    }
+    else {
+        if(mState == State::ADDING)
+            cancelAdd();
+        mState =State::NONE;
+        mMode = Mode::NONE;
+    }
+}
+///////////////////////////////////////////////////////////////////////////
+void Particle::onRainClicked(bool check)
+{
+    if (check) {
+
+        mState = (State::READY);
+        mMode = Mode::RAIN;
+    }
+    else {
+        if(mState == State::ADDING)
+            cancelAdd();
+        mState =State::NONE;
+        mMode = Mode::NONE;
+    }
+}
+///////////////////////////////////////////////////////////////////////////
+void Particle::onFogClicked(bool check)
+{
+    if (check) {
+
+        mState = (State::READY);
+        mMode = Mode::FOG;
+    }
+    else {
+        if(mState == State::ADDING)
+            cancelAdd();
+        mState =State::NONE;
+        mMode = Mode::NONE;
+    }
+}
 
 
 void Particle::add(const osgEarth::GeoPoint &geoPos)
@@ -114,6 +174,18 @@ void Particle::add(const osgEarth::GeoPoint &geoPos)
         mExplosion = new Explosion(mapItem());
         mExplosion->setPosition(geoPos);
         mParticleLayer->addChild(mExplosion);
+        break;
+    case Mode::SNOW:
+        mSnow = new Snow(mapItem());
+        mParticleLayer->addChild(mSnow);
+        break;
+    case Mode::RAIN:
+        mRain = new Rain(mapItem());
+        mParticleLayer->addChild(mRain);
+        break;
+    case Mode::FOG:
+        mFog = new Fog(mapItem());
+        mParticleLayer->addChild(mFog);
         break;
     default:
         break;
@@ -153,7 +225,16 @@ void Particle::cancelAdd(){
             break;
         case Mode::EXPLOSION:
             mParticleLayer->removeChild(mExplosion);
-        break;
+            break;
+        case Mode::SNOW:
+            mParticleLayer->removeChild(mSnow);
+            break;
+        case Mode::RAIN:
+            mParticleLayer->removeChild(mRain);
+            break;
+        case Mode::FOG:
+            mParticleLayer->removeChild(mFog);
+            break;
         default:
             break;
         }
