@@ -9,7 +9,6 @@ const QString EXPLOSION = "Explosion";
 const QString FIRE      = "Fire";
 const QString SNOW      = "Snow";
 const QString RAIN      = "Rain";
-const QString FOG       = "Fog" ;
 
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
@@ -44,10 +43,7 @@ bool Particle::setup()
     auto toolboxItemRain =  new ToolboxItem{RAIN, CATEGORY, "qrc:/resources/rain.png", true};
     QObject::connect(toolboxItemRain, &ToolboxItem::itemChecked, this, &Particle::onRainClicked);
     toolbox()->addItem(toolboxItemRain);
-    ///////////////////////////add fog/////////////////////////////////////
-    auto toolboxItemFog =  new ToolboxItem{FOG, CATEGORY, "qrc:/resources/fog.png", true};
-    QObject::connect(toolboxItemFog, &ToolboxItem::itemChecked, this, &Particle::onFogClicked);
-    toolbox()->addItem(toolboxItemFog);
+
 
 
     return true;
@@ -146,20 +142,6 @@ void Particle::onRainClicked(bool check)
     }
 }
 ///////////////////////////////////////////////////////////////////////////
-void Particle::onFogClicked(bool check)
-{
-    if (check) {
-
-        mState = (State::READY);
-        mMode = Mode::FOG;
-    }
-    else {
-        if(mState == State::ADDING)
-            cancelAdd();
-        mState =State::NONE;
-        mMode = Mode::NONE;
-    }
-}
 
 
 void Particle::add(const osgEarth::GeoPoint &geoPos)
@@ -182,10 +164,6 @@ void Particle::add(const osgEarth::GeoPoint &geoPos)
     case Mode::RAIN:
         mRain = new Rain(mapItem());
         mParticleLayer->addChild(mRain);
-        break;
-    case Mode::FOG:
-        mFog = new Fog(mapItem());
-        mParticleLayer->addChild(mFog);
         break;
     default:
         break;
@@ -231,9 +209,6 @@ void Particle::cancelAdd(){
             break;
         case Mode::RAIN:
             mParticleLayer->removeChild(mRain);
-            break;
-        case Mode::FOG:
-            mParticleLayer->removeChild(mFog);
             break;
         default:
             break;

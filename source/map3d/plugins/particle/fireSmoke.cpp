@@ -22,7 +22,6 @@ FireSmoke::FireSmoke(MapItem *map)
     osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());
     getPositionAttitudeTransform()->addChild(mSmoke->getParticleSystem());
     getPositionAttitudeTransform()->addChild(mFire->getParticleSystem());
-
 }
 
 osg::PositionAttitudeTransform *FireSmoke::getFireSmoke()

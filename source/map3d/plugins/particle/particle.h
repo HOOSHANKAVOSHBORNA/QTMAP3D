@@ -7,7 +7,6 @@
 #include "fireSmoke.h"
 #include "snow.h"
 #include "rain.h"
-#include "fog.h"
 #include "plugininterface.h"
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/ModelNode>
@@ -65,7 +64,6 @@ private:
     FireSmoke *mFire;
     Snow *mSnow;
     Rain *mRain;
-    Fog  *mFog;
     osg::ref_ptr<ParenticAnnotationLayer> mParticleLayer{nullptr};
 
 };
