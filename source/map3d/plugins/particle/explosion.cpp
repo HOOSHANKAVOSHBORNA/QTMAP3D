@@ -5,15 +5,15 @@ Explosion::Explosion(MapItem *map)
 {
 
     float scale = 100;
-    osg::ref_ptr<osgParticle::ExplosionEffect> explosion1 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 8.0f * scale, 0.128f);
-    osg::ref_ptr<osgParticle::ExplosionEffect> explosion2 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 4.0f * scale, 0.25f);
-    osg::ref_ptr<osgParticle::ExplosionEffect> explosion3 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 2.0f * scale, 0.5f);
-    osg::ref_ptr<osgParticle::ExplosionEffect> explosion4 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 1.0f * scale, 1.0f);
+    osg::ref_ptr<osgParticle::ExplosionEffect> explosion1 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 6.0f * scale, 1.128f);
+    osg::ref_ptr<osgParticle::ExplosionEffect> explosion2 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 4.0f * scale, 1.25f);
+    osg::ref_ptr<osgParticle::ExplosionEffect> explosion3 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 2.0f * scale, 1.5f);
+    osg::ref_ptr<osgParticle::ExplosionEffect> explosion4 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 1.0f * scale, 2.0f);
 
-    explosion1->setParticleDuration(2.0);
-    explosion2->setParticleDuration(2.2);
-    explosion3->setParticleDuration(2.4);
-    explosion4->setParticleDuration(2.8);
+    explosion1->setParticleDuration(1.0);
+    explosion2->setParticleDuration(1.2);
+    explosion3->setParticleDuration(1.4);
+    explosion4->setParticleDuration(1.8);
 
     osg::ref_ptr<osgParticle::ExplosionDebrisEffect> debris1 = new osgParticle::ExplosionDebrisEffect(osg::Vec3(0,0,0), 10.0f * scale, 1.0f);
     osg::ref_ptr<osgParticle::SmokeEffect> smoke = new osgParticle::SmokeEffect(osg::Vec3(0,0,scale), 18.0f * scale ,0.2);
@@ -40,7 +40,7 @@ Explosion::Explosion(MapItem *map)
     explosion4->setTextureFileName("../data/images/fire_p4.png");
 
     debris1->setTextureFileName("../data/images/debris_p1.png");
-    smoke->setTextureFileName("../data/images/smoke_p2.png");
+    smoke->setTextureFileName("../data/images/smoke_p1.png");
     fire->setTextureFileName("../data/images/fire_p5.png");
 
     pSphereGroup->addChild(explosion1);

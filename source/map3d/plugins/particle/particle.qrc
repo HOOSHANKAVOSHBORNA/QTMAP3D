@@ -4,6 +4,6 @@
         <file>resources/fire.png</file>
         <file>resources/snow.png</file>
         <file>resources/rain.png</file>
-        <file>resources/fog.png</file>
+        <file>resources/cloud.png</file>
     </qresource>
 </RCC>

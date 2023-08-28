@@ -14,6 +14,7 @@ class Rain: public osgEarth::Annotation::GeoPositionNode
 public:
     Rain(MapItem *map);
     osgParticle::PrecipitationEffect *getRain();
+    void removeRain(MapItem *map);
 private:
     osg::ref_ptr<osgParticle::PrecipitationEffect> mRain;
 };

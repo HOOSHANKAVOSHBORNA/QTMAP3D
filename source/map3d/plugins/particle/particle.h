@@ -7,7 +7,9 @@
 #include "fireSmoke.h"
 #include "snow.h"
 #include "rain.h"
+#include "cloud.h"
 #include "plugininterface.h"
+#include <osgEarthAnnotation/CircleNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/AnnotationLayer>
@@ -24,7 +26,7 @@ public:
     enum class State{
         NONE,
         READY,
-        ADDING,
+        MOVING,
         CANCEL,
         CONFIRM
     };
@@ -35,7 +37,7 @@ public:
         EXPLOSION,
         SNOW,
         RAIN,
-        FOG
+        CLOUD
     };
 
     Particle(QObject *parent = nullptr);
@@ -43,12 +45,14 @@ public:
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 
 
+
+
 public slots:
     void onExplodeClicked(bool check);
     void onFireClicked(bool check);
     void onSnowClicked(bool check);
     void onRainClicked(bool check);
-    void onFogClicked(bool check);
+    void onCloudClicked(bool check);
 
 protected:
     void add(const osgEarth::GeoPoint &geoPos);
@@ -63,6 +67,9 @@ private:
     Explosion *mExplosion;
     FireSmoke *mFire;
     Snow *mSnow;
+    Cloud *mCloud;
+    osg::ref_ptr<osgEarth::Annotation::CircleNode> circle;
+
     Rain *mRain;
     osg::ref_ptr<ParenticAnnotationLayer> mParticleLayer{nullptr};
 
