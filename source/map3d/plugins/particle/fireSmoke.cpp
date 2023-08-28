@@ -5,7 +5,7 @@ FireSmoke::FireSmoke(MapItem *map)
 {
     mFire = new osgParticle::FireEffect(osg::Vec3(0,0,0), 1000, 1);
     mSmoke = new osgParticle::SmokeEffect(osg::Vec3(0,0,500),2000,0.2);
-    mSmoke->setTextureFileName("../data/images/smoke_p2.png");
+    mSmoke->setTextureFileName("../data/images/smoke_p1.png");
     mFire->setTextureFileName("../data/images/fire_p5.png");
     mFire->setUseLocalParticleSystem(false);
     mSmoke->setUseLocalParticleSystem(false);
@@ -22,7 +22,6 @@ FireSmoke::FireSmoke(MapItem *map)
     osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());
     getPositionAttitudeTransform()->addChild(mSmoke->getParticleSystem());
     getPositionAttitudeTransform()->addChild(mFire->getParticleSystem());
-
 }
 
 osg::PositionAttitudeTransform *FireSmoke::getFireSmoke()

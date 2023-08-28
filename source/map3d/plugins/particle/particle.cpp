@@ -2,6 +2,7 @@
 #include <osgEarth/GLUtils>
 #include <QLabel>
 #include <osgEarth/Registry>
+#include <osgEarthAnnotation/CircleNode>
 
 
 const QString CATEGORY  = "Particle" ;
@@ -9,7 +10,9 @@ const QString EXPLOSION = "Explosion";
 const QString FIRE      = "Fire";
 const QString SNOW      = "Snow";
 const QString RAIN      = "Rain";
-const QString FOG       = "Fog" ;
+const QString CLOUD     = "Cloud";
+
+
 
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
@@ -44,11 +47,10 @@ bool Particle::setup()
     auto toolboxItemRain =  new ToolboxItem{RAIN, CATEGORY, "qrc:/resources/rain.png", true};
     QObject::connect(toolboxItemRain, &ToolboxItem::itemChecked, this, &Particle::onRainClicked);
     toolbox()->addItem(toolboxItemRain);
-    ///////////////////////////add fog/////////////////////////////////////
-    auto toolboxItemFog =  new ToolboxItem{FOG, CATEGORY, "qrc:/resources/fog.png", true};
-    QObject::connect(toolboxItemFog, &ToolboxItem::itemChecked, this, &Particle::onFogClicked);
-    toolbox()->addItem(toolboxItemFog);
-
+    ///////////////////////////add cloud/////////////////////////////////////
+    auto toolboxItemCloud =  new ToolboxItem{CLOUD, CATEGORY, "qrc:/resources/cloud.png", true};
+    QObject::connect(toolboxItemCloud, &ToolboxItem::itemChecked, this, &Particle::onCloudClicked);
+    toolbox()->addItem(toolboxItemCloud);
 
     return true;
 }
@@ -66,19 +68,18 @@ bool Particle::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             add(geoPos);
             return true;
         }
-
-        if (mState == State::ADDING) {
+        if (mState == State::MOVING) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             moving(geoPos);
             return true;
         }
 
     }
-    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::ADDING)) {
+    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::MOVING)) {
         cancelAdd();
         return false;
     }
-    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::ADDING)) {
+    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
         confirm();
         return false;
     }
@@ -94,7 +95,7 @@ void Particle::onExplodeClicked(bool check)
         mMode = Mode::EXPLOSION;
     }
     else {
-        if(mState == State::ADDING)
+        if(mState == State::MOVING)
             cancelAdd();
         mState =State::NONE;
         mMode = Mode::NONE;
@@ -109,7 +110,7 @@ void Particle::onFireClicked(bool check)
         mMode = Mode::FIRE;
     }
     else {
-        if(mState == State::ADDING)
+        if(mState == State::MOVING)
             cancelAdd();
         mState =State::NONE;
         mMode = Mode::NONE;
@@ -124,7 +125,7 @@ void Particle::onSnowClicked(bool check)
         mMode = Mode::SNOW;
     }
     else {
-        if(mState == State::ADDING)
+        if(mState == State::MOVING)
             cancelAdd();
         mState =State::NONE;
         mMode = Mode::NONE;
@@ -139,31 +140,40 @@ void Particle::onRainClicked(bool check)
         mMode = Mode::RAIN;
     }
     else {
-        if(mState == State::ADDING)
+        if(mState == State::MOVING)
             cancelAdd();
         mState =State::NONE;
         mMode = Mode::NONE;
     }
 }
 ///////////////////////////////////////////////////////////////////////////
-void Particle::onFogClicked(bool check)
+void Particle::onCloudClicked(bool check)
 {
     if (check) {
 
         mState = (State::READY);
-        mMode = Mode::FOG;
+        mMode = Mode::CLOUD;
     }
     else {
-        if(mState == State::ADDING)
+        if(mState == State::MOVING)
             cancelAdd();
         mState =State::NONE;
         mMode = Mode::NONE;
     }
 }
+///////////////////////////////////////////////////////////////////////////
 
 
 void Particle::add(const osgEarth::GeoPoint &geoPos)
 {
+    circle = new osgEarth::Annotation::CircleNode;
+    circle->setRadius(osgEarth::Distance(10, osgEarth::Units::KILOMETERS));
+    auto style = circle->getStyle();
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osg::Vec4f(0,0,0,0));
+    style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = true;
+    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color(osg::Vec4f(0,1,0,1));
+    circle->setStyle(style);
+
     switch (mMode) {
     case Mode::FIRE:
         mFire = new FireSmoke(mapItem());
@@ -176,21 +186,24 @@ void Particle::add(const osgEarth::GeoPoint &geoPos)
         mParticleLayer->addChild(mExplosion);
         break;
     case Mode::SNOW:
-        mSnow = new Snow(mapItem());
+        mSnow = new Snow(circle);
+        mapItem()->getMapNode()->addChild(circle);
+        circle->setPosition(geoPos);
         mParticleLayer->addChild(mSnow);
         break;
     case Mode::RAIN:
         mRain = new Rain(mapItem());
         mParticleLayer->addChild(mRain);
         break;
-    case Mode::FOG:
-        mFog = new Fog(mapItem());
-        mParticleLayer->addChild(mFog);
+    case Mode::CLOUD:
+        mCloud = new Cloud(mapItem());
+        mCloud->setPosition(geoPos);
+        mParticleLayer->addChild(mCloud);
         break;
     default:
         break;
     }
-    mState = State::ADDING;
+    mState = State::MOVING;
 }
 
 void Particle::moving(const osgEarth::GeoPoint &geoPos)
@@ -202,6 +215,12 @@ void Particle::moving(const osgEarth::GeoPoint &geoPos)
     case Mode::EXPLOSION:
         mExplosion->setPosition(geoPos);
         break;
+    case Mode::CLOUD:
+        mCloud->setPosition(geoPos);
+        break;
+    case Mode::SNOW:
+        circle->setPosition(geoPos);
+        break;
     default:
         break;
     }
@@ -211,14 +230,14 @@ void Particle::moving(const osgEarth::GeoPoint &geoPos)
 
 void Particle::confirm()
 {
-    if (mState == State::ADDING) {
+    if (mState == State::MOVING) {
         mState = State::READY;
     }
 }
 
 void Particle::cancelAdd(){
 
-    if(mState == State::ADDING){
+    if(mState == State::MOVING){
         switch (mMode) {
         case Mode::FIRE:
             mParticleLayer->removeChild(mFire);
@@ -226,14 +245,16 @@ void Particle::cancelAdd(){
         case Mode::EXPLOSION:
             mParticleLayer->removeChild(mExplosion);
             break;
+        case Mode::CLOUD:
+            mParticleLayer->removeChild(mCloud);
+            break;
         case Mode::SNOW:
+            mSnow->removeSnow(mapItem());
             mParticleLayer->removeChild(mSnow);
             break;
         case Mode::RAIN:
+            mRain->removeRain(mapItem());
             mParticleLayer->removeChild(mRain);
-            break;
-        case Mode::FOG:
-            mParticleLayer->removeChild(mFog);
             break;
         default:
             break;
