@@ -142,11 +142,25 @@ MapController {
         anchors.leftMargin: 20
     }
     SearchBar {
+        id:searcbarContainer
         anchors.top: parent.top
         anchors.topMargin: 20
         anchors.rightMargin: 20
         anchors.right: parent.right
         model: map.searchNodeProxyModel()
+    }
+    MultiEffect {
+        source: searcbarContainer
+        enabled: true
+        anchors.fill: searcbarContainer
+        shadowColor: "black"
+        shadowEnabled: true
+        shadowBlur: 0.6
+        shadowHorizontalOffset: 3.5
+        shadowVerticalOffset:2.5
+        shadowOpacity:0.35
+        paddingRect: Qt.rect(0,0,20,20)
+        shadowScale: 0.98
     }
     //        id:mapItem
     Rectangle {

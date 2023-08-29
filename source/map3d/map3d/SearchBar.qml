@@ -19,6 +19,7 @@ Rectangle {
 
         anchors.fill: parent
         //---------------------------searcbox---------------------------//
+
         RowLayout{
             Layout.fillHeight: true
             Layout.fillWidth: true
@@ -26,8 +27,12 @@ Rectangle {
             layoutDirection: Qt.LeftToRight
 
             //------------------------------search-----------------------//
+
+
             Rectangle{
-                color:_colorIcon
+                id:searchContainer
+
+                color:"transparent"
                 height: 40
                 width: 40
                 radius: 20
@@ -56,7 +61,9 @@ Rectangle {
 
                 }
             }
+
             }
+
 
             TextField {
                 id : txtid
@@ -141,22 +148,23 @@ Rectangle {
                     }
 
                 }
-                MultiEffect {
-                    source: closeButton
-                    enabled: true
-                    anchors.fill: closeButton
-                    shadowColor: "black"
-                    shadowEnabled: true
-                    shadowBlur: 0.6
-                    shadowHorizontalOffset: -1.5
-                    shadowVerticalOffset:0
-                    shadowOpacity:0.35
-                    paddingRect: Qt.rect(0,0,20,20)
-                    shadowScale: 0.98
-                }
+//                MultiEffect {
+//                    source: closeButton
+//                    enabled: true
+//                    anchors.fill: closeButton
+//                    shadowColor: "black"
+//                    shadowEnabled: true
+//                    shadowBlur: 0.6
+//                    shadowHorizontalOffset: -1.5
+//                    shadowVerticalOffset:0
+//                    shadowOpacity:0.35
+//                    paddingRect: Qt.rect(0,0,20,20)
+//                    shadowScale: 0.98
+//                }
             }
         }
     }
+
     //-------------------- search list ----------------------//
     Rectangle{
         id:dropDown
