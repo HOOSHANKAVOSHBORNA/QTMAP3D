@@ -28,7 +28,7 @@ Rectangle {
 
     Rectangle{
         anchors.fill: parent
-        color: _colorRec
+        color:"white"
         opacity: 0.7
         radius: sp.height/2
 

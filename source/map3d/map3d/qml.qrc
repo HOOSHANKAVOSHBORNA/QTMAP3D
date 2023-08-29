@@ -26,6 +26,6 @@
         <file>DockWindow.qml</file>
         <file>ToolBar.qml</file>
         <file>TabItem.qml</file>
-        <file>NavigationWidget.qml</file>
+        <file>MapViewController.qml</file>
     </qresource>
 </RCC>
