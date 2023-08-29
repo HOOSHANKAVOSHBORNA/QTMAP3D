@@ -25,6 +25,7 @@ add_executable(Map3d
         application.cpp mapItem.h
         mapItem.cpp application.h
         pluginmanager.cpp   pluginmanager.h
+        serviceManager.h serviceManager.cpp
         defenseDataManager.cpp  defenseDataManager.h
         listwindow.cpp  listwindow.h
         layerModel.cpp layerModel.h
