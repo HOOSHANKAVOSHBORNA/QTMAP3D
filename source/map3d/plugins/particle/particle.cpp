@@ -249,7 +249,7 @@ void Particle::cancelAdd(){
             mParticleLayer->removeChild(mCloud);
             break;
         case Mode::SNOW:
-            mSnow->removeSnow(mapItem());
+            mapItem()->getMapNode()->removeChild(circle);
             mParticleLayer->removeChild(mSnow);
             break;
         case Mode::RAIN:
