@@ -52,6 +52,7 @@ Item {
             //            Layout.alignment:  Qt.AlignVCenter
 
 
+
             clip: true
             ControlCamera{
                 id: rotationControlCamera
@@ -62,8 +63,7 @@ Item {
 //                anchors.top: parent.top
 //                anchors.topMargin: 17
                 centerIcon: "qrc:/Resources/eye.png"
-                //color: "transparent"
-                //buttonIcon: "qrc:/Resources/rotate.png"
+
             }
 
 
@@ -86,7 +86,7 @@ Item {
             //                    icon.source : "qrc:/Resources/eye.png"
             //                    icon.width :20
             //                    icon.height : 20
-            //                    icon.color :"white"
+            //                    icon.color :_colorIcon
             //                    background: Rectangle{
 
             //                        color: "#003569"
@@ -147,6 +147,7 @@ Item {
             //                    icon.width :20
             //                    icon.height : 20
             //                    icon.color :"white"
+
             //                    background: Rectangle{
 
             //                        color: "#003569"
@@ -194,7 +195,7 @@ Item {
                     width: 40
                     height: 82
                     anchors.fill: parent
-                    color: "white"
+                    color: _colorIcon
                     radius: 20
                     ColumnLayout{
                         anchors.fill: parent
@@ -267,7 +268,7 @@ Item {
                                            (pressed ? _colorHover : _colorPresed);
 
                     background: Rectangle{
-                        color:"white"
+                        color:_colorIcon
                         radius:20
                     }
 
@@ -311,7 +312,7 @@ Item {
                     icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
                                            (pressed ? _colorHover : _colorPresed);
                     background: Rectangle{
-                        color:"white"
+                        color:_colorIcon
                         radius:20
                     }
                     onClicked: btnHomeClicked()
@@ -342,12 +343,12 @@ Item {
                     width:40
                     height:40
                     icon.source : modeMap === "projection" ? "qrc:///Resources/threeD.png": "qrc:/Resources/twoD.png"
-                    icon.width :24
-                    icon.height : 24
+                    icon.width :26
+                    icon.height : 26
                     icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
                                            (pressed ? _colorHover : _colorPresed);
                     background: Rectangle{
-                        color: "white"
+                        color: _colorIcon
                         radius:20
                     }
                     smooth: true
