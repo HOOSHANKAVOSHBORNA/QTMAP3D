@@ -13,9 +13,8 @@
    class Snow: public osgEarth::Annotation::GeoPositionNode
 {
 public:
-    Snow(osgEarth::Annotation::CircleNode *map);
+    Snow(osgEarth::Annotation::CircleNode *rangeLayer);
     osgParticle::PrecipitationEffect *getSnow();
-    void removeSnow(MapItem *map);
 private:
     osg::ref_ptr<osgParticle::PrecipitationEffect> mSnow;
 };

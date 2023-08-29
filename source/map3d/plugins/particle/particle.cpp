@@ -11,6 +11,7 @@ const QString FIRE      = "Fire";
 const QString SNOW      = "Snow";
 const QString RAIN      = "Rain";
 const QString CLOUD     = "Cloud";
+const QString WIND      = "Wind";
 
 
 
@@ -51,6 +52,11 @@ bool Particle::setup()
     auto toolboxItemCloud =  new ToolboxItem{CLOUD, CATEGORY, "qrc:/resources/cloud.png", true};
     QObject::connect(toolboxItemCloud, &ToolboxItem::itemChecked, this, &Particle::onCloudClicked);
     toolbox()->addItem(toolboxItemCloud);
+    ///////////////////////////add silver/////////////////////////////////////
+    auto toolboxItemWind =  new ToolboxItem{WIND, CATEGORY, "qrc:/resources/wind.png", true};
+    QObject::connect(toolboxItemWind, &ToolboxItem::itemChecked, this, &Particle::onWindClicked);
+    toolbox()->addItem(toolboxItemWind);
+
 
     return true;
 }
@@ -162,17 +168,32 @@ void Particle::onCloudClicked(bool check)
     }
 }
 ///////////////////////////////////////////////////////////////////////////
+void Particle::onWindClicked(bool check)
+{
+    if (check) {
+
+        mState = (State::READY);
+        mMode = Mode::WIND;
+    }
+    else {
+        if(mState == State::MOVING)
+            cancelAdd();
+        mState =State::NONE;
+        mMode = Mode::NONE;
+    }
+}
+///////////////////////////////////////////////////////////////////////////
 
 
 void Particle::add(const osgEarth::GeoPoint &geoPos)
 {
-    circle = new osgEarth::Annotation::CircleNode;
-    circle->setRadius(osgEarth::Distance(10, osgEarth::Units::KILOMETERS));
-    auto style = circle->getStyle();
+    precipitationRange = new osgEarth::Annotation::CircleNode;
+    precipitationRange->setRadius(osgEarth::Distance(10, osgEarth::Units::KILOMETERS));
+    auto style = precipitationRange->getStyle();
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color(osg::Vec4f(0,0,0,0));
     style.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->outline() = true;
-    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color(osg::Vec4f(0,1,0,1));
-    circle->setStyle(style);
+    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color(osg::Vec4f(0,0.5,0.2,1));
+    precipitationRange->setStyle(style);
 
     switch (mMode) {
     case Mode::FIRE:
@@ -186,19 +207,24 @@ void Particle::add(const osgEarth::GeoPoint &geoPos)
         mParticleLayer->addChild(mExplosion);
         break;
     case Mode::SNOW:
-        mSnow = new Snow(circle);
-        mapItem()->getMapNode()->addChild(circle);
-        circle->setPosition(geoPos);
-        mParticleLayer->addChild(mSnow);
+        mSnow = new Snow(precipitationRange);
+        precipitationRange->setPosition(geoPos);
+        mParticleLayer->addChild(precipitationRange);
         break;
     case Mode::RAIN:
-        mRain = new Rain(mapItem());
-        mParticleLayer->addChild(mRain);
+        mRain = new Rain(precipitationRange);
+        precipitationRange->setPosition(geoPos);
+        mParticleLayer->addChild(precipitationRange);
         break;
     case Mode::CLOUD:
         mCloud = new Cloud(mapItem());
         mCloud->setPosition(geoPos);
         mParticleLayer->addChild(mCloud);
+        break;
+    case Mode::WIND:
+//        mCloud = new Cloud(mapItem());
+//        mCloud->setPosition(geoPos);
+//        mParticleLayer->addChild(mCloud);
         break;
     default:
         break;
@@ -219,7 +245,10 @@ void Particle::moving(const osgEarth::GeoPoint &geoPos)
         mCloud->setPosition(geoPos);
         break;
     case Mode::SNOW:
-        circle->setPosition(geoPos);
+        precipitationRange->setPosition(geoPos);
+        break;
+    case Mode::RAIN:
+        precipitationRange->setPosition(geoPos);
         break;
     default:
         break;
@@ -249,11 +278,9 @@ void Particle::cancelAdd(){
             mParticleLayer->removeChild(mCloud);
             break;
         case Mode::SNOW:
-            mapItem()->getMapNode()->removeChild(circle);
             mParticleLayer->removeChild(mSnow);
             break;
         case Mode::RAIN:
-            mRain->removeRain(mapItem());
             mParticleLayer->removeChild(mRain);
             break;
         default:

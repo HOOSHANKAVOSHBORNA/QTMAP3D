@@ -8,6 +8,7 @@
 #include "snow.h"
 #include "rain.h"
 #include "cloud.h"
+#include "wind.h"
 #include "plugininterface.h"
 #include <osgEarthAnnotation/CircleNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -37,7 +38,8 @@ public:
         EXPLOSION,
         SNOW,
         RAIN,
-        CLOUD
+        CLOUD,
+        WIND
     };
 
     Particle(QObject *parent = nullptr);
@@ -53,6 +55,7 @@ public slots:
     void onSnowClicked(bool check);
     void onRainClicked(bool check);
     void onCloudClicked(bool check);
+    void onWindClicked(bool check);
 
 protected:
     void add(const osgEarth::GeoPoint &geoPos);
@@ -68,7 +71,8 @@ private:
     FireSmoke *mFire;
     Snow *mSnow;
     Cloud *mCloud;
-    osg::ref_ptr<osgEarth::Annotation::CircleNode> circle;
+    Wind *mWind;
+    osg::ref_ptr<osgEarth::Annotation::CircleNode> precipitationRange;
 
     Rain *mRain;
     osg::ref_ptr<ParenticAnnotationLayer> mParticleLayer{nullptr};
