@@ -45,12 +45,12 @@ Item {
 
         Rectangle{
             id: control
-//            Layout.fillWidth: true
-//            Layout.fillHeight: true
-//            Layout.alignment:  Qt.AlignVCenter
+            //            Layout.fillWidth: true
+            //            Layout.fillHeight: true
+            //            Layout.alignment:  Qt.AlignVCenter
 
 
-color:"transparent"
+            color:"transparent"
             Layout.minimumWidth: 65
             Layout.minimumHeight: 212
             anchors.rightMargin: 5
@@ -64,57 +64,56 @@ color:"transparent"
                 x: positionFactor * 65
                 anchors.topMargin: 17
                 centerIcon: "qrc:/Resources/eye.png"
-                //color: "transparent"
-                //buttonIcon: "qrc:/Resources/rotate.png"
+
             }
 
 
-//            ///////// -------------------  rotation control
+            //            ///////// -------------------  rotation control
 
-//            Rectangle{
-//                id: rotationControlCamera
-//                Layout.preferredWidth:65
-//                Layout.preferredHeight: 65
-////                anchors.centerIn: parent
-////                x: positionFactor * 65
-//                radius: 40
+            //            Rectangle{
+            //                id: rotationControlCamera
+            //                Layout.preferredWidth:65
+            //                Layout.preferredHeight: 65
+            ////                anchors.centerIn: parent
+            ////                x: positionFactor * 65
+            //                radius: 40
 
-//                Button {
-//                    id:middleEye
-//                    display: AbstractButton.IconOnly
-////                    width:30
-////                    height: 30
-//                    anchors.centerIn: parent
-//                    icon.source : "qrc:/Resources/eye.png"
-//                    icon.width :20
-//                    icon.height : 20
-//                    icon.color :"white"
-//                    background: Rectangle{
+            //                Button {
+            //                    id:middleEye
+            //                    display: AbstractButton.IconOnly
+            ////                    width:30
+            ////                    height: 30
+            //                    anchors.centerIn: parent
+            //                    icon.source : "qrc:/Resources/eye.png"
+            //                    icon.width :20
+            //                    icon.height : 20
+            //                    icon.color :_colorIcon
+            //                    background: Rectangle{
 
-//                        color: "#003569"
-//                        border.color: "black"
-//                        border.width: 2
-//                        radius:20
+            //                        color: "#003569"
+            //                        border.color: "black"
+            //                        border.width: 2
+            //                        radius:20
 
-//                    }
-//                    smooth: true
-//                }
-//                MultiEffect {
-//                    source: middleEye
-//                    enabled: true
-//                    anchors.fill: middleEye
-//                    shadowColor: "black"
-//                    shadowEnabled: true
-//                    shadowBlur: 1
-//                    shadowHorizontalOffset: 3.5
-//                    shadowVerticalOffset:2.5
-//                    shadowOpacity:1
-//                    paddingRect: Qt.rect(0,0,20,20)
-//                    shadowScale: 0.98
+            //                    }
+            //                    smooth: true
+            //                }
+            //                MultiEffect {
+            //                    source: middleEye
+            //                    enabled: true
+            //                    anchors.fill: middleEye
+            //                    shadowColor: "black"
+            //                    shadowEnabled: true
+            //                    shadowBlur: 1
+            //                    shadowHorizontalOffset: 3.5
+            //                    shadowVerticalOffset:2.5
+            //                    shadowOpacity:1
+            //                    paddingRect: Qt.rect(0,0,20,20)
+            //                    shadowScale: 0.98
 
-//                }
+            //                }
 
-//            }
+            //            }
 
             ControlCamera{
                 id: moveControlCamera
@@ -132,48 +131,48 @@ color:"transparent"
             //////// -----------------  move control
 
 
-//            Rectangle{
-//                id: moveControlCamera
-//                Layout.preferredWidth:65
-//                Layout.preferredHeight: 65
+            //            Rectangle{
+            //                id: moveControlCamera
+            //                Layout.preferredWidth:65
+            //                Layout.preferredHeight: 65
 
-////                anchors.centerIn: parent
-////                x: positionFactor * 65
-//                radius: parent.height/2
+            ////                anchors.centerIn: parent
+            ////                x: positionFactor * 65
+            //                radius: parent.height/2
 
-//                Button {
-//                    id:middleHand
-//                    display: AbstractButton.IconOnly
-//                    anchors.centerIn: parent
-//                    icon.source : "qrc:/Resources/hand.png"
-//                    icon.width :20
-//                    icon.height : 20
-//                    icon.color :"white"
-//                    background: Rectangle{
+            //                Button {
+            //                    id:middleHand
+            //                    display: AbstractButton.IconOnly
+            //                    anchors.centerIn: parent
+            //                    icon.source : "qrc:/Resources/hand.png"
+            //                    icon.width :20
+            //                    icon.height : 20
+            //                    icon.color :_colorIcon
+            //                    background: Rectangle{
 
-//                        color: "#003569"
-//                        border.color: "black"
-//                        border.width: 2
-//                        radius:20
+            //                        color: "#003569"
+            //                        border.color: "black"
+            //                        border.width: 2
+            //                        radius:20
 
-//                    }
-//                    smooth: true
-//                }
+            //                    }
+            //                    smooth: true
+            //                }
 
-//                MultiEffect {
-//                    source: middleHand
-//                    enabled: true
-//                    anchors.fill: middleHand
-//                    shadowColor: "black"
-//                    shadowEnabled: true
-//                    shadowBlur: 1
-//                    shadowHorizontalOffset: 3.5
-//                    shadowVerticalOffset:2.5
-//                    shadowOpacity:1
-//                    paddingRect: Qt.rect(0,0,20,20)
-//                    shadowScale: 0.98
-//                }
-//            }
+            //                MultiEffect {
+            //                    source: middleHand
+            //                    enabled: true
+            //                    anchors.fill: middleHand
+            //                    shadowColor: "black"
+            //                    shadowEnabled: true
+            //                    shadowBlur: 1
+            //                    shadowHorizontalOffset: 3.5
+            //                    shadowVerticalOffset:2.5
+            //                    shadowOpacity:1
+            //                    paddingRect: Qt.rect(0,0,20,20)
+            //                    shadowScale: 0.98
+            //                }
+            //            }
         }
         //------------------ Navigation
         /*
@@ -191,112 +190,112 @@ color:"transparent"
                 Layout.preferredWidth: 40
                 Layout.preferredHeight: 82
 
-            Rectangle {
-                id: zoomBtnContainer
-                width: 40
-                height: 82
-                anchors.fill: parent
-                color: "white"
-                radius: 20
-                ColumnLayout{
+                Rectangle {
+                    id: zoomBtnContainer
+                    width: 40
+                    height: 82
                     anchors.fill: parent
-                    Button {
-                        id: positive
-                        Layout.leftMargin: 3
-                        icon.source : "qrc:/Resources/add.png"
-                        icon.width : 26
-                        icon.height :26
-                        icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                               (pressed ? _colorHover : _colorPresed);
-                        background:Rectangle {
-                            color:"transparent"
+                    color: _colorIcon
+                    radius: 20
+                    ColumnLayout{
+                        anchors.fill: parent
+                        Button {
+                            id: positive
+                            Layout.leftMargin: 3
+                            icon.source : "qrc:/Resources/add.png"
+                            icon.width : 26
+                            icon.height :26
+                            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                                   (pressed ? _colorHover : _colorPresed);
+                            background:Rectangle {
+                                color:"transparent"
+                            }
                         }
-                    }
-                    Rectangle{
-                        Layout.leftMargin:6
-                        visible: true
-                        width: parent.width/1.4
-                        color:"black"
-                        opacity: 0.3
-                        height: 2
-                    }
-
-                    Button {
-                        id: negative
-                        Layout.leftMargin:3
-                        text: qsTr("Button")
-                        display: AbstractButton.IconOnly
-                        icon.source : "qrc:/Resources/minus.png"
-                        icon.width : 26
-                        icon.height : 26
-                        icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                               (pressed ? _colorHover : _colorPresed);
-                        background:Rectangle {
-                            color:"transparent"
+                        Rectangle{
+                            Layout.leftMargin:6
+                            visible: true
+                            width: parent.width/1.4
+                            color:"black"
+                            opacity: 0.3
+                            height: 2
                         }
-                    }
 
+                        Button {
+                            id: negative
+                            Layout.leftMargin:3
+                            text: qsTr("Button")
+                            display: AbstractButton.IconOnly
+                            icon.source : "qrc:/Resources/minus.png"
+                            icon.width : 26
+                            icon.height : 26
+                            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                                   (pressed ? _colorHover : _colorPresed);
+                            background:Rectangle {
+                                color:"transparent"
+                            }
+                        }
+
+                    }
+                }
+                MultiEffect {
+                    source: zoomBtnContainer
+                    enabled: true
+                    anchors.fill: zoomBtnContainer
+                    shadowColor: "black"
+                    shadowEnabled: true
+                    shadowBlur: 1
+                    shadowHorizontalOffset: 3.5
+                    shadowVerticalOffset:2.5
+                    shadowOpacity:1
+                    paddingRect: Qt.rect(0,0,20,20)
+                    shadowScale: 0.98
                 }
             }
-            MultiEffect {
-                source: zoomBtnContainer
-                enabled: true
-                anchors.fill: zoomBtnContainer
-                shadowColor: "black"
-                shadowEnabled: true
-                shadowBlur: 1
-                shadowHorizontalOffset: 3.5
-                shadowVerticalOffset:2.5
-                shadowOpacity:1
-                paddingRect: Qt.rect(0,0,20,20)
-                shadowScale: 0.98
-            }
-}
             Item {
                 Layout.preferredWidth:40
                 Layout.preferredHeight: 40
-            Button {
-                id: directionBtn
-                rotation:0 /*-90 - 180*(positionFactor)*/
-                hoverEnabled: true
-                width: 40
-                height: 40
-                display: AbstractButton.IconOnly
-                icon.source : "qrc:/Resources/direction.png"
-                icon.width : 26
-                icon.height : 26
-                icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                       (pressed ? _colorHover : _colorPresed);
+                Button {
+                    id: directionBtn
+                    rotation:0 /*-90 - 180*(positionFactor)*/
+                    hoverEnabled: true
+                    width: 40
+                    height: 40
+                    display: AbstractButton.IconOnly
+                    icon.source : "qrc:/Resources/direction.png"
+                    icon.width : 26
+                    icon.height : 26
+                    icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                           (pressed ? _colorHover : _colorPresed);
 
-                background: Rectangle{
-                    color:"white"
-                    radius:20
-                }
+                    background: Rectangle{
+                        color:_colorIcon
+                        radius:20
+                    }
 
-                onClicked: {
-                    if(rootItem.positionFactor){
-                        showSlider.stop()
-                        hideSlider.start()
-                    } else {
-                        hideSlider.stop()
-                        showSlider.start()
+                    onClicked: {
+                        if(rootItem.positionFactor){
+                            showSlider.stop()
+                            hideSlider.start()
+                        } else {
+                            hideSlider.stop()
+                            showSlider.start()
+                        }
                     }
                 }
+                MultiEffect {
+                    source: directionBtn
+                    enabled: true
+                    rotation: directionBtn.rotation
+                    anchors.fill: directionBtn
+                    shadowColor: "black"
+                    shadowEnabled: true
+                    shadowBlur: 1
+                    shadowHorizontalOffset: 3.5
+                    shadowVerticalOffset:2.5
+                    shadowOpacity:1
+                    paddingRect: Qt.rect(0,0,20,20)
+                    shadowScale: 0.98
                 }
-            MultiEffect {
-                source: directionBtn
-                enabled: true
-                rotation: directionBtn.rotation
-                anchors.fill: directionBtn
-                shadowColor: "black"
-                shadowEnabled: true
-                shadowBlur: 1
-                shadowHorizontalOffset: 3.5
-                shadowVerticalOffset:2.5
-                shadowOpacity:1
-                paddingRect: Qt.rect(0,0,20,20)
-                shadowScale: 0.98
-            }
             }
             Item {
                 Layout.preferredWidth:40
@@ -313,7 +312,7 @@ color:"transparent"
                     icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
                                            (pressed ? _colorHover : _colorPresed);
                     background: Rectangle{
-                        color:"white"
+                        color:_colorIcon
                         radius:20
                     }
                     onClicked: btnHomeClicked()
@@ -338,45 +337,45 @@ color:"transparent"
                 Layout.preferredWidth:40
                 Layout.preferredHeight: 40
 
-            Button {
-                id: project
-                display: AbstractButton.IconOnly
-                width:40
-                height:40
-                icon.source : modeMap === "projection" ? "qrc:///Resources/threeD.png": "qrc:/Resources/twoD.png"
-                icon.width :24
-                icon.height : 24
-                icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                       (pressed ? _colorHover : _colorPresed);
-                background: Rectangle{
-                    color: "white"
-                    radius:20
-                }
-                smooth: true
+                Button {
+                    id: project
+                    display: AbstractButton.IconOnly
+                    width:40
+                    height:40
+                    icon.source : modeMap === "projection" ? "qrc:///Resources/threeD.png": "qrc:/Resources/twoD.png"
+                    icon.width :26
+                    icon.height : 26
+                    icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
+                                           (pressed ? _colorHover : _colorPresed);
+                    background: Rectangle{
+                        color: _colorIcon
+                        radius:20
+                    }
+                    smooth: true
 
-                onClicked:{
-                    if (modeMap==="projection")
-                        modeMap = "geocentric"
-                    else
-                        modeMap = "projection"
-                    btnProjectionClicked()
-                }
+                    onClicked:{
+                        if (modeMap==="projection")
+                            modeMap = "geocentric"
+                        else
+                            modeMap = "projection"
+                        btnProjectionClicked()
+                    }
 
+                }
+                MultiEffect {
+                    source: project
+                    enabled: true
+                    anchors.fill: project
+                    shadowColor: "black"
+                    shadowEnabled: true
+                    shadowBlur: 1
+                    shadowHorizontalOffset: 3.5
+                    shadowVerticalOffset:2.5
+                    shadowOpacity:1
+                    paddingRect: Qt.rect(0,0,20,20)
+                    shadowScale: 0.98
+                }
             }
-            MultiEffect {
-                source: project
-                enabled: true
-                anchors.fill: project
-                shadowColor: "black"
-                shadowEnabled: true
-                shadowBlur: 1
-                shadowHorizontalOffset: 3.5
-                shadowVerticalOffset:2.5
-                shadowOpacity:1
-                paddingRect: Qt.rect(0,0,20,20)
-                shadowScale: 0.98
-            }
-}
 
         }
     }
