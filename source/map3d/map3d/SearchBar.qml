@@ -8,10 +8,12 @@ import "style"
 Rectangle {
     id: rootItem
     property var model
+
     width: 40 + txtid.implicitWidth + (closeButton.visible? closeButton.width : 0)
     height: 40
     radius: 20
-    color: Style.backgroundColor
+//    color: Style.backgroundColor
+    color:"white"
     opacity: 0.85
     ColumnLayout{
 
@@ -24,17 +26,26 @@ Rectangle {
             layoutDirection: Qt.LeftToRight
 
             //------------------------------search-----------------------//
+            Rectangle{
+                color:"grey"
+                height: 40
+                width: 40
+                radius: 20
+
             Button {
                 id:searchbtn
+                anchors.fill: parent
                 Layout.fillHeight: true
                 width: 40
+
                 background: Rectangle{
-                    color: "transparent"
+                    radius:20
+                    color: "white"
                 }
                 Layout.leftMargin: 3
 
                 icon{
-                    source: "qrc:/Resources/search-white.jpeg"
+                    source: "qrc:/Resources/search.png"
                     width: 26
                     height: 26
                 }
@@ -44,6 +55,7 @@ Rectangle {
                     txtid.focus = true
 
                 }
+            }
             }
 
             TextField {
@@ -67,7 +79,8 @@ Rectangle {
                 selectionColor: "#ffcc00"
                 placeholderTextColor: "#81848c"
                 background: Rectangle{
-                    color: Style.backgroundColor
+//                    color: Style.backgroundColor
+                    color: "white"
                     opacity: 0.3
                 }
                 onTextChanged: {
@@ -108,7 +121,8 @@ Rectangle {
 
 //                }
                 id: closeRect
-                color: Style.backgroundColor
+//                color: Style.backgroundColor
+                color:"grey"
                 height: 40
                 width: 40
                 radius: 20
@@ -117,15 +131,16 @@ Rectangle {
                 Button {
                     id: closeButton
                     width: 40
+                    height: 40
                     clip: true
                     background: Rectangle{
-                        color: "transparent"
+                        color: "white"
                         radius: 20
                     }
                     anchors.centerIn: parent
 
                     icon{
-                        source: "qrc:/Resources/close-white.jpeg"
+                        source: "qrc:/Resources/index.png"
                         width: 26
                         height: 26
 

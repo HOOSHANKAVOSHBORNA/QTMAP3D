@@ -40,7 +40,6 @@
         <file>Resources/airplane2.jpg</file>
         <file>Resources/eye_close.png</file>
         <file>Resources/eye_open.png</file>
-        <file>Resources/Layers.png</file>
         <file>Resources/close.png</file>
         <file>Resources/collapse.png</file>
         <file>Resources/close1.png</file>
@@ -470,5 +469,15 @@
         <file>Resources/close-icon.png</file>
         <file>Resources/close-white.jpeg</file>
         <file>Resources/search-white.jpeg</file>
+        <file>Resources/minus.png</file>
+        <file>Resources/add.png</file>
+        <file>Resources/home.png</file>
+        <file>Resources/layers.png</file>
+        <file>Resources/list.png</file>
+        <file>Resources/settings.png</file>
+        <file>Resources/toolbox.png</file>
+        <file>Resources/2d.png</file>
+        <file>Resources/3d.png</file>
+        <file>Resources/index.png</file>
     </qresource>
 </RCC>

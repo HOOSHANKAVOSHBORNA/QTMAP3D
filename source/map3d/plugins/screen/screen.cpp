@@ -53,7 +53,7 @@ void Screen::takeSnapShot()
 //    QRect  screenGeometry = screen->geometry();
 //    qDebug() << screenGeometry;
 
-//    auto frameSize = mapItem()->mapRectToScene(QRect(0,0,mapItem()->width(),mapItem()->height()));
+
     auto screenPoint = mapItem()->mapToGlobal(0,0);
     qDebug() << screenPoint;
     QQmlComponent component(&mEngine, QUrl("qrc:/resources/SnapShot.qml"));

@@ -16,7 +16,7 @@ set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build")
 
 set(CMAKE_CXX_EXTENSIONS ON)
 
-find_package(Qt6 COMPONENTS Core Quick Gui Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Core Quick Gui Widgets Network REQUIRED)
 
 add_executable(Map3d
         main.cpp
@@ -38,6 +38,7 @@ add_executable(Map3d
         compositeAnnotationLayer.h compositeAnnotationLayer.cpp
         utility.h utility.cpp
         searchNodeModel.h searchNodeModel.cpp
+        networkManager.h networkManager.cpp
         qml.qrc
         resources.qrc)
 
@@ -45,7 +46,7 @@ add_executable(Map3d
 target_include_directories(Map3d PUBLIC "/usr/local/include" "style/")
 target_link_directories(Map3d PUBLIC ${PLUGINS_OUTPUT_DIR})
 target_link_libraries(Map3d
-        PRIVATE Qt6::Core Qt6::Quick Qt6::Gui Qt6::Widgets
+        PRIVATE Qt6::Core Qt6::Quick Qt6::Gui Qt6::Widgets Qt6::Network
         PUBLIC osg osgViewer osgDB osgGA OpenThreads osgManipulator osgSim osgParticle osgText osgUtil
         gdal osgEarth osgEarthFeatures osgEarthUtil osgEarthSymbology osgEarthAnnotation
         GL
@@ -70,6 +71,13 @@ add_custom_command(TARGET Map3d POST_BUILD
         COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/Images/continous_smoke.rgb" "${CMAKE_CURRENT_BINARY_DIR}/Images/")
 
 
+#--network----------------------------
+add_custom_command(TARGET Map3d PRE_LINK
+    COMMAND mkdir ARGS "-p" "${CMAKE_CURRENT_BINARY_DIR}/../libs"
+    COMMAND cp ARGS "-rf" "${CMAKE_CURRENT_SOURCE_DIR}/../libs/*" "${CMAKE_CURRENT_BINARY_DIR}/../libs/")
 
+target_include_directories(Map3d PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../libs/qamqp/include")
+target_link_directories(Map3d PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../libs/qamqp")
 
+target_link_libraries(Map3d PUBLIC qamqp)
 
