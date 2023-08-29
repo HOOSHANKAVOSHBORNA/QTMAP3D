@@ -133,6 +133,9 @@ void PluginManager::setup()
     PluginInterface::setUiHandle(uiHandle);
     auto toolbox = Application::instance()->mainWindow()->toolbox();
     PluginInterface::setToolbox(static_cast<Toolbox*>(toolbox->sourceModel()));
+
+    ServiceManager * const serviceManager = Application::instance()->mainWindow()->serviceManager();
+    PluginInterface::setServiceManager(serviceManager);
     //-------------------------------------
     for (const auto& item : mPluginsInfoList) {
         item.interface->setup();
