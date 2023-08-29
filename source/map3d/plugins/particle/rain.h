@@ -2,6 +2,7 @@
 #define RAIN_H
 
 
+#include <osgEarthAnnotation/CircleNode>
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgParticle/PrecipitationEffect>
 #include <osgParticle/ParticleEffect>
@@ -12,9 +13,8 @@
 class Rain: public osgEarth::Annotation::GeoPositionNode
 {
 public:
-    Rain(MapItem *map);
+    Rain(osgEarth::Annotation::CircleNode *rangeLayer);
     osgParticle::PrecipitationEffect *getRain();
-    void removeRain(MapItem *map);
 private:
     osg::ref_ptr<osgParticle::PrecipitationEffect> mRain;
 };

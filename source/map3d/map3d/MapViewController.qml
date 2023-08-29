@@ -11,7 +11,7 @@ Item {
     height: mainRowLayout.implicitHeight
 
     property string modeMap: "geocentric"
-    property real positionFactor: 1.0
+    property real positionFactor: 0.0
     property bool showRecMov: true
     property real myDuration: 300.0
 
@@ -43,26 +43,25 @@ Item {
           Move and Rotation control Button
         */
 
-        Rectangle{
+        ColumnLayout{
             id: control
+            spacing: 5
+
             //            Layout.fillWidth: true
             //            Layout.fillHeight: true
             //            Layout.alignment:  Qt.AlignVCenter
 
 
-            color:"transparent"
-            Layout.minimumWidth: 65
-            Layout.minimumHeight: 212
-            anchors.rightMargin: 5
-            Layout.topMargin: 40
+
             clip: true
             ControlCamera{
                 id: rotationControlCamera
                 width: 65
                 height: 65
-                anchors.top: parent.top
+
                 x: positionFactor * 65
-                anchors.topMargin: 17
+//                anchors.top: parent.top
+//                anchors.topMargin: 17
                 centerIcon: "qrc:/Resources/eye.png"
 
             }
@@ -120,8 +119,8 @@ Item {
                 width: 65
                 height: 65
                 x: positionFactor * 65
-                anchors.top: rotationControlCamera.bottom
-                anchors.topMargin: 17
+//                anchors.top: rotationControlCamera.bottom
+//                anchors.topMargin: 17
                 //color: "transparent"
             }
 
@@ -147,7 +146,8 @@ Item {
             //                    icon.source : "qrc:/Resources/hand.png"
             //                    icon.width :20
             //                    icon.height : 20
-            //                    icon.color :_colorIcon
+            //                    icon.color :"white"
+
             //                    background: Rectangle{
 
             //                        color: "#003569"
@@ -183,8 +183,8 @@ Item {
         ColumnLayout {
             id:navigationLayout
             spacing: 4
-            Layout.preferredWidth: 40
-            Layout.preferredHeight: 40
+//            Layout.preferredWidth: 40
+//            Layout.preferredHeight: 40
             Item {
 
                 Layout.preferredWidth: 40
