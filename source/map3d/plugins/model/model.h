@@ -7,7 +7,6 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include "simpleModelNode.h"
-
 #define MODEL "Model"
 #define TREE "Tree"
 #define CAR "Car"
@@ -49,6 +48,8 @@ public slots:
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
+
+    void addFlyable(ServiseModel *model, ParenticAnnotationLayer *layer);
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
     void moving(osgEarth::GeoPoint &geoPos);;

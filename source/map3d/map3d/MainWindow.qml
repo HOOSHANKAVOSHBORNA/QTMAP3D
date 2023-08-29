@@ -15,6 +15,7 @@ CMainWindow {
     minimumHeight: 600
     title: qsTr("MAP3D")
 
+
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
     property string modeMap: "geocentric"

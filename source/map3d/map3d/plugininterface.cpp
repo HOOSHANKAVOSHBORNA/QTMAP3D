@@ -19,6 +19,7 @@ DefenseDataManager *PluginInterface::mDefenseDataManager;
 QQmlEngine *PluginInterface::mQmlEngine;
 Toolbox *PluginInterface::mToolbox;
 MainWindow *PluginInterface::mMainWindow;
+ServiceManager *PluginInterface::mServiceManager;
 
 PluginInterface::PluginInterface(QObject *parent):
     QObject(parent)
@@ -136,6 +137,16 @@ Toolbox *PluginInterface::toolbox() const
 void PluginInterface::setToolbox(Toolbox *newToolbox)
 {
     mToolbox = newToolbox;
+}
+
+ServiceManager *PluginInterface::serviceManager() const
+{
+    return mServiceManager;
+}
+
+void PluginInterface::setServiceManager(ServiceManager *newServiceManager)
+{
+    mServiceManager = newServiceManager;
 }
 
 void UIHandle::iwSetReceiverObject(QObject *receiverObject)

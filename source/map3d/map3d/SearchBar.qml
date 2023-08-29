@@ -13,7 +13,7 @@ Rectangle {
     height: 40
     radius: 20
 //    color: Style.backgroundColor
-    color:"white"
+    color:_colorIcon
     opacity: 0.85
     ColumnLayout{
 
@@ -27,7 +27,7 @@ Rectangle {
 
             //------------------------------search-----------------------//
             Rectangle{
-                color:"grey"
+                color:_colorIcon
                 height: 40
                 width: 40
                 radius: 20
@@ -40,7 +40,7 @@ Rectangle {
 
                 background: Rectangle{
                     radius:20
-                    color: "white"
+                    color: _colorIcon
                 }
                 Layout.leftMargin: 3
 
@@ -75,12 +75,12 @@ Rectangle {
                 font.pointSize: 10
                 clip: true
                 selectByMouse: true
-                selectedTextColor: "white"
+                selectedTextColor: _colorIcon
                 selectionColor: "#ffcc00"
                 placeholderTextColor: "#81848c"
                 background: Rectangle{
 //                    color: Style.backgroundColor
-                    color: "white"
+                    color: _colorIcon
                     opacity: 0.3
                 }
                 onTextChanged: {
@@ -109,17 +109,7 @@ Rectangle {
             }
             // close botton ------------------------------------------------------
             Rectangle {
-//                MultiEffect{
-//                    source: closeRect
-//                    anchors.fill: closeRect
-//                    //                                autoPaddingEnabled: false
-//                    paddingRect: Qt.rect(0, 0 , 40, 40)
-//                    shadowBlur: 1.0
-//                    shadowColor: 'black'
-//                    shadowEnabled: true
-//                    shadowHorizontalOffset: -8
 
-//                }
                 id: closeRect
 //                color: Style.backgroundColor
                 color:"grey"
@@ -134,7 +124,7 @@ Rectangle {
                     height: 40
                     clip: true
                     background: Rectangle{
-                        color: "white"
+                        color: _colorIcon
                         radius: 20
                     }
                     anchors.centerIn: parent
@@ -150,6 +140,19 @@ Rectangle {
                         txtid.clear()
                     }
 
+                }
+                MultiEffect {
+                    source: closeButton
+                    enabled: true
+                    anchors.fill: closeButton
+                    shadowColor: "black"
+                    shadowEnabled: true
+                    shadowBlur: 0.6
+                    shadowHorizontalOffset: -1.5
+                    shadowVerticalOffset:0
+                    shadowOpacity:0.35
+                    paddingRect: Qt.rect(0,0,20,20)
+                    shadowScale: 0.98
                 }
             }
         }

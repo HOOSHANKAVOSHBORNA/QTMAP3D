@@ -2,6 +2,7 @@
 #include "mapItem.h"
 #include "MoveableModelNode.h"
 #include "flyableModelNode.h"
+#include "serviceManager.h"
 #include <osgEarth/GLUtils>
 #include <QRandomGenerator>
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
@@ -20,7 +21,7 @@ Model::~Model()
 bool Model::setup()
 {
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-
+    connect(serviceManager(), &ServiceManager::flyableAdded, this, &Model::addFlyable);
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
     mapItem()->getMapObject()->addLayer(mModelNodeLayer);
@@ -196,8 +197,21 @@ void Model::onAirplanItemCheck(bool check)
     }
 }
 
-void Model::initModel(const osgEarth::GeoPoint &geoPos){
+void Model::addFlyable(ServiseModel *model, ParenticAnnotationLayer *layer)
+{
+    QString name = "Airplane88";
+    FlyableModelNode *fmodel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
+//    fmodel->setUserData()
+    fmodel->setName(name.toStdString());
+    fmodel->setPosition(model->position);
+    qDebug() << model->position.toString();
+    layer->addChild(fmodel);
+//    fmodel->setScalability(false);
+    confirm();
 
+}
+
+void Model::initModel(const osgEarth::GeoPoint &geoPos){
     QString name;
     switch (mType) {
     case Type::SIMPLE:
