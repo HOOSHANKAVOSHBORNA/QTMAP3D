@@ -7,5 +7,6 @@
         <file>resources/cloud.png</file>
         <file>resources/silver.png</file>
         <file>resources/wind.png</file>
+        <file>resources/fog.png</file>
     </qresource>
 </RCC>

@@ -22,6 +22,7 @@ add_library(particle SHARED
     rain.h rain.cpp
     cloud.h cloud.cpp
     wind.h wind.cpp
+    fog.h fog.cpp
 )
 
 target_include_directories(particle PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

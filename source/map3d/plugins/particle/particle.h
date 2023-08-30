@@ -9,12 +9,22 @@
 #include "rain.h"
 #include "cloud.h"
 #include "wind.h"
+#include "fog.h"
 #include "plugininterface.h"
 #include <osgEarthAnnotation/CircleNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <QObject>
+
+#define CATEGORY  "Particle"
+#define EXPLOSION "Explosion"
+#define FIRE      "Fire"
+#define SNOW      "Snow"
+#define RAIN      "Rain"
+#define CLOUD     "Cloud"
+#define WIND      "Wind"
+#define FOG       "Fog"
 
 
 class Particle: public PluginInterface
@@ -34,12 +44,13 @@ public:
 
     enum class Mode{
         NONE,
-        FIRE,
-        EXPLOSION,
-        SNOW,
-        RAIN,
-        CLOUD,
-        WIND
+        Fire,
+        Explosion,
+        Snow,
+        Rain,
+        Cloud,
+        Wind,
+        Fog
     };
 
     Particle(QObject *parent = nullptr);
@@ -56,6 +67,7 @@ public slots:
     void onRainClicked(bool check);
     void onCloudClicked(bool check);
     void onWindClicked(bool check);
+    void onFogClicked(bool check);
 
 protected:
     void add(const osgEarth::GeoPoint &geoPos);
@@ -65,17 +77,19 @@ protected:
 
 
 private:
+//    MapItem *mapItem() const;
     State mState{State::NONE};
     Mode mMode{Mode::NONE};
     Explosion *mExplosion;
     FireSmoke *mFire;
     Snow *mSnow;
     Cloud *mCloud;
-    Wind *mWind;
-    osg::ref_ptr<osgEarth::Annotation::CircleNode> precipitationRange;
-
+    WindEffect *mWind;
     Rain *mRain;
+    Fog *mFog;
+
     osg::ref_ptr<ParenticAnnotationLayer> mParticleLayer{nullptr};
+
 
 };
 
