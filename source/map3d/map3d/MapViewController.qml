@@ -11,7 +11,8 @@ Item {
     height: mainRowLayout.implicitHeight
 
     property string modeMap: "geocentric"
-    property real positionFactor: 0.0
+    property real positionFactor: 1.0
+
     property bool showRecMov: true
     property real myDuration: 300.0
 
@@ -46,6 +47,7 @@ Item {
         ColumnLayout{
             id: control
             spacing: 5
+            //            Layout.rightMargin: -positionFactor * 65
 
             //            Layout.fillWidth: true
             //            Layout.fillHeight: true
@@ -56,12 +58,18 @@ Item {
             clip: true
             ControlCamera{
                 id: rotationControlCamera
+                opacity:0
                 width: 65
                 height: 65
+//                function update(){
+//                    rotationControlCamera.opacity=1
+//                    moveControlCamera.opacity = 1
+
+//                }
 
                 x: positionFactor * 65
-//                anchors.top: parent.top
-//                anchors.topMargin: 17
+                //                anchors.top: parent.top
+                //                anchors.topMargin: 17
                 centerIcon: "qrc:/Resources/eye.png"
 
             }
@@ -116,11 +124,12 @@ Item {
 
             ControlCamera{
                 id: moveControlCamera
+                opacity: 0
                 width: 65
                 height: 65
                 x: positionFactor * 65
-//                anchors.top: rotationControlCamera.bottom
-//                anchors.topMargin: 17
+                //                anchors.top: rotationControlCamera.bottom
+                //                anchors.topMargin: 17
                 //color: "transparent"
             }
 
@@ -183,20 +192,18 @@ Item {
         ColumnLayout {
             id:navigationLayout
             spacing: 4
-//            Layout.preferredWidth: 40
-//            Layout.preferredHeight: 40
             Item {
 
-                Layout.preferredWidth: 40
-                Layout.preferredHeight: 82
+                Layout.preferredWidth : _containerSize
+                Layout.preferredHeight: _containerSize *2 + 2
 
                 Rectangle {
                     id: zoomBtnContainer
-                    width: 40
-                    height: 82
+                    width: _containerSize
+                    height:  _containerSize *2 + 2
                     anchors.fill: parent
                     color: _colorIcon
-                    radius: 20
+                    radius: 40
                     ColumnLayout{
                         anchors.fill: parent
                         Button {
@@ -252,14 +259,14 @@ Item {
                 }
             }
             Item {
-                Layout.preferredWidth:40
-                Layout.preferredHeight: 40
+                Layout.preferredWidth: _containerSize
+                Layout.preferredHeight: _containerSize
                 Button {
                     id: directionBtn
                     rotation:0 /*-90 - 180*(positionFactor)*/
                     hoverEnabled: true
-                    width: 40
-                    height: 40
+                    width: _containerSize
+                    height: _containerSize
                     display: AbstractButton.IconOnly
                     icon.source : "qrc:/Resources/direction.png"
                     icon.width : 26
@@ -271,12 +278,24 @@ Item {
                         color:_colorIcon
                         radius:20
                     }
+                    //                    onHoveredChanged: {
+                    //                        rotationControlCamera.visible = true
+                    //                        moveControlCamera.visible     = true
+                    //                    }
 
                     onClicked: {
+
+                        rotationAnim.start()
+                        moveAnim.start()
+
                         if(rootItem.positionFactor){
+
                             showSlider.stop()
                             hideSlider.start()
+
+
                         } else {
+
                             hideSlider.stop()
                             showSlider.start()
                         }
@@ -340,8 +359,8 @@ Item {
                 Button {
                     id: project
                     display: AbstractButton.IconOnly
-                    width:40
-                    height:40
+                    width:_containerSize
+                    height:_containerSize
                     icon.source : modeMap === "projection" ? "qrc:///Resources/threeD.png": "qrc:/Resources/twoD.png"
                     icon.width :26
                     icon.height : 26
@@ -402,6 +421,27 @@ Item {
         easing.type: Easing.InQuint
     }
 
+
+    PropertyAnimation {
+        id: rotationAnim
+        target: rotationControlCamera
+        property: "opacity"
+        from: rotationControlCamera.opacity
+        to: 1.0
+        duration:  myDuration * Math.abs(positionFactor)
+
+        easing.type: Easing.OutQuint
+    }
+    PropertyAnimation {
+        id:  moveAnim
+        target: moveControlCamera
+        property: "opacity"
+        from :moveControlCamera.opacity
+        to: 1.0
+        duration: myDuration * Math.abs(positionFactor)
+
+        easing.type: Easing.InQuint
+    }
 }
 
 /*##^##

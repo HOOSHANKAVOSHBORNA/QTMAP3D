@@ -21,18 +21,19 @@ MapController {
     objectName: "MainMap"
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
-    readonly property int       _iconSize   : 24
-    readonly property int       _margin     : 15
-    readonly property int       _radius     : 10
-    readonly property color     _colorRec   : "#404040"
-    readonly property color     _colorHover : "#01AED6"
-    readonly property color     _colorPresed : "#003569"
-    readonly property color     _colorIcon  : "#DEE3E6"
-    readonly property color     _colorButton: "#55FFFFFF"
-    readonly property string    _fontFamily : "Srouce Sans Pro"
-    readonly property int       _fontPointSize : 11
-    readonly property color     itemColor: "#404040"
-    readonly property real      widgetsMargins: 10
+    readonly property int       _containerSize   : 40
+    readonly property int       _iconSize        : 24
+    readonly property int       _margin          : 15
+    readonly property int       _radius          : 10
+    readonly property color     _colorRec        : "#404040"
+    readonly property color     _colorHover      : "#01AED6"
+    readonly property color     _colorPresed     : "#003569"
+    readonly property color     _colorIcon       : "#DEE3E6"
+    readonly property color     _colorButton     : "#55FFFFFF"
+    readonly property string    _fontFamily      : "Srouce Sans Pro"
+    readonly property int       _fontPointSize   : 11
+    readonly property color     itemColor        : "#404040"
+    readonly property real      widgetsMargins   : 10
     clip: true
     DropArea {
         id: dragTarget
@@ -142,11 +143,25 @@ MapController {
         anchors.leftMargin: 20
     }
     SearchBar {
+        id:searcbarContainer
         anchors.top: parent.top
         anchors.topMargin: 20
         anchors.rightMargin: 20
         anchors.right: parent.right
         model: map.searchNodeProxyModel()
+    }
+    MultiEffect {
+        source: searcbarContainer
+        enabled: true
+        anchors.fill: searcbarContainer
+        shadowColor: "black"
+        shadowEnabled: true
+        shadowBlur: 0.6
+        shadowHorizontalOffset: 3.5
+        shadowVerticalOffset:2.5
+        shadowOpacity:0.35
+        paddingRect: Qt.rect(0,0,20,20)
+        shadowScale: 0.98
     }
     //        id:mapItem
     Rectangle {
