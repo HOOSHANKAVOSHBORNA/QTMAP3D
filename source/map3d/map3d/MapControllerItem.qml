@@ -176,6 +176,8 @@ MapController {
 
         Drag.hotSpot.x: 32
         Drag.hotSpot.y: 32
+
+
 //        states: State {
 //            when: dragMouseArea.drag.active
 //            AnchorChanges {
@@ -206,7 +208,7 @@ MapController {
 //            height: 14
 //        }
 
-        Compass{
+        Compass {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 10
             id:compassWidget

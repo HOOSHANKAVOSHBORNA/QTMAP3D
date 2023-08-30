@@ -1,58 +1,72 @@
 import QtQuick 2.12
 import QtQuick.Effects
+import QtQuick3D
 
-Item {
-    id: rootIte
-    visible: true
+Rectangle {
     width: 50
     height: 50
-    readonly property int  _widthimage : 32
-    readonly property int  _heightimage:  32
-    readonly property color _colorRec: "#404040"
-
 
     property real headingAngle
 
     signal compassDoubleClicked();
 
-    Rectangle {
+    color: "#404040"
+    smooth: true
+    radius: 100
+    opacity: 0.8
 
-
-
-        id: compass
+    View3D {
         anchors.fill: parent
-        color: _colorRec
-        smooth: true
-        radius: 100
-        opacity: 0.8
+        importScene: DirectionalLight {
+            ambientColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
+            brightness: 1.0
+            eulerRotation.x: -25
+        }
 
-        MouseArea {
-            id: mouseArea
-            anchors.fill: parent
-            onDoubleClicked: function() {
-                rootIte.compassDoubleClicked();
+        Node {
+            scale: Qt.vector3d(20, 20, 20)
+
+            eulerRotation.x: -90
+            eulerRotation.y: 0
+            eulerRotation.z: 0
+
+            PropertyAnimation on eulerRotation.x {
+                //            running: animationPlay
+                loops: Animation.Infinite
+                duration: 5000
+                to: 0
+                from: -360
             }
-            hoverEnabled: true
+
+            PropertyAnimation on eulerRotation.y {
+                //            running: animationPlay
+                loops: Animation.Infinite
+                duration: 5000
+                to: 0
+                from: -360
+            }
+
+            Model {
+                id: plane
+                source: "qrc:/Resources/compass-surface.mesh"
+                materials: PrincipledMaterial {
+                    baseColor: "red"
+                    roughness: 1
+                    indexOfRefraction: 1
+                }
+            }
+
+            Model {
+                id: plane_001
+                source: "qrc:/Resources/compass-premeter.mesh"
+                materials: PrincipledMaterial {
+                    baseColor: "green"
+                    roughness: 1
+                    indexOfRefraction: 1
+                }
+            }
         }
 
-        Image {
-            rotation: rootIte.headingAngle
-            id: image
-            width: _widthimage
-            height: _widthimage
-            anchors.centerIn: compass
-            source: "qrc:/Resources/compass.png"
-            opacity: 1            
-        }
-        MultiEffect {
-            id: glowimg
-            anchors.fill: image
-            colorizationColor: mouseArea.pressed ? _colorPresed : mouseArea.containsMouse ? _colorHover : "transparent"
-            source: image
-            colorization: 1
-            rotation: rootIte.headingAngle
-        }
-
-
+        camera: PerspectiveCamera { z: 100 }
     }
 }

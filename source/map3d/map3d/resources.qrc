@@ -479,5 +479,7 @@
         <file>Resources/2d.png</file>
         <file>Resources/3d.png</file>
         <file>Resources/index.png</file>
+        <file>Resources/compass-premeter.mesh</file>
+        <file>Resources/compass-surface.mesh</file>
     </qresource>
 </RCC>
