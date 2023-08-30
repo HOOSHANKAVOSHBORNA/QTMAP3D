@@ -119,7 +119,7 @@ Rectangle {
 
                 id: closeRect
 //                color: Style.backgroundColor
-                color:"grey"
+                color:"transparent"
                 height: 40
                 width: 40
                 radius: 20
@@ -168,7 +168,7 @@ Rectangle {
     //-------------------- search list ----------------------//
     Rectangle{
         id:dropDown
-        color: Style.backgroundColor
+        color: _colorIcon
         visible:true
         width: closeButton.visible ? rootItem.width - 6: 0
         height:Math.min(bt.count *35, 200);
@@ -187,6 +187,15 @@ Rectangle {
                 width: bt.width
                 height: 35
                 text: model.display
+                contentItem: Text {
+                        text: textnew.text
+                        font: textnew.font
+//                        opacity: enabled ? 1.0 : 0.3
+                        color: textnew.down ? "yellow" : "grey"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
                 id:textnew
                 hoverEnabled: true
                 onClicked:{
@@ -195,6 +204,7 @@ Rectangle {
                 background: Rectangle
                 {
                     color: parent.hovered ? Style.hoverColor : "transparent"
+                    radius:12
                 }
             }
         }

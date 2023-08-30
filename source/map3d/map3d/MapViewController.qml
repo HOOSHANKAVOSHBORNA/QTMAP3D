@@ -12,7 +12,7 @@ Item {
 
     property string modeMap: "geocentric"
     property real positionFactor: 1.0
-    property int a: 0
+
     property bool showRecMov: true
     property real myDuration: 300.0
 
@@ -58,9 +58,14 @@ Item {
             clip: true
             ControlCamera{
                 id: rotationControlCamera
-                visible: false
+                opacity:0
                 width: 65
                 height: 65
+//                function update(){
+//                    rotationControlCamera.opacity=1
+//                    moveControlCamera.opacity = 1
+
+//                }
 
                 x: positionFactor * 65
                 //                anchors.top: parent.top
@@ -119,7 +124,7 @@ Item {
 
             ControlCamera{
                 id: moveControlCamera
-                visible: false
+                opacity: 0
                 width: 65
                 height: 65
                 x: positionFactor * 65
@@ -273,15 +278,18 @@ Item {
                         color:_colorIcon
                         radius:20
                     }
-//                    onHoveredChanged: {
-//                        rotationControlCamera.visible = true
-//                        moveControlCamera.visible     = true
-//                    }
+                    //                    onHoveredChanged: {
+                    //                        rotationControlCamera.visible = true
+                    //                        moveControlCamera.visible     = true
+                    //                    }
 
                     onClicked: {
+
+                        rotationAnim.start()
+                        moveAnim.start()
+
                         if(rootItem.positionFactor){
-                            rotationControlCamera.visible = true
-                            moveControlCamera.visible     = true
+
                             showSlider.stop()
                             hideSlider.start()
 
@@ -398,7 +406,7 @@ Item {
         property: "positionFactor"
         from: rootItem.positionFactor
         to: 1.0
-        duration: myDuration * Math.abs(1.0 - positionFactor)/7
+        duration: myDuration * Math.abs(1.0 - positionFactor)
 
         easing.type: Easing.OutQuint
     }
@@ -408,11 +416,32 @@ Item {
         property: "positionFactor"
         from: rootItem.positionFactor
         to: 0.0
-        duration: myDuration * Math.abs(positionFactor)/7
+        duration: myDuration * Math.abs(positionFactor)
 
         easing.type: Easing.InQuint
     }
 
+
+    PropertyAnimation {
+        id: rotationAnim
+        target: rotationControlCamera
+        property: "opacity"
+        from: rotationControlCamera.opacity
+        to: 1.0
+        duration:  myDuration * Math.abs(positionFactor)
+
+        easing.type: Easing.OutQuint
+    }
+    PropertyAnimation {
+        id:  moveAnim
+        target: moveControlCamera
+        property: "opacity"
+        from :moveControlCamera.opacity
+        to: 1.0
+        duration: myDuration * Math.abs(positionFactor)
+
+        easing.type: Easing.InQuint
+    }
 }
 
 /*##^##
