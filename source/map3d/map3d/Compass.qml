@@ -6,14 +6,24 @@ Rectangle {
     width: 50
     height: 50
 
-    property real headingAngle
+    property alias headingAngle: compassObject.eulerRotation.y
+    property alias pitchAngle: compassObject.eulerRotation.x
+    property alias offsetAngle: compassObject.eulerRotation.z
 
-    signal compassDoubleClicked();
+
+    signal compassDirectionChanged()
+    signal compassClicked()
 
     color: "#404040"
     smooth: true
     radius: 100
     opacity: 0.8
+
+    MouseArea {
+        anchors.fill: parent
+
+        onClicked: compassClicked()
+    }
 
     View3D {
         anchors.fill: parent
@@ -24,33 +34,36 @@ Rectangle {
         }
 
         Node {
+            id: compassObject
             scale: Qt.vector3d(20, 20, 20)
 
             eulerRotation.x: -90
             eulerRotation.y: 0
             eulerRotation.z: 0
 
-            PropertyAnimation on eulerRotation.x {
-                //            running: animationPlay
-                loops: Animation.Infinite
-                duration: 5000
-                to: 0
-                from: -360
-            }
+            onEulerRotationChanged: compassDirectionChanged()
 
-            PropertyAnimation on eulerRotation.y {
-                //            running: animationPlay
-                loops: Animation.Infinite
-                duration: 5000
-                to: 0
-                from: -360
-            }
+//            PropertyAnimation on eulerRotation.x {
+//                running: animationPlay
+//                loops: Animation.Infinite
+//                duration: 5000
+//                to: 0
+//                from: -360
+//            }
+
+//            PropertyAnimation on eulerRotation.y {
+//                running: animationPlay
+//                loops: Animation.Infinite
+//                duration: 5000
+//                to: 0
+//                from: -360
+//            }
 
             Model {
                 id: plane
                 source: "qrc:/Resources/compass-surface.mesh"
                 materials: PrincipledMaterial {
-                    baseColor: "red"
+                    baseColor: "#dee3e6"
                     roughness: 1
                     indexOfRefraction: 1
                 }
@@ -60,7 +73,7 @@ Rectangle {
                 id: plane_001
                 source: "qrc:/Resources/compass-premeter.mesh"
                 materials: PrincipledMaterial {
-                    baseColor: "green"
+                    baseColor: "#e6c0ca"
                     roughness: 1
                     indexOfRefraction: 1
                 }

@@ -172,7 +172,7 @@ void MapControllerItem::frame()
     calculateFps();
     calculateNavigationStep();
 
-    emit headingAngleChanged();
+    emit compassDirectionChanged();
 }
 
 void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
@@ -238,11 +238,6 @@ void MapControllerItem::hoverMoveEvent(QHoverEvent *event)
     event->ignore();
 }
 
-double MapControllerItem::headingAngle() const
-{
-    return -getCameraController()->getViewpoint().heading()->as(osgEarth::Units::DEGREES);
-}
-
 double MapControllerItem::fps() const
 {
     return mFps;
@@ -264,4 +259,20 @@ void MapControllerItem::home()
 void MapControllerItem::setHeadingToNorth()
 {
     getCameraController()->setHeadingToNorth();
+}
+
+QVector2D MapControllerItem::compassDirection() const
+{
+    double headingAngle = getCameraController()->getViewpoint().heading()->as(osgEarth::Units::DEGREES);
+    double pitchAngle = 180 - getCameraController()->getViewpoint().pitch()->as(osgEarth::Units::DEGREES);
+
+    return QVector2D(headingAngle, pitchAngle);
+}
+
+void MapControllerItem::setCompassDirection(const QVector2D &newCompassDirection)
+{
+    if (m_compassDirection == newCompassDirection)
+        return;
+    m_compassDirection = newCompassDirection;
+    emit compassDirectionChanged();
 }

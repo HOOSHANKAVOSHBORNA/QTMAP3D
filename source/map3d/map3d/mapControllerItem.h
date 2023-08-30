@@ -11,7 +11,7 @@ class MapControllerItem : public MapItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(double headingAngle READ headingAngle NOTIFY headingAngleChanged)
+    Q_PROPERTY(QVector2D compassDirection READ compassDirection WRITE setCompassDirection NOTIFY compassDirectionChanged FINAL)
     Q_PROPERTY(double fps READ fps WRITE setFps NOTIFY fpsChanged)
 
     Q_PROPERTY(bool zoomInButtonPressed       WRITE setZoomInButtonPressed      )
@@ -39,8 +39,10 @@ public:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void hoverMoveEvent(QHoverEvent *event) override;
-    double headingAngle() const;
     double fps() const;
+
+    QVector2D compassDirection() const;
+    void setCompassDirection(const QVector2D &newCompassDirection);
 
 public slots:
     void setFps(double fps);
@@ -60,11 +62,12 @@ public slots:
 
 signals:
     void fpsChanged();
-    void headingAngleChanged();
     void mouseLocationChanged();
     void mousePointingLocationChanged(QVector3D location);
     void clicked();
     void searchChange();
+    void compassDirectionChanged();
+
 private:
     void tickNavigation(double deltaTime);
     void calculateNavigationStep();
@@ -88,6 +91,7 @@ private:
     bool mInClickProcess = false;
     double mFps = 0.0f;
     SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
+    QVector2D m_compassDirection;
 };
 
 #endif // MAPCONTROLLERITEM_H
