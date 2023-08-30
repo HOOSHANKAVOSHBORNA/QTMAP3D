@@ -20,31 +20,31 @@ void NetworkManager::sendData()
 
 void NetworkManager::clientConnected()
 {
-    QAmqpQueue *queue = mClient.createQueue("hello");
+    QAmqpQueue *queue = mClient.createQueue("flyable");
     disconnect(queue, 0, 0, 0); // in case this is a reconnect
-    connect(queue, &QAmqpQueue::declared, this, &NetworkManager::queueDeclared);
+    connect(queue, &QAmqpQueue::declared, this, &NetworkManager::flyableQueueDeclared);
     queue->declare();
 }
 
-void NetworkManager::queueDeclared()
+void NetworkManager::flyableQueueDeclared()
 {
     QAmqpQueue *queue = qobject_cast<QAmqpQueue*>(sender());
     if (!queue)
         return;
 
-    connect(queue, &QAmqpQueue::messageReceived, this, &NetworkManager::messageReceived);
+    connect(queue, &QAmqpQueue::messageReceived, this, &NetworkManager::flyableMessageReceived);
     queue->consume(QAmqpQueue::coNoAck);
-    qDebug() << " [*] Waiting for messages. To exit press CTRL+C";
+    qDebug() << "Waiting for flyable messages.";
 
     emit ready();
 }
 
-void NetworkManager::messageReceived()
+void NetworkManager::flyableMessageReceived()
 {
     QAmqpQueue *queue = qobject_cast<QAmqpQueue*>(sender());
     if (!queue)
         return;
 
     QAmqpMessage message = queue->dequeue();
-    qDebug() << " [x] Received " << message.payload();
+    qDebug() << "Flyable message: " << message.payload();
 }
