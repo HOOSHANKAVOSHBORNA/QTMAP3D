@@ -2,6 +2,7 @@
 #include "mapItem.h"
 #include "MoveableModelNode.h"
 #include "flyableModelNode.h"
+#include "serviceManager.h"
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
 #include <osgEarth/ModelSource>
@@ -27,9 +28,14 @@ Model::~Model()
 
 bool Model::setup()
 {
+
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(mapItem(), &MapItem::modeChanged, this, &Model::onModeChanged);
     mIs3D = mapItem()->getMode();
+
+    //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+    connect(serviceManager(), &ServiceManager::flyableAdded, this, &Model::addFlyable);
+
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
     mapItem()->getMapObject()->addLayer(mModelNodeLayer);
@@ -175,9 +181,7 @@ bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter
 //        mCircle->setRadius(osgEarth::Distance(mCurrentModelSize, osgEarth::Units::METERS));
         mCircle->setScale(mSelectedModelNode->getScale());
     }
-    else{
-        qDebug()<<"HIIIIIIIIII";
-    }
+
     return false;
 }
 
@@ -252,6 +256,7 @@ void Model::onAirplanItemCheck(bool check)
     }
 }
 
+
 void Model::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -264,8 +269,24 @@ void Model::onModeChanged(bool is3DView)
     }
 }
 
-void Model::initModel(const osgEarth::GeoPoint &geoPos){
 
+
+void Model::addFlyable(ServiseModel *model, ParenticAnnotationLayer *layer)
+{
+    QString name = "Airplane88";
+    FlyableModelNode *fmodel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
+//    fmodel->setUserData()
+    fmodel->setName(name.toStdString());
+    fmodel->setPosition(model->position);
+    qDebug() << model->position.toString();
+    layer->addChild(fmodel);
+//    fmodel->setScalability(false);
+    confirm();
+
+
+}
+
+void Model::initModel(const osgEarth::GeoPoint &geoPos){
     QString name;
     switch (mType) {
     case Type::SIMPLE:
@@ -400,7 +421,7 @@ SimpleModelNode *Model::pick(float x, float y)
                         mCurrentModelSize = hit.drawable->getBoundingBox().yMax();
                         mCircle->setFillColor(osg::Vec4f(0,0.6,0.6,0.6));
                         mCircle->setStrokeColor(osg::Vec4f(0,1,0,1));
-                        mCircle->setStrokeWidth(5);
+                        mCircle->setStrokeWidth(2);
                         //mCircle->setHeight(0.3);
                         mCircle->setRadius(osgEarth::Distance(mCurrentModelSize, osgEarth::Units::METERS));
 //                        osg::StateSet* ss = mCircle->getOrCreateStateSet();

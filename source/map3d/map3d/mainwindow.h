@@ -11,6 +11,7 @@
 #include "layerModel.h"
 #include "mapItem.h"
 #include "toolbox.h"
+#include "serviceManager.h"
 
 class PluginInfo;
 class PluginInterface;
@@ -44,6 +45,7 @@ public:
     LayersModel *layersModel() const;
     ToolboxProxyModel *toolbox() const;
     UIHandle *uiHandle() const;
+    ServiceManager *serviceManager() const;
 
 signals:
     void layersModelChanged();
@@ -54,7 +56,6 @@ public slots:
 
     void setLayersModel(LayersModel *layersModel);
     void setToolbox(ToolboxProxyModel* toolbox);
-
 public:
     MapItem* getMapItem();
     void setMapItem(MapItem& mapItem);
@@ -77,6 +78,7 @@ private:
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
     ToolboxProxyModel *mToolbox = nullptr;
+    ServiceManager *mServiceManager = nullptr;
 };
 
 #endif // MainWindow_H

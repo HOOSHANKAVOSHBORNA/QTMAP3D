@@ -160,12 +160,15 @@ void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsig
 {
     if (getIndexOfLayer(layer) != getNumLayers())
         return;
-    if (index == mChilds.size())
-        mChilds.push_back(layer);
+    if (index == mChilds.size()) {
+        addLayer(layer);
+        return;
+    }
     else
         mChilds.insert(mChilds.begin() + index, layer);
 
     layer->addParent(this);
+    mRoot->addChild(layer->getNode());
     for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
         layer->addCallback(it->get());
     }

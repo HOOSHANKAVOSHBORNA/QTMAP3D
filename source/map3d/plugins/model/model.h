@@ -7,6 +7,7 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include "simpleModelNode.h"
+
 #include <osg/PolygonMode>
 #include <osg/Fog>
 #include "sphereNode.h"
@@ -57,6 +58,8 @@ public slots:
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
     void onModeChanged(bool is3DView);
+    void addFlyable(ServiseModel *model, ParenticAnnotationLayer *layer);
+
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
     void moving(osgEarth::GeoPoint &geoPos);;
@@ -76,9 +79,6 @@ private:
     bool mClicked{false};
     osg::ref_ptr<osg::PolygonMode> mPm;
     Type mType;
-
-    osg::BoundingSphere mBs;
-    osg::NodePath mNp;
     osg::ref_ptr<SphereNode> mSphere{nullptr};
     osg::ref_ptr<Circle> mCircle{nullptr};
     static int mCount;

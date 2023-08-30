@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Effects
 import Crystal 1.0
 
 
@@ -8,30 +9,31 @@ MapController {
     id: map
     zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
     zoomOutButtonPressed:     navigationWidget.zoomOutButtonPressed
-    upButtonPressed:          navigationWidget.upButtonPressed
-    downButtonPressed:        navigationWidget.downButtonPressed
-    leftButtonPressed:        navigationWidget.leftButtonPressed
-    rightButtonPressed:       navigationWidget.rightButtonPressed
-    rotateUpButtonPressed:    navigationWidget.rotateUpButtonPressed
-    rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
-    rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
-    rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
-//    anchors.fill: parent
+//    upButtonPressed:          navigationWidget.upButtonPressed
+//    downButtonPressed:        navigationWidget.downButtonPressed
+//    leftButtonPressed:        navigationWidget.leftButtonPressed
+//    rightButtonPressed:       navigationWidget.rightButtonPressed
+//    rotateUpButtonPressed:    navigationWidget.rotateUpButtonPressed
+//    rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
+//    rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
+//    rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
+    anchors.fill: parent
     objectName: "MainMap"
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
-    readonly property int       _iconSize   : 24
-    readonly property int       _margin     : 15
-    readonly property int       _radius     : 10
-    readonly property color     _colorRec   : "#404040"
-    readonly property color     _colorHover : "#FFCC00"
-    readonly property color     _colorPresed : "#908000"
-    readonly property color     _colorIcon  : "#FFFFFF"
-    readonly property color     _colorButton: "#55FFFFFF"
-    readonly property string    _fontFamily : "Srouce Sans Pro"
-    readonly property int       _fontPointSize : 11
-    readonly property color     itemColor: "#404040"
-    readonly property real      widgetsMargins: 10
+    readonly property int       _containerSize   : 40
+    readonly property int       _iconSize        : 24
+    readonly property int       _margin          : 15
+    readonly property int       _radius          : 10
+    readonly property color     _colorRec        : "#404040"
+    readonly property color     _colorHover      : "#01AED6"
+    readonly property color     _colorPresed     : "#003569"
+    readonly property color     _colorIcon       : "#DEE3E6"
+    readonly property color     _colorButton     : "#55FFFFFF"
+    readonly property string    _fontFamily      : "Srouce Sans Pro"
+    readonly property int       _fontPointSize   : 11
+    readonly property color     itemColor        : "#404040"
+    readonly property real      widgetsMargins   : 10
     clip: true
     DropArea {
         id: dragTarget
@@ -141,11 +143,25 @@ MapController {
         anchors.leftMargin: 20
     }
     SearchBar {
+        id:searcbarContainer
         anchors.top: parent.top
         anchors.topMargin: 20
         anchors.rightMargin: 20
         anchors.right: parent.right
         model: map.searchNodeProxyModel()
+    }
+    MultiEffect {
+        source: searcbarContainer
+        enabled: true
+        anchors.fill: searcbarContainer
+        shadowColor: "black"
+        shadowEnabled: true
+        shadowBlur: 0.6
+        shadowHorizontalOffset: 3.5
+        shadowVerticalOffset:2.5
+        shadowOpacity:0.35
+        paddingRect: Qt.rect(0,0,20,20)
+        shadowScale: 0.98
     }
     //        id:mapItem
     Rectangle {
@@ -157,7 +173,7 @@ MapController {
         height: compassWidget.height+10
         width: compassWidget.width
         y: parent.height  - widgetsPositionFactor * (compassWidget.height + (widgetsMargins) + statusBar.height)
-//        Drag.active: dragMouseArea.drag.active
+
         Drag.hotSpot.x: 32
         Drag.hotSpot.y: 32
 //        states: State {
@@ -195,10 +211,6 @@ MapController {
             anchors.bottomMargin: 10
             id:compassWidget
             headingAngle: map.headingAngle
-            //            anchors.left: parent.left
-            //            anchors.leftMargin: widgetsMargins
-            //            anchors.bottomMargin: widgetsMargins
-            //            y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins) + statusBar.height)
 
             onCompassDoubleClicked: function() {
                 map.setHeadingToNorth();
@@ -207,13 +219,11 @@ MapController {
     }
 
 
-    NavigationWidget{
+    MapViewController{
         id : navigationWidget
-        //anchors.right: parent.right
+
         anchors.rightMargin: widgetsMargins
-        //            y:25 + parent.height  - (wnd.widgetsPositionFactor * (height + ((widgetsMargins)/2+3)+25))
-        //y: parent.height  - widgetsPositionFactor * (height + (widgetsMargins/2+3) + statusBar.height)
-        // slot button
+
         y: parent.height/2
         x:parent.width - widgetsPositionFactor * (width + widgetsMargins)
         onBtnHomeClicked: function() {
@@ -245,6 +255,5 @@ MapController {
 
     }
 
-    //    }
 }
 

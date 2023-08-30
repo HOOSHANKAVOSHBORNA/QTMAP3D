@@ -14,6 +14,8 @@
 #include "mapItem.h"
 #include "listwindow.h"
 
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QQuickOpenGLUtils>
 MainWindow::MainWindow(QWindow *parent) :
     QQuickWindow(parent)
@@ -48,6 +50,11 @@ ToolboxProxyModel *MainWindow::toolbox() const
 UIHandle *MainWindow::uiHandle() const
 {
     return mUIHandle;
+}
+
+ServiceManager *MainWindow::serviceManager() const
+{
+    return mServiceManager;
 }
 
 void MainWindow::addToCenterCenterContainer(QQuickItem *item)
@@ -95,6 +102,30 @@ void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
     emit toolboxChanged();
 }
 
+//void MainWindow::onTestClicked()
+//{
+
+//    QJsonDocument jsonDocc;
+//    QJsonObject node1;
+//    QJsonArray nodeParents;
+//    nodeParents.push_back(100);
+//    nodeParents.push_back(101);
+//    nodeParents.push_back(102);
+//    node1.insert("layers", nodeParents);
+//    node1.insert("Latitude", 1000);
+//    node1.insert("Longitude", 1000);
+//    node1.insert("Altitude", 1000);
+//    node1.insert("Heading", 1000);
+//    node1.insert("Speed", 1000);
+//    node1.insert("TN", 1000);
+//    node1.insert("ModelLocation2d", "pwd");
+//    node1.insert("ModelLocation3d", "pwd");
+//    node1.insert("x", 51.3347);
+//    node1.insert("y", 35.7219);
+//    node1.insert("z", 0);
+//    serviceManager()->addFlyableModel(&jsonDocc, 1);
+//}
+
 MapItem *MainWindow::getMapItem()
 {
     return mMapItem;
@@ -104,6 +135,7 @@ void MainWindow::setMapItem(MapItem &mapItem)
 {
     mMapItem = &mapItem;
     mLayersModel = new LayersModel(mMapItem);
+    mServiceManager = new ServiceManager(mMapItem);
 }
 
 void MainWindow::addToLeftContainer(QQuickItem *item, QString title)

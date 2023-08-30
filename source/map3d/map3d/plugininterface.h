@@ -3,6 +3,7 @@
 #define PluginInterface_H
 
 
+#include "serviceManager.h"
 #include "toolbox.h"
 
 #include <QObject>
@@ -196,6 +197,8 @@ public:
 
     Toolbox *toolbox() const;
     static void setToolbox(Toolbox *newToolbox);
+    ServiceManager *serviceManager() const;
+    static void setServiceManager(ServiceManager *newServiceManager);
 
 public:
     virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
@@ -208,6 +211,7 @@ public:
     virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
 
+
 private:
     static MapItem *mMapItem;
     static QQmlEngine *mQmlEngine;
@@ -215,7 +219,7 @@ private:
     static DefenseDataManager *mDefenseDataManager;
     static MainWindow *mMainWindow;
     static Toolbox *mToolbox;
-
+    static ServiceManager *mServiceManager;
     QString mName;
 
 };

@@ -8,15 +8,18 @@ import "style"
 Rectangle {
     id: rootItem
     property var model
+
     width: 40 + txtid.implicitWidth + (closeButton.visible? closeButton.width : 0)
     height: 40
     radius: 20
-    color: Style.backgroundColor
+//    color: Style.backgroundColor
+    color:_colorIcon
     opacity: 0.85
     ColumnLayout{
 
         anchors.fill: parent
         //---------------------------searcbox---------------------------//
+
         RowLayout{
             Layout.fillHeight: true
             Layout.fillWidth: true
@@ -24,17 +27,30 @@ Rectangle {
             layoutDirection: Qt.LeftToRight
 
             //------------------------------search-----------------------//
+
+
+            Rectangle{
+                id:searchContainer
+
+                color:"transparent"
+                height: 40
+                width: 40
+                radius: 20
+
             Button {
                 id:searchbtn
+                anchors.fill: parent
                 Layout.fillHeight: true
                 width: 40
+
                 background: Rectangle{
-                    color: "transparent"
+                    radius:20
+                    color: _colorIcon
                 }
                 Layout.leftMargin: 3
 
                 icon{
-                    source: "qrc:/Resources/search-white.jpeg"
+                    source: "qrc:/Resources/search.png"
                     width: 26
                     height: 26
                 }
@@ -45,6 +61,9 @@ Rectangle {
 
                 }
             }
+
+            }
+
 
             TextField {
                 id : txtid
@@ -63,11 +82,12 @@ Rectangle {
                 font.pointSize: 10
                 clip: true
                 selectByMouse: true
-                selectedTextColor: "white"
+                selectedTextColor: _colorIcon
                 selectionColor: "#ffcc00"
                 placeholderTextColor: "#81848c"
                 background: Rectangle{
-                    color: Style.backgroundColor
+//                    color: Style.backgroundColor
+                    color: _colorIcon
                     opacity: 0.3
                 }
                 onTextChanged: {
@@ -96,19 +116,10 @@ Rectangle {
             }
             // close botton ------------------------------------------------------
             Rectangle {
-//                MultiEffect{
-//                    source: closeRect
-//                    anchors.fill: closeRect
-//                    //                                autoPaddingEnabled: false
-//                    paddingRect: Qt.rect(0, 0 , 40, 40)
-//                    shadowBlur: 1.0
-//                    shadowColor: 'black'
-//                    shadowEnabled: true
-//                    shadowHorizontalOffset: -8
 
-//                }
                 id: closeRect
-                color: Style.backgroundColor
+//                color: Style.backgroundColor
+                color:"transparent"
                 height: 40
                 width: 40
                 radius: 20
@@ -117,15 +128,16 @@ Rectangle {
                 Button {
                     id: closeButton
                     width: 40
+                    height: 40
                     clip: true
                     background: Rectangle{
-                        color: "transparent"
+                        color: _colorIcon
                         radius: 20
                     }
                     anchors.centerIn: parent
 
                     icon{
-                        source: "qrc:/Resources/close-white.jpeg"
+                        source: "qrc:/Resources/index.png"
                         width: 26
                         height: 26
 
@@ -136,13 +148,27 @@ Rectangle {
                     }
 
                 }
+//                MultiEffect {
+//                    source: closeButton
+//                    enabled: true
+//                    anchors.fill: closeButton
+//                    shadowColor: "black"
+//                    shadowEnabled: true
+//                    shadowBlur: 0.6
+//                    shadowHorizontalOffset: -1.5
+//                    shadowVerticalOffset:0
+//                    shadowOpacity:0.35
+//                    paddingRect: Qt.rect(0,0,20,20)
+//                    shadowScale: 0.98
+//                }
             }
         }
     }
+
     //-------------------- search list ----------------------//
     Rectangle{
         id:dropDown
-        color: Style.backgroundColor
+        color: _colorIcon
         visible:true
         width: closeButton.visible ? rootItem.width - 6: 0
         height:Math.min(bt.count *35, 200);
@@ -161,6 +187,15 @@ Rectangle {
                 width: bt.width
                 height: 35
                 text: model.display
+                contentItem: Text {
+                        text: textnew.text
+                        font: textnew.font
+//                        opacity: enabled ? 1.0 : 0.3
+                        color: textnew.down ? "yellow" : "grey"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
                 id:textnew
                 hoverEnabled: true
                 onClicked:{
@@ -169,6 +204,7 @@ Rectangle {
                 background: Rectangle
                 {
                     color: parent.hovered ? Style.hoverColor : "transparent"
+                    radius:12
                 }
             }
         }
