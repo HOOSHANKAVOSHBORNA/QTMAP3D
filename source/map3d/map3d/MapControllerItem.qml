@@ -9,14 +9,14 @@ MapController {
     id: map
     zoomInButtonPressed:      navigationWidget.zoomInButtonPressed
     zoomOutButtonPressed:     navigationWidget.zoomOutButtonPressed
-//    upButtonPressed:          navigationWidget.upButtonPressed
-//    downButtonPressed:        navigationWidget.downButtonPressed
-//    leftButtonPressed:        navigationWidget.leftButtonPressed
-//    rightButtonPressed:       navigationWidget.rightButtonPressed
-//    rotateUpButtonPressed:    navigationWidget.rotateUpButtonPressed
-//    rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
-//    rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
-//    rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
+    //    upButtonPressed:          navigationWidget.upButtonPressed
+    //    downButtonPressed:        navigationWidget.downButtonPressed
+    //    leftButtonPressed:        navigationWidget.leftButtonPressed
+    //    rightButtonPressed:       navigationWidget.rightButtonPressed
+    //    rotateUpButtonPressed:    navigationWidget.rotateUpButtonPressed
+    //    rotateDownButtonPressed:  navigationWidget.rotateDownButtonPressed
+    //    rotateLeftButtonPressed:  navigationWidget.rotateLeftButtonPressed
+    //    rotateRightButtonPressed: navigationWidget.rotateRightButtonPressed
     anchors.fill: parent
     objectName: "MainMap"
     property real widgetsPositionFactor: 1.0
@@ -44,12 +44,12 @@ MapController {
         height: 64
         keys: [ colorKey ]
 
-//        Rectangle {
-//            id: dropRectangle
+        //        Rectangle {
+        //            id: dropRectangle
 
-//            anchors.fill: parent
-//            color: dragMouseArea.drag.active ? (dragTarget.containsDrag ? "grey" : dragTarget.colorKey) : "transparent"
-//        }
+        //            anchors.fill: parent
+        //            color: dragMouseArea.drag.active ? (dragTarget.containsDrag ? "grey" : dragTarget.colorKey) : "transparent"
+        //        }
     }
     //    MouseArea {
     //        id: mouseArea
@@ -176,44 +176,57 @@ MapController {
 
         Drag.hotSpot.x: 32
         Drag.hotSpot.y: 32
-//        states: State {
-//            when: dragMouseArea.drag.active
-//            AnchorChanges {
-//                target: compass
-//                anchors {
-//                    verticalCenter: undefined
-//                    horizontalCenter: undefined
-//                }
-//            }
-//        }
-//        MouseArea {
-//            id: dragMouseArea
 
-//            width: 64
-//            height: 64
-//            anchors.fill: dragImg
 
-//            drag.target: compass
+        //        states: State {
+        //            when: dragMouseArea.drag.active
+        //            AnchorChanges {
+        //                target: compass
+        //                anchors {
+        //                    verticalCenter: undefined
+        //                    horizontalCenter: undefined
+        //                }
+        //            }
+        //        }
+        //        MouseArea {
+        //            id: dragMouseArea
 
-//            onReleased: parent = compass.Drag.target !== null ? compass.Drag.target : rootItem
-//        }
-//        Image {
-//            id: dragImg
-//            source: "qrc:/Resources/drag.png"
-//            anchors.top: parent.top
-//            anchors.left: parent.left
-//            width: 14
-//            height: 14
-//        }
+        //            width: 64
+        //            height: 64
+        //            anchors.fill: dragImg
 
-        Compass{
+        //            drag.target: compass
+
+        //            onReleased: parent = compass.Drag.target !== null ? compass.Drag.target : rootItem
+        //        }
+        //        Image {
+        //            id: dragImg
+        //            source: "qrc:/Resources/drag.png"
+        //            anchors.top: parent.top
+        //            anchors.left: parent.left
+        //            width: 14
+        //            height: 14
+        //        }
+
+        Compass {
+            id: compassWidget
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 10
-            id:compassWidget
-            headingAngle: map.headingAngle
 
-            onCompassDoubleClicked: function() {
-                map.setHeadingToNorth();
+            headingAngle:  map.compassDirection.x
+
+            onCompassDirectionChanged: function () {
+                if (-90 < map.compassDirection.x && map.compassDirection.x < 90) {
+                    pitchAngle = map.compassDirection.y
+                } else {
+                    pitchAngle = -map.compassDirection.y
+                }
+            }
+
+            onCompassClicked: function() {
+                console.log("x: " + map.compassDirection.x + ", y: " + map.compassDirection.y)
+
+                //                map.setHeadingToNorth();
             }
         }
     }
