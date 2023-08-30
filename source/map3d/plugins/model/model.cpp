@@ -3,7 +3,15 @@
 #include "MoveableModelNode.h"
 #include "flyableModelNode.h"
 #include <osgEarth/GLUtils>
+#include <osgEarth/ModelLayer>
+#include <osgEarth/ModelSource>
+#include <osgEarth/ModelSource>
 #include <QRandomGenerator>
+#include <osgFX/Outline>
+#include <osgEarthSymbology/Style>
+#include <osgEarthSymbology/StyleSheet>
+#include <osg/ShapeDrawable>
+
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 int Model::mCount{0};
 Model::Model(QObject *parent)
@@ -19,8 +27,9 @@ Model::~Model()
 
 bool Model::setup()
 {
-    //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+    connect(mapItem(), &MapItem::modeChanged, this, &Model::onModeChanged);
+    mIs3D = mapItem()->getMode();
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
     mapItem()->getMapObject()->addLayer(mModelNodeLayer);
@@ -76,10 +85,42 @@ void Model::setState(State newState)
 
 bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+    if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
+        SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
+        if (mSelectedModelNode && mSelectedModelNode != modelNode){
+            mSelectedModelNode->getGeoTransform()->removeChild(mCircle);
+            mCircle = nullptr;
+           // mSelectedModelNode->getOrCreateStateSet()->removeAttribute(mPm.get());
+        }
+        if(modelNode){
+
+            mSelectedModelNode = modelNode;
+            mClicked = true;
+            qDebug()<<"model name: "<<mSelectedModelNode->getName();
+
+            mPm = new osg::PolygonMode;
+            mPm->setMode(osg::PolygonMode::FRONT_AND_BACK,
+                        osg::PolygonMode::LINE);
+
+            //mSelectedModelNode->getOrCreateStateSet()->setAttribute(mPm.get());
+
+
+
+
+
+
+
+//            osg::ref_ptr<osgFX::Outline> outline = new osgFX::Outline;
+//            outline->setWidth( 2 );
+//            outline->setColor( osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) );
+//            outline->addChild(mSelectedModelNode);
+//            mapItem()->getViewer()->getCamera()->setClearMask(
+//                GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT
+//                );
+//            mapItem()->getViewer()->setSceneData( outline.get() );
+        }
     if(mState == State::NONE)
         return false;
-
-    if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         if (mState == State::READY) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initModel(geoPos);
@@ -98,17 +139,17 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         return false;
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
-        mCurrentModel->setScalability(false);
+        //mCurrentModel->setScalability(false);
         confirm();
         return false;
     }
+
+    mClicked = false;
     return false;
 }
 
 bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    if(mState == State::NONE)
-        return false;
     //move icon-----------------------
     if(mIconNode){
         osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
@@ -122,6 +163,21 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
     //        return true;
     //    }
     //--------------------------------
+    return false;
+}
+
+bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mCircle){
+//        mCurrentModelSize = mSelectedModelNode->getBound().radius()*0.9;
+        qDebug()<<"circle radius : "<< mSelectedModelNode->getBound().radius()*0.9;
+        qDebug()<<"scale x : "<< mSelectedModelNode->getScale().x()<<"scale y : "<< mSelectedModelNode->getScale().y()<<"scale z : "<< mSelectedModelNode->getScale().z();
+//        mCircle->setRadius(osgEarth::Distance(mCurrentModelSize, osgEarth::Units::METERS));
+        mCircle->setScale(mSelectedModelNode->getScale());
+    }
+    else{
+        qDebug()<<"HIIIIIIIIII";
+    }
     return false;
 }
 
@@ -193,6 +249,18 @@ void Model::onAirplanItemCheck(bool check)
 
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
+    }
+}
+
+void Model::onModeChanged(bool is3DView)
+{
+    mIs3D = is3DView;
+    if(mIs3D && mCircle){
+
+        mCircle->setRadius(osgEarth::Distance(mCurrentModelSize, osgEarth::Units::METERS));
+    }
+    else if(!mIs3D && mSphere){
+        mCircle->setRadius(osgEarth::Distance(3, osgEarth::Units::METERS));
     }
 }
 
@@ -281,4 +349,93 @@ void Model::cancel(){
         setState(State::READY);
         mCount--;
     }
+}
+
+SimpleModelNode *Model::pick(float x, float y)
+{
+    SimpleModelNode *simpleModelNode = nullptr;
+    osgViewer::Viewer *viewer = mapItem()->getViewer();
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+
+    if (viewer->computeIntersections(x, y, intersections))
+    {
+        for(const osgUtil::LineSegmentIntersector::Intersection& hit : intersections)
+        {
+            const osg::NodePath& nodePath = hit.nodePath;
+            for(osg::NodePath::const_iterator nitr=nodePath.begin();
+                 nitr!=nodePath.end();
+
+                 ++nitr)
+            {
+                simpleModelNode = dynamic_cast<SimpleModelNode*>(*nitr);
+                if (simpleModelNode)
+                {
+                    osg::ref_ptr<osg::MatrixTransform> _selectionBox;
+                    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+                    geode->addDrawable(
+                        new osg::ShapeDrawable(new osg::Box(osg::Vec3(),
+                                                            1.0f)) );
+                    _selectionBox = new osg::MatrixTransform;
+                    _selectionBox->setNodeMask( 0x1 );
+                    _selectionBox->addChild( geode.get() );
+                    osg::StateSet* ss = _selectionBox->getOrCreateStateSet();
+                    ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+                    ss->setAttributeAndModes(new osg::PolygonMode(
+                        osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE));
+
+                    osg::BoundingBox bb = hit.drawable->getBoundingBox();
+                    qDebug()<<"radius: "<<bb.radius();
+                    osg::Vec3 worldCenter = bb.center() *
+                                            osg::computeLocalToWorld(hit.nodePath);
+                    _selectionBox->setMatrix(
+                        osg::Matrix::scale(bb.xMax()-bb.xMin(),
+                                           bb.yMax()-bb.yMin(),
+                                           bb.zMax()-bb.zMin()) *
+                        osg::Matrix::translate(worldCenter) );
+                    //qDebug()<<"center.x: "<<worldCenter.x()<<"center.y: "<<worldCenter.y()<<"center.z: "<<worldCenter.z();
+
+                    if (!mCircle){
+                        //mSphere = new SphereNode();
+                        mCircle = new Circle();
+                        mCurrentModelSize = hit.drawable->getBoundingBox().yMax();
+                        mCircle->setFillColor(osg::Vec4f(0,0.6,0.6,0.6));
+                        mCircle->setStrokeColor(osg::Vec4f(0,1,0,1));
+                        mCircle->setStrokeWidth(5);
+                        //mCircle->setHeight(0.3);
+                        mCircle->setRadius(osgEarth::Distance(mCurrentModelSize, osgEarth::Units::METERS));
+//                        osg::StateSet* ss = mCircle->getOrCreateStateSet();
+//                        ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+//                        ss->setAttributeAndModes(new osg::PolygonMode(
+//                            osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE));
+
+                        //mSphere->setRadius(osgEarth::Distance(mCurrentModelSize, osgEarth::Units::METERS));
+                        //mSphere->setPosition(simpleModelNode->getPosition());
+                        //mSphere->setFillColor(osg::Vec4f(1,0,0,0.4));
+                        //mSphere->setDynamic(true);
+                        simpleModelNode->getPositionAttitudeTransform()->setPivotPoint(osg::Vec3d(-0.2, -0.15, 0));
+                        simpleModelNode->getGeoTransform()->addChild(mCircle);
+
+
+//                        auto x = dynamic_cast<osgEarth::Annotation::CircleNode*>(simpleModelNode->getChild(0));
+//                        osgEarth::GeoPoint abbas;
+//                        abbas.x() = simpleModelNode->getPosition().x();
+//                        abbas.y() = simpleModelNode->getPosition().y();
+//                        abbas.z() = simpleModelNode->getPosition().z() + 100;
+//                        x->setPosition(abbas);
+                        mCircle->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.01));
+                        //mCircle->setPosition(abbas);
+                    }
+
+                    //simpleModelNode->setStyle(simpleModelNode->getStyle());
+                    return simpleModelNode;
+                }
+            }
+        }
+    }
+    return simpleModelNode;
+}
+
+bool Model::clicked() const
+{
+    return mClicked;
 }

@@ -7,6 +7,10 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include "simpleModelNode.h"
+#include <osg/PolygonMode>
+#include <osg/Fog>
+#include "sphereNode.h"
+#include "circle.h"
 
 #define MODEL "Model"
 #define TREE "Tree"
@@ -44,11 +48,15 @@ public:
 
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+    bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+    bool clicked() const;
+
 public slots:
     static osgEarth::Symbology::Style &getDefaultStyle();
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
+    void onModeChanged(bool is3DView);
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
     void moving(osgEarth::GeoPoint &geoPos);;
@@ -63,9 +71,19 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
 
+    SimpleModelNode* pick(float x, float y);
+    SimpleModelNode* mSelectedModelNode{nullptr};
+    bool mClicked{false};
+    osg::ref_ptr<osg::PolygonMode> mPm;
     Type mType;
 
+    osg::BoundingSphere mBs;
+    osg::NodePath mNp;
+    osg::ref_ptr<SphereNode> mSphere{nullptr};
+    osg::ref_ptr<Circle> mCircle{nullptr};
     static int mCount;
+    double mCurrentModelSize;
+    bool mIs3D;
 
 };
 

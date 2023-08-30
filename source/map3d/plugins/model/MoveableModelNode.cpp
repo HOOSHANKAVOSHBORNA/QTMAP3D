@@ -7,7 +7,9 @@
 #include <osgAnimation/Sampler>
 #include <osgEarth/GeoMath>
 #include <osgEarth/Viewpoint>
+#include <osgEarth/ImageUtils>
 
+//osgEarth::Util::Controls::ImageLayer
 
 ModelAnimationPathCallback::ModelAnimationPathCallback(MapItem *mapItem, MoveableModelNode *moveableModel)
 {

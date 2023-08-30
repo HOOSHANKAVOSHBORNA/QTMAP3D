@@ -1,9 +1,13 @@
 #include "simpleModelNode.h"
 #include "model.h"
-
+#include <osg/CullFace>
+#include <osg/PolygonMode>
 #include "mapItem.h"
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
+#include <osgEarthSymbology/ModelSymbol>
+#include <osgEarth/GLUtils>
+#include <osgEarth/Registry>
 const float RANGE3D = 835;
 SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent)
     : QObject{parent},
@@ -13,6 +17,9 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     mIconUrl(iconUrl)
 
 {
+    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+    //osgEarth::GLUtils::setLighting(osg::StateSet::,osg::StateAttribute::GLMode(GL_LIGHTING))
+
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
 
@@ -22,6 +29,58 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     m3DNode->addChild(simpleNode, 0, std::numeric_limits<float>::max());
     //--root ------------------------------------------------------------
     mSwitchNode = new osg::Switch;
+
+
+
+
+    mOutline = new osgFX::Outline;
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Silver);
+    //mat->setAmbient(osg::Material::FRONT_AND_BACK, osgEarth::Color::Silver);
+    //mat->setColorMode(osg::Material::AMBIENT);
+    //getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+
+    mHighlight = new osgFX::Scribe;
+    mHighlight->setWireframeColor(osg::Vec4f(1,0,0,1));
+    //osgEarth::Registry::shaderGenerator().run(mOutline);
+    mOutline->setWidth(10);
+
+    osg::ref_ptr<osg::StateSet> vOutlineState = mOutline->getOrCreateStateSet();
+//    vOutlineState->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
+
+
+    //mOutline->getOrCreateStateSet()->setMode(GL_LIGHTING,
+//                                             osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    //mOutline->getOrCreateStateSet()->setAssociatedModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    //mOutline->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    //mOutline->setColor(osg::Vec4f(1,0,0,1));
+
+//    mOutline->dirtyBound();
+    //osg::DisplaySettings::instance()->setMinimumNumStencilBits(1);
+//    osg::DisplaySettings::instance()->setRGB(true);
+//    osg::DisplaySettings::instance()->setDepthBuffer(true);
+    //mapItem()->getViewer()->getCamera()->setClearColor(osgEarth::Color::Blue);
+    //mapItem()->getViewer()->getCamera()->setClearStencil(1);
+
+    //mapItem()->getViewer()->setLightingMode(OSGRenderNode::LightingMode::HEADLIGHT);
+
+//    osgEarth::Symbology::Style  rootStylee;
+//    rootStylee.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(m3DNode);
+//    rootStylee.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::Blue;
+//    rootStylee.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color::Blue;
+//    setStyle(rootStylee);
+
+//    mapItem()->getViewer()->getCamera()->setClearMask(
+//        GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT
+//        );
+
+    //mapItem()->getViewer()->getCamera()->setClearStencil(0);
+//    osg::ref_ptr<osg::CullFace> cf = new osg::CullFace;
+//    cf->setMode(osg::CullFace::FRONT);
+//    vOutlineState->setAttributeAndModes(cf, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+
+    //mapItem()->getViewer()->getCamera()->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+
     setCullingActive(false);
 
 
@@ -32,7 +91,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
         ScaleRatio = 20;
     }
 
-    else if(modelLenght<10 && modelLenght<15){
+    else if(modelLenght<7 && modelLenght<15){
         ScaleRatio = 4;
     }
 
@@ -54,18 +113,32 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     m2DNode->setStateSet(geodeStateSet);
     m2DNode->addDrawable(imgGeom);
 
+
+    osg::ref_ptr<osg::PolygonMode> pm = new osg::PolygonMode;
+    pm->setMode(osg::PolygonMode::FRONT_AND_BACK,
+                osg::PolygonMode::LINE);
+
+
     //--setting--------------------------------------------------------
     if(mIs3D){
+        //m3DNode->getOrCreateStateSet()->setAttribute(pm.get());
+        //mHighlight->addChild(m3DNode.get());
+        mOutline->addChild(m3DNode.get());
         mSwitchNode->addChild(m3DNode, true);
         mSwitchNode->addChild(m2DNode, false);
     }
     else{
+        //m3DNode->getOrCreateStateSet()->setAttribute(pm.get());
+        //mHighlight->addChild(m3DNode.get());
+        mOutline->addChild(m3DNode.get());
         mSwitchNode->addChild(m3DNode, false);
         mSwitchNode->addChild(m2DNode, true);
     }
 
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
+    rootStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osgEarth::Color::Blue;
+    rootStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() = osgEarth::Color::Blue;
     setStyle(rootStyle);
 //    osg::AutoTransform *at = new osg::AutoTransform;
 //    //at->addChild(mMode);
