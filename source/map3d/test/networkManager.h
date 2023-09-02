@@ -12,15 +12,14 @@ class NetworkManager: public QObject
     Q_OBJECT
 public:
     NetworkManager(QObject *parent = nullptr);
-    void start();
+    void sendFlyableData(const QString &data);
 
-    void sendData();
+    void start();
 private slots:
     void clientConnected();
-    void flyableQueueDeclared();
-    void flyableMessageReceived();
+    void clientError(QAMQP::Error error);
 signals:
-    void ready();
+    void flyableQueueDeclared();
 private:
     QAmqpClient mClient;
 };

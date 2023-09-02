@@ -4,6 +4,9 @@
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
 #include "modelAutoScaler.h"
+#include <osgFX/Outline>
+#include <osgFX/Scribe>
+
 
 class MoveableModelNode;
 class FlyableModelNode;
@@ -30,6 +33,8 @@ private slots:
 
 private:
     osg::ref_ptr<osg::Switch> mSwitchNode;
+    osg::ref_ptr<osgFX::Outline> mOutline;
+    osg::ref_ptr<osgFX::Scribe> mHighlight;
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<ModelAutoScaler> mScaler;
