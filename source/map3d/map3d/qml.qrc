@@ -27,5 +27,6 @@
         <file>ToolBar.qml</file>
         <file>TabItem.qml</file>
         <file>MapViewController.qml</file>
+        <file>Resources/plane.mesh</file>
     </qresource>
 </RCC>

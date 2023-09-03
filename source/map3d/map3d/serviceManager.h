@@ -23,7 +23,7 @@ public:
     ServiceManager(MapItem *mapItem, QObject *parent = nullptr);
 
     void initLayers(QJsonDocument *layersJson);
-    void addFlyableModel(QJsonDocument *flyable, int layerId);
+    void addFlyableModel(QJsonDocument *flyable);
     void addMovableModel(QJsonDocument *movable);
     void addModel(QJsonDocument *model);
 

@@ -16,17 +16,16 @@ void ServiceManager::initLayers(QJsonDocument *layersJson)
         parseLayersFromJson(it.toObject());
 }
 
-void ServiceManager::addFlyableModel(QJsonDocument *flyable, int layerId)
+void ServiceManager::addFlyableModel(QJsonDocument *flyable)
 {
     QJsonObject data = flyable->object();
     double x = data.value("x").toDouble();
     double y = data.value("y").toDouble();
     double z = data.value("z").toDouble();
-    osgEarth::GeoPoint geopos(mMapItem->screenToGeoPoint(600, 300));
-    geopos.z() = 0;
-    ServiseModel *model = new ServiseModel(data.value("modelUrl2D").toString().toStdString(),data.value("modelUrl3D").toString().toStdString()
-                                           , data.value("iconUrl").toString().toStdString(), geopos);
-    emit flyableAdded(model, layers[layerId].get());
+//    osgEarth::GeoPoint geopos()
+//    ServiseModel *model = new ServiseModel(data.value("modelUrl2D").toString().toStdString(),data.value("modelUrl3D").toString().toStdString()
+//                                           , data.value("iconUrl").toString().toStdString(), geopos);
+//    emit flyableAdded(model, layers[layerId].get());
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent)
