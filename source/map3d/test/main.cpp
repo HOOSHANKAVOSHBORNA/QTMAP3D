@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include "layerTest.h"
 #include "networkManager.h"
 #include "modelNodeTest.h"
 
@@ -10,7 +11,8 @@ int main(int argc, char *argv[])
 //    QObject::connect(&networkManager, &NetworkManager::flyableQueueDeclared,[&networkManager]{
 //        networkManager.sendFlyableData("data");
 //    });
-    ModelNodeTest modelNodeTest(&networkManager);
+    LayerTest LayerTest(&networkManager);
+//    ModelNodeTest modelNodeTest(&networkManager);
 
     networkManager.start();
 
