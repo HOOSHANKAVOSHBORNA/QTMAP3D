@@ -57,9 +57,9 @@ int main(int argc, char *argv[])
 //    }
 //    mainWindow.show();
     NetworkManager networkManager;
-    QObject::connect(&networkManager, &NetworkManager::ready,[&networkManager]{
-        networkManager.sendData();
-    });
+//    QObject::connect(&networkManager, &NetworkManager::ready,[&networkManager]{
+//        networkManager.sendData();
+//    });
     networkManager.start();
     return app.exec();
 }

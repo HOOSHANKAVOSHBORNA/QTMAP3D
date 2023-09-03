@@ -4,6 +4,7 @@
 #include <QColor>
 #include <QRandomGenerator>
 #include <QTimer>
+#include <QJsonArray>
 
 ModelNodeTest::ModelNodeTest(NetworkManager *networkManager):
     mNetworkManager(networkManager)
@@ -14,8 +15,9 @@ ModelNodeTest::ModelNodeTest(NetworkManager *networkManager):
     QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
         createFlyableInfo();
         updateFlyableInfo();
-        for(auto& jsonDocument: mFlyableDataList)
-        mNetworkManager->sendFlyableData(jsonDocument.toJson(QJsonDocument::Compact));
+        if(mFlyableQueueDeclared)
+            for(auto& jsonDocument: mFlyableDataList)
+                mNetworkManager->sendFlyableData(jsonDocument.toJson(QJsonDocument::Compact));
     });
     timerUpdateAircraft->start(1000);
 }
@@ -32,6 +34,7 @@ void ModelNodeTest::createFlyableInfo()
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
     double altitude = (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));
     double heading = (0 + (QRandomGenerator::global()->generate() % 361));
+    double speed = (100 + (QRandomGenerator::global()->generate() % (300-100)));
     //--------------------------------------------------------
     QJsonDocument jsonDocument;
     QJsonObject jsonObject;
@@ -45,7 +48,15 @@ void ModelNodeTest::createFlyableInfo()
     jsonObject.insert("Latitude", latitude);
     jsonObject.insert("Altitude", altitude);
     jsonObject.insert("Heading", heading);
-    jsonObject.insert("Speed", 200);
+    jsonObject.insert("Speed", speed);
+
+    QJsonArray layer;
+    layer.push_back(102);
+    if(speed < 200)
+        layer.push_back(103);
+    else
+        layer.push_back(104);
+    jsonObject.insert("LayersId", layer);
 
     jsonDocument.setObject(jsonObject);
     mFlyableDataList.append(jsonDocument);
