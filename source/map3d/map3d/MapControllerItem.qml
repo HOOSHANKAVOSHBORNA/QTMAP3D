@@ -214,18 +214,20 @@ MapController {
             anchors.bottomMargin: 10
 
             headingAngle:  map.compassDirection.x
-
-            onCompassDirectionChanged: function () {
-                if (-90 < map.compassDirection.x && map.compassDirection.x < 90) {
-                    pitchAngle = map.compassDirection.y
-                } else {
-                    pitchAngle = -map.compassDirection.y
-                }
-            }
+            pitchAngle: map.compassDirection.y+90
+//            pitchAngle: 90
+//            onCompassDirectionChanged: function () {
+//                if (-90 < map.compassDirection.x && map.compassDirection.x < 90) {
+//                    pitchAngle = map.compassDirection.y
+//                } else {
+//                    pitchAngle = -map.compassDirection.y
+//                }
+//                headingAngle = map.compassDirection.x
+//            }
 
             onCompassClicked: function() {
-                console.log("x: " + map.compassDirection.x + ", y: " + map.compassDirection.y)
-
+                console.log("headingAngle: " + map.compassDirection.x + ", pitch: " + map.compassDirection.y)
+print(Screen.desktopAvailableHeight )
                 //                map.setHeadingToNorth();
             }
         }

@@ -4,8 +4,6 @@
 #include <QObject>
 
 #include "qamqpclient.h"
-#include "qamqpexchange.h"
-#include "qamqpqueue.h"
 
 class NetworkManager: public QObject
 {
@@ -13,6 +11,7 @@ class NetworkManager: public QObject
 public:
     NetworkManager(QObject *parent = nullptr);
     void sendFlyableData(const QString &data);
+    void sendLayerData(const QString &data);
 
     void start();
 private slots:
@@ -20,6 +19,7 @@ private slots:
     void clientError(QAMQP::Error error);
 signals:
     void flyableQueueDeclared();
+    void layerQueueDeclared();
 private:
     QAmqpClient mClient;
 };
