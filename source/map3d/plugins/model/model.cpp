@@ -35,7 +35,7 @@ bool Model::setup()
     mIs3D = mapItem()->getMode();
 
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-    connect(serviceManager(), &ServiceManager::addFlyableModel, this, &Model::addFlyableFromService);
+//    connect(serviceManager(), &ServiceManager::addFlyableModel, this, &Model::addFlyableFromService);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);

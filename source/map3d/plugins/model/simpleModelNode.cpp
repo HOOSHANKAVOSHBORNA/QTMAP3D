@@ -34,8 +34,8 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     //mat->setColorMode(osg::Material::AMBIENT);
     //getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
-    mHighlight = new osgFX::Scribe;
-    mHighlight->setWireframeColor(osg::Vec4f(1,0,0,1));
+//    mHighlight = new osgFX::Scribe;
+//    mHighlight->setWireframeColor(osg::Vec4f(1,0,0,1));
     //osgEarth::Registry::shaderGenerator().run(mOutline);
 //    mOutline->setWidth(10);
 //    osg::ref_ptr<osg::StateSet> vOutlineState = mOutline->getOrCreateStateSet();

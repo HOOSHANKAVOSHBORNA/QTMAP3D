@@ -9,9 +9,11 @@ ServiceManager::ServiceManager(QObject *parent): QObject(parent)
 
 }
 
-void ServiceManager::initLayers(QJsonDocument *layersJson)
+void ServiceManager::initLayers(QString layersStr)
 {
-    QJsonObject data = layersJson->object();
+    QJsonDocument doc = QJsonDocument::fromJson(layersStr.toUtf8());
+
+    QJsonObject data = doc.object();
     for (auto it : data)
         parseLayersFromJson(it.toObject());
 }
@@ -32,26 +34,20 @@ void ServiceManager::addFlyableModel(QJsonDocument *flyable)
 
 void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent)
 {
-//    if (obj.value("childs").toArray().size() > 0){
-//        osg::ref_ptr<CompositeAnnotationLayer> comp = new CompositeAnnotationLayer();
-//        comp->setName(obj.value("text").toString().toStdString());
-//        mMapItem->getMapObject()->addLayer(comp);
-//        unsigned int order = obj.value("order").toInt();
-//        if (parent)
-//            parent->insertLayer(comp, order);
-//        layers[obj.value("id").toInt()] = comp;
-//        for (auto it: obj.value("childs").toArray()) {
-//            parseLayersFromJson(it.toObject(), comp);
-//        }
-//    }
-//    else {
-//        osg::ref_ptr<ParenticAnnotationLayer> parentic = new ParenticAnnotationLayer();
-//        parentic->setName(obj.value("text").toString().toStdString());
-//        unsigned int order = obj.value("order").toInt();
-//        if (parent)
-//            parent->insertLayer(parentic, order);
-//        layers[obj.value("id").toInt()] = parentic;
-//        return;
-//    }
+    if (obj.value("Children").toArray().size() > 0){
+        CompositeAnnotationLayer* comp = new CompositeAnnotationLayer();
+        comp->setName(obj.value("Text").toString().toStdString());
+        emit layerAdded(comp, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
+
+        for (auto it: obj.value("Children").toArray()) {
+            parseLayersFromJson(it.toObject(), comp);
+        }
+    }
+    else {
+        osg::ref_ptr<ParenticAnnotationLayer> parentic = new ParenticAnnotationLayer();
+        parentic->setName(obj.value("Text").toString().toStdString());
+        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
+        return;
+    }
 }
 

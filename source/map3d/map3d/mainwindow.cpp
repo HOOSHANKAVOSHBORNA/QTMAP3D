@@ -52,10 +52,6 @@ UIHandle *MainWindow::uiHandle() const
     return mUIHandle;
 }
 
-ServiceManager *MainWindow::serviceManager() const
-{
-    return mServiceManager;
-}
 
 void MainWindow::addToCenterCenterContainer(QQuickItem *item)
 {
@@ -135,7 +131,6 @@ void MainWindow::setMapItem(MapItem &mapItem)
 {
     mMapItem = &mapItem;
     mLayersModel = new LayersModel(mMapItem);
-    mServiceManager = new ServiceManager(mMapItem);
 }
 
 void MainWindow::addToLeftContainer(QQuickItem *item, QString title)

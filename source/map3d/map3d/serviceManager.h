@@ -33,6 +33,12 @@ struct  ServiceFlyableModel: public ServiceMovableModel
 };
 
 struct ServiceLayer {
+    int id;
+    int parentId;
+    std::string text;
+    int order;
+    bool parentic;
+    ServiceLayer(int id, int parent, std::string text, int order, bool parentic):id{id}, parentId{parent}, text{text}, order{order}, parentic{parentic} {}
 
 };
 
@@ -42,7 +48,7 @@ class ServiceManager: public QObject
 public:
     ServiceManager(QObject *parent = nullptr);
 
-    void initLayers(QJsonDocument *layersJson);
+    void initLayers(QString layersStr);
     void addFlyableModel(QJsonDocument *flyable);
     void addMovableModel(QJsonDocument *movable);
     void addModel(QJsonDocument *model);
@@ -53,9 +59,10 @@ public:
     void addPolyline(QJsonDocument *polyline);
 
 signals:
+    void layerAdded(ParenticAnnotationLayer *layer, int id, int parentId, int order);
 //    void flyableAdded(ServiseModel *model, ParenticAnnotationLayer* parentic);
 private:
-    void parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent=nullptr);
+    void parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent = nullptr);
 };
 
 #endif // DATAMANAGER_H

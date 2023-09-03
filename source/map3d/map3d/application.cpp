@@ -14,6 +14,7 @@
 #include "layerModel.h"
 #include "mapControllerItem.h"
 #include "mapItem.h"
+#include "networkManager.h"
 Application::Application() :
     mPluginManager(new PluginManager)
 {
@@ -161,35 +162,15 @@ void Application::onUICreated()
     mUIIsReady = true;
     mPluginManager->loadPlugins();
     setup();
-    //////////////////////
-//    QJsonObject layers;
-//    QJsonObject layer1;
 
-//    layer1.insert("id", 100);
-//    layer1.insert("parentId", 1);
-//    layer1.insert("text", "layer1");
-//    layer1.insert("order", 1);
-//    layer1.insert("type", "Aircraft");
+    ServiceManager *serviceManager = new ServiceManager;
+    connect(serviceManager, &ServiceManager::layerAdded, mMainWindow->getMapItem()->getMapObject(), &MapObject::addLayerFromService);
+    NetworkManager *networkManager = new NetworkManager(serviceManager);
+    //    QObject::connect(&networkManager, &NetworkManager::ready,[&networkManager]{
+    //        networkManager.sendData();
+    //    });
+    networkManager->start();
 
-//    QJsonArray childs;
-//    for (int i{0}; i < 8; ++i){
-//        QJsonObject child;
-//        child.insert("id", i);
-//        child.insert("parentId", i);
-//        child.insert("text", "layer1" + QString::number(i));
-//        child.insert("order", 0);
-//        child.insert("type", "Aircraft");
-//        childs.push_back(child);
-//    }
-//    layer1.insert("childs", childs);
-
-//    layers.insert("layer1", layer1);
-//    QJsonDocument doc;
-//    doc.setObject(layers);
-//    mMainWindow->serviceManager()->initLayers(&doc);
-
-
-    ///////////////////////////
     emit uiCreated();
 }
 

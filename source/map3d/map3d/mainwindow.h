@@ -45,7 +45,6 @@ public:
     LayersModel *layersModel() const;
     ToolboxProxyModel *toolbox() const;
     UIHandle *uiHandle() const;
-    ServiceManager *serviceManager() const;
 
 signals:
     void layersModelChanged();
@@ -78,7 +77,6 @@ private:
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
     ToolboxProxyModel *mToolbox = nullptr;
-    ServiceManager *mServiceManager = nullptr;
 };
 
 #endif // MainWindow_H
