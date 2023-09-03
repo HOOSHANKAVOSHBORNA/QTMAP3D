@@ -6,6 +6,8 @@
 #include "modelAutoScaler.h"
 #include <osgFX/Outline>
 #include <osgFX/Scribe>
+#include <circle.h>
+#include <cone.h>
 
 
 class MoveableModelNode;
@@ -28,21 +30,28 @@ public:
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
+    void selectModel(bool isSelected);
+
 private slots:
     void onModeChanged(bool is3DView);
 
 private:
     osg::ref_ptr<osg::Switch> mSwitchNode;
-    osg::ref_ptr<osgFX::Outline> mOutline;
-    osg::ref_ptr<osgFX::Scribe> mHighlight;
+//    osg::ref_ptr<osgFX::Scribe> mHighlight;
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<ModelAutoScaler> mScaler;
+    osg::ref_ptr<osg::Group> root;
+
+    osg::ref_ptr<Circle> mCircle;
+    osg::ref_ptr<Cone> mCone ;
+
 
     std::string mModelUrl;
     std::string mIconUrl;
     MapItem *mMapItem;
     bool mScalability{true};
+    bool mIsSelected{false};
 
 
 

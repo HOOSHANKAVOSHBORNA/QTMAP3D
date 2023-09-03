@@ -12,6 +12,7 @@
 #include <osg/Fog>
 #include "sphereNode.h"
 #include "circle.h"
+#include "cone.h"
 
 #define MODEL "Model"
 #define TREE "Tree"
@@ -81,6 +82,7 @@ private:
     Type mType;
     osg::ref_ptr<SphereNode> mSphere{nullptr};
     osg::ref_ptr<Circle> mCircle{nullptr};
+    osg::ref_ptr<Cone> mCone{nullptr};
     static int mCount;
     double mCurrentModelSize;
     bool mIs3D;

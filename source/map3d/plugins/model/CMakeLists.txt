@@ -32,11 +32,13 @@ target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawLine")
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawSphere")
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCircle")
+target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCone")
 
 target_link_libraries(model PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
 target_link_libraries(model PRIVATE drawLine)
 target_link_libraries(model PRIVATE drawSphere)
 target_link_libraries(model PRIVATE drawCircle)
+target_link_libraries(model PRIVATE drawCone)
 target_compile_definitions(model PRIVATE CPTEST_LIBRARY)
 
 add_custom_command(TARGET model POST_BUILD
