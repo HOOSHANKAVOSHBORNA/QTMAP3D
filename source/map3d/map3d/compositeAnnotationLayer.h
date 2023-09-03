@@ -22,7 +22,7 @@ public:
 class ParenticAnnotationLayer: public QObject, public osgEarth::Annotation::AnnotationLayer
 {
 public:
-    ParenticAnnotationLayer(QObject *parent = nullptr);
+    ParenticAnnotationLayer(QObject *parent = nullptr, int id = -1);
 
     CompositeAnnotationLayer *getParentAtIndex(unsigned index);
     unsigned getIndexOfparent(const ParenticAnnotationLayer* layer) const;
@@ -34,6 +34,7 @@ public:
     int getNumberOfNodes() const;
     void fireCallback(ParenticLayerCallback::MethodPtr, osgEarth::Annotation::AnnotationNode *node);
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() { return nullptr; }
+    virtual CompositeAnnotationLayer* asComposite(){return 0;}
 
 protected:
     virtual void addParent(CompositeAnnotationLayer* parent);
@@ -44,6 +45,7 @@ private:
     std::vector<osg::ref_ptr<CompositeAnnotationLayer>> mParents;
 //    osg::ref_ptr<osgEarth::Annotation::AnnotationNode> mNode;
     friend class CompositeAnnotationLayer;
+    int id;
 };
 
 class CompositeLayerCallback : public ParenticLayerCallback
@@ -78,19 +80,21 @@ public:
     void removeLayerByName(const QString& layerName);
     bool containsLayer( const ParenticAnnotationLayer* layer ) const;
     ParenticAnnotationLayer *getLayerByName(const QString& layerName);
+    ParenticAnnotationLayer *getLayerById(const int Id);
     void fireCallback(CompositeLayerCallback::MethodPtr, ParenticAnnotationLayer *layer);
 //    int getNumChildren() const;
-    inline ParenticAnnotationLayer* getChild(int i ) { return mChilds[i].get(); }
+    inline ParenticAnnotationLayer* getChild(int i ) { return mChildildren[i].get(); }
     //! Adds a property notification callback to this layer
     void addCallback(osgEarth::LayerCallback* cb);
 
     //! Removes a property notification callback from this layer
     void removeCallback(osgEarth::LayerCallback* cb);
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() override { return this; }
+    CompositeAnnotationLayer *asComposite() override {return this;}
 
 private:
     osg::ref_ptr<osg::Group> mRoot;
-    std::vector<osg::ref_ptr<ParenticAnnotationLayer>> mChilds;
+    std::vector<osg::ref_ptr<ParenticAnnotationLayer>> mChildildren;
 };
 
 

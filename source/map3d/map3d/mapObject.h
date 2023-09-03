@@ -5,6 +5,7 @@
 #include <QObject>
 #include <osgEarth/Map>
 #include "compositeAnnotationLayer.h"
+#include "serviceManager.h"
 
 namespace osgEarth {
 namespace Annotation {
@@ -52,7 +53,7 @@ class MapObject: public QObject, public osgEarth::Map
 public:
     MapObject(QObject *parent = nullptr);
     MapObject(const osgEarth::MapOptions& options, QObject *parent = nullptr);
-    bool addLayer(osgEarth::Layer* layer, osgEarth::Layer *parentLayer = nullptr);
+    bool addLayer(osgEarth::Layer* layer, osgEarth::Layer *parentLayer = nullptr, int id = -1);
     bool removeLayer(osgEarth::Layer* layer, osgEarth::Layer *parentLayer = nullptr);
 //    bool addNodeToLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
 //    bool removeNodeFromLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
@@ -61,6 +62,8 @@ public:
     void addCompositeCallback(osgEarth::Layer* layer, CompositeCallback* callback);
     void removeCompositeCallback(osgEarth::Layer* layer);
     CompositeCallback* getCompositeCallback(osgEarth::Layer* layer);
+    void initLayers(ServiceLayer *layer);
+    ParenticAnnotationLayer *getLayerById(int id);
 signals:
     void layerAdded(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
     void layerRemoved(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
@@ -74,6 +77,7 @@ signals:
 
 private:
     QMap<osgEarth::Layer*, CompositeCallback*> mCompositeCallbacks;
+    std::map<int, ParenticAnnotationLayer*> mParenticLayers;
 };
 
 #endif // CUSTOMMAP_H

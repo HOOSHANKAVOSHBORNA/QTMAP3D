@@ -104,12 +104,14 @@ MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):
     addMapCallback(new MainMapCallback(this));
 }
 
-bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
+bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer, int id)
 {
     if (!layer)
         return false;
     CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
     if (compositeLayer){
+//        if(id != -1)
+//            mCompositeLayers[id] = compositeLayer;
         auto compositCallback = new CompositeCallback(this);
         mCompositeCallbacks[layer] = compositCallback;
         compositeLayer->addCallback(compositCallback);

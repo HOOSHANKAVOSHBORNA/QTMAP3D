@@ -2,6 +2,7 @@
 #include "mapItem.h"
 #include "MoveableModelNode.h"
 #include "flyableModelNode.h"
+#include "qjsonobject.h"
 #include "serviceManager.h"
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
@@ -34,7 +35,7 @@ bool Model::setup()
     mIs3D = mapItem()->getMode();
 
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-    connect(serviceManager(), &ServiceManager::flyableAdded, this, &Model::addFlyable);
+    connect(serviceManager(), &ServiceManager::addFlyableModel, this, &Model::addFlyableFromService);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -270,20 +271,18 @@ void Model::onModeChanged(bool is3DView)
 }
 
 
-
-void Model::addFlyable(ServiseModel *model, ParenticAnnotationLayer *layer)
+void Model::addFlyableFromService(QJsonDocument *json)
 {
-    QString name = "Airplane88";
-    FlyableModelNode *fmodel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
-//    fmodel->setUserData()
-    fmodel->setName(name.toStdString());
-    fmodel->setPosition(model->position);
-    qDebug() << model->position.toString();
-    layer->addChild(fmodel);
-//    fmodel->setScalability(false);
-    confirm();
-
-
+    QJsonObject model = json->object();
+    FlyableModelNode *fmodel = new FlyableModelNode(mapItem(),model.value("Url2d").toString().toStdString(), model.value("Url3d").toString().toStdString());
+    fmodel->setName(model.value("Name").toString().toStdString());
+    double x{model.value("Longitude").toDouble()};
+    double y{model.value("Latitude").toDouble()};
+    double z{model.value("Altitude").toDouble()};
+    osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), x, y, z);
+    fmodel->setPosition(geopos);
+//    fmodel.setHeading
+    fmodel->setSpeed(model.value("Heading").toDouble());
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
