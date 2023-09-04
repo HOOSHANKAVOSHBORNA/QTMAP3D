@@ -110,6 +110,7 @@ bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer, i
         return false;
     CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
     if (compositeLayer){
+        mParenticLayers[id] = compositeLayer;
 //        if(id != -1)
 //            mCompositeLayers[id] = compositeLayer;
         auto compositCallback = new CompositeCallback(this);
@@ -231,22 +232,3 @@ CompositeCallback *MapObject::getCompositeCallback(osgEarth::Layer *layer)
 {
     return mCompositeCallbacks[layer];
 }
-
-void MapObject::addLayerFromService(ParenticAnnotationLayer *layer, int id, int parentId, int order)
-{
-    mParenticLayers[id] = layer;
-    if (parentId == 0){
-        addLayer(layer);
-        return;
-    }
-    for (auto &l : mParenticLayers){
-        if (!l.second->asComposite()){
-            ParenticAnnotationLayer *c = l.second->asComposite()->getLayerById(parentId);
-            if (c->asComposite()){
-                c->asComposite()->insertLayer(layer, order);
-                return;
-            }
-        }
-    }
-}
-

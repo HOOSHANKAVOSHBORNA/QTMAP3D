@@ -153,8 +153,6 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 
 //        emit listWindowCreated();
     }
-
-
 }
 
 void Application::onUICreated()
@@ -164,7 +162,9 @@ void Application::onUICreated()
     setup();
 
     ServiceManager *serviceManager = new ServiceManager;
-    connect(serviceManager, &ServiceManager::layerAdded, mMainWindow->getMapItem()->getMapObject(), &MapObject::addLayerFromService);
+    connect(serviceManager, &ServiceManager::layerAdded, [&](CompositeAnnotationLayer *layer, int id){
+            mMainWindow->getMapItem()->getMapObject()->addLayer(layer, nullptr, id);
+        });
     NetworkManager *networkManager = new NetworkManager(serviceManager);
     //    QObject::connect(&networkManager, &NetworkManager::ready,[&networkManager]{
     //        networkManager.sendData();

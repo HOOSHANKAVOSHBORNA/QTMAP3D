@@ -89,6 +89,11 @@ void ParenticAnnotationLayer::insertParent(CompositeAnnotationLayer *parent, uns
         mParents.insert(mParents.begin() + index, parent);
 }
 
+void ParenticAnnotationLayer::setOrder(int newOrder)
+{
+    order = newOrder;
+}
+
 CompositeAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int index)
 {
     if (index >= getNumParents())
@@ -96,8 +101,8 @@ CompositeAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int
     return mParents[index].get();
 }
 
-CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent):
-    ParenticAnnotationLayer(parent)
+CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent, int id):
+    ParenticAnnotationLayer(parent, id)
 {
     init();
 }
@@ -172,6 +177,9 @@ void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsig
     for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
         layer->addCallback(it->get());
     }
+    std::sort(mChildildren.begin(), mChildildren.end(), [this](const ParenticAnnotationLayer* p1, const ParenticAnnotationLayer* p2){
+        return p1->order < p2->order;
+    });
 
     fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
 }
@@ -264,15 +272,15 @@ ParenticAnnotationLayer *CompositeAnnotationLayer::getLayerByName(const QString 
 
 ParenticAnnotationLayer *CompositeAnnotationLayer::getLayerById(const int Id)
 {
-    if (!asComposite()){
-        if (id == Id)
-            return this;
-        return 0;
-    }
     if(id == Id)
         return this;
+    if (!asCompositeAnnotationLayer()){
+        return 0;
+    }
     for (auto &layer: mChildildren){
-        return getLayerById(layer->id);
+        auto l = layer->asCompositeAnnotationLayer();
+        if (l)
+            return l->getLayerById(Id);
     }
     return 0;
 }

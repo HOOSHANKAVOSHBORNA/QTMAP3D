@@ -59,7 +59,7 @@ public:
     void addPolyline(QJsonDocument *polyline);
 
 signals:
-    void layerAdded(ParenticAnnotationLayer *layer, int id, int parentId, int order);
+    void layerAdded(CompositeAnnotationLayer *layer, int id);
 //    void flyableAdded(ServiseModel *model, ParenticAnnotationLayer* parentic);
 private:
     void parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent = nullptr);

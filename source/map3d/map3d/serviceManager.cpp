@@ -35,18 +35,24 @@ void ServiceManager::addFlyableModel(QJsonDocument *flyable)
 void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent)
 {
     if (obj.value("Children").toArray().size() > 0){
-        CompositeAnnotationLayer* comp = new CompositeAnnotationLayer();
+        CompositeAnnotationLayer* comp = new CompositeAnnotationLayer(nullptr, obj.value("Id").toInt());
         comp->setName(obj.value("Text").toString().toStdString());
-        emit layerAdded(comp, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
+        comp->setOrder(obj.value("Order").toInt());
+        if (parent){
+            parent->addLayer(comp);
+        }
+        else
+            emit layerAdded(comp, obj.value("Id").toInt());
 
         for (auto it: obj.value("Children").toArray()) {
             parseLayersFromJson(it.toObject(), comp);
         }
     }
     else {
-        osg::ref_ptr<ParenticAnnotationLayer> parentic = new ParenticAnnotationLayer();
+        ParenticAnnotationLayer* parentic = new ParenticAnnotationLayer(nullptr, obj.value("Id").toInt());
         parentic->setName(obj.value("Text").toString().toStdString());
-        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
+        parent->addLayer(parentic);
+//        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
         return;
     }
 }

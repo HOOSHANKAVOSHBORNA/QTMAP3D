@@ -34,7 +34,8 @@ public:
     int getNumberOfNodes() const;
     void fireCallback(ParenticLayerCallback::MethodPtr, osgEarth::Annotation::AnnotationNode *node);
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() { return nullptr; }
-    virtual CompositeAnnotationLayer* asComposite(){return 0;}
+
+    void setOrder(int newOrder);
 
 protected:
     virtual void addParent(CompositeAnnotationLayer* parent);
@@ -46,6 +47,7 @@ private:
 //    osg::ref_ptr<osgEarth::Annotation::AnnotationNode> mNode;
     friend class CompositeAnnotationLayer;
     int id;
+    int order{-1};
 };
 
 class CompositeLayerCallback : public ParenticLayerCallback
@@ -62,7 +64,7 @@ class CompositeAnnotationLayer: public ParenticAnnotationLayer
 {
     Q_OBJECT
 public:
-    CompositeAnnotationLayer(QObject *parent = nullptr);
+    CompositeAnnotationLayer(QObject *parent = nullptr, int id = -1);
 
     virtual osg::Node* getNode() const override;
     virtual void init() override;
@@ -90,7 +92,6 @@ public:
     //! Removes a property notification callback from this layer
     void removeCallback(osgEarth::LayerCallback* cb);
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() override { return this; }
-    CompositeAnnotationLayer *asComposite() override {return this;}
 
 private:
     osg::ref_ptr<osg::Group> mRoot;
