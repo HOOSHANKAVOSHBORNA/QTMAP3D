@@ -22,7 +22,7 @@ public:
 class ParenticAnnotationLayer: public QObject, public osgEarth::Annotation::AnnotationLayer
 {
 public:
-    ParenticAnnotationLayer(QObject *parent = nullptr, int id = -1);
+    ParenticAnnotationLayer(int id = -1, QObject *parent = nullptr);
 
     CompositeAnnotationLayer *getParentAtIndex(unsigned index);
     unsigned getIndexOfparent(const ParenticAnnotationLayer* layer) const;
@@ -37,6 +37,8 @@ public:
 
     void setOrder(int newOrder);
 
+    int userId() const;
+
 protected:
     virtual void addParent(CompositeAnnotationLayer* parent);
     virtual void removeParent(CompositeAnnotationLayer* parent);
@@ -46,8 +48,8 @@ private:
     std::vector<osg::ref_ptr<CompositeAnnotationLayer>> mParents;
 //    osg::ref_ptr<osgEarth::Annotation::AnnotationNode> mNode;
     friend class CompositeAnnotationLayer;
-    int id;
-    int order{-1};
+    int mUserId;
+    int mOrder{-1};
 };
 
 class CompositeLayerCallback : public ParenticLayerCallback
@@ -64,7 +66,7 @@ class CompositeAnnotationLayer: public ParenticAnnotationLayer
 {
     Q_OBJECT
 public:
-    CompositeAnnotationLayer(QObject *parent = nullptr, int id = -1);
+    CompositeAnnotationLayer(int id = -1, QObject *parent = nullptr);
 
     virtual osg::Node* getNode() const override;
     virtual void init() override;
@@ -82,7 +84,7 @@ public:
     void removeLayerByName(const QString& layerName);
     bool containsLayer( const ParenticAnnotationLayer* layer ) const;
     ParenticAnnotationLayer *getLayerByName(const QString& layerName);
-    ParenticAnnotationLayer *getLayerById(const int Id);
+    ParenticAnnotationLayer *getHierarchicalLayerByUserId(int userId);
     void fireCallback(CompositeLayerCallback::MethodPtr, ParenticAnnotationLayer *layer);
 //    int getNumChildren() const;
     inline ParenticAnnotationLayer* getChild(int i ) { return mChildildren[i].get(); }

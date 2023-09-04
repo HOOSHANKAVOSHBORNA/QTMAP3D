@@ -35,21 +35,21 @@ void ServiceManager::addFlyableModel(QJsonDocument *flyable)
 void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent)
 {
     if (obj.value("Children").toArray().size() > 0){
-        CompositeAnnotationLayer* comp = new CompositeAnnotationLayer(nullptr, obj.value("Id").toInt());
+        CompositeAnnotationLayer* comp = new CompositeAnnotationLayer(obj.value("Id").toInt());
         comp->setName(obj.value("Text").toString().toStdString());
         comp->setOrder(obj.value("Order").toInt());
         if (parent){
             parent->addLayer(comp);
         }
         else
-            emit layerAdded(comp, obj.value("Id").toInt());
+            emit layerAdded(comp);
 
         for (auto it: obj.value("Children").toArray()) {
             parseLayersFromJson(it.toObject(), comp);
         }
     }
     else {
-        ParenticAnnotationLayer* parentic = new ParenticAnnotationLayer(nullptr, obj.value("Id").toInt());
+        ParenticAnnotationLayer* parentic = new ParenticAnnotationLayer(obj.value("Id").toInt());
         parentic->setName(obj.value("Text").toString().toStdString());
         parent->addLayer(parentic);
 //        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());

@@ -1,8 +1,9 @@
 #include "compositeAnnotationLayer.h"
 
-ParenticAnnotationLayer::ParenticAnnotationLayer(QObject *parent, int id):
-    osgEarth::Annotation::AnnotationLayer(), id(id),
-    QObject(parent)
+ParenticAnnotationLayer::ParenticAnnotationLayer(int id, QObject *parent):
+    osgEarth::Annotation::AnnotationLayer(),
+    QObject(parent),
+    mUserId(id)
 {
     init();
 }
@@ -89,9 +90,14 @@ void ParenticAnnotationLayer::insertParent(CompositeAnnotationLayer *parent, uns
         mParents.insert(mParents.begin() + index, parent);
 }
 
+int ParenticAnnotationLayer::userId() const
+{
+    return mUserId;
+}
+
 void ParenticAnnotationLayer::setOrder(int newOrder)
 {
-    order = newOrder;
+    mOrder = newOrder;
 }
 
 CompositeAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int index)
@@ -101,8 +107,8 @@ CompositeAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int
     return mParents[index].get();
 }
 
-CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent, int id):
-    ParenticAnnotationLayer(parent, id)
+CompositeAnnotationLayer::CompositeAnnotationLayer(int id, QObject *parent):
+    ParenticAnnotationLayer(id, parent)
 {
     init();
 }
@@ -178,7 +184,7 @@ void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsig
         layer->addCallback(it->get());
     }
     std::sort(mChildildren.begin(), mChildildren.end(), [this](const ParenticAnnotationLayer* p1, const ParenticAnnotationLayer* p2){
-        return p1->order < p2->order;
+        return p1->mOrder < p2->mOrder;
     });
 
     fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
@@ -270,19 +276,16 @@ ParenticAnnotationLayer *CompositeAnnotationLayer::getLayerByName(const QString 
     return *it;
 }
 
-ParenticAnnotationLayer *CompositeAnnotationLayer::getLayerById(const int Id)
+ParenticAnnotationLayer *CompositeAnnotationLayer::getHierarchicalLayerByUserId(int userId)
 {
-    if(id == Id)
-        return this;
-    if (!asCompositeAnnotationLayer()){
-        return 0;
-    }
     for (auto &layer: mChildildren){
+        if(layer->userId() == userId)
+            return layer;
         auto l = layer->asCompositeAnnotationLayer();
         if (l)
-            return l->getLayerById(Id);
+            return l->getHierarchicalLayerByUserId(userId);
     }
-    return 0;
+    return nullptr;
 }
 
 void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr method, ParenticAnnotationLayer *layer)

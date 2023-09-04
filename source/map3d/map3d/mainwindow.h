@@ -7,11 +7,10 @@
 #include <QTime>
 #include <QPoint>
 
-#include "pluginmanager.h"
 #include "layerModel.h"
 #include "mapItem.h"
+#include "qqmlapplicationengine.h"
 #include "toolbox.h"
-#include "serviceManager.h"
 
 class PluginInfo;
 class PluginInterface;
@@ -41,24 +40,12 @@ public:
 public:
     MainWindow(QWindow *parent = nullptr);
     ~MainWindow();
-
+    void initComponent();
     LayersModel *layersModel() const;
     ToolboxProxyModel *toolbox() const;
     UIHandle *uiHandle() const;
-
-signals:
-    void layersModelChanged();
-    void toolboxChanged();
-
-public slots:
-    void showListWindow();
-
-    void setLayersModel(LayersModel *layersModel);
-    void setToolbox(ToolboxProxyModel* toolbox);
-public:
     MapItem* getMapItem();
-    void setMapItem(MapItem& mapItem);
-
+public:
     void addToLeftContainer(QQuickItem *item, QString title);
     void addToRightContainer(QQuickItem *item, QString title);
     void addToCenterCenterContainer(QQuickItem *item);
@@ -66,7 +53,14 @@ public:
     void removeFromLeftContainer(QQuickItem *item);
 
 public slots:
+    void showListWindow();
+    void setLayersModel(LayersModel *layersModel);
+    void setToolbox(ToolboxProxyModel* toolbox);
     void setListWindow(ListWindow *listWindow);
+
+signals:
+    void layersModelChanged();
+    void toolboxChanged();
 
 protected:
     bool event(QEvent *ev) override;

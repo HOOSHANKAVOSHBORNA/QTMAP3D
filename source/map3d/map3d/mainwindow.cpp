@@ -13,13 +13,22 @@
 #include "plugininterface.h"
 #include "mapItem.h"
 #include "listwindow.h"
+#include "qqmlcontext.h"
+#include "mapControllerItem.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
+
 MainWindow::MainWindow(QWindow *parent) :
     QQuickWindow(parent)
 {
+    qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
+    qmlRegisterType<MapItem>("Crystal",1,0,"MapItem");
+    qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
+
+    qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
+    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
 
     setColor(Qt::black);
     mToolbox = new ToolboxProxyModel();
@@ -34,6 +43,27 @@ MainWindow::~MainWindow()
 {
     //    cleanup();
     //    mMapItem->deleteLater();
+}
+
+void MainWindow::initComponent()
+{
+    QQmlEngine *engine = qmlContext(this)->engine();
+    QQmlComponent* comp = new QQmlComponent(engine);
+    connect(comp, &QQmlComponent::statusChanged,[&](QQmlComponent::Status status){
+        if(status == QQmlComponent::Error){
+            qDebug()<<"Can not load MapControllerItem: "<<comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready){
+            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+            mMapItem = static_cast<MapItem*>(item);
+            addToCenterCenterContainer(mMapItem);
+
+            mLayersModel = new LayersModel(mMapItem);
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
+
 }
 
 
@@ -98,39 +128,9 @@ void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
     emit toolboxChanged();
 }
 
-//void MainWindow::onTestClicked()
-//{
-
-//    QJsonDocument jsonDocc;
-//    QJsonObject node1;
-//    QJsonArray nodeParents;
-//    nodeParents.push_back(100);
-//    nodeParents.push_back(101);
-//    nodeParents.push_back(102);
-//    node1.insert("layers", nodeParents);
-//    node1.insert("Latitude", 1000);
-//    node1.insert("Longitude", 1000);
-//    node1.insert("Altitude", 1000);
-//    node1.insert("Heading", 1000);
-//    node1.insert("Speed", 1000);
-//    node1.insert("TN", 1000);
-//    node1.insert("ModelLocation2d", "pwd");
-//    node1.insert("ModelLocation3d", "pwd");
-//    node1.insert("x", 51.3347);
-//    node1.insert("y", 35.7219);
-//    node1.insert("z", 0);
-//    serviceManager()->addFlyableModel(&jsonDocc, 1);
-//}
-
 MapItem *MainWindow::getMapItem()
 {
     return mMapItem;
-}
-
-void MainWindow::setMapItem(MapItem &mapItem)
-{
-    mMapItem = &mapItem;
-    mLayersModel = new LayersModel(mMapItem);
 }
 
 void MainWindow::addToLeftContainer(QQuickItem *item, QString title)
