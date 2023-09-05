@@ -6,6 +6,7 @@ QtObject {
     readonly property int       padding:        20
     readonly property int       marginSize:     15
     readonly property int       _iconSize:      24
+    readonly property int       containeSize:   40
     readonly property color     tiltleColor:    "white"
     readonly property int       titleFontSize:  24
     readonly property string    fontFamily:     "Srouce Sans Pro"
@@ -41,6 +42,23 @@ QtObject {
     readonly property color     _mainBlue:      "#06AED4"
     readonly property color     _mainYellow:    "#F79009"
     readonly property color     _persianGreen:  "#15B79E"
+
+    //--------  UI Desired Color Added   ---------//
+
+    readonly property color     uiWhite:        "#DEE3E6"
+    readonly property color     uiHover:        "#01AED6"
+    readonly property color     uiBlue :        "#003569"
+
+
+    //-------   UI Desired Size Added    ---------//
+
+    readonly property int uiContainerSize      : 40/1.3
+    readonly property int uiSecondContainerSize: 65
+    readonly property int uiBtnIconSize        : 26 / 1.3
+
+
+
+
 }
 
 

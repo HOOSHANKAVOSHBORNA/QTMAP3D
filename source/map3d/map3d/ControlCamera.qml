@@ -1,137 +1,123 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.13
+import QtQuick
+import QtQuick.Controls
 import QtQuick.Effects
+import "style"
 
 Rectangle {
-    property url buttonIcon: "qrc:/Resources/arrow.png"
-    property url centerIcon: "qrc:/Resources/hand.png"
-    signal itemClicked(string direction)
+    id:root
+    visible: true
+    width: Style.uiSecondContainerSize
+    height: Style.uiSecondContainerSize
     color: "transparent"
-    id:sp
-    radius: sp.height/2
-    property bool upButtonPressed: btn_up.pressed
-    property bool downButtonPressed: btn_down.pressed
-    property bool leftButtonPressed: btn_left.pressed
-    property bool rightButtonPressed: btn_right.pressed
-    readonly property int       _iconSize   : 24
-    readonly property int       _margin     : 15
-    readonly property int       _radius     : 10
-    readonly property color     _colorRec   : "#404040"
-    readonly property color     _colorHover : "#FFCC00"
-    readonly property color     _colorPresed : "#908000"
-    readonly property color     _colorIcon  : "#FFFFFF"
-    readonly property color     _colorButton: "#55FFFFFF"
-    readonly property string    _fontFamily : "Srouce Sans Pro"
-    readonly property int       _fontPointSize : 11
-    readonly property color     itemColor: "#404040"
-    readonly property real      widgetsMargins: 10
+    property double requestToMoveX: (containerCircle.width/2 - draggableCircle.x-12.5)
+    property double requestToMoveY: -(containerCircle.height/2 -draggableCircle.y-12.5)
 
-    Rectangle{
-        anchors.fill: parent
-        color:"white"
-        opacity: 0.7
-        radius: sp.height/2
+    property variant requstXY: Qt.vector2d(requestToMoveX,requestToMoveY)
 
-    } 
+    property url centerIcon: "qrc:/Resources/hand.png"
 
-    Image {
-        id: center
-        source: centerIcon
+    property double _circleRadiusDiffrential : containerCircle.width/2 - draggableCircle.width /2
+
+    Rectangle {
+        id: containerCircle
+        width: Style.uiSecondContainerSize
+        height: Style.uiSecondContainerSize
+        color:Style.uiWhite
+        radius: width / 2
         anchors.centerIn: parent
-        width: 17
-        height: 17
+        clip: true
+        opacity:0.9
+        Rectangle{
+            width:draggableCircle.width
+            height:draggableCircle.height
+            anchors.centerIn:parent
+            radius : height/2
+            opacity : 0.2
 
-    }
 
-//    MultiEffect{
-//        id: centerRecolor
-//        source: center
-//        anchors.fill: center
-//        colorization: 1
-//        colorizationColor: "#FFFFFF"
-//    }
+        gradient: Gradient {
+                    GradientStop { position: 0.0; color: "black" }
+                    GradientStop { position: 1.0; color: "white" }
+                }
 
-    Button {
-        id: btn_right
-        width: 30
-        height: 30
-        anchors.right: parent.right
-        anchors.rightMargin: -5
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: 0
-        display: AbstractButton.IconOnly
-        rotation: 180
-        icon.source : buttonIcon
-        icon.width : _iconSize
-        icon.height : _iconSize
-        icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                               (pressed ? _colorHover : "white");
-        background: Rectangle{
-            color:"transparent"
-            radius: _radius * 10
+}
+
+
+        Rectangle {
+            id: draggableCircle
+            width: Style._iconSize+1
+            height: Style._iconSize+1
+            radius: width / 2
+            color: Style.uiBlue
+            border.color: "black"
+            border.width: 0.2
+
+            clip: true
+            x: _circleRadiusDiffrential
+            y: _circleRadiusDiffrential
+            Component.onCompleted: function (){
+               dragArea.drag.minimumX = _circleRadiusDiffrential -Math.max(Math.sqrt(_circleRadiusDiffrential *_circleRadiusDiffrential -Math.pow(_circleRadiusDiffrential -draggableCircle.y,2)), _circleRadiusDiffrential )
+               dragArea.drag.maximumX = Math.min(Math.sqrt(_circleRadiusDiffrential*_circleRadiusDiffrential-Math.pow(_circleRadiusDiffrential -draggableCircle.y,2)))+_circleRadiusDiffrential
+               dragArea.drag.minimumY = _circleRadiusDiffrential -Math.max(Math.sqrt(_circleRadiusDiffrential*_circleRadiusDiffrential-Math.pow((_circleRadiusDiffrential -draggableCircle.x), 2)))
+               dragArea.drag.maximumY = Math.min(Math.sqrt(_circleRadiusDiffrential*_circleRadiusDiffrential-Math.pow((_circleRadiusDiffrential -draggableCircle.x), 2)))+_circleRadiusDiffrential
+            }
+
+            Button {
+                id: positive
+                anchors.centerIn: parent
+                icon.source : centerIcon
+                icon.width : Style._iconSize-8
+                icon.height :Style._iconSize-8
+                icon.color : Style.uiWhite
+                background:Rectangle {
+                    color:"transparent"
+                }
+            }
+            MouseArea {
+                id: dragArea
+                anchors.fill: parent
+                drag.target: parent
+
+                onReleased: {
+                    // Snap back to starting position
+                    draggableCircle.x = (containerCircle.width - draggableCircle.width) / 2
+                    draggableCircle.y = (containerCircle.height - draggableCircle.height) / 2
+                }
+
+            /*
+                this method can be implemented as well.
+                instead of using drag.<something> in component.oncompleted, you can use it here!
+                the functioning shall "not" be the same.
+
+            */
+
+
+
+//                drag.minimumX: _circleRadiusDiffrential -Math.max(Math.sqrt(_circleRadiusDiffrential *_circleRadiusDiffrential -Math.pow(_circleRadiusDiffrential -draggableCircle.y,2)), _circleRadiusDiffrential )
+//                drag.maximumX: Math.min(Math.sqrt(_circleRadiusDiffrential*_circleRadiusDiffrential-Math.pow(_circleRadiusDiffrential -draggableCircle.y,2)))+_circleRadiusDiffrential
+//                drag.minimumY: _circleRadiusDiffrential -Math.max(Math.sqrt(_circleRadiusDiffrential*_circleRadiusDiffrential-Math.pow((_circleRadiusDiffrential -draggableCircle.x), 2)))
+//                drag.maximumY: Math.min(Math.sqrt(_circleRadiusDiffrential*_circleRadiusDiffrential-Math.pow((_circleRadiusDiffrential -draggableCircle.x), 2)))+_circleRadiusDiffrential
+
+            }
         }
-    }
-
-    Button {
-        id: btn_up
-        width: 30
-        height: 30
-        anchors.top: parent.top
-        anchors.topMargin: -5
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: 0
-        anchors.leftMargin: 0
-        display: AbstractButton.IconOnly
-        rotation: 90
-        icon.source : buttonIcon
-        icon.width : _iconSize
-        icon.height : _iconSize
-        icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                               (pressed ? _colorHover : "white");
-        background: Rectangle{
-            color:"transparent"
-            radius: _radius * 10
+        MultiEffect {
+            source: draggableCircle
+            enabled: true
+            anchors.fill: draggableCircle
+            shadowColor: "black"
+            shadowEnabled: true
+            shadowBlur: 1
+            shadowHorizontalOffset: -1.5
+            shadowVerticalOffset:1
+            shadowOpacity:0.4
+            paddingRect: Qt.rect(0,0,20,20)
+            shadowScale: 0.98
         }
-    }
 
-    Button {
-        id: btn_left
-        width: 30
-        height: 30
-        anchors.left: parent.left
-        anchors.leftMargin: -5
-        anchors.rightMargin: 0
-        anchors.verticalCenter: parent.verticalCenter
-        display: AbstractButton.IconOnly
-        icon.source : buttonIcon
-        icon.width : _iconSize
-        icon.height : _iconSize
-        icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                               (pressed ? _colorHover : "white");
-        background: Rectangle{
-            color:"transparent"
-            radius: _radius * 10
-        }
-    }
-
-    Button {
-        id: btn_down
-        width: 30
-        height: 30
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: -5
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: 0
-        display: AbstractButton.IconOnly
-        rotation: -90
-        icon.source : buttonIcon
-        icon.width : _iconSize
-        icon.height : _iconSize
-        icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                               (pressed ? _colorHover : "white");
-        background: Rectangle{
-            color:"transparent"
-            radius: _radius * 10
-        }
     }
 }
+
+
+
+
+
