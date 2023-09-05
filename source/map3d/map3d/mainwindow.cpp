@@ -10,7 +10,6 @@
 #include <chrono>
 
 #include "mainwindow.h"
-#include "plugininterface.h"
 #include "mapItem.h"
 #include "listwindow.h"
 #include "qqmlcontext.h"
@@ -24,18 +23,16 @@ MainWindow::MainWindow(QWindow *parent) :
     QQuickWindow(parent)
 {
     qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
-    qmlRegisterType<MapItem>("Crystal",1,0,"MapItem");
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
-
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
-    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
+
 
     setColor(Qt::black);
     mToolbox = new ToolboxProxyModel();
     Toolbox *toolbox = new Toolbox(this);
     mToolbox->setSourceModel(toolbox);
 
-    mUIHandle = new UIHandle(this);
+//    mUIHandle = new UIHandle(this);
 }
 
 
@@ -77,12 +74,6 @@ ToolboxProxyModel *MainWindow::toolbox() const
     return mToolbox;
 }
 
-UIHandle *MainWindow::uiHandle() const
-{
-    return mUIHandle;
-}
-
-
 void MainWindow::addToCenterCenterContainer(QQuickItem *item)
 {
     QMetaObject::invokeMethod(this, "addToCenterCenterContainer",
@@ -114,19 +105,19 @@ void MainWindow::showListWindow()
     }
 }
 
-void MainWindow::setLayersModel(LayersModel *layersModel)
-{
-    if (mLayersModel != layersModel) {
-        mLayersModel = layersModel;
-        emit layersModelChanged();
-    }
-}
+//void MainWindow::setLayersModel(LayersModel *layersModel)
+//{
+//    if (mLayersModel != layersModel) {
+//        mLayersModel = layersModel;
+//        emit layersModelChanged();
+//    }
+//}
 
-void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
-{
-    mToolbox = toolbox;
-    emit toolboxChanged();
-}
+//void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
+//{
+//    mToolbox = toolbox;
+//    emit toolboxChanged();
+//}
 
 MapItem *MainWindow::getMapItem()
 {
@@ -152,7 +143,7 @@ void MainWindow::addToRightContainer(QQuickItem *item, QString title)
 void MainWindow::setListWindow(ListWindow *listWindow)
 {
     mListWindow = listWindow;
-    mUIHandle->setListWindow(listWindow);
+//    mUIHandle->setListWindow(listWindow);
 }
 
 bool MainWindow::event(QEvent *ev)

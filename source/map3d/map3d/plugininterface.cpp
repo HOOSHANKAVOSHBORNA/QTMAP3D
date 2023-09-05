@@ -8,13 +8,13 @@
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
 
-UIHandle::UIHandle(MainWindow *mainWindow, QObject *parent) : QObject(parent)
-{
-    mMainWindow = mainWindow;
-}
+//UIHandle::UIHandle(MainWindow *mainWindow, QObject *parent) : QObject(parent)
+//{
+//    mMainWindow = mainWindow;
+//}
 //-------------------------------------------------------------------------
 MapItem *PluginInterface::mMapItem;
-UIHandle *PluginInterface::mUiHandle;
+//UIHandle *PluginInterface::mUiHandle;
 DefenseDataManager *PluginInterface::mDefenseDataManager;
 QQmlEngine *PluginInterface::mQmlEngine;
 Toolbox *PluginInterface::mToolbox;
@@ -56,15 +56,15 @@ void PluginInterface::setQmlEngine(QQmlEngine *newQmlEngine)
     mQmlEngine = newQmlEngine;
 }
 
-UIHandle *PluginInterface::uiHandle() const
-{
-    return mUiHandle;
-}
+//UIHandle *PluginInterface::uiHandle() const
+//{
+//    return mUiHandle;
+//}
 
-void PluginInterface::setUiHandle(UIHandle *newUiHandle)
-{
-    mUiHandle = newUiHandle;
-}
+//void PluginInterface::setUiHandle(UIHandle *newUiHandle)
+//{
+//    mUiHandle = newUiHandle;
+//}
 
 MainWindow *PluginInterface::mainWindow() const
 {
@@ -149,72 +149,72 @@ void PluginInterface::setServiceManager(ServiceManager *newServiceManager)
     mServiceManager = newServiceManager;
 }
 
-void UIHandle::iwSetReceiverObject(QObject *receiverObject)
-{
-    mReceiverObject = receiverObject;
-}
+//void UIHandle::iwSetReceiverObject(QObject *receiverObject)
+//{
+//    mReceiverObject = receiverObject;
+//}
 
-void UIHandle::iwShow(QQuickItem* item, QString title)
-{
+//void UIHandle::iwShow(QQuickItem* item, QString title)
+//{
 
-    //    if (!mReceiverObject) return;
-    //    if (mReceiverObject != receiverObject) return;
+//    //    if (!mReceiverObject) return;
+//    //    if (mReceiverObject != receiverObject) return;
 
-    //    if (mMainWindow) {
-    //        bool bValidType = false;
-    //        QString itemTypeString = "";
-    //        switch (infoWidgetType) {
-    //        case UIHandle::InfoWidgetType::Airplane:
-    //            bValidType = true;
-    //            itemTypeString = "Airplane";
-    //            break;
-    //        case UIHandle::InfoWidgetType::Station:
-    //            bValidType = true;
-    //            itemTypeString = "Station";
-    //            break;
-    //        case UIHandle::InfoWidgetType::System:
-    //            bValidType = true;
-    //            itemTypeString = "System";
-    //            break;
-    //        }
+//    //    if (mMainWindow) {
+//    //        bool bValidType = false;
+//    //        QString itemTypeString = "";
+//    //        switch (infoWidgetType) {
+//    //        case UIHandle::InfoWidgetType::Airplane:
+//    //            bValidType = true;
+//    //            itemTypeString = "Airplane";
+//    //            break;
+//    //        case UIHandle::InfoWidgetType::Station:
+//    //            bValidType = true;
+//    //            itemTypeString = "Station";
+//    //            break;
+//    //        case UIHandle::InfoWidgetType::System:
+//    //            bValidType = true;
+//    //            itemTypeString = "System";
+//    //            break;
+//    //        }
 
-    //        if (bValidType) {
-    //            QMetaObject::invokeMethod(mMainWindow,
-    //                                      "showInfoItem",
-    //                                      Q_ARG(QVariant, QVariant::fromValue<QString>(itemTypeString))
-    //                                      );
-    //        }
-    //    }
-    QMetaObject::invokeMethod(mMainWindow,
-                              "showInfoView",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
-                              Q_ARG(QVariant, QVariant::fromValue<QString>(title))
-                              );
-}
-
-void UIHandle::iwHide(QQuickItem *item)
-{
+//    //        if (bValidType) {
+//    //            QMetaObject::invokeMethod(mMainWindow,
+//    //                                      "showInfoItem",
+//    //                                      Q_ARG(QVariant, QVariant::fromValue<QString>(itemTypeString))
+//    //                                      );
+//    //        }
+//    //    }
 //    QMetaObject::invokeMethod(mMainWindow,
-//                              "hideInfoView"
+//                              "showInfoView",
+//                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
+//                              Q_ARG(QVariant, QVariant::fromValue<QString>(title))
 //                              );
-    mMainWindow->removeFromLeftContainer(item);
-}
+//}
 
-void UIHandle::propertiesShow(QQuickItem *item)
-{
+//void UIHandle::iwHide(QQuickItem *item)
+//{
+////    QMetaObject::invokeMethod(mMainWindow,
+////                              "hideInfoView"
+////                              );
+//    mMainWindow->removeFromLeftContainer(item);
+//}
+
+//void UIHandle::propertiesShow(QQuickItem *item)
+//{
+////    QMetaObject::invokeMethod(mMainWindow,
+////                              "showRightContainer",
+////                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+////                              );
+//}
+
+//void UIHandle::propertiesHide(QQuickItem *item)
+//{
 //    QMetaObject::invokeMethod(mMainWindow,
-//                              "showRightContainer",
+//                              "hideRightContainer",
 //                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
 //                              );
-}
-
-void UIHandle::propertiesHide(QQuickItem *item)
-{
-    QMetaObject::invokeMethod(mMainWindow,
-                              "hideRightContainer",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
-                              );
-}
+//}
 
 
 //void UIHandle::iwUpdateData(QObject *receiverObject, const QString &infoJSON)
@@ -231,113 +231,113 @@ void UIHandle::propertiesHide(QQuickItem *item)
 
 //}
 
-void UIHandle::sbShowMessage(const QString &message, qreal duration)
-{
-    if (mMainWindow) {
-        QMetaObject::invokeMethod(mMainWindow,
-                                  "showStatusMessage",
-                                  Q_ARG(QVariant, QVariant::fromValue<QString>(message)),
-                                  Q_ARG(QVariant, QVariant::fromValue<int>(int(duration * 1000.0)))
-                                  );
+//void UIHandle::sbShowMessage(const QString &message, qreal duration)
+//{
+//    if (mMainWindow) {
+//        QMetaObject::invokeMethod(mMainWindow,
+//                                  "showStatusMessage",
+//                                  Q_ARG(QVariant, QVariant::fromValue<QString>(message)),
+//                                  Q_ARG(QVariant, QVariant::fromValue<int>(int(duration * 1000.0)))
+//                                  );
 
-    }
-}
+//    }
+//}
 
-void UIHandle::cmShowContextMenu(QQuickItem *contextMenu, int x, int y)
-{
-    if (mMainWindow) {
+//void UIHandle::cmShowContextMenu(QQuickItem *contextMenu, int x, int y)
+//{
+//    if (mMainWindow) {
 
-        if (mCurrentContextMenuItem) {
-            cmHideContextMenu(mCurrentContextMenuItem);
-        }
+//        if (mCurrentContextMenuItem) {
+//            cmHideContextMenu(mCurrentContextMenuItem);
+//        }
 
-        mCurrentContextMenuItem = contextMenu;
-        QMetaObject::invokeMethod(mMainWindow,
-                                  "addContextmenu",
-                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(contextMenu)),
-                                  Q_ARG(QVariant, QVariant::fromValue<int>(x)),
-                                  Q_ARG(QVariant, QVariant::fromValue<int>(y))
-                                  );
+//        mCurrentContextMenuItem = contextMenu;
+//        QMetaObject::invokeMethod(mMainWindow,
+//                                  "addContextmenu",
+//                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(contextMenu)),
+//                                  Q_ARG(QVariant, QVariant::fromValue<int>(x)),
+//                                  Q_ARG(QVariant, QVariant::fromValue<int>(y))
+//                                  );
 
 
-    }
-}
+//    }
+//}
 
-void UIHandle::cmSetContextMenuPosition(QQuickItem *contextMenu, int x, int y)
-{
-    if (mMainWindow) {
-        if (contextMenu == mCurrentContextMenuItem) {
-            QMetaObject::invokeMethod(mMainWindow,
-                                      "updateXYContextmenu",
-                                      Q_ARG(QVariant, QVariant::fromValue<int>(x)),
-                                      Q_ARG(QVariant, QVariant::fromValue<int>(y))
-                                      );
+//void UIHandle::cmSetContextMenuPosition(QQuickItem *contextMenu, int x, int y)
+//{
+//    if (mMainWindow) {
+//        if (contextMenu == mCurrentContextMenuItem) {
+//            QMetaObject::invokeMethod(mMainWindow,
+//                                      "updateXYContextmenu",
+//                                      Q_ARG(QVariant, QVariant::fromValue<int>(x)),
+//                                      Q_ARG(QVariant, QVariant::fromValue<int>(y))
+//                                      );
 
-        }
-    }
-}
+//        }
+//    }
+//}
 
-void UIHandle::cmHideContextMenu(QQuickItem *contextMenu)
-{
-    if (mMainWindow) {
-        if (contextMenu == mCurrentContextMenuItem) {
-            QMetaObject::invokeMethod(mMainWindow,
-                                      "hideContextmenu"
-                                      );
-            mCurrentContextMenuItem = nullptr;
+//void UIHandle::cmHideContextMenu(QQuickItem *contextMenu)
+//{
+//    if (mMainWindow) {
+//        if (contextMenu == mCurrentContextMenuItem) {
+//            QMetaObject::invokeMethod(mMainWindow,
+//                                      "hideContextmenu"
+//                                      );
+//            mCurrentContextMenuItem = nullptr;
 
-        }
-    }
-}
+//        }
+//    }
+//}
 
-void UIHandle::lwAddTab(const QString &tabTitle, QQuickItem *tabItem)
-{
-    if (mListWindow) {
-        QMetaObject::invokeMethod(mListWindow,
-                                  "addTab",
-                                  Q_ARG(QVariant, QVariant::fromValue<QString>(tabTitle)),
-                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(tabItem))
-                                  );
+//void UIHandle::lwAddTab(const QString &tabTitle, QQuickItem *tabItem)
+//{
+//    if (mListWindow) {
+//        QMetaObject::invokeMethod(mListWindow,
+//                                  "addTab",
+//                                  Q_ARG(QVariant, QVariant::fromValue<QString>(tabTitle)),
+//                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(tabItem))
+//                                  );
 
-    }
-}
+//    }
+//}
 
-void UIHandle::onInfoWidget2D3DButtonClicked()
-{
-    if (mReceiverObject) {
-        QMetaObject::invokeMethod(mReceiverObject,
-                                  "iw2D3DButtonClicked");
-    }
-}
+//void UIHandle::onInfoWidget2D3DButtonClicked()
+//{
+//    if (mReceiverObject) {
+//        QMetaObject::invokeMethod(mReceiverObject,
+//                                  "iw2D3DButtonClicked");
+//    }
+//}
 
-void UIHandle::onInfoWidgetRouteButtonClicked()
-{
-    if (mReceiverObject) {
-        QMetaObject::invokeMethod(mReceiverObject,
-                                  "iwRouteButtonClicked");
-    }
-}
+//void UIHandle::onInfoWidgetRouteButtonClicked()
+//{
+//    if (mReceiverObject) {
+//        QMetaObject::invokeMethod(mReceiverObject,
+//                                  "iwRouteButtonClicked");
+//    }
+//}
 
-void UIHandle::onInfoWidgetFollowButtonClicked()
-{
-    if (mReceiverObject) {
-        QMetaObject::invokeMethod(mReceiverObject,
-                                  "iwFollowButtonClicked");
-    }
-}
+//void UIHandle::onInfoWidgetFollowButtonClicked()
+//{
+//    if (mReceiverObject) {
+//        QMetaObject::invokeMethod(mReceiverObject,
+//                                  "iwFollowButtonClicked");
+//    }
+//}
 
-void UIHandle::onInfoWidgetMoreButtonClicked()
-{
-    if (mReceiverObject) {
-        QMetaObject::invokeMethod(mReceiverObject,
-                                  "iwMoreButtonClicked");
-    }
-}
+//void UIHandle::onInfoWidgetMoreButtonClicked()
+//{
+//    if (mReceiverObject) {
+//        QMetaObject::invokeMethod(mReceiverObject,
+//                                  "iwMoreButtonClicked");
+//    }
+//}
 
-void UIHandle::setListWindow(ListWindow *listWindow)
-{
-    mListWindow = listWindow;
-    QObject::connect(mListWindow, &ListWindow::tabChanged, this, &UIHandle::listwindowTabChanged);
-}
+//void UIHandle::setListWindow(ListWindow *listWindow)
+//{
+//    mListWindow = listWindow;
+//    QObject::connect(mListWindow, &ListWindow::tabChanged, this, &UIHandle::listwindowTabChanged);
+//}
 
 

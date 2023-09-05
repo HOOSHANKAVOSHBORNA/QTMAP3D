@@ -9,12 +9,8 @@
 
 #include "layerModel.h"
 #include "mapItem.h"
-#include "qqmlapplicationengine.h"
 #include "toolbox.h"
 
-class PluginInfo;
-class PluginInterface;
-class UIHandle;
 class ListWindow;
 class LayersModel;
 
@@ -22,8 +18,8 @@ Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QQuickWindow
 {
     Q_OBJECT
-    Q_PROPERTY(LayersModel* layersModel READ layersModel WRITE setLayersModel NOTIFY layersModelChanged)
-    Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox WRITE setToolbox NOTIFY toolboxChanged)
+    Q_PROPERTY(LayersModel* layersModel READ layersModel /*WRITE setLayersModel NOTIFY layersModelChanged*/)
+    Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox /*WRITE setToolbox NOTIFY toolboxChanged*/)
 public:
     enum class InfoWidgetType {
         Airplane,
@@ -43,7 +39,6 @@ public:
     void initComponent();
     LayersModel *layersModel() const;
     ToolboxProxyModel *toolbox() const;
-    UIHandle *uiHandle() const;
     MapItem* getMapItem();
 public:
     void addToLeftContainer(QQuickItem *item, QString title);
@@ -54,20 +49,19 @@ public:
 
 public slots:
     void showListWindow();
-    void setLayersModel(LayersModel *layersModel);
-    void setToolbox(ToolboxProxyModel* toolbox);
+//    void setLayersModel(LayersModel *layersModel);
+//    void setToolbox(ToolboxProxyModel* toolbox);
     void setListWindow(ListWindow *listWindow);
 
 signals:
-    void layersModelChanged();
-    void toolboxChanged();
+//    void layersModelChanged();
+//    void toolboxChanged();
 
 protected:
     bool event(QEvent *ev) override;
 
 private:
     MapItem *mMapItem = nullptr;
-    UIHandle *mUIHandle = nullptr;
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
     ToolboxProxyModel *mToolbox = nullptr;

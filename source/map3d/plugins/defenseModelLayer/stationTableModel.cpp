@@ -173,7 +173,7 @@ StationTable::StationTable(StationDataManager *stationDataManager, DefenseModelL
 
 
             stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
-            mDefenseModelLayer->uiHandle()->lwAddTab("Stations", stationTab);
+//            mDefenseModelLayer->uiHandle()->lwAddTab("Stations", stationTab);
         }
 
     });

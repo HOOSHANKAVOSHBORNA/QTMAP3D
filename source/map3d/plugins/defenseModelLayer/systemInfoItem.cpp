@@ -142,9 +142,9 @@ QStringList SystemInfoModel::getAssignmentsType() const
     return aircrafts;
 }
 
-SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, const System::Data* systemInfo,
+SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, const System::Data* systemInfo,
                                      QObject *parent) :
-    QObject(parent), mUiHandle(uiHandle), mInformation(systemInfo)
+    QObject(parent), mInformation(systemInfo)
 {
     QQmlComponent *comp = new QQmlComponent(qmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
@@ -170,13 +170,13 @@ void SystemInfoItem::setInfo(const System::Data *systemInfo)
 
 void SystemInfoItem::hide()
 {
-    if(mItem)
-        mUiHandle->iwHide(mItem);
+//    if(mItem)
+//        mUiHandle->iwHide(mItem);
 }
 
 void SystemInfoItem::show()
 {
-    mUiHandle->iwShow(mItem, QString::number(mInformation->information->systemInfo.Number));
+//    mUiHandle->iwShow(mItem, QString::number(mInformation->information->systemInfo.Number));
 }
 
 

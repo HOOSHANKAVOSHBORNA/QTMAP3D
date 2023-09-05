@@ -81,7 +81,7 @@ public:
 private:
     const Aircraft::Data *mInformation;
     AircraftInfoModel *mInfomodel;
-    UIHandle *mUiHandle = nullptr;
+//    UIHandle *mUiHandle = nullptr;
     QQuickItem *mItem{nullptr};
 };
 

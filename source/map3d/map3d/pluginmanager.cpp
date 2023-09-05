@@ -129,8 +129,8 @@ void PluginManager::setup()
     DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
     PluginInterface::setDefenseDataManager(defenseDataManager);
 
-    UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
-    PluginInterface::setUiHandle(uiHandle);
+//    UIHandle * const uiHandle = Application::instance()->mainWindow()->uiHandle();
+//    PluginInterface::setUiHandle(uiHandle);
     auto toolbox = Application::instance()->mainWindow()->toolbox();
     PluginInterface::setToolbox(static_cast<Toolbox*>(toolbox->sourceModel()));
 
