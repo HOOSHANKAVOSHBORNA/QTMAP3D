@@ -20,6 +20,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <defenseDataManager.h>
 
 class MapAnimationPathCallback;
 class EventCallback;

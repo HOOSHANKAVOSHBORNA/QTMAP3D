@@ -1,8 +1,7 @@
 #include "systemInfoItem.h"
 #include "plugininterface.h"
 #include <QQmlEngine>
-#include "aircraftModelNode.h"
-#include "aircraftDataManager.h"
+#include "mainwindow.h"
 #include "systemDataManager.h"
 
 SystemInfoModel::SystemInfoModel(QObject *parent) : QAbstractListModel(parent)
@@ -142,11 +141,11 @@ QStringList SystemInfoModel::getAssignmentsType() const
     return aircrafts;
 }
 
-SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, const System::Data* systemInfo,
+SystemInfoItem::SystemInfoItem(DefenseModelLayer *defenseModelLayer, const System::Data* systemInfo,
                                      QObject *parent) :
-    QObject(parent), mInformation(systemInfo)
+    QObject(parent), mInformation(systemInfo), mDefenseModelLayer(defenseModelLayer)
 {
-    QQmlComponent *comp = new QQmlComponent(qmlEngine);
+    QQmlComponent *comp = new QQmlComponent(defenseModelLayer->qmlEngine());
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
 
         if (comp->status() == QQmlComponent::Ready) {
@@ -156,7 +155,6 @@ SystemInfoItem::SystemInfoItem(QQmlEngine *qmlEngine, const System::Data* system
             mInfoModel->setInformtion(mInformation);
             mItem->setProperty("model", QVariant::fromValue<SystemInfoModel*>(mInfoModel));
         }
-
     });
 
     comp->loadUrl(QUrl("qrc:/modelplugin/SystemInfoView.qml"));
@@ -170,13 +168,12 @@ void SystemInfoItem::setInfo(const System::Data *systemInfo)
 
 void SystemInfoItem::hide()
 {
-//    if(mItem)
-//        mUiHandle->iwHide(mItem);
+    mDefenseModelLayer->mainWindow()->hideInfoItem(mItem);
 }
 
 void SystemInfoItem::show()
 {
-//    mUiHandle->iwShow(mItem, QString::number(mInformation->information->systemInfo.Number));
+    mDefenseModelLayer->mainWindow()->showInfoItem(mItem, QString::number(mInformation->information->systemInfo.Number));
 }
 
 

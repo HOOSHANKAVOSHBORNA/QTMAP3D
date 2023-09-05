@@ -40,6 +40,11 @@ public:
     LayersModel *layersModel() const;
     ToolboxProxyModel *toolbox() const;
     MapItem* getMapItem();
+
+    void showInfoItem(QQuickItem* item, QString title);
+    void hideInfoItem(QQuickItem* item);
+    void hideProperty(QQuickItem* item);
+    void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
 public:
     void addToLeftContainer(QQuickItem *item, QString title);
     void addToRightContainer(QQuickItem *item, QString title);
