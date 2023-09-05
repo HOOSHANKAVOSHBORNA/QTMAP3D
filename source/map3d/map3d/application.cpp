@@ -111,15 +111,20 @@ void Application::onUICreated()
     mPluginManager->setup();
     emit defenseDataManagerInitialized(mDefenseDataManager);
 
-    ServiceManager *serviceManager = new ServiceManager;
-    connect(serviceManager, &ServiceManager::layerAdded, [&](CompositeAnnotationLayer *layer){
+    mServiceManager = new ServiceManager;
+    connect(mServiceManager, &ServiceManager::layerAdded, [&](CompositeAnnotationLayer *layer){
             mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
         });
-    NetworkManager *networkManager = new NetworkManager(serviceManager);
+    NetworkManager *networkManager = new NetworkManager(mServiceManager);
     networkManager->start();
 
     mIsReady = true;
     emit ready();
+}
+
+ServiceManager *Application::serviceManager() const
+{
+    return mServiceManager;
 }
 
 

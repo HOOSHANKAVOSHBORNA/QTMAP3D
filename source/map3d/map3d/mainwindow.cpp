@@ -31,8 +31,6 @@ MainWindow::MainWindow(QWindow *parent) :
     mToolbox = new ToolboxProxyModel();
     Toolbox *toolbox = new Toolbox(this);
     mToolbox->setSourceModel(toolbox);
-
-//    mUIHandle = new UIHandle(this);
 }
 
 
@@ -44,7 +42,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::initComponent()
 {
-    QQmlEngine *engine = qmlContext(this)->engine();
+//    QQmlEngine *engine = qmlContext(this)->engine();
+    QQmlEngine *engine = qmlEngine(this);
     QQmlComponent* comp = new QQmlComponent(engine);
     connect(comp, &QQmlComponent::statusChanged,[&](QQmlComponent::Status status){
         if(status == QQmlComponent::Error){
@@ -61,6 +60,11 @@ void MainWindow::initComponent()
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
 
+}
+
+QQmlEngine *MainWindow::getQmlEngine()
+{
+    return qmlEngine(this);
 }
 
 
@@ -104,20 +108,6 @@ void MainWindow::showListWindow()
             mListWindow->hide();
     }
 }
-
-//void MainWindow::setLayersModel(LayersModel *layersModel)
-//{
-//    if (mLayersModel != layersModel) {
-//        mLayersModel = layersModel;
-//        emit layersModelChanged();
-//    }
-//}
-
-//void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
-//{
-//    mToolbox = toolbox;
-//    emit toolboxChanged();
-//}
 
 MapItem *MainWindow::getMapItem()
 {

@@ -37,6 +37,7 @@ public:
     MainWindow(QWindow *parent = nullptr);
     ~MainWindow();
     void initComponent();
+    QQmlEngine *getQmlEngine();
     LayersModel *layersModel() const;
     ToolboxProxyModel *toolbox() const;
     MapItem* getMapItem();
@@ -54,13 +55,9 @@ public:
 
 public slots:
     void showListWindow();
-//    void setLayersModel(LayersModel *layersModel);
-//    void setToolbox(ToolboxProxyModel* toolbox);
     void setListWindow(ListWindow *listWindow);
 
 signals:
-//    void layersModelChanged();
-//    void toolboxChanged();
 
 protected:
     bool event(QEvent *ev) override;
