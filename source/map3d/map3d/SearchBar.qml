@@ -9,11 +9,11 @@ Rectangle {
     id: rootItem
     property var model
 
-    width: 40 + txtid.implicitWidth + (closeButton.visible? closeButton.width : 0)
-    height: 40
-    radius: 20
+    width: Style.uiContainerSize + txtid.implicitWidth + (closeButton.visible? closeButton.width : 0)
+    height: Style.uiContainerSize
+    radius: height/2
 //    color: Style.backgroundColor
-    color:_colorIcon
+    color:Style.uiWhite
     opacity: 0.85
     ColumnLayout{
 
@@ -31,28 +31,30 @@ Rectangle {
 
             Rectangle{
                 id:searchContainer
+                Layout.bottomMargin: 10
+                Layout.leftMargin: 2
 
                 color:"transparent"
-                height: 40
-                width: 40
+                height: Style.uiContainerSize
+                width: Style.uiContainerSize
                 radius: 20
 
             Button {
                 id:searchbtn
                 anchors.fill: parent
                 Layout.fillHeight: true
-                width: 40
+                width: Style.uiContainerSize
 
                 background: Rectangle{
                     radius:20
-                    color: _colorIcon
+                    color: Style.uiWhite
                 }
                 Layout.leftMargin: 3
 
                 icon{
                     source: "qrc:/Resources/search.png"
-                    width: 26
-                    height: 26
+                    width: Style.uiBtnIconSize
+                    height: Style.uiBtnIconSize
                 }
                 onClicked: {
                     textonFocus.running =true
@@ -69,6 +71,7 @@ Rectangle {
                 id : txtid
                 implicitWidth : 0
                 Layout.fillHeight: true
+                Layout.bottomMargin: 10
 
                 property  color colorDefault       : Style.backgroundColor
                 property  color colorOnFocus       : Style.secondaryColor
@@ -79,15 +82,15 @@ Rectangle {
                 color: "black"
                 font.family:closeButton.font.family
                 //                    "Segoe UI"
-                font.pointSize: 10
+                font.pointSize: 8
                 clip: true
                 selectByMouse: true
-                selectedTextColor: _colorIcon
+                selectedTextColor: Style.uiWhite
                 selectionColor: "#ffcc00"
                 placeholderTextColor: "#81848c"
                 background: Rectangle{
 //                    color: Style.backgroundColor
-                    color: _colorIcon
+                    color: Style.uiWhite
                     opacity: 0.3
                 }
                 onTextChanged: {
@@ -120,55 +123,40 @@ Rectangle {
                 id: closeRect
 //                color: Style.backgroundColor
                 color:"transparent"
-                height: 40
-                width: 40
+                height: Style.uiContainerSize
+                width: Style.uiContainerSize
                 radius: 20
                 visible: false
-                Layout.leftMargin: -5
+                Layout.bottomMargin: 10
+                Layout.leftMargin: -10
                 Button {
                     id: closeButton
-                    width: 40
-                    height: 40
+                    width: Style.uiContainerSize
+                    height: Style.uiContainerSize
                     clip: true
                     background: Rectangle{
-                        color: _colorIcon
+                        color: Style.uiWhite
                         radius: 20
                     }
                     anchors.centerIn: parent
 
                     icon{
                         source: "qrc:/Resources/index.png"
-                        width: 26
-                        height: 26
-
+                        width: Style.uiBtnIconSize
+                        height: Style.uiBtnIconSize
                     }
                     onClicked: {
                         textlostFocus.running =true
                         txtid.clear()
                     }
-
                 }
-//                MultiEffect {
-//                    source: closeButton
-//                    enabled: true
-//                    anchors.fill: closeButton
-//                    shadowColor: "black"
-//                    shadowEnabled: true
-//                    shadowBlur: 0.6
-//                    shadowHorizontalOffset: -1.5
-//                    shadowVerticalOffset:0
-//                    shadowOpacity:0.35
-//                    paddingRect: Qt.rect(0,0,20,20)
-//                    shadowScale: 0.98
-//                }
             }
         }
     }
-
     //-------------------- search list ----------------------//
     Rectangle{
         id:dropDown
-        color: _colorIcon
+        color: Style.uiWhite
         visible:true
         width: closeButton.visible ? rootItem.width - 6: 0
         height:Math.min(bt.count *35, 200);

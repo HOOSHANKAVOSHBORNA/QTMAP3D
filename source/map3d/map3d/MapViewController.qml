@@ -3,6 +3,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
+import "style"
+
 
 
 Item {
@@ -19,15 +21,9 @@ Item {
     property bool zoomInButtonPressed: positive.pressed
     property bool zoomOutButtonPressed: negative.pressed
 
-    //    property bool upButtonPressed:    moveControlCamera.upButtonPressed
-    //    property bool downButtonPressed:  moveControlCamera.downButtonPressed
-    //    property bool leftButtonPressed:  moveControlCamera.leftButtonPressed
-    //    property bool rightButtonPressed: moveControlCamera.rightButtonPressed
+    property variant moveXY  : moveControlCamera.requstXY
+    property variant rotateXY: rotationControlCamera.requstXY
 
-    //    property bool rotateUpButtonPressed:   rotationControlCamera.upButtonPressed
-    //    property bool rotateDownButtonPressed: rotationControlCamera.downButtonPressed
-    //    property bool rotateLeftButtonPressed: rotationControlCamera.leftButtonPressed
-    //    property bool rotateRightButtonPressed:rotationControlCamera.rightButtonPressed
 
 
     signal btnHomeClicked()
@@ -40,148 +36,34 @@ Item {
 
         ///////// ------------ Move and Rotation control Area
         /*
-          a transparent rectangle holds place for
-          Move and Rotation control Button
+
         */
 
         ColumnLayout{
             id: control
             spacing: 5
-            //            Layout.rightMargin: -positionFactor * 65
-
-            //            Layout.fillWidth: true
-            //            Layout.fillHeight: true
-            //            Layout.alignment:  Qt.AlignVCenter
-
-
-
             clip: true
             ControlCamera{
                 id: rotationControlCamera
                 opacity:0
-                width: 65
-                height: 65
-//                function update(){
-//                    rotationControlCamera.opacity=1
-//                    moveControlCamera.opacity = 1
-
-//                }
-
-                x: positionFactor * 65
-                //                anchors.top: parent.top
-                //                anchors.topMargin: 17
+                width: Style.uiSecondContainerSize
+                height: Style.uiSecondContainerSize
+                x: positionFactor * Style.uiSecondContainerSize
                 centerIcon: "qrc:/Resources/eye.png"
 
             }
 
-
-            //            ///////// -------------------  rotation control
-
-            //            Rectangle{
-            //                id: rotationControlCamera
-            //                Layout.preferredWidth:65
-            //                Layout.preferredHeight: 65
-            ////                anchors.centerIn: parent
-            ////                x: positionFactor * 65
-            //                radius: 40
-
-            //                Button {
-            //                    id:middleEye
-            //                    display: AbstractButton.IconOnly
-            ////                    width:30
-            ////                    height: 30
-            //                    anchors.centerIn: parent
-            //                    icon.source : "qrc:/Resources/eye.png"
-            //                    icon.width :20
-            //                    icon.height : 20
-            //                    icon.color :_colorIcon
-            //                    background: Rectangle{
-
-            //                        color: "#003569"
-            //                        border.color: "black"
-            //                        border.width: 2
-            //                        radius:20
-
-            //                    }
-            //                    smooth: true
-            //                }
-            //                MultiEffect {
-            //                    source: middleEye
-            //                    enabled: true
-            //                    anchors.fill: middleEye
-            //                    shadowColor: "black"
-            //                    shadowEnabled: true
-            //                    shadowBlur: 1
-            //                    shadowHorizontalOffset: 3.5
-            //                    shadowVerticalOffset:2.5
-            //                    shadowOpacity:1
-            //                    paddingRect: Qt.rect(0,0,20,20)
-            //                    shadowScale: 0.98
-
-            //                }
-
-            //            }
-
             ControlCamera{
                 id: moveControlCamera
                 opacity: 0
-                width: 65
-                height: 65
-                x: positionFactor * 65
-                //                anchors.top: rotationControlCamera.bottom
-                //                anchors.topMargin: 17
-                //color: "transparent"
+                width: Style.uiSecondContainerSize
+                height: Style.uiSecondContainerSize
+                x: positionFactor * Style.uiSecondContainerSize
             }
 
 
 
 
-            //////// -----------------  move control
-
-
-            //            Rectangle{
-            //                id: moveControlCamera
-            //                Layout.preferredWidth:65
-            //                Layout.preferredHeight: 65
-
-            ////                anchors.centerIn: parent
-            ////                x: positionFactor * 65
-            //                radius: parent.height/2
-
-            //                Button {
-            //                    id:middleHand
-            //                    display: AbstractButton.IconOnly
-            //                    anchors.centerIn: parent
-            //                    icon.source : "qrc:/Resources/hand.png"
-            //                    icon.width :20
-            //                    icon.height : 20
-            //                    icon.color :"white"
-
-            //                    background: Rectangle{
-
-            //                        color: "#003569"
-            //                        border.color: "black"
-            //                        border.width: 2
-            //                        radius:20
-
-            //                    }
-            //                    smooth: true
-            //                }
-
-            //                MultiEffect {
-            //                    source: middleHand
-            //                    enabled: true
-            //                    anchors.fill: middleHand
-            //                    shadowColor: "black"
-            //                    shadowEnabled: true
-            //                    shadowBlur: 1
-            //                    shadowHorizontalOffset: 3.5
-            //                    shadowVerticalOffset:2.5
-            //                    shadowOpacity:1
-            //                    paddingRect: Qt.rect(0,0,20,20)
-            //                    shadowScale: 0.98
-            //                }
-            //            }
         }
         //------------------ Navigation
         /*
@@ -194,26 +76,26 @@ Item {
             spacing: 4
             Item {
 
-                Layout.preferredWidth : _containerSize
-                Layout.preferredHeight: _containerSize *2 + 2
+                Layout.preferredWidth : Style.uiContainerSize
+                Layout.preferredHeight: Style.uiContainerSize *2 + 2
 
                 Rectangle {
                     id: zoomBtnContainer
-                    width: _containerSize
-                    height:  _containerSize *2 + 2
+                    width: Style.uiContainerSize
+                    height:  Style.uiContainerSize *2 + 2
                     anchors.fill: parent
-                    color: _colorIcon
+                    color: Style.uiWhite
                     radius: 40
                     ColumnLayout{
                         anchors.fill: parent
                         Button {
                             id: positive
-                            Layout.leftMargin: 3
+                            Layout.leftMargin: 1
                             icon.source : "qrc:/Resources/add.png"
-                            icon.width : 26
-                            icon.height :26
-                            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                                   (pressed ? _colorHover : _colorPresed);
+                            icon.width : Style.uiBtnIconSize
+                            icon.height :Style.uiBtnIconSize
+                            icon.color : hovered ? (pressed ? Style.uiBlue: Style.uiHover) :
+                                                   (pressed ? Style.uiHover : Style.uiBlue);
                             background:Rectangle {
                                 color:"transparent"
                             }
@@ -221,22 +103,23 @@ Item {
                         Rectangle{
                             Layout.leftMargin:6
                             visible: true
-                            width: parent.width/1.4
+                            width: (parent.width/1.4)/1.2
                             color:"black"
                             opacity: 0.3
-                            height: 2
+                            height: 2/1.3
                         }
 
                         Button {
                             id: negative
-                            Layout.leftMargin:3
+                            Layout.leftMargin:1
+                            Layout.topMargin: -5
                             text: qsTr("Button")
                             display: AbstractButton.IconOnly
                             icon.source : "qrc:/Resources/minus.png"
-                            icon.width : 26
-                            icon.height : 26
-                            icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                                   (pressed ? _colorHover : _colorPresed);
+                            icon.width : Style.uiBtnIconSize
+                            icon.height : Style.uiBtnIconSize
+                            icon.color : hovered ? (pressed ? Style.uiBlue: Style.uiHover) :
+                                                   (pressed ? Style.uiHover : Style.uiBlue);
                             background:Rectangle {
                                 color:"transparent"
                             }
@@ -259,30 +142,25 @@ Item {
                 }
             }
             Item {
-                Layout.preferredWidth: _containerSize
-                Layout.preferredHeight: _containerSize
+                Layout.preferredWidth: Style.uiContainerSize
+                Layout.preferredHeight: Style.uiContainerSize
                 Button {
                     id: directionBtn
                     rotation:0 /*-90 - 180*(positionFactor)*/
                     hoverEnabled: true
-                    width: _containerSize
-                    height: _containerSize
+                    width: Style.uiContainerSize
+                    height: Style.uiContainerSize
                     display: AbstractButton.IconOnly
                     icon.source : "qrc:/Resources/direction.png"
-                    icon.width : 26
-                    icon.height : 26
-                    icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                           (pressed ? _colorHover : _colorPresed);
+                    icon.width : Style.uiBtnIconSize
+                    icon.height : Style.uiBtnIconSize
+                    icon.color : hovered ? (pressed ? Style.uiBlue: Style.uiHover) :
+                                           (pressed ? Style.uiHover : Style.uiBlue);
 
                     background: Rectangle{
-                        color:_colorIcon
+                        color:Style.uiWhite
                         radius:20
                     }
-                    //                    onHoveredChanged: {
-                    //                        rotationControlCamera.visible = true
-                    //                        moveControlCamera.visible     = true
-                    //                    }
-
                     onClicked: {
 
                         rotationAnim.start()
@@ -317,21 +195,21 @@ Item {
                 }
             }
             Item {
-                Layout.preferredWidth:40
-                Layout.preferredHeight: 40
+                Layout.preferredWidth:Style.uiContainerSize
+                Layout.preferredHeight: Style.uiContainerSize
                 Button {
                     id: home
-                    width: 40
-                    height: 40
+                    width: Style.uiContainerSize
+                    height: Style.uiContainerSize
                     hoverEnabled: true
                     display: AbstractButton.IconOnly
                     icon.source : "qrc:/Resources/home.png"
-                    icon.width :_iconSize
-                    icon.height : _iconSize
-                    icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                           (pressed ? _colorHover : _colorPresed);
+                    icon.width :Style.uiBtnIconSize
+                    icon.height : Style.uiBtnIconSize
+                    icon.color : hovered ? (pressed ? Style.uiBlue: Style.uiHover) :
+                                           (pressed ? Style.uiHover : Style.uiBlue);
                     background: Rectangle{
-                        color:_colorIcon
+                        color:Style.uiWhite
                         radius:20
                     }
                     onClicked: btnHomeClicked()
@@ -359,15 +237,15 @@ Item {
                 Button {
                     id: project
                     display: AbstractButton.IconOnly
-                    width:_containerSize
-                    height:_containerSize
+                    width:Style.uiContainerSize
+                    height:Style.uiContainerSize
                     icon.source : modeMap === "projection" ? "qrc:///Resources/threeD.png": "qrc:/Resources/twoD.png"
-                    icon.width :26
-                    icon.height : 26
-                    icon.color : hovered ? (pressed ? _colorPresed: _colorHover) :
-                                           (pressed ? _colorHover : _colorPresed);
+                    icon.width :Style.uiBtnIconSize
+                    icon.height : Style.uiBtnIconSize
+                    icon.color : hovered ? (pressed ? Style.uiBlue: Style.uiHover) :
+                                           (pressed ? Style.uiHover : Style.uiBlue);
                     background: Rectangle{
-                        color: _colorIcon
+                        color: Style.uiWhite
                         radius:20
                     }
                     smooth: true

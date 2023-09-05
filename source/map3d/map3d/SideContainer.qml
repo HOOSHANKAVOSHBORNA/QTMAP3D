@@ -7,7 +7,6 @@ ColumnLayout{
     id: rootItem
     property ListModel model:ListModel{}
     property int visibleCount : 0
-//    Layout.preferredWidth: implicitWidth
     function setCurrentIndex(index){
         tabBar.currentIndex = index
     }
@@ -16,10 +15,7 @@ ColumnLayout{
 
     clip: true
     TabBar {
-        //        property int tabVisibleCount: 0
         id: tabBar
-        //        Layout.fillWidth: true
-
         Repeater {
             id: repeater
             model: rootItem.model
@@ -75,17 +71,10 @@ ColumnLayout{
                            }
         }
     }
-
     StackLayout {
         id: stackLayout
         Layout.fillHeight: true
-//<<<<<<< HEAD
-//        //        Layout.fillWidth: true
-////        Layout.preferredWidth: childrenRect ? childrenRect.width : 250
-//=======
-////                Layout.fillWidth: true
-////        Layout.preferredWidth: implicitWidth
-//>>>>>>> 2cb79cb5b89e6c836bd9e0255a24bacbd233a804
+
         currentIndex: tabBar.currentIndex
     }
     //------------------------------------------

@@ -29,62 +29,25 @@ void MapControllerItem::setZoomOutButtonPressed(bool pressed)
     }
 }
 
-void MapControllerItem::setUpButtonPressed(bool pressed)
+void MapControllerItem::setMoveXY(QVector2D &xy)
 {
-    if (mUpButtonPressed != pressed) {
-        mUpButtonPressed = pressed;
-    }
-
-}
-
-void MapControllerItem::setdownButtonPressed(bool pressed)
-{
-    if (mDownButtonPressed != pressed) {
-        mDownButtonPressed = pressed;
+    if (mMoveXY != xy) {
+        mMoveXY = xy;
+        mMoveTick = true;
     }
 }
 
-void MapControllerItem::setleftButtonPressed(bool pressed)
+void MapControllerItem::setRotateXY(QVector2D &xy)
 {
-    if (mLeftButtonPressed != pressed) {
-        mLeftButtonPressed = pressed;
+    if (mRotateXY != xy) {
+        mRotateXY  = xy;
+        mRotateTick = true;
+    }
+    if(mRotateXY.x() == 0 && mRotateXY.y() == 0){
+        mRotateTick = false;
     }
 }
 
-void MapControllerItem::setrightButtonPressed(bool pressed)
-{
-    if (mRightButtonPressed != pressed) {
-        mRightButtonPressed = pressed;
-    }
-}
-
-void MapControllerItem::setrotateUpButtonPressed(bool pressed)
-{
-    if (mRotateUpButtonPressed != pressed) {
-        mRotateUpButtonPressed = pressed;
-    }
-}
-
-void MapControllerItem::setrotateDownButtonPressed(bool pressed)
-{
-    if (mRotateDownButtonPressed != pressed) {
-        mRotateDownButtonPressed = pressed;
-    }
-}
-
-void MapControllerItem::setrotateLeftButtonPressed(bool pressed)
-{
-    if (mRotateLeftButtonPressed != pressed) {
-        mRotateLeftButtonPressed = pressed;
-    }
-}
-
-void MapControllerItem::setrotateRightButtonPressed(bool pressed)
-{
-    if (mRotateRightButtonPressed != pressed) {
-        mRotateRightButtonPressed = pressed;
-    }
-}
 
 void MapControllerItem::tickNavigation(double deltaTime)
 {
@@ -94,25 +57,15 @@ void MapControllerItem::tickNavigation(double deltaTime)
         getCameraController()->zoom(-0.0018 * deltaTime);
     }
 
-    if (mUpButtonPressed) {
-        getCameraController()->pan(0.0, -0.0015 * deltaTime);
-    } else if (mDownButtonPressed) {
-        getCameraController()->pan(0.0, 0.0015 * deltaTime);
-    } else if (mLeftButtonPressed) {
-        getCameraController()->pan(0.0015 * deltaTime, 0.0);
-    } else if (mRightButtonPressed) {
-        getCameraController()->pan(-0.0015 * deltaTime, 0.0);
+
+    if(mMoveTick){
+        getCameraController()->pan(mMoveXY.x()/5000  * deltaTime, mMoveXY.y()/5000 * deltaTime);
+
+    }
+    if(mRotateTick){
+        getCameraController()->rotate(mRotateXY.x()/5000  * deltaTime, -mRotateXY.y()/5000 * deltaTime);
     }
 
-    if (mRotateUpButtonPressed) {
-        getCameraController()->rotate(0.0, 0.001 * deltaTime);
-    } else if (mRotateDownButtonPressed) {
-        getCameraController()->rotate(0.0, -0.001 * deltaTime);
-    } else if (mRotateLeftButtonPressed) {
-        getCameraController()->rotate(-0.001 * deltaTime, 0.0);
-    } else if (mRotateRightButtonPressed) {
-        getCameraController()->rotate(0.001 * deltaTime, 0.0);
-    }
 }
 
 void MapControllerItem::calculateNavigationStep()
@@ -173,13 +126,11 @@ void MapControllerItem::frame()
 
     calculateFps();
     calculateNavigationStep();
-
     emit compassDirectionChanged();
 }
 
 void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
 {
-//    qDebug()<<"mouseMoveEvent";
     MapItem::mouseMoveEvent(event);
     mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
     emit mouseLocationChanged();
@@ -187,7 +138,6 @@ void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
 
 void MapControllerItem::mousePressEvent(QMouseEvent *event)
 {
-//    qDebug()<<"mousePressEvent";
     MapItem::mousePressEvent(event);
 
     if (getCameraController()->getEventHandled())
@@ -202,14 +152,11 @@ void MapControllerItem::mousePressEvent(QMouseEvent *event)
         } else {
             mMousePressOusideClickProcess = false;
         }
-
     }
-//    emit clicked();
 }
 
 void MapControllerItem::mouseReleaseEvent(QMouseEvent *event)
 {
-//    qDebug()<<"mouseReleaseEvent";
     MapItem::mouseReleaseEvent(event);
     if (event->button() == Qt::LeftButton) {
         if (mLastMousePressTime.msecsTo(QTime::currentTime()) < 400) {
@@ -232,9 +179,7 @@ void MapControllerItem::mouseReleaseEvent(QMouseEvent *event)
 
 void MapControllerItem::hoverMoveEvent(QHoverEvent *event)
 {
-//    qDebug()<<"hoverMoveEvent";
     MapItem::hoverMoveEvent(event);
-//    qDebug() << event->position().x() << ", " << event->position().y() ;
     mCurrentMouseGeoPoint = screenToGeoPoint(event->position().x(), event->position().y());
     emit mouseLocationChanged();
     event->ignore();
