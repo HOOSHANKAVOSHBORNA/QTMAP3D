@@ -53,6 +53,7 @@ bool Model::setup()
     QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
+
     mSimpleNodeLayer = new ParenticAnnotationLayer();
     mSimpleNodeLayer->setName(TREE);
 
@@ -219,6 +220,7 @@ void Model::onTreeItemCheck(bool check)
         mapItem()->removeNode(iconNode());
     }
 }
+
 
 void Model::onCarItemCheck(bool check)
 {

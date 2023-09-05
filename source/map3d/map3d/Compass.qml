@@ -85,7 +85,7 @@ Rectangle {
             // Resources
             PrincipledMaterial {
                 id: material_001_material
-                baseColor: "#ffeeeeee"
+                baseColor: "#ffdee3e6"
                 alphaMode: PrincipledMaterial.Mask
                 indexOfRefraction: 5
             }
