@@ -138,3 +138,14 @@ CompositeCallback *MapObject::getCompositeCallback(osgEarth::Layer *layer)
 {
     return mCompositeCallbacks[layer];
 }
+
+ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
+{
+    for (auto& l: mParenticLayers){
+        ParenticAnnotationLayer *p = l.second->asCompositeAnnotationLayer()->getHierarchicalLayerByUserId(userid);
+        if (p){
+            return p;
+        }
+    }
+    return nullptr;
+}

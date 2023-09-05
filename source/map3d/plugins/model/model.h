@@ -59,7 +59,7 @@ public slots:
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
     void onModeChanged(bool is3DView);
-    void addFlyableFromService(QJsonDocument *json);
+    void addFlyableModel(ServiceFlyableModel *serviceModel);
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;

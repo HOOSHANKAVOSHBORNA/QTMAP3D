@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 //        networkManager.sendFlyableData("data");
 //    });
     LayerTest LayerTest(&networkManager);
-//    ModelNodeTest modelNodeTest(&networkManager);
+    ModelNodeTest modelNodeTest(&networkManager);
 
     networkManager.start();
 

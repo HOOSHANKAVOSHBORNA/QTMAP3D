@@ -57,6 +57,7 @@ public:
     void addCompositeCallback(osgEarth::Layer* layer, CompositeCallback* callback);
     void removeCompositeCallback(osgEarth::Layer* layer);
     CompositeCallback* getCompositeCallback(osgEarth::Layer* layer);
+    ParenticAnnotationLayer *getLayerByUserId(int userid);
 signals:
     void layerAdded(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
     void layerRemoved(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);

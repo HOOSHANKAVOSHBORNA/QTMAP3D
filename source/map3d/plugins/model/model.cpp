@@ -35,7 +35,7 @@ bool Model::setup()
     mIs3D = mapItem()->getMode();
 
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-//    connect(serviceManager(), &ServiceManager::addFlyableModel, this, &Model::addFlyableFromService);
+    connect(serviceManager(), &ServiceManager::flyableAdded, this, &Model::addFlyableModel);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -277,18 +277,24 @@ void Model::onModeChanged(bool is3DView)
 }
 
 
-void Model::addFlyableFromService(QJsonDocument *json)
+void Model::addFlyableModel(ServiceFlyableModel *serviceModel)
 {
-    QJsonObject model = json->object();
-    FlyableModelNode *fmodel = new FlyableModelNode(mapItem(),model.value("Url2d").toString().toStdString(), model.value("Url3d").toString().toStdString());
-    fmodel->setName(model.value("Name").toString().toStdString());
-    double x{model.value("Longitude").toDouble()};
-    double y{model.value("Latitude").toDouble()};
-    double z{model.value("Altitude").toDouble()};
-    osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), x, y, z);
+    FlyableModelNode *fmodel = new FlyableModelNode(mapItem(), serviceModel->url3D, serviceModel->url2D);
+    fmodel->setName(serviceModel->name);
+    double latitude{serviceModel->latitude};
+    double longitude{serviceModel->longitude};
+    double altitude{serviceModel->altitude};
+    osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), longitude, latitude, altitude);
     fmodel->setPosition(geopos);
 //    fmodel.setHeading
-    fmodel->setSpeed(model.value("Heading").toDouble());
+    fmodel->setSpeed(serviceModel->speed);
+//    ParenticAnnotationLayer *p = mapItem()->getMapObject()->getLayerByUserId(serviceModel->id);
+    ParenticAnnotationLayer *p = new ParenticAnnotationLayer;
+    p->setName("seee");
+    mapItem()->getMapObject()->addLayer(p);
+    p->addChild(fmodel);
+//    if (p)
+//        p->addChild(fmodel);
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){

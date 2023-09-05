@@ -4,32 +4,40 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-ServiceManager::ServiceManager(QObject *parent): QObject(parent)
+ServiceManager::ServiceManager(MapItem *mapItem, QObject *parent):
+    QObject(parent),
+    mMapItem{mapItem}
 {
 
 }
 
-void ServiceManager::initLayers(QString layersStr)
+void ServiceManager::initLayers(std::string layersStr)
 {
-    QJsonDocument doc = QJsonDocument::fromJson(layersStr.toUtf8());
+    QJsonDocument doc = QJsonDocument::fromJson(QString::fromStdString(layersStr).toUtf8());
 
     QJsonObject data = doc.object();
     for (auto it : data)
         parseLayersFromJson(it.toObject());
 }
 
-void ServiceManager::addFlyableModel(QJsonDocument *flyable)
+void ServiceManager::addFlyableModel(std::string flyable)
 {
-    QJsonObject data = flyable->object();
-    double x = data.value("x").toDouble();
-    double y = data.value("y").toDouble();
-    double z = data.value("z").toDouble();
-//    osgEarth::GeoPoint geopos(mMapItem->getMapSRS(), x, y, z);
-//    ServiceFlyableModel *model = new ServiceFlyableModel(data.value("Id").toInt()
-//                                    , data.value("Name").toString().toStdString(), data.value("Url2d").toString().toStdString()
-//                                    ,  data.value("Url3d").toString().toStdString(), data.value("Color").toString().toStdString()
-//                                    , geopos, data.value("Speed").toDouble());
-//    emit flyableAdded(model, layers[layerId].get());
+    QJsonDocument doc = QJsonDocument::fromJson(QString::fromStdString(flyable).toUtf8());
+    QJsonObject data = doc.object();
+
+    ServiceFlyableModel* flyableModel = new ServiceFlyableModel();
+    flyableModel->longitude =  data.value("Longitude").toDouble();
+    flyableModel->latitude = data.value("Latitude").toDouble();
+    flyableModel->altitude = data.value("Altitude").toDouble();
+    flyableModel->name = data.value("Name").toString().toStdString();
+    flyableModel->url2D = data.value("Url2d").toString().toStdString();
+    flyableModel->url3D = data.value("Url3d").toString().toStdString();
+    flyableModel->color = data.value("Color").toString().toStdString();
+    flyableModel->speed = data.value("Speed").toInt();
+    for (auto i : data.value("LayersId").toArray())
+        flyableModel->layersId.push_back(i.toInt());
+
+    emit flyableAdded(flyableModel);
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent)
