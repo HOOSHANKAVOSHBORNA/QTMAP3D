@@ -108,11 +108,9 @@ void ImagePropertyModel::setImage(osgEarth::Annotation::ImageOverlay *image)
 
 
 
-ImageProperty::ImageProperty(osgEarth::Annotation::ImageOverlay* image, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent) :
+ImageProperty::ImageProperty(osgEarth::Annotation::ImageOverlay* image, QQmlEngine *qmlEngine, MapItem *mapItem, QObject *parent) :
     QObject(parent),
-    mQmlEngine(qmlEngine),
-//    mImage(*image),
-    mUiHandle(uiHandle)
+    mQmlEngine(qmlEngine)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp, mapItem, image](){
@@ -125,14 +123,14 @@ ImageProperty::ImageProperty(osgEarth::Annotation::ImageOverlay* image, QQmlEngi
 
 void ImageProperty::show()
 {
-    if(mItem)
-    mUiHandle->propertiesShow(mItem);
+//    if(mItem)
+//    mUiHandle->propertiesShow(mItem);
 }
 
 void ImageProperty::hide()
 {
-    if(mItem)
-    mUiHandle->propertiesHide(mItem);
+//    if(mItem)
+//    mUiHandle->propertiesHide(mItem);
 }
 
 void ImageProperty::setImage(osgEarth::Annotation::ImageOverlay *image)

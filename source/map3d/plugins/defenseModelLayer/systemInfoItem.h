@@ -73,7 +73,7 @@ class SystemInfoItem : public QObject
     Q_OBJECT
 
 public:
-    SystemInfoItem(QQmlEngine *qmlEngine, UIHandle *uiHandle, const System::Data *data, QObject *parent = nullptr);
+    SystemInfoItem(DefenseModelLayer* defenseModelLayer, const System::Data *data, QObject *parent = nullptr);
 
     SystemInfoModel *getInfo() {return mInfoModel;}
     void setInfo(const System::Data *systemInfo);
@@ -81,9 +81,9 @@ public:
     void show();
 private:
     SystemInfoModel* mInfoModel;
-    UIHandle *mUiHandle;
     QQuickItem *mItem;
     const System::Data* mInformation;
+    DefenseModelLayer* mDefenseModelLayer;
 };
 
 #endif

@@ -28,14 +28,14 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     m3DNode->addChild(simpleNode, 0, std::numeric_limits<float>::max());
     //--root ------------------------------------------------------------
     mSwitchNode = new osg::Switch;
-    osg::ref_ptr<osg::Material> mat = new osg::Material;
-    mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Silver);
+//    osg::ref_ptr<osg::Material> mat = new osg::Material;
+//    mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Silver);
     //mat->setAmbient(osg::Material::FRONT_AND_BACK, osgEarth::Color::Silver);
     //mat->setColorMode(osg::Material::AMBIENT);
     //getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
-    mHighlight = new osgFX::Scribe;
-    mHighlight->setWireframeColor(osg::Vec4f(1,0,0,1));
+//    mHighlight = new osgFX::Scribe;
+//    mHighlight->setWireframeColor(osg::Vec4f(1,0,0,1));
     //osgEarth::Registry::shaderGenerator().run(mOutline);
 //    mOutline->setWidth(10);
 //    osg::ref_ptr<osg::StateSet> vOutlineState = mOutline->getOrCreateStateSet();

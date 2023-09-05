@@ -1,8 +1,9 @@
 #include "compositeAnnotationLayer.h"
 
-ParenticAnnotationLayer::ParenticAnnotationLayer(QObject *parent):
+ParenticAnnotationLayer::ParenticAnnotationLayer(int id, QObject *parent):
     osgEarth::Annotation::AnnotationLayer(),
-    QObject(parent)
+    QObject(parent),
+    mUserId(id)
 {
     init();
 }
@@ -89,6 +90,16 @@ void ParenticAnnotationLayer::insertParent(CompositeAnnotationLayer *parent, uns
         mParents.insert(mParents.begin() + index, parent);
 }
 
+int ParenticAnnotationLayer::userId() const
+{
+    return mUserId;
+}
+
+void ParenticAnnotationLayer::setOrder(int newOrder)
+{
+    mOrder = newOrder;
+}
+
 CompositeAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int index)
 {
     if (index >= getNumParents())
@@ -96,8 +107,8 @@ CompositeAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int
     return mParents[index].get();
 }
 
-CompositeAnnotationLayer::CompositeAnnotationLayer(QObject *parent):
-    ParenticAnnotationLayer(parent)
+CompositeAnnotationLayer::CompositeAnnotationLayer(int id, QObject *parent):
+    ParenticAnnotationLayer(id, parent)
 {
     init();
 }
@@ -117,23 +128,23 @@ void CompositeAnnotationLayer::init()
 void CompositeAnnotationLayer::setVisible(bool value)
 {
     ParenticAnnotationLayer::setVisible(value);
-    for(auto& layer:mChilds)
+    for(auto& layer:mChildildren)
         layer->setVisible(value);
 }
 
 void CompositeAnnotationLayer::setOpacity(float value)
 {
     ParenticAnnotationLayer::setOpacity(value);
-    for (auto& layer:mChilds)
+    for (auto& layer:mChildildren)
         layer->setOpacity(value);
 }
 
 unsigned int CompositeAnnotationLayer::getIndexOfLayer(const ParenticAnnotationLayer *layer) const
 {
     unsigned index = 0;
-    for (; index < mChilds.size(); ++index)
+    for (; index < mChildildren.size(); ++index)
     {
-        if (mChilds[index] == layer)
+        if (mChildildren[index] == layer)
             break;
     }
     return index;
@@ -141,12 +152,12 @@ unsigned int CompositeAnnotationLayer::getIndexOfLayer(const ParenticAnnotationL
 
 unsigned int CompositeAnnotationLayer::getNumLayers() const
 {
-    return mChilds.size();
+    return mChildildren.size();
 }
 
 void CompositeAnnotationLayer::addLayer(ParenticAnnotationLayer *layer)
 {
-    mChilds.push_back(layer);
+    mChildildren.push_back(layer);
     layer->addParent(this);
     mRoot->addChild(layer->getNode());
     for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
@@ -160,18 +171,21 @@ void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsig
 {
     if (getIndexOfLayer(layer) != getNumLayers())
         return;
-    if (index == mChilds.size()) {
+    if (index == mChildildren.size()) {
         addLayer(layer);
         return;
     }
     else
-        mChilds.insert(mChilds.begin() + index, layer);
+        mChildildren.insert(mChildildren.begin() + index, layer);
 
     layer->addParent(this);
     mRoot->addChild(layer->getNode());
     for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
         layer->addCallback(it->get());
     }
+    std::sort(mChildildren.begin(), mChildildren.end(), [this](const ParenticAnnotationLayer* p1, const ParenticAnnotationLayer* p2){
+        return p1->mOrder < p2->mOrder;
+    });
 
     fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
 }
@@ -184,23 +198,23 @@ void CompositeAnnotationLayer::removeLayer(ParenticAnnotationLayer *layer)
     }
     mRoot->removeChild(layer->getNode());
 
-    auto it = std::remove_if(mChilds.begin(), mChilds.end(), [&](ParenticAnnotationLayer* l){
+    auto it = std::remove_if(mChildildren.begin(), mChildildren.end(), [&](ParenticAnnotationLayer* l){
         return l == layer;
     });
-    if (it != mChilds.end()) mChilds.erase(it);
+    if (it != mChildildren.end()) mChildildren.erase(it);
 
     fireCallback(&CompositeLayerCallback::onLayerRemoved, layer);
 }
 
 void CompositeAnnotationLayer::clearLayers()
 {
-    for(auto& layer: mChilds){
+    for(auto& layer: mChildildren){
         layer->removeParent(this);
         for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
             layer->removeCallback(it->get());
         }
     }
-    mChilds.clear();
+    mChildildren.clear();
     mRoot->removeChildren(0, mRoot->getNumChildren());
 }
 
@@ -212,8 +226,8 @@ void CompositeAnnotationLayer::moveLayer(ParenticAnnotationLayer *layer, unsigne
     oldIndex = getIndexOfLayer(layer);
     if (oldIndex == getNumLayers())
         return; // layer not found in list
-//    auto i_oldIndex = mChilds.end();
-//    for(auto i = mChilds.begin(); i != mChilds.end(); i++, actualIndex++ )
+//    auto i_oldIndex = mChildildren.end();
+//    for(auto i = mChildildren.begin(); i != mChildildren.end(); i++, actualIndex++ )
 //    {
 //        if ( i->get() == layer )
 //        {
@@ -222,10 +236,10 @@ void CompositeAnnotationLayer::moveLayer(ParenticAnnotationLayer *layer, unsigne
 //            break;
 //        }
 //    }
-//    if ( i_oldIndex == mChilds.end() )
+//    if ( i_oldIndex == mChildildren.end() )
 //        return; // layer not found in list
-    mChilds.erase( mChilds.begin() + oldIndex );
-    mChilds.insert(mChilds.begin() + index, layerToMove);
+    mChildildren.erase( mChildildren.begin() + oldIndex );
+    mChildildren.insert(mChildildren.begin() + index, layerToMove);
 
     for (CallbackVector::iterator i = _callbacks.begin(); i != _callbacks.end(); ++i){
         CompositeLayerCallback* cb = dynamic_cast<CompositeLayerCallback*>(i->get());
@@ -243,8 +257,8 @@ void CompositeAnnotationLayer::removeLayerByName(const QString &layerName)
 
 bool CompositeAnnotationLayer::containsLayer(const ParenticAnnotationLayer *layer) const
 {
-    for (auto itr = mChilds.begin();
-         itr!=mChilds.end();
+    for (auto itr = mChildildren.begin();
+         itr!=mChildildren.end();
          ++itr)
     {
         if (itr->get()== layer) return true;
@@ -254,12 +268,24 @@ bool CompositeAnnotationLayer::containsLayer(const ParenticAnnotationLayer *laye
 
 ParenticAnnotationLayer *CompositeAnnotationLayer::getLayerByName(const QString &layerName)
 {
-    auto it = std::find_if(mChilds.begin(), mChilds.end(), [&](const osgEarth::Annotation::AnnotationLayer *layer){
+    auto it = std::find_if(mChildildren.begin(), mChildildren.end(), [&](const osgEarth::Annotation::AnnotationLayer *layer){
         return layer->getName() == layerName.toStdString();
     });
-    if (it == mChilds.end())
+    if (it == mChildildren.end())
         return nullptr;
     return *it;
+}
+
+ParenticAnnotationLayer *CompositeAnnotationLayer::getHierarchicalLayerByUserId(int userId)
+{
+    for (auto &layer: mChildildren){
+        if(layer->userId() == userId)
+            return layer;
+        auto l = layer->asCompositeAnnotationLayer();
+        if (l)
+            return l->getHierarchicalLayerByUserId(userId);
+    }
+    return nullptr;
 }
 
 void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr method, ParenticAnnotationLayer *layer)
@@ -274,7 +300,7 @@ void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr me
 void CompositeAnnotationLayer::addCallback(osgEarth::LayerCallback *cb)
 {
     ParenticAnnotationLayer::addCallback(cb);
-    for (auto& layer: mChilds) {
+    for (auto& layer: mChildildren) {
         layer->addCallback(cb);
     }
 }
@@ -282,12 +308,12 @@ void CompositeAnnotationLayer::addCallback(osgEarth::LayerCallback *cb)
 void CompositeAnnotationLayer::removeCallback(osgEarth::LayerCallback *cb)
 {
     ParenticAnnotationLayer::removeCallback(cb);
-    for (auto& layer: mChilds) {
+    for (auto& layer: mChildildren) {
         layer->removeCallback(cb);
     }
 }
 
 //int CompositeAnnotationLayer::getNumChildren() const
 //{
-//    return mChilds.size();
+//    return mChildildren.size();
 //}

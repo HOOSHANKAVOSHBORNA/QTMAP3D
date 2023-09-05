@@ -104,7 +104,7 @@ MapController {
         paddingRect: Qt.rect(0,0,20,20)
         shadowScale: 0.98
     }
-    Rectangle {
+     Rectangle {
         color: "transparent"
         id:compass
         anchors.left: parent.left

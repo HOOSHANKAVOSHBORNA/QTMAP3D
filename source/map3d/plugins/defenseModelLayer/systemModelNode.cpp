@@ -191,7 +191,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
 	if (!mSystemInfoItem) {
-        mSystemInfoItem = new SystemInfoItem(mDefenseModelLayer->qmlEngine(), mDefenseModelLayer->uiHandle(), mData, this);
+        mSystemInfoItem = new SystemInfoItem(mDefenseModelLayer, mData, this);
 		connect(mSystemInfoItem->getInfo(), &SystemInfoModel::gotoButtonClicked, this, &SystemModelNode::onGotoButtonClicked);
 		connect(mSystemInfoItem->getInfo(), &SystemInfoModel::rangeButtonClicked, this, &SystemModelNode::onRangeButtonToggled);
 		connect(mSystemInfoItem->getInfo(), &SystemInfoModel::wezButtonClicked, this, &SystemModelNode::onWezButtonToggled);

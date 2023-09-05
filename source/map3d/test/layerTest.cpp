@@ -3,13 +3,14 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
+#include <fstream>
 LayerTest::LayerTest(NetworkManager *networkManager):
     mNetworkManager(networkManager)
 {
     QObject::connect(mNetworkManager, &NetworkManager::layerQueueDeclared, [this]
                      {
                          QJsonDocument layerDoc = createLayers();
-                         mNetworkManager->sendFlyableData(layerDoc.toJson(QJsonDocument::Compact));
+                         mNetworkManager->sendLayerData(layerDoc.toJson(QJsonDocument::Compact));
                      });
 }
 
@@ -77,5 +78,8 @@ QJsonDocument LayerTest::createLayers()
 
     QJsonDocument doc;
     doc.setObject(layers);
+//    std::ofstream myfile ("example.txt");
+//    myfile << doc.toJson(QJsonDocument::Indented).toStdString();
+//    myfile.close();
     return doc;
 }

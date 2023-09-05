@@ -2,7 +2,8 @@
 #include "qamqpexchange.h"
 #include "qamqpqueue.h"
 
-NetworkManager::NetworkManager(QObject *parent): QObject(parent)
+NetworkManager::NetworkManager(ServiceManager *serviceManger, QObject *parent):
+    QObject(parent), mServiceManager(serviceManger)
 {
     mClient.setAutoReconnect(true);
 }
@@ -69,4 +70,6 @@ void NetworkManager::layerMessageReceived()
 
     QAmqpMessage message = queue->dequeue();
     qDebug() << "Layer message: " << message.payload();
+
+    mServiceManager->initLayers(QString::fromStdString(message.payload().toStdString()));
 }

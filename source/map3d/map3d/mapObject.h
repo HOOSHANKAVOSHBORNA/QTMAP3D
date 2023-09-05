@@ -54,10 +54,6 @@ public:
     MapObject(const osgEarth::MapOptions& options, QObject *parent = nullptr);
     bool addLayer(osgEarth::Layer* layer, osgEarth::Layer *parentLayer = nullptr);
     bool removeLayer(osgEarth::Layer* layer, osgEarth::Layer *parentLayer = nullptr);
-//    bool addNodeToLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
-//    bool removeNodeFromLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer);
-//    bool setParentLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer);
-//    osgEarth::Layer *getParentLayer(osgEarth::Layer *layer);
     void addCompositeCallback(osgEarth::Layer* layer, CompositeCallback* callback);
     void removeCompositeCallback(osgEarth::Layer* layer);
     CompositeCallback* getCompositeCallback(osgEarth::Layer* layer);
@@ -74,6 +70,7 @@ signals:
 
 private:
     QMap<osgEarth::Layer*, CompositeCallback*> mCompositeCallbacks;
+    std::map<int, ParenticAnnotationLayer*> mParenticLayers;
 };
 
 #endif // CUSTOMMAP_H

@@ -3,6 +3,7 @@
 #include "plugininterface.h"
 #include <iostream>
 #include <QQmlEngine>
+#include <mainwindow.h>
 
 StationInfoModel::StationInfoModel(QObject *parent) : QAbstractListModel(parent)
 {
@@ -84,7 +85,6 @@ StationInformtion::StationInformtion(DefenseModelLayer *defenseModelLayer, Stati
 
 			mInfoModel->setInformtion(mData->info);
             mItem->setProperty("model", QVariant::fromValue<StationInfoModel*>(mInfoModel));
-//            QQmlEngine::setObjectOwnership(mItem, QQmlEngine::JavaScriptOwnership);
         }
 
     });
@@ -94,10 +94,10 @@ StationInformtion::StationInformtion(DefenseModelLayer *defenseModelLayer, Stati
 
 void StationInformtion::show()
 {
-    mDefenseModelLayer->uiHandle()->iwShow(mItem, QString::number(mData->info.Number));
+    mDefenseModelLayer->mainWindow()->showInfoItem(mItem, QString::number(mData->info.Number));
 }
 
 void StationInformtion::hide()
 {
-    mDefenseModelLayer->uiHandle()->iwHide(mItem);
+    mDefenseModelLayer->mainWindow()->hideInfoItem(mItem);
 }

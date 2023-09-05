@@ -22,7 +22,7 @@ public:
 class ParenticAnnotationLayer: public QObject, public osgEarth::Annotation::AnnotationLayer
 {
 public:
-    ParenticAnnotationLayer(QObject *parent = nullptr);
+    ParenticAnnotationLayer(int id = -1, QObject *parent = nullptr);
 
     CompositeAnnotationLayer *getParentAtIndex(unsigned index);
     unsigned getIndexOfparent(const ParenticAnnotationLayer* layer) const;
@@ -35,6 +35,10 @@ public:
     void fireCallback(ParenticLayerCallback::MethodPtr, osgEarth::Annotation::AnnotationNode *node);
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() { return nullptr; }
 
+    void setOrder(int newOrder);
+
+    int userId() const;
+
 protected:
     virtual void addParent(CompositeAnnotationLayer* parent);
     virtual void removeParent(CompositeAnnotationLayer* parent);
@@ -44,6 +48,8 @@ private:
     std::vector<osg::ref_ptr<CompositeAnnotationLayer>> mParents;
 //    osg::ref_ptr<osgEarth::Annotation::AnnotationNode> mNode;
     friend class CompositeAnnotationLayer;
+    int mUserId;
+    int mOrder{-1};
 };
 
 class CompositeLayerCallback : public ParenticLayerCallback
@@ -60,7 +66,7 @@ class CompositeAnnotationLayer: public ParenticAnnotationLayer
 {
     Q_OBJECT
 public:
-    CompositeAnnotationLayer(QObject *parent = nullptr);
+    CompositeAnnotationLayer(int id = -1, QObject *parent = nullptr);
 
     virtual osg::Node* getNode() const override;
     virtual void init() override;
@@ -78,9 +84,10 @@ public:
     void removeLayerByName(const QString& layerName);
     bool containsLayer( const ParenticAnnotationLayer* layer ) const;
     ParenticAnnotationLayer *getLayerByName(const QString& layerName);
+    ParenticAnnotationLayer *getHierarchicalLayerByUserId(int userId);
     void fireCallback(CompositeLayerCallback::MethodPtr, ParenticAnnotationLayer *layer);
 //    int getNumChildren() const;
-    inline ParenticAnnotationLayer* getChild(int i ) { return mChilds[i].get(); }
+    inline ParenticAnnotationLayer* getChild(int i ) { return mChildildren[i].get(); }
     //! Adds a property notification callback to this layer
     void addCallback(osgEarth::LayerCallback* cb);
 
@@ -90,7 +97,7 @@ public:
 
 private:
     osg::ref_ptr<osg::Group> mRoot;
-    std::vector<osg::ref_ptr<ParenticAnnotationLayer>> mChilds;
+    std::vector<osg::ref_ptr<ParenticAnnotationLayer>> mChildildren;
 };
 
 
