@@ -2,7 +2,7 @@
 #define INFOMODEL_H
 #include <QAbstractListModel>
 #include <QQuickItem>
-#include "defenseDataManager.h"
+#include "mainwindow.h"
 namespace Aircraft {
 struct Data;
 }
@@ -81,8 +81,9 @@ public:
 private:
     const Aircraft::Data *mInformation;
     AircraftInfoModel *mInfomodel;
-    UIHandle *mUiHandle = nullptr;
+//    UIHandle *mUiHandle = nullptr;
     QQuickItem *mItem{nullptr};
+    DefenseModelLayer* mDefenseModelLayer{nullptr};
 };
 
 #endif // INFOMODEL_H

@@ -309,7 +309,7 @@ AircraftTable::AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseMo
                              mAircraftTableModel,
                              SLOT(sortWithHeader(int)));
             aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
-            mDefenseModelLayer->uiHandle()->lwAddTab("Aircrafts", aircraftTab);
+//            mDefenseModelLayer->uiHandle()->lwAddTab("Aircrafts", aircraftTab);
         }
 
     });

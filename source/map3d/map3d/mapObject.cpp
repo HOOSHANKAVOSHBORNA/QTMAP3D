@@ -13,23 +13,12 @@ CompositeCallback::CompositeCallback(MapObject *mapObject):
 
 void CompositeCallback::onLayerAdded(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
     if(mMapObject){
-//        CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
-//        if (compositeLayer){
-//            auto compositCallback = new CompositeCallback(mMapObject);
-//            mMapObject->addCompositeCallback(layer, compositCallback);
-//            compositeLayer->addCallback(compositCallback);
-//        }
         emit mMapObject->layerAdded(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
     }
 }
 
 void CompositeCallback::onLayerRemoved(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
     if(mMapObject){
-//        CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
-//        if (compositeLayer){
-//            mMapObject->removeCompositeCallback(layer);
-//            compositeLayer->removeCallback(mMapObject->getCompositeCallback(layer));
-//        }
         emit mMapObject->layerRemoved(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
     }
 }
@@ -110,19 +99,14 @@ bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
         return false;
     CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
     if (compositeLayer){
+        if(compositeLayer->userId() >= 0)
+            mParenticLayers[compositeLayer->userId()] = compositeLayer;
+
         auto compositCallback = new CompositeCallback(this);
         mCompositeCallbacks[layer] = compositCallback;
         compositeLayer->addCallback(compositCallback);
     }
-//    beginUpdate();
-//    endUpdate();
-//    if(parentLayer){
-//        auto dataContainer = parentLayer->getOrCreateUserDataContainer();
-//        dataContainer->addUserObject(layer);
-//    }
-//    layer->setUserData(parentLayer);
     osgEarth::Map::addLayer(layer);
-//    emit layerAdded(layer, parentLayer, getIndexOfLayer(layer));
     return true;
 }
 
@@ -136,84 +120,9 @@ bool MapObject::removeLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer
         compositeLayer->removeCallback(mCompositeCallbacks[layer]);
         mCompositeCallbacks.remove(layer);
     }
-//    auto index = getIndexOfLayer(layer);
-//    beginUpdate();
-//    osgEarth::Map::removeLayer(layer);
-//    endUpdate();
-//    if(parentLayer){
-//        auto dataContainer = parentLayer->getOrCreateUserDataContainer();
-//        auto objectIndex = dataContainer->getUserObjectIndex(layer);
-//        dataContainer->removeUserObject(objectIndex);
-//    }
     osgEarth::Map::removeLayer(layer);
-//    emit layerRemoved(layer, parentLayer, index);
     return true;
 }
-
-//bool MapObject::addNodeToLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
-//{
-//    if (!layer)
-//        return false;
-//    //--layer is not in map----------------
-////    unsigned int index = getIndexOfLayer(layer);
-////    if(index >= getNumLayers())
-////        return false;
-//    //-------------------------------------
-//    if(!layer->getGroup()->addChild(node))
-//        return false;
-//    emit nodeToLayerAdded(node, layer);
-//    return true;
-//}
-
-//bool MapObject::removeNodeFromLayer(osg::Node *node, osgEarth::Annotation::AnnotationLayer *layer)
-//{
-//    if (!layer)
-//        return false;
-//    //--layer is not in map----------------
-////    unsigned int index = getIndexOfLayer(layer);
-////    if(index >= getNumLayers())
-////        return false;
-//    //-------------------------------------
-//    if(!layer->getGroup()->removeChild(node))
-//        return false;
-//    emit nodeFromLayerRemoved(node, layer);
-//    return true;
-//}
-
-//bool MapObject::setParentLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
-//{
-//    if (!layer)
-//        return false;
-//    //--layers are not in map----------------
-//    unsigned int index = getIndexOfLayer(layer);
-//    if(index >= getNumLayers())
-//        return false;
-//    //-----------------------------------------
-//    if(parentLayer && getIndexOfLayer(parentLayer)>= getNumLayers())
-//        return false;
-//    if(parentLayer){
-//        auto dataContainer = parentLayer->getOrCreateUserDataContainer();
-//        dataContainer->addUserObject(layer);
-//    }
-//    auto oldParent = getParentLayer(layer);
-//    if(oldParent){
-//        auto dataContainer = oldParent->getOrCreateUserDataContainer();
-//        auto objectIndex = dataContainer->getUserObjectIndex(layer);
-//        dataContainer->removeUserObject(objectIndex);
-//    }
-//    layer->setUserData(parentLayer);
-
-//    emit parentLayerChanged(layer, oldParent, parentLayer);
-//    return true;
-//}
-
-//osgEarth::Layer *MapObject::getParentLayer(osgEarth::Layer *layer)
-//{
-
-//    if (layer)
-//        return dynamic_cast<osgEarth::Layer*>(layer->getUserData());
-//    return nullptr;
-//}
 
 void MapObject::addCompositeCallback(osgEarth::Layer* layer, CompositeCallback* callback)
 {

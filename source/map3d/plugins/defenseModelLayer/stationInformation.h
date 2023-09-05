@@ -66,9 +66,7 @@ public:
     void show();
     void hide();
 private:
-//    StationInfo mInformation;
     StationInfoModel *mInfoModel;
-//    UIHandle *mUiHandle;
 	QQuickItem *mItem;
 	DefenseModelLayer* mDefenseModelLayer;
 	Station::Data* mData;

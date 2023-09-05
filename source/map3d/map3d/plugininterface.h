@@ -26,126 +26,6 @@ namespace osgViewer {
     class Viewer;
 };
 
-class UIHandle : public QObject
-{
-    Q_OBJECT
-    friend class MainWindow;
-public:
-    UIHandle(MainWindow *mainWindow, QObject *parent = nullptr);
-    virtual ~UIHandle() { }
-
-public:
-    enum class InfoWidgetType {
-        Airplane,
-        Station,
-        System
-    };
-
-    void iwSetReceiverObject(QObject *receiverObject);
-    void iwShow(QQuickItem* item, QString title);
-    void iwHide(QQuickItem *item);
-    void iwUpdateData(QObject *receiverObject, const QString& infoJSON);
-
-
-public:
-    void propertiesShow(QQuickItem* item);
-    void propertiesHide(QQuickItem* item);
-
-public:
-    void sbShowMessage(const QString& message, qreal duration);
-
-public:
-    void cmShowContextMenu(QQuickItem* contextMenu, int x, int y);
-    void cmSetContextMenuPosition(QQuickItem* contextMenu, int x, int y);
-    void cmHideContextMenu(QQuickItem* contextMenu);
-
-public:
-    void lwAddTab(const QString& tabTitle, QQuickItem *tabItem);
-signals:
-    void listwindowTabChanged(int indx);
-private:
-    void onInfoWidget2D3DButtonClicked();
-    void onInfoWidgetRouteButtonClicked();
-    void onInfoWidgetFollowButtonClicked();
-    void onInfoWidgetMoreButtonClicked();
-
-    void setListWindow(ListWindow *listWindow);
-
-private:
-    MainWindow *mMainWindow = nullptr;
-    ListWindow *mListWindow = nullptr;
-    QObject *mReceiverObject = nullptr;
-    QQuickItem *mCurrentContextMenuItem = nullptr;
-
-};
-
-//struct ItemDesc
-//{
-//    ItemDesc(
-//            QString _name      = QString(),
-//            QString _category  = QString(),
-//            QString _iconUrl   = QString(),
-//            bool    _checkable = false,
-//            bool    _hasMenu   = false,
-//            QString _menuUrl   = QString()) :
-//        name     (_name     ),
-//        category (_category ),
-//        iconUrl  (_iconUrl  ),
-//        checkable(_checkable),
-//        hasMenu  (_hasMenu  ),
-//        menuUrl  (_menuUrl  )
-//    {
-
-//    }
-
-//    QString name;
-//    QString category;
-//    QString iconUrl;
-//    bool    checkable = false;
-//    bool    hasMenu   = false;
-//    QString menuUrl;
-//};
-
-
-//struct PluginQMLDesc
-//{
-//    bool           pluginHasSideItem = false;
-//    QString        sideItemMenuBarTitle;
-//    QString        sideItemMenuBarIconUrl;
-//    QString        sideItemUrl;
-
-//    QList<ItemDesc*> toolboxItemsList;
-//    QList<ItemDesc*> fileItemsList;
-//};
-
-struct ToolboxItem: public QObject
-{
-    Q_OBJECT
-public:
-    ToolboxItem(
-        QString _name      = QString(),
-        QString _category  = QString(),
-        QString _iconUrl   = QString(),
-        bool    _checkable = false):
-        name     (_name     ),
-        category (_category ),
-        iconUrl  (_iconUrl  ),
-        checkable(_checkable)
-    {
-
-    }
-
-    QString name;
-    QString category;
-    QString iconUrl;
-    bool    checkable = false;
-    bool    checked = false;
-    void changeCheck(bool check){checked = checkable ? check : checked;}
-signals:
-    void itemClicked();
-    void itemChecked(bool check);
-};
-
 class PluginInterface : public QObject
 {
     friend class PluginManager;
@@ -160,9 +40,6 @@ public:
 
     QQmlEngine *qmlEngine() const;
     static void setQmlEngine(QQmlEngine *newQmlEngine);
-
-    UIHandle *uiHandle() const;
-    static void setUiHandle(UIHandle *newUiHandle);
 
     MainWindow *mainWindow() const;
     static void setMainWindow(MainWindow* mainWindow);
@@ -215,7 +92,6 @@ public:
 private:
     static MapItem *mMapItem;
     static QQmlEngine *mQmlEngine;
-    static UIHandle *mUiHandle;
     static DefenseDataManager *mDefenseDataManager;
     static MainWindow *mMainWindow;
     static Toolbox *mToolbox;

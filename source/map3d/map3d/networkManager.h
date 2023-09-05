@@ -4,12 +4,13 @@
 #include <QObject>
 
 #include "qamqpclient.h"
+#include "serviceManager.h"
 
 class NetworkManager: public QObject
 {
     Q_OBJECT
 public:
-    NetworkManager(QObject *parent = nullptr);
+    NetworkManager(ServiceManager *serviceManger, QObject *parent = nullptr);
     void start();
 
 private slots:
@@ -22,6 +23,7 @@ private slots:
 signals:
 //    void ready();
 private:
+    ServiceManager *mServiceManager;
     QAmqpClient mClient;
 };
 

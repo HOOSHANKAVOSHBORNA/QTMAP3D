@@ -37,6 +37,35 @@ private:
     TreeItem *m_parentItem;
 };
 
+
+struct ToolboxItem: public QObject
+{
+    Q_OBJECT
+public:
+    ToolboxItem(
+        QString _name      = QString(),
+        QString _category  = QString(),
+        QString _iconUrl   = QString(),
+        bool    _checkable = false):
+        name     (_name     ),
+        category (_category ),
+        iconUrl  (_iconUrl  ),
+        checkable(_checkable)
+    {
+
+    }
+
+    QString name;
+    QString category;
+    QString iconUrl;
+    bool    checkable = false;
+    bool    checked = false;
+    void changeCheck(bool check){checked = checkable ? check : checked;}
+signals:
+    void itemClicked();
+    void itemChecked(bool check);
+};
+
 class Toolbox : public QAbstractItemModel
 {
     Q_OBJECT

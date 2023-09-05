@@ -7,15 +7,10 @@
 #include <QTime>
 #include <QPoint>
 
-#include "pluginmanager.h"
 #include "layerModel.h"
 #include "mapItem.h"
 #include "toolbox.h"
-#include "serviceManager.h"
 
-class PluginInfo;
-class PluginInterface;
-class UIHandle;
 class ListWindow;
 class LayersModel;
 
@@ -23,8 +18,8 @@ Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QQuickWindow
 {
     Q_OBJECT
-    Q_PROPERTY(LayersModel* layersModel READ layersModel WRITE setLayersModel NOTIFY layersModelChanged)
-    Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox WRITE setToolbox NOTIFY toolboxChanged)
+    Q_PROPERTY(LayersModel* layersModel READ layersModel /*WRITE setLayersModel NOTIFY layersModelChanged*/)
+    Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox /*WRITE setToolbox NOTIFY toolboxChanged*/)
 public:
     enum class InfoWidgetType {
         Airplane,
@@ -41,25 +36,16 @@ public:
 public:
     MainWindow(QWindow *parent = nullptr);
     ~MainWindow();
-
+    void initComponent();
     LayersModel *layersModel() const;
     ToolboxProxyModel *toolbox() const;
-    UIHandle *uiHandle() const;
-    ServiceManager *serviceManager() const;
-
-signals:
-    void layersModelChanged();
-    void toolboxChanged();
-
-public slots:
-    void showListWindow();
-
-    void setLayersModel(LayersModel *layersModel);
-    void setToolbox(ToolboxProxyModel* toolbox);
-public:
     MapItem* getMapItem();
-    void setMapItem(MapItem& mapItem);
 
+    void showInfoItem(QQuickItem* item, QString title);
+    void hideInfoItem(QQuickItem* item);
+    void hideProperty(QQuickItem* item);
+    void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
+public:
     void addToLeftContainer(QQuickItem *item, QString title);
     void addToRightContainer(QQuickItem *item, QString title);
     void addToCenterCenterContainer(QQuickItem *item);
@@ -67,18 +53,23 @@ public:
     void removeFromLeftContainer(QQuickItem *item);
 
 public slots:
+    void showListWindow();
+//    void setLayersModel(LayersModel *layersModel);
+//    void setToolbox(ToolboxProxyModel* toolbox);
     void setListWindow(ListWindow *listWindow);
+
+signals:
+//    void layersModelChanged();
+//    void toolboxChanged();
 
 protected:
     bool event(QEvent *ev) override;
 
 private:
     MapItem *mMapItem = nullptr;
-    UIHandle *mUIHandle = nullptr;
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
     ToolboxProxyModel *mToolbox = nullptr;
-    ServiceManager *mServiceManager = nullptr;
 };
 
 #endif // MainWindow_H
