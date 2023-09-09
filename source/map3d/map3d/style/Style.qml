@@ -56,8 +56,16 @@ QtObject {
     readonly property int uiSecondContainerSize: 65
     readonly property int uiBtnIconSize        : 26 / 1.3
 
-
-
+    //--them white--------------------------------------------------------------------
+//    readonly property color     backgroundColor:        "#DEE3E6"
+//    readonly property color     forgroundColor:        "#DEE3E6"
+//    readonly property color     hoverColor:        "#01AED6"
+//    readonly property color     selectColor :        "#003569"
+    //--them black--------------------------------------------------------------------
+//    readonly property color     backgroundColor:        "#DEE3E6"
+//    readonly property color     forgroundColor:        "#DEE3E6"
+//    readonly property color     hoverColor:        "#01AED6"
+//    readonly property color     selectColor :        "#003569"
 
 }
 
