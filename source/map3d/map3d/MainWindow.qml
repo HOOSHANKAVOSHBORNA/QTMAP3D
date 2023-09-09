@@ -135,14 +135,32 @@ CMainWindow {
                                 color : hovered ? (pressed ? _colorPresed: _colorHover) :
                                                   (pressed ? _colorHover : _colorPresed);
                             }
-                            background: Rectangle {
-                                color: "transparent"
 
-                            }
-                            display: AbstractButton.TextUnderIcon
+                            background: Rectangle { color: "transparent" }
+
+                            display: AbstractButton.IconOnly
 
                             Material.foreground: "white"
+
+                            checkable: true
+                            checked: false
+                            property var locationManagerItem
+                            onReleased: {
+                                if (checked && mainWindow.toolbox) {
+                                    var locationManager = Qt.createComponent("LocationManager.qml");
+                                    if (locationManager.status === Component.Ready) {
+                                        locationManagerItem = locationManager.createObject(null, {});
+                                        locationManagerItem.listModel = mainWindow.locationManagerModel
+                                        mainWindow.addToLeftContainer(locationManagerItem, "Location Manager")
+                                    } else {
+                                        print("can not load toolbox.");
+                                    }
+                                } else {
+                                    removeFromLeftContainer(locationManagerItem)
+                                }
+                            }
                         }
+
                         Button {
                             width: 28
                             display: AbstractButton.TextUnderIcon

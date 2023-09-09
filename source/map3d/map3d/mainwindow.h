@@ -10,6 +10,7 @@
 #include "layerModel.h"
 #include "mapItem.h"
 #include "toolbox.h"
+#include "locationManagerModel.h"
 
 class ListWindow;
 class LayersModel;
@@ -20,6 +21,7 @@ class MainWindow : public QQuickWindow
     Q_OBJECT
     Q_PROPERTY(LayersModel* layersModel READ layersModel /*WRITE setLayersModel NOTIFY layersModelChanged*/)
     Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox /*WRITE setToolbox NOTIFY toolboxChanged*/)
+    Q_PROPERTY(LocationManagerModel* locationManagerModel READ locationManagerModel /*WRITE setLocationManagerModel NOTIFY locationManagerModelChanged FINAL*/)
 public:
     enum class InfoWidgetType {
         Airplane,
@@ -53,6 +55,8 @@ public:
     void removeFromRightContainer(QQuickItem *item);
     void removeFromLeftContainer(QQuickItem *item);
 
+    LocationManagerModel *locationManagerModel() const;
+
 public slots:
     void showListWindow();
     void setListWindow(ListWindow *listWindow);
@@ -67,6 +71,7 @@ private:
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
     ToolboxProxyModel *mToolbox = nullptr;
+    LocationManagerModel *mLocationManagerModel = nullptr;
 };
 
 #endif // MainWindow_H

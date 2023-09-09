@@ -15,6 +15,8 @@
 #include "qqmlcontext.h"
 #include "mapControllerItem.h"
 
+#include "locationManagerModel.h"
+
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
@@ -26,11 +28,12 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 
-
     setColor(Qt::black);
     mToolbox = new ToolboxProxyModel();
     Toolbox *toolbox = new Toolbox(this);
     mToolbox->setSourceModel(toolbox);
+
+    mLocationManagerModel = new LocationManagerModel();
 }
 
 
@@ -44,6 +47,7 @@ void MainWindow::initComponent()
 {
 //    QQmlEngine *engine = qmlContext(this)->engine();
     QQmlEngine *engine = qmlEngine(this);
+
     QQmlComponent* comp = new QQmlComponent(engine);
     connect(comp, &QQmlComponent::statusChanged,[&](QQmlComponent::Status status){
         if(status == QQmlComponent::Error){
@@ -176,4 +180,9 @@ bool MainWindow::event(QEvent *ev)
     }
 
     return QQuickWindow::event(ev);
+}
+
+LocationManagerModel *MainWindow::locationManagerModel() const
+{
+    return mLocationManagerModel;
 }
