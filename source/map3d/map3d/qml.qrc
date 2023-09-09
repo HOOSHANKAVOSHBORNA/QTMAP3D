@@ -3,7 +3,6 @@
         <file>MainWindow.qml</file>
         <file>File.qml</file>
         <file>LayersWidget.qml</file>
-        <file>ControlCamera.qml</file>
         <file>Compass.qml</file>
         <file>LocationWidget.qml</file>
         <file>location/GoPointWidget.qml</file>
@@ -26,7 +25,8 @@
         <file>DockWindow.qml</file>
         <file>ToolBar.qml</file>
         <file>TabItem.qml</file>
-        <file>MapViewController.qml</file>
+        <file>CameraHandlerItem.qml</file>
         <file>Resources/plane.mesh</file>
+        <file>CameraPositionHandlerItem.qml</file>
     </qresource>
 </RCC>
