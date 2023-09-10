@@ -119,6 +119,20 @@ Rectangle {
                         Text {
                             text: model.lat + ", " + model.lang
                         }
+
+                        Text {
+                            text: "heading: " + model.vp.heading
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onClicked: {
+                                    console.log("model.vp: " + model.vp)
+                                    console.log("model.vp: " + model.vp.value)
+                                    console.log("model.vp: " + model.vp)
+                                }
+                            }
+                        }
                     }
                 }
             }

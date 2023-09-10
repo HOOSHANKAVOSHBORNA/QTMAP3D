@@ -10,7 +10,11 @@ public:
     LocationData() {}
     LocationData(QString iname, QString iwhere, QString iimageSource, double ilat, double ilang) :
         name(iname), where(iwhere), lat(ilat), lang(ilang), imageSource(iimageSource)
-    {}
+    {
+        vp.setHeading(45);
+        vp.setPitch(45);
+        vp.setRange(45);
+    }
 
     QString name;
     QString where;

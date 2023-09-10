@@ -1,9 +1,13 @@
 #include "locationManagerModel.h"
 
+Q_DECLARE_METATYPE(osgEarth::Viewpoint)
+
 LocationManagerModel::LocationManagerModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    m_locations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", 45.568075, 74.136643});
+    LocationData* ld1 = new LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", 45.568075, 74.136643};
+    qDebug() << "in cpp: " << ld1->vp.heading().value().asString();
+    m_locations.append(*ld1);
     m_locations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", 45.568075, 74.136643});
 }
 
@@ -15,6 +19,9 @@ int LocationManagerModel::rowCount(const QModelIndex &parent) const
 QVariant LocationManagerModel::data(const QModelIndex &index, int role) const
 {
     const LocationData ld = m_locations.at(index.row());
+
+    QVariant vp;
+    vp.setValue(ld.vp);
 
     switch (role) {
     case NameRole:
@@ -28,7 +35,7 @@ QVariant LocationManagerModel::data(const QModelIndex &index, int role) const
     case LangRole:
         return QVariant(ld.lang);
     case VPRole:
-        return QVariant::fromValue(ld.vp);
+        return vp;
     default:
         break;
     }
