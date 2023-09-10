@@ -29,21 +29,21 @@ void MapControllerItem::setZoomOutButtonPressed(bool pressed)
     }
 }
 
-void MapControllerItem::setMoveXY(QVector2D &xy)
+void MapControllerItem::setMovePosition(QVector2D &position)
 {
-    if (mMoveXY != xy) {
-        mMoveXY = xy;
+    if (mMovePosition != position) {
+        mMovePosition = position;
         mMoveTick = true;
     }
 }
 
-void MapControllerItem::setRotateXY(QVector2D &xy)
+void MapControllerItem::setRotatePosition(QVector2D &position)
 {
-    if (mRotateXY != xy) {
-        mRotateXY  = xy;
+    if (mRotatePosition != position) {
+        mRotatePosition  = position;
         mRotateTick = true;
     }
-    if(mRotateXY.x() == 0 && mRotateXY.y() == 0){
+    if(mRotatePosition.x() == 0 && mRotatePosition.y() == 0){
         mRotateTick = false;
     }
 }
@@ -59,11 +59,11 @@ void MapControllerItem::tickNavigation(double deltaTime)
 
 
     if(mMoveTick){
-        getCameraController()->pan(mMoveXY.x()/5000  * deltaTime, mMoveXY.y()/5000 * deltaTime);
+        getCameraController()->pan(mMovePosition.x()/7000  * deltaTime, mMovePosition.y()/7000 * deltaTime);
 
     }
     if(mRotateTick){
-        getCameraController()->rotate(mRotateXY.x()/5000  * deltaTime, -mRotateXY.y()/5000 * deltaTime);
+        getCameraController()->rotate(mRotatePosition.x()/7000  * deltaTime, -mRotatePosition.y()/7000 * deltaTime);
     }
 
 }

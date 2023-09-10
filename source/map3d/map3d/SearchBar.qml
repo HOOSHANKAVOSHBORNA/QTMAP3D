@@ -4,86 +4,61 @@ import QtQuick.Layouts
 import QtQuick.Effects
 import "style"
 
-Rectangle {
+Item{
     property var model
+    property int iconSize: 26/Style.monitorRatio
     id: rootItem
-    width: Style.containerSize + txtid.implicitWidth + (closeButton.visible? closeButton.width : 0)
-    height: Style.containerSize
-    radius: height/2
-    color:Style.backgroundColor
-    opacity: 0.85
-    ColumnLayout{
-        anchors.fill: parent
-        //---------------------------searcbox---------------------------//
+    width: searchRect.width
+    height: 240/Style.monitorRatio
+    Rectangle {
+        id:searchRect
+        width: searchBtn.width + searchText.implicitWidth + (closeButton.visible? closeButton.width : 0)
+        height: 40/Style.monitorRatio
+        radius: height/2
+        color:Style.backgroundColor
         RowLayout{
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            layoutDirection: Qt.LeftToRight
+            id: rowLayout
+            anchors.fill: parent
+            spacing: 0
 
-            //------------------------------search-----------------------//
-
-            Rectangle{
-                id:searchContainer
-                Layout.bottomMargin: 10
-                Layout.leftMargin: 2
-                color:"transparent"
-                height: Style.containerSize
-                width: Style.containerSize
-                radius: 20
-
-            Button {
-                id:searchbtn
-                anchors.fill: parent
+            RoundButton {
+                id:searchBtn
                 Layout.fillHeight: true
-                width: Style.uiContainerSize
-
                 background: Rectangle{
-                    radius:20
+                    radius:height/2
                     color: Style.backgroundColor
                 }
-                Layout.leftMargin: 3
 
                 icon{
                     source: "qrc:/Resources/search.png"
-                    width: Style.uiBtnIconSize
-                    height: Style.uiBtnIconSize
+                    width: iconSize
+                    height: iconSize
                 }
                 onClicked: {
+                    icon.color = Style.disableColor
+                    closeButton.visible = true
                     textonFocus.running =true
-                    closeRect.visible = true
-                    txtid.focus = true
+                    searchText.focus = true
 
                 }
             }
 
-            }
-
-
             TextField {
-                id : txtid
-                implicitWidth : 0
+                id : searchText
                 Layout.fillHeight: true
-                Layout.bottomMargin: 10
-
-                property  color colorDefault       : Style.backgroundColor
-                property  color colorOnFocus       : Style.secondaryColor
-                property  color colorMouseOver     : Style.textHoverColor
-                property  color colorBorderOnFocus : Style.hoverColor
-
-                placeholderText:  qsTr("Search By" )
-                color: "black"
-                font.family:closeButton.font.family
-                //                    "Segoe UI"
-                font.pointSize: 8
-                clip: true
+                Layout.fillWidth: true
+                implicitWidth: 0
+                placeholderText: implicitWidth? qsTr("Search ..." ) : ""
+                color: Style.foregroundColor
+                font.family: Style.fontFamily
+                font.pointSize: Style.fontPointSize
                 selectByMouse: true
-                selectedTextColor: Style.backgroundColor
-                selectionColor: "#ffcc00"
-                placeholderTextColor: "#81848c"
+                selectedTextColor: Style.foregroundColor
+                selectionColor: Style.selectColor
+                placeholderTextColor: Style.disableColor
                 background: Rectangle{
-//                    color: Style.backgroundColor
                     color: Style.backgroundColor
-                    opacity: 0.3
+                    radius: height/2
                 }
                 onTextChanged: {
                     rootItem.model.setFilterString(text)
@@ -91,100 +66,84 @@ Rectangle {
 
                 PropertyAnimation {
                     id : textonFocus
-                    target: txtid
+                    target: searchText
                     properties: "implicitWidth"
-                    to:200
+                    to:(340-2*26)/Style.monitorRatio
                     duration: 150
                     easing.type: Easing.OutQuint
                 }
                 PropertyAnimation {
                     id : textlostFocus
-                    target: txtid
+                    target: searchText
                     properties: "implicitWidth"
                     to:0
                     duration: 150
                     easing.type: Easing.OutQuint
-                    onFinished: {
-                        closeRect.visible = false
-                    }
                 }
             }
-            // close botton ------------------------------------------------------
-            Rectangle {
 
-                id: closeRect
-//                color: Style.backgroundColor
-                color:"transparent"
-                height: Style.uiContainerSize
-                width: Style.uiContainerSize
-                radius: 20
+            RoundButton {
+                id: closeButton
+                Layout.fillHeight: true
                 visible: false
-                Layout.bottomMargin: 10
-                Layout.leftMargin: -10
-                Button {
-                    id: closeButton
-                    width: Style.uiContainerSize
-                    height: Style.uiContainerSize
-                    clip: true
-                    background: Rectangle{
-                        color: Style.backgroundColor
-                        radius: 20
-                    }
-                    anchors.centerIn: parent
+                background: Rectangle{
+                    color: Style.backgroundColor
+                    radius: height/2
+                }
 
-                    icon{
-                        source: "qrc:/Resources/index.png"
-                        width: Style.uiBtnIconSize
-                        height: Style.uiBtnIconSize
-                    }
-                    onClicked: {
-                        textlostFocus.running =true
-                        txtid.clear()
-                    }
+                icon{
+                    source: "qrc:/Resources/index.png"
+                    width: iconSize
+                    height: iconSize
+                    color: Style.foregroundColor
+                }
+                onClicked: {
+                    closeButton.visible = false
+                    textlostFocus.running =true
+                    searchText.clear()
+                    searchBtn.icon.color = Style.foregroundColor
                 }
             }
         }
-    }
-    //-------------------- search list ----------------------//
-    Rectangle{
-        id:dropDown
-        color: Style.backgroundColor
-        visible:true
-        width: closeButton.visible ? rootItem.width - 6: 0
-        height:Math.min(bt.count *35, 200);
-        clip:true
-        anchors.top:  rootItem.bottom;
-        anchors.left: rootItem.left
-        anchors.topMargin: 2
-        anchors.leftMargin: 2
-        radius: 12
-        ListView{
-            id:bt
-            anchors.fill: parent
-            model: rootItem.model
-            delegate: Button
-            {
-                width: bt.width
-                height: 35
-                text: model.display
-                contentItem: Text {
-                        text: textnew.text
-                        font: textnew.font
-//                        opacity: enabled ? 1.0 : 0.3
-                        color: textnew.down ? "yellow" : "grey"
+        //-------------------- search list ----------------------//
+        Rectangle{
+            id:dropDown
+            color: Style.backgroundColor
+            opacity: 0.5
+            visible:true
+            width: closeButton.visible ? rootItem.width: 0
+            height: rootItem.height
+            z: -1
+            radius: searchRect.radius
+            ListView{
+                id:listView
+                anchors.fill: parent
+                anchors.margins: 5
+                anchors.topMargin: searchRect.height + 5
+                clip: true
+                model: rootItem.model
+                delegate: Button
+                {
+                    id:delegateBtn
+                    width: listView.width
+                    hoverEnabled: true
+                    contentItem: Text {
+                        text: model.display
+                        font.family: Style.fontFamily
+                        font.pointSize: Style.fontPointSize
+                        color: Style.foregroundColor
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
-                id:textnew
-                hoverEnabled: true
-                onClicked:{
-                    rootItem.model.onNodeClicked(index)
-                }
-                background: Rectangle
-                {
-                    color: parent.hovered ? Style.hoverColor : "transparent"
-                    radius:12
+                    onClicked:{
+                        rootItem.model.onNodeClicked(index)
+                    }
+                    background: Rectangle
+                    {
+                        color: parent.hovered ? Style.hoverColor : "transparent"
+                        radius:height/2
+                    }
                 }
             }
         }
