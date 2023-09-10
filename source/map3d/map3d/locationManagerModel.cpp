@@ -1,13 +1,9 @@
 #include "locationManagerModel.h"
 
-Q_DECLARE_METATYPE(osgEarth::Viewpoint)
-
-LocationManagerModel::LocationManagerModel(QObject *parent)
-    : QAbstractListModel(parent)
+LocationManagerModel::LocationManagerModel(MapItem *mapItem)
 {
-    LocationData* ld1 = new LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", 45.568075, 74.136643};
-    qDebug() << "in cpp: " << ld1->vp.heading().value().asString();
-    m_locations.append(*ld1);
+    mMapItem = mapItem;
+    m_locations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", 45.568075, 74.136643});
     m_locations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", 45.568075, 74.136643});
 }
 
@@ -26,6 +22,8 @@ QVariant LocationManagerModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case NameRole:
         return QVariant(ld.name);
+    case DescriptionRole:
+        return QVariant("description");
     case WhereRole:
         return QVariant(ld.where);
     case ImageSourceRole:
@@ -34,8 +32,6 @@ QVariant LocationManagerModel::data(const QModelIndex &index, int role) const
         return QVariant(ld.lat);
     case LangRole:
         return QVariant(ld.lang);
-    case VPRole:
-        return vp;
     default:
         break;
     }
@@ -96,7 +92,7 @@ QHash<int, QByteArray> LocationManagerModel::roleNames() const
     locationFields[ImageSourceRole] = "imgsrc";
     locationFields[LatRole] = "lat";
     locationFields[LangRole] = "lang";
-    locationFields[VPRole] = "vp";
+    locationFields[DescriptionRole] = "description";
 
     return locationFields;
 }

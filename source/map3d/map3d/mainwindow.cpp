@@ -32,8 +32,6 @@ MainWindow::MainWindow(QWindow *parent) :
     mToolbox = new ToolboxProxyModel();
     Toolbox *toolbox = new Toolbox(this);
     mToolbox->setSourceModel(toolbox);
-
-    mLocationManagerModel = new LocationManagerModel();
 }
 
 
@@ -60,6 +58,7 @@ void MainWindow::initComponent()
             addToCenterCenterContainer(mMapItem);
 
             mLayersModel = new LayersModel(mMapItem);
+            mLocationManagerModel = new LocationManagerModel(mMapItem);
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));

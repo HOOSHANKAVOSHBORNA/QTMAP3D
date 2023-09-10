@@ -121,7 +121,7 @@ Rectangle {
                         }
 
                         Text {
-                            text: "heading: " + model.vp.heading
+                            text: "heading: " + model.heading
 
                             MouseArea {
                                 anchors.fill: parent

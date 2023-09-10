@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 #include "osgEarth/Viewpoint"
+#include "mapItem.h"
 
 class LocationData
 {
@@ -29,15 +30,15 @@ class LocationManagerModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit LocationManagerModel(QObject *parent = nullptr);
+    explicit LocationManagerModel(MapItem *mapItem);
 
     enum {
         NameRole = Qt::UserRole,
+        DescriptionRole,
         WhereRole,
         ImageSourceRole,
         LatRole,
-        LangRole,
-        VPRole
+        LangRole
     };
 
     // Basic functionality:
@@ -63,6 +64,7 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
 
 private:
+    MapItem *mMapItem;
     QVector<LocationData> m_locations;
 };
 

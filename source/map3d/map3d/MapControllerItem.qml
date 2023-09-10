@@ -11,8 +11,8 @@ MapController {
     zoomInButtonPressed:      mapViewController.zoomInButtonPressed
     zoomOutButtonPressed:     mapViewController.zoomOutButtonPressed
 
-    moveXY: mapViewController.moveXY
-    rotateXY: mapViewController.rotateXY
+    moveXY: mapViewController.movePosition
+    rotateXY: mapViewController.rotatePositon
 
     anchors.fill: parent
     objectName: "MainMap"
@@ -135,7 +135,7 @@ MapController {
     }
 
 
-    MapViewController{
+    CameraHandlerItem{
         id : mapViewController
 
         anchors.rightMargin: widgetsMargins
