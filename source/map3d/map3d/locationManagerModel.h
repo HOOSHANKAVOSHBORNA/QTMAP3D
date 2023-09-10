@@ -5,24 +5,29 @@
 #include "osgEarth/Viewpoint"
 #include "mapItem.h"
 
-class LocationData
+struct LocationData
 {
 public:
     LocationData() {}
-    LocationData(QString iname, QString iwhere, QString iimageSource, double ilat, double ilang) :
-        name(iname), where(iwhere), lat(ilat), lang(ilang), imageSource(iimageSource)
+
+    LocationData(QString iDescription, QString iImageSource, QString iColor) :
+        description(iDescription), imageSource(iImageSource), color(iColor)
+    {}
+
+    LocationData(QString iName, QString iDescription, QString iImageSource, QString iColor) :
+        description(iDescription), imageSource(iImageSource), color(iColor)
     {
-        vp.setHeading(45);
-        vp.setPitch(45);
-        vp.setRange(45);
+        viewpoint.name().init(iName.toStdString());
     }
 
-    QString name;
-    QString where;
+    LocationData(QString iName, double lon, double lat, double z, double heading, double pitch, double range, QString iDescription, QString iImageSource, QString iColor) :
+        description(iDescription), imageSource(iImageSource), color(iColor)
+    {}
+
+    osgEarth::Viewpoint viewpoint;
+    QString description;
     QString imageSource;
-    double lat;
-    double lang;
-    osgEarth::Viewpoint vp;
+    QString color;
 };
 
 class LocationManagerModel : public QAbstractListModel
@@ -34,11 +39,15 @@ public:
 
     enum {
         NameRole = Qt::UserRole,
-        DescriptionRole,
-        WhereRole,
-        ImageSourceRole,
+        LonRole,
         LatRole,
-        LangRole
+        ZRole,
+        HeadingRole,
+        PitchRole,
+        RangeRole,
+        DescriptionRole,
+        ImageSourceRole,
+        ColorRole,
     };
 
     // Basic functionality:
@@ -49,8 +58,6 @@ public:
     // Editable:
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole) override;
-
-    Qt::ItemFlags flags(const QModelIndex& index) const override;
 
     // Add data:
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
@@ -65,7 +72,7 @@ public:
 
 private:
     MapItem *mMapItem;
-    QVector<LocationData> m_locations;
+    QVector<LocationData> mLocations;
 };
 
 #endif // LOCATIONMANAGERMODEL_H

@@ -16,6 +16,7 @@ Rectangle {
         anchors.margins: 10
         spacing: 10
 
+        // search bar
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 40
@@ -55,7 +56,7 @@ Rectangle {
             spacing: 10
             clip: true
 
-            // model set in main window
+            // ---------- this listview model sets in mainwindow.cpp !!!
 
             delegate: Rectangle {
                 width: lvLocationManger.width
@@ -71,7 +72,7 @@ Rectangle {
                     Image {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        source: model.imgsrc
+                        source: model.imageSource
                     }
 
                     RowLayout {
@@ -83,7 +84,7 @@ Rectangle {
                             width: locationColorIconWidth
                             height: locationColorIconWidth
                             radius: width / 2
-                            color: "yellow"
+                            color: model.color
                         }
 
                         Text {
@@ -113,25 +114,15 @@ Rectangle {
                         spacing: 0
 
                         Text {
-                            text: model.where
+                            text: model.description
                         }
 
                         Text {
-                            text: model.lat + ", " + model.lang
+                            text: model.lon + ", " + model.lat
                         }
 
                         Text {
-                            text: "heading: " + model.heading
-
-                            MouseArea {
-                                anchors.fill: parent
-
-                                onClicked: {
-                                    console.log("model.vp: " + model.vp)
-                                    console.log("model.vp: " + model.vp.value)
-                                    console.log("model.vp: " + model.vp)
-                                }
-                            }
+                            text: model.heading + ", " + model.pitch + ", " + model.range
                         }
                     }
                 }

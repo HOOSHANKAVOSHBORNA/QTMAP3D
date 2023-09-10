@@ -3,35 +3,40 @@
 LocationManagerModel::LocationManagerModel(MapItem *mapItem)
 {
     mMapItem = mapItem;
-    m_locations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", 45.568075, 74.136643});
-    m_locations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", 45.568075, 74.136643});
+    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
+    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "yellow"});
 }
 
 int LocationManagerModel::rowCount(const QModelIndex &parent) const
 {
-    return m_locations.size();
+    return mLocations.size();
 }
 
 QVariant LocationManagerModel::data(const QModelIndex &index, int role) const
 {
-    const LocationData ld = m_locations.at(index.row());
-
-    QVariant vp;
-    vp.setValue(ld.vp);
+    const LocationData ld = mLocations.at(index.row());
 
     switch (role) {
     case NameRole:
-        return QVariant(ld.name);
+        return QVariant(QString::fromStdString(ld.viewpoint.name().get()));
+    case LonRole:
+        return QVariant(ld.viewpoint.focalPoint().get().x());
+    case LatRole:
+        return QVariant(ld.viewpoint.focalPoint().get().y());
+    case ZRole:
+        return QVariant(ld.viewpoint.focalPoint().get().z());
+    case HeadingRole:
+        return QVariant(ld.viewpoint.heading()->as(osgEarth::Units::DEGREES));
+    case PitchRole:
+        return QVariant(ld.viewpoint.pitch()->as(osgEarth::Units::DEGREES));
+    case RangeRole:
+        return QVariant(ld.viewpoint.range()->as(osgEarth::Units::METERS));
     case DescriptionRole:
-        return QVariant("description");
-    case WhereRole:
-        return QVariant(ld.where);
+        return QVariant(ld.description);
     case ImageSourceRole:
         return QVariant(ld.imageSource);
-    case LatRole:
-        return QVariant(ld.lat);
-    case LangRole:
-        return QVariant(ld.lang);
+    case ColorRole:
+        return QVariant(ld.color);
     default:
         break;
     }
@@ -47,14 +52,6 @@ bool LocationManagerModel::setData(const QModelIndex &index, const QVariant &val
         return true;
     }
     return false;
-}
-
-Qt::ItemFlags LocationManagerModel::flags(const QModelIndex &index) const
-{
-    if (!index.isValid())
-        return Qt::NoItemFlags;
-
-    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable; // FIXME: Implement me!
 }
 
 bool LocationManagerModel::insertRows(int row, int count, const QModelIndex &parent)
@@ -75,12 +72,12 @@ bool LocationManagerModel::removeRows(int row, int count, const QModelIndex &par
 
 QVector<LocationData> LocationManagerModel::locations() const
 {
-    return m_locations;
+    return mLocations;
 }
 
 void LocationManagerModel::setLocations(const QVector<LocationData> &newLocations)
 {
-    m_locations = newLocations;
+    mLocations = newLocations;
 }
 
 QHash<int, QByteArray> LocationManagerModel::roleNames() const
@@ -88,12 +85,16 @@ QHash<int, QByteArray> LocationManagerModel::roleNames() const
     QHash<int, QByteArray> locationFields;
 
     locationFields[NameRole] = "name";
-    locationFields[WhereRole] = "where";
-    locationFields[ImageSourceRole] = "imgsrc";
+    locationFields[LonRole] = "lon";
     locationFields[LatRole] = "lat";
-    locationFields[LangRole] = "lang";
+    locationFields[ZRole] = "z";
+    locationFields[HeadingRole] = "heading";
+    locationFields[PitchRole] = "pitch";
+    locationFields[RangeRole] = "range";
     locationFields[DescriptionRole] = "description";
-
+    locationFields[ImageSourceRole] = "imageSource";
+    locationFields[ColorRole] = "color";
+    \
     return locationFields;
 }
 
