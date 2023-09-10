@@ -150,7 +150,7 @@ CMainWindow {
                                     var locationManager = Qt.createComponent("LocationManager.qml");
                                     if (locationManager.status === Component.Ready) {
                                         locationManagerItem = locationManager.createObject(null, {});
-                                        locationManagerItem.listModel = mainWindow.locationManagerModel
+                                        locationManagerItem.listModel = mainWindow.locationManagerProxyModel
                                         mainWindow.addToLeftContainer(locationManagerItem, "Location Manager")
                                     } else {
                                         print("can not load toolbox.");

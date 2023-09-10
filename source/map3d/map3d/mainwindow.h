@@ -21,7 +21,8 @@ class MainWindow : public QQuickWindow
     Q_OBJECT
     Q_PROPERTY(LayersModel* layersModel READ layersModel /*WRITE setLayersModel NOTIFY layersModelChanged*/)
     Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox /*WRITE setToolbox NOTIFY toolboxChanged*/)
-    Q_PROPERTY(LocationManagerModel* locationManagerModel READ locationManagerModel /*WRITE setLocationManagerModel NOTIFY locationManagerModelChanged FINAL*/)
+    Q_PROPERTY(LocationManagerProxyModel* locationManagerProxyModel READ locationManagerProxyModel /*WRITE setLocationManagerProxyModel NOTIFY locationManagerProxyModelChanged FINAL*/)
+
 public:
     enum class InfoWidgetType {
         Airplane,
@@ -55,7 +56,8 @@ public:
     void removeFromRightContainer(QQuickItem *item);
     void removeFromLeftContainer(QQuickItem *item);
 
-    LocationManagerModel *locationManagerModel() const;
+
+    LocationManagerProxyModel *locationManagerProxyModel() const;
 
 public slots:
     void showListWindow();
@@ -71,7 +73,7 @@ private:
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
     ToolboxProxyModel *mToolbox = nullptr;
-    LocationManagerModel *mLocationManagerModel = nullptr;
+    LocationManagerProxyModel *mLocationManagerProxyModel = nullptr;
 };
 
 #endif // MainWindow_H

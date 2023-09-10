@@ -1,27 +1,43 @@
 #ifndef LOCATIONMANAGERMODEL_H
 #define LOCATIONMANAGERMODEL_H
 
+#include <QObject>
 #include <QAbstractListModel>
+#include <QSortFilterProxyModel>
+
 #include "osgEarth/Viewpoint"
 #include "mapItem.h"
+
+enum {
+    NameRole = Qt::UserRole,
+    LonRole,
+    LatRole,
+    ZRole,
+    HeadingRole,
+    PitchRole,
+    RangeRole,
+    DescriptionRole,
+    ImageSourceRole,
+    ColorRole,
+};
 
 struct LocationData
 {
 public:
     LocationData() {}
 
-    LocationData(QString iDescription, QString iImageSource, QString iColor) :
-        description(iDescription), imageSource(iImageSource), color(iColor)
+    LocationData(QString newDescription, QString newSourceImage, QString newColor) :
+        description(newDescription), imageSource(newSourceImage), color(newColor)
     {}
 
-    LocationData(QString iName, QString iDescription, QString iImageSource, QString iColor) :
-        description(iDescription), imageSource(iImageSource), color(iColor)
+    LocationData(QString newName, QString newDescription, QString newSourceImage, QString newColor) :
+        description(newDescription), imageSource(newSourceImage), color(newColor)
     {
-        viewpoint.name().init(iName.toStdString());
+        viewpoint.name().init(newName.toStdString());
     }
 
-    LocationData(QString iName, double lon, double lat, double z, double heading, double pitch, double range, QString iDescription, QString iImageSource, QString iColor) :
-        description(iDescription), imageSource(iImageSource), color(iColor)
+    LocationData(QString newName, double newLon, double newLat, double newZ, double newHeading, double newPitch, double newRange, QString newDescription, QString newSourceImage, QString newColor) :
+        description(newDescription), imageSource(newSourceImage), color(newColor)
     {}
 
     osgEarth::Viewpoint viewpoint;
@@ -36,19 +52,6 @@ class LocationManagerModel : public QAbstractListModel
 
 public:
     explicit LocationManagerModel(MapItem *mapItem);
-
-    enum {
-        NameRole = Qt::UserRole,
-        LonRole,
-        LatRole,
-        ZRole,
-        HeadingRole,
-        PitchRole,
-        RangeRole,
-        DescriptionRole,
-        ImageSourceRole,
-        ColorRole,
-    };
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -73,6 +76,29 @@ public:
 private:
     MapItem *mMapItem;
     QVector<LocationData> mLocations;
+};
+
+// ------------------------------------------------------- proxy model
+class LocationManagerProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+    Q_PROPERTY(QString searchedName READ searchedName WRITE setSearchedName NOTIFY searchedNameChanged FINAL)
+
+public:
+    explicit LocationManagerProxyModel(QObject *parent = nullptr);
+
+    QString searchedName() const;
+    void setSearchedName(const QString &newSearchedName);
+
+signals:
+    void searchedNameChanged();
+
+private:
+    QString mSearchedWord;
+
+protected:
+    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+    virtual bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
 };
 
 #endif // LOCATIONMANAGERMODEL_H

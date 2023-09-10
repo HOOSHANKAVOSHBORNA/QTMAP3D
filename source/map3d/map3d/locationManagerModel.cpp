@@ -5,6 +5,16 @@ LocationManagerModel::LocationManagerModel(MapItem *mapItem)
     mMapItem = mapItem;
     mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
     mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "yellow"});
+    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
+    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "yellow"});
+    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
+    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "blue"});
+    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
+    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "white"});
+    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
+    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "yellow"});
+    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
+    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "yellow"});
 }
 
 int LocationManagerModel::rowCount(const QModelIndex &parent) const
@@ -98,4 +108,38 @@ QHash<int, QByteArray> LocationManagerModel::roleNames() const
     return locationFields;
 }
 
+// ------------------------------------------------------- proxy model methods
+LocationManagerProxyModel::LocationManagerProxyModel(QObject *parent)
+{}
 
+QString LocationManagerProxyModel::searchedName() const
+{
+    return mSearchedWord;
+}
+
+void LocationManagerProxyModel::setSearchedName(const QString &newSearchedName)
+{
+    if (mSearchedWord == newSearchedName)
+        return;
+    mSearchedWord = newSearchedName;
+    emit searchedNameChanged();
+
+    invalidateFilter();
+}
+
+bool LocationManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    const QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+
+    const QString name = sourceModel()->data(index, NameRole).toString().toLower();
+
+    return (name.contains(mSearchedWord.toLower()));
+}
+
+bool LocationManagerProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
+{
+    QVariant leftData = sourceModel()->data(source_left, NameRole);
+    QVariant rightData = sourceModel()->data(source_right, NameRole);
+
+    return leftData.toString() < rightData.toString();
+}

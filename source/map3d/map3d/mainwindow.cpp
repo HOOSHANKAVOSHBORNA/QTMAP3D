@@ -58,7 +58,12 @@ void MainWindow::initComponent()
             addToCenterCenterContainer(mMapItem);
 
             mLayersModel = new LayersModel(mMapItem);
-            mLocationManagerModel = new LocationManagerModel(mMapItem);
+
+            // --- location manager and its proxy model settings
+            mLocationManagerProxyModel = new LocationManagerProxyModel();
+            LocationManagerModel *locationManagerModel = new LocationManagerModel(mMapItem);
+            mLocationManagerProxyModel->setSourceModel(locationManagerModel);
+            // ---
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
@@ -181,7 +186,7 @@ bool MainWindow::event(QEvent *ev)
     return QQuickWindow::event(ev);
 }
 
-LocationManagerModel *MainWindow::locationManagerModel() const
+LocationManagerProxyModel *MainWindow::locationManagerProxyModel() const
 {
-    return mLocationManagerModel;
+    return mLocationManagerProxyModel;
 }

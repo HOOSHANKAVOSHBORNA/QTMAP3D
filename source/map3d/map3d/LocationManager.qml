@@ -4,7 +4,7 @@ import QtQuick.Layouts
 Rectangle {
     id: rLocationManager
 
-    color: "teal"
+    color: "silver"
 
     property alias listModel: lvLocationManger.model
     property int locationColorIconWidth: 10
@@ -23,6 +23,18 @@ Rectangle {
             border.color: 'grey'
             radius: 20
             color: "transparent"
+            clip: true
+
+            TextInput {
+                anchors.fill: parent
+                anchors.leftMargin: 15
+                anchors.rightMargin: 15
+                verticalAlignment: Text.AlignVCenter
+
+                onTextChanged: {
+                    lvLocationManger.model.searchedName = text
+                }
+            }
         }
 
         // add place button
@@ -35,8 +47,32 @@ Rectangle {
                 anchors.fill: parent
 
                 onClicked: {
-                    console.log(lvLocationManger.model)
+                    console.log(lvLocationManger.model.searchedName)
                 }
+            }
+
+            Text {
+                text: "Add Place"
+                anchors.centerIn: parent
+            }
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 40
+            radius: 20
+
+            MouseArea {
+                anchors.fill: parent
+
+                onClicked: {
+                    lvLocationManger.model.sort(0, Qt.AscendingOrder)
+                }
+            }
+
+            Text {
+                text: "Sort By Name"
+                anchors.centerIn: parent
             }
         }
 
