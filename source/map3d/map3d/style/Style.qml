@@ -54,7 +54,7 @@ QtObject {
     readonly property double monitorRatio: 1.3
 
 
-    readonly property int uiContainerSize      : 40/1.3
+    readonly property int containerSize      : 40/1.3
     readonly property int uiSecondContainerSize: 65
     readonly property int uiBtnIconSize        : 26 / 1.3
 

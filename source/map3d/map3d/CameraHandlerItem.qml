@@ -55,8 +55,8 @@ Item {
             spacing: 4
             Rectangle {
                 id: zoomBtnContainer
-                width: 40/Style.monitorRatio
-                height: 80/Style.monitorRatio
+                width: 40/Style.monitorRatio-2
+                height: 80/Style.monitorRatio+4
                 color: Style.backgroundColor
                 radius: width/2
                 ColumnLayout{
@@ -64,6 +64,7 @@ Item {
                     anchors.fill: parent
                     Button {
                         id: zoomInBtn
+                        Layout.alignment: Qt.AlignCenter
                         icon.source : "qrc:/Resources/add.png"
                         icon.width: iconSize
                         icon.height: iconSize
@@ -83,6 +84,7 @@ Item {
 
                     Button {
                         id: zoomOutBtn
+                        Layout.alignment: Qt.AlignCenter
                         icon.source : "qrc:/Resources/minus.png"
                         icon.width : iconSize
                         icon.height : iconSize
