@@ -4,39 +4,31 @@ import QtQuick.Layouts
 import QtQuick.Effects
 import "style"
 
-
 Rectangle {
-    id: rootItem
     property var model
-
-    width: Style.uiContainerSize + txtid.implicitWidth + (closeButton.visible? closeButton.width : 0)
-    height: Style.uiContainerSize
+    id: rootItem
+    width: Style.containerSize + txtid.implicitWidth + (closeButton.visible? closeButton.width : 0)
+    height: Style.containerSize
     radius: height/2
-//    color: Style.backgroundColor
-    color:Style.uiWhite
+    color:Style.backgroundColor
     opacity: 0.85
     ColumnLayout{
-
         anchors.fill: parent
         //---------------------------searcbox---------------------------//
-
         RowLayout{
             Layout.fillHeight: true
             Layout.fillWidth: true
-            //            Layout.rightMargin: 100
             layoutDirection: Qt.LeftToRight
 
             //------------------------------search-----------------------//
-
 
             Rectangle{
                 id:searchContainer
                 Layout.bottomMargin: 10
                 Layout.leftMargin: 2
-
                 color:"transparent"
-                height: Style.uiContainerSize
-                width: Style.uiContainerSize
+                height: Style.containerSize
+                width: Style.containerSize
                 radius: 20
 
             Button {
@@ -47,7 +39,7 @@ Rectangle {
 
                 background: Rectangle{
                     radius:20
-                    color: Style.uiWhite
+                    color: Style.backgroundColor
                 }
                 Layout.leftMargin: 3
 
@@ -85,12 +77,12 @@ Rectangle {
                 font.pointSize: 8
                 clip: true
                 selectByMouse: true
-                selectedTextColor: Style.uiWhite
+                selectedTextColor: Style.backgroundColor
                 selectionColor: "#ffcc00"
                 placeholderTextColor: "#81848c"
                 background: Rectangle{
 //                    color: Style.backgroundColor
-                    color: Style.uiWhite
+                    color: Style.backgroundColor
                     opacity: 0.3
                 }
                 onTextChanged: {
@@ -135,7 +127,7 @@ Rectangle {
                     height: Style.uiContainerSize
                     clip: true
                     background: Rectangle{
-                        color: Style.uiWhite
+                        color: Style.backgroundColor
                         radius: 20
                     }
                     anchors.centerIn: parent
@@ -156,7 +148,7 @@ Rectangle {
     //-------------------- search list ----------------------//
     Rectangle{
         id:dropDown
-        color: Style.uiWhite
+        color: Style.backgroundColor
         visible:true
         width: closeButton.visible ? rootItem.width - 6: 0
         height:Math.min(bt.count *35, 200);
