@@ -9,8 +9,8 @@ QtObject {
     readonly property int       containeSize:   40
     readonly property color     tiltleColor:    "white"
     readonly property int       titleFontSize:  24
-    readonly property string    fontFamily:     "Srouce Sans Pro"
-    readonly property int       fontPointSize: 11
+//    readonly property string    fontFamily:     "Srouce Sans Pro"
+//    readonly property int       fontPointSize: 11
     readonly property real      widgetsMargins: 10
     readonly property int       borderwidth:    1
     readonly property int       radius:         4
@@ -51,8 +51,9 @@ QtObject {
 
 
     //-------   UI Desired Size Added    ---------//
-    readonly property double monitorRatio: 1.3
-
+    readonly property double monitorRatio: 1.
+    readonly property string fontFamily:"Roboto"
+    readonly property double fontPointSize: 11/monitorRatio
 
     readonly property int containerSize      : 40/1.3
     readonly property int uiSecondContainerSize: 65
@@ -60,7 +61,8 @@ QtObject {
 
     //--them white--------------------------------------------------------------------
     readonly property color     backgroundColor: "#DEE3E6"
-    readonly property color     foregroundColor:  "#003569"
+    readonly property color     foregroundColor: "#003569"
+    readonly property color     disableColor: Qt.rgba(foregroundColor.r, foregroundColor.g, foregroundColor.b, 0.5)
     readonly property color     hoverColor:      "#01AED6"
     readonly property color     selectColor :    "#B6C0CA"
     //--them black--------------------------------------------------------------------

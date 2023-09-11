@@ -10,26 +10,26 @@ Item {
     property bool showRecMov: true
     property real animationDuration: 500.0
     property int iconSize: 26/Style.monitorRatio
-
+    
     property string mode: "geocentric"
     property bool zoomInButtonPressed: zoomInBtn.pressed
     property bool zoomOutButtonPressed: zoomOutBtn.pressed
     property vector2d movePosition  : moveCameraHandler.position
     property vector2d rotatePositon: rotateCameraHandler.position
-
+    
     signal btnHomeClicked()
     signal btnProjectionClicked()
-
+    
     id:rootItem
     width: mainRowLayout.implicitWidth
     height: mainRowLayout.implicitHeight
     smooth: true
-
+    
     RowLayout {
         id: mainRowLayout
         anchors.fill: parent
         spacing: 5
-
+        
         RowLayout{
             id:cameraPositionLayout
             spacing: 5
@@ -41,7 +41,7 @@ Item {
                 width: 80/Style.monitorRatio
                 height: 80/Style.monitorRatio
                 source: "qrc:/Resources/eye.png"
-
+                
             }
             CameraPositionHandlerItem{
                 id: moveCameraHandler
@@ -50,56 +50,66 @@ Item {
                 source: "qrc:/Resources/hand.png"
             }
         }
-
+        
         ColumnLayout {
             spacing: 4
             Rectangle {
                 id: zoomBtnContainer
-                width: 40/Style.monitorRatio-2
-                height: 80/Style.monitorRatio+4
+                Layout.alignment: Qt.AlignCenter
+                width: 40/Style.monitorRatio
+                height: 82/Style.monitorRatio
                 color: Style.backgroundColor
                 radius: width/2
-                ColumnLayout{
-                    id:test
-                    anchors.fill: parent
-                    Button {
-                        id: zoomInBtn
-                        Layout.alignment: Qt.AlignCenter
-                        icon.source : "qrc:/Resources/add.png"
-                        icon.width: iconSize
-                        icon.height: iconSize
-                        icon.color: hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
-                                              (pressed ? Style.hoverColor : Style.foregroundColor);
-                        background:Rectangle {
-                            color:"transparent"
-                        }
-                    }
-                    Rectangle{
-                        Layout.alignment: Qt.AlignCenter
-                        width:(zoomBtnContainer.width *3/4)/Style.monitorRatio
-                        color:"black"
-                        opacity: 0.3
-                        height: 2/Style.monitorRatio
-                    }
+                Button {
+                    id: zoomInBtn
+                    anchors.top: parent.top
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: 40/Style.monitorRatio
+                    height: 40/Style.monitorRatio
 
-                    Button {
-                        id: zoomOutBtn
-                        Layout.alignment: Qt.AlignCenter
-                        icon.source : "qrc:/Resources/minus.png"
-                        icon.width : iconSize
-                        icon.height : iconSize
-                        icon.color : hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
-                                               (pressed ? Style.hoverColor : Style.foregroundColor);
-                        background:Rectangle {
-                            color:"transparent"
-                        }
+                    icon.source : "qrc:/Resources/add.png"
+                    icon.width: iconSize
+                    icon.height: iconSize
+                    icon.color: hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
+                                          (pressed ? Style.hoverColor : Style.foregroundColor);
+                    background:Rectangle {
+                        color:"transparent"
                     }
+                }
+                Rectangle{
+                    id: seperator
+                    anchors.top: zoomInBtn.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width:(zoomBtnContainer.width *3/4)/Style.monitorRatio
+                    color:"black"
+                    opacity: 0.3
+                    height: 2/Style.monitorRatio
+                }
+                
+                Button {
+                    id: zoomOutBtn
+                    anchors.top: seperator.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: 40/Style.monitorRatio
+                    height: 40/Style.monitorRatio
 
+                    icon.source : "qrc:/Resources/minus.png"
+                    icon.width : iconSize
+                    icon.height : iconSize
+                    icon.color : hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
+                                           (pressed ? Style.hoverColor : Style.foregroundColor);
+                    background:Rectangle {
+                        color:"transparent"
+                    }
                 }
             }
             Button {
                 id: directionBtn
                 rotation:0 /*-90 - 180*(positionFactor)*/
+                Layout.alignment: Qt.AlignCenter
+                width: 40/Style.monitorRatio
+                height: 40/Style.monitorRatio
+
                 hoverEnabled: true
                 display: AbstractButton.IconOnly
                 icon.source : "qrc:/Resources/direction.png"
@@ -107,13 +117,13 @@ Item {
                 icon.height : iconSize
                 icon.color : hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
                                        (pressed ? Style.hoverColor : Style.foregroundColor);
-
+                
                 background: Rectangle{
                     color:Style.backgroundColor
                     radius:width/2
                 }
                 onClicked: {
-
+                    
                     if(rootItem.positionFactor){
                         showSlider.stop()
                         hideSlider.start()
@@ -125,6 +135,9 @@ Item {
             }
             Button {
                 id: homeBtn
+                width: 40/Style.monitorRatio
+                height: 40/Style.monitorRatio
+                Layout.alignment: Qt.AlignCenter
                 hoverEnabled: true
                 display: AbstractButton.IconOnly
                 icon.source : "qrc:/Resources/home.png"
@@ -134,12 +147,15 @@ Item {
                                        (pressed ? Style.hoverColor : Style.foregroundColor);
                 background: Rectangle{
                     color:Style.uiWhite
-                    radius:20
+                    radius:height/2
                 }
                 onClicked: btnHomeClicked()
             }
             Button {
                 id: modeBtn
+                Layout.alignment: Qt.AlignCenter
+                width: 40/Style.monitorRatio
+                height: 40/Style.monitorRatio
                 display: AbstractButton.IconOnly
                 icon.source : mode === "projection" ? "qrc:///Resources/threeD.png": "qrc:/Resources/twoD.png"
                 icon.width :iconSize
@@ -147,11 +163,11 @@ Item {
                 icon.color : hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
                                        (pressed ? Style.hoverColor : Style.foregroundColor);
                 background: Rectangle{
-                    color: Style.uiWhite
-                    radius:20
+                    color: Style.backgroundColor
+                    radius:height/2
                 }
                 smooth: true
-
+                
                 onClicked:{
                     if (mode==="projection")
                         mode = "geocentric"
@@ -159,9 +175,9 @@ Item {
                         mode = "projection"
                     btnProjectionClicked()
                 }
-
+                
             }
-
+            
         }
     }
     MultiEffect {
@@ -183,7 +199,7 @@ Item {
         from: rootItem.positionFactor
         to: 1.0
         duration: animationDuration * Math.abs(1.0 - positionFactor)
-
+        
         easing.type: Easing.OutQuint
     }
     PropertyAnimation {
@@ -193,7 +209,7 @@ Item {
         from: rootItem.positionFactor
         to: 0.0
         duration: animationDuration * Math.abs(positionFactor)
-
+        
         easing.type: Easing.InQuint
     }
 }

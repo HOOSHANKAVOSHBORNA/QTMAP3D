@@ -31,17 +31,19 @@ void NetworkManager::start()
 void NetworkManager::clientConnected()
 {
     qDebug() << "Client connected.";
+    //--layer queue-------------------------------------------
+    QAmqpQueue *layerQueue = mClient.createQueue("layer");
+    disconnect(layerQueue, 0, 0, 0); // in case this is a reconnect
+    connect(layerQueue, &QAmqpQueue::declared, this, &NetworkManager::layerQueueDeclared);
+    layerQueue->declare();
+
     //--flyable queue-------------------------------------------
     QAmqpQueue *flyableQueue = mClient.createQueue("flyable");
     disconnect(flyableQueue, 0, 0, 0); // in case this is a reconnect
     connect(flyableQueue, &QAmqpQueue::declared, this, &NetworkManager::flyableQueueDeclared);
     flyableQueue->declare();
 
-    //--layer queue-------------------------------------------
-    QAmqpQueue *layerQueue = mClient.createQueue("layer");
-    disconnect(layerQueue, 0, 0, 0); // in case this is a reconnect
-    connect(layerQueue, &QAmqpQueue::declared, this, &NetworkManager::layerQueueDeclared);
-    layerQueue->declare();
+
 
 }
 

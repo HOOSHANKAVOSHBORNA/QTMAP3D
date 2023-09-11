@@ -14,11 +14,11 @@ class MapControllerItem : public MapItem
     Q_PROPERTY(QVector2D compassDirection READ compassDirection WRITE setCompassDirection NOTIFY compassDirectionChanged FINAL)
     Q_PROPERTY(double fps READ fps WRITE setFps NOTIFY fpsChanged)
 
-    Q_PROPERTY(bool zoomInButtonPressed       WRITE setZoomInButtonPressed      )
-    Q_PROPERTY(bool zoomOutButtonPressed      WRITE setZoomOutButtonPressed     )
+    Q_PROPERTY(bool zoomInButtonPressed WRITE setZoomInButtonPressed)
+    Q_PROPERTY(bool zoomOutButtonPressed WRITE setZoomOutButtonPressed)
 
-    Q_PROPERTY(QVector2D moveXY               WRITE setMoveXY                   )
-    Q_PROPERTY(QVector2D rotateXY             WRITE setRotateXY                 )
+    Q_PROPERTY(QVector2D movePosition WRITE setMovePosition)
+    Q_PROPERTY(QVector2D rotatePosition WRITE setRotatePosition)
 
     Q_PROPERTY(QVector3D mapMouseGeoLocation READ mapMouseGeoLocation NOTIFY mouseLocationChanged)
     Q_PROPERTY(QVector3D mapMouseLocation READ mapMouseLocation NOTIFY mouseLocationChanged)
@@ -45,8 +45,8 @@ public slots:
     void setZoomInButtonPressed(bool pressed);
     void setZoomOutButtonPressed(bool pressed);
 
-    void setMoveXY(QVector2D &xy);
-    void setRotateXY(QVector2D &xy);
+    void setMovePosition(QVector2D &position);
+    void setRotatePosition(QVector2D &position);
 
 
     SearchNodeProxyModel *searchNodeProxyModel() const;
@@ -67,8 +67,8 @@ private:
     bool mZoomInButtonPressed{false};
     bool mZoomOutButtonPressed{false};
 
-    QVector2D mMoveXY;
-    QVector2D mRotateXY;
+    QVector2D mMovePosition;
+    QVector2D mRotatePosition;
 
     bool mMoveTick{false};
     bool mRotateTick{false};

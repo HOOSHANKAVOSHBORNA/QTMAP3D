@@ -8,68 +8,56 @@ import "style"
 
 MapController {
     id: map
-    zoomInButtonPressed:      mapViewController.zoomInButtonPressed
-    zoomOutButtonPressed:     mapViewController.zoomOutButtonPressed
+    zoomInButtonPressed:      cameraHandlerItem.zoomInButtonPressed
+    zoomOutButtonPressed:     cameraHandlerItem.zoomOutButtonPressed
 
-    moveXY: mapViewController.movePosition
-    rotateXY: mapViewController.rotatePositon
+    movePosition: cameraHandlerItem.movePosition
+    rotatePosition: cameraHandlerItem.rotatePositon
 
     anchors.fill: parent
     objectName: "MainMap"
-    property real widgetsPositionFactor: 1.0
-    property bool widgetsVisible: true
-    readonly property int       _iconSize        : 24
-    readonly property int       _margin          : 15
-    readonly property int       _radius          : 10
-    readonly property color     _colorRec        : "#404040"
-    readonly property color     _colorHover      : "#01AED6"
-    readonly property color     _colorPresed     : "#003569"
-    readonly property color     _colorIcon       : "#DEE3E6"
-    readonly property color     _colorButton     : "#55FFFFFF"
-    readonly property string    _fontFamily      : "Srouce Sans Pro"
-    readonly property int       _fontPointSize   : 11
-    readonly property color     itemColor        : "#404040"
-    readonly property real      widgetsMargins   : 10
-    clip: true
+    property real itemPositionFactor: 1.0
+    property bool itemVisible: true
+    readonly property int       iconSize      : 26/Style.monitorRatio
+    readonly property real      itemMargin   : 10
 
     onClicked: function() {
-        toggleWidgetsVisible();
+        toggleItemsVisible();
     }
 
-    function toggleWidgetsVisible() {
-        if (map.widgetsVisible === true) {
-            widgetsShowAnimation.stop();
-            widgetsHideAnimation.start();
-            map.widgetsVisible = false;
+    function toggleItemsVisible() {
+        if (map.itemVisible === true) {
+            itemsShowAnimation.stop();
+            itemsHideAnimation.start();
+            map.itemVisible = false;
         } else {
 
-            widgetsHideAnimation.stop();
-            widgetsShowAnimation.start();
-            map.widgetsVisible = true;
+            itemsHideAnimation.stop();
+            itemsShowAnimation.start();
+            map.itemVisible = true;
         }
     }
 
     PropertyAnimation {
-        id: widgetsShowAnimation
+        id: itemsShowAnimation
         target: map
-        property: "widgetsPositionFactor"
-        from: map.widgetsPositionFactor
+        property: "itemPositionFactor"
+        from: map.itemPositionFactor
         to: 1.0
-        duration: 200 * Math.abs(1.0 - map.widgetsPositionFactor)
+        duration: 200 * Math.abs(1.0 - map.itemPositionFactor)
 
         easing.type: Easing.OutQuint
     }
     PropertyAnimation {
-        id: widgetsHideAnimation
+        id: itemsHideAnimation
         target: map
-        property: "widgetsPositionFactor"
-        from: map.widgetsPositionFactor
+        property: "itemPositionFactor"
+        from: map.itemPositionFactor
         to: 0.0
-        duration: 200 * Math.abs(map.widgetsPositionFactor)
+        duration: 200 * Math.abs(map.itemPositionFactor)
 
         easing.type: Easing.InQuint
     }
-    //
     Label {
         id: fpsLabel
         text: map.fps.toLocaleString(Qt.locale(), 'f', 2)
@@ -84,64 +72,62 @@ MapController {
         anchors.leftMargin: 20
     }
     SearchBar {
-        id:searcbarContainer
+        id:searcbar
+        x: parent.width - itemPositionFactor * (width + itemMargin)
         anchors.top: parent.top
-        anchors.topMargin: 20
-        anchors.rightMargin: 20
-        anchors.right: parent.right
+        anchors.topMargin: itemMargin
         model: map.searchNodeProxyModel()
     }
     MultiEffect {
-        source: searcbarContainer
+        source: searcbar
         enabled: true
-        anchors.fill: searcbarContainer
+        anchors.fill: searcbar
         shadowColor: "black"
         shadowEnabled: true
         shadowBlur: 0.6
         shadowHorizontalOffset: 3.5
         shadowVerticalOffset:2.5
         shadowOpacity:0.35
-        paddingRect: Qt.rect(0,0,20,20)
         shadowScale: 0.98
     }
-     Rectangle {
-        color: "transparent"
-        id:compass
+    Compass {
+        id: compassItem
         anchors.left: parent.left
-        anchors.leftMargin: widgetsMargins
-        anchors.bottomMargin: widgetsMargins
-        height: compassWidget.height+10
-        width: compassWidget.width
-        y: parent.height  - widgetsPositionFactor * (compassWidget.height + (widgetsMargins) + statusBar.height)
-
-        Drag.hotSpot.x: 32
-        Drag.hotSpot.y: 32
-
-
-        Compass {
-            id: compassWidget
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 10
-
-            headingAngle:  map.compassDirection.x
-            pitchAngle: map.compassDirection.y+90
-
-            onCompassClicked: function() {
-                console.log("headingAngle: " + map.compassDirection.x + ", pitch: " + map.compassDirection.y)
-                print(Screen.desktopAvailableHeight )
-
+        anchors.leftMargin: itemMargin
+        anchors.bottomMargin: itemMargin
+        y: parent.height  - itemPositionFactor * (compassItem.height + (itemMargin) + statusBar.height)
+        headingAngle:  map.compassDirection.x
+        pitchAngle: map.compassDirection.y+90
+        color: mouseArea.hovered ? Style.selectColor: Style.backgroundColor
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            onDoubleClicked: {
+                map.setHeadingToNorth()
             }
+            hoverEnabled: true
+            property bool hovered: false
+            onEntered: hovered = true
+            onExited: hovered = false
         }
     }
-
-
+    MultiEffect {
+        source: compassItem
+        enabled: true
+        anchors.fill: compassItem
+        shadowColor: "black"
+        shadowEnabled: true
+        shadowBlur: 0.6
+        shadowHorizontalOffset: 3.5
+        shadowVerticalOffset:2.5
+        shadowOpacity:0.35
+        shadowScale: 0.98
+    }
     CameraHandlerItem{
-        id : mapViewController
-
-        anchors.rightMargin: widgetsMargins
-
+        id : cameraHandlerItem
+        anchors.rightMargin: itemMargin
         y: parent.height/2
-        x:parent.width - widgetsPositionFactor * (width + widgetsMargins)
+        x:parent.width - itemPositionFactor * (width + itemMargin)
         onBtnHomeClicked: function() {
             map.home();
         }
@@ -149,7 +135,6 @@ MapController {
             map.changeMode();
         }
     }
-
     StatusBar {
         id: statusBar
         anchors.bottom: parent.bottom
