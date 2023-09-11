@@ -122,6 +122,12 @@ Rectangle {
             color: backgroundColorop50
         }
 
+        // ----------------------------------------------- selection model
+        ItemSelectionModel {
+            id: ismLocationManager
+            model: lvLocationManger.model
+        }
+
         // ----------------------------------------------- locatoins list
         ListView {
             id: lvLocationManger
@@ -193,6 +199,11 @@ Rectangle {
                             icon.source: "qrc:/Resources/location-delete.png"
                             icon.width: 20
                             icon.height: 20
+
+                            onClicked: {
+                                ismLocationManager.setCurrentIndex(lvLocationManger.model.index(index, 0), ItemSelectionModel.Select | ItemSelectionModel.Rows)
+                                lvLocationManger.model.myRemoveRow(ismLocationManager.currentIndex)
+                            }
                         }
                     }
 

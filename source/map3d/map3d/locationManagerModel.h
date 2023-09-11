@@ -62,11 +62,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole) override;
 
-    // Add data:
-    bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
-
-    // Remove data:
-    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+    Q_INVOKABLE void myRemoveRow(QModelIndex index);
 
     QVector<LocationData> locations() const;
     void setLocations(const QVector<LocationData> &newLocations);
@@ -86,6 +82,8 @@ class LocationManagerProxyModel : public QSortFilterProxyModel
 
 public:
     explicit LocationManagerProxyModel(QObject *parent = nullptr);
+
+    Q_INVOKABLE void myRemoveRow(const QModelIndex &index);
 
     QString searchedName() const;
     void setSearchedName(const QString &newSearchedName);

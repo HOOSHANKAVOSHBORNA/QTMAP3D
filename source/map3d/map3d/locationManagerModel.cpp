@@ -64,20 +64,11 @@ bool LocationManagerModel::setData(const QModelIndex &index, const QVariant &val
     return false;
 }
 
-bool LocationManagerModel::insertRows(int row, int count, const QModelIndex &parent)
+void LocationManagerModel::myRemoveRow(QModelIndex index)
 {
-    beginInsertRows(parent, row, row + count - 1);
-    // FIXME: Implement me!
-    endInsertRows();
-    return true;
-}
-
-bool LocationManagerModel::removeRows(int row, int count, const QModelIndex &parent)
-{
-    beginRemoveRows(parent, row, row + count - 1);
-    // FIXME: Implement me!
+    beginRemoveRows(QModelIndex(), index.row(), index.row());
+    mLocations.removeAt(index.row());
     endRemoveRows();
-    return true;
 }
 
 QVector<LocationData> LocationManagerModel::locations() const
@@ -111,6 +102,11 @@ QHash<int, QByteArray> LocationManagerModel::roleNames() const
 // ------------------------------------------------------- proxy model methods
 LocationManagerProxyModel::LocationManagerProxyModel(QObject *parent)
 {}
+
+void LocationManagerProxyModel::myRemoveRow(const QModelIndex &index)
+{
+    dynamic_cast<LocationManagerModel*>(sourceModel())->myRemoveRow(mapToSource(index));
+}
 
 QString LocationManagerProxyModel::searchedName() const
 {
