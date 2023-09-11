@@ -153,7 +153,7 @@ CMainWindow {
                                         locationManagerItem.listModel = mainWindow.locationManagerProxyModel
                                         mainWindow.addToLeftContainer(locationManagerItem, "Location Manager")
                                     } else {
-                                        print("can not load toolbox.");
+                                        print("can not load LocationManager.qml.");
                                     }
                                 } else {
                                     removeFromLeftContainer(locationManagerItem)

@@ -1,47 +1,78 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls
+import "style"
 
 Rectangle {
     id: rLocationManager
 
-    color: "silver"
-
     property alias listModel: lvLocationManger.model
+
     property int locationColorIconWidth: 10
     property int locationColorIconMargin: 3
 
+    readonly property color backgroundColor: "#DEE3E6"
+    readonly property color backgroundColorop25: Qt.rgba(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0.25)
+    readonly property color backgroundColorop50: Qt.rgba(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0.5)
+
+    readonly property color foregroundColor: "#003569"
+    readonly property color foregroundColorop75: Qt.rgba(foregroundColor.r, foregroundColor.g, foregroundColor.b, 0.75)
+
+    readonly property color endGradiant: "#EDF3F9"
+    readonly property color endGradiantop0: Qt.rgba(endGradiant.r, endGradiant.g, endGradiant.b, 0)
+
+    color: "grey"
+//    gradient: Gradient {
+//        GradientStop { position: 0.0; color: backgroundColor; }
+//        GradientStop { position: height; color: endGradiantop0; }
+//    }
 
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 10
         spacing: 10
 
-        // search bar
+        // ----------------------------------------------- search bar
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 40
-            border.color: 'grey'
-            radius: 20
-            color: "transparent"
+            Layout.preferredHeight: 30
+            radius: height / 2
+            color: backgroundColorop25
             clip: true
 
             TextInput {
+                id: tiSearchedText
                 anchors.fill: parent
                 anchors.leftMargin: 15
                 anchors.rightMargin: 15
                 verticalAlignment: Text.AlignVCenter
+                font.family: "Roboto"
+                font.pixelSize: 17 / Style.monitorRatio
+                color: foregroundColorop75
 
                 onTextChanged: {
                     lvLocationManger.model.searchedName = text
                 }
             }
+
+            Text {
+                anchors.fill: parent
+                anchors.leftMargin: 15
+                anchors.rightMargin: 15
+                verticalAlignment: tiSearchedText.verticalAlignment
+                text: "Go to location..."
+                font: tiSearchedText.font
+                visible: tiSearchedText.text === ""
+                color: foregroundColorop75
+            }
         }
 
-        // add place button
+        // ----------------------------------------------- add place button
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 40
-            radius: 20
+            Layout.preferredHeight: 30
+            radius: height / 2
+            color: backgroundColorop25
 
             MouseArea {
                 anchors.fill: parent
@@ -51,38 +82,47 @@ Rectangle {
                 }
             }
 
-            Text {
-                text: "Add Place"
-                anchors.centerIn: parent
-            }
-        }
-
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 40
-            radius: 20
-
-            MouseArea {
+            RowLayout {
                 anchors.fill: parent
 
-                onClicked: {
-                    lvLocationManger.model.sort(0, Qt.AscendingOrder)
+                Rectangle {
+                    Layout.fillWidth: true
+                }
+
+                Image {
+                    Layout.preferredWidth: 22 / Style.monitorRatio
+                    Layout.preferredHeight: 22 / Style.monitorRatio
+                    source: "qrc:/Resources/location-add.png"
+                }
+
+                Rectangle {
+                    Layout.preferredWidth: 12
+                }
+
+                Text {
+                    text: "Add Place"
+                    anchors.centerIn: parent
+                    font.family: "Roboto"
+                    font.pixelSize: 17 / Style.monitorRatio
+                    color: foregroundColor
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
                 }
             }
 
-            Text {
-                text: "Sort By Name"
-                anchors.centerIn: parent
-            }
+
         }
 
-        // seperate line
+        // ----------------------------------------------- seperate line
         Rectangle {
             Layout.fillWidth: true
-            height: 3
-            color: "blue"
+            height: 1
+            color: backgroundColorop50
         }
 
+        // ----------------------------------------------- locatoins list
         ListView {
             id: lvLocationManger
 
@@ -92,18 +132,18 @@ Rectangle {
             spacing: 10
             clip: true
 
-            // ---------- this listview model sets in mainwindow.cpp !!!
+            // model set from MainWindow.qml by listModel property in this file
 
             delegate: Rectangle {
                 width: lvLocationManger.width
-                height: 200
-                color: "orange"
-                radius: 10
+                height: 232 / Style.monitorRatio
+                color: backgroundColorop25
+                radius: 15 / Style.monitorRatio
 
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: 5
-                    spacing: 0
+                    spacing: 5
 
                     Image {
                         Layout.fillWidth: true
@@ -111,10 +151,12 @@ Rectangle {
                         source: model.imageSource
                     }
 
+                    // ----------------------------------------------- Location Name Row
                     RowLayout {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         spacing: locationColorIconMargin
+                        Layout.alignment: Qt.AlignCenter
 
                         Rectangle {
                             width: locationColorIconWidth
@@ -126,23 +168,35 @@ Rectangle {
                         Text {
                             Layout.fillWidth: true
                             text: model.name
-                            font.bold: true
-                            font.pixelSize: 20
+                            font.pixelSize: 20 / Style.monitorRatio
+                            font.family: "Roboto"
+                            color: foregroundColor
                         }
 
-                        Rectangle {
-                            width: 20
-                            height: 20
-                            color: "black"
+                        Button {
+                            background: Rectangle {
+                                color: "transparent"
+                            }
+
+                            opacity: 0.75
+                            icon.source: "qrc:/Resources/location-edit.png"
+                            icon.width: 20
+                            icon.height: 20
                         }
 
-                        Rectangle {
-                            width: 20
-                            height: 20
-                            color: "black"
+                        Button {
+                            background: Rectangle {
+                                color: "transparent"
+                            }
+
+                            opacity: 0.75
+                            icon.source: "qrc:/Resources/location-delete.png"
+                            icon.width: 20
+                            icon.height: 20
                         }
                     }
 
+                    // ----------------------------------------------- Location details
                     ColumnLayout {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
@@ -151,14 +205,16 @@ Rectangle {
 
                         Text {
                             text: model.description
+                            font.pixelSize: 17 / Style.monitorRatio
+                            font.family: "Roboto"
+                            color: foregroundColorop75
                         }
 
                         Text {
                             text: model.lon + ", " + model.lat
-                        }
-
-                        Text {
-                            text: model.heading + ", " + model.pitch + ", " + model.range
+                            font.pixelSize: 17 / Style.monitorRatio
+                            font.family: "Roboto"
+                            color: foregroundColorop75
                         }
                     }
                 }
