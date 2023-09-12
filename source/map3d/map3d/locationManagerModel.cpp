@@ -1,20 +1,20 @@
 #include "locationManagerModel.h"
+#include "osgEarth/Viewpoint"
 
 LocationManagerModel::LocationManagerModel(MapItem *mapItem)
 {
     mMapItem = mapItem;
-    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
-    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "yellow"});
-    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
-    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "yellow"});
-    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
-    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "blue"});
-    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
-    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "white"});
-    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
-    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "yellow"});
-    mLocations.append(LocationData{"Eiffel Tower", "France, Paris", "qrc:/Resources/airplane1.jpg", "red"});
-    mLocations.append(LocationData{"Old Trafford", "England, Manchester", "qrc:/Resources/airplane2.jpg", "yellow"});
+
+    osgEarth::GeoPoint gp{mapItem->getMapSRS(), -165, 90, 0};
+    osgEarth::Viewpoint vp;
+    vp.name() = "North";
+    vp.setHeading(0);
+    vp.setPitch(-20);
+    vp.setRange(5000000);
+    vp.focalPoint() = gp;
+    LocationData ld1 = LocationData{vp, "France, Paris", "qrc:/Resources/airplane1.jpg", "red"};
+
+    mLocations.append(ld1);
 }
 
 int LocationManagerModel::rowCount(const QModelIndex &parent) const
@@ -71,6 +71,12 @@ void LocationManagerModel::myRemoveRow(QModelIndex index)
     endRemoveRows();
 }
 
+void LocationManagerModel::goToLocation(QModelIndex index)
+{
+    qDebug() << "goToLocation called!";
+    mMapItem->getCameraController()->setViewpoint(mLocations.at(index.row()).viewpoint, 1);
+}
+
 QVector<LocationData> LocationManagerModel::locations() const
 {
     return mLocations;
@@ -99,6 +105,11 @@ QHash<int, QByteArray> LocationManagerModel::roleNames() const
     return locationFields;
 }
 
+MapItem *LocationManagerModel::mapItem() const
+{
+    return mMapItem;
+}
+
 // ------------------------------------------------------- proxy model methods
 LocationManagerProxyModel::LocationManagerProxyModel(QObject *parent)
 {}
@@ -106,6 +117,25 @@ LocationManagerProxyModel::LocationManagerProxyModel(QObject *parent)
 void LocationManagerProxyModel::myRemoveRow(const QModelIndex &index)
 {
     dynamic_cast<LocationManagerModel*>(sourceModel())->myRemoveRow(mapToSource(index));
+}
+
+void LocationManagerProxyModel::goToLocation(const QModelIndex &index)
+{
+    dynamic_cast<LocationManagerModel*>(sourceModel())->goToLocation(mapToSource(index));
+}
+
+// for debug
+void LocationManagerProxyModel::printCurrentLocation()
+{
+    osgEarth::Viewpoint vp = dynamic_cast<LocationManagerModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
+
+    qDebug() << "vp.name(): " << QString::fromStdString(vp.name().get());
+    qDebug() << "vp.focalPoint().value().x(): " << vp.focalPoint().value().x();
+    qDebug() << "vp.focalPoint().value().y(): " << vp.focalPoint().value().y();
+    qDebug() << "vp.focalPoint().value().z(): " << vp.focalPoint().value().z();
+    qDebug() << "vp.heading(): " << vp.heading()->as(osgEarth::Units::DEGREES);
+    qDebug() << "vp.pitch(): " << vp.pitch()->as(osgEarth::Units::DEGREES);
+    qDebug() << "vp.range(): " << vp.range()->as(osgEarth::Units::METERS);
 }
 
 QString LocationManagerProxyModel::searchedName() const

@@ -101,7 +101,6 @@ Rectangle {
 
                 Text {
                     text: "Add Place"
-                    anchors.centerIn: parent
                     font.family: "Roboto"
                     font.pixelSize: 17 / Style.monitorRatio
                     color: foregroundColor
@@ -111,8 +110,6 @@ Rectangle {
                     Layout.fillWidth: true
                 }
             }
-
-
         }
 
         // ----------------------------------------------- seperate line
@@ -120,12 +117,6 @@ Rectangle {
             Layout.fillWidth: true
             height: 1
             color: backgroundColorop50
-        }
-
-        // ----------------------------------------------- selection model
-        ItemSelectionModel {
-            id: ismLocationManager
-            model: lvLocationManger.model
         }
 
         // ----------------------------------------------- locatoins list
@@ -145,6 +136,24 @@ Rectangle {
                 height: 232 / Style.monitorRatio
                 color: backgroundColorop25
                 radius: 15 / Style.monitorRatio
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onDoubleClicked: {
+                        // --- for debug
+                        console.log("model.name: ", model.name)
+                        console.log("model.lon: ", model.lon)
+                        console.log("model.lat: ", model.lat)
+                        console.log("model.z: ", model.z)
+                        console.log("model.heading: ", model.heading)
+                        console.log("model.pitch: ", model.pitch)
+                        console.log("model.range: ", model.range)
+                        // ---
+
+                        lvLocationManger.model.goToLocation(lvLocationManger.model.index(index, 0))
+                    }
+                }
 
                 ColumnLayout {
                     anchors.fill: parent
@@ -177,6 +186,15 @@ Rectangle {
                             font.pixelSize: 20 / Style.monitorRatio
                             font.family: "Roboto"
                             color: foregroundColor
+
+                            // for debug
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onDoubleClicked: {
+                                    lvLocationManger.model.printCurrentLocation();
+                                }
+                            }
                         }
 
                         Button {
@@ -201,8 +219,7 @@ Rectangle {
                             icon.height: 20
 
                             onClicked: {
-                                ismLocationManager.setCurrentIndex(lvLocationManger.model.index(index, 0), ItemSelectionModel.Select | ItemSelectionModel.Rows)
-                                lvLocationManger.model.myRemoveRow(ismLocationManager.currentIndex)
+                                lvLocationManger.model.myRemoveRow(lvLocationManger.model.index(index, 0))
                             }
                         }
                     }

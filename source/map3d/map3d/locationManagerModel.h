@@ -24,21 +24,26 @@ enum {
 struct LocationData
 {
 public:
-    LocationData() {}
+//    LocationData() {}
 
-    LocationData(QString newDescription, QString newSourceImage, QString newColor) :
-        description(newDescription), imageSource(newSourceImage), color(newColor)
-    {}
+//    LocationData(QString newDescription, QString newSourceImage, QString newColor) :
+//        description(newDescription), imageSource(newSourceImage), color(newColor)
+//    {
+//        viewpoint.name().init("Default Name");
+//        viewpoint.setHeading(0);
+//        viewpoint.setPitch(-20);
+//        viewpoint.setRange(5000000);
+//    }
 
-    LocationData(QString newName, QString newDescription, QString newSourceImage, QString newColor) :
-        description(newDescription), imageSource(newSourceImage), color(newColor)
-    {
-        viewpoint.name().init(newName.toStdString());
-    }
+//    LocationData(QString newName, QString newDescription, QString newSourceImage, QString newColor) :
+//        description(newDescription), imageSource(newSourceImage), color(newColor)
+//    {
+//        viewpoint.name().init(newName.toStdString());
+//    }
 
-    LocationData(QString newName, double newLon, double newLat, double newZ, double newHeading, double newPitch, double newRange, QString newDescription, QString newSourceImage, QString newColor) :
-        description(newDescription), imageSource(newSourceImage), color(newColor)
-    {}
+//    LocationData(QString newName, double newLon, double newLat, double newZ, double newHeading, double newPitch, double newRange, QString newDescription, QString newSourceImage, QString newColor) :
+//        description(newDescription), imageSource(newSourceImage), color(newColor)
+//    {}
 
     osgEarth::Viewpoint viewpoint;
     QString description;
@@ -53,21 +58,22 @@ class LocationManagerModel : public QAbstractListModel
 public:
     explicit LocationManagerModel(MapItem *mapItem);
 
-    // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    // Editable:
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole) override;
 
     Q_INVOKABLE void myRemoveRow(QModelIndex index);
+    Q_INVOKABLE void goToLocation(QModelIndex index);
 
     QVector<LocationData> locations() const;
     void setLocations(const QVector<LocationData> &newLocations);
 
     virtual QHash<int, QByteArray> roleNames() const override;
+
+    MapItem *mapItem() const;
 
 private:
     MapItem *mMapItem;
@@ -84,6 +90,8 @@ public:
     explicit LocationManagerProxyModel(QObject *parent = nullptr);
 
     Q_INVOKABLE void myRemoveRow(const QModelIndex &index);
+    Q_INVOKABLE void goToLocation(const QModelIndex &index);
+    Q_INVOKABLE void printCurrentLocation(); // for debugging
 
     QString searchedName() const;
     void setSearchedName(const QString &newSearchedName);
