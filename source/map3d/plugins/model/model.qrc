@@ -3,5 +3,6 @@
         <file>resources/tree.png</file>
         <file>resources/car.png</file>
         <file>resources/airplane.png</file>
+        <file>resources/status.png</file>
     </qresource>
 </RCC>
