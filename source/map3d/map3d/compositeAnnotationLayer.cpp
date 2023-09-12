@@ -164,7 +164,7 @@ void CompositeAnnotationLayer::addLayer(ParenticAnnotationLayer *layer)
         layer->addCallback(it->get());
     }
 
-    fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
+    fireCallback(&CompositeLayerCallback::onLayerAdded, layer, mChildildren.size() - 1);
 }
 
 void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsigned int index)
@@ -187,11 +187,12 @@ void CompositeAnnotationLayer::insertLayer(ParenticAnnotationLayer *layer, unsig
         return p1->mOrder < p2->mOrder;
     });
 
-    fireCallback(&CompositeLayerCallback::onLayerAdded, layer);
+    fireCallback(&CompositeLayerCallback::onLayerAdded, layer, index);
 }
 
 void CompositeAnnotationLayer::removeLayer(ParenticAnnotationLayer *layer)
 {
+    unsigned int index = getIndexOfLayer(layer);
     layer->removeParent(this);
     for (auto it = _callbacks.begin(); it != _callbacks.end(); ++it){
         layer->removeCallback(it->get());
@@ -203,7 +204,7 @@ void CompositeAnnotationLayer::removeLayer(ParenticAnnotationLayer *layer)
     });
     if (it != mChildildren.end()) mChildildren.erase(it);
 
-    fireCallback(&CompositeLayerCallback::onLayerRemoved, layer);
+    fireCallback(&CompositeLayerCallback::onLayerRemoved, layer, index);
 }
 
 void CompositeAnnotationLayer::clearLayers()
@@ -288,12 +289,12 @@ ParenticAnnotationLayer *CompositeAnnotationLayer::getHierarchicalLayerByUserId(
     return nullptr;
 }
 
-void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr method, ParenticAnnotationLayer *layer)
+void CompositeAnnotationLayer::fireCallback(CompositeLayerCallback::MethodPtr method, ParenticAnnotationLayer *layer, unsigned int index)
 {
     for (CallbackVector::iterator i = _callbacks.begin(); i != _callbacks.end(); ++i)
     {
         CompositeLayerCallback* cb = dynamic_cast<CompositeLayerCallback*>(i->get());
-        if (cb) (cb->*method)(layer, this);
+        if (cb) (cb->*method)(layer, this, index);
     }
 }
 
