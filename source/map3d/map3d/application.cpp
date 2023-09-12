@@ -11,9 +11,9 @@
 #include "application.h"
 #include "mainwindow.h"
 #include "listwindow.h"
-#include "layerModel.h"
-#include "mapControllerItem.h"
 #include "mapItem.h"
+#include "networkManager.h"
+
 Application::Application() :
     mPluginManager(new PluginManager)
 {
@@ -29,37 +29,27 @@ void Application::performStartupConfiguration()
 {
     qputenv("QSG_RENDER_LOOP", "basic"); // This line is very important and can not be removed
     initializeSurfaceFormat();
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
+//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 }
 
 void Application::initialize()
 {
+    qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
+    qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
 
-    //initializeNetworkManager();
-    registerTypes();
     initializeQmlEngine();
     initializeDefenseDataManager();
 
-
-//    QObject::connect(this, &Application::mainWindowCreated,
-//                     this, &Application::onMainWindowCreated,
-//                     Qt::DirectConnection);
-//    QObject::connect(this, &Application::listWindowCreated,
-//                     this, &Application::onListWindowCreated,
-//                     Qt::DirectConnection);
-
-    createMainWindow();
-    createListWindow();
-
+    mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
+    mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
 }
 
 void Application::show()
 {
-    if (mUIIsReady) {
+    if (mIsReady) {
         mMainWindow->show();
     } else {
-        QObject::connect(this, &Application::uiCreated, [this]() {
+        QObject::connect(this, &Application::ready, [this]() {
             mMainWindow->show();
         });
     }
@@ -74,43 +64,17 @@ void Application::initializeSurfaceFormat()
     QSurfaceFormat::setDefaultFormat(fmt);
 }
 
-void Application::registerTypes()
-{
-    qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
-    qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
-    qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
-//    qmlRegisterType<LayersProxyModel>("Crystal", 1, 0, "CLayerProxyModel");
-    qmlRegisterType<MapItem>("Crystal",1,0,"MapItem");
-    qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
-
-    qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
-    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
-}
-
 void Application::initializeQmlEngine()
 {
     mQmlEngine = new QQmlApplicationEngine();
     QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreated,
                      this, &Application::onQmlObjectCreated,
                      Qt::DirectConnection);
+
+    QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreationFailed,[]( const QUrl &url){
+        qDebug()<<"Can not create: "<< url.toString();
+    });
 }
-
-
-void Application::createMainWindow()
-{
-    mQmlEngine->load(mMainWindowUrl);
-}
-
-void Application::createListWindow()
-{
-    mQmlEngine->load(mListWindowUrl);
-}
-
-
-//void Application::initializeNetworkManager()
-//{
-//    mNetworkManager = new NetworkManager;mMainWindow
-//}
 
 void Application::initializeDefenseDataManager()
 {
@@ -120,149 +84,47 @@ void Application::initializeDefenseDataManager()
 
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 {
-    if (!obj && mMainWindowUrl == objUrl)
+    if(!obj){
+        qDebug()<<"Can not create: "<< objUrl.toString();
         QCoreApplication::exit(-1);
+        return;
+    }
+    qDebug()<<"Load: "<< objUrl.toString();
+
     MainWindow *mainWnd = qobject_cast<MainWindow*>(obj);
     ListWindow *listWnd = qobject_cast<ListWindow*>(obj);
 
-
-
-
-
-
-    if (mainWnd && !mMainWindow) {
+    if (mainWnd) {
         mMainWindow = mainWnd;
-        if(mListWindow)
-            onUICreated();
-        QQmlComponent* comp = new QQmlComponent(mQmlEngine);
-        comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
-        QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-        MapItem *mapitem = static_cast<MapItem*>(item);
-        mainWnd->setMapItem(*mapitem);
-//        QQuickItem* dock = mainWnd->wrapItemWithDockable(item, "Viewport");
-        mainWnd->addToCenterCenterContainer(mapitem);
-        onMainWindowCreated();
-//        emit mainWindowCreated();
+        mMainWindow->initComponent();
     }
-    if (listWnd && !mListWindow) {
+    if (listWnd) {
         mListWindow = listWnd;
         mMainWindow->setListWindow(mListWindow);
-        if(mMainWindow)
-            onUICreated();
-
-//        emit listWindowCreated();
+        onUICreated();
     }
-
-
 }
 
 void Application::onUICreated()
 {
-    mUIIsReady = true;
+    mServiceManager = new ServiceManager(mMainWindow->getMapItem());
+    connect(mServiceManager, &ServiceManager::layerAdded, [&](CompositeAnnotationLayer *layer){
+            mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
+        });
+    NetworkManager *networkManager = new NetworkManager(mServiceManager);
+    networkManager->start();
+
     mPluginManager->loadPlugins();
-    setup();
-    //////////////////////
-//    QJsonObject layers;
-//    QJsonObject layer1;
-
-//    layer1.insert("id", 100);
-//    layer1.insert("parentId", 1);
-//    layer1.insert("text", "layer1");
-//    layer1.insert("order", 1);
-//    layer1.insert("type", "Aircraft");
-
-//    QJsonArray childs;
-//    for (int i{0}; i < 8; ++i){
-//        QJsonObject child;
-//        child.insert("id", i);
-//        child.insert("parentId", i);
-//        child.insert("text", "layer1" + QString::number(i));
-//        child.insert("order", 0);
-//        child.insert("type", "Aircraft");
-//        childs.push_back(child);
-//    }
-//    layer1.insert("childs", childs);
-
-//    layers.insert("layer1", layer1);
-//    QJsonDocument doc;
-//    doc.setObject(layers);
-//    mMainWindow->serviceManager()->initLayers(&doc);
-
-
-    ///////////////////////////
-    emit uiCreated();
-}
-
-void Application::onMainWindowCreated()
-{
-//    mMainWindowIsReady = true;
-
-//    if (mMainWindowIsReady && mListWindowIsReady) {
-//        onAllWindowsCreated();
-//    }
-}
-
-void Application::onListWindowCreated()
-{
-//    mListWindowIsReady = true;
-
-//    if (mMainWindowIsReady && mListWindowIsReady) {
-//        onAllWindowsCreated();
-//    }
-}
-
-void Application::onAllWindowsCreated()
-{
-//    if (mMainWindow && mListWindow) {
-//        static bool bFirst = true;
-//        if (bFirst) {
-//            mMainWindow->setListWindow(mListWindow);
-//            bFirst = false;
-//        }
-//    }
-//}
-
-
-
-//    QObject::connect(mMainWindow, &MainWindow::sideItemCreated,
-//                     mPluginManager, &PluginManager::onSideItemCreated,
-//                     Qt::QueuedConnection);
-//    QObject::connect(mMainWindow, &MainWindow::toolboxItemCreated,
-//                     mPluginManager, &PluginManager::onToolboxItemCreated,
-//                     Qt::DirectConnection);
-//    QObject::connect(mMainWindow, &MainWindow::toolboxItemClicked,
-//                     mPluginManager, &PluginManager::onToolboxItemClicked,
-//                     Qt::DirectConnection);
-//    QObject::connect(mMainWindow, &MainWindow::toolboxItemCheckedChanged,
-//                     mPluginManager, &PluginManager::onToolboxItemCheckedChanged,
-//                     Qt::DirectConnection);
-//    QObject::connect(mMainWindow, &MainWindow::osgInitialized,
-//                     this, &Application::setup,
-//                     Qt::DirectConnection);
-
-//    QObject::connect(mMainWindow, &MainWindow::fileItemCreated,
-//                     mPluginManager, &PluginManager::onFileItemCreated,
-//                     Qt::DirectConnection);
-//    QObject::connect(mMainWindow, &MainWindow::fileItemClicked,
-//                     mPluginManager, &PluginManager::onFileItemClicked,
-//                     Qt::DirectConnection);
-
-//    mPluginManager->performPluginsInitQMLDesc(mQmlEngine);
-
-//    mMainWindow->initializePluginsUI(mPluginManager->pluginsInfoList());
-
-//    setup();
-
-}
-
-void Application::setup()
-{
-//    mPluginManager->performPluginsInitQMLDesc(mQmlEngine);
-
-//    mMainWindow->initializePluginsUI(mPluginManager->pluginsInfoList());
     mPluginManager->setup();
-
-//    mPluginManager->performPluginsSetup(mMainWindow->getMapItem());
     emit defenseDataManagerInitialized(mDefenseDataManager);
+
+    mIsReady = true;
+    emit ready();
 }
+
+ServiceManager *Application::serviceManager() const
+{
+    return mServiceManager;
+}
+
 

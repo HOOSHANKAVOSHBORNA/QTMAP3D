@@ -1,4 +1,6 @@
 #include "networkManager.h"
+#include "qamqpexchange.h"
+#include "qamqpqueue.h"
 
 NetworkManager::NetworkManager(QObject *parent): QObject(parent)
 {
@@ -12,6 +14,13 @@ void NetworkManager::sendFlyableData(const QString &data)
     qDebug() << "Sent flyable data: "<<data;
 }
 
+void NetworkManager::sendLayerData(const QString &data)
+{
+    QAmqpExchange *exchange = mClient.createExchange();
+    exchange->publish(data, "layer");
+    qDebug() << "Sent layer data: "<<data;
+}
+
 void NetworkManager::start()
 {
     connect(&mClient, &QAmqpClient::connected, this, &NetworkManager::clientConnected);
@@ -22,11 +31,19 @@ void NetworkManager::start()
 void NetworkManager::clientConnected()
 {
     qDebug() << "Client connected.";
+    //--layer queue-------------------------------------------
+    QAmqpQueue *layerQueue = mClient.createQueue("layer");
+    disconnect(layerQueue, 0, 0, 0); // in case this is a reconnect
+    connect(layerQueue, &QAmqpQueue::declared, this, &NetworkManager::layerQueueDeclared);
+    layerQueue->declare();
+
     //--flyable queue-------------------------------------------
-    QAmqpQueue *queue = mClient.createQueue("flyable");
-    disconnect(queue, 0, 0, 0); // in case this is a reconnect
-    connect(queue, &QAmqpQueue::declared, this, &NetworkManager::flyableQueueDeclared);
-    queue->declare();
+    QAmqpQueue *flyableQueue = mClient.createQueue("flyable");
+    disconnect(flyableQueue, 0, 0, 0); // in case this is a reconnect
+    connect(flyableQueue, &QAmqpQueue::declared, this, &NetworkManager::flyableQueueDeclared);
+    flyableQueue->declare();
+
+
 
 }
 

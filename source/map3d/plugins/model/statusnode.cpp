@@ -55,6 +55,8 @@ void StatusNode::setData(QString title, std::list<Data> dataList)
 {
     mTitle = title;
     mDataList = dataList;
+    updateStatusData();
+    setStyle(getStyle());
 }
 
 void StatusNode::updateStatusData()

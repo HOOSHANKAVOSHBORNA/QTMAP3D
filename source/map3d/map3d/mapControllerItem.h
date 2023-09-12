@@ -14,18 +14,12 @@ class MapControllerItem : public MapItem
     Q_PROPERTY(QVector2D compassDirection READ compassDirection WRITE setCompassDirection NOTIFY compassDirectionChanged FINAL)
     Q_PROPERTY(double fps READ fps WRITE setFps NOTIFY fpsChanged)
 
-    Q_PROPERTY(bool zoomInButtonPressed       WRITE setZoomInButtonPressed      )
-    Q_PROPERTY(bool zoomOutButtonPressed      WRITE setZoomOutButtonPressed     )
-    Q_PROPERTY(bool upButtonPressed           WRITE setUpButtonPressed          )
-    Q_PROPERTY(bool downButtonPressed         WRITE setdownButtonPressed        )
-    Q_PROPERTY(bool leftButtonPressed         WRITE setleftButtonPressed        )
-    Q_PROPERTY(bool rightButtonPressed        WRITE setrightButtonPressed       )
-    Q_PROPERTY(bool rotateUpButtonPressed     WRITE setrotateUpButtonPressed    )
-    Q_PROPERTY(bool rotateDownButtonPressed   WRITE setrotateDownButtonPressed  )
-    Q_PROPERTY(bool rotateLeftButtonPressed   WRITE setrotateLeftButtonPressed  )
-    Q_PROPERTY(bool rotateRightButtonPressed  WRITE setrotateRightButtonPressed )
+    Q_PROPERTY(bool zoomInButtonPressed WRITE setZoomInButtonPressed)
+    Q_PROPERTY(bool zoomOutButtonPressed WRITE setZoomOutButtonPressed)
 
-//    Q_PROPERTY(SearchNodeModel searchNodeModel   READ getSearchNodeModel NOTIFY searchChange)
+    Q_PROPERTY(QVector2D movePosition WRITE setMovePosition)
+    Q_PROPERTY(QVector2D rotatePosition WRITE setRotatePosition)
+
     Q_PROPERTY(QVector3D mapMouseGeoLocation READ mapMouseGeoLocation NOTIFY mouseLocationChanged)
     Q_PROPERTY(QVector3D mapMouseLocation READ mapMouseLocation NOTIFY mouseLocationChanged)
 
@@ -50,14 +44,11 @@ public slots:
     void setHeadingToNorth();
     void setZoomInButtonPressed(bool pressed);
     void setZoomOutButtonPressed(bool pressed);
-    void setUpButtonPressed(bool pressed);
-    void setdownButtonPressed(bool pressed);
-    void setleftButtonPressed(bool pressed);
-    void setrightButtonPressed(bool pressed);
-    void setrotateUpButtonPressed(bool pressed);
-    void setrotateDownButtonPressed(bool pressed);
-    void setrotateLeftButtonPressed(bool pressed);
-    void setrotateRightButtonPressed(bool pressed);
+
+    void setMovePosition(QVector2D &position);
+    void setRotatePosition(QVector2D &position);
+
+
     SearchNodeProxyModel *searchNodeProxyModel() const;
 
 signals:
@@ -75,14 +66,12 @@ private:
 private:
     bool mZoomInButtonPressed{false};
     bool mZoomOutButtonPressed{false};
-    bool mUpButtonPressed{false};
-    bool mDownButtonPressed{false};
-    bool mLeftButtonPressed{false};
-    bool mRightButtonPressed{false};
-    bool mRotateUpButtonPressed{false};
-    bool mRotateDownButtonPressed{false};
-    bool mRotateLeftButtonPressed{false};
-    bool mRotateRightButtonPressed{false};
+
+    QVector2D mMovePosition;
+    QVector2D mRotatePosition;
+
+    bool mMoveTick{false};
+    bool mRotateTick{false};
     osgEarth::GeoPoint mCurrentMouseGeoPoint;
 
     QTime mLastMousePressTime = QTime::currentTime();

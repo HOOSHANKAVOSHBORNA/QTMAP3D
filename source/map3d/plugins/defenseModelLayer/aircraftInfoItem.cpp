@@ -136,7 +136,7 @@ QHash<int, QByteArray> AircraftInfoModel::roleNames() const
 
 AircraftInfoItem::AircraftInfoItem(DefenseModelLayer *defenseModelLayer, const Aircraft::Data& minformation, QObject *parent)
     :QObject(parent),
-    mInformation(&minformation), mUiHandle(defenseModelLayer->uiHandle())
+    mInformation(&minformation), mDefenseModelLayer(defenseModelLayer)
 {
     QQmlComponent *comp = new QQmlComponent(defenseModelLayer->qmlEngine());
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
@@ -157,8 +157,8 @@ AircraftInfoItem::AircraftInfoItem(DefenseModelLayer *defenseModelLayer, const A
 
 AircraftInfoItem::~AircraftInfoItem()
 {
-    if(mUiHandle)
-        mUiHandle->iwHide(mItem);
+//    if(mUiHandle)
+//        mUiHandle->iwHide(mItem);
     delete mInfomodel;
     delete mItem;
 }
@@ -173,13 +173,12 @@ void AircraftInfoItem::updateAircraft()
     mInfomodel->updateAircraftInfo();
 }
 void AircraftInfoItem::show() {
-    mUiHandle->iwShow(mItem, QString::number(mInformation->info.TN));
+    mDefenseModelLayer->mainWindow()->showInfoItem(mItem, QString::number(mInformation->info.TN));
 }
 
 void AircraftInfoItem::hide()
 {
-    if (mItem)
-        mUiHandle->iwHide(mItem);
+    mDefenseModelLayer->mainWindow()->hideInfoItem(mItem);
 }
 
 void AircraftInfoItem::setTrackOff()

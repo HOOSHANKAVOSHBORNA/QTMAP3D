@@ -6,14 +6,43 @@
 #include <QJsonDocument>
 #include <osgEarth/Layer>
 
-struct ServiseModel: public osg::Referenced {
+struct ServiseFixedModel: public osg::Referenced
+{
+    int id;
     std::string name;
-    std::string modelUrl2D;
-    std::string modelUrl3D;
-    std::string iconUrl;
-    osgEarth::GeoPoint position;
-    ServiseModel(std::string modelUrl2D, std::string modelUrl3D, std::string iconUrl, osgEarth::GeoPoint position)
-        : modelUrl2D{modelUrl2D}, modelUrl3D{modelUrl3D}, iconUrl{iconUrl}, position{position} {}
+    std::string url2D;
+    std::string url3D;
+    std::string color;
+    double latitude;
+    double longitude;
+    double altitude;
+    std::vector<int> layersId;
+    ServiseFixedModel()
+        : osg::Referenced() {}
+};
+
+struct ServiceMovableModel: public ServiseFixedModel
+{
+    ServiceMovableModel():
+        ServiseFixedModel(){}
+};
+
+struct  ServiceFlyableModel: public ServiceMovableModel
+{
+    ServiceFlyableModel()
+        : ServiceMovableModel(){}
+
+    double speed;
+};
+
+struct ServiceLayer {
+    int id;
+    int parentId;
+    std::string text;
+    int order;
+    bool parentic;
+    ServiceLayer(int id, int parent, std::string text, int order, bool parentic):id{id}, parentId{parent}, text{text}, order{order}, parentic{parentic} {}
+
 };
 
 class ServiceManager: public QObject
@@ -22,8 +51,8 @@ class ServiceManager: public QObject
 public:
     ServiceManager(MapItem *mapItem, QObject *parent = nullptr);
 
-    void initLayers(QJsonDocument *layersJson);
-    void addFlyableModel(QJsonDocument *flyable, int layerId);
+    void initLayers(std::string layersStr);
+    void addFlyableModel(std::string flyable);
     void addMovableModel(QJsonDocument *movable);
     void addModel(QJsonDocument *model);
 
@@ -33,11 +62,12 @@ public:
     void addPolyline(QJsonDocument *polyline);
 
 signals:
-    void flyableAdded(ServiseModel *model, ParenticAnnotationLayer* parentic);
+    void layerAdded(CompositeAnnotationLayer *layer);
+    void flyableAdded(ServiceFlyableModel *model);
 private:
-    void parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent=nullptr);
+    void parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent = nullptr);
+
 private:
-    QMap<int, osg::ref_ptr<ParenticAnnotationLayer>> layers;
     MapItem *mMapItem{nullptr};
 };
 

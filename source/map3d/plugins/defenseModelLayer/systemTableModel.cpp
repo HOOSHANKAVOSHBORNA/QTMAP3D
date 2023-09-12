@@ -242,7 +242,7 @@ SystemTable::SystemTable(SystemDataManager *systemDataManger, DefenseModelLayer 
                              SLOT(onDoubleClicked(const int&)));
 
             systemTab->setProperty("model", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
-            mDefenseModelLayer->uiHandle()->lwAddTab("Systems", systemTab);
+            mDefenseModelLayer->mainWindow()->addTabToListWindow("Systems", systemTab);
         }
 
     });

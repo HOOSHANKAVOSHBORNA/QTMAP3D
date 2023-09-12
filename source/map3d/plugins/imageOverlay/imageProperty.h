@@ -67,7 +67,7 @@ class ImageProperty: public QObject
     Q_OBJECT
 
 public:
-    ImageProperty(osgEarth::Annotation::ImageOverlay *image, QQmlEngine *qmlEngine, UIHandle *uiHandle, MapItem *mapItem, QObject *parent = nullptr);
+    ImageProperty(osgEarth::Annotation::ImageOverlay *image, QQmlEngine *qmlEngine, MapItem *mapItem, QObject *parent = nullptr);
 
     void show();
     void hide();
@@ -83,7 +83,6 @@ private:
     QQuickItem* mItem{nullptr};
     osgEarth::Annotation::ImageOverlay mImage{nullptr};
     ImagePropertyModel* mImageProperty{nullptr};
-    UIHandle* mUiHandle;
 };
 
 #endif // IMAGEPROPERTYMODEL_H

@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <time.h>
 #include <iomanip>
-
+#include "mainwindow.h"
 AircraftTableModel::AircraftTableModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
@@ -309,7 +309,7 @@ AircraftTable::AircraftTable(AircraftDataManager *aircraftDatamanager, DefenseMo
                              mAircraftTableModel,
                              SLOT(sortWithHeader(int)));
             aircraftTab->setProperty("model", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
-            mDefenseModelLayer->uiHandle()->lwAddTab("Aircrafts", aircraftTab);
+            mDefenseModelLayer->mainWindow()->addTabToListWindow("Aircrafts", aircraftTab);
         }
 
     });

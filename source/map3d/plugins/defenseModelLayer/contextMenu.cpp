@@ -24,8 +24,8 @@ QHash<int, QByteArray> ContextMenumodel::roleNames() const
     return hash;
 }
 
-ContextMenu::ContextMenu(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent) :
-    QObject(parent), mUiHandle(uiHandle), mQmlEngine(qmlEngine)
+ContextMenu::ContextMenu(QQmlEngine *qmlEngine, QObject *parent) :
+    QObject(parent), mQmlEngine(qmlEngine)
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [this, comp](){
@@ -46,7 +46,7 @@ void ContextMenu::show(int x, int y)
 
     QQmlEngine::setObjectOwnership(mNowContextMenu, QQmlEngine::JavaScriptOwnership);
 
-    mUiHandle->cmShowContextMenu(mNowContextMenu, static_cast<int>(x), static_cast<int>(y));
+//    mUiHandle->cmShowContextMenu(mNowContextMenu, static_cast<int>(x), static_cast<int>(y));
     QMetaObject::invokeMethod(mNowContextMenu, "addMenuItem",
                               Q_ARG(QVariant, QVariant::fromValue<QStringList>(mContextMenuModel->getList())));
 }
@@ -55,11 +55,11 @@ void ContextMenu::show(int x, int y)
 
 void ContextMenu::hideMenu()
 {
-    mUiHandle->cmHideContextMenu(mNowContextMenu);
+//    mUiHandle->cmHideContextMenu(mNowContextMenu);
     mNowContextMenu = nullptr;
 }
 
 void ContextMenu::updatePosition(int x, int y)
 {
-    mUiHandle->cmSetContextMenuPosition(mNowContextMenu, x, y);
+//    mUiHandle->cmSetContextMenuPosition(mNowContextMenu, x, y);
 }

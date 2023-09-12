@@ -10,23 +10,28 @@
 #include <chrono>
 
 #include "mainwindow.h"
-#include "plugininterface.h"
 #include "mapItem.h"
 #include "listwindow.h"
+#include "qqmlcontext.h"
+#include "mapControllerItem.h"
+
+#include "locationManagerModel.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
+
 MainWindow::MainWindow(QWindow *parent) :
     QQuickWindow(parent)
 {
+    qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
+    qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
+    qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 
     setColor(Qt::black);
     mToolbox = new ToolboxProxyModel();
     Toolbox *toolbox = new Toolbox(this);
     mToolbox->setSourceModel(toolbox);
-
-    mUIHandle = new UIHandle(this);
 }
 
 
@@ -34,6 +39,40 @@ MainWindow::~MainWindow()
 {
     //    cleanup();
     //    mMapItem->deleteLater();
+}
+
+void MainWindow::initComponent()
+{
+//    QQmlEngine *engine = qmlContext(this)->engine();
+    QQmlEngine *engine = qmlEngine(this);
+
+    QQmlComponent* comp = new QQmlComponent(engine);
+    connect(comp, &QQmlComponent::statusChanged,[&](QQmlComponent::Status status){
+        if(status == QQmlComponent::Error){
+            qDebug()<<"Can not load MapControllerItem: "<<comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready){
+            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+            mMapItem = static_cast<MapItem*>(item);
+            addToCenterCenterContainer(mMapItem);
+
+            mLayersModel = new LayersModel(mMapItem);
+
+            // --- location manager and its proxy model settings
+            mLocationManagerProxyModel = new LocationManagerProxyModel();
+            LocationManagerModel *locationManagerModel = new LocationManagerModel(mMapItem);
+            mLocationManagerProxyModel->setSourceModel(locationManagerModel);
+            // ---
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
+
+}
+
+QQmlEngine *MainWindow::getQmlEngine()
+{
+    return qmlEngine(this);
 }
 
 
@@ -45,16 +84,6 @@ LayersModel *MainWindow::layersModel() const
 ToolboxProxyModel *MainWindow::toolbox() const
 {
     return mToolbox;
-}
-
-UIHandle *MainWindow::uiHandle() const
-{
-    return mUIHandle;
-}
-
-ServiceManager *MainWindow::serviceManager() const
-{
-    return mServiceManager;
 }
 
 void MainWindow::addToCenterCenterContainer(QQuickItem *item)
@@ -88,55 +117,37 @@ void MainWindow::showListWindow()
     }
 }
 
-void MainWindow::setLayersModel(LayersModel *layersModel)
-{
-    if (mLayersModel != layersModel) {
-        mLayersModel = layersModel;
-        emit layersModelChanged();
-    }
-}
-
-void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
-{
-    mToolbox = toolbox;
-    emit toolboxChanged();
-}
-
-//void MainWindow::onTestClicked()
-//{
-
-//    QJsonDocument jsonDocc;
-//    QJsonObject node1;
-//    QJsonArray nodeParents;
-//    nodeParents.push_back(100);
-//    nodeParents.push_back(101);
-//    nodeParents.push_back(102);
-//    node1.insert("layers", nodeParents);
-//    node1.insert("Latitude", 1000);
-//    node1.insert("Longitude", 1000);
-//    node1.insert("Altitude", 1000);
-//    node1.insert("Heading", 1000);
-//    node1.insert("Speed", 1000);
-//    node1.insert("TN", 1000);
-//    node1.insert("ModelLocation2d", "pwd");
-//    node1.insert("ModelLocation3d", "pwd");
-//    node1.insert("x", 51.3347);
-//    node1.insert("y", 35.7219);
-//    node1.insert("z", 0);
-//    serviceManager()->addFlyableModel(&jsonDocc, 1);
-//}
-
 MapItem *MainWindow::getMapItem()
 {
     return mMapItem;
 }
 
-void MainWindow::setMapItem(MapItem &mapItem)
+void MainWindow::showInfoItem(QQuickItem *item, QString title)
 {
-    mMapItem = &mapItem;
-    mLayersModel = new LayersModel(mMapItem);
-    mServiceManager = new ServiceManager(mMapItem);
+    QMetaObject::invokeMethod(this,
+                              "showInfoView",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
+                              Q_ARG(QVariant, QVariant::fromValue<QString>(title))
+                              );
 }
+
+void MainWindow::hideInfoItem(QQuickItem *item)
+{
+    removeFromLeftContainer(item);
+}
+
+void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
+{
+    if (mListWindow) {
+        QMetaObject::invokeMethod(mListWindow,
+                                  "addTab",
+                                  Q_ARG(QVariant, QVariant::fromValue<QString>(tabTitle)),
+                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(tabItem))
+                                  );
+
+    }
+}
+
 
 void MainWindow::addToLeftContainer(QQuickItem *item, QString title)
 {
@@ -157,7 +168,7 @@ void MainWindow::addToRightContainer(QQuickItem *item, QString title)
 void MainWindow::setListWindow(ListWindow *listWindow)
 {
     mListWindow = listWindow;
-    mUIHandle->setListWindow(listWindow);
+//    mUIHandle->setListWindow(listWindow);
 }
 
 bool MainWindow::event(QEvent *ev)
@@ -173,4 +184,9 @@ bool MainWindow::event(QEvent *ev)
     }
 
     return QQuickWindow::event(ev);
+}
+
+LocationManagerProxyModel *MainWindow::locationManagerProxyModel() const
+{
+    return mLocationManagerProxyModel;
 }

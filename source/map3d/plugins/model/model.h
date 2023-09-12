@@ -12,7 +12,11 @@
 #include <osg/Fog>
 #include "sphereNode.h"
 #include "circle.h"
+
 #include <statusnode.h>
+
+#include "cone.h"
+
 
 #define MODEL "Model"
 #define TREE "Tree"
@@ -62,7 +66,7 @@ public slots:
     void onAirplanItemCheck (bool check);
     void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
-    void addFlyable(ServiseModel *model, ParenticAnnotationLayer *layer);
+    void addFlyableModel(ServiceFlyableModel *serviceModel);
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
@@ -87,6 +91,7 @@ private:
     Type mType;
     osg::ref_ptr<SphereNode> mSphere{nullptr};
     osg::ref_ptr<Circle> mCircle{nullptr};
+    osg::ref_ptr<Cone> mCone{nullptr};
     static int mCount;
     double mCurrentModelSize;
     bool mIs3D;

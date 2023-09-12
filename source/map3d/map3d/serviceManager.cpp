@@ -4,52 +4,63 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-ServiceManager::ServiceManager(MapItem *mapItem, QObject *parent): mMapItem(mapItem), QObject(parent)
+ServiceManager::ServiceManager(MapItem *mapItem, QObject *parent):
+    QObject(parent),
+    mMapItem{mapItem}
 {
 
 }
 
-void ServiceManager::initLayers(QJsonDocument *layersJson)
+void ServiceManager::initLayers(std::string layersStr)
 {
-    QJsonObject data = layersJson->object();
+    QJsonDocument doc = QJsonDocument::fromJson(QString::fromStdString(layersStr).toUtf8());
+
+    QJsonObject data = doc.object();
     for (auto it : data)
         parseLayersFromJson(it.toObject());
 }
 
-void ServiceManager::addFlyableModel(QJsonDocument *flyable, int layerId)
+void ServiceManager::addFlyableModel(std::string flyable)
 {
-    QJsonObject data = flyable->object();
-    double x = data.value("x").toDouble();
-    double y = data.value("y").toDouble();
-    double z = data.value("z").toDouble();
-    osgEarth::GeoPoint geopos(mMapItem->screenToGeoPoint(600, 300));
-    geopos.z() = 0;
-    ServiseModel *model = new ServiseModel(data.value("modelUrl2D").toString().toStdString(),data.value("modelUrl3D").toString().toStdString()
-                                           , data.value("iconUrl").toString().toStdString(), geopos);
-    emit flyableAdded(model, layers[layerId].get());
+    QJsonDocument doc = QJsonDocument::fromJson(QString::fromStdString(flyable).toUtf8());
+    QJsonObject data = doc.object();
+
+    ServiceFlyableModel* flyableModel = new ServiceFlyableModel();
+    flyableModel->longitude =  data.value("Longitude").toDouble();
+    flyableModel->latitude = data.value("Latitude").toDouble();
+    flyableModel->altitude = data.value("Altitude").toDouble();
+    flyableModel->name = data.value("Name").toString().toStdString();
+    flyableModel->url2D = data.value("Url2d").toString().toStdString();
+    flyableModel->url3D = data.value("Url3d").toString().toStdString();
+    flyableModel->color = data.value("Color").toString().toStdString();
+    flyableModel->speed = data.value("Speed").toInt();
+    for (auto i : data.value("LayersId").toArray())
+        flyableModel->layersId.push_back(i.toInt());
+
+    emit flyableAdded(flyableModel);
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent)
 {
-    if (obj.value("childs").toArray().size() > 0){
-        osg::ref_ptr<CompositeAnnotationLayer> comp = new CompositeAnnotationLayer();
-        comp->setName(obj.value("text").toString().toStdString());
-        mMapItem->getMapObject()->addLayer(comp);
-        unsigned int order = obj.value("order").toInt();
-        if (parent)
-            parent->insertLayer(comp, order);
-        layers[obj.value("id").toInt()] = comp;
-        for (auto it: obj.value("childs").toArray()) {
+    if (obj.value("Children").toArray().size() > 0){
+        CompositeAnnotationLayer* comp = new CompositeAnnotationLayer(obj.value("Id").toInt());
+        comp->setName(obj.value("Text").toString().toStdString());
+        comp->setOrder(obj.value("Order").toInt());
+        if (parent){
+            parent->addLayer(comp);
+        }
+        else
+            emit layerAdded(comp);
+
+        for (auto it: obj.value("Children").toArray()) {
             parseLayersFromJson(it.toObject(), comp);
         }
     }
     else {
-        osg::ref_ptr<ParenticAnnotationLayer> parentic = new ParenticAnnotationLayer();
-        parentic->setName(obj.value("text").toString().toStdString());
-        unsigned int order = obj.value("order").toInt();
-        if (parent)
-            parent->insertLayer(parentic, order);
-        layers[obj.value("id").toInt()] = parentic;
+        ParenticAnnotationLayer* parentic = new ParenticAnnotationLayer(obj.value("Id").toInt());
+        parentic->setName(obj.value("Text").toString().toStdString());
+        parent->addLayer(parentic);
+//        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
         return;
     }
 }

@@ -30,14 +30,14 @@ class ContextMenu : public QObject
 {
     Q_OBJECT
 public:
-    ContextMenu(QQmlEngine *qmlEngine, UIHandle *uiHandle, QObject *parent = nullptr);
+    ContextMenu(QQmlEngine *qmlEngine, QObject *parent = nullptr);
     void addRow(QString row){mContextMenuModel->addRow(row);}
     void show(int x, int y);
     void hideMenu();
     void updatePosition(int x, int y);
     ContextMenumodel* getModel() {return mContextMenuModel;}
 private:
-    UIHandle *mUiHandle;
+//    UIHandle *mUiHandle;
     QQmlEngine *mQmlEngine;
     ContextMenumodel *mContextMenuModel;
     QQuickItem *mNowContextMenu;
