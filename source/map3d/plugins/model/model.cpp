@@ -321,7 +321,7 @@ void Model::addFlyableModel(ServiceFlyableModel *serviceModel)
         mFlyableModelNodeMap[serviceModel->id]->setPosition(geopos);
         for(auto layer: serviceModel->layerList){
             layer->addChild(mFlyableModelNodeMap[serviceModel->id]);
-            break;
+//            break;
         }
         return;
     }
@@ -329,7 +329,7 @@ void Model::addFlyableModel(ServiceFlyableModel *serviceModel)
     auto flyableModelNode = mFlyableModelNodeMap[serviceModel->id];
     flyableModelNode->setName(serviceModel->name);
 
-    flyableModelNode->flyTo(geopos, 100);
+    flyableModelNode->flyTo(geopos, serviceModel->speed);
 
 }
 

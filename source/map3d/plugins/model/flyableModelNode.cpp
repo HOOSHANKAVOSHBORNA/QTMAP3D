@@ -81,9 +81,10 @@ FlyableModelNode::FlyableModelNode(MapItem *mapControler, const std::string &mod
 
 void FlyableModelNode::flyTo(osgEarth::GeoPoint destinationPoint, double velocity)
 {
-    mMoveAnimationPathCallback->reset();
     mMoveAnimationPathCallback->getAnimationPath()->clear();
     mMoveAnimationPathCallback->setPause(false);
+//    mMoveAnimationPathCallback->reset();
+
     osg::Vec3d currentWPoint;
     getPosition().toWorld(currentWPoint);
     osg::Vec3d destinationWPoint;
