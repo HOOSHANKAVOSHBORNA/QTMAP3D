@@ -13,7 +13,7 @@ MapPin::MapPin(MapItem* map , osg::Vec4f color)
     is3D = map->getMode();
     mScaler = new ModelAutoScaler(15, 2, 500);
     //--3D node----------------------------------------------------------
-    m3DPin = osgDB::readRefNodeFile("../data/models/Qarch1.osgb");
+    m3DPin = osgDB::readRefNodeFile("../data/models/Qarch.osgb");
     //--3D model Color --------------------------------------------------
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
