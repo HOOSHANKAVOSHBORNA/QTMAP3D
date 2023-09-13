@@ -39,7 +39,7 @@ AssignmentTableModel::AssignmentTableModel(AircraftDataManager *aircraftDatamana
             connect(mAircraftDataManager, &AircraftDataManager::assignmentChanged, mSystemTableModel, &SystemTableModel::updateAssignment);
             assignTab->setProperty("aircraftModel", QVariant::fromValue<AircraftTableModel*>(mAircraftTableModel));
             assignTab->setProperty("systemModel", QVariant::fromValue<SystemTableModel*>(mSystemTableModel));
-//            mDefenseModelLayer->uiHandle()->lwAddTab("Assignments", assignTab);
+            mDefenseModelLayer->mainWindow()->addTabToListWindow("Assignments", assignTab);
         }
 
     });

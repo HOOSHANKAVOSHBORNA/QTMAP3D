@@ -19,8 +19,8 @@ class CompositeCallback: public CompositeLayerCallback
     Q_OBJECT
 public:
     CompositeCallback(MapObject *mapObject);
-    void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
-    void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer) override;
+    void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer, unsigned index) override;
+    void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer *parentLayer, unsigned index) override;
     void onLayerMoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned oldIndex, unsigned newIndex) override;
     void onNodeAdded(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer) override;
     void onNodeRemoved(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer) override;
@@ -57,6 +57,7 @@ public:
     void addCompositeCallback(osgEarth::Layer* layer, CompositeCallback* callback);
     void removeCompositeCallback(osgEarth::Layer* layer);
     CompositeCallback* getCompositeCallback(osgEarth::Layer* layer);
+    ParenticAnnotationLayer *getLayerByUserId(int userid);
 signals:
     void layerAdded(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
     void layerRemoved(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
@@ -66,7 +67,7 @@ signals:
 
     void nodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer);
     void nodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer);
-    void parentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
+//    void parentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
 
 private:
     QMap<osgEarth::Layer*, CompositeCallback*> mCompositeCallbacks;

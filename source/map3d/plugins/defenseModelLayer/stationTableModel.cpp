@@ -1,4 +1,5 @@
 #include "stationTableModel.h"
+#include "mainwindow.h"
 #include "stationDataManager.h"
 #include <QColor>
 #include <QRegularExpression>
@@ -173,7 +174,7 @@ StationTable::StationTable(StationDataManager *stationDataManager, DefenseModelL
 
 
             stationTab->setProperty("model", QVariant::fromValue<StationTableModel*>(mStationTableModel));
-//            mDefenseModelLayer->uiHandle()->lwAddTab("Stations", stationTab);
+            mDefenseModelLayer->mainWindow()->addTabToListWindow("Stations", stationTab);
         }
 
     });

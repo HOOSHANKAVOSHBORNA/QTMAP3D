@@ -19,7 +19,6 @@ public:
 private:
     double mSpeed;
     osg::ref_ptr<osg::AnimationPathCallback> mMoveAnimationPathCallback;
-
 };
 
 class ModelAnimationPathCallback: public osg::AnimationPathCallback

@@ -19,7 +19,7 @@ private:
     bool mFlyableQueueDeclared{false};
 
     QVector<QJsonDocument> mFlyableDataList;
-    int mMaxFlyableNumber{10};
+    int mMaxFlyableNumber{1};
 };
 
 #endif // MODELNODETEST_H

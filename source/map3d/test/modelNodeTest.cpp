@@ -9,17 +9,22 @@
 ModelNodeTest::ModelNodeTest(NetworkManager *networkManager):
     mNetworkManager(networkManager)
 {
-    QObject::connect(mNetworkManager, &NetworkManager::flyableQueueDeclared, [this]{mFlyableQueueDeclared = true;});
-    //--create and update aircraft info------------------------
-    QTimer *timerUpdateAircraft = new QTimer();
-    QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
-        createFlyableInfo();
-        updateFlyableInfo();
-        if(mFlyableQueueDeclared)
-            for(auto& jsonDocument: mFlyableDataList)
+    QObject::connect(mNetworkManager, &NetworkManager::flyableQueueDeclared, [this]{mFlyableQueueDeclared = true;
+    createFlyableInfo();
+    for(auto& jsonDocument: mFlyableDataList)
                 mNetworkManager->sendFlyableData(jsonDocument.toJson(QJsonDocument::Compact));
     });
-    timerUpdateAircraft->start(1000);
+    //--create and update aircraft info------------------------
+
+//    QTimer *timerUpdateAircraft = new QTimer();
+//    QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
+//        createFlyableInfo();
+//        updateFlyableInfo();
+//        if(mFlyableQueueDeclared)
+//            for(auto& jsonDocument: mFlyableDataList)
+//                mNetworkManager->sendFlyableData(jsonDocument.toJson(QJsonDocument::Compact));
+//    });
+//    timerUpdateAircraft->start(1000);
 }
 
 void ModelNodeTest::createFlyableInfo()
@@ -42,8 +47,8 @@ void ModelNodeTest::createFlyableInfo()
     jsonObject.insert("Name", name);
     jsonObject.insert("Id", id);
     jsonObject.insert("Color", color.name());
-    jsonObject.insert("Url2d", "/url2d");
-    jsonObject.insert("Url3d", "/url3d");
+    jsonObject.insert("Url2d", "../data/images/model/airplane.png");
+    jsonObject.insert("Url3d", "../data/models/aircraft/boeing-747.osgb");
     jsonObject.insert("Longitude", longitude);
     jsonObject.insert("Latitude", latitude);
     jsonObject.insert("Altitude", altitude);

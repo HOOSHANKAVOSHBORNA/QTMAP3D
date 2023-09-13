@@ -11,15 +11,15 @@ CompositeCallback::CompositeCallback(MapObject *mapObject):
 
 }
 
-void CompositeCallback::onLayerAdded(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
+void CompositeCallback::onLayerAdded(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer, unsigned int index){
     if(mMapObject){
-        emit mMapObject->layerAdded(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
+        emit mMapObject->layerAdded(layer, parentLayer, index);
     }
 }
 
-void CompositeCallback::onLayerRemoved(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer){
+void CompositeCallback::onLayerRemoved(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer, unsigned int index){
     if(mMapObject){
-        emit mMapObject->layerRemoved(layer, parentLayer, mMapObject->getIndexOfLayer(parentLayer));
+        emit mMapObject->layerRemoved(layer, parentLayer, index);
     }
 }
 
@@ -137,4 +137,15 @@ void MapObject::removeCompositeCallback(osgEarth::Layer* layer)
 CompositeCallback *MapObject::getCompositeCallback(osgEarth::Layer *layer)
 {
     return mCompositeCallbacks[layer];
+}
+
+ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
+{
+    for (auto& l: mParenticLayers){
+        ParenticAnnotationLayer *p = l.second->asCompositeAnnotationLayer()->getHierarchicalLayerByUserId(userid);
+        if (p){
+            return p;
+        }
+    }
+    return nullptr;
 }

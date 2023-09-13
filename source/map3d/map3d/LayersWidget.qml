@@ -129,7 +129,7 @@ Item {
                     DropArea{
                         anchors.fill: parent
                         id:dropArea
-                        visible: isDropVisible
+                        visible: dropRole
                         onDropped: {
 
 //                            console.log("onDropped")
@@ -297,19 +297,19 @@ Item {
                             width: parent.width
                             height: parent.height
                             anchors.centerIn: parent
-                            color: isVisible ?  Style._mainBlue : "red"
+                            color: visibleRole ?  Style._mainBlue : "red"
 
                         }
                         MouseArea{
                             id:hideBtn
-                            //                    enabled: isVisible
+                            //                    enabled: visibleRole
                             hoverEnabled: true
                             anchors.fill: hideContainer
-                            onEntered: eye.color = Style._mainYellow
-                            onExited: isVisible ? eye.color = Style._mainBlue : eye.color = "red"
+//                            onEntered: eye.color = Style._mainYellow
+//                            onExited: visibleRole ? eye.color = Style._mainBlue : eye.color = "red"
 
                             onClicked: function() {
-                                rootItem.layersModell.onItemClicked(treeView.index(row , column))
+                                rootItem.layersModell.onVisibleItemClicked(treeView.index(row , column))
                             }
 
                         }
@@ -320,17 +320,7 @@ Item {
                                 icon.source: "./Resources/48/delete.png"
                                 icon.color: "red"
                                 onClicked: function() {
-                                    rootItem.layersModell.onDeleteLayerClicked(treeView.index(row , column))
-                                }
-                            }
-                            MenuItem {
-                                visible: isLocatable
-                                height: (isLocatable) ? 30 : 0
-                                text: "Show On Map"
-                                icon.source: "./Resources/48/location.png"
-                                icon.color: Style._mainYellow
-                                onClicked: {
-                                    rootItem.layersModell.onGoToClicked(treeView.index(row , column))
+                                    rootItem.layersModell.onRemoveItemClicked(treeView.index(row , column))
                                 }
                             }
                             MenuItem {

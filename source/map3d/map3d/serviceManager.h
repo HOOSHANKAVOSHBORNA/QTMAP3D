@@ -2,6 +2,7 @@
 #define SERVICEMANAGER_H
 
 #include "compositeAnnotationLayer.h"
+#include "mapItem.h"
 #include <QJsonDocument>
 #include <osgEarth/Layer>
 
@@ -9,25 +10,27 @@ struct ServiseFixedModel: public osg::Referenced
 {
     int id;
     std::string name;
-    std::string modelUrl2D;
-    std::string modelUrl3D;
+    std::string url2D;
+    std::string url3D;
     std::string color;
-    osgEarth::GeoPoint position;
-    ServiseFixedModel(int id, std::string name, std::string modelUrl2D, std::string modelUrl3D, std::string color, osgEarth::GeoPoint position)
-        : osg::Referenced(), id{id}, name{name}, modelUrl2D{modelUrl2D}, modelUrl3D{modelUrl3D}, color{color}, position{position} {}
-    ServiseFixedModel(): osg::Referenced(){}
+    double latitude;
+    double longitude;
+    double altitude;
+    std::vector<int> layersId;
+    ServiseFixedModel()
+        : osg::Referenced() {}
 };
 
 struct ServiceMovableModel: public ServiseFixedModel
 {
-    ServiceMovableModel(int id, std::string name, std::string modelUrl2D, std::string modelUrl3D, std::string color, osgEarth::GeoPoint position):
-        ServiseFixedModel(id, name, modelUrl2D, modelUrl3D, color, position){}
+    ServiceMovableModel():
+        ServiseFixedModel(){}
 };
 
 struct  ServiceFlyableModel: public ServiceMovableModel
 {
-    ServiceFlyableModel(int id, std::string name, std::string modelUrl2D, std::string modelUrl3D, std::string color, osgEarth::GeoPoint position, double speed)
-        : ServiceMovableModel(id, name, modelUrl2D, modelUrl3D, color, position){}
+    ServiceFlyableModel()
+        : ServiceMovableModel(){}
 
     double speed;
 };
@@ -46,10 +49,10 @@ class ServiceManager: public QObject
 {
     Q_OBJECT
 public:
-    ServiceManager(QObject *parent = nullptr);
+    ServiceManager(MapItem *mapItem, QObject *parent = nullptr);
 
-    void initLayers(QString layersStr);
-    void addFlyableModel(QJsonDocument *flyable);
+    void initLayers(std::string layersStr);
+    void addFlyableModel(std::string flyable);
     void addMovableModel(QJsonDocument *movable);
     void addModel(QJsonDocument *model);
 
@@ -60,9 +63,12 @@ public:
 
 signals:
     void layerAdded(CompositeAnnotationLayer *layer);
-//    void flyableAdded(ServiseModel *model, ParenticAnnotationLayer* parentic);
+    void flyableAdded(ServiceFlyableModel *model);
 private:
     void parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent = nullptr);
+
+private:
+    MapItem *mMapItem{nullptr};
 };
 
 #endif // DATAMANAGER_H

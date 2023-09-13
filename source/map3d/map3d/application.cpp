@@ -107,19 +107,24 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 
 void Application::onUICreated()
 {
+    mServiceManager = new ServiceManager(mMainWindow->getMapItem());
+    connect(mServiceManager, &ServiceManager::layerAdded, [&](CompositeAnnotationLayer *layer){
+            mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
+        });
+    NetworkManager *networkManager = new NetworkManager(mServiceManager);
+    networkManager->start();
+
     mPluginManager->loadPlugins();
     mPluginManager->setup();
     emit defenseDataManagerInitialized(mDefenseDataManager);
 
-    ServiceManager *serviceManager = new ServiceManager;
-    connect(serviceManager, &ServiceManager::layerAdded, [&](CompositeAnnotationLayer *layer){
-            mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
-        });
-    NetworkManager *networkManager = new NetworkManager(serviceManager);
-    networkManager->start();
-
     mIsReady = true;
     emit ready();
+}
+
+ServiceManager *Application::serviceManager() const
+{
+    return mServiceManager;
 }
 
 

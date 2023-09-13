@@ -56,10 +56,10 @@ class CompositeLayerCallback : public ParenticLayerCallback
 {
     Q_OBJECT
 public:
-    virtual void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer){}
-    virtual void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer){}
+    virtual void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned index){}
+    virtual void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned index){}
     virtual void onLayerMoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned oldIndex, unsigned newIndex){}
-    typedef void (CompositeLayerCallback::*MethodPtr)(class ParenticAnnotationLayer* layer, class CompositeAnnotationLayer* parentLayer);
+    typedef void (CompositeLayerCallback::*MethodPtr)(class ParenticAnnotationLayer* layer, class CompositeAnnotationLayer* parentLayer, unsigned index);
 };
 
 class CompositeAnnotationLayer: public ParenticAnnotationLayer
@@ -85,7 +85,7 @@ public:
     bool containsLayer( const ParenticAnnotationLayer* layer ) const;
     ParenticAnnotationLayer *getLayerByName(const QString& layerName);
     ParenticAnnotationLayer *getHierarchicalLayerByUserId(int userId);
-    void fireCallback(CompositeLayerCallback::MethodPtr, ParenticAnnotationLayer *layer);
+    void fireCallback(CompositeLayerCallback::MethodPtr, ParenticAnnotationLayer *layer, unsigned index);
 //    int getNumChildren() const;
     inline ParenticAnnotationLayer* getChild(int i ) { return mChildildren[i].get(); }
     //! Adds a property notification callback to this layer

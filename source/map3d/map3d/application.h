@@ -31,6 +31,8 @@ public:
 
     inline DefenseDataManager *defenseDataManager() const{ return mDefenseDataManager; }
 
+    ServiceManager *serviceManager() const;
+
 signals:
     void ready();
     void defenseDataManagerInitialized(DefenseDataManager *defenseDataManager);
@@ -51,6 +53,7 @@ private:
 
     PluginManager *mPluginManager = nullptr;
     DefenseDataManager *mDefenseDataManager{nullptr};
+    ServiceManager *mServiceManager{nullptr};
 
     bool mIsReady{false};
 };

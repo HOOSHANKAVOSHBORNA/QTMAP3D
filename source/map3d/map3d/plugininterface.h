@@ -28,52 +28,26 @@ namespace osgViewer {
 
 class PluginInterface : public QObject
 {
-    friend class PluginManager;
     Q_OBJECT
 
 public:
     PluginInterface(QObject *parent = nullptr);
     virtual ~PluginInterface() { }
 
-    MapItem *mapItem() const;
-    static void setMapItem(MapItem *mapItem);
-
-    QQmlEngine *qmlEngine() const;
-    static void setQmlEngine(QQmlEngine *newQmlEngine);
-
-    MainWindow *mainWindow() const;
     static void setMainWindow(MainWindow* mainWindow);
+    MainWindow *mainWindow() const;
+    MapItem *mapItem() const;
+    QQmlEngine *qmlEngine() const;
+    Toolbox *toolbox() const;
 
     DefenseDataManager *defenseDataManager() const;
     static void setDefenseDataManager(DefenseDataManager* defenseDataManager);
-
-//    virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
-//    virtual void onSideItemCreated(int index, QObject *sideItem) {}
-//    virtual void onToolboxItemClicked(const QS//    virtual bool initializeQMLDesc(QQmlEngine *engine, PluginQMLDesc *desc) {return false;}
-    //    virtual void onSideItemCreated(int index, QObject *sideItem) {}
-    //    virtual void onToolboxItemClicked(const QString& name,
-    //                                      const QString& category) {}
-    //    virtual void onToolboxItemCheckedChanged(const QString& name,
-    //                                             const QString& category,
-    //                                             bool checked) {}
-    //    virtual void onFileItemClicked(const QString& name,
-    //                                      const QString& category) {}tring& name,
-//                                      const QString& category) {}
-//    virtual void onToolboxItemCheckedChanged(const QString& name,
-//                                             const QString& category,
-//                                             bool checked) {}
-//    virtual void onFileItemClicked(const QString& name,
-//                                      const QString& category) {}
 
     virtual bool setup() {return false;}
 
     QString name() const;
     void setName(const QString &newName);
 
-
-    Toolbox *toolbox() const;
-    static void setToolbox(Toolbox *newToolbox);
     ServiceManager *serviceManager() const;
     static void setServiceManager(ServiceManager *newServiceManager);
 

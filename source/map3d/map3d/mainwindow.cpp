@@ -15,6 +15,8 @@
 #include "qqmlcontext.h"
 #include "mapControllerItem.h"
 
+#include "locationManagerModel.h"
+
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
@@ -26,13 +28,10 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 
-
     setColor(Qt::black);
     mToolbox = new ToolboxProxyModel();
     Toolbox *toolbox = new Toolbox(this);
     mToolbox->setSourceModel(toolbox);
-
-//    mUIHandle = new UIHandle(this);
 }
 
 
@@ -44,7 +43,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::initComponent()
 {
-    QQmlEngine *engine = qmlContext(this)->engine();
+//    QQmlEngine *engine = qmlContext(this)->engine();
+    QQmlEngine *engine = qmlEngine(this);
+
     QQmlComponent* comp = new QQmlComponent(engine);
     connect(comp, &QQmlComponent::statusChanged,[&](QQmlComponent::Status status){
         if(status == QQmlComponent::Error){
@@ -57,10 +58,21 @@ void MainWindow::initComponent()
             addToCenterCenterContainer(mMapItem);
 
             mLayersModel = new LayersModel(mMapItem);
+
+            // --- location manager and its proxy model settings
+            mLocationManagerProxyModel = new LocationManagerProxyModel();
+            LocationManagerModel *locationManagerModel = new LocationManagerModel(mMapItem);
+            mLocationManagerProxyModel->setSourceModel(locationManagerModel);
+            // ---
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
 
+}
+
+QQmlEngine *MainWindow::getQmlEngine()
+{
+    return qmlEngine(this);
 }
 
 
@@ -104,20 +116,6 @@ void MainWindow::showListWindow()
             mListWindow->hide();
     }
 }
-
-//void MainWindow::setLayersModel(LayersModel *layersModel)
-//{
-//    if (mLayersModel != layersModel) {
-//        mLayersModel = layersModel;
-//        emit layersModelChanged();
-//    }
-//}
-
-//void MainWindow::setToolbox(ToolboxProxyModel *toolbox)
-//{
-//    mToolbox = toolbox;
-//    emit toolboxChanged();
-//}
 
 MapItem *MainWindow::getMapItem()
 {
@@ -186,4 +184,9 @@ bool MainWindow::event(QEvent *ev)
     }
 
     return QQuickWindow::event(ev);
+}
+
+LocationManagerProxyModel *MainWindow::locationManagerProxyModel() const
+{
+    return mLocationManagerProxyModel;
 }
