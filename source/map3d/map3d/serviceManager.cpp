@@ -26,6 +26,7 @@ void ServiceManager::addFlyableModel(std::string flyable)
     QJsonObject data = doc.object();
 
     ServiceFlyableModel* flyableModel = new ServiceFlyableModel();
+    flyableModel->id = data.value("Id").toInt();
     flyableModel->longitude =  data.value("Longitude").toDouble();
     flyableModel->latitude = data.value("Latitude").toDouble();
     flyableModel->altitude = data.value("Altitude").toDouble();
@@ -34,10 +35,15 @@ void ServiceManager::addFlyableModel(std::string flyable)
     flyableModel->url3D = data.value("Url3d").toString().toStdString();
     flyableModel->color = data.value("Color").toString().toStdString();
     flyableModel->speed = data.value("Speed").toInt();
-    for (auto i : data.value("LayersId").toArray())
-        flyableModel->layersId.push_back(i.toInt());
-
-    emit flyableAdded(flyableModel);
+    for (auto i : data.value("LayersId").toArray()){
+        int id = i.toInt();
+        if(mParenticLayerMap.contains(id))
+            flyableModel->layerList.push_back(mParenticLayerMap[id]);
+        else
+            qDebug()<<"Can not found layer: "<<id;
+    }
+    if(flyableModel->layerList.size() > 0)
+        emit flyableAdded(flyableModel);
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent)
@@ -57,9 +63,13 @@ void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLay
         }
     }
     else {
-        ParenticAnnotationLayer* parentic = new ParenticAnnotationLayer(obj.value("Id").toInt());
-        parentic->setName(obj.value("Text").toString().toStdString());
-        parent->addLayer(parentic);
+        int layerId = obj.value("Id").toInt();
+        if(!mParenticLayerMap.contains(layerId)){
+            ParenticAnnotationLayer* parentic = new ParenticAnnotationLayer(layerId);
+            parentic->setName(obj.value("Text").toString().toStdString());
+            mParenticLayerMap[layerId] = parentic;
+        }
+        parent->addLayer(mParenticLayerMap[layerId]);
 //        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
         return;
     }
