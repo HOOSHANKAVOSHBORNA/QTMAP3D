@@ -39,6 +39,7 @@ add_executable(Map3d
         utility.h utility.cpp
         searchNodeModel.h searchNodeModel.cpp
         networkManager.h networkManager.cpp
+        smallmap.h smallmap.cpp
         qml.qrc
         resources.qrc)
 

@@ -10,6 +10,7 @@
 #include "layerModel.h"
 #include "mapItem.h"
 #include "toolbox.h"
+#include "mapControllerItem.h"
 
 class ListWindow;
 class LayersModel;
@@ -63,7 +64,7 @@ protected:
     bool event(QEvent *ev) override;
 
 private:
-    MapItem *mMapItem = nullptr;
+    MapControllerItem *mMapItem = nullptr;
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
     ToolboxProxyModel *mToolbox = nullptr;

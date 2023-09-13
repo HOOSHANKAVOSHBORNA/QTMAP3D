@@ -28,5 +28,6 @@
         <file>CameraHandlerItem.qml</file>
         <file>Resources/plane.mesh</file>
         <file>CameraPositionHandlerItem.qml</file>
+        <file>SmallMapItem.qml</file>
     </qresource>
 </RCC>
