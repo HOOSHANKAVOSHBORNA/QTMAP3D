@@ -129,22 +129,23 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
 
 
     //-------------------------------------------------------------------------
-    double boundRadius = m3DNode->computeBound().radius();
+    osg::ComputeBoundsVisitor cbv;
+    m3DNode->accept(cbv);
     //---circle indicator------------------------------------------------------
     mCircle = new Circle();
     mCircle->setFillColor(osg::Vec4f(0,0.6,0.6,0));
     mCircle->setStrokeColor(osg::Vec4f(0,1,0,1));
     mCircle->setStrokeWidth(2);
-    mCircle->setRadius(osgEarth::Distance(boundRadius, osgEarth::Units::METERS));
+    mCircle->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
     mCircle->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
     mCircle->setNodeMask(0);
     //---coneIndicator----------------------------------------------------------
     mCone = new Cone();
     mCone->setFillColor(osg::Vec4f(0,1,0,0.4));
-    mCone->setRadius(osgEarth::Distance(boundRadius/4, osgEarth::Units::METERS));
-    mCone->setHeight(osgEarth::Distance(boundRadius/2, osgEarth::Units::METERS));
+    mCone->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius()/4, osgEarth::Units::METERS));
+    mCone->setHeight(osgEarth::Distance(cbv.getBoundingBox().radius()/2, osgEarth::Units::METERS));
     mCone->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
-    mCone->setCenter(osg::Vec3d(0,0,-boundRadius*2));
+    mCone->setCenter(osg::Vec3d(0,0,-cbv.getBoundingBox().zMax()*2));
     mCone->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0));
     mCone->setNodeMask(0);
     //--------------------------------------------------------------------------
