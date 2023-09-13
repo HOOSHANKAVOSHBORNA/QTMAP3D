@@ -9,27 +9,27 @@
 ModelNodeTest::ModelNodeTest(NetworkManager *networkManager):
     mNetworkManager(networkManager)
 {
-    QObject::connect(mNetworkManager, &NetworkManager::flyableQueueDeclared, [this]{mFlyableQueueDeclared = true;
-    createFlyableInfo();
-    for(auto& jsonDocument: mFlyableDataList)
+    QObject::connect(mNetworkManager, &NetworkManager::flyableQueueDeclared, [this]{
+    mFlyableQueueDeclared = true;
+//    createFlyableInfo();
+//    for(auto& jsonDocument: mFlyableDataList)
+//                mNetworkManager->sendFlyableData(jsonDocument.toJson(QJsonDocument::Compact));
+    //--create and update aircraft info------------------------
+    QTimer *timerUpdateAircraft = new QTimer();
+    QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
+        createFlyableInfo();
+        updateFlyableInfo();
+        if(mFlyableQueueDeclared)
+            for(auto& jsonDocument: mFlyableDataList)
                 mNetworkManager->sendFlyableData(jsonDocument.toJson(QJsonDocument::Compact));
     });
-    //--create and update aircraft info------------------------
-
-//    QTimer *timerUpdateAircraft = new QTimer();
-//    QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
-//        createFlyableInfo();
-//        updateFlyableInfo();
-//        if(mFlyableQueueDeclared)
-//            for(auto& jsonDocument: mFlyableDataList)
-//                mNetworkManager->sendFlyableData(jsonDocument.toJson(QJsonDocument::Compact));
-//    });
-//    timerUpdateAircraft->start(1000);
+    timerUpdateAircraft->start(1000);
+    });
 }
 
 void ModelNodeTest::createFlyableInfo()
 {
-    if(mFlyableDataList.count() > mMaxFlyableNumber)
+    if(mFlyableDataList.count() >= mMaxFlyableNumber)
         return;
     //---------------------------------------------------------
     QString name = "Flyable" + QString::number(mFlyableDataList.count());
@@ -37,7 +37,7 @@ void ModelNodeTest::createFlyableInfo()
     QColor color("red");
     double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
-    double altitude = (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));
+    double altitude =0;/* (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));*/
     double heading = (0 + (QRandomGenerator::global()->generate() % 361));
     double speed = (100 + (QRandomGenerator::global()->generate() % (300-100)));
     //--------------------------------------------------------
@@ -92,10 +92,11 @@ void ModelNodeTest::updateFlyableInfo()
         latitude += step * std::sin(teta);
 
         rn = (0 + (QRandomGenerator::global()->generate() % 2));
-        if(rn < 1)
-            altitude += altitude - 50;
-        else
-            altitude += altitude + 50;
+//        if(rn < 1)
+//            altitude += altitude - 5;
+//        else
+//            altitude += altitude + 5;
+        altitude = 2000;
         //--------------------------------------------------------
         jsonObject["Longitude"] = longitude;
         jsonObject["Latitude"] = latitude;

@@ -1,6 +1,8 @@
 #include "mapControllerItem.h"
 #include "searchNodeModel.h"
+#include "smallmap.h"
 
+#include <QQmlComponent>
 #include <QTimer>
 
 
@@ -8,11 +10,12 @@ MapControllerItem::MapControllerItem():
     MapItem()
 {
     qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
-
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
     mSearchNodeProxyModel = new SearchNodeProxyModel();
     mSearchNodeProxyModel->setSourceModel(new SearchNodeModel(this));
+
+
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -101,6 +104,12 @@ void MapControllerItem::calculateFps()
             setFps(fps);
         }
     }
+}
+
+void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
+{
+    mQmlEngine = newQmlEngine;
+    mSmallMap = dynamic_cast<SmallMap*>(findChild<QObject*>("SmallMap"));
 }
 
 SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
