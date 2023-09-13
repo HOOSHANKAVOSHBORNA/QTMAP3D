@@ -7,6 +7,8 @@
 #include <osgEarth/ModelLayer>
 #include <osgEarth/ModelSource>
 #include <osgEarth/ModelSource>
+
+#include <QPainter>
 #include <QRandomGenerator>
 #include <osgFX/Outline>
 #include <osgEarthSymbology/Style>
@@ -53,6 +55,10 @@ bool Model::setup()
     QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
+    auto statusToolboxItem =  new ToolboxItem{STATUS, MODEL, "qrc:/resources/status.png", true};
+    QObject::connect(statusToolboxItem, &ToolboxItem::itemChecked, this, &Model::onStatusItemCheck);
+    toolbox()->addItem(statusToolboxItem);
+
 
     mSimpleNodeLayer = new ParenticAnnotationLayer();
     mSimpleNodeLayer->setName(TREE);
@@ -62,6 +68,9 @@ bool Model::setup()
 
     mFlyableNodelLayer = new ParenticAnnotationLayer();
     mFlyableNodelLayer->setName(AIRPLANE);
+
+    mStatusNodelLayer = new ParenticAnnotationLayer();
+    mStatusNodelLayer->setName(STATUS);
     return true;
 }
 
@@ -179,11 +188,14 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
 
 bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+
+
 //    if (mCircle){
 //        mCircle->setScale(mSelectedModelNode->getScale());
 //        mCone->setScale(mSelectedModelNode->getScale());
 
 //    }
+
 
     return false;
 }
@@ -247,6 +259,25 @@ void Model::onAirplanItemCheck(bool check)
         makeIconNode("../data/images/model/airplane.png");
 
         mType = Type::FLYABLE;
+        setState(State::READY);
+        mapItem()->addNode(iconNode());
+
+    }
+    else {
+        if(state() == State::MOVING)
+            cancel();
+
+        setState(State::NONE);
+        mapItem()->removeNode(iconNode());
+    }
+}
+
+void Model::onStatusItemCheck(bool check)
+{
+    if (check) {
+        makeIconNode("../data/images/model/status.png");
+
+        mType = Type::INFO;
         setState(State::READY);
         mapItem()->addNode(iconNode());
 
@@ -332,28 +363,55 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         }
         mFlyableNodelLayer->addChild(mCurrentModel);
         break;
+    case Type::INFO:
+        name = "Status" + QString::number(mCount);
+        mStatusModel = new StatusNode(mapItem());
+
+        if(!mModelNodeLayer->containsLayer(mStatusNodelLayer)){
+            mStatusNodelLayer->clear();
+            mModelNodeLayer->addLayer(mStatusNodelLayer);
+        }
+        mStatusNodelLayer->addChild(mStatusModel);
+        break;
     default:
         break;
     }
-    mCurrentModel->setName(name.toStdString());
-    mCurrentModel->setPosition(geoPos);
+
+    if (mCurrentModel){
+        mCurrentModel->setName(name.toStdString());
+        mCurrentModel->setPosition(geoPos);
+    }
+    else{
+        mStatusModel->setName(name.toStdString());
+        mStatusModel->setPosition(geoPos);
+    }
+
+
+;
     setState(State::MOVING);
     mCount++;
 }
 
 void Model::moving(osgEarth::GeoPoint &geoPos){
 
-    if (mCurrentModel->asFlyableModelNode()){
-        double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
-        geoPos.z() += randomHeight;
-        mCurrentModel->asFlyableModelNode()->flyTo(geoPos,200);
-        return;
+    if (mCurrentModel){
+        if (mCurrentModel->asFlyableModelNode()){
+            double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
+            geoPos.z() += randomHeight;
+            mCurrentModel->asFlyableModelNode()->flyTo(geoPos,20);
+            return;
+        }
+        if (mCurrentModel->asMoveableModelNode()){
+            mCurrentModel->asMoveableModelNode()->moveTo(geoPos,20);
+            return;
+        }
     }
-    if (mCurrentModel->asMoveableModelNode()){
-        mCurrentModel->asMoveableModelNode()->moveTo(geoPos,20);
-        return;
+    if (mCurrentModel){
+        mCurrentModel->setPosition(geoPos);
     }
-    mCurrentModel->setPosition(geoPos);
+    else{
+        mStatusModel->setPosition(geoPos);
+    }
 }
 
 void Model::confirm()
@@ -376,10 +434,14 @@ void Model::cancel(){
         case Type::FLYABLE:
             mFlyableNodelLayer->removeChild(mCurrentModel);
             break;
+        case Type::INFO:
+            mStatusNodelLayer->removeChild(mStatusModel);
+            break;
         default:
             break;
         }
         mCurrentModel.release();
+        mStatusModel.release();
         setState(State::READY);
         mCount--;
     }
@@ -455,6 +517,56 @@ SimpleModelNode *Model::pick(float x, float y)
         }
     }
     return simpleModelNode;
+}
+
+void Model::updateModelDataLabel(std::string name)
+{
+    if (!mRenderImage) {
+        mRenderImage = new QImage(
+            LABEL_IMAGE_WIDTH,
+            LABEL_IMAGE_HEIGHT,
+            QImage::Format_RGBA8888
+            );
+    }
+    if(!mImageLabel.valid())
+        mImageLabel = new osg::Image;
+
+    {
+
+        mRenderImage->fill(QColor(Qt::transparent));
+        QPainter *painter = new QPainter(mRenderImage);
+        painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+        static const QFont textFont("SourceSansPro", 10, QFont::Normal);
+        static const QPen  textPen(QColor(255, 255, 255));
+
+
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(backgroundBrush);
+        painter->drawRoundedRect(
+            mRenderImage->rect(),
+            10,2);
+
+
+        painter->setPen(textPen);
+        painter->setFont(textFont);
+
+        painter->drawText(0, 0, LABEL_IMAGE_WIDTH, 20,
+                         Qt::AlignCenter|Qt::AlignVCenter,
+                         QString::fromStdString(name));
+
+    *mRenderImage = mRenderImage->mirrored(false, true);
+
+    mImageLabel->setImage(LABEL_IMAGE_WIDTH,
+                          LABEL_IMAGE_HEIGHT,
+                          1,
+                          GL_RGBA,
+                          GL_RGBA,
+                          GL_UNSIGNED_BYTE,
+                          mRenderImage->bits(),
+                          osg::Image::AllocationMode::NO_DELETE);
+}
 }
 
 bool Model::clicked() const
