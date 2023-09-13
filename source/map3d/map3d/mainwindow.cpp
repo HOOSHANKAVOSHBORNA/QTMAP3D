@@ -20,12 +20,14 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
+#include "smallmap.h"
 
 MainWindow::MainWindow(QWindow *parent) :
     QQuickWindow(parent)
 {
     qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
+    qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 
     setColor(Qt::black);
@@ -54,7 +56,8 @@ void MainWindow::initComponent()
 
         if(status == QQmlComponent::Ready){
             QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-            mMapItem = static_cast<MapItem*>(item);
+            mMapItem = static_cast<MapControllerItem*>(item);
+            mMapItem->setQmlEngine(engine);
             addToCenterCenterContainer(mMapItem);
 
             mLayersModel = new LayersModel(mMapItem);

@@ -8,6 +8,7 @@
 #include <osgFX/Scribe>
 #include <circle.h>
 #include <cone.h>
+#include <osg/ComputeBoundsVisitor>
 
 
 class MoveableModelNode;

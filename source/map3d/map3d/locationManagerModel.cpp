@@ -77,6 +77,13 @@ void LocationManagerModel::goToLocation(QModelIndex index)
     mMapItem->getCameraController()->setViewpoint(mLocations.at(index.row()).viewpoint, 1);
 }
 
+void LocationManagerModel::myAppendRow(const LocationData &newLocationData)
+{
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    mLocations.append(newLocationData);
+    endInsertRows();
+}
+
 QVector<LocationData> LocationManagerModel::locations() const
 {
     return mLocations;
@@ -136,6 +143,14 @@ void LocationManagerProxyModel::printCurrentLocation()
     qDebug() << "vp.heading(): " << vp.heading()->as(osgEarth::Units::DEGREES);
     qDebug() << "vp.pitch(): " << vp.pitch()->as(osgEarth::Units::DEGREES);
     qDebug() << "vp.range(): " << vp.range()->as(osgEarth::Units::METERS);
+}
+
+void LocationManagerProxyModel::addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor)
+{
+    osgEarth::Viewpoint vp = dynamic_cast<LocationManagerModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
+    vp.name() = newName.toStdString();
+
+    dynamic_cast<LocationManagerModel*>(sourceModel())->myAppendRow(LocationData{vp, newDescription, newImageSource, newColor});
 }
 
 QString LocationManagerProxyModel::searchedName() const

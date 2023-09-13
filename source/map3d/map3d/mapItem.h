@@ -101,9 +101,9 @@ signals:
 //    void frameChanged();
     //    void mapSRSChanged();
 //    void mouseLocationChanged();
-
+protected:
+    virtual void initializeOsgEarth();
 private:
-    void initializeOsgEarth();
     void createMapNode(bool geocentric, osgEarth::Map *map = nullptr);
     void createCameraManipulator();
 
@@ -143,6 +143,8 @@ public:
     virtual void mouseMoveEvent(QMouseEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
     virtual void hoverMoveEvent(QHoverEvent *event) override;
+    OSGRenderNode *oSGRenderNode() const;
+
 private:
     OSGRenderNode *mOSGRenderNode{nullptr};
     //    QQuickWindow *mWindow{nullptr};
