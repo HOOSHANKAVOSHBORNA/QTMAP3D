@@ -16,7 +16,7 @@ struct ServiseFixedModel: public osg::Referenced
     double latitude;
     double longitude;
     double altitude;
-    std::vector<int> layersId;
+    std::vector<ParenticAnnotationLayer*> layerList;
     ServiseFixedModel()
         : osg::Referenced() {}
 };
@@ -69,6 +69,7 @@ private:
 
 private:
     MapItem *mMapItem{nullptr};
+    QMap<int, ParenticAnnotationLayer*> mParenticLayerMap;
 };
 
 #endif // DATAMANAGER_H

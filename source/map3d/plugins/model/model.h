@@ -86,6 +86,8 @@ private:
     static int mCount;
     double mCurrentModelSize;
     bool mIs3D;
+private:
+    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableModelNodeMap;
 
 };
 

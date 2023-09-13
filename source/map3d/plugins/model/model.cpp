@@ -2,7 +2,6 @@
 #include "mapItem.h"
 #include "MoveableModelNode.h"
 #include "flyableModelNode.h"
-#include "qjsonobject.h"
 #include "serviceManager.h"
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
@@ -279,22 +278,28 @@ void Model::onModeChanged(bool is3DView)
 
 void Model::addFlyableModel(ServiceFlyableModel *serviceModel)
 {
-    FlyableModelNode *fmodel = new FlyableModelNode(mapItem(), serviceModel->url3D, serviceModel->url2D);
-    fmodel->setName(serviceModel->name);
     double latitude{serviceModel->latitude};
     double longitude{serviceModel->longitude};
     double altitude{serviceModel->altitude};
-    osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), longitude, latitude, altitude);
-    fmodel->setPosition(geopos);
-//    fmodel.setHeading
-    fmodel->setSpeed(serviceModel->speed);
-//    ParenticAnnotationLayer *p = mapItem()->getMapObject()->getLayerByUserId(serviceModel->id);
-    ParenticAnnotationLayer *p = new ParenticAnnotationLayer;
-    p->setName("seee");
-    mapItem()->getMapObject()->addLayer(p);
-    p->addChild(fmodel);
-//    if (p)
-//        p->addChild(fmodel);
+//    qDebug()<<"Latitude: "<<latitude<<" Longitude: "<<longitude<<" Altitude: "<< altitude;
+    osgEarth::GeoPoint geopos(mapItem()->getMapObject()->getSRS(), longitude, latitude, altitude);
+
+    if(!mFlyableModelNodeMap.contains(serviceModel->id)){
+        qDebug()<<"create model ";
+        mFlyableModelNodeMap[serviceModel->id] = new FlyableModelNode(mapItem(), serviceModel->url3D, serviceModel->url2D);
+        mFlyableModelNodeMap[serviceModel->id]->setPosition(geopos);
+        for(auto layer: serviceModel->layerList){
+            layer->addChild(mFlyableModelNodeMap[serviceModel->id]);
+            break;
+        }
+        return;
+    }
+
+    auto flyableModelNode = mFlyableModelNodeMap[serviceModel->id];
+    flyableModelNode->setName(serviceModel->name);
+
+    flyableModelNode->flyTo(geopos, 100);
+
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
@@ -341,7 +346,7 @@ void Model::moving(osgEarth::GeoPoint &geoPos){
     if (mCurrentModel->asFlyableModelNode()){
         double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
         geoPos.z() += randomHeight;
-        mCurrentModel->asFlyableModelNode()->flyTo(geoPos,20);
+        mCurrentModel->asFlyableModelNode()->flyTo(geoPos,200);
         return;
     }
     if (mCurrentModel->asMoveableModelNode()){
