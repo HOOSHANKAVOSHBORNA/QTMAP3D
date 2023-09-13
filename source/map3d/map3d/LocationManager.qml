@@ -377,6 +377,12 @@ Rectangle {
                                 font.family: "Roboto"
                                 color: foregroundColor
                             }
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onClicked: popup.close()
+                            }
                         }
 
                         Rectangle {
@@ -391,6 +397,15 @@ Rectangle {
                                 font.pixelSize: 22 / Style.monitorRatio
                                 font.family: "Roboto"
                                 color: endGradiant
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onClicked: {
+                                    lvLocationManger.model.addNewLocation(tiLocationName.text, "default description", "qrc:/Resources/airplane2.jpg", "red")
+                                    popup.close()
+                                }
                             }
                         }
                     }
