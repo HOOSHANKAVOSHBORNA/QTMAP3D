@@ -12,12 +12,17 @@
 #include <osg/Fog>
 #include "sphereNode.h"
 #include "circle.h"
+
+#include <statusnode.h>
+
 #include "cone.h"
+
 
 #define MODEL "Model"
 #define TREE "Tree"
 #define CAR "Car"
 #define AIRPLANE "Airplane"
+#define STATUS "Status"
 
 class Model : public PluginInterface
 {
@@ -36,7 +41,8 @@ public:
     enum class Type{
         SIMPLE,
         MOVEABLE,
-        FLYABLE
+        FLYABLE,
+        INFO
     };
 
 public:
@@ -58,6 +64,7 @@ public slots:
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
+    void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
     void addFlyableModel(ServiceFlyableModel *serviceModel);
 
@@ -73,7 +80,9 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mSimpleNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
+    osg::ref_ptr<StatusNode> mStatusModel {nullptr};
 
     SimpleModelNode* pick(float x, float y);
     SimpleModelNode* mSelectedModelNode{nullptr};
@@ -86,6 +95,16 @@ private:
     static int mCount;
     double mCurrentModelSize;
     bool mIs3D;
+private:
+    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableModelNodeMap;
+
+
+    QImage *mRenderImage{nullptr};
+    static constexpr int LABEL_IMAGE_WIDTH = 90;
+    static constexpr int LABEL_IMAGE_HEIGHT = 20;
+    void updateModelDataLabel(std::string name);
+    osg::ref_ptr<osg::Image> mImageLabel;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLabelNode;
 
 };
 

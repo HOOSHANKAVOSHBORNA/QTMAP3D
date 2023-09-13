@@ -90,6 +90,8 @@ void FlyableModelNode::flyTo(osgEarth::GeoPoint destinationPoint, double velocit
     destinationPoint.toWorld(destinationWPoint);
 
     double distance = getPosition().distanceTo(destinationPoint);
+    if(distance == 0)
+        return;
     double t = distance / velocity;
 
     mMoveAnimationPathCallback->getAnimationPath()->insert(0, osg::AnimationPath::ControlPoint(currentWPoint));

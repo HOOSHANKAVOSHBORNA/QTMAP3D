@@ -15,6 +15,8 @@
 #include "qqmlcontext.h"
 #include "mapControllerItem.h"
 
+#include "locationManagerModel.h"
+
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
@@ -27,7 +29,6 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
-
 
     setColor(Qt::black);
     mToolbox = new ToolboxProxyModel();
@@ -46,6 +47,7 @@ void MainWindow::initComponent()
 {
 //    QQmlEngine *engine = qmlContext(this)->engine();
     QQmlEngine *engine = qmlEngine(this);
+
     QQmlComponent* comp = new QQmlComponent(engine);
     connect(comp, &QQmlComponent::statusChanged,[&](QQmlComponent::Status status){
         if(status == QQmlComponent::Error){
@@ -59,6 +61,12 @@ void MainWindow::initComponent()
             addToCenterCenterContainer(mMapItem);
 
             mLayersModel = new LayersModel(mMapItem);
+
+            // --- location manager and its proxy model settings
+            mLocationManagerProxyModel = new LocationManagerProxyModel();
+            LocationManagerModel *locationManagerModel = new LocationManagerModel(mMapItem);
+            mLocationManagerProxyModel->setSourceModel(locationManagerModel);
+            // ---
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
@@ -179,4 +187,9 @@ bool MainWindow::event(QEvent *ev)
     }
 
     return QQuickWindow::event(ev);
+}
+
+LocationManagerProxyModel *MainWindow::locationManagerProxyModel() const
+{
+    return mLocationManagerProxyModel;
 }

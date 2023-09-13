@@ -13,42 +13,36 @@ class LayersModel : public TreeProxyModel
 
     Q_PROPERTY(QModelIndex dragIndex READ getDragIndex WRITE setDragIndex)
 
-    enum CustomRoles{
-        visibleRole = Qt::UserRole + 100 ,
-        locatableRole = Qt::UserRole + 101,
-        layerRole = Qt::UserRole + 102,
-        visibleDrop = Qt::UserRole + 103
+    enum Role{
+        VisibleRole = Qt::UserRole + 100 ,
+        LayerRole,
+        DropRole
     };
 
 public:
     LayersModel(MapItem *mapController = nullptr, QObject *parent = nullptr);
-    QHash<int,QByteArray> roleNames() const override;
     void initializeModel(osgEarth::Map *map);
-    bool getLayerVisible(osgEarth::Layer *layer) const;
+    QHash<int,QByteArray> roleNames() const override;
     QModelIndex getDragIndex();
     void setDragIndex(QModelIndex value);
 
-//    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
-
 public slots:
-    void onItemClicked(const QModelIndex &current)override;
-    void onDeleteLayerClicked(const QModelIndex &current);
-    void onGoToClicked(const QModelIndex &current);
+    void onVisibleItemClicked(const QModelIndex &current);
+    void onRemoveItemClicked(const QModelIndex &current);
     void onMoveItem(QModelIndex oldIndex, QModelIndex newIndex);
 
     void onLayerAdded(osgEarth::Layer* layer , osgEarth::Layer *parentLayer,   unsigned index);
     void onLayerRemoved(osgEarth::Layer* layer ,osgEarth::Layer *parentLayer, unsigned index);
-//    void onNodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer);
-//    void onNodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer);
-    void onParentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
-
 private:
+    void moveItem(QModelIndex from , QModelIndex to);
+    void setItemVisible(QStandardItem *item, bool visible);
+    bool getLayerVisible(osgEarth::Layer *layer) const;
     void setLayerVisible(osgEarth::VisibleLayer *layer);
-    QStandardItem mLayerList;
+private:
+//    QStandardItem mLayerList;
     MapItem *mMapItem;
-    TreeModel *mTreeModel;
-    QMap<QStandardItem , osgEarth::Layer*> treeLayerMap;
+    QStandardItemModel *mSourceModel;
+//    QMap<QStandardItem , osgEarth::Layer*> treeLayerMap;
     QModelIndex mDragIndex;
 
 

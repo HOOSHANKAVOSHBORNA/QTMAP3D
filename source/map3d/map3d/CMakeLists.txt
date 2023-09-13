@@ -41,7 +41,8 @@ add_executable(Map3d
         networkManager.h networkManager.cpp
         smallmap.h smallmap.cpp
         qml.qrc
-        resources.qrc)
+        resources.qrc
+        locationManagerModel.h locationManagerModel.cpp)
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include" "style/")

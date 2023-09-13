@@ -482,5 +482,8 @@
         <file>Resources/compass-premeter.mesh</file>
         <file>Resources/compass-surface.mesh</file>
         <file>Resources/plane.mesh</file>
+        <file>Resources/location-add.png</file>
+        <file>Resources/location-delete.png</file>
+        <file>Resources/location-edit.png</file>
     </qresource>
 </RCC>
