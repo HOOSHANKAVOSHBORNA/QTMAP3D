@@ -256,7 +256,7 @@ void Model::onCarItemCheck(bool check)
 void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
-        makeIconNode("../data/images/model/airplane.png");
+        makeIconNode("../data/models/aircraft/aircraft.png");
 
         mType = Type::FLYABLE;
         setState(State::READY);
@@ -356,7 +356,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         break;
     case Type::FLYABLE:
         name = "Airplane" + QString::number(mCount);
-        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
+        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/models/aircraft/aircraft.png");
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);
