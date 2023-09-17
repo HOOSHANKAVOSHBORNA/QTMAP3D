@@ -24,27 +24,6 @@ enum {
 struct LocationData
 {
 public:
-//    LocationData() {}
-
-//    LocationData(QString newDescription, QString newSourceImage, QString newColor) :
-//        description(newDescription), imageSource(newSourceImage), color(newColor)
-//    {
-//        viewpoint.name().init("Default Name");
-//        viewpoint.setHeading(0);
-//        viewpoint.setPitch(-20);
-//        viewpoint.setRange(5000000);
-//    }
-
-//    LocationData(QString newName, QString newDescription, QString newSourceImage, QString newColor) :
-//        description(newDescription), imageSource(newSourceImage), color(newColor)
-//    {
-//        viewpoint.name().init(newName.toStdString());
-//    }
-
-//    LocationData(QString newName, double newLon, double newLat, double newZ, double newHeading, double newPitch, double newRange, QString newDescription, QString newSourceImage, QString newColor) :
-//        description(newDescription), imageSource(newSourceImage), color(newColor)
-//    {}
-
     osgEarth::Viewpoint viewpoint;
     QString description;
     QString imageSource;

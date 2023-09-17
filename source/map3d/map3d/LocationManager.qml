@@ -14,6 +14,7 @@ Rectangle {
     property int locationColorIconMargin: 3
 
     // colors
+    readonly property color bg40: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.40)
     readonly property color bg20: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.20)
     readonly property color bg25: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.25)
     readonly property color bg50: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.50)
@@ -112,8 +113,8 @@ Rectangle {
 
             x: 400
             y: 400
-            width: 800 / Style.monitorRatio
-            height: 800 / Style.monitorRatio
+            width: 1500 / Style.monitorRatio
+            height: 1000 / Style.monitorRatio
             color: "transparent"
             visible: false
             flags: Qt.FramelessWindowHint
@@ -135,8 +136,8 @@ Rectangle {
             Rectangle {
                 id: rPopup
 
-                width: 500 / Style.monitorRatio
-                height: 678 / Style.monitorRatio
+                width: 450 / Style.monitorRatio
+                height: 612 / Style.monitorRatio
                 color: "silver"
                 radius: 20 / Style.monitorRatio
 
@@ -149,11 +150,16 @@ Rectangle {
                     anchors.top: rPopup.top
                     anchors.topMargin: 25 / Style.monitorRatio
                     font.family: Style.fontFamily
-                    font.pixelSize: 30 / Style.monitorRatio
+                    font.pixelSize: 28 / Style.monitorRatio
                     font.styleName: Font.Medium
                 }
 
                 Button {
+                    topPadding: 0
+                    rightPadding: 0
+                    bottomPadding: 0
+                    leftPadding: 0
+
                     background: Rectangle {
                         color: "transparent"
                     }
@@ -162,52 +168,48 @@ Rectangle {
                     anchors.right: rPopup.right
                     anchors.rightMargin: 24 / Style.monitorRatio
                     icon.source: "qrc:/Resources/add-place-close.png"
-                    icon.width: 35 / Style.monitorRatio
-                    icon.height: 35 / Style.monitorRatio
+                    icon.width: 31 / Style.monitorRatio
+                    icon.height: 31 / Style.monitorRatio
 
                     onClicked: popup.close()
                 }
 
                 ColumnLayout {
                     anchors.top: txtAddPlace.bottom
-                    anchors.topMargin: 50 / Style.monitorRatio
+                    anchors.topMargin: 35 / Style.monitorRatio
                     anchors.left: rPopup.left
-                    anchors.leftMargin: 24 / Style.monitorRatio
-                    width: 452 / Style.monitorRatio
-                    spacing: 25 / Style.monitorRatio
+                    anchors.leftMargin: 25 / Style.monitorRatio
+                    anchors.right: rPopup.right
+                    anchors.rightMargin: 25 / Style.monitorRatio
+
+                    spacing: 10 / Style.monitorRatio
 
                     // ----------------------------------------------- add place location
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 10 / Style.monitorRatio
-                        RowLayout {
-                            spacing: 2 / Style.monitorRatio
+                    RowLayout {
+                        spacing: 2 / Style.monitorRatio
+                        Layout.bottomMargin: 10 / Style.monitorRatio
 
-                            Button {
-                                id: iconLocation
+                        Button {
+                            id: iconLocation
 
-                                background: Rectangle {
-                                    color: "transparent"
-                                }
+                            topPadding: 0
+                            rightPadding: 0
+                            bottomPadding: 0
+                            leftPadding: 0
 
-                                icon.source: "qrc:/Resources/add-place-location.png"
-                                icon.width: 30 / Style.monitorRatio
-                                icon.height: 30 / Style.monitorRatio
-                                icon.color: Style.foregroundColor
+                            background: Rectangle {
+                                color: "transparent"
                             }
 
-                            Text {
-                                id: txtPlaceName
-
-                                text: "Iran . Tehran Province . Tehran"
-                                font.family: Style.fontFamily
-                                font.pixelSize: 20 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
+                            icon.source: "qrc:/Resources/add-place-location.png"
+                            icon.width: 30 / Style.monitorRatio
+                            icon.height: 30 / Style.monitorRatio
+                            icon.color: Style.foregroundColor
                         }
 
                         Text {
-                            Layout.leftMargin: (30 + 2) / 1 // (wtf?)
+                            id: txtPlaceName
+
                             text: "45.568075, 74.136643"
                             font.family: Style.fontFamily
                             font.pixelSize: 20 / Style.monitorRatio
@@ -220,7 +222,7 @@ Rectangle {
                         color: bg50
                         radius: 10 / Style.monitorRatio
                         Layout.fillWidth: true
-                        height: 55 / Style.monitorRatio
+                        height: 50 / Style.monitorRatio
                         clip: true
 
                         TextInput {
@@ -243,25 +245,64 @@ Rectangle {
                             text: "Place name"
                             font: tiLocationName.font
                             visible: tiLocationName.text === ""
+                            color: fg50
+                        }
+                    }
+
+                    // ----------------------------------------------- add place input description
+                    Rectangle {
+                        color: bg50
+                        radius: 10 / Style.monitorRatio
+                        Layout.fillWidth: true
+                        height: 50 / Style.monitorRatio
+                        clip: true
+
+                        TextInput {
+                            id: tiLocationDescription
+
+                            anchors.fill: parent
+                            anchors.leftMargin: 32 / Style.monitorRatio
+                            anchors.rightMargin: 32 / Style.monitorRatio
+                            verticalAlignment: Text.AlignVCenter
+                            font.family: Style.fontFamily
+                            font.pixelSize: 19 / Style.monitorRatio
                             color: fg80
+                        }
+
+                        Text {
+                            anchors.fill: parent
+                            anchors.leftMargin: 32 / Style.monitorRatio
+                            anchors.rightMargin: 32 / Style.monitorRatio
+                            verticalAlignment: tiLocationDescription.verticalAlignment
+                            text: "Description"
+                            font: tiLocationDescription.font
+                            visible: tiLocationDescription.text === ""
+                            color: fg50
                         }
                     }
 
                     // ----------------------------------------------- add place take photo
                     Rectangle {
                         Layout.fillWidth: true
-                        color: bg50
+                        color: bg40
                         radius: 10 / Style.monitorRatio
-                        height: 200 / Style.monitorRatio
+                        height: 180 / Style.monitorRatio
 
                         Column {
                             anchors.centerIn: parent
+                            spacing: 3 / Style.monitorRatio
 
                             Button {
+                                topPadding: 0
+                                rightPadding: 0
+                                bottomPadding: 0
+                                leftPadding: 0
+
                                 background: Rectangle {
                                     color: "transparent"
                                 }
 
+                                opacity: 0.75
                                 anchors.horizontalCenter: txtTakePhoto.horizontalCenter
                                 icon.source: "qrc:/Resources/add-place-add-camera.png"
                                 icon.width: 40 / Style.monitorRatio
@@ -275,8 +316,8 @@ Rectangle {
                                 text: "Take photo for place"
                                 font.underline: true
                                 font.family: Style.fontFamily
-                                font.pixelSize: 20 / Style.monitorRatio
-                                color: fg80
+                                font.pixelSize: 19 / Style.monitorRatio
+                                color: fg50
                             }
                         }
                     }
@@ -284,45 +325,43 @@ Rectangle {
                     // ----------------------------------------------- place color selection
                     ColumnLayout {
                         Layout.fillWidth: true
-                        spacing: 10 / Style.monitorRatio
+                        spacing: 5 / Style.monitorRatio
                         Text {
-                            text: "Place Color"
+                            text: "Place color"
                             font.family: Style.fontFamily
-                            font.pixelSize: 20 / Style.monitorRatio
+                            font.pixelSize: 19 / Style.monitorRatio
                             color: fg80
                         }
 
                         RowLayout {
                             Layout.fillWidth: true
+                            spacing: 5 / Style.monitorRatio
+
                             Rectangle {
-                                Layout.rightMargin: 5 / Style.monitorRatio
                                 color: "red"
-                                width: 30 / Style.monitorRatio
-                                height: 30 / Style.monitorRatio
+                                width: 25 / Style.monitorRatio
+                                height: 25 / Style.monitorRatio
                                 radius: width / 2
                             }
 
                             Rectangle {
-                                Layout.rightMargin: 5 / Style.monitorRatio
                                 color: "blue"
-                                width: 30 / Style.monitorRatio
-                                height: 30 / Style.monitorRatio
+                                width: 25 / Style.monitorRatio
+                                height: 25 / Style.monitorRatio
                                 radius: width / 2
                             }
 
                             Rectangle {
-                                Layout.rightMargin: 5 / Style.monitorRatio
                                 color: "yellow"
-                                width: 30 / Style.monitorRatio
-                                height: 30 / Style.monitorRatio
+                                width: 25 / Style.monitorRatio
+                                height: 25 / Style.monitorRatio
                                 radius: width / 2
                             }
 
                             Rectangle {
-                                Layout.rightMargin: 5 / Style.monitorRatio
                                 color: "green"
-                                width: 30 / Style.monitorRatio
-                                height: 30 / Style.monitorRatio
+                                width: 25 / Style.monitorRatio
+                                height: 25 / Style.monitorRatio
                                 radius: width / 2
                             }
 
@@ -332,19 +371,24 @@ Rectangle {
 
                             Text {
                                 text: "More colors"
-                                font.pixelSize: 15 / Style.monitorRatio
+                                font.pixelSize: 13 / Style.monitorRatio
                                 font.family: Style.fontFamily
                                 color: fg50
                             }
 
                             Button {
+                                topPadding: 0
+                                rightPadding: 0
+                                bottomPadding: 0
+                                leftPadding: 0
+
                                 background: Rectangle {
                                     color: "transparent"
                                 }
 
                                 icon.source: "qrc:/Resources/add-place-more-color.png"
-                                icon.width: 30 / Style.monitorRatio
-                                icon.height: 30 / Style.monitorRatio
+                                icon.width: 25 / Style.monitorRatio
+                                icon.height: 25 / Style.monitorRatio
                             }
                         }
                     }
@@ -355,12 +399,12 @@ Rectangle {
                     anchors.bottom: rPopup.bottom
                     anchors.bottomMargin: 25 / Style.monitorRatio
                     anchors.right: rPopup.right
-                    anchors.rightMargin: 24 / Style.monitorRatio
+                    anchors.rightMargin: 25 / Style.monitorRatio
                     spacing: 5
 
                     Rectangle {
-                        width: 90 / Style.monitorRatio
-                        height: 40 / Style.monitorRatio
+                        width: 108 / Style.monitorRatio
+                        height: 42 / Style.monitorRatio
                         radius: 20 / Style.monitorRatio
                         color: "transparent"
                         border.width: 1
@@ -382,8 +426,8 @@ Rectangle {
                     }
 
                     Rectangle {
-                        width: 90 / Style.monitorRatio
-                        height: 40 / Style.monitorRatio
+                        width: 91 / Style.monitorRatio
+                        height: 42 / Style.monitorRatio
                         radius: 20 / Style.monitorRatio
                         color: Style.foregroundColor
 
@@ -399,7 +443,8 @@ Rectangle {
                             anchors.fill: parent
 
                             onClicked: {
-                                lvLocationManger.model.addNewLocation(tiLocationName.text, "default description", "qrc:/Resources/airplane1.jpg", "red")
+                                lvLocationManger.model.addNewLocation(tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", "red")
+                                tiLocationName.text = ""
                                 popup.close()
                             }
                         }
