@@ -69,7 +69,7 @@ MapController {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.topMargin: 20
-        anchors.leftMargin: 20
+        anchors.leftMargin: 80
     }
     SearchBar {
         id:searcbar
@@ -154,7 +154,7 @@ MapController {
         anchors.leftMargin: 0
         anchors.rightMargin: 0
         width: parent.width
-        height: childrenRect.height
+        height: 20
         latitude: map.mapMouseGeoLocation.x
         longitude: map.mapMouseGeoLocation.y
         altitude: map.mapMouseGeoLocation.z
