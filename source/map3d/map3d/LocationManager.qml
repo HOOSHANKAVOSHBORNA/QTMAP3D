@@ -10,7 +10,7 @@ Rectangle {
     property alias listModel: lvLocationManger.model
 
     // sizes
-    property int locationColorIconWidth: 10
+    property int locationColorIconWidth: 13
     property int locationColorIconMargin: 3
 
     // colors
@@ -427,6 +427,8 @@ Rectangle {
             // model set from MainWindow.qml by listModel property in this file
 
             delegate: Rectangle {
+                id: rDelegate
+
                 width: lvLocationManger.width
                 height: 232 / Style.monitorRatio
                 color: bg25
@@ -451,36 +453,43 @@ Rectangle {
                     }
                 }
 
-                Column {
+                Rectangle {
+                    id: rDelegateContent
                     anchors.fill: parent
                     anchors.margins: 5 / Style.monitorRatio
-                    spacing: 0
+                    color: "transparent"
 
                     Image {
-                        anchors.left: parent.left
-                        anchors.right: parent.right
+                        id: imgLocation
+
+                        anchors.left: rDelegateContent.left
+                        anchors.right: rDelegateContent.right
                         height: 138 / Style.monitorRatio
                         source: model.imageSource
                     }
 
                     // ----------------------------------------------- Location Name Row
                     RowLayout {
-                        anchors.left: parent.left
-                        anchors.right: parent.right
+                        anchors.top: imgLocation.bottom
+                        anchors.topMargin: 7 / Style.monitorRatio
+                        anchors.left: rDelegateContent.left
+                        anchors.right: rDelegateContent.right
                         spacing: 0
 
                         Rectangle {
-                            width: locationColorIconWidth
-                            height: locationColorIconWidth
+                            width: locationColorIconWidth / Style.monitorRatio
+                            height: locationColorIconWidth / Style.monitorRatio
                             radius: width / 2
                             color: model.color
                         }
 
                         Rectangle {
-                            width: 3 / Style.monitorRatio
+                            width: locationColorIconMargin / Style.monitorRatio
                         }
 
                         Text {
+                            id: txtLocationName
+
                             Layout.fillWidth: true
                             text: model.name
                             font.pixelSize: 20 / Style.monitorRatio
@@ -498,25 +507,33 @@ Rectangle {
                         }
 
                         Button {
+                            topPadding: 0
+                            rightPadding: 0
+                            bottomPadding: 0
+                            leftPadding: 0
                             background: Rectangle {
                                 color: "transparent"
                             }
 
                             opacity: 0.75
                             icon.source: "qrc:/Resources/location-edit.png"
-                            icon.width: 20
-                            icon.height: 20
+                            icon.width: 25 / Style.monitorRatio
+                            icon.height: 25 / Style.monitorRatio
                         }
 
                         Button {
+                            topPadding: 0
+                            rightPadding: 0
+                            bottomPadding: 0
+                            leftPadding: 0
                             background: Rectangle {
                                 color: "transparent"
                             }
 
                             opacity: 0.75
                             icon.source: "qrc:/Resources/location-delete.png"
-                            icon.width: 20
-                            icon.height: 20
+                            icon.width: 25 / Style.monitorRatio
+                            icon.height: 25 / Style.monitorRatio
 
                             onClicked: {
                                 lvLocationManger.model.myRemoveRow(lvLocationManger.model.index(index, 0))
@@ -526,9 +543,10 @@ Rectangle {
 
                     // ----------------------------------------------- Location details
                     ColumnLayout {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.leftMargin: locationColorIconWidth + locationColorIconMargin
+                        anchors.left: rDelegateContent.left
+                        anchors.leftMargin: (locationColorIconWidth + locationColorIconMargin) / Style.monitorRatio
+                        anchors.bottom: rDelegateContent.bottom
+                        anchors.bottomMargin: 5 / Style.monitorRatio
                         spacing: 0
 
                         Text {
