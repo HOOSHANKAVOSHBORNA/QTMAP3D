@@ -116,6 +116,16 @@ void SimpleModelNode::onModeChanged(bool is3DView)
     mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
 }
 
+NodeData *SimpleModelNode::nodeData() const
+{
+    return mNodeData;
+}
+
+void SimpleModelNode::setNodeData(NodeData *newNodeData)
+{
+    mNodeData = newNodeData;
+}
+
 bool SimpleModelNode::isAutoScale() const
 {
     return mIsAutoScale;

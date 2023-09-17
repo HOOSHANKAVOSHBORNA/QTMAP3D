@@ -22,7 +22,6 @@ public:
     MapItem *mapItem() const;
     std::string iconUrl() const;
     std::string modelUrl() const;
-    bool mIs3D{false};
 
     virtual SimpleModelNode* asSimpleModelNode(){return this;}
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
@@ -31,6 +30,9 @@ public:
     void selectModel(bool isSelected);
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
+
+    NodeData *nodeData() const;
+    void setNodeData(NodeData *newNodeData);
 
 private slots:
     void onModeChanged(bool is3DView);
@@ -46,11 +48,10 @@ private:
     std::string mModelUrl;
     std::string mIconUrl;
     MapItem *mMapItem;
+    bool mIs3D{false};
     bool mIsAutoScale{true};
     bool mIsSelected{false};
-
-
-
+    NodeData* mNodeData;
 };
 
 #endif // SIMPLEMODELNODE_H

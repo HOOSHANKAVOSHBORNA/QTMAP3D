@@ -49,7 +49,7 @@ void NetworkManager::flyableMessageReceived()
 
     QAmqpMessage message = queue->dequeue();
     qDebug() << "Flyable message: " << message.payload();
-    mServiceManager->addFlyableModel(message.payload().toStdString());
+    mServiceManager->flyableNodeData(message.payload().toStdString());
 }
 
 void NetworkManager::layerQueueDeclared()
@@ -72,5 +72,5 @@ void NetworkManager::layerMessageReceived()
     QAmqpMessage message = queue->dequeue();
     qDebug() << "Layer message: " << message.payload();
 
-    mServiceManager->initLayers(message.payload().toStdString());
+    mServiceManager->layersData(message.payload().toStdString());
 }
