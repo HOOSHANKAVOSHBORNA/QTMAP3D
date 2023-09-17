@@ -52,6 +52,7 @@ void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLay
         CompositeAnnotationLayer* comp = new CompositeAnnotationLayer(obj.value("Id").toInt());
         comp->setName(obj.value("Text").toString().toStdString());
         comp->setOrder(obj.value("Order").toInt());
+//        qDebug()<<"composite:"<<comp->getName();
         if (parent){
             parent->addLayer(comp);
         }
@@ -68,8 +69,11 @@ void ServiceManager::parseLayersFromJson(QJsonObject obj, CompositeAnnotationLay
             ParenticAnnotationLayer* parentic = new ParenticAnnotationLayer(layerId);
             parentic->setName(obj.value("Text").toString().toStdString());
             mParenticLayerMap[layerId] = parentic;
+//            qDebug()<<"composite parent: "<<parent->getName();
+//            qDebug()<<"parentic: "<<parentic->getName();
         }
         parent->addLayer(mParenticLayerMap[layerId]);
+
 //        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
         return;
     }
