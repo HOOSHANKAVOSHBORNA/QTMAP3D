@@ -60,34 +60,27 @@ CMainWindow {
             rightContainer.model.remove(indx)
     }
 
-
-
-    ColumnLayout {
+    Rectangle{
+        height: parent.height - 20-2*y
+        width: 80/Style.monitorRatio + leftContainer.implicitWidth
+        radius: 10
         x: 3
         y: 3
         z: 1
-        id: upContainer
-        width: 80/Style.monitorRatio
-        height: parent.height - 20-2*y
-        Rectangle {
-            id: toolBarcontainer
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.alignment: Qt.AlignHCenter
-            Layout.rightMargin:-2
-
-            radius:5
-            color:"grey"
+        color: Style.backgroundColor
+        border.color: Style.borderColor
+        border.width: 2
+        RowLayout {
+            anchors.fill: parent
             Rectangle {
                 id: toolBar
-                width: parent.width-5
-                height: parent.height -5
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                Layout.alignment: Qt.AlignHCenter
+                Layout.leftMargin: 3
+                Layout.preferredWidth: 80/Style.monitorRatio - 6
+                Layout.preferredHeight: parent.height -5
                 color: Style.backgroundColor
-                radius: 5
-                anchors.leftMargin: 1
+                border.color: "gray"
+                border.width: 3
+                radius: 10
                 ColumnLayout{
                     id: centerItemUp
                     anchors.fill: parent
@@ -238,6 +231,14 @@ CMainWindow {
                     }
                 }
             }
+
+            //-------------------------------------left dock-----------------
+            SideContainer {
+                id: leftContainer
+                Layout.fillWidth: true
+                //                Layout.preferredWidth: visibleCount > 0 ?  implicitWidth : 0
+                //                Layout.maximumWidth: visibleCount > 0 ?  parent.width/3.5 : 0
+            }
         }
     }
     SplitView {
@@ -261,12 +262,7 @@ CMainWindow {
             color: test.containsMouse ? Style.hoverColor : "transparent"
         }
 
-        //-------------------------------------left dock-----------------
-        SideContainer {
-            id: leftContainer
-            SplitView.preferredWidth: visibleCount > 0 ?  implicitWidth : 0
-            SplitView.maximumWidth: visibleCount > 0 ?  parent.width/3.5 : 0
-        }
+
 
         SplitView {
             SplitView.fillHeight: true
