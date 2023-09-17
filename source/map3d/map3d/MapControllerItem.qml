@@ -69,7 +69,7 @@ MapController {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.topMargin: 20
-        anchors.leftMargin: 20
+        anchors.leftMargin: 80
     }
     SearchBar {
         id:searcbar
