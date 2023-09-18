@@ -489,5 +489,6 @@
         <file>Resources/add-place-close.png</file>
         <file>Resources/add-place-location.png</file>
         <file>Resources/add-place-more-color.png</file>
+        <file>Resources/add-place-color-select.png</file>
     </qresource>
 </RCC>

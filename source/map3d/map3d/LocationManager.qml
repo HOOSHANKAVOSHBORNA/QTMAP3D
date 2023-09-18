@@ -337,32 +337,55 @@ Rectangle {
                             Layout.fillWidth: true
                             spacing: 5 / Style.monitorRatio
 
-                            Rectangle {
-                                color: "red"
-                                width: 25 / Style.monitorRatio
-                                height: 25 / Style.monitorRatio
-                                radius: width / 2
-                            }
+                            Row {
+                                spacing: 1 / Style.monitorRatio
 
-                            Rectangle {
-                                color: "blue"
-                                width: 25 / Style.monitorRatio
-                                height: 25 / Style.monitorRatio
-                                radius: width / 2
-                            }
+                                Repeater {
+                                    id: lvColors
+                                    model: ["red", "blue", "yellow", "green", "white", "black", "orange", "pink", "purple"]
 
-                            Rectangle {
-                                color: "yellow"
-                                width: 25 / Style.monitorRatio
-                                height: 25 / Style.monitorRatio
-                                radius: width / 2
-                            }
+                                    property string selectedColor: "nocolor"
+                                    property int showCount: 4
 
-                            Rectangle {
-                                color: "green"
-                                width: 25 / Style.monitorRatio
-                                height: 25 / Style.monitorRatio
-                                radius: width / 2
+                                    Rectangle {
+                                        required property string modelData
+
+                                        visible: model.index < lvColors.showCount
+                                        width: 30 / Style.monitorRatio
+                                        height: 30 / Style.monitorRatio
+                                        radius: width / 2
+                                        color: "transparent"
+                                        border.color: modelData
+                                        border.width: lvColors.selectedColor === modelData ? 1 : 0
+
+                                        Rectangle {
+                                            anchors.centerIn: parent
+                                            color: parent.modelData
+                                            width: 25 / Style.monitorRatio
+                                            height: 25 / Style.monitorRatio
+                                            radius: width / 2
+                                        }
+
+                                        Image {
+                                            visible: lvColors.selectedColor === modelData
+                                            anchors.centerIn: parent
+                                            source: "qrc:/Resources/add-place-color-select.png"
+                                            width: 19 / Style.monitorRatio
+                                            height: 19 / Style.monitorRatio
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+
+                                            onClicked: {
+                                                console.log("color: " + parent.modelData)
+//                                                console.log(index)
+                                                lvColors.selectedColor = parent.modelData
+                                            }
+
+                                        }
+                                    }
+                                }
                             }
 
                             Rectangle {
@@ -443,8 +466,10 @@ Rectangle {
                             anchors.fill: parent
 
                             onClicked: {
-                                lvLocationManger.model.addNewLocation(tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", "red")
+                                lvLocationManger.model.addNewLocation(tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", lvColors.selectedColor)
                                 tiLocationName.text = ""
+                                tiLocationDescription.text = ""
+                                lvColors.selectedColor = "nocolor"
                                 popup.close()
                             }
                         }
