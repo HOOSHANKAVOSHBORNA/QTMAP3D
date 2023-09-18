@@ -36,7 +36,7 @@ bool Model::setup()
     mIs3D = mapItem()->getMode();
 
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-    connect(serviceManager(), &ServiceManager::flyableAdded, this, &Model::addFlyableModel);
+    connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, this, &Model::addUpdateFlyableNode);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -256,7 +256,7 @@ void Model::onCarItemCheck(bool check)
 void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
-        makeIconNode("../data/images/model/airplane.png");
+        makeIconNode("../data/models/aircraft/aircraft.png");
 
         mType = Type::FLYABLE;
         setState(State::READY);
@@ -307,30 +307,29 @@ void Model::onModeChanged(bool is3DView)
 }
 
 
-void Model::addFlyableModel(ServiceFlyableModel *serviceModel)
+void Model::addUpdateFlyableNode(NodeData *nodeData)
 {
-    double latitude{serviceModel->latitude};
-    double longitude{serviceModel->longitude};
-    double altitude{serviceModel->altitude};
-//    qDebug()<<"Latitude: "<<latitude<<" Longitude: "<<longitude<<" Altitude: "<< altitude;
-    osgEarth::GeoPoint geopos(mapItem()->getMapObject()->getSRS(), longitude, latitude, altitude);
 
-    if(!mFlyableModelNodeMap.contains(serviceModel->id)){
-        qDebug()<<"create model ";
-        mFlyableModelNodeMap[serviceModel->id] = new FlyableModelNode(mapItem(), serviceModel->url3D, serviceModel->url2D);
-        mFlyableModelNodeMap[serviceModel->id]->setPosition(geopos);
-        for(auto layer: serviceModel->layerList){
-            layer->addChild(mFlyableModelNodeMap[serviceModel->id]);
-//            break;
-        }
-        return;
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
+    osg::ref_ptr<FlyableModelNode> flyableNode;
+
+    if(!mFlyableModelNodeMap.contains(nodeData->id)){
+        flyableNode = new FlyableModelNode(mapItem(), nodeData->url3D, nodeData->url2D);
+        flyableNode->setPosition(geoPoint);
+        mFlyableModelNodeMap[nodeData->id] = flyableNode;
     }
-
-    auto flyableModelNode = mFlyableModelNodeMap[serviceModel->id];
-    flyableModelNode->setName(serviceModel->name);
-
-    flyableModelNode->flyTo(geopos, serviceModel->speed);
-
+    else{
+        flyableNode = mFlyableModelNodeMap[nodeData->id];
+        for(auto layer: flyableNode->nodeData()->layers){
+            layer->removeChild(flyableNode);
+        }
+        flyableNode->flyTo(geoPoint, nodeData->speed);
+    }
+    for(auto layer: nodeData->layers){
+        layer->addChild(flyableNode);
+    }
+    flyableNode->setName(nodeData->name);
+    flyableNode->setNodeData(nodeData);
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
@@ -356,7 +355,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         break;
     case Type::FLYABLE:
         name = "Airplane" + QString::number(mCount);
-        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
+        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/models/aircraft/aircraft.png");
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);

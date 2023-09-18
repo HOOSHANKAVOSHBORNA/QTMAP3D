@@ -108,7 +108,7 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 void Application::onUICreated()
 {
     mServiceManager = new ServiceManager(mMainWindow->getMapItem());
-    connect(mServiceManager, &ServiceManager::layerAdded, [&](CompositeAnnotationLayer *layer){
+    connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
             mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
         });
     NetworkManager *networkManager = new NetworkManager(mServiceManager);
