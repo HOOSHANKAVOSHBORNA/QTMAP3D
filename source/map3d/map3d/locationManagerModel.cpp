@@ -153,6 +153,13 @@ void LocationManagerProxyModel::addNewLocation(QString newName, QString newDescr
     dynamic_cast<LocationManagerModel*>(sourceModel())->myAppendRow(LocationData{vp, newDescription, newImageSource, newColor});
 }
 
+QVector3D LocationManagerProxyModel::getCurrentXYZ()
+{
+    osgEarth::Viewpoint vp = dynamic_cast<LocationManagerModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
+
+    return QVector3D{vp.focalPoint().value().x(), vp.focalPoint().value().y(), vp.focalPoint().value().z()};
+}
+
 QString LocationManagerProxyModel::searchedName() const
 {
     return mSearchedWord;

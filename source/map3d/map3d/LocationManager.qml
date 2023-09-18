@@ -25,8 +25,6 @@ Rectangle {
 
     readonly property color beautifulWhite: "#EDF3F9"
 
-    // components
-
 
     color: "silver"
 
@@ -210,7 +208,7 @@ Rectangle {
                         Text {
                             id: txtPlaceName
 
-                            text: "45.568075, 74.136643"
+                            text: listModel.getCurrentXYZ().x.toFixed(6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
                             font.family: Style.fontFamily
                             font.pixelSize: 20 / Style.monitorRatio
                             color: Style.foregroundColor
@@ -344,7 +342,7 @@ Rectangle {
                                     id: lvColors
                                     model: ["red", "blue", "yellow", "green", "white", "black", "orange", "pink", "purple"]
 
-                                    property string selectedColor: "nocolor"
+                                    property string selectedColor: "black"
                                     property int showCount: 4
 
                                     Rectangle {
@@ -469,7 +467,7 @@ Rectangle {
                                 lvLocationManger.model.addNewLocation(tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", lvColors.selectedColor)
                                 tiLocationName.text = ""
                                 tiLocationDescription.text = ""
-                                lvColors.selectedColor = "nocolor"
+                                lvColors.selectedColor = "black"
                                 popup.close()
                             }
                         }
@@ -627,7 +625,7 @@ Rectangle {
                         }
 
                         Text {
-                            text: model.lon + ", " + model.lat
+                            text: model.lon.toFixed(6) + ", " + model.lat.toFixed(6)
                             font.pixelSize: 17 / Style.monitorRatio
                             font.family: Style.fontFamily
                             color: fg75
