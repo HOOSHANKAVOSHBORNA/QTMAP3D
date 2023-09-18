@@ -101,6 +101,7 @@ Rectangle {
                     anchors.fill: parent
 
                     onClicked: {
+                        popup.editIndex = -1;
                         popup.myOpen()
                     }
                 }
@@ -110,6 +111,9 @@ Rectangle {
         // -------------------------------------- Popup
         Window {
             id: popup
+
+            property int editIndex: -1
+            property var itemModel
 
             function myOpen () {
                 txtPlaceName.text = listModel.getCurrentXYZ().x.toFixed(6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
@@ -364,7 +368,7 @@ Rectangle {
                                     Rectangle {
                                         required property string modelData
 
-                                        visible: model.index < lvColors.showCount
+//                                        visible: model.index < lvColors.showCount
                                         width: 30 / Style.monitorRatio
                                         height: 30 / Style.monitorRatio
                                         radius: width / 2
@@ -393,7 +397,7 @@ Rectangle {
 
                                             onClicked: {
                                                 console.log("color: " + parent.modelData)
-//                                                console.log(index)
+                                                //                                                console.log(index)
                                                 lvColors.selectedColor = parent.modelData
                                             }
 
@@ -480,7 +484,12 @@ Rectangle {
                             anchors.fill: parent
 
                             onClicked: {
-                                lvLocationManger.model.addNewLocation(tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", lvColors.selectedColor)
+                                if (popup.editIndex === -1) {
+                                    lvLocationManger.model.addNewLocation(tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", lvColors.selectedColor)
+                                } else {
+                                    lvLocationManger.model.editLocation(lvLocationManger.model.index(popup.editIndex, 0), tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", lvColors.selectedColor)
+                                }
+
                                 popup.myClose()
                             }
                         }
@@ -517,6 +526,7 @@ Rectangle {
                 clip: true
 
                 MouseArea {
+                    id: goToLocationBtn
                     anchors.fill: parent
 
                     onDoubleClicked: {
@@ -600,6 +610,18 @@ Rectangle {
                             icon.source: "qrc:/Resources/location-edit.png"
                             icon.width: 25 / Style.monitorRatio
                             icon.height: 25 / Style.monitorRatio
+
+                            onClicked: {
+                                lvLocationManger.model.goToLocation(lvLocationManger.model.index(index, 0))
+
+                                tiLocationName.text = model.name
+                                tiLocationDescription.text = model.description
+                                lvColors.selectedColor = model.color
+                                popup.editIndex = model.index
+                                popup.itemModel = model
+
+                                popup.myOpen()
+                            }
                         }
 
                         Button {
@@ -616,9 +638,7 @@ Rectangle {
                             icon.width: 25 / Style.monitorRatio
                             icon.height: 25 / Style.monitorRatio
 
-                            onClicked: {
-                                lvLocationManger.model.myRemoveRow(lvLocationManger.model.index(index, 0))
-                            }
+                            onClicked: lvLocationManger.model.myRemoveRow(lvLocationManger.model.index(index, 0))
                         }
                     }
 

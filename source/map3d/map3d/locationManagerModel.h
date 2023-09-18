@@ -47,7 +47,7 @@ public:
     Q_INVOKABLE void myRemoveRow(QModelIndex index);
     Q_INVOKABLE void goToLocation(QModelIndex index);
     Q_INVOKABLE void myAppendRow(const LocationData &newLocationData);
-
+    Q_INVOKABLE void myEditRow(QModelIndex index, const LocationData &newLocationData);
 
     QVector<LocationData> locations() const;
     void setLocations(const QVector<LocationData> &newLocations);
@@ -75,6 +75,7 @@ public:
     Q_INVOKABLE void printCurrentLocation(); // for debugging
     Q_INVOKABLE void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
     Q_INVOKABLE QVector3D getCurrentXYZ();
+    Q_INVOKABLE void editLocation(const QModelIndex &index, QString newName, QString newDescription, QString newImageSource, QString newColor);
 
     QString searchedName() const;
     void setSearchedName(const QString &newSearchedName);
