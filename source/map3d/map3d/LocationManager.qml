@@ -100,7 +100,9 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
 
-                    onClicked: popup.visible = true
+                    onClicked: {
+                        popup.myOpen()
+                    }
                 }
             }
         }
@@ -108,6 +110,20 @@ Rectangle {
         // -------------------------------------- Popup
         Window {
             id: popup
+
+            function myOpen () {
+                txtPlaceName.text = listModel.getCurrentXYZ().x.toFixed(6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
+
+                popup.visible = true
+            }
+
+            function myClose () {
+                tiLocationName.text = ""
+                tiLocationDescription.text = ""
+                lvColors.selectedColor = "black"
+
+                popup.close()
+            }
 
             x: 400
             y: 400
@@ -169,7 +185,7 @@ Rectangle {
                     icon.width: 31 / Style.monitorRatio
                     icon.height: 31 / Style.monitorRatio
 
-                    onClicked: popup.close()
+                    onClicked: popup.myClose()
                 }
 
                 ColumnLayout {
@@ -208,7 +224,7 @@ Rectangle {
                         Text {
                             id: txtPlaceName
 
-                            text: listModel.getCurrentXYZ().x.toFixed(6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
+                            text: "set before opening :)"
                             font.family: Style.fontFamily
                             font.pixelSize: 20 / Style.monitorRatio
                             color: Style.foregroundColor
@@ -442,7 +458,7 @@ Rectangle {
                         MouseArea {
                             anchors.fill: parent
 
-                            onClicked: popup.close()
+                            onClicked: popup.myClose()
                         }
                     }
 
@@ -465,10 +481,7 @@ Rectangle {
 
                             onClicked: {
                                 lvLocationManger.model.addNewLocation(tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", lvColors.selectedColor)
-                                tiLocationName.text = ""
-                                tiLocationDescription.text = ""
-                                lvColors.selectedColor = "black"
-                                popup.close()
+                                popup.myClose()
                             }
                         }
                     }
