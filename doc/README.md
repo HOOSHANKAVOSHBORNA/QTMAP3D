@@ -2,11 +2,16 @@
 
 # قراردادهای برنامه نویسی (Coding Conventions/Programming Style) پروژه
 
+</div>
+
 - [X] [C++ Conventions](./cpp-conventions.md)
 
 - [X] [QML Conventions](./qml-conventions.md)
 
 - [X] [Qt Conventions](./qt-conventions.md)
+
+
+<div dir="rtl">
 
 # قراردادهای برنامه نویسی
 
