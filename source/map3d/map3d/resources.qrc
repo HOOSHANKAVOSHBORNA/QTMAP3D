@@ -485,5 +485,10 @@
         <file>Resources/location-add.png</file>
         <file>Resources/location-delete.png</file>
         <file>Resources/location-edit.png</file>
+        <file>Resources/add-place-add-camera.png</file>
+        <file>Resources/add-place-close.png</file>
+        <file>Resources/add-place-location.png</file>
+        <file>Resources/add-place-more-color.png</file>
+        <file>Resources/add-place-color-select.png</file>
     </qresource>
 </RCC>

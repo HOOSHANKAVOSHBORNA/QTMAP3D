@@ -47,7 +47,7 @@ void ModelNodeTest::createFlyableInfo()
     jsonObject.insert("Name", name);
     jsonObject.insert("Id", id);
     jsonObject.insert("Color", color.name());
-    jsonObject.insert("Url2d", "../data/images/model/airplane.png");
+    jsonObject.insert("Url2d", "../data/models/aircraft/aircraft.png");
     jsonObject.insert("Url3d", "../data/models/aircraft/boeing-747.osgb");
     jsonObject.insert("Longitude", longitude);
     jsonObject.insert("Latitude", latitude);

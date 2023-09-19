@@ -69,7 +69,7 @@ MapController {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.topMargin: 20
-        anchors.leftMargin: 20
+        anchors.leftMargin: 80
     }
     SearchBar {
         id:searcbar
@@ -135,6 +135,16 @@ MapController {
             map.changeMode();
         }
     }
+//    SmallMap {
+//        width: 100
+//        height: 100
+//        x: parent.width - (100 + itemMargin)
+//        y: parent.height - itemPositionFactor * (100 + itemMargin + statusBar.height)
+////        anchors.rightMargin: 10
+////        anchors.bottomMargin: 50
+//        objectName: "SmallMap"
+//    }
+
     StatusBar {
         id: statusBar
         anchors.bottom: parent.bottom
@@ -144,7 +154,7 @@ MapController {
         anchors.leftMargin: 0
         anchors.rightMargin: 0
         width: parent.width
-        height: childrenRect.height
+        height: 20
         latitude: map.mapMouseGeoLocation.x
         longitude: map.mapMouseGeoLocation.y
         altitude: map.mapMouseGeoLocation.z

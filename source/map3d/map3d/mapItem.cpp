@@ -758,3 +758,8 @@ void MapItem::hoverMoveEvent(QHoverEvent *event)
         mOSGRenderNode->hoverMoveEvent(event);
     }
 }
+
+OSGRenderNode *MapItem::oSGRenderNode() const
+{
+    return mOSGRenderNode;
+}

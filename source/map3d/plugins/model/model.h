@@ -66,7 +66,8 @@ public slots:
     void onAirplanItemCheck (bool check);
     void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
-    void addFlyableModel(ServiceFlyableModel *serviceModel);
+
+    void addUpdateFlyableNode(NodeData *nodeData);
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;

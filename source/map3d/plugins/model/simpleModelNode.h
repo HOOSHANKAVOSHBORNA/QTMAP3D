@@ -22,40 +22,36 @@ public:
     MapItem *mapItem() const;
     std::string iconUrl() const;
     std::string modelUrl() const;
-    bool mIs3D{false};
-
-    bool getScalability() const;
-    void setScalability(bool newScalability);
 
     virtual SimpleModelNode* asSimpleModelNode(){return this;}
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
     void selectModel(bool isSelected);
+    bool isAutoScale() const;
+    void setAutoScale(bool newIsAutoScale);
+
+    NodeData *nodeData() const;
+    void setNodeData(NodeData *newNodeData);
 
 private slots:
     void onModeChanged(bool is3DView);
 
 private:
     osg::ref_ptr<osg::Switch> mSwitchNode;
-//    osg::ref_ptr<osgFX::Scribe> mHighlight;
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
-    osg::ref_ptr<ModelAutoScaler> mScaler;
-    osg::ref_ptr<osg::Group> root;
+    osg::ref_ptr<Circle> mCircleSelectNode;
+    osg::ref_ptr<Cone> mConeSelecteNode;
 
-    osg::ref_ptr<Circle> mCircle;
-    osg::ref_ptr<Cone> mCone ;
-
-
+    osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mModelUrl;
     std::string mIconUrl;
     MapItem *mMapItem;
-    bool mScalability{true};
+    bool mIs3D{false};
+    bool mIsAutoScale{true};
     bool mIsSelected{false};
-
-
-
+    NodeData* mNodeData;
 };
 
 #endif // SIMPLEMODELNODE_H

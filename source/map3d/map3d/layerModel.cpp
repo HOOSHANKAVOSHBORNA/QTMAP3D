@@ -170,30 +170,18 @@ void LayersModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentL
     newItem->setData(layerVariant,LayerRole);
 
     if(parentLayer){
-        auto itemList = mSourceModel->findItems(QString(parentLayer->getName().c_str()));
-        for(auto& item: itemList){
-            osgEarth::Layer *itemLayer = item->data(LayerRole).value<osgEarth::Layer*>();
-            if(itemLayer == parentLayer){
-                item->insertRow(index, newItem);
-                break;
-            }
-        }
+        mLayerToItemMap[parentLayer]->insertRow(index, newItem);
     }
     else
         mSourceModel->invisibleRootItem()->insertRow(index, newItem);
+
+    mLayerToItemMap[layer] = newItem;
 }
 
 void LayersModel::onLayerRemoved(osgEarth::Layer *layer , osgEarth::Layer *parentLayer, unsigned index)
 {
     if(parentLayer){
-        auto itemList = mSourceModel->findItems(QString(parentLayer->getName().c_str()));
-        for(auto& item: itemList){
-            osgEarth::Layer *itemLayer = item->data(LayerRole).value<osgEarth::Layer*>();
-            if(itemLayer == parentLayer){
-                item->removeRow(index);
-                break;
-            }
-        }
+        mLayerToItemMap[parentLayer]->removeRow(index);
     }
     else
         mSourceModel->invisibleRootItem()->removeRow(index);
