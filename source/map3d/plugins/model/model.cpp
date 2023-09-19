@@ -365,6 +365,22 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     case Type::INFO:
         name = "Status" + QString::number(mCount);
         mStatusModel = new StatusNode(mapItem());
+        {
+            StatusNode::Data data;
+            data.name = "name";
+            data.value = 10;
+            StatusNode::Data data1;
+            data1.name = "name";
+            data1.value = 30000;
+            StatusNode::Data data2;
+            data2.name = "name";
+            data2.value = "kasjdf";
+            std::list<StatusNode::Data> dataList;
+            dataList.push_back(data);
+            dataList.push_back(data1);
+            dataList.push_back(data2);
+            mStatusModel->setData("title", &dataList);
+        }
 
         if(!mModelNodeLayer->containsLayer(mStatusNodelLayer)){
             mStatusNodelLayer->clear();
