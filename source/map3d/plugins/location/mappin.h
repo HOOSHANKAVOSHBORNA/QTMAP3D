@@ -7,6 +7,7 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include "mapItem.h"
 #include "modelAutoScaler.h"
+#include "statusnode.h"
 
 
 
@@ -33,7 +34,11 @@ private:
     osg::ref_ptr<osg::Node> m3DPin;
     osg::ref_ptr<osg::Geode> m2DPin;
     ModelAutoScaler *mScaler;
+    StatusNode *mStatus;
     MapItem mMapItem;
+    QString mTitle;
+    std::list<StatusNode::Data> mDataList;
+
 
 
     bool is3D;

@@ -1,83 +1,37 @@
 #include "screen.h"
 #include "mapItem.h"
-
-#include <QFileDialog>
-#include <QLabel>
-#include <QLineEdit>
-#include <QQuickView>
-#include <QTimer>
-#include <QStandardPaths>
-#include <QGuiApplication>
-
-
-const QString CATEGORY = "Screen";
-const QString SNAPSHOT = "Snap Shot";
-
-
-
+#include <QQmlContext>
 
 Screen::Screen(QWidget *parent): PluginInterface(parent)
 {
+
+//    mEngine = new QQmlEngine;
 }
 
 bool Screen::setup()
 {
     auto toolboxItemSnapShot =  new ToolboxItem{SNAPSHOT, CATEGORY, "qrc:/resources/screen.png", false};
-    QObject::connect(toolboxItemSnapShot, &ToolboxItem::itemClicked, this, &Screen::takeSnapShot);
+    QObject::connect(toolboxItemSnapShot, &ToolboxItem::itemClicked, this, &Screen::onSnapShotClicked);
     toolbox()->addItem(toolboxItemSnapShot);
-    mCamera =  mapItem()->getViewer()->getCamera();
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    auto toolboxItemSnipTool =  new ToolboxItem{SNIP, CATEGORY, "qrc:/resources/snip.png", false};
+    QObject::connect(toolboxItemSnipTool, &ToolboxItem::itemClicked, this, &Screen::onSnipToolClicked);
+    toolbox()->addItem(toolboxItemSnipTool);
+    //////////////////////////////////////////////////////////////////////////////////////////////
     return true;
 }
 
-//bool Screen::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-//{
-//    return false;
-//}
 
-void Screen::takeSnapShot()
+void Screen::onSnapShotClicked()
 {
-    mReadyStatus = false;
-    std::string directory = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation).last().toStdString() + "/QArch SnapShot/" + QDateTime::currentDateTime().date().toString().toStdString();
-    std::string filename = "SnapShot ";
-    QString timeNow = QDateTime::currentDateTime().time().toString();
-    osgDB::makeDirectory(directory);
-    mFileDialog = osgDB::getRealPath(directory + "/" + filename + timeNow.toStdString() + ".png");
-    auto point = mapItem()->mapToScene(QPoint(0,0));
-    osg::ref_ptr<osg::Image> img = new osg::Image();
-    mViewCaptureCallback = new ViewCaptureCallback(img, point ,mFileDialog);
-    connect(mViewCaptureCallback,&ViewCaptureCallback::imageProcessComplete,this,&Screen::onImageProcessComplete);
-    mCamera->setFinalDrawCallback(mViewCaptureCallback);
-
-
-//    QScreen *screen = QGuiApplication::primaryScreen();
-//    QRect  screenGeometry = screen->geometry();
-//    qDebug() << screenGeometry;
-
-
-    auto screenPoint = mapItem()->mapToGlobal(0,0);
-    qDebug() << screenPoint;
-    QQmlComponent component(&mEngine, QUrl("qrc:/resources/SnapShot.qml"));
-    mObject = component.create();
-    auto window = dynamic_cast<QQuickWindow*>(mObject);
-    if(window){
-        window->setGeometry(QRect(screenPoint.x(), screenPoint.y(), mapItem()->width(), mapItem()->height()));
-        window->show();
-    }
-
-    QTimer *timer = new QTimer(this);
-    timer->singleShot(50, this, SLOT(takingProcessFinished()));
-    timer->deleteLater();
+    mSnapShot = new SnapShot(mapItem());
 }
 
-void Screen::onImageProcessComplete(osg::Image *iImage)
+
+void Screen::onSnipToolClicked()
 {
-    mCamera->setFinalDrawCallback(NULL);
-    mViewCaptureCallback->screenTaken = false;
+    mSnipTool = new SnipToolInterface(mapItem(),qmlEngine());
 }
 
-void Screen::takingProcessFinished()
-{
-    mObject->deleteLater();
-}
 
 
