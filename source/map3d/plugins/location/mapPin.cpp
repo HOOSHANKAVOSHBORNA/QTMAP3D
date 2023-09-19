@@ -1,4 +1,4 @@
-#include "mappin.h"
+#include "mapPin.h"
 #include <osg/Material>
 #include <osg/Depth>
 #include <osgEarthAnnotation/AnnotationUtils>
@@ -28,7 +28,7 @@ MapPin::MapPin(MapItem* map , osg::Vec4f color)
     lon.value = getPosition().y();
     mDataList.push_back(lon);
     mTitle = "Map Pin";
-    mStatus->setData(mTitle,mDataList);
+//    mStatus->setData(mTitle,mDataList);
     //--root ------------------------------------------------------------
     mSwitchNode = new osg::Switch;
     //--2D node---------------------------------------------------------

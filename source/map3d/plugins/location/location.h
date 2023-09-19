@@ -3,7 +3,7 @@
 
 
 #include "compositeAnnotationLayer.h"
-#include "mappin.h"
+#include "mapPin.h"
 #include "plugininterface.h"
 #include "qcolordialog.h"
 #include <osgEarthAnnotation/PlaceNode>
