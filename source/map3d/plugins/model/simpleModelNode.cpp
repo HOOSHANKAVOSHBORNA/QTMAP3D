@@ -25,14 +25,14 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     mSwitchNode = new osg::Switch;
     //--3D node----------------------------------------------------------
     m3DNode = new osg::LOD;
-    osg::ref_ptr<osg::Node> simpleNode = osgDB::readRefNodeFile(modelUrl);
-    m3DNode->addChild(simpleNode, 0, std::numeric_limits<float>::max());
+    mSimpleNode = osgDB::readRefNodeFile(modelUrl);
+    m3DNode->addChild(mSimpleNode, 0, std::numeric_limits<float>::max());
     //--2D node---------------------------------------------------------
     m2DNode = new osg::Geode();
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(iconUrl);
-    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(image, osg::Vec2s(0,0), 0, 0, 0.2);
+    mImage = osgDB::readImageFile(iconUrl);
+    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 0.2);
     m2DNode->setStateSet(geodeStateSet);
     m2DNode->addDrawable(imgGeom);
     //--select node---------------------------------------------------
@@ -72,7 +72,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     }
     //--auto scale----------------------------------------------------
     setCullingActive(false);
-    double modelLenght = simpleNode->getBound().radius() * 2;
+    double modelLenght = mSimpleNode->getBound().radius() * 2;
     double scaleRatio;
     if (3 < modelLenght && modelLenght < 7)
         scaleRatio = 20;
@@ -124,6 +124,26 @@ NodeData *SimpleModelNode::nodeData() const
 void SimpleModelNode::setNodeData(NodeData *newNodeData)
 {
     mNodeData = newNodeData;
+}
+
+void SimpleModelNode::setModelColor(osg::Vec3 color)
+{
+    //--recolor 3D Node----------------------------------------------------
+    osgEarth::Symbology::Style  style = getStyle();
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(color, 1.0f));
+    mSimpleNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    //--recolor 2D Node----------------------------------------------------
+    for(int i=0; i<mImage->s(); ++i) {
+        for(int j=0; j<mImage->t(); ++j) {
+            osg::Vec4 imageColor = mImage->getColor(i, j);
+            imageColor = osg::Vec4(color , imageColor.a());
+            mImage->setColor(imageColor, i, j);
+        }
+    }
+    mImage->dirty();
+    //---------------------------------------------------------------------
+
 }
 
 bool SimpleModelNode::isAutoScale() const
