@@ -84,7 +84,7 @@ private:
     double mFps = 0.0f;
     SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
     QVector2D m_compassDirection;
-    MapItem *mSmallMap{nullptr};
+    SmallMap *mSmallMap{nullptr};
     QQmlEngine *mQmlEngine{nullptr};
 };
 
