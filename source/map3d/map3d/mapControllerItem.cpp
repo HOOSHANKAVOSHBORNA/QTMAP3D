@@ -109,7 +109,9 @@ void MapControllerItem::calculateFps()
 void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 {
     mQmlEngine = newQmlEngine;
-    mSmallMap = dynamic_cast<SmallMap*>(findChild<QObject*>("SmallMap"));
+//    mSmallMap = dynamic_cast<SmallMap*>(findChild<QObject*>("SmallMap"));
+//    osgEarth::GeoPoint p{mSmallMap->getMapSRS(), getCameraController()->getViewpoint().focalPoint().get()};
+//    mSmallMap->setLocation(p);
 }
 
 SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const

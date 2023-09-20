@@ -25,9 +25,9 @@
 
 > اگر به یک شی reference ندادید برای آن `id` تعریف نکنید.
 
-</div>
-
 مثال:
+
+</div>
 
 ```QML
 Rectangle {
@@ -206,6 +206,7 @@ Rectangle {
 }
 ```
 <div dir="rtl">
+
 - اگر کدتان بیش از چند خط کوتاه است برای آن یک تابع بنویسید.
 
 مثال:
@@ -233,6 +234,8 @@ Rectangle {
 
 ## قراردادهای نام گذاری
 
+</div>
+
 <div align="center">
     <img src="./medias/naming-conventions.png">
 </div>
@@ -250,8 +253,10 @@ Rectangle {
 
 </div>
 
+<div dir="rtl">
 
 # منابع
+
 </div>
 
 https://doc.qt.io/qt-6/qml-codingconventions.html
