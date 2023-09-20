@@ -1,6 +1,6 @@
 <div dir="rtl">
 
-# قراردادهای برنامه نویسی (Coding Conventions/Programming Style) پروژه
+# قراردادهای برنامه نویسی پروژه
 
 </div>
 
