@@ -8,7 +8,6 @@ Rectangle {
     color: Style.backgroundColor
 
     readonly property color lightBlue: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.80)
-    readonly property int leftContainerWidth : 60
     property bool heightVisiblity : false
     property real longitude : 0.0
     property real latitude : 0.0
@@ -39,6 +38,8 @@ Rectangle {
         if(timer != -1)
             message = "Ready"
     }
+
+
     // --------------  ---      ---
     Item {
         id: messegeLogoItem
@@ -96,6 +97,9 @@ Rectangle {
     }
 
 
+
+
+// Altitude ------------------------------------
     RowLayout{
         id:theRowLayout
         anchors.left: messegeLogoItem.right
@@ -103,8 +107,6 @@ Rectangle {
         layoutDirection: Qt.RightToLeft
         clip:true
         spacing: 6/Style.monitorRatio
-
-// Altitude ------------------------------------
         Label {
             id: altitudevalue
             Layout.minimumWidth: 28/Style.monitorRatio + 80/Style.monitorRatio
@@ -179,7 +181,7 @@ Rectangle {
 
         Label {
             id: coordinateText
-            Layout.minimumWidth: hiddenn.implicitWidth
+            Layout.minimumWidth: 78/Style.monitorRatio
             Layout.preferredHeight: 20/Style.monitorRatio
             background: Rectangle {
                 id: t4
@@ -322,6 +324,7 @@ Rectangle {
                 }
 
                 onClicked: {
+
                     listView.selectedIndexes.sort().reverse()
                     console.log(listView.selectedIndexes)
 
@@ -635,7 +638,13 @@ Rectangle {
         text: "-1,254.000 "
         visible: false
     }
-
+    Rectangle{
+id:margint
+        anchors.right:  parent.left
+        width: 80/Style.monitorRatio
+        height: 22/Style.monitorRatio
+        color: Style.backgroundColor
+    }
     PropertyAnimation {
         id: showRect
         target: root
