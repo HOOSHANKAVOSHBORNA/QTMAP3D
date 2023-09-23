@@ -2,12 +2,13 @@
 #include "mapItem.h"
 #include "MoveableModelNode.h"
 #include "flyableModelNode.h"
-#include "qjsonobject.h"
 #include "serviceManager.h"
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
 #include <osgEarth/ModelSource>
 #include <osgEarth/ModelSource>
+
+#include <QPainter>
 #include <QRandomGenerator>
 #include <osgFX/Outline>
 #include <osgEarthSymbology/Style>
@@ -35,7 +36,7 @@ bool Model::setup()
     mIs3D = mapItem()->getMode();
 
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-    connect(serviceManager(), &ServiceManager::flyableAdded, this, &Model::addFlyableModel);
+    connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, this, &Model::addUpdateFlyableNode);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -54,6 +55,10 @@ bool Model::setup()
     QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
+    auto statusToolboxItem =  new ToolboxItem{STATUS, MODEL, "qrc:/resources/status.png", true};
+    QObject::connect(statusToolboxItem, &ToolboxItem::itemChecked, this, &Model::onStatusItemCheck);
+    toolbox()->addItem(statusToolboxItem);
+
 
     mSimpleNodeLayer = new ParenticAnnotationLayer();
     mSimpleNodeLayer->setName(TREE);
@@ -63,6 +68,9 @@ bool Model::setup()
 
     mFlyableNodelLayer = new ParenticAnnotationLayer();
     mFlyableNodelLayer->setName(AIRPLANE);
+
+    mStatusNodelLayer = new ParenticAnnotationLayer();
+    mStatusNodelLayer->setName(STATUS);
     return true;
 }
 
@@ -152,6 +160,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
         //mCurrentModel->setScalability(false);
+        mCurrentModel->setModelColor(osg::Vec3f(1.0f,0,0.5f));
         confirm();
         return false;
     }
@@ -180,11 +189,14 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
 
 bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+
+
 //    if (mCircle){
 //        mCircle->setScale(mSelectedModelNode->getScale());
 //        mCone->setScale(mSelectedModelNode->getScale());
 
 //    }
+
 
     return false;
 }
@@ -245,9 +257,28 @@ void Model::onCarItemCheck(bool check)
 void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
-        makeIconNode("../data/images/model/airplane.png");
+        makeIconNode("../data/models/aircraft/aircraft.png");
 
         mType = Type::FLYABLE;
+        setState(State::READY);
+        mapItem()->addNode(iconNode());
+
+    }
+    else {
+        if(state() == State::MOVING)
+            cancel();
+
+        setState(State::NONE);
+        mapItem()->removeNode(iconNode());
+    }
+}
+
+void Model::onStatusItemCheck(bool check)
+{
+    if (check) {
+        makeIconNode("../data/images/model/status.png");
+
+        mType = Type::INFO;
         setState(State::READY);
         mapItem()->addNode(iconNode());
 
@@ -277,24 +308,29 @@ void Model::onModeChanged(bool is3DView)
 }
 
 
-void Model::addFlyableModel(ServiceFlyableModel *serviceModel)
+void Model::addUpdateFlyableNode(NodeData *nodeData)
 {
-    FlyableModelNode *fmodel = new FlyableModelNode(mapItem(), serviceModel->url3D, serviceModel->url2D);
-    fmodel->setName(serviceModel->name);
-    double latitude{serviceModel->latitude};
-    double longitude{serviceModel->longitude};
-    double altitude{serviceModel->altitude};
-    osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), longitude, latitude, altitude);
-    fmodel->setPosition(geopos);
-//    fmodel.setHeading
-    fmodel->setSpeed(serviceModel->speed);
-//    ParenticAnnotationLayer *p = mapItem()->getMapObject()->getLayerByUserId(serviceModel->id);
-    ParenticAnnotationLayer *p = new ParenticAnnotationLayer;
-    p->setName("seee");
-    mapItem()->getMapObject()->addLayer(p);
-    p->addChild(fmodel);
-//    if (p)
-//        p->addChild(fmodel);
+
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
+    osg::ref_ptr<FlyableModelNode> flyableNode;
+
+    if(!mFlyableModelNodeMap.contains(nodeData->id)){
+        flyableNode = new FlyableModelNode(mapItem(), nodeData->url3D, nodeData->url2D);
+        flyableNode->setPosition(geoPoint);
+        mFlyableModelNodeMap[nodeData->id] = flyableNode;
+    }
+    else{
+        flyableNode = mFlyableModelNodeMap[nodeData->id];
+        for(auto layer: flyableNode->nodeData()->layers){
+            layer->removeChild(flyableNode);
+        }
+        flyableNode->flyTo(geoPoint, nodeData->speed);
+    }
+    for(auto layer: nodeData->layers){
+        layer->addChild(flyableNode);
+    }
+    flyableNode->setName(nodeData->name);
+    flyableNode->setNodeData(nodeData);
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
@@ -320,35 +356,78 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         break;
     case Type::FLYABLE:
         name = "Airplane" + QString::number(mCount);
-        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
+        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/models/aircraft/aircraft.png");
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);
         }
         mFlyableNodelLayer->addChild(mCurrentModel);
         break;
+    case Type::INFO:
+        name = "Status" + QString::number(mCount);
+        mStatusModel = new StatusNode(mapItem());
+        {
+            StatusNode::Data data;
+            data.name = "name";
+            data.value = 10;
+            StatusNode::Data data1;
+            data1.name = "name";
+            data1.value = 30000;
+            StatusNode::Data data2;
+            data2.name = "name";
+            data2.value = "kasjdf";
+            std::list<StatusNode::Data> dataList;
+            dataList.push_back(data);
+            dataList.push_back(data1);
+            dataList.push_back(data2);
+            mStatusModel->setData("title", &dataList);
+        }
+
+        if(!mModelNodeLayer->containsLayer(mStatusNodelLayer)){
+            mStatusNodelLayer->clear();
+            mModelNodeLayer->addLayer(mStatusNodelLayer);
+        }
+        mStatusNodelLayer->addChild(mStatusModel);
+        break;
     default:
         break;
     }
-    mCurrentModel->setName(name.toStdString());
-    mCurrentModel->setPosition(geoPos);
+
+    if (mCurrentModel){
+        mCurrentModel->setName(name.toStdString());
+        mCurrentModel->setPosition(geoPos);
+    }
+    else{
+        mStatusModel->setName(name.toStdString());
+        mStatusModel->setPosition(geoPos);
+    }
+
+
+;
     setState(State::MOVING);
     mCount++;
 }
 
 void Model::moving(osgEarth::GeoPoint &geoPos){
 
-    if (mCurrentModel->asFlyableModelNode()){
-        double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
-        geoPos.z() += randomHeight;
-        mCurrentModel->asFlyableModelNode()->flyTo(geoPos,20);
-        return;
+    if (mCurrentModel){
+        if (mCurrentModel->asFlyableModelNode()){
+            double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
+            geoPos.z() += randomHeight;
+            mCurrentModel->asFlyableModelNode()->flyTo(geoPos,20);
+            return;
+        }
+        if (mCurrentModel->asMoveableModelNode()){
+            mCurrentModel->asMoveableModelNode()->moveTo(geoPos,20);
+            return;
+        }
     }
-    if (mCurrentModel->asMoveableModelNode()){
-        mCurrentModel->asMoveableModelNode()->moveTo(geoPos,20);
-        return;
+    if (mCurrentModel){
+        mCurrentModel->setPosition(geoPos);
     }
-    mCurrentModel->setPosition(geoPos);
+    else{
+        mStatusModel->setPosition(geoPos);
+    }
 }
 
 void Model::confirm()
@@ -371,10 +450,14 @@ void Model::cancel(){
         case Type::FLYABLE:
             mFlyableNodelLayer->removeChild(mCurrentModel);
             break;
+        case Type::INFO:
+            mStatusNodelLayer->removeChild(mStatusModel);
+            break;
         default:
             break;
         }
         mCurrentModel.release();
+        mStatusModel.release();
         setState(State::READY);
         mCount--;
     }
@@ -450,6 +533,56 @@ SimpleModelNode *Model::pick(float x, float y)
         }
     }
     return simpleModelNode;
+}
+
+void Model::updateModelDataLabel(std::string name)
+{
+    if (!mRenderImage) {
+        mRenderImage = new QImage(
+            LABEL_IMAGE_WIDTH,
+            LABEL_IMAGE_HEIGHT,
+            QImage::Format_RGBA8888
+            );
+    }
+    if(!mImageLabel.valid())
+        mImageLabel = new osg::Image;
+
+    {
+
+        mRenderImage->fill(QColor(Qt::transparent));
+        QPainter *painter = new QPainter(mRenderImage);
+        painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+        static const QFont textFont("SourceSansPro", 10, QFont::Normal);
+        static const QPen  textPen(QColor(255, 255, 255));
+
+
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(backgroundBrush);
+        painter->drawRoundedRect(
+            mRenderImage->rect(),
+            10,2);
+
+
+        painter->setPen(textPen);
+        painter->setFont(textFont);
+
+        painter->drawText(0, 0, LABEL_IMAGE_WIDTH, 20,
+                         Qt::AlignCenter|Qt::AlignVCenter,
+                         QString::fromStdString(name));
+
+    *mRenderImage = mRenderImage->mirrored(false, true);
+
+    mImageLabel->setImage(LABEL_IMAGE_WIDTH,
+                          LABEL_IMAGE_HEIGHT,
+                          1,
+                          GL_RGBA,
+                          GL_RGBA,
+                          GL_UNSIGNED_BYTE,
+                          mRenderImage->bits(),
+                          osg::Image::AllocationMode::NO_DELETE);
+}
 }
 
 bool Model::clicked() const

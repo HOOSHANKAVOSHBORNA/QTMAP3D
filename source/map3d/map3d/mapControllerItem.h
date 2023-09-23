@@ -2,12 +2,13 @@
 #define MAPCONTROLLERITEM_H
 
 #include <QObject>
+#include <QQmlEngine>
 #include <QTime>
 #include "mapItem.h"
 #include "searchNodeModel.h"
 #include "statusBar.h"
 Q_DECLARE_METATYPE(SearchNodeModel)
-
+class SmallMap;
 class MapControllerItem : public MapItem
 {
     Q_OBJECT
@@ -39,6 +40,7 @@ public:
     QVector2D compassDirection() const;
     void setCompassDirection(const QVector2D &newCompassDirection);
 
+    void setQmlEngine(QQmlEngine *newQmlEngine);
 
 public slots:
     void setFps(double fps);
@@ -85,6 +87,8 @@ private:
     SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
     StatusBarSearchModel *mStatusBar{nullptr};
     QVector2D m_compassDirection;
+    SmallMap *mSmallMap{nullptr};
+    QQmlEngine *mQmlEngine{nullptr};
 };
 
 #endif // MAPCONTROLLERITEM_H

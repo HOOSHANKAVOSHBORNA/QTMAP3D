@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>resources/screen.png</file>
         <file>resources/SnapShot.qml</file>
+        <file>resources/snip.png</file>
+        <file>resources/SnipTool.qml</file>
+        <file>resources/shot.png</file>
+        <file>resources/group.png</file>
+        <file>resources/close.png</file>
     </qresource>
 </RCC>

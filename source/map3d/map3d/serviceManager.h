@@ -6,7 +6,14 @@
 #include <QJsonDocument>
 #include <osgEarth/Layer>
 
-struct ServiseFixedModel: public osg::Referenced
+struct NodeFieldData
+{
+    QString name;
+    QString category;
+    QVariant value;
+};
+
+struct NodeData: public osg::Referenced
 {
     int id;
     std::string name;
@@ -16,34 +23,21 @@ struct ServiseFixedModel: public osg::Referenced
     double latitude;
     double longitude;
     double altitude;
-    std::vector<int> layersId;
-    ServiseFixedModel()
-        : osg::Referenced() {}
-};
-
-struct ServiceMovableModel: public ServiseFixedModel
-{
-    ServiceMovableModel():
-        ServiseFixedModel(){}
-};
-
-struct  ServiceFlyableModel: public ServiceMovableModel
-{
-    ServiceFlyableModel()
-        : ServiceMovableModel(){}
-
     double speed;
+    std::vector<ParenticAnnotationLayer*> layers;
+    std::vector<NodeFieldData> data;
 };
 
-struct ServiceLayer {
-    int id;
-    int parentId;
-    std::string text;
-    int order;
-    bool parentic;
-    ServiceLayer(int id, int parent, std::string text, int order, bool parentic):id{id}, parentId{parent}, text{text}, order{order}, parentic{parentic} {}
 
-};
+//struct ServiceLayer {
+//    int id;
+//    int parentId;
+//    std::string text;
+//    int order;
+//    bool parentic;
+//    ServiceLayer(int id, int parent, std::string text, int order, bool parentic):id{id}, parentId{parent}, text{text}, order{order}, parentic{parentic} {}
+
+//};
 
 class ServiceManager: public QObject
 {
@@ -51,24 +45,23 @@ class ServiceManager: public QObject
 public:
     ServiceManager(MapItem *mapItem, QObject *parent = nullptr);
 
-    void initLayers(std::string layersStr);
-    void addFlyableModel(std::string flyable);
-    void addMovableModel(QJsonDocument *movable);
-    void addModel(QJsonDocument *model);
+    void layersData(std::string jsonData);
+    void flyableNodeData(std::string jsonData);
 
-    void addPolygon(QJsonDocument *polygon);
-    void addSphere(QJsonDocument *sphere);
-    void addCircle(QJsonDocument *circle);
-    void addPolyline(QJsonDocument *polyline);
+//    void addPolygon(QJsonDocument *polygon);
+//    void addSphere(QJsonDocument *sphere);
+//    void addCircle(QJsonDocument *circle);
+//    void addPolyline(QJsonDocument *polyline);
 
 signals:
-    void layerAdded(CompositeAnnotationLayer *layer);
-    void flyableAdded(ServiceFlyableModel *model);
+    void layerDataReceived(CompositeAnnotationLayer *layer);
+    void flyableNodeDataReceived(NodeData *modelNodeData);
 private:
-    void parseLayersFromJson(QJsonObject obj, CompositeAnnotationLayer *parent = nullptr);
+    void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
 
 private:
     MapItem *mMapItem{nullptr};
+    QMap<int, ParenticAnnotationLayer*> mParenticLayerMap;
 };
 
 #endif // DATAMANAGER_H

@@ -16,7 +16,7 @@ add_library(location SHARED
     location.h
     location.json
     location.qrc
-    mappin.h mappin.cpp
+    mapPin.h mapPin.cpp
 )
 
 target_include_directories(location PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

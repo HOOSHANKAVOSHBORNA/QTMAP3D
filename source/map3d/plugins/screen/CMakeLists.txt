@@ -16,6 +16,12 @@ add_library(screen SHARED
     screen.h
     screen.json
     screen.qrc
+
+    viewCaptureCallback.h
+    snapShot.h snapShot.cpp
+    snipTool.h snipTool.cpp
+    screenImageProvider.h
+    screenImageProvider.cpp
 )
 
 target_include_directories(screen PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

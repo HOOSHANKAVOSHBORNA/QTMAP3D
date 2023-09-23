@@ -12,29 +12,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgEarthDrivers/xyz/XYZOptions>
 #include "mapItem.h"
-//class MainMapCallback : public osgEarth::MapCallback
-//{
-//public:
-//    MainMapCallback(MapItem *MapItem) :
-//        mMapItem(MapItem)
-//    {
 
-//    }
-
-//    void onLayerAdded  (osgEarth::Layer* layer, unsigned index) override
-//    {
-//        if(mMapItem)
-//            mMapItem->layerAdded(layer, index);
-//    }
-//    void onLayerRemoved(osgEarth::Layer* layer, unsigned index) override
-//    {
-//        if(mMapItem)
-//            mMapItem->layerRemoved(layer, index);
-//    }
-
-//private:
-//    MapItem *mMapItem{nullptr};
-//};
 
 //--MapItem---------------------------------------------------------------------------------------------------------
 MapItem::MapItem(QQuickItem *parent) :
@@ -121,70 +99,6 @@ bool MapItem::removeNode(osg::Node *node)
     return mMapNode->removeChild(node);
 }
 
-//osgEarth::Util::EarthManipulator *MapItem::getEarthManipulator() const
-//{
-//    return mCameraController;
-//}
-
-//void MapItem::setViewpoint(const osgEarth::Viewpoint &vp, double duration_s)
-//{
-//    mCameraController->setViewpoint(vp,duration_s);
-//}
-
-//osgEarth::Viewpoint MapItem::getViewpoint() const
-//{
-//    if (mCameraController)
-//        return mCameraController->getViewpoint();
-//    return osgEarth::Viewpoint();
-//}
-
-//void MapItem::setTrackNode(osg::Node *node, double minDistance)
-//{
-//    auto vp = mCameraController->getViewpoint();
-//    if(vp.getNode() == node)
-//        return;
-
-//    vp.setNode(node);
-//    mCameraController->setViewpoint(vp);
-//    auto camSet = mCameraController->getSettings();
-//    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
-//    camSet->setTetherMode(osgEarth::Util::EarthManipulator::TetherMode::TETHER_CENTER);
-//    mCameraController->applySettings(camSet);
-//}
-
-//void MapController::untrackNode(osg::Node *node)
-//{
-//    auto vp = mCameraController->getViewpoint();
-//    if(vp.getNode() == nullptr)
-//        return;
-//    if(vp.getNode() != node)
-//        return;
-//    vp.setNode(nullptr);
-//    mCameraController->setViewpoint(vp);
-//    auto camSet = mCameraController->getSettings();
-//    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
-//	mCameraController->applySettings(camSet);
-//}
-
-//void MapItem::untrack()
-//{
-//    auto vp = mCameraController->getViewpoint();
-//    //    if(vp.getNode() == nullptr)
-//    //        return;
-//    vp.setNode(nullptr);
-//    mCameraController->setViewpoint(vp);
-
-//    auto camSet = mCameraController->getSettings();
-//    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
-//    mCameraController->applySettings(camSet);
-
-//}
-
-//qreal MapItem::headingAngle() const
-//{
-//    return -getViewpoint().getHeading();
-//}
-
 void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
 {
     //    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
@@ -241,114 +155,9 @@ void MapItem::worldToOSGScreen(osg::Vec3d worldPoint, float &outX, float &outY) 
     outY = point.y();
 }
 
-//void MapItem::addLayer(osgEarth::Layer *layer)
-//{
-//    layer->setUserValue("parent", false);
-//    auto node = layer->getNode();
-//    if(node)
-//        node->setName(layer->getName());
-//    //    else
-//    //        qDebug()<<layer->getName();
-//    mMapNode->getMap()->addLayer(layer);
-//    // Check if the layer is added successfully
-//    auto added = mMapNode->getMap()->getLayerByName(layer->getName());
-//    if (added && added->getEnabled())
-//    {
-
-//    }
-//    else
-//    {
-//        QMessageBox::warning(nullptr, tr("Error"), tr("Data loading failed!"));
-//    }
-//}
-
-//void MapItem::removeLayer(osgEarth::Layer *layer)
-//{
-//    mMapNode->getMap()->removeLayer(layer);
-//}
-
-//bool MapItem::addNodeToLayer(osg::Node *node, std::string layerName)
-//{
-//    auto layer = getMapNode()->getMap()->getLayerByName(layerName);
-//    if (layer) {
-//        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-//        if (group) {
-//            group->addChild(node);
-//            emit layerChanged();
-//            return true;
-//        }
-//    }
-
-//    return false;
-//}
-
-//bool MapItem::removeNodeFromLayer(osg::Node *node, std::string layerName)
-//{
-//    auto layer = getMapNode()->getMap()->getLayerByName(layerName);
-//    if (layer) {
-//        osg::Group *group = dynamic_cast<osg::Group*>(layer->getNode());
-//        if (group) {
-//            group->removeChild(node);
-
-//            emit layerChanged();
-//            return true;
-//        }
-//    }
-
-//    return false;
-//}
-
-//bool MapItem::addLayerToLayer(osgEarth::Layer *layer, std::string layerName)
-//{
-//    auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
-//    //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
-//    if(destinationLayer){
-//        auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
-//        dataContainer->addUserObject(layer);
-//        //        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
-//        //        if(group){
-//        //            if(!group->containsNode(layer->getNode())){
-//        //group->addChild(layer->getNode());
-//        mMapObject->addLayer(layer);
-//        layer->setUserValue("parent", destinationLayer->getName());
-//        //                qDebug()<<"num parent"<<layer->getNode()->getNumParents();
-//        //                qDebug()<<"parent 0"<<layer->getNode()->getParent(0)->getName();
-//        //                qDebug()<<"parent 1"<<layer->getNode()->getParent(1)->getName();
-//        emit layerChanged();
-//        //            }
-//        return true;
-//    }
-//    return false;
-//}
-
-//bool MapItem::removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName)
-//{
-//    auto destinationLayer = getMapNode()->getMap()->getLayerByName(layerName);
-//    //    auto annotationLayer = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer);
-//    if(destinationLayer){
-//        auto dataContainer = destinationLayer->getOrCreateUserDataContainer();
-//        unsigned int index = dataContainer->getUserObjectIndex(layer);
-//        dataContainer->removeUserObject(index);
-//        mMapObject->removeLayer(layer);
-//        emit layerChanged();
-//        return true;
-
-//        //        osg::Group *group = dynamic_cast<osg::Group*>(destinationLayer->getNode());
-//        //        if(group){
-//        //            group->removeChild(layer->getNode());
-//        //            removeLayer(layer);
-//        //            layer->setUserValue("parent", false);
-//        //            emit layerChanged();
-//        //            return true;
-//        //        }
-//    }
-//    return false;
-//}
-
 QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 {
     QSGRenderNode *n = static_cast<QSGRenderNode *>(node);
-    //    qDebug() << "999999999999";
     QSGRendererInterface *ri = window()->rendererInterface();
     if (!ri)
         return nullptr;
@@ -373,46 +182,6 @@ QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 
     return n;
 }
-
-//void MapItem::zoom(double val)
-//{
-//    mCameraController->zoom(0, -val, getViewer());
-//}
-
-//void MapItem::goToHome()
-//{
-//    mCameraController->home(0);
-//    auto camSet = mCameraController->getSettings();
-//    camSet->setMinMaxDistance(0,MAX_CAM_DISTANCE);
-//    mCameraController->applySettings(camSet);
-//}
-
-//void MapItem::goToPosition(double latitude, double longitude, double range)
-//{
-//    osgEarth::GeoPoint  geoPoint(getMapSRS()->getGeographicSRS(), latitude, longitude, 0);
-//    geoPoint.transformInPlace(getMapSRS());
-
-//    osgEarth::Viewpoint vp;
-//    vp.focalPoint() = geoPoint;
-//    vp.range()= range;
-//    setViewpoint(vp, 3.0);
-//}
-
-//void MapItem::goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration)
-//{
-//    if(mapPoint.isRelative())
-//        mapPoint.makeAbsolute(mMapNode->getTerrain());
-//    osgEarth::Viewpoint vp;
-//    vp.focalPoint() = mapPoint;
-//    vp.range()= range;
-//    setViewpoint(vp, duration);
-
-//    //    auto minDistance = range/2;
-//    //    mCameraController->setViewpoint(vp);
-//    //    auto camSet = mCameraController->getSettings();
-//    //    camSet->setMinMaxDistance(minDistance,MAX_CAM_DISTANCE);
-//    //    mCameraController->applySettings(camSet);
-//}
 
 void MapItem::changeMode()
 {
@@ -455,53 +224,12 @@ void MapItem::setGeocentric(bool isGeocentric)
     mCameraController->setViewpoint(vp);
 }
 
-//void MapItem::toggle3DView()
-//{
-//    //    setGeocentric(!mGeocentric);
-//    setMode(!mIs3DView);
-//}
-
-//void MapItem::pan(double xVal, double yVal)
-//{
-//    mCameraController->pan(xVal, yVal);
-//}
-
-//void MapItem::rotate(double xVal, double yVal)
-//{
-//    mCameraController->rotate(xVal, yVal);
-//}
-
-//void MapItem::travelToViewpoint(qreal latitude,
-//                                qreal longitude,
-//                                qreal range,
-//                                qreal pitch,
-//                                qreal heading)
-//{
-
-//    osgEarth::GeoPoint  pt(getMapSRS()->getGeographicSRS(), latitude, longitude, 0);
-//    pt.transformInPlace(getMapSRS());
-//    osgEarth::Viewpoint vp;
-//    vp.focalPoint() = pt;
-//    vp.range() = range;
-//    vp.pitch() = pitch;
-//    vp.heading() = heading;
-//    mCameraController->setViewpoint(vp, 3.0);
-//}
-
-//void MapItem::orientCameraToNorth()
-//{
-//    osgEarth::Viewpoint vp = mCameraController->getViewpoint();
-//    vp.heading() = 0;
-//    mCameraController->setViewpoint(vp, 0.3);
-//}
-
 void MapItem::initializeOsgEarth()
 {
     mMapRoot = new osg::Group();
     osgEarth::Util::SkyOptions sopts;
     mSkyNode = osgEarth::Util::SkyNode::create(sopts);
     createMapNode(true);
-
     mOSGRenderNode->setSceneData(mMapRoot);
 
     osgEarth::Drivers::GDALOptions gdal;
@@ -594,39 +322,8 @@ void MapItem::createCameraManipulator()
     settings->setMinMaxPitch(-90, 0);
 }
 
-//void MapItem::layerAdded(osgEarth::Layer */*layer*/, unsigned /*index*/)
-//{
-//    emit layerChanged();
-//}
-
-//void MapItem::layerRemoved(osgEarth::Layer */*layer*/, unsigned /*index*/)
-//{
-//    emit layerChanged();
-//}
-
 void MapItem::frame()
 {
-//    const auto vp = mCameraController->getViewpoint();
-//    const auto fp = vp.focalPoint();
-//    if (fp.isSet()) {
-//        const osgEarth::GeoPoint mapPoint = fp.get();
-//        //        mapPoint.makeGeographic();
-//        osgEarth::GeoPoint  pointLatLong;
-//        mapPoint.transform(getMapSRS()->getGeographicSRS(), pointLatLong);
-
-
-////        emit focalPointLatChanged(pointLatLong.x());
-////        emit focalPointLongChanged(pointLatLong.y());
-////        emit focalPointRangeChanged(vp.range().get().getValue());
-////        emit focalPointPitchChanged(vp.pitch().get().getValue());
-////        emit focalPointHeadChanged(vp.heading().get().getValue());
-
-//    }
-
-
-
-
-    //
     // Set SkyNode sun light rotate with camera
     //
     auto sunLight = mSkyNode->getSunLight();
@@ -646,65 +343,6 @@ void MapItem::frame()
     spos *= -1.0f;
     sunLight->setDirection(spos);
 }
-
-//--renderer---------------------------------------------------------------------------------------------------
-//void MapItem::cleanup()
-//{
-//    if (mOsgRenderer) {
-//        mOsgRenderer->deleteLater();
-//        mOsgRenderer = nullptr;
-//    }
-//}
-
-//void MapItem::initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId)
-//{
-//    mRenderTargetId = renderTargetId;
-
-//    createOsgRenderer(width, height, screen);
-
-//    if(mWindow) {
-//        QObject::connect(mOsgRenderer, &OSGRenderer::needsUpdate,
-//                         [this](){
-//                             QQuickOpenGLUtils::resetOpenGLState();
-//            qDebug() << "<<<<<<<<";
-//                         });
-//    }
-//}
-
-//void MapItem::resizeGL(int width, int height, QScreen *screen)
-//{
-//    if (mOsgRenderer) {
-//        const float pixelRatio = static_cast<float>(screen->devicePixelRatio());
-//        mOsgRenderer->resize(0, 0, width, height, pixelRatio);
-//    }
-//}
-
-//void MapItem::paintGL()
-//{
-//    qDebug() << "------------------";
-//    if (mOsgRenderer) {
-//        if (mIsFirstFrame) {
-//            mIsFirstFrame = false;
-//            mOsgRenderer->getCamera()->getGraphicsContext()->setDefaultFboId(mRenderTargetId);
-//        }
-//        frame();
-//        mOs->frame();
-//    }
-//}
-
-//void MapItem::createOsgRenderer()
-//{
-////    osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
-////    ds->setNvOptimusEnablement(1);
-////    ds->setStereo(false);
-
-
-//    mOSGRenderNode = new OSGRenderNode(this);
-////    mOSGRenderNode->setupOSG(x(), y(), width(), height(), 1);
-
-//    mOSGRenderNode->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
-
-//}
 
 void MapItem::keyPressEvent(QKeyEvent *event)
 {
@@ -757,4 +395,9 @@ void MapItem::hoverMoveEvent(QHoverEvent *event)
     if (mOSGRenderNode) {
         mOSGRenderNode->hoverMoveEvent(event);
     }
+}
+
+OSGRenderNode *MapItem::oSGRenderNode() const
+{
+    return mOSGRenderNode;
 }

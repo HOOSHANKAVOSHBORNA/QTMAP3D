@@ -37,7 +37,8 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
 {
     beginResetModel();
 //    beginInsertRows(createIndex(0, 0), mNodes.size(), mNodes.size()+1);
-    mNodes.push_back(node);
+    if(std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end())
+        mNodes.push_back(node);
 //    endInsertRows();
     endResetModel();
 }

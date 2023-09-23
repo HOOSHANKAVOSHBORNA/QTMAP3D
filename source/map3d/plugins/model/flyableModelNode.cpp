@@ -81,15 +81,18 @@ FlyableModelNode::FlyableModelNode(MapItem *mapControler, const std::string &mod
 
 void FlyableModelNode::flyTo(osgEarth::GeoPoint destinationPoint, double velocity)
 {
-    mMoveAnimationPathCallback->reset();
     mMoveAnimationPathCallback->getAnimationPath()->clear();
     mMoveAnimationPathCallback->setPause(false);
+//    mMoveAnimationPathCallback->reset();
+
     osg::Vec3d currentWPoint;
     getPosition().toWorld(currentWPoint);
     osg::Vec3d destinationWPoint;
     destinationPoint.toWorld(destinationWPoint);
 
     double distance = getPosition().distanceTo(destinationPoint);
+    if(distance == 0)
+        return;
     double t = distance / velocity;
 
     mMoveAnimationPathCallback->getAnimationPath()->insert(0, osg::AnimationPath::ControlPoint(currentWPoint));

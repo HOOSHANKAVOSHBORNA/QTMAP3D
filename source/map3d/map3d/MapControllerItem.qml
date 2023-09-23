@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
+import Qt5Compat.GraphicalEffects
 import Crystal 1.0
 import "style"
 
@@ -69,7 +70,7 @@ MapController {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.topMargin: 20
-        anchors.leftMargin: 20
+        anchors.leftMargin: 80
     }
     SearchBar {
         id:searcbar
@@ -93,7 +94,7 @@ MapController {
     Compass {
         id: compassItem
         anchors.left: parent.left
-        anchors.leftMargin: itemMargin
+        anchors.leftMargin: itemMargin + 80/Style.monitorRatio
         anchors.bottomMargin: itemMargin
         y: parent.height  - itemPositionFactor * (compassItem.height + (itemMargin) + statusBar.height)
         headingAngle:  map.compassDirection.x
@@ -135,6 +136,41 @@ MapController {
             map.changeMode();
         }
     }
+
+//    Rectangle {
+//        id: recct
+//        width: 100
+//        height: 100
+//        x: parent.width - (100 + itemMargin)
+//        y: parent.height - (100 + itemMargin + statusBar.height)
+//        opacity: 0.5
+//        radius: 50
+////        layer.enabled: true
+//        layer.effect: OpacityMask {
+//            maskSource: Item {
+//                width: 100
+//                height: 100
+//                Rectangle {
+//                    anchors.centerIn: parent
+//                    width: recct.adapt ? recct.width : Math.min(recct.width, recct.height)
+//                    height: recct.adapt ? recct.height : width
+//                    radius: 50
+//                }
+//            }
+//        }
+
+
+//        SmallMap {
+//            x: 0
+//            y: 0
+//            width: 100
+//            height: 100
+////            anchors.fill: parent
+//            objectName: "SmallMap"
+//        }
+//    }
+
+
     StatusBar {
         id: statusBar
         anchors.bottom: parent.bottom
