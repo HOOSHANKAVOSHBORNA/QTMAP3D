@@ -184,7 +184,6 @@ Rectangle {
             Layout.minimumWidth: 78/Style.monitorRatio
             Layout.preferredHeight: 20/Style.monitorRatio
             background: Rectangle {
-                id: t4
                 color: "transparent"
             }
 
@@ -212,14 +211,11 @@ Rectangle {
                 Layout.preferredWidth: 55/Style.monitorRatio
                 Layout.preferredHeight: 20/Style.monitorRatio
                 background: Rectangle {
-                    id:t8
                     color:"transparent"
 
                 }
                 Text {
-                    id:t6
                     Layout.alignment: Qt.AlignVCenter
-
                     color: lightBlue
                     text: Number(modelData).toLocaleString(Qt.locale(), root.fe[index], 3)
                     font.family: Style.fontFamily
@@ -397,14 +393,13 @@ Rectangle {
                     selectedTextColor: Style.foregroundColor
                     selectionColor: Style.selectColor
                     placeholderTextColor: Style.disableColor
-
                     background: Rectangle{
                         color: "transparent"
                         radius: height/2
                     }
-                    //                    onTextChanged: {
-                    //                        rootItem.model.setFilterString(text)
-                    //                    }
+                    onTextChanged: {
+                        root.model.setFilterString(text)
+                    }
                 }
             }
         }
