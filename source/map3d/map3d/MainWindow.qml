@@ -83,7 +83,7 @@ CMainWindow {
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                     Layout.alignment: Qt.AlignHCenter
-                    color:"white"
+                    color:Style.backgroundColor
                     radius: 5
                     anchors.leftMargin: 1
                     ColumnLayout{

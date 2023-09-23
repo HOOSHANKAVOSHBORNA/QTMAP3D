@@ -13,6 +13,37 @@ MapControllerItem::MapControllerItem():
     setFlag(ItemAcceptsInputMethod, true);
     mSearchNodeProxyModel = new SearchNodeProxyModel();
     mSearchNodeProxyModel->setSourceModel(new SearchNodeModel(this));
+    StatusBar *status = new StatusBar();
+    mStatusBar = new StatusBarSearchModel();
+    mStatusBar->setSourceModel(status);
+    mStatusBar->addMessage("salam", QDateTime::currentDateTime());
+    mStatusBar->addMessage("Koja", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("gkjhdf", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("hi", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("salxam", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("salxam", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("salxam", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("salssam", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("salssam", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("salssam", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("salam", QDateTime::currentDateTime());
+
+
+
+   mStatusBar->addMessage("salssam", QDateTime::currentDateTime());
+
+    mStatusBar->addMessage("salasssssm", QDateTime::currentDateTime());
+
+
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -103,6 +134,11 @@ void MapControllerItem::calculateFps()
     }
 }
 
+StatusBarSearchModel *MapControllerItem::statusBar() const
+{
+    return mStatusBar;
+}
+
 SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
 {
     return mSearchNodeProxyModel;
@@ -126,6 +162,7 @@ void MapControllerItem::frame()
 
     calculateFps();
     calculateNavigationStep();
+    mStatusBar->setRange(getCameraController()->getViewpoint().getRange());
     emit compassDirectionChanged();
 }
 

@@ -482,5 +482,9 @@
         <file>Resources/compass-premeter.mesh</file>
         <file>Resources/compass-surface.mesh</file>
         <file>Resources/plane.mesh</file>
+        <file>Resources/message.png</file>
+        <file>Resources/up.png</file>
+        <file>Resources/down.png</file>
+        <file>Resources/garbage.png</file>
     </qresource>
 </RCC>

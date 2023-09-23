@@ -40,7 +40,9 @@ add_executable(Map3d
         searchNodeModel.h searchNodeModel.cpp
         networkManager.h networkManager.cpp
         qml.qrc
-        resources.qrc)
+        resources.qrc
+        statusBar.cpp
+        statusBar.h)
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include" "style/")
