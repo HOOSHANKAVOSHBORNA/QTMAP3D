@@ -320,12 +320,11 @@ Rectangle {
                 }
 
                 onClicked: {
-
                     listView.selectedIndexes.sort().reverse()
-                    console.log(listView.selectedIndexes)
+//                    console.log(listView.selectedIndexes)
 
                     while (listView.selectedIndexes.length !== 0) {
-                        console.log(listView.selectedIndexes.length)
+//                        console.log(listView.selectedIndexes.length)
                         listView.model.removeMessage(listView.model.index(listView.selectedIndexes[0], 0));
                         listView.selectedIndexes.shift();
                     }
@@ -413,7 +412,7 @@ Rectangle {
             color: Style.foregroundColor
 
         }
-
+        property bool s: false
         Item{
             id : topofDelegate
             width:628/Style.monitorRatio
@@ -421,12 +420,13 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: boldSepratorLine.bottom
             CheckBox {
+                id: subjectCheckBox
                 topPadding: 0
                 rightPadding: 0
                 leftPadding: 0
-                id: relative
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
+
                 background: Rectangle{
                     height: 20/Style.monitorRatio
                     width:20/Style.monitorRatio
@@ -434,18 +434,17 @@ Rectangle {
                     anchors.left: parent.left
                     color:"transparent"
                 }
+                onCheckStateChanged:
+                    if(checked === true){
 
-                //                onCheckStateChanged: if(checked === true){
-                //                                         delegateCheckBox.checked =true
-                //                                     }
-                //                                     else{
-                //                                         rootItem.model.locationRelative = false
-                //                                     }
+                        print(listView.selectedIndexes)
+                        }
+
 
                 indicator: Rectangle {
                     implicitWidth: 20/Style.monitorRatio
                     implicitHeight: 20/Style.monitorRatio
-                    x: relative.leftPadding
+                    x: subjectCheckBox.leftPadding
                     y: parent.height / 2 - height / 2
                     radius: 4
                     color: "transparent"
@@ -460,7 +459,7 @@ Rectangle {
                         y: 3
                         radius: 4
                         color: Style.foregroundColor
-                        visible: relative.checked
+                        visible: subjectCheckBox.checked
                     }
                 }
 
@@ -470,7 +469,7 @@ Rectangle {
                 id : subject
                 width:430/Style.monitorRatio
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.left: relative.right
+                anchors.left: subjectCheckBox.right
                 text:"Subject"
                 color: Style.foregroundColor
                 font.family:Style.fontFamily
@@ -549,11 +548,13 @@ Rectangle {
                                 anchors.left: parent.left
                                 color:"transparent"
                             }
-
+                            checkState: subjectCheckBox.checkState
                             onCheckStateChanged: if(checked === true){
+
                                                      listView.selectedIndexes.push(index)
                                                  }
                                                  else{
+                                                     subjectCheckBox.checked = false
                                                      listView.selectedIndexes.splice(index, 1)
                                                  }
 
