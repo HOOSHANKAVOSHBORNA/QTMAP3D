@@ -2,49 +2,14 @@
 #define SCREEN_H
 
 #include "plugininterface.h"
-#include <osgDB/WriteFile>
-#include <osgViewer/Viewer>
-#include <osgDB/FileNameUtils>
-#include <osgDB/FileUtils>
-#include <QFileDialog>
-#include <QQmlComponent>
-#include <QQuickItem>
 #include <QObject>
+#include "snapShot.h"
+#include "snipTool.h"
 
-class ViewCaptureCallback :public QObject, public osg::Camera::DrawCallback
+#define CATEGORY "Screen"
+#define SNAPSHOT "Snap Shot"
+#define SNIP     "Snip Tool"
 
-{
-    Q_OBJECT
-public:
-    ViewCaptureCallback(osg::Image* image, QPointF sceneStartPoint , std::string filePath) :
-        mImage(image),
-        mSceneStartPoint(sceneStartPoint),
-        mFilePath(filePath)
-    {}
-
-
-
-    virtual void operator () (osg::RenderInfo& renderInfo) const
-    {
-        auto viewPort = renderInfo.getCurrentCamera()->getViewport();
-        mImage->readPixels(mSceneStartPoint.x(), mSceneStartPoint.y(), viewPort->width(), viewPort->height(), GL_RGB, GL_UNSIGNED_BYTE);
-        bool resultSnap = osgDB::writeImageFile(*mImage, mFilePath);
-        screenTaken = resultSnap;
-        if(resultSnap)
-        emit imageProcessComplete(mImage);
-    }
-    mutable bool screenTaken = false;
-
-signals:
-    void imageProcessComplete(osg::Image *osgImage) const;
-
-protected:
-    osg::ref_ptr<osg::Image> mImage;
-    QString mDirectorryPath;
-    QPointF mSceneStartPoint;
-    std::string mFilePath;
-
-};
 
 class Screen: public PluginInterface
 {
@@ -56,24 +21,17 @@ public:
     Screen(QWidget *parent = nullptr);
     ~Screen()override{}
     bool setup() override;
-//    bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-
-
-signals:
-    void fileUpdated();
 
 private slots:
-    void takeSnapShot();
-    void onImageProcessComplete(osg::Image *iImage);
-    void takingProcessFinished();
+    void onSnapShotClicked();
+    void onSnipToolClicked();
+
 
 private:
-    osg::Camera* mCamera;
-    ViewCaptureCallback* mViewCaptureCallback{nullptr};
-    std::string mFileDialog;
-    QQmlEngine mEngine;
-    QObject *mObject;
-    bool mReadyStatus;
+    SnapShot *mSnapShot{nullptr};
+    SnipToolInterface *mSnipTool{nullptr};
+//    QQmlEngine *mEngine;
+
 };
 
 

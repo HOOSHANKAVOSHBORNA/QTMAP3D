@@ -2,7 +2,6 @@
 #include "mapItem.h"
 #include "MoveableModelNode.h"
 #include "flyableModelNode.h"
-#include "qjsonobject.h"
 #include "serviceManager.h"
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
@@ -37,7 +36,7 @@ bool Model::setup()
     mIs3D = mapItem()->getMode();
 
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-    connect(serviceManager(), &ServiceManager::flyableAdded, this, &Model::addFlyableModel);
+    connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, this, &Model::addUpdateFlyableNode);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -162,28 +161,9 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
         //mCurrentModel->setScalability(false);
 
-        StatusNode::Data data0;
-        data0.name = "x";
-        data0.value = 85;
-        StatusNode::Data data1;
-        data1.name = "y";
-        data1.value = 69;
-        StatusNode::Data data2;
-        data2.name = "z";
-        data2.value = 6985;
-        StatusNode::Data data3;
-        data3.name = "u";
-        data3.value = "BooB";
+        mCurrentModel->setModelColor(osg::Vec3f(1.0f,0,0.5f));
+        confirm();
 
-
-        std::list<StatusNode::Data> dataList;
-        dataList.push_back(data0);
-        dataList.push_back(data1);
-        dataList.push_back(data2);
-        dataList.push_back(data3);
-
-        mStatusModel->setData("kos",dataList);
-        //confirm();
         return false;
     }
 
@@ -279,7 +259,7 @@ void Model::onCarItemCheck(bool check)
 void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
-        makeIconNode("../data/images/model/airplane.png");
+        makeIconNode("../data/models/aircraft/aircraft.png");
 
         mType = Type::FLYABLE;
         setState(State::READY);
@@ -330,24 +310,29 @@ void Model::onModeChanged(bool is3DView)
 }
 
 
-void Model::addFlyableModel(ServiceFlyableModel *serviceModel)
+void Model::addUpdateFlyableNode(NodeData *nodeData)
 {
-    FlyableModelNode *fmodel = new FlyableModelNode(mapItem(), serviceModel->url3D, serviceModel->url2D);
-    fmodel->setName(serviceModel->name);
-    double latitude{serviceModel->latitude};
-    double longitude{serviceModel->longitude};
-    double altitude{serviceModel->altitude};
-    osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), longitude, latitude, altitude);
-    fmodel->setPosition(geopos);
-//    fmodel.setHeading
-    fmodel->setSpeed(serviceModel->speed);
-//    ParenticAnnotationLayer *p = mapItem()->getMapObject()->getLayerByUserId(serviceModel->id);
-    ParenticAnnotationLayer *p = new ParenticAnnotationLayer;
-    p->setName("seee");
-    mapItem()->getMapObject()->addLayer(p);
-    p->addChild(fmodel);
-//    if (p)
-//        p->addChild(fmodel);
+
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
+    osg::ref_ptr<FlyableModelNode> flyableNode;
+
+    if(!mFlyableModelNodeMap.contains(nodeData->id)){
+        flyableNode = new FlyableModelNode(mapItem(), nodeData->url3D, nodeData->url2D);
+        flyableNode->setPosition(geoPoint);
+        mFlyableModelNodeMap[nodeData->id] = flyableNode;
+    }
+    else{
+        flyableNode = mFlyableModelNodeMap[nodeData->id];
+        for(auto layer: flyableNode->nodeData()->layers){
+            layer->removeChild(flyableNode);
+        }
+        flyableNode->flyTo(geoPoint, nodeData->speed);
+    }
+    for(auto layer: nodeData->layers){
+        layer->addChild(flyableNode);
+    }
+    flyableNode->setName(nodeData->name);
+    flyableNode->setNodeData(nodeData);
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
@@ -373,7 +358,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         break;
     case Type::FLYABLE:
         name = "Airplane" + QString::number(mCount);
-        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/images/model/airplane.png");
+        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/models/aircraft/aircraft.png");
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);
@@ -383,6 +368,22 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     case Type::INFO:
         name = "Status" + QString::number(mCount);
         mStatusModel = new StatusNode(mapItem());
+        {
+            StatusNode::Data data;
+            data.name = "name";
+            data.value = 10;
+            StatusNode::Data data1;
+            data1.name = "name";
+            data1.value = 30000;
+            StatusNode::Data data2;
+            data2.name = "name";
+            data2.value = "kasjdf";
+            std::list<StatusNode::Data> dataList;
+            dataList.push_back(data);
+            dataList.push_back(data1);
+            dataList.push_back(data2);
+            mStatusModel->setData("title", &dataList);
+        }
 
         if(!mModelNodeLayer->containsLayer(mStatusNodelLayer)){
             mStatusNodelLayer->clear();

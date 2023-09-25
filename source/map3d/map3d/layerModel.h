@@ -44,6 +44,7 @@ private:
     QStandardItemModel *mSourceModel;
 //    QMap<QStandardItem , osgEarth::Layer*> treeLayerMap;
     QModelIndex mDragIndex;
+    std::map<osgEarth::Layer*, QStandardItem*> mLayerToItemMap;
 
 
 };

@@ -66,7 +66,8 @@ public slots:
     void onAirplanItemCheck (bool check);
     void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
-    void addFlyableModel(ServiceFlyableModel *serviceModel);
+
+    void addUpdateFlyableNode(NodeData *nodeData);
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
@@ -95,6 +96,8 @@ private:
     static int mCount;
     double mCurrentModelSize;
     bool mIs3D;
+private:
+    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableModelNodeMap;
 
 
     QImage *mRenderImage{nullptr};

@@ -1,5 +1,4 @@
-#include "mappin.h"
-
+#include "mapPin.h"
 #include <osg/Material>
 #include <osg/Depth>
 #include <osgEarthAnnotation/AnnotationUtils>
@@ -18,6 +17,18 @@ MapPin::MapPin(MapItem* map , osg::Vec4f color)
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
     m3DPin->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    //--status-----------------------------------------------------------
+    mStatus = new StatusNode(map);
+    StatusNode::Data lat;
+    lat.name = "Latitude";
+    lat.value = getPosition().x();
+    mDataList.push_back(lat);
+    StatusNode::Data lon;
+    lon.name = "Longtitude";
+    lon.value = getPosition().y();
+    mDataList.push_back(lon);
+    mTitle = "Map Pin";
+//    mStatus->setData(mTitle,mDataList);
     //--root ------------------------------------------------------------
     mSwitchNode = new osg::Switch;
     //--2D node---------------------------------------------------------
@@ -39,6 +50,7 @@ MapPin::MapPin(MapItem* map , osg::Vec4f color)
     m2DPin->setStateSet(geodeStateSet);
     m2DPin->addDrawable(imgGeom);
     //--setting 3D 2D view-----------------------------------------------
+    mSwitchNode->addChild(mStatus);
     if(is3D){
         mSwitchNode->addChild(m3DPin, true);
         mSwitchNode->addChild(m2DPin, false);

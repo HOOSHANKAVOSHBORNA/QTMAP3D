@@ -1,0 +1,119 @@
+#include <QAbstractListModel>
+#include <QObject>
+#include "statusBar.h"
+
+StatusBar::StatusBar(QObject *parent) : QAbstractListModel(parent)
+{
+
+}
+
+int StatusBar::rowCount(const QModelIndex &parent) const
+{
+    return mMessages.size();
+}
+
+QVariant StatusBar::data(const QModelIndex &index, int role) const
+{
+    switch (role) {
+    case messageText:
+        return mMessages[index.row()]->text;
+        break;
+    case dateText:
+        return mMessages[index.row()]->dateTime.toString("dd/MM/yyyy");
+        break;
+    case timeText:
+        return mMessages[index.row()]->dateTime.toString("h:m ap");
+    default:
+        return QVariant();
+    };
+}
+
+
+void StatusBar::removeMessage(const QModelIndex &index)
+{
+    beginRemoveRows(QModelIndex(), index.row(), index.row());
+    mMessages.erase(mMessages.begin()+index.row());
+    endRemoveRows();
+}
+
+
+QHash<int, QByteArray> StatusBar::roleNames() const
+{
+    QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
+    hash[messageText] = "messageText";
+    hash[dateText] = "dateText";
+    hash[timeText] = "timeText";
+
+    return hash;
+}
+
+void StatusBar::addMessage(Message *m)
+{
+    mMessages.push_back(m);
+}
+
+
+//-------------------------------
+
+/////////////////////////////////////////////////////////////////ProxyModel///////////////////////////////
+StatusBarSearchModel::StatusBarSearchModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+    setDynamicSortFilter(true);
+}
+
+bool StatusBarSearchModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+    if (index.data(StatusBar::myRoles::messageText).toString().contains(mFilterString, Qt::CaseInsensitive))
+        return true;
+    return false;
+}
+
+QString StatusBarSearchModel::filterString() const
+{
+    return mFilterString;
+}
+
+int StatusBarSearchModel::getRange() const
+{
+    return mRange;
+}
+
+double StatusBarSearchModel::getScale() const
+{
+    return mScale;
+}
+
+void StatusBarSearchModel::setRange(const int range)
+{
+    mRange = range;
+    emit rangeChanged();
+}
+
+void StatusBarSearchModel::setScale(const double scale)
+{
+    mScale = scale;
+}
+
+void StatusBarSearchModel::addMessage(QString Text, QDateTime time)
+{
+    Message *m = new Message(Text, time, true);
+    dynamic_cast<StatusBar*>(sourceModel())->addMessage(m);
+}
+
+void StatusBarSearchModel::removeMessage(const QModelIndex &index)
+{
+    dynamic_cast<StatusBar*>(sourceModel())->removeMessage((index));
+
+}
+
+
+void StatusBarSearchModel::setFilterString(const QString &filterString)
+{
+    mFilterString = filterString;
+    invalidateFilter();
+}
+
+
+

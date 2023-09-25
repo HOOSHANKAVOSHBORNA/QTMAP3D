@@ -17,18 +17,17 @@
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
+#include <osgViewer/config/SphericalDisplay>
 #include <QOpenGLFramebufferObject>
 #include <QQuickOpenGLUtils>
 #include "mapItem.h"
-
+#include <osg/GraphicsContext>
 OSGRenderNode::OSGRenderNode(MapItem *parent):
     QSGRenderNode(),
     osgViewer::Viewer(),
     QObject(parent),
     mOSGItem(parent)
 {
-
-
 
 }
 
@@ -54,7 +53,6 @@ void OSGRenderNode::render(const RenderState *state)
 
 
         QQuickOpenGLUtils::resetOpenGLState();
-
 //        mGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
@@ -75,7 +73,6 @@ void OSGRenderNode::render(const RenderState *state)
 
 
 //        mOSGItem->update();
-
         frame();
         mOSGItem->frame();
 
@@ -140,7 +137,6 @@ void OSGRenderNode::sync(QQuickItem *item)
 
     QPointF scenePoint(0, 0);
     scenePoint = item->mapToScene(scenePoint);
-
     mX = static_cast<int>(scenePoint.x());
     mY = static_cast<int>(item->window()->height() - item->height() - scenePoint.y());
     if(mY != mYOld || mXOld != mX || mWidth != item->width() || mHeight != item->height())
@@ -241,7 +237,7 @@ void OSGRenderNode::update()
 
     if(mOSGItem != nullptr)
     {
-        mOSGItem->window()->update();
+        mOSGItem->update();
     }
 }
 

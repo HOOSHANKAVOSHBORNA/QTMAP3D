@@ -7,146 +7,131 @@
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osgEarth/GLUtils>
 #include "model.h"
+
 StatusNode::StatusNode(MapItem *mapControler, QObject *parent)
     : QObject{parent},
     osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Model::getDefaultStyle()),
     mMapItem(mapControler)
 {
-    Data data0;
-    data0.name = "Mehrdad";
-    data0.value = 85;
-    Data data1;
-    data1.name = "changiz";
-    data1.value = 69;
-    Data data2;
-    data2.name = "abbas";
-    data2.value = 6985;
-    Data data3;
-    data3.name = "torab";
-    data3.value = "BooB";
-
-
-    mTitle = "Moos";
-    mDataList.push_back(data0);
-    mDataList.push_back(data1);
-    mDataList.push_back(data2);
-    mDataList.push_back(data3);
-
-    updateStatusData();
-    osg::AutoTransform *at = new osg::AutoTransform;
-    mImgNode = new osg::Geode();
-    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
-    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
-//    osg::ref_ptr<osg::Image> image = mStatusImg;
-    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mStatusImg, osg::Vec2s(0,0), 0, 0, 1);
-    mImgNode->setStateSet(geodeStateSet);
-    mImgNode->addDrawable(imgGeom);
-    at->addChild(mImgNode);
-    at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
+    mAutoTransform = new osg::AutoTransform;
+    mAutoTransform->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
     osgEarth::Symbology::Style  rootStyle;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(at);
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mAutoTransform);
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
     setStyle(rootStyle);
-//    getGeoTransform()->addChild(mImgNode);
-
 }
 
-void StatusNode::setData(QString title, std::list<Data> dataList)
+void StatusNode::setData(QString title, std::list<Data> *dataList)
 {
 //    mRenderImage = nullptr;
 //    mStatusImg = nullptr;
     //mPainter = nullptr;
-    mPainter->end();
+    //mPainter->end();
     //mPainter->isActive()
     mTitle = title;
     mDataList = dataList;
-    updateStatusData();
-//    setStyle(getStyle());
+
+    createImageNode();
+    osgEarth::Symbology::Style  rootStyle;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mAutoTransform);
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
+    setStyle(rootStyle);
 }
 
-void StatusNode::updateStatusData()
+void StatusNode::createImageNode()
 {
-    int imageHeight = 36;
-    int pos = 5;
-    if (mDataList.size() > 1){
-        imageHeight += (mDataList.size()-1)*22;
+    int cellHeight = 22;
+    int height = cellHeight + 2 + 2;
+    int width = 100;
+    int pos = 0;
+    if (mDataList){
+        height += mDataList->size() * cellHeight;
     }
-        //pos = mDataList.size()-1*16;
 
     if (!mRenderImage) {
         mRenderImage = new QImage(
-            LABEL_IMAGE_WIDTH,
-            imageHeight,
+            width,
+            height,
+            QImage::Format_RGBA8888
+            );
+    } else {
+        mRenderImage->~QImage();
+        mRenderImage = new(mRenderImage) QImage(
+            width,
+            height,
             QImage::Format_RGBA8888
             );
     }
-    if(!mStatusImg.valid())
-        mStatusImg = new osg::Image;
+    //--------------------------------------------------------------------------
+    mRenderImage->fill(QColor(Qt::transparent));
+    QPainter painter(mRenderImage);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
-    {
+    QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+    QFont titleTextFont("SourceSansPro", 10, QFont::Bold);
+    QPen  titleTextPen(QColor(204, 204, 51, 255));
 
-        mRenderImage->fill(QColor(Qt::transparent));
-//        if(!mPainter){
-            mPainter = new QPainter(mRenderImage);
-            mPainter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-//        }
+    QFont textFont("SourceSansPro", 9, QFont::Normal);
+    QPen  textPen(QColor(255, 255, 255));
+
+    QPen linePen(QColor(255, 255, 255), 1, Qt::PenStyle::DashLine);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(backgroundBrush);
+    painter.drawRoundedRect(mRenderImage->rect(), 8, 8);
+    painter.setBrush(QBrush(QColor(26, 77, 46, int(255 * 0.2f))));
+    painter.drawRoundedRect(
+        QRect(0, 0, width, cellHeight + 1),
+        8,8);
+    //--title---------------------------------------------------------------
+    painter.setPen(titleTextPen);
+    painter.setFont(titleTextFont);
+    painter.drawText(0, pos, width, cellHeight + 2,
+                     Qt::AlignCenter,
+                     mTitle);
+    pos += cellHeight + 2;
+
+    painter.setPen(linePen);
+    painter.setBrush(Qt::NoBrush);
+    painter.drawLine(0, pos + 1, width, pos + 1);
+    pos += 2;
+    //--data--------------------------------------------------------------
+    painter.setPen(textPen);
+    painter.setFont(textFont);
+    if(mDataList)
+        for (const auto& data: *mDataList){
+            painter.setOpacity(0.8);
+            painter.drawText(2, pos, width/2, cellHeight,
+                             Qt::AlignLeft|Qt::AlignVCenter,
+                             data.name + ": ");
 
 
-        static const QBrush backgroundBrush(QColor(30, 30, 30, int(255 * 0.3f)));
-        static const QFont textFont("SourceSansPro", 7, QFont::Normal);
-        static const QPen  textPen(QColor(255, 255, 255));
-
-        static const QFont tTextFont("SourceSansPro", 8, QFont::Bold);
-        static const QPen  tTextPen(QColor(255, 0, 0));
-
-
-        static const QPen linePen(QColor(255, 255, 255),
-                                  1,
-                                  Qt::PenStyle::DashLine
-                                  );
-
-        mPainter->setPen(linePen);
-        mPainter->setBrush(Qt::NoBrush);
-        mPainter->drawLine(0, 14, LABEL_IMAGE_WIDTH, 14);
-
-        mPainter->setPen(Qt::NoPen);
-        mPainter->setBrush(backgroundBrush);
-        mPainter->drawRoundedRect(
-            mRenderImage->rect(),
-            10,2);
-
-
-        mPainter->setPen(tTextPen);
-        mPainter->setFont(tTextFont);
-
-        mPainter->drawText(0, 0, LABEL_IMAGE_WIDTH, imageHeight,
-                          Qt::AlignHCenter,
-                          mTitle);
-
-        for (const auto& data: mDataList){
-            pos += 16 ;
-            mPainter->setPen(textPen);
-            mPainter->setFont(textFont);
-            mPainter->drawText(2, pos, LABEL_IMAGE_WIDTH, 22,
-                              Qt::AlignLeft,
-                              data.name);
-
-            static const QPen  gTextPen(QColor(0, 255, 0));
-            mPainter->setPen(gTextPen);
-            mPainter->drawText(-2, pos, LABEL_IMAGE_WIDTH, 22,
-                              Qt::AlignRight,
-                              data.value.toString());
+            painter.setOpacity(1);
+            painter.drawText(2 + width/2, pos, width, cellHeight,
+                             Qt::AlignLeft|Qt::AlignVCenter,
+                             data.value.toString());
+            pos += cellHeight;
         }
+    painter.end();
 
-        *mRenderImage = mRenderImage->mirrored(false, true);
+    *mRenderImage = mRenderImage->mirrored(false, true);
 
-        mStatusImg->setImage(LABEL_IMAGE_WIDTH,
-                              imageHeight,
-                              1,
-                              GL_RGBA,
-                              GL_RGBA,
-                              GL_UNSIGNED_BYTE,
-                              mRenderImage->bits(),
-                              osg::Image::AllocationMode::NO_DELETE);
-    }
+    osg::ref_ptr<osg::Image> osgImage = new osg::Image;
+    osgImage->setImage(width,
+                         height,
+                         1,
+                         GL_RGBA,
+                         GL_RGBA,
+                         GL_UNSIGNED_BYTE,
+                         mRenderImage->bits(),
+                         osg::Image::AllocationMode::NO_DELETE);
+
+    osg::ref_ptr<osg::Geode> imageNode = new osg::Geode();
+    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(osgImage, osg::Vec2s(0,0), 0, 0, 1);
+    imageNode->setStateSet(geodeStateSet);
+    imageNode->addDrawable(imgGeom);
+    mAutoTransform->removeChildren(0, mAutoTransform->getNumChildren());
+    mAutoTransform->addChild(imageNode);
 }
