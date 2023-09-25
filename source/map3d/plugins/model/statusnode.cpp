@@ -1,7 +1,7 @@
 #include "statusnode.h"
 
 #include <QColor>
-#include <QPainter>
+
 #include <osg/AutoTransform>
 #include <osg/Depth>
 #include <osgEarthAnnotation/AnnotationUtils>
@@ -37,8 +37,8 @@ StatusNode::StatusNode(MapItem *mapControler, QObject *parent)
     mImgNode = new osg::Geode();
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
-    osg::ref_ptr<osg::Image> image = mStatusImg;
-    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(image, osg::Vec2s(0,0), 0, 0, 1);
+//    osg::ref_ptr<osg::Image> image = mStatusImg;
+    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mStatusImg, osg::Vec2s(0,0), 0, 0, 1);
     mImgNode->setStateSet(geodeStateSet);
     mImgNode->addDrawable(imgGeom);
     at->addChild(mImgNode);
@@ -53,10 +53,15 @@ StatusNode::StatusNode(MapItem *mapControler, QObject *parent)
 
 void StatusNode::setData(QString title, std::list<Data> dataList)
 {
+//    mRenderImage = nullptr;
+//    mStatusImg = nullptr;
+    //mPainter = nullptr;
+    mPainter->end();
+    //mPainter->isActive()
     mTitle = title;
     mDataList = dataList;
     updateStatusData();
-    setStyle(getStyle());
+//    setStyle(getStyle());
 }
 
 void StatusNode::updateStatusData()
@@ -81,10 +86,13 @@ void StatusNode::updateStatusData()
     {
 
         mRenderImage->fill(QColor(Qt::transparent));
-        QPainter *painter = new QPainter(mRenderImage);
-        painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+//        if(!mPainter){
+            mPainter = new QPainter(mRenderImage);
+            mPainter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
+//        }
 
-        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
+
+        static const QBrush backgroundBrush(QColor(30, 30, 30, int(255 * 0.3f)));
         static const QFont textFont("SourceSansPro", 7, QFont::Normal);
         static const QPen  textPen(QColor(255, 255, 255));
 
@@ -97,35 +105,35 @@ void StatusNode::updateStatusData()
                                   Qt::PenStyle::DashLine
                                   );
 
-        painter->setPen(linePen);
-        painter->setBrush(Qt::NoBrush);
-        painter->drawLine(0, 14, LABEL_IMAGE_WIDTH, 14);
+        mPainter->setPen(linePen);
+        mPainter->setBrush(Qt::NoBrush);
+        mPainter->drawLine(0, 14, LABEL_IMAGE_WIDTH, 14);
 
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(backgroundBrush);
-        painter->drawRoundedRect(
+        mPainter->setPen(Qt::NoPen);
+        mPainter->setBrush(backgroundBrush);
+        mPainter->drawRoundedRect(
             mRenderImage->rect(),
             10,2);
 
 
-        painter->setPen(tTextPen);
-        painter->setFont(tTextFont);
+        mPainter->setPen(tTextPen);
+        mPainter->setFont(tTextFont);
 
-        painter->drawText(0, 0, LABEL_IMAGE_WIDTH, imageHeight,
+        mPainter->drawText(0, 0, LABEL_IMAGE_WIDTH, imageHeight,
                           Qt::AlignHCenter,
                           mTitle);
 
         for (const auto& data: mDataList){
             pos += 16 ;
-            painter->setPen(textPen);
-            painter->setFont(textFont);
-            painter->drawText(2, pos, LABEL_IMAGE_WIDTH, 22,
+            mPainter->setPen(textPen);
+            mPainter->setFont(textFont);
+            mPainter->drawText(2, pos, LABEL_IMAGE_WIDTH, 22,
                               Qt::AlignLeft,
                               data.name);
 
             static const QPen  gTextPen(QColor(0, 255, 0));
-            painter->setPen(gTextPen);
-            painter->drawText(-2, pos, LABEL_IMAGE_WIDTH, 22,
+            mPainter->setPen(gTextPen);
+            mPainter->drawText(-2, pos, LABEL_IMAGE_WIDTH, 22,
                               Qt::AlignRight,
                               data.value.toString());
         }

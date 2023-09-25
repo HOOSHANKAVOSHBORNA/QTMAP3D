@@ -161,7 +161,29 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
         //mCurrentModel->setScalability(false);
-        confirm();
+
+        StatusNode::Data data0;
+        data0.name = "x";
+        data0.value = 85;
+        StatusNode::Data data1;
+        data1.name = "y";
+        data1.value = 69;
+        StatusNode::Data data2;
+        data2.name = "z";
+        data2.value = 6985;
+        StatusNode::Data data3;
+        data3.name = "u";
+        data3.value = "BooB";
+
+
+        std::list<StatusNode::Data> dataList;
+        dataList.push_back(data0);
+        dataList.push_back(data1);
+        dataList.push_back(data2);
+        dataList.push_back(data3);
+
+        mStatusModel->setData("kos",dataList);
+        //confirm();
         return false;
     }
 

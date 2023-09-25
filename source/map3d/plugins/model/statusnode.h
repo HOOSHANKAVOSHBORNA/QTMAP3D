@@ -7,7 +7,7 @@
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgEarthAnnotation/ModelNode>
 #include "mapItem.h"
-
+#include <QPainter>
 
 class StatusNode : public QObject, public osgEarth::Annotation::ModelNode
 {
@@ -20,6 +20,7 @@ public:
         QString name;
         QVariant value;
     };
+
     void setData(QString title, std::list<Data> dataList);
 private:
     QString mTitle;
@@ -30,6 +31,7 @@ private:
     osg::ref_ptr<osg::Image> mStatusImg;
     osg::ref_ptr<osg::Geode> mImgNode;
     MapItem *mMapItem;
+    QPainter *mPainter;
 };
 
 #endif // STATUSNODE_H
