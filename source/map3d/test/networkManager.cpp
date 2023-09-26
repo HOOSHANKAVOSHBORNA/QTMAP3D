@@ -21,6 +21,13 @@ void NetworkManager::sendLayerData(const QString &data)
     qDebug() << "Sent layer data: "<<data;
 }
 
+void NetworkManager::sendStatusData(const QString &data)
+{
+    QAmqpExchange *exchange = mClient.createExchange();
+    exchange->publish(data, "status");
+    qDebug() << "Sent status data: "<<data;
+}
+
 void NetworkManager::start()
 {
     connect(&mClient, &QAmqpClient::connected, this, &NetworkManager::clientConnected);
@@ -43,7 +50,11 @@ void NetworkManager::clientConnected()
     connect(flyableQueue, &QAmqpQueue::declared, this, &NetworkManager::flyableQueueDeclared);
     flyableQueue->declare();
 
-
+    //--status queue--------------------------------------------
+    QAmqpQueue *statusQueue = mClient.createQueue("status");
+    disconnect(statusQueue, 0, 0, 0); // in case this is a reconnect
+    connect(statusQueue, &QAmqpQueue::declared, this, &NetworkManager::statusQueueDeclared);
+    statusQueue->declare();
 
 }
 

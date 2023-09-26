@@ -20,6 +20,9 @@ private slots:
 
     void layerQueueDeclared();
     void layerMessageReceived();
+
+    void statusQueueDeclared();
+    void statusMessageReceived();
 signals:
 //    void ready();
 private:
