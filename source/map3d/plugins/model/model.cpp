@@ -161,7 +161,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
         //mCurrentModel->setScalability(false);
 
-        mCurrentModel->setModelColor(osg::Vec3f(1.0f,0,0.5f));
+//        mCurrentModel->setModelColor(osg::Vec4f(1.0f,0,0.5f, 1));
         confirm();
 
         return false;
