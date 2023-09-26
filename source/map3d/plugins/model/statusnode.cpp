@@ -1,7 +1,7 @@
 #include "statusnode.h"
 
 #include <QColor>
-#include <QPainter>
+
 #include <osg/AutoTransform>
 #include <osg/Depth>
 #include <osgEarthAnnotation/AnnotationUtils>
@@ -23,8 +23,14 @@ StatusNode::StatusNode(MapItem *mapControler, QObject *parent)
 
 void StatusNode::setData(QString title, std::list<Data> *dataList)
 {
+//    mRenderImage = nullptr;
+//    mStatusImg = nullptr;
+    //mPainter = nullptr;
+    //mPainter->end();
+    //mPainter->isActive()
     mTitle = title;
     mDataList = dataList;
+
     createImageNode();
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mAutoTransform);
@@ -62,7 +68,6 @@ void StatusNode::createImageNode()
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
     QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
-
     QFont titleTextFont("SourceSansPro", 10, QFont::Bold);
     QPen  titleTextPen(QColor(204, 204, 51, 255));
 
@@ -99,6 +104,7 @@ void StatusNode::createImageNode()
             painter.drawText(2, pos, width/2, cellHeight,
                              Qt::AlignLeft|Qt::AlignVCenter,
                              data.name + ": ");
+
 
             painter.setOpacity(1);
             painter.drawText(2 + width/2, pos, width, cellHeight,

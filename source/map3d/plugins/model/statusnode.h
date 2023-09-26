@@ -7,6 +7,7 @@
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgEarthAnnotation/ModelNode>
 #include "mapItem.h"
+#include <QPainter>
 #include <osg/AutoTransform>
 #include <osg/ref_ptr>
 
@@ -34,6 +35,7 @@ private:
 //    osg::ref_ptr<osg::Image> mStatusImg;
 //    osg::ref_ptr<osg::Geode> mImgNode;
     MapItem *mMapItem;
+    QPainter *mPainter;
 };
 
 #endif // STATUSNODE_H

@@ -6,6 +6,7 @@
 #include <QTime>
 #include "mapItem.h"
 #include "searchNodeModel.h"
+#include "statusBar.h"
 Q_DECLARE_METATYPE(SearchNodeModel)
 class SmallMap;
 class MapControllerItem : public MapItem
@@ -50,6 +51,7 @@ public slots:
 
     void setMovePosition(QVector2D &position);
     void setRotatePosition(QVector2D &position);
+    StatusBarSearchModel *statusBar() const;
 
 
     SearchNodeProxyModel *searchNodeProxyModel() const;
@@ -83,8 +85,9 @@ private:
     bool mInClickProcess = false;
     double mFps = 0.0f;
     SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
+    StatusBarSearchModel *mStatusBar{nullptr};
     QVector2D m_compassDirection;
-    MapItem *mSmallMap{nullptr};
+    SmallMap *mSmallMap{nullptr};
     QQmlEngine *mQmlEngine{nullptr};
 };
 

@@ -33,11 +33,14 @@ public:
 
     NodeData *nodeData() const;
     void setNodeData(NodeData *newNodeData);
+    void setModelColor(osg::Vec3 color);
 
 private slots:
     void onModeChanged(bool is3DView);
 
 private:
+    osg::ref_ptr<osg::Image> mImage;
+    osg::ref_ptr<osg::Node> mSimpleNode;
     osg::ref_ptr<osg::Switch> mSwitchNode;
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
