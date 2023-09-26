@@ -247,11 +247,11 @@ void MapItem::initializeOsgEarth()
     getMapObject()->addLayer(layer);
 
     osgEarth::Drivers::XYZOptions optxyz;
-    optxyz.url() = "https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg";
+    optxyz.url() = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
     optxyz.profile() = { "spherical-mercator" };
-    auto imageLayerOptions = osgEarth::ImageLayerOptions("https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg", optxyz);
-    osg::ref_ptr<osgEarth::ImageLayer> layerImage2 = new osgEarth::ImageLayer(osgEarth::ImageLayerOptions("https://api.gitanegaran.ir/sat/{z}/{x}/{y}.jpg", optxyz));
-    layerImage2->setName("Gitanegaran");
+    auto imageLayerOptions = osgEarth::ImageLayerOptions("Google S", optxyz);
+    osg::ref_ptr<osgEarth::ImageLayer> layerImage2 = new osgEarth::ImageLayer(imageLayerOptions);
+    layerImage2->setName("Google S");
     getMapObject()->addLayer(layerImage2);
 
     //create camera after create map node
