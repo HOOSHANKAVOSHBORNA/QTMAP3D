@@ -318,7 +318,7 @@ private:
     // ---------- height //
 
     bool mHeightStatus{false};
-    double mHeight {1000};
+    double mHeight {100};
 
 
     // ---------- lenght //
