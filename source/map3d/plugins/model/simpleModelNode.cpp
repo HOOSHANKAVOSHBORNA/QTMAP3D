@@ -32,6 +32,21 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
     mImage = osgDB::readImageFile(iconUrl);
+
+    double modelLenght = mSimpleNode->getBound().radius() * 2;
+    double scaleRatio;
+    if (3 < modelLenght && modelLenght < 7){
+        scaleRatio = 15;
+        mImage->scaleImage(24, 24, mImage->r());
+    }
+    else if(modelLenght < 7 && modelLenght < 15){
+        scaleRatio = 4;
+    }
+    else{
+        scaleRatio = 1.3;
+        mImage->scaleImage(330, 445, mImage->r());
+    }
+    //mImage->scaleImage(32, 32, mImage->r());
 //    mImage->scaleImage(64,64, mImage->r());
     osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 0.2);     
     m2DNode->setStateSet(geodeStateSet);
@@ -73,14 +88,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     }
     //--auto scale----------------------------------------------------
     setCullingActive(false);
-    double modelLenght = mSimpleNode->getBound().radius() * 2;
-    double scaleRatio;
-    if (3 < modelLenght && modelLenght < 7)
-        scaleRatio = 20;
-    else if(modelLenght < 7 && modelLenght < 15)
-        scaleRatio = 4;
-    else
-        scaleRatio = 1.3;
+
 
     mAutoScaler = new ModelAutoScaler(scaleRatio, 1, 1000);
     if (mIsAutoScale){

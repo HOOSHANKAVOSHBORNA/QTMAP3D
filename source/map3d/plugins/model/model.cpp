@@ -161,8 +161,6 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
         //mCurrentModel->setScalability(false);
-
-//        mCurrentModel->setModelColor(osg::Vec4f(1.0f,0,0.5f, 1));
         confirm();
 
         return false;
@@ -367,6 +365,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     case Type::SIMPLE:
         name = "Tree" + QString::number(mCount);
         mCurrentModel = new SimpleModelNode(mapItem(),"../data/models/tree_I.osgb", "../data/images/model/tree.png");
+        mCurrentModel->setModelColor(osgEarth::Color::Aqua);
         if(!mModelNodeLayer->containsLayer(mSimpleNodeLayer)){
             mSimpleNodeLayer->clear();
             mModelNodeLayer->addLayer(mSimpleNodeLayer);
@@ -376,6 +375,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     case Type::MOVEABLE:
         name = "Car" + QString::number(mCount);
         mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
+        mCurrentModel->setModelColor(osgEarth::Color::Green);
         if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
             mMoveableNodeLayer->clear();
             mModelNodeLayer->addLayer(mMoveableNodeLayer);
@@ -385,6 +385,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     case Type::FLYABLE:
         name = "Airplane" + QString::number(mCount);
         mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/models/aircraft/aircraft.png");
+        mCurrentModel->setModelColor(osgEarth::Color::Red);
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);

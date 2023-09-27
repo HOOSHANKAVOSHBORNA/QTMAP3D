@@ -1,7 +1,5 @@
 #include "statusnode.h"
-
 #include <QColor>
-
 #include <osg/AutoTransform>
 #include <osg/Depth>
 #include <osgEarthAnnotation/AnnotationUtils>
@@ -23,11 +21,6 @@ StatusNode::StatusNode(MapItem *mapControler, QObject *parent)
 
 void StatusNode::setData(QString title, std::list<Data> *dataList)
 {
-//    mRenderImage = nullptr;
-//    mStatusImg = nullptr;
-    //mPainter = nullptr;
-    //mPainter->end();
-    //mPainter->isActive()
     mTitle = title;
     mDataList = dataList;
 

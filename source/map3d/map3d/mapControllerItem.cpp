@@ -26,35 +26,35 @@ MapControllerItem::MapControllerItem():
 
     mStatusBar->addMessage("hi", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("nice", QDateTime::currentDateTime());
+    mStatusBar->addMessage("nice", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("twice", QDateTime::currentDateTime());
+    mStatusBar->addMessage("twice", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("dice", QDateTime::currentDateTime());
+    mStatusBar->addMessage("dice", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("rice", QDateTime::currentDateTime());
+    mStatusBar->addMessage("rice", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("price", QDateTime::currentDateTime());
+    mStatusBar->addMessage("price", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("pass", QDateTime::currentDateTime());
+    mStatusBar->addMessage("pass", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("salam", QDateTime::currentDateTime());
+    mStatusBar->addMessage("salam", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("hi", QDateTime::currentDateTime());
+    mStatusBar->addMessage("hi", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("mamad", QDateTime::currentDateTime());
+    mStatusBar->addMessage("mamad", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("ali", QDateTime::currentDateTime());
+    mStatusBar->addMessage("ali", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("morteza", QDateTime::currentDateTime());
+    mStatusBar->addMessage("morteza", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("mamad ali", QDateTime::currentDateTime());
+    mStatusBar->addMessage("mamad ali", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("mostafa", QDateTime::currentDateTime());
+    mStatusBar->addMessage("mostafa", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("nasser", QDateTime::currentDateTime());
+    mStatusBar->addMessage("nasser", QDateTime::currentDateTime());
 
-//    mStatusBar->addMessage("jafary", QDateTime::currentDateTime());
+    mStatusBar->addMessage("jafary", QDateTime::currentDateTime());
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)

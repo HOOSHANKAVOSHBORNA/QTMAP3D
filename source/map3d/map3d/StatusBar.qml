@@ -271,7 +271,7 @@ Layout.alignment: Qt.AlignCenter
                     context.lineTo(width, 0);
                     context.lineTo(width / 2, height);
                     context.closePath();
-                    context.fillStyle = control.pressed ? "red" : "blue";
+                    context.fillStyle = control.pressed ? Style.backgroundColor : Style.foregroundColor;
                     context.fill();
                 }
             }
@@ -419,7 +419,7 @@ color: Style.backgroundColor
 
                     while (listView.selectedIndexes.length !== 0) {
 //                        console.log(listView.selectedIndexes.length)
-                        listView.model.removeMessage(listView.model.index(listView.selectedIndexes[0], 0));
+//                        listView.model.removeMessage(listView.model.index(listView.selectedIndexes[0], 0));
                         listView.selectedIndexes.pop();
                     }
                 }
@@ -628,11 +628,11 @@ color: Style.backgroundColor
                         width: listView.width
                         height: 45/Style.monitorRatio
 
-                        CheckDelegate {
+                        CheckBox {
+                            id:delegateCheckBox
                             topPadding: 0
                             rightPadding: 0
                             leftPadding: 0
-                            id: delegateCheckBox
                             anchors.left: parent.left
                             anchors.verticalCenter: parent.verticalCenter
                             background: Rectangle{
@@ -642,26 +642,27 @@ color: Style.backgroundColor
                                 anchors.left: parent.left
                                 color:"transparent"
                             }
-//                            checked: subjectCheckBox.checked?true:false
-                            checkState: subjectCheckBox.checkState
-                            onCheckStateChanged: {if(checked === true){
-                                    flag = false
-                                                     for (var i = 0 ; i < listView.selectedIndexes.lenght;i++){
-                                                         if( listView.selectedIndexes[i] === model.index ){
-                                                             flag = true
-                                                         }
-                                                     }
-                                                     if (flag == false){
-                                                     listView.selectedIndexes.push(model.index)
+                            checkState: model.textChecked ? Qt.Checked: Qt.Unchecked
+                            nextCheckState: function() {
 
-                                                 }
-                                                 }
-                                                 else{
-                                                     subjectCheckBox.checked = false
-                                                     listView.selectedIndexes.splice(model.index, 1)
-                                                 }
-                                print(listView.selectedIndexes)
-                            }
+                                    if (checkState === Qt.Checked){
+                                        root.model.toggleCheck(root.model.index(index, 0), false)
+                                        return Qt.Unchecked
+                                    }
+                                    else{
+                                        root.model.toggleCheck(root.model.index(index, 0), true)
+                                        return Qt.Checked
+                                    }
+
+                                }
+//                            checked: model.textChecked
+//                            checkState: subjectCheckBox.checkState
+//                            onCheckStateChanged: {
+//                                console.log(root.model.index(index, 0))
+//                                console.log(model.textChecked)
+
+//                                root.model.toggleCheck(root.model.index(index, 0), checked)
+//                            }
 
                             indicator: Rectangle {
                                 implicitWidth: 20/Style.monitorRatio
