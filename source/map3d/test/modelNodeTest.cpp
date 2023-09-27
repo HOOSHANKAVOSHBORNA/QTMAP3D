@@ -1,13 +1,13 @@
 #include "modelNodeTest.h"
 #include <QJsonObject>
-#include<QObject>
+#include <QObject>
 #include <QColor>
 #include <QRandomGenerator>
 #include <QTimer>
 #include <QJsonArray>
 
-ModelNodeTest::ModelNodeTest(NetworkManager *networkManager):
-    mNetworkManager(networkManager)
+ModelNodeTest::ModelNodeTest(NetworkManager *networkManager, StatusNodeTest *statusNodeTest):
+    mNetworkManager(networkManager), mStatusNodeTest{statusNodeTest}
 {
     QObject::connect(mNetworkManager, &NetworkManager::flyableQueueDeclared, [this]{
     mFlyableQueueDeclared = true;
@@ -65,6 +65,20 @@ void ModelNodeTest::createFlyableInfo()
 
     jsonDocument.setObject(jsonObject);
     mFlyableDataList.append(jsonDocument);
+
+    QJsonDocument jsonDocStatus;
+    QJsonObject jsonObjectStatus;
+
+    jsonObjectStatus.insert("Name", name);
+    jsonObjectStatus.insert("Id", id);
+    jsonObjectStatus.insert("Longitude", longitude);
+    jsonObjectStatus.insert("Latitude", latitude);
+    jsonObjectStatus.insert("Altitude", altitude);
+    jsonObjectStatus.insert("Heading", heading);
+    jsonObjectStatus.insert("Speed", speed);
+    jsonObjectStatus.insert("LayerId", 106);
+    jsonDocStatus.setObject(jsonObjectStatus);
+    mStatusNodeTest->addOrUpdateStatusInfo(id, jsonDocStatus);
 }
 
 void ModelNodeTest::updateFlyableInfo()
@@ -105,5 +119,23 @@ void ModelNodeTest::updateFlyableInfo()
         jsonObject["Speed"] =  speed;
 
         jsonDocument.setObject(jsonObject);
+
+
+        QJsonDocument jsonDocStatus;
+        QJsonObject jsonObjectStatus;
+
+        int id = jsonObject["Id"].toInt();
+        QString name = jsonObject["Name"].toString();
+
+        jsonObjectStatus.insert("Name", name);
+        jsonObjectStatus.insert("Id", id);
+        jsonObjectStatus.insert("Longitude", longitude);
+        jsonObjectStatus.insert("Latitude", latitude);
+        jsonObjectStatus.insert("Altitude", altitude);
+        jsonObjectStatus.insert("Heading", heading);
+        jsonObjectStatus.insert("Speed", speed);
+        jsonObjectStatus.insert("LayerId", 106);
+        jsonDocStatus.setObject(jsonObjectStatus);
+        mStatusNodeTest->addOrUpdateStatusInfo(id, jsonDocStatus);
     }
 }

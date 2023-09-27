@@ -27,6 +27,11 @@ void NetworkManager::clientConnected()
     disconnect(layerQueue, 0, 0, 0); // in case this is a reconnect
     connect(layerQueue, &QAmqpQueue::declared, this, &NetworkManager::layerQueueDeclared);
     layerQueue->declare();
+    //--status queue--------------------------------------------
+    QAmqpQueue *statusQueue = mClient.createQueue("status");
+    disconnect(statusQueue, 0, 0, 0); // in case this is a reconnect
+    connect(statusQueue, &QAmqpQueue::declared, this, &NetworkManager::statusQueueDeclared);
+    statusQueue->declare();
 
 }
 
@@ -73,4 +78,27 @@ void NetworkManager::layerMessageReceived()
     qDebug() << "Layer message: " << message.payload();
 
     mServiceManager->layersData(message.payload().toStdString());
+}
+
+void NetworkManager::statusQueueDeclared()
+{
+    QAmqpQueue *queue = qobject_cast<QAmqpQueue*>(sender());
+    if (!queue)
+        return;
+
+    connect(queue, &QAmqpQueue::messageReceived, this, &NetworkManager::statusMessageReceived);
+    queue->consume(QAmqpQueue::coNoAck);
+    qDebug() << "Waiting for status messages.";
+}
+
+void NetworkManager::statusMessageReceived()
+{
+    QAmqpQueue *queue = qobject_cast<QAmqpQueue*>(sender());
+    if (!queue)
+        return;
+
+    QAmqpMessage message = queue->dequeue();
+    qDebug() << "status message: " << message.payload();
+
+    mServiceManager->statusNodeData(message.payload().toStdString());
 }

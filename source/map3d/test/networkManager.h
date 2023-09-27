@@ -12,6 +12,7 @@ public:
     NetworkManager(QObject *parent = nullptr);
     void sendFlyableData(const QString &data);
     void sendLayerData(const QString &data);
+    void sendStatusData(const QString &data);
 
     void start();
 private slots:
@@ -20,6 +21,7 @@ private slots:
 signals:
     void flyableQueueDeclared();
     void layerQueueDeclared();
+    void statusQueueDeclared();
 private:
     QAmqpClient mClient;
 };

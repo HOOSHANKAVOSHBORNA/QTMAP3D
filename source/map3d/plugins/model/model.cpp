@@ -37,6 +37,7 @@ bool Model::setup()
 
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, this, &Model::addUpdateFlyableNode);
+    connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Model::addUpdateStatusNode);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -160,7 +161,6 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
         //mCurrentModel->setScalability(false);
-        //mCurrentModel->setModelColor(osg::Vec3f(1.0f,0,0.5f));
         confirm();
 
         return false;
@@ -334,12 +334,52 @@ void Model::addUpdateFlyableNode(NodeData *nodeData)
     flyableNode->setNodeData(nodeData);
 }
 
+void Model::addUpdateStatusNode(NodeData *nodeData)
+{
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
+    osg::ref_ptr<StatusNode> statusNode;
+
+    if(!mStatusModelNodeMap.contains(nodeData->id)){
+        statusNode = new StatusNode(mapItem());
+        {
+            StatusNode::Data data;
+            data.name = "name";
+            data.value = QString::fromStdString(nodeData->name);
+            StatusNode::Data data1;
+            data1.name = "speed";
+            data1.value = nodeData->speed;
+            StatusNode::Data data2;
+            data2.name = "id";
+            data2.value = nodeData->id;
+            std::list<StatusNode::Data> dataList;
+            dataList.push_back(data);
+            dataList.push_back(data1);
+            dataList.push_back(data2);
+            statusNode->setData(QString::fromStdString(nodeData->name), &dataList);
+        }
+        mStatusModelNodeMap[nodeData->id] = statusNode;
+    }
+    else{
+        statusNode = mStatusModelNodeMap[nodeData->id];
+        for(auto layer: statusNode->nodeData()->layers){
+            layer->removeChild(statusNode);
+        }
+    }
+    statusNode->setPosition(geoPoint);
+    for(auto layer: nodeData->layers){
+        layer->addChild(statusNode);
+    }
+    statusNode->setName(nodeData->name);
+    statusNode->setNodeData(nodeData);
+}
+
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
     QString name;
     switch (mType) {
     case Type::SIMPLE:
         name = "Tree" + QString::number(mCount);
         mCurrentModel = new SimpleModelNode(mapItem(),"../data/models/tree_I.osgb", "../data/images/model/tree.png");
+        mCurrentModel->setModelColor(osgEarth::Color::Aqua);
         if(!mModelNodeLayer->containsLayer(mSimpleNodeLayer)){
             mSimpleNodeLayer->clear();
             mModelNodeLayer->addLayer(mSimpleNodeLayer);
@@ -349,6 +389,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     case Type::MOVEABLE:
         name = "Car" + QString::number(mCount);
         mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
+        mCurrentModel->setModelColor(osgEarth::Color::Green);
         if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
             mMoveableNodeLayer->clear();
             mModelNodeLayer->addLayer(mMoveableNodeLayer);
@@ -358,6 +399,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     case Type::FLYABLE:
         name = "Airplane" + QString::number(mCount);
         mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/models/aircraft/aircraft.png");
+        mCurrentModel->setModelColor(osgEarth::Color::Red);
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);

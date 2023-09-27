@@ -2,13 +2,14 @@
 #define MODELNODETEST_H
 
 #include "networkManager.h"
+#include "statusNodeTest.h"
 
 #include <QJsonDocument>
 
 class ModelNodeTest
 {
 public:
-    ModelNodeTest(NetworkManager *networkManager);
+    ModelNodeTest(NetworkManager *networkManager, StatusNodeTest *statusNodeTest);
 
 private:
     void createFlyableInfo();
@@ -16,6 +17,7 @@ private:
 
 private:
     NetworkManager *mNetworkManager;
+    StatusNodeTest *mStatusNodeTest;
     bool mFlyableQueueDeclared{false};
 
     QVector<QJsonDocument> mFlyableDataList;
