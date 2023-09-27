@@ -136,12 +136,12 @@ void StatusNode::createImageNode()
     mAutoTransform->addChild(imageNode);
 }
 
-NodeData *StatusNode::nodeData() const
+StatusNodeData *StatusNode::nodeData() const
 {
     return mNodeData;
 }
 
-void StatusNode::setNodeData(NodeData *newNodeData)
+void StatusNode::setNodeData(StatusNodeData *newNodeData)
 {
     mNodeData = newNodeData;
 }
