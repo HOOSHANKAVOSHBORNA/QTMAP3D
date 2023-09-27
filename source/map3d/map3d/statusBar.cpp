@@ -31,13 +31,20 @@ QVariant StatusBar::data(const QModelIndex &index, int role) const
 }
 
 
-void StatusBar::removeMessage(const QModelIndex &index)
+void StatusBar::removeMessage()
 {
-    beginRemoveRows(QModelIndex(), index.row(), index.row());
-    mMessages.erase(mMessages.begin()+index.row());
-    endRemoveRows();
-}
+    for (int i = 0; i < mMessages.size();) {
+        if(mMessages[i]->isCheck){
+            beginRemoveRows(QModelIndex(),i,i);
+            mMessages.erase(mMessages.begin()+i);
+            endRemoveRows();
+        } else {
+            i++;
+        }
+    }
 
+
+}
 
 QHash<int, QByteArray> StatusBar::roleNames() const
 {
@@ -57,9 +64,7 @@ void StatusBar::addMessage(Message *m)
 
 void StatusBar::toggleCheck(const QModelIndex &index, bool check)
 {
-//    beginResetModel();
     mMessages[index.row()]->isCheck = check;
-//    endResetModel();
     QList<int> roles;
     roles.append(textChecked);
     emit dataChanged(index,index, roles);
@@ -116,17 +121,18 @@ void StatusBarSearchModel::addMessage(QString Text, QDateTime time)
     dynamic_cast<StatusBar*>(sourceModel())->addMessage(m);
 }
 
-void StatusBarSearchModel::removeMessage(const QModelIndex &index)
+void StatusBarSearchModel::removeMessage()
 {
-    dynamic_cast<StatusBar*>(sourceModel())->removeMessage((index));
+    dynamic_cast<StatusBar*>(sourceModel())->removeMessage();
 
 }
 
 void StatusBarSearchModel::toggleCheck(const QModelIndex &index, bool check)
 {
-    qDebug() << "set text check called";
+
     dynamic_cast<StatusBar*>(sourceModel())->toggleCheck(mapToSource(index), check);
 }
+
 
 
 void StatusBarSearchModel::setFilterString(const QString &filterString)

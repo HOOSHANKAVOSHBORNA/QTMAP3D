@@ -412,17 +412,8 @@ color: Style.backgroundColor
                     height: 24/Style.monitorRatio
                 }
 
-                onClicked: {
+                onClicked: root.model.removeMessage()
 
-                    listView.selectedIndexes.sort()
-//                    console.log(listView.selectedIndexes)
-
-                    while (listView.selectedIndexes.length !== 0) {
-//                        console.log(listView.selectedIndexes.length)
-//                        listView.model.removeMessage(listView.model.index(listView.selectedIndexes[0], 0));
-                        listView.selectedIndexes.pop();
-                    }
-                }
 
             }
             Button {
