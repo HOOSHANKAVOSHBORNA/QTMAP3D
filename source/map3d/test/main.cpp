@@ -2,6 +2,7 @@
 #include "layerTest.h"
 #include "networkManager.h"
 #include "modelNodeTest.h"
+#include "statusNodeTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +14,8 @@ int main(int argc, char *argv[])
 //        networkManager.sendFlyableData("data");
 //    });
     LayerTest LayerTest(&networkManager);
-    ModelNodeTest modelNodeTest(&networkManager);
+    StatusNodeTest statusNodeTest(&networkManager);
+    ModelNodeTest modelNodeTest(&networkManager, &statusNodeTest);
 
 
 

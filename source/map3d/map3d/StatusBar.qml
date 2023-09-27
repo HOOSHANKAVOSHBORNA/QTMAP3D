@@ -13,6 +13,7 @@ Rectangle {
     property real latitude : 0.0
     property real altitude : 0.0
 
+    property bool flag:false
     property real coordinate1 : 0.0
     property real coordinate2 : 0.0
     property real coordinate3 : 0.0
@@ -212,8 +213,8 @@ Rectangle {
                 Layout.preferredHeight: 20/Style.monitorRatio
                 background: Rectangle {
                     color:"transparent"
-
                 }
+
                 Text {
                     Layout.alignment: Qt.AlignVCenter
                     color: lightBlue
@@ -226,26 +227,118 @@ Rectangle {
             }
         }
 
-
-
-        ComboBox{
-            id:comboBox
-            Layout.alignment: Qt.AlignVCenter
+        ComboBox {
+            id: control
             model: ["Long, Lat", "Cordinate"]
-            contentItem: Text {
+Layout.alignment: Qt.AlignCenter
+            delegate: ItemDelegate {
+                id:itemDelegate
+                width: control.width
+                background:Rectangle{
+                    color:Style.backgroundColor
+                    radius:5
+                }
 
-                text: comboBox.displayText
+                contentItem: Text {
+                    text: control.textRole
+                        ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole])
+                        : modelData
+                    color: Style.foregroundColor
+                    font.family: Style.fontFamily
+                    font.pixelSize: 14/Style.monitorRatio
+//                    elide: Text.ElideRight
+//                    verticalAlignment: Text.AlignVCenter
+                }
+                highlighted: control.highlightedIndex === index
+            }
+
+            indicator: Canvas {
+                id: canvas
+                x: control.width - width - control.rightPadding
+                y: control.topPadding + (control.availableHeight - height) / 2
+                width: 12
+                height: 8
+                contextType: "2d"
+
+                Connections {
+                    target: control
+                    function onPressedChanged() { canvas.requestPaint(); }
+                }
+
+                onPaint: {
+                    context.reset();
+                    context.moveTo(0, 0);
+                    context.lineTo(width, 0);
+                    context.lineTo(width / 2, height);
+                    context.closePath();
+                    context.fillStyle = control.pressed ? Style.backgroundColor : Style.foregroundColor;
+                    context.fill();
+                }
+            }
+
+            contentItem: Text {
+                leftPadding: 0
+                rightPadding: control.indicator.width + control.spacing
+
+                text: control.displayText
                 font.family: Style.fontFamily
                 font.pixelSize: 14/Style.monitorRatio
                 color:Style.foregroundColor
-            }
-            background:Rectangle{
-                color: "transparent"
-                implicitWidth: 102/Style.monitorRatio
-                implicitHeight:20/Style.monitorRatio
+//                color: control.pressed ? "#17a81a" : "#21be2b"
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
             }
 
+            background: Rectangle {
+                implicitWidth: 102/Style.monitorRatio
+                implicitHeight:20/Style.monitorRatio
+color: Style.backgroundColor
+
+//                border.width: control.visualFocus ? 2 : 1
+                radius: 2
+            }
+
+            popup: Popup {
+                y: control.height - 20
+                width: control.width
+                implicitHeight: contentItem.implicitHeight +2
+                padding: 1
+
+                contentItem: ListView {
+                    clip: true
+                    implicitHeight: contentHeight
+                    model: control.popup.visible ? control.delegateModel : null
+                    currentIndex: control.highlightedIndex
+
+                    ScrollIndicator.vertical: ScrollIndicator { }
+                }
+
+                background: Rectangle {
+                   color:"transparent"
+                    radius: 2
+                }
+            }
         }
+
+//        ComboBox{
+//            id:comboBox
+//            Layout.alignment: Qt.AlignVCenter
+//            model: ["Long, Lat", "Cordinate"]
+//            contentItem: Text {
+
+//                text: comboBox.displayText
+//                font.family: Style.fontFamily
+//                font.pixelSize: 14/Style.monitorRatio
+//                color:Style.foregroundColor
+//            }
+
+//            background:Rectangle{
+//                color: "transparent"
+//                implicitWidth: 102/Style.monitorRatio
+//                implicitHeight:20/Style.monitorRatio
+//            }
+
+//        }
         Rectangle{
             id:sepratorRectangle
             Layout.alignment: Qt.AlignVCenter
@@ -320,13 +413,14 @@ Rectangle {
                 }
 
                 onClicked: {
-                    listView.selectedIndexes.sort().reverse()
+
+                    listView.selectedIndexes.sort()
 //                    console.log(listView.selectedIndexes)
 
                     while (listView.selectedIndexes.length !== 0) {
 //                        console.log(listView.selectedIndexes.length)
-                        listView.model.removeMessage(listView.model.index(listView.selectedIndexes[0], 0));
-                        listView.selectedIndexes.shift();
+//                        listView.model.removeMessage(listView.model.index(listView.selectedIndexes[0], 0));
+                        listView.selectedIndexes.pop();
                     }
                 }
 
@@ -412,14 +506,14 @@ Rectangle {
             color: Style.foregroundColor
 
         }
-        property bool s: false
+
         Item{
             id : topofDelegate
             width:628/Style.monitorRatio
             height: 45/Style.monitorRatio
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: boldSepratorLine.bottom
-            CheckBox {
+            CheckDelegate {
                 id: subjectCheckBox
                 topPadding: 0
                 rightPadding: 0
@@ -434,12 +528,12 @@ Rectangle {
                     anchors.left: parent.left
                     color:"transparent"
                 }
+
                 onCheckStateChanged:
                     if(checked === true){
-
+                        listView.selectedIndexes.length = 0
                         print(listView.selectedIndexes)
                         }
-
 
                 indicator: Rectangle {
                     implicitWidth: 20/Style.monitorRatio
@@ -535,10 +629,10 @@ Rectangle {
                         height: 45/Style.monitorRatio
 
                         CheckBox {
+                            id:delegateCheckBox
                             topPadding: 0
                             rightPadding: 0
                             leftPadding: 0
-                            id: delegateCheckBox
                             anchors.left: parent.left
                             anchors.verticalCenter: parent.verticalCenter
                             background: Rectangle{
@@ -548,15 +642,27 @@ Rectangle {
                                 anchors.left: parent.left
                                 color:"transparent"
                             }
-                            checkState: subjectCheckBox.checkState
-                            onCheckStateChanged: if(checked === true){
+                            checkState: model.textChecked ? Qt.Checked: Qt.Unchecked
+                            nextCheckState: function() {
 
-                                                     listView.selectedIndexes.push(index)
-                                                 }
-                                                 else{
-                                                     subjectCheckBox.checked = false
-                                                     listView.selectedIndexes.splice(index, 1)
-                                                 }
+                                    if (checkState === Qt.Checked){
+                                        root.model.toggleCheck(root.model.index(index, 0), false)
+                                        return Qt.Unchecked
+                                    }
+                                    else{
+                                        root.model.toggleCheck(root.model.index(index, 0), true)
+                                        return Qt.Checked
+                                    }
+
+                                }
+//                            checked: model.textChecked
+//                            checkState: subjectCheckBox.checkState
+//                            onCheckStateChanged: {
+//                                console.log(root.model.index(index, 0))
+//                                console.log(model.textChecked)
+
+//                                root.model.toggleCheck(root.model.index(index, 0), checked)
+//                            }
 
                             indicator: Rectangle {
                                 implicitWidth: 20/Style.monitorRatio

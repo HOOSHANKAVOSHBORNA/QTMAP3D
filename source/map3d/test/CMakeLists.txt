@@ -18,6 +18,7 @@ add_executable(test
   networkManager.h networkManager.cpp
   modelNodeTest.h modelNodeTest.cpp
   layerTest.cpp layerTest.h
+  statusNodeTest.h statusNodeTest.cpp
 )
 target_link_libraries(test Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Gui)
 

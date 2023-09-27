@@ -33,7 +33,7 @@ public:
 
     NodeData *nodeData() const;
     void setNodeData(NodeData *newNodeData);
-    void setModelColor(osg::Vec3 color);
+    void setModelColor(osgEarth::Color color);
 
 private slots:
     void onModeChanged(bool is3DView);

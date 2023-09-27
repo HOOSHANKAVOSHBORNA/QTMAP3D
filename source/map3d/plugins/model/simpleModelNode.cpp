@@ -32,7 +32,8 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
     mImage = osgDB::readImageFile(iconUrl);
-    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 0.2);
+//    mImage->scaleImage(64,64, mImage->r());
+    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 0.2);     
     m2DNode->setStateSet(geodeStateSet);
     m2DNode->addDrawable(imgGeom);
     //--select node---------------------------------------------------
@@ -124,20 +125,21 @@ NodeData *SimpleModelNode::nodeData() const
 void SimpleModelNode::setNodeData(NodeData *newNodeData)
 {
     mNodeData = newNodeData;
+    setModelColor(osgEarth::Color(mNodeData->color));
 }
 
-void SimpleModelNode::setModelColor(osg::Vec3 color)
+void SimpleModelNode::setModelColor(osgEarth::Color color)
 {
     //--recolor 3D Node----------------------------------------------------
     osgEarth::Symbology::Style  style = getStyle();
     osg::ref_ptr<osg::Material> mat = new osg::Material;
-    mat->setDiffuse (osg::Material::FRONT_AND_BACK, osg::Vec4(color, 1.0f));
+    mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
     mSimpleNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
     //--recolor 2D Node----------------------------------------------------
+    osg::Vec4 imageColor = color;
     for(int i=0; i<mImage->s(); ++i) {
         for(int j=0; j<mImage->t(); ++j) {
-            osg::Vec4 imageColor = mImage->getColor(i, j);
-            imageColor = osg::Vec4(color , imageColor.a());
+            imageColor.a() = mImage->getColor(i, j).a();
             mImage->setColor(imageColor, i, j);
         }
     }
