@@ -23,6 +23,8 @@ QVariant StatusBar::data(const QModelIndex &index, int role) const
         break;
     case timeText:
         return mMessages[index.row()]->dateTime.toString("h:m ap");
+    case textChecked:
+        return mMessages[index.row()]->isCheck;
     default:
         return QVariant();
     };
@@ -43,6 +45,7 @@ QHash<int, QByteArray> StatusBar::roleNames() const
     hash[messageText] = "messageText";
     hash[dateText] = "dateText";
     hash[timeText] = "timeText";
+    hash[textChecked] = "textChecked";
 
     return hash;
 }
@@ -51,6 +54,17 @@ void StatusBar::addMessage(Message *m)
 {
     mMessages.push_back(m);
 }
+
+void StatusBar::toggleCheck(const QModelIndex &index, bool check)
+{
+//    beginResetModel();
+    mMessages[index.row()]->isCheck = check;
+//    endResetModel();
+    QList<int> roles;
+    roles.append(textChecked);
+    emit dataChanged(index,index, roles);
+}
+
 
 
 //-------------------------------
@@ -98,7 +112,7 @@ void StatusBarSearchModel::setScale(const double scale)
 
 void StatusBarSearchModel::addMessage(QString Text, QDateTime time)
 {
-    Message *m = new Message(Text, time, true);
+    Message *m = new Message{Text, time};
     dynamic_cast<StatusBar*>(sourceModel())->addMessage(m);
 }
 
@@ -106,6 +120,12 @@ void StatusBarSearchModel::removeMessage(const QModelIndex &index)
 {
     dynamic_cast<StatusBar*>(sourceModel())->removeMessage((index));
 
+}
+
+void StatusBarSearchModel::toggleCheck(const QModelIndex &index, bool check)
+{
+    qDebug() << "set text check called";
+    dynamic_cast<StatusBar*>(sourceModel())->toggleCheck(mapToSource(index), check);
 }
 
 

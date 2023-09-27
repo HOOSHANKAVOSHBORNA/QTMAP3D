@@ -9,8 +9,8 @@
 struct Message {
     QString text;
     QDateTime dateTime;
-    bool isNew;
-    Message(QString text, QDateTime time, bool n):text{text}, dateTime{time}, isNew{n} {}
+    bool isNew{true};
+    bool isCheck{false};
 };
 
 
@@ -21,13 +21,15 @@ public:
     enum myRoles{
         messageText = Qt::UserRole + 100,
         dateText,
-        timeText
+        timeText,
+        textChecked
     };
 
     StatusBar(QObject *parent = nullptr);
     Q_INVOKABLE int rowCount(const QModelIndex & parent = QModelIndex()) const override;
     QVariant data(const QModelIndex & index,int role =Qt::DisplayRole)const override;
     void removeMessage(const QModelIndex &index);
+//    void deleteMarkedMessage(const QModelIndex &index);
     QHash<int, QByteArray> roleNames() const override;
 
     void addMessage(Message* m);
@@ -39,6 +41,10 @@ public:
 private:
     std::vector<Message*> mMessages;
 
+
+    // QAbstractItemModel interface
+public:
+    Q_INVOKABLE void toggleCheck(const QModelIndex &index, bool check);
 };
 
 
@@ -64,6 +70,7 @@ public:
     void setScale(const double scale);
     void addMessage(QString Text, QDateTime);
     Q_INVOKABLE void removeMessage(const QModelIndex &index);
+    Q_INVOKABLE void toggleCheck(const QModelIndex &index, bool check);
 
 public slots:
     void setFilterString(const QString &filterString);
