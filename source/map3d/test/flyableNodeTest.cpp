@@ -21,8 +21,8 @@ FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
         updateFlyableInfo();
         if(mFlyableQueueDeclared)
             for(auto& flaybleData: mFlyableDataList){
-                mNetworkManager->sendFlyableData(flaybleData.flyableDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendStatusData(flaybleData.statusDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(flaybleData.flyableDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(flaybleData.statusDoc.toJson(QJsonDocument::Compact));
             }
     });
     timerUpdateAircraft->start(1000);

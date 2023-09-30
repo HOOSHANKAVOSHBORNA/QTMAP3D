@@ -10,7 +10,7 @@ LayerTest::LayerTest(NetworkManager *networkManager):
     QObject::connect(mNetworkManager, &NetworkManager::dataQueueDeclared, [this]
                      {
                          QJsonDocument layerDoc = createLayers();
-                         mNetworkManager->sendLayerData(layerDoc.toJson(QJsonDocument::Compact));
+                         mNetworkManager->sendData(layerDoc.toJson(QJsonDocument::Compact));
                      });
 }
 

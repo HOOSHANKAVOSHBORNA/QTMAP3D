@@ -7,25 +7,11 @@ NetworkManager::NetworkManager(QObject *parent): QObject(parent)
     mClient.setAutoReconnect(true);
 }
 
-void NetworkManager::sendFlyableData(const QString &data)
-{
-    QAmqpExchange *defaultExchange = mClient.createExchange();
-    defaultExchange->publish(data, "data");
-    qDebug() << "Sent flyable data: "<<data;
-}
-
-void NetworkManager::sendLayerData(const QString &data)
+void NetworkManager::sendData(const QString &data)
 {
     QAmqpExchange *exchange = mClient.createExchange();
     exchange->publish(data, "data");
-    qDebug() << "Sent layer data: "<<data;
-}
-
-void NetworkManager::sendStatusData(const QString &data)
-{
-    QAmqpExchange *exchange = mClient.createExchange();
-    exchange->publish(data, "data");
-    qDebug() << "Sent status data: "<<data;
+    qDebug() << "Sent data: "<<data;
 }
 
 void NetworkManager::start()
