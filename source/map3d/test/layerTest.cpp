@@ -17,6 +17,7 @@ LayerTest::LayerTest(NetworkManager *networkManager):
 QJsonDocument LayerTest::createLayers()
 {
     QJsonObject layers;
+    QJsonObject layersData;
     layers.insert("Type", "Layer");
     //--flayable layer------------------------------------------------
     QJsonObject flyable;
@@ -72,7 +73,8 @@ QJsonDocument LayerTest::createLayers()
         flableChildren.push_back(status);
     }
     flyable.insert("Children", flableChildren);
-    layers.insert("Flyable", flyable);
+    layersData.insert("Flyable", flyable);
+    layers.insert("Data", layersData);
     //--moveable layer------------------------------------------------------
 
     //--fixed layer---------------------------------------------------------

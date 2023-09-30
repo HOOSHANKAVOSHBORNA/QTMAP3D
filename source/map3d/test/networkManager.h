@@ -17,9 +17,6 @@ private slots:
     void clientConnected();
     void clientError(QAMQP::Error error);
 signals:
-    void flyableQueueDeclared();
-    void layerQueueDeclared();
-    void statusQueueDeclared();
     void dataQueueDeclared();
 private:
     QAmqpClient mClient;

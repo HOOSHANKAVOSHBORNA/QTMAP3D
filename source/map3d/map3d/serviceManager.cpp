@@ -70,13 +70,12 @@ void ServiceManager::messageData(QString jsonData)
         if (doc.isObject()){
             obj = doc.object();
             QString type = obj.value("Type").toString();
-            obj.remove("Type");
             if      (type == "Layer")
-                layersData(obj);
+                layersData(obj.value("Data").toObject());
             else if (type == "Flyable")
-                flyableNodeData(obj);
+                flyableNodeData(obj.value("Data").toObject());
             else if (type == "Status")
-                statusNodeData(obj);
+                statusNodeData(obj.value("Data").toObject());
             else
                 qDebug() << "type of data is unknown";
         }
