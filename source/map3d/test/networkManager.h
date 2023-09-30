@@ -22,6 +22,7 @@ signals:
     void flyableQueueDeclared();
     void layerQueueDeclared();
     void statusQueueDeclared();
+    void dataQueueDeclared();
 private:
     QAmqpClient mClient;
 };

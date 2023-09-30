@@ -7,7 +7,7 @@
 LayerTest::LayerTest(NetworkManager *networkManager):
     mNetworkManager(networkManager)
 {
-    QObject::connect(mNetworkManager, &NetworkManager::layerQueueDeclared, [this]
+    QObject::connect(mNetworkManager, &NetworkManager::dataQueueDeclared, [this]
                      {
                          QJsonDocument layerDoc = createLayers();
                          mNetworkManager->sendLayerData(layerDoc.toJson(QJsonDocument::Compact));
@@ -17,6 +17,7 @@ LayerTest::LayerTest(NetworkManager *networkManager):
 QJsonDocument LayerTest::createLayers()
 {
     QJsonObject layers;
+    layers.insert("Type", "Layer");
     //--flayable layer------------------------------------------------
     QJsonObject flyable;
     flyable.insert("Id", 100);

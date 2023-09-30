@@ -9,7 +9,7 @@
 FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
     mNetworkManager(networkManager)
 {
-    QObject::connect(mNetworkManager, &NetworkManager::flyableQueueDeclared, [this]{
+    QObject::connect(mNetworkManager, &NetworkManager::dataQueueDeclared, [this]{
     mFlyableQueueDeclared = true;
 //    createFlyableInfo();
 //    for(auto& jsonDocument: mFlyableDataList)
@@ -46,6 +46,7 @@ void FlyableNodeTest::createFlyableInfo()
     QJsonDocument jsonDocument;
     QJsonObject jsonObject;
 
+    jsonObject.insert("Type", "Flyable");
     jsonObject.insert("Name", name);
     jsonObject.insert("Id", id);
     jsonObject.insert("Color", color.name());
@@ -73,6 +74,7 @@ void FlyableNodeTest::createFlyableInfo()
     QJsonDocument jsonDocStatus;
     QJsonObject jsonObjectStatus;
 
+    jsonObjectStatus.insert("Type", "Status");
     jsonObjectStatus.insert("Name", name);
     jsonObjectStatus.insert("Id", id);
     jsonObjectStatus.insert("Longitude", longitude);
@@ -132,6 +134,7 @@ void FlyableNodeTest::updateFlyableInfo()
         int id = jsonObject["Id"].toInt();
         QString name = jsonObject["Name"].toString();
 
+        jsonObjectStatus.insert("Type", "Status");
         jsonObjectStatus.insert("Name", name);
         jsonObjectStatus.insert("Id", id);
         jsonObjectStatus.insert("Longitude", longitude);
