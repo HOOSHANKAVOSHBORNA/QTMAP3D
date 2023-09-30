@@ -50,30 +50,24 @@ void ServiceManager::statusNodeData(std::string jsonData)
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(QString::fromStdString(jsonData).toUtf8());
     QJsonObject jsonObject = jsonDoc.object();
+    StatusNodeData *statusNodeData = new StatusNodeData;
 
-//    NodeData* statusNodeData = new NodeData();
-//    statusNodeData->id = jsonObject.value("Id").toInt();
-//    statusNodeData->longitude =  jsonObject.value("Longitude").toDouble();
-//    statusNodeData->latitude = jsonObject.value("Latitude").toDouble();
-//    statusNodeData->altitude = jsonObject.value("Altitude").toDouble();
-//    statusNodeData->name = jsonObject.value("Name").toString().toStdString();
-//    statusNodeData->speed = jsonObject.value("Speed").toInt();
-//    int id = jsonObject.value("LayerId").toInt();
-    StatusNodeData *statusNode;
-    statusNode->id = jsonObject.value("Id").toInt();
-    statusNode->longitude =  jsonObject.value("Longitude").toDouble();
-    statusNode->latitude = jsonObject.value("Latitude").toDouble();
-    statusNode->altitude = jsonObject.value("Altitude").toDouble();
-    statusNode->name = jsonObject.value("Name").toString().toStdString();
-    statusNode->data.push_back(NodeFieldData{"speed", "main", jsonObject.value("Speed").toString()});
-    statusNode->data.push_back(NodeFieldData{"Id", "main", jsonObject.value("Id").toString()});
-//    if(mParenticLayerMap.contains(id))
-//        statusNodeData->layers.push_back(mParenticLayerMap[id]);
-//    else
-//        qDebug()<<"Can not found layer: "<<id;
+    statusNodeData->id = jsonObject.value("Id").toInt();
+    statusNodeData->name = jsonObject.value("Name").toString().toStdString();
+    statusNodeData->longitude =  jsonObject.value("Longitude").toDouble();
+    statusNodeData->latitude = jsonObject.value("Latitude").toDouble();
+    statusNodeData->altitude = jsonObject.value("Altitude").toDouble();
+    int layerId = jsonObject.value("LayerId").toInt();
+    if(mParenticLayerMap.contains(layerId))
+        statusNodeData->layer = mParenticLayerMap[layerId];
+    else
+        qDebug()<<"Can not found layer: "<<layerId;
 
-//    if(statusNodeData->layers.size() > 0)
-//        emit statusNodeDataReceived(statusNodeData);
+    for(auto& key:jsonObject.keys())
+        statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key)});
+
+    if(statusNodeData->layer)
+        emit statusNodeDataReceived(statusNodeData);
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent)

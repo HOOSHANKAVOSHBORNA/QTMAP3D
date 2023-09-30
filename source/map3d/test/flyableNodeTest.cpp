@@ -1,4 +1,4 @@
-#include "modelNodeTest.h"
+#include "flyableNodeTest.h"
 #include <QJsonObject>
 #include <QObject>
 #include <QColor>
@@ -6,8 +6,8 @@
 #include <QTimer>
 #include <QJsonArray>
 
-ModelNodeTest::ModelNodeTest(NetworkManager *networkManager, StatusNodeTest *statusNodeTest):
-    mNetworkManager(networkManager), mStatusNodeTest{statusNodeTest}
+FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
+    mNetworkManager(networkManager)
 {
     QObject::connect(mNetworkManager, &NetworkManager::flyableQueueDeclared, [this]{
     mFlyableQueueDeclared = true;
@@ -20,14 +20,16 @@ ModelNodeTest::ModelNodeTest(NetworkManager *networkManager, StatusNodeTest *sta
         createFlyableInfo();
         updateFlyableInfo();
         if(mFlyableQueueDeclared)
-            for(auto& jsonDocument: mFlyableDataList)
-                mNetworkManager->sendFlyableData(jsonDocument.toJson(QJsonDocument::Compact));
+            for(auto& flaybleData: mFlyableDataList){
+                mNetworkManager->sendFlyableData(flaybleData.flyableDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendStatusData(flaybleData.statusDoc.toJson(QJsonDocument::Compact));
+            }
     });
     timerUpdateAircraft->start(1000);
     });
 }
 
-void ModelNodeTest::createFlyableInfo()
+void FlyableNodeTest::createFlyableInfo()
 {
     if(mFlyableDataList.count() >= mMaxFlyableNumber)
         return;
@@ -64,8 +66,10 @@ void ModelNodeTest::createFlyableInfo()
     jsonObject.insert("LayersId", layer);
 
     jsonDocument.setObject(jsonObject);
-    mFlyableDataList.append(jsonDocument);
+    FlayableData flaybleData;
+    flaybleData.flyableDoc = jsonDocument;
 
+    //--status node-----------------------------------------------
     QJsonDocument jsonDocStatus;
     QJsonObject jsonObjectStatus;
 
@@ -78,14 +82,16 @@ void ModelNodeTest::createFlyableInfo()
     jsonObjectStatus.insert("Speed", speed);
     jsonObjectStatus.insert("LayerId", 106);
     jsonDocStatus.setObject(jsonObjectStatus);
-    mStatusNodeTest->addOrUpdateStatusInfo(id, jsonDocStatus);
+    flaybleData.statusDoc = jsonDocStatus;
+
+    mFlyableDataList.append(flaybleData);
 }
 
-void ModelNodeTest::updateFlyableInfo()
+void FlyableNodeTest::updateFlyableInfo()
 {
-    for(auto& jsonDocument: mFlyableDataList)
+    for(auto& flaybleData: mFlyableDataList)
     {
-        QJsonObject jsonObject = jsonDocument.object();
+        QJsonObject jsonObject = flaybleData.flyableDoc.object();
         //------------------------
         double latitude = jsonObject["Latitude"].toDouble();
         double longitude = jsonObject["Longitude"].toDouble();
@@ -118,9 +124,8 @@ void ModelNodeTest::updateFlyableInfo()
         jsonObject["Heading"] = heading;
         jsonObject["Speed"] =  speed;
 
-        jsonDocument.setObject(jsonObject);
-
-
+        flaybleData.flyableDoc.setObject(jsonObject);
+        //--status node-----------------------------------------------
         QJsonDocument jsonDocStatus;
         QJsonObject jsonObjectStatus;
 
@@ -136,6 +141,6 @@ void ModelNodeTest::updateFlyableInfo()
         jsonObjectStatus.insert("Speed", speed);
         jsonObjectStatus.insert("LayerId", 106);
         jsonDocStatus.setObject(jsonObjectStatus);
-        mStatusNodeTest->addOrUpdateStatusInfo(id, jsonDocStatus);
+        flaybleData.statusDoc = jsonDocStatus;
     }
 }

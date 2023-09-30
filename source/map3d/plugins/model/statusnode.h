@@ -25,8 +25,8 @@ public:
 
     StatusNode(MapItem* mapControler, QObject *parent = nullptr);
     void setData(QString title, std::list<Data> *dataList);
-    NodeData *nodeData() const;
-    void setNodeData(NodeData *newNodeData);
+    StatusNodeData *nodeData() const;
+    void setNodeData(StatusNodeData *newNodeData);
 
 private:
     void createImageNode();
@@ -40,7 +40,7 @@ private:
 //    osg::ref_ptr<osg::Geode> mImgNode;
     MapItem *mMapItem;
     QPainter *mPainter;
-    NodeData *mNodeData;
+    StatusNodeData *mNodeData;
 };
 
 #endif // STATUSNODE_H
