@@ -33,7 +33,7 @@ public:
 
     void addMessage(Message* m);
     void removeMessage();
-    void selectAllMessages(bool check);
+//    void selectAllMessages(bool check);
 
 
 
