@@ -30,7 +30,7 @@ public:
     QVariant data(const QModelIndex & index,int role =Qt::DisplayRole)const override;
     void removeMessage();
 //    void deleteMarkedMessage(const QModelIndex &index);
-    void selectAllMessages();
+    void selectAllMessages(bool check);
     QHash<int, QByteArray> roleNames() const override;
 
     void addMessage(Message* m);
@@ -73,7 +73,7 @@ public:
     void addMessage(QString Text, QDateTime);
     Q_INVOKABLE void removeMessage();
     Q_INVOKABLE void toggleCheck(const QModelIndex &index, bool check);
-    Q_INVOKABLE void selectAllMessages();
+    Q_INVOKABLE void selectAllMessages(bool check);
 
 
 public slots:
