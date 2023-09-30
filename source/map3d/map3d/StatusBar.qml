@@ -509,7 +509,7 @@ color: Style.backgroundColor
                     exclusive: false
                     checkState: subjectCheckBox.checkState
                 }
-            CheckDelegate {
+            CheckBox {
                 id: subjectCheckBox
                 topPadding: 0
                 rightPadding: 0
@@ -528,13 +528,17 @@ color: Style.backgroundColor
                 nextCheckState: function() {
 
                         if (checkState === Qt.Checked){
+                            root.model.selectAllMessages(false)
                             return Qt.Unchecked
-                        }                        else{
-                            root.model.selectAllMessages()
+                        }else{
+                            root.model.selectAllMessages(true)
                             return Qt.Checked
                         }
 
                     }
+                onCheckStateChanged:{
+                     print("onCheckStateChanged")
+                }
 
                 indicator: Rectangle {
                     implicitWidth: 20/Style.monitorRatio
@@ -625,10 +629,24 @@ color: Style.backgroundColor
                     model: root.model
                     delegate:
                         Item {
-
+Rectangle{
+    radius: height/2
+    height: 8
+    width: 8
+    color: "green"
+    x:30/Style.monitorRatio + delegateSubject.implicitWidth
+//    anchors.right: delegateSubject.right
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.rightMargin: 10
+    visible: model.isnewMessage
+}
                         width: listView.width
                         height: 45/Style.monitorRatio
-
+                        MouseArea{
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onEntered: root.model.isNewMessage(root.model.index(index, 0))
+}
                         CheckBox {
                             id:delegateCheckBox
                             topPadding: 0
@@ -646,6 +664,7 @@ color: Style.backgroundColor
                             ButtonGroup.group: childGroup
                             checkState: model.textChecked ? Qt.Checked: Qt.Unchecked
                             nextCheckState: function() {
+                                print("nextCheckState")
 
                                     if (checkState === Qt.Checked){
                                         root.model.toggleCheck(root.model.index(index, 0), false)
@@ -657,14 +676,6 @@ color: Style.backgroundColor
                                     }
 
                                 }
-//                            checked: model.textChecked
-//                            checkState: subjectCheckBox.checkState
-//                            onCheckStateChanged: {
-//                                console.log(root.model.index(index, 0))
-//                                console.log(model.textChecked)
-
-//                                root.model.toggleCheck(root.model.index(index, 0), checked)
-//                            }
 
                             indicator: Rectangle {
                                 implicitWidth: 20/Style.monitorRatio
@@ -697,7 +708,7 @@ color: Style.backgroundColor
                             color: Style.foregroundColor
                             font.family:Style.fontFamily
                             font.pixelSize:  16/ Style.monitorRatio
-                            selectByMouse: true
+                            selectByMouse: false
                             selectedTextColor: Style.foregroundColor
                             selectionColor: Style.selectColor
                             placeholderTextColor: Style.disableColor
