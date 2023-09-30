@@ -29,7 +29,8 @@ public:
     Q_INVOKABLE int rowCount(const QModelIndex & parent = QModelIndex()) const override;
     QVariant data(const QModelIndex & index,int role =Qt::DisplayRole)const override;
     void removeMessage();
-    void deleteMarkedMessage(const QModelIndex &index);
+//    void deleteMarkedMessage(const QModelIndex &index);
+    void selectAllMessages();
     QHash<int, QByteArray> roleNames() const override;
 
     void addMessage(Message* m);
@@ -40,6 +41,7 @@ public:
 
 private:
     std::vector<Message*> mMessages;
+//    bool isAllSelected{false};
 
 
     // QAbstractItemModel interface
@@ -71,6 +73,7 @@ public:
     void addMessage(QString Text, QDateTime);
     Q_INVOKABLE void removeMessage();
     Q_INVOKABLE void toggleCheck(const QModelIndex &index, bool check);
+    Q_INVOKABLE void selectAllMessages();
 
 
 public slots:

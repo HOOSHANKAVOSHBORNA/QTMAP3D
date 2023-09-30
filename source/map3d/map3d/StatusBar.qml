@@ -358,7 +358,7 @@ color: Style.backgroundColor
     Rectangle{
         id:messageContainer
         anchors.bottom:root.top
-        anchors.bottomMargin: 3
+        anchors.bottomMargin: 5/Style.monitorRatio
         implicitHeight: 0
 
         x: 3
@@ -504,6 +504,11 @@ color: Style.backgroundColor
             height: 45/Style.monitorRatio
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: boldSepratorLine.bottom
+            ButtonGroup {
+                    id: childGroup
+                    exclusive: false
+                    checkState: subjectCheckBox.checkState
+                }
             CheckDelegate {
                 id: subjectCheckBox
                 topPadding: 0
@@ -511,7 +516,7 @@ color: Style.backgroundColor
                 leftPadding: 0
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-
+                checkState: childGroup.checkState
                 background: Rectangle{
                     height: 20/Style.monitorRatio
                     width:20/Style.monitorRatio
@@ -520,11 +525,16 @@ color: Style.backgroundColor
                     color:"transparent"
                 }
 
-                onCheckStateChanged:
-                    if(checked === true){
-                        listView.selectedIndexes.length = 0
-                        print(listView.selectedIndexes)
+                nextCheckState: function() {
+
+                        if (checkState === Qt.Checked){
+                            return Qt.Unchecked
+                        }                        else{
+                            root.model.selectAllMessages()
+                            return Qt.Checked
                         }
+
+                    }
 
                 indicator: Rectangle {
                     implicitWidth: 20/Style.monitorRatio
@@ -633,6 +643,7 @@ color: Style.backgroundColor
                                 anchors.left: parent.left
                                 color:"transparent"
                             }
+                            ButtonGroup.group: childGroup
                             checkState: model.textChecked ? Qt.Checked: Qt.Unchecked
                             nextCheckState: function() {
 
