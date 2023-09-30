@@ -25,6 +25,8 @@ QVariant StatusBar::data(const QModelIndex &index, int role) const
         return mMessages[index.row()]->dateTime.toString("h:m ap");
     case textChecked:
         return mMessages[index.row()]->isCheck;
+    case isnewMessage:
+        return mMessages[index.row()]->isNew;
     default:
         return QVariant();
     };
@@ -64,6 +66,7 @@ QHash<int, QByteArray> StatusBar::roleNames() const
     hash[dateText] = "dateText";
     hash[timeText] = "timeText";
     hash[textChecked] = "textChecked";
+    hash[isnewMessage] = "isnewMessage";
 
     return hash;
 }
@@ -71,6 +74,14 @@ QHash<int, QByteArray> StatusBar::roleNames() const
 void StatusBar::addMessage(Message *m)
 {
     mMessages.push_back(m);
+}
+
+void StatusBar::isNewMessage(const QModelIndex &index)
+{
+    mMessages[index.row()]->isNew = false;
+    QList<int> roles;
+    roles.append(isnewMessage);
+    emit dataChanged(index,index, roles);
 }
 
 void StatusBar::toggleCheck(const QModelIndex &index, bool check)
@@ -147,6 +158,11 @@ void StatusBarSearchModel::toggleCheck(const QModelIndex &index, bool check)
 void StatusBarSearchModel::selectAllMessages(bool check)
 {
     dynamic_cast<StatusBar*>(sourceModel())->selectAllMessages(check);
+}
+
+void StatusBarSearchModel::isNewMessage(const QModelIndex &index)
+{
+    dynamic_cast<StatusBar*>(sourceModel())->isNewMessage(mapToSource(index));
 }
 
 void StatusBarSearchModel::setFilterString(const QString &filterString)
