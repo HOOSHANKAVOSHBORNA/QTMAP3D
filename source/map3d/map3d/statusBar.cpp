@@ -157,7 +157,14 @@ void StatusBarSearchModel::toggleCheck(const QModelIndex &index, bool check)
 
 void StatusBarSearchModel::selectAllMessages(bool check)
 {
-    dynamic_cast<StatusBar*>(sourceModel())->selectAllMessages(check);
+    auto model = dynamic_cast<StatusBar*>(sourceModel());
+    for(int i = 0; i < rowCount(); i++)
+    {
+        auto filterIndex = index(i, 0);
+        auto sourceIndex = mapToSource(filterIndex);
+        model->toggleCheck(sourceIndex, check);
+    }
+//    dynamic_cast<StatusBar*>(sourceModel())->selectAllMessages(check);
 }
 
 void StatusBarSearchModel::isNewMessage(const QModelIndex &index)
