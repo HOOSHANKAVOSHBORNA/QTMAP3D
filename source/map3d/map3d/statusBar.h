@@ -22,17 +22,18 @@ public:
         messageText = Qt::UserRole + 100,
         dateText,
         timeText,
+        isnewMessage,
         textChecked
     };
 
     StatusBar(QObject *parent = nullptr);
     Q_INVOKABLE int rowCount(const QModelIndex & parent = QModelIndex()) const override;
     QVariant data(const QModelIndex & index,int role =Qt::DisplayRole)const override;
-    void removeMessage(const QModelIndex &index);
-//    void deleteMarkedMessage(const QModelIndex &index);
     QHash<int, QByteArray> roleNames() const override;
 
     void addMessage(Message* m);
+    void removeMessage();
+//    void selectAllMessages(bool check);
 
 
 
@@ -45,6 +46,7 @@ private:
     // QAbstractItemModel interface
 public:
     Q_INVOKABLE void toggleCheck(const QModelIndex &index, bool check);
+    Q_INVOKABLE void isNewMessage(const QModelIndex &index);
 };
 
 
@@ -69,8 +71,11 @@ public:
     void setRange(const int range);
     void setScale(const double scale);
     void addMessage(QString Text, QDateTime);
-    Q_INVOKABLE void removeMessage(const QModelIndex &index);
+    Q_INVOKABLE void removeMessage();
     Q_INVOKABLE void toggleCheck(const QModelIndex &index, bool check);
+    Q_INVOKABLE void selectAllMessages(bool check);
+    Q_INVOKABLE void isNewMessage(const QModelIndex &index);
+
 
 public slots:
     void setFilterString(const QString &filterString);

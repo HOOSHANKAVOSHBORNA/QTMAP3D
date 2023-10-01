@@ -9,17 +9,18 @@
 struct NodeFieldData
 {
     QString name;
-    QString category;
     QVariant value;
+    QString category;
 };
 
-struct StatusNodeData
+struct StatusNodeData: public osg::Referenced
 {
     int id{-1};
+    std::string name;
     double longitude;
     double latitude;
     double altitude;
-    std::string name;
+    ParenticAnnotationLayer* layer{nullptr};
     std::vector<NodeFieldData> data;
 };
 
@@ -55,9 +56,10 @@ class ServiceManager: public QObject
 public:
     ServiceManager(MapItem *mapItem, QObject *parent = nullptr);
 
-    void layersData(std::string jsonData);
-    void flyableNodeData(std::string jsonData);
-    void statusNodeData(std::string jsonData);
+    void layersData(QJsonObject jsonObject);
+    void flyableNodeData(QJsonObject jsonObject);
+    void statusNodeData(QJsonObject jsonObject);
+    void messageData(QString jsonData);
 
 //    void addPolygon(QJsonDocument *polygon);
 //    void addSphere(QJsonDocument *sphere);
@@ -67,7 +69,7 @@ public:
 signals:
     void layerDataReceived(CompositeAnnotationLayer *layer);
     void flyableNodeDataReceived(NodeData *modelNodeData);
-    void statusNodeDataReceived(NodeData *statusNodeData);
+    void statusNodeDataReceived(StatusNodeData *statusNodeData);
 private:
     void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
 

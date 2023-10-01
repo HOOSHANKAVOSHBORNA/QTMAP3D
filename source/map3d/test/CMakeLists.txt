@@ -16,9 +16,8 @@ find_package(Qt6 REQUIRED COMPONENTS Gui)
 add_executable(test
   main.cpp
   networkManager.h networkManager.cpp
-  modelNodeTest.h modelNodeTest.cpp
+  flyableNodeTest.h flyableNodeTest.cpp
   layerTest.cpp layerTest.h
-  statusNodeTest.h statusNodeTest.cpp
 )
 target_link_libraries(test Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Gui)
 

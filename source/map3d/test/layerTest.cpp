@@ -7,16 +7,18 @@
 LayerTest::LayerTest(NetworkManager *networkManager):
     mNetworkManager(networkManager)
 {
-    QObject::connect(mNetworkManager, &NetworkManager::layerQueueDeclared, [this]
+    QObject::connect(mNetworkManager, &NetworkManager::dataQueueDeclared, [this]
                      {
                          QJsonDocument layerDoc = createLayers();
-                         mNetworkManager->sendLayerData(layerDoc.toJson(QJsonDocument::Compact));
+                         mNetworkManager->sendData(layerDoc.toJson(QJsonDocument::Compact));
                      });
 }
 
 QJsonDocument LayerTest::createLayers()
 {
     QJsonObject layers;
+    QJsonObject layersData;
+    layers.insert("Type", "Layer");
     //--flayable layer------------------------------------------------
     QJsonObject flyable;
     flyable.insert("Id", 100);
@@ -71,7 +73,8 @@ QJsonDocument LayerTest::createLayers()
         flableChildren.push_back(status);
     }
     flyable.insert("Children", flableChildren);
-    layers.insert("Flyable", flyable);
+    layersData.insert("Flyable", flyable);
+    layers.insert("Data", layersData);
     //--moveable layer------------------------------------------------------
 
     //--fixed layer---------------------------------------------------------

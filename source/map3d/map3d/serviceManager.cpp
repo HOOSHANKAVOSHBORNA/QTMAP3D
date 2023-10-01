@@ -11,20 +11,14 @@ ServiceManager::ServiceManager(MapItem *mapItem, QObject *parent):
 
 }
 
-void ServiceManager::layersData(std::string jsonData)
+void ServiceManager::layersData(QJsonObject jsonObject)
 {
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(QString::fromStdString(jsonData).toUtf8());
-
-    QJsonObject jsonObject = jsonDoc.object();
     for (auto it : jsonObject)
         parseLayersFromJson(it.toObject());
 }
 
-void ServiceManager::flyableNodeData(std::string jsonData)
+void ServiceManager::flyableNodeData(QJsonObject jsonObject)
 {
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(QString::fromStdString(jsonData).toUtf8());
-    QJsonObject jsonObject = jsonDoc.object();
-
     NodeData* flyableNodeData = new NodeData();
     flyableNodeData->id = jsonObject.value("Id").toInt();
     flyableNodeData->longitude =  jsonObject.value("Longitude").toDouble();
@@ -46,34 +40,46 @@ void ServiceManager::flyableNodeData(std::string jsonData)
         emit flyableNodeDataReceived(flyableNodeData);
 }
 
-void ServiceManager::statusNodeData(std::string jsonData)
+void ServiceManager::statusNodeData(QJsonObject jsonObject)
 {
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(QString::fromStdString(jsonData).toUtf8());
-    QJsonObject jsonObject = jsonDoc.object();
+    StatusNodeData *statusNodeData = new StatusNodeData;
 
-//    NodeData* statusNodeData = new NodeData();
-//    statusNodeData->id = jsonObject.value("Id").toInt();
-//    statusNodeData->longitude =  jsonObject.value("Longitude").toDouble();
-//    statusNodeData->latitude = jsonObject.value("Latitude").toDouble();
-//    statusNodeData->altitude = jsonObject.value("Altitude").toDouble();
-//    statusNodeData->name = jsonObject.value("Name").toString().toStdString();
-//    statusNodeData->speed = jsonObject.value("Speed").toInt();
-//    int id = jsonObject.value("LayerId").toInt();
-    StatusNodeData *statusNode;
-    statusNode->id = jsonObject.value("Id").toInt();
-    statusNode->longitude =  jsonObject.value("Longitude").toDouble();
-    statusNode->latitude = jsonObject.value("Latitude").toDouble();
-    statusNode->altitude = jsonObject.value("Altitude").toDouble();
-    statusNode->name = jsonObject.value("Name").toString().toStdString();
-    statusNode->data.push_back(NodeFieldData{"speed", "main", jsonObject.value("Speed").toString()});
-    statusNode->data.push_back(NodeFieldData{"Id", "main", jsonObject.value("Id").toString()});
-//    if(mParenticLayerMap.contains(id))
-//        statusNodeData->layers.push_back(mParenticLayerMap[id]);
-//    else
-//        qDebug()<<"Can not found layer: "<<id;
+    statusNodeData->id = jsonObject.value("Id").toInt();
+    statusNodeData->name = jsonObject.value("Name").toString().toStdString();
+    statusNodeData->longitude =  jsonObject.value("Longitude").toDouble();
+    statusNodeData->latitude = jsonObject.value("Latitude").toDouble();
+    statusNodeData->altitude = jsonObject.value("Altitude").toDouble();
+    int layerId = jsonObject.value("LayerId").toInt();
+    if(mParenticLayerMap.contains(layerId))
+        statusNodeData->layer = mParenticLayerMap[layerId];
+    else
+        qDebug()<<"Can not found layer: "<<layerId;
 
-//    if(statusNodeData->layers.size() > 0)
-//        emit statusNodeDataReceived(statusNodeData);
+    for(auto& key:jsonObject.keys())
+        statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key)});
+
+    if(statusNodeData->layer)
+        emit statusNodeDataReceived(statusNodeData);
+}
+
+void ServiceManager::messageData(QString jsonData)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(jsonData.toUtf8());
+    QJsonObject obj;
+    if (!doc.isNull()) {
+        if (doc.isObject()){
+            obj = doc.object();
+            QString type = obj.value("Type").toString();
+            if      (type == "Layer")
+                layersData(obj.value("Data").toObject());
+            else if (type == "Flyable")
+                flyableNodeData(obj.value("Data").toObject());
+            else if (type == "Status")
+                statusNodeData(obj.value("Data").toObject());
+            else
+                qDebug() << "type of data is unknown";
+        }
+    }
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent)

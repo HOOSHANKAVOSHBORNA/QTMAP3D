@@ -15,14 +15,9 @@ public:
 
 private slots:
     void clientConnected();
-    void flyableQueueDeclared();
-    void flyableMessageReceived();
 
-    void layerQueueDeclared();
-    void layerMessageReceived();
-
-    void statusQueueDeclared();
-    void statusMessageReceived();
+    void dataQueueDeclared();
+    void dataMessageReceived();
 signals:
 //    void ready();
 private:

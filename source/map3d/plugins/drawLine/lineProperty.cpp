@@ -20,6 +20,7 @@ LineProperty::LineProperty(QQuickItem *parent):
     setShowLenStatus(true);
     setAltitudeStatus(true);
     setHeightStatus(true);
+    setHeight(0);
 }
 
 
