@@ -13,7 +13,6 @@ Rectangle {
     property real latitude : 0.0
     property real altitude : 0.0
 
-    property bool flag:false
     property real coordinate1 : 0.0
     property real coordinate2 : 0.0
     property real coordinate3 : 0.0
@@ -100,7 +99,7 @@ Rectangle {
 
 
 
-// Altitude ------------------------------------
+    // Altitude ------------------------------------
     RowLayout{
         id:theRowLayout
         anchors.left: messegeLogoItem.right
@@ -151,7 +150,7 @@ Rectangle {
             radius:10
         }
 
-// Space  ----------------------------------
+        // Space  ----------------------------------
         Rectangle{
             Layout.leftMargin: -5 *Style.monitorRatio
             width:50/Style.monitorRatio
@@ -204,7 +203,7 @@ Rectangle {
             radius:10
         }
 
-// Long, Lat   Cordinate  -------------------------------
+        // Long, Lat   Cordinate  -------------------------------
         Repeater {
             model: [coordinate3, coordinate2, coordinate1]
 
@@ -230,7 +229,7 @@ Rectangle {
         ComboBox {
             id: control
             model: ["Long, Lat", "Cordinate"]
-Layout.alignment: Qt.AlignCenter
+            Layout.alignment: Qt.AlignCenter
             delegate: ItemDelegate {
                 id:itemDelegate
                 width: control.width
@@ -241,13 +240,11 @@ Layout.alignment: Qt.AlignCenter
 
                 contentItem: Text {
                     text: control.textRole
-                        ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole])
-                        : modelData
+                          ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole])
+                          : modelData
                     color: Style.foregroundColor
                     font.family: Style.fontFamily
                     font.pixelSize: 14/Style.monitorRatio
-//                    elide: Text.ElideRight
-//                    verticalAlignment: Text.AlignVCenter
                 }
                 highlighted: control.highlightedIndex === index
             }
@@ -284,7 +281,6 @@ Layout.alignment: Qt.AlignCenter
                 font.family: Style.fontFamily
                 font.pixelSize: 14/Style.monitorRatio
                 color:Style.foregroundColor
-//                color: control.pressed ? "#17a81a" : "#21be2b"
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
             }
@@ -292,9 +288,7 @@ Layout.alignment: Qt.AlignCenter
             background: Rectangle {
                 implicitWidth: 102/Style.monitorRatio
                 implicitHeight:20/Style.monitorRatio
-color: Style.backgroundColor
-
-//                border.width: control.visualFocus ? 2 : 1
+                color: Style.backgroundColor
                 radius: 2
             }
 
@@ -314,31 +308,12 @@ color: Style.backgroundColor
                 }
 
                 background: Rectangle {
-                   color:"transparent"
+                    color:"transparent"
                     radius: 2
                 }
             }
         }
 
-//        ComboBox{
-//            id:comboBox
-//            Layout.alignment: Qt.AlignVCenter
-//            model: ["Long, Lat", "Cordinate"]
-//            contentItem: Text {
-
-//                text: comboBox.displayText
-//                font.family: Style.fontFamily
-//                font.pixelSize: 14/Style.monitorRatio
-//                color:Style.foregroundColor
-//            }
-
-//            background:Rectangle{
-//                color: "transparent"
-//                implicitWidth: 102/Style.monitorRatio
-//                implicitHeight:20/Style.monitorRatio
-//            }
-
-//        }
         Rectangle{
             id:sepratorRectangle
             Layout.alignment: Qt.AlignVCenter
@@ -352,7 +327,7 @@ color: Style.backgroundColor
             radius:10
 
         }
-// -  messageContainer    -- -- -----------------
+        // -  messageContainer    -- -- -----------------
 
     }
     Rectangle{
@@ -505,10 +480,10 @@ color: Style.backgroundColor
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: boldSepratorLine.bottom
             ButtonGroup {
-                    id: childGroup
-                    exclusive: false
-                    checkState: subjectCheckBox.checkState
-                }
+                id: childGroup
+                exclusive: false
+                checkState: subjectCheckBox.checkState
+            }
             CheckBox {
                 id: subjectCheckBox
                 topPadding: 0
@@ -527,18 +502,15 @@ color: Style.backgroundColor
 
                 nextCheckState: function() {
 
-                        if (checkState === Qt.Checked){
-                            root.model.selectAllMessages(false)
-                            return Qt.Unchecked
-                        }else{
-                            root.model.selectAllMessages(true)
-                            return Qt.Checked
-                        }
-
+                    if (checkState === Qt.Checked){
+                        root.model.selectAllMessages(false)
+                        return Qt.Unchecked
+                    }else{
+                        root.model.selectAllMessages(true)
+                        return Qt.Checked
                     }
-                onCheckStateChanged:{
-                     print("onCheckStateChanged")
                 }
+
 
                 indicator: Rectangle {
                     implicitWidth: 20/Style.monitorRatio
@@ -554,8 +526,8 @@ color: Style.backgroundColor
                         anchors.centerIn: parent
                         implicitWidth: 17/Style.monitorRatio
                         implicitHeight: 17/Style.monitorRatio
-                        x: 3
-                        y: 3
+                        x: 4/Style.monitorRatio
+                        y: 4/Style.monitorRatio
                         radius: 4
                         color: Style.foregroundColor
                         visible: subjectCheckBox.checked
@@ -593,15 +565,14 @@ color: Style.backgroundColor
                 color: Style.foregroundColor
                 font.family:Style.fontFamily
                 font.pixelSize: root.massageFontSize
-
             }
+
             Image {
                 width: 19/Style.monitorRatio; height: 19/Style.monitorRatio
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: dateTime.right
                 fillMode: Image.PreserveAspectFit
                 source: "qrc:/Resources/down.png"
-
             }
 
             Rectangle{
@@ -629,24 +600,23 @@ color: Style.backgroundColor
                     model: root.model
                     delegate:
                         Item {
-Rectangle{
-    radius: height/2
-    height: 8
-    width: 8
-    color: "green"
-    x:30/Style.monitorRatio + delegateSubject.implicitWidth
-//    anchors.right: delegateSubject.right
-    anchors.verticalCenter: parent.verticalCenter
-    anchors.rightMargin: 10
-    visible: model.isnewMessage
-}
+                        Rectangle{
+                            radius: height/2
+                            height: 8
+                            width: 8
+                            color: "green"
+                            x:30/Style.monitorRatio + delegateSubject.implicitWidth
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.rightMargin: 10
+                            visible: model.isnewMessage
+                        }
                         width: listView.width
                         height: 45/Style.monitorRatio
                         MouseArea{
                             anchors.fill: parent
                             hoverEnabled: true
                             onEntered: root.model.isNewMessage(root.model.index(index, 0))
-}
+                        }
                         CheckBox {
                             id:delegateCheckBox
                             topPadding: 0
@@ -654,6 +624,9 @@ Rectangle{
                             leftPadding: 0
                             anchors.left: parent.left
                             anchors.verticalCenter: parent.verticalCenter
+                            ButtonGroup.group: childGroup
+                            checkState: model.textChecked ? Qt.Checked: Qt.Unchecked
+
                             background: Rectangle{
                                 height: 20/Style.monitorRatio
                                 width:20/Style.monitorRatio
@@ -661,21 +634,17 @@ Rectangle{
                                 anchors.left: parent.left
                                 color:"transparent"
                             }
-                            ButtonGroup.group: childGroup
-                            checkState: model.textChecked ? Qt.Checked: Qt.Unchecked
+
                             nextCheckState: function() {
-                                print("nextCheckState")
-
-                                    if (checkState === Qt.Checked){
-                                        root.model.toggleCheck(root.model.index(index, 0), false)
-                                        return Qt.Unchecked
-                                    }
-                                    else{
-                                        root.model.toggleCheck(root.model.index(index, 0), true)
-                                        return Qt.Checked
-                                    }
-
+                                if (checkState === Qt.Checked){
+                                    root.model.toggleCheck(root.model.index(index, 0), false)
+                                    return Qt.Unchecked
                                 }
+                                else{
+                                    root.model.toggleCheck(root.model.index(index, 0), true)
+                                    return Qt.Checked
+                                }
+                            }
 
                             indicator: Rectangle {
                                 implicitWidth: 20/Style.monitorRatio
@@ -691,8 +660,8 @@ Rectangle{
                                     anchors.centerIn: parent
                                     implicitWidth: 17/Style.monitorRatio
                                     implicitHeight: 17/Style.monitorRatio
-                                    x: 3
-                                    y: 3
+                                    x: 4/Style.monitorRatio
+                                    y: 4/Style.monitorRatio
                                     radius: 4
                                     color: Style.foregroundColor
                                     visible: delegateCheckBox.checked
@@ -705,7 +674,7 @@ Rectangle{
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: delegateCheckBox.right
                             text: messageText
-                            color: Style.foregroundColor
+                            color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily
                             font.pixelSize:  16/ Style.monitorRatio
                             selectByMouse: false
@@ -725,36 +694,30 @@ Rectangle{
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: delegateSubject.right
                             text: dateText
-                            color: Style.foregroundColor
+                            color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily
                             font.pixelSize: root.massageFontSize
-
                         }
+
                         Text {
                             id: delegatehourTime
                             width:62/Style.monitorRatio
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: delegatedateTime.right
-
                             text: timeText
-                            color: Style.foregroundColor
+                            color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily
                             font.pixelSize: root.massageFontSize
                             font.weight: Font.Light
-
                         }
                     }
                 }
             }
         }
     }
-    Label {
-        id: hiddenn
-        text: "-1,254.000 "
-        visible: false
-    }
+
     Rectangle{
-id:margint
+        id:margint
         anchors.right:  parent.left
         width: 80/Style.monitorRatio
         height: 22/Style.monitorRatio

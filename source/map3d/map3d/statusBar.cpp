@@ -48,16 +48,7 @@ void StatusBar::removeMessage()
 
 }
 
-void StatusBar::selectAllMessages(bool check)
-{
-    for (int i = 0; i < mMessages.size(); i++) {
-        mMessages[i]->isCheck = check;
-        QList<int> roles;
-        roles.append(textChecked);
-        emit dataChanged(QAbstractItemModel::createIndex(i, 0), QAbstractItemModel::createIndex(i, 0), roles);
-    }
 
-}
 
 QHash<int, QByteArray> StatusBar::roleNames() const
 {
@@ -164,7 +155,7 @@ void StatusBarSearchModel::selectAllMessages(bool check)
         auto sourceIndex = mapToSource(filterIndex);
         model->toggleCheck(sourceIndex, check);
     }
-//    dynamic_cast<StatusBar*>(sourceModel())->selectAllMessages(check);
+
 }
 
 void StatusBarSearchModel::isNewMessage(const QModelIndex &index)
@@ -174,6 +165,7 @@ void StatusBarSearchModel::isNewMessage(const QModelIndex &index)
 
 void StatusBarSearchModel::setFilterString(const QString &filterString)
 {
+    selectAllMessages(false);
     mFilterString = filterString;
     invalidateFilter();
 }
