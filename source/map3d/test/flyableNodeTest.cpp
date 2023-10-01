@@ -94,11 +94,11 @@ void FlyableNodeTest::createFlyableInfo()
     jsonDocStatus.setObject(jsonObjectStatus);
     flaybleData.statusDoc = jsonDocStatus;
 
-    //--route node------------------------------------------------
+    //--Line node------------------------------------------------
     QJsonDocument jsonDocLine;
     QJsonObject jsonObjectLine;
 
-    jsonObjectLine.insert("Type", "Route");
+    jsonObjectLine.insert("Type", "Line");
 
     QJsonObject jsonObjectLineData;
     jsonObjectLineData.insert("Name", name);
@@ -183,25 +183,26 @@ void FlyableNodeTest::updateFlyableInfo()
         jsonDocStatus.setObject(jsonObjectStatus);
         flaybleData.statusDoc = jsonDocStatus;
 
-        //--route node------------------------------------------------
+        //--Line node------------------------------------------------
         QJsonDocument jsonDocLine;
         QJsonObject jsonObjectLine;
 
-        jsonObjectLine.insert("Type", "Route");
+        jsonObjectLine.insert("Type", "Line");
 
         QJsonObject jsonObjectLineData;
         jsonObjectLineData.insert("Name", name);
         jsonObjectLineData.insert("Id", id);
 
-        QJsonArray points = dataObject.value("Points").toArray();
+        QJsonArray points = flaybleData.lineDoc.object().value("Data").toObject().value("Points").toArray();
         QJsonObject point;
         point.insert("Longitude", longitude);
         point.insert("Latitude", latitude);
         point.insert("Altitude", altitude);
         points.push_back(point);
-
+        if (points.size() > 100)
+            points.removeFirst();
         jsonObjectLineData.insert("Points", points);
-        jsonObjectLineData.insert("LayerId", 106);
+        jsonObjectLineData.insert("LayerId", 105);
 
         jsonObjectLine.insert("Data", jsonObjectLineData);
         jsonDocLine.setObject(jsonObjectLine);
