@@ -39,6 +39,7 @@ private slots:
     void onRulerItemCheck(bool check);
     void onHeightItemCheck(bool check);
     void onSlopeItemCheck(bool check);
+    void addUpdateLineNode(LineNodeData *lineNodeData);
 private:
     void onItemChecked(Type type, bool check);
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
@@ -54,6 +55,7 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mRulerLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mHeightLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mSlopeLayer;
+    QMap<int, osg::ref_ptr<LineNode>> mLineNodeMap;
     static int mCount;
 };
 

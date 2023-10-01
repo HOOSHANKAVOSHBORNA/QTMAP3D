@@ -74,7 +74,7 @@ void ServiceManager::messageData(QString jsonData)
                 flyableNodeData(obj.value("Data").toObject());
             else if (type == "Status")
                 statusNodeData(obj.value("Data").toObject());
-            else if (type == "Route")
+            else if (type == "Line")
                 polylineData(obj.value("Data").toObject());
             else if(type == "Node")
                 nodeData(obj.value("Data").toObject());
@@ -93,14 +93,16 @@ void ServiceManager::polylineData(QJsonObject polyline)
         point.setX(i.toObject().value("Longitude").toDouble());
         point.setY(i.toObject().value("Latitude").toDouble());
         point.setZ(i.toObject().value("Altitude").toDouble());
+        lineNodeData->points.push_back(point);
     }
     int layerId = polyline.value("LayerId").toInt();
     auto layer = findParenticLayer(layerId);
     if (layer){
         lineNodeData->layer = layer;
+        lineNodeData->name = polyline.value("name").toString().toStdString();
+        lineNodeData->id = polyline.value("Id").toInt();
         emit lineNodeDataReceived(lineNodeData);
     }
-
 }
 
 void ServiceManager::nodeData(QJsonObject jsonObject)
