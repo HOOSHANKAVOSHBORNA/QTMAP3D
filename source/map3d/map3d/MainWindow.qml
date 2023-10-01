@@ -31,10 +31,6 @@ CMainWindow {
         leftContainer.model.append({item:item, name:name})
     }
 
-    function addToRightContainer(item, name) {
-        rightContainer.model.append({item:item, name:name})
-    }
-
     function removeFromLeftContainer(item) {
         var indx = -1
         for (var i = 0; i < leftContainer.model.count; ++i){
@@ -45,18 +41,6 @@ CMainWindow {
         }
         if (indx > -1)
             leftContainer.model.remove(indx)
-    }
-
-    function removeFromRightContainer(item) {
-        var indx = -1
-        for (var i = 0; i < rightContainer.model.count; ++i){
-            if (rightContainer.model.get(i).item === item){
-                indx = i
-                break
-            }
-        }
-        if (indx > -1)
-            rightContainer.model.remove(indx)
     }
 
     Rectangle{
@@ -193,13 +177,14 @@ CMainWindow {
                             if (checked && mainWindow.layersModel ) {
                                 var layersWidget = Qt.createComponent("LayersWidget.qml");
                                 if (layersWidget.status === Component.Ready) {
-                                    layerItem = layersWidget.createObject(mainWindow, {});
+                                    layerItem = layersWidget.createObject(null, {});
                                     layerItem.layersModell = mainWindow.layersModel
-                                    addToRightContainer(layerItem, "Layers")
+                                    mainWindow.addToLeftContainer(layerItem, "Layers")
+                                } else {
+                                    print("can not load Layer Widget")
                                 }
-                            }
-                            else {
-                                removeFromRightContainer(layerItem)
+                            } else {
+                                removeFromLeftContainer(layerItem)
                             }
                         }
                     }
@@ -240,50 +225,10 @@ CMainWindow {
             }
         }
     }
-    SplitView {
+
+    StackLayout {
+        id: centerCenterContainer
         anchors.fill: parent
-        orientation: Qt.Horizontal
-        handle: Rectangle {
-            MouseArea {
-                id: test
-                anchors.fill: parent
-                hoverEnabled: true
-
-                onPressed: function(mouse) {
-                    mouse.accepted = false
-                }
-                propagateComposedEvents: true
-                cursorShape: Qt.SizeHorCursor
-
-            }
-            implicitWidth: 3
-            height: parent.height
-            color: test.containsMouse ? Style.hoverColor : "transparent"
-        }
-
-
-
-        SplitView {
-            SplitView.fillHeight: true
-            SplitView.fillWidth: true
-            orientation: Qt.Vertical
-            handle: Item {
-
-            }
-
-            StackLayout {
-                id: centerCenterContainer
-                SplitView.fillHeight: true
-                SplitView.fillWidth: true
-            }
-        }
-        SideContainer {
-            id: rightContainer
-            SplitView.preferredWidth: visibleCount > 0 ?  implicitWidth : 0
-            SplitView.maximumWidth: visibleCount > 0 ?  parent.width/3.5 : 0
-        }
-
-
     }
 
     ContextmenuWidget {
