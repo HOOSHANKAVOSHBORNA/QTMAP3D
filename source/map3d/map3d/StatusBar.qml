@@ -197,6 +197,7 @@ Rectangle {
         Rectangle{
             id:seprator2
             Layout.alignment: Qt.AlignCenter
+            Layout.leftMargin: 28
             width: 2/Style.monitorRatio
             height: 16/Style.monitorRatio
             color:Style.disableColor
@@ -545,7 +546,7 @@ Rectangle {
                 color: Style.foregroundColor
                 font.family:Style.fontFamily
                 font.pixelSize:  16/ Style.monitorRatio
-                selectByMouse: true
+                selectByMouse: false
                 selectedTextColor: Style.foregroundColor
                 selectionColor: Style.selectColor
                 placeholderTextColor: Style.disableColor
