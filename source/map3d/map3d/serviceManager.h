@@ -78,7 +78,9 @@ signals:
     void flyableNodeDataReceived(NodeData *modelNodeData);
     void statusNodeDataReceived(StatusNodeData *statusNodeData);
     void lineNodeDataReceived(LineNodeData *lineNodeData);
+    void nodeDataReceived(NodeData *nodeData);
 private:
+    void nodeData(QJsonObject jsonObject);
     void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
     ParenticAnnotationLayer* findParenticLayer(int id);
 private:

@@ -37,6 +37,7 @@ bool Model::setup()
 
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, this, &Model::addUpdateFlyableNode);
+    connect(serviceManager(), &ServiceManager::nodeDataReceived, this, &Model::addUpdateNode);
     connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Model::addUpdateStatusNode);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
@@ -332,6 +333,29 @@ void Model::addUpdateFlyableNode(NodeData *nodeData)
     }
     flyableNode->setName(nodeData->name);
     flyableNode->setNodeData(nodeData);
+}
+
+void Model::addUpdateNode(NodeData *nodeData)
+{
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
+    osg::ref_ptr<SimpleModelNode> node;
+
+    if(!mNodeMap.contains(nodeData->id)){
+        node = new SimpleModelNode(mapItem(), nodeData->url3D, nodeData->url2D);
+        node->setPosition(geoPoint);
+        mNodeMap[nodeData->id] = node;
+    }
+    else{
+        node = mNodeMap[nodeData->id];
+        for(auto layer: node->nodeData()->layers){
+            layer->removeChild(node);
+        }
+    }
+    for(auto layer: nodeData->layers){
+        layer->addChild(node);
+    }
+    node->setName(nodeData->name);
+    node->setNodeData(nodeData);
 }
 
 void Model::addUpdateStatusNode(StatusNodeData *statusnNodeData)

@@ -76,6 +76,8 @@ void ServiceManager::messageData(QString jsonData)
                 statusNodeData(obj.value("Data").toObject());
             else if (type == "Route")
                 polylineData(obj.value("Data").toObject());
+            else if(type == "Node")
+                nodeData(obj.value("Data").toObject());
             else
                 qDebug() << "type of data is unknown";
         }
@@ -99,6 +101,27 @@ void ServiceManager::polylineData(QJsonObject polyline)
         emit lineNodeDataReceived(lineNodeData);
     }
 
+}
+
+void ServiceManager::nodeData(QJsonObject jsonObject)
+{
+    NodeData* nodeData = new NodeData();
+    nodeData->id = jsonObject.value("Id").toInt();
+    nodeData->longitude =  jsonObject.value("Longitude").toDouble();
+    nodeData->latitude = jsonObject.value("Latitude").toDouble();
+    nodeData->altitude = jsonObject.value("Altitude").toDouble();
+    nodeData->name = jsonObject.value("Name").toString().toStdString();
+    nodeData->url2D = jsonObject.value("Url2d").toString().toStdString();
+    nodeData->url3D = jsonObject.value("Url3d").toString().toStdString();
+    nodeData->color = jsonObject.value("Color").toString().toStdString();
+    for (auto i : jsonObject.value("LayersId").toArray()){
+        int id = i.toInt();
+        auto layer = findParenticLayer(id);
+        if(layer)
+            nodeData->layers.push_back(layer);
+    }
+    if(nodeData->layers.size() > 0)
+        emit nodeDataReceived(nodeData);
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent)

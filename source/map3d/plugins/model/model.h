@@ -68,6 +68,7 @@ public slots:
     void onModeChanged(bool is3DView);
 
     void addUpdateFlyableNode(NodeData *nodeData);
+    void addUpdateNode(NodeData *nodeData);
     void addUpdateStatusNode(StatusNodeData *statusnNodeData);
 
 protected:
@@ -99,6 +100,7 @@ private:
     bool mIs3D;
 private:
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
+    QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
     QMap<int, osg::ref_ptr<StatusNode>> mStatusNodeMap;
 
     QImage *mRenderImage{nullptr};
