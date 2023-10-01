@@ -31,10 +31,9 @@ void ServiceManager::flyableNodeData(QJsonObject jsonObject)
     flyableNodeData->speed = jsonObject.value("Speed").toInt();
     for (auto i : jsonObject.value("LayersId").toArray()){
         int id = i.toInt();
-        if(mParenticLayerMap.contains(id))
-            flyableNodeData->layers.push_back(mParenticLayerMap[id]);
-        else
-            qDebug()<<"Can not found layer: "<<id;
+        auto layer = findParenticLayer(id);
+        if(layer)
+            flyableNodeData->layers.push_back(layer);
     }
     if(flyableNodeData->layers.size() > 0)
         emit flyableNodeDataReceived(flyableNodeData);
@@ -50,10 +49,9 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
     statusNodeData->latitude = jsonObject.value("Latitude").toDouble();
     statusNodeData->altitude = jsonObject.value("Altitude").toDouble();
     int layerId = jsonObject.value("LayerId").toInt();
-    if(mParenticLayerMap.contains(layerId))
-        statusNodeData->layer = mParenticLayerMap[layerId];
-    else
-        qDebug()<<"Can not found layer: "<<layerId;
+    auto layer = findParenticLayer(layerId);
+    if(layer)
+        statusNodeData->layer = layer;
 
     for(auto& key:jsonObject.keys())
         statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key)});
@@ -76,10 +74,31 @@ void ServiceManager::messageData(QString jsonData)
                 flyableNodeData(obj.value("Data").toObject());
             else if (type == "Status")
                 statusNodeData(obj.value("Data").toObject());
+            else if (type == "Route")
+                polylineData(obj.value("Data").toObject());
             else
                 qDebug() << "type of data is unknown";
         }
     }
+}
+
+void ServiceManager::polylineData(QJsonObject polyline)
+{
+    QJsonArray points = polyline.value("Points").toArray();
+    LineNodeData *lineNodeData = new LineNodeData;
+    for (auto i : points) {
+        QVector3D point;
+        point.setX(i.toObject().value("Longitude").toDouble());
+        point.setY(i.toObject().value("Latitude").toDouble());
+        point.setZ(i.toObject().value("Altitude").toDouble());
+    }
+    int layerId = polyline.value("LayerId").toInt();
+    auto layer = findParenticLayer(layerId);
+    if (layer){
+        lineNodeData->layer = layer;
+        emit lineNodeDataReceived(lineNodeData);
+    }
+
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent)
@@ -113,5 +132,13 @@ void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnota
 //        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
         return;
     }
+}
+
+ParenticAnnotationLayer *ServiceManager::findParenticLayer(int id)
+{
+    if (mParenticLayerMap.contains(id))
+        return mParenticLayerMap[id];
+    qDebug()<<"Can not found layer: "<<id;
+    return nullptr;
 }
 

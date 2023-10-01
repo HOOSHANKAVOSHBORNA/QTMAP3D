@@ -20,9 +20,10 @@ FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
         createFlyableInfo();
         updateFlyableInfo();
         if(mFlyableQueueDeclared)
-            for(auto& flaybleData: mFlyableDataList){
-                mNetworkManager->sendData(flaybleData.flyableDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(flaybleData.statusDoc.toJson(QJsonDocument::Compact));
+            for(auto& flybleData: mFlyableDataList){
+                mNetworkManager->sendData(flybleData.flyableDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(flybleData.statusDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(flybleData.lineDoc.toJson(QJsonDocument::Compact));
             }
     });
     timerUpdateAircraft->start(1000);
@@ -93,6 +94,30 @@ void FlyableNodeTest::createFlyableInfo()
     jsonDocStatus.setObject(jsonObjectStatus);
     flaybleData.statusDoc = jsonDocStatus;
 
+    //--route node------------------------------------------------
+    QJsonDocument jsonDocLine;
+    QJsonObject jsonObjectLine;
+
+    jsonObjectLine.insert("Type", "Route");
+
+    QJsonObject jsonObjectLineData;
+    jsonObjectLineData.insert("Name", name);
+    jsonObjectLineData.insert("Id", id);
+
+    QJsonArray points;
+    QJsonObject point1;
+    point1.insert("Longitude", longitude);
+    point1.insert("Latitude", latitude);
+    point1.insert("Altitude", altitude);
+    points.push_back(point1);
+
+    jsonObjectLineData.insert("Points", points);
+    jsonObjectLineData.insert("LayerId", 106);
+
+    jsonObjectLine.insert("Data", jsonObjectLineData);
+    jsonDocLine.setObject(jsonObjectLine);
+    flaybleData.lineDoc = jsonDocLine;
+
     mFlyableDataList.append(flaybleData);
 }
 
@@ -157,5 +182,29 @@ void FlyableNodeTest::updateFlyableInfo()
         jsonObjectStatus.insert("Data", jsonObjectStatusData);
         jsonDocStatus.setObject(jsonObjectStatus);
         flaybleData.statusDoc = jsonDocStatus;
+
+        //--route node------------------------------------------------
+        QJsonDocument jsonDocLine;
+        QJsonObject jsonObjectLine;
+
+        jsonObjectLine.insert("Type", "Route");
+
+        QJsonObject jsonObjectLineData;
+        jsonObjectLineData.insert("Name", name);
+        jsonObjectLineData.insert("Id", id);
+
+        QJsonArray points = dataObject.value("Points").toArray();
+        QJsonObject point;
+        point.insert("Longitude", longitude);
+        point.insert("Latitude", latitude);
+        point.insert("Altitude", altitude);
+        points.push_back(point);
+
+        jsonObjectLineData.insert("Points", points);
+        jsonObjectLineData.insert("LayerId", 106);
+
+        jsonObjectLine.insert("Data", jsonObjectLineData);
+        jsonDocLine.setObject(jsonObjectLine);
+        flaybleData.lineDoc = jsonDocLine;
     }
 }

@@ -8,6 +8,7 @@ struct FlayableData
 {
     QJsonDocument flyableDoc;
     QJsonDocument statusDoc;
+    QJsonDocument lineDoc;
 };
 class FlyableNodeTest
 {
