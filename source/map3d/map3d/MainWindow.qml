@@ -21,6 +21,7 @@ CMainWindow {
     readonly property color     _colorHover : "#01AED6"
     readonly property color     _colorPresed : "#003569"
 
+
     property Component dockableItemComp: Qt.createComponent("DockableItem.qml");
 
     function addToCenterCenterContainer(item) {
@@ -44,13 +45,18 @@ CMainWindow {
     }
 
     Rectangle{
+        id:container
         height: parent.height - 20-2*y
         width: 80/Style.monitorRatio + leftContainer.implicitWidth
         radius: 10
         x: 3
         y: 3
         z: 1
-        color: Style.backgroundColor
+
+        gradient: Gradient{
+         GradientStop { position: 0.0; color: Style.topGradient }
+         GradientStop { position: 1.0; color: Style.bottomGradient }
+        }
         border.color: Style.borderColor
         border.width: 2
         RowLayout {

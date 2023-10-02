@@ -26,22 +26,21 @@ public:
         textChecked
     };
 
+//    Q_PROPERTY(QString mMessages READ getMMessage NOTIFY mMessageChanged)
+
     StatusBar(QObject *parent = nullptr);
     Q_INVOKABLE int rowCount(const QModelIndex & parent = QModelIndex()) const override;
     QVariant data(const QModelIndex & index,int role =Qt::DisplayRole)const override;
     QHash<int, QByteArray> roleNames() const override;
-
+//    QString getMMessage(const QModelIndex & index) const ;
     void addMessage(Message* m);
     void removeMessage();
-//    void selectAllMessages(bool check);
 
-
-
-
+signals:
+//    void mMessageChanged();
 
 private:
     std::vector<Message*> mMessages;
-
 
     // QAbstractItemModel interface
 public:
@@ -51,8 +50,7 @@ public:
 
 
 
-
-//----------------------------------------------
+//---------------------------------------------- PROXYMODEL
 
 
 
@@ -75,6 +73,8 @@ public:
     Q_INVOKABLE void toggleCheck(const QModelIndex &index, bool check);
     Q_INVOKABLE void selectAllMessages(bool check);
     Q_INVOKABLE void isNewMessage(const QModelIndex &index);
+//    Q_INVOKABLE QString getMMessage(const QModelIndex & index) const ;
+
 
 
 public slots:
