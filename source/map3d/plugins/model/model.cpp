@@ -365,8 +365,10 @@ void Model::addUpdateStatusNode(StatusNodeData *statusnNodeData)
     osg::ref_ptr<StatusNode> statusNode;
 
     std::list<StatusNode::Data> dataList;
-    for(auto& data: statusnNodeData->data)
+    for(auto& data: statusnNodeData->data) {
+        qDebug() << data.value;
         dataList.push_back(StatusNode::Data{data.name, data.value});
+    }
 
     if(!mStatusNodeMap.contains(statusnNodeData->id)){
         statusNode = new StatusNode(mapItem());
