@@ -2,6 +2,7 @@
 #include <QObject>
 #include "statusBar.h"
 
+
 StatusBar::StatusBar(QObject *parent) : QAbstractListModel(parent)
 {
 
@@ -62,13 +63,6 @@ QHash<int, QByteArray> StatusBar::roleNames() const
     return hash;
 }
 
-//QString StatusBar::getMMessage(const QModelIndex &index) const
-//{
-//    if(mMessages[index.row()]->isNew == true){
-//    return mMessages[index.row()]->text;
-//    }
-//    return "Message";
-//}
 
 void StatusBar::addMessage(Message *m)
 {

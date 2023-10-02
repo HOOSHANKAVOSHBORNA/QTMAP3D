@@ -60,15 +60,17 @@ void DrawCircle::addUpdateCircle(CircleData *circleData)
     Circle *circle;
     if(mCircleMap.contains(circleData->id)){
         circle = mCircleMap[circleData->id];
-        circleData->layer->addChild(circle);
     }
     else {
         circle = new Circle;
         mCircleMap[circleData->id] = circle;
+        circleData->layer->addChild(circle);
     }
     circle->setPosition(geoPoint);
     circle->setRadius(circleData->radius);
-    circle->setFillColor(osgEarth::Color(circleData->color));
+    QColor color(QString::fromStdString(circleData->color));
+    circle->setFillColor(Utility::qColor2osgEarthColor(color));
+//    circle->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 }
 
 void DrawCircle::initDraw(const osgEarth::GeoPoint &geoPos)

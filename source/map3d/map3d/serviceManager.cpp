@@ -83,6 +83,8 @@ void ServiceManager::messageData(QString jsonData)
                 nodeData(obj.value("Data").toObject());
             else if(type == "Circle")
                 circleData(obj.value("Data").toObject());
+            else if(type == "Polygon")
+                polygonData(obj.value("Data").toObject());
             else
                 qDebug() << "type of data is unknown";
         }
@@ -168,6 +170,29 @@ void ServiceManager::circleData(QJsonObject jsonObject)
     circleData->layer = layer;
     if (layer)
         emit circleDataReceived(circleData);
+}
+
+void ServiceManager::polygonData(QJsonObject jsonObject)
+{
+    PolygonData *polygonData = new PolygonData;
+    polygonData->id = jsonObject.value("Id").toInt();
+    polygonData->name = jsonObject.value("Name").toString().toStdString();
+    polygonData->color = jsonObject.value("Color").toString().toStdString();
+
+    QJsonArray points = jsonObject.value("Points").toArray();
+    for (auto i : points) {
+        QVector3D point;
+        point.setX(i.toObject().value("Longitude").toDouble());
+        point.setY(i.toObject().value("Latitude").toDouble());
+        point.setZ(i.toObject().value("Altitude").toDouble());
+        polygonData->points.push_back(point);
+    }
+    int layerId = jsonObject.value("LayerId").toInt();
+    auto layer = findParenticLayer(layerId);
+    polygonData->layer = layer;
+    if (layer){
+        emit polygonDataReceived(polygonData);
+    }
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent)
