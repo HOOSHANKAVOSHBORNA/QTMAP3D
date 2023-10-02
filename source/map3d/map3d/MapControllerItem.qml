@@ -174,13 +174,12 @@ MapController {
     StatusBar {
         id: statusBar
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.leftMargin: 0
+        anchors.leftMargin: 83/Style.monitorRatio
         anchors.rightMargin: 0
         width: parent.width
-        height: 20
+        height: 22/Style.monitorRatio
         latitude: map.mapMouseGeoLocation.x
         longitude: map.mapMouseGeoLocation.y
         altitude: map.mapMouseGeoLocation.z
@@ -189,6 +188,7 @@ MapController {
         coordinate3: map.mapMouseLocation.z
         message: "Ready"
         timer: -1
+        model: map.statusBar()
 
     }
 

@@ -130,7 +130,7 @@ Item{
                     contentItem: Text {
                         text: model.display
                         font.family: Style.fontFamily
-                        font.pointSize: Style.fontPointSize
+                        font.pointSize: Style.fontPointSize + 2
                         color: Style.foregroundColor
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter

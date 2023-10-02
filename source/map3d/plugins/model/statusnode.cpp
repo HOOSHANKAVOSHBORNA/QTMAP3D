@@ -1,7 +1,5 @@
 #include "statusnode.h"
-
 #include <QColor>
-#include <QPainter>
 #include <osg/AutoTransform>
 #include <osg/Depth>
 #include <osgEarthAnnotation/AnnotationUtils>
@@ -25,6 +23,7 @@ void StatusNode::setData(QString title, std::list<Data> *dataList)
 {
     mTitle = title;
     mDataList = dataList;
+
     createImageNode();
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mAutoTransform);
@@ -62,7 +61,6 @@ void StatusNode::createImageNode()
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
     QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
-
     QFont titleTextFont("SourceSansPro", 10, QFont::Bold);
     QPen  titleTextPen(QColor(204, 204, 51, 255));
 
@@ -100,6 +98,7 @@ void StatusNode::createImageNode()
                              Qt::AlignLeft|Qt::AlignVCenter,
                              data.name + ": ");
 
+
             painter.setOpacity(1);
             painter.drawText(2 + width/2, pos, width, cellHeight,
                              Qt::AlignLeft|Qt::AlignVCenter,
@@ -128,4 +127,14 @@ void StatusNode::createImageNode()
     imageNode->addDrawable(imgGeom);
     mAutoTransform->removeChildren(0, mAutoTransform->getNumChildren());
     mAutoTransform->addChild(imageNode);
+}
+
+StatusNodeData *StatusNode::nodeData() const
+{
+    return mNodeData;
+}
+
+void StatusNode::setNodeData(StatusNodeData *newNodeData)
+{
+    mNodeData = newNodeData;
 }

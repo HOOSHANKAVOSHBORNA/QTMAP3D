@@ -32,6 +32,7 @@ DrawLine::DrawLine(QWidget *parent)
 
 bool DrawLine::setup()
 {
+    connect(serviceManager(), &ServiceManager::lineNodeDataReceived, this, &DrawLine::addUpdateLineNode);
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     auto toolboxItemLine =  new ToolboxItem{POLYLINE, CATEGORY, "qrc:/resources/line.png", true};
@@ -88,6 +89,27 @@ void DrawLine::onSlopeItemCheck(bool check)
 {
     makeIconNode("../data/images/draw/slope.png");
     onItemChecked(Type::SLOPEE, check);
+}
+
+void DrawLine::addUpdateLineNode(LineNodeData *lineNodeData)
+{
+    LineNode *lineNode;
+    if (!mLineNodeMap.contains(lineNodeData->id)) {
+        lineNode = new LineNode(mapItem());
+        lineNodeData->layer->addChild(lineNode);
+        mLineNodeMap[lineNodeData->id] = lineNode;
+    }
+    else {
+        lineNode = mLineNodeMap[lineNodeData->id];
+        lineNode->clear();
+    }
+
+    for (auto point: lineNodeData->points){
+        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
+        lineNode->setName(lineNodeData->name);
+        lineNode->addPoint(geopos);
+        lineNode->setPointVisible(true);
+    }
 }
 
 void DrawLine::onItemChecked(Type type, bool check)

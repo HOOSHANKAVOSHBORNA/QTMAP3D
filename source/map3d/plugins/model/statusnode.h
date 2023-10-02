@@ -7,6 +7,8 @@
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgEarthAnnotation/ModelNode>
 #include "mapItem.h"
+#include "serviceManager.h"
+#include <QPainter>
 #include <osg/AutoTransform>
 #include <osg/ref_ptr>
 
@@ -23,6 +25,9 @@ public:
 
     StatusNode(MapItem* mapControler, QObject *parent = nullptr);
     void setData(QString title, std::list<Data> *dataList);
+    StatusNodeData *nodeData() const;
+    void setNodeData(StatusNodeData *newNodeData);
+
 private:
     void createImageNode();
 private:
@@ -34,6 +39,8 @@ private:
 //    osg::ref_ptr<osg::Image> mStatusImg;
 //    osg::ref_ptr<osg::Geode> mImgNode;
     MapItem *mMapItem;
+    QPainter *mPainter;
+    StatusNodeData *mNodeData;
 };
 
 #endif // STATUSNODE_H

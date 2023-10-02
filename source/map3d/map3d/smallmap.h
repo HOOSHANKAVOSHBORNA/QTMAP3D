@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <osg/Shape>
-#include <osgEarthAnnotation/RectangleNode>>
+#include <osgEarthAnnotation/RectangleNode>
 #include "mapItem.h"
 
 class SmallMap: public MapItem

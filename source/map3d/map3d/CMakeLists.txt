@@ -42,6 +42,8 @@ add_executable(Map3d
         smallmap.h smallmap.cpp
         qml.qrc
         resources.qrc
+        statusBar.cpp
+        statusBar.h
         locationManagerModel.h locationManagerModel.cpp)
 
 
