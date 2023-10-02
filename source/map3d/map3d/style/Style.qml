@@ -65,6 +65,9 @@ QtObject {
     readonly property color     disableColor: Qt.rgba(foregroundColor.r, foregroundColor.g, foregroundColor.b, 0.5)
     readonly property color     hoverColor:      "#01AED6"
     readonly property color     selectColor :    "#B6C0CA"
+
+    readonly property color     topGradient: "#c0DEE3E6"
+    readonly property color     bottomGradient:"#40DEE3E6"
     //--them black--------------------------------------------------------------------
 //    readonly property color     backgroundColor:        "#DEE3E6"
 //    readonly property color     forgroundColor:        "#DEE3E6"

@@ -103,6 +103,7 @@ Rectangle {
     RowLayout{
         id:theRowLayout
         anchors.left: messegeLogoItem.right
+
         height: 22/Style.monitorRatio
         layoutDirection: Qt.RightToLeft
         clip:true
@@ -126,10 +127,7 @@ Rectangle {
             id: altitudeText
             Layout.minimumWidth: 52/Style.monitorRatio
             Layout.preferredHeight: 20/Style.monitorRatio
-
-
             background: Rectangle {
-
                 color: "transparent"
             }
 
@@ -341,6 +339,12 @@ Rectangle {
         width: 670 / Style.monitorRatio
         height: 288/Style.monitorRatio * heightFactor
         color:Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.80)
+//        gradient: Gradient {
+//                GradientStop { position: 0.0; color: "#ffDEE3E6" }
+////                GradientStop { position: 0.33; color: "yellow" }
+//                GradientStop { position: 1.0; color: "#60DEE3E6" }
+//            }
+
         radius:10
         Item {
             id: heading

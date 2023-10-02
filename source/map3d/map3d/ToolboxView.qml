@@ -10,9 +10,7 @@ Item {
     readonly property color     _colorHover : Style.hoverColor
     readonly property color     _colorPresed : "#908000"
     readonly property color     _colorRec   : "#363739"
-//    readonly property color     sectionColor:  "#00587A"
-//    readonly property color     sectionColor:  "#2f528d"
-    readonly property color     sectionColor:  /*"#213f72"//0dc2df*/ Style.primaryColor
+    readonly property color     sectionColor: Style.primaryColor
     readonly property real      categorySize: 40
     readonly property real      itemSize: 40
 
@@ -20,32 +18,8 @@ Item {
     anchors.fill: parent
 
     Rectangle{
-        anchors.top: parent.top
-//        height: 0
-//        width: 300
         id: header
-//        radius: Style.radius
-//        color: Style._darkestGray
-//        Label {
-//            Text {
-//                id: headerType
-//                text: "Toolbox"
-//                color:"white"
-//                font.pointSize: 16
-//                anchors.centerIn: parent
-//            }
-//            id:headerTypeLbl
-//            width: parent.width/2
-//            anchors.verticalCenter: parent.verticalCenter
-//            anchors.horizontalCenter: parent.horizontalCenter
-
-//        }
-//        Rectangle {
-//            width: header.width
-//            height: 10
-//            anchors.bottom: header.bottom
-//            color: header.color
-//        }
+        anchors.top: parent.top
     }
     Rectangle {
         id: search
