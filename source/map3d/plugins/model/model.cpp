@@ -38,6 +38,7 @@ bool Model::setup()
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, this, &Model::addUpdateFlyableNode);
     connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Model::addUpdateStatusNode);
+    connect(serviceManager(), &ServiceManager::movableNodeDataReceived, this, &Model::addUpdateMovableNode);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -357,6 +358,30 @@ void Model::addUpdateStatusNode(StatusNodeData *statusnNodeData)
 
     statusNode->setName(statusnNodeData->name);
     statusNode->setNodeData(statusnNodeData);
+}
+
+void Model::addUpdateMovableNode(NodeData *nodeData)
+{
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
+    osg::ref_ptr<MoveableModelNode> movableNode;
+
+    if(!mMovableNodeMap.contains(nodeData->id)){
+        movableNode = new MoveableModelNode(mapItem(), nodeData->url3D, nodeData->url2D);
+        movableNode->setPosition(geoPoint);
+        mMovableNodeMap[nodeData->id] = movableNode;
+    }
+    else{
+        movableNode = mMovableNodeMap[nodeData->id];
+        for(auto layer: movableNode->nodeData()->layers){
+            layer->removeChild(movableNode);
+        }
+        movableNode->moveTo(geoPoint, nodeData->speed);
+    }
+    for(auto layer: nodeData->layers){
+        layer->addChild(movableNode);
+    }
+    movableNode->setName(nodeData->name);
+    movableNode->setNodeData(nodeData);
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){

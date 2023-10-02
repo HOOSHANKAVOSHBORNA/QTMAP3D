@@ -74,11 +74,65 @@ QJsonDocument LayerTest::createLayers()
     }
     flyable.insert("Children", flableChildren);
     layersData.insert("Flyable", flyable);
-    layers.insert("Data", layersData);
     //--moveable layer------------------------------------------------------
+    QJsonObject movable;
+    movable.insert("Id", 200);
+    movable.insert("ParentId", 0);
+    movable.insert("Text", "Movable");
+    movable.insert("Order", 1);
+    QJsonArray movableChildren;
+    {
+        QJsonObject movableNode;
+        movableNode.insert("Id", 201);
+        movableNode.insert("ParentId", 200);
+        movableNode.insert("Text", "Movable");
+        movableNode.insert("Order", 1);
+        QJsonArray movableNodeChildren;
+        {
+            QJsonObject unknown;
+            unknown.insert("Id", 202);
+            unknown.insert("ParentId", 201);
+            unknown.insert("Text", "Unknown");
+            unknown.insert("Order", 1);
+            movableNodeChildren.push_back(unknown);
 
+            QJsonObject speedUp200;
+            speedUp200.insert("Id", 203);
+            speedUp200.insert("ParentId", 201);
+            speedUp200.insert("Text", "SpeedUp200");
+            speedUp200.insert("Order", 2);
+            movableNodeChildren.push_back(speedUp200);
+
+            QJsonObject speedDown200;
+            speedDown200.insert("Id", 204);
+            speedDown200.insert("ParentId", 201);
+            speedDown200.insert("Text", "SpeedDown200");
+            speedDown200.insert("Order", 3);
+            movableNodeChildren.push_back(speedDown200);
+        }
+        movableNode.insert("Children", movableNodeChildren);
+        movableChildren.push_back(movableNode);
+
+        QJsonObject route;
+        route.insert("Id", 205);
+        route.insert("ParentId", 200);
+        route.insert("Text", "Route");
+        route.insert("Order", 2);
+        movableChildren.push_back(route);
+
+        QJsonObject status;
+        status.insert("Id", 206);
+        status.insert("ParentId", 200);
+        status.insert("Text", "Status");
+        status.insert("Order", 3);
+        movableChildren.push_back(status);
+    }
+    movable.insert("Children", movableChildren);
+    layersData.insert("Movable", movable);
     //--fixed layer---------------------------------------------------------
 
+
+    layers.insert("Data", layersData);
     QJsonDocument doc;
     doc.setObject(layers);
 //    std::ofstream myfile ("example.txt");

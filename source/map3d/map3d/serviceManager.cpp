@@ -76,6 +76,8 @@ void ServiceManager::messageData(QString jsonData)
                 statusNodeData(obj.value("Data").toObject());
             else if (type == "Line")
                 polylineData(obj.value("Data").toObject());
+            else if (type == "Movable")
+                movableNodeData(obj.value("Data").toObject());
             else
                 qDebug() << "type of data is unknown";
         }
@@ -101,6 +103,28 @@ void ServiceManager::polylineData(QJsonObject polyline)
         lineNodeData->id = polyline.value("Id").toInt();
         emit lineNodeDataReceived(lineNodeData);
     }
+}
+
+void ServiceManager::movableNodeData(QJsonObject jsonObject)
+{
+    NodeData* movableNodeData = new NodeData();
+    movableNodeData->id = jsonObject.value("Id").toInt();
+    movableNodeData->longitude =  jsonObject.value("Longitude").toDouble();
+    movableNodeData->latitude = jsonObject.value("Latitude").toDouble();
+    movableNodeData->altitude = jsonObject.value("Altitude").toDouble();
+    movableNodeData->name = jsonObject.value("Name").toString().toStdString();
+    movableNodeData->url2D = jsonObject.value("Url2d").toString().toStdString();
+    movableNodeData->url3D = jsonObject.value("Url3d").toString().toStdString();
+    movableNodeData->color = jsonObject.value("Color").toString().toStdString();
+    movableNodeData->speed = jsonObject.value("Speed").toInt();
+    for (auto i : jsonObject.value("LayersId").toArray()){
+        int id = i.toInt();
+        auto layer = findParenticLayer(id);
+        if(layer)
+            movableNodeData->layers.push_back(layer);
+    }
+    if(movableNodeData->layers.size() > 0)
+        emit movableNodeDataReceived(movableNodeData);
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent)

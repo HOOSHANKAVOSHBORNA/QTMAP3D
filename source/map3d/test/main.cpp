@@ -2,6 +2,7 @@
 #include "layerTest.h"
 #include "networkManager.h"
 #include "flyableNodeTest.h"
+#include "movableNodeTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +15,7 @@ int main(int argc, char *argv[])
 //    });
     LayerTest LayerTest(&networkManager);
     FlyableNodeTest flyableNodeTest(&networkManager);
+    MovableNodeTest movableNodeTest(&networkManager);
 
 
 

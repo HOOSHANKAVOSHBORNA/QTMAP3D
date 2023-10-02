@@ -119,7 +119,7 @@ MoveableModelNode::MoveableModelNode(MapItem *mapControler, const std::string &m
 
 void MoveableModelNode::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
 {
-    mMoveAnimationPathCallback->reset();
+//    mMoveAnimationPathCallback->reset();
     mMoveAnimationPathCallback->getAnimationPath()->clear();
     mMoveAnimationPathCallback->setPause(false);
     osg::Vec3d currentWPoint;
