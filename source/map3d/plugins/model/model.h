@@ -70,6 +70,7 @@ public slots:
     void addUpdateFlyableNode(NodeData *nodeData);
     void addUpdateNode(NodeData *nodeData);
     void addUpdateStatusNode(StatusNodeData *statusnNodeData);
+    void addUpdateMovableNode(NodeData *nodeData);
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
@@ -102,6 +103,8 @@ private:
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
     QMap<int, osg::ref_ptr<StatusNode>> mStatusNodeMap;
+    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
+
 
     QImage *mRenderImage{nullptr};
     static constexpr int LABEL_IMAGE_WIDTH = 90;

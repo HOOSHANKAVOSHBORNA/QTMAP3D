@@ -79,6 +79,7 @@ public:
     void statusNodeData(QJsonObject jsonObject);
     void messageData(QString jsonData);
     void polylineData(QJsonObject polyline);
+    void movableNodeData(QJsonObject jsonObject);
 
 //    void addPolygon(QJsonDocument *polygon);
 //    void addSphere(QJsonDocument *sphere);
@@ -89,6 +90,7 @@ signals:
     void flyableNodeDataReceived(NodeData *modelNodeData);
     void statusNodeDataReceived(StatusNodeData *statusNodeData);
     void lineNodeDataReceived(LineNodeData *lineNodeData);
+    void movableNodeDataReceived(NodeData *modelNodeData);
     void nodeDataReceived(NodeData *nodeData);
     void circleDataReceived(CircleData *circleData);
 private:
