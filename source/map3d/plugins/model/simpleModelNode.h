@@ -55,6 +55,9 @@ private:
     bool mIsAutoScale{true};
     bool mIsSelected{false};
     NodeData* mNodeData;
+private:
+    static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
+    static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;
 };
 
 #endif // SIMPLEMODELNODE_H
