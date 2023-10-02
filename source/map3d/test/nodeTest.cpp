@@ -19,6 +19,7 @@ NodeTest::NodeTest(NetworkManager *networkManager):
                 mNetworkManager->sendData(nodeData.nodeDoc.toJson(QJsonDocument::Compact));
                 mNetworkManager->sendData(nodeData.statusDoc.toJson(QJsonDocument::Compact));
                 mNetworkManager->sendData(nodeData.circleDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(nodeData.polygonDoc.toJson(QJsonDocument::Compact));
             }
         });
         timerUpdateAircraft->start(10000);
@@ -85,27 +86,73 @@ void NodeTest::createInfo()
 
     //--circle node------------------------------------------------
     double radius = 1000 + (QRandomGenerator::global()->generate() % (5000 - 1000));
-    QColor colorCircle("green");
+    QColor colorCircle("red");
+    colorCircle.setAlpha(100);
     QJsonDocument jsonDocCircle;
     QJsonObject jsonObjectCircle;
 
     jsonObjectCircle.insert("Type", "Circle");
 
     QJsonObject jsonObjectCircleData;
-    jsonObjectCircleData.insert("Name", name);
+    jsonObjectCircleData.insert("Name", name + " circle");
     jsonObjectCircleData.insert("Id", id);
 
     jsonObjectCircleData.insert("Longitude", longitude);
     jsonObjectCircleData.insert("Latitude", latitude);
     jsonObjectCircleData.insert("Altitude", altitude);
     jsonObjectCircleData.insert("Radius", radius);
-    jsonObjectCircleData.insert("Color", colorCircle.name());
+    jsonObjectCircleData.insert("Color", colorCircle.name(QColor::HexArgb));
 
     jsonObjectCircleData.insert("LayerId", 304);
 
     jsonObjectCircle.insert("Data", jsonObjectCircleData);
     jsonDocCircle.setObject(jsonObjectCircle);
     nodeData.circleDoc = jsonDocCircle;
+    //--polygon----------------------------------------------------
+    QColor colorPolygon("green");
+    colorPolygon.setAlpha(100);
+    QJsonDocument jsonDocPolygon;
+    QJsonObject jsonObjectPolygon;
+
+    jsonObjectPolygon.insert("Type", "Polygon");
+
+    QJsonObject jsonObjectPolygonData;
+    jsonObjectPolygonData.insert("Name", name + " polygon");
+    jsonObjectPolygonData.insert("Id", id);
+    jsonObjectPolygonData.insert("Color", colorPolygon.name(QColor::HexArgb));
+
+    QJsonArray points;
+    double step = 0.01;
+    QJsonObject point1;
+    point1.insert("Longitude", longitude - step);
+    point1.insert("Latitude", latitude - step);
+    point1.insert("Altitude", altitude);
+    points.push_back(point1);
+
+    QJsonObject point2;
+    point2.insert("Longitude", longitude + step);
+    point2.insert("Latitude", latitude - step);
+    point2.insert("Altitude", altitude);
+    points.push_back(point2);
+
+    QJsonObject point3;
+    point3.insert("Longitude", longitude + step);
+    point3.insert("Latitude", latitude + step);
+    point3.insert("Altitude", altitude);
+    points.push_back(point3);
+
+    QJsonObject point4;
+    point4.insert("Longitude", longitude - step);
+    point4.insert("Latitude", latitude + step);
+    point4.insert("Altitude", altitude);
+    points.push_back(point4);
+
+    jsonObjectPolygonData.insert("Points", points);
+    jsonObjectPolygonData.insert("LayerId", 306);
+
+    jsonObjectPolygon.insert("Data", jsonObjectPolygonData);
+    jsonDocPolygon.setObject(jsonObjectPolygon);
+    nodeData.polygonDoc = jsonDocPolygon;
 
     mNodeDataList.append(nodeData);
 }

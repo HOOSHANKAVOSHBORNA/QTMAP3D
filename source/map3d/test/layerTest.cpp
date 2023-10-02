@@ -162,12 +162,12 @@ QJsonDocument LayerTest::createLayers()
         nodeChild.insert("Children", nodeChildChildren);
         nodeChildren.push_back(nodeChild);
 
-        QJsonObject range;
-        range.insert("Id", 304);
-        range.insert("ParentId", 300);
-        range.insert("Text", "Range");
-        range.insert("Order", 2);
-        nodeChildren.push_back(range);
+        QJsonObject circle;
+        circle.insert("Id", 304);
+        circle.insert("ParentId", 300);
+        circle.insert("Text", "Circle");
+        circle.insert("Order", 2);
+        nodeChildren.push_back(circle);
 
         QJsonObject status;
         status.insert("Id", 305);
@@ -175,6 +175,13 @@ QJsonDocument LayerTest::createLayers()
         status.insert("Text", "Status");
         status.insert("Order", 3);
         nodeChildren.push_back(status);
+
+        QJsonObject polygon;
+        polygon.insert("Id", 306);
+        polygon.insert("ParentId", 300);
+        polygon.insert("Text", "Polygon");
+        polygon.insert("Order", 4);
+        nodeChildren.push_back(polygon);
     }
     node.insert("Children", nodeChildren);
     layersData.insert("Node", node);

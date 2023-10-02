@@ -20,6 +20,7 @@ public:
     bool setup() override;
 private slots:
     void onPolygonItemCheck (bool check);
+    void addUpdatePolygon(PolygonData *polygonData);
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void tempDrawing(const osgEarth::GeoPoint &geoPos) override;
@@ -31,6 +32,7 @@ private:
     PolygonProperty *mPolygonProperty{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mPolygonLayer;
     static int mCount;
+    QMap<int, osg::ref_ptr<Polygon>> mPolygonMap;
 //    QQuickItem *mItem;
 
 
