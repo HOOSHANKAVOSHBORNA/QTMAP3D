@@ -10,6 +10,7 @@ Item {
     readonly property color bg20: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.20)
     readonly property color bg60: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.60)
 
+    readonly property color fg20: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
     readonly property color fg75: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
     readonly property color     _colorHover : Style.hoverColor
     readonly property color     _colorPresed : "#908000"
@@ -36,7 +37,7 @@ Item {
         height: 30 / Style.monitorRatio
 
         radius: height / 2
-        color: bg20
+        color: fg20
         clip: true
 
         TextInput {
@@ -138,6 +139,18 @@ Item {
                                 color:bg60
                                 opacity: 0
                             }
+//                            MultiEffect {
+//                                source: opacityRectangle
+//                                enabled: true
+//                                anchors.fill: opacityRectangle
+//                                shadowColor: "black"
+//                                shadowEnabled: true
+//                                shadowBlur: 0.1
+//                                shadowHorizontalOffset: 1.5
+//                                shadowVerticalOffset:0.5
+//                                shadowOpacity:0.05
+//                                shadowScale: 0.98
+//                            }
                         }
 
 
@@ -161,29 +174,14 @@ Item {
                             id: label
                             x: padding + (treeDelegate.isTreeNode ? (treeDelegate.depth + 1) * treeDelegate.indent : 0)
                             clip: true
-                            font.pixelSize: 14
-                            font.bold: treeDelegate.hasChildren
+                            font.pixelSize: 17/Style.monitorRatio
                             anchors.verticalCenter: container.verticalCenter
+                            font.weight: Font.Medium
                             color: Style.foregroundColor
                             text: display
                         }
 
-                        Rectangle {
-                            width: 5
-                            height: parent.height
-                            color: Style._darkGray
-                            visible: !treeDelegate.hasChildren
-                            x: 0
-                        }
 
-                        Rectangle {
-                            width: 5
-                            id: rightBar
-                            height: parent.height
-                            color: Style._darkGray
-                            anchors.right: container.right
-                            visible: !treeDelegate.hasChildren
-                        }
 
                         IconImage {
                             id: img
@@ -196,14 +194,14 @@ Item {
                         }
                         IconImage {
                             id: img2
-                            source: "qrc:/Resources/arrow.png"
-                            width: 18
-                            height: 18
-
-                            anchors.rightMargin: 5
+                            source: "qrc:/Resources/down.png"
+                            width: 16/Style.monitorRatio
+                            height: 16/Style.monitorRatio
+opacity: 0.75
+                            anchors.rightMargin: 10/Style.monitorRatio
                             anchors.right: parent.right
                             visible: treeDelegate.hasChildren
-                            rotation: treeDelegate.expanded ? -90 : 180
+                            rotation: treeDelegate.expanded ? 180: 0
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
@@ -214,8 +212,12 @@ Item {
                         }
                     }
                 }
+
             }
+
+
         }
+
     }
     Rectangle {
         Rectangle {
