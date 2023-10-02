@@ -37,7 +37,9 @@ bool Model::setup()
 
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, this, &Model::addUpdateFlyableNode);
+    connect(serviceManager(), &ServiceManager::nodeDataReceived, this, &Model::addUpdateNode);
     connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Model::addUpdateStatusNode);
+    connect(serviceManager(), &ServiceManager::movableNodeDataReceived, this, &Model::addUpdateMovableNode);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -315,13 +317,13 @@ void Model::addUpdateFlyableNode(NodeData *nodeData)
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
     osg::ref_ptr<FlyableModelNode> flyableNode;
 
-    if(!mFlyableModelNodeMap.contains(nodeData->id)){
+    if(!mFlyableNodeMap.contains(nodeData->id)){
         flyableNode = new FlyableModelNode(mapItem(), nodeData->url3D, nodeData->url2D);
         flyableNode->setPosition(geoPoint);
-        mFlyableModelNodeMap[nodeData->id] = flyableNode;
+        mFlyableNodeMap[nodeData->id] = flyableNode;
     }
     else{
-        flyableNode = mFlyableModelNodeMap[nodeData->id];
+        flyableNode = mFlyableNodeMap[nodeData->id];
         for(auto layer: flyableNode->nodeData()->layers){
             layer->removeChild(flyableNode);
         }
@@ -334,43 +336,76 @@ void Model::addUpdateFlyableNode(NodeData *nodeData)
     flyableNode->setNodeData(nodeData);
 }
 
-void Model::addUpdateStatusNode(NodeData *nodeData)
+void Model::addUpdateNode(NodeData *nodeData)
 {
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
-    osg::ref_ptr<StatusNode> statusNode;
+    osg::ref_ptr<SimpleModelNode> node;
 
-    if(!mStatusModelNodeMap.contains(nodeData->id)){
-        statusNode = new StatusNode(mapItem());
-        {
-            StatusNode::Data data;
-            data.name = "name";
-            data.value = QString::fromStdString(nodeData->name);
-            StatusNode::Data data1;
-            data1.name = "speed";
-            data1.value = nodeData->speed;
-            StatusNode::Data data2;
-            data2.name = "id";
-            data2.value = nodeData->id;
-            std::list<StatusNode::Data> dataList;
-            dataList.push_back(data);
-            dataList.push_back(data1);
-            dataList.push_back(data2);
-            statusNode->setData(QString::fromStdString(nodeData->name), &dataList);
-        }
-        mStatusModelNodeMap[nodeData->id] = statusNode;
+    if(!mNodeMap.contains(nodeData->id)){
+        node = new SimpleModelNode(mapItem(), nodeData->url3D, nodeData->url2D);
+        node->setPosition(geoPoint);
+        mNodeMap[nodeData->id] = node;
     }
     else{
-        statusNode = mStatusModelNodeMap[nodeData->id];
-        for(auto layer: statusNode->nodeData()->layers){
-            layer->removeChild(statusNode);
+        node = mNodeMap[nodeData->id];
+        for(auto layer: node->nodeData()->layers){
+            layer->removeChild(node);
         }
     }
-    statusNode->setPosition(geoPoint);
     for(auto layer: nodeData->layers){
-        layer->addChild(statusNode);
+        layer->addChild(node);
     }
-    statusNode->setName(nodeData->name);
-    statusNode->setNodeData(nodeData);
+    node->setName(nodeData->name);
+    node->setNodeData(nodeData);
+}
+
+void Model::addUpdateStatusNode(StatusNodeData *statusnNodeData)
+{
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), statusnNodeData->longitude, statusnNodeData->latitude, statusnNodeData->altitude);
+    osg::ref_ptr<StatusNode> statusNode;
+
+    std::list<StatusNode::Data> dataList;
+    for(auto& data: statusnNodeData->data)
+        dataList.push_back(StatusNode::Data{data.name, data.value});
+
+    if(!mStatusNodeMap.contains(statusnNodeData->id)){
+        statusNode = new StatusNode(mapItem());
+        statusNode->setData(QString::fromStdString(statusnNodeData->name), &dataList);
+        mStatusNodeMap[statusnNodeData->id] = statusNode;
+    }
+    else{
+        statusNode = mStatusNodeMap[statusnNodeData->id];
+        statusNode->nodeData()->layer->removeChild(statusNode);
+    }
+    statusNode->setPosition(geoPoint);
+    statusnNodeData->layer->addChild(statusNode);
+
+    statusNode->setName(statusnNodeData->name);
+    statusNode->setNodeData(statusnNodeData);
+}
+
+void Model::addUpdateMovableNode(NodeData *nodeData)
+{
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
+    osg::ref_ptr<MoveableModelNode> movableNode;
+
+    if(!mMovableNodeMap.contains(nodeData->id)){
+        movableNode = new MoveableModelNode(mapItem(), nodeData->url3D, nodeData->url2D);
+        movableNode->setPosition(geoPoint);
+        mMovableNodeMap[nodeData->id] = movableNode;
+    }
+    else{
+        movableNode = mMovableNodeMap[nodeData->id];
+        for(auto layer: movableNode->nodeData()->layers){
+            layer->removeChild(movableNode);
+        }
+        movableNode->moveTo(geoPoint, nodeData->speed);
+    }
+    for(auto layer: nodeData->layers){
+        layer->addChild(movableNode);
+    }
+    movableNode->setName(nodeData->name);
+    movableNode->setNodeData(nodeData);
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){

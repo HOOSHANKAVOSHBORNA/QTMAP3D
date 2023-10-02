@@ -58,7 +58,6 @@ ColumnLayout{
                                  tabBar.currentIndex = index
                                  repeater.itemAt(index).visible = Qt.binding(function() { return docItem.state === "docked" })
                                  rootItem.visibleCount += 1
-
                                  docItem.stateChanged.connect(changeVisibleCount)
                              }
                              else
@@ -74,7 +73,6 @@ ColumnLayout{
     StackLayout {
         id: stackLayout
         Layout.fillHeight: true
-
         currentIndex: tabBar.currentIndex
     }
     //------------------------------------------

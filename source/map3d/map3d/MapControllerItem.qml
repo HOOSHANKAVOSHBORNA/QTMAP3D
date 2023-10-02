@@ -176,7 +176,7 @@ MapController {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.leftMargin: 83/Style.monitorRatio
+        anchors.leftMargin: 75/Style.monitorRatio
         anchors.rightMargin: 0
         width: parent.width
         height: 22/Style.monitorRatio

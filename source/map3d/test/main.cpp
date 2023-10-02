@@ -1,8 +1,9 @@
 #include <QCoreApplication>
 #include "layerTest.h"
 #include "networkManager.h"
-#include "modelNodeTest.h"
-#include "statusNodeTest.h"
+#include "flyableNodeTest.h"
+#include "movableNodeTest.h"
+#include "nodeTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,10 +15,9 @@ int main(int argc, char *argv[])
 //        networkManager.sendFlyableData("data");
 //    });
     LayerTest LayerTest(&networkManager);
-    StatusNodeTest statusNodeTest(&networkManager);
-    ModelNodeTest modelNodeTest(&networkManager, &statusNodeTest);
-
-
+    FlyableNodeTest flyableNodeTest(&networkManager);
+    MovableNodeTest movableNodeTest(&networkManager);
+    NodeTest nodeTest(&networkManager);
 
     return a.exec();
 }
