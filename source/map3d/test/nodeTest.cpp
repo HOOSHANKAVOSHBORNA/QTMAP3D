@@ -18,7 +18,7 @@ NodeTest::NodeTest(NetworkManager *networkManager):
             for(auto& nodeData: mNodeDataList){
                 mNetworkManager->sendData(nodeData.nodeDoc.toJson(QJsonDocument::Compact));
                 mNetworkManager->sendData(nodeData.statusDoc.toJson(QJsonDocument::Compact));
-//                mNetworkManager->sendData(nodeData.circleDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(nodeData.circleDoc.toJson(QJsonDocument::Compact));
             }
         });
         timerUpdateAircraft->start(10000);
@@ -53,7 +53,7 @@ void NodeTest::createInfo()
     jsonData.insert("Altitude", altitude);
 
     QJsonArray layer;
-    double rand = (QRandomGenerator::global()->generate() % (1));
+    double rand = (QRandomGenerator::global()->generate() % (2));
     if(rand < 1)
         layer.push_back(302);
     else
@@ -83,29 +83,29 @@ void NodeTest::createInfo()
     jsonDocStatus.setObject(jsonObjectStatus);
     nodeData.statusDoc = jsonDocStatus;
 
-//    //--route node------------------------------------------------
-//    QJsonDocument jsonDocLine;
-//    QJsonObject jsonObjectLine;
+    //--circle node------------------------------------------------
+    double radius = 1000 + (QRandomGenerator::global()->generate() % (5000 - 1000));
+    QColor colorCircle("green");
+    QJsonDocument jsonDocCircle;
+    QJsonObject jsonObjectCircle;
 
-//    jsonObjectLine.insert("Type", "Route");
+    jsonObjectCircle.insert("Type", "Circle");
 
-//    QJsonObject jsonObjectLineData;
-//    jsonObjectLineData.insert("Name", name);
-//    jsonObjectLineData.insert("Id", id);
+    QJsonObject jsonObjectCircleData;
+    jsonObjectCircleData.insert("Name", name);
+    jsonObjectCircleData.insert("Id", id);
 
-//    QJsonArray points;
-//    QJsonObject point1;
-//    point1.insert("Longitude", longitude);
-//    point1.insert("Latitude", latitude);
-//    point1.insert("Altitude", altitude);
-//    points.push_back(point1);
+    jsonObjectCircleData.insert("Longitude", longitude);
+    jsonObjectCircleData.insert("Latitude", latitude);
+    jsonObjectCircleData.insert("Altitude", altitude);
+    jsonObjectCircleData.insert("Radius", radius);
+    jsonObjectCircleData.insert("Color", colorCircle.name());
 
-//    jsonObjectLineData.insert("Points", points);
-//    jsonObjectLineData.insert("LayerId", 106);
+    jsonObjectCircleData.insert("LayerId", 304);
 
-//    jsonObjectLine.insert("Data", jsonObjectLineData);
-//    jsonDocLine.setObject(jsonObjectLine);
-//    flaybleData.lineDoc = jsonDocLine;
+    jsonObjectCircle.insert("Data", jsonObjectCircleData);
+    jsonDocCircle.setObject(jsonObjectCircle);
+    nodeData.circleDoc = jsonDocCircle;
 
     mNodeDataList.append(nodeData);
 }
