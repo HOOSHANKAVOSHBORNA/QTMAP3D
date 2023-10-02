@@ -53,8 +53,9 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
     if(layer)
         statusNodeData->layer = layer;
 
-    for(auto& key:jsonObject.keys())
-        statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key)});
+    for(auto& key:jsonObject.keys()){
+        statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key).toDouble()});
+    }
 
     if(statusNodeData->layer)
         emit statusNodeDataReceived(statusNodeData);

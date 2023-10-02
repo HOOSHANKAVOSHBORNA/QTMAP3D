@@ -26,7 +26,7 @@ Rectangle {
     readonly property color beautifulWhite: "#EDF3F9"
 
 
-    color: "silver"
+    color: "transparent"
 
     ColumnLayout {
         anchors.fill: parent

@@ -110,6 +110,7 @@ void DrawLine::addUpdateLineNode(LineNodeData *lineNodeData)
         lineNode->addPoint(geopos);
         lineNode->setPointVisible(true);
     }
+    lineNode->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 }
 
 void DrawLine::onItemChecked(Type type, bool check)

@@ -206,15 +206,15 @@ bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter
 
 osgEarth::Symbology::Style &Model::getDefaultStyle()
 {
-    static osgEarth::Symbology::Style _style;
+    static osgEarth::Symbology::Style style;
     static bool bFirst = true;
     if (bFirst) {
         static osg::Node *node = new osg::Node;
-        _style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
         bFirst = false;
     }
 
-    return _style;
+    return style;
 }
 
 void Model::onTreeItemCheck(bool check)
@@ -365,8 +365,10 @@ void Model::addUpdateStatusNode(StatusNodeData *statusnNodeData)
     osg::ref_ptr<StatusNode> statusNode;
 
     std::list<StatusNode::Data> dataList;
-    for(auto& data: statusnNodeData->data)
+    for(auto& data: statusnNodeData->data) {
+        qDebug() << data.value;
         dataList.push_back(StatusNode::Data{data.name, data.value});
+    }
 
     if(!mStatusNodeMap.contains(statusnNodeData->id)){
         statusNode = new StatusNode(mapItem());

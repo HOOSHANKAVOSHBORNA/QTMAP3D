@@ -25,14 +25,27 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     mSwitchNode = new osg::Switch;
     //--3D node----------------------------------------------------------
     m3DNode = new osg::LOD;
-    mSimpleNode = osgDB::readRefNodeFile(modelUrl);
+    QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
+    if (mNodes3D.contains(modelUrl)){
+        mSimpleNode = mNodes3D[modelUrl];
+    }
+    else {
+        mSimpleNode = osgDB::readRefNodeFile(modelUrl);
+        mNodes3D[modelUrl] = mSimpleNode ;
+    }
     m3DNode->addChild(mSimpleNode, 0, std::numeric_limits<float>::max());
     //--2D node---------------------------------------------------------
     m2DNode = new osg::Geode();
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
-    mImage = osgDB::readImageFile(iconUrl);
-
+    QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;
+    if (mImages2D.contains(iconUrl)){
+        mImage = mImages2D[iconUrl];
+    }
+    else {
+        mImage = osgDB::readImageFile(iconUrl);
+        mImages2D[iconUrl] = mImage ;
+    }
     double modelLenght = mSimpleNode->getBound().radius() * 2;
     double scaleRatio;
     if (3 < modelLenght && modelLenght < 7){
@@ -97,6 +110,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     //--------------------------------------------------------------------------
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
+    //rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
     setStyle(rootStyle);
 }
 
@@ -139,7 +153,6 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
 void SimpleModelNode::setModelColor(osgEarth::Color color)
 {
     //--recolor 3D Node----------------------------------------------------
-    osgEarth::Symbology::Style  style = getStyle();
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
     mSimpleNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
