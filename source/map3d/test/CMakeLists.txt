@@ -17,6 +17,7 @@ add_executable(test
   main.cpp
   networkManager.h networkManager.cpp
   flyableNodeTest.h flyableNodeTest.cpp
+  nodeTest.cpp nodeTest.h
   layerTest.cpp layerTest.h
   movableNodeTest.h movableNodeTest.cpp
 )

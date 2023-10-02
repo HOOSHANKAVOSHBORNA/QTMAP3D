@@ -22,10 +22,10 @@ public:
 private slots:
     void onCircleItemCheck (bool check);
 private:
+    void addUpdateCircle(CircleData *circleData);
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
     void cancelDraw()override;
-
 
 private:
     osg::ref_ptr<Circle> mCircle{nullptr};
@@ -34,6 +34,7 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mCircleLayer;
     static int mCount;
     QQuickItem *mItem;
+    QMap<int, osg::ref_ptr<Circle>> mCircleMap;
 
 
 };

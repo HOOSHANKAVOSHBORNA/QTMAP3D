@@ -17,6 +17,7 @@ DrawCircle::DrawCircle(QObject *parent): DrawShape(parent)
 
 bool DrawCircle::setup()
 {
+    connect(serviceManager(), &ServiceManager::circleDataReceived, this, &DrawCircle::addUpdateCircle);
     auto toolboxItem =  new ToolboxItem{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCircle::onCircleItemCheck);
     toolbox()->addItem(toolboxItem);
@@ -53,10 +54,22 @@ void DrawCircle::onCircleItemCheck(bool check)
     }
 }
 
-
-
-
-
+void DrawCircle::addUpdateCircle(CircleData *circleData)
+{
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), circleData->longitude, circleData->latitude, circleData->altitude);
+    Circle *circle;
+    if(mCircleMap.contains(circleData->id)){
+        circle = mCircleMap[circleData->id];
+        circleData->layer->addChild(circle);
+    }
+    else {
+        circle = new Circle;
+        mCircleMap[circleData->id] = circle;
+    }
+    circle->setPosition(geoPoint);
+    circle->setRadius(circleData->radius);
+    circle->setFillColor(osgEarth::Color(circleData->color));
+}
 
 void DrawCircle::initDraw(const osgEarth::GeoPoint &geoPos)
 {
