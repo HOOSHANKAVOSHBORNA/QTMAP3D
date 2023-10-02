@@ -8,13 +8,15 @@ Item {
     id: rootItem
     property var listModel
     readonly property color bg20: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.20)
+    readonly property color bg60: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.60)
+
     readonly property color fg75: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
     readonly property color     _colorHover : Style.hoverColor
     readonly property color     _colorPresed : "#908000"
     readonly property color     _colorRec   : "#363739"
     readonly property color     sectionColor: Style.primaryColor
     readonly property real      categorySize: 30/Style.monitorRatio
-    readonly property real      itemSize: 30/Style.monitorRatio
+    readonly property real      itemSize:30/Style.monitorRatio
 
     anchors.fill: parent
 
@@ -97,7 +99,7 @@ Item {
                     }
                     onSelectionChanged: function(sel, des){
                         reset()
-//                        img2.rotation : treeDelegate.hasChildren ? -90 : 180
+                        //                        img2.rotation : treeDelegate.hasChildren ? -90 : 180
                     }
                 }
                 delegate: Item {
@@ -114,7 +116,7 @@ Item {
                     required property int depth
                     required property bool selected
                     required property bool current
-//                    anchors.margins: 5
+                    //                    anchors.margins: 5
                     Rectangle{
                         id: container
                         width: parent.width  - treeDelegate.indent * ( 0.5 * treeDelegate.depth ) - treeDelegate.padding -3
@@ -123,20 +125,29 @@ Item {
                         clip: true
                         anchors.horizontalCenter: parent.horizontalCenter
 
-
                         Rectangle {
                             id: rect
-                            color: bg20
+                            color: treeDelegate.expanded? bg60:bg20
                             width:  parent.width
                             height: parent.height
-                            radius: Style.radius
-
+                            radius: height / 2
+                            Rectangle{
+                                id:opacityRectangle
+                                anchors.fill: parent
+                                radius: height / 2
+                                color:bg60
+                                opacity: 0
+                            }
                         }
+
+
                         MouseArea {
                             id: mouseArea
                             anchors.fill: parent
                             hoverEnabled: true
 
+                            onEntered: {opacityRectangle.opacity = 1}
+                            onExited:  {opacityRectangle.opacity = 0 }
                             onPressed: function(mouse) {
                                 mouse.accepted = false
 
@@ -153,10 +164,10 @@ Item {
                             font.pixelSize: 14
                             font.bold: treeDelegate.hasChildren
                             anchors.verticalCenter: container.verticalCenter
-                            color: checkedd ? Style._darkBlue : mouseArea.containsMouse ? Style._mainBlue : "#ffffff"
+                            color: Style.foregroundColor
                             text: display
-//                            color: Style.textColor
                         }
+
                         Rectangle {
                             width: 5
                             height: parent.height
@@ -171,24 +182,14 @@ Item {
                             height: parent.height
                             color: Style._darkGray
                             anchors.right: container.right
-//                            x: container.width
                             visible: !treeDelegate.hasChildren
                         }
-//                        Rectangle {
-//                            width: container.width
-//                            height: 5
-//                            color: Style._darkestBlue
-//                            x: 0
-//                            visible: treeDelegate.hasChildren && treeDelegate.expanded
-////                            anchors.topMargin: 3
-////                            anchors.bottom: container.bottom
-//                        }
 
                         IconImage {
                             id: img
                             source: imageSource ?? ""
-                            width: 32
-                            height: 32
+                            width: 24/Style.monitorRatio
+                            height: 24/Style.monitorRatio
                             x: treeDelegate.indent * (1 * treeDelegate.depth ) - (treeDelegate.depth) * treeDelegate.padding
                             anchors.verticalCenter: container.verticalCenter
                             color: checkedd ? Style._darkBlue : mouseArea.containsMouse ? _colorHover : "transparent"
@@ -200,12 +201,10 @@ Item {
                             height: 18
 
                             anchors.rightMargin: 5
-//                            anchors.top :parent.top
                             anchors.right: parent.right
                             visible: treeDelegate.hasChildren
                             rotation: treeDelegate.expanded ? -90 : 180
                             anchors.verticalCenter: parent.verticalCenter
-
                         }
                     }
 
