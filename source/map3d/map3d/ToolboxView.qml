@@ -9,6 +9,7 @@ Item {
     property var listModel
     readonly property color bg20: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.20)
     readonly property color bg60: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.60)
+    readonly property color bg70: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.70)
 
     readonly property color fg20: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
     readonly property color fg75: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
@@ -68,7 +69,7 @@ Item {
             source: "qrc:/Resources/search.png"
             width: 24/Style.monitorRatio
             height: 24/Style.monitorRatio
-x:10/Style.monitorRatio
+            x:10/Style.monitorRatio
             anchors.verticalCenter: parent.verticalCenter
             color: Style.foregroundColor
         }
@@ -99,6 +100,7 @@ x:10/Style.monitorRatio
                 anchors.topMargin: 20/Style.monitorRatio
                 clip: true
                 model: rootItem.listModel
+                rowSpacing: 5/Style.monitorRatio
                 signal toolboxItemClicked(string category, string name)
 
                 selectionModel: ItemSelectionModel {
@@ -112,6 +114,7 @@ x:10/Style.monitorRatio
                         //                        img2.rotation : treeDelegate.hasChildren ? -90 : 180
                     }
                 }
+
                 delegate: Item {
                     id: treeDelegate
 
@@ -129,48 +132,51 @@ x:10/Style.monitorRatio
                     //                    anchors.margins: 5
                     Rectangle{
                         id:backgroundrec
-//                        anchors.top: container.top
-//                        anchors.left: container.left
-                        width: rect.width
-                      height: 20
-//                        height: treeDelegate.hasChildren ? (rootItem.listModel ? (rootItem.listModel.childCount1(treeView.index(row,column)) +1) * rect.height: 0) :0
-                        radius: 12
+                        anchors.top: container.top
+                        anchors.left: container.left
+                        width: container.width
+                        height: treeDelegate.hasChildren ? (rootItem.listModel ? (rootItem.listModel.childCount(treeView.index(row,column)) +1) * (container.height+ treeView.rowSpacing): 0) :0
+                        radius: container.height/2
                         visible: treeDelegate.expanded
-                        color:"red"
-//                            opacity: 0.1
+                        color: Style.backgroundColor
+                        opacity: 0.15
                     }
                     Rectangle{
                         id: container
                         width: parent.width
                         height: parent.height
-                        color: "transparent"
+                        opacity: 30
+//                        color: Style.backgroundColor
+                        color: /*rootItem.listModel.childCount(treeView.index(row,column))? bg20:*/ "transparent"
+                        radius: height / 2
                         clip: true
                         anchors.horizontalCenter: parent.horizontalCenter
                         Rectangle {
-                            id: rect
-                            color: treeDelegate.expanded? bg60:bg20
+                            id: selectRect
+                            color: rootItem.listModel.childCount(treeView.index(row,column))? treeDelegate.expanded? bg60:bg20: checkedd? bg60:"transparent"
                             width:  parent.width
                             height: parent.height
                             radius: height / 2
+
                             Rectangle{
-                                id:opacityRectangle
+                                id:opacitySelectRec
                                 anchors.fill: parent
                                 radius: height / 2
                                 color:bg60
                                 opacity: 0
                             }
-//                            MultiEffect {
-//                                source: opacityRectangle
-//                                enabled: true
-//                                anchors.fill: opacityRectangle
-//                                shadowColor: "black"
-//                                shadowEnabled: true
-//                                shadowBlur: 0.1
-//                                shadowHorizontalOffset: 1.5
-//                                shadowVerticalOffset:0.5
-//                                shadowOpacity:0.05
-//                                shadowScale: 0.98
-//                            }
+                            //                            MultiEffect {
+                            //                                source: opacityRectangle
+                            //                                enabled: true
+                            //                                anchors.fill: opacityRectangle
+                            //                                shadowColor: "black"
+                            //                                shadowEnabled: true
+                            //                                shadowBlur: 0.1
+                            //                                shadowHorizontalOffset: 1.5
+                            //                                shadowVerticalOffset:0.5
+                            //                                shadowOpacity:0.05
+                            //                                shadowScale: 0.98
+                            //                            }
                         }
 
 
@@ -179,9 +185,10 @@ x:10/Style.monitorRatio
                             anchors.fill: parent
                             hoverEnabled: true
 
-                            onEntered: {opacityRectangle.opacity = 1
+                            onEntered: {
+                                opacitySelectRec.opacity =1
                             }
-                            onExited:  {opacityRectangle.opacity = 0 }
+                            onExited:  { opacitySelectRec.opacity =0}
                             onPressed: function(mouse) {
                                 mouse.accepted = false
 
@@ -199,10 +206,9 @@ x:10/Style.monitorRatio
                             anchors.verticalCenter: container.verticalCenter
                             font.weight: Font.Medium
                             color: Style.foregroundColor
+                            opacity: 1
                             text: display
                         }
-
-
 
                         IconImage {
                             id: img
@@ -211,14 +217,14 @@ x:10/Style.monitorRatio
                             height: 24/Style.monitorRatio
                             x: treeDelegate.indent * (1 * treeDelegate.depth ) - (treeDelegate.depth) * treeDelegate.padding
                             anchors.verticalCenter: container.verticalCenter
-                            color: checkedd ? Style._darkBlue : mouseArea.containsMouse ? _colorHover : "transparent"
+                            color:Style.foregroundColor /*checkedd ? Style._darkBlue : mouseArea.containsMouse ? _colorHover : "transparent"*/
                         }
                         IconImage {
                             id: img2
                             source: "qrc:/Resources/down.png"
                             width: 16/Style.monitorRatio
                             height: 16/Style.monitorRatio
-opacity: 0.75
+                            opacity: 0.75
                             anchors.rightMargin: 10/Style.monitorRatio
                             anchors.right: parent.right
                             visible: treeDelegate.hasChildren
