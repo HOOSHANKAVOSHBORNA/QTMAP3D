@@ -50,7 +50,7 @@ Item {
                 treeView.expandRecursively()
             }
             anchors.fill: parent
-            anchors.leftMargin: 15 / Style.monitorRatio
+            anchors.leftMargin: 40 / Style.monitorRatio
             anchors.rightMargin: 15 / Style.monitorRatio
             verticalAlignment: Text.AlignVCenter
             font.family: Style.fontFamily
@@ -63,13 +63,22 @@ Item {
                 sendToSearch()
             }
         }
-
+        IconImage {
+            id: iconImage
+            source: "qrc:/Resources/search.png"
+            width: 24/Style.monitorRatio
+            height: 24/Style.monitorRatio
+x:10/Style.monitorRatio
+            anchors.verticalCenter: parent.verticalCenter
+            color: Style.foregroundColor
+        }
         Text {
+            id:textOfSearch
             anchors.fill: parent
-            anchors.leftMargin: 15 / Style.monitorRatio
+            anchors.leftMargin: 40 / Style.monitorRatio
             anchors.rightMargin: 15 / Style.monitorRatio
             verticalAlignment: tiSearchedText.verticalAlignment
-            text: "Search Toolbox"
+            text: "Search "
             font: tiSearchedText.font
             visible: tiSearchedText.text === ""
             color: fg75
@@ -119,13 +128,24 @@ Item {
                     required property bool current
                     //                    anchors.margins: 5
                     Rectangle{
+                        id:backgroundrec
+//                        anchors.top: container.top
+//                        anchors.left: container.left
+                        width: rect.width
+                      height: 20
+//                        height: treeDelegate.hasChildren ? (rootItem.listModel ? (rootItem.listModel.childCount1(treeView.index(row,column)) +1) * rect.height: 0) :0
+                        radius: 12
+                        visible: treeDelegate.expanded
+                        color:"red"
+//                            opacity: 0.1
+                    }
+                    Rectangle{
                         id: container
-                        width: parent.width  - treeDelegate.indent * ( 0.5 * treeDelegate.depth ) - treeDelegate.padding -3
+                        width: parent.width
                         height: parent.height
                         color: "transparent"
                         clip: true
                         anchors.horizontalCenter: parent.horizontalCenter
-
                         Rectangle {
                             id: rect
                             color: treeDelegate.expanded? bg60:bg20
@@ -159,7 +179,8 @@ Item {
                             anchors.fill: parent
                             hoverEnabled: true
 
-                            onEntered: {opacityRectangle.opacity = 1}
+                            onEntered: {opacityRectangle.opacity = 1
+                            }
                             onExited:  {opacityRectangle.opacity = 0 }
                             onPressed: function(mouse) {
                                 mouse.accepted = false

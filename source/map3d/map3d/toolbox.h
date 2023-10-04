@@ -23,6 +23,7 @@ public:
     TreeItem *child(int row);
     int childCount() const;
     int columnCount() const;
+
     QVariant data(int column) const;
     int row() const;
     TreeItem *parentItem();
@@ -89,6 +90,7 @@ public:
                       const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    Q_INVOKABLE int childCount1(QModelIndex index);
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
 public slots:
@@ -106,7 +108,7 @@ class ToolboxProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 public:
     ToolboxProxyModel(QObject *parent = nullptr);
-
+    Q_INVOKABLE int childCount1(QModelIndex index);
     QString filterString() const;
 
 public slots:
