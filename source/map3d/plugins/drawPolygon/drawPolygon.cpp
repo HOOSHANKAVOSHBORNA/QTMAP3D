@@ -5,6 +5,8 @@
 
 #include <osgEarth/GLUtils>
 
+#include <utility.h>
+
 int DrawPolygon::mCount{0};
 DrawPolygon::DrawPolygon(QObject *parent): DrawShape(parent)
 {
@@ -62,12 +64,13 @@ void DrawPolygon::addUpdatePolygon(PolygonData *polygonData)
         polygon->clearPoints();
     }
     polygon->setName(polygonData->name);
-    polygon->setFillColor(osgEarth::Color::Green);
     for (auto point: polygonData->points){
         osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
         polygon->addPoint(geopos);
     }
-    polygon->setHeight(1);
+    polygon->setHeight(10);
+    QColor color(QString::fromStdString(polygonData->color));
+    polygon->setFillColor(Utility::qColor2osgEarthColor(color));
 //    polygon->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 }
 

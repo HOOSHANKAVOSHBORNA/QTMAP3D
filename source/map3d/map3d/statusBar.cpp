@@ -66,7 +66,7 @@ QHash<int, QByteArray> StatusBar::roleNames() const
 
 void StatusBar::addMessage(Message *m)
 {
-    mMessages.push_back(m);
+    mMessages.insert(mMessages.begin(), m);
 }
 
 void StatusBar::isNewMessage(const QModelIndex &index)
@@ -130,9 +130,9 @@ void StatusBarSearchModel::setScale(const double scale)
     mScale = scale;
 }
 
-void StatusBarSearchModel::addMessage(QString Text, QDateTime time)
+void StatusBarSearchModel::addMessage(QString Text)
 {
-    Message *m = new Message{Text, time};
+    Message *m = new Message{Text, QDateTime::currentDateTime()};
     dynamic_cast<StatusBar*>(sourceModel())->addMessage(m);
 }
 

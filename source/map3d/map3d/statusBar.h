@@ -67,7 +67,7 @@ public:
     double getScale() const;
     void setRange(const int range);
     void setScale(const double scale);
-    void addMessage(QString Text, QDateTime);
+    void addMessage(QString Text);
     Q_INVOKABLE void removeMessage();
     Q_INVOKABLE void toggleCheck(const QModelIndex &index, bool check);
     Q_INVOKABLE void selectAllMessages(bool check);

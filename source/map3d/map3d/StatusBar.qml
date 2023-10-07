@@ -83,7 +83,7 @@ Rectangle {
             anchors.left: messageLogo.right
             anchors.verticalCenter: parent.verticalCenter
             implicitWidth:messegeLogoItem.width - messageTextField.x
-            placeholderText: implicitWidth? qsTr("Message" ) : ""
+            placeholderText: implicitWidth? root.model.data(root.model.index(0, 0), Qt.UserRole + 100) : ""
             color: Style.backgroundColor
             font.family: Style.fontFamily
             font.pointSize: Style.fontPointSize
@@ -92,6 +92,15 @@ Rectangle {
             placeholderTextColor: Style.foregroundColor
             background: Rectangle{
                 color: "transparent"
+            }
+        }
+        Connections {
+            target: root.model
+            function onRowsInserted() {
+                messageTextField.placeholderText = root.model.data(root.model.index(0, 0), Qt.UserRole + 100)
+            }
+            function onRowsRemoved() {
+                messageTextField.placeholderText = root.model.data(root.model.index(0, 0), Qt.UserRole + 100)
             }
         }
     }
@@ -339,11 +348,11 @@ Rectangle {
         width: 670 / Style.monitorRatio
         height: 288/Style.monitorRatio * heightFactor
         color:Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.80)
-//        gradient: Gradient {
-//                GradientStop { position: 0.0; color: "#ffDEE3E6" }
-////                GradientStop { position: 0.33; color: "yellow" }
-//                GradientStop { position: 1.0; color: "#60DEE3E6" }
-//            }
+        //        gradient: Gradient {
+        //                GradientStop { position: 0.0; color: "#ffDEE3E6" }
+        ////                GradientStop { position: 0.33; color: "yellow" }
+        //                GradientStop { position: 1.0; color: "#60DEE3E6" }
+        //            }
 
         radius:10
         Item {

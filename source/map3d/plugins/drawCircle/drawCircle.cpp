@@ -66,10 +66,12 @@ void DrawCircle::addUpdateCircle(CircleData *circleData)
         mCircleMap[circleData->id] = circle;
         circleData->layer->addChild(circle);
     }
+    circle->setName(circleData->name);
     circle->setPosition(geoPoint);
     circle->setRadius(circleData->radius);
     QColor color(QString::fromStdString(circleData->color));
     circle->setFillColor(Utility::qColor2osgEarthColor(color));
+    circle->setHeight(1);
 //    circle->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 }
 
