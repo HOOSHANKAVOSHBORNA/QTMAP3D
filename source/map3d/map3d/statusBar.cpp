@@ -66,7 +66,9 @@ QHash<int, QByteArray> StatusBar::roleNames() const
 
 void StatusBar::addMessage(Message *m)
 {
+    beginResetModel();
     mMessages.insert(mMessages.begin(), m);
+    endResetModel();
 }
 
 void StatusBar::isNewMessage(const QModelIndex &index)

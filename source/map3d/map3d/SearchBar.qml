@@ -115,6 +115,10 @@ Item{
             height: rootItem.height
             z: -1
             radius: searchRect.radius
+            ScrollView{
+                anchors.fill: parent
+
+
             ListView{
                 id:listView
                 anchors.fill: parent
@@ -145,6 +149,7 @@ Item{
                         radius:height/2
                     }
                 }
+            }
             }
         }
     }
