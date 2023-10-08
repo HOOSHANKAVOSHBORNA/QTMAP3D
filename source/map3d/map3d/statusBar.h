@@ -78,6 +78,7 @@ public:
 
 public slots:
     void setFilterString(const QString &filterString);
+    StatusBar *getSourceModel()const;
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 

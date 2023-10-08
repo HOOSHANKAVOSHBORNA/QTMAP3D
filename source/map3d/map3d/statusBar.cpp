@@ -15,6 +15,8 @@ int StatusBar::rowCount(const QModelIndex &parent) const
 
 QVariant StatusBar::data(const QModelIndex &index, int role) const
 {
+    if (!index.isValid())
+        return QVariant();
     switch (role) {
     case messageText:
         return mMessages[index.row()]->text;
@@ -172,6 +174,11 @@ void StatusBarSearchModel::setFilterString(const QString &filterString)
     selectAllMessages(false);
     mFilterString = filterString;
     invalidateFilter();
+}
+
+StatusBar *StatusBarSearchModel::getSourceModel() const
+{
+    return dynamic_cast<StatusBar*>(sourceModel());
 }
 
 
