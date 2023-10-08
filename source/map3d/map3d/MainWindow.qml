@@ -27,6 +27,7 @@ CMainWindow {
 
     SideBar {
         id: sideBar
+
         mainWindow: mainWindow
         pinContainer: pinContainer
         unpinContainer: unpinContainer
@@ -35,13 +36,10 @@ CMainWindow {
     Item {
         id: unpinContainer
 
-        height: mainWindow.height - 20-2*y
-        width: 80/Style.monitorRatio + sideBar.sideContainerWidth
-        x: 3
-        y: 3
+        height: mainWindow.height
+        width: 75 / Style.monitorRatio + sideBar.sideContainerWidth
         z: 1
     }
-
 
     SplitView {
         id: mainWindowSplitter
@@ -52,11 +50,9 @@ CMainWindow {
 
             visible: sideBar.state === "pin"
             color: "tomato"
-            SplitView.preferredHeight: mainWindow.height - 20-2*y
-            SplitView.preferredWidth: 80/Style.monitorRatio + sideBar.sideContainerWidth
-            x: 3
-            y: 3
-            z: 1
+            SplitView.preferredHeight: mainWindow.height
+            // TODO: don't work with visible and set preferred width as childrenRect size
+            SplitView.preferredWidth: 75 / Style.monitorRatio + sideBar.sideContainerWidth
         }
 
         StackLayout {
