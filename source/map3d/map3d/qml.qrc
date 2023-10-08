@@ -30,5 +30,6 @@
         <file>LocationManager.qml</file>
         <file>CameraPositionHandlerItem.qml</file>
         <file>SmallMapItem.qml</file>
+        <file>SideBar.qml</file>
     </qresource>
 </RCC>
