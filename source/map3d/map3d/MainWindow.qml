@@ -36,7 +36,8 @@ CMainWindow {
     Item {
         id: unpinContainer
 
-        height: mainWindow.height
+        // TODO: 22 is hardcode size of statusbar
+        height: mainWindow.height - (22 / Style.monitorRatio)
         width: 75 / Style.monitorRatio + sideBar.sideContainerWidth
         z: 1
     }
