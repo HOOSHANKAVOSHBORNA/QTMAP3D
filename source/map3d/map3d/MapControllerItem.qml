@@ -189,6 +189,7 @@ MapController {
         message: "Ready"
         timer: -1
         model: map.statusBar()
+        sourceModel: map.statusBar().getSourceModel()
 
     }
 

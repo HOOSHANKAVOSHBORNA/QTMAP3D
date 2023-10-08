@@ -21,6 +21,7 @@ Rectangle {
 
     property double massageFontSize: 16 / Style.monitorRatio
     property var model
+    property var sourceModel
     property string modeMap: "geocentric"
     property var timer: 0
     property var message: ""
@@ -95,12 +96,12 @@ Rectangle {
             }
         }
         Connections {
-            target: root.model
+            target: root.sourceModel
             function onRowsInserted() {
-                messageTextField.placeholderText = root.model.data(root.model.index(0, 0), Qt.UserRole + 100)
+                messageTextField.placeholderText = root.sourceModel.data(root.model.index(0, 0), Qt.UserRole + 100)
             }
             function onRowsRemoved() {
-                messageTextField.placeholderText = root.model.data(root.model.index(0, 0), Qt.UserRole + 100)
+                messageTextField.placeholderText = root.sourceModel.data(root.model.index(0, 0), Qt.UserRole + 100)
             }
         }
     }
@@ -559,10 +560,11 @@ Rectangle {
                 color: Style.foregroundColor
                 font.family:Style.fontFamily
                 font.pixelSize:  16/ Style.monitorRatio
-                selectByMouse: false
                 selectedTextColor: Style.foregroundColor
                 selectionColor: Style.selectColor
                 placeholderTextColor: Style.disableColor
+                readOnly: true
+                selectByMouse: false
 
                 background: Rectangle{
                     color: "transparent"
@@ -691,10 +693,11 @@ Rectangle {
                             color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily
                             font.pixelSize:  16/ Style.monitorRatio
-                            selectByMouse: false
                             selectedTextColor: Style.foregroundColor
                             selectionColor: Style.selectColor
                             placeholderTextColor: Style.disableColor
+                            readOnly: true
+                            selectByMouse: false
 
                             background: Rectangle{
                                 color: "transparent"
