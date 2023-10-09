@@ -364,12 +364,6 @@ Rectangle {
         width: 670 / Style.monitorRatio
         height: 288/Style.monitorRatio * heightFactor
         color:Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.80)
-        //        gradient: Gradient {
-        //                GradientStop { position: 0.0; color: "#ffDEE3E6" }
-        ////                GradientStop { position: 0.33; color: "yellow" }
-        //                GradientStop { position: 1.0; color: "#60DEE3E6" }
-        //            }
-
         radius:10
         Item {
             id: heading
@@ -397,7 +391,6 @@ Rectangle {
                     font.weight: Font.Medium
                     font.pixelSize: 24/Style.monitorRatio
 
-
                 }
             }
             Button {
@@ -418,7 +411,6 @@ Rectangle {
                 }
 
                 onClicked: root.model.removeMessage()
-
 
             }
             Button {
@@ -592,6 +584,7 @@ Rectangle {
                 width:76/Style.monitorRatio
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: subject.right
+                anchors.leftMargin: 10/Style.monitorRatio
                 text:"Date/Time"
                 color: Style.foregroundColor
                 font.family:Style.fontFamily
@@ -703,6 +696,7 @@ Rectangle {
                         TextField {
                             id : delegateSubject
                             width:430/Style.monitorRatio
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: delegateCheckBox.right
                             text: messageText
@@ -726,6 +720,7 @@ Rectangle {
                             width:96/Style.monitorRatio
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: delegateSubject.right
+                            anchors.leftMargin: 10/Style.monitorRatio
                             text: dateText
                             color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily
