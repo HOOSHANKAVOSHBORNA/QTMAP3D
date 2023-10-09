@@ -95,15 +95,30 @@ Rectangle {
                 color: "transparent"
             }
         }
+
         Connections {
             target: root.sourceModel
             function onRowsInserted() {
                 messageTextField.placeholderText = root.sourceModel.data(root.model.index(0, 0), Qt.UserRole + 100)
             }
             function onRowsRemoved() {
-                messageTextField.placeholderText = root.sourceModel.data(root.model.index(0, 0), Qt.UserRole + 100)
+                messageTextField.placeholderText = root.sourceModel.data(root.model.index(0, 0), Qt.UserRole + 100) ?? 0
             }
         }
+         MouseArea{
+             anchors.fill: messageTextField
+             onClicked: {
+                 if(root.heightFactor == 0){
+                     showRect.start()
+                     root.heightVisiblity = true
+                     heading.visible = true}
+                 else{
+
+                     hideRect.start()
+                     heading.visible = false
+                     root.heightVisiblity = false}
+             }
+         }
     }
 
 
@@ -587,6 +602,7 @@ Rectangle {
                 width: 19/Style.monitorRatio; height: 19/Style.monitorRatio
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: dateTime.right
+                anchors.leftMargin: 10 /Style.monitorRatio
                 fillMode: Image.PreserveAspectFit
                 source: "qrc:/Resources/down.png"
             }
