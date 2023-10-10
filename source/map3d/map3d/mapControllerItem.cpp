@@ -18,43 +18,13 @@ MapControllerItem::MapControllerItem():
     mStatusBar = new StatusBarSearchModel();
     mStatusBar->setSourceModel(status);
 
-    mStatusBar->addMessage("salam");
 
-    mStatusBar->addMessage("Koja");
 
-    mStatusBar->addMessage("gkjhdf");
+    mStatusBar->addMessage("Also is based on \"OpenSceneGraph\" and \"OSG Earth !!!\" ");
 
-    mStatusBar->addMessage("hi");
+    mStatusBar->addMessage("This application Works on Qt Framwork");
 
-    mStatusBar->addMessage("nice");
-
-    mStatusBar->addMessage("twice");
-
-    mStatusBar->addMessage("dice");
-
-    mStatusBar->addMessage("rice");
-
-    mStatusBar->addMessage("price");
-
-    mStatusBar->addMessage("pass");
-
-    mStatusBar->addMessage("salam");
-
-    mStatusBar->addMessage("hi");
-
-    mStatusBar->addMessage("mamad");
-
-    mStatusBar->addMessage("ali");
-
-    mStatusBar->addMessage("morteza");
-
-    mStatusBar->addMessage("mamad ali");
-
-    mStatusBar->addMessage("mostafa");
-
-    mStatusBar->addMessage("nasser");
-
-    mStatusBar->addMessage("jafary");
+    mStatusBar->addMessage("Wellcome To QARCH 2023");
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)

@@ -27,7 +27,7 @@ public:
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
-    void selectModel(bool isSelected);
+    void selectModel();
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 

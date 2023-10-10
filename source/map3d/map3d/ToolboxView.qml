@@ -95,7 +95,7 @@ Item {
                     required property bool selected
                     required property bool current
 
-                    implicitWidth: treeView.width // TODO: TypeError: Cannot read property 'width' of null
+                    implicitWidth: treeView.width
                     implicitHeight:  30/Style.monitorRatio
 
                     //vertical line for item children

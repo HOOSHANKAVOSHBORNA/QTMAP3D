@@ -186,10 +186,10 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
     }
 }
 
-void SimpleModelNode::selectModel(bool isSelected)
+void SimpleModelNode::selectModel()
 {
-    mIsSelected = isSelected;
-    if(isSelected){
+    mIsSelected = !mIsSelected;
+    if(mIsSelected){
         mSwitchNode->setValue(2, true);
     }else{
         mSwitchNode->setValue(2, false);
