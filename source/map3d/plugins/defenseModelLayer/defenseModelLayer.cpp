@@ -470,7 +470,7 @@ bool DefenseModelLayer::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIA
 bool DefenseModelLayer::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     bool res = false;
-    qDebug() << ea.getX() << ", " << ea.getY();
+//    qDebug() << ea.getX() << ", " << ea.getY();
     DefenseModelNode* modelNode = pick(ea.getX(), ea.getY());
     if(modelNode)
     {
