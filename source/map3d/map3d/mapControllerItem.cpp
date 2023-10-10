@@ -18,43 +18,13 @@ MapControllerItem::MapControllerItem():
     mStatusBar = new StatusBarSearchModel();
     mStatusBar->setSourceModel(status);
 
-    mStatusBar->addMessage("salam", QDateTime::currentDateTime());
 
-    mStatusBar->addMessage("Koja", QDateTime::currentDateTime());
 
-    mStatusBar->addMessage("gkjhdf", QDateTime::currentDateTime());
+    mStatusBar->addMessage("Also is based on \"OpenSceneGraph\" and \"OSG Earth !!!\" ");
 
-    mStatusBar->addMessage("hi", QDateTime::currentDateTime());
+    mStatusBar->addMessage("This application Works on Qt Framwork");
 
-    mStatusBar->addMessage("nice", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("twice", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("dice", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("rice", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("price", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("pass", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("salam", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("hi", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("mamad", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("ali", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("morteza", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("mamad ali", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("mostafa", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("nasser", QDateTime::currentDateTime());
-
-    mStatusBar->addMessage("jafary", QDateTime::currentDateTime());
+    mStatusBar->addMessage("Wellcome To QARCH 2023");
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)

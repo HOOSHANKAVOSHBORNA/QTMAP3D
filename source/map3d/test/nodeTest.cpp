@@ -18,7 +18,8 @@ NodeTest::NodeTest(NetworkManager *networkManager):
             for(auto& nodeData: mNodeDataList){
                 mNetworkManager->sendData(nodeData.nodeDoc.toJson(QJsonDocument::Compact));
                 mNetworkManager->sendData(nodeData.statusDoc.toJson(QJsonDocument::Compact));
-//                mNetworkManager->sendData(nodeData.circleDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(nodeData.circleDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(nodeData.polygonDoc.toJson(QJsonDocument::Compact));
             }
         });
         timerUpdateAircraft->start(10000);
@@ -53,7 +54,7 @@ void NodeTest::createInfo()
     jsonData.insert("Altitude", altitude);
 
     QJsonArray layer;
-    double rand = (QRandomGenerator::global()->generate() % (1));
+    double rand = (QRandomGenerator::global()->generate() % (2));
     if(rand < 1)
         layer.push_back(302);
     else
@@ -83,29 +84,75 @@ void NodeTest::createInfo()
     jsonDocStatus.setObject(jsonObjectStatus);
     nodeData.statusDoc = jsonDocStatus;
 
-//    //--route node------------------------------------------------
-//    QJsonDocument jsonDocLine;
-//    QJsonObject jsonObjectLine;
+    //--circle node------------------------------------------------
+    double radius = 1000 + (QRandomGenerator::global()->generate() % (5000 - 1000));
+    QColor colorCircle("red");
+    colorCircle.setAlpha(100);
+    QJsonDocument jsonDocCircle;
+    QJsonObject jsonObjectCircle;
 
-//    jsonObjectLine.insert("Type", "Route");
+    jsonObjectCircle.insert("Type", "Circle");
 
-//    QJsonObject jsonObjectLineData;
-//    jsonObjectLineData.insert("Name", name);
-//    jsonObjectLineData.insert("Id", id);
+    QJsonObject jsonObjectCircleData;
+    jsonObjectCircleData.insert("Name", name + " circle");
+    jsonObjectCircleData.insert("Id", id);
 
-//    QJsonArray points;
-//    QJsonObject point1;
-//    point1.insert("Longitude", longitude);
-//    point1.insert("Latitude", latitude);
-//    point1.insert("Altitude", altitude);
-//    points.push_back(point1);
+    jsonObjectCircleData.insert("Longitude", longitude);
+    jsonObjectCircleData.insert("Latitude", latitude);
+    jsonObjectCircleData.insert("Altitude", altitude);
+    jsonObjectCircleData.insert("Radius", radius);
+    jsonObjectCircleData.insert("Color", colorCircle.name(QColor::HexArgb));
 
-//    jsonObjectLineData.insert("Points", points);
-//    jsonObjectLineData.insert("LayerId", 106);
+    jsonObjectCircleData.insert("LayerId", 304);
 
-//    jsonObjectLine.insert("Data", jsonObjectLineData);
-//    jsonDocLine.setObject(jsonObjectLine);
-//    flaybleData.lineDoc = jsonDocLine;
+    jsonObjectCircle.insert("Data", jsonObjectCircleData);
+    jsonDocCircle.setObject(jsonObjectCircle);
+    nodeData.circleDoc = jsonDocCircle;
+    //--polygon----------------------------------------------------
+    QColor colorPolygon("green");
+    colorPolygon.setAlpha(100);
+    QJsonDocument jsonDocPolygon;
+    QJsonObject jsonObjectPolygon;
+
+    jsonObjectPolygon.insert("Type", "Polygon");
+
+    QJsonObject jsonObjectPolygonData;
+    jsonObjectPolygonData.insert("Name", name + " polygon");
+    jsonObjectPolygonData.insert("Id", id);
+    jsonObjectPolygonData.insert("Color", colorPolygon.name(QColor::HexArgb));
+
+    QJsonArray points;
+    double step = 0.01;
+    QJsonObject point1;
+    point1.insert("Longitude", longitude - step);
+    point1.insert("Latitude", latitude - step);
+    point1.insert("Altitude", altitude);
+    points.push_back(point1);
+
+    QJsonObject point2;
+    point2.insert("Longitude", longitude + step);
+    point2.insert("Latitude", latitude - step);
+    point2.insert("Altitude", altitude);
+    points.push_back(point2);
+
+    QJsonObject point3;
+    point3.insert("Longitude", longitude + step);
+    point3.insert("Latitude", latitude + step);
+    point3.insert("Altitude", altitude);
+    points.push_back(point3);
+
+    QJsonObject point4;
+    point4.insert("Longitude", longitude - step);
+    point4.insert("Latitude", latitude + step);
+    point4.insert("Altitude", altitude);
+    points.push_back(point4);
+
+    jsonObjectPolygonData.insert("Points", points);
+    jsonObjectPolygonData.insert("LayerId", 306);
+
+    jsonObjectPolygon.insert("Data", jsonObjectPolygonData);
+    jsonDocPolygon.setObject(jsonObjectPolygon);
+    nodeData.polygonDoc = jsonDocPolygon;
 
     mNodeDataList.append(nodeData);
 }

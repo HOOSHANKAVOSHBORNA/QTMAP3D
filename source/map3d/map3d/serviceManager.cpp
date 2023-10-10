@@ -53,8 +53,9 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
     if(layer)
         statusNodeData->layer = layer;
 
-    for(auto& key:jsonObject.keys())
-        statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key)});
+    for(auto& key:jsonObject.keys()){
+        statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key).toDouble()});
+    }
 
     if(statusNodeData->layer)
         emit statusNodeDataReceived(statusNodeData);
@@ -76,8 +77,14 @@ void ServiceManager::messageData(QString jsonData)
                 statusNodeData(obj.value("Data").toObject());
             else if (type == "Line")
                 polylineData(obj.value("Data").toObject());
+            else if (type == "Movable")
+                movableNodeData(obj.value("Data").toObject());
             else if(type == "Node")
                 nodeData(obj.value("Data").toObject());
+            else if(type == "Circle")
+                circleData(obj.value("Data").toObject());
+            else if(type == "Polygon")
+                polygonData(obj.value("Data").toObject());
             else
                 qDebug() << "type of data is unknown";
         }
@@ -105,6 +112,28 @@ void ServiceManager::polylineData(QJsonObject polyline)
     }
 }
 
+void ServiceManager::movableNodeData(QJsonObject jsonObject)
+{
+    NodeData* movableNodeData = new NodeData();
+    movableNodeData->id = jsonObject.value("Id").toInt();
+    movableNodeData->longitude =  jsonObject.value("Longitude").toDouble();
+    movableNodeData->latitude = jsonObject.value("Latitude").toDouble();
+    movableNodeData->altitude = jsonObject.value("Altitude").toDouble();
+    movableNodeData->name = jsonObject.value("Name").toString().toStdString();
+    movableNodeData->url2D = jsonObject.value("Url2d").toString().toStdString();
+    movableNodeData->url3D = jsonObject.value("Url3d").toString().toStdString();
+    movableNodeData->color = jsonObject.value("Color").toString().toStdString();
+    movableNodeData->speed = jsonObject.value("Speed").toInt();
+    for (auto i : jsonObject.value("LayersId").toArray()){
+        int id = i.toInt();
+        auto layer = findParenticLayer(id);
+        if(layer)
+            movableNodeData->layers.push_back(layer);
+    }
+    if(movableNodeData->layers.size() > 0)
+        emit movableNodeDataReceived(movableNodeData);
+}
+
 void ServiceManager::nodeData(QJsonObject jsonObject)
 {
     NodeData* nodeData = new NodeData();
@@ -124,6 +153,46 @@ void ServiceManager::nodeData(QJsonObject jsonObject)
     }
     if(nodeData->layers.size() > 0)
         emit nodeDataReceived(nodeData);
+}
+
+void ServiceManager::circleData(QJsonObject jsonObject)
+{
+    CircleData* circleData = new CircleData();
+    circleData->id = jsonObject.value("Id").toInt();
+    circleData->name = jsonObject.value("Name").toString().toStdString();
+    circleData->longitude =  jsonObject.value("Longitude").toDouble();
+    circleData->latitude = jsonObject.value("Latitude").toDouble();
+    circleData->altitude = jsonObject.value("Altitude").toDouble();
+    circleData->radius = jsonObject.value("Radius").toDouble();
+    circleData->color = jsonObject.value("Color").toString().toStdString();
+    int layerId = jsonObject.value("LayerId").toInt();
+    auto layer = findParenticLayer(layerId);
+    circleData->layer = layer;
+    if (layer)
+        emit circleDataReceived(circleData);
+}
+
+void ServiceManager::polygonData(QJsonObject jsonObject)
+{
+    PolygonData *polygonData = new PolygonData;
+    polygonData->id = jsonObject.value("Id").toInt();
+    polygonData->name = jsonObject.value("Name").toString().toStdString();
+    polygonData->color = jsonObject.value("Color").toString().toStdString();
+
+    QJsonArray points = jsonObject.value("Points").toArray();
+    for (auto i : points) {
+        QVector3D point;
+        point.setX(i.toObject().value("Longitude").toDouble());
+        point.setY(i.toObject().value("Latitude").toDouble());
+        point.setZ(i.toObject().value("Altitude").toDouble());
+        polygonData->points.push_back(point);
+    }
+    int layerId = jsonObject.value("LayerId").toInt();
+    auto layer = findParenticLayer(layerId);
+    polygonData->layer = layer;
+    if (layer){
+        emit polygonDataReceived(polygonData);
+    }
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent)

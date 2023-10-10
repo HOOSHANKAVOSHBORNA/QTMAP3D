@@ -2,6 +2,7 @@
 #include <QObject>
 #include "statusBar.h"
 
+
 StatusBar::StatusBar(QObject *parent) : QAbstractListModel(parent)
 {
 
@@ -14,6 +15,8 @@ int StatusBar::rowCount(const QModelIndex &parent) const
 
 QVariant StatusBar::data(const QModelIndex &index, int role) const
 {
+    if (!index.isValid())
+        return QVariant();
     switch (role) {
     case messageText:
         return mMessages[index.row()]->text;
@@ -62,9 +65,12 @@ QHash<int, QByteArray> StatusBar::roleNames() const
     return hash;
 }
 
+
 void StatusBar::addMessage(Message *m)
 {
-    mMessages.push_back(m);
+    beginResetModel();
+    mMessages.insert(mMessages.begin(), m);
+    endResetModel();
 }
 
 void StatusBar::isNewMessage(const QModelIndex &index)
@@ -128,9 +134,9 @@ void StatusBarSearchModel::setScale(const double scale)
     mScale = scale;
 }
 
-void StatusBarSearchModel::addMessage(QString Text, QDateTime time)
+void StatusBarSearchModel::addMessage(QString Text)
 {
-    Message *m = new Message{Text, time};
+    Message *m = new Message{Text, QDateTime::currentDateTime()};
     dynamic_cast<StatusBar*>(sourceModel())->addMessage(m);
 }
 
@@ -168,6 +174,11 @@ void StatusBarSearchModel::setFilterString(const QString &filterString)
     selectAllMessages(false);
     mFilterString = filterString;
     invalidateFilter();
+}
+
+StatusBar *StatusBarSearchModel::getSourceModel() const
+{
+    return dynamic_cast<StatusBar*>(sourceModel());
 }
 
 

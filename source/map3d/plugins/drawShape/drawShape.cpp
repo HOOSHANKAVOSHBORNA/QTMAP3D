@@ -177,7 +177,7 @@ void DrawShape::createProperty(QString name, QVariant property)
         mItem = qobject_cast<QQuickItem*>(comp->create());
         mItem->setProperty("model", property);
 
-        mainWindow()->addToRightContainer(mItem, name);
+        mainWindow()->addToLeftContainer(mItem, name);
 
     });
 
@@ -187,6 +187,6 @@ void DrawShape::createProperty(QString name, QVariant property)
 
 void DrawShape::hideProperty()
 {
-    mainWindow()->removeFromRightContainer(mItem);
+    mainWindow()->removeFromLeftContainer(mItem);
 }
 

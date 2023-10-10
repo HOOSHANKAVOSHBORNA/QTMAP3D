@@ -51,13 +51,13 @@ QtObject {
 
 
     //-------   UI Desired Size Added    ---------//
-    readonly property double monitorRatio: 1.3
+    readonly property double monitorRatio: 1.1
     readonly property string fontFamily:"Roboto"
     readonly property double fontPointSize: 11/monitorRatio
 
-    readonly property int containerSize      : 40/1.3
-    readonly property int uiSecondContainerSize: 65
-    readonly property int uiBtnIconSize        : 26 / 1.3
+//    readonly property int containerSize      : 40/1.3
+//    readonly property int uiSecondContainerSize: 65
+//    readonly property int uiBtnIconSize        : 26 / 1.3
 
     //--them white--------------------------------------------------------------------
     readonly property color     backgroundColor: "#DEE3E6"
@@ -65,6 +65,9 @@ QtObject {
     readonly property color     disableColor: Qt.rgba(foregroundColor.r, foregroundColor.g, foregroundColor.b, 0.5)
     readonly property color     hoverColor:      "#01AED6"
     readonly property color     selectColor :    "#B6C0CA"
+
+    readonly property color     topGradient: "#90DEE3E6"
+    readonly property color     bottomGradient:"#20DEE3E6"
     //--them black--------------------------------------------------------------------
 //    readonly property color     backgroundColor:        "#DEE3E6"
 //    readonly property color     forgroundColor:        "#DEE3E6"

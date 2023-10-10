@@ -88,8 +88,8 @@ MapController {
         shadowBlur: 0.6
         shadowHorizontalOffset: 3.5
         shadowVerticalOffset:2.5
-        shadowOpacity:0.35
-        shadowScale: 0.98
+        shadowOpacity:0.25
+        shadowScale: 1.04
     }
     Compass {
         id: compassItem
@@ -176,7 +176,7 @@ MapController {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.leftMargin: 83/Style.monitorRatio
+        anchors.leftMargin: 75/Style.monitorRatio
         anchors.rightMargin: 0
         width: parent.width
         height: 22/Style.monitorRatio
@@ -189,6 +189,7 @@ MapController {
         message: "Ready"
         timer: -1
         model: map.statusBar()
+        sourceModel: map.statusBar().getSourceModel()
 
     }
 

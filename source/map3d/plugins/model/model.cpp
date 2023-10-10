@@ -39,6 +39,7 @@ bool Model::setup()
     connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, this, &Model::addUpdateFlyableNode);
     connect(serviceManager(), &ServiceManager::nodeDataReceived, this, &Model::addUpdateNode);
     connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Model::addUpdateStatusNode);
+    connect(serviceManager(), &ServiceManager::movableNodeDataReceived, this, &Model::addUpdateMovableNode);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -205,15 +206,15 @@ bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter
 
 osgEarth::Symbology::Style &Model::getDefaultStyle()
 {
-    static osgEarth::Symbology::Style _style;
+    static osgEarth::Symbology::Style style;
     static bool bFirst = true;
     if (bFirst) {
         static osg::Node *node = new osg::Node;
-        _style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
         bFirst = false;
     }
 
-    return _style;
+    return style;
 }
 
 void Model::onTreeItemCheck(bool check)
@@ -364,8 +365,10 @@ void Model::addUpdateStatusNode(StatusNodeData *statusnNodeData)
     osg::ref_ptr<StatusNode> statusNode;
 
     std::list<StatusNode::Data> dataList;
-    for(auto& data: statusnNodeData->data)
+    for(auto& data: statusnNodeData->data) {
+        qDebug() << data.value;
         dataList.push_back(StatusNode::Data{data.name, data.value});
+    }
 
     if(!mStatusNodeMap.contains(statusnNodeData->id)){
         statusNode = new StatusNode(mapItem());
@@ -381,6 +384,30 @@ void Model::addUpdateStatusNode(StatusNodeData *statusnNodeData)
 
     statusNode->setName(statusnNodeData->name);
     statusNode->setNodeData(statusnNodeData);
+}
+
+void Model::addUpdateMovableNode(NodeData *nodeData)
+{
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
+    osg::ref_ptr<MoveableModelNode> movableNode;
+
+    if(!mMovableNodeMap.contains(nodeData->id)){
+        movableNode = new MoveableModelNode(mapItem(), nodeData->url3D, nodeData->url2D);
+        movableNode->setPosition(geoPoint);
+        mMovableNodeMap[nodeData->id] = movableNode;
+    }
+    else{
+        movableNode = mMovableNodeMap[nodeData->id];
+        for(auto layer: movableNode->nodeData()->layers){
+            layer->removeChild(movableNode);
+        }
+        movableNode->moveTo(geoPoint, nodeData->speed);
+    }
+    for(auto layer: nodeData->layers){
+        layer->addChild(movableNode);
+    }
+    movableNode->setName(nodeData->name);
+    movableNode->setNodeData(nodeData);
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){

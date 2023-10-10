@@ -9,6 +9,7 @@ struct NodeData
     QJsonDocument nodeDoc;
     QJsonDocument statusDoc;
     QJsonDocument circleDoc;
+    QJsonDocument polygonDoc;
 };
 
 class NodeTest

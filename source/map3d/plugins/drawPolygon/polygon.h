@@ -53,8 +53,8 @@ private:
 //    };
     //osg::ref_ptr<osg::Group> mLabelGroup;
     //std::vector<LabelData> mVecLabelData;
-    osgEarth::Color mFillColor{osgEarth::Color::Green};
-    osgEarth::Color mStrokeColor{osgEarth::Color::Green};
+    osgEarth::Color mFillColor{osgEarth::Color::White};
+    osgEarth::Color mStrokeColor{osgEarth::Color::White};
     float mStrokeWidth{5};
     float mHeight{0};
     osgEarth::Symbology::AltitudeSymbol::Clamping mClamp;

@@ -21,6 +21,7 @@ Rectangle {
 
     property double massageFontSize: 16 / Style.monitorRatio
     property var model
+    property var sourceModel
     property string modeMap: "geocentric"
     property var timer: 0
     property var message: ""
@@ -83,7 +84,7 @@ Rectangle {
             anchors.left: messageLogo.right
             anchors.verticalCenter: parent.verticalCenter
             implicitWidth:messegeLogoItem.width - messageTextField.x
-            placeholderText: implicitWidth? qsTr("Message" ) : ""
+            placeholderText: implicitWidth? root.model.data(root.model.index(0, 0), Qt.UserRole + 100) : ""
             color: Style.backgroundColor
             font.family: Style.fontFamily
             font.pointSize: Style.fontPointSize
@@ -94,6 +95,30 @@ Rectangle {
                 color: "transparent"
             }
         }
+
+        Connections {
+            target: root.sourceModel
+            function onRowsInserted() {
+                messageTextField.placeholderText = root.sourceModel.data(root.model.index(0, 0), Qt.UserRole + 100)
+            }
+            function onRowsRemoved() {
+                messageTextField.placeholderText = root.sourceModel.data(root.model.index(0, 0), Qt.UserRole + 100) ?? 0
+            }
+        }
+         MouseArea{
+             anchors.fill: messageTextField
+             onClicked: {
+                 if(root.heightFactor == 0){
+                     showRect.start()
+                     root.heightVisiblity = true
+                     heading.visible = true}
+                 else{
+
+                     hideRect.start()
+                     heading.visible = false
+                     root.heightVisiblity = false}
+             }
+         }
     }
 
 
@@ -103,6 +128,7 @@ Rectangle {
     RowLayout{
         id:theRowLayout
         anchors.left: messegeLogoItem.right
+
         height: 22/Style.monitorRatio
         layoutDirection: Qt.RightToLeft
         clip:true
@@ -126,10 +152,7 @@ Rectangle {
             id: altitudeText
             Layout.minimumWidth: 52/Style.monitorRatio
             Layout.preferredHeight: 20/Style.monitorRatio
-
-
             background: Rectangle {
-
                 color: "transparent"
             }
 
@@ -368,7 +391,6 @@ Rectangle {
                     font.weight: Font.Medium
                     font.pixelSize: 24/Style.monitorRatio
 
-
                 }
             }
             Button {
@@ -389,7 +411,6 @@ Rectangle {
                 }
 
                 onClicked: root.model.removeMessage()
-
 
             }
             Button {
@@ -546,10 +567,11 @@ Rectangle {
                 color: Style.foregroundColor
                 font.family:Style.fontFamily
                 font.pixelSize:  16/ Style.monitorRatio
-                selectByMouse: false
                 selectedTextColor: Style.foregroundColor
                 selectionColor: Style.selectColor
                 placeholderTextColor: Style.disableColor
+                readOnly: true
+                selectByMouse: false
 
                 background: Rectangle{
                     color: "transparent"
@@ -562,6 +584,7 @@ Rectangle {
                 width:76/Style.monitorRatio
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: subject.right
+                anchors.leftMargin: 10/Style.monitorRatio
                 text:"Date/Time"
                 color: Style.foregroundColor
                 font.family:Style.fontFamily
@@ -572,6 +595,7 @@ Rectangle {
                 width: 19/Style.monitorRatio; height: 19/Style.monitorRatio
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: dateTime.right
+                anchors.leftMargin: 10 /Style.monitorRatio
                 fillMode: Image.PreserveAspectFit
                 source: "qrc:/Resources/down.png"
             }
@@ -672,16 +696,18 @@ Rectangle {
                         TextField {
                             id : delegateSubject
                             width:430/Style.monitorRatio
+                            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: delegateCheckBox.right
                             text: messageText
                             color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily
                             font.pixelSize:  16/ Style.monitorRatio
-                            selectByMouse: false
                             selectedTextColor: Style.foregroundColor
                             selectionColor: Style.selectColor
                             placeholderTextColor: Style.disableColor
+                            readOnly: true
+                            selectByMouse: false
 
                             background: Rectangle{
                                 color: "transparent"
@@ -694,6 +720,7 @@ Rectangle {
                             width:96/Style.monitorRatio
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: delegateSubject.right
+                            anchors.leftMargin: 10/Style.monitorRatio
                             text: dateText
                             color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily

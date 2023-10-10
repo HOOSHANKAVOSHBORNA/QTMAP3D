@@ -46,6 +46,25 @@ struct LineNodeData: public osg::Referenced
     ParenticAnnotationLayer* layer{nullptr};
     std::vector<QVector3D> points;
 };
+struct PolygonData: public osg::Referenced
+{
+    int id;
+    std::string name;
+    std::string color;
+    ParenticAnnotationLayer* layer{nullptr};
+    std::vector<QVector3D> points;
+};
+struct CircleData: public osg::Referenced
+{
+    int id;
+    std::string name;
+    std::string color;
+    double latitude;
+    double longitude;
+    double altitude;
+    double radius;
+    ParenticAnnotationLayer* layer{nullptr};
+};
 
 //struct ServiceLayer {
 //    int id;
@@ -68,6 +87,7 @@ public:
     void statusNodeData(QJsonObject jsonObject);
     void messageData(QString jsonData);
     void polylineData(QJsonObject polyline);
+    void movableNodeData(QJsonObject jsonObject);
 
 //    void addPolygon(QJsonDocument *polygon);
 //    void addSphere(QJsonDocument *sphere);
@@ -78,9 +98,15 @@ signals:
     void flyableNodeDataReceived(NodeData *modelNodeData);
     void statusNodeDataReceived(StatusNodeData *statusNodeData);
     void lineNodeDataReceived(LineNodeData *lineNodeData);
+    void movableNodeDataReceived(NodeData *modelNodeData);
     void nodeDataReceived(NodeData *nodeData);
+    void circleDataReceived(CircleData *circleData);
+    void polygonDataReceived(PolygonData *polygonData);
 private:
     void nodeData(QJsonObject jsonObject);
+    void circleData(QJsonObject jsonObject);
+    void polygonData(QJsonObject jsonObject);
+
     void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
     ParenticAnnotationLayer* findParenticLayer(int id);
 private:

@@ -5,118 +5,93 @@ import QtQuick.Controls 2.15
 import QtQuick.Effects
 import "style"
 
-
-
-
 Item {
     id: rootItem
-    implicitWidth: 230
     property CLayersModel layersModell
-    //    property bool destroyCalled: false
-
-    //    onDestroyCalledChanged: rootItem.destroy()
+    readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
 
 
-    Rectangle {
+    ColumnLayout{
         anchors.fill: parent
-        color: Style._darkestGray
-        opacity: 1
+        anchors.margins: 20 / Style.monitorRatio
+        Rectangle {
+            id:search
+            Layout.fillWidth: true
+            height: 30 / Style.monitorRatio
+            radius: height / 2
+            color: backgroundColor
 
-
-        Item{
-            anchors.horizontalCenter: parent.horizontalCenter
-            y : 0
-            id:treerootItem
-            width: parent.width
-            height: parent.height - 40
-
-            Rectangle {
-                id: search
-                width: parent.width
-                height: 40
-                y : -1
-                clip: true
-                color: "transparent"
-                anchors.horizontalCenter: parent.horizontalCenter
-                TextField {
-                    function sendToSearch() {
-                        if( rootItem.layersModell){
-                            rootItem.layersModell.setFilterString(text)
-                            if (text.length === 0) {
-                                treeView.collapseRecursively()
-                            }
-                            treeView.expandRecursively()
-                        }}
-
-
-                    background: Rectangle {
-                        implicitWidth: search.width
-                        implicitHeight: 35
-                        border.color: "black"
-                        border.width: Style.borderwidth
-                        color: Style.backgroundColor
-                    }
-                    anchors.fill: parent
-                    color: Style.textColor
-                    IconImage{
-                        anchors.verticalCenter: parent.verticalCenter
-                        height: parent.height * 0.6
-                        width: height
-                        anchors.right: parent.right
-                        anchors.rightMargin: 10
-                        color: Style.textColor
-                        source: "./Resources/48/search.png"
-                    }
-
-                    placeholderText: "Search Layers"
-                    placeholderTextColor: Style.selectionColor
-                    onAccepted: {
-                        sendToSearch()
-                    }
-                    onTextChanged: function() {
-                        sendToSearch()
-                    }
-
-                }
+            IconImage {
+                id: searchIcon
+                source: "qrc:/Resources/search.png"
+                width: 24/Style.monitorRatio
+                height: 24/Style.monitorRatio
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 10/Style.monitorRatio
+                color: Style.foregroundColor
             }
 
+            TextField {
+                function sendToSearch() {
+                    if( rootItem.layersModell){
+                        rootItem.layersModell.setFilterString(text)
+                        if (text.length === 0) {
+                            treeView.collapseRecursively()
+                        }
+                        treeView.expandRecursively()
+                    }}
 
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: searchIcon.right
+                anchors.right: parent.right
+                verticalAlignment: Text.AlignVCenter
+                font.family: Style.fontFamily
+                font.pixelSize: 17/Style.monitorRatio
+                color: Style.foregroundColor
+                background: Rectangle{
+                    color: "transparent"
+                    radius: height/2
+                }
 
+                onAccepted: {
+                    sendToSearch()
+                }
+                onTextChanged: function() {
+                    sendToSearch()
+                }
+                placeholderText: "Search ..."
+                placeholderTextColor: Style.disableColor
+            }
+        }
 
+        ScrollView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.topMargin: 10/Style.monitorRatio
+            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
             TreeView{
-                id:treeView
-                anchors.top: search.bottom
-                anchors.topMargin: 7
-                width: parent.width -10
-                height: parent.height - 35
-                anchors.horizontalCenter: parent.horizontalCenter
-
-
-                model: selectionModel.model
+                id: treeView
+                anchors.fill: parent
                 clip: true
-
+                rowSpacing: 5/Style.monitorRatio
+                model: selectionModel.model
 
                 selectionModel: ItemSelectionModel {
                     id: selectionModel
                     model: layersModell ?? null
-
                     onCurrentChanged: {
-
                     }
                     onSelectionChanged:{
                     }
                 }
 
-//                flickableDirection: Qt.Horizontal
 
                 delegate: Item {
                     id: treeDelegate
-                    implicitWidth: treerootItem.width
-                    implicitHeight: label.implicitHeight * 2 - 4*depth
-                    anchors.margins: 10
-
-
-                    readonly property real indent: 25
+                    implicitWidth: treeView.width
+                    implicitHeight:  30/Style.monitorRatio
+                    readonly property real indent: 30
                     readonly property real padding: 5
                     required property TreeView treeView
                     required property bool isTreeNode
@@ -124,7 +99,16 @@ Item {
                     required property int hasChildren
                     required property int depth
 
-
+                    Rectangle{
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: indent * depth
+                        width: 2/Style.monitorRatio
+                        height: parent.height + treeView.rowSpacing
+                        visible: depth
+                        color: Style.foregroundColor
+                        opacity: 0.2
+                    }
 
                     DropArea{
                         anchors.fill: parent
@@ -132,12 +116,9 @@ Item {
                         visible: dropRole
                         onDropped: {
 
-//                            console.log("onDropped")
-//                            console.log(treeView.index(row , column))
                             if((treeView.index(row , column) !== layersModell.dragIndex) && (layersModell.dragIndex.valid)){
                                 if(layersModell.dragIndex.parent === treeView.index(row , column).parent){
                                     layersModell.onMoveItem(layersModell.dragIndex, treeView.index(row , column))
-                                    //print("replacing " + treeView.index(row , column) + " with: " + layersModell.dropIndex)
                                 }
                             }
                             treeView.forceLayout()
@@ -149,7 +130,7 @@ Item {
                             gradient: Gradient{
                                 orientation: Qt.Horizontal
                                 GradientStop{color: "transparent" ; position: 0.0}
-                                GradientStop{id:dropEffectColor;color: Style._darkGray ; position: 0.5 }
+                                GradientStop{id:dropEffectColor;color: Style.disableColor ; position: 0.5 }
                                 GradientStop{color: "transparent" ; position: 1.0}
                             }
                             width: container.width
@@ -164,37 +145,14 @@ Item {
 
                     Drag.dragType: Drag.Automatic
                     Drag.onDragStarted: {
-//                        console.log("drag started")
-//                        console.log(treeView.index(row , column))
+
                         rootItem.layersModell.dragIndex = treeView.index(row, column)
-//                        console.log("drag start")
 
                     }
                     Drag.onDragFinished: {
-//                        console.log("drag finished")
                         Drag.drop();
                     }
-//                    Drag.active: dragHandler.active
-//                    DragHandler {
-//                        id: dragHandler
-//                        target: parent
-//                        xAxis.enabled: false
-//                        yAxis.enabled: true
-//                        //                onActiveChanged:
-//                        //                    console.log("drag");
-//                        onGrabChanged:(trans, point)=>{
-//                                          //drag
-//                                          if(trans === 16){
-//                                              console.log("drag")
-//                                          }
-//                                          if(trans === 32){
-//                                              if(!dropArea.containsDrag){
-//                                              }
-//                                              parent.Drag.drop();
-//                                              console.log("drop")
-//                                          }
-//                                      }
-//                    }
+
                     Binding on Drag.active {
                         value: dragArea.drag.active
                         delayed: true
@@ -213,12 +171,10 @@ Item {
 
                     Rectangle{
                         id: container
-                        width:  parent.width - x - 10
-                        height:   parent.height-10
-                        anchors.verticalCenter: parent.verticalCenter
-                        color:  Style._darkestGray
-                        radius:   Style.radius
-                        x:  ((treeDelegate.depth ) * treeDelegate.indent)
+                        anchors.fill: parent
+                        anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
+                        color: (expanded )? backgroundColor: "transparent"
+                        radius: height/2
                         MouseArea{
                             id: containerMouse
                             anchors.fill: parent
@@ -230,25 +186,17 @@ Item {
                         }
                     }
 
-
-
-
                     HoverHandler{
                         onHoveredChanged: {
                             if(hovered){
-                                container.color = Style._darkGray
-                                label.color = Style.textHoverColor
+                                container.color = backgroundColor
                             }else{
-                                container.color = Style._darkestGray
-                                label.color = Style.textColor
+                                container.color = "transparent"
                             }
                         }
                     }
 
                     TapHandler {
-                        //                        onTapped: {
-
-                        //                        }
                         onPressedChanged: pressed ? label.color = Style.hoverColor : !pressed ? label.color = Style.textColor : Style.textColor
                     }
 
@@ -256,30 +204,39 @@ Item {
 
                     IconImage {
                         id: indicator
-                        source: "qrc:/Resources/arrow.png"
+                        source: "qrc:/Resources/down.png"
                         width: container.height * 0.4 - 2*depth
                         height:container.height * 0.5 - 2*depth
-
+                        color: visibleRole ?  Style.foregroundColor :Style.disableColor
                         anchors.rightMargin: 15
-                        //                            anchors.top :parent.top
                         anchors.right:  parent.right
                         visible: treeDelegate.hasChildren
-                        rotation: treeDelegate.expanded ? -90 : 0
+                        rotation: treeDelegate.expanded ? 180 : 0
                         anchors.verticalCenter: parent.verticalCenter
 
                     }
 
+                    IconImage {
+                        id: itemIcon
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin:depth?(indent) * depth + 10/Style.monitorRatio: 0
+                        source: /*imageSource ??*/ ""
+                        width: 24/Style.monitorRatio
+                        height: 24/Style.monitorRatio
+                        color:Style.foregroundColor
+                    }
+
                     Text {
                         id: label
-                        x: treeDelegate.padding + (treeDelegate.isTreeNode ? (treeDelegate.depth) * treeDelegate.indent : 0) + hideContainer.width*1.3
-                        //                anchors.left: cont
-                        //                width: treeDelegate.width - treeDelegate.padding - x
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: itemIcon.right
+                        anchors.leftMargin: 10/Style.monitorRatio
                         clip: true
-                        font.pixelSize: 16 - depth
-                        anchors.verticalCenter: container.verticalCenter
-                        color: Style.textColor
+                        font.pixelSize: 17/Style.monitorRatio
+                        font.weight: Font.Medium
+                        color: visibleRole ?  Style.foregroundColor :Style.disableColor
                         text: display
-                        //                anchors.margins: 5
                     }
 
 
@@ -297,17 +254,14 @@ Item {
                             width: parent.width
                             height: parent.height
                             anchors.centerIn: parent
-                            color: visibleRole ?  Style._mainBlue : "red"
+                            color: visibleRole ?  Style.foregroundColor :Style.disableColor
+
 
                         }
                         MouseArea{
                             id:hideBtn
-                            //                    enabled: visibleRole
                             hoverEnabled: true
                             anchors.fill: hideContainer
-//                            onEntered: eye.color = Style._mainYellow
-//                            onExited: visibleRole ? eye.color = Style._mainBlue : eye.color = "red"
-
                             onClicked: function() {
                                 rootItem.layersModell.onVisibleItemClicked(treeView.index(row , column))
                             }
@@ -325,22 +279,18 @@ Item {
                             }
                             MenuItem {
                                 text: "Shift Up"
-//                                enabled: row === 0 ? false:true
                                 icon.source: "./Resources/48/arrow-outline-up.png"
                                 icon.color: Style._persianGreen
                                 onClicked: {
-//                                    rootItem.layersModell.dropIndex = treeView.index(row-1 , column)
                                     rootItem.layersModell.onMoveItem(treeView.index(row , column), treeView.index(row-1 , column))
                                 }
 
                             }
                             MenuItem {
                                 text: "Shift Down"
-//                                enabled: row === treeView.index(row , column).parent().rowCount() ? false:true
                                 icon.source: "./Resources/48/arrow-outline-down.png"
                                 icon.color: Style._persianGreen
                                 onClicked: {
-//                                    rootItem.layersModell.dropIndex= treeView.index(row+1 , column)
                                     rootItem.layersModell.onMoveItem(treeView.index(row , column), treeView.index(row+1 , column))
                                 }
                             }
@@ -349,6 +299,8 @@ Item {
                 }
             }
         }
+
     }
+
 }
 

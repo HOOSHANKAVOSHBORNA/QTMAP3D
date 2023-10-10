@@ -5,6 +5,8 @@
 
 #include <osgEarth/GLUtils>
 
+#include <utility.h>
+
 int DrawPolygon::mCount{0};
 DrawPolygon::DrawPolygon(QObject *parent): DrawShape(parent)
 {
@@ -13,6 +15,8 @@ DrawPolygon::DrawPolygon(QObject *parent): DrawShape(parent)
 
 bool DrawPolygon::setup()
 {
+    connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawPolygon::addUpdatePolygon);
+
     auto toolboxItem =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawPolygon::onPolygonItemCheck);
     toolbox()->addItem(toolboxItem);
@@ -45,6 +49,29 @@ void DrawPolygon::onPolygonItemCheck(bool check)
         hideProperty();
         mapItem()->removeNode(iconNode());
     }
+}
+
+void DrawPolygon::addUpdatePolygon(PolygonData *polygonData)
+{
+    Polygon *polygon;
+    if (!mPolygonMap.contains(polygonData->id)) {
+        polygon = new Polygon(mapItem());
+        polygonData->layer->addChild(polygon);
+        mPolygonMap[polygonData->id] = polygon;
+    }
+    else {
+        polygon = mPolygonMap[polygonData->id];
+        polygon->clearPoints();
+    }
+    polygon->setName(polygonData->name);
+    for (auto point: polygonData->points){
+        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
+        polygon->addPoint(geopos);
+    }
+    polygon->setHeight(10);
+    QColor color(QString::fromStdString(polygonData->color));
+    polygon->setFillColor(Utility::qColor2osgEarthColor(color));
+//    polygon->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 }
 
 void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)

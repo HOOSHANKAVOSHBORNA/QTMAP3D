@@ -37,6 +37,7 @@ int TreeItem::columnCount() const
     return m_itemData.count();
 }
 
+
 QVariant TreeItem::data(int column) const
 {
     if (column < 0 || column >= m_itemData.size())
@@ -186,6 +187,12 @@ int Toolbox::rowCount(const QModelIndex &parent) const
     return parentItem->childCount();
 }
 
+int Toolbox::childCount(QModelIndex index)
+{
+    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+    return item->childCount();
+}
+
 int Toolbox::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
@@ -226,6 +233,11 @@ ToolboxProxyModel::ToolboxProxyModel(QObject *parent):
     QSortFilterProxyModel(parent)
 {
     setDynamicSortFilter(true);
+}
+
+int ToolboxProxyModel::childCount(QModelIndex index)
+{
+    return dynamic_cast<Toolbox*>(sourceModel())->childCount(mapToSource(index));
 }
 
 bool ToolboxProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
