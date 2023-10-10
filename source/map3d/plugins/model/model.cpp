@@ -106,44 +106,11 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
 {
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-        if (mSelectedModelNode && mSelectedModelNode != modelNode){
-//            mSelectedModelNode->getGeoTransform()->removeChild(mCircle);
-//            mCircle = nullptr;
-//            mSelectedModelNode->getGeoTransform()->removeChild(mCone);
-//            mCone = nullptr;
-            mSelectedModelNode->selectModel(false);
-           // mSelectedModelNode->getOrCreateStateSet()->removeAttribute(mPm.get());
-        }
         if(modelNode){
-
-            mSelectedModelNode = modelNode;
-            mClicked = true;
-//            qDebug()<<"model name: "<<mSelectedModelNode->getName();
-            mSelectedModelNode->selectModel(true);
-
-            mPm = new osg::PolygonMode;
-            mPm->setMode(osg::PolygonMode::FRONT_AND_BACK,
-                        osg::PolygonMode::LINE);
-
-            //mSelectedModelNode->getOrCreateStateSet()->setAttribute(mPm.get());
-
-
-
-
-
-
-
-//            osg::ref_ptr<osgFX::Outline> outline = new osgFX::Outline;
-//            outline->setWidth( 2 );
-//            outline->setColor( osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) );
-//            outline->addChild(mSelectedModelNode);
-//            mapItem()->getViewer()->getCamera()->setClearMask(
-//                GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT
-//                );
-//            mapItem()->getViewer()->setSceneData( outline.get() );
+            modelNode->selectModel();
         }
-    if(mState == State::NONE)
-        return false;
+        if(mState == State::NONE)
+            return false;
         if (mState == State::READY) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initModel(geoPos);
@@ -162,13 +129,10 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         return false;
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
-        //mCurrentModel->setScalability(false);
         confirm();
 
         return false;
     }
-
-    mClicked = false;
     return false;
 }
 
@@ -180,27 +144,11 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
         mIconNode->setPosition(geoPos);
     }
 
-
-    //    if(mState == State::MOVING){
-    //        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-    //        moving(geoPos);
-    //        return true;
-    //    }
-    //--------------------------------
     return false;
 }
 
 bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-
-
-//    if (mCircle){
-//        mCircle->setScale(mSelectedModelNode->getScale());
-//        mCone->setScale(mSelectedModelNode->getScale());
-
-//    }
-
-
     return false;
 }
 
@@ -295,21 +243,10 @@ void Model::onStatusItemCheck(bool check)
     }
 }
 
-
 void Model::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
-    if(mIs3D && mCircle){
-
-//        mCircle->setRadius(osgEarth::Distance(mCurrentModelSize, osgEarth::Units::METERS));
-//        mCone->setRadius(osgEarth::Distance(mCurrentModelSize/2, osgEarth::Units::METERS));
-//        mCone->setHeight(osgEarth::Distance(mCurrentModelSize/2, osgEarth::Units::METERS));
-    }
-    else if(!mIs3D && mSphere){
-//        mCircle->setRadius(osgEarth::Distance(3, osgEarth::Units::METERS));
-    }
 }
-
 
 void Model::addUpdateFlyableNode(NodeData *nodeData)
 {
@@ -483,7 +420,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     }
 
 
-;
+    ;
     setState(State::MOVING);
     mCount++;
 }
@@ -583,89 +520,10 @@ SimpleModelNode *Model::pick(float x, float y)
                                            bb.zMax()-bb.zMin()) *
                         osg::Matrix::translate(worldCenter) );
 
-
-
-//                    if (!mCircle){
-//                        //---circle indicator------------------------------------------------------
-//                        mCircle = new Circle();
-//                        mCurrentModelSize = hit.drawable->getBoundingBox().yMax();
-//                        mCircle->setFillColor(osg::Vec4f(0,0.6,0.6,0));
-//                        mCircle->setStrokeColor(osg::Vec4f(0,1,0,1));
-//                        mCircle->setStrokeWidth(2);
-//                        mCircle->setRadius(osgEarth::Distance(mCurrentModelSize, osgEarth::Units::METERS));
-//                        simpleModelNode->getPositionAttitudeTransform()->setPivotPoint(osg::Vec3d(-0.2, -0.15, 0));
-//                        simpleModelNode->getGeoTransform()->addChild(mCircle);
-//                        mCircle->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.01));
-//                        //---coneIndicator----------------------------------------------------------
-//                        mCone = new Cone();
-//                        mCone->setFillColor(osg::Vec4f(0,1,0,0.4));
-//                        mCone->setRadius(osgEarth::Distance(mCurrentModelSize/2, osgEarth::Units::METERS));
-//                        mCone->setHeight(osgEarth::Distance(mCurrentModelSize, osgEarth::Units::METERS));
-//                        mCone->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
-//                        mCone->setCenter(osg::Vec3d(0,0,-hit.drawable->getBoundingBox().zMax()*3));
-//                        simpleModelNode->getGeoTransform()->addChild(mCone);
-//                        mCone->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0));
-//                        //--------------------------------------------------------------------------
-//                    }
                     return simpleModelNode;
                 }
             }
         }
     }
     return simpleModelNode;
-}
-
-void Model::updateModelDataLabel(std::string name)
-{
-    if (!mRenderImage) {
-        mRenderImage = new QImage(
-            LABEL_IMAGE_WIDTH,
-            LABEL_IMAGE_HEIGHT,
-            QImage::Format_RGBA8888
-            );
-    }
-    if(!mImageLabel.valid())
-        mImageLabel = new osg::Image;
-
-    {
-
-        mRenderImage->fill(QColor(Qt::transparent));
-        QPainter *painter = new QPainter(mRenderImage);
-        painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-
-        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
-        static const QFont textFont("SourceSansPro", 10, QFont::Normal);
-        static const QPen  textPen(QColor(255, 255, 255));
-
-
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(backgroundBrush);
-        painter->drawRoundedRect(
-            mRenderImage->rect(),
-            10,2);
-
-
-        painter->setPen(textPen);
-        painter->setFont(textFont);
-
-        painter->drawText(0, 0, LABEL_IMAGE_WIDTH, 20,
-                         Qt::AlignCenter|Qt::AlignVCenter,
-                         QString::fromStdString(name));
-
-    *mRenderImage = mRenderImage->mirrored(false, true);
-
-    mImageLabel->setImage(LABEL_IMAGE_WIDTH,
-                          LABEL_IMAGE_HEIGHT,
-                          1,
-                          GL_RGBA,
-                          GL_RGBA,
-                          GL_UNSIGNED_BYTE,
-                          mRenderImage->bits(),
-                          osg::Image::AllocationMode::NO_DELETE);
-}
-}
-
-bool Model::clicked() const
-{
-    return mClicked;
 }

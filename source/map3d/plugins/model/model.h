@@ -7,16 +7,9 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include "simpleModelNode.h"
-
 #include <osg/PolygonMode>
 #include <osg/Fog>
-#include "sphereNode.h"
-#include "circle.h"
-
 #include <statusnode.h>
-
-#include "cone.h"
-
 
 #define MODEL "Model"
 #define TREE "Tree"
@@ -57,10 +50,9 @@ public:
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
-    bool clicked() const;
 
-public slots:
     static osgEarth::Symbology::Style &getDefaultStyle();
+public slots:
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
@@ -76,43 +68,31 @@ protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
     void moving(osgEarth::GeoPoint &geoPos);;
     void confirm();
-    void cancel();;
+    void cancel();
+
 private:
+    SimpleModelNode* pick(float x, float y);
+
+private:
+    Type mType;
+    static int mCount;
+    bool mIs3D;
     State mState{State::NONE};
+
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mSimpleNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
+
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     osg::ref_ptr<StatusNode> mStatusModel {nullptr};
 
-    SimpleModelNode* pick(float x, float y);
-    SimpleModelNode* mSelectedModelNode{nullptr};
-    bool mClicked{false};
-    osg::ref_ptr<osg::PolygonMode> mPm;
-    Type mType;
-    osg::ref_ptr<SphereNode> mSphere{nullptr};
-    osg::ref_ptr<Circle> mCircle{nullptr};
-    osg::ref_ptr<Cone> mCone{nullptr};
-    static int mCount;
-    double mCurrentModelSize;
-    bool mIs3D;
-private:
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
     QMap<int, osg::ref_ptr<StatusNode>> mStatusNodeMap;
     QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
-
-
-    QImage *mRenderImage{nullptr};
-    static constexpr int LABEL_IMAGE_WIDTH = 90;
-    static constexpr int LABEL_IMAGE_HEIGHT = 20;
-    void updateModelDataLabel(std::string name);
-    osg::ref_ptr<osg::Image> mImageLabel;
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> mLabelNode;
-
 };
 
 #endif // MODEL_H
