@@ -95,7 +95,7 @@ Item {
                     required property bool selected
                     required property bool current
 
-                    implicitWidth: treeView.width
+                    implicitWidth: treeView.width ?? 0
                     implicitHeight:  30/Style.monitorRatio
 
                     //vertical line for item children
