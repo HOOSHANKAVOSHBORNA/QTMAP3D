@@ -5,7 +5,7 @@
 #include <QString>
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgEarthAnnotation/GeoPositionNode>
-#include <osgEarthAnnotation/ModelNode>
+#include <osgEarthAnnotation/PlaceNode>
 #include "mapItem.h"
 #include "serviceManager.h"
 #include <QPainter>
@@ -13,9 +13,8 @@
 #include <osg/ref_ptr>
 
 
-class StatusNode : public QObject, public osgEarth::Annotation::ModelNode
+class StatusNode : public osgEarth::Annotation::PlaceNode
 {
-    Q_OBJECT
 public:
     struct Data
     {
@@ -23,7 +22,7 @@ public:
         QVariant value;
     };
 
-    StatusNode(MapItem* mapControler, QObject *parent = nullptr);
+    StatusNode(MapItem* mapControler);
     void setData(QString title, std::list<Data> *dataList);
     StatusNodeData *nodeData() const;
     void setNodeData(StatusNodeData *newNodeData);
@@ -31,16 +30,13 @@ public:
 private:
     void createImageNode();
 private:
-    osg::ref_ptr<osg::AutoTransform> mAutoTransform;
     QString mTitle;
     std::list<Data> *mDataList{nullptr};
     QImage *mRenderImage{nullptr};
-////    int LABEL_IMAGE_WIDTH = 70;
-//    osg::ref_ptr<osg::Image> mStatusImg;
-//    osg::ref_ptr<osg::Geode> mImgNode;
     MapItem *mMapItem;
     QPainter *mPainter;
     StatusNodeData *mNodeData;
+    QFont mFont;
 };
 
 #endif // STATUSNODE_H
