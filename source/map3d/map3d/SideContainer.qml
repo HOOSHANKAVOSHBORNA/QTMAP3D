@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import "style"
 
 ColumnLayout{
 
@@ -16,14 +17,62 @@ ColumnLayout{
     clip: true
     TabBar {
         id: tabBar
+contentWidth: rootItem.model.count ?parent.width - 40 /Style.monitorRatio: 0
+Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
+
+                clip: true
         Repeater {
             id: repeater
             model: rootItem.model
 
             TabButton {
                 id:tb
-                width: visible ? implicitWidth + 10 :0
-                text: name ?? "unknown"
+
+                width:{
+                    if (rootItem.model.count === 1){
+
+                        return implicitWidth
+                    }else{
+                        if(tabBar.currentIndex === index){
+                            return implicitWidth
+                        }
+                        else return (tabBar.width - implicitWidth*2) / rootItem.model.count
+                    }
+                    }
+
+
+
+
+
+//                    if (rootItem.model.count){
+//                        if(tabBar.currentIndex === index){
+//                            return txt.implicitWidth
+//                        }
+////                        else return (parent.width - tabBar.implicitWidth) / (rootItem.model.count - 1)
+//                    }
+//                    else return 0
+//                }
+
+
+
+
+//                    (tabBar.currentIndex === index) ? implicitWidth + 10 :50
+                contentItem: Text {
+                    id:txt
+                    text: name ?? "unknown"
+                    font: Style.fontFamily
+                    opacity: enabled ? 1.0 : 0.3
+                    color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+
+                background:Rectangle{
+                        color:"transparent"
+                    }
+
+
                 onDoubleClicked: {
                     var docItem = stackLayout.data[index]
                     docItem.state = "undocked"
