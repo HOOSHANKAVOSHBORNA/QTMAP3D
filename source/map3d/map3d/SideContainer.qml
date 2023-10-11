@@ -36,27 +36,10 @@ Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
                         if(tabBar.currentIndex === index){
                             return implicitWidth
                         }
-                        else return (tabBar.width - implicitWidth*2) / rootItem.model.count
+//                        else return (tabBar.width - implicitWidth*2) / rootItem.model.count
                     }
                     }
 
-
-
-
-
-//                    if (rootItem.model.count){
-//                        if(tabBar.currentIndex === index){
-//                            return txt.implicitWidth
-//                        }
-////                        else return (parent.width - tabBar.implicitWidth) / (rootItem.model.count - 1)
-//                    }
-//                    else return 0
-//                }
-
-
-
-
-//                    (tabBar.currentIndex === index) ? implicitWidth + 10 :50
                 contentItem: Text {
                     id:txt
                     text: name ?? "unknown"
