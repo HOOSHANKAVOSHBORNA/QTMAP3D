@@ -368,6 +368,7 @@ radius: 10/Style.monitorRatio
                                     implicitHeight: 100/Style.monitorRatio
                                     color: Style.backgroundColor
                                     radius: 15/Style.monitorRatio
+                                    opacity: .85
 
 
                                 }
