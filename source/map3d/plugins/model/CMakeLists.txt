@@ -17,16 +17,16 @@ add_library(model SHARED
     model.cpp
     simpleModelNode.h
     simpleModelNode.cpp
-    MoveableModelNode.h
-    MoveableModelNode.cpp
+    moveableModelNode.h
+    moveableModelNode.cpp
     flyableModelNode.h
     flyableModelNode.cpp
     modelAutoScaler.h
     modelautoscaler.cpp
     model.json
     model.qrc
-    statusnode.cpp
-    statusnode.h
+    statusNode.cpp
+    statusNode.h
 )
 
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

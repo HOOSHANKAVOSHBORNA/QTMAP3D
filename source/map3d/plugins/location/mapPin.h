@@ -7,7 +7,7 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include "mapItem.h"
 #include "modelAutoScaler.h"
-#include "statusnode.h"
+#include "statusNode.h"
 
 
 
@@ -37,7 +37,7 @@ private:
     StatusNode *mStatus;
     MapItem mMapItem;
     QString mTitle;
-    std::list<StatusNode::Data> mDataList;
+    std::vector<NodeFieldData> mDataList;
 
 
 

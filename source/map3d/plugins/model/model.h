@@ -9,7 +9,7 @@
 #include "simpleModelNode.h"
 #include <osg/PolygonMode>
 #include <osg/Fog>
-#include <statusnode.h>
+#include <statusNode.h>
 
 #define MODEL "Model"
 #define TREE "Tree"

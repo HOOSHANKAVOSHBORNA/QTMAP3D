@@ -1,6 +1,6 @@
 #include "model.h"
 #include "mapItem.h"
-#include "MoveableModelNode.h"
+#include "moveableModelNode.h"
 #include "flyableModelNode.h"
 #include "serviceManager.h"
 #include <osgEarth/GLUtils>
@@ -301,15 +301,8 @@ void Model::addUpdateStatusNode(StatusNodeData *statusnNodeData)
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), statusnNodeData->longitude, statusnNodeData->latitude, statusnNodeData->altitude);
     osg::ref_ptr<StatusNode> statusNode;
 
-    std::list<StatusNode::Data> dataList;
-    for(auto& data: statusnNodeData->data) {
-        qDebug() << data.value;
-        dataList.push_back(StatusNode::Data{data.name, data.value});
-    }
-
     if(!mStatusNodeMap.contains(statusnNodeData->id)){
         statusNode = new StatusNode(mapItem());
-        statusNode->setData(QString::fromStdString(statusnNodeData->name), &dataList);
         mStatusNodeMap[statusnNodeData->id] = statusNode;
     }
     else{
@@ -384,20 +377,20 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         name = "Status" + QString::number(mCount);
         mStatusModel = new StatusNode(mapItem());
         {
-            StatusNode::Data data;
+            NodeFieldData data;
             data.name = "name";
             data.value = 10;
-            StatusNode::Data data1;
+            NodeFieldData data1;
             data1.name = "name";
             data1.value = 30000;
-            StatusNode::Data data2;
+            NodeFieldData data2;
             data2.name = "name";
             data2.value = "kasjdf";
-            std::list<StatusNode::Data> dataList;
+            std::vector<NodeFieldData> dataList;
             dataList.push_back(data);
             dataList.push_back(data1);
             dataList.push_back(data2);
-            mStatusModel->setData("title", &dataList);
+            mStatusModel->setFieldData("title", dataList);
         }
 
         if(!mModelNodeLayer->containsLayer(mStatusNodelLayer)){

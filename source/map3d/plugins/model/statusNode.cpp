@@ -1,4 +1,4 @@
-#include "statusnode.h"
+#include "statusNode.h"
 #include <QColor>
 #include <osg/AutoTransform>
 #include <osg/Depth>
@@ -28,18 +28,21 @@ StatusNode::StatusNode(MapItem *mapControler)
     setStyle(rootStyle);
 //    setOcclusionCulling(true);
 //    setOcclusionCullingMaxAltitude(20000000);
-//    setPriority(FLT_MAX);
+    //    setPriority(FLT_MAX);
 }
 
-void StatusNode::setData(QString title, std::list<Data> *dataList)
+StatusNode::~StatusNode()
+{
+
+}
+
+void StatusNode::setFieldData(QString title, const std::vector<NodeFieldData>& data)
 {
     mTitle = title;
-    mDataList = dataList;
-
-    createImageNode();
+    compile(data);
 }
 
-void StatusNode::createImageNode()
+void StatusNode::compile(const std::vector<NodeFieldData>& data)
 {
 //    int cellHeight = 22;
 //    int height = cellHeight + 2 + 2;
@@ -49,23 +52,23 @@ void StatusNode::createImageNode()
 //        height += mDataList->size() * cellHeight;
 //    }
 
-//    if (!mRenderImage) {
-//        mRenderImage = new QImage(
+//    if (!mTitleImage) {
+//        mTitleImage = new QImage(
 //            width,
 //            height,
 //            QImage::Format_RGBA8888
 //            );
 //    } else {
-//        mRenderImage->~QImage();
-//        mRenderImage = new(mRenderImage) QImage(
+//        mTitleImage->~QImage();
+//        mTitleImage = new(mTitleImage) QImage(
 //            width,
 //            height,
 //            QImage::Format_RGBA8888
 //            );
 //    }
 //    //--------------------------------------------------------------------------
-//    mRenderImage->fill(QColor(Qt::transparent));
-//    QPainter painter(mRenderImage);
+//    mTitleImage->fill(QColor(Qt::transparent));
+//    QPainter painter(mTitleImage);
 //    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
 //    QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
@@ -79,7 +82,7 @@ void StatusNode::createImageNode()
 
 //    painter.setPen(Qt::NoPen);
 //    painter.setBrush(backgroundBrush);
-//    painter.drawRoundedRect(mRenderImage->rect(), 8, 8);
+//    painter.drawRoundedRect(mTitleImage->rect(), 8, 8);
 //    painter.setBrush(QBrush(QColor(26, 77, 46, int(255 * 0.2f))));
 //    painter.drawRoundedRect(
 //        QRect(0, 0, width, cellHeight + 1),
@@ -119,7 +122,7 @@ void StatusNode::createImageNode()
 //        }
 //    painter.end();
 
-//    *mRenderImage = mRenderImage->mirrored(false, true);
+//    *mTitleImage = mTitleImage->mirrored(false, true);
 
 //    osg::ref_ptr<osg::Image> osgImage = new osg::Image;
 //    osgImage->setImage(width,
@@ -128,7 +131,7 @@ void StatusNode::createImageNode()
 //                       GL_RGBA,
 //                       GL_RGBA,
 //                       GL_UNSIGNED_BYTE,
-//                       mRenderImage->bits(),
+//                       mTitleImage->bits(),
 //                       osg::Image::AllocationMode::NO_DELETE);
 
     int height = 22;
@@ -136,33 +139,32 @@ void StatusNode::createImageNode()
     //--data--------------------------------------------------------------
     QFontMetrics fm(mFont);
     width = fm.horizontalAdvance(mTitle);;
-    std::string text = "-----------\n";
-    if(mDataList)
-        for (const auto& data: *mDataList){
-            QString str = (data.name + ": "+ data.value.toString() +"\n");
-            int widthStr = fm.horizontalAdvance(str);
-            if(widthStr > width)
-                width = widthStr;
-            text += str.toStdString();
-        }
+    std::string text = "";
+    for (const auto& data: data){
+        QString str = (data.name + ": "+ data.value.toString() +"\n");
+        int widthStr = fm.horizontalAdvance(str);
+        if(widthStr > width)
+            width = widthStr;
+        text += str.toStdString();
+    }
    //-----------------------------------------------------------------------
-    if (!mRenderImage) {
-        mRenderImage = new QImage(
+    if (!mTitleImage) {
+        mTitleImage = new QImage(
             width,
             height,
             QImage::Format_RGBA8888
             );
     } else {
-        mRenderImage->~QImage();
-        mRenderImage = new(mRenderImage) QImage(
+        mTitleImage->~QImage();
+        mTitleImage = new(mTitleImage) QImage(
             width,
             height,
             QImage::Format_RGBA8888
             );
     }
     //--------------------------------------------------------------------------
-    mRenderImage->fill(QColor(Qt::transparent));
-    QPainter painter(mRenderImage);
+    mTitleImage->fill(QColor(Qt::transparent));
+    QPainter painter(mTitleImage);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
     QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.1f)));
@@ -171,7 +173,7 @@ void StatusNode::createImageNode()
 
     painter.setPen(Qt::NoPen);
     painter.setBrush(backgroundBrush);
-    painter.drawRoundedRect(mRenderImage->rect(), 5, 5);
+    painter.drawRoundedRect(mTitleImage->rect(), 5, 5);
     painter.setBrush(QBrush(QColor(26, 77, 46, int(255 * 0.1f))));
     painter.drawRoundedRect(QRect(0, 0, width, height), 5, 5);
     //--title---------------------------------------------------------------
@@ -182,7 +184,7 @@ void StatusNode::createImageNode()
                      mTitle);
     painter.end();
 
-    *mRenderImage = mRenderImage->mirrored(false, true);
+    *mTitleImage = mTitleImage->mirrored(false, true);
 
     osg::ref_ptr<osg::Image> osgImage = new osg::Image;
     osgImage->setImage(width,
@@ -191,7 +193,7 @@ void StatusNode::createImageNode()
                        GL_RGBA,
                        GL_RGBA,
                        GL_UNSIGNED_BYTE,
-                       mRenderImage->bits(),
+                       mTitleImage->bits(),
                        osg::Image::AllocationMode::NO_DELETE);
     setIconImage(osgImage);
     setText(text);
@@ -205,4 +207,5 @@ StatusNodeData *StatusNode::nodeData() const
 void StatusNode::setNodeData(StatusNodeData *newNodeData)
 {
     mNodeData = newNodeData;
+    setFieldData(QString::fromStdString(newNodeData->name), newNodeData->data);
 }
