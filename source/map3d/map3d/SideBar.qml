@@ -163,48 +163,7 @@ Rectangle {
                                     container.state = "pin"
                                 }
                             },
-                            "rr": function (checked) {
-                                if (checked && mainWindow.toolbox) {
-                                    let toolboxx = Qt.createComponent("ToolboxView.qml");
-                                    if (toolboxx.status === Component.Ready) {
-                                        toolboxItem = toolboxx.createObject(null, {});
-                                        toolboxItem.listModel = mainWindow.toolbox
-                                        addToLeftContainer(toolboxItem, "Toolbox")
-                                    } else {
-                                        print("can not load toolbox.");
-                                    }
-                                } else {
-                                    removeFromLeftContainer(toolboxItem)
-                                }
-                            },
-                            "rr1": function (checked) {
-                                if (checked && mainWindow.toolbox) {
-                                    let toolboxx = Qt.createComponent("ToolboxView.qml");
-                                    if (toolboxx.status === Component.Ready) {
-                                        toolboxItem = toolboxx.createObject(null, {});
-                                        toolboxItem.listModel = mainWindow.toolbox
-                                        addToLeftContainer(toolboxItem, "Toolbox")
-                                    } else {
-                                        print("can not load toolbox.");
-                                    }
-                                } else {
-                                    removeFromLeftContainer(toolboxItem)
-                                }
-                            },
-                            "rr2": function (checked) {
-                                if (checked && mainWindow.toolbox) {
-                                    let toolboxx = Qt.createComponent("ToolboxView.qml");
-                                    if (toolboxx.status === Component.Ready) {
-                                        toolboxItem = toolboxx.createObject(null, {});
-                                        toolboxItem.listModel = mainWindow.toolbox
-                                        addToLeftContainer(toolboxItem, "Toolbox")
-                                    } else {
-                                        print("can not load toolbox.");
-                                    }
-                                } else {
-                                    removeFromLeftContainer(toolboxItem)
-                                }
-                            },
+
                         }
 
                         ListElement {
@@ -235,21 +194,6 @@ Rectangle {
                         ListElement {
                             label: "hand"
                             iconSource: "qrc:/Resources/hand.png"
-                        }
-
-                        ListElement {
-                            label: "rr"
-                            iconSource: "qrc:/Resources/toolbox.png"
-                        }
-
-                        ListElement {
-                            label: "rr1"
-                            iconSource: "qrc:/Resources/toolbox.png"
-                        }
-
-                        ListElement {
-                            label: "toolbox"
-                            iconSource: "qrc:/Resources/toolbox.png"
                         }
                     }
 
