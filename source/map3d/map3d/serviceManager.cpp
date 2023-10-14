@@ -181,10 +181,10 @@ void ServiceManager::polygonData(QJsonObject jsonObject)
 
     QJsonArray points = jsonObject.value("Points").toArray();
     for (auto i : points) {
-        QVector3D point;
-        point.setX(i.toObject().value("Longitude").toDouble());
-        point.setY(i.toObject().value("Latitude").toDouble());
-        point.setZ(i.toObject().value("Altitude").toDouble());
+        osg::Vec3d point;
+        point.x() = i.toObject().value("Longitude").toDouble();
+        point.y() = i.toObject().value("Latitude").toDouble();
+        point.z() = i.toObject().value("Altitude").toDouble();
         polygonData->points.push_back(point);
     }
     int layerId = jsonObject.value("LayerId").toInt();
