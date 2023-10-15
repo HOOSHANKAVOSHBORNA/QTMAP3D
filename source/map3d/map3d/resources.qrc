@@ -500,5 +500,6 @@
         <file>Resources/easy-to-find.png</file>
         <file>Resources/square.png</file>
         <file>Resources/aircraft.png</file>
+        <file>Resources/Qarch.png</file>
     </qresource>
 </RCC>

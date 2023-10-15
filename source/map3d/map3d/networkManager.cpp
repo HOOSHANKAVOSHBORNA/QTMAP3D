@@ -32,7 +32,7 @@ void NetworkManager::dataMessageReceived()
         return;
 
     QAmqpMessage message = queue->dequeue();
-    qDebug() << "message: " << message.payload();
+//    qDebug() << "message: " << message.payload();
     mServiceManager->messageData(message.payload());
 }
 

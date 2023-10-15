@@ -6,8 +6,8 @@
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include "mapItem.h"
-#include "modelAutoScaler.h"
-#include "statusnode.h"
+//#include "modelAutoScaler.h"
+#include "statusNode.h"
 
 
 
@@ -33,11 +33,11 @@ private:
     osg::ref_ptr<osg::Switch> mSwitchNode{nullptr};
     osg::ref_ptr<osg::Node> m3DPin;
     osg::ref_ptr<osg::Geode> m2DPin;
-    ModelAutoScaler *mScaler;
+//    ModelAutoScaler *mScaler;
     StatusNode *mStatus;
     MapItem mMapItem;
     QString mTitle;
-    std::list<StatusNode::Data> mDataList;
+    std::vector<NodeFieldData> mDataList;
 
 
 

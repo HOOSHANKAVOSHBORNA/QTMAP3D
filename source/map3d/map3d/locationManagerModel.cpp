@@ -157,8 +157,20 @@ MapItem *LocationManagerModel::mapItem() const
 }
 
 // ------------------------------------------------------- proxy model methods
-LocationManagerProxyModel::LocationManagerProxyModel(QObject *parent)
-{}
+LocationManagerProxyModel *LocationManagerProxyModel::mInstance = nullptr;
+
+LocationManagerProxyModel::LocationManagerProxyModel()
+{
+
+}
+
+LocationManagerProxyModel *LocationManagerProxyModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    if(mInstance == nullptr){ mInstance = new LocationManagerProxyModel(); }
+    return mInstance;
+}
 
 void LocationManagerProxyModel::myRemoveRow(const QModelIndex &index)
 {

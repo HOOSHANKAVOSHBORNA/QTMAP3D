@@ -9,28 +9,41 @@
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/GeoPositionNode>
 
+LayersModel *LayersModel::mInstance = nullptr;
 
-LayersModel::LayersModel(MapItem *mapItem, QObject *parent) :
-    TreeProxyModel(parent)
+LayersModel::LayersModel()
+{
+
+}
+
+LayersModel *LayersModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    if(mInstance == nullptr){ mInstance = new LayersModel(); }
+    return mInstance;
+}
+
+void LayersModel::initialize(MapItem *mapItem)
 {
     mSourceModel = new QStandardItemModel;
     mMapItem = mapItem;
 
     initializeModel(mapItem->getMapNode()->getMap());
     setSourceModel(mSourceModel);
-//    connect(mapItem, &MapItem::layerChanged,[this, mapItem](){
-//        mTreeModel->removeRows(0,mTreeModel->rowCount());
-//        initializeModel(mapItem->getMapNode()->getMap());
-//    });
+    //    connect(mapItem, &MapItem::layerChanged,[this, mapItem](){
+    //        mTreeModel->removeRows(0,mTreeModel->rowCount());
+    //        initializeModel(mapItem->getMapNode()->getMap());
+    //    });
     connect(mapItem, &MapItem::mapCleared,[this, mapItem](){
         mSourceModel->clear();
         initializeModel(mapItem->getMapNode()->getMap());
     });
     connect(mapItem->getMapObject(), &MapObject::layerAdded,this ,&LayersModel::onLayerAdded);
     connect(mapItem->getMapObject(), &MapObject::layerRemoved,this ,&LayersModel::onLayerRemoved);
-//    connect(mapItem->getMapObject(), &MapObject::nodeToLayerAdded,this ,&LayersModel::onNodeToLayerAdded);
-//    connect(mapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,this ,&LayersModel::onNodeFromLayerRemoved);
-//    connect(mapItem->getMapObject(), &MapObject::parentLayerChanged,this ,&LayersModel::onParentLayerChanged);
+    //    connect(mapItem->getMapObject(), &MapObject::nodeToLayerAdded,this ,&LayersModel::onNodeToLayerAdded);
+    //    connect(mapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,this ,&LayersModel::onNodeFromLayerRemoved);
+    //    connect(mapItem->getMapObject(), &MapObject::parentLayerChanged,this ,&LayersModel::onParentLayerChanged);
 }
 
 void LayersModel::initializeModel(osgEarth::Map *map)

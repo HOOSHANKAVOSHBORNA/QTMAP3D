@@ -24,7 +24,7 @@ private:
 private:
     NetworkManager *mNetworkManager;
     QVector<NodeData> mNodeDataList;
-    int mMaxNumber{5};
+    int mMaxNumber{20};
 };
 
 #endif // NODETEST_H

@@ -10,10 +10,11 @@ class Polygon : public osgEarth::Annotation::FeatureNode
 public:
     Polygon(MapItem *mapItem);
     ~Polygon();
+    void create(std::vector<osg::Vec3d> *points);
     void addPoint(osgEarth::GeoPoint point);
     void clearPoints();
     void removePoint();
-    double getSize()const;
+    double getSize();
 
     void setFillColor(osgEarth::Color color);
     osgEarth::Color getFillColor() const;
@@ -41,18 +42,8 @@ private:
 
 private:
     MapItem* mMapItem{nullptr};
-    osg::ref_ptr<osgEarth::Features::Geometry> mPolygonGeom;
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mPlaceNode;
 
-//    struct LabelData {
-//        QImage *qImage{nullptr};
-//        osg::ref_ptr<osg::Image> image;
-//        double area;
-//        double volume;
-//        osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode;
-//    };
-    //osg::ref_ptr<osg::Group> mLabelGroup;
-    //std::vector<LabelData> mVecLabelData;
     osgEarth::Color mFillColor{osgEarth::Color::White};
     osgEarth::Color mStrokeColor{osgEarth::Color::White};
     float mStrokeWidth{5};

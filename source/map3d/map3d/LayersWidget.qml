@@ -89,7 +89,7 @@ Item {
 
                 delegate: Item {
                     id: treeDelegate
-                    implicitWidth: treeView.width
+                    implicitWidth: treeView ? treeView.width ?? 0 : 0
                     implicitHeight:  30/Style.monitorRatio
                     readonly property real indent: 30
                     readonly property real padding: 5
@@ -104,7 +104,7 @@ Item {
                         anchors.left: parent.left
                         anchors.leftMargin: indent * depth
                         width: 2/Style.monitorRatio
-                        height: parent.height + treeView.rowSpacing
+                        height: parent.height + (treeView ? treeView.rowSpacing ?? 0 : 0)
                         visible: depth
                         color: Style.foregroundColor
                         opacity: 0.2
@@ -208,7 +208,7 @@ Item {
                         width: container.height * 0.4 - 2*depth
                         height:container.height * 0.5 - 2*depth
                         color: visibleRole ?  Style.foregroundColor :Style.disableColor
-                        anchors.rightMargin: 15
+                        anchors.rightMargin: 15/Style.monitorRatio
                         anchors.right:  parent.right
                         visible: treeDelegate.hasChildren
                         rotation: treeDelegate.expanded ? 180 : 0
@@ -239,7 +239,6 @@ Item {
                         text: display
                     }
 
-
                     Rectangle{
                         id: hideContainer
                         width: container.height * 0.5
@@ -269,30 +268,109 @@ Item {
                         }
                         Menu {
                             id: contextMenu
-                            MenuItem{height: 30
-                                text: "Delete Layer"
-                                icon.source: "./Resources/48/delete.png"
-                                icon.color: "red"
-                                onClicked: function() {
-                                    rootItem.layersModell.onRemoveItemClicked(treeView.index(row , column))
+                            MenuSeparator {
+                                contentItem: Rectangle {
+                                    implicitWidth: 200/Style.monitorRatio
+                                    implicitHeight: 7/Style.monitorRatio
+                                    color: "transparent"
                                 }
                             }
-                            MenuItem {
+                            Action{
+                                text: qsTr("Delete Layer")
+                                icon.source: "qrc:/Resources/garbage.png"
+                                icon.color: "red"
+                                onTriggered: function() {
+                                    rootItem.layersModell.onRemoveItemClicked(treeView.index(row , column))
+                                }
+
+                            }
+                            MenuSeparator {
+                                contentItem: Rectangle {
+                                    implicitWidth: 200/Style.monitorRatio
+                                    implicitHeight: 7/Style.monitorRatio
+                                    color: "transparent"
+                                }
+                            }
+                            Action {
                                 text: "Shift Up"
-                                icon.source: "./Resources/48/arrow-outline-up.png"
+                                icon.source: "qrc:/Resources/up.png"
                                 icon.color: Style._persianGreen
-                                onClicked: {
+                                onTriggered: {
                                     rootItem.layersModell.onMoveItem(treeView.index(row , column), treeView.index(row-1 , column))
                                 }
 
                             }
-                            MenuItem {
+                            MenuSeparator {
+                                contentItem: Rectangle {
+                                    implicitWidth: 200/Style.monitorRatio
+                                    implicitHeight: 7/Style.monitorRatio
+                                    color: "transparent"
+                                }
+                            }
+                            Action {
                                 text: "Shift Down"
-                                icon.source: "./Resources/48/arrow-outline-down.png"
+                                icon.source: "qrc:/Resources/down.png"
                                 icon.color: Style._persianGreen
-                                onClicked: {
+                                onTriggered: {
                                     rootItem.layersModell.onMoveItem(treeView.index(row , column), treeView.index(row+1 , column))
                                 }
+                            }
+                            MenuSeparator {
+                                contentItem: Rectangle {
+                                    implicitWidth: 200/Style.monitorRatio
+                                    implicitHeight: 7/Style.monitorRatio
+                                    color: "transparent"
+                                }
+                            }
+                            delegate: MenuItem {
+                                id: menuItem
+                                implicitWidth: 121/Style.monitorRatio
+                                implicitHeight: 22/Style.monitorRatio
+
+
+
+                                indicator:IconImage {
+                                    source: menuItem.icon.source
+                                    width: 22/Style.monitorRatio
+                                    height: 22/Style.monitorRatio
+                                    color:Style.foregroundColor
+                                    anchors.verticalCenter:parent.verticalCenter
+                                    x: 10 /Style.monitorRatio
+
+                                }
+
+                                contentItem: Text {
+                                    id:rightClickText
+                                    leftPadding: menuItem.indicator.width +  menuItem.indicator.x
+                                    text: menuItem.text
+                                    font.family: Style.fontFamily
+                                    font.pixelSize: 17/Style.monitorRatio
+                                    font.weight: Font.Medium
+                                    opacity: enabled ? 1.0 : 0.3
+                                    color: Style.foregroundColor
+                                    horizontalAlignment: Text.AlignLeft
+                                    verticalAlignment: Text.AlignVCenter
+                                    elide: Text.ElideRight
+                                }
+
+                                background: Rectangle {
+                                    width: 140/Style.monitorRatio
+                                    height: 30/Style.monitorRatio
+                                    anchors.centerIn: parent
+                                    radius: 10/Style.monitorRatio
+                                    opacity: enabled ? 1 : 0.3
+                                    color: menuItem.highlighted ? backgroundColor : "transparent"
+                                }
+                            }
+
+                            background: Rectangle {
+                                implicitWidth: 150/Style.monitorRatio
+                                implicitHeight: 100/Style.monitorRatio
+                                color: Style.backgroundColor
+                                radius: 15/Style.monitorRatio
+                                opacity: .85
+
+
                             }
                         }
                     }

@@ -5,18 +5,18 @@
 #include "qpainter.h"
 
 Polygon::Polygon(MapItem *mapItem)
+    : mMapItem(mapItem)
 {
-    mPolygonGeom = new osgEarth::Features::Polygon();
-    mMapItem = mapItem;
-    osgEarth::Features::Feature* feature = new osgEarth::Features::Feature(mPolygonGeom, mMapItem->getMapSRS());
+    osg::ref_ptr<osgEarth::Features::Polygon> polygonGeom = new osgEarth::Features::Polygon();
+    osg::ref_ptr<osgEarth::Features::Feature> feature = new osgEarth::Features::Feature(polygonGeom, mMapItem->getMapSRS());
     feature->geoInterp() = osgEarth::GEOINTERP_GREAT_CIRCLE;
-    osgEarth::Symbology::Style geomStyle;
+    osgEarth::Symbology::Style style;
     //    geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() /*= osgEarth::Color::Purple*/;
     //    geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() /*= 2.0f*/;
-    geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
+    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellationSize() = 75000;
     //geomStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = 10;
     //    geomStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() /*= osg::Vec4f(1,1,1,1)*/;
-    geomStyle.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
+    style.getOrCreate<osgEarth::Symbology::RenderSymbol>()->depthOffset()->enabled() = true;
 
     //geomStyle.getOrCreate<osgEarth::Symbology::ExtrusionSymbol>()->height() = 800000;
 
@@ -24,7 +24,7 @@ Polygon::Polygon(MapItem *mapItem)
 
     //geomStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->autoScale() = true;
 
-    geomStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+    style.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
 
     //mLabelGroup = new osg::Group;
     //addChild(mLabelGroup);
@@ -37,22 +37,19 @@ Polygon::Polygon(MapItem *mapItem)
     _clampDirty = true;
     _index = nullptr;
 
-    _features.push_back( feature );
-
-    osgEarth::Annotation::Style style = geomStyle;
-    if (style.empty() && feature->style().isSet())
-    {
-        style = *feature->style();
-    }
+    _features.push_back(feature);
     setStyle(style);
 }
 
 Polygon::~Polygon()
 {
-    //    for(auto labelData: mVecLabelData){
-    //        if(labelData.qImage)
-    //            delete labelData.qImage;
-    //    }
+}
+
+void Polygon::create(std::vector<osg::Vec3d> *points)
+{
+    auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_POLYGON, points);
+    getFeature()->setGeometry(geometry);
+    dirty();
 }
 
 void Polygon::addPoint(osgEarth::GeoPoint point)
@@ -71,11 +68,9 @@ void Polygon::addPoint(osgEarth::GeoPoint point)
 
     //    mCenter.x() = x_sum / mPoints.size();
     //    mCenter.y() = y_sum / mPoints.size();
+    getFeature()->getGeometry()->push_back(point.vec3d());
 
-    auto fea = this->getFeature();
-    mPolygonGeom->push_back(point.vec3d());
     dirty();
-    fea->setGeometry(mPolygonGeom);
     if(mShowArea){
         auto area = CalculateAreaOfPolygon();
         osg::ref_ptr<osg::Image> image = new osg::Image;
@@ -88,10 +83,10 @@ void Polygon::addPoint(osgEarth::GeoPoint point)
         //    data.volume = 0;
         //    data.placeNode = placeNode;
         //    mVecLabelData.push_back(data);
-        if(mPolygonGeom->size() >2){
+        if(getFeature()->getGeometry()->size() >2){
             osgEarth::GeoPoint midPoint(mMapItem->getMapSRS(),
-                                        (mPolygonGeom->at(mPolygonGeom->size() - 2)
-                                         + mPolygonGeom->at(mPolygonGeom->size() -1 )) / 2);
+                                        (getFeature()->getGeometry()->at(getFeature()->getGeometry()->size() - 2)
+                                         + getFeature()->getGeometry()->at(getFeature()->getGeometry()->size() -1 )) / 2);
             mPlaceNode->setPosition(midPoint);
         }
 
@@ -103,11 +98,12 @@ void Polygon::addPoint(osgEarth::GeoPoint point)
     }
     //mLabelGroup->addChild(placeNode);
     //addChild(mLabelGroup);
+//    qDebug()<<"area: "<<getFeature()->getGeoJSON();
 }
 
 void Polygon::clearPoints()
 {
-    mPolygonGeom->clear();
+    getFeature()->getGeometry()->clear();
     //    for(auto labelData: mVecLabelData){
     //    if(labelData.qImage)
     //        delete labelData.qImage;
@@ -126,7 +122,7 @@ void Polygon::clearPoints()
 
 void Polygon::removePoint()
 {
-    mPolygonGeom->pop_back();
+    getFeature()->getGeometry()->pop_back();
 
 
     //    auto qImage = mVecLabelData[getSize()-1].qImage;
@@ -142,9 +138,9 @@ void Polygon::removePoint()
     //    addChild(mLabelGroup);
 }
 
-double Polygon::getSize() const
+double Polygon::getSize()
 {
-    return mPolygonGeom->size();
+    return getFeature()->getGeometry()->size();
 }
 
 void Polygon::setFillColor(osgEarth::Color color)
@@ -279,8 +275,8 @@ double Polygon::CalculateAreaOfPolygon()
     if (getSize()>2){
         for (int i = 0; i < numPoints; i++)
         {
-            osg::Vec3d p1 = mPolygonGeom->at(i);
-            osg::Vec3d p2 = mPolygonGeom->at(fmod((i + 1) , numPoints));
+            osg::Vec3d p1 = getFeature()->getGeometry()->at(i);
+            osg::Vec3d p2 = getFeature()->getGeometry()->at(fmod((i + 1) , numPoints));
 
             //use Shoelace formula to calculate area of polygon
             totalArea += (p1.x() * p2.y()) - (p2.x() * p1.y());
@@ -326,9 +322,9 @@ double Polygon::CalculateAreaOfPolygon_I()
     if (getSize()>3){
         for (unsigned int i = 1; i < numPoints-1; i++)
         {
-            osg::Vec3  pos1 = mPolygonGeom->at(0);
-            osg::Vec3  pos2 = mPolygonGeom->at(i);
-            osg::Vec3  pos3 = mPolygonGeom->at(i+1);
+            osg::Vec3  pos1 = getFeature()->getGeometry()->at(0);
+            osg::Vec3  pos2 = getFeature()->getGeometry()->at(i);
+            osg::Vec3  pos3 = getFeature()->getGeometry()->at(i+1);
 
             float  length1 = (pos1 - pos2).length();
             float  length2 = (pos3 - pos2).length();

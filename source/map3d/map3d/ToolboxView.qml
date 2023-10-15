@@ -95,7 +95,7 @@ Item {
                     required property bool selected
                     required property bool current
 
-                    implicitWidth: treeView.width
+                    implicitWidth: treeView ? treeView.width ?? 0 : 0
                     implicitHeight:  30/Style.monitorRatio
 
                     //vertical line for item children
@@ -104,7 +104,7 @@ Item {
                         anchors.left: parent.left
                         anchors.leftMargin: indent * depth
                         width: 2/Style.monitorRatio
-                        height: parent.height + treeView.rowSpacing
+                        height: parent.height + (treeView ? treeView.rowSpacing ?? 0 : 0)
                         visible: depth
                         color: Style.foregroundColor
                         opacity: 0.2

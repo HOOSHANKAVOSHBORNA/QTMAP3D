@@ -42,7 +42,7 @@ void PluginInterface::setMainWindow(MainWindow *mainWindow)
     mMainWindow = mainWindow;
     mMapItem = mainWindow->getMapItem();
     mQmlEngine = mainWindow->getQmlEngine();
-    mToolbox = dynamic_cast<Toolbox*>(mainWindow->toolbox()->sourceModel());
+    mToolbox = dynamic_cast<Toolbox*>(ToolboxProxyModel::createSingletonInstance(nullptr, nullptr)->sourceModel());
 }
 
 DefenseDataManager *PluginInterface::defenseDataManager() const
