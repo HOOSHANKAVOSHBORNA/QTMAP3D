@@ -8,6 +8,7 @@
 #include <QWindow>
 #include <QOpenGLFunctions_2_0>
 #include <chrono>
+#include <bookmark.h>
 
 #include "mainwindow.h"
 #include "mapItem.h"
@@ -71,6 +72,17 @@ void MainWindow::initComponent()
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
 
+    mBookmark = new BookmarkProxyModel;
+    mBookmark->addBookmarkItem(new BookmarkItem{"Aircraft", "NFT2526", new QQuickItem(),"qrc:/Resources/aircraft.png"});
+    mBookmark->addBookmarkItem(new BookmarkItem{"Aircraft","NFT2527",  new QQuickItem(),"qrc:/Resources/aircraft.png"});
+    mBookmark->addBookmarkItem(new BookmarkItem{"Square","sqr1",       new QQuickItem(),"qrc:/Resources/square.png"});
+    mBookmark->addBookmarkItem(new BookmarkItem{"Square","sqr2",       new QQuickItem(),"qrc:/Resources/square.png"});
+    mBookmark->addBookmarkItem(new BookmarkItem{"Circle","cir1",       new QQuickItem(),"qrc:/Resources/circle.png"});
+    mBookmark->addBookmarkItem(new BookmarkItem{"Circle","cir2",       new QQuickItem(),"qrc:/Resources/circle.png"});
+    mBookmark->addBookmarkItem(new BookmarkItem{"Rectangle","rec1",    new QQuickItem(),"qrc:/Resources/rectangle.png"});
+    mBookmark->addBookmarkItem(new BookmarkItem{"Rectangle","rec2",    new QQuickItem(),"qrc:/Resources/rectangle.png"});
+//    mBookmark->select();
+    engine->rootContext()->setContextProperty("bookmarkproxymodel", mBookmark);
 }
 
 QQmlEngine *MainWindow::getQmlEngine()
@@ -187,6 +199,11 @@ bool MainWindow::event(QEvent *ev)
     }
 
     return QQuickWindow::event(ev);
+}
+
+BookmarkProxyModel *MainWindow::bookmark() const
+{
+    return mBookmark;
 }
 
 LocationManagerProxyModel *MainWindow::locationManagerProxyModel() const

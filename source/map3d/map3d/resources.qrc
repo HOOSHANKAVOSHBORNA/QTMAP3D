@@ -494,5 +494,11 @@
         <file>Resources/add-place-location.png</file>
         <file>Resources/add-place-more-color.png</file>
         <file>Resources/add-place-color-select.png</file>
+        <file>Resources/bookmark.png</file>
+        <file>Resources/multiply.png</file>
+        <file>Resources/logout.png</file>
+        <file>Resources/easy-to-find.png</file>
+        <file>Resources/square.png</file>
+        <file>Resources/aircraft.png</file>
     </qresource>
 </RCC>

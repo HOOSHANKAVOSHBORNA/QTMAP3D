@@ -12,6 +12,7 @@
 #include "toolbox.h"
 #include "mapControllerItem.h"
 #include "locationManagerModel.h"
+#include "bookmark.h"
 
 class ListWindow;
 class LayersModel;
@@ -21,6 +22,7 @@ class MainWindow : public QQuickWindow
 {
     Q_OBJECT
     Q_PROPERTY(LayersModel* layersModel READ layersModel /*WRITE setLayersModel NOTIFY layersModelChanged*/)
+    Q_PROPERTY(BookmarkProxyModel* bookmark READ bookmark /*WRITE setLayersModel NOTIFY layersModelChanged*/)
     Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox /*WRITE setToolbox NOTIFY toolboxChanged*/)
     Q_PROPERTY(LocationManagerProxyModel* locationManagerProxyModel READ locationManagerProxyModel /*WRITE setLocationManagerProxyModel NOTIFY locationManagerProxyModelChanged FINAL*/)
 
@@ -60,6 +62,8 @@ public:
 
     LocationManagerProxyModel *locationManagerProxyModel() const;
 
+    BookmarkProxyModel *bookmark() const;
+
 public slots:
     void showListWindow();
     void setListWindow(ListWindow *listWindow);
@@ -74,6 +78,7 @@ private:
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
     ToolboxProxyModel *mToolbox = nullptr;
+    BookmarkProxyModel *mBookmark = nullptr;
     LocationManagerProxyModel *mLocationManagerProxyModel = nullptr;
 };
 

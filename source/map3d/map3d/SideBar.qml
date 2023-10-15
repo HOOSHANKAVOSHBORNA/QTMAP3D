@@ -108,6 +108,7 @@ Rectangle {
                         property var toolboxItem
                         property var locationManagerItem
                         property var layerItem
+                        property var bookmarkItem
 
                         property var actions: {
                             "toolbox": function (checked) {
@@ -156,6 +157,20 @@ Rectangle {
                             "list": function (checked) {
                                 mainWindow.showListWindow()
                             },
+                            "bookmark": function(checked) {
+                                if (checked && mainWindow.bookmark) {
+                                    var bookmarkcomp = Qt.createComponent("BookmarkItem.qml");
+                                    if (bookmarkcomp.status === Component.Ready) {
+                                        bookmarkItem = bookmarkcomp.createObject(null, {});
+//                                        bookmarkItem.model = mainWindow.bookmark
+                                        addToLeftContainer(bookmarkItem, "Bookmark")
+                                    } else {
+                                        print("can not load LocationManager.qml.");
+                                    }
+                                } else {
+                                    removeFromLeftContainer(bookmarkItem)
+                                }
+                            },
                             "hand": function (checked) {
                                 if (container.state === "pin") {
                                     container.state = "unpin"
@@ -188,6 +203,11 @@ Rectangle {
                         ListElement {
                             label: "list"
                             iconSource: "qrc:/Resources/list.png"
+                        }
+
+                        ListElement {
+                            label: "bookmark"
+                            iconSource: "qrc:/Resources/bookmark.png"
                         }
 
                         ListElement {
