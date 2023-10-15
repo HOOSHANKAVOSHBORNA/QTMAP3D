@@ -112,11 +112,11 @@ Rectangle {
 
                         property var actions: {
                             "toolbox": function (checked) {
-                                if (checked && mainWindow.toolbox) {
+                                if (checked) {
                                     let toolboxx = Qt.createComponent("ToolboxView.qml");
                                     if (toolboxx.status === Component.Ready) {
                                         toolboxItem = toolboxx.createObject(null, {});
-                                        toolboxItem.listModel = mainWindow.toolbox
+                                        toolboxItem.listModel = ToolboxInstance
                                         addToLeftContainer(toolboxItem, "Toolbox")
                                     } else {
                                         print("can not load toolbox.");
@@ -126,11 +126,11 @@ Rectangle {
                                 }
                             },
                             "location": function (checked) {
-                                if (checked && mainWindow.toolbox) {
+                                if (checked) {
                                     var locationManager = Qt.createComponent("LocationManager.qml");
                                     if (locationManager.status === Component.Ready) {
                                         locationManagerItem = locationManager.createObject(null, {});
-                                        locationManagerItem.listModel = Sinstance
+                                        locationManagerItem.listModel = LocatoinManagerInstance
                                         addToLeftContainer(locationManagerItem, "Location Manager")
                                     } else {
                                         print("can not load LocationManager.qml.");

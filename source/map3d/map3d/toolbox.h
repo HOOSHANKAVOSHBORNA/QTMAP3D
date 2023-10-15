@@ -11,6 +11,7 @@ struct ToolboxItem;
 #include <QVariant>
 #include <QList>
 #include <QSortFilterProxyModel>
+#include <QtQml>
 
 class TreeItem
 {
@@ -70,6 +71,7 @@ signals:
 class Toolbox : public QAbstractItemModel
 {
     Q_OBJECT
+
     enum CustomRoles {
         imageSource = Qt::UserRole + 100,
         checked = Qt::UserRole + 101,
@@ -106,14 +108,22 @@ private:
 class ToolboxProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+
+private:
+    explicit ToolboxProxyModel();
+
 public:
-    ToolboxProxyModel(QObject *parent = nullptr);
+    static ToolboxProxyModel* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+
     Q_INVOKABLE int childCount(QModelIndex index);
     QString filterString() const;
 
 public slots:
     void onItemClicked(const QModelIndex &current);
     void setFilterString(const QString &filterString);
+
 signals:
     void filterStringChanged();
 
@@ -121,6 +131,7 @@ protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
 private:
+    static ToolboxProxyModel* mInstance;
     QString mFilterString = "";
 };
 

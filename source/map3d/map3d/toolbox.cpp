@@ -229,10 +229,19 @@ void Toolbox::onItemClicked(const QModelIndex &current)
         previous = current;
 }
 
-ToolboxProxyModel::ToolboxProxyModel(QObject *parent):
-    QSortFilterProxyModel(parent)
+ToolboxProxyModel* ToolboxProxyModel::mInstance = nullptr;
+
+ToolboxProxyModel::ToolboxProxyModel()
 {
     setDynamicSortFilter(true);
+}
+
+ToolboxProxyModel *ToolboxProxyModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    if(mInstance==nullptr){ mInstance = new ToolboxProxyModel(); }
+    return mInstance;
 }
 
 int ToolboxProxyModel::childCount(QModelIndex index)
