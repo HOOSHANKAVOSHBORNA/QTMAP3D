@@ -95,6 +95,13 @@ Rectangle {
                     width: 45 / Style.monitorRatio
                     height: 45 / Style.monitorRatio
                     radius: width / 2
+
+                    Image {
+                        width: 37 / Style.monitorRatio
+                        height: 37 / Style.monitorRatio
+                        source: "qrc:/Resources/Qarch.png"
+                        anchors.centerIn: parent
+                    }
                 }
 
                 ColumnLayout {

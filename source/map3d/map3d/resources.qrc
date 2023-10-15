@@ -494,5 +494,6 @@
         <file>Resources/add-place-location.png</file>
         <file>Resources/add-place-more-color.png</file>
         <file>Resources/add-place-color-select.png</file>
+        <file>Resources/Qarch.png</file>
     </qresource>
 </RCC>
