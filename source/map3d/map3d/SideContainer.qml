@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import Crystal 1.0
 import "style"
 
 ColumnLayout{
@@ -106,6 +107,10 @@ Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
         id: stackLayout
         Layout.fillHeight: true
         currentIndex: tabBar.currentIndex
+
+//        LocationManager {
+//            listModel: Sinstance
+//        }
     }
     //------------------------------------------
 }

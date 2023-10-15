@@ -8,6 +8,8 @@
 #include <QWindow>
 #include <QOpenGLFunctions_2_0>
 #include <chrono>
+#include <QQmlEngine>
+#include <QJSEngine>
 
 #include "mainwindow.h"
 #include "mapItem.h"
@@ -30,10 +32,14 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 
+    qmlRegisterSingletonType<LocationManagerProxyModel>("Crystal", 1,
+                                                        0, "Sinstance", LocationManagerProxyModel::createSingletonInstance);
+
     setColor(Qt::black);
     mToolbox = new ToolboxProxyModel();
     Toolbox *toolbox = new Toolbox(this);
     mToolbox->setSourceModel(toolbox);
+
 }
 
 
@@ -63,9 +69,10 @@ void MainWindow::initComponent()
             mLayersModel = new LayersModel(mMapItem);
 
             // --- location manager and its proxy model settings
-            mLocationManagerProxyModel = new LocationManagerProxyModel();
             LocationManagerModel *locationManagerModel = new LocationManagerModel(mMapItem);
-            mLocationManagerProxyModel->setSourceModel(locationManagerModel);
+
+            LocationManagerProxyModel* myModel = LocationManagerProxyModel::createSingletonInstance(nullptr, nullptr);
+            myModel->setSourceModel(locationManagerModel);
             // ---
         }
     });
@@ -187,9 +194,4 @@ bool MainWindow::event(QEvent *ev)
     }
 
     return QQuickWindow::event(ev);
-}
-
-LocationManagerProxyModel *MainWindow::locationManagerProxyModel() const
-{
-    return mLocationManagerProxyModel;
 }
