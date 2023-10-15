@@ -64,10 +64,11 @@ void DrawPolygon::addUpdatePolygon(PolygonData *polygonData)
         polygon->clearPoints();
     }
     polygon->setName(polygonData->name);
-    for (auto point: polygonData->points){
-        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
-        polygon->addPoint(geopos);
-    }
+    polygon->create(&polygonData->points);
+//    for (auto point: polygonData->points){
+//        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
+//        polygon->addPoint(geopos);
+//    }
     polygon->setHeight(10);
     QColor color(QString::fromStdString(polygonData->color));
     polygon->setFillColor(Utility::qColor2osgEarthColor(color));

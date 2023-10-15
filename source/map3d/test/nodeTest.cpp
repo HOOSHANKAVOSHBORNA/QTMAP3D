@@ -22,7 +22,7 @@ NodeTest::NodeTest(NetworkManager *networkManager):
                 mNetworkManager->sendData(nodeData.polygonDoc.toJson(QJsonDocument::Compact));
             }
         });
-        timerUpdateAircraft->start(10000);
+        timerUpdateAircraft->start(5000);
     });
 }
 

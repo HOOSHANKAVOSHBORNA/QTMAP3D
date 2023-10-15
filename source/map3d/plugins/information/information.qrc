@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/mappin.png</file>
+        <file>resources/status.png</file>
     </qresource>
 </RCC>

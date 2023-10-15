@@ -19,11 +19,11 @@ MapPin::MapPin(MapItem* map , osg::Vec4f color)
     m3DPin->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
     //--status-----------------------------------------------------------
     mStatus = new StatusNode(map);
-    StatusNode::Data lat;
+    NodeFieldData lat;
     lat.name = "Latitude";
     lat.value = getPosition().x();
     mDataList.push_back(lat);
-    StatusNode::Data lon;
+    NodeFieldData lon;
     lon.name = "Longtitude";
     lon.value = getPosition().y();
     mDataList.push_back(lon);

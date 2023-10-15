@@ -52,7 +52,7 @@ struct PolygonData: public osg::Referenced
     std::string name;
     std::string color;
     ParenticAnnotationLayer* layer{nullptr};
-    std::vector<QVector3D> points;
+    std::vector<osg::Vec3d> points;
 };
 struct CircleData: public osg::Referenced
 {

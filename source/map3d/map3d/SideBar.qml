@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Crystal
 import "style"
 
 Rectangle {
@@ -35,7 +36,7 @@ Rectangle {
             leftContainer.model.remove(indx)
     }
 
-    state: "unpin"
+    state: "pin"
     states: [
         State {
             name: "unpin"
@@ -129,7 +130,7 @@ Rectangle {
                                     var locationManager = Qt.createComponent("LocationManager.qml");
                                     if (locationManager.status === Component.Ready) {
                                         locationManagerItem = locationManager.createObject(null, {});
-                                        locationManagerItem.listModel = mainWindow.locationManagerProxyModel
+                                        locationManagerItem.listModel = Sinstance
                                         addToLeftContainer(locationManagerItem, "Location Manager")
                                     } else {
                                         print("can not load LocationManager.qml.");
@@ -162,7 +163,8 @@ Rectangle {
                                 } else {
                                     container.state = "pin"
                                 }
-                            }
+                            },
+
                         }
 
                         ListElement {
