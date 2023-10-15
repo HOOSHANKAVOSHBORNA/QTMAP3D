@@ -65,10 +65,15 @@ private:
 class LocationManagerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
     Q_PROPERTY(QString searchedName READ searchedName WRITE setSearchedName NOTIFY searchedNameChanged FINAL)
 
+private:
+    explicit LocationManagerProxyModel();
+
 public:
-    explicit LocationManagerProxyModel(QObject *parent = nullptr);
+    static LocationManagerProxyModel* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
 
     Q_INVOKABLE void myRemoveRow(const QModelIndex &index);
     Q_INVOKABLE void goToLocation(const QModelIndex &index);
@@ -84,7 +89,9 @@ signals:
     void searchedNameChanged();
 
 private:
+    static LocationManagerProxyModel* mInstance;
     QString mSearchedWord;
+
 
 protected:
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
