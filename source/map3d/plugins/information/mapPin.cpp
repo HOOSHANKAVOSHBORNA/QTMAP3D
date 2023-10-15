@@ -10,7 +10,7 @@ MapPin::MapPin(MapItem* map , osg::Vec4f color)
 {
     connect(map, &MapItem::modeChanged, this, &MapPin::onModeChanged);
     is3D = map->getMode();
-    mScaler = new ModelAutoScaler(15, 2, 500);
+//    mScaler = new ModelAutoScaler(15, 2, 500);
     //--3D node----------------------------------------------------------
     m3DPin = osgDB::readRefNodeFile("../data/models/Qarch1.osgb");
     //--3D model Color --------------------------------------------------
@@ -62,7 +62,7 @@ MapPin::MapPin(MapItem* map , osg::Vec4f color)
     //--add to model node and AutoScale-----------------------------------------------
     getGeoTransform()->addChild(mSwitchNode);
     setCullingActive(false);
-    addCullCallback(mScaler);
+//    addCullCallback(mScaler);
     osgEarth::Symbology::Style  rootStyle;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
     setStyle(rootStyle);

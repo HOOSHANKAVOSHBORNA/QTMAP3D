@@ -45,11 +45,13 @@ target_include_directories(defenseModelLayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR
 target_include_directories(defenseModelLayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawLine")
 target_include_directories(defenseModelLayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawSphere")
 target_include_directories(defenseModelLayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawPolygon")
+target_include_directories(defenseModelLayer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../information")
 
 target_link_libraries(defenseModelLayer PRIVATE drawPolygon)
 target_link_libraries(defenseModelLayer PRIVATE drawCircle)
 target_link_libraries(defenseModelLayer PRIVATE drawSphere)
 target_link_libraries(defenseModelLayer PRIVATE drawLine)
+target_link_libraries(defenseModelLayer PRIVATE information)
 target_link_libraries(defenseModelLayer PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
 
 target_compile_definitions(defenseModelLayer PRIVATE CPTEST_LIBRARY)

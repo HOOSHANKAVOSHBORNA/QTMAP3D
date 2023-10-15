@@ -21,10 +21,10 @@ add_library(information SHARED
 )
 
 target_include_directories(information PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
-target_include_directories(information PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
+#target_include_directories(information PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
 
 target_link_libraries(information PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
-target_link_libraries(information PRIVATE model)
+#target_link_libraries(information PRIVATE model)
 target_compile_definitions(information PRIVATE CPTEST_LIBRARY)
 
 add_custom_command(TARGET information POST_BUILD
