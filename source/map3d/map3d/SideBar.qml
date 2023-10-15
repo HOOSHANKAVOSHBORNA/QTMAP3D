@@ -148,11 +148,11 @@ Rectangle {
                             },
                             "settings": function (checked) {},
                             "layers": function (checked) {
-                                if (checked && mainWindow.layersModel ) {
+                                if (checked) {
                                     var layersWidget = Qt.createComponent("LayersWidget.qml");
                                     if (layersWidget.status === Component.Ready) {
                                         layerItem = layersWidget.createObject(null, {});
-                                        layerItem.layersModell = mainWindow.layersModel
+                                        layerItem.layersModell = LayersInstance
                                         addToLeftContainer(layerItem, "Layers")
                                     } else {
                                         print("can not load Layer Widget")

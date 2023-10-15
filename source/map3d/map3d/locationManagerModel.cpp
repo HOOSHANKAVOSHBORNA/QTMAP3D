@@ -168,7 +168,7 @@ LocationManagerProxyModel *LocationManagerProxyModel::createSingletonInstance(QQ
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-    if(mInstance==nullptr){ mInstance = new LocationManagerProxyModel(); }
+    if(mInstance == nullptr){ mInstance = new LocationManagerProxyModel(); }
     return mInstance;
 }
 

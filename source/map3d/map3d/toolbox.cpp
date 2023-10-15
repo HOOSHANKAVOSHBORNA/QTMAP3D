@@ -240,7 +240,7 @@ ToolboxProxyModel *ToolboxProxyModel::createSingletonInstance(QQmlEngine *engine
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-    if(mInstance==nullptr){ mInstance = new ToolboxProxyModel(); }
+    if(mInstance == nullptr){ mInstance = new ToolboxProxyModel(); }
     return mInstance;
 }
 

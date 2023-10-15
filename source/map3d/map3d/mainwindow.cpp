@@ -60,8 +60,6 @@ void MainWindow::initComponent()
             mMapItem->setQmlEngine(engine);
             addToCenterCenterContainer(mMapItem);
 
-            mLayersModel = new LayersModel(mMapItem);
-
             // ----------------------------------
             // --------- model settings ---------
             // ----------------------------------
@@ -74,6 +72,10 @@ void MainWindow::initComponent()
             Toolbox *toolbox = new Toolbox(this);
             toolboxProxyModel->setSourceModel(toolbox);
             qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
+
+            LayersModel *layersModel = LayersModel::createSingletonInstance(nullptr, nullptr);
+            layersModel->initialize(mMapItem);
+            qmlRegisterSingletonType<LayersModel>("Crystal", 1, 0, "LayersInstance", LayersModel::createSingletonInstance);
 
         }
     });
