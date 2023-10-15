@@ -1,6 +1,7 @@
 #ifndef LINENODE_H
 #define LINENODE_H
 
+#include "statusNode.h"
 #include <osgEarth/Color>
 #include <osgEarthAnnotation/FeatureNode>
 #include "mapItem.h"
@@ -15,6 +16,7 @@ class LineNode : public osgEarth::Annotation::FeatureNode
 public:
     LineNode(MapItem *mapItem);
     ~LineNode();
+    void create(std::vector<osg::Vec3d> *points);
     void addPoint(osgEarth::GeoPoint point);
     osgEarth::GeoPoint getPoint(int index);
     void removePoint();
@@ -63,54 +65,20 @@ public:
 
 private:
     struct LabelData {
-        QImage *qImage{nullptr};
-        osg::ref_ptr<osg::Image> image;
+//        QImage *qImage{nullptr};
+//        osg::ref_ptr<osg::Image> image;
         double distance;
         double altitude;
         double bearing;
         double slope;
-        osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode;
-
-        //		LabelData() = default;
-        //		LabelData(const LabelData& source){
-        //			qImage = source.qImage;
-        //			image = source.image;
-        //			lenght = source.lenght;
-        //			bearing = source.bearing;
-        //			placeNode = source.placeNode;
-        //		}
-        //		LabelData(LabelData&& source){
-        //			qImage = source.qImage;
-        //			image = source.image;
-        //			lenght = source.lenght;
-        //			bearing = source.bearing;
-        //			placeNode = source.placeNode;
-
-        //			source.qImage = nullptr;
-        //		}
-        //		LabelData& operator=(const LabelData& source){
-        //			LabelData* data = new LabelData ();
-        //			data->qImage = source.qImage;
-        //			data->image = source.image;
-        //			data->lenght = source.lenght;
-        //			data->bearing = source.bearing;
-        //			data->placeNode = source.placeNode;
-        //			return *data;
-        //		}
-        //		~LabelData(){
-        //			if(qImage){
-        //				delete qImage;
-        //				qImage = nullptr;
-        //			}
-        //		}
-
+        osg::ref_ptr<StatusNode> statusNode;
     };
 
-    QImage *createOrUpdateLabelImg(osg::ref_ptr<osg::Image>& image, LabelData &lableData);
+    void updateStatusNode(LabelData &lableData);
 
 private:
     MapItem* mMapItem{nullptr};
-    osgEarth::Symbology::Geometry* mLineGeometry{nullptr};
+//    osgEarth::Symbology::Geometry* mLineGeometry{nullptr};
     osgEarth::Color mColor{osgEarth::Color::Green};
     osgEarth::Color mPointColor{osgEarth::Color::Blue};
     float mWidth{5};
@@ -128,8 +96,8 @@ private:
     std::vector<LabelData> mVecLabelData;
     //Lenght part
     osg::ref_ptr<osg::Group> mLabelGroup;
-    static constexpr int LABEL_IMAGE_WIDTH = 100;
-    static constexpr int LABEL_IMAGE_HEIGHT = 27;
+//    static constexpr int LABEL_IMAGE_WIDTH = 100;
+//    static constexpr int LABEL_IMAGE_HEIGHT = 27;
     int mCount{0};
 
 };
