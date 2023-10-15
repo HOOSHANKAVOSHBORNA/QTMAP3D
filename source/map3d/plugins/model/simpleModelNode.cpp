@@ -8,8 +8,10 @@
 #include <osgEarthSymbology/ModelSymbol>
 #include <osgEarth/GLUtils>
 #include <osgEarth/Registry>
-const float RANGE3D = 835;
 
+const float RANGE3D = 835;
+QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
+QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
 SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent)
     : QObject{parent},
@@ -25,7 +27,6 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     mSwitchNode = new osg::Switch;
     //--3D node----------------------------------------------------------
     m3DNode = new osg::LOD;
-    QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     if (mNodes3D.contains(modelUrl)){
         mSimpleNode = mNodes3D[modelUrl];
     }
@@ -38,7 +39,6 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
     m2DNode = new osg::Geode();
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
     geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
-    QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;
     if (mImages2D.contains(iconUrl)){
         mImage = mImages2D[iconUrl];
     }

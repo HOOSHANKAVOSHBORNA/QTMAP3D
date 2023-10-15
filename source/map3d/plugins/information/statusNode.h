@@ -16,6 +16,7 @@ class StatusNode : public osgEarth::Annotation::PlaceNode
 {
 public:
     StatusNode(MapItem* mapControler);
+    ~StatusNode() override;
     void setFieldData(QString title, const std::vector<NodeFieldData> &data);
     StatusNodeData *nodeData() const;
     void setNodeData(StatusNodeData *newNodeData);

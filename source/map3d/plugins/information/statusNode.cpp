@@ -33,7 +33,8 @@ StatusNode::StatusNode(MapItem *mapControler)
 
 StatusNode::~StatusNode()
 {
-
+    delete mTitleImage;
+    mTitleImage = nullptr;
 }
 
 void StatusNode::setFieldData(QString title, const std::vector<NodeFieldData>& data)

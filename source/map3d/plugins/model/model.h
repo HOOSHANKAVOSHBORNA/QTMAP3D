@@ -9,13 +9,11 @@
 #include "simpleModelNode.h"
 #include <osg/PolygonMode>
 #include <osg/Fog>
-#include <statusNode.h>
 
 #define MODEL "Model"
 #define TREE "Tree"
 #define CAR "Car"
 #define AIRPLANE "Airplane"
-#define STATUS "Status"
 
 class Model : public PluginInterface
 {
@@ -34,8 +32,7 @@ public:
     enum class Type{
         SIMPLE,
         MOVEABLE,
-        FLYABLE,
-        INFO
+        FLYABLE
     };
 
 public:
@@ -87,11 +84,8 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
 
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
-    osg::ref_ptr<StatusNode> mStatusModel {nullptr};
-
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
-    QMap<int, osg::ref_ptr<StatusNode>> mStatusNodeMap;
     QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
 };
 
