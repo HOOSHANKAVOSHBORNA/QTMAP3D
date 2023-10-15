@@ -38,7 +38,6 @@ bool Model::setup()
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, this, &Model::addUpdateFlyableNode);
     connect(serviceManager(), &ServiceManager::nodeDataReceived, this, &Model::addUpdateNode);
-    connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Model::addUpdateStatusNode);
     connect(serviceManager(), &ServiceManager::movableNodeDataReceived, this, &Model::addUpdateMovableNode);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
@@ -58,11 +57,6 @@ bool Model::setup()
     QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
-    auto statusToolboxItem =  new ToolboxItem{STATUS, MODEL, "qrc:/resources/status.png", true};
-    QObject::connect(statusToolboxItem, &ToolboxItem::itemChecked, this, &Model::onStatusItemCheck);
-    toolbox()->addItem(statusToolboxItem);
-
-
     mSimpleNodeLayer = new ParenticAnnotationLayer();
     mSimpleNodeLayer->setName(TREE);
 
@@ -72,8 +66,7 @@ bool Model::setup()
     mFlyableNodelLayer = new ParenticAnnotationLayer();
     mFlyableNodelLayer->setName(AIRPLANE);
 
-    mStatusNodelLayer = new ParenticAnnotationLayer();
-    mStatusNodelLayer->setName(STATUS);
+
     return true;
 }
 
@@ -224,25 +217,6 @@ void Model::onAirplanItemCheck(bool check)
     }
 }
 
-void Model::onStatusItemCheck(bool check)
-{
-    if (check) {
-        makeIconNode("../data/images/model/status.png");
-
-        mType = Type::INFO;
-        setState(State::READY);
-        mapItem()->addNode(iconNode());
-
-    }
-    else {
-        if(state() == State::MOVING)
-            cancel();
-
-        setState(State::NONE);
-        mapItem()->removeNode(iconNode());
-    }
-}
-
 void Model::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -294,26 +268,6 @@ void Model::addUpdateNode(NodeData *nodeData)
     }
     node->setName(nodeData->name);
     node->setNodeData(nodeData);
-}
-
-void Model::addUpdateStatusNode(StatusNodeData *statusnNodeData)
-{
-    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), statusnNodeData->longitude, statusnNodeData->latitude, statusnNodeData->altitude);
-    osg::ref_ptr<StatusNode> statusNode;
-
-    if(!mStatusNodeMap.contains(statusnNodeData->id)){
-        statusNode = new StatusNode(mapItem());
-        mStatusNodeMap[statusnNodeData->id] = statusNode;
-    }
-    else{
-        statusNode = mStatusNodeMap[statusnNodeData->id];
-        statusNode->nodeData()->layer->removeChild(statusNode);
-    }
-    statusNode->setPosition(geoPoint);
-    statusnNodeData->layer->addChild(statusNode);
-
-    statusNode->setName(statusnNodeData->name);
-    statusNode->setNodeData(statusnNodeData);
 }
 
 void Model::addUpdateMovableNode(NodeData *nodeData)
@@ -373,32 +327,6 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         }
         mFlyableNodelLayer->addChild(mCurrentModel);
         break;
-    case Type::INFO:
-        name = "Status" + QString::number(mCount);
-        mStatusModel = new StatusNode(mapItem());
-        {
-            NodeFieldData data;
-            data.name = "name";
-            data.value = 10;
-            NodeFieldData data1;
-            data1.name = "name";
-            data1.value = 30000;
-            NodeFieldData data2;
-            data2.name = "name";
-            data2.value = "kasjdf";
-            std::vector<NodeFieldData> dataList;
-            dataList.push_back(data);
-            dataList.push_back(data1);
-            dataList.push_back(data2);
-            mStatusModel->setFieldData("title", dataList);
-        }
-
-        if(!mModelNodeLayer->containsLayer(mStatusNodelLayer)){
-            mStatusNodelLayer->clear();
-            mModelNodeLayer->addLayer(mStatusNodelLayer);
-        }
-        mStatusNodelLayer->addChild(mStatusModel);
-        break;
     default:
         break;
     }
@@ -407,13 +335,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         mCurrentModel->setName(name.toStdString());
         mCurrentModel->setPosition(geoPos);
     }
-    else{
-        mStatusModel->setName(name.toStdString());
-        mStatusModel->setPosition(geoPos);
-    }
 
-
-    ;
     setState(State::MOVING);
     mCount++;
 }
@@ -434,9 +356,6 @@ void Model::moving(osgEarth::GeoPoint &geoPos){
     }
     if (mCurrentModel){
         mCurrentModel->setPosition(geoPos);
-    }
-    else{
-        mStatusModel->setPosition(geoPos);
     }
 }
 
@@ -460,14 +379,11 @@ void Model::cancel(){
         case Type::FLYABLE:
             mFlyableNodelLayer->removeChild(mCurrentModel);
             break;
-        case Type::INFO:
-            mStatusNodelLayer->removeChild(mStatusModel);
-            break;
+
         default:
             break;
         }
         mCurrentModel.release();
-        mStatusModel.release();
         setState(State::READY);
         mCount--;
     }

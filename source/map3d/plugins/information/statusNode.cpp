@@ -31,10 +31,11 @@ StatusNode::StatusNode(MapItem *mapControler)
     //    setPriority(FLT_MAX);
 }
 
-//StatusNode::~StatusNode()
-//{
-
-//}
+StatusNode::~StatusNode()
+{
+    delete mTitleImage;
+    mTitleImage = nullptr;
+}
 
 void StatusNode::setFieldData(QString title, const std::vector<NodeFieldData>& data)
 {
