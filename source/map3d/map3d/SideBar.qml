@@ -19,7 +19,7 @@ Rectangle {
 
     readonly property color fg50: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
 
-
+    property var bookmarkItem: null
     function addToLeftContainer(item, name) {
         leftContainer.model.append({item:item, name:name})
     }
@@ -36,7 +36,7 @@ Rectangle {
             leftContainer.model.remove(indx)
     }
 
-    state: "pin"
+    state: "unpin"
     states: [
         State {
             name: "unpin"
@@ -167,13 +167,18 @@ Rectangle {
                             },
                             "bookmark": function(checked) {
                                 if (checked && mainWindow.bookmark) {
-                                    var bookmarkcomp = Qt.createComponent("BookmarkItem.qml");
-                                    if (bookmarkcomp.status === Component.Ready) {
-                                        bookmarkItem = bookmarkcomp.createObject(null, {});
-//                                        bookmarkItem.model = mainWindow.bookmark
+                                    if (!bookmarkItem){
+                                        var bookmarkcomp = Qt.createComponent("BookmarkItem.qml");
+                                        if (bookmarkcomp.status === Component.Ready) {
+                                            bookmarkItem = bookmarkcomp.createObject(null, {});
+                                            bookmarkItem.model = BookmarkInstance
+                                            addToLeftContainer(bookmarkItem, "Bookmark")
+                                        } else {
+                                            print("can not load LocationManager.qml.");
+                                        }
+                                    }
+                                    else{
                                         addToLeftContainer(bookmarkItem, "Bookmark")
-                                    } else {
-                                        print("can not load LocationManager.qml.");
                                     }
                                 } else {
                                     removeFromLeftContainer(bookmarkItem)

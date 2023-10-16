@@ -22,13 +22,15 @@ signals:
 class BookmarkProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
     Q_PROPERTY(QString searchedText READ searchedText WRITE setSearchedText NOTIFY searchedTextChanged)
     enum CustomRoles {
         imageSource = Qt::UserRole + 100,
         itemSource = Qt::UserRole + 101
     };
 public:
-    BookmarkProxyModel(QObject *parent = nullptr);
+    static BookmarkProxyModel* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
     ~BookmarkProxyModel();
     QHash<int, QByteArray> roleNames() const override;
     void addBookmarkItem(BookmarkItem *bookmarkItem);
@@ -45,12 +47,14 @@ signals:
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+    BookmarkProxyModel(QObject *parent = nullptr);
 private:
     QString mSearchedText;
     QStandardItem *rootItem;
     QStandardItemModel *mStandardItemModel;
     QItemSelectionModel *mSelectioModel;
     std::map<QString, std::pair<BookmarkItem*, QStandardItem*>> mItems;
+    static inline BookmarkProxyModel* mInstance{nullptr};
 
 };
 

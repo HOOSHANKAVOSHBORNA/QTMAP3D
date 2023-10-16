@@ -6,6 +6,7 @@ import "style"
 
 Item {
     id: rootItem
+    property var model
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
     ColumnLayout {
         anchors.fill: parent
@@ -29,13 +30,6 @@ Item {
             }
 
             TextField {
-                function sendToSearch() {
-                    bookmarkproxymodel.setSearchedText(text)
-                    if (text.length === 0) {
-                        treeview.collapseRecursively()
-                    }
-                    treeview.expandRecursively()
-                }
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: searchIcon.right
                 anchors.right: parent.right
@@ -47,11 +41,8 @@ Item {
                     color: "transparent"
                     radius: height/2
                 }
-                onAccepted: {
-                    sendToSearch()
-                }
                 onTextChanged: function() {
-                    sendToSearch()
+                    rootItem.model.setSearchedText(text)
                 }
                 placeholderText: "Search ..."
                 placeholderTextColor: Style.disableColor
@@ -67,10 +58,10 @@ Item {
                 id:treeview
                 anchors.fill: parent
                 anchors.centerIn: parent
-                model: bookmarkproxymodel
+                model: rootItem.model
                 rowSpacing: 5/Style.monitorRatio
 
-                selectionModel: bookmarkproxymodel.selectioModel()
+                selectionModel: rootItem.model ? rootItem.model.selectioModel(): null
 
                 MouseArea{
                     anchors.fill: parent
@@ -143,7 +134,7 @@ Item {
                                     height: 20
                                 }
                                 onClicked: {
-                                    var item = bookmarkproxymodel.rowItem(treeview.index(row,column))
+                                    var item = rootItem.model.rowItem(treeview.index(row,column))
                                     mywnd.visible = true
                                     item.parent = testwindow
                                 }
@@ -160,7 +151,7 @@ Item {
                                     height: 20
                                 }
                                 onClicked: {
-                                    bookmarkproxymodel.removeBookmarkItem(treeview.index(row,column))
+                                    rootItem.model.removeBookmarkItem(treeview.index(row,column))
                                 }
                             }
                             Image{
@@ -179,8 +170,8 @@ Item {
                             id: mousearea
                             anchors.fill: parent
                             hoverEnabled: true
-                            onClicked:{
-                                bookmarkproxymodel.select(treeview.index(row,column))
+                            onClicked: {
+                                rootItem.model.select(treeview.index(row,column))
                                 treeview.toggleExpanded(row)
                             }
                         }

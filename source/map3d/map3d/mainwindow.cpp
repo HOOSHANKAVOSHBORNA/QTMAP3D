@@ -78,21 +78,14 @@ void MainWindow::initComponent()
             layersModel->initialize(mMapItem);
             qmlRegisterSingletonType<LayersModel>("Crystal", 1, 0, "LayersInstance", LayersModel::createSingletonInstance);
 
+
+            mBookmark = BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+            qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
 
-    mBookmark = new BookmarkProxyModel;
-    mBookmark->addBookmarkItem(new BookmarkItem{"Aircraft", "NFT2526", new QQuickItem(),"qrc:/Resources/aircraft.png"});
-    mBookmark->addBookmarkItem(new BookmarkItem{"Aircraft","NFT2527",  new QQuickItem(),"qrc:/Resources/aircraft.png"});
-    mBookmark->addBookmarkItem(new BookmarkItem{"Square","sqr1",       new QQuickItem(),"qrc:/Resources/square.png"});
-    mBookmark->addBookmarkItem(new BookmarkItem{"Square","sqr2",       new QQuickItem(),"qrc:/Resources/square.png"});
-    mBookmark->addBookmarkItem(new BookmarkItem{"Circle","cir1",       new QQuickItem(),"qrc:/Resources/circle.png"});
-    mBookmark->addBookmarkItem(new BookmarkItem{"Circle","cir2",       new QQuickItem(),"qrc:/Resources/circle.png"});
-    mBookmark->addBookmarkItem(new BookmarkItem{"Rectangle","rec1",    new QQuickItem(),"qrc:/Resources/rectangle.png"});
-    mBookmark->addBookmarkItem(new BookmarkItem{"Rectangle","rec2",    new QQuickItem(),"qrc:/Resources/rectangle.png"});
-//    mBookmark->select();
-    engine->rootContext()->setContextProperty("bookmarkproxymodel", mBookmark);
+//    engine->rootContext()->setContextProperty("bookmarkproxymodel", mBookmark);
 }
 
 QQmlEngine *MainWindow::getQmlEngine()

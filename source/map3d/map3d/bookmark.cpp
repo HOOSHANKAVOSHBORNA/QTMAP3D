@@ -9,6 +9,14 @@ BookmarkProxyModel::BookmarkProxyModel(QObject *parent):
     mSelectioModel = new QItemSelectionModel(this);
 }
 
+BookmarkProxyModel *BookmarkProxyModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    if(mInstance == nullptr){ mInstance = new BookmarkProxyModel(); }
+    return mInstance;
+}
+
 BookmarkProxyModel::~BookmarkProxyModel()
 {
 
