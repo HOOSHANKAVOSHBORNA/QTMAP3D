@@ -1,4 +1,4 @@
-#include "MoveableModelNode.h"
+#include "moveableModelNode.h"
 #include "mapItem.h"
 #include <QObject>
 #include <osg/Geode>

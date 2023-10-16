@@ -1,7 +1,6 @@
 #ifndef STATUSNODE_H
 #define STATUSNODE_H
 
-#include "qvariant.h"
 #include <QString>
 #include <osgEarthAnnotation/GeoPositionNode>
 #include <osgEarthAnnotation/GeoPositionNode>
@@ -16,25 +15,18 @@
 class StatusNode : public osgEarth::Annotation::PlaceNode
 {
 public:
-    struct Data
-    {
-        QString name;
-        QVariant value;
-    };
-
     StatusNode(MapItem* mapControler);
-    void setData(QString title, std::list<Data> *dataList);
+    ~StatusNode() override;
+    void setFieldData(QString title, const std::vector<NodeFieldData> &data);
     StatusNodeData *nodeData() const;
     void setNodeData(StatusNodeData *newNodeData);
 
 private:
-    void createImageNode();
+    void compile(const std::vector<NodeFieldData> &data);
 private:
     QString mTitle;
-    std::list<Data> *mDataList{nullptr};
-    QImage *mRenderImage{nullptr};
+    QImage *mTitleImage{nullptr};
     MapItem *mMapItem;
-    QPainter *mPainter;
     StatusNodeData *mNodeData;
     QFont mFont;
 };

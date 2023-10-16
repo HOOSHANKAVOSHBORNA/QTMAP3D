@@ -104,13 +104,14 @@ void DrawLine::addUpdateLineNode(LineNodeData *lineNodeData)
         lineNode->clear();
     }
 
-    for (auto point: lineNodeData->points){
-        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
-        lineNode->setName(lineNodeData->name);
-        lineNode->addPoint(geopos);
-        lineNode->setPointVisible(true);
-    }
-    lineNode->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
+    lineNode->create(&lineNodeData->points);
+//    for (auto point: lineNodeData->points){
+//        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
+//        lineNode->setName(lineNodeData->name);
+//        lineNode->addPoint(geopos);
+//        lineNode->setPointVisible(true);
+//    }
+//    lineNode->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 }
 
 void DrawLine::onItemChecked(Type type, bool check)

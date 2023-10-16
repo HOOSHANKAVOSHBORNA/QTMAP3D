@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
+import Crystal 1.0
 import "style"
 
 
@@ -115,7 +116,9 @@ ColumnLayout{
         id: stackLayout
         Layout.fillHeight: true
         currentIndex: tabBar.currentIndex
-
+//        LocationManager {
+//            listModel: Sinstance
+//        }
     }
     //------------------------------------------
 }

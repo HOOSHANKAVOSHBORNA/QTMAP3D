@@ -21,6 +21,6 @@ add_subdirectory(imageOverlay)
 add_subdirectory(model)
 add_subdirectory(screen)
 add_subdirectory(particle)
-add_subdirectory(location)
+add_subdirectory(information/)
 #add_subdirectory(uiComponents)
 
