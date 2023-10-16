@@ -253,7 +253,7 @@ Item {
                             width: parent.width
                             height: parent.height
                             anchors.centerIn: parent
-                            color: visibleRole ?  Style.foregroundColor :Style.disableColor
+                            color: visibleRole ?  Style.hoverColor :Style.disableColor
 
 
                         }

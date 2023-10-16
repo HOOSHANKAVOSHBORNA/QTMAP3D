@@ -263,7 +263,6 @@ Rectangle {
 
         SideContainer {
             id: leftContainer
-
             Layout.fillWidth: true
         }
     }

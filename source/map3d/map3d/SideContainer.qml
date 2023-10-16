@@ -1,8 +1,11 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Controls.Material
 import Crystal 1.0
 import "style"
+
+
 
 ColumnLayout{
 
@@ -12,16 +15,23 @@ ColumnLayout{
     function setCurrentIndex(index){
         tabBar.currentIndex = index
     }
-
     //--tab-----------------------------------------------
 
     clip: true
     TabBar {
         id: tabBar
-contentWidth: rootItem.model.count ?parent.width - 40 /Style.monitorRatio: 0
-Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
+        contentWidth: rootItem.model.count ?parent.width - 40 /Style.monitorRatio: 0
+        Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
+        Material.accent: Style.foregroundColor
+        background:
+            Rectangle{
+            color:Style.disableColor
+            height: 2
+            anchors.bottom: parent.bottom
 
-                clip: true
+        }
+//        clip: true
+
         Repeater {
             id: repeater
             model: rootItem.model
@@ -39,7 +49,7 @@ Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
                         }
 //                        else return (tabBar.width - implicitWidth*2) / rootItem.model.count
                     }
-                    }
+                }
 
                 contentItem: Text {
                     id:txt
@@ -53,8 +63,7 @@ Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
                 }
 
                 background:Rectangle{
-                        color:"transparent"
-                    }
+                    color:"transparent"                  }
 
 
                 onDoubleClicked: {
@@ -107,7 +116,6 @@ Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
         id: stackLayout
         Layout.fillHeight: true
         currentIndex: tabBar.currentIndex
-
 //        LocationManager {
 //            listModel: Sinstance
 //        }
