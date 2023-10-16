@@ -203,9 +203,11 @@ Item {
                         onEntered: {
                             selectRect.color = backgroundColor
                             selectRect.visible = true
+                            backgroundbtn.visible = true
                         }
                         onExited:  {
                             selectRect.visible = false
+                            backgroundbtn.visible = false
                         }
                         onPressed: function(mouse) {
                             mouse.accepted = false
@@ -255,8 +257,8 @@ Rectangle{
     anchors.verticalCenter: parent.verticalCenter
     anchors.left: parent.left
     anchors.leftMargin:depth?(indent) * depth + 10/Style.monitorRatio: 0
- width: 26/Style.monitorRatio
- height: 26/Style.monitorRatio
+ width: 28/Style.monitorRatio
+ height: 28/Style.monitorRatio
  radius: height/2
  color:Style.disableColor
  visible: false
