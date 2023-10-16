@@ -60,7 +60,6 @@ Item {
 
         ScrollView{
             Layout.fillWidth: true
-            Layout.fillHeight: true
             Layout.topMargin: 10/Style.monitorRatio
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
@@ -72,6 +71,11 @@ Item {
                 rowSpacing: 5/Style.monitorRatio
 
                 selectionModel: bookmarkproxymodel.selectioModel()
+
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {}
+                }
 
                 delegate: Item {
                     id: treeDelegate
@@ -183,6 +187,10 @@ Item {
                     }
                 }
             }
+        }
+        Item {
+            Layout.fillHeight: true
+            Layout.fillWidth: true
         }
     }
 }
