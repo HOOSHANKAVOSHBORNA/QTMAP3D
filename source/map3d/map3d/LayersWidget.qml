@@ -91,6 +91,7 @@ Item {
                     id: treeDelegate
                     implicitWidth: treeView ? treeView.width ?? 0 : 0
                     implicitHeight:  30/Style.monitorRatio
+
                     readonly property real indent: 30
                     readonly property real padding: 5
                     required property TreeView treeView
@@ -164,6 +165,8 @@ Item {
                         drag.target: parent
                         drag.axis: Drag.YAxis
                         onClicked: {
+                            if(!expanded){
+                                container.color= "transparent"}
                             treeView.toggleExpanded(row)
                         }
                     }
@@ -173,7 +176,7 @@ Item {
                         id: container
                         anchors.fill: parent
                         anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
-                        color: (expanded )? backgroundColor: "transparent"
+                        color: expanded? backgroundColor: "transparent"
                         radius: height/2
                         MouseArea{
                             id: containerMouse
@@ -185,22 +188,33 @@ Item {
                             }
                         }
                     }
+                    Rectangle{
+                        id: selectRect
+                        anchors.fill: parent
+                        anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
+                        radius: height/2
+                        visible: false
+                        z: -1
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
 
-                    HoverHandler{
-                        onHoveredChanged: {
-                            if(hovered){
-                                container.color = backgroundColor
-                            }else{
-                                container.color = "transparent"
-                            }
+                        onEntered: {
+                            selectRect.color = backgroundColor
+                            selectRect.visible = true
+                            backgroundbtn.visible = true
                         }
+                        onExited:  {
+                            selectRect.visible = false
+                            backgroundbtn.visible = false
+                        }
+                        onPressed: function(mouse) {
+                            mouse.accepted = false
+
+                        }
+
                     }
-
-                    TapHandler {
-                        onPressedChanged: pressed ? label.color = Style.hoverColor : !pressed ? label.color = Style.textColor : Style.textColor
-                    }
-
-
 
                     IconImage {
                         id: indicator
@@ -235,10 +249,22 @@ Item {
                         clip: true
                         font.pixelSize: 17/Style.monitorRatio
                         font.weight: Font.Medium
-                        color: visibleRole ?  Style.foregroundColor :Style.disableColor
+                        color: Style.foregroundColor
                         text: display
                     }
+Rectangle{
+    id:backgroundbtn
+    anchors.verticalCenter: parent.verticalCenter
+    anchors.left: parent.left
+    anchors.leftMargin:depth?(indent) * depth + 10/Style.monitorRatio: 0
+ width: 28/Style.monitorRatio
+ height: 28/Style.monitorRatio
+ radius: height/2
+ color:Style.disableColor
+ visible: false
+ opacity: .2
 
+}
                     Rectangle{
                         id: hideContainer
                         width: container.height * 0.5
