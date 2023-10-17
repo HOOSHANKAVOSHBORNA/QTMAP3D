@@ -28,6 +28,9 @@ CMainWindow {
     SideBar {
         id: sideBar
 
+        // TODO: 22 is hardcode size of statusbar
+        height: mainWindow.height - (22 / Style.monitorRatio)
+
         mainWindow: mainWindow
         pinContainer: pinContainer
         unpinContainer: unpinContainer
@@ -36,9 +39,8 @@ CMainWindow {
     Item {
         id: unpinContainer
 
-        // TODO: 22 is hardcode size of statusbar
-        height: mainWindow.height - (22 / Style.monitorRatio)
-        width: 75 / Style.monitorRatio + sideBar.sideContainerWidth
+        height: childrenRect.height
+        width: childrenRect.width
         z: 1
     }
 
@@ -53,7 +55,7 @@ CMainWindow {
             color: "tomato"
             SplitView.preferredHeight: mainWindow.height
             // TODO: don't work with visible and set preferred width as childrenRect size
-            SplitView.preferredWidth: 75 / Style.monitorRatio + sideBar.sideContainerWidth
+            SplitView.preferredWidth: sideBar.width
         }
 
         StackLayout {
