@@ -8,18 +8,24 @@ import "style"
 ColumnLayout {
     id: rootItem
 
-    property ListModel model: ListModel{}
-    property int visibleCount: 0
-
+    property list<string> model: []
     property alias isOpen: stackLayout.visible
     property alias currentItemIndex: stackLayout.currentIndex
     property int previousItemIndex: -1
 
-//    function setCurrentIndex(index){
-//        tabBar.currentIndex = index
-//    }
+    signal modelEmpty
 
-    function toggleIndex(index) {
+    function isInModel(s) {
+        for (var i = 0; i < model.length; i++) {
+            if (model[i] === s) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    function toggleStackLayoutIndex(index) {
         if (isOpen && currentItemIndex === index) {
             if (previousItemIndex !== -1) {
                 stackLayout.currentIndex = previousItemIndex
@@ -36,93 +42,107 @@ ColumnLayout {
     }
 
     function toggleToolbox() {
-        toggleIndex(0)
+        var i = model.indexOf("Toolbox");
+        if (i !== -1) {
+            model.splice(i, 1);
+        } else {
+            model.push("Toolbox")
+        }
+
+        toggleStackLayoutIndex(0)
         toolbox.listModel = ToolboxInstance
     }
 
     function toggleLocationManager() {
-        toggleIndex(1)
+        var i = model.indexOf("LocationManager");
+        if (i !== -1) {
+            model.splice(i, 1);
+        } else {
+            model.push("LocationManager")
+        }
+
+        toggleStackLayoutIndex(1)
         locationManager.listModel = LocatoinManagerInstance
     }
 
     function toggleLayers() {
-        toggleIndex(2)
+        var i = model.indexOf("Layers");
+        if (i !== -1) {
+            model.splice(i, 1);
+        } else {
+            model.push("Layers")
+        }
+
+        toggleStackLayoutIndex(2)
         layers.layersModell = LayersInstance
     }
 
     function toggleBookmark() {
-        toggleIndex(3)
+        var i = model.indexOf("Bookmark");
+        if (i !== -1) {
+            model.splice(i, 1);
+        } else {
+            model.push("Bookmark")
+        }
+
+        toggleStackLayoutIndex(3)
         bookmark.model = BookmarkInstance
     }
 
-//    TabBar {
-//        id: tabBar
-//        contentWidth: rootItem.model.count ?parent.width - 40 /Style.monitorRatio: 0
-//        Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
-//        Material.accent: Style.foregroundColor
-//        background:
-//            Rectangle{
-//            color:Style.disableColor
-//            height: 2
-//            anchors.bottom: parent.bottom
+    TabBar {
+        id: tabBar
 
-//        }
-////        clip: true
+        contentWidth: rootItem.model.count ? parent.width - 40 / Style.monitorRatio : 0
+        Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
+        Material.accent: Style.foregroundColor
 
-//        Repeater {
-//            id: repeater
-//            model: rootItem.model
+        background: Rectangle {
+            color: Style.disableColor
+            height: 2
+            anchors.bottom: parent.bottom
+        }
 
-//            TabButton {
-//                id:tb
+        Repeater {
+            id: repeater
 
-//                width:{
-//                    if (rootItem.model.count === 1){
+            model: rootItem.model.length
 
-//                        return implicitWidth
-//                    }else{
-//                        if(tabBar.currentIndex === index){
-//                            return implicitWidth
-//                        }
-////                        else return (tabBar.width - implicitWidth*2) / rootItem.model.count
-//                    }
-//                }
+            TabButton {
+                id: tb
 
-//                contentItem: Text {
-//                    id:txt
-//                    text: name ?? "unknown"
-//                    font: Style.fontFamily
-//                    opacity: enabled ? 1.0 : 0.3
-//                    color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
-//                    horizontalAlignment: Text.AlignHCenter
-//                    verticalAlignment: Text.AlignVCenter
-//                    elide: Text.ElideRight
-//                }
+                width: {
+                    if (rootItem.model.count === 1) {
+                        return implicitWidth
+                    } else {
+                        if (tabBar.currentIndex === index) {
+                            return implicitWidth
+                        }
+//                        else return (tabBar.width - implicitWidth * 2) / rootItem.model.count
+                    }
+                }
 
-//                background:Rectangle{
-//                    color:"transparent"                  }
+                contentItem: Text {
+                    id: txt
 
+                    text: rootItem.model[index] ?? "unknown"
+                    font: Style.fontFamily
+                    opacity: enabled ? 1.0 : 0.3
+                    color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
 
-//                onDoubleClicked: {
-//                    var docItem = stackLayout.data[index]
-//                    docItem.state = "undocked"
+                background: Rectangle {
+                    color: "transparent"
+                }
 
-//                    for(var i = 1; i<rootItem.model.count; i++){
-//                        var mindex = (i + index) % rootItem.model.count
-//                        if(repeater.itemAt(mindex).visible){
-//                            tabBar.currentIndex = mindex
-//                            break
-//                        }
-//                    }
-//                }
-
-//                onVisibleChanged: {
-//                    tabBar.currentIndex = visible ? index: tabBar.currentIndex
-//                }
-//            }
-
-//        }
-//    }
+                onDoubleClicked: {
+                    // coder here
+                }
+            }
+        }
+    }
 
     StackLayout {
         id: stackLayout

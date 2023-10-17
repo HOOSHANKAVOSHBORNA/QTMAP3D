@@ -52,10 +52,17 @@ Rectangle {
     radius: 20 / Style.monitorRatio
 
     PropertyAnimation on width {
-        id: myAnim
+        id: openAnimation
         running: false
-        from: 75 / Style.monitorRatio
+        from: container.width
         to: 350 / Style.monitorRatio
+    }
+
+    PropertyAnimation on width {
+        id: closeAnimation
+        running: false
+        from: 350 / Style.monitorRatio
+        to: container.width
     }
 
     gradient: Gradient{
@@ -202,7 +209,8 @@ Rectangle {
                                 checked: false
 
                                 onClicked: {
-                                    if (!leftContainer.isOpen) myAnim.running = true
+                                    console.log(!leftContainer.model)
+                                    if (leftContainer.model) openAnimation.running = true
                                     toolBarModel.actions[model.label]()
                                 }
                             }
@@ -217,6 +225,8 @@ Rectangle {
 
             Layout.preferredHeight: toolBar.height
             Layout.fillWidth: true
+
+            onModelEmpty: closeAnimation.running = true
         }
     }
 }
