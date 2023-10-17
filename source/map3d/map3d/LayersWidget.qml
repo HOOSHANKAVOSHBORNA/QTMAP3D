@@ -164,11 +164,11 @@ Item {
                         anchors.fill: parent
                         drag.target: parent
                         drag.axis: Drag.YAxis
-                        onClicked: {
-                            if(!expanded){
-                                container.color= "transparent"}
+                        propagateComposedEvents: true
+                        onClicked: function(mouse){
                             treeView.toggleExpanded(row)
                         }
+
                     }
 
 
@@ -176,95 +176,92 @@ Item {
                         id: container
                         anchors.fill: parent
                         anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
-                        color: expanded? backgroundColor: "transparent"
+                        color: (treeDelegate.hasChildren && expanded)? backgroundColor: "transparent"
                         radius: height/2
                         MouseArea{
                             id: containerMouse
+                            propagateComposedEvents: true
+
                             anchors.fill: parent
                             acceptedButtons: Qt.RightButton;
-                            onClicked: {
+                            onClicked:function(mouse) {
                                 contextMenu.popup()
-
                             }
                         }
+
+
+
+                        IconImage {
+                            id: indicator
+                            source: "qrc:/Resources/down.png"
+                            width: container.height * 0.4 - 2*depth
+                            height:container.height * 0.5 - 2*depth
+                            color: visibleRole ?  Style.foregroundColor :Style.disableColor
+                            anchors.rightMargin: 15/Style.monitorRatio
+                            anchors.right:  parent.right
+                            visible: treeDelegate.hasChildren
+                            rotation: treeDelegate.expanded ? 180 : 0
+                            anchors.verticalCenter: parent.verticalCenter
+
+                        }
+
+                        IconImage {
+                            id: itemIcon
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: parent.left
+                            anchors.leftMargin:10/Style.monitorRatio
+                            source: /*imageSource ??*/ ""
+                            width: 24/Style.monitorRatio
+                            height: 24/Style.monitorRatio
+                            color:Style.foregroundColor
+                        }
+
+                        Text {
+                            id: label
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: itemIcon.right
+                            anchors.leftMargin: 10/Style.monitorRatio
+                            clip: true
+                            font.pixelSize: 17/Style.monitorRatio
+                            font.weight: Font.Medium
+                            color: Style.foregroundColor
+                            text: display
+                        }
+
                     }
+
                     Rectangle{
                         id: selectRect
                         anchors.fill: parent
                         anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
                         radius: height/2
-                        visible: false
+                        visible: true
+                        color: co.containsMouse || hideBtn.containsMouse ? backgroundColor : "transparent"
                         z: -1
                     }
                     MouseArea {
-                        anchors.fill: parent
+                        id: co
+                        anchors.fill: container
                         hoverEnabled: true
-
-                        onEntered: {
-                            selectRect.color = backgroundColor
-                            selectRect.visible = true
-                            backgroundbtn.visible = true
-                        }
-                        onExited:  {
-                            selectRect.visible = false
-                            backgroundbtn.visible = false
-                        }
+                        propagateComposedEvents: true
                         onPressed: function(mouse) {
                             mouse.accepted = false
-
                         }
-
                     }
 
-                    IconImage {
-                        id: indicator
-                        source: "qrc:/Resources/down.png"
-                        width: container.height * 0.4 - 2*depth
-                        height:container.height * 0.5 - 2*depth
-                        color: visibleRole ?  Style.foregroundColor :Style.disableColor
-                        anchors.rightMargin: 15/Style.monitorRatio
-                        anchors.right:  parent.right
-                        visible: treeDelegate.hasChildren
-                        rotation: treeDelegate.expanded ? 180 : 0
-                        anchors.verticalCenter: parent.verticalCenter
-
-                    }
-
-                    IconImage {
-                        id: itemIcon
+                    Rectangle{
+                        id:backgroundbtn
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin:depth?(indent) * depth + 10/Style.monitorRatio: 0
-                        source: /*imageSource ??*/ ""
-                        width: 24/Style.monitorRatio
-                        height: 24/Style.monitorRatio
-                        color:Style.foregroundColor
-                    }
+                        width: 28/Style.monitorRatio
+                        height: 28/Style.monitorRatio
+                        radius: height/2
+                        color: hideBtn.containsMouse ? Style.disableColor : "transparent"
+                        visible: true
+                        opacity: .2
 
-                    Text {
-                        id: label
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: itemIcon.right
-                        anchors.leftMargin: 10/Style.monitorRatio
-                        clip: true
-                        font.pixelSize: 17/Style.monitorRatio
-                        font.weight: Font.Medium
-                        color: Style.foregroundColor
-                        text: display
                     }
-Rectangle{
-    id:backgroundbtn
-    anchors.verticalCenter: parent.verticalCenter
-    anchors.left: parent.left
-    anchors.leftMargin:depth?(indent) * depth + 10/Style.monitorRatio: 0
- width: 28/Style.monitorRatio
- height: 28/Style.monitorRatio
- radius: height/2
- color:Style.disableColor
- visible: false
- opacity: .2
-
-}
                     Rectangle{
                         id: hideContainer
                         width: container.height * 0.5
@@ -287,7 +284,8 @@ Rectangle{
                             id:hideBtn
                             hoverEnabled: true
                             anchors.fill: hideContainer
-                            onClicked: function() {
+                            propagateComposedEvents: true
+                            onClicked:{
                                 rootItem.layersModell.onVisibleItemClicked(treeView.index(row , column))
                             }
 
@@ -308,7 +306,6 @@ Rectangle{
                                 onTriggered: function() {
                                     rootItem.layersModell.onRemoveItemClicked(treeView.index(row , column))
                                 }
-
                             }
                             MenuSeparator {
                                 contentItem: Rectangle {
@@ -324,7 +321,6 @@ Rectangle{
                                 onTriggered: {
                                     rootItem.layersModell.onMoveItem(treeView.index(row , column), treeView.index(row-1 , column))
                                 }
-
                             }
                             MenuSeparator {
                                 contentItem: Rectangle {

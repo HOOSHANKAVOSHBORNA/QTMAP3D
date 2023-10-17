@@ -66,7 +66,6 @@ Rectangle {
 
     RowLayout {
         anchors.fill: parent
-
         Rectangle {
             id: toolBar
 
