@@ -12,6 +12,7 @@
 #include "toolbox.h"
 #include "mapControllerItem.h"
 #include "locationManagerModel.h"
+#include "bookmark.h"
 
 class ListWindow;
 class LayersModel;
@@ -20,8 +21,7 @@ Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QQuickWindow
 {
     Q_OBJECT
-    Q_PROPERTY(LayersModel* layersModel READ layersModel /*WRITE setLayersModel NOTIFY layersModelChanged*/)
-    Q_PROPERTY(ToolboxProxyModel* toolbox READ toolbox /*WRITE setToolbox NOTIFY toolboxChanged*/)
+    Q_PROPERTY(BookmarkProxyModel* bookmark READ bookmark /*WRITE setLayersModel NOTIFY layersModelChanged*/)
 
 public:
     enum class InfoWidgetType {
@@ -29,6 +29,7 @@ public:
         Station,
         System
     };
+
     enum DockPosition{
         Left = 0x1,
         Right = 0x2,
@@ -42,19 +43,21 @@ public:
     void initComponent();
     QQmlEngine *getQmlEngine();
     LayersModel *layersModel() const;
-    ToolboxProxyModel *toolbox() const;
     MapItem* getMapItem();
 
     void showInfoItem(QQuickItem* item, QString title);
     void hideInfoItem(QQuickItem* item);
     void hideProperty(QQuickItem* item);
     void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
+
 public:
     void addToLeftContainer(QQuickItem *item, QString title);
     void addToRightContainer(QQuickItem *item, QString title);
     void addToCenterCenterContainer(QQuickItem *item);
     void removeFromRightContainer(QQuickItem *item);
     void removeFromLeftContainer(QQuickItem *item);
+
+    BookmarkProxyModel *bookmark() const;
 
 public slots:
     void showListWindow();
@@ -69,7 +72,7 @@ private:
     MapControllerItem *mMapItem = nullptr;
     ListWindow *mListWindow = nullptr;
     LayersModel *mLayersModel = nullptr;
-    ToolboxProxyModel *mToolbox = nullptr;
+    BookmarkProxyModel *mBookmark = nullptr;
 };
 
 #endif // MainWindow_H

@@ -96,10 +96,10 @@ void ServiceManager::polylineData(QJsonObject polyline)
     QJsonArray points = polyline.value("Points").toArray();
     LineNodeData *lineNodeData = new LineNodeData;
     for (auto i : points) {
-        QVector3D point;
-        point.setX(i.toObject().value("Longitude").toDouble());
-        point.setY(i.toObject().value("Latitude").toDouble());
-        point.setZ(i.toObject().value("Altitude").toDouble());
+        osg::Vec3d point;
+        point.x() = (i.toObject().value("Longitude").toDouble());
+        point.y() = (i.toObject().value("Latitude").toDouble());
+        point.z() = (i.toObject().value("Altitude").toDouble());
         lineNodeData->points.push_back(point);
     }
     int layerId = polyline.value("LayerId").toInt();

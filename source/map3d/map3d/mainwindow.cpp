@@ -8,6 +8,7 @@
 #include <QWindow>
 #include <QOpenGLFunctions_2_0>
 #include <chrono>
+#include <bookmark.h>
 #include <QQmlEngine>
 #include <QJSEngine>
 
@@ -32,14 +33,8 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 
-    qmlRegisterSingletonType<LocationManagerProxyModel>("Crystal", 1,
-                                                        0, "Sinstance", LocationManagerProxyModel::createSingletonInstance);
 
     setColor(Qt::black);
-    mToolbox = new ToolboxProxyModel();
-    Toolbox *toolbox = new Toolbox(this);
-    mToolbox->setSourceModel(toolbox);
-
 }
 
 
@@ -66,18 +61,31 @@ void MainWindow::initComponent()
             mMapItem->setQmlEngine(engine);
             addToCenterCenterContainer(mMapItem);
 
-            mLayersModel = new LayersModel(mMapItem);
-
-            // --- location manager and its proxy model settings
+            // ----------------------------------
+            // --------- model settings ---------
+            // ----------------------------------
             LocationManagerModel *locationManagerModel = new LocationManagerModel(mMapItem);
-
             LocationManagerProxyModel* myModel = LocationManagerProxyModel::createSingletonInstance(nullptr, nullptr);
             myModel->setSourceModel(locationManagerModel);
-            // ---
+            qmlRegisterSingletonType<LocationManagerProxyModel>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManagerProxyModel::createSingletonInstance);
+
+            ToolboxProxyModel* toolboxProxyModel = ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
+            Toolbox *toolbox = new Toolbox(this);
+            toolboxProxyModel->setSourceModel(toolbox);
+            qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
+
+            LayersModel *layersModel = LayersModel::createSingletonInstance(nullptr, nullptr);
+            layersModel->initialize(mMapItem);
+            qmlRegisterSingletonType<LayersModel>("Crystal", 1, 0, "LayersInstance", LayersModel::createSingletonInstance);
+
+
+            mBookmark = BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+            qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
 
+//    engine->rootContext()->setContextProperty("bookmarkproxymodel", mBookmark);
 }
 
 QQmlEngine *MainWindow::getQmlEngine()
@@ -89,11 +97,6 @@ QQmlEngine *MainWindow::getQmlEngine()
 LayersModel *MainWindow::layersModel() const
 {
     return mLayersModel;
-}
-
-ToolboxProxyModel *MainWindow::toolbox() const
-{
-    return mToolbox;
 }
 
 void MainWindow::addToCenterCenterContainer(QQuickItem *item)
@@ -194,4 +197,9 @@ bool MainWindow::event(QEvent *ev)
     }
 
     return QQuickWindow::event(ev);
+}
+
+BookmarkProxyModel *MainWindow::bookmark() const
+{
+    return mBookmark;
 }

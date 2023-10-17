@@ -31,5 +31,6 @@
         <file>CameraPositionHandlerItem.qml</file>
         <file>SmallMapItem.qml</file>
         <file>SideBar.qml</file>
+        <file>BookmarkItem.qml</file>
     </qresource>
 </RCC>

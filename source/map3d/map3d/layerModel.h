@@ -10,17 +10,23 @@ Q_DECLARE_METATYPE(osgEarth::Layer);
 class LayersModel : public TreeProxyModel
 {
     Q_OBJECT
-
+    QML_ELEMENT
+    QML_SINGLETON
     Q_PROPERTY(QModelIndex dragIndex READ getDragIndex WRITE setDragIndex)
 
-    enum Role{
+    enum Role {
         VisibleRole = Qt::UserRole + 100 ,
         LayerRole,
         DropRole
     };
 
+private:
+    explicit LayersModel();
+
 public:
-    LayersModel(MapItem *mapController = nullptr, QObject *parent = nullptr);
+    static LayersModel* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+
+    void initialize(MapItem *mapItem);
     void initializeModel(osgEarth::Map *map);
     QHash<int,QByteArray> roleNames() const override;
     QModelIndex getDragIndex();
@@ -33,20 +39,22 @@ public slots:
 
     void onLayerAdded(osgEarth::Layer* layer , osgEarth::Layer *parentLayer,   unsigned index);
     void onLayerRemoved(osgEarth::Layer* layer ,osgEarth::Layer *parentLayer, unsigned index);
+
 private:
     void moveItem(QModelIndex from , QModelIndex to);
     void setItemVisible(QStandardItem *item, bool visible);
     bool getLayerVisible(osgEarth::Layer *layer) const;
     void setLayerVisible(osgEarth::VisibleLayer *layer);
+
 private:
+    static LayersModel* mInstance;
+
 //    QStandardItem mLayerList;
     MapItem *mMapItem;
     QStandardItemModel *mSourceModel;
 //    QMap<QStandardItem , osgEarth::Layer*> treeLayerMap;
     QModelIndex mDragIndex;
     std::map<osgEarth::Layer*, QStandardItem*> mLayerToItemMap;
-
-
 };
 
 

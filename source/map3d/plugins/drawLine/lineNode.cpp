@@ -13,8 +13,8 @@
 LineNode::LineNode(MapItem *mapItem)
 {
     mMapItem = mapItem;
-    mLineGeometry = new osgEarth::Symbology::Geometry();
-    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(mLineGeometry, mMapItem->getMapSRS());
+    auto geometry = new osgEarth::Symbology::Geometry();
+    osgEarth::Features::Feature* pathFeature = new osgEarth::Features::Feature(geometry, mMapItem->getMapSRS());
     pathFeature->geoInterp() = osgEarth::GEOINTERP_GREAT_CIRCLE;
 
     osgEarth::Symbology::Style pathStyle;
@@ -42,21 +42,29 @@ LineNode::LineNode(MapItem *mapItem)
 
 LineNode::~LineNode()
 {
-    for(const auto &labelData: mVecLabelData){
-        if(labelData.qImage)
-            delete labelData.qImage;
-    }
+    //    for(const auto &labelData: mVecLabelData){
+    //        if(labelData.qImage)
+    //            delete labelData.qImage;
+    //    }
+}
+
+void LineNode::create(std::vector<osg::Vec3d> *points)
+{
+    auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_LINESTRING, points);
+    getFeature()->setGeometry(geometry);
+    dirty();
 }
 
 void LineNode::addPoint(osgEarth::GeoPoint point)
 {
-    mLineGeometry->push_back(point.vec3d());
+    auto geometry = getFeature()->getGeometry();
+    geometry->push_back(point.vec3d());
     dirty();
 
     if(getSize() >= 2)
     {
-        osgEarth::GeoPoint p1(mMapItem->getMapSRS() ,mLineGeometry->at(mLineGeometry->size() - 2));
-        osgEarth::GeoPoint p2(mMapItem->getMapSRS(),mLineGeometry->at(mLineGeometry->size() - 1));
+        osgEarth::GeoPoint p1(mMapItem->getMapSRS() ,geometry->at(geometry->size() - 2));
+        osgEarth::GeoPoint p2(mMapItem->getMapSRS(),geometry->at(geometry->size() - 1));
 
         std::vector<osg::Vec3d> distanceVectorPoint;
         distanceVectorPoint.push_back(p1.vec3d());
@@ -74,24 +82,24 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
             bearing += 360;
         }
 
-        double slope = (mLineGeometry->at(mLineGeometry->size() - 1).z() - mLineGeometry->at(mLineGeometry->size() - 2).z()) / p1.distanceTo(p2);
+        double slope = (geometry->at(geometry->size() - 1).z() - geometry->at(geometry->size() - 2).z()) / p1.distanceTo(p2);
         slope = std::asin(slope);
         slope = osg::RadiansToDegrees(slope);
 
-        osg::ref_ptr<osg::Image> image = new osg::Image;
-        osg::ref_ptr<osgEarth::Annotation::PlaceNode> placeNode = new osgEarth::Annotation::PlaceNode();
+//        osg::ref_ptr<osg::Image> image = new osg::Image;
+        osg::ref_ptr<StatusNode> statusNode = new StatusNode(mMapItem);
         LabelData data;
         data.distance = distance;
         data.altitude = altitude;
         data.bearing = bearing;
         data.slope = slope;
-        data.placeNode = placeNode;
+        data.statusNode = statusNode;
 
-        QImage* qImage = createOrUpdateLabelImg(image, data);
-        data.image = image;
-        data.qImage = qImage;
+        updateStatusNode(data);
+        //        data.image = image;
+        //        data.qImage = qImage;
         mVecLabelData.push_back(data);
-        placeNode->setIconImage(image);
+//        statusNode->setIconImage(image);
 
 
 
@@ -108,11 +116,11 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
                                      latMidP, lonMidP);
 
         osgEarth::GeoPoint midpoint(mMapItem->getMapSRS()->getGeographicSRS(),osg::RadiansToDegrees(latMidP),osg::RadiansToDegrees(lonMidP),zMidP);
-        placeNode->setPosition(midpoint);
+        statusNode->setPosition(midpoint);
 
 
-        placeNode->setStyle(placeNode->getStyle());
-        mLabelGroup->addChild(placeNode);
+        //        statusNode->setStyle(placeNode->getStyle());
+        mLabelGroup->addChild(statusNode);
     }
     addChild(mLabelGroup);
 
@@ -120,15 +128,15 @@ void LineNode::addPoint(osgEarth::GeoPoint point)
 
 osgEarth::GeoPoint LineNode::getPoint(int index)
 {
-    return osgEarth::GeoPoint(mMapItem->getMapSRS() ,mLineGeometry->at(index));
+    return osgEarth::GeoPoint(mMapItem->getMapSRS() ,getFeature()->getGeometry()->at(index));
 }
 
 void LineNode::removePoint()
 {
-    mLineGeometry->pop_back();
-    auto qImage = mVecLabelData[mVecLabelData.size()-1 ].qImage;
-    if(qImage)
-        delete  qImage;
+    getFeature()->getGeometry()->pop_back();
+    //    auto qImage = mVecLabelData[mVecLabelData.size()-1 ].qImage;
+    //    if(qImage)
+    //        delete  qImage;
 
     mVecLabelData.pop_back();
     dirty();
@@ -139,10 +147,10 @@ void LineNode::removePoint()
 
 void LineNode::removeFirstPoint()
 {
-    mLineGeometry->erase(mLineGeometry->begin());
-    auto qImage = mVecLabelData[0].qImage;
-    if(qImage)
-        delete  qImage;
+    getFeature()->getGeometry()->erase(getFeature()->getGeometry()->begin());
+    //    auto qImage = mVecLabelData[0].qImage;
+    //    if(qImage)
+    //        delete  qImage;
     mVecLabelData.erase(mVecLabelData.begin());
     dirty();
     mLabelGroup->removeChild(0, 1);
@@ -153,11 +161,11 @@ void LineNode::removeFirstPoint()
 void LineNode::clear()
 {
 
-    mLineGeometry->clear();
-    for(const auto& labelData: mVecLabelData){
-        if(labelData.qImage)
-            delete labelData.qImage;
-    }
+    getFeature()->getGeometry()->clear();
+    //    for(const auto& labelData: mVecLabelData){
+    //        if(labelData.qImage)
+    //            delete labelData.qImage;
+    //    }
     mVecLabelData.clear();
     dirty();
     mLabelGroup->removeChildren(0,mLabelGroup->getNumChildren());
@@ -168,7 +176,7 @@ void LineNode::clear()
 
 int LineNode::getSize()
 {
-    return static_cast<int>(mLineGeometry->size());
+    return static_cast<int>(getFeature()->getGeometry()->size());
 }
 
 osgEarth::Color LineNode::getFillColor() const
@@ -297,12 +305,7 @@ void LineNode::setShowBearing(const bool &bearing)
         mLabelGroup->setNodeMask(true);
         for(auto& data:mVecLabelData)
         {
-            if(data.qImage)
-                delete data.qImage;
-            QImage* qImage = createOrUpdateLabelImg(data.image, data);
-            data.qImage = qImage;
-            data.placeNode->setIconImage(data.image);
-            data.placeNode->setStyle(data.placeNode->getStyle());
+            updateStatusNode(data);
         }
     }
     else
@@ -325,12 +328,7 @@ void LineNode::setShowDistance(const bool &show)
         mLabelGroup->setNodeMask(true);
         for(auto& data:mVecLabelData)
         {
-            if(data.qImage)
-                delete data.qImage;
-            QImage* qImage = createOrUpdateLabelImg(data.image, data);
-            data.qImage = qImage;
-            data.placeNode->setIconImage(data.image);
-            data.placeNode->setStyle(data.placeNode->getStyle());
+            updateStatusNode(data);
         }
     }
     else
@@ -365,22 +363,7 @@ void LineNode::setShowSlope(bool showSlope)
         mLabelGroup->setNodeMask(true);
         for(auto& data:mVecLabelData)
         {
-            if(data.qImage)
-                delete data.qImage;
-            QImage* qImage = createOrUpdateLabelImg(data.image, data);
-            data.qImage = qImage;
-            data.placeNode->setIconImage(data.image);
-            //			osgEarth::Annotation::Style style;
-            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->alignment() = osgEarth::Symbology::TextSymbol::ALIGN_CENTER_CENTER;
-            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->size() = 14;
-            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->fill() = osgEarth::Color::Black;
-            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->haloBackdropType() = osgText::Text::BackdropType::OUTLINE;
-            //			osgEarth::Symbology::Stroke strok;
-            //			strok.color() = osgEarth::Color::White;
-            //			strok.width() = 0;
-            //			style.getOrCreate<osgEarth::Symbology::TextSymbol>()->halo() = strok;
-            //			data.placeNode->setText(std::to_string(data.slope));
-            data.placeNode->setStyle(getStyle());
+           updateStatusNode(data);
         }
     }
     else
@@ -408,12 +391,7 @@ void LineNode::setShowAltitude(bool showAltitude)
         mLabelGroup->setNodeMask(true);
         for(auto& data:mVecLabelData)
         {
-            if(data.qImage)
-                delete data.qImage;
-            QImage* qImage = createOrUpdateLabelImg(data.image, data);
-            data.qImage = qImage;
-            data.placeNode->setIconImage(data.image);
-            data.placeNode->setStyle(data.placeNode->getStyle());
+           updateStatusNode(data);
         }
     }
     else
@@ -474,111 +452,48 @@ void LineNode::setSmooth(bool smooth)
     }
 }
 //---------------------------------------------------------------
-QImage *LineNode::createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, LabelData &lableData)
+void LineNode::updateStatusNode( LabelData &lableData)
 {
-    int imageHeight = 0;
-    if (mCount > 0)
-        imageHeight = mCount*23;
-    else
-        return nullptr;
-    //    int distancePos = 5;
-    //    int slopePos = 5;
-    //    int bearingPos = 5;
-    int pos = 5;
+    std::vector<NodeFieldData> dataList;
 
-    QImage* lblImage = new QImage(
-        LABEL_IMAGE_WIDTH,
-        imageHeight,
-        QImage::Format_RGBA8888);
-
-    if(!image->valid())
-        image = new osg::Image;
-
-    {
-        lblImage->fill(QColor(Qt::transparent));
-        QPainter painter(lblImage);
-        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-
-        static const QBrush backgroundBrush = QBrush(QColor(30, 30, 30, int(255 * 0.3f)));
-        static const QFont textFont("SourceSansPro", 10, QFont::Normal);
-        static const QPen  textPen(QColor(255, 255, 255));
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(backgroundBrush);
-        painter.drawRoundedRect(
-            lblImage->rect(),
-            8,8);
-
-
-        painter.setPen(textPen);
-        painter.setFont(textFont);
-
-        if (mShowDistance){
-            if (lableData.distance >= 1000){
-                QString str = QObject::tr("d: %1 km").arg(lableData.distance/1000,0,'f',2);
-                painter.drawText(8, pos, LABEL_IMAGE_WIDTH, 15,
-                                 Qt::AlignLeft|Qt::AlignVCenter,
-                                 str);
-            }
-            else{
-                QString str = QObject::tr("d: %1 m").arg(lableData.distance,0,'f',2);
-                painter.drawText(8, pos, LABEL_IMAGE_WIDTH, 15,
-                                 Qt::AlignLeft|Qt::AlignVCenter,
-                                 str);
-            }
-            pos += 22;
-        }
-        if (mShowAltitude){
-            if (lableData.altitude >= 1000){
-                QString str = QObject::tr("h: %1 km").arg(lableData.altitude/1000, 0, 'f', 2);
-                painter.drawText(8, pos, LABEL_IMAGE_WIDTH, 15,
-                                 Qt::AlignLeft|Qt::AlignVCenter,
-                                 str);
-            }
-            else{
-                QString str = QObject::tr("h: %1 m").arg(lableData.altitude,0,'f',2);
-                painter.drawText(8, pos, LABEL_IMAGE_WIDTH, 15,
-                                 Qt::AlignLeft|Qt::AlignVCenter,
-                                 str);
-            }
-            pos += 22;
-        }
-        if (mShowBearing){
-            QString bearStr= QString::number(lableData.bearing, 'f', 2);
-            painter.drawText(QRect(8, pos, LABEL_IMAGE_WIDTH, 15),
-                             Qt::AlignLeft|Qt::AlignVCenter,
-                             "b: "+bearStr+"°");
-                pos += 22;
-        }
-
-        if (mShowSlope){
-            QString slopeStr= QString::number(lableData.slope, 'f', 2);
-            painter.drawText(QRect(8, pos, LABEL_IMAGE_WIDTH, 15),
-                             Qt::AlignLeft|Qt::AlignVCenter,
-                             "s: "+slopeStr+"°");
-        }
+    if (mShowDistance){
+        NodeFieldData data;
+        QString strVal;
+        data.name = "d";
+        if (lableData.distance >= 1000)
+            strVal = QObject::tr("%1 km").arg(lableData.distance/1000,0,'f',2);
+        else
+            strVal = QObject::tr("%1 m").arg(lableData.distance,0,'f',2);
+        data.value = strVal;
+        dataList.push_back(data);
+    }
+    if (mShowAltitude){
+        NodeFieldData data;
+        QString strVal;
+        data.name = "h";
+        if (lableData.altitude >= 1000)
+            strVal = QObject::tr("%1 km").arg(lableData.altitude/1000, 0, 'f', 2);
+        else
+            strVal = QObject::tr("%1 m").arg(lableData.altitude,0,'f',2);
+        data.value = strVal;
+        dataList.push_back(data);
+    }
+    if (mShowBearing){
+        NodeFieldData data;
+        QString strVal = QString::number(lableData.bearing, 'f', 2);
+        data.name = "b";
+        data.value = strVal;
+        dataList.push_back(data);
     }
 
-    *lblImage = lblImage->mirrored(false, true);
-    //    QDialog *dlg = new QDialog();
-    //    QLabel *label = new QLabel;
-    //    label->setPixmap(QPixmap::fromImage(*lblImage));
-    //    QVBoxLayout *lay = new QVBoxLayout;
-    //    lay->addWidget(label);
-    //    lay->setStretch(0, 1000);
-    //    dlg->setLayout(lay);
-
-    //    dlg->exec();
-
-
-    image->setImage(LABEL_IMAGE_WIDTH,
-                    imageHeight,
-                    1,
-                    GL_RGBA,
-                    GL_RGBA,
-                    GL_UNSIGNED_BYTE,
-                    lblImage->bits(),
-                    osg::Image::AllocationMode::NO_DELETE);
-    return lblImage;
+    if (mShowSlope){
+        NodeFieldData data;
+        QString strVal = QString::number(lableData.slope, 'f', 2);
+        data.name = "s";
+        data.value = strVal;
+        dataList.push_back(data);
+    }
+    lableData.statusNode->setFieldData(QString::fromStdString(getName()), dataList);
 
 }
 

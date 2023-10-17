@@ -158,7 +158,6 @@ Item {
                         anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
                         radius: height/2
                         visible: false
-                        color: backgroundColor
                         z: -1
                     }
                     MouseArea {

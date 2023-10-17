@@ -19,7 +19,7 @@ Rectangle {
 
     readonly property color fg50: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
 
-
+    property var bookmarkItem: null
     function addToLeftContainer(item, name) {
         leftContainer.model.append({item:item, name:name})
     }
@@ -36,7 +36,7 @@ Rectangle {
             leftContainer.model.remove(indx)
     }
 
-    state: "pin"
+    state: "unpin"
     states: [
         State {
             name: "unpin"
@@ -95,6 +95,13 @@ Rectangle {
                     width: 45 / Style.monitorRatio
                     height: 45 / Style.monitorRatio
                     radius: width / 2
+
+                    Image {
+                        width: 37 / Style.monitorRatio
+                        height: 37 / Style.monitorRatio
+                        source: "qrc:/Resources/Qarch.png"
+                        anchors.centerIn: parent
+                    }
                 }
 
                 ColumnLayout {
@@ -109,14 +116,15 @@ Rectangle {
                         property var toolboxItem
                         property var locationManagerItem
                         property var layerItem
+                        property var bookmarkItem
 
                         property var actions: {
                             "toolbox": function (checked) {
-                                if (checked && mainWindow.toolbox) {
+                                if (checked) {
                                     let toolboxx = Qt.createComponent("ToolboxView.qml");
                                     if (toolboxx.status === Component.Ready) {
                                         toolboxItem = toolboxx.createObject(null, {});
-                                        toolboxItem.listModel = mainWindow.toolbox
+                                        toolboxItem.listModel = ToolboxInstance
                                         addToLeftContainer(toolboxItem, "Toolbox")
                                     } else {
                                         print("can not load toolbox.");
@@ -126,11 +134,11 @@ Rectangle {
                                 }
                             },
                             "location": function (checked) {
-                                if (checked && mainWindow.toolbox) {
+                                if (checked) {
                                     var locationManager = Qt.createComponent("LocationManager.qml");
                                     if (locationManager.status === Component.Ready) {
                                         locationManagerItem = locationManager.createObject(null, {});
-                                        locationManagerItem.listModel = Sinstance
+                                        locationManagerItem.listModel = LocatoinManagerInstance
                                         addToLeftContainer(locationManagerItem, "Location Manager")
                                     } else {
                                         print("can not load LocationManager.qml.");
@@ -141,11 +149,11 @@ Rectangle {
                             },
                             "settings": function (checked) {},
                             "layers": function (checked) {
-                                if (checked && mainWindow.layersModel ) {
+                                if (checked) {
                                     var layersWidget = Qt.createComponent("LayersWidget.qml");
                                     if (layersWidget.status === Component.Ready) {
                                         layerItem = layersWidget.createObject(null, {});
-                                        layerItem.layersModell = mainWindow.layersModel
+                                        layerItem.layersModell = LayersInstance
                                         addToLeftContainer(layerItem, "Layers")
                                     } else {
                                         print("can not load Layer Widget")
@@ -156,6 +164,25 @@ Rectangle {
                             },
                             "list": function (checked) {
                                 mainWindow.showListWindow()
+                            },
+                            "bookmark": function(checked) {
+                                if (checked && mainWindow.bookmark) {
+                                    if (!bookmarkItem){
+                                        var bookmarkcomp = Qt.createComponent("BookmarkItem.qml");
+                                        if (bookmarkcomp.status === Component.Ready) {
+                                            bookmarkItem = bookmarkcomp.createObject(null, {});
+                                            bookmarkItem.model = BookmarkInstance
+                                            addToLeftContainer(bookmarkItem, "Bookmark")
+                                        } else {
+                                            print("can not load LocationManager.qml.");
+                                        }
+                                    }
+                                    else{
+                                        addToLeftContainer(bookmarkItem, "Bookmark")
+                                    }
+                                } else {
+                                    removeFromLeftContainer(bookmarkItem)
+                                }
                             },
                             "hand": function (checked) {
                                 if (container.state === "pin") {
@@ -190,6 +217,11 @@ Rectangle {
                         ListElement {
                             label: "list"
                             iconSource: "qrc:/Resources/list.png"
+                        }
+
+                        ListElement {
+                            label: "bookmark"
+                            iconSource: "qrc:/Resources/bookmark.png"
                         }
 
                         ListElement {
@@ -236,7 +268,6 @@ Rectangle {
 
         SideContainer {
             id: leftContainer
-
             Layout.fillWidth: true
         }
     }
