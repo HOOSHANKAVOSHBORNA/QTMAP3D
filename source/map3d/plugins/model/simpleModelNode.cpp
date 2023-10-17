@@ -23,22 +23,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
-    //--root node--------------------------------------------------------
-    mSwitchNode = new osg::Switch;
-    //--3D node----------------------------------------------------------
-    m3DNode = new osg::LOD;
-    if (mNodes3D.contains(modelUrl)){
-        mSimpleNode = mNodes3D[modelUrl];
-    }
-    else {
-        mSimpleNode = osgDB::readRefNodeFile(modelUrl);
-        mNodes3D[modelUrl] = mSimpleNode ;
-    }
-    m3DNode->addChild(mSimpleNode, 0, std::numeric_limits<float>::max());
-    //--2D node---------------------------------------------------------
-    m2DNode = new osg::Geode();
-    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
-    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+    //--read node and image----------------------------------------------
     if (mImages2D.contains(iconUrl)){
         mImage = mImages2D[iconUrl];
     }
@@ -46,21 +31,66 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
         mImage = osgDB::readImageFile(iconUrl);
         mImages2D[iconUrl] = mImage ;
     }
+    if (mNodes3D.contains(modelUrl)){
+        mSimpleNode = mNodes3D[modelUrl];
+    }
+    else {
+        mSimpleNode = osgDB::readRefNodeFile(modelUrl);
+        mNodes3D[modelUrl] = mSimpleNode ;
+    }
+    //--auto scale----------------------------------------------------
     double modelLenght = mSimpleNode->getBound().radius() * 2;
-    double scaleRatio;
-    if (3 < modelLenght && modelLenght < 7){
-        scaleRatio = 15;
-        mImage->scaleImage(24, 24, mImage->r());
+    qDebug()<<"len: "<<modelLenght;
+    double scaleRatio = 100/modelLenght;
+    double iconSize = 400/ scaleRatio;
+//    if (modelLenght < 12){
+//        scaleRatio = 14;
+//        mImage->scaleImage(28, 28, mImage->r());
+//    }
+//    else if (modelLenght < 24){
+//        scaleRatio = 5;
+//        mImage->scaleImage(78, 78, mImage->r());
+//    }
+//    else if (modelLenght < 36){
+//        scaleRatio = 10;
+//        mImage->scaleImage(39, 39, mImage->r());
+//    }
+//    else if (modelLenght < 48){
+//        scaleRatio = 8;
+//        mImage->scaleImage(49, 49, mImage->r());
+//    }
+//    else if (modelLenght < 60){
+//        scaleRatio = 6;
+//        mImage->scaleImage(65, 65, mImage->r());
+//    }
+//    else if (modelLenght < 72){
+//        scaleRatio = 4;
+//        mImage->scaleImage(98, 98, mImage->r());
+//    }
+//    else if (modelLenght < 84){
+//        scaleRatio = 2;
+//        mImage->scaleImage(196, 196, mImage->r());
+//    }
+//    else{
+//        scaleRatio = 1;
+//        mImage->scaleImage(392, 392, mImage->r());
+//    }
+    mImage->scaleImage(iconSize, iconSize, mImage->r());
+    setCullingActive(false);
+    mAutoScaler = new ModelAutoScaler(scaleRatio, 1, 1000);
+    if (mIsAutoScale){
+        setCullCallback(mAutoScaler);
     }
-    else if(modelLenght < 7 && modelLenght < 15){
-        scaleRatio = 4;
-    }
-    else{
-        scaleRatio = 1.3;
-        mImage->scaleImage(330, 445, mImage->r());
-    }
-    //mImage->scaleImage(32, 32, mImage->r());
-//    mImage->scaleImage(64,64, mImage->r());
+    //--root node--------------------------------------------------------
+    mSwitchNode = new osg::Switch;
+    //--3D node----------------------------------------------------------
+    m3DNode = new osg::LOD;
+
+    m3DNode->addChild(mSimpleNode, 0, std::numeric_limits<float>::max());
+    //--2D node---------------------------------------------------------
+    m2DNode = new osg::Geode();
+    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
     osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 0.2);     
     m2DNode->setStateSet(geodeStateSet);
     m2DNode->addDrawable(imgGeom);
@@ -98,14 +128,6 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &model
         mSwitchNode->addChild(m3DNode, false);
         mSwitchNode->addChild(m2DNode, true);
         mSwitchNode->addChild(selectGroup, false);
-    }
-    //--auto scale----------------------------------------------------
-    setCullingActive(false);
-
-
-    mAutoScaler = new ModelAutoScaler(scaleRatio, 1, 1000);
-    if (mIsAutoScale){
-        setCullCallback(mAutoScaler);
     }
     //--------------------------------------------------------------------------
     osgEarth::Symbology::Style  rootStyle;
