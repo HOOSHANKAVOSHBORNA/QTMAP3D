@@ -9,24 +9,31 @@
 FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
     mNetworkManager(networkManager)
 {
+    mUrlList.append(Url{"../data/models/airplane/airplane.png", "../data/models/airplane/airplane.osgb"});
+    mUrlList.append(Url{"../data/models/hellicopter/hellicopter.png", "../data/models/hellicopter/hellicopter.osgb"});
+    mUrlList.append(Url{"../data/models/drone/drone.png", "../data/models/drone/drone.osgb"});
+    mUrlList.append(Url{"../data/models/fighter/fighter.png", "../data/models/fighter/fighter.osgb"});
+    mUrlList.append(Url{"../data/models/missile/missile.png", "../data/models/missile/missile.osgb"});
+
+    mColorList.append(QColor("white"));
+    mColorList.append(QColor("green"));
+    mColorList.append(QColor("yellow"));
+    mColorList.append(QColor("orange"));
+    mColorList.append(QColor("red"));
+
     QObject::connect(mNetworkManager, &NetworkManager::dataQueueDeclared, [this]{
-    mFlyableQueueDeclared = true;
-//    createFlyableInfo();
-//    for(auto& jsonDocument: mFlyableDataList)
-//                mNetworkManager->sendFlyableData(jsonDocument.toJson(QJsonDocument::Compact));
-    //--create and update aircraft info------------------------
-    QTimer *timerUpdateAircraft = new QTimer();
-    QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
-        createFlyableInfo();
-        updateFlyableInfo();
-        if(mFlyableQueueDeclared)
+        //--create and update aircraft info------------------------
+        QTimer *timerUpdateAircraft = new QTimer();
+        QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
+            createFlyableInfo();
+            updateFlyableInfo();
             for(auto& flybleData: mFlyableDataList){
                 mNetworkManager->sendData(flybleData.flyableDoc.toJson(QJsonDocument::Compact));
                 mNetworkManager->sendData(flybleData.statusDoc.toJson(QJsonDocument::Compact));
                 mNetworkManager->sendData(flybleData.lineDoc.toJson(QJsonDocument::Compact));
             }
-    });
-    timerUpdateAircraft->start(1000);
+        });
+        timerUpdateAircraft->start(1000);
     });
 }
 
@@ -37,12 +44,13 @@ void FlyableNodeTest::createFlyableInfo()
     //---------------------------------------------------------
     QString name = "Flyable" + QString::number(mFlyableDataList.count());
     int id = 10000 + mFlyableDataList.count();
-    QColor color("red");
     double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
     double altitude =0;/* (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));*/
     double heading = (0 + (QRandomGenerator::global()->generate() % 361));
     double speed = (100 + (QRandomGenerator::global()->generate() % (300-100)));
+    int urlIndex = (0 + (QRandomGenerator::global()->generate() % (mUrlList.length())));
+    int colorIndex = (0 + (QRandomGenerator::global()->generate() % (mColorList.length())));
     //--------------------------------------------------------
     QJsonDocument jsonDocument;
     QJsonObject jsonObject;
@@ -52,9 +60,9 @@ void FlyableNodeTest::createFlyableInfo()
     QJsonObject jsonData;
     jsonData.insert("Name", name);
     jsonData.insert("Id", id);
-    jsonData.insert("Color", color.name());
-    jsonData.insert("Url2d", "../data/models/aircraft/aircraft.png");
-    jsonData.insert("Url3d", "../data/models/aircraft/boeing-747.osgb");
+    jsonData.insert("Color", mColorList[colorIndex].name());
+    jsonData.insert("Url2d", mUrlList[urlIndex].Url2d);
+    jsonData.insert("Url3d", mUrlList[urlIndex].Url3d);
     jsonData.insert("Longitude", longitude);
     jsonData.insert("Latitude", latitude);
     jsonData.insert("Altitude", altitude);
@@ -145,13 +153,21 @@ void FlyableNodeTest::updateFlyableInfo()
         longitude += step * std::cos(teta);
         latitude += step * std::sin(teta);
 
-        rn = (0 + (QRandomGenerator::global()->generate() % 2));
-//        if(rn < 1)
-//            altitude += altitude - 5;
-//        else
-//            altitude += altitude + 5;
+//        rn = (0 + (QRandomGenerator::global()->generate() % 2));
+        //        if(rn < 1)
+        //            altitude += altitude - 5;
+        //        else
+        //            altitude += altitude + 5;
         altitude = 2000;
+        int urlIndex = (0 + (QRandomGenerator::global()->generate() % (mUrlList.length())));
+        int colorIndex = (0 + (QRandomGenerator::global()->generate() % (mColorList.length())));
         //--------------------------------------------------------
+        if(rn < 1000){
+            dataObject["Url2d"] = mUrlList[urlIndex].Url2d;
+            dataObject["Url3d"] = mUrlList[urlIndex].Url3d;
+            dataObject.insert("Color", mColorList[colorIndex].name());
+        }
+
         dataObject["Longitude"] = longitude;
         dataObject["Latitude"] = latitude;
         dataObject["Altitude"] = altitude;

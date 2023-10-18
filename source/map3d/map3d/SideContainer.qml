@@ -2,57 +2,116 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
-import Crystal 1.0
+import Crystal
 import "style"
 
-
-
-ColumnLayout{
-
+ColumnLayout {
     id: rootItem
-    property ListModel model:ListModel{}
-    property int visibleCount : 0
-    function setCurrentIndex(index){
-        tabBar.currentIndex = index
-    }
-    //--tab-----------------------------------------------
 
-    clip: true
+    property ListModel sideModel: ListModel{}
+    property alias currentItemIndex: tabBar.currentIndex
+
+    signal modelEmpty
+
+    function isInModel(objectName) {
+        for (var i = 0; i < sideModel.count; i++) {
+            if (sideModel.get(i).name === objectName)
+                return i
+        }
+
+        return -1
+    }
+
+    function toggleToolbox() {
+        var i = isInModel("Toolbox")
+        if (i !== -1) {
+            sideModel.remove(i)
+            if (sideModel.count === 0) modelEmpty()
+            currentItemIndex = 0
+            stackLayout.currentIndex = stackLayout.getIndex(sideModel.get(0).name)
+        } else {
+            sideModel.append({name: "Toolbox"})
+            currentItemIndex = sideModel.count - 1
+            stackLayout.currentIndex = 0
+        }
+
+        toolbox.listModel = ToolboxInstance
+    }
+
+    function toggleLocationManager() {
+        var i = isInModel("LocationManager");
+        if (i !== -1) {
+            sideModel.remove(i)
+            if (sideModel.count === 0) modelEmpty()
+            currentItemIndex = 0
+            stackLayout.currentIndex = stackLayout.getIndex(sideModel.get(0).name)
+        } else {
+            sideModel.append({name: "LocationManager"})
+            currentItemIndex = sideModel.count - 1
+            stackLayout.currentIndex = 1
+        }
+
+        locationManager.listModel = LocatoinManagerInstance
+    }
+
+    function toggleLayers() {
+        var i = isInModel("Layers");
+        if (i !== -1) {
+            sideModel.remove(i)
+            if (sideModel.count === 0) modelEmpty()
+            currentItemIndex = 0
+            stackLayout.currentIndex = stackLayout.getIndex(sideModel.get(0).name)
+        } else {
+            sideModel.append({name: "Layers"})
+            currentItemIndex = sideModel.count - 1
+            stackLayout.currentIndex = 2
+        }
+
+        layers.layersModell = LayersInstance
+    }
+
+    function toggleBookmark() {
+        var i = isInModel("Bookmark");
+        if (i !== -1) {
+            sideModel.remove(i)
+            if (sideModel.count === 0) modelEmpty()
+            currentItemIndex = 0
+            stackLayout.currentIndex = stackLayout.getIndex(sideModel.get(0).name)
+        } else {
+            sideModel.append({name: "Bookmark"})
+            currentItemIndex = sideModel.count - 1
+            stackLayout.currentIndex = 3
+        }
+
+        bookmark.model = BookmarkInstance
+    }
+
     TabBar {
         id: tabBar
-        contentWidth: rootItem.model.count ?parent.width - 40 /Style.monitorRatio: 0
-        Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
+
+        contentWidth: rootItem.sideModel.count ? parent.width - 40 / Style.monitorRatio : 0
+        Layout.leftMargin: rootItem.sideModel.count ? 18 / Style.monitorRatio : 0
         Material.accent: Style.foregroundColor
-        background:
-            Rectangle{
-            color:Style.disableColor
+
+        background: Rectangle {
+            color: Style.disableColor
             height: 2
             anchors.bottom: parent.bottom
-
         }
-//        clip: true
 
         Repeater {
             id: repeater
-            model: rootItem.model
+
+            model: rootItem.sideModel
 
             TabButton {
-                id:tb
+                id: tb
 
-                width:{
-                    if (rootItem.model.count === 1){
-
-                        return implicitWidth
-                    }else{
-                        if(tabBar.currentIndex === index){
-                            return implicitWidth
-                        }
-//                        else return (tabBar.width - implicitWidth*2) / rootItem.model.count
-                    }
-                }
+                width: tabBar.width / rootItem.sideModel.count
 
                 contentItem: Text {
-                    id:txt
+                    id: txt
+
                     text: name ?? "unknown"
                     font: Style.fontFamily
                     opacity: enabled ? 1.0 : 0.3
@@ -62,63 +121,64 @@ ColumnLayout{
                     elide: Text.ElideRight
                 }
 
-                background:Rectangle{
-                    color:"transparent"                  }
-
+                background: Rectangle {
+                    color: "transparent"
+                }
 
                 onDoubleClicked: {
-                    var docItem = stackLayout.data[index]
-                    docItem.state = "undocked"
-
-                    for(var i = 1; i<rootItem.model.count; i++){
-                        var mindex = (i + index) % rootItem.model.count
-                        if(repeater.itemAt(mindex).visible){
-                            tabBar.currentIndex = mindex
-                            break
-                        }
-                    }
-                }
-
-                onVisibleChanged: {
-                    tabBar.currentIndex = visible ? index: tabBar.currentIndex
+                    stackLayout.data[currentItemIndex].parent = windowContainer
+                    wnd.show()
                 }
             }
-
-            function changeVisibleCount(st) {
-                rootItem.visibleCount += st === "docked" ? 1 : -1
-            }
-            onItemAdded: (index, it)=>{
-                             var item = rootItem.model.get(index).item
-                             var name = rootItem.model.get(index).name
-                             var docItemCom = Qt.createComponent("DockWindow.qml");
-                             if (docItemCom.status === Component.Ready) {
-                                 var docItem = docItemCom.createObject(tabBar, {});
-                                 docItem.containerItem.push(item)
-                                 docItem.name = name
-                                 docItem.width = stackLayout.count > 0 ? stackLayout.childrenRect.width : 300
-                                 stackLayout.data.push(docItem)
-                                 tabBar.currentIndex = index
-                                 repeater.itemAt(index).visible = Qt.binding(function() { return docItem.state === "docked" })
-                                 rootItem.visibleCount += 1
-                                 docItem.stateChanged.connect(changeVisibleCount)
-                             }
-                             else
-                             print("error load docItem")
-                         }
-            onItemRemoved: (index, item)=>{
-                               var docItem = stackLayout.data[index]
-                               rootItem.visibleCount -= 1
-                               docItem.destroy()
-                           }
         }
     }
+
     StackLayout {
         id: stackLayout
         Layout.fillHeight: true
-        currentIndex: tabBar.currentIndex
-//        LocationManager {
-//            listModel: Sinstance
-//        }
+        currentIndex: 0
+
+        function getIndex(i) {
+            console.log(i)
+            if (i === "Toolbox") {
+                return 0
+            } else if (i === "LocationManager") {
+                return 1
+            } else if (i === "Layers") {
+                return 2
+            } else {
+                return 3
+            }
+        }
+
+        ToolboxView { id: toolbox }
+        LocationManager { id: locationManager }
+        LayersWidget { id: layers }
+        BookmarkItem { id: bookmark }
     }
-    //------------------------------------------
+
+    Window {
+        id: wnd
+
+        visible: false
+        width: 300
+        height: 500
+        x: mapToGlobal(10, 30).x
+        y: mapToGlobal(10, 30).y
+
+        Item {
+            id: windowContainer
+            anchors.fill: parent
+        }
+
+        onVisibleChanged: {
+            if(visible){
+                show()
+            } else {
+                windowContainer.data[0].parent = stackLayout
+                windowContainer.data = []
+                close();
+            }
+        }
+    }
 }
