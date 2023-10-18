@@ -18,10 +18,11 @@ class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    SimpleModelNode(MapItem* mapControler, const std::string& modelUrl, const std::string& iconUrl, QObject *parent = nullptr);
+    SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
+    void updateUrl(const std::string& url3D, const std::string& url2D);
     MapItem *mapItem() const;
-    std::string iconUrl() const;
-    std::string modelUrl() const;
+    std::string url2D() const;
+    std::string url3D() const;
 
     virtual SimpleModelNode* asSimpleModelNode(){return this;}
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
@@ -36,6 +37,7 @@ public:
     void setModelColor(osgEarth::Color color);
 
 private slots:
+    void compile();
     void onModeChanged(bool is3DView);
 
 private:
@@ -48,8 +50,8 @@ private:
     osg::ref_ptr<Cone> mConeSelecteNode;
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
-    std::string mModelUrl;
-    std::string mIconUrl;
+    std::string mUrl2D;
+    std::string mUrl3D;
     MapItem *mMapItem;
     bool mIs3D{false};
     bool mIsAutoScale{true};
