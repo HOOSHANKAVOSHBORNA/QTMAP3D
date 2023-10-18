@@ -62,7 +62,7 @@ Rectangle {
         id: closeAnimation
         running: false
         from: 350 / Style.monitorRatio
-        to: container.width
+        to: 75 / Style.monitorRatio
     }
 
     gradient: Gradient{
@@ -225,7 +225,11 @@ Rectangle {
             Layout.preferredHeight: toolBar.height
             Layout.fillWidth: true
 
-            onModelEmpty: closeAnimation.running = true
+            onModelEmpty: {
+                console.log('there')
+                closeAnimation.running = true
+            }
+
         }
     }
 }

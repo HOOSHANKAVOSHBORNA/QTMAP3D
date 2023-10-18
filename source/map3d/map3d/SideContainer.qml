@@ -45,6 +45,7 @@ ColumnLayout {
         var i = model.indexOf("Toolbox");
         if (i !== -1) {
             model.splice(i, 1);
+            if (model.length === 0) modelEmpty()
         } else {
             model.push("Toolbox")
         }
@@ -57,6 +58,7 @@ ColumnLayout {
         var i = model.indexOf("LocationManager");
         if (i !== -1) {
             model.splice(i, 1);
+            if (model.length === 0) modelEmpty()
         } else {
             model.push("LocationManager")
         }
@@ -69,6 +71,7 @@ ColumnLayout {
         var i = model.indexOf("Layers");
         if (i !== -1) {
             model.splice(i, 1);
+            if (model.length === 0) modelEmpty()
         } else {
             model.push("Layers")
         }
@@ -81,6 +84,7 @@ ColumnLayout {
         var i = model.indexOf("Bookmark");
         if (i !== -1) {
             model.splice(i, 1);
+            if (model.length === 0) modelEmpty()
         } else {
             model.push("Bookmark")
         }
