@@ -20,21 +20,6 @@ Rectangle {
     readonly property color fg50: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
 
     property var bookmarkItem: null
-    function addToLeftContainer(item, name) {
-        leftContainer.model.append({item:item, name:name})
-    }
-
-    function removeFromLeftContainer(item) {
-        var indx = -1
-        for (var i = 0; i < leftContainer.model.count; ++i){
-            if (leftContainer.model.get(i).item === item){
-                indx = i
-                break
-            }
-        }
-        if (indx > -1)
-            leftContainer.model.remove(indx)
-    }
 
     state: "unpin"
     states: [
@@ -208,8 +193,7 @@ Rectangle {
                                 checked: false
 
                                 onClicked: {
-                                    console.log(!leftContainer.model)
-                                    if (leftContainer.model) openAnimation.running = true
+                                    if (!leftContainer.sideModel.count) openAnimation.running = true
                                     toolBarModel.actions[model.label]()
                                 }
                             }
@@ -226,7 +210,6 @@ Rectangle {
             Layout.fillWidth: true
 
             onModelEmpty: {
-                console.log('there')
                 closeAnimation.running = true
             }
 
