@@ -7,7 +7,7 @@ import "style"
 
 Item {
     id: rootItem
-    property CLayersModel layersModell
+    property var layersModell
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
 
 

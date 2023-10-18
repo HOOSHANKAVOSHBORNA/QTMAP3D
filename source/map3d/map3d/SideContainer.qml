@@ -2,57 +2,123 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
-import Crystal 1.0
+import Crystal
 import "style"
 
-
-
-ColumnLayout{
-
+ColumnLayout {
     id: rootItem
-    property ListModel model:ListModel{}
-    property int visibleCount : 0
-    function setCurrentIndex(index){
-        tabBar.currentIndex = index
-    }
-    //--tab-----------------------------------------------
 
-    clip: true
-    TabBar {
-        id: tabBar
-        contentWidth: rootItem.model.count ?parent.width - 40 /Style.monitorRatio: 0
-        Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
-        Material.accent: Style.foregroundColor
-        background:
-            Rectangle{
-            color:Style.disableColor
-            height: 2
-            anchors.bottom: parent.bottom
+    property ListModel model: ListModel{}
+    property alias isOpen: stackLayout.visible
+    property alias currentItemIndex: tabBar.currentIndex
+    property int previousItemIndex: -1
+
+    signal modelEmpty
+
+    function isInModel(objectName) {
+        for (var i = 0; i < model.count; i++) {
+            if (model.get(i).name === objectName)
+                return i
+        }
+
+        return -1
+    }
+
+    function toggleStackLayoutIndex(index) {
+        if (isOpen && currentItemIndex === index) {
+            if (previousItemIndex !== -1) {
+                currentItemIndex = previousItemIndex
+            } else {
+                isOpen = false
+            }
+        } else {
+            if (!isOpen) {
+                isOpen = true
+            }
+            previousItemIndex = currentItemIndex
+            currentItemIndex = index
+        }
+    }
+
+    function toggleToolbox() {
+        var i = isInModel("Toolbox")
+        if (i !== -1) {
+            model.remove(i)
+            if (model.count === 0) modelEmpty()
+        } else {
+            model.append({name: "Toolbox"})
 
         }
-//        clip: true
+
+        toggleStackLayoutIndex(0)
+        toolbox.listModel = ToolboxInstance
+    }
+
+    function toggleLocationManager() {
+        var i = isInModel("LocationManager");
+        if (i !== -1) {
+            model.remove(i)
+            if (model.count === 0) modelEmpty()
+        } else {
+            model.append({name: "LocationManager"})
+        }
+
+        toggleStackLayoutIndex(1)
+        locationManager.listModel = LocatoinManagerInstance
+    }
+
+    function toggleLayers() {
+        var i = isInModel("Layers");
+        if (i !== -1) {
+            model.remove(i)
+            if (model.count === 0) modelEmpty()
+        } else {
+            model.append({name: "Layers"})
+        }
+
+        toggleStackLayoutIndex(2)
+        layers.layersModell = LayersInstance
+    }
+
+    function toggleBookmark() {
+        var i = isInModel("Bookmark");
+        if (i !== -1) {
+            model.remove(i)
+            if (model.count === 0) modelEmpty()
+        } else {
+            model.append({name: "Bookmark"})
+        }
+
+        toggleStackLayoutIndex(3)
+        bookmark.model = BookmarkInstance
+    }
+
+    TabBar {
+        id: tabBar
+
+        contentWidth: rootItem.model.count ? parent.width - 40 / Style.monitorRatio : 0
+        Layout.leftMargin: rootItem.model.count ? 18 / Style.monitorRatio : 0
+        Material.accent: Style.foregroundColor
+
+        background: Rectangle {
+            color: Style.disableColor
+            height: 2
+            anchors.bottom: parent.bottom
+        }
 
         Repeater {
             id: repeater
+
             model: rootItem.model
 
             TabButton {
-                id:tb
+                id: tb
 
-                width:{
-                    if (rootItem.model.count === 1){
-
-                        return implicitWidth
-                    }else{
-                        if(tabBar.currentIndex === index){
-                            return implicitWidth
-                        }
-//                        else return (tabBar.width - implicitWidth*2) / rootItem.model.count
-                    }
-                }
+                width: tabBar.width / rootItem.model.count
 
                 contentItem: Text {
-                    id:txt
+                    id: txt
+
                     text: name ?? "unknown"
                     font: Style.fontFamily
                     opacity: enabled ? 1.0 : 0.3
@@ -62,63 +128,31 @@ ColumnLayout{
                     elide: Text.ElideRight
                 }
 
-                background:Rectangle{
-                    color:"transparent"                  }
-
+                background: Rectangle {
+                    color: "transparent"
+                }
 
                 onDoubleClicked: {
-                    var docItem = stackLayout.data[index]
-                    docItem.state = "undocked"
-
-                    for(var i = 1; i<rootItem.model.count; i++){
-                        var mindex = (i + index) % rootItem.model.count
-                        if(repeater.itemAt(mindex).visible){
-                            tabBar.currentIndex = mindex
-                            break
-                        }
-                    }
-                }
-
-                onVisibleChanged: {
-                    tabBar.currentIndex = visible ? index: tabBar.currentIndex
+                    console.log('hoho')
+                    stackLayout.data[currentItemIndex].state = 'docked'
                 }
             }
-
-            function changeVisibleCount(st) {
-                rootItem.visibleCount += st === "docked" ? 1 : -1
-            }
-            onItemAdded: (index, it)=>{
-                             var item = rootItem.model.get(index).item
-                             var name = rootItem.model.get(index).name
-                             var docItemCom = Qt.createComponent("DockWindow.qml");
-                             if (docItemCom.status === Component.Ready) {
-                                 var docItem = docItemCom.createObject(tabBar, {});
-                                 docItem.containerItem.push(item)
-                                 docItem.name = name
-                                 docItem.width = stackLayout.count > 0 ? stackLayout.childrenRect.width : 300
-                                 stackLayout.data.push(docItem)
-                                 tabBar.currentIndex = index
-                                 repeater.itemAt(index).visible = Qt.binding(function() { return docItem.state === "docked" })
-                                 rootItem.visibleCount += 1
-                                 docItem.stateChanged.connect(changeVisibleCount)
-                             }
-                             else
-                             print("error load docItem")
-                         }
-            onItemRemoved: (index, item)=>{
-                               var docItem = stackLayout.data[index]
-                               rootItem.visibleCount -= 1
-                               docItem.destroy()
-                           }
         }
     }
+
     StackLayout {
         id: stackLayout
         Layout.fillHeight: true
         currentIndex: tabBar.currentIndex
-//        LocationManager {
-//            listModel: Sinstance
-//        }
+        visible: false
+
+        DockWindow {
+            containerItem: ToolboxView { id: toolbox }
+        }
+
+
+        LocationManager { id: locationManager }
+        LayersWidget { id: layers }
+        BookmarkItem { id: bookmark }
     }
-    //------------------------------------------
 }

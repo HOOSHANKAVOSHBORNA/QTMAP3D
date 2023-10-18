@@ -48,10 +48,21 @@ Rectangle {
         }
     ]
 
+    width: 75 / Style.monitorRatio
     radius: 20 / Style.monitorRatio
 
-    anchors {
-        fill: parent
+    PropertyAnimation on width {
+        id: openAnimation
+        running: false
+        from: container.width
+        to: 350 / Style.monitorRatio
+    }
+
+    PropertyAnimation on width {
+        id: closeAnimation
+        running: false
+        from: 350 / Style.monitorRatio
+        to: 75 / Style.monitorRatio
     }
 
     gradient: Gradient{
@@ -117,80 +128,21 @@ Rectangle {
                         property var layerItem
                         property var bookmarkItem
 
+                        // actions calls by list elements "labels"
                         property var actions: {
-                            "toolbox": function (checked) {
-                                if (checked) {
-                                    let toolboxx = Qt.createComponent("ToolboxView.qml");
-                                    if (toolboxx.status === Component.Ready) {
-                                        toolboxItem = toolboxx.createObject(null, {});
-                                        toolboxItem.listModel = ToolboxInstance
-                                        addToLeftContainer(toolboxItem, "Toolbox")
-                                    } else {
-                                        print("can not load toolbox.");
-                                    }
-                                } else {
-                                    removeFromLeftContainer(toolboxItem)
-                                }
-                            },
-                            "location": function (checked) {
-                                if (checked) {
-                                    var locationManager = Qt.createComponent("LocationManager.qml");
-                                    if (locationManager.status === Component.Ready) {
-                                        locationManagerItem = locationManager.createObject(null, {});
-                                        locationManagerItem.listModel = LocatoinManagerInstance
-                                        addToLeftContainer(locationManagerItem, "Location Manager")
-                                    } else {
-                                        print("can not load LocationManager.qml.");
-                                    }
-                                } else {
-                                    removeFromLeftContainer(locationManagerItem)
-                                }
-                            },
-                            "settings": function (checked) {},
-                            "layers": function (checked) {
-                                if (checked) {
-                                    var layersWidget = Qt.createComponent("LayersWidget.qml");
-                                    if (layersWidget.status === Component.Ready) {
-                                        layerItem = layersWidget.createObject(null, {});
-                                        layerItem.layersModell = LayersInstance
-                                        addToLeftContainer(layerItem, "Layers")
-                                    } else {
-                                        print("can not load Layer Widget")
-                                    }
-                                } else {
-                                    removeFromLeftContainer(layerItem)
-                                }
-                            },
-                            "list": function (checked) {
-                                mainWindow.showListWindow()
-                            },
-                            "bookmark": function(checked) {
-                                if (checked && mainWindow.bookmark) {
-                                    if (!bookmarkItem){
-                                        var bookmarkcomp = Qt.createComponent("BookmarkItem.qml");
-                                        if (bookmarkcomp.status === Component.Ready) {
-                                            bookmarkItem = bookmarkcomp.createObject(null, {});
-                                            bookmarkItem.model = BookmarkInstance
-                                            addToLeftContainer(bookmarkItem, "Bookmark")
-                                        } else {
-                                            print("can not load LocationManager.qml.");
-                                        }
-                                    }
-                                    else{
-                                        addToLeftContainer(bookmarkItem, "Bookmark")
-                                    }
-                                } else {
-                                    removeFromLeftContainer(bookmarkItem)
-                                }
-                            },
-                            "hand": function (checked) {
+                            "toolbox": function () { leftContainer.toggleToolbox() },
+                            "location": function () { leftContainer.toggleLocationManager() },
+                            "settings": function () {},
+                            "layers": function () { leftContainer.toggleLayers() },
+                            "list": function () { mainWindow.showListWindow() },
+                            "bookmark": function () { leftContainer.toggleBookmark() },
+                            "hand": function () {
                                 if (container.state === "pin") {
                                     container.state = "unpin"
                                 } else {
                                     container.state = "pin"
                                 }
                             },
-
                         }
 
                         ListElement {
@@ -256,7 +208,9 @@ Rectangle {
                                 checked: false
 
                                 onClicked: {
-                                    toolBarModel.actions[model.label](checked)
+                                    console.log(!leftContainer.model)
+                                    if (leftContainer.model) openAnimation.running = true
+                                    toolBarModel.actions[model.label]()
                                 }
                             }
                         }
@@ -267,7 +221,15 @@ Rectangle {
 
         SideContainer {
             id: leftContainer
+
+            Layout.preferredHeight: toolBar.height
             Layout.fillWidth: true
+
+            onModelEmpty: {
+                console.log('there')
+                closeAnimation.running = true
+            }
+
         }
     }
 }
