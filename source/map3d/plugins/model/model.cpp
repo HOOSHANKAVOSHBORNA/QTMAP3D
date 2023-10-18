@@ -161,7 +161,7 @@ osgEarth::Symbology::Style &Model::getDefaultStyle()
 void Model::onTreeItemCheck(bool check)
 {
     if (check) {
-        makeIconNode("../data/images/model/tree.png");
+        makeIconNode("../data/models/tree/tree.png");
 
         mType = Type::SIMPLE;
 
@@ -182,7 +182,7 @@ void Model::onTreeItemCheck(bool check)
 void Model::onCarItemCheck(bool check)
 {
     if (check) {
-        makeIconNode("../data/images/model/car.png");
+        makeIconNode("../data/models/car/car.png");
         mType = Type::MOVEABLE;
 
         setState(State::READY);
@@ -201,7 +201,7 @@ void Model::onCarItemCheck(bool check)
 void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
-        makeIconNode("../data/models/aircraft/aircraft.png");
+        makeIconNode("../data/models/airplane/airplane.png");
 
         mType = Type::FLYABLE;
         setState(State::READY);
@@ -299,7 +299,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     switch (mType) {
     case Type::SIMPLE:
         name = "Tree" + QString::number(mCount);
-        mCurrentModel = new SimpleModelNode(mapItem(),"../data/models/tree_I.osgb", "../data/images/model/tree.png");
+        mCurrentModel = new SimpleModelNode(mapItem(),"../data/models/tree/tree.osgb", "../data/models/tree/tree.png");
         mCurrentModel->setModelColor(osgEarth::Color::Aqua);
         if(!mModelNodeLayer->containsLayer(mSimpleNodeLayer)){
             mSimpleNodeLayer->clear();
@@ -309,7 +309,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         break;
     case Type::MOVEABLE:
         name = "Car" + QString::number(mCount);
-        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/car.osgb", "../data/images/model/car.png");
+        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/car/car.osgb", "../data/models/car/car.png");
         mCurrentModel->setModelColor(osgEarth::Color::Green);
         if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
             mMoveableNodeLayer->clear();
@@ -319,7 +319,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         break;
     case Type::FLYABLE:
         name = "Airplane" + QString::number(mCount);
-        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/aircraft/boeing-747.osgb", "../data/models/aircraft/aircraft.png");
+        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/airplane/airplane.osgb", "../data/models/airplane/airplane.png");
         mCurrentModel->setModelColor(osgEarth::Color::Red);
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();

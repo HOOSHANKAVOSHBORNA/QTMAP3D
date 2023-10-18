@@ -10,6 +10,12 @@ struct FlayableData
     QJsonDocument statusDoc;
     QJsonDocument lineDoc;
 };
+struct Url
+{
+    QString Url2d;
+    QString Url3d;
+};
+
 class FlyableNodeTest
 {
 public:
@@ -21,10 +27,11 @@ private:
 
 private:
     NetworkManager *mNetworkManager;
-    bool mFlyableQueueDeclared{false};
 
     QVector<FlayableData> mFlyableDataList;
-    int mMaxFlyableNumber{5};
+    int mMaxFlyableNumber{10};
+
+    QVector<Url> mUrlList;
 };
 
 #endif // MODELNODETEST_H
