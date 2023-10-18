@@ -2,6 +2,7 @@
 #define MODELNODETEST_H
 
 #include "networkManager.h"
+#include <QColor>
 #include <QJsonDocument>
 
 struct FlayableData
@@ -32,6 +33,7 @@ private:
     int mMaxFlyableNumber{10};
 
     QVector<Url> mUrlList;
+    QVector<QColor> mColorList;
 };
 
 #endif // MODELNODETEST_H
