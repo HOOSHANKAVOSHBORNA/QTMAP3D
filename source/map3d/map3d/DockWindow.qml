@@ -2,11 +2,13 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
 
-Item{
-    id:rootItem
+Item {
+    id: rootItem
+
     property var containerItem: container.children
     property string name: ""
     width: 300
+
     StackLayout {
         id: container
         anchors.fill: parent
@@ -16,7 +18,7 @@ Item{
     states: [
         State {
             name: "undocked"
-            PropertyChanges{ target: wnd; visible: true; title: name}
+            PropertyChanges{ target: wnd; visible: true; title: name }
             PropertyChanges{ target: rootItem; visible: false }
             ParentChange{ target: container; parent: undockedContainer }
         },
@@ -27,13 +29,15 @@ Item{
             ParentChange { target: container; parent: rootItem }
         }
     ]
+
     Window {
-        id:wnd
+        id: wnd
         visible: false
         width: 300
         height: 500
         x: mapToGlobal(10, 30).x
         y: mapToGlobal(10, 30).y
+
         Item {
             id: undockedContainer
             anchors.fill: parent
@@ -42,14 +46,13 @@ Item{
         onVisibleChanged: {
             if(visible){
                 show()
-            }
-            else{
+            } else {
                 close();
             }
         }
+
         onClosing: {
             rootItem.state = "docked"
         }
-
     }
 }

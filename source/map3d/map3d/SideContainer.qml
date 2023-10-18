@@ -8,27 +8,26 @@ import "style"
 ColumnLayout {
     id: rootItem
 
-    property list<string> model: []
+    property ListModel model: ListModel{}
     property alias isOpen: stackLayout.visible
-    property alias currentItemIndex: stackLayout.currentIndex
+    property alias currentItemIndex: tabBar.currentIndex
     property int previousItemIndex: -1
 
     signal modelEmpty
 
-    function isInModel(s) {
-        for (var i = 0; i < model.length; i++) {
-            if (model[i] === s) {
-                return true
-            }
+    function isInModel(objectName) {
+        for (var i = 0; i < model.count; i++) {
+            if (model.get(i).name === objectName)
+                return i
         }
 
-        return false
+        return -1
     }
 
     function toggleStackLayoutIndex(index) {
         if (isOpen && currentItemIndex === index) {
             if (previousItemIndex !== -1) {
-                stackLayout.currentIndex = previousItemIndex
+                currentItemIndex = previousItemIndex
             } else {
                 isOpen = false
             }
@@ -36,18 +35,19 @@ ColumnLayout {
             if (!isOpen) {
                 isOpen = true
             }
-            previousItemIndex = stackLayout.currentIndex
-            stackLayout.currentIndex = index
+            previousItemIndex = currentItemIndex
+            currentItemIndex = index
         }
     }
 
     function toggleToolbox() {
-        var i = model.indexOf("Toolbox");
+        var i = isInModel("Toolbox")
         if (i !== -1) {
-            model.splice(i, 1);
-            if (model.length === 0) modelEmpty()
+            model.remove(i)
+            if (model.count === 0) modelEmpty()
         } else {
-            model.push("Toolbox")
+            model.append({name: "Toolbox"})
+
         }
 
         toggleStackLayoutIndex(0)
@@ -55,12 +55,12 @@ ColumnLayout {
     }
 
     function toggleLocationManager() {
-        var i = model.indexOf("LocationManager");
+        var i = isInModel("LocationManager");
         if (i !== -1) {
-            model.splice(i, 1);
-            if (model.length === 0) modelEmpty()
+            model.remove(i)
+            if (model.count === 0) modelEmpty()
         } else {
-            model.push("LocationManager")
+            model.append({name: "LocationManager"})
         }
 
         toggleStackLayoutIndex(1)
@@ -68,12 +68,12 @@ ColumnLayout {
     }
 
     function toggleLayers() {
-        var i = model.indexOf("Layers");
+        var i = isInModel("Layers");
         if (i !== -1) {
-            model.splice(i, 1);
-            if (model.length === 0) modelEmpty()
+            model.remove(i)
+            if (model.count === 0) modelEmpty()
         } else {
-            model.push("Layers")
+            model.append({name: "Layers"})
         }
 
         toggleStackLayoutIndex(2)
@@ -81,12 +81,12 @@ ColumnLayout {
     }
 
     function toggleBookmark() {
-        var i = model.indexOf("Bookmark");
+        var i = isInModel("Bookmark");
         if (i !== -1) {
-            model.splice(i, 1);
-            if (model.length === 0) modelEmpty()
+            model.remove(i)
+            if (model.count === 0) modelEmpty()
         } else {
-            model.push("Bookmark")
+            model.append({name: "Bookmark"})
         }
 
         toggleStackLayoutIndex(3)
@@ -109,26 +109,17 @@ ColumnLayout {
         Repeater {
             id: repeater
 
-            model: rootItem.model.length
+            model: rootItem.model
 
             TabButton {
                 id: tb
 
-                width: {
-                    if (rootItem.model.count === 1) {
-                        return implicitWidth
-                    } else {
-                        if (tabBar.currentIndex === index) {
-                            return implicitWidth
-                        }
-//                        else return (tabBar.width - implicitWidth * 2) / rootItem.model.count
-                    }
-                }
+                width: tabBar.width / rootItem.model.count
 
                 contentItem: Text {
                     id: txt
 
-                    text: rootItem.model[index] ?? "unknown"
+                    text: name ?? "unknown"
                     font: Style.fontFamily
                     opacity: enabled ? 1.0 : 0.3
                     color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
@@ -151,7 +142,7 @@ ColumnLayout {
     StackLayout {
         id: stackLayout
         Layout.fillHeight: true
-        currentIndex: 0
+        currentIndex: tabBar.currentIndex
         visible: false
 
         ToolboxView { id: toolbox }
