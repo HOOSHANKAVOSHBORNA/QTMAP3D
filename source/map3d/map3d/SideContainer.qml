@@ -133,7 +133,8 @@ ColumnLayout {
                 }
 
                 onDoubleClicked: {
-                    // coder here
+                    console.log('hoho')
+                    stackLayout.data[currentItemIndex].state = 'docked'
                 }
             }
         }
@@ -145,7 +146,11 @@ ColumnLayout {
         currentIndex: tabBar.currentIndex
         visible: false
 
-        ToolboxView { id: toolbox }
+        DockWindow {
+            containerItem: ToolboxView { id: toolbox }
+        }
+
+
         LocationManager { id: locationManager }
         LayersWidget { id: layers }
         BookmarkItem { id: bookmark }

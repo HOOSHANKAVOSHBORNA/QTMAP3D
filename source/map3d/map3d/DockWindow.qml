@@ -5,7 +5,7 @@ import QtQuick.Layouts
 Item {
     id: rootItem
 
-    property var containerItem: container.children
+    property alias containerItem: container.children
     property string name: ""
     width: 300
 
