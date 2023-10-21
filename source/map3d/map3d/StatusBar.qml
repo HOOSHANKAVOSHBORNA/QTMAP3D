@@ -220,7 +220,7 @@ Rectangle {
         Rectangle{
             id:seprator2
             Layout.alignment: Qt.AlignCenter
-            Layout.leftMargin: 28
+            Layout.leftMargin: 37/Style.monitorRatio
             width: 2/Style.monitorRatio
             height: 16/Style.monitorRatio
             color:Style.disableColor
@@ -230,7 +230,6 @@ Rectangle {
         // Long, Lat   Cordinate  -------------------------------
         Repeater {
             model: [coordinate3, coordinate2, coordinate1]
-
             Label {
                 Layout.preferredWidth: 55/Style.monitorRatio
                 Layout.preferredHeight: 20/Style.monitorRatio
@@ -239,6 +238,7 @@ Rectangle {
                 }
 
                 Text {
+
                     Layout.alignment: Qt.AlignVCenter
                     color: lightBlue
                     text: Number(modelData).toLocaleString(Qt.locale(), root.fe[index], 3)
@@ -341,15 +341,11 @@ Rectangle {
         Rectangle{
             id:sepratorRectangle
             Layout.alignment: Qt.AlignVCenter
-
-
-
             width: 2/Style.monitorRatio
             height: 16/Style.monitorRatio
 
             color:Style.disableColor
             radius:10
-
         }
         // -  messageContainer    -- -- -----------------
 
