@@ -85,10 +85,35 @@ ColumnLayout {
 
         bookmark.model = BookmarkInstance
     }
+    Item {
 
+
+        id:salam
+        Layout.fillWidth: true
+        visible: true
+        height: 70/Style.monitorRatio
+        Layout.leftMargin: rootItem.sideModel.count ? 18 / Style.monitorRatio : 0
+
+        Label {
+            id: altitudevalue
+            anchors.fill: parent
+            background: Rectangle {
+                color: "transparent"
+            }
+
+            Text {
+                topPadding: 35/Style.monitorRatio
+                color: Style.foregroundColor
+                font.pixelSize: 30/Style.monitorRatio
+                font.bold: true
+                text: "Qarch"
+                font.family: Style.fontFamily
+            }
+        }
+
+    }
     TabBar {
         id: tabBar
-
         contentWidth: rootItem.sideModel.count ? parent.width - 40 / Style.monitorRatio : 0
         Layout.leftMargin: rootItem.sideModel.count ? 18 / Style.monitorRatio : 0
         Material.accent: Style.foregroundColor

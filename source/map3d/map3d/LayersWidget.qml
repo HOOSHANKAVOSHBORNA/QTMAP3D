@@ -236,11 +236,11 @@ Item {
                         anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
                         radius: height/2
                         visible: true
-                        color: co.containsMouse || hideBtn.containsMouse ? backgroundColor : "transparent"
+                        color: selectRectContainar.containsMouse || hideBtn.containsMouse ? backgroundColor : "transparent"
                         z: -1
                     }
                     MouseArea {
-                        id: co
+                        id: selectRectContainar
                         anchors.fill: container
                         hoverEnabled: true
                         propagateComposedEvents: true
