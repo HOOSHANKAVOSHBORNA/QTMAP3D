@@ -115,12 +115,12 @@ Rectangle {
 
                         // actions calls by list elements "labels"
                         property var actions: {
-                            "toolbox": function () { leftContainer.toggleToolbox() },
-                            "location": function () { leftContainer.toggleLocationManager() },
+                            "toolbox": function () { leftContainer.toggleItem("Toolbox") },
+                            "location": function () { leftContainer.toggleItem("LocationManager") },
                             "settings": function () {},
-                            "layers": function () { leftContainer.toggleLayers() },
+                            "layers": function () { leftContainer.toggleItem("Layers") },
                             "list": function () { mainWindow.showListWindow() },
-                            "bookmark": function () { leftContainer.toggleBookmark() },
+                            "bookmark": function () { leftContainer.toggleItem("Bookmark") },
                             "hand": function () {
                                 if (container.state === "pin") {
                                     container.state = "unpin"

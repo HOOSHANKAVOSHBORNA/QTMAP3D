@@ -10,6 +10,8 @@ ColumnLayout {
 
     property ListModel sideModel: ListModel{}
     property alias currentItemIndex: tabBar.currentIndex
+    property var names: {0: "Toolbox", 1: "LocationManager", 2: "Layers", 3: "Bookmark"}
+    property var indexes: {"Toolbox": 0, "LocationManager": 1, "Layers": 2, "Bookmark": 3}
 
     signal modelEmpty
 
@@ -22,69 +24,32 @@ ColumnLayout {
         return -1
     }
 
-    function toggleToolbox() {
-        var i = isInModel("Toolbox")
+    function toggleItem(itemName) {
+        var index = indexes[itemName]
+
+        var i = isInModel(itemName)
         if (i !== -1) {
             sideModel.remove(i)
             if (sideModel.count === 0) modelEmpty()
             currentItemIndex = 0
-            stackLayout.currentIndex = stackLayout.getIndex(sideModel.get(0).name)
+            stackLayout.currentIndex = indexes[sideModel.get(0).name]
         } else {
-            sideModel.append({name: "Toolbox"})
+            sideModel.append({name: itemName})
             currentItemIndex = sideModel.count - 1
-            stackLayout.currentIndex = 0
+            stackLayout.currentIndex = index
         }
 
+        modelsInitialize();
+    }
+
+    function modelsInitialize() {
         toolbox.listModel = ToolboxInstance
-    }
-
-    function toggleLocationManager() {
-        var i = isInModel("LocationManager");
-        if (i !== -1) {
-            sideModel.remove(i)
-            if (sideModel.count === 0) modelEmpty()
-            currentItemIndex = 0
-            stackLayout.currentIndex = stackLayout.getIndex(sideModel.get(0).name)
-        } else {
-            sideModel.append({name: "LocationManager"})
-            currentItemIndex = sideModel.count - 1
-            stackLayout.currentIndex = 1
-        }
-
         locationManager.listModel = LocatoinManagerInstance
-    }
-
-    function toggleLayers() {
-        var i = isInModel("Layers");
-        if (i !== -1) {
-            sideModel.remove(i)
-            if (sideModel.count === 0) modelEmpty()
-            currentItemIndex = 0
-            stackLayout.currentIndex = stackLayout.getIndex(sideModel.get(0).name)
-        } else {
-            sideModel.append({name: "Layers"})
-            currentItemIndex = sideModel.count - 1
-            stackLayout.currentIndex = 2
-        }
-
         layers.layersModell = LayersInstance
-    }
-
-    function toggleBookmark() {
-        var i = isInModel("Bookmark");
-        if (i !== -1) {
-            sideModel.remove(i)
-            if (sideModel.count === 0) modelEmpty()
-            currentItemIndex = 0
-            stackLayout.currentIndex = stackLayout.getIndex(sideModel.get(0).name)
-        } else {
-            sideModel.append({name: "Bookmark"})
-            currentItemIndex = sideModel.count - 1
-            stackLayout.currentIndex = 3
-        }
-
         bookmark.model = BookmarkInstance
     }
+
+
 
     TabBar {
         id: tabBar
@@ -125,9 +90,8 @@ ColumnLayout {
                     color: "transparent"
                 }
 
-                onDoubleClicked: {
-                    stackLayout.data[currentItemIndex].parent = windowContainer
-                    wnd.show()
+                onClicked: {
+                    stackLayout.currentIndex = indexes[sideModel.get(currentItemIndex).name]
                 }
             }
         }
@@ -138,47 +102,9 @@ ColumnLayout {
         Layout.fillHeight: true
         currentIndex: 0
 
-        function getIndex(i) {
-            console.log(i)
-            if (i === "Toolbox") {
-                return 0
-            } else if (i === "LocationManager") {
-                return 1
-            } else if (i === "Layers") {
-                return 2
-            } else {
-                return 3
-            }
-        }
-
         ToolboxView { id: toolbox }
         LocationManager { id: locationManager }
         LayersWidget { id: layers }
         BookmarkItem { id: bookmark }
-    }
-
-    Window {
-        id: wnd
-
-        visible: false
-        width: 300
-        height: 500
-        x: mapToGlobal(10, 30).x
-        y: mapToGlobal(10, 30).y
-
-        Item {
-            id: windowContainer
-            anchors.fill: parent
-        }
-
-        onVisibleChanged: {
-            if(visible){
-                show()
-            } else {
-                windowContainer.data[0].parent = stackLayout
-                windowContainer.data = []
-                close();
-            }
-        }
     }
 }
