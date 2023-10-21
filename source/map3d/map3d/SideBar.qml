@@ -205,7 +205,6 @@ Rectangle {
 
         SideContainer {
             id: leftContainer
-
             Layout.preferredHeight: toolBar.height
             Layout.fillWidth: true
 
