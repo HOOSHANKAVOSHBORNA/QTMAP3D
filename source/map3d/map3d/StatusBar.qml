@@ -317,10 +317,15 @@ Rectangle {
             }
 
             popup: Popup {
-                y: control.height - 20
+                y: control.height - control.height
+                x:-2
                 width: control.width
                 implicitHeight: contentItem.implicitHeight +2
                 padding: 1
+                enter: Transition {
+                        NumberAnimation { property: "opacity"; from: 0.0; to: 1.0 }}
+                exit:Transition {
+                    NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }}
 
                 contentItem: ListView {
                     clip: true
@@ -328,12 +333,13 @@ Rectangle {
                     model: control.popup.visible ? control.delegateModel : null
                     currentIndex: control.highlightedIndex
 
+
                     ScrollIndicator.vertical: ScrollIndicator { }
                 }
 
                 background: Rectangle {
                     color:"transparent"
-                    radius: 2
+                    radius: 5
                 }
             }
         }
