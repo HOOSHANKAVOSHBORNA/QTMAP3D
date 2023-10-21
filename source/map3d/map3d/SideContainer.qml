@@ -51,7 +51,6 @@ ColumnLayout {
     Item {
 
 
-<<<<<<< HEAD
         id:salam
         Layout.fillWidth: true
         visible: true
@@ -76,9 +75,7 @@ ColumnLayout {
         }
 
     }
-=======
 
->>>>>>> 56f42a5debac7d3e7b93d25f7fe0e49561714630
     TabBar {
         id: tabBar
         contentWidth: rootItem.sideModel.count ? parent.width - 40 / Style.monitorRatio : 0
