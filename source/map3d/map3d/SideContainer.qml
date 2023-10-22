@@ -58,6 +58,7 @@ ColumnLayout {
 //        contentWidth: rootItem.sideModel.count ? parent.width - 40 / Style.monitorRatio : 0
 //        visible: /*count? true:*/ false
         Material.accent: Style.foregroundColor
+        implicitWidth: visibleCount === 0 ? 0 : parent.width
 
         background: Rectangle {
             color: Style.disableColor
@@ -73,8 +74,8 @@ ColumnLayout {
                 id: tb
 
 
-                width: visible? txt.implicitWidth + 10: 0
-                implicitHeight: visible? 30/Style.monitorRatio: 0
+                width: visible ? (tabBar.width / visibleCount) : 0
+                implicitHeight: visible ? 30 / Style.monitorRatio : 0
                 visible: model.checked
 
                 contentItem: Text {
@@ -95,7 +96,13 @@ ColumnLayout {
                     if (visible) {
                         tabBar.currentIndex = model.index
                     } else {
-                        tabBar.currentIndex = 0
+                        if (model.index === tabBar.currentIndex)
+                            for (var j = 0; j < sideModel.count; ++j) {
+                                if (sideModel.get(j).checked) {
+                                    tabBar.currentIndex = j
+                                    break
+                                }
+                            }
                     }
 
                     var count = 0
