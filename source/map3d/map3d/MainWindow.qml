@@ -25,25 +25,29 @@ CMainWindow {
         centerCenterContainer.data.push(item)
     }
 
-    SideBar {
-        id: sideBar
 
-        // TODO: 22 is hardcode size of statusbar
-        height: mainWindow.height - (22 / Style.monitorRatio)
-
-        mainWindow: mainWindow
-        pinContainer: pinContainer
-        unpinContainer: unpinContainer
-    }
-
-    Item {
-        id: unpinContainer
-
-        height: childrenRect.height
-        width: childrenRect.width
+    color: Style.backgroundColor
+    StackLayout {
+        id: sideBarItem
         z: 1
-    }
+        SideBar {
+            id: sideBar
+            Layout.fillHeight: true
+            Layout.fillWidth: true
 
+            // TODO: 22 is hardcode size of statusbar
+            height: mainWindow.height - (22 / Style.monitorRatio)
+            //            width: 100
+
+            onPinChanged: {
+                print(pin)
+                if(pin)
+                    parent = pinContainer
+                else
+                    parent = sideBarItem
+            }
+        }
+    }
     SplitView {
         id: mainWindowSplitter
         anchors.fill: parent
@@ -51,34 +55,52 @@ CMainWindow {
         Rectangle {
             id: pinContainer
 
-            visible: sideBar.state === "pin"
+            visible: sideBar.pin
             color: "tomato"
             SplitView.preferredHeight: mainWindow.height
             // TODO: don't work with visible and set preferred width as childrenRect size
             SplitView.preferredWidth: sideBar.width
+            z:1
         }
+        //        SideBar {
+        //            id: sideBar
+
+        //            // TODO: 22 is hardcode size of statusbar
+        ////            height: mainWindow.height - (22 / Style.monitorRatio)
+        ////            z: 1
+        ////            implicitWidth: 80 / Style.monitorRatio
+        //            SplitView.minimumWidth: implicitWidth
+        ////            SplitView.maximumWidth: implicitWidth
+        //            onPinChanged: {
+        //                print(pin)
+        //                if(pin)
+        //                    parent = pinContainer
+        //                else
+        //                    parent = mainWindow
+        //            }
+        //        }
 
         StackLayout {
             id: centerCenterContainer
+            SplitView.minimumWidth: 50
             SplitView.fillWidth: true
-            SplitView.fillHeight: true
         }
     }
 
-    ContextmenuWidget {
-        id: contextmenu
-    }
+    //    ContextmenuWidget {
+    //        id: contextmenu
+    //    }
 
-    function showInfoView(item, title) {
-        var indx = -1
-        for (var i = 0; i < leftContainer.model.count; ++i){
-            if (leftContainer.model.get(i).item === item){
-                leftContainer.setCurrentIndex(i)
-                return
-            }
-        }
-        leftContainer.model.append({item:item, name:title})
-    }
+    //    function showInfoView(item, title) {
+    //        var indx = -1
+    //        for (var i = 0; i < leftContainer.model.count; ++i){
+    //            if (leftContainer.model.get(i).item === item){
+    //                leftContainer.setCurrentIndex(i)
+    //                return
+    //            }
+    //        }
+    //        leftContainer.model.append({item:item, name:title})
+    //    }
 
     //---------------------for frame---------------------
     Rectangle {

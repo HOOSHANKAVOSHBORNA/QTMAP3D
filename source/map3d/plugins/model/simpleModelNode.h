@@ -57,6 +57,7 @@ private:
     bool mIsAutoScale{true};
     bool mIsSelected{false};
     NodeData* mNodeData;
+    osgEarth::Color mColor{osgEarth::Color::White};
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;

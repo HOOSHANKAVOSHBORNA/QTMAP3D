@@ -30,7 +30,7 @@ private:
     NetworkManager *mNetworkManager;
 
     QVector<FlayableData> mFlyableDataList;
-    int mMaxFlyableNumber{10};
+    int mMaxFlyableNumber{20};
 
     QVector<Url> mUrlList;
     QVector<QColor> mColorList;

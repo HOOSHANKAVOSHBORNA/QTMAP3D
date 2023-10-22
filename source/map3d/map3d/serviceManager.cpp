@@ -54,7 +54,10 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
         statusNodeData->layer = layer;
 
     for(auto& key:jsonObject.keys()){
-        statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key).toDouble()});
+        if(jsonObject.value(key).type() == QJsonValue::Double)
+            statusNodeData->data.push_back(NodeFieldData{key, QObject::tr("%1 km").arg(jsonObject.value(key).toDouble(),0,'f',4)});
+        else
+            statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key).toString()});
     }
 
     if(statusNodeData->layer)

@@ -33,6 +33,10 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 
+    qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
+    qmlRegisterSingletonType<LayersModel>("Crystal", 1, 0, "LayersInstance", LayersModel::createSingletonInstance);
+    qmlRegisterSingletonType<LocationManagerProxyModel>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManagerProxyModel::createSingletonInstance);
+    qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
 
     setColor(Qt::black);
 }
@@ -67,20 +71,19 @@ void MainWindow::initComponent()
             LocationManagerModel *locationManagerModel = new LocationManagerModel(mMapItem);
             LocationManagerProxyModel* myModel = LocationManagerProxyModel::createSingletonInstance(nullptr, nullptr);
             myModel->setSourceModel(locationManagerModel);
-            qmlRegisterSingletonType<LocationManagerProxyModel>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManagerProxyModel::createSingletonInstance);
+
 
             ToolboxProxyModel* toolboxProxyModel = ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
             Toolbox *toolbox = new Toolbox(this);
             toolboxProxyModel->setSourceModel(toolbox);
-            qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
 
             LayersModel *layersModel = LayersModel::createSingletonInstance(nullptr, nullptr);
             layersModel->initialize(mMapItem);
-            qmlRegisterSingletonType<LayersModel>("Crystal", 1, 0, "LayersInstance", LayersModel::createSingletonInstance);
+
 
 
             mBookmark = BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
-            qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
+
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
