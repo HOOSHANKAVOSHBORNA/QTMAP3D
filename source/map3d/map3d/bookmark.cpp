@@ -1,5 +1,7 @@
 #include "bookmark.h"
 
+#include <QQuickWindow>
+
 BookmarkProxyModel::BookmarkProxyModel(QObject *parent):
     QSortFilterProxyModel(parent)
 {

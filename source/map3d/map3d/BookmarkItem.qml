@@ -3,11 +3,12 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Effects
 import "style"
-
+import Crystal
 Item {
     id: rootItem
     property var model
-    readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
+    readonly property color hoverColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
+    readonly property color hoverColor2: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.40)
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 20 / Style.monitorRatio
@@ -16,7 +17,7 @@ Item {
             Layout.fillWidth: true
             height: 30 / Style.monitorRatio
             radius: height / 2
-            color: backgroundColor
+            color: hoverColor
 
             IconImage {
                 id: searchIcon
@@ -97,7 +98,8 @@ Item {
                         anchors.fill: parent
                         anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
                         radius: height/2
-                        color: selected ? backgroundColor: mousearea.containsMouse ? backgroundColor : "transparent"
+                        color: (selected && mousearea.containsMouse) ? hoverColor2 :
+                               (selected || mousearea.containsMouse) ? hoverColor : "transparent"
                         RowLayout{
                             anchors.fill: parent
                             Layout.fillHeight: true
@@ -133,10 +135,17 @@ Item {
                                     width: 20
                                     height: 20
                                 }
+                                Window {
+                                    id: bookwnd
+                                    StackLayout {
+                                        id: bookstk
+                                        anchors.fill: parent
+                                    }
+                                }
                                 onClicked: {
-                                    var item = rootItem.model.rowItem(treeview.index(row,column))
-                                    mywnd.visible = true
-                                    item.parent = testwindow
+                                    bookstk.data.push(itemSource)
+                                    bookwnd.visible = true
+                                    BookmarkInstance.select(treeview.index(row,column))
                                 }
                             }
                             Button{
@@ -151,7 +160,7 @@ Item {
                                     height: 20
                                 }
                                 onClicked: {
-                                    rootItem.model.removeBookmarkItem(treeview.index(row,column))
+                                    BookmarkInstance.removeBookmarkItem(treeview.index(row,column))
                                 }
                             }
                             Image{
@@ -170,9 +179,11 @@ Item {
                             id: mousearea
                             anchors.fill: parent
                             hoverEnabled: true
-                            onClicked: {
-                                rootItem.model.select(treeview.index(row,column))
+                            propagateComposedEvents: true
+                            onPressed:  (mouse)=> {
+                                BookmarkInstance.select(treeview.index(row,column))
                                 treeview.toggleExpanded(row)
+                                mouse.accepted = false
                             }
                         }
                     }

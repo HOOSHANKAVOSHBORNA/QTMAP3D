@@ -5,214 +5,217 @@ import Crystal
 import "style"
 
 Rectangle {
-    id: container
+    id: rootRect
 
-    property alias sideContainerWidth: leftContainer.implicitWidth
+    //    property alias sideContainerWidth: leftContainer.implicitWidth
 
-    // TODO: you should not pass mainwindow to here :)
-    required property var mainWindow
-    required property var unpinContainer
-    required property var pinContainer
+    //    // TODO: you should not pass mainwindow to here :)
+    //    required property var mainWindow
+    //    required property var unpinContainer
+    //    required property var pinContainer
 
-    readonly property color _colorHover: "#01AED6"
-    readonly property color _colorPresed: "#003569"
+    //    readonly property color _colorHover: "#01AED6"
+    //    readonly property color _colorPresed: "#003569"
 
     readonly property color fg50: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
+    readonly property color bg50: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.50)
 
-    property var bookmarkItem: null
+    readonly property bool pin: btnPin.checked
+    //    property var bookmarkItem: null
 
-    state: "unpin"
-    states: [
-        State {
-            name: "unpin"
-            ParentChange { target: container; parent: unpinContainer }
-        },
-        State {
-            name: "pin"
-            ParentChange { target: container; parent: pinContainer }
-        }
-    ]
+//        state: btnPin.checked? "pin": "unpin"
+//        states: [
+//            State {
+//                name: "unpin"
+//            },
+//            State {
+//                name: "pin"
+//            }
+//        ]
 
-    width: 75 / Style.monitorRatio
-    radius: 20 / Style.monitorRatio
+    //    width: 350 / Style.monitorRatio
+    //    radius: 20 / Style.monitorRatio
 
-    PropertyAnimation on width {
-        id: openAnimation
-        running: false
-        from: container.width
-        to: 350 / Style.monitorRatio
-    }
+    //    PropertyAnimation on width {
+    //        id: openAnimation
+    //        running: false
+    //        from: container.width
+    //        to: 350 / Style.monitorRatio
+    //    }
 
-    PropertyAnimation on width {
-        id: closeAnimation
-        running: false
-        from: 350 / Style.monitorRatio
-        to: 75 / Style.monitorRatio
-    }
+    //    PropertyAnimation on width {
+    //        id: closeAnimation
+    //        running: false
+    //        from: 350 / Style.monitorRatio
+    //        to: 75 / Style.monitorRatio
+    //    }
 
-    gradient: Gradient{
-        GradientStop { position: 0.0; color: Style.topGradient }
-        GradientStop { position: 1.0; color: Style.bottomGradient }
-    }
+    //    gradient: Gradient{
+    //        GradientStop { position: 0.0; color: Style.topGradient }
+    //        GradientStop { position: 1.0; color: Style.bottomGradient }
+    //    }
 
     border {
-        color: Style.borderColor
-        width: 2
+        color: "white"
+        width: 3
     }
+    radius: 15 / Style.monitorRatio
+    color: bg50
+
+//    width: sideContainer.visibleCount? rowLayout.implicitWidth: 0
+//    width: rowLayout.implicitWidth
 
     RowLayout {
+        id:rowLayout
         anchors.fill: parent
         Rectangle {
             id: toolBar
 
-            Layout.preferredWidth: 65 / Style.monitorRatio
+            Layout.preferredWidth: 80 / Style.monitorRatio
+            Layout.minimumWidth: 80 / Style.monitorRatio
+            Layout.maximumWidth: 80 / Style.monitorRatio
             Layout.fillHeight: true
-            Layout.leftMargin: 5 / Style.monitorRatio
-            Layout.bottomMargin: 5 / Style.monitorRatio
-            Layout.topMargin: 5 / Style.monitorRatio
+            Layout.margins: 5/Style.monitorRatio
 
             color: Style.backgroundColor
 
-            border {
-                width: 3 / Style.monitorRatio
-                color: "gray"
+            radius: rootRect.radius
+
+            Rectangle {
+                id: logo
+                anchors.topMargin: 35 / Style.monitorRatio
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 45 / Style.monitorRatio
+                height: 45 / Style.monitorRatio
+                radius: width / 2
+
+                Image {
+                    width: 37 / Style.monitorRatio
+                    height: 37 / Style.monitorRatio
+                    source: "qrc:/Resources/Qarch.png"
+                    anchors.centerIn: parent
+                }
             }
 
-            radius: 15 / Style.monitorRatio
-
-            Column {
-                anchors.top: parent.top
-                anchors.topMargin: 30 / Style.monitorRatio
+            ColumnLayout {
+                anchors.top: logo.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 80 / Style.monitorRatio
+                anchors.topMargin: 80 / Style.monitorRatio
+                spacing: 20 / Style.monitorRatio
 
-                Rectangle {
-                    width: 45 / Style.monitorRatio
-                    height: 45 / Style.monitorRatio
-                    radius: width / 2
+                Repeater {
+                    model: sideBarModel
 
-                    Image {
-                        width: 37 / Style.monitorRatio
-                        height: 37 / Style.monitorRatio
-                        source: "qrc:/Resources/Qarch.png"
-                        anchors.centerIn: parent
-                    }
-                }
-
-                ColumnLayout {
-                    id: centerItemUp
-
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    spacing: 20 / Style.monitorRatio
-
-                    ListModel {
-                        id: toolBarModel
-
-                        property var toolboxItem
-                        property var locationManagerItem
-                        property var layerItem
-                        property var bookmarkItem
-
-                        // actions calls by list elements "labels"
-                        property var actions: {
-                            "toolbox": function () { leftContainer.toggleToolbox() },
-                            "location": function () { leftContainer.toggleLocationManager() },
-                            "settings": function () {},
-                            "layers": function () { leftContainer.toggleLayers() },
-                            "list": function () { mainWindow.showListWindow() },
-                            "bookmark": function () { leftContainer.toggleBookmark() },
-                            "hand": function () {
-                                if (container.state === "pin") {
-                                    container.state = "unpin"
-                                } else {
-                                    container.state = "pin"
-                                }
-                            },
+                    Button {
+                        id: btnDelegate
+                        padding: 0
+                        icon {
+                            source: model.iconSource
+                            width: 35 / Style.monitorRatio
+                            height: 35 / Style.monitorRatio
                         }
-
-                        ListElement {
-                            label: "toolbox"
-                            iconSource: "qrc:/Resources/toolbox.png"
-                        }
-
-                        ListElement {
-                            label: "location"
-                            iconSource: "qrc:/Resources/location.png"
-                        }
-
-                        ListElement {
-                            label: "settings"
-                            iconSource: "qrc:/Resources/settings.png"
-                        }
-
-                        ListElement {
-                            label: "layers"
-                            iconSource: "qrc:/Resources/layers.png"
-                        }
-
-                        ListElement {
-                            label: "list"
-                            iconSource: "qrc:/Resources/list.png"
-                        }
-
-                        ListElement {
-                            label: "bookmark"
-                            iconSource: "qrc:/Resources/bookmark.png"
-                        }
-
-                        ListElement {
-                            label: "hand"
-                            iconSource: "qrc:/Resources/hand.png"
-                        }
-                    }
-
-                    Repeater {
-                        model: toolBarModel
-
-                        Rectangle {
-                            width: 40 / Style.monitorRatio
-                            height: 40 / Style.monitorRatio
+                        background: Rectangle {
                             radius: 10 / Style.monitorRatio
                             color: btnDelegate.checked ? fg50 : "transparent"
+                        }
 
-                            Button {
-                                id: btnDelegate
-                                anchors.centerIn: parent
-                                padding: 0
-
-                                icon {
-                                    source: model.iconSource
-                                    width: 35 / Style.monitorRatio
-                                    height: 35 / Style.monitorRatio
-                                }
-
-                                background: Rectangle { color: "transparent" }
-
-                                display: AbstractButton.IconOnly
-                                checkable: true
-                                checked: false
-
-                                onClicked: {
-                                    if (!leftContainer.sideModel.count) openAnimation.running = true
-                                    toolBarModel.actions[model.label]()
-                                }
-                            }
+                        display: AbstractButton.IconOnly
+                        checkable: true
+                        checked: false
+                        onToggled: {
+                            model.checked = checked;
                         }
                     }
+                }
+                Button {
+                    id: btnList
+                    padding: 0
+                    icon {
+                        source: "qrc:/Resources/list.png"
+                        width: 35 / Style.monitorRatio
+                        height: 35 / Style.monitorRatio
+                    }
+                    background: Rectangle {
+                        radius: 10 / Style.monitorRatio
+                        color: btnList.checked ? fg50 : "transparent"
+                    }
+
+                    display: AbstractButton.IconOnly
+                    checkable: true
+                    checked: false
+                    onToggled: {
+
+                    }
+                }
+            }
+            Button {
+                id: btnPin
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottomMargin: 100 / Style.monitorRatio
+                padding: 0
+                icon {
+                    source: "qrc:/Resources/hand.png"
+                    width: 35 / Style.monitorRatio
+                    height: 35 / Style.monitorRatio
+                }
+                background: Rectangle {
+                    radius: 10 / Style.monitorRatio
+                    color: btnPin.checked ? fg50 : "transparent"
+                }
+
+                display: AbstractButton.IconOnly
+                checkable: true
+                checked: false
+                onToggled: {
+
                 }
             }
         }
 
         SideContainer {
-            id: leftContainer
-
-            Layout.preferredHeight: toolBar.height
+            id: sideContainer
             Layout.fillWidth: true
-
-            onModelEmpty: {
-                closeAnimation.running = true
-            }
+            Layout.fillHeight: true
+            sideModel: sideBarModel
 
         }
+    }
+
+    //--------------------------------------------------------------------------------------
+    ListModel {
+        id: sideBarModel
+        signal toggleItem(var index, var checked)
+        ListElement {
+            name: "Toolbox"
+            iconSource: "qrc:/Resources/toolbox.png"
+            checked: false
+        }
+
+        ListElement {
+            name: "Layer"
+            iconSource: "qrc:/Resources/layers.png"
+            checked: false
+        }
+
+        ListElement {
+            name: "Bookmark"
+            iconSource: "qrc:/Resources/bookmark.png"
+            checked: false
+        }
+
+        ListElement {
+            name: "Location"
+            iconSource: "qrc:/Resources/location.png"
+            checked: false
+        }
+
+        ListElement {
+            name: "Setting"
+            iconSource: "qrc:/Resources/settings.png"
+            checked: false
+        }
+
     }
 }

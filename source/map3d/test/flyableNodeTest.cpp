@@ -29,11 +29,11 @@ FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
             updateFlyableInfo();
             for(auto& flybleData: mFlyableDataList){
                 mNetworkManager->sendData(flybleData.flyableDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(flybleData.statusDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(flybleData.lineDoc.toJson(QJsonDocument::Compact));
+                //mNetworkManager->sendData(flybleData.statusDoc.toJson(QJsonDocument::Compact));
+                //mNetworkManager->sendData(flybleData.lineDoc.toJson(QJsonDocument::Compact));
             }
         });
-        timerUpdateAircraft->start(1000);
+        timerUpdateAircraft->start(3000);
     });
 }
 

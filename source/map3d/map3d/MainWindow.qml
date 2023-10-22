@@ -25,60 +25,65 @@ CMainWindow {
         centerCenterContainer.data.push(item)
     }
 
-    SideBar {
-        id: sideBar
 
-        // TODO: 22 is hardcode size of statusbar
-        height: mainWindow.height - (22 / Style.monitorRatio)
+    color: Style.backgroundColor
+//    ColumnLayout {
+//        id: unPinContainer
+//        z: 1
+//        SideBar {
+//            id: sideBar
+//            Layout.fillHeight: true
+//            Layout.fillWidth: true
 
-        mainWindow: mainWindow
-        pinContainer: pinContainer
-        unpinContainer: unpinContainer
-    }
+//            // TODO: 22 is hardcode size of statusbar
+//            height: mainWindow.height - (22 / Style.monitorRatio)
+//            //            width: 100
 
-    Item {
-        id: unpinContainer
-
-        height: childrenRect.height
-        width: childrenRect.width
-        z: 1
-    }
-
+////            onPinChanged: {
+////                print(pin)
+////                if(pin)
+////                    parent = pinContainer
+////                else
+////                    parent = unPinContainer
+////            }
+//        }
+//    }
     SplitView {
         id: mainWindowSplitter
         anchors.fill: parent
 
-        Rectangle {
+        Item {
             id: pinContainer
-
-            visible: sideBar.state === "pin"
-            color: "tomato"
-            SplitView.preferredHeight: mainWindow.height
-            // TODO: don't work with visible and set preferred width as childrenRect size
             SplitView.preferredWidth: sideBar.width
+//            SplitView.minimumWidth: sideBar.width
+//            SplitView.fillWidth: true
+            z:1
+            SideBar {
+                id: sideBar
+                anchors.fill: parent
+            }
         }
 
         StackLayout {
             id: centerCenterContainer
             SplitView.fillWidth: true
-            SplitView.fillHeight: true
         }
     }
 
-    ContextmenuWidget {
-        id: contextmenu
-    }
+    //    ContextmenuWidget {
+    //        id: contextmenu
+    //    }
 
-    function showInfoView(item, title) {
-        var indx = -1
-        for (var i = 0; i < leftContainer.model.count; ++i){
-            if (leftContainer.model.get(i).item === item){
-                leftContainer.setCurrentIndex(i)
-                return
-            }
-        }
-        leftContainer.model.append({item:item, name:title})
-    }
+    //    function showInfoView(item, title) {
+    //        var indx = -1
+    //        for (var i = 0; i < leftContainer.model.count; ++i){
+    //            if (leftContainer.model.get(i).item === item){
+    //                leftContainer.setCurrentIndex(i)
+    //                return
+    //            }
+    //        }
+    //        leftContainer.model.append({item:item, name:title})
+    //    }
 
     //---------------------for frame---------------------
     Rectangle {

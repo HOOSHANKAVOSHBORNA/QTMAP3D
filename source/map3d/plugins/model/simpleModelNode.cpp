@@ -76,20 +76,23 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
 
 void SimpleModelNode::setModelColor(osgEarth::Color color)
 {
-    //--recolor 3D Node----------------------------------------------------
-    osg::ref_ptr<osg::Material> mat = new osg::Material;
-    mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
-    mSimpleNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-    //--recolor 2D Node----------------------------------------------------
-    osg::Vec4 imageColor = color;
-    for(int i=0; i<mImage->s(); ++i) {
-        for(int j=0; j<mImage->t(); ++j) {
-            imageColor.a() = mImage->getColor(i, j).a();
-            mImage->setColor(imageColor, i, j);
+    if(mColor != color){
+        //--recolor 3D Node----------------------------------------------------
+        osg::ref_ptr<osg::Material> mat = new osg::Material;
+        mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
+        mSimpleNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+        //--recolor 2D Node----------------------------------------------------
+        osg::Vec4 imageColor = color;
+        for(int i=0; i<mImage->s(); ++i) {
+            for(int j=0; j<mImage->t(); ++j) {
+                imageColor.a() = mImage->getColor(i, j).a();
+                mImage->setColor(imageColor, i, j);
+            }
         }
+        mImage->dirty();
+        //---------------------------------------------------------------------
     }
-    mImage->dirty();
-    //---------------------------------------------------------------------
+    mColor = color;
 
 }
 
@@ -206,6 +209,7 @@ void SimpleModelNode::compile()
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
     //rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
     setStyle(rootStyle);
+    setModelColor(mColor);
 }
 
 bool SimpleModelNode::isAutoScale() const

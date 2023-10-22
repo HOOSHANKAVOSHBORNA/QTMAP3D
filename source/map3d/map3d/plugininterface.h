@@ -21,7 +21,7 @@ class MainWindow;
 class ListWindow;
 class QQuickItem;
 class DefenseDataManager;
-
+class BookmarkProxyModel;
 namespace osgViewer {
     class Viewer;
 };
@@ -39,6 +39,7 @@ public:
     MapItem *mapItem() const;
     QQmlEngine *qmlEngine() const;
     Toolbox *toolbox() const;
+    BookmarkProxyModel *bookmarkProxyModel() const;
 
     DefenseDataManager *defenseDataManager() const;
     static void setDefenseDataManager(DefenseDataManager* defenseDataManager);
@@ -63,6 +64,7 @@ public:
     virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
 
 
+
 private:
     static MapItem *mMapItem;
     static QQmlEngine *mQmlEngine;
@@ -70,6 +72,7 @@ private:
     static MainWindow *mMainWindow;
     static Toolbox *mToolbox;
     static ServiceManager *mServiceManager;
+    static inline BookmarkProxyModel *mBookmarkProxyModel;
     QString mName;
 
 };
