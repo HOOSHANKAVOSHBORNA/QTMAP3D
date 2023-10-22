@@ -7,7 +7,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
 #include <QtQml>
-
+#include "bookmark.h"
 //-------------------------------------------------------------------------
 MapItem *PluginInterface::mMapItem;
 DefenseDataManager *PluginInterface::mDefenseDataManager;
@@ -43,6 +43,7 @@ void PluginInterface::setMainWindow(MainWindow *mainWindow)
     mMapItem = mainWindow->getMapItem();
     mQmlEngine = mainWindow->getQmlEngine();
     mToolbox = dynamic_cast<Toolbox*>(ToolboxProxyModel::createSingletonInstance(nullptr, nullptr)->sourceModel());
+    mBookmarkProxyModel = BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
 }
 
 DefenseDataManager *PluginInterface::defenseDataManager() const
@@ -78,4 +79,9 @@ ServiceManager *PluginInterface::serviceManager() const
 void PluginInterface::setServiceManager(ServiceManager *newServiceManager)
 {
     mServiceManager = newServiceManager;
+}
+
+BookmarkProxyModel *PluginInterface::bookmarkProxyModel() const
+{
+    return mBookmarkProxyModel;
 }

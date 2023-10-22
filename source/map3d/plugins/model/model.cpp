@@ -10,6 +10,7 @@
 
 #include <QPainter>
 #include <QRandomGenerator>
+#include <bookmark.h>
 #include <osgFX/Outline>
 #include <osgEarthSymbology/Style>
 #include <osgEarthSymbology/StyleSheet>
