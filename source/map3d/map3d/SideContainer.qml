@@ -17,6 +17,9 @@ Item {
     ColumnLayout{
         id:columnLayout
         anchors.fill: parent
+        anchors.topMargin: 5 / Style.monitorRatio
+        anchors.rightMargin: 15 / Style.monitorRatio
+        anchors.leftMargin: 15 / Style.monitorRatio
         TabBar {
             id: tabBar
 //            Layout.preferredHeight: 30 / Style.monitorRatio
@@ -33,25 +36,42 @@ Item {
                 id: repeater
                 model: sideModel
                 TabButton {
-                    clip: true
                     background: Rectangle {
                         color: "transparent"
                     }
                     contentItem: Rectangle {
                         anchors.fill: parent
                         color: 'transparent'
-                        Text {
-                            id: txt
 
-                            text: model.name ?? "unknown"
-                            font.family: Style.fontFamily
-                            font.pixelSize: 20 / Style.monitorRatio
-                            opacity: enabled ? 1.0 : 0.3
-                            color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
-                            anchors.verticalCenter: parent.verticalCenter
-//                            verticalAlignment: Text.AlignVCenter
-                            //                            horizontalAlignment: Text.AlignHCenter
+                        Rectangle {
+                            height: 2
+                            width: parent.width
+                            radius: 1
+                            color: Style.disableColor
+                            anchors.bottom: parent.bottom
                         }
+
+                        Rectangle {
+                            color: 'transparent'
+                            anchors.fill: parent
+                            anchors.margins: 3 / Style.monitorRatio
+                            clip: true
+
+                            Text {
+                                id: txt
+
+                                text: model.name ?? "unknown"
+                                font.family: Style.fontFamily
+                                font.pixelSize: 17 / Style.monitorRatio
+                                opacity: enabled ? 1.0 : 0.3
+                                color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
+                                anchors.verticalCenter: parent.verticalCenter
+    //                            verticalAlignment: Text.AlignVCenter
+                                //                            horizontalAlignment: Text.AlignHCenter
+                            }
+                        }
+
+
 
                         // TODO: replace rectangle and mouse area with Button
                         Rectangle {
@@ -112,9 +132,9 @@ Item {
                     visible: model.checked
                     width: {
                         if (visible) {
-                            if (visibleCount <= 3) {
+                            if (visibleCount < 3) {
                                 return columnLayout.width / visibleCount
-                            } else if (visibleCount > 3 && tabBar.currentIndex === model.index) {
+                            } else if (visibleCount >= 3 && tabBar.currentIndex === model.index) {
                                 return 100
                             } else {
                                 return (columnLayout.width - 100) / (visibleCount - 1)
