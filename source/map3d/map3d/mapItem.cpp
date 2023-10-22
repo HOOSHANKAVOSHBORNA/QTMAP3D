@@ -27,7 +27,7 @@ MapItem::MapItem(QQuickItem *parent) :
     mOSGRenderNode->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
     //    createOsgRenderer();
 
-    initializeOsgEarth();
+//    initializeOsgEarth();
 }
 
 MapItem::~MapItem()

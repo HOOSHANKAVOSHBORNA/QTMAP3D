@@ -58,6 +58,7 @@ void MainWindow::initComponent()
         if(status == QQmlComponent::Ready){
             QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
             mMapItem = static_cast<MapControllerItem*>(item);
+//            mMapItem->initializeOsgEarth();
             mMapItem->setQmlEngine(engine);
             addToCenterCenterContainer(mMapItem);
 
