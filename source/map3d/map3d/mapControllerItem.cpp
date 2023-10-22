@@ -9,6 +9,7 @@
 MapControllerItem::MapControllerItem():
     MapItem()
 {
+    initializeOsgEarth();
     qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);

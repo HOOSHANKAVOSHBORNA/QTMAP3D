@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
-import Qt5Compat.GraphicalEffects
+//import Qt5Compat.GraphicalEffects
 import Crystal 1.0
 import "style"
 
@@ -137,38 +137,37 @@ MapController {
         }
     }
 
-//    Rectangle {
-//        id: recct
-//        width: 100
-//        height: 100
-//        x: parent.width - (100 + itemMargin)
-//        y: parent.height - (100 + itemMargin + statusBar.height)
-//        opacity: 0.5
-//        radius: 50
-////        layer.enabled: true
-//        layer.effect: OpacityMask {
-//            maskSource: Item {
-//                width: 100
-//                height: 100
-//                Rectangle {
-//                    anchors.centerIn: parent
-//                    width: recct.adapt ? recct.width : Math.min(recct.width, recct.height)
-//                    height: recct.adapt ? recct.height : width
-//                    radius: 50
-//                }
-//            }
-//        }
+    //    Rectangle {
+    //        id: recct
+    //        width: 100
+    //        height: 100
+    //        x: parent.width - (100 + itemMargin)
+    //        y: parent.height - (100 + itemMargin + statusBar.height)
+    //        opacity: 0.5
+    //        radius: 50
+    ////        layer.enabled: true
+    //        layer.effect: OpacityMask {
+    //            maskSource: Item {
+    //                width: 100
+    //                height: 100
+    //                Rectangle {
+    //                    anchors.centerIn: parent
+    //                    width: recct.adapt ? recct.width : Math.min(recct.width, recct.height)
+    //                    height: recct.adapt ? recct.height : width
+    //                    radius: 50
+    //                }
+    //            }
+    //        }
 
 
-//        SmallMap {
-//            x: 0
-//            y: 0
-//            width: 100
-//            height: 100
-////            anchors.fill: parent
-//            objectName: "SmallMap"
-//        }
-//    }
+    SmallMap {
+        x: map.width - 103
+        y: map.height - 123
+        width: 100
+        height: 100
+        objectName: "SmallMap"
+    }
+    //    }
 
 
     StatusBar {

@@ -12,7 +12,7 @@ CMainWindow {
     visible: true
     width: 800
     minimumWidth: 800
-    minimumHeight: 600
+    minimumHeight: 700
     title: qsTr("MAP3D")
 
     property real widgetsPositionFactor: 1.0
@@ -24,210 +24,53 @@ CMainWindow {
     function addToCenterCenterContainer(item) {
         centerCenterContainer.data.push(item)
     }
-
-
     color: Style.backgroundColor
-//    ColumnLayout {
-//        id: unPinContainer
-//        z: 1
-//        SideBar {
-//            id: sideBar
-//            Layout.fillHeight: true
-//            Layout.fillWidth: true
-
-//            // TODO: 22 is hardcode size of statusbar
-//            height: mainWindow.height - (22 / Style.monitorRatio)
-//            //            width: 100
-
-////            onPinChanged: {
-////                print(pin)
-////                if(pin)
-////                    parent = pinContainer
-////                else
-////                    parent = unPinContainer
-////            }
-//        }
-//    }
-    SplitView {
-        id: mainWindowSplitter
+    Item {
         anchors.fill: parent
 
+
         Item {
-            id: pinContainer
-            SplitView.preferredWidth: sideBar.width
-//            SplitView.minimumWidth: sideBar.width
-//            SplitView.fillWidth: true
-            z:1
+            id: unPinContainer
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.margins: 5/Style.monitorRatio
+            z: 1
+            width: sideBar.minWidth
+            height: mainWindow.height - (25 + 10)/Style.monitorRatio
+
             SideBar {
                 id: sideBar
                 anchors.fill: parent
+//                pin: true
+                onPinChanged: {
+                    if(pin){
+                        parent = pinContainer
+                        pinContainer.visible = true
+                        unPinContainer.visible = false
+                    }
+                    else{
+                        parent = unPinContainer
+                        pinContainer.visible = false
+                        unPinContainer.visible = true
+                    }
+                }
             }
         }
-
-        StackLayout {
-            id: centerCenterContainer
-            SplitView.fillWidth: true
-        }
-    }
-
-    //    ContextmenuWidget {
-    //        id: contextmenu
-    //    }
-
-    //    function showInfoView(item, title) {
-    //        var indx = -1
-    //        for (var i = 0; i < leftContainer.model.count; ++i){
-    //            if (leftContainer.model.get(i).item === item){
-    //                leftContainer.setCurrentIndex(i)
-    //                return
-    //            }
-    //        }
-    //        leftContainer.model.append({item:item, name:title})
-    //    }
-
-    //---------------------for frame---------------------
-    Rectangle {
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.leftMargin: Style.marginSize
-        anchors.topMargin: Style.marginSize
-        height: rowl.impliitemClickedcitHeight + 15
-        width: rowl.implicitWidth + 20
-        visible: false
-        color: "transparent"
-        Rectangle {
+        SplitView {
+            id: mainWindowSplitter
             anchors.fill: parent
-            color: "#404040"
-            opacity: 0.8
-            radius: 10
-        }
-        MouseArea {
-            anchors.fill: parent
-        }
 
-        RowLayout {
-            id: rowl
-            anchors.fill: parent
-            spacing: 0
-            anchors.rightMargin: 20
             Item {
-                Layout.alignment: Qt.AlignCenter
-
-                Layout.preferredWidth: 64
-                Layout.preferredHeight: 64
-
-                ColumnLayout {
-                    id: col3
-                    anchors.centerIn: parent
-                    Image {
-                        id: img3
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 24
-                        Layout.preferredHeight: 24
-                        source: "qrc:///Resources/close.png"
-                        width: 24
-                        height: 24
-                    }
-
-                    Label {
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: implicitWidth
-                        Layout.preferredHeight: implicitHeight
-                        text: "Exit"
-                        color: "white"
-                        font.family: Style.fontFamily
-                        font.pointSize: 11
-                    }
-                    visible: false
-                }
-
-                MouseArea {
-                    id: mouseArea3
-                    anchors.fill: col3
-                    hoverEnabled: true
-
-                    property bool isMouseOnItem: false
-
-                    onEntered: function() {
-                        isMouseOnItem = true;
-                    }
-                    onExited: function() {
-                        isMouseOnItem = false;
-                    }
-
-                    onClicked: function() {
-                        mainWindow.close();
-                        //rootItem.clickCallback(index);
-                    }
-                }
-
-                MultiEffect {
-                    anchors.fill: col3
-                    source: col3
-                    colorization: 1
-                    colorizationColor: mouseArea3.isMouseOnItem ?
-                                           (mouseArea3.pressed ? _colorPresed: _colorHover) :
-                                           (mouseArea3.pressed ? _colorHover : "#FFFFFF");
-                }
+                id: pinContainer
+                SplitView.preferredWidth: sideBar.minWidth
+                SplitView.minimumWidth: sideBar.minWidth
+                SplitView.maximumWidth: sideBar.minWidth
+                visible: false
             }
-            Item {
-                Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: 64
-                Layout.preferredHeight: 64
 
-                ColumnLayout {
-                    id: col4
-                    anchors.centerIn: parent
-                    Image {
-                        id: img4
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 24
-                        Layout.preferredHeight: 24
-                        source: "qrc:///Resources/collapse.png"
-                        width: 24
-                        height: 24
-                    }
-
-                    Label {
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: implicitWidth
-                        Layout.preferredHeight: implicitHeight
-                        text: "Mininnize"
-                        color: "white"
-                        font.family: Style.fontFamily
-                        font.pointSize: 11
-                    }
-                    visible: false
-                }
-
-                MouseArea {
-                    id: mouseArea4
-                    anchors.fill: col4
-                    hoverEnabled: true
-
-                    property bool isMouseOnItem: false
-
-                    onEntered: function() {
-                        isMouseOnItem = true;
-                    }
-                    onExited: function() {
-                        isMouseOnItem = false;
-                    }
-
-                    onClicked: function() {
-                        mainWindow.showMinimized()
-                        //rootItem.clickCallback(index);
-                    }
-                }
-
-                MultiEffect {
-                    anchors.fill: col4
-                    source: col4
-                    colorization: 1
-                    colorizationColor: mouseArea4.isMouseOnItem ?
-                                           (mouseArea4.pressed ? _colorPresed: _colorHover) :
-                                           (mouseArea4.pressed ? _colorHover : "#FFFFFF");
-                }
+            StackLayout {
+                id: centerCenterContainer
+                SplitView.fillWidth: true
             }
         }
     }
