@@ -95,6 +95,7 @@ Item {
 
                                 onClicked: {
                                     stackLayout.data[tabBar.currentIndex].state = 'undocked'
+                                    stackLayout.data[tabBar.currentIndex].windowTitle = model.name
                                     model.checked = false
                                 }
                             }
