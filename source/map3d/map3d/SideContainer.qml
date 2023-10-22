@@ -9,7 +9,6 @@ import "style"
 ColumnLayout {
     id: rootItem
 
-
     property ListModel sideModel: ListModel{}
     property alias currentItemIndex: tabBar.currentIndex
     property int visibleCount: 0
@@ -65,6 +64,7 @@ ColumnLayout {
             height: 2
             anchors.bottom: parent.bottom
         }
+
         Repeater {
             id: repeater
             model: sideModel
@@ -92,6 +92,12 @@ ColumnLayout {
                     color: "transparent"
                 }
                 onVisibleChanged: {
+                    if (visible) {
+                        tabBar.currentIndex = model.index
+                    } else {
+                        tabBar.currentIndex = 0
+                    }
+
                     var count = 0
                     for(var i = 0; i <  sideModel.count; ++i){
                         if(sideModel.get(i).checked)
