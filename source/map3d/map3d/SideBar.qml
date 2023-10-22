@@ -62,19 +62,19 @@ Rectangle {
         color: "white"
         width: 3
     }
-    radius: 15 / Style.monitorRatio
+    radius: Math.ceil(15 / Style.monitorRatio)
     color: bg50
 
-    minWidth: sideContainer.visibleCount? (300+75) / Style.monitorRatio: 75 / Style.monitorRatio
+    minWidth: sideContainer.visibleCount? Math.ceil((300+75) / Style.monitorRatio): Math.ceil(75 / Style.monitorRatio)
 
     RowLayout {
         id:rowLayout
         anchors.fill: parent
         Item {
-            Layout.preferredWidth: 65 / Style.monitorRatio
-            Layout.minimumWidth: 65 / Style.monitorRatio
-            Layout.maximumWidth: 65 / Style.monitorRatio
-            Layout.margins: 5/Style.monitorRatio
+            Layout.preferredWidth: Math.ceil(65 / Style.monitorRatio)
+            Layout.minimumWidth: Math.ceil(65 / Style.monitorRatio)
+            Layout.maximumWidth: Math.ceil(65 / Style.monitorRatio)
+            Layout.margins: Math.ceil(5/Style.monitorRatio)
             Layout.fillHeight: true
             Rectangle {
                 id: toolBar
@@ -86,16 +86,16 @@ Rectangle {
 
                 Rectangle {
                     id: logo
-                    anchors.topMargin: 35 / Style.monitorRatio
+                    anchors.topMargin: Math.ceil(35 / Style.monitorRatio)
                     anchors.top: parent.top
                     anchors.horizontalCenter: parent.horizontalCenter
-                    width: 45 / Style.monitorRatio
-                    height: 45 / Style.monitorRatio
-                    radius: width / 2
+                    width: Math.ceil(45 / Style.monitorRatio)
+                    height: Math.ceil(45 / Style.monitorRatio)
+                    radius: Math.ceil(width / 2)
 
                     Image {
-                        width: 37 / Style.monitorRatio
-                        height: 37 / Style.monitorRatio
+                        width: Math.ceil(37 / Style.monitorRatio)
+                        height: Math.ceil(37 / Style.monitorRatio)
                         source: "qrc:/Resources/Qarch.png"
                         anchors.centerIn: parent
                     }
@@ -104,8 +104,8 @@ Rectangle {
                 ColumnLayout {
                     anchors.top: logo.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.topMargin: 80 / Style.monitorRatio
-                    spacing: 20 / Style.monitorRatio
+                    anchors.topMargin: Math.ceil(80 / Style.monitorRatio)
+                    spacing: Math.ceil(20 / Style.monitorRatio)
 
                     Repeater {
                         model: sideBarModel
@@ -115,11 +115,11 @@ Rectangle {
                             padding: 0
                             icon {
                                 source: model.iconSource
-                                width: 35 / Style.monitorRatio
-                                height: 35 / Style.monitorRatio
+                                width: Math.ceil(35 / Style.monitorRatio)
+                                height: Math.ceil(35 / Style.monitorRatio)
                             }
                             background: Rectangle {
-                                radius: 10 / Style.monitorRatio
+                                radius: Math.ceil(10 / Style.monitorRatio)
                                 color: btnDelegate.checked ? fg50 : "transparent"
                             }
 
@@ -136,11 +136,11 @@ Rectangle {
                         padding: 0
                         icon {
                             source: "qrc:/Resources/list.png"
-                            width: 35 / Style.monitorRatio
-                            height: 35 / Style.monitorRatio
+                            width: Math.ceil(35 / Style.monitorRatio)
+                            height: Math.ceil(35 / Style.monitorRatio)
                         }
                         background: Rectangle {
-                            radius: 10 / Style.monitorRatio
+                            radius: Math.ceil(10 / Style.monitorRatio)
                             color: btnList.checked ? fg50 : "transparent"
                         }
 
@@ -156,15 +156,15 @@ Rectangle {
                     id: btnPin
                     anchors.bottom: parent.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.bottomMargin: 100 / Style.monitorRatio
+                    anchors.bottomMargin: Math.ceil(100 / Style.monitorRatio)
                     padding: 0
                     icon {
                         source: "qrc:/Resources/hand.png"
-                        width: 35 / Style.monitorRatio
-                        height: 35 / Style.monitorRatio
+                        width: Math.ceil(35 / Style.monitorRatio)
+                        height: Math.ceil(35 / Style.monitorRatio)
                     }
                     background: Rectangle {
-                        radius: 10 / Style.monitorRatio
+                        radius: Math.ceil(10 / Style.monitorRatio)
                         color: btnPin.checked ? fg50 : "transparent"
                     }
 
