@@ -6,154 +6,200 @@ import Crystal
 import "style"
 
 
-ColumnLayout {
+Item {
     id: rootItem
 
     property ListModel sideModel: ListModel{}
     property alias currentItemIndex: tabBar.currentIndex
     property int visibleCount: 0
-    //    property var names: {0: "Toolbox", 1: "LocationManager", 2: "Layers", 3: "Bookmark"}
-    //    property var indexes: {"Toolbox": 0, "LocationManager": 1, "Layers": 2, "Bookmark": 3}
 
-    //    signal modelEmpty
+    //clip: true
+    ColumnLayout{
+        id:columnLayout
+        anchors.fill: parent
+        TabBar {
+            id: tabBar
+//            Layout.preferredHeight: 30 / Style.monitorRatio
+            Layout.fillWidth: true
+            Material.accent: Style.foregroundColor
 
-    //    function isInModel(objectName) {
-    //        for (var i = 0; i < sideModel.count; i++) {
-    //            if (sideModel.get(i).name === objectName)
-    //                return i
-    //        }
+            background: Rectangle {
+                color: "transparent"
+                //                height: 2
+                anchors.bottom: parent.bottom
+            }
 
-    //        return -1
-    //    }
-
-    //    function toggleItem(itemName) {
-    //        var index = indexes[itemName]
-
-    //        var i = isInModel(itemName)
-    //        if (i !== -1) {
-    //            sideModel.remove(i)
-    //            if (sideModel.count === 0) modelEmpty()
-    //            currentItemIndex = 0
-    //            stackLayout.currentIndex = indexes[sideModel.get(0).name]
-    //        } else {
-    //            sideModel.append({name: itemName})
-    //            currentItemIndex = sideModel.count - 1
-    //            stackLayout.currentIndex = index
-    //        }
-    //        modelsInitialize();
-    //    }
-
-
-    //    function modelsInitialize() {
-    //        toolbox.listModel = ToolboxInstance
-    //        locationManager.listModel = LocatoinManagerInstance
-    //        layers.layersModell = LayersInstance
-    //        bookmark.model = BookmarkInstance
-    //    }
-
-//clip: true
-
-    TabBar {
-        id: tabBar
-//        contentWidth: rootItem.sideModel.count ? parent.width - 40 / Style.monitorRatio : 0
-//        visible: /*count? true:*/ false
-        Material.accent: Style.foregroundColor
-        implicitWidth: visibleCount === 0 ? 0 : parent.width
-
-        background: Rectangle {
-            color: Style.disableColor
-            height: 2
-            anchors.bottom: parent.bottom
-        }
-
-        Repeater {
-            id: repeater
-            model: sideModel
-
-            TabButton {
-                id: tb
-
-
-                width: {
-                    if (visible) {
-                        if (visibleCount <= 3) {
-                            return (tabBar.width / visibleCount)
-                        } else if (visibleCount > 3 && tabBar.currentIndex === model.index) {
-                            return 100
-                        } else {
-                            return (tabBar.width - 100) / (visibleCount - 1)
-                        }
-                    } else {
-                        return 0
+            Repeater {
+                id: repeater
+                model: sideModel
+                TabButton {
+                    clip: true
+                    background: Rectangle {
+                        color: "transparent"
                     }
-                }
-                implicitHeight: visible ? 30 / Style.monitorRatio : 0
-                visible: model.checked
-                clip: true
+                    contentItem: Rectangle {
+                        anchors.fill: parent
+                        color: 'transparent'
+                        Text {
+                            id: txt
 
-                contentItem: Text {
-                    id: txt
+                            text: model.name ?? "unknown"
+                            font.family: Style.fontFamily
+                            font.pixelSize: 20 / Style.monitorRatio
+                            opacity: enabled ? 1.0 : 0.3
+                            color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
+                            anchors.verticalCenter: parent.verticalCenter
+//                            verticalAlignment: Text.AlignVCenter
+                            //                            horizontalAlignment: Text.AlignHCenter
+                        }
 
-                    text: model.name ?? "unknown"
-                    font: Style.fontFamily
-                    opacity: enabled ? 1.0 : 0.3
-                    color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
-                    verticalAlignment: Text.AlignVCenter
-//                    horizontalAlignment: Text.AlignHCenter
-                }
+                        // TODO: replace rectangle and mouse area with Button
+                        Rectangle {
+                            visible: tabBar.currentIndex === model.index
+                            width: 22 / Style.monitorRatio
+                            height: 22 / Style.monitorRatio
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: 'transparent'
 
-                background: Rectangle {
-                    color: "transparent"
-                }
+//                            padding: 0
 
-                onVisibleChanged: {
-                    if (visible) {
-                        tabBar.currentIndex = model.index
-                    } else {
-                        if (model.index === tabBar.currentIndex)
-                            for (var j = 0; j < sideModel.count; ++j) {
-                                if (sideModel.get(j).checked) {
-                                    tabBar.currentIndex = j
-                                    break
+                            Image {
+                                source: "qrc:/Resources/undocker.png"
+                                width: 22 / Style.monitorRatio
+                                height: 22 / Style.monitorRatio
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onClicked: {
+                                    stackLayout.data[tabBar.currentIndex].state = 'undocked'
+                                    model.checked = false
                                 }
                             }
+
+//                            background: Rectangle {
+//                                color: 'transparent'
+//                            }
+
+//                            display: AbstractButton.IconOnly
+                        }
                     }
 
-                    var count = 0
-                    for(var i = 0; i <  sideModel.count; ++i){
-                        if(sideModel.get(i).checked)
-                            count++
+
+                    //                        Button {
+                    //                            id: btnPin
+
+                    //                            padding: 0
+
+                    //                            visible: tabBar.currentIndex === model.index
+
+                    //                            icon {
+                    //                                source: "qrc:/Resources/undocker.png"
+                    //                                width: 22 / Style.monitorRatio
+                    //                                height: 22 / Style.monitorRatio
+                    //                            }
+
+                    //                            background: Rectangle {
+                    //                                color: 'transparent'
+                    //                            }
+
+                    //                            display: AbstractButton.IconOnly
+                    //                        }
+
+
+                    visible: model.checked
+                    width: {
+                        if (visible) {
+                            if (visibleCount <= 3) {
+                                return columnLayout.width / visibleCount
+                            } else if (visibleCount > 3 && tabBar.currentIndex === model.index) {
+                                return 100
+                            } else {
+                                return (columnLayout.width - 100) / (visibleCount - 1)
+                            }
+                        } else {
+                            return 0
+                        }
                     }
-                    visibleCount = count
+
+                    onVisibleChanged: {
+                        if (visible) {
+                            tabBar.currentIndex = model.index
+                        } else {
+                            if (model.index === tabBar.currentIndex)
+                                for (var j = 0; j < sideModel.count; ++j) {
+                                    if (sideModel.get(j).checked) {
+                                        tabBar.currentIndex = j
+                                        break
+                                    }
+                                }
+                        }
+
+                        var count = 0
+                        for(var i = 0; i <  sideModel.count; ++i){
+                            if(sideModel.get(i).checked)
+                                count++
+                        }
+                        visibleCount = count
+                    }
                 }
+
             }
         }
-    }
 
-    StackLayout {
-        id: stackLayout
-        Layout.fillHeight: true
-        currentIndex: tabBar.currentIndex
-        visible: visibleCount? true: false
-        ToolboxView {
-            id: toolbox
-            listModel:ToolboxInstance
-//            visible: sideModel.get(0).checked
-        }
-        LayersWidget {
-            id: layers
-            //            layersModell: LayersInstance
-//            visible: sideModel? sideModel.get(1).checked: false
-        }
-        BookmarkItem {
-            id: bookmark
-            model: BookmarkInstance
-//            visible:  sideModel.get(2).checked
-        }
-        LocationManager {
-            id: locationManager
-            listModel: LocatoinManagerInstance
-//            visible: sideModel? sideModel.get(3).checked: false
+        StackLayout {
+            id: stackLayout
+
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            currentIndex: tabBar.currentIndex
+            visible: visibleCount ? true: false
+
+            DockWindow {
+                containerItem: ToolboxView {
+                    id: toolbox
+                    listModel:ToolboxInstance
+                }
+
+                onWindowClose: {
+                    sideModel.get(0).checked = true
+                }
+            }
+
+            DockWindow {
+                containerItem: LayersWidget {
+                    id: layers
+                    //            layersModell: LayersInstance
+                }
+
+                onWindowClose: {
+                    sideModel.get(1).checked = true
+                }
+            }
+
+            DockWindow {
+                containerItem: BookmarkItem {
+                    id: bookmark
+                    model: BookmarkInstance
+                }
+
+                onWindowClose: {
+                    sideModel.get(2).checked = true
+                }
+            }
+
+            DockWindow {
+                containerItem: LocationManager {
+                    id: locationManager
+                    listModel: LocatoinManagerInstance
+                }
+
+                onWindowClose: {
+                    sideModel.get(3).checked = true
+                }
+            }
         }
     }
 }

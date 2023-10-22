@@ -9,6 +9,8 @@ Item {
     property string name: ""
     width: 300
 
+    signal windowClose
+
     StackLayout {
         id: container
         anchors.fill: parent
@@ -52,6 +54,7 @@ Item {
         }
 
         onClosing: {
+            windowClose()
             rootItem.state = "docked"
         }
     }
