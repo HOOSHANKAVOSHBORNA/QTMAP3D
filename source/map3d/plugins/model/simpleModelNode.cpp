@@ -86,7 +86,6 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
 
         }
     });
-
     comp->loadUrl(QUrl("qrc:/nodeInformation.qml"));
 }
 
