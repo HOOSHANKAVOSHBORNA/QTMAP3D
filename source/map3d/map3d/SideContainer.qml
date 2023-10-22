@@ -9,7 +9,6 @@ import "style"
 ColumnLayout {
     id: rootItem
 
-
     property ListModel sideModel: ListModel{}
     property alias currentItemIndex: tabBar.currentIndex
     property int visibleCount: 0
@@ -59,12 +58,14 @@ ColumnLayout {
 //        contentWidth: rootItem.sideModel.count ? parent.width - 40 / Style.monitorRatio : 0
 //        visible: /*count? true:*/ false
         Material.accent: Style.foregroundColor
+        implicitWidth: visibleCount === 0 ? 0 : parent.width
 
         background: Rectangle {
             color: Style.disableColor
             height: 2
             anchors.bottom: parent.bottom
         }
+
         Repeater {
             id: repeater
             model: sideModel
@@ -73,8 +74,8 @@ ColumnLayout {
                 id: tb
 
 
-                width: visible? txt.implicitWidth + 10: 0
-                implicitHeight: visible? 30/Style.monitorRatio: 0
+                width: visible ? (tabBar.width / visibleCount) : 0
+                implicitHeight: visible ? 30 / Style.monitorRatio : 0
                 visible: model.checked
 
                 contentItem: Text {
@@ -92,6 +93,18 @@ ColumnLayout {
                     color: "transparent"
                 }
                 onVisibleChanged: {
+                    if (visible) {
+                        tabBar.currentIndex = model.index
+                    } else {
+                        if (model.index === tabBar.currentIndex)
+                            for (var j = 0; j < sideModel.count; ++j) {
+                                if (sideModel.get(j).checked) {
+                                    tabBar.currentIndex = j
+                                    break
+                                }
+                            }
+                    }
+
                     var count = 0
                     for(var i = 0; i <  sideModel.count; ++i){
                         if(sideModel.get(i).checked)
