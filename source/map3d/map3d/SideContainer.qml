@@ -74,9 +74,22 @@ ColumnLayout {
                 id: tb
 
 
-                width: visible ? (tabBar.width / visibleCount) : 0
+                width: {
+                    if (visible) {
+                        if (visibleCount <= 3) {
+                            return (tabBar.width / visibleCount)
+                        } else if (visibleCount > 3 && tabBar.currentIndex === model.index) {
+                            return 100
+                        } else {
+                            return (tabBar.width - 100) / (visibleCount - 1)
+                        }
+                    } else {
+                        return 0
+                    }
+                }
                 implicitHeight: visible ? 30 / Style.monitorRatio : 0
                 visible: model.checked
+                clip: true
 
                 contentItem: Text {
                     id: txt
@@ -86,12 +99,13 @@ ColumnLayout {
                     opacity: enabled ? 1.0 : 0.3
                     color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
                     verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
+//                    horizontalAlignment: Text.AlignHCenter
                 }
 
                 background: Rectangle {
                     color: "transparent"
                 }
+
                 onVisibleChanged: {
                     if (visible) {
                         tabBar.currentIndex = model.index
