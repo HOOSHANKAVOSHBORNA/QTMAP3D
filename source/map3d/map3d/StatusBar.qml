@@ -220,7 +220,7 @@ Rectangle {
         Rectangle{
             id:seprator2
             Layout.alignment: Qt.AlignCenter
-            Layout.leftMargin: 28
+            Layout.leftMargin: 37/Style.monitorRatio
             width: 2/Style.monitorRatio
             height: 16/Style.monitorRatio
             color:Style.disableColor
@@ -230,7 +230,6 @@ Rectangle {
         // Long, Lat   Cordinate  -------------------------------
         Repeater {
             model: [coordinate3, coordinate2, coordinate1]
-
             Label {
                 Layout.preferredWidth: 55/Style.monitorRatio
                 Layout.preferredHeight: 20/Style.monitorRatio
@@ -239,6 +238,7 @@ Rectangle {
                 }
 
                 Text {
+
                     Layout.alignment: Qt.AlignVCenter
                     color: lightBlue
                     text: Number(modelData).toLocaleString(Qt.locale(), root.fe[index], 3)
@@ -317,10 +317,15 @@ Rectangle {
             }
 
             popup: Popup {
-                y: control.height - 20
+                y: control.height - control.height
+                x:-2
                 width: control.width
                 implicitHeight: contentItem.implicitHeight +2
                 padding: 1
+                enter: Transition {
+                        NumberAnimation { property: "opacity"; from: 0.0; to: 1.0 }}
+                exit:Transition {
+                    NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }}
 
                 contentItem: ListView {
                     clip: true
@@ -328,12 +333,13 @@ Rectangle {
                     model: control.popup.visible ? control.delegateModel : null
                     currentIndex: control.highlightedIndex
 
+
                     ScrollIndicator.vertical: ScrollIndicator { }
                 }
 
                 background: Rectangle {
                     color:"transparent"
-                    radius: 2
+                    radius: 5
                 }
             }
         }
@@ -341,15 +347,11 @@ Rectangle {
         Rectangle{
             id:sepratorRectangle
             Layout.alignment: Qt.AlignVCenter
-
-
-
             width: 2/Style.monitorRatio
             height: 16/Style.monitorRatio
 
             color:Style.disableColor
             radius:10
-
         }
         // -  messageContainer    -- -- -----------------
 

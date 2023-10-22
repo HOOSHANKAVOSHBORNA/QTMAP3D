@@ -41,9 +41,9 @@ ColumnLayout {
     //            currentItemIndex = sideModel.count - 1
     //            stackLayout.currentIndex = index
     //        }
-
     //        modelsInitialize();
     //    }
+
 
     //    function modelsInitialize() {
     //        toolbox.listModel = ToolboxInstance
@@ -58,7 +58,6 @@ ColumnLayout {
         id: tabBar
 //        contentWidth: rootItem.sideModel.count ? parent.width - 40 / Style.monitorRatio : 0
 //        visible: /*count? true:*/ false
-
         Material.accent: Style.foregroundColor
 
         background: Rectangle {
