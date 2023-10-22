@@ -225,7 +225,6 @@ void Model::onModeChanged(bool is3DView)
 
 void Model::addUpdateFlyableNode(NodeData *nodeData)
 {
-
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
     osg::ref_ptr<FlyableModelNode> flyableNode;
 
