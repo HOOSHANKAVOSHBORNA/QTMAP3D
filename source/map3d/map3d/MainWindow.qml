@@ -27,62 +27,45 @@ CMainWindow {
 
 
     color: Style.backgroundColor
-    StackLayout {
-        id: sideBarItem
-        z: 1
-        SideBar {
-            id: sideBar
-            Layout.fillHeight: true
-            Layout.fillWidth: true
+//    ColumnLayout {
+//        id: unPinContainer
+//        z: 1
+//        SideBar {
+//            id: sideBar
+//            Layout.fillHeight: true
+//            Layout.fillWidth: true
 
-            // TODO: 22 is hardcode size of statusbar
-            height: mainWindow.height - (22 / Style.monitorRatio)
-            //            width: 100
+//            // TODO: 22 is hardcode size of statusbar
+//            height: mainWindow.height - (22 / Style.monitorRatio)
+//            //            width: 100
 
-            onPinChanged: {
-                print(pin)
-                if(pin)
-                    parent = pinContainer
-                else
-                    parent = sideBarItem
-            }
-        }
-    }
+////            onPinChanged: {
+////                print(pin)
+////                if(pin)
+////                    parent = pinContainer
+////                else
+////                    parent = unPinContainer
+////            }
+//        }
+//    }
     SplitView {
         id: mainWindowSplitter
         anchors.fill: parent
 
-        Rectangle {
+        Item {
             id: pinContainer
-
-            visible: sideBar.pin
-            color: "tomato"
-            SplitView.preferredHeight: mainWindow.height
-            // TODO: don't work with visible and set preferred width as childrenRect size
             SplitView.preferredWidth: sideBar.width
+//            SplitView.minimumWidth: sideBar.width
+//            SplitView.fillWidth: true
             z:1
+            SideBar {
+                id: sideBar
+                anchors.fill: parent
+            }
         }
-        //        SideBar {
-        //            id: sideBar
-
-        //            // TODO: 22 is hardcode size of statusbar
-        ////            height: mainWindow.height - (22 / Style.monitorRatio)
-        ////            z: 1
-        ////            implicitWidth: 80 / Style.monitorRatio
-        //            SplitView.minimumWidth: implicitWidth
-        ////            SplitView.maximumWidth: implicitWidth
-        //            onPinChanged: {
-        //                print(pin)
-        //                if(pin)
-        //                    parent = pinContainer
-        //                else
-        //                    parent = mainWindow
-        //            }
-        //        }
 
         StackLayout {
             id: centerCenterContainer
-            SplitView.minimumWidth: 50
             SplitView.fillWidth: true
         }
     }
