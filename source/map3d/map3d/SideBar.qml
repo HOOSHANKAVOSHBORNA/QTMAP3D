@@ -5,7 +5,7 @@ import Crystal
 import "style"
 
 Rectangle {
-    id: container
+    id: rootRect
 
     //    property alias sideContainerWidth: leftContainer.implicitWidth
 
@@ -18,6 +18,7 @@ Rectangle {
     //    readonly property color _colorPresed: "#003569"
 
     readonly property color fg50: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
+    readonly property color bg50: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.50)
 
     readonly property bool pin: btnPin.checked
     //    property var bookmarkItem: null
@@ -54,33 +55,31 @@ Rectangle {
     //        GradientStop { position: 1.0; color: Style.bottomGradient }
     //    }
 
-    //    border {
-    //        color: Style.borderColor
-    //        width: 2
-    //    }
-    color: Style.backgroundColor
+    border {
+        color: "white"
+        width: 3
+    }
+    radius: 15 / Style.monitorRatio
+    color: bg50
 
-    width: sideContainer.visibleCount? rowLayout.implicitWidth: 0
+//    width: sideContainer.visibleCount? rowLayout.implicitWidth: 0
+//    width: rowLayout.implicitWidth
+
     RowLayout {
         id:rowLayout
         anchors.fill: parent
         Rectangle {
             id: toolBar
 
-            width: 80 / Style.monitorRatio
+            Layout.preferredWidth: 80 / Style.monitorRatio
+            Layout.minimumWidth: 80 / Style.monitorRatio
+            Layout.maximumWidth: 80 / Style.monitorRatio
             Layout.fillHeight: true
-            Layout.leftMargin: 5 / Style.monitorRatio
-            Layout.bottomMargin: 5 / Style.monitorRatio
-            Layout.topMargin: 5 / Style.monitorRatio
+            Layout.margins: 5/Style.monitorRatio
 
             color: Style.backgroundColor
 
-            border {
-                width: 3 / Style.monitorRatio
-                color: "gray"
-            }
-
-            radius: 15 / Style.monitorRatio
+            radius: rootRect.radius
 
             Rectangle {
                 id: logo
@@ -125,8 +124,6 @@ Rectangle {
                         checkable: true
                         checked: false
                         onToggled: {
-                            //                                    if (!leftContainer.sideModel.count) openAnimation.running = true
-//                            sideBarModel.toggleItem(index, checked)
                             model.checked = checked;
                         }
                     }
@@ -179,10 +176,8 @@ Rectangle {
 
         SideContainer {
             id: sideContainer
-//            Layout.preferredHeight: 200
-//            Layout.fillWidth: true
-            Layout.minimumWidth: 300/Style.monitorRatio
-            Layout.maximumWidth: 300/Style.monitorRatio
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             sideModel: sideBarModel
 
         }
