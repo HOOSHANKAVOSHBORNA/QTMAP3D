@@ -72,6 +72,22 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
     mNodeData = newNodeData;
     updateUrl(mNodeData->url3D, mNodeData->url2D);
     setModelColor(osgEarth::Color(mNodeData->color));
+
+    QQmlApplicationEngine engine;
+
+    QQmlComponent* comp = new QQmlComponent(&engine);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status){
+        if(status == QQmlComponent::Error){
+            qDebug()<<"Can not load this: "<<comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready){
+            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+
+        }
+    });
+
+    comp->loadUrl(QUrl("qrc:/nodeInformation.qml"));
 }
 
 void SimpleModelNode::setModelColor(osgEarth::Color color)
@@ -113,7 +129,7 @@ void SimpleModelNode::compile()
         mSimpleNode = osgDB::readRefNodeFile(mUrl3D);
         mNodes3D[mUrl3D] = mSimpleNode ;
     }
-    //--auto scale----------------------------------------------------
+    //--auto scale------selectModel----------------------------------------------
     double modelLenght = mSimpleNode->getBound().radius() * 2;
     qDebug()<<"len: "<<modelLenght;
     double scaleRatio = 100/modelLenght;
