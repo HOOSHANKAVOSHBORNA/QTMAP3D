@@ -91,7 +91,7 @@ void DrawLine::onSlopeItemCheck(bool check)
     onItemChecked(Type::SLOPEE, check);
 }
 
-void DrawLine::addUpdateLineNode(LineNodeData *lineNodeData)
+void DrawLine::addUpdateLineNode(PolyLineData *lineNodeData)
 {
     LineNode *lineNode;
     if (!mLineNodeMap.contains(lineNodeData->id)) {
@@ -105,6 +105,8 @@ void DrawLine::addUpdateLineNode(LineNodeData *lineNodeData)
     }
 
     lineNode->create(&lineNodeData->points);
+    lineNode->setFillColor(osgEarth::Color(lineNodeData->color));
+    lineNode->setWidth(lineNodeData->width);
 //    for (auto point: lineNodeData->points){
 //        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
 //        lineNode->setName(lineNodeData->name);

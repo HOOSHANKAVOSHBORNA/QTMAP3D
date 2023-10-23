@@ -39,7 +39,7 @@ private slots:
     void onRulerItemCheck(bool check);
     void onHeightItemCheck(bool check);
     void onSlopeItemCheck(bool check);
-    void addUpdateLineNode(LineNodeData *lineNodeData);
+    void addUpdateLineNode(PolyLineData *lineNodeData);
 private:
     void onItemChecked(Type type, bool check);
     void initDraw(const osgEarth::GeoPoint &geoPos) override;

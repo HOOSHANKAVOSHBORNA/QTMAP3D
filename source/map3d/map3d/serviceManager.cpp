@@ -52,12 +52,12 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
     auto layer = findParenticLayer(layerId);
     if(layer)
         statusNodeData->layer = layer;
-
-    for(auto& key:jsonObject.keys()){
-        if(jsonObject.value(key).type() == QJsonValue::Double)
-            statusNodeData->data.push_back(NodeFieldData{key, QObject::tr("%1 km").arg(jsonObject.value(key).toDouble(),0,'f',4)});
+    auto jsonObjectFieldData = jsonObject.value("FieldData").toObject();
+    for(auto& key:jsonObjectFieldData.keys()){
+        if(jsonObjectFieldData.value(key).type() == QJsonValue::Double)
+            statusNodeData->fieldData.push_back(NodeFieldData{key, /*QObject::tr("%1").arg(*/jsonObjectFieldData.value(key).toDouble()/*,0,'f',4)*/});
         else
-            statusNodeData->data.push_back(NodeFieldData{key, jsonObject.value(key).toString()});
+            statusNodeData->fieldData.push_back(NodeFieldData{key, jsonObjectFieldData.value(key).toString()});
     }
 
     if(statusNodeData->layer)
@@ -97,7 +97,7 @@ void ServiceManager::messageData(QString jsonData)
 void ServiceManager::polylineData(QJsonObject polyline)
 {
     QJsonArray points = polyline.value("Points").toArray();
-    LineNodeData *lineNodeData = new LineNodeData;
+    PolyLineData *lineNodeData = new PolyLineData;
     for (auto i : points) {
         osg::Vec3d point;
         point.x() = (i.toObject().value("Longitude").toDouble());
@@ -111,6 +111,8 @@ void ServiceManager::polylineData(QJsonObject polyline)
         lineNodeData->layer = layer;
         lineNodeData->name = polyline.value("name").toString().toStdString();
         lineNodeData->id = polyline.value("Id").toInt();
+        lineNodeData->color = polyline.value("Color").toString().toStdString();
+        lineNodeData->width = polyline.value("Width").toInt();
         emit lineNodeDataReceived(lineNodeData);
     }
 }

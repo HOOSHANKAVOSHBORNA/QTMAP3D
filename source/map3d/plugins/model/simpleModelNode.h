@@ -4,8 +4,11 @@
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
 #include "modelAutoScaler.h"
+#include "nodeInformation.h"
 #include <osgFX/Outline>
 #include <osgFX/Scribe>
+#include <QQmlEngine>
+#include <bookmark.h>
 #include <circle.h>
 #include <cone.h>
 #include <osg/ComputeBoundsVisitor>
@@ -18,7 +21,7 @@ class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
+    SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D, QQmlEngine *engine, QObject *parent = nullptr);
     void updateUrl(const std::string& url3D, const std::string& url2D);
     MapItem *mapItem() const;
     std::string url2D() const;
@@ -35,6 +38,11 @@ public:
     NodeData *nodeData() const;
     void setNodeData(NodeData *newNodeData);
     void setModelColor(osgEarth::Color color);
+
+    bool getIsBookmarked() const;
+    void setIsBookmarked(bool newIsBookmarked);
+
+    void showModelInformation(MainWindow *mainWindow);
 
 private slots:
     void compile();
@@ -58,6 +66,10 @@ private:
     bool mIsSelected{false};
     NodeData* mNodeData;
     osgEarth::Color mColor{osgEarth::Color::White};
+    NodeInformation* mNodeInformation{nullptr};
+    bool isBookmarked{false};
+    QQmlEngine *mEnigine;
+    BookmarkItem *mBookmarkItem;
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;

@@ -10,10 +10,10 @@
 struct BookmarkItem: public QObject {
     Q_OBJECT
 public:
-    BookmarkItem(QString parent, QString text, QQuickItem *item, QString imgUrl);
+    BookmarkItem(QString parent, QString text, QQuickWindow *wnd, QString imgUrl);
     QString parent;
     QString text;
-    QQuickItem *item;
+    QQuickWindow *wnd;
     QString imgUrl;
 signals:
     void itemDeleted();

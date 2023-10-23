@@ -135,16 +135,8 @@ Item {
                                     width: 20
                                     height: 20
                                 }
-                                Window {
-                                    id: bookwnd
-                                    StackLayout {
-                                        id: bookstk
-                                        anchors.fill: parent
-                                    }
-                                }
                                 onClicked: {
-                                    bookstk.data.push(itemSource)
-                                    bookwnd.visible = true
+                                    itemSource.show()
                                     BookmarkInstance.select(treeview.index(row,column))
                                 }
                             }
