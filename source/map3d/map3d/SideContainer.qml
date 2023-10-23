@@ -17,9 +17,12 @@ Item {
     ColumnLayout{
         id:columnLayout
         anchors.fill: parent
+        anchors.topMargin: 5 / Style.monitorRatio
+        anchors.rightMargin: 15 / Style.monitorRatio
+        anchors.leftMargin: 15 / Style.monitorRatio
         TabBar {
             id: tabBar
-            Layout.preferredHeight: 30 / Style.monitorRatio
+//            Layout.preferredHeight: 30 / Style.monitorRatio
             Layout.fillWidth: true
             Material.accent: Style.foregroundColor
 
@@ -33,22 +36,115 @@ Item {
                 id: repeater
                 model: sideModel
                 TabButton {
-                    clip: true
                     background: Rectangle {
                         color: "transparent"
                     }
-                    contentItem: Text {
-                        id: txt
+                    contentItem: Rectangle {
+                        anchors.fill: parent
+                        color: 'transparent'
 
-                        text: model.name ?? "unknown"
-                        font: Style.fontFamily
-                        opacity: enabled ? 1.0 : 0.3
-                        color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
+                        Rectangle {
+                            height: 2
+                            width: parent.width
+                            radius: 1
+                            color: Style.disableColor
+                            anchors.bottom: parent.bottom
+                        }
+
+                        Rectangle {
+                            color: 'transparent'
+                            anchors.fill: parent
+                            anchors.margins: 3 / Style.monitorRatio
+                            clip: true
+
+                            Text {
+                                id: txt
+
+                                text: model.name ?? "unknown"
+                                font.family: Style.fontFamily
+                                font.pixelSize: 17 / Style.monitorRatio
+                                opacity: enabled ? 1.0 : 0.3
+                                color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
+                                anchors.verticalCenter: parent.verticalCenter
+    //                            verticalAlignment: Text.AlignVCenter
+                                //                            horizontalAlignment: Text.AlignHCenter
+                            }
+                        }
+
+
+
+                        // TODO: replace rectangle and mouse area with Button
+                        Rectangle {
+                            visible: tabBar.currentIndex === model.index
+                            width: 22 / Style.monitorRatio
+                            height: 22 / Style.monitorRatio
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: 'transparent'
+
+//                            padding: 0
+
+                            Image {
+                                source: "qrc:/Resources/undocker.png"
+                                width: 22 / Style.monitorRatio
+                                height: 22 / Style.monitorRatio
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+
+                                onClicked: {
+                                    stackLayout.data[tabBar.currentIndex].state = 'undocked'
+                                    stackLayout.data[tabBar.currentIndex].windowTitle = model.name
+                                    model.checked = false
+                                }
+                            }
+
+//                            background: Rectangle {
+//                                color: 'transparent'
+//                            }
+
+//                            display: AbstractButton.IconOnly
+                        }
                     }
+
+
+                    //                        Button {
+                    //                            id: btnPin
+
+                    //                            padding: 0
+
+                    //                            visible: tabBar.currentIndex === model.index
+
+                    //                            icon {
+                    //                                source: "qrc:/Resources/undocker.png"
+                    //                                width: 22 / Style.monitorRatio
+                    //                                height: 22 / Style.monitorRatio
+                    //                            }
+
+                    //                            background: Rectangle {
+                    //                                color: 'transparent'
+                    //                            }
+
+                    //                            display: AbstractButton.IconOnly
+                    //                        }
+
+
                     visible: model.checked
-                    width: visible? columnLayout.width/visibleCount:0
+                    width: {
+                        if (visible) {
+                            if (visibleCount < 3) {
+                                return columnLayout.width / visibleCount
+                            } else if (visibleCount >= 3 && tabBar.currentIndex === model.index) {
+                                return 100
+                            } else {
+                                return (columnLayout.width - 100) / (visibleCount - 1)
+                            }
+                        } else {
+                            return 0
+                        }
+                    }
+
                     onVisibleChanged: {
                         if (visible) {
                             tabBar.currentIndex = model.index
@@ -76,25 +172,54 @@ Item {
 
         StackLayout {
             id: stackLayout
+
             Layout.fillHeight: true
             Layout.fillWidth: true
             currentIndex: tabBar.currentIndex
-            visible: visibleCount? true: false
-            ToolboxView {
-                id: toolbox
-                listModel:ToolboxInstance
+            visible: visibleCount ? true: false
+
+            DockWindow {
+                containerItem: ToolboxView {
+                    id: toolbox
+                    listModel:ToolboxInstance
+                }
+
+                onWindowClose: {
+                    sideModel.get(0).checked = true
+                }
             }
-            LayersWidget {
-                id: layers
-                //            layersModell: LayersInstance
+
+            DockWindow {
+                containerItem: LayersWidget {
+                    id: layers
+                    //            layersModell: LayersInstance
+                }
+
+                onWindowClose: {
+                    sideModel.get(1).checked = true
+                }
             }
-            BookmarkItem {
-                id: bookmark
-                model: BookmarkInstance
+
+            DockWindow {
+                containerItem: BookmarkItem {
+                    id: bookmark
+                    model: BookmarkInstance
+                }
+
+                onWindowClose: {
+                    sideModel.get(2).checked = true
+                }
             }
-            LocationManager {
-                id: locationManager
-                listModel: LocatoinManagerInstance
+
+            DockWindow {
+                containerItem: LocationManager {
+                    id: locationManager
+                    listModel: LocatoinManagerInstance
+                }
+
+                onWindowClose: {
+                    sideModel.get(3).checked = true
+                }
             }
         }
     }

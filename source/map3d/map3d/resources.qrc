@@ -501,5 +501,6 @@
         <file>Resources/square.png</file>
         <file>Resources/aircraft.png</file>
         <file>Resources/Qarch.png</file>
+        <file>Resources/undocker.png</file>
     </qresource>
 </RCC>

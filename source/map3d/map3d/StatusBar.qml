@@ -250,6 +250,18 @@ Rectangle {
             }
         }
 
+        ListModel{
+            id: listModel
+            ListElement {
+                name: "Cordinate"
+
+            }
+            ListElement {
+                name: "Long, Lat"
+
+            }
+
+        }
         ComboBox {
             id: control
             model: ["Long, Lat", "Cordinate"]
@@ -317,22 +329,50 @@ Rectangle {
             }
 
             popup: Popup {
-                y: control.height - control.height
-                x:-2
+                y: control.height
+                x:-5
                 width: control.width
                 implicitHeight: contentItem.implicitHeight +2
                 padding: 1
                 enter: Transition {
                         NumberAnimation { property: "opacity"; from: 0.0; to: 1.0 }}
+
+
                 exit:Transition {
                     NumberAnimation { property: "opacity"; from: 1.0; to: 0.0 }}
 
                 contentItem: ListView {
                     clip: true
                     implicitHeight: contentHeight
-                    model: control.popup.visible ? control.delegateModel : null
-                    currentIndex: control.highlightedIndex
+                    model: control.popup.visible ? listModel: null
 
+
+                    currentIndex: 0
+                    delegate: TextField {
+padding:0
+leftPadding:3
+height: control.displayText !== name?implicitHeight : 1
+                             text: name
+                             font{
+                                 pixelSize: 14/Style.monitorRatio
+                                 family: Style.fontFamily
+                             }
+
+                             color:Style.foregroundColor
+                             MouseArea{
+                                 anchors.fill: parent
+                                 onClicked: control.displayText = name
+                             }
+                             background: Rectangle{
+
+                                 color:Style.backgroundColor
+                                 width: control.width - 5
+                                 height:control.height + 2
+                                 radius: 5
+
+                             }
+                             visible:control.displayText !== name
+                         }
 
                     ScrollIndicator.vertical: ScrollIndicator { }
                 }

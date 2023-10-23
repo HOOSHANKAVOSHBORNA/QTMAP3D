@@ -6,8 +6,11 @@ Item {
     id: rootItem
 
     property alias containerItem: container.children
+    property alias windowTitle: wnd.title
     property string name: ""
     width: 300
+
+    signal windowClose
 
     StackLayout {
         id: container
@@ -32,6 +35,7 @@ Item {
 
     Window {
         id: wnd
+
         visible: false
         width: 300
         height: 500
@@ -52,6 +56,7 @@ Item {
         }
 
         onClosing: {
+            windowClose()
             rootItem.state = "docked"
         }
     }
