@@ -246,7 +246,7 @@ void SimpleModelNode::selectModel()
 {
     mNodeInformation = new NodeInformation();
     mNodeInformation->addUpdateNodeInformationItem(mNodeData, "");
-    TODO: // move to nodeinformation ----------------------------------
+    // TODO: move to nodeinformation ----------------------------------
     QQuickWindow *wnd;
     QQmlComponent* comp = new QQmlComponent(mEnigine);
     QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){

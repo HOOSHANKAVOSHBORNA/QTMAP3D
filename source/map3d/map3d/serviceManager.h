@@ -36,7 +36,7 @@ struct NodeData: public osg::Referenced
     double altitude;
     double speed;
     std::vector<ParenticAnnotationLayer*> layers;
-    std::vector<NodeFieldData> data;
+    std::vector<NodeFieldData> fieldData;
 };
 
 struct LineNodeData: public osg::Referenced

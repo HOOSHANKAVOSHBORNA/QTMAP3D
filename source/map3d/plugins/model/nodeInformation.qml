@@ -178,7 +178,7 @@ Window {
                                 id:indicator
                                 Layout.preferredHeight: 15
                                 Layout.preferredWidth: 15
-                                source: "qrc:/icons/down.png"
+                                source: "qrc:/Resources/down.png"
                                 Layout.alignment: Qt.AlignVCenter
                                 Layout.rightMargin: 10
                                 rotation: treeDelegate.expanded ? 180 : 0
