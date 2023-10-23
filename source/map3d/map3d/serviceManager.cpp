@@ -97,7 +97,7 @@ void ServiceManager::messageData(QString jsonData)
 void ServiceManager::polylineData(QJsonObject polyline)
 {
     QJsonArray points = polyline.value("Points").toArray();
-    LineNodeData *lineNodeData = new LineNodeData;
+    PolyLineData *lineNodeData = new PolyLineData;
     for (auto i : points) {
         osg::Vec3d point;
         point.x() = (i.toObject().value("Longitude").toDouble());
@@ -111,6 +111,8 @@ void ServiceManager::polylineData(QJsonObject polyline)
         lineNodeData->layer = layer;
         lineNodeData->name = polyline.value("name").toString().toStdString();
         lineNodeData->id = polyline.value("Id").toInt();
+        lineNodeData->color = polyline.value("Color").toString().toStdString();
+        lineNodeData->width = polyline.value("Width").toInt();
         emit lineNodeDataReceived(lineNodeData);
     }
 }

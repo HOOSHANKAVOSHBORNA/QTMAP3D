@@ -39,20 +39,17 @@ struct NodeData: public osg::Referenced
     std::vector<NodeFieldData> data;
 };
 
-struct LineNodeData: public osg::Referenced
-{
-    int id;
-    std::string name;
-    ParenticAnnotationLayer* layer{nullptr};
-    std::vector<osg::Vec3d> points;
-};
-struct PolygonData: public osg::Referenced
+struct PolyLineData: public osg::Referenced
 {
     int id;
     std::string name;
     std::string color;
+    int width;
     ParenticAnnotationLayer* layer{nullptr};
     std::vector<osg::Vec3d> points;
+};
+struct PolygonData: public PolyLineData
+{
 };
 struct CircleData: public osg::Referenced
 {
@@ -97,7 +94,7 @@ signals:
     void layerDataReceived(CompositeAnnotationLayer *layer);
     void flyableNodeDataReceived(NodeData *modelNodeData);
     void statusNodeDataReceived(StatusNodeData *statusNodeData);
-    void lineNodeDataReceived(LineNodeData *lineNodeData);
+    void lineNodeDataReceived(PolyLineData *lineNodeData);
     void movableNodeDataReceived(NodeData *modelNodeData);
     void nodeDataReceived(NodeData *nodeData);
     void circleDataReceived(CircleData *circleData);
