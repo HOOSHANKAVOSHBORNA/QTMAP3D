@@ -30,7 +30,7 @@ FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
             for(auto& flybleData: mFlyableDataList){
                 mNetworkManager->sendData(flybleData.flyableDoc.toJson(QJsonDocument::Compact));
                 mNetworkManager->sendData(flybleData.statusDoc.toJson(QJsonDocument::Compact));
-                //mNetworkManager->sendData(flybleData.lineDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(flybleData.lineDoc.toJson(QJsonDocument::Compact));
             }
         });
         timerUpdateAircraft->start(3000);
@@ -129,6 +129,7 @@ void FlyableNodeTest::createFlyableInfo()
     flaybleData.statusDoc = jsonDocStatus;
 
     //--Line node------------------------------------------------
+    QColor lineColor(255, 0, 255);
     QJsonDocument jsonDocLine;
     QJsonObject jsonObjectLine;
 
@@ -137,6 +138,9 @@ void FlyableNodeTest::createFlyableInfo()
     QJsonObject jsonObjectLineData;
     jsonObjectLineData.insert("Name", name);
     jsonObjectLineData.insert("Id", id);
+    jsonObjectLineData.insert("Color", lineColor.name());
+    jsonObjectLineData.insert("Width", 7);
+
 
     QJsonArray points;
     QJsonObject point1;
@@ -250,6 +254,7 @@ void FlyableNodeTest::updateFlyableInfo()
         flaybleData.statusDoc = jsonDocStatus;
 
         //--Line node------------------------------------------------
+        QColor lineColor(255, 0, 255);
         QJsonDocument jsonDocLine;
         QJsonObject jsonObjectLine;
 
@@ -258,6 +263,8 @@ void FlyableNodeTest::updateFlyableInfo()
         QJsonObject jsonObjectLineData;
         jsonObjectLineData.insert("Name", name);
         jsonObjectLineData.insert("Id", id);
+        jsonObjectLineData.insert("Color", lineColor.name());
+        jsonObjectLineData.insert("Width", 7);
 
         QJsonArray points = flaybleData.lineDoc.object().value("Data").toObject().value("Points").toArray();
         QJsonObject point;
