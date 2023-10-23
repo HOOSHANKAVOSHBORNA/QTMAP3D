@@ -21,7 +21,7 @@ struct StatusNodeData: public osg::Referenced
     double latitude;
     double altitude;
     ParenticAnnotationLayer* layer{nullptr};
-    std::vector<NodeFieldData> data;
+    std::vector<NodeFieldData> fieldData;
 };
 
 struct NodeData: public osg::Referenced

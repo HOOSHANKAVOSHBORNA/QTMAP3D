@@ -140,7 +140,7 @@ void StatusNode::compile(const std::vector<NodeFieldData>& data)
     //--data--------------------------------------------------------------
     QFontMetrics fm(mFont);
     width = fm.horizontalAdvance(mTitle);;
-    std::string text = "";
+    std::string text = "\n";
     for (const auto& data: data){
         QString str = (data.name + ": "+ data.value.toString() +"\n");
         int widthStr = fm.horizontalAdvance(str);
@@ -208,5 +208,5 @@ StatusNodeData *StatusNode::nodeData() const
 void StatusNode::setNodeData(StatusNodeData *newNodeData)
 {
     mNodeData = newNodeData;
-    setFieldData(QString::fromStdString(newNodeData->name), newNodeData->data);
+    setFieldData(QString::fromStdString(newNodeData->name), newNodeData->fieldData);
 }
