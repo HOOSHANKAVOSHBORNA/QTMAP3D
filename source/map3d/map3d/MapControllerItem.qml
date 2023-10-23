@@ -161,13 +161,16 @@ MapController {
 
 
     SmallMap {
+        id: miniMap
+        objectName: "SmallMap"
         x: map.width - 103
         y: map.height - 123
         width: 100
         height: 100
-        objectName: "SmallMap"
+        Component.onCompleted: {
+                 setMainMap(map.getCameraController(),map.getViewer())
+        }
     }
-    //    }
 
 
     StatusBar {

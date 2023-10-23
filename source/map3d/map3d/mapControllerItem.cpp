@@ -125,6 +125,7 @@ void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 {
     mQmlEngine = newQmlEngine;
 //    mSmallMap = dynamic_cast<SmallMap*>(findChild<QObject*>("SmallMap"));
+//    mSmallMap.
 //    osgEarth::GeoPoint p{mSmallMap->getMapSRS(), getCameraController()->getViewpoint().focalPoint().get()};
 //    mSmallMap->setLocation(p);
 }

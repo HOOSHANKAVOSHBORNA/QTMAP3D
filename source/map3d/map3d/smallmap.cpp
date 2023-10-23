@@ -1,11 +1,17 @@
 #include "smallmap.h"
 #include <osgViewer/config/SphericalDisplay>
+#include <osgEarth/GeoData>
+#include <osgEarth/MapNode>
 #include <osgEarth/MapOptions>
 #include <osgEarth/ModelLayer>
-#include <osgEarth/VirtualProgram>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osg/BlendFunc>
 #include <osg/StateSet>
+#include <osgEarthSymbology/Geometry>
+#include <osgEarthSymbology/Style>
+
+
+
 
 SmallMap::SmallMap(QQuickItem *parent):
     MapItem(parent)
@@ -16,6 +22,7 @@ SmallMap::SmallMap(QQuickItem *parent):
     this->getViewer()->getCamera()->setProjectionResizePolicy( osg::Camera::FIXED );
     this->getViewer()->getCamera()->setProjectionMatrixAsPerspective(30.0, double(100) / double(100), 1.0, 1000.0);
     initializeOsgEarth();
+
 }
 
 void SmallMap::initializeOsgEarth()
@@ -34,34 +41,18 @@ void SmallMap::initializeOsgEarth()
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world_simple.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
     mMapObject->addLayer(imlayer);
-
-    createCameraManipulator();
-
-//    if (mMapNode)
-//    {
-//        const char* modelTransparencyFrag = R"(
-//    #version 330
-//    uniform float modelTransparencyValue;
-//    void modelTransparencyFunc (inout vec4 color) {
-//         color = vec4(color.r, color.g, color.b, 0.7);
-//    })";
-
-//        osgEarth::VirtualProgram* vp = osgEarth::VirtualProgram::getOrCreate(mMapNode->getOrCreateStateSet());
-//        vp->setFunction("modelTransparencyFunc", modelTransparencyFrag, osgEarth::ShaderComp::LOCATION_FRAGMENT_COLORING);
-
-//        osg::Uniform* transparentUniform = new osg::Uniform("modelTransparencyValue", 0.5f);
-//        mMapNode->getOrCreateStateSet()->addUniform(transparentUniform);
-//    }
-
+    mCameraController = new CameraController(this);
+    focalRect = new osgEarth::Annotation::RectangleNode;
+    osgEarth::Symbology::Style rectseStyle;
+    rectseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() =  osgEarth::Color("01AED6");
+    rectseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color().a() = 0.7;
+    rectseStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
+    focalRect->setStyle(rectseStyle);
+    focalRect->setHeight(1200000);
+    focalRect->setWidth(1200000);
+    mMapRoot->addChild(focalRect);
 
     this->oSGRenderNode()->setCameraManipulator(mCameraController);
-
-}
-
-void SmallMap::setLocation(const osgEarth::GeoPoint &geoPos)
-{
-
-    this->getCameraController()->goToPosition(geoPos,30000,3);
 }
 
 
@@ -77,8 +68,6 @@ void SmallMap::createMapNode(bool geocentric, osgEarth::Map *map)
             mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
             mMapObject = new MapObject(mapOpt);
             mMapNode = new osgEarth::MapNode(mMapObject);
-
-
         }
         else
         {
@@ -93,28 +82,16 @@ void SmallMap::createMapNode(bool geocentric, osgEarth::Map *map)
     mMapRoot->addChild(mMapNode);
 }
 
-void SmallMap::createCameraManipulator()
-{
-    mCameraController = new CameraController(this);
-    auto  settings = mCameraController->getSettings();
-    settings->setMinMaxDistance(0.0, MAX_CAM_DISTANCE);
-    settings->setMinMaxPitch(-90, 0);
-
-    osgEarth::Viewpoint vp;
-    vp.range()= 32000000;
-    vp.pitch() = -90;
-    vp.heading() = 0;
-    mCameraController->setHomeViewpoint(vp, 0);
-    settings->setMinMaxPitch(-90, 0);
-
-
-
-
-}
 
 void SmallMap::frame()
 {
+    osgEarth::Viewpoint tmpVP;
+    tmpVP = mainMapCamera->getViewpoint();
+    tmpVP.setRange(22000000);
+    tmpVP.setPitch(-90);
+    mCameraController->setViewpoint(tmpVP);
 
+    focalRect->setPosition(mCameraController->getViewpoint().focalPoint().get());
 }
 
 void SmallMap::keyPressEvent(QKeyEvent *event)
@@ -155,6 +132,12 @@ void SmallMap::wheelEvent(QWheelEvent *event)
 void SmallMap::hoverMoveEvent(QHoverEvent *event)
 {
     event->ignore();
+}
+
+void SmallMap::setMainMap(CameraController *camera, osgViewer::Viewer *viewer)
+{
+    mainMapCamera = camera;
+    mainMapView = viewer;
 }
 
 

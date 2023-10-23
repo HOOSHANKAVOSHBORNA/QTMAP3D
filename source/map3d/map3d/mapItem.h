@@ -27,14 +27,14 @@ public:
     explicit MapItem(QQuickItem *parent = nullptr);
     ~MapItem();
     void setMap(osgEarth::Map *map);
-    osgViewer::Viewer *getViewer()const;
+    Q_INVOKABLE osgViewer::Viewer *getViewer()const;
     const osg::Group *getRoot() const;
     osgEarth::MapNode *getMapNode() const;
 
     MapObject *getMapObject();
     const MapObject* getMapObject() const;
 
-    CameraController *getCameraController();
+    Q_INVOKABLE CameraController *getCameraController();
     const CameraController *getCameraController() const;
 //    MapObject *operator->(){return mMapObject.get();}
 //    const MapObject *operator->()const {return mMapObject;}
