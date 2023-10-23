@@ -502,5 +502,6 @@
         <file>Resources/aircraft.png</file>
         <file>Resources/Qarch.png</file>
         <file>Resources/undocker.png</file>
+        <file>Resources/track-icon.png</file>
     </qresource>
 </RCC>

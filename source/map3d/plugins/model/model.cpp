@@ -3,6 +3,7 @@
 #include "moveableModelNode.h"
 #include "flyableModelNode.h"
 #include "serviceManager.h"
+#include "mainwindow.h"
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
 #include <osgEarth/ModelSource>
@@ -102,7 +103,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
         if(modelNode){
             modelNode->selectModel();
-            modelNode->showModelInformation(mainWindow());
+            return true;
         }
         if(mState == State::NONE)
             return false;
@@ -230,7 +231,7 @@ void Model::addUpdateFlyableNode(NodeData *nodeData)
     osg::ref_ptr<FlyableModelNode> flyableNode;
 
     if(!mFlyableNodeMap.contains(nodeData->id)){
-        flyableNode = new FlyableModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine());
+        flyableNode = new FlyableModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine(), mainWindow());
         flyableNode->setPosition(geoPoint);
         mFlyableNodeMap[nodeData->id] = flyableNode;
     }
@@ -254,7 +255,7 @@ void Model::addUpdateNode(NodeData *nodeData)
     osg::ref_ptr<SimpleModelNode> node;
 
     if(!mNodeMap.contains(nodeData->id)){
-        node = new SimpleModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine());
+        node = new SimpleModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine(), mainWindow());
         node->setPosition(geoPoint);
         mNodeMap[nodeData->id] = node;
     }
@@ -277,7 +278,7 @@ void Model::addUpdateMovableNode(NodeData *nodeData)
     osg::ref_ptr<MoveableModelNode> movableNode;
 
     if(!mMovableNodeMap.contains(nodeData->id)){
-        movableNode = new MoveableModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine());
+        movableNode = new MoveableModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine(), mainWindow());
         movableNode->setPosition(geoPoint);
         mMovableNodeMap[nodeData->id] = movableNode;
     }
@@ -300,7 +301,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     switch (mType) {
     case Type::SIMPLE:
         name = "Tree" + QString::number(mCount);
-        mCurrentModel = new SimpleModelNode(mapItem(),"../data/models/tree/tree.osgb", "../data/models/tree/tree.png", qmlEngine());
+        mCurrentModel = new SimpleModelNode(mapItem(),"../data/models/tree/tree.osgb", "../data/models/tree/tree.png", qmlEngine(), mainWindow());
         mCurrentModel->setModelColor(osgEarth::Color::Aqua);
         if(!mModelNodeLayer->containsLayer(mSimpleNodeLayer)){
             mSimpleNodeLayer->clear();
@@ -310,7 +311,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         break;
     case Type::MOVEABLE:
         name = "Car" + QString::number(mCount);
-        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/car/car.osgb", "../data/models/car/car.png", qmlEngine());
+        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/car/car.osgb", "../data/models/car/car.png", qmlEngine(), mainWindow());
         mCurrentModel->setModelColor(osgEarth::Color::Green);
         if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
             mMoveableNodeLayer->clear();
@@ -320,7 +321,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         break;
     case Type::FLYABLE:
         name = "Airplane" + QString::number(mCount);
-        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/airplane/airplane.osgb", "../data/models/airplane/airplane.png", qmlEngine());
+        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/airplane/airplane.osgb", "../data/models/airplane/airplane.png", qmlEngine(), mainWindow());
         mCurrentModel->setModelColor(osgEarth::Color::Red);
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
