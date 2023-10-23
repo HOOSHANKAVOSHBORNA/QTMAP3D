@@ -42,7 +42,7 @@ void BookmarkProxyModel::addBookmarkItem(BookmarkItem *bookmarkItem)
 {
     QStandardItem *item = new QStandardItem;
     item->setText(bookmarkItem->text);
-    item->setData(QVariant::fromValue(bookmarkItem->item), itemSource);
+    item->setData(QVariant::fromValue(bookmarkItem->wnd), itemSource);
     QString parent = bookmarkItem->parent;
     if (mItems.find(parent) == mItems.end()){
         QStandardItem *p = new QStandardItem(parent);
@@ -110,8 +110,8 @@ QItemSelectionModel *BookmarkProxyModel::selectioModel() const
     return mSelectioModel;
 }
 
-BookmarkItem::BookmarkItem(QString parent, QString text, QQuickItem *item, QString imgUrl):
-    parent{parent}, text{text}, item{item}, imgUrl{imgUrl}
+BookmarkItem::BookmarkItem(QString parent, QString text, QQuickWindow *wnd, QString imgUrl):
+    parent{parent}, text{text}, wnd{wnd}, imgUrl{imgUrl}
 {
 
 }

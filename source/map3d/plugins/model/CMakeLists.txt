@@ -25,6 +25,8 @@ add_library(model SHARED
     modelautoscaler.cpp
     model.json
     model.qrc
+    nodeInformation.h
+    nodeInformation.cpp
 )
 
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
