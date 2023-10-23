@@ -28,8 +28,8 @@ FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
             createFlyableInfo();
             updateFlyableInfo();
             for(auto& flybleData: mFlyableDataList){
-                mNetworkManager->sendData(flybleData.flyableDoc.toJson(QJsonDocument::Compact));
-                //mNetworkManager->sendData(flybleData.statusDoc.toJson(QJsonDocument::Compact));
+//                mNetworkManager->sendData(flybleData.flyableDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(flybleData.statusDoc.toJson(QJsonDocument::Compact));
                 //mNetworkManager->sendData(flybleData.lineDoc.toJson(QJsonDocument::Compact));
             }
         });
@@ -50,7 +50,7 @@ void FlyableNodeTest::createFlyableInfo()
     double heading = (0 + (QRandomGenerator::global()->generate() % 361));
     double speed = (100 + (QRandomGenerator::global()->generate() % (300-100)));
     int urlIndex = (0 + (QRandomGenerator::global()->generate() % (mUrlList.length())));
-    int colorIndex = (0 + (QRandomGenerator::global()->generate() % (mColorList.length())));
+//    int colorIndex = (0 + (QRandomGenerator::global()->generate() % (mColorList.length())));
     //--------------------------------------------------------
     QJsonDocument jsonDocument;
     QJsonObject jsonObject;
@@ -60,7 +60,7 @@ void FlyableNodeTest::createFlyableInfo()
     QJsonObject jsonData;
     jsonData.insert("Name", name);
     jsonData.insert("Id", id);
-    jsonData.insert("Color", mColorList[colorIndex].name());
+    jsonData.insert("Color", mColorList[urlIndex].name());
     jsonData.insert("Url2d", mUrlList[urlIndex].Url2d);
     jsonData.insert("Url3d", mUrlList[urlIndex].Url3d);
     jsonData.insert("Longitude", longitude);
@@ -94,9 +94,12 @@ void FlyableNodeTest::createFlyableInfo()
     jsonObjectStatusData.insert("Longitude", longitude);
     jsonObjectStatusData.insert("Latitude", latitude);
     jsonObjectStatusData.insert("Altitude", altitude);
-    jsonObjectStatusData.insert("Heading", heading);
-    jsonObjectStatusData.insert("Speed", speed);
     jsonObjectStatusData.insert("LayerId", 106);
+
+    QJsonObject jsonObjectStatusFieldData;
+    jsonObjectStatusFieldData.insert("Heading", heading);
+    jsonObjectStatusFieldData.insert("Speed", speed);
+    jsonObjectStatusData.insert("FieldData", jsonObjectStatusFieldData);
 
     jsonObjectStatus.insert("Data", jsonObjectStatusData);
     jsonDocStatus.setObject(jsonObjectStatus);
@@ -160,12 +163,12 @@ void FlyableNodeTest::updateFlyableInfo()
         //            altitude += altitude + 5;
         altitude = 2000;
         int urlIndex = (0 + (QRandomGenerator::global()->generate() % (mUrlList.length())));
-        int colorIndex = (0 + (QRandomGenerator::global()->generate() % (mColorList.length())));
+//        int colorIndex = (0 + (QRandomGenerator::global()->generate() % (mColorList.length())));
         //--------------------------------------------------------
         if(rn < 1000){
             dataObject["Url2d"] = mUrlList[urlIndex].Url2d;
             dataObject["Url3d"] = mUrlList[urlIndex].Url3d;
-            dataObject.insert("Color", mColorList[colorIndex].name());
+            dataObject.insert("Color", mColorList[urlIndex].name());
         }
 
         dataObject["Longitude"] = longitude;
@@ -192,9 +195,13 @@ void FlyableNodeTest::updateFlyableInfo()
         jsonObjectStatusData.insert("Longitude", longitude);
         jsonObjectStatusData.insert("Latitude", latitude);
         jsonObjectStatusData.insert("Altitude", altitude);
-        jsonObjectStatusData.insert("Heading", heading);
-        jsonObjectStatusData.insert("Speed", speed);
         jsonObjectStatusData.insert("LayerId", 106);
+
+        QJsonObject jsonObjectStatusFieldData;
+        jsonObjectStatusFieldData.insert("Heading", heading);
+        jsonObjectStatusFieldData.insert("Speed", speed);
+        jsonObjectStatusData.insert("FieldData", jsonObjectStatusFieldData);
+
         jsonObjectStatus.insert("Data", jsonObjectStatusData);
         jsonDocStatus.setObject(jsonObjectStatus);
         flaybleData.statusDoc = jsonDocStatus;
