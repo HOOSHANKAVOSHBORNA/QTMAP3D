@@ -8,17 +8,18 @@
 #include <osgEarthSymbology/ModelSymbol>
 #include <osgEarth/GLUtils>
 #include <osgEarth/Registry>
-
+#include <mainwindow.h>
 const float RANGE3D = 835;
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
-SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QObject *parent)
+SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, QObject *parent)
     : QObject{parent},
     osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Model::getDefaultStyle()),
     mUrl3D(url3D),
     mMapItem(mapControler),
-    mUrl2D(url2D)
+    mUrl2D(url2D),
+    mEnigine(engine)
 
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
@@ -62,6 +63,44 @@ void SimpleModelNode::onModeChanged(bool is3DView)
     mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
 }
 
+bool SimpleModelNode::getIsBookmarked() const
+{
+    return isBookmarked;
+}
+
+void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
+{
+    isBookmarked = newIsBookmarked;
+}
+
+void SimpleModelNode::showModelInformation(MainWindow *mainWindow)
+{
+    mNodeInformation = new NodeInformation();
+    mNodeInformation->addUpdateNodeInformationItem(mNodeData, "");
+    QQuickWindow *wnd;
+    QQmlComponent* comp = new QQmlComponent(mEnigine);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status){
+        if(status == QQmlComponent::Error){
+            qDebug()<<"Can not load this: "<<comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready){
+            wnd = qobject_cast<QQuickWindow*>(comp->create());
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/nodeInformation.qml"));
+    connect(mNodeInformation, &NodeInformation::bookmarkChecked, [&](){
+        isBookmarked = true;
+        if (isBookmarked){
+            mBookmarkItem = new BookmarkItem("Aircraft", QString::fromStdString(mNodeData->name), wnd, "");
+            mainWindow->bookmark()->addBookmarkItem(mBookmarkItem);
+        }
+        else
+            mainWindow->bookmark()->removeBookmarkItem(mBookmarkItem);
+    });
+    wnd->show();
+}
+
 NodeData *SimpleModelNode::nodeData() const
 {
     return mNodeData;
@@ -72,21 +111,6 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
     mNodeData = newNodeData;
     updateUrl(mNodeData->url3D, mNodeData->url2D);
     setModelColor(osgEarth::Color(mNodeData->color));
-
-    QQmlApplicationEngine engine;
-
-    QQmlComponent* comp = new QQmlComponent(&engine);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status){
-        if(status == QQmlComponent::Error){
-            qDebug()<<"Can not load this: "<<comp->errorString();
-        }
-
-        if(status == QQmlComponent::Ready){
-            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/nodeInformation.qml"));
 }
 
 void SimpleModelNode::setModelColor(osgEarth::Color color)
@@ -249,7 +273,7 @@ void SimpleModelNode::selectModel()
     mIsSelected = !mIsSelected;
     if(mIsSelected){
         mSwitchNode->setValue(2, true);
-    }else{
+    }else {
         mSwitchNode->setValue(2, false);
     }
 }

@@ -12,75 +12,42 @@ NodeInformation::~NodeInformation()
 
 }
 
-NodeInformationItem *NodeInformation::addNodeInformationItem(NodeInformationItem *nodeInformationItem)
+void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData, QString imageUrl)
 {
-    QStandardItem *item = new QStandardItem;
-    QString parent = nodeInformationItem->parent;
-    if (mItems.find(parent) == mItems.end()){
-        QStandardItem *p = new QStandardItem(parent);
-        mItems[parent].second = p;
-        rootItem->appendRow(p);
-        p->setData(nodeInformationItem->iconImageUrl,iconImageSource);
+    windowName = QString::fromStdString(nodeData->name);
+    mainImageUrl = imageUrl;
+    for(NodeFieldData nodeFieldData:nodeData->data){
+
+        QStandardItem *item = new QStandardItem;
+        QString category = nodeFieldData.category;
+        if (mItems.find(category) == mItems.end()){
+            QStandardItem *p = new QStandardItem(category);
+            mItems[category] = p;
+            rootItem->appendRow(p);
+        }
+        item->setData(QVariant::fromValue(nodeFieldData.name), nameText);
+        item->setData(QVariant::fromValue(nodeFieldData.value), valueText);
     }
-    item->setData(QVariant::fromValue(nodeInformationItem->property), propertyText);
-    item->setData(QVariant::fromValue(nodeInformationItem->value), valueText);
-    mItems[nodeInformationItem->property].second = item;
-    mItems[nodeInformationItem->property].first = nodeInformationItem;
-    mItems[nodeInformationItem->value].second = item;
-    mItems[nodeInformationItem->value].first = nodeInformationItem;
-    mItems[parent].second->appendRow(item);
-
-    return nodeInformationItem;
-}
-
-void NodeInformation::updateNodeInformationItem(NodeInformationItem *node, QString value)
-{
-    mItems[node->value].second->setData(value,valueText);
 }
 
 QHash<int, QByteArray> NodeInformation::roleNames() const
 {
     QHash<int, QByteArray> textroles = QAbstractItemModel::roleNames();
 
-    textroles[propertyText] = "propertyText";
+    textroles[nameText] = "propertyText";
     textroles[valueText] = "valueText";
     textroles[iconImageSource] = "iconImageSource";
     return textroles;
 }
 
-void NodeInformation::setHeaderItem(HeaderItem *headerItem)
-{
-    mHeaderItem = headerItem;
-}
-
 QString NodeInformation::getMainImageUrl()
 {
-    return mHeaderItem->mainImageUrl;
-}
-
-QString NodeInformation::getHeaderImageUrl()
-{
-    return mHeaderItem->headerImageUrl;
+    return mainImageUrl;
 }
 
 QString NodeInformation::getWindowName()
 {
-    return mHeaderItem->windowName;
+    return windowName;
 }
 
-bool NodeInformation::bookmarkStatus()
-{
-    return mHeaderItem->isBookmarked;
-}
 
-NodeInformationItem::NodeInformationItem(QString parent, QString property, QString value, QString iconImageUrl):
-parent{parent}, property{property}, value{value}, iconImageUrl{iconImageUrl}
-{
-
-}
-
-HeaderItem::HeaderItem(QString mainImageUrl, QString headerImageUrl, QString windowName, bool isBookmarked):
-mainImageUrl{mainImageUrl}, headerImageUrl{headerImageUrl}, windowName{windowName}, isBookmarked{isBookmarked}
-{
-
-}
