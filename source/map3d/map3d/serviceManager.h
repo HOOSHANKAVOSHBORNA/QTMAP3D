@@ -50,6 +50,7 @@ struct PolyLineData: public osg::Referenced
 };
 struct PolygonData: public PolyLineData
 {
+    std::string fillColor;
 };
 struct CircleData: public osg::Referenced
 {

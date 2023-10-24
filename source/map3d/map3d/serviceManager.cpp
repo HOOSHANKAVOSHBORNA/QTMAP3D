@@ -188,7 +188,9 @@ void ServiceManager::polygonData(QJsonObject jsonObject)
     PolygonData *polygonData = new PolygonData;
     polygonData->id = jsonObject.value("Id").toInt();
     polygonData->name = jsonObject.value("Name").toString().toStdString();
+    polygonData->width = jsonObject.value("Width").toInt();
     polygonData->color = jsonObject.value("Color").toString().toStdString();
+    polygonData->fillColor = jsonObject.value("FillColor").toString().toStdString();
 
     QJsonArray points = jsonObject.value("Points").toArray();
     for (auto i : points) {

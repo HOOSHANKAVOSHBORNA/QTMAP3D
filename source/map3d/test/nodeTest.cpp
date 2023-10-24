@@ -48,7 +48,7 @@ void NodeTest::createInfo()
     jsonData.insert("Id", id);
     jsonData.insert("Color", color.name());
     jsonData.insert("Url2d", "../data/models/station/station.png");
-    jsonData.insert("Url3d", "../data/models/station/Station.osgb");
+    jsonData.insert("Url3d", "../data/models/station/station.osgb");
     jsonData.insert("Longitude", longitude);
     jsonData.insert("Latitude", latitude);
     jsonData.insert("Altitude", altitude);
@@ -80,6 +80,11 @@ void NodeTest::createInfo()
     jsonObjectStatusData.insert("Altitude", altitude);
     jsonObjectStatusData.insert("LayerId", 305);
 
+    QJsonObject jsonObjectStatusFieldData;
+    jsonObjectStatusFieldData.insert("Info1", "info1");
+    jsonObjectStatusFieldData.insert("Info2", 200);
+    jsonObjectStatusData.insert("FieldData", jsonObjectStatusFieldData);
+
     jsonObjectStatus.insert("Data", jsonObjectStatusData);
     jsonDocStatus.setObject(jsonObjectStatus);
     nodeData.statusDoc = jsonDocStatus;
@@ -110,7 +115,8 @@ void NodeTest::createInfo()
     nodeData.circleDoc = jsonDocCircle;
     //--polygon----------------------------------------------------
     QColor colorPolygon("green");
-    colorPolygon.setAlpha(100);
+    colorPolygon.setAlpha(50);
+    QColor colorStroke("blue");
     QJsonDocument jsonDocPolygon;
     QJsonObject jsonObjectPolygon;
 
@@ -119,7 +125,9 @@ void NodeTest::createInfo()
     QJsonObject jsonObjectPolygonData;
     jsonObjectPolygonData.insert("Name", name + " polygon");
     jsonObjectPolygonData.insert("Id", id);
-    jsonObjectPolygonData.insert("Color", colorPolygon.name(QColor::HexArgb));
+    jsonObjectPolygonData.insert("Width", 7);
+    jsonObjectPolygonData.insert("Color", colorStroke.name(QColor::HexArgb));
+    jsonObjectPolygonData.insert("FillColor", colorPolygon.name(QColor::HexArgb));
 
     QJsonArray points;
     double step = 0.01;

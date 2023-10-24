@@ -15,8 +15,8 @@ int main(int argc, char *argv[])
 //        networkManager.sendFlyableData("data");
 //    });
     LayerTest LayerTest(&networkManager);
-    FlyableNodeTest flyableNodeTest(&networkManager);
-//    MovableNodeTest movableNodeTest(&networkManager);
+//    FlyableNodeTest flyableNodeTest(&networkManager);
+    MovableNodeTest movableNodeTest(&networkManager);
 //    NodeTest nodeTest(&networkManager);
 
     return a.exec();
