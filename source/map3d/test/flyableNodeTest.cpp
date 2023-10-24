@@ -58,16 +58,39 @@ void FlyableNodeTest::createFlyableInfo()
     jsonObject.insert("Type", "Flyable");
 
     QJsonObject jsonData;
-    jsonData.insert("Name", name);
-    jsonData.insert("Id", id);
+    QJsonObject nameObject;
+    nameObject.insert("value", name);
+    nameObject.insert("category", "Main Information");
+    jsonData.insert("Name", nameObject);
+    QJsonObject idObject;
+    idObject.insert("value", id);
+    nameObject.insert("category", "Main Information");
+    jsonData.insert("Id", idObject);
+
     jsonData.insert("Color", mColorList[urlIndex].name());
     jsonData.insert("Url2d", mUrlList[urlIndex].Url2d);
     jsonData.insert("Url3d", mUrlList[urlIndex].Url3d);
-    jsonData.insert("Longitude", longitude);
-    jsonData.insert("Latitude", latitude);
-    jsonData.insert("Altitude", altitude);
-    jsonData.insert("Heading", heading);
-    jsonData.insert("Speed", speed);
+
+    QJsonObject longObject;
+    longObject.insert("value", longitude);
+    longObject.insert("category", "Location Information");
+    jsonData.insert("Longitude", longObject);
+    QJsonObject latObject;
+    latObject.insert("value", latitude);
+    latObject.insert("category", "Location Information");
+    jsonData.insert("Latitude", latObject);
+    QJsonObject altObject;
+    altObject.insert("value", altitude);
+    altObject.insert("category", "Location Information");
+    jsonData.insert("Altitude", altObject);
+    QJsonObject headObject;
+    headObject.insert("value", heading);
+    headObject.insert("category", "Location Information");
+    jsonData.insert("Heading", headObject);
+    QJsonObject speedObject;
+    speedObject.insert("value", speed);
+    speedObject.insert("category", "Location Information");
+    jsonData.insert("Speed", speedObject);
 
     QJsonArray layer;
     layer.push_back(102);
@@ -142,11 +165,11 @@ void FlyableNodeTest::updateFlyableInfo()
     {
         QJsonObject dataObject = flaybleData.flyableDoc.object().value("Data").toObject();
         //------------------------
-        double latitude = dataObject["Latitude"].toDouble();
-        double longitude = dataObject["Longitude"].toDouble();
-        double altitude = dataObject["Altitude"].toDouble();
+        double latitude = dataObject["Latitude"].toObject().value("value").toDouble();
+        double longitude = dataObject["Longitude"].toObject().value("value").toDouble();
+        double altitude = dataObject["Altitude"].toObject().value("value").toDouble();
         double speed /*= jsonObject["Speed"].toDouble()*/;
-        double heading = dataObject["Heading"].toDouble();
+        double heading = dataObject["Heading"].toObject().value("value").toDouble();
 
         int rn = (0 + (QRandomGenerator::global()->generate() % 10000));
         if(rn < 1)
@@ -174,12 +197,32 @@ void FlyableNodeTest::updateFlyableInfo()
             dataObject["Url3d"] = mUrlList[urlIndex].Url3d;
             dataObject.insert("Color", mColorList[urlIndex].name());
         }
+        QJsonObject longObject;
+        longObject.insert("value", longitude);
+        longObject.insert("category", "Location Information");
+        dataObject.insert("Longitude", longObject);
+        QJsonObject latObject;
+        latObject.insert("value", latitude);
+        latObject.insert("category", "Location Information");
+        dataObject.insert("Latitude", latObject);
+        QJsonObject altObject;
+        altObject.insert("value", altitude);
+        altObject.insert("category", "Location Information");
+        dataObject.insert("Altitude", altObject);
+        QJsonObject headObject;
+        headObject.insert("value", heading);
+        headObject.insert("category", "Location Information");
+        dataObject.insert("Heading", headObject);
+        QJsonObject speedObject;
+        speedObject.insert("value", speed);
+        speedObject.insert("category", "Location Information");
+        dataObject.insert("Speed", speedObject);
 
-        dataObject["Longitude"] = longitude;
-        dataObject["Latitude"] = latitude;
-        dataObject["Altitude"] = altitude;
-        dataObject["Heading"] = heading;
-        dataObject["Speed"] =  speed;
+//        dataObject["Longitude"] = longitude;
+//        dataObject["Latitude"] = latitude;
+//        dataObject["Altitude"] = altitude;
+//        dataObject["Heading"] = heading;
+//        dataObject["Speed"] =  speed;
 
         QJsonObject jsonObject;
         jsonObject.insert("Type", "Flyable");
@@ -190,8 +233,8 @@ void FlyableNodeTest::updateFlyableInfo()
         QJsonObject jsonObjectStatus;
         QJsonObject jsonObjectStatusData;
 
-        int id = dataObject["Id"].toInt();
-        QString name = dataObject["Name"].toString();
+        int id = dataObject["Id"].toObject().value("value").toInt();
+        QString name = dataObject["Name"].toObject().value("value").toString();
 
         jsonObjectStatus.insert("Type", "Status");
         jsonObjectStatusData.insert("Name", name);

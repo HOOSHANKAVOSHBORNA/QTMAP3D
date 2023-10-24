@@ -16,7 +16,7 @@ void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData, QString i
 {
     windowName = QString::fromStdString(nodeData->name);
     mainImageUrl = imageUrl;
-    for(NodeFieldData nodeFieldData:nodeData->data){
+    for(NodeFieldData nodeFieldData:nodeData->fieldData){
 
         QStandardItem *item = new QStandardItem;
         QString category = nodeFieldData.category;

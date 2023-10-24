@@ -6,7 +6,7 @@ Window {
     width:310
     height: 612
     color: "#DEE3E6"
-
+    property var nodeinfo
     property color projectcolor: "#003569"
     ColumnLayout{
         anchors.fill: parent
@@ -25,7 +25,7 @@ Window {
                     background:IconImage{
                         width: 22
                         height: 22
-                        source: nodeinfo ? nodeinfo.getHeaderImageUrl() : ""
+//                        source: nodeinfo ? nodeinfo.getHeaderImageUrl() : ""
                     }
                 }
                 Text{
@@ -40,8 +40,7 @@ Window {
                     background:IconImage{
                         width: 22
                         height: 22
-                        source: nodeinfo ? (nodeinfo.bookmarkStatus() ?
-                                                "qrc:/icons/filled-bookmark.png" : "qrc:/icons/bookmark.png") : ""
+                        source: /*nodeinfo ? (nodeinfo.bookmarkStatus() ? "qrc:/icons/filled-bookmark.png" :*/ "qrc:/Resources/bookmark.png"/*) : ""*/
                     }
                     onClicked: {
 
@@ -50,7 +49,7 @@ Window {
                 IconImage{
                     Layout.preferredWidth: 22
                     Layout.preferredHeight: 22
-                    source: "qrc:/icons/multiply.png"
+                    source: "qrc:/Resources/multiply.png"
                     Layout.rightMargin: 15
                 }
             }
@@ -81,7 +80,7 @@ Window {
                         background:IconImage{
                             width: 28
                             height: 28
-                            source: "qrc:/icons/target-airplane.png"
+                            source: "qrc:/Resources/track-icon.png"
                         }
                     }
 
@@ -106,7 +105,7 @@ Window {
                         background:IconImage{
                             width: 28
                             height: 28
-                            source: "qrc:/icons/easy-to-find.png"
+                            source: "qrc:/Resources/easy-to-find.png"
                         }
                     }
                     Text{
@@ -179,7 +178,7 @@ Window {
                                 id:indicator
                                 Layout.preferredHeight: 15
                                 Layout.preferredWidth: 15
-                                source: "qrc:/icons/down.png"
+                                source: "qrc:/Resources/down.png"
                                 Layout.alignment: Qt.AlignVCenter
                                 Layout.rightMargin: 10
                                 rotation: treeDelegate.expanded ? 180 : 0
