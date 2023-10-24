@@ -13,6 +13,13 @@ Item {
     property alias currentItemIndex: tabBar.currentIndex
     property int visibleCount: 0
 
+    Connections {
+        target: sideModel
+        function onToggleItem(index, checked){
+//            sideModel.get(index).isWindow = false
+            stackLayout.data[index].isWindow = false
+        }
+    }
     //clip: true
     ColumnLayout{
         id:columnLayout
@@ -22,7 +29,7 @@ Item {
         anchors.leftMargin: 15 / Style.monitorRatio
         TabBar {
             id: tabBar
-//            Layout.preferredHeight: 30 / Style.monitorRatio
+            //            Layout.preferredHeight: 30 / Style.monitorRatio
             Layout.fillWidth: true
             Material.accent: Style.foregroundColor
 
@@ -66,7 +73,7 @@ Item {
                                 opacity: enabled ? 1.0 : 0.3
                                 color: tabBar.currentIndex === index ? Style.foregroundColor : Style.disableColor
                                 anchors.verticalCenter: parent.verticalCenter
-    //                            verticalAlignment: Text.AlignVCenter
+                                //                            verticalAlignment: Text.AlignVCenter
                                 //                            horizontalAlignment: Text.AlignHCenter
                             }
                         }
@@ -82,7 +89,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             color: 'transparent'
 
-//                            padding: 0
+                            //                            padding: 0
 
                             Image {
                                 source: "qrc:/Resources/undocker.png"
@@ -94,43 +101,25 @@ Item {
                                 anchors.fill: parent
 
                                 onClicked: {
-                                    stackLayout.data[tabBar.currentIndex].state = 'undocked'
-                                    stackLayout.data[tabBar.currentIndex].windowTitle = model.name
-                                    model.checked = false
+                                    //                                    stackLayout.data[tabBar.currentIndex].isWindow = true
+//                                    stackLayout.data[tabBar.currentIndex].isWindow = true
+                                    //                                    stackLayout.data[tabBar.currentIndex].windowTitle = model.name
+                                    model.isWindow = true
+                                    stackLayout.data[index].isWindow = true
+                                    //                                    model.checked = false
                                 }
                             }
 
-//                            background: Rectangle {
-//                                color: 'transparent'
-//                            }
+                            //                            background: Rectangle {
+                            //                                color: 'transparent'
+                            //                            }
 
-//                            display: AbstractButton.IconOnly
+                            //                            display: AbstractButton.IconOnly
                         }
                     }
 
 
-                    //                        Button {
-                    //                            id: btnPin
-
-                    //                            padding: 0
-
-                    //                            visible: tabBar.currentIndex === model.index
-
-                    //                            icon {
-                    //                                source: "qrc:/Resources/undocker.png"
-                    //                                width: 22 / Style.monitorRatio
-                    //                                height: 22 / Style.monitorRatio
-                    //                            }
-
-                    //                            background: Rectangle {
-                    //                                color: 'transparent'
-                    //                            }
-
-                    //                            display: AbstractButton.IconOnly
-                    //                        }
-
-
-                    visible: model.checked
+                    visible: model.checked && !model.isWindow
                     width: {
                         if (visible) {
                             if (visibleCount < 3) {
@@ -160,10 +149,11 @@ Item {
 
                         var count = 0
                         for(var i = 0; i <  sideModel.count; ++i){
-                            if(sideModel.get(i).checked)
+                            if(sideModel.get(i).checked && !sideModel.get(i).isWindow)
                                 count++
                         }
                         visibleCount = count
+//                        print(visibleCount)
                     }
                 }
 
@@ -177,50 +167,84 @@ Item {
             Layout.fillWidth: true
             currentIndex: tabBar.currentIndex
             visible: visibleCount ? true: false
-
+//---------------------------------------------------------
             DockWindow {
+                id: toolBoxDocItem
+//                windowTitle: sideModel.get(0).name
+                isWindow: sideModel.get(0).isWindow
                 containerItem: ToolboxView {
                     id: toolbox
                     listModel:ToolboxInstance
                 }
 
                 onWindowClose: {
-                    sideModel.get(0).checked = true
+                    sideModel.get(0).isWindow = false
                 }
             }
-
+//            Binding {
+//                target: toolBoxDocItem
+//                property: "isWindow"
+//                value: sideModel.get(0).isWindow
+//            }
+//---------------------------------------------------------
             DockWindow {
+                id: layerDocItem
+                windowTitle: sideModel.get(1).name
+//                isWindow: sideModel.get(1).isWindow
                 containerItem: LayersWidget {
                     id: layers
                     //            layersModell: LayersInstance
                 }
 
                 onWindowClose: {
-                    sideModel.get(1).checked = true
+                    sideModel.get(1).isWindow = false
                 }
             }
-
+//            Binding {
+//                target: layerDocItem
+//                property: "isWindow"
+//                value: sideModel.get(1).isWindow
+//            }
+//----------------------------------------------------------------
             DockWindow {
+                id: bookmarkDocItem
+                windowTitle: sideModel.get(2).name
+//                isWindow: sideModel.get(2).isWindow
                 containerItem: BookmarkItem {
                     id: bookmark
                     model: BookmarkInstance
                 }
 
                 onWindowClose: {
-                    sideModel.get(2).checked = true
+                    sideModel.get(2).isWindow = false
                 }
             }
-
+//            Binding {
+//                target: bookmarkDocItem
+//                property: "isWindow"
+//                value: sideModel.get(2).isWindow
+//            }
+//----------------------------------------------------------------
             DockWindow {
+                id: locationDocItem
+                windowTitle: sideModel.get(3).name
+//                isWindow: sideModel.get(3).isWindow
                 containerItem: LocationManager {
                     id: locationManager
                     listModel: LocatoinManagerInstance
                 }
 
                 onWindowClose: {
-                    sideModel.get(3).checked = true
+                    sideModel.get(3).isWindow = false
                 }
             }
+//            Binding {
+//                target: locationDocItem
+//                property: "isWindow"
+//                value: sideModel.get(3).isWindow
+//            }
+ //-----------------------------------------------------
+
         }
     }
 }
