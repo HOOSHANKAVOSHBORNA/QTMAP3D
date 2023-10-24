@@ -44,14 +44,32 @@ void NodeTest::createInfo()
     jsonObject.insert("Type", "Node");
 
     QJsonObject jsonData;
-    jsonData.insert("Name", name);
-    jsonData.insert("Id", id);
+
+    QJsonObject nameObject;
+    nameObject.insert("value", name);
+    nameObject.insert("category", "Main Information");
+    jsonData.insert("Name", nameObject);
+    QJsonObject idObject;
+    idObject.insert("value", id);
+    nameObject.insert("category", "Main Information");
+    jsonData.insert("Id", idObject);
+
     jsonData.insert("Color", color.name());
     jsonData.insert("Url2d", "../data/models/station/station.png");
     jsonData.insert("Url3d", "../data/models/station/station.osgb");
-    jsonData.insert("Longitude", longitude);
-    jsonData.insert("Latitude", latitude);
-    jsonData.insert("Altitude", altitude);
+
+    QJsonObject longObject;
+    longObject.insert("value", longitude);
+    longObject.insert("category", "Location Information");
+    jsonData.insert("Longitude", longObject);
+    QJsonObject latObject;
+    latObject.insert("value", latitude);
+    latObject.insert("category", "Location Information");
+    jsonData.insert("Latitude", latObject);
+    QJsonObject altObject;
+    altObject.insert("value", altitude);
+    altObject.insert("category", "Location Information");
+    jsonData.insert("Altitude", altObject);
 
     QJsonArray layer;
     double rand = (QRandomGenerator::global()->generate() % (2));
@@ -211,8 +229,8 @@ void NodeTest::updateInfo()
 //        QJsonObject jsonObjectStatus;
 //        QJsonObject jsonObjectStatusData;
 
-//        int id = dataObject["Id"].toInt();
-//        QString name = dataObject["Name"].toString();
+//        int id = dataObject["Id"].toObject().value("value").toInt();
+//        QString name = dataObject["Name"].toObject().value("value").toString();
 
 //        jsonObjectStatus.insert("Type", "Status");
 //        jsonObjectStatusData.insert("Name", name);
