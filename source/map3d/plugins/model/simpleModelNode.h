@@ -23,6 +23,7 @@ class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 public:
     SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D,
                     QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent = nullptr);
+    ~SimpleModelNode();
     void updateUrl(const std::string& url3D, const std::string& url2D);
     MapItem *mapItem() const;
     std::string url2D() const;

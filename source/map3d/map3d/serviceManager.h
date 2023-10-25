@@ -29,6 +29,7 @@ struct NodeData: public osg::Referenced
 {
     int id;
     std::string name;
+    std::string type;
     std::string url2D;
     std::string url3D;
     std::string color;

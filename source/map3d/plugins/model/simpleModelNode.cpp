@@ -30,6 +30,11 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
     compile();
 }
 
+SimpleModelNode::~SimpleModelNode()
+{
+    delete mNodeInformation;
+}
+
 void SimpleModelNode::updateUrl(const std::string &url3D, const std::string &url2D)
 {
     if(mUrl2D != url2D || mUrl3D != url3D){
@@ -244,12 +249,12 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
 
 void SimpleModelNode::selectModel()
 {
-    mNodeInformation = new NodeInformation(mEnigine);
+    mNodeInformation = new NodeInformation(mEnigine, this);
     mNodeInformation->addUpdateNodeInformationItem(mNodeData);
     connect(mNodeInformation, &NodeInformation::bookmarkChecked, [&](bool t){
         isBookmarked = t;
         if (isBookmarked){
-            mBookmarkItem = new BookmarkItem("Aircraft", QString::fromStdString(mNodeData->name),mNodeInformation->wnd , QString::fromStdString(mNodeData->iconSrc));
+            mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd , QString::fromStdString(mNodeData->iconSrc));
             mBookmark->addBookmarkItem(mBookmarkItem);
         }
         else{

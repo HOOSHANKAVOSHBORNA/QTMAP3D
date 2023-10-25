@@ -5,7 +5,7 @@ NodeInformation::NodeInformation(QQmlEngine* Engine,QObject *parent)
     setColumnCount(1);
     rootItem = invisibleRootItem();
 
-    QQmlComponent* comp = new QQmlComponent(Engine);
+    QQmlComponent* comp = new QQmlComponent(Engine, this);
     QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
         if(status == QQmlComponent::Error){
             qDebug()<<"Can not load this: "<<comp->errorString();
