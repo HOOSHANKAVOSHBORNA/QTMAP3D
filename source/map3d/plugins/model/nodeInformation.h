@@ -19,7 +19,7 @@ class NodeInformation:public QStandardItemModel
 public:
     explicit NodeInformation(QQmlEngine* Engine ,QObject *parent = nullptr);
     ~NodeInformation();
-    void addUpdateNodeInformationItem(NodeData* nodeData, QString imageUrl);
+    void addUpdateNodeInformationItem(NodeData* nodeData);
     virtual QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE QString getMainImageUrl();

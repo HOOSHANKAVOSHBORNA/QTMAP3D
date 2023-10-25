@@ -24,10 +24,10 @@ NodeInformation::~NodeInformation()
 
 }
 
-void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData, QString imageUrl)
+void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
 {
     windowName = QString::fromStdString(nodeData->name);
-    mainImageUrl = imageUrl;
+    mainImageUrl = QString::fromStdString(nodeData->imgSrc);
     for(NodeFieldData nodeFieldData:nodeData->fieldData){
 
         QStandardItem *item = new QStandardItem;

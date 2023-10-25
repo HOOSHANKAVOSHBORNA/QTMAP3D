@@ -11,6 +11,7 @@ struct NodeFieldData
     QString name;
     QVariant value;
     QString category;
+    QString categorySrc;
 };
 
 struct StatusNodeData: public osg::Referenced
@@ -31,6 +32,8 @@ struct NodeData: public osg::Referenced
     std::string url2D;
     std::string url3D;
     std::string color;
+    std::string imgSrc;
+    std::string iconSrc;
     double latitude;
     double longitude;
     double altitude;

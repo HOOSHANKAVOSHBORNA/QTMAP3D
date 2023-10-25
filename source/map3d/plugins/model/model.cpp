@@ -119,6 +119,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
             flyableNodeData->name = "Aircraft0";
             flyableNodeData->url2D = "../data/models/airplane/airplane.png";
             flyableNodeData->url3D = "../data/models/airplane/airplane.osgb";
+            flyableNodeData->imgSrc = "qrc:/Resources/airplane1.jpg";
             flyableNodeData->color = "white";
             flyableNodeData->speed = 100;
             flyableNodeData->fieldData.push_back(NodeFieldData{"name","Aircraft0", "Main Information"});

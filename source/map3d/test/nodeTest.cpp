@@ -57,6 +57,7 @@ void NodeTest::createInfo()
     jsonData.insert("Color", color.name());
     jsonData.insert("Url2d", "../data/models/station/station.png");
     jsonData.insert("Url3d", "../data/models/station/station.osgb");
+    jsonData.insert("ImgSrc", "qrc:/Resources/system.jpg");
 
     QJsonObject longObject;
     longObject.insert("value", longitude);

@@ -245,11 +245,11 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
 void SimpleModelNode::selectModel()
 {
     mNodeInformation = new NodeInformation(mEnigine);
-    mNodeInformation->addUpdateNodeInformationItem(mNodeData, "");
+    mNodeInformation->addUpdateNodeInformationItem(mNodeData);
     connect(mNodeInformation, &NodeInformation::bookmarkChecked, [&](bool t){
         isBookmarked = t;
         if (isBookmarked){
-            mBookmarkItem = new BookmarkItem("Aircraft", QString::fromStdString(mNodeData->name),mNodeInformation->wnd , "");
+            mBookmarkItem = new BookmarkItem("Aircraft", QString::fromStdString(mNodeData->name),mNodeInformation->wnd , QString::fromStdString(mNodeData->iconSrc));
             mBookmark->addBookmarkItem(mBookmarkItem);
         }
         else{
