@@ -74,17 +74,17 @@ Item {
                 id: treeView
                 anchors.fill: parent
                 clip: true
-                rowSpacing: 5/Style.monitorRatio
-                model: selectionModel.model
+                rowSpacing: 5 / Style.monitorRatio
+                model: layersModell
 
-                selectionModel: ItemSelectionModel {
-                    id: selectionModel
-                    model: layersModell ?? null
-                    onCurrentChanged: {
-                    }
-                    onSelectionChanged:{
-                    }
-                }
+//                selectionModel: ItemSelectionModel {
+//                    id: selectionModel
+//                    model: layersModell
+//                    onCurrentChanged: {
+//                    }
+//                    onSelectionChanged:{
+//                    }
+//                }
 
 
                 delegate: Item {

@@ -170,7 +170,7 @@ Item {
 //---------------------------------------------------------
             DockWindow {
                 id: toolBoxDocItem
-//                windowTitle: sideModel.get(0).name
+                windowTitle: sideModel.get(0).name
                 isWindow: sideModel.get(0).isWindow
                 containerItem: ToolboxView {
                     id: toolbox
@@ -193,7 +193,7 @@ Item {
 //                isWindow: sideModel.get(1).isWindow
                 containerItem: LayersWidget {
                     id: layers
-                    //            layersModell: LayersInstance
+                    layersModell: LayersInstance
                 }
 
                 onWindowClose: {

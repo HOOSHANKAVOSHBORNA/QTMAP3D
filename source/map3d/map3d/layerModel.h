@@ -15,7 +15,7 @@ class LayersModel : public TreeProxyModel
     Q_PROPERTY(QModelIndex dragIndex READ getDragIndex WRITE setDragIndex)
 
     enum Role {
-        VisibleRole = Qt::UserRole + 100 ,
+        VisibleRole = Qt::UserRole + 100,
         LayerRole,
         DropRole
     };
