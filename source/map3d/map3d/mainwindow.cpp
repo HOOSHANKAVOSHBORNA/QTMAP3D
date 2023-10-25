@@ -28,13 +28,13 @@
 MainWindow::MainWindow(QWindow *parent) :
     QQuickWindow(parent)
 {
-    qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
+    qmlRegisterType<LayerModel>("Crystal", 1, 0, "CLayersModel");
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 
     qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
-    qmlRegisterSingletonType<LayersModel>("Crystal", 1, 0, "LayersInstance", LayersModel::createSingletonInstance);
+    qmlRegisterSingletonType<LayerModel>("Crystal", 1, 0, "LayersInstance", LayerModel::createSingletonInstance);
     qmlRegisterSingletonType<LocationManagerProxyModel>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManagerProxyModel::createSingletonInstance);
     qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
 
@@ -78,7 +78,7 @@ void MainWindow::initComponent()
             Toolbox *toolbox = new Toolbox(this);
             toolboxProxyModel->setSourceModel(toolbox);
 
-            LayersModel *layersModel = LayersModel::createSingletonInstance(nullptr, nullptr);
+            LayerModel *layersModel = LayerModel::createSingletonInstance(nullptr, nullptr);
             layersModel->initialize(mMapItem);
 
 
@@ -97,7 +97,7 @@ QQmlEngine *MainWindow::getQmlEngine()
 }
 
 
-LayersModel *MainWindow::layersModel() const
+LayerModel *MainWindow::layersModel() const
 {
     return mLayersModel;
 }

@@ -7,15 +7,14 @@
 #include <QTime>
 #include <QPoint>
 
-#include "layerModel.h"
+#include "layerManager.h"
 #include "mapItem.h"
-#include "toolbox.h"
 #include "mapControllerItem.h"
-#include "locationManagerModel.h"
 #include "bookmark.h"
+#include "toolbox.h"
 
 class ListWindow;
-class LayersModel;
+class LayerModel;
 
 Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QQuickWindow
@@ -32,9 +31,9 @@ public:
 
     enum DockPosition{
         Left = 0x1,
-        Right = 0x2,
-        Top = 0x3,
-        Bottom = 0x4
+        Right,
+        Top,
+        Bottom
     };
 
 public:
@@ -42,7 +41,7 @@ public:
     ~MainWindow();
     void initComponent();
     QQmlEngine *getQmlEngine();
-    LayersModel *layersModel() const;
+    LayerModel *layersModel() const;
     MapItem* getMapItem();
 
     void showInfoItem(QQuickItem* item, QString title);
@@ -71,7 +70,7 @@ protected:
 private:
     MapControllerItem *mMapItem = nullptr;
     ListWindow *mListWindow = nullptr;
-    LayersModel *mLayersModel = nullptr;
+    LayerModel *mLayersModel = nullptr;
     BookmarkProxyModel *mBookmark = nullptr;
 };
 

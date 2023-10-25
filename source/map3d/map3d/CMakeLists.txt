@@ -28,13 +28,12 @@ add_executable(Map3d
         serviceManager.h serviceManager.cpp
         defenseDataManager.cpp  defenseDataManager.h
         listwindow.cpp  listwindow.h
-        layerModel.cpp layerModel.h
+        layerManager.cpp layerManager.h
         osgRenderNode.cpp   osgRenderNode.h
         mapControllerItem.cpp mapControllerItem.h
         mapObject.cpp mapObject.h
         cameraController.cpp cameraController.h
         toolbox.h toolbox.cpp
-        treeModel.h treeModel.cpp
         compositeAnnotationLayer.h compositeAnnotationLayer.cpp
         utility.h utility.cpp
         searchNodeModel.h searchNodeModel.cpp
