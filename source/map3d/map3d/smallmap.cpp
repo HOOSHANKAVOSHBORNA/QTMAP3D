@@ -51,6 +51,7 @@ void SmallMap::initializeOsgEarth()
     focalRect->setHeight(1200000);
     focalRect->setWidth(1200000);
     mMapRoot->addChild(focalRect);
+    focalRect->setPosition(mCameraController->getViewpoint().focalPoint().get());
 
     this->oSGRenderNode()->setCameraManipulator(mCameraController);
 }
@@ -91,7 +92,7 @@ void SmallMap::frame()
     tmpVP.setPitch(-90);
     mCameraController->setViewpoint(tmpVP);
 
-    focalRect->setPosition(mCameraController->getViewpoint().focalPoint().get());
+//    focalRect->setPosition(mCameraController->getViewpoint().focalPoint().get());
 }
 
 void SmallMap::keyPressEvent(QKeyEvent *event)

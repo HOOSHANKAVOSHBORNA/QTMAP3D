@@ -44,14 +44,32 @@ void NodeTest::createInfo()
     jsonObject.insert("Type", "Node");
 
     QJsonObject jsonData;
-    jsonData.insert("Name", name);
-    jsonData.insert("Id", id);
+
+    QJsonObject nameObject;
+    nameObject.insert("value", name);
+    nameObject.insert("category", "Main Information");
+    jsonData.insert("Name", nameObject);
+    QJsonObject idObject;
+    idObject.insert("value", id);
+    nameObject.insert("category", "Main Information");
+    jsonData.insert("Id", idObject);
+
     jsonData.insert("Color", color.name());
     jsonData.insert("Url2d", "../data/models/station/station.png");
-    jsonData.insert("Url3d", "../data/models/station/Station.osgb");
-    jsonData.insert("Longitude", longitude);
-    jsonData.insert("Latitude", latitude);
-    jsonData.insert("Altitude", altitude);
+    jsonData.insert("Url3d", "../data/models/station/station.osgb");
+
+    QJsonObject longObject;
+    longObject.insert("value", longitude);
+    longObject.insert("category", "Location Information");
+    jsonData.insert("Longitude", longObject);
+    QJsonObject latObject;
+    latObject.insert("value", latitude);
+    latObject.insert("category", "Location Information");
+    jsonData.insert("Latitude", latObject);
+    QJsonObject altObject;
+    altObject.insert("value", altitude);
+    altObject.insert("category", "Location Information");
+    jsonData.insert("Altitude", altObject);
 
     QJsonArray layer;
     double rand = (QRandomGenerator::global()->generate() % (2));
@@ -79,6 +97,11 @@ void NodeTest::createInfo()
     jsonObjectStatusData.insert("Latitude", latitude);
     jsonObjectStatusData.insert("Altitude", altitude);
     jsonObjectStatusData.insert("LayerId", 305);
+
+    QJsonObject jsonObjectStatusFieldData;
+    jsonObjectStatusFieldData.insert("Info1", "info1");
+    jsonObjectStatusFieldData.insert("Info2", 200);
+    jsonObjectStatusData.insert("FieldData", jsonObjectStatusFieldData);
 
     jsonObjectStatus.insert("Data", jsonObjectStatusData);
     jsonDocStatus.setObject(jsonObjectStatus);
@@ -110,7 +133,8 @@ void NodeTest::createInfo()
     nodeData.circleDoc = jsonDocCircle;
     //--polygon----------------------------------------------------
     QColor colorPolygon("green");
-    colorPolygon.setAlpha(100);
+    colorPolygon.setAlpha(50);
+    QColor colorStroke("blue");
     QJsonDocument jsonDocPolygon;
     QJsonObject jsonObjectPolygon;
 
@@ -119,7 +143,9 @@ void NodeTest::createInfo()
     QJsonObject jsonObjectPolygonData;
     jsonObjectPolygonData.insert("Name", name + " polygon");
     jsonObjectPolygonData.insert("Id", id);
-    jsonObjectPolygonData.insert("Color", colorPolygon.name(QColor::HexArgb));
+    jsonObjectPolygonData.insert("Width", 7);
+    jsonObjectPolygonData.insert("Color", colorStroke.name(QColor::HexArgb));
+    jsonObjectPolygonData.insert("FillColor", colorPolygon.name(QColor::HexArgb));
 
     QJsonArray points;
     double step = 0.01;
@@ -203,8 +229,8 @@ void NodeTest::updateInfo()
 //        QJsonObject jsonObjectStatus;
 //        QJsonObject jsonObjectStatusData;
 
-//        int id = dataObject["Id"].toInt();
-//        QString name = dataObject["Name"].toString();
+//        int id = dataObject["Id"].toObject().value("value").toInt();
+//        QString name = dataObject["Name"].toObject().value("value").toString();
 
 //        jsonObjectStatus.insert("Type", "Status");
 //        jsonObjectStatusData.insert("Name", name);

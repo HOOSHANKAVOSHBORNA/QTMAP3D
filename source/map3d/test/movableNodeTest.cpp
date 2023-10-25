@@ -48,17 +48,39 @@ void MovableNodeTest::createMovableInfo()
     jsonObject.insert("Type", "Movable");
 
     QJsonObject jsonData;
-    jsonData.insert("Name", name);
-    jsonData.insert("Id", id);
-    jsonData.insert("Color", color.name());
-    jsonData.insert("Url2d", "../data/images/model/car.png");
-    jsonData.insert("Url3d", "../data/models/car.osgb");
-    jsonData.insert("Longitude", longitude);
-    jsonData.insert("Latitude", latitude);
-    jsonData.insert("Altitude", altitude);
-    jsonData.insert("Heading", heading);
-    jsonData.insert("Speed", speed);
+    QJsonObject nameObject;
+    nameObject.insert("value", name);
+    nameObject.insert("category", "Main Information");
+    jsonData.insert("Name", nameObject);
+    QJsonObject idObject;
+    idObject.insert("value", id);
+    nameObject.insert("category", "Main Information");
+    jsonData.insert("Id", idObject);
 
+    jsonData.insert("Color", color.name());
+    jsonData.insert("Url2d", "../data/models/car/car.png");
+    jsonData.insert("Url3d", "../data/models/car/car.osgb");
+
+    QJsonObject longObject;
+    longObject.insert("value", longitude);
+    longObject.insert("category", "Location Information");
+    jsonData.insert("Longitude", longObject);
+    QJsonObject latObject;
+    latObject.insert("value", latitude);
+    latObject.insert("category", "Location Information");
+    jsonData.insert("Latitude", latObject);
+    QJsonObject altObject;
+    altObject.insert("value", altitude);
+    altObject.insert("category", "Location Information");
+    jsonData.insert("Altitude", altObject);
+    QJsonObject headObject;
+    headObject.insert("value", heading);
+    headObject.insert("category", "Location Information");
+    jsonData.insert("Heading", headObject);
+    QJsonObject speedObject;
+    speedObject.insert("value", speed);
+    speedObject.insert("category", "Location Information");
+    jsonData.insert("Speed", speedObject);
     QJsonArray layer;
     layer.push_back(202);
     if(speed < 200)
@@ -84,15 +106,19 @@ void MovableNodeTest::createMovableInfo()
     jsonObjectStatusData.insert("Longitude", longitude);
     jsonObjectStatusData.insert("Latitude", latitude);
     jsonObjectStatusData.insert("Altitude", altitude);
-    jsonObjectStatusData.insert("Heading", heading);
-    jsonObjectStatusData.insert("Speed", speed);
     jsonObjectStatusData.insert("LayerId", 206);
+
+    QJsonObject jsonObjectStatusFieldData;
+    jsonObjectStatusFieldData.insert("Heading", heading);
+    jsonObjectStatusFieldData.insert("Speed", speed);
+    jsonObjectStatusData.insert("FieldData", jsonObjectStatusFieldData);
 
     jsonObjectStatus.insert("Data", jsonObjectStatusData);
     jsonDocStatus.setObject(jsonObjectStatus);
     movableData.statusDoc = jsonDocStatus;
 
     //--Line node------------------------------------------------
+    QColor lineColor(255, 0, 255);
     QJsonDocument jsonDocLine;
     QJsonObject jsonObjectLine;
 
@@ -101,6 +127,8 @@ void MovableNodeTest::createMovableInfo()
     QJsonObject jsonObjectLineData;
     jsonObjectLineData.insert("Name", name);
     jsonObjectLineData.insert("Id", id);
+    jsonObjectLineData.insert("Color", lineColor.name());
+    jsonObjectLineData.insert("Width", 7);
 
     QJsonArray points;
     QJsonObject point1;
@@ -125,11 +153,11 @@ void MovableNodeTest::updateMovableInfo()
     {
         QJsonObject dataObject = movableData.movableDoc.object().value("Data").toObject();
         //------------------------
-        double latitude = dataObject["Latitude"].toDouble();
-        double longitude = dataObject["Longitude"].toDouble();
-        double altitude = dataObject["Altitude"].toDouble();
+        double latitude = dataObject["Latitude"].toObject().value("value").toDouble();
+        double longitude = dataObject["Longitude"].toObject().value("value").toDouble();
+        double altitude = dataObject["Altitude"].toObject().value("value").toDouble();
         double speed /*= jsonObject["Speed"].toDouble()*/;
-        double heading = dataObject["Heading"].toDouble();
+        double heading = dataObject["Heading"].toObject().value("value").toDouble();
 
         int rn = (0 + (QRandomGenerator::global()->generate() % 10000));
         if(rn < 1)
@@ -150,11 +178,26 @@ void MovableNodeTest::updateMovableInfo()
         //            altitude += altitude + 5;
         altitude = 0;
         //--------------------------------------------------------
-        dataObject["Longitude"] = longitude;
-        dataObject["Latitude"] = latitude;
-        dataObject["Altitude"] = altitude;
-        dataObject["Heading"] = heading;
-        dataObject["Speed"] =  speed;
+        QJsonObject longObject;
+        longObject.insert("value", longitude);
+        longObject.insert("category", "Location Information");
+        dataObject.insert("Longitude", longObject);
+        QJsonObject latObject;
+        latObject.insert("value", latitude);
+        latObject.insert("category", "Location Information");
+        dataObject.insert("Latitude", latObject);
+        QJsonObject altObject;
+        altObject.insert("value", altitude);
+        altObject.insert("category", "Location Information");
+        dataObject.insert("Altitude", altObject);
+        QJsonObject headObject;
+        headObject.insert("value", heading);
+        headObject.insert("category", "Location Information");
+        dataObject.insert("Heading", headObject);
+        QJsonObject speedObject;
+        speedObject.insert("value", speed);
+        speedObject.insert("category", "Location Information");
+        dataObject.insert("Speed", speedObject);
 
         QJsonObject jsonObject;
         jsonObject.insert("Type", "Movable");
@@ -165,8 +208,8 @@ void MovableNodeTest::updateMovableInfo()
         QJsonObject jsonObjectStatus;
         QJsonObject jsonObjectStatusData;
 
-        int id = dataObject["Id"].toInt();
-        QString name = dataObject["Name"].toString();
+        int id = dataObject["Id"].toObject().value("value").toInt();
+        QString name = dataObject["Name"].toObject().value("value").toString();
 
         jsonObjectStatus.insert("Type", "Status");
         jsonObjectStatusData.insert("Name", name);
@@ -177,11 +220,18 @@ void MovableNodeTest::updateMovableInfo()
         jsonObjectStatusData.insert("Heading", heading);
         jsonObjectStatusData.insert("Speed", speed);
         jsonObjectStatusData.insert("LayerId", 206);
+
+        QJsonObject jsonObjectStatusFieldData;
+        jsonObjectStatusFieldData.insert("Heading", heading);
+        jsonObjectStatusFieldData.insert("Speed", speed);
+        jsonObjectStatusData.insert("FieldData", jsonObjectStatusFieldData);
+
         jsonObjectStatus.insert("Data", jsonObjectStatusData);
         jsonDocStatus.setObject(jsonObjectStatus);
         movableData.statusDoc = jsonDocStatus;
 
         //--Line node------------------------------------------------
+        QColor lineColor(255, 0, 255);
         QJsonDocument jsonDocLine;
         QJsonObject jsonObjectLine;
 
@@ -190,6 +240,8 @@ void MovableNodeTest::updateMovableInfo()
         QJsonObject jsonObjectLineData;
         jsonObjectLineData.insert("Name", name);
         jsonObjectLineData.insert("Id", id);
+        jsonObjectLineData.insert("Color", lineColor.name());
+        jsonObjectLineData.insert("Width", 7);
 
         QJsonArray points = movableData.lineDoc.object().value("Data").toObject().value("Points").toArray();
         QJsonObject point;

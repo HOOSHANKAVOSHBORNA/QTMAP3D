@@ -127,7 +127,8 @@ Rectangle {
                             checkable: true
                             checked: false
                             onToggled: {
-                                model.checked = checked;
+                                model.checked = checked
+                                sideBarModel.toggleItem(index, checked)
                             }
                         }
                     }
@@ -203,34 +204,40 @@ Rectangle {
     ListModel {
         id: sideBarModel
         signal toggleItem(var index, var checked)
+//        onToggleItem:function(index, checked){ print(checked)}
         ListElement {
             name: "Toolbox"
             iconSource: "qrc:/Resources/toolbox.png"
             checked: false
+            isWindow: false
         }
 
         ListElement {
             name: "Layer"
             iconSource: "qrc:/Resources/layers.png"
             checked: false
+            isWindow: false
         }
 
         ListElement {
             name: "Bookmark"
             iconSource: "qrc:/Resources/bookmark.png"
             checked: false
+            isWindow: false
         }
 
         ListElement {
             name: "Location"
             iconSource: "qrc:/Resources/location.png"
             checked: false
+            isWindow: false
         }
 
         ListElement {
             name: "Setting"
             iconSource: "qrc:/Resources/settings.png"
             checked: false
+            isWindow: false
         }
 
     }
