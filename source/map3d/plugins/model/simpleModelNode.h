@@ -22,7 +22,7 @@ class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
     Q_OBJECT
 public:
     SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D,
-                    QQmlEngine *engine, MainWindow *mainWindow, QObject *parent = nullptr);
+                    QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent = nullptr);
     void updateUrl(const std::string& url3D, const std::string& url2D);
     MapItem *mapItem() const;
     std::string url2D() const;
@@ -68,7 +68,7 @@ private:
     NodeInformation* mNodeInformation{nullptr};
     bool isBookmarked{false};
     QQmlEngine *mEnigine;
-    MainWindow *mMainWindow;
+    BookmarkProxyModel *mBookmark;
     BookmarkItem *mBookmarkItem;
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;

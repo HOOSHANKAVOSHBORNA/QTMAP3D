@@ -503,5 +503,6 @@
         <file>Resources/Qarch.png</file>
         <file>Resources/undocker.png</file>
         <file>Resources/track-icon.png</file>
+        <file>Resources/filled-bookmark.png</file>
     </qresource>
 </RCC>

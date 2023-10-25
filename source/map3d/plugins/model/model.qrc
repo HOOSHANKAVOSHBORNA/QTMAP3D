@@ -3,6 +3,6 @@
         <file>resources/tree.png</file>
         <file>resources/car.png</file>
         <file>resources/airplane.png</file>
-        <file>nodeInformation.qml</file>
+        <file>NodeInformation.qml</file>
     </qresource>
 </RCC>
