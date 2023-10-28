@@ -60,6 +60,7 @@ void MovableNodeTest::createMovableInfo()
     jsonData.insert("Color", color.name());
     jsonData.insert("Url2d", "../data/models/car/car.png");
     jsonData.insert("Url3d", "../data/models/car/car.osgb");
+    jsonData.insert("ImgSrc", "qrc:/Resources/station.jpg");
 
     QJsonObject longObject;
     longObject.insert("value", longitude);

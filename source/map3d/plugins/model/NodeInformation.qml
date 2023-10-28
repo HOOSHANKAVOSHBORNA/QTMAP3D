@@ -1,54 +1,58 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import "style"
 Window {
     id:backgroundRec
-    width:310
-    height: 612
-    color: "#DEE3E6"
+    readonly property color verticalBarColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.10)
+    readonly property color parentColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
+    width:310/Style.monitorRatio
+    height: 612/Style.monitorRatio
+    color: Style.backgroundColor
     property var nodeinfo
-    property color projectcolor: "#003569"
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
         Item{
             id:windowframe
-            implicitHeight: 30
+            implicitHeight: 30/Style.monitorRatio
             Layout.fillWidth:true
             RowLayout{
                 anchors.fill: parent
                 spacing:0
                 Button{
-                    Layout.preferredHeight: 22
-                    Layout.preferredWidth: 22
+                    Layout.preferredHeight: 22/Style.monitorRatio
+                    Layout.preferredWidth: 22/Style.monitorRatio
                     Layout.leftMargin: 15
                     background:IconImage{
                         width: 22
                         height: 22
-//                        source: nodeinfo ? nodeinfo.getHeaderImageUrl() : ""
+                        source: ""
                     }
                 }
                 Text{
                     text: nodeinfo ? nodeinfo.getWindowName() : ""
-                    color: projectcolor
-                    font.pixelSize: 17
+                    color: Style.foregroundColor
+                    font.pixelSize: 17/Style.monitorRatio
                     Layout.fillWidth: true
                 }
                 Button{
-                    Layout.preferredWidth: 22
-                    Layout.preferredHeight: 22
+                    id: bookBtn
+                    Layout.preferredWidth: 22/Style.monitorRatio
+                    Layout.preferredHeight: 22/Style.monitorRatio
                     background:IconImage{
-                        width: 22
-                        height: 22
-                        source: /*nodeinfo ? (nodeinfo.bookmarkStatus() ? "qrc:/icons/filled-bookmark.png" :*/ "qrc:/Resources/bookmark.png"/*) : ""*/
+                        width: 22/Style.monitorRatio
+                        height: 22/Style.monitorRatio
+                        source: bookBtn.checked ? "qrc:/Resources/filled-bookmark.png" : "qrc:/Resources/bookmark.png"
                     }
+                    checkable: true
                     onClicked: {
-
+                        nodeinfo.bookmarkChecked(checked)
                     }
                 }
                 IconImage{
-                    Layout.preferredWidth: 22
-                    Layout.preferredHeight: 22
+                    Layout.preferredWidth: 22/Style.monitorRatio
+                    Layout.preferredHeight: 22/Style.monitorRatio
                     source: "qrc:/Resources/multiply.png"
                     Layout.rightMargin: 15
                 }
@@ -58,7 +62,7 @@ Window {
         Item{
             id:mainImageItem
             Layout.fillWidth: true
-            implicitHeight: 175
+            implicitHeight: 175/Style.monitorRatio
             Image{
                 id:image
                 anchors.fill: parent
@@ -68,7 +72,7 @@ Window {
                 color: "silver"
                 anchors.bottom: mainImageItem.bottom
                 width: mainImageItem.width
-                height: 30
+                height: 30/Style.monitorRatio
 
                 RowLayout{
                     anchors.fill: parent
@@ -78,43 +82,44 @@ Window {
                         Layout.preferredWidth: 28
                         Layout.leftMargin: 44
                         background:IconImage{
-                            width: 28
-                            height: 28
+                            width: 28/Style.monitorRatio
+                            height: 28/Style.monitorRatio
                             source: "qrc:/Resources/track-icon.png"
                         }
                     }
 
                     Text{
                         text: "Track"
-                        color: projectcolor
-                        font.pixelSize: 13
+                        color: Style.foregroundColor
+                        font.pixelSize: 13/Style.monitorRatio
                         Layout.fillWidth: true
                         Layout.leftMargin: 2
-                        // font.family: Roboto
+                        font.family: Style.fontFamily
+
                     }
                     Rectangle{
                         id:verticalbar
-                        color: Qt.rgba(0,53,105,0.1)
-                        Layout.preferredHeight: 30
-                        Layout.preferredWidth: 2
+                        color: verticalBarColor
+                        Layout.preferredHeight: 30/Style.monitorRatio
+                        Layout.preferredWidth: 2/Style.monitorRatio
                     }
                     Button{
-                        Layout.preferredHeight: 28
-                        Layout.preferredWidth: 28
+                        Layout.preferredHeight: 28/Style.monitorRatio
+                        Layout.preferredWidth: 28/Style.monitorRatio
                         Layout.leftMargin: 44
                         background:IconImage{
-                            width: 28
-                            height: 28
+                            width: 28/Style.monitorRatio
+                            height: 28/Style.monitorRatio
                             source: "qrc:/Resources/easy-to-find.png"
                         }
                     }
                     Text{
                         text: "Go to"
-                        color: projectcolor
-                        font.pixelSize: 13
+                        color: Style.foregroundColor
+                        font.pixelSize: 13/Style.monitorRatio
                         Layout.fillWidth: true
                         Layout.leftMargin: 2
-                        // font.family: Roboto
+                        font.family: Style.fontFamily
                     }
                 }
             }
@@ -145,22 +150,22 @@ Window {
 
 
                     implicitWidth: treeView.width
-                    implicitHeight: 20
+                    implicitHeight: 20/Style.monitorRatio
 
                     Rectangle{
                         id:parenttext
-                        color:treeDelegate.hasChildren ? Qt.rgba(0, 53, 105, 0.2) : "transparent"
+                        color:treeDelegate.hasChildren ? parentColor : "transparent"
                         radius: 15
-                        width: 300
-                        height: 25
+                        width: 300/Style.monitorRatio
+                        height: 25/Style.monitorRatio
                         anchors.horizontalCenter: parent.horizontalCenter
                         RowLayout{
                             anchors.fill: parent
                             spacing: 0
 
                             IconImage{
-                                Layout.preferredHeight: 19
-                                Layout.preferredWidth: 19
+                                Layout.preferredHeight: 19/Style.monitorRatio
+                                Layout.preferredWidth: 19/Style.monitorRatio
                                 source: iconImageSource ?? ""
                                 Layout.alignment: Qt.AlignVCenter
                                 Layout.leftMargin: 10
@@ -169,8 +174,8 @@ Window {
 
                             Text{
                                 text:display ?? ""
-                                font.pixelSize: 18
-                                color: projectcolor
+                                font.pixelSize: 18/Style.monitorRatio
+                                color: Style.foregroundColor
                                 Layout.alignment: Qt.AlignVCenter
                                 Layout.fillWidth: true
                             }
@@ -200,26 +205,27 @@ Window {
                             spacing: 0
                             Rectangle{
                                 color:"transparent"
-                                Layout.preferredHeight: 10
-                                Layout.preferredWidth: 160
+                                Layout.preferredHeight: 10/Style.monitorRatio
+                                Layout.preferredWidth: 160/Style.monitorRatio
                                 Text{
-                                    text: propertyText ?? ""
-                                    font.pixelSize: 12
-                                    // font.family: Roboto
-                                    color: projectcolor
+                                    text: nameText ?? ""
+                                    font.pixelSize: 12/Style.monitorRatio
+                                    font.family: Style.fontFamily
+                                    color: Style.foregroundColor
                                     anchors.left: parent.left
                                     anchors.leftMargin: 15
                                 }
                             }
                             Rectangle{
                                 color:"transparent"
-                                Layout.preferredHeight: 10
-                                Layout.preferredWidth: 160
+                                Layout.preferredHeight: 10/Style.monitorRatio
+                                Layout.preferredWidth: 160/Style.monitorRatio
                                 Text{
                                     text: valueText ?? ""
-                                    font.pixelSize: 12
-                                    // font.family: Roboto
-                                    color: projectcolor
+                                    font.pixelSize: 12/Style.monitorRatio
+                                    font.family: Style.fontFamily
+                                    color: Style.foregroundColor
+
                                     anchors.left: parent.left
                                     anchors.leftMargin: 15
                                 }
