@@ -21,7 +21,7 @@ Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QQuickWindow
 {
     Q_OBJECT
-    Q_PROPERTY(BookmarkProxyModel* bookmark READ bookmark /*WRITE setLayersModel NOTIFY layersModelChanged*/)
+//    Q_PROPERTY(BookmarkProxyModel* bookmark READ bookmark /*WRITE setLayersModel NOTIFY layersModelChanged*/)
 
 public:
     enum class InfoWidgetType {
@@ -42,13 +42,11 @@ public:
     ~MainWindow();
     void initComponent();
     QQmlEngine *getQmlEngine();
-    LayersModel *layersModel() const;
-    MapItem* getMapItem();
-
-    void showInfoItem(QQuickItem* item, QString title);
-    void hideInfoItem(QQuickItem* item);
-    void hideProperty(QQuickItem* item);
-    void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
+    MapItem *getMapItem();
+    ToolboxProxyModel *getToolboxManager() const;
+    LayersModel *getLayerManager() const;
+    BookmarkProxyModel *getBookmarkManager() const;
+    LocationManagerProxyModel *getLocationManager() const;
 
 public:
     void addToLeftContainer(QQuickItem *item, QString title);
@@ -57,7 +55,10 @@ public:
     void removeFromRightContainer(QQuickItem *item);
     void removeFromLeftContainer(QQuickItem *item);
 
-    BookmarkProxyModel *bookmark() const;
+    void showInfoItem(QQuickItem* item, QString title);
+    void hideInfoItem(QQuickItem* item);
+    void hideProperty(QQuickItem* item);
+    void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
 
 public slots:
     void showListWindow();
@@ -71,8 +72,8 @@ protected:
 private:
     MapControllerItem *mMapItem = nullptr;
     ListWindow *mListWindow = nullptr;
-    LayersModel *mLayersModel = nullptr;
-    BookmarkProxyModel *mBookmark = nullptr;
+//    LayersModel *mLayersModel = nullptr;
+//    BookmarkProxyModel *mBookmark = nullptr;
 };
 
 #endif // MainWindow_H
