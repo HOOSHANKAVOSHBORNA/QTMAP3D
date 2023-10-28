@@ -128,7 +128,7 @@ void SimpleModelNode::compile()
     }
     //--auto scale------selectModel----------------------------------------------
     double modelLenght = mSimpleNode->getBound().radius() * 2;
-    qDebug()<<"len: "<<modelLenght;
+//    qDebug()<<"len: "<<modelLenght;
     double scaleRatio = 100/modelLenght;
     double iconSize = 400/ scaleRatio;
     //    if (modelLenght < 12){

@@ -59,6 +59,10 @@ bool Model::setup()
     QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
+    auto tankToolboxItem =  new ToolboxItem{TANK, MODEL, "qrc:/resources/tank.png", true};
+    QObject::connect(tankToolboxItem, &ToolboxItem::itemChecked, this, &Model::onTankItemCheck);
+    toolbox()->addItem(tankToolboxItem);
+
     mSimpleNodeLayer = new ParenticAnnotationLayer();
     mSimpleNodeLayer->setName(TREE);
 
@@ -67,6 +71,9 @@ bool Model::setup()
 
     mFlyableNodelLayer = new ParenticAnnotationLayer();
     mFlyableNodelLayer->setName(AIRPLANE);
+
+    mAttackerNodeLayer = new ParenticAnnotationLayer();
+    mAttackerNodeLayer->setName(AIRPLANE);
 
 
     return true;
@@ -220,6 +227,25 @@ void Model::onAirplanItemCheck(bool check)
     }
 }
 
+void Model::onTankItemCheck(bool check)
+{
+    if (check) {
+        makeIconNode("../data/models/tank/tank.png");
+
+        mType = Type::ATTACKER;
+        setState(State::READY);
+        mapItem()->addNode(iconNode());
+
+    }
+    else {
+        if(state() == State::MOVING)
+            cancel();
+
+        setState(State::NONE);
+        mapItem()->removeNode(iconNode());
+    }
+}
+
 void Model::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -329,6 +355,16 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         }
         mFlyableNodelLayer->addChild(mCurrentModel);
         break;
+    case Type::ATTACKER:
+        name = "Tank" + QString::number(mCount);
+        mCurrentModel = new AttackerModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), mainWindow());
+        mCurrentModel->setModelColor(osgEarth::Color::Red);
+        if(!mModelNodeLayer->containsLayer(mAttackerNodeLayer)){
+            mAttackerNodeLayer->clear();
+            mModelNodeLayer->addLayer(mAttackerNodeLayer);
+        }
+        mAttackerNodeLayer->addChild(mCurrentModel);
+        break;
     default:
         break;
     }
@@ -345,6 +381,12 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
 void Model::moving(osgEarth::GeoPoint &geoPos){
 
     if (mCurrentModel){
+        if (mCurrentModel->asAttackerModelNode()){
+            mCurrentModel->asAttackerModelNode()->ready(1);
+            mCurrentModel->asAttackerModelNode()->attackTo(geoPos);
+            mCurrentModel->asAttackerModelNode()->attackResult(true,geoPos);
+            return;
+        }
         if (mCurrentModel->asFlyableModelNode()){
             double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
             geoPos.z() += randomHeight;
@@ -380,6 +422,9 @@ void Model::cancel(){
             break;
         case Type::FLYABLE:
             mFlyableNodelLayer->removeChild(mCurrentModel);
+            break;
+        case Type::ATTACKER:
+            mAttackerNodeLayer->removeChild(mCurrentModel);
             break;
 
         default:

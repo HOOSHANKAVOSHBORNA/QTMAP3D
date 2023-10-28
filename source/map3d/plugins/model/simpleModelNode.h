@@ -1,5 +1,6 @@
 #ifndef SIMPLEMODELNODE_H
 #define SIMPLEMODELNODE_H
+
 #include "mapItem.h"
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
@@ -16,6 +17,7 @@
 
 class MoveableModelNode;
 class FlyableModelNode;
+class AttackerModelNode;
 
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
@@ -31,6 +33,7 @@ public:
     virtual SimpleModelNode* asSimpleModelNode(){return this;}
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
+    virtual AttackerModelNode* asAttackerModelNode(){return nullptr;}
 
     void selectModel();
     bool isAutoScale() const;

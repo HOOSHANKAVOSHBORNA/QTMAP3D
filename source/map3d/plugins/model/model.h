@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include <QObject>
+#include "attackerModelNode.h"
 #include "plugininterface.h"
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -14,6 +15,7 @@
 #define TREE "Tree"
 #define CAR "Car"
 #define AIRPLANE "Airplane"
+#define TANK "Tank"
 
 class Model : public PluginInterface
 {
@@ -32,7 +34,8 @@ public:
     enum class Type{
         SIMPLE,
         MOVEABLE,
-        FLYABLE
+        FLYABLE,
+        ATTACKER
     };
 
 public:
@@ -53,6 +56,7 @@ public slots:
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
+    void onTankItemCheck (bool check);
     void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
 
@@ -80,6 +84,7 @@ private:
     osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mSimpleNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mAttackerNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
 
@@ -87,6 +92,7 @@ private:
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
     QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
+    QMap<int, osg::ref_ptr<AttackerModelNode>> mAttackerNodeMap;
 };
 
 #endif // MODEL_H
