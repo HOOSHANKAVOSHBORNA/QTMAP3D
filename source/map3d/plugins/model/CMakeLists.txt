@@ -27,7 +27,7 @@ add_library(model SHARED
     model.qrc
     nodeInformation.h
     nodeInformation.cpp
-    attackerModelNode.h attackerModelNode.cpp
+    bulletNode.h bulletNode.cpp
 )
 
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

@@ -2,7 +2,6 @@
 #define MODEL_H
 
 #include <QObject>
-#include "attackerModelNode.h"
 #include "plugininterface.h"
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -15,7 +14,7 @@
 #define TREE "Tree"
 #define CAR "Car"
 #define AIRPLANE "Airplane"
-#define TANK "Tank"
+#define BULLET "Bullet"
 
 class Model : public PluginInterface
 {
@@ -67,7 +66,8 @@ public slots:
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
-    void moving(osgEarth::GeoPoint &geoPos);;
+    void moving(osgEarth::GeoPoint &geoPos);
+    void attack(osgEarth::GeoPoint &geoPos);
     void confirm();
     void cancel();
 
@@ -84,15 +84,14 @@ private:
     osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mSimpleNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
-    osg::ref_ptr<ParenticAnnotationLayer> mAttackerNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mBulletNodeLayer{nullptr};
 
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
     QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
-    QMap<int, osg::ref_ptr<AttackerModelNode>> mAttackerNodeMap;
 };
 
 #endif // MODEL_H

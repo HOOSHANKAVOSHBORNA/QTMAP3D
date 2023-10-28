@@ -9,20 +9,21 @@
 #include <osgEarth/GLUtils>
 #include <osgEarth/Registry>
 #include <mainwindow.h>
+#include "bulletNode.h"
 
 const float RANGE3D = 835;
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
-SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent)
+SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, BookmarkProxyModel *bookmark, int bulletCount, QObject *parent)
     : QObject{parent},
     osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Model::getDefaultStyle()),
     mUrl3D(url3D),
     mMapItem(mapControler),
     mUrl2D(url2D),
     mEnigine(engine),
-    mBookmark(bookmark)
-
+    mBookmark(bookmark),
+    mBulletcount(bulletCount)
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
@@ -78,6 +79,26 @@ bool SimpleModelNode::getIsBookmarked() const
 void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
 {
     isBookmarked = newIsBookmarked;
+}
+
+void SimpleModelNode::attackTo(osgEarth::GeoPoint geoPos,const std::string model3D,const std::string icon2D)
+{
+    if(mBulletcount){
+        mBulletNode = new BulletNode(mMapItem,model3D,icon2D,mEnigine,mBookmark);
+        this->addChild(mBulletNode);
+        mBulletNode->attackTo(geoPos);
+        mBulletcount--;
+    }
+}
+
+void SimpleModelNode::attackResult(bool result)
+{
+    if(result){
+        mBulletNode->explode();
+        mBulletNode->deleteLater();
+    }else{
+        mBulletNode->deleteLater();
+    }
 }
 
 NodeData *SimpleModelNode::nodeData() const

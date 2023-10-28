@@ -15,16 +15,17 @@
 #include <osg/ComputeBoundsVisitor>
 
 
+
 class MoveableModelNode;
 class FlyableModelNode;
-class AttackerModelNode;
+class BulletNode;
 
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
     SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D,
-                    QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent = nullptr);
+                    QQmlEngine *engine, BookmarkProxyModel *bookmark, int bulletCount = 0, QObject *parent = nullptr);
     ~SimpleModelNode();
     void updateUrl(const std::string& url3D, const std::string& url2D);
     MapItem *mapItem() const;
@@ -34,7 +35,6 @@ public:
     virtual SimpleModelNode* asSimpleModelNode(){return this;}
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
-    virtual AttackerModelNode* asAttackerModelNode(){return nullptr;}
 
     void selectModel();
     bool isAutoScale() const;
@@ -46,6 +46,9 @@ public:
 
     bool getIsBookmarked() const;
     void setIsBookmarked(bool newIsBookmarked);
+
+    void attackTo(osgEarth::GeoPoint geoPos,const std::string model3D,const std::string icon2D);
+    void attackResult(bool result);
 
 private slots:
     void compile();
@@ -59,6 +62,7 @@ private:
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<Circle> mCircleSelectNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
+    osg::ref_ptr<BulletNode> mBulletNode;
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;
@@ -74,6 +78,7 @@ private:
     QQmlEngine *mEnigine;
     BookmarkProxyModel *mBookmark;
     BookmarkItem *mBookmarkItem;
+    int mBulletcount = 0;
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;
