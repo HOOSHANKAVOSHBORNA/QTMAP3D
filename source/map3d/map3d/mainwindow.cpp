@@ -81,9 +81,7 @@ void MainWindow::initComponent()
             LayersModel *layersModel = LayersModel::createSingletonInstance(nullptr, nullptr);
             layersModel->initialize(mMapItem);
 
-
-
-            mBookmark = BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+            BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
@@ -97,9 +95,29 @@ QQmlEngine *MainWindow::getQmlEngine()
 }
 
 
-LayersModel *MainWindow::layersModel() const
+MapItem *MainWindow::getMapItem()
 {
-    return mLayersModel;
+    return mMapItem;
+}
+
+ToolboxProxyModel *MainWindow::getToolboxManager() const
+{
+    return ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
+}
+
+LayersModel *MainWindow::getLayerManager() const
+{
+    return LayersModel::createSingletonInstance(nullptr, nullptr);
+}
+
+BookmarkProxyModel *MainWindow::getBookmarkManager() const
+{
+    return BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+}
+
+LocationManagerProxyModel *MainWindow::getLocationManager() const
+{
+    return LocationManagerProxyModel::createSingletonInstance(nullptr, nullptr);
 }
 
 void MainWindow::addToCenterCenterContainer(QQuickItem *item)
@@ -133,10 +151,7 @@ void MainWindow::showListWindow()
     }
 }
 
-MapItem *MainWindow::getMapItem()
-{
-    return mMapItem;
-}
+
 
 void MainWindow::showInfoItem(QQuickItem *item, QString title)
 {
@@ -200,9 +215,4 @@ bool MainWindow::event(QEvent *ev)
     }
 
     return QQuickWindow::event(ev);
-}
-
-BookmarkProxyModel *MainWindow::bookmark() const
-{
-    return mBookmark;
 }
