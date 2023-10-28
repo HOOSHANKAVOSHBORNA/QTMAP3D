@@ -193,7 +193,7 @@ Item {
 //                isWindow: sideModel.get(1).isWindow
                 containerItem: LayersWidget {
                     id: layers
-                    layersModell: LayersInstance
+                    layersModell: LayersInstance.layerModel()
                 }
 
                 onWindowClose: {

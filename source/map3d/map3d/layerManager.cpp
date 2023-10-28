@@ -260,3 +260,22 @@ void LayerModel::setFilterString(const QString &newFilterString)
     mFilterString = newFilterString;
     invalidateFilter();
 }
+
+// ---------------- Model Manager
+LayerManager::LayerManager()
+{
+    mLayerModel = LayerModel::createSingletonInstance(nullptr, nullptr);
+}
+
+LayerModel *LayerManager::layerModel() const
+{
+    return mLayerModel;
+}
+
+LayerManager *LayerManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    if(mInstance == nullptr){ mInstance = new LayerManager(); }
+    return mInstance;
+}

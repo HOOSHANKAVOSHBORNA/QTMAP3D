@@ -8,11 +8,30 @@
 
 Q_DECLARE_METATYPE(osgEarth::Layer);
 
-class LayerModel : public QSortFilterProxyModel
+class LayerModel;
+
+class LayerManager : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
+
+public:
+    static LayerManager* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+
+    Q_INVOKABLE LayerModel *layerModel() const;
+
+private:
+    explicit LayerManager();
+
+private:
+    inline static LayerManager *mInstance;
+    inline static LayerModel *mLayerModel;
+};
+
+class LayerModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
     Q_PROPERTY(QString filterString READ filterString WRITE setFilterString NOTIFY filterStringChanged FINAL)
     Q_PROPERTY(QModelIndex dragIndex READ getDragIndex WRITE setDragIndex)
 
