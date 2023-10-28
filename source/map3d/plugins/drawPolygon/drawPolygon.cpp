@@ -69,9 +69,12 @@ void DrawPolygon::addUpdatePolygon(PolygonData *polygonData)
 //        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
 //        polygon->addPoint(geopos);
 //    }
-    polygon->setHeight(10);
+//    polygon->setHeight(0);
+    polygon->setStrokeWidth(polygonData->width);
     QColor color(QString::fromStdString(polygonData->color));
-    polygon->setFillColor(Utility::qColor2osgEarthColor(color));
+    polygon->setStrokeColor(Utility::qColor2osgEarthColor(color));
+    QColor fillColor(QString::fromStdString(polygonData->fillColor));
+    polygon->setFillColor(Utility::qColor2osgEarthColor(fillColor));
 //    polygon->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 }
 

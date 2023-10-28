@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
 //    });
     LayerTest LayerTest(&networkManager);
     FlyableNodeTest flyableNodeTest(&networkManager);
-//    MovableNodeTest movableNodeTest(&networkManager);
-//    NodeTest nodeTest(&networkManager);
+    MovableNodeTest movableNodeTest(&networkManager);
+    NodeTest nodeTest(&networkManager);
 
     return a.exec();
 }

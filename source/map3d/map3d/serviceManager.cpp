@@ -20,6 +20,7 @@ void ServiceManager::layersData(QJsonObject jsonObject)
 void ServiceManager::flyableNodeData(QJsonObject jsonObject)
 {
     NodeData* flyableNodeData = new NodeData();
+    flyableNodeData->type = "Flyable";
     flyableNodeData->id = jsonObject.value("Id").isObject() ? jsonObject.value("Id").toObject().value("value").toInt() : jsonObject.value("Id").toInt();
     flyableNodeData->longitude = jsonObject.value("Longitude").isObject() ? jsonObject.value("Longitude").toObject().value("value").toDouble() : jsonObject.value("Longitude").toDouble();
     flyableNodeData->latitude = jsonObject.value("Latitude").isObject() ? jsonObject.value("Latitude").toObject().value("value").toDouble() : jsonObject.value("Latitude").toDouble();
@@ -27,6 +28,8 @@ void ServiceManager::flyableNodeData(QJsonObject jsonObject)
     flyableNodeData->name = jsonObject.value("Name").isObject() ? jsonObject.value("Name").toObject().value("value").toString().toStdString() : jsonObject.value("Name").toString().toStdString();
     flyableNodeData->url2D = jsonObject.value("Url2d").isObject() ? jsonObject.value("Url2d").toObject().value("value").toString().toStdString() : jsonObject.value("Url2d").toString().toStdString();
     flyableNodeData->url3D = jsonObject.value("Url3d").isObject() ? jsonObject.value("Url3d").toObject().value("value").toString().toStdString() : jsonObject.value("Url3d").toString().toStdString();
+    flyableNodeData->imgSrc = jsonObject.value("ImgSrc").isObject() ? jsonObject.value("ImgSrc").toObject().value("value").toString().toStdString() : jsonObject.value("ImgSrc").toString().toStdString();
+    flyableNodeData->iconSrc = jsonObject.value("IconSrc").isObject() ? jsonObject.value("IconSrc").toObject().value("value").toString().toStdString() : jsonObject.value("IconSrc").toString().toStdString();
     flyableNodeData->color = jsonObject.value("Color").isObject() ? jsonObject.value("Color").toObject().value("value").toString().toStdString() : jsonObject.value("Color").toString().toStdString();
     flyableNodeData->speed = jsonObject.value("Speed").isObject() ? jsonObject.value("Speed").toObject().value("value").toInt() : jsonObject.value("Speed").toInt();
     for (auto i : jsonObject.value("LayersId").toArray()){
@@ -35,6 +38,8 @@ void ServiceManager::flyableNodeData(QJsonObject jsonObject)
         if(layer)
             flyableNodeData->layers.push_back(layer);
     }
+
+
     for (auto &key:jsonObject.keys()){
         if (jsonObject.value(key).isObject()) {
             auto obj = jsonObject.value(key).toObject();
@@ -126,20 +131,31 @@ void ServiceManager::polylineData(QJsonObject polyline)
 void ServiceManager::movableNodeData(QJsonObject jsonObject)
 {
     NodeData* movableNodeData = new NodeData();
-    movableNodeData->id = jsonObject.value("Id").toInt();
-    movableNodeData->longitude =  jsonObject.value("Longitude").toDouble();
-    movableNodeData->latitude = jsonObject.value("Latitude").toDouble();
-    movableNodeData->altitude = jsonObject.value("Altitude").toDouble();
-    movableNodeData->name = jsonObject.value("Name").toString().toStdString();
-    movableNodeData->url2D = jsonObject.value("Url2d").toString().toStdString();
-    movableNodeData->url3D = jsonObject.value("Url3d").toString().toStdString();
-    movableNodeData->color = jsonObject.value("Color").toString().toStdString();
-    movableNodeData->speed = jsonObject.value("Speed").toInt();
+    movableNodeData->type = "Movable";
+    movableNodeData->id = jsonObject.value("Id").isObject() ? jsonObject.value("Id").toObject().value("value").toInt() : jsonObject.value("Id").toInt();
+    movableNodeData->longitude = jsonObject.value("Longitude").isObject() ? jsonObject.value("Longitude").toObject().value("value").toDouble() : jsonObject.value("Longitude").toDouble();
+    movableNodeData->latitude = jsonObject.value("Latitude").isObject() ? jsonObject.value("Latitude").toObject().value("value").toDouble() : jsonObject.value("Latitude").toDouble();
+    movableNodeData->altitude = jsonObject.value("Altitude").isObject() ? jsonObject.value("Altitude").toObject().value("value").toDouble() : jsonObject.value("Altitude").toDouble();
+    movableNodeData->name = jsonObject.value("Name").isObject() ? jsonObject.value("Name").toObject().value("value").toString().toStdString() : jsonObject.value("Name").toString().toStdString();
+    movableNodeData->url2D = jsonObject.value("Url2d").isObject() ? jsonObject.value("Url2d").toObject().value("value").toString().toStdString() : jsonObject.value("Url2d").toString().toStdString();
+    movableNodeData->url3D = jsonObject.value("Url3d").isObject() ? jsonObject.value("Url3d").toObject().value("value").toString().toStdString() : jsonObject.value("Url3d").toString().toStdString();
+    movableNodeData->imgSrc = jsonObject.value("ImgSrc").isObject() ? jsonObject.value("ImgSrc").toObject().value("value").toString().toStdString() : jsonObject.value("ImgSrc").toString().toStdString();
+    movableNodeData->iconSrc = jsonObject.value("IconSrc").isObject() ? jsonObject.value("IconSrc").toObject().value("value").toString().toStdString() : jsonObject.value("IconSrc").toString().toStdString();
+    movableNodeData->color = jsonObject.value("Color").isObject() ? jsonObject.value("Color").toObject().value("value").toString().toStdString() : jsonObject.value("Color").toString().toStdString();
+    movableNodeData->speed = jsonObject.value("Speed").isObject() ? jsonObject.value("Speed").toObject().value("value").toInt() : jsonObject.value("Speed").toInt();
+
     for (auto i : jsonObject.value("LayersId").toArray()){
         int id = i.toInt();
         auto layer = findParenticLayer(id);
         if(layer)
             movableNodeData->layers.push_back(layer);
+    }
+
+    for (auto &key:jsonObject.keys()){
+        if (jsonObject.value(key).isObject()) {
+            auto obj = jsonObject.value(key).toObject();
+            movableNodeData->fieldData.push_back(NodeFieldData{key, obj.value("value").toVariant(), obj.value("category").toString()});
+        }
     }
     if(movableNodeData->layers.size() > 0)
         emit movableNodeDataReceived(movableNodeData);
@@ -148,19 +164,30 @@ void ServiceManager::movableNodeData(QJsonObject jsonObject)
 void ServiceManager::nodeData(QJsonObject jsonObject)
 {
     NodeData* nodeData = new NodeData();
-    nodeData->id = jsonObject.value("Id").toInt();
-    nodeData->longitude =  jsonObject.value("Longitude").toDouble();
-    nodeData->latitude = jsonObject.value("Latitude").toDouble();
-    nodeData->altitude = jsonObject.value("Altitude").toDouble();
-    nodeData->name = jsonObject.value("Name").toString().toStdString();
-    nodeData->url2D = jsonObject.value("Url2d").toString().toStdString();
-    nodeData->url3D = jsonObject.value("Url3d").toString().toStdString();
-    nodeData->color = jsonObject.value("Color").toString().toStdString();
+    nodeData->type = "Node";
+    nodeData->id = jsonObject.value("Id").isObject() ? jsonObject.value("Id").toObject().value("value").toInt() : jsonObject.value("Id").toInt();
+    nodeData->longitude = jsonObject.value("Longitude").isObject() ? jsonObject.value("Longitude").toObject().value("value").toDouble() : jsonObject.value("Longitude").toDouble();
+    nodeData->latitude = jsonObject.value("Latitude").isObject() ? jsonObject.value("Latitude").toObject().value("value").toDouble() : jsonObject.value("Latitude").toDouble();
+    nodeData->altitude = jsonObject.value("Altitude").isObject() ? jsonObject.value("Altitude").toObject().value("value").toDouble() : jsonObject.value("Altitude").toDouble();
+    nodeData->name = jsonObject.value("Name").isObject() ? jsonObject.value("Name").toObject().value("value").toString().toStdString() : jsonObject.value("Name").toString().toStdString();
+    nodeData->url2D = jsonObject.value("Url2d").isObject() ? jsonObject.value("Url2d").toObject().value("value").toString().toStdString() : jsonObject.value("Url2d").toString().toStdString();
+    nodeData->url3D = jsonObject.value("Url3d").isObject() ? jsonObject.value("Url3d").toObject().value("value").toString().toStdString() : jsonObject.value("Url3d").toString().toStdString();
+    nodeData->imgSrc = jsonObject.value("ImgSrc").isObject() ? jsonObject.value("ImgSrc").toObject().value("value").toString().toStdString() : jsonObject.value("ImgSrc").toString().toStdString();
+    nodeData->iconSrc = jsonObject.value("IconSrc").isObject() ? jsonObject.value("IconSrc").toObject().value("value").toString().toStdString() : jsonObject.value("IconSrc").toString().toStdString();
+    nodeData->color = jsonObject.value("Color").isObject() ? jsonObject.value("Color").toObject().value("value").toString().toStdString() : jsonObject.value("Color").toString().toStdString();
+
     for (auto i : jsonObject.value("LayersId").toArray()){
         int id = i.toInt();
         auto layer = findParenticLayer(id);
         if(layer)
             nodeData->layers.push_back(layer);
+    }
+
+    for (auto &key:jsonObject.keys()){
+        if (jsonObject.value(key).isObject()) {
+            auto obj = jsonObject.value(key).toObject();
+            nodeData->fieldData.push_back(NodeFieldData{key, obj.value("value").toVariant(), obj.value("category").toString()});
+        }
     }
     if(nodeData->layers.size() > 0)
         emit nodeDataReceived(nodeData);
@@ -188,7 +215,9 @@ void ServiceManager::polygonData(QJsonObject jsonObject)
     PolygonData *polygonData = new PolygonData;
     polygonData->id = jsonObject.value("Id").toInt();
     polygonData->name = jsonObject.value("Name").toString().toStdString();
+    polygonData->width = jsonObject.value("Width").toInt();
     polygonData->color = jsonObject.value("Color").toString().toStdString();
+    polygonData->fillColor = jsonObject.value("FillColor").toString().toStdString();
 
     QJsonArray points = jsonObject.value("Points").toArray();
     for (auto i : points) {

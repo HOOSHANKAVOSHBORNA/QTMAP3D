@@ -6,7 +6,6 @@
 #include "serviceManager.h"
 
 
-
 class NodeInformation:public QStandardItemModel
 {
     Q_OBJECT
@@ -18,13 +17,15 @@ class NodeInformation:public QStandardItemModel
 
 
 public:
-    explicit NodeInformation(QObject *parent = nullptr);
+    explicit NodeInformation(QQmlEngine* Engine ,QObject *parent = nullptr);
     ~NodeInformation();
-    void addUpdateNodeInformationItem(NodeData* nodeData, QString imageUrl);
+    void addUpdateNodeInformationItem(NodeData* nodeData);
     virtual QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE QString getMainImageUrl();
     Q_INVOKABLE QString getWindowName();
+
+    QQuickWindow *wnd;
 signals:
     void bookmarkChecked(bool check);
 private:

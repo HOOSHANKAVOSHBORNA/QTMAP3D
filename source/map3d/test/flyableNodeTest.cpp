@@ -70,6 +70,7 @@ void FlyableNodeTest::createFlyableInfo()
     jsonData.insert("Color", mColorList[urlIndex].name());
     jsonData.insert("Url2d", mUrlList[urlIndex].Url2d);
     jsonData.insert("Url3d", mUrlList[urlIndex].Url3d);
+    jsonData.insert("ImgSrc", "qrc:/Resources/airplane1.jpg");
 
     QJsonObject longObject;
     longObject.insert("value", longitude);

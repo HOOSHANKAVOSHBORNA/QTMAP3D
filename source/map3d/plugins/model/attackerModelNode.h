@@ -10,7 +10,7 @@
 class AttackerModelNode : public SimpleModelNode
 {
 public:
-    AttackerModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, MainWindow *mainWindow);
+    AttackerModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkProxyModel *bookmark);
     AttackerModelNode* asAttackerModelNode() override {return this;}
     void ready(int count);
     void attackTo(osgEarth::GeoPoint position);
@@ -26,7 +26,7 @@ private:
     std::string mBulletModelURL;
     std::string mBulletIconURL;
     QQmlEngine *mEngine;
-    MainWindow *mMainWindow;
+    BookmarkProxyModel *mBookmark;
 };
 
 #endif // ATTACKERMODELNODE_H
