@@ -172,7 +172,7 @@ Item {
                 id: toolBoxDocItem
                 windowTitle: sideModel.get(0).name
                 isWindow: sideModel.get(0).isWindow
-                containerItem: ToolboxView {
+                containerItem: ToolboxManagerItem {
                     id: toolbox
                     listModel: ToolboxInstance.toolboxProxyModel()
                 }
