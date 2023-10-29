@@ -160,7 +160,7 @@ Rectangle {
                     anchors.bottomMargin: Math.ceil(100 / Style.monitorRatio)
                     padding: 0
                     icon {
-                        source: pin ? "qrc:/Resources/sidebar-pin.png" : "qrc:/Resources/sidebar-unpin.png"
+                        source: pin ? "qrc:/Resources/sidebar-unpin.png" : "qrc:/Resources/sidebar-pin.png"
                         width: Math.ceil(35 / Style.monitorRatio)
                         height: Math.ceil(35 / Style.monitorRatio)
                     }
