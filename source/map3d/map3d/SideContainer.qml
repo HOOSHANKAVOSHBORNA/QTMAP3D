@@ -231,7 +231,7 @@ Item {
 //                isWindow: sideModel.get(3).isWindow
                 containerItem: LocationManager {
                     id: locationManager
-                    listModel: LocatoinManagerInstance
+                    listModel: LocatoinManagerInstance.locationProxyModel()
                 }
 
                 onWindowClose: {
