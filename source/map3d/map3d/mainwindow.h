@@ -11,7 +11,7 @@
 #include "mapItem.h"
 #include "mapControllerItem.h"
 #include "bookmark.h"
-#include "toolbox.h"
+#include "toolboxManager.h"
 #include "locationManager.h"
 
 class ListWindow;

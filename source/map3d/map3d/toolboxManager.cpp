@@ -1,4 +1,4 @@
-#include "toolbox.h"
+#include "toolboxManager.h"
 
 #include <QHeaderView>
 #include <QQmlComponent>
@@ -234,6 +234,8 @@ ToolboxProxyModel* ToolboxProxyModel::mInstance = nullptr;
 ToolboxProxyModel::ToolboxProxyModel()
 {
     setDynamicSortFilter(true);
+    Toolbox *myModel = new Toolbox();
+    setSourceModel(myModel);
 }
 
 ToolboxProxyModel *ToolboxProxyModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -281,4 +283,23 @@ void ToolboxProxyModel::onItemClicked(const QModelIndex &current)
     // call mapped item in toolbox model
     QModelIndex index = mapToSource(current);
     static_cast<Toolbox*>(sourceModel())->onItemClicked(index);
+}
+
+ToolboxManager::ToolboxManager()
+{
+    mToolboxModel = ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
+}
+
+ToolboxManager *ToolboxManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+
+    if(mInstance == nullptr){ mInstance = new ToolboxManager(); }
+    return mInstance;
+}
+
+ToolboxProxyModel *ToolboxManager::toolboxProxyModel() const
+{
+    return mToolboxModel;
 }
