@@ -174,7 +174,7 @@ Item {
                 isWindow: sideModel.get(0).isWindow
                 containerItem: ToolboxView {
                     id: toolbox
-                    listModel:ToolboxInstance
+                    listModel: ToolboxInstance.toolboxProxyModel()
                 }
 
                 onWindowClose: {

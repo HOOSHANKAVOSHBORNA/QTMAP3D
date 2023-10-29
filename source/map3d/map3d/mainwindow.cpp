@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
 
-    qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
+    qmlRegisterSingletonType<ToolboxManager>("Crystal", 1, 0, "ToolboxInstance", ToolboxManager::createSingletonInstance);
     qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayersInstance", LayerManager::createSingletonInstance);
     qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);
     qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
@@ -64,12 +64,10 @@ void MainWindow::initComponent()
             addToCenterCenterContainer(mMapItem);
 
             // --------------------------------------------------------- model settings
-            LocationManager* myModel = LocationManager::createSingletonInstance(nullptr, nullptr);
-            myModel->initialize(mMapItem);
+            LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
+            locationManager->initialize(mMapItem);
 
-            ToolboxProxyModel* toolboxProxyModel = ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
-            Toolbox *toolbox = new Toolbox(this);
-            toolboxProxyModel->setSourceModel(toolbox);
+            ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
 
             LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
             layerManager->layerModel()->initialize(mMapItem);

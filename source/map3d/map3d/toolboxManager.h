@@ -1,5 +1,5 @@
-#ifndef TOOLBOX_H
-#define TOOLBOX_H
+#ifndef TOOLBOXMANAGER_H
+#define TOOLBOXMANAGER_H
 
 #include <QAbstractItemModel>
 #include <QQmlEngine>
@@ -108,8 +108,6 @@ private:
 class ToolboxProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
 
 private:
     explicit ToolboxProxyModel();
@@ -135,4 +133,23 @@ private:
     QString mFilterString = "";
 };
 
-#endif // TOOLBOX_H
+class ToolboxManager : public QObject
+{
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+
+private:
+    explicit ToolboxManager();
+
+public:
+    static ToolboxManager* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+
+    Q_INVOKABLE ToolboxProxyModel *toolboxProxyModel() const;
+
+private:
+    inline static ToolboxManager* mInstance;
+    ToolboxProxyModel *mToolboxModel;
+};
+
+#endif // TOOLBOXMANAGER_H
