@@ -75,7 +75,7 @@ private:
     NodeData* mNodeData;
     osgEarth::Color mColor{osgEarth::Color::White};
     NodeInformation* mNodeInformation{nullptr};
-    bool isBookmarked{false};
+    bool mIsBookmarked{false};
     QQmlEngine *mEnigine;
     BookmarkProxyModel *mBookmark;
     BookmarkItem *mBookmarkItem;

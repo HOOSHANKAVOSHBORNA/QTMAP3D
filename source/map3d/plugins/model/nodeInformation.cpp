@@ -1,5 +1,7 @@
 #include "nodeInformation.h"
 
+#include <QQmlEngine>
+
 NodeInformation::NodeInformation(QQmlEngine* Engine,QObject *parent)
 {
     setColumnCount(1);
@@ -12,11 +14,11 @@ NodeInformation::NodeInformation(QQmlEngine* Engine,QObject *parent)
         }
 
         if(status == QQmlComponent::Ready){
-            wnd = qobject_cast<QQuickWindow*>(comp->create());
+            mWnd = qobject_cast<QQuickWindow*>(comp->create());
         }
     });
     comp->loadUrl(QUrl("qrc:/NodeInformation.qml"));
-    wnd->show();
+    mWnd->setProperty("nodeinfo", QVariant::fromValue<NodeInformation*>(this));
 }
 
 NodeInformation::~NodeInformation()
@@ -41,8 +43,6 @@ void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
         item->setData(QVariant::fromValue(nodeFieldData.value), valueText);
         mItems[category]->appendRow(item);
     }
-
-    wnd->setProperty("nodeinfo", QVariant::fromValue<NodeInformation*>(this));
 }
 
 QHash<int, QByteArray> NodeInformation::roleNames() const
@@ -55,6 +55,11 @@ QHash<int, QByteArray> NodeInformation::roleNames() const
     return textroles;
 }
 
+void NodeInformation::show()
+{
+    mWnd->show();
+}
+
 QString NodeInformation::getMainImageUrl()
 {
     return mainImageUrl;
@@ -63,6 +68,11 @@ QString NodeInformation::getMainImageUrl()
 QString NodeInformation::getWindowName()
 {
     return windowName;
+}
+
+QQuickWindow *NodeInformation::wnd() const
+{
+    return mWnd;
 }
 
 

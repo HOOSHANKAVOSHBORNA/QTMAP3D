@@ -75,7 +75,7 @@ protected:
 
 private:
     SimpleModelNode* pick(float x, float y);
-
+    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, osgEarth::GeoPoint geopos);
 private:
     Type mType;
     static int mCount;

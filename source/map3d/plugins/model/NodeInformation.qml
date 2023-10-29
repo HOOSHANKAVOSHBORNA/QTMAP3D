@@ -9,6 +9,7 @@ Window {
     width:310/Style.monitorRatio
     height: 612/Style.monitorRatio
     color: Style.backgroundColor
+
     property var nodeinfo
     ColumnLayout{
         anchors.fill: parent

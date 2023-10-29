@@ -21,11 +21,13 @@ public:
     ~NodeInformation();
     void addUpdateNodeInformationItem(NodeData* nodeData);
     virtual QHash<int, QByteArray> roleNames() const override;
+    void show();
 
     Q_INVOKABLE QString getMainImageUrl();
     Q_INVOKABLE QString getWindowName();
 
-    QQuickWindow *wnd;
+    QQuickWindow *wnd() const;
+
 signals:
     void bookmarkChecked(bool check);
 private:
@@ -33,6 +35,7 @@ private:
     QString windowName;
     QString mainImageUrl;
     std::map<QString, QStandardItem*> mItems;
+    QQuickWindow *mWnd;
 };
 
 #endif // NODEINFORMATION_H
