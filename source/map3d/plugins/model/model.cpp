@@ -158,22 +158,18 @@ bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter
 
 bool Model::mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    if (mState == State::MOVING) {
+    if (mState == State::MOVING && !isAttackActive) {
         osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         attack(geoPos);
+        isAttackActive = true;
         return true;
+    }else if(isAttackActive){
+        mCurrentModel->attackResult(true);
+        isAttackActive = false;
     }
     return false;
 }
 
-bool Model::keyPressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-{
-    if (ea.getKey() == osgKeyButton::KEY_Space ){
-        mCurrentModel->attackResult(true);
-        return true;
-    }
-    return false;
-}
 
 osgEarth::Symbology::Style &Model::getDefaultStyle()
 {
@@ -251,16 +247,13 @@ void Model::onTankItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/models/tank/tank.png");
-
         mType = Type::ATTACKER;
         setState(State::READY);
         mapItem()->addNode(iconNode());
-
     }
     else {
         if(state() == State::MOVING)
             cancel();
-
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
     }
@@ -385,14 +378,15 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         addUpdateFlyableNode(nodeData);
         break;
     case Type::ATTACKER:
-        name = "Tank" + QString::number(mCount);
-        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkProxyModel() , 5);
+        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkProxyModel() , 5);
         mCurrentModel->setModelColor(osgEarth::Color::Red);
-        if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
-            mFlyableNodelLayer->clear();
-            mModelNodeLayer->addLayer(mFlyableNodelLayer);
+        mCurrentModel->setBulletLayer(mMoveableNodeLayer);
+        if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
+            mMoveableNodeLayer->clear();
+            mModelNodeLayer->addLayer(mMoveableNodeLayer);
         }
-        mFlyableNodelLayer->addChild(mCurrentModel);
+        mCurrentModel->setPosition(geoPos);
+        mMoveableNodeLayer->addChild(mCurrentModel);
         break;
     default:
         break;

@@ -49,7 +49,8 @@ public:
 
     void attackTo(osgEarth::GeoPoint geoPos,const std::string model3D,const std::string icon2D);
     void attackResult(bool result);
-    double getBulletDistanceToTarget();
+    osgEarth::GeoPoint getBulletPosition();
+    void setBulletLayer(ParenticAnnotationLayer *layer);
 
 private slots:
     void compile();
@@ -64,6 +65,7 @@ private:
     osg::ref_ptr<Circle> mCircleSelectNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
     osg::ref_ptr<BulletNode> mBulletNode;
+    osg::ref_ptr<ParenticAnnotationLayer> mBulletNodeLayer{nullptr};
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;

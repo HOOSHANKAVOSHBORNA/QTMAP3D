@@ -50,7 +50,6 @@ public:
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
-    bool keyPressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
 
     static osgEarth::Symbology::Style &getDefaultStyle();
 public slots:
@@ -81,6 +80,7 @@ private:
     static int mCount;
     bool mIs3D;
     State mState{State::NONE};
+    bool isAttackActive = false;
 
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
