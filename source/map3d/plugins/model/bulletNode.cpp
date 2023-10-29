@@ -3,18 +3,25 @@
 BulletNode::BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkManager *bookmark):
     FlyableModelNode(mapControler, modelUrl, iconUrl, engine, bookmark)
 {
+    mMapItem = mapControler;
 }
 
 void BulletNode::attackTo(osgEarth::GeoPoint position)
 {
+    mTarget = position;
     this->flyTo(position,100);
 }
 
-void BulletNode::explode()
+Explosion *BulletNode::explode()
 {
     mExplosion = new Explosion(mMapItem);
     mExplosion->setMapNode(mMapItem->getMapNode());
-    this->addChild(mExplosion);
+    return mExplosion;
+}
+
+osgEarth::GeoPoint BulletNode::getTargetPosition()
+{
+    return mTarget;
 }
 
 

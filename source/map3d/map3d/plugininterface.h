@@ -4,7 +4,7 @@
 
 
 #include "serviceManager.h"
-#include "toolbox.h"
+#include "toolboxManager.h"
 
 #include <QObject>
 #include <QString>

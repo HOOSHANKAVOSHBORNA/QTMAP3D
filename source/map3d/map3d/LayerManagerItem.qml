@@ -7,7 +7,7 @@ import "style"
 
 Item {
     id: rootItem
-    property var layersModell
+    property var layerModel
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
 
 
@@ -75,7 +75,7 @@ Item {
                 anchors.fill: parent
                 clip: true
                 rowSpacing: 5 / Style.monitorRatio
-                model: layersModell
+                model: layerModel
 
 //                selectionModel: ItemSelectionModel {
 //                    id: selectionModel

@@ -1,7 +1,7 @@
-#include "locationManagerModel.h"
+#include "locationManager.h"
 #include "osgEarth/Viewpoint"
 
-LocationManagerModel::LocationManagerModel(MapItem *mapItem)
+LocationModel::LocationModel(MapItem *mapItem)
 {
     mMapItem = mapItem;
 
@@ -17,12 +17,12 @@ LocationManagerModel::LocationManagerModel(MapItem *mapItem)
     mLocations.append(ld1);
 }
 
-int LocationManagerModel::rowCount(const QModelIndex &parent) const
+int LocationModel::rowCount(const QModelIndex &parent) const
 {
     return mLocations.size();
 }
 
-QVariant LocationManagerModel::data(const QModelIndex &index, int role) const
+QVariant LocationModel::data(const QModelIndex &index, int role) const
 {
     const LocationData ld = mLocations.at(index.row());
 
@@ -54,7 +54,7 @@ QVariant LocationManagerModel::data(const QModelIndex &index, int role) const
     return QVariant(false);
 }
 
-bool LocationManagerModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool LocationModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     LocationData ld = mLocations.at(index.row());
 
@@ -97,43 +97,43 @@ bool LocationManagerModel::setData(const QModelIndex &index, const QVariant &val
     return true;
 }
 
-void LocationManagerModel::myRemoveRow(QModelIndex index)
+void LocationModel::myRemoveRow(QModelIndex index)
 {
     beginRemoveRows(QModelIndex(), index.row(), index.row());
     mLocations.removeAt(index.row());
     endRemoveRows();
 }
 
-void LocationManagerModel::goToLocation(QModelIndex index)
+void LocationModel::goToLocation(QModelIndex index)
 {
     mMapItem->getCameraController()->setViewpoint(mLocations.at(index.row()).viewpoint, 0);
 }
 
-void LocationManagerModel::myAppendRow(const LocationData &newLocationData)
+void LocationModel::myAppendRow(const LocationData &newLocationData)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     mLocations.append(newLocationData);
     endInsertRows();
 }
 
-void LocationManagerModel::myEditRow(QModelIndex index, const LocationData &newLocationData)
+void LocationModel::myEditRow(QModelIndex index, const LocationData &newLocationData)
 {
     beginResetModel();
     mLocations[index.row()] = newLocationData;
     endResetModel();
 }
 
-QVector<LocationData> LocationManagerModel::locations() const
+QVector<LocationData> LocationModel::locations() const
 {
     return mLocations;
 }
 
-void LocationManagerModel::setLocations(const QVector<LocationData> &newLocations)
+void LocationModel::setLocations(const QVector<LocationData> &newLocations)
 {
     mLocations = newLocations;
 }
 
-QHash<int, QByteArray> LocationManagerModel::roleNames() const
+QHash<int, QByteArray> LocationModel::roleNames() const
 {
     QHash<int, QByteArray> locationFields;
 
@@ -147,45 +147,45 @@ QHash<int, QByteArray> LocationManagerModel::roleNames() const
     locationFields[DescriptionRole] = "description";
     locationFields[ImageSourceRole] = "imageSource";
     locationFields[ColorRole] = "color";
-    \
+
     return locationFields;
 }
 
-MapItem *LocationManagerModel::mapItem() const
+MapItem *LocationModel::mapItem() const
 {
     return mMapItem;
 }
 
 // ------------------------------------------------------- proxy model methods
-LocationManagerProxyModel *LocationManagerProxyModel::mInstance = nullptr;
+LocationProxyModel *LocationProxyModel::mInstance = nullptr;
 
-LocationManagerProxyModel::LocationManagerProxyModel()
+LocationProxyModel::LocationProxyModel()
 {
 
 }
 
-LocationManagerProxyModel *LocationManagerProxyModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+LocationProxyModel *LocationProxyModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new LocationManagerProxyModel(); }
+    if(mInstance == nullptr){ mInstance = new LocationProxyModel(); }
     return mInstance;
 }
 
-void LocationManagerProxyModel::myRemoveRow(const QModelIndex &index)
+void LocationProxyModel::myRemoveRow(const QModelIndex &index)
 {
-    dynamic_cast<LocationManagerModel*>(sourceModel())->myRemoveRow(mapToSource(index));
+    dynamic_cast<LocationModel*>(sourceModel())->myRemoveRow(mapToSource(index));
 }
 
-void LocationManagerProxyModel::goToLocation(const QModelIndex &index)
+void LocationProxyModel::goToLocation(const QModelIndex &index)
 {
-    dynamic_cast<LocationManagerModel*>(sourceModel())->goToLocation(mapToSource(index));
+    dynamic_cast<LocationModel*>(sourceModel())->goToLocation(mapToSource(index));
 }
 
 // for debug
-void LocationManagerProxyModel::printCurrentLocation()
+void LocationProxyModel::printCurrentLocation()
 {
-    osgEarth::Viewpoint vp = dynamic_cast<LocationManagerModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
+    osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
 
     qDebug() << "vp.name(): " << QString::fromStdString(vp.name().get());
     qDebug() << "vp.focalPoint().value().x(): " << vp.focalPoint().value().x();
@@ -196,17 +196,17 @@ void LocationManagerProxyModel::printCurrentLocation()
     qDebug() << "vp.range(): " << vp.range()->as(osgEarth::Units::METERS);
 }
 
-void LocationManagerProxyModel::addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor)
+void LocationProxyModel::addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor)
 {
-    osgEarth::Viewpoint vp = dynamic_cast<LocationManagerModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
+    osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
     vp.name() = newName.toStdString();
 
-    dynamic_cast<LocationManagerModel*>(sourceModel())->myAppendRow(LocationData{vp, newDescription, newImageSource, newColor});
+    dynamic_cast<LocationModel*>(sourceModel())->myAppendRow(LocationData{vp, newDescription, newImageSource, newColor});
 }
 
-QVector3D LocationManagerProxyModel::getCurrentXYZ()
+QVector3D LocationProxyModel::getCurrentXYZ()
 {
-    osgEarth::Viewpoint vp = dynamic_cast<LocationManagerModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
+    osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
 
     QVector3D qv3d;
     qv3d.setX(vp.focalPoint().value().x());
@@ -215,20 +215,20 @@ QVector3D LocationManagerProxyModel::getCurrentXYZ()
     return qv3d;
 }
 
-void LocationManagerProxyModel::editLocation(const QModelIndex &index, QString newName, QString newDescription, QString newImageSource, QString newColor)
+void LocationProxyModel::editLocation(const QModelIndex &index, QString newName, QString newDescription, QString newImageSource, QString newColor)
 {
-    osgEarth::Viewpoint vp = dynamic_cast<LocationManagerModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
+    osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
     vp.name() = newName.toStdString();
 
-    dynamic_cast<LocationManagerModel*>(sourceModel())->myEditRow(mapToSource(index), LocationData{vp, newDescription, newImageSource, newColor});
+    dynamic_cast<LocationModel*>(sourceModel())->myEditRow(mapToSource(index), LocationData{vp, newDescription, newImageSource, newColor});
 }
 
-QString LocationManagerProxyModel::searchedName() const
+QString LocationProxyModel::searchedName() const
 {
     return mSearchedWord;
 }
 
-void LocationManagerProxyModel::setSearchedName(const QString &newSearchedName)
+void LocationProxyModel::setSearchedName(const QString &newSearchedName)
 {
     if (mSearchedWord == newSearchedName)
         return;
@@ -238,7 +238,7 @@ void LocationManagerProxyModel::setSearchedName(const QString &newSearchedName)
     invalidateFilter();
 }
 
-bool LocationManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+bool LocationProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     const QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
 
@@ -247,10 +247,51 @@ bool LocationManagerProxyModel::filterAcceptsRow(int source_row, const QModelInd
     return (name.contains(mSearchedWord.toLower()));
 }
 
-bool LocationManagerProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
+bool LocationProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
 {
     QVariant leftData = sourceModel()->data(source_left, NameRole);
     QVariant rightData = sourceModel()->data(source_right, NameRole);
 
     return leftData.toString() < rightData.toString();
+}
+
+// ----------------------------------------------------- model manager
+LocationManager::LocationManager()
+{
+    mLocationProxyModel = LocationProxyModel::createSingletonInstance(nullptr, nullptr);
+}
+
+LocationManager *LocationManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+
+    if(mInstance == nullptr){ mInstance = new LocationManager(); }
+    return mInstance;
+}
+
+void LocationManager::myRemoveRow(int index)
+{
+    mLocationProxyModel->myRemoveRow(mLocationProxyModel->index(index, 0));
+}
+
+void LocationManager::addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor)
+{
+    mLocationProxyModel->addNewLocation(newName, newDescription, newImageSource, newColor);
+}
+
+void LocationManager::editLocation(int index, QString newName, QString newDescription, QString newImageSource, QString newColor)
+{
+    mLocationProxyModel->editLocation(mLocationProxyModel->index(index, 0), newName, newDescription, newImageSource, newColor);
+}
+
+LocationProxyModel *LocationManager::locationProxyModel()
+{
+    return mLocationProxyModel;
+}
+
+void LocationManager::initialize(MapItem *mapItem)
+{
+    LocationModel *myModel = new LocationModel(mapItem);
+    mLocationProxyModel->setSourceModel(myModel);
 }

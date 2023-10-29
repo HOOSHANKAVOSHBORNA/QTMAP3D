@@ -18,7 +18,7 @@
 #include "qqmlcontext.h"
 #include "mapControllerItem.h"
 #include "layerManager.h"
-#include "locationManagerModel.h"
+#include "locationManager.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
@@ -31,11 +31,11 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
 
-    qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
-    qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayersInstance", LayerManager::createSingletonInstance);
-    qmlRegisterSingletonType<LocationManagerProxyModel>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManagerProxyModel::createSingletonInstance);
-    qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
 
+    qmlRegisterSingletonType<ToolboxManager>("Crystal", 1, 0, "ToolboxManagerInstance", ToolboxManager::createSingletonInstance);
+    qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayerManagerInstance", LayerManager::createSingletonInstance);
+    qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);
+    qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
     setColor(Qt::black);
 }
 
@@ -51,7 +51,7 @@ void MainWindow::initComponent()
     QQmlEngine *engine = qmlEngine(this);
 
     QQmlComponent* comp = new QQmlComponent(engine);
-    connect(comp, &QQmlComponent::statusChanged,[&](QQmlComponent::Status status){
+    connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status){
         if(status == QQmlComponent::Error){
             qDebug()<<"Can not load MapControllerItem: "<<comp->errorString();
         }
@@ -64,16 +64,13 @@ void MainWindow::initComponent()
             addToCenterCenterContainer(mMapItem);
 
             // --------------------------------------------------------- model settings
-            LocationManagerModel *locationManagerModel = new LocationManagerModel(mMapItem);
-            LocationManagerProxyModel* myModel = LocationManagerProxyModel::createSingletonInstance(nullptr, nullptr);
-            myModel->setSourceModel(locationManagerModel);
+            LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
+            locationManager->initialize(mMapItem);
 
-            ToolboxProxyModel* toolboxProxyModel = ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
-            Toolbox *toolbox = new Toolbox(this);
-            toolboxProxyModel->setSourceModel(toolbox);
+            ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
 
             LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
-            layerManager->layerModel()->initialize(mMapItem);
+            layerManager->setMapItem(mMapItem);
 
             BookmarkManager::createSingletonInstance(nullptr, nullptr);
         }
@@ -107,9 +104,9 @@ BookmarkManager *MainWindow::getBookmarkManager() const
     return BookmarkManager::createSingletonInstance(nullptr, nullptr);
 }
 
-LocationManagerProxyModel *MainWindow::getLocationManager() const
+LocationProxyModel *MainWindow::getLocationManager() const
 {
-    return LocationManagerProxyModel::createSingletonInstance(nullptr, nullptr);
+    return LocationProxyModel::createSingletonInstance(nullptr, nullptr);
 }
 
 void MainWindow::addToCenterCenterContainer(QQuickItem *item)

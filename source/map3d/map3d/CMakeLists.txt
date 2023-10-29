@@ -33,7 +33,7 @@ add_executable(Map3d
         mapControllerItem.cpp mapControllerItem.h
         mapObject.cpp mapObject.h
         cameraController.cpp cameraController.h
-        toolbox.h toolbox.cpp
+        toolboxManager.h toolboxManager.cpp
         compositeAnnotationLayer.h compositeAnnotationLayer.cpp
         utility.h utility.cpp
         searchNodeModel.h searchNodeModel.cpp
@@ -44,7 +44,7 @@ add_executable(Map3d
         resources.qrc
         statusBar.cpp
         statusBar.h
-        locationManagerModel.h locationManagerModel.cpp)
+        locationManager.h locationManager.cpp)
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include" "style/")

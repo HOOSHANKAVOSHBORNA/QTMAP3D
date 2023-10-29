@@ -172,9 +172,9 @@ Item {
                 id: toolBoxDocItem
                 windowTitle: sideModel.get(0).name
                 isWindow: sideModel.get(0).isWindow
-                containerItem: ToolboxView {
+                containerItem: ToolboxManagerItem {
                     id: toolbox
-                    listModel:ToolboxInstance
+                    listModel: ToolboxManagerInstance.toolboxProxyModel()
                 }
 
                 onWindowClose: {
@@ -191,9 +191,9 @@ Item {
                 id: layerDocItem
                 windowTitle: sideModel.get(1).name
 //                isWindow: sideModel.get(1).isWindow
-                containerItem: LayersWidget {
+                containerItem: LayerManagerItem {
                     id: layers
-                    layersModell: LayersInstance.layerModel()
+                    layerModel: LayerManagerInstance.layerModel()
                 }
 
                 onWindowClose: {
@@ -229,9 +229,9 @@ Item {
                 id: locationDocItem
                 windowTitle: sideModel.get(3).name
 //                isWindow: sideModel.get(3).isWindow
-                containerItem: LocationManager {
+                containerItem: LocationManagerItem {
                     id: locationManager
-                    listModel: LocatoinManagerInstance
+                    listModel: LocatoinManagerInstance.locationProxyModel()
                 }
 
                 onWindowClose: {

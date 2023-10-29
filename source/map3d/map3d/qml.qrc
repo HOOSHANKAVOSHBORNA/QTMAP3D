@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>MainWindow.qml</file>
         <file>File.qml</file>
-        <file>LayersWidget.qml</file>
+        <file>LayerManagerItem.qml</file>
         <file>Compass.qml</file>
         <file>LocationWidget.qml</file>
         <file>location/GoPointWidget.qml</file>
@@ -17,7 +17,7 @@
         <file>setting/Settings.qml</file>
         <file>StatusBar.qml</file>
         <file>MapControllerItem.qml</file>
-        <file>ToolboxView.qml</file>
+        <file>ToolboxManagerItem.qml</file>
         <file>SearchBar.qml</file>
         <file>style/Style.qml</file>
         <file>style/qmldir</file>
@@ -27,7 +27,7 @@
         <file>TabItem.qml</file>
         <file>CameraHandlerItem.qml</file>
         <file>Resources/plane.mesh</file>
-        <file>LocationManager.qml</file>
+        <file>LocationManagerItem.qml</file>
         <file>CameraPositionHandlerItem.qml</file>
         <file>SmallMapItem.qml</file>
         <file>SideBar.qml</file>

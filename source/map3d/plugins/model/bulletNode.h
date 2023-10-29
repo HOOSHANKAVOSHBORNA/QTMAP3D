@@ -9,17 +9,19 @@ class BulletNode : public FlyableModelNode
 public:
     BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkManager *bookmark);
     void attackTo(osgEarth::GeoPoint position);
-    void explode();
+    Explosion* explode();
+    osgEarth::GeoPoint getTargetPosition();
 
 
 
 private:
-    Explosion *mExplosion;
+    osg::ref_ptr<Explosion> mExplosion;
     MapItem *mMapItem;
     std::string mBulletModelURL;
     std::string mBulletIconURL;
     QQmlEngine *mEngine;
     BookmarkManager *mBookmark;
+    osgEarth::GeoPoint mTarget;
 };
 
 #endif // BULLETNODE_H
