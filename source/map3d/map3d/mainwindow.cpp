@@ -72,7 +72,7 @@ void MainWindow::initComponent()
             toolboxProxyModel->setSourceModel(toolbox);
 
             LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
-            layerManager->layerModel()->initialize(mMapItem);
+            layerManager->setMapItem(mMapItem);
 
             BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
         }
