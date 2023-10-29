@@ -28,14 +28,20 @@ NodeInformation::~NodeInformation()
 
 void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
 {
+    QStandardItem* header = new QStandardItem;
     windowName = QString::fromStdString(nodeData->name);
-    mainImageUrl = QString::fromStdString(nodeData->imgSrc);
+   // mainImageUrl = QString::fromStdString(nodeData->imgSrc);
+    setMainImageUrl(QString::fromStdString(nodeData->imgSrc));
+    header->setData(QVariant::fromValue(windowName),windowText);
+    //    mItems.clear();
+    //    rootItem->removeRows(0,rootItem->rowCount());
     for(NodeFieldData nodeFieldData:nodeData->fieldData){
 
         QStandardItem *item = new QStandardItem;
         QString category = nodeFieldData.category;
         if (mItems.find(category) == mItems.end()){
             QStandardItem *p = new QStandardItem(category);
+            p->setData(QVariant::fromValue(nodeFieldData.categorySrc),iconImageSource);
             mItems[category] = p;
             rootItem->appendRow(p);
         }
@@ -52,6 +58,10 @@ QHash<int, QByteArray> NodeInformation::roleNames() const
     textroles[nameText] = "nameText";
     textroles[valueText] = "valueText";
     textroles[iconImageSource] = "iconImageSource";
+    textroles[mainImageSource] = "mainImageSource";
+    textroles[windowText] = "windowText";
+    textroles[mainIconImageSource] = "mainIconImageSource";
+
     return textroles;
 }
 
@@ -60,14 +70,15 @@ void NodeInformation::show()
     mWnd->show();
 }
 
-QString NodeInformation::getMainImageUrl()
-{
-    return mainImageUrl;
-}
 
 QString NodeInformation::getWindowName()
 {
     return windowName;
+}
+
+QString NodeInformation::getIconImageUrl()
+{
+    return iconImageUrl;
 }
 
 QQuickWindow *NodeInformation::wnd() const
@@ -76,3 +87,15 @@ QQuickWindow *NodeInformation::wnd() const
 }
 
 
+QString NodeInformation::mainImageUrl() const
+{
+    return mMainImageUrl;
+}
+
+void NodeInformation::setMainImageUrl(const QString &newMainImageUrl)
+{
+    if (mMainImageUrl == newMainImageUrl)
+        return;
+    mMainImageUrl = newMainImageUrl;
+    emit MainImageUrlChanged();
+}

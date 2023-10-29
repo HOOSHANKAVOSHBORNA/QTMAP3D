@@ -504,11 +504,14 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     flyableNodeData->imgSrc = imgSrc;
     flyableNodeData->color = "white";
     flyableNodeData->speed = 100;
-    flyableNodeData->fieldData.push_back(NodeFieldData{"name", "Aircraft" + QString::number(mCount), "Main Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"Longitude",QString::number(flyableNodeData->longitude), "Location Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"Latitude",QString::number(flyableNodeData->latitude), "Location Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(flyableNodeData->altitude), "Location Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(flyableNodeData->speed), "Location Information"});
+    flyableNodeData->imgSrc = "qrc:/Resources/airplane1.jpg";
+    flyableNodeData->iconSrc = "qrc:/Resources/aircraft.png";
+    flyableNodeData->name = "Aircraft0";
+    flyableNodeData->fieldData.push_back(NodeFieldData{"name", "Aircraft" + QString::number(mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"Longitude",QString::number(flyableNodeData->longitude), "Location Information","qrc:/Resources/location.png"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"Latitude",QString::number(flyableNodeData->latitude), "Location Information","qrc:/Resources/location.png"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(flyableNodeData->altitude), "Location Information","qrc:/Resources/location.png"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(flyableNodeData->speed), "Location Information","qrc:/Resources/location.png"});
     return flyableNodeData;
 }
