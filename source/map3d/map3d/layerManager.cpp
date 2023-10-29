@@ -261,7 +261,7 @@ void LayerModel::setFilterString(const QString &newFilterString)
     invalidateFilter();
 }
 
-// ---------------- Model Manager
+// ----------------------------------------------------------------- Model Manager
 LayerManager::LayerManager()
 {
     mLayerModel = LayerModel::createSingletonInstance(nullptr, nullptr);
@@ -272,10 +272,35 @@ LayerModel *LayerManager::layerModel() const
     return mLayerModel;
 }
 
+void LayerManager::onLayerAdded(osgEarth::Layer *layer, osgEarth::Layer *parentLayer, unsigned int index)
+{
+    mLayerModel->onLayerAdded(layer, parentLayer, index);
+}
+
+void LayerManager::onLayerRemoved(osgEarth::Layer *layer, osgEarth::Layer *parentLayer, unsigned int index)
+{
+    mLayerModel->onLayerRemoved(layer, parentLayer, index);
+}
+
+bool LayerManager::getLayerVisible(osgEarth::Layer *layer) const
+{
+    return mLayerModel->getLayerVisible(layer);
+}
+
+void LayerManager::setLayerVisible(osgEarth::VisibleLayer *layer)
+{
+    mLayerModel->setLayerVisible(layer);
+}
+
 LayerManager *LayerManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
     if(mInstance == nullptr){ mInstance = new LayerManager(); }
     return mInstance;
+}
+
+void LayerManager::initialize(MapItem *mapItem)
+{
+
 }

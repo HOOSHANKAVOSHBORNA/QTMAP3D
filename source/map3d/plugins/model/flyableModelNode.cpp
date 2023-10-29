@@ -69,8 +69,8 @@ void FmodelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *
     NodeCallback::traverse(node,nv);
 }
 
-FlyableModelNode::FlyableModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent):
-    MoveableModelNode(mapControler, modelUrl, iconUrl, engine, bookmark, parent)
+FlyableModelNode::FlyableModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkProxyModel *bookmark,int bulletCount, QObject *parent):
+    MoveableModelNode(mapControler, modelUrl, iconUrl, engine, bookmark,bulletCount, parent)
 {
     mMoveAnimationPathCallback = new FmodelAnimationPathCallback(mapItem(), this);
     osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath();

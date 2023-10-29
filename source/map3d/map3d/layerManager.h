@@ -17,9 +17,17 @@ class LayerManager : public QObject
     QML_SINGLETON
 
 public:
-    static LayerManager* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+    static LayerManager* createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
+
+    void initialize(MapItem *mapItem);
 
     Q_INVOKABLE LayerModel *layerModel() const;
+
+    void onLayerAdded(osgEarth::Layer* layer, osgEarth::Layer *parentLayer, unsigned index);
+    void onLayerRemoved(osgEarth::Layer* layer, osgEarth::Layer *parentLayer, unsigned index);
+
+    bool getLayerVisible(osgEarth::Layer *layer) const;
+    void setLayerVisible(osgEarth::VisibleLayer *layer);
 
 private:
     explicit LayerManager();
@@ -33,7 +41,7 @@ class LayerModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_PROPERTY(QString filterString READ filterString WRITE setFilterString NOTIFY filterStringChanged FINAL)
-    Q_PROPERTY(QModelIndex dragIndex READ getDragIndex WRITE setDragIndex)
+    Q_PROPERTY(QModelIndex dragIndex READ getDragIndex WRITE setDragIndex NOTIFY filterStringChanged FINAL)
 
     enum Role {
         VisibleRole = Qt::UserRole + 100,
@@ -49,20 +57,23 @@ public:
 
     void initialize(MapItem *mapItem);
     void initializeModel(osgEarth::Map *map);
-    QHash<int,QByteArray> roleNames() const override;
+    QHash<int, QByteArray> roleNames() const override;
     QModelIndex getDragIndex();
     void setDragIndex(QModelIndex value);
 
     QString filterString() const;
     Q_INVOKABLE void setFilterString(const QString &newFilterString);
 
+    bool getLayerVisible(osgEarth::Layer *layer) const;
+    void setLayerVisible(osgEarth::VisibleLayer *layer);
+
 public slots:
     void onVisibleItemClicked(const QModelIndex &current);
     void onRemoveItemClicked(const QModelIndex &current);
     void onMoveItem(QModelIndex oldIndex, QModelIndex newIndex);
 
-    void onLayerAdded(osgEarth::Layer* layer , osgEarth::Layer *parentLayer,   unsigned index);
-    void onLayerRemoved(osgEarth::Layer* layer ,osgEarth::Layer *parentLayer, unsigned index);
+    void onLayerAdded(osgEarth::Layer* layer, osgEarth::Layer *parentLayer, unsigned index);
+    void onLayerRemoved(osgEarth::Layer* layer, osgEarth::Layer *parentLayer, unsigned index);
 
 signals:
     void filterStringChanged();
@@ -70,8 +81,6 @@ signals:
 private:
     void moveItem(QModelIndex from , QModelIndex to);
     void setItemVisible(QStandardItem *item, bool visible);
-    bool getLayerVisible(osgEarth::Layer *layer) const;
-    void setLayerVisible(osgEarth::VisibleLayer *layer);
 
 private:
     static LayerModel* mInstance;
