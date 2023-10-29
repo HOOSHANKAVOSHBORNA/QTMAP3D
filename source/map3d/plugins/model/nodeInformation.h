@@ -28,7 +28,6 @@ public:
     QQuickWindow *wnd;
 signals:
     void bookmarkChecked(bool check);
-    void onWindowClosing();
 private:
     QStandardItem *rootItem;
     QString windowName;

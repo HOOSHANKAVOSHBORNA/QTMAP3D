@@ -286,9 +286,6 @@ void SimpleModelNode::selectModel()
                 delete mBookmarkItem;
             }
         });
-        connect(mNodeInformation, &NodeInformation::onWindowClosing, [&](){
-            delete mNodeInformation;
-        });
     }
     mIsSelected = !mIsSelected;
     if(mIsSelected){

@@ -4,5 +4,6 @@
         <file>resources/car.png</file>
         <file>resources/airplane.png</file>
         <file>resources/tank.png</file>
+        <file>NodeInformation.qml</file>
     </qresource>
 </RCC>
