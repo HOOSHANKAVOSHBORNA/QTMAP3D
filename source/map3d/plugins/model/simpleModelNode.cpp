@@ -278,15 +278,15 @@ void SimpleModelNode::selectModel()
         connect(mNodeInformation, &NodeInformation::bookmarkChecked, [&](bool t){
             mIsBookmarked = t;
             if (mIsBookmarked){
-                mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd , QString::fromStdString(mNodeData->iconSrc));
+                mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd() , QString::fromStdString(mNodeData->iconSrc));
                 mBookmark->addBookmarkItem(mBookmarkItem);
             }
             else{
                 mBookmark->removeBookmarkItem(mBookmarkItem);
-                delete mBookmarkItem;
             }
         });
     }
+    mNodeInformation->show();
     mIsSelected = !mIsSelected;
     if(mIsSelected){
         mSwitchNode->setValue(2, true);
