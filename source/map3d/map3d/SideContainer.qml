@@ -174,7 +174,7 @@ Item {
                 isWindow: sideModel.get(0).isWindow
                 containerItem: ToolboxManagerItem {
                     id: toolbox
-                    listModel: ToolboxInstance.toolboxProxyModel()
+                    listModel: ToolboxManagerInstance.toolboxProxyModel()
                 }
 
                 onWindowClose: {
@@ -191,9 +191,9 @@ Item {
                 id: layerDocItem
                 windowTitle: sideModel.get(1).name
 //                isWindow: sideModel.get(1).isWindow
-                containerItem: LayersWidget {
+                containerItem: LayerManagerItem {
                     id: layers
-                    layersModell: LayersInstance.layerModel()
+                    layerModel: LayerManagerInstance.layerModel()
                 }
 
                 onWindowClose: {
@@ -212,7 +212,7 @@ Item {
 //                isWindow: sideModel.get(2).isWindow
                 containerItem: BookmarkItem {
                     id: bookmark
-                    model: BookmarkInstance
+                    model: BookmarkManagerInstance
                 }
 
                 onWindowClose: {

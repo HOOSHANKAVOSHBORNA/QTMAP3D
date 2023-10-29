@@ -31,10 +31,10 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
 
-    qmlRegisterSingletonType<ToolboxManager>("Crystal", 1, 0, "ToolboxInstance", ToolboxManager::createSingletonInstance);
-    qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayersInstance", LayerManager::createSingletonInstance);
+    qmlRegisterSingletonType<ToolboxManager>("Crystal", 1, 0, "ToolboxManagerInstance", ToolboxManager::createSingletonInstance);
+    qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayerManagerInstance", LayerManager::createSingletonInstance);
     qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);
-    qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
+    qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkManagerInstance", BookmarkProxyModel::createSingletonInstance);
 
     setColor(Qt::black);
 }

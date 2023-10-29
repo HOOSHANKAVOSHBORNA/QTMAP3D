@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>MainWindow.qml</file>
         <file>File.qml</file>
-        <file>LayersWidget.qml</file>
+        <file>LayerManagerItem.qml</file>
         <file>Compass.qml</file>
         <file>LocationWidget.qml</file>
         <file>location/GoPointWidget.qml</file>
