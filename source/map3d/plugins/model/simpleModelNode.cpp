@@ -85,7 +85,8 @@ void SimpleModelNode::attackTo(osgEarth::GeoPoint geoPos,const std::string model
 {
     if(mBulletcount){
         mBulletNode = new BulletNode(mMapItem,model3D,icon2D,mEnigine,mBookmark);
-        this->addChild(mBulletNode);
+        mBulletNodeLayer->addChild(mBulletNode);
+        mBulletNode->setPosition(this->getPosition());
         mBulletNode->attackTo(geoPos);
         mBulletcount--;
     }
@@ -93,12 +94,24 @@ void SimpleModelNode::attackTo(osgEarth::GeoPoint geoPos,const std::string model
 
 void SimpleModelNode::attackResult(bool result)
 {
-    if(result){
-        mBulletNode->explode();
-        mBulletNode->deleteLater();
+    if(result && mBulletNode){
+        Explosion *explode = mBulletNode->explode();
+        mBulletNodeLayer->addChild(explode);
+        explode->setPosition(mBulletNode->getPosition());
+        mBulletNode->setNodeMask(0);
     }else{
-        mBulletNode->deleteLater();
+        mBulletNode->setNodeMask(0);
     }
+}
+
+osgEarth::GeoPoint SimpleModelNode::getBulletPosition()
+{
+    return mBulletNode->getPosition();
+}
+
+void SimpleModelNode::setBulletLayer(ParenticAnnotationLayer *layer)
+{
+    mBulletNodeLayer = layer;
 }
 
 NodeData *SimpleModelNode::nodeData() const
