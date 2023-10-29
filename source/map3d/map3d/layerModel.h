@@ -2,12 +2,11 @@
 #define LAYERSMODEL_H
 
 #include "mapItem.h"
-#include "treeModel.h"
+#include <QStandardItemModel>
 #include <osgEarth/Layer>
 
 Q_DECLARE_METATYPE(osgEarth::Layer);
-
-class LayersModel : public TreeProxyModel
+class LayersModel : public QStandardItemModel
 {
     Q_OBJECT
     QML_ELEMENT

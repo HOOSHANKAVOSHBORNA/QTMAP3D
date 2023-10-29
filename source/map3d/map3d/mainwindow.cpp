@@ -17,7 +17,7 @@
 #include "listwindow.h"
 #include "qqmlcontext.h"
 #include "mapControllerItem.h"
-
+#include "layerManager.h"
 #include "locationManagerModel.h"
 
 #include <QJsonArray>
@@ -28,13 +28,11 @@
 MainWindow::MainWindow(QWindow *parent) :
     QQuickWindow(parent)
 {
-    qmlRegisterType<LayersModel>("Crystal", 1, 0, "CLayersModel");
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
-    qmlRegisterType<Toolbox>("Crystal",1,0,"Toolbox");
 
     qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
-    qmlRegisterSingletonType<LayersModel>("Crystal", 1, 0, "LayersInstance", LayersModel::createSingletonInstance);
+    qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayersInstance", LayerManager::createSingletonInstance);
     qmlRegisterSingletonType<LocationManagerProxyModel>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManagerProxyModel::createSingletonInstance);
     qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
 
@@ -50,7 +48,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::initComponent()
 {
-//    QQmlEngine *engine = qmlContext(this)->engine();
     QQmlEngine *engine = qmlEngine(this);
 
     QQmlComponent* comp = new QQmlComponent(engine);
@@ -62,33 +59,26 @@ void MainWindow::initComponent()
         if(status == QQmlComponent::Ready){
             QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
             mMapItem = static_cast<MapControllerItem*>(item);
-//            mMapItem->initializeOsgEarth();
+            //            mMapItem->initializeOsgEarth();
             mMapItem->setQmlEngine(engine);
             addToCenterCenterContainer(mMapItem);
 
-            // ----------------------------------
-            // --------- model settings ---------
-            // ----------------------------------
+            // --------------------------------------------------------- model settings
             LocationManagerModel *locationManagerModel = new LocationManagerModel(mMapItem);
             LocationManagerProxyModel* myModel = LocationManagerProxyModel::createSingletonInstance(nullptr, nullptr);
             myModel->setSourceModel(locationManagerModel);
-
 
             ToolboxProxyModel* toolboxProxyModel = ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
             Toolbox *toolbox = new Toolbox(this);
             toolboxProxyModel->setSourceModel(toolbox);
 
-            LayersModel *layersModel = LayersModel::createSingletonInstance(nullptr, nullptr);
-            layersModel->initialize(mMapItem);
+            LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
+            layerManager->layerModel()->initialize(mMapItem);
 
-
-
-            mBookmark = BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+            BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
-
-//    engine->rootContext()->setContextProperty("bookmarkproxymodel", mBookmark);
 }
 
 QQmlEngine *MainWindow::getQmlEngine()
@@ -97,9 +87,29 @@ QQmlEngine *MainWindow::getQmlEngine()
 }
 
 
-LayersModel *MainWindow::layersModel() const
+MapItem *MainWindow::getMapItem()
 {
-    return mLayersModel;
+    return mMapItem;
+}
+
+ToolboxProxyModel *MainWindow::getToolboxManager() const
+{
+    return ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
+}
+
+LayerManager *MainWindow::getLayerManager() const
+{
+    return LayerManager::createSingletonInstance(nullptr, nullptr);
+}
+
+BookmarkProxyModel *MainWindow::getBookmarkManager() const
+{
+    return BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+}
+
+LocationManagerProxyModel *MainWindow::getLocationManager() const
+{
+    return LocationManagerProxyModel::createSingletonInstance(nullptr, nullptr);
 }
 
 void MainWindow::addToCenterCenterContainer(QQuickItem *item)
@@ -133,10 +143,7 @@ void MainWindow::showListWindow()
     }
 }
 
-MapItem *MainWindow::getMapItem()
-{
-    return mMapItem;
-}
+
 
 void MainWindow::showInfoItem(QQuickItem *item, QString title)
 {
@@ -184,7 +191,7 @@ void MainWindow::addToRightContainer(QQuickItem *item, QString title)
 void MainWindow::setListWindow(ListWindow *listWindow)
 {
     mListWindow = listWindow;
-//    mUIHandle->setListWindow(listWindow);
+    //    mUIHandle->setListWindow(listWindow);
 }
 
 bool MainWindow::event(QEvent *ev)
@@ -200,9 +207,4 @@ bool MainWindow::event(QEvent *ev)
     }
 
     return QQuickWindow::event(ev);
-}
-
-BookmarkProxyModel *MainWindow::bookmark() const
-{
-    return mBookmark;
 }

@@ -7,21 +7,21 @@
 #include <QTime>
 #include <QPoint>
 
-#include "layerModel.h"
+#include "layerManager.h"
 #include "mapItem.h"
-#include "toolbox.h"
 #include "mapControllerItem.h"
-#include "locationManagerModel.h"
 #include "bookmark.h"
+#include "toolbox.h"
+#include "locationManagerModel.h"
 
 class ListWindow;
-class LayersModel;
+class LayerModel;
 
 Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QQuickWindow
 {
     Q_OBJECT
-    Q_PROPERTY(BookmarkProxyModel* bookmark READ bookmark /*WRITE setLayersModel NOTIFY layersModelChanged*/)
+//    Q_PROPERTY(BookmarkProxyModel* bookmark READ bookmark /*WRITE setLayersModel NOTIFY layersModelChanged*/)
 
 public:
     enum class InfoWidgetType {
@@ -32,9 +32,9 @@ public:
 
     enum DockPosition{
         Left = 0x1,
-        Right = 0x2,
-        Top = 0x3,
-        Bottom = 0x4
+        Right,
+        Top,
+        Bottom
     };
 
 public:
@@ -42,14 +42,11 @@ public:
     ~MainWindow();
     void initComponent();
     QQmlEngine *getQmlEngine();
-    LayersModel *layersModel() const;
-    MapItem* getMapItem();
-
-    void showInfoItem(QQuickItem* item, QString title);
-    void hideInfoItem(QQuickItem* item);
-    void hideProperty(QQuickItem* item);
-    void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
-
+    MapItem *getMapItem();
+    ToolboxProxyModel *getToolboxManager() const;
+    LayerManager *getLayerManager() const;
+    BookmarkProxyModel *getBookmarkManager() const;
+    LocationManagerProxyModel *getLocationManager() const;
 public:
     void addToLeftContainer(QQuickItem *item, QString title);
     void addToRightContainer(QQuickItem *item, QString title);
@@ -57,7 +54,10 @@ public:
     void removeFromRightContainer(QQuickItem *item);
     void removeFromLeftContainer(QQuickItem *item);
 
-    BookmarkProxyModel *bookmark() const;
+    void showInfoItem(QQuickItem* item, QString title);
+    void hideInfoItem(QQuickItem* item);
+    void hideProperty(QQuickItem* item);
+    void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
 
 public slots:
     void showListWindow();
@@ -71,8 +71,8 @@ protected:
 private:
     MapControllerItem *mMapItem = nullptr;
     ListWindow *mListWindow = nullptr;
-    LayersModel *mLayersModel = nullptr;
-    BookmarkProxyModel *mBookmark = nullptr;
+//    LayersModel *mLayersModel = nullptr;
+//    BookmarkProxyModel *mBookmark = nullptr;
 };
 
 #endif // MainWindow_H

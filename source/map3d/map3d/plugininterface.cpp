@@ -42,8 +42,8 @@ void PluginInterface::setMainWindow(MainWindow *mainWindow)
     mMainWindow = mainWindow;
     mMapItem = mainWindow->getMapItem();
     mQmlEngine = mainWindow->getQmlEngine();
-    mToolbox = dynamic_cast<Toolbox*>(ToolboxProxyModel::createSingletonInstance(nullptr, nullptr)->sourceModel());
-    mBookmarkProxyModel = BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+    mToolbox = dynamic_cast<Toolbox*>(mainWindow->getToolboxManager()->sourceModel());
+    mBookmarkProxyModel = mainWindow->getBookmarkManager();
 }
 
 DefenseDataManager *PluginInterface::defenseDataManager() const

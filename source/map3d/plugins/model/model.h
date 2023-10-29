@@ -14,6 +14,7 @@
 #define TREE "Tree"
 #define CAR "Car"
 #define AIRPLANE "Airplane"
+#define BULLET "Bullet"
 
 class Model : public PluginInterface
 {
@@ -32,7 +33,8 @@ public:
     enum class Type{
         SIMPLE,
         MOVEABLE,
-        FLYABLE
+        FLYABLE,
+        ATTACKER
     };
 
 public:
@@ -53,6 +55,7 @@ public slots:
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
+    void onTankItemCheck (bool check);
     void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
 
@@ -63,7 +66,8 @@ public slots:
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
-    void moving(osgEarth::GeoPoint &geoPos);;
+    void moving(osgEarth::GeoPoint &geoPos);
+    void attack(osgEarth::GeoPoint &geoPos);
     void confirm();
     void cancel();
 
@@ -82,6 +86,7 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mBulletNodeLayer{nullptr};
 
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
