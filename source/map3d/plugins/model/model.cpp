@@ -18,7 +18,7 @@
 #include <osg/ShapeDrawable>
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
-using osgDoubleClickButton = osgGA::GUIEventAdapter::EventType;
+using osgKeyButton = osgGA::GUIEventAdapter::KeySymbol;
 int Model::mCount{0};
 Model::Model(QObject *parent)
     : PluginInterface(parent)
@@ -161,11 +161,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         confirm();
         return false;
     }
-    else if (ea.getButton() == osgDoubleClickButton::DOUBLECLICK && (mState == State::MOVING)) {
-        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-        attack(geoPos);
-        return false;
-    }
+
     return false;
 }
 
@@ -182,6 +178,25 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
 
 bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+    return false;
+}
+
+bool Model::mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (mState == State::MOVING) {
+        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+        attack(geoPos);
+        return true;
+    }
+    return false;
+}
+
+bool Model::keyPressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if (ea.getKey() == osgKeyButton::KEY_Space ){
+        mCurrentModel->attackResult(true);
+        return true;
+    }
     return false;
 }
 

@@ -86,6 +86,7 @@ void SimpleModelNode::attackTo(osgEarth::GeoPoint geoPos,const std::string model
     if(mBulletcount){
         mBulletNode = new BulletNode(mMapItem,model3D,icon2D,mEnigine,mBookmark);
         this->addChild(mBulletNode);
+        mBulletNode->setPosition(this->getPosition());
         mBulletNode->attackTo(geoPos);
         mBulletcount--;
     }
@@ -95,10 +96,15 @@ void SimpleModelNode::attackResult(bool result)
 {
     if(result){
         mBulletNode->explode();
-        mBulletNode->deleteLater();
+//        mBulletNode->deleteLater();
     }else{
-        mBulletNode->deleteLater();
+//        mBulletNode->deleteLater();
     }
+}
+
+double SimpleModelNode::getBulletDistanceToTarget()
+{
+    return mBulletNode->getPosition().alt() - mBulletNode->getTargetPosition().alt();
 }
 
 NodeData *SimpleModelNode::nodeData() const

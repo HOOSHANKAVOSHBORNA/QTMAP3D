@@ -49,6 +49,7 @@ public:
 
     void attackTo(osgEarth::GeoPoint geoPos,const std::string model3D,const std::string icon2D);
     void attackResult(bool result);
+    double getBulletDistanceToTarget();
 
 private slots:
     void compile();

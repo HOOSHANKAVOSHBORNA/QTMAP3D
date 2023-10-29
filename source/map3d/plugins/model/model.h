@@ -49,6 +49,8 @@ public:
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+    bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+    bool keyPressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
 
     static osgEarth::Symbology::Style &getDefaultStyle();
 public slots:

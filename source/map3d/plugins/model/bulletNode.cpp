@@ -7,6 +7,7 @@ BulletNode::BulletNode(MapItem *mapControler, const std::string &modelUrl, const
 
 void BulletNode::attackTo(osgEarth::GeoPoint position)
 {
+    mTarget = position;
     this->flyTo(position,100);
 }
 
@@ -15,6 +16,11 @@ void BulletNode::explode()
     mExplosion = new Explosion(mMapItem);
     mExplosion->setMapNode(mMapItem->getMapNode());
     this->addChild(mExplosion);
+}
+
+osgEarth::GeoPoint BulletNode::getTargetPosition()
+{
+    return mTarget;
 }
 
 
