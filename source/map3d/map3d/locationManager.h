@@ -1,5 +1,5 @@
-#ifndef LOCATIONMANAGERMODEL_H
-#define LOCATIONMANAGERMODEL_H
+#ifndef LOCATIONMANAGER_H
+#define LOCATIONMANAGER_H
 
 #include <QObject>
 #include <QAbstractListModel>
@@ -7,6 +7,10 @@
 
 #include "osgEarth/Viewpoint"
 #include "mapItem.h"
+
+class LocationManager;
+class LocationModel;
+class LocationProxyModel;
 
 enum {
     NameRole = Qt::UserRole,
@@ -30,12 +34,37 @@ public:
     QString color;
 };
 
-class LocationManagerModel : public QAbstractListModel
+// ------------------------------------------------------------ model manager
+class LocationManager : public QObject
+{
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+
+private:
+    explicit LocationManager();
+
+public:
+    static LocationManager *createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
+
+    void initialize(MapItem *mapItem);
+    void myRemoveRow(int index);
+    void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
+    void editLocation(int index, QString newName, QString newDescription, QString newImageSource, QString newColor);
+    Q_INVOKABLE LocationProxyModel *locationProxyModel();
+
+private:
+    inline static LocationManager* mInstance;
+    LocationProxyModel* mLocationProxyModel;
+};
+
+// ------------------------------------------------------------ model
+class LocationModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
-    explicit LocationManagerModel(MapItem *mapItem);
+    explicit LocationModel(MapItem *mapItem);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
@@ -61,8 +90,8 @@ private:
     QVector<LocationData> mLocations;
 };
 
-// ------------------------------------------------------- proxy model
-class LocationManagerProxyModel : public QSortFilterProxyModel
+// ------------------------------------------------------------ proxy model
+class LocationProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     QML_ELEMENT
@@ -70,10 +99,10 @@ class LocationManagerProxyModel : public QSortFilterProxyModel
     Q_PROPERTY(QString searchedName READ searchedName WRITE setSearchedName NOTIFY searchedNameChanged FINAL)
 
 private:
-    explicit LocationManagerProxyModel();
+    explicit LocationProxyModel();
 
 public:
-    static LocationManagerProxyModel* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+    static LocationProxyModel* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
 
     Q_INVOKABLE void myRemoveRow(const QModelIndex &index);
     Q_INVOKABLE void goToLocation(const QModelIndex &index);
@@ -89,7 +118,7 @@ signals:
     void searchedNameChanged();
 
 private:
-    static LocationManagerProxyModel* mInstance;
+    static LocationProxyModel* mInstance;
     QString mSearchedWord;
 
 protected:
@@ -97,4 +126,4 @@ protected:
     virtual bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
 };
 
-#endif // LOCATIONMANAGERMODEL_H
+#endif // LOCATIONMANAGER_H

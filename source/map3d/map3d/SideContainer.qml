@@ -229,9 +229,9 @@ Item {
                 id: locationDocItem
                 windowTitle: sideModel.get(3).name
 //                isWindow: sideModel.get(3).isWindow
-                containerItem: LocationManager {
+                containerItem: LocationManagerItem {
                     id: locationManager
-                    listModel: LocatoinManagerInstance
+                    listModel: LocatoinManagerInstance.locationProxyModel()
                 }
 
                 onWindowClose: {
