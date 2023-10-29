@@ -109,32 +109,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
             return false;
         if (mState == State::READY) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-//            initModel(geoPos);
-            //----------------------------------------------------
-            NodeData* flyableNodeData = new NodeData();
-            flyableNodeData->id = 100;
-            flyableNodeData->longitude = geoPos.x();
-            flyableNodeData->latitude = geoPos.y();
-            flyableNodeData->altitude = geoPos.z();
-            flyableNodeData->name = "Aircraft0";
-            flyableNodeData->url2D = "../data/models/airplane/airplane.png";
-            flyableNodeData->url3D = "../data/models/airplane/airplane.osgb";
-            flyableNodeData->imgSrc = "qrc:/Resources/airplane1.jpg";
-            flyableNodeData->color = "white";
-            flyableNodeData->speed = 100;
-            flyableNodeData->fieldData.push_back(NodeFieldData{"name","Aircraft0", "Main Information"});
-            flyableNodeData->fieldData.push_back(NodeFieldData{"Id","100", "Main Information"});
-            flyableNodeData->fieldData.push_back(NodeFieldData{"Longitude",QString::number(flyableNodeData->longitude), "Location Information"});
-            flyableNodeData->fieldData.push_back(NodeFieldData{"Latitude",QString::number(flyableNodeData->latitude), "Location Information"});
-            flyableNodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(flyableNodeData->altitude), "Location Information"});
-            flyableNodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(flyableNodeData->speed), "Location Information"});
-
-            ParenticAnnotationLayer* parentic = new ParenticAnnotationLayer(1000);
-            parentic->setName("testing");
-            mapItem()->getMapObject()->addLayer(parentic);
-            flyableNodeData->layers.push_back(parentic);
-            addUpdateFlyableNode(flyableNodeData);
-            //---------------------------------------------------------
+            initModel(geoPos);
             return true;
         }
 
@@ -272,10 +247,12 @@ void Model::addUpdateFlyableNode(NodeData *nodeData)
     }
     flyableNode->setName(nodeData->name);
     flyableNode->setNodeData(nodeData);
+    mCurrentModel = flyableNode;
 }
 
 void Model::addUpdateNode(NodeData *nodeData)
 {
+    qDebug() << nodeData->id;
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
     osg::ref_ptr<SimpleModelNode> node;
 
@@ -293,8 +270,12 @@ void Model::addUpdateNode(NodeData *nodeData)
     for(auto layer: nodeData->layers){
         layer->addChild(node);
     }
-    node->setName(nodeData->name);
-    node->setNodeData(nodeData);
+    if (node){
+        node->setName(nodeData->name);
+        node->setPosition(geoPoint);
+        node->setNodeData(nodeData);
+    }
+    mCurrentModel = node;
 }
 
 void Model::addUpdateMovableNode(NodeData *nodeData)
@@ -319,48 +300,44 @@ void Model::addUpdateMovableNode(NodeData *nodeData)
     }
     movableNode->setName(nodeData->name);
     movableNode->setNodeData(nodeData);
+    mCurrentModel = movableNode;
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
-    QString name;
+    NodeData* nodeData;
     switch (mType) {
     case Type::SIMPLE:
-        name = "Tree" + QString::number(mCount);
-        mCurrentModel = new SimpleModelNode(mapItem(),"../data/models/tree/tree.osgb", "../data/models/tree/tree.png", qmlEngine(), bookmarkProxyModel());
-        mCurrentModel->setModelColor(osgEarth::Color::Aqua);
+        nodeData = sampleNodeData("Tree", "../data/models/tree/tree.png", "../data/models/tree/tree.osgb", "", geoPos);
+        nodeData->id = 100 + mCount;
         if(!mModelNodeLayer->containsLayer(mSimpleNodeLayer)){
             mSimpleNodeLayer->clear();
             mModelNodeLayer->addLayer(mSimpleNodeLayer);
         }
-        mSimpleNodeLayer->addChild(mCurrentModel);
+        nodeData->layers.push_back(mSimpleNodeLayer);
+        addUpdateNode(nodeData);
         break;
     case Type::MOVEABLE:
-        name = "Car" + QString::number(mCount);
-        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/car/car.osgb", "../data/models/car/car.png", qmlEngine(), bookmarkProxyModel());
-        mCurrentModel->setModelColor(osgEarth::Color::Green);
+        nodeData = sampleNodeData("Car", "../data/models/car/car.png", "../data/models/car/car.osgb", "", geoPos);
+        nodeData->id = 100 + mCount;
         if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
             mMoveableNodeLayer->clear();
             mModelNodeLayer->addLayer(mMoveableNodeLayer);
         }
-        mMoveableNodeLayer->addChild(mCurrentModel);
+        nodeData->layers.push_back(mMoveableNodeLayer);
+        addUpdateMovableNode(nodeData);
         break;
     case Type::FLYABLE:
-        name = "Airplane" + QString::number(mCount);
-        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/airplane/airplane.osgb", "../data/models/airplane/airplane.png", qmlEngine(), bookmarkProxyModel());
-        mCurrentModel->setModelColor(osgEarth::Color::Red);
+        nodeData = sampleNodeData("Airplane", "../data/models/airplane/airplane.png", "../data/models/airplane/airplane.osgb", "", geoPos);
+        nodeData->id = 100 + mCount;
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);
         }
-        mFlyableNodelLayer->addChild(mCurrentModel);
+        nodeData->layers.push_back(mFlyableNodelLayer);
+        addUpdateFlyableNode(nodeData);
         break;
     default:
         break;
-    }
-
-    if (mCurrentModel){
-        mCurrentModel->setName(name.toStdString());
-        mCurrentModel->setPosition(geoPos);
     }
 
     setState(State::MOVING);
@@ -462,4 +439,26 @@ SimpleModelNode *Model::pick(float x, float y)
         }
     }
     return simpleModelNode;
+}
+
+NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc,
+                                osgEarth::GeoPoint geoPos)
+{
+    NodeData* flyableNodeData = new NodeData();
+//    flyableNodeData->id = 100;
+    flyableNodeData->longitude = geoPos.x();
+    flyableNodeData->latitude = geoPos.y();
+    flyableNodeData->altitude = geoPos.z();
+    flyableNodeData->url2D = url2d;
+    flyableNodeData->url3D = url3d;
+    flyableNodeData->imgSrc = imgSrc;
+    flyableNodeData->color = "white";
+    flyableNodeData->speed = 100;
+    flyableNodeData->fieldData.push_back(NodeFieldData{"name", "Aircraft" + QString::number(mCount), "Main Information"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"Longitude",QString::number(flyableNodeData->longitude), "Location Information"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"Latitude",QString::number(flyableNodeData->latitude), "Location Information"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(flyableNodeData->altitude), "Location Information"});
+    flyableNodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(flyableNodeData->speed), "Location Information"});
+    return flyableNodeData;
 }

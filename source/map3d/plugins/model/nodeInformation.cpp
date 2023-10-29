@@ -1,5 +1,7 @@
 #include "nodeInformation.h"
 
+#include <QQmlEngine>
+
 NodeInformation::NodeInformation(QQmlEngine* Engine,QObject *parent)
 {
     setColumnCount(1);

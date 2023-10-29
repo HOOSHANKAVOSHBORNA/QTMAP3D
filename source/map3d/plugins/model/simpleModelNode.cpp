@@ -72,12 +72,12 @@ void SimpleModelNode::onModeChanged(bool is3DView)
 
 bool SimpleModelNode::getIsBookmarked() const
 {
-    return isBookmarked;
+    return mIsBookmarked;
 }
 
 void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
 {
-    isBookmarked = newIsBookmarked;
+    mIsBookmarked = newIsBookmarked;
 }
 
 NodeData *SimpleModelNode::nodeData() const
@@ -90,6 +90,8 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
     mNodeData = newNodeData;
     updateUrl(mNodeData->url3D, mNodeData->url2D);
     setModelColor(osgEarth::Color(mNodeData->color));
+    if (mNodeInformation)
+        mNodeInformation->addUpdateNodeInformationItem(newNodeData);
 }
 
 void SimpleModelNode::setModelColor(osgEarth::Color color)
@@ -249,19 +251,24 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
 
 void SimpleModelNode::selectModel()
 {
-    mNodeInformation = new NodeInformation(mEnigine, this);
-    mNodeInformation->addUpdateNodeInformationItem(mNodeData);
-    connect(mNodeInformation, &NodeInformation::bookmarkChecked, [&](bool t){
-        isBookmarked = t;
-        if (isBookmarked){
-            mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd , QString::fromStdString(mNodeData->iconSrc));
-            mBookmark->addBookmarkItem(mBookmarkItem);
-        }
-        else{
-            mBookmark->removeBookmarkItem(mBookmarkItem);
-            delete mBookmarkItem;
-        }
-    });
+    if (!mNodeInformation){
+        mNodeInformation = new NodeInformation(mEnigine, this);
+        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+        connect(mNodeInformation, &NodeInformation::bookmarkChecked, [&](bool t){
+            mIsBookmarked = t;
+            if (mIsBookmarked){
+                mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd , QString::fromStdString(mNodeData->iconSrc));
+                mBookmark->addBookmarkItem(mBookmarkItem);
+            }
+            else{
+                mBookmark->removeBookmarkItem(mBookmarkItem);
+                delete mBookmarkItem;
+            }
+        });
+        connect(mNodeInformation, &NodeInformation::onWindowClosing, [&](){
+            delete mNodeInformation;
+        });
+    }
     mIsSelected = !mIsSelected;
     if(mIsSelected){
         mSwitchNode->setValue(2, true);
