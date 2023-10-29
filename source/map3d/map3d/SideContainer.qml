@@ -212,7 +212,7 @@ Item {
 //                isWindow: sideModel.get(2).isWindow
                 containerItem: BookmarkItem {
                     id: bookmark
-                    model: BookmarkInstance
+                    model: BookmarkInstance.getBookmarkProxyModel()
                 }
 
                 onWindowClose: {

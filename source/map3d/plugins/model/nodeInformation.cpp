@@ -28,8 +28,7 @@ NodeInformation::~NodeInformation()
 
 void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
 {
-    windowName = QString::fromStdString(nodeData->name);
-    mainImageUrl = QString::fromStdString(nodeData->imgSrc);
+    mNodeData = nodeData;
     for(NodeFieldData nodeFieldData:nodeData->fieldData){
 
         QStandardItem *item = new QStandardItem;
@@ -59,20 +58,24 @@ void NodeInformation::show()
 {
     mWnd->show();
 }
-
-QString NodeInformation::getMainImageUrl()
-{
-    return mainImageUrl;
-}
-
-QString NodeInformation::getWindowName()
-{
-    return windowName;
-}
-
 QQuickWindow *NodeInformation::wnd() const
 {
     return mWnd;
+}
+
+QString NodeInformation::imageUrl() const
+{
+    return mNodeData ? QString::fromStdString(mNodeData->imgSrc) : "";
+}
+
+QString NodeInformation::icnUrl() const
+{
+    return mNodeData ? QString::fromStdString(mNodeData->iconSrc) : "";
+}
+
+QString NodeInformation::title() const
+{
+    return mNodeData ? QString::fromStdString(mNodeData->name) : "";
 }
 
 

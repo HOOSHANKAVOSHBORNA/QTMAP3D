@@ -7,7 +7,7 @@
 class BulletNode : public FlyableModelNode
 {
 public:
-    BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkProxyModel *bookmark);
+    BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkManager *bookmark);
     void attackTo(osgEarth::GeoPoint position);
     void explode();
 
@@ -19,7 +19,7 @@ private:
     std::string mBulletModelURL;
     std::string mBulletIconURL;
     QQmlEngine *mEngine;
-    BookmarkProxyModel *mBookmark;
+    BookmarkManager *mBookmark;
 };
 
 #endif // BULLETNODE_H

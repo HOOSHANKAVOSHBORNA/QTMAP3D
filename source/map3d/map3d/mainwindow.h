@@ -45,7 +45,7 @@ public:
     MapItem *getMapItem();
     ToolboxProxyModel *getToolboxManager() const;
     LayerManager *getLayerManager() const;
-    BookmarkProxyModel *getBookmarkManager() const;
+    BookmarkManager *getBookmarkManager() const;
     LocationManagerProxyModel *getLocationManager() const;
 public:
     void addToLeftContainer(QQuickItem *item, QString title);

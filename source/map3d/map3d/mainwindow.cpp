@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
     qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayersInstance", LayerManager::createSingletonInstance);
     qmlRegisterSingletonType<LocationManagerProxyModel>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManagerProxyModel::createSingletonInstance);
-    qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
+    qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
 
     setColor(Qt::black);
 }
@@ -75,7 +75,7 @@ void MainWindow::initComponent()
             LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
             layerManager->layerModel()->initialize(mMapItem);
 
-            BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+            BookmarkManager::createSingletonInstance(nullptr, nullptr);
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
@@ -102,9 +102,9 @@ LayerManager *MainWindow::getLayerManager() const
     return LayerManager::createSingletonInstance(nullptr, nullptr);
 }
 
-BookmarkProxyModel *MainWindow::getBookmarkManager() const
+BookmarkManager *MainWindow::getBookmarkManager() const
 {
-    return BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+    return BookmarkManager::createSingletonInstance(nullptr, nullptr);
 }
 
 LocationManagerProxyModel *MainWindow::getLocationManager() const

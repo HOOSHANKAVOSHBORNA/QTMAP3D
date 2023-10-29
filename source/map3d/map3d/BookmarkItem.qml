@@ -137,7 +137,7 @@ Item {
                                 }
                                 onClicked: {
                                     itemSource.show()
-                                    BookmarkInstance.select(treeview.index(row,column))
+                                    rootItem.model.select(treeview.index(row,column))
                                 }
                             }
                             Button{
@@ -152,7 +152,7 @@ Item {
                                     height: 20
                                 }
                                 onClicked: {
-                                    BookmarkInstance.removeBookmarkItem(treeview.index(row,column))
+                                    rootItem.model.removeBookmarkItem(treeview.index(row,column))
                                 }
                             }
                             Image{
@@ -173,7 +173,7 @@ Item {
                             hoverEnabled: true
                             propagateComposedEvents: true
                             onPressed:  (mouse)=> {
-                                BookmarkInstance.select(treeview.index(row,column))
+                                rootItem.model.select(treeview.index(row,column))
                                 treeview.toggleExpanded(row)
                                 mouse.accepted = false
                             }

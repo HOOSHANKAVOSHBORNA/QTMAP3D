@@ -28,11 +28,11 @@ Window {
                     background:IconImage{
                         width: 22
                         height: 22
-                        source: ""
+                        source: nodeinfo ? nodeinfo.icnUrl : ""
                     }
                 }
                 Text{
-                    text: nodeinfo ? nodeinfo.getWindowName() : ""
+                    text: nodeinfo ? nodeinfo.title : ""
                     color: Style.foregroundColor
                     font.pixelSize: 17/Style.monitorRatio
                     Layout.fillWidth: true
@@ -67,7 +67,7 @@ Window {
             Image{
                 id:image
                 anchors.fill: parent
-                source:nodeinfo ? nodeinfo.getMainImageUrl() :""
+                source:nodeinfo ? nodeinfo.imageUrl :""
             }
             Rectangle{
                 color: "silver"

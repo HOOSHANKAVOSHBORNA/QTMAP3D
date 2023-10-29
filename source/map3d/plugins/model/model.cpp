@@ -263,7 +263,7 @@ void Model::addUpdateFlyableNode(NodeData *nodeData)
     osg::ref_ptr<FlyableModelNode> flyableNode;
 
     if(!mFlyableNodeMap.contains(nodeData->id)){
-        flyableNode = new FlyableModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine(), bookmarkProxyModel());
+        flyableNode = new FlyableModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine(), bookmarkManager());
         flyableNode->setPosition(geoPoint);
         mFlyableNodeMap[nodeData->id] = flyableNode;
     }
@@ -289,7 +289,7 @@ void Model::addUpdateNode(NodeData *nodeData)
     osg::ref_ptr<SimpleModelNode> node;
 
     if(!mNodeMap.contains(nodeData->id)){
-        node = new SimpleModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine(), bookmarkProxyModel());
+        node = new SimpleModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine(), bookmarkManager());
         node->setPosition(geoPoint);
         mNodeMap[nodeData->id] = node;
     }
@@ -316,7 +316,7 @@ void Model::addUpdateMovableNode(NodeData *nodeData)
     osg::ref_ptr<MoveableModelNode> movableNode;
 
     if(!mMovableNodeMap.contains(nodeData->id)){
-        movableNode = new MoveableModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine(), bookmarkProxyModel());
+        movableNode = new MoveableModelNode(mapItem(), nodeData->url3D, nodeData->url2D, qmlEngine(), bookmarkManager());
         movableNode->setPosition(geoPoint);
         mMovableNodeMap[nodeData->id] = movableNode;
     }
@@ -371,7 +371,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         break;
     case Type::ATTACKER:
         name = "Tank" + QString::number(mCount);
-        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkProxyModel() , 5);
+        mCurrentModel = new FlyableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkManager() , 5);
         mCurrentModel->setModelColor(osgEarth::Color::Red);
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
@@ -494,21 +494,22 @@ SimpleModelNode *Model::pick(float x, float y)
 NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc,
                                 osgEarth::GeoPoint geoPos)
 {
-    NodeData* flyableNodeData = new NodeData();
+    NodeData* nodeData = new NodeData();
 //    flyableNodeData->id = 100;
-    flyableNodeData->longitude = geoPos.x();
-    flyableNodeData->latitude = geoPos.y();
-    flyableNodeData->altitude = geoPos.z();
-    flyableNodeData->url2D = url2d;
-    flyableNodeData->url3D = url3d;
-    flyableNodeData->imgSrc = imgSrc;
-    flyableNodeData->color = "white";
-    flyableNodeData->speed = 100;
-    flyableNodeData->fieldData.push_back(NodeFieldData{"name", "Aircraft" + QString::number(mCount), "Main Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"Longitude",QString::number(flyableNodeData->longitude), "Location Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"Latitude",QString::number(flyableNodeData->latitude), "Location Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(flyableNodeData->altitude), "Location Information"});
-    flyableNodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(flyableNodeData->speed), "Location Information"});
-    return flyableNodeData;
+    nodeData->name = name + std::to_string(mCount);
+    nodeData->longitude = geoPos.x();
+    nodeData->latitude = geoPos.y();
+    nodeData->altitude = geoPos.z();
+    nodeData->url2D = url2d;
+    nodeData->url3D = url3d;
+    nodeData->imgSrc = imgSrc;
+    nodeData->color = "white";
+    nodeData->speed = 100;
+    nodeData->fieldData.push_back(NodeFieldData{"name", "Aircraft" + QString::number(mCount), "Main Information"});
+    nodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information"});
+    nodeData->fieldData.push_back(NodeFieldData{"Longitude",QString::number(nodeData->longitude), "Location Information"});
+    nodeData->fieldData.push_back(NodeFieldData{"Latitude",QString::number(nodeData->latitude), "Location Information"});
+    nodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(nodeData->altitude), "Location Information"});
+    nodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(nodeData->speed), "Location Information"});
+    return nodeData;
 }
