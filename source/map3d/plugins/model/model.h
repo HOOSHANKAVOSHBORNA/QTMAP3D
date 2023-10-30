@@ -95,6 +95,7 @@ private:
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
     QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
+    NodeData* mNodeData;
 };
 
 #endif // MODEL_H

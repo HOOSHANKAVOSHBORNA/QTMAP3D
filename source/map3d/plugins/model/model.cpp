@@ -292,7 +292,6 @@ void Model::addUpdateFlyableNode(NodeData *nodeData)
 
 void Model::addUpdateNode(NodeData *nodeData)
 {
-    qDebug() << nodeData->id;
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
     osg::ref_ptr<SimpleModelNode> node;
 
@@ -310,11 +309,9 @@ void Model::addUpdateNode(NodeData *nodeData)
     for(auto layer: nodeData->layers){
         layer->addChild(node);
     }
-    if (node){
-        node->setName(nodeData->name);
-        node->setPosition(geoPoint);
-        node->setNodeData(nodeData);
-    }
+    node->setName(nodeData->name);
+    node->setPosition(geoPoint);
+    node->setNodeData(nodeData);
     mCurrentModel = node;
 }
 
@@ -341,6 +338,7 @@ void Model::addUpdateMovableNode(NodeData *nodeData)
     movableNode->setName(nodeData->name);
     movableNode->setNodeData(nodeData);
     mCurrentModel = movableNode;
+    mNodeData = nodeData;
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
@@ -442,6 +440,7 @@ void Model::cancel(){
             break;
         case Type::MOVEABLE:
             mMoveableNodeLayer->removeChild(mCurrentModel);
+            mMovableNodeMap.remove(mNodeData->id);
             break;
         case Type::FLYABLE:
             mFlyableNodelLayer->removeChild(mCurrentModel);
