@@ -273,7 +273,7 @@ void SimpleModelNode::selectModel()
     mIsSelected = !mIsSelected;
     if(mIsSelected){
         mSwitchNode->setValue(2, true);
-    }else {
+    } else {
         mSwitchNode->setValue(2, false);
     }
 }
