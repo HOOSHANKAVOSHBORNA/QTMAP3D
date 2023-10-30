@@ -3,7 +3,6 @@
 #include "moveableModelNode.h"
 #include "flyableModelNode.h"
 #include "serviceManager.h"
-//#include "mainwindow.h"
 #include <osgEarth/GLUtils>
 #include <osgEarth/ModelLayer>
 #include <osgEarth/ModelSource>
@@ -158,14 +157,15 @@ bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter
 
 bool Model::mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    if (mState == State::MOVING && !isAttackActive) {
+    if (mState == State::MOVING && !mmIsAttackActive) {
         osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         attack(geoPos);
-        isAttackActive = true;
+        mIsAttackActive = true;
         return true;
-    }else if(isAttackActive){
-        mCurrentModel->attackResult(true);
-        isAttackActive = false;
+    }else if(mIsAttackActive){
+//        mCurrentModel->attackResult(true);
+        mIsAttackActive = false;
+        return true;
     }
     return false;
 }
@@ -378,9 +378,10 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         addUpdateFlyableNode(nodeData);
         break;
     case Type::ATTACKER:
-        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkProxyModel() , 5);
+        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkProxyModel());
         mCurrentModel->setModelColor(osgEarth::Color::Red);
-        mCurrentModel->setBulletLayer(mMoveableNodeLayer);
+
+        mCurrentModel->isAttacker(mMoveableNodeLayer,5);
         if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
             mMoveableNodeLayer->clear();
             mModelNodeLayer->addLayer(mMoveableNodeLayer);
@@ -418,7 +419,9 @@ void Model::moving(osgEarth::GeoPoint &geoPos){
 void Model::attack(osgEarth::GeoPoint &geoPos)
 {
     if(mCurrentModel){
-        mCurrentModel->attackTo(geoPos ,"../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
+//        AttackManager *mAttackManager = mCurrentModel->getAttackManager();
+
+//        mCurrentModel->attackTo(geoPos ,"../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
     }
 }
 

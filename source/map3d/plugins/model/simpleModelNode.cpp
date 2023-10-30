@@ -9,21 +9,20 @@
 #include <osgEarth/GLUtils>
 #include <osgEarth/Registry>
 #include <mainwindow.h>
-#include "bulletNode.h"
+#include "attackManager.h"
 
 const float RANGE3D = 835;
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
-SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, BookmarkProxyModel *bookmark, int bulletCount, QObject *parent)
+SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent)
     : QObject{parent},
     osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Model::getDefaultStyle()),
     mUrl3D(url3D),
     mMapItem(mapControler),
     mUrl2D(url2D),
     mEnigine(engine),
-    mBookmark(bookmark),
-    mBulletcount(bulletCount)
+    mBookmark(bookmark)
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
@@ -81,37 +80,16 @@ void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
     mIsBookmarked = newIsBookmarked;
 }
 
-void SimpleModelNode::attackTo(osgEarth::GeoPoint geoPos,const std::string model3D,const std::string icon2D)
+void SimpleModelNode::isAttacker(ParenticAnnotationLayer *layer, int bulletCount)
 {
-    if(mBulletcount){
-        mBulletNode = new BulletNode(mMapItem,model3D,icon2D,mEnigine,mBookmark);
-        mBulletNodeLayer->addChild(mBulletNode);
-        mBulletNode->setPosition(this->getPosition());
-        mBulletNode->attackTo(geoPos);
-        mBulletcount--;
-    }
+    mAttackManager = new AttackManager(mMapItem,mEnigine,mBookmark,this);
+    mAttackManager->setAttackLayer(layer);
+    mAttackManager->setBulletCount(bulletCount);
 }
 
-void SimpleModelNode::attackResult(bool result)
+AttackManager *SimpleModelNode::getAttackManager()
 {
-    if(result && mBulletNode){
-        Explosion *explode = mBulletNode->explode();
-        mBulletNodeLayer->addChild(explode);
-        explode->setPosition(mBulletNode->getPosition());
-        mBulletNode->setNodeMask(0);
-    }else{
-        mBulletNode->setNodeMask(0);
-    }
-}
-
-osgEarth::GeoPoint SimpleModelNode::getBulletPosition()
-{
-    return mBulletNode->getPosition();
-}
-
-void SimpleModelNode::setBulletLayer(ParenticAnnotationLayer *layer)
-{
-    mBulletNodeLayer = layer;
+    return mAttackManager;
 }
 
 NodeData *SimpleModelNode::nodeData() const
