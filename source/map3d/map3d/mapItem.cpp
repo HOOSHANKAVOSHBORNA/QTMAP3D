@@ -278,7 +278,7 @@ void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
         else
         {
             mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_PROJECTED;
-            mapOpt.profile() = osgEarth::ProfileOptions();
+            mapOpt.profile() = osgEarth::ProfileOptions("plate-carre");
             mMapObject = new MapObject(mapOpt);
             mMapNode = new osgEarth::MapNode(mMapObject);
         }

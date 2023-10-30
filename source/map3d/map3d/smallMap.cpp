@@ -23,70 +23,60 @@ SmallMap::SmallMap(QQuickItem *parent):
     getViewer()->getCamera()->setProjectionResizePolicy( osg::Camera::FIXED );
     getViewer()->getCamera()->setProjectionMatrixAsPerspective(30.0, double(100) / double(100), 1.0, 1000.0);
 
-    mCameraController = new osgEarth::Util::EarthManipulator;
+    mCameraManipulator = new osgEarth::Util::EarthManipulator;
+    getViewer()->setCameraManipulator(mCameraManipulator);
     mMapRoot = new osg::Group();
     getViewer()->setSceneData(mMapRoot);
 
-    initializeOsgEarth();
-
+    compile(true);
 }
 
 void SmallMap::setMainMapItem(MapItem *mapItem)
 {
     mMapItem = mapItem;
+    //    getViewer()->getCamera()->setGraphicsContext( mMapItem->getViewer()->getCamera()->getGraphicsContext());
+    //    compile(false);
 }
 
-void SmallMap::initializeOsgEarth()
+void SmallMap::compile(bool geocentric)
 {
 
 
-    createMapNode(true,mMapObject);
+    createMapNode(geocentric);
 
     osgEarth::Drivers::GDALOptions gdal;
-    gdal.maxDataLevelOverride() = 700000;
-    gdal.interpolation() = osgEarth::ElevationInterpolation::INTERP_CUBICSPLINE;
-    gdal.L2CacheSize() = 2048;
+//        gdal.maxDataLevelOverride() = 700000;
+//        gdal.interpolation() = osgEarth::ElevationInterpolation::INTERP_CUBICSPLINE;
+//        gdal.L2CacheSize() = 2048;
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world_simple.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
-    mMapObject->addLayer(imlayer);
-    focalRect = new osgEarth::Annotation::RectangleNode;
-    osgEarth::Symbology::Style rectseStyle;
-    rectseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color() =  osgEarth::Color("01AED6");
-    rectseStyle.getOrCreate<osgEarth::Symbology::PolygonSymbol>()->fill()->color().a() = 0.7;
-    rectseStyle.getOrCreate<osgEarth::Symbology::AltitudeSymbol>()->technique() = osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE;
-    focalRect->setStyle(rectseStyle);
-    focalRect->setHeight(1200000);
-    focalRect->setWidth(1200000);
-    mMapRoot->addChild(focalRect);
-    focalRect->setPosition(mCameraController->getViewpoint().focalPoint().get());
-
-    this->oSGRenderNode()->setCameraManipulator(mCameraController);
+    mMap->addLayer(imlayer);
 }
 
 
-void SmallMap::createMapNode(bool geocentric, osgEarth::Map *map)
+void SmallMap::createMapNode(bool geocentric)
 {
     mMapRoot->removeChild(mMapNode);
-    if(!map)
+
+    osgEarth::MapNodeOptions mapNodeOptions;
+    mapNodeOptions.enableLighting() = false;
+
+    osgEarth::MapOptions mapOpt;
+    if(geocentric)
     {
-        osgEarth::MapOptions mapOpt;
-        if(geocentric)
-        {
-            mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_GEOCENTRIC;
-            mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
-            mMapObject = new MapObject(mapOpt);
-            mMapNode = new osgEarth::MapNode(mMapObject);
-        }
-        else
-        {
-            mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_PROJECTED;
-            mapOpt.profile() = osgEarth::ProfileOptions();
-            mMapObject = new MapObject(mapOpt);
-            mMapNode = new osgEarth::MapNode(mMapObject);
-        }
+        mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_GEOCENTRIC;
+        mapOpt.profile() = osgEarth::ProfileOptions("global-mercator");
+        mMap = new osgEarth::Map(mapOpt);
+        mMapNode = new osgEarth::MapNode(mMap, mapNodeOptions);
     }
     else
-        mMapNode = new osgEarth::MapNode(map);
+    {
+        mapOpt.coordSysType() = osgEarth::MapOptions::CSTYPE_PROJECTED;
+        mapOpt.profile() = osgEarth::ProfileOptions("plate-carre");
+        mMap = new osgEarth::Map(mapOpt);
+        mMapNode = new osgEarth::MapNode(mMap, mapNodeOptions);
+    }
+
     mMapRoot->addChild(mMapNode);
 }
 
@@ -94,13 +84,11 @@ void SmallMap::createMapNode(bool geocentric, osgEarth::Map *map)
 void SmallMap::frame()
 {
     if(mMapItem){
-    osgEarth::Viewpoint tmpVP;
-    tmpVP = mMapItem->getCameraController()->getViewpoint();
-    tmpVP.setRange(22000000);
-    tmpVP.setPitch(-90);
-    mCameraController->setViewpoint(tmpVP);
+        osgEarth::Viewpoint tmpVP;
+        tmpVP = mCameraManipulator->getViewpoint();
+        tmpVP.focalPoint() = mMapItem->getCameraController()->getViewpoint().focalPoint();
+        mCameraManipulator->setViewpoint(tmpVP);
 
-//    focalRect->setPosition(mCameraController->getViewpoint().focalPoint().get());
     }
 }
 
@@ -143,12 +131,6 @@ void SmallMap::hoverMoveEvent(QHoverEvent *event)
 {
     event->ignore();
 }
-
-//void SmallMap::setMainMap(CameraController *camera, osgViewer::Viewer *viewer)
-//{
-//    mainMapCamera = camera;
-//    mainMapView = viewer;
-//}
 
 
 
