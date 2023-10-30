@@ -168,7 +168,7 @@ MapController {
         width: 100
         height: 100
         Component.onCompleted: {
-                 setMainMap(map.getCameraController(),map.getViewer())
+                 setMainMapItem(map)
         }
     }
 
