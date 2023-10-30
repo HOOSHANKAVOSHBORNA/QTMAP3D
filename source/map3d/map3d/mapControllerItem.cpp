@@ -1,6 +1,6 @@
 #include "mapControllerItem.h"
 #include "searchNodeModel.h"
-#include "smallmap.h"
+#include "smallMap.h"
 
 #include <QQmlComponent>
 #include <QTimer>

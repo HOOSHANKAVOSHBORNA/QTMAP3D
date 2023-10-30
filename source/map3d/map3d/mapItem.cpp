@@ -16,15 +16,15 @@
 
 //--MapItem---------------------------------------------------------------------------------------------------------
 MapItem::MapItem(QQuickItem *parent) :
-    QQuickItem(parent)
+    OsgViewerItem(parent)
 {
 //    setMouseTracking(true);
 //    setFlag(QQuickItem::ItemAcceptsDrops, true);
-    setAcceptHoverEvents(true);
-    setFlags(ItemHasContents/*|ItemAcceptsDrops*/);
-    setAcceptedMouseButtons(Qt::MouseButton::AllButtons);
-    mOSGRenderNode = new OSGRenderNode(this);
-    mOSGRenderNode->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
+//    setAcceptHoverEvents(true);
+//    setFlags(ItemHasContents/*|ItemAcceptsDrops*/);
+//    setAcceptedMouseButtons(Qt::MouseButton::AllButtons);
+//    mOSGRenderNode = new OSGRenderNode(this);
+    getViewer()->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
     //    createOsgRenderer();
 
 //    initializeOsgEarth();
@@ -48,10 +48,10 @@ void MapItem::setMap(osgEarth::Map *map)
     mCameraController->home(0);
 }
 
-osgViewer::Viewer *MapItem::getViewer() const
-{
-    return dynamic_cast<osgViewer::Viewer*>(mOSGRenderNode);
-}
+//osgViewer::Viewer *MapItem::getViewer() const
+//{
+//    return dynamic_cast<osgViewer::Viewer*>(mOSGRenderNode);
+//}
 
 const osg::Group *MapItem::getRoot() const
 {
@@ -104,7 +104,7 @@ void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
     //    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
     float height = 0;
     osgUtil::LineSegmentIntersector::Intersections intersections;
-    if (mOSGRenderNode->computeIntersections(x, /*height - */y, intersections))
+    if (getViewer()->computeIntersections(x, /*height - */y, intersections))
     {
         for (const auto &intersection : intersections)
         {
@@ -114,7 +114,7 @@ void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
         }
     }
     else
-        mCameraController->screenToWorld(x, y,mOSGRenderNode, outWorldPoint);
+        mCameraController->screenToWorld(x, y,getViewer(), outWorldPoint);
 }
 
 osgEarth::GeoPoint MapItem::screenToGeoPoint(float x, float y) const
@@ -128,11 +128,11 @@ osgEarth::GeoPoint MapItem::screenToGeoPoint(float x, float y) const
 
 void MapItem::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) const
 {
-    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
-    float width = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->width());
+    float height = static_cast<float>(getViewer()->getCamera()->getViewport()->height());
+    float width = static_cast<float>(getViewer()->getCamera()->getViewport()->width());
 
-    const osg::Matrixd pMatrix = mOSGRenderNode->getCamera()->getProjectionMatrix();
-    const osg::Matrixd vMatrix = mOSGRenderNode->getCamera()->getViewMatrix();
+    const osg::Matrixd pMatrix = getViewer()->getCamera()->getProjectionMatrix();
+    const osg::Matrixd vMatrix = getViewer()->getCamera()->getViewMatrix();
     osg::Vec3f result =   (worldPoint * vMatrix) * pMatrix;
     outX = result.x() * (width/2.0f) + width/2.0f;
     outY = result.y() * (height/2.0f) + height/2.0f;
@@ -142,11 +142,11 @@ void MapItem::worldToScreen(osg::Vec3d worldPoint, float &outX, float &outY) con
 
 void MapItem::worldToOSGScreen(osg::Vec3d worldPoint, float &outX, float &outY) const
 {
-    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());
-    float width = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->width());
+    float height = static_cast<float>(getViewer()->getCamera()->getViewport()->height());
+    float width = static_cast<float>(getViewer()->getCamera()->getViewport()->width());
 
-    const osg::Matrixd pMatrix = mOSGRenderNode->getCamera()->getProjectionMatrix();
-    const osg::Matrixd vMatrix = mOSGRenderNode->getCamera()->getViewMatrix();
+    const osg::Matrixd pMatrix = getViewer()->getCamera()->getProjectionMatrix();
+    const osg::Matrixd vMatrix = getViewer()->getCamera()->getViewMatrix();
     osg::Vec3f result =   (worldPoint * vMatrix) * pMatrix;
     outX = result.x() * (width/2.0f) + width/2.0f;
     outY = result.y() * (height/2.0f) + height/2.0f;
@@ -155,33 +155,33 @@ void MapItem::worldToOSGScreen(osg::Vec3d worldPoint, float &outX, float &outY) 
     outY = point.y();
 }
 
-QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
-{
-    QSGRenderNode *n = static_cast<QSGRenderNode *>(node);
-    QSGRendererInterface *ri = window()->rendererInterface();
-    if (!ri)
-        return nullptr;
+//QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
+//{
+//    QSGRenderNode *n = static_cast<QSGRenderNode *>(node);
+//    QSGRendererInterface *ri = window()->rendererInterface();
+//    if (!ri)
+//        return nullptr;
 
-    if (!n)
-    {
-        //        mOSGRenderNode = new OSGRenderNode(this);
-        //        createOsgRenderer();
-        ////        mOSGRenderNode->setupOSG(x(), y(), width(), height(), 1);
+//    if (!n)
+//    {
+//        //        mOSGRenderNode = new OSGRenderNode(this);
+//        //        createOsgRenderer();
+//        ////        mOSGRenderNode->setupOSG(x(), y(), width(), height(), 1);
 
-        ////        setNode(mSource);
-        //        initializeOsgEarth();
+//        ////        setNode(mSource);
+//        //        initializeOsgEarth();
 
-        mOSGRenderNode->setupOSG(0, 0, 800, 620, 1);
+//        mOSGRenderNode->setupOSG(0, 0, 800, 620, 1);
 
-        n = mOSGRenderNode;
-    }
-    static_cast<OSGRenderNode *>(n)->sync(this);
+//        n = mOSGRenderNode;
+//    }
+//    static_cast<OSGRenderNode *>(n)->sync(this);
 
-    if (!n)
-        qWarning("QSGRendererInterface reports unknown graphics API %d", ri->graphicsApi());
+//    if (!n)
+//        qWarning("QSGRendererInterface reports unknown graphics API %d", ri->graphicsApi());
 
-    return n;
-}
+//    return n;
+//}
 
 void MapItem::changeMode()
 {
@@ -230,7 +230,7 @@ void MapItem::initializeOsgEarth()
     osgEarth::Util::SkyOptions sopts;
     mSkyNode = osgEarth::Util::SkyNode::create(sopts);
     createMapNode(true);
-    mOSGRenderNode->setSceneData(mMapRoot);
+    getViewer()->setSceneData(mMapRoot);
 
     osgEarth::Drivers::GDALOptions gdal;
     gdal.maxDataLevelOverride() = 700000;
@@ -256,7 +256,7 @@ void MapItem::initializeOsgEarth()
 
     //create camera after create map node
     createCameraManipulator();
-    mOSGRenderNode->setCameraManipulator(mCameraController);
+    getViewer()->setCameraManipulator(mCameraController);
 }
 
 void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
@@ -344,60 +344,60 @@ void MapItem::frame()
     sunLight->setDirection(spos);
 }
 
-void MapItem::keyPressEvent(QKeyEvent *event)
-{
-    if (mOSGRenderNode)
-        mOSGRenderNode->keyPressEvent(event);
-}
+//void MapItem::keyPressEvent(QKeyEvent *event)
+//{
+//    if (mOSGRenderNode)
+//        mOSGRenderNode->keyPressEvent(event);
+//}
 
-void MapItem::keyReleaseEvent(QKeyEvent *event)
-{
-    if (mOSGRenderNode)
-        mOSGRenderNode->keyReleaseEvent(event);
-}
+//void MapItem::keyReleaseEvent(QKeyEvent *event)
+//{
+//    if (mOSGRenderNode)
+//        mOSGRenderNode->keyReleaseEvent(event);
+//}
 
-void MapItem::mousePressEvent(QMouseEvent *event)
-{
-    if (mOSGRenderNode) {
-        mOSGRenderNode->mousePressEvent(event);
-    }
+//void MapItem::mousePressEvent(QMouseEvent *event)
+//{
+//    if (mOSGRenderNode) {
+//        mOSGRenderNode->mousePressEvent(event);
+//    }
 
-}
+//}
 
-void MapItem::mouseReleaseEvent(QMouseEvent *event)
-{
-    if (mOSGRenderNode) {
-        mOSGRenderNode->mouseReleaseEvent(event);
-    }
-}
+//void MapItem::mouseReleaseEvent(QMouseEvent *event)
+//{
+//    if (mOSGRenderNode) {
+//        mOSGRenderNode->mouseReleaseEvent(event);
+//    }
+//}
 
-void MapItem::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    if (mOSGRenderNode)
-        mOSGRenderNode->mouseDoubleClickEvent(event);
-}
+//void MapItem::mouseDoubleClickEvent(QMouseEvent *event)
+//{
+//    if (mOSGRenderNode)
+//        mOSGRenderNode->mouseDoubleClickEvent(event);
+//}
 
-void MapItem::mouseMoveEvent(QMouseEvent *event)
-{
-    if (mOSGRenderNode) {
-        mOSGRenderNode->mouseMoveEvent(event);
-    }
-}
+//void MapItem::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (mOSGRenderNode) {
+//        mOSGRenderNode->mouseMoveEvent(event);
+//    }
+//}
 
-void MapItem::wheelEvent(QWheelEvent *event)
-{
-    if (mOSGRenderNode)
-        mOSGRenderNode->wheelEvent(event);
-}
+//void MapItem::wheelEvent(QWheelEvent *event)
+//{
+//    if (mOSGRenderNode)
+//        mOSGRenderNode->wheelEvent(event);
+//}
 
-void MapItem::hoverMoveEvent(QHoverEvent *event)
-{
-    if (mOSGRenderNode) {
-        mOSGRenderNode->hoverMoveEvent(event);
-    }
-}
+//void MapItem::hoverMoveEvent(QHoverEvent *event)
+//{
+//    if (mOSGRenderNode) {
+//        mOSGRenderNode->hoverMoveEvent(event);
+//    }
+//}
 
-OSGRenderNode *MapItem::oSGRenderNode() const
-{
-    return mOSGRenderNode;
-}
+//OSGRenderNode *MapItem::oSGRenderNode() const
+//{
+//    return mOSGRenderNode;
+//}

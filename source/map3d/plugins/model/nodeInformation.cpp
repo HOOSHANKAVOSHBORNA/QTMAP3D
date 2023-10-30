@@ -1,4 +1,5 @@
 #include "nodeInformation.h"
+#include "qquickwindow.h"
 
 #include <QQmlEngine>
 

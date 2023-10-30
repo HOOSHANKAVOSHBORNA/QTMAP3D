@@ -23,7 +23,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
-#include "smallmap.h"
+#include "smallMap.h"
 
 MainWindow::MainWindow(QWindow *parent) :
     QQuickWindow(parent)

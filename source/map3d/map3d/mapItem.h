@@ -1,25 +1,17 @@
 #ifndef MapController_H
 #define MapController_H
 
-#include "osgRenderNode.h"
+#include "osgViewerItem.h"
 #include "mapObject.h"
 #include "cameraController.h"
-//#include "layerModel.h"
-#include <QQuickItem>
-#include <QQuickWindow>
-#include <QObject>
-#include <QEvent>
-#include <QScreen>
-#include <GL/gl.h>
 
 #include <osgEarth/MapNode>
-//#include <osgEarthUtil/EarthManipulator>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
 #include <osgEarthAnnotation/AnnotationLayer>
 
-class MapItem : public QQuickItem
+class MapItem : public OsgViewerItem
 {
     Q_OBJECT
 
@@ -27,7 +19,7 @@ public:
     explicit MapItem(QQuickItem *parent = nullptr);
     ~MapItem();
     void setMap(osgEarth::Map *map);
-    Q_INVOKABLE osgViewer::Viewer *getViewer()const;
+//    Q_INVOKABLE osgViewer::Viewer *getViewer()const;
     const osg::Group *getRoot() const;
     osgEarth::MapNode *getMapNode() const;
 
@@ -68,7 +60,7 @@ public:
 //    bool addLayerToLayer(osgEarth::Layer *layer, std::string layerName);
 //    bool removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName);
 
-    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
+//    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 public slots:
 //    void zoom(double);
 //    void goToHome();
@@ -133,20 +125,20 @@ public:
     //    void resizeGL(int width, int height, QScreen *screen);
     //    void paintGL();
     //    void createOsgRenderer();
-    virtual void frame();
+    virtual void frame() override;
     //events------------------------------
-    virtual void keyPressEvent(QKeyEvent* event) override;
-    virtual void keyReleaseEvent(QKeyEvent* event) override;
-    virtual void mousePressEvent(QMouseEvent* event) override;
-    virtual void mouseReleaseEvent(QMouseEvent* event) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
-    virtual void mouseMoveEvent(QMouseEvent* event) override;
-    virtual void wheelEvent(QWheelEvent* event) override;
-    virtual void hoverMoveEvent(QHoverEvent *event) override;
-    OSGRenderNode *oSGRenderNode() const;
+//    virtual void keyPressEvent(QKeyEvent* event) override;
+//    virtual void keyReleaseEvent(QKeyEvent* event) override;
+//    virtual void mousePressEvent(QMouseEvent* event) override;
+//    virtual void mouseReleaseEvent(QMouseEvent* event) override;
+//    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
+//    virtual void mouseMoveEvent(QMouseEvent* event) override;
+//    virtual void wheelEvent(QWheelEvent* event) override;
+//    virtual void hoverMoveEvent(QHoverEvent *event) override;
+//    OSGRenderNode *oSGRenderNode() const;
 
 private:
-    OSGRenderNode *mOSGRenderNode{nullptr};
+//    OSGRenderNode *mOSGRenderNode{nullptr};
     //    QQuickWindow *mWindow{nullptr};
 };
 
