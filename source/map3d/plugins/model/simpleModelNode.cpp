@@ -15,7 +15,8 @@ const float RANGE3D = 835;
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
-SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent)
+
+SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, BookmarkManager *bookmark, QObject *parent)
     : QObject{parent},
     osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Model::getDefaultStyle()),
     mUrl3D(url3D),
@@ -265,7 +266,6 @@ void SimpleModelNode::selectModel()
 {
     if (!mNodeInformation){
         mNodeInformation = new NodeInformation(mEnigine, this);
-        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
         connect(mNodeInformation, &NodeInformation::bookmarkChecked, [&](bool t){
             mIsBookmarked = t;
             if (mIsBookmarked){
@@ -274,8 +274,10 @@ void SimpleModelNode::selectModel()
             }
             else{
                 mBookmark->removeBookmarkItem(mBookmarkItem);
+                delete mBookmarkItem;
             }
         });
+        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
     }
     mNodeInformation->show();
     mIsSelected = !mIsSelected;

@@ -5,7 +5,7 @@
 class FlyableModelNode: public MoveableModelNode
 {
 public:
-    FlyableModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent = nullptr);
+    FlyableModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkManager *bookmark, QObject *parent = nullptr);
     FlyableModelNode* asFlyableModelNode()override {return this;}
     void flyTo(osgEarth::GeoPoint destinationPoint, double velocity);
     double speed() const override;

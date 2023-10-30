@@ -1,6 +1,6 @@
 #include "attackManager.h"
 
-AttackManager::AttackManager(MapItem *mapControler, QQmlEngine *engine, BookmarkProxyModel *bookmark, SimpleModelNode *parent)
+AttackManager::AttackManager(MapItem *mapControler, QQmlEngine *engine, BookmarkManager *bookmark, SimpleModelNode *parent)
     : mMapItem(mapControler),
     mEngine(engine),
     mBookmark(bookmark),

@@ -43,7 +43,7 @@ void PluginInterface::setMainWindow(MainWindow *mainWindow)
     mMapItem = mainWindow->getMapItem();
     mQmlEngine = mainWindow->getQmlEngine();
     mToolbox = dynamic_cast<Toolbox*>(mainWindow->getToolboxManager()->sourceModel());
-    mBookmarkProxyModel = mainWindow->getBookmarkManager();
+    mBookmarkManager = mainWindow->getBookmarkManager();
 }
 
 DefenseDataManager *PluginInterface::defenseDataManager() const
@@ -81,7 +81,7 @@ void PluginInterface::setServiceManager(ServiceManager *newServiceManager)
     mServiceManager = newServiceManager;
 }
 
-BookmarkProxyModel *PluginInterface::bookmarkProxyModel() const
+BookmarkManager *PluginInterface::bookmarkManager() const
 {
-    return mBookmarkProxyModel;
+    return mBookmarkManager;
 }

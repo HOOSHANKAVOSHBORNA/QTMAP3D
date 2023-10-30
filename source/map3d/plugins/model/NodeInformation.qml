@@ -3,14 +3,22 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import "style"
 Window {
-    id:backgroundRec
+    id:window
     readonly property color verticalBarColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.10)
     readonly property color parentColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
+    property int previousX
+    property int previousY
+    flags: Qt.Window | Qt.FramelessWindowHint
     width:310/Style.monitorRatio
-    height: 612/Style.monitorRatio
-    color: Style.backgroundColor
-
+    height:612/Style.monitorRatio
+    color: "transparent"
     property var nodeinfo
+    Rectangle{
+        color: Style.backgroundColor
+        anchors.fill: parent
+        radius: 15
+    }
+
     ColumnLayout{
         anchors.fill: parent
         spacing: 0
@@ -21,18 +29,15 @@ Window {
             RowLayout{
                 anchors.fill: parent
                 spacing:0
-                Button{
+
+                IconImage{
                     Layout.preferredHeight: 22/Style.monitorRatio
                     Layout.preferredWidth: 22/Style.monitorRatio
                     Layout.leftMargin: 15
-                    background:IconImage{
-                        width: 22
-                        height: 22
-                        source: ""
-                    }
+                    source: nodeinfo ? nodeinfo.icnUrl : ""
                 }
                 Text{
-                    text: nodeinfo ? nodeinfo.getWindowName() : ""
+                    text: nodeinfo ? nodeinfo.title : ""
                     color: Style.foregroundColor
                     font.pixelSize: 17/Style.monitorRatio
                     Layout.fillWidth: true
@@ -51,15 +56,40 @@ Window {
                         nodeinfo.bookmarkChecked(checked)
                     }
                 }
-                IconImage{
+                Button{
                     Layout.preferredWidth: 22/Style.monitorRatio
                     Layout.preferredHeight: 22/Style.monitorRatio
-                    source: "qrc:/Resources/multiply.png"
                     Layout.rightMargin: 15
+                    background:IconImage{
+                        width: 22/Style.monitorRatio
+                        height: 22/Style.monitorRatio
+                        source: "qrc:/Resources/multiply.png"
+                    }
+                    onClicked:{
+                        window.close()
+                    }
                 }
             }
-        }
+            MouseArea {
+                anchors.fill: parent
 
+                onPressed: {
+                    previousX = mouseX
+                    previousY = mouseY
+                }
+
+                onMouseXChanged: {
+                    var dx = mouseX - previousX
+                    window.setX(window.x + dx)
+                }
+
+                onMouseYChanged: {
+                    var dy = mouseY - previousY
+                    window.setY(window.y + dy)
+                }
+               z:-1
+            }
+}
         Item{
             id:mainImageItem
             Layout.fillWidth: true
@@ -67,7 +97,9 @@ Window {
             Image{
                 id:image
                 anchors.fill: parent
-                source:nodeinfo ? nodeinfo.getMainImageUrl() :""
+
+                source:nodeinfo ? nodeinfo.imageUrl :""
+
             }
             Rectangle{
                 color: "silver"

@@ -11,17 +11,27 @@ BookmarkProxyModel::BookmarkProxyModel(QObject *parent):
     mSelectioModel = new QItemSelectionModel(this);
 }
 
-BookmarkProxyModel *BookmarkProxyModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+BookmarkManager *BookmarkManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new BookmarkProxyModel(); }
+    if(mInstance == nullptr){ mInstance = new BookmarkManager(); }
     return mInstance;
 }
 
-BookmarkProxyModel::~BookmarkProxyModel()
+BookmarkManager::~BookmarkManager()
 {
+    delete mBookmarkProxyModel;
+}
 
+void BookmarkManager::addBookmarkItem(BookmarkItem *bookmarkItem)
+{
+    mBookmarkProxyModel->addBookmarkItem(bookmarkItem);
+}
+
+void BookmarkManager::removeBookmarkItem(BookmarkItem *bookmarkItem)
+{
+    mBookmarkProxyModel->removeBookmarkItem(bookmarkItem);
 }
 
 QHash<int, QByteArray> BookmarkProxyModel::roleNames() const
@@ -33,9 +43,24 @@ QHash<int, QByteArray> BookmarkProxyModel::roleNames() const
     return hash;
 }
 
-void BookmarkProxyModel::select(const QModelIndex index)
+void BookmarkManager::select(BookmarkItem *bookmarkItem)
 {
-    mSelectioModel->select(index, QItemSelectionModel::SelectionFlag::Toggle);
+    mBookmarkProxyModel->select(bookmarkItem);
+}
+
+QItemSelectionModel *BookmarkManager::getSelectioModel() const
+{
+    return mBookmarkProxyModel->selectioModel();
+}
+
+BookmarkProxyModel *BookmarkManager::getBookmarkProxyModel() const
+{
+    return mBookmarkProxyModel;
+}
+
+BookmarkManager::BookmarkManager(QObject *parent): QObject(parent)
+{
+    mBookmarkProxyModel= new BookmarkProxyModel();
 }
 
 void BookmarkProxyModel::addBookmarkItem(BookmarkItem *bookmarkItem)
@@ -64,6 +89,17 @@ void BookmarkProxyModel::removeBookmarkItem(BookmarkItem *bookmarkItem)
         mItems.erase(bookmarkItem->parent);
     }
     emit bookmarkItem->itemDeleted();
+}
+
+void BookmarkProxyModel::select(const QModelIndex index)
+{
+    mSelectioModel->select(index, QItemSelectionModel::SelectionFlag::Toggle);
+}
+
+void BookmarkProxyModel::select(BookmarkItem *bookmarkItem)
+{
+    QModelIndex indexSource = mapToSource(mStandardItemModel->indexFromItem(mItems[bookmarkItem->text].second));
+    select(indexSource);
 }
 
 void BookmarkProxyModel::removeBookmarkItem(const QModelIndex index)

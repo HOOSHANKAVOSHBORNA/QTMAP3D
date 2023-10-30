@@ -7,7 +7,7 @@ import "style"
 
 Item {
     id: rootItem
-    property var layersModell
+    property var layerModel
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
 
 
@@ -34,8 +34,8 @@ Item {
 
             TextField {
                 function sendToSearch() {
-                    if( rootItem.layersModell){
-                        rootItem.layersModell.setFilterString(text)
+                    if( rootItem.layerModel){
+                        rootItem.layerModel.setFilterString(text)
                         if (text.length === 0) {
                             treeView.collapseRecursively()
                         }
@@ -75,11 +75,11 @@ Item {
                 anchors.fill: parent
                 clip: true
                 rowSpacing: 5 / Style.monitorRatio
-                model: layersModell
+                model: layerModel
 
 //                selectionModel: ItemSelectionModel {
 //                    id: selectionModel
-//                    model: layersModell
+//                    model: layerModel
 //                    onCurrentChanged: {
 //                    }
 //                    onSelectionChanged:{
@@ -117,9 +117,9 @@ Item {
                         visible: dropRole
                         onDropped: {
 
-                            if((treeView.index(row , column) !== layersModell.dragIndex) && (layersModell.dragIndex.valid)){
-                                if(layersModell.dragIndex.parent === treeView.index(row , column).parent){
-                                    layersModell.onMoveItem(layersModell.dragIndex, treeView.index(row , column))
+                            if((treeView.index(row , column) !== layerModel.dragIndex) && (layerModel.dragIndex.valid)){
+                                if(layerModel.dragIndex.parent === treeView.index(row , column).parent){
+                                    layerModel.onMoveItem(layerModel.dragIndex, treeView.index(row , column))
                                 }
                             }
                             treeView.forceLayout()
@@ -147,7 +147,7 @@ Item {
                     Drag.dragType: Drag.Automatic
                     Drag.onDragStarted: {
 
-                        rootItem.layersModell.dragIndex = treeView.index(row, column)
+                        rootItem.layerModel.dragIndex = treeView.index(row, column)
 
                     }
                     Drag.onDragFinished: {
@@ -286,7 +286,7 @@ Item {
                             anchors.fill: hideContainer
                             propagateComposedEvents: true
                             onClicked:{
-                                rootItem.layersModell.onVisibleItemClicked(treeView.index(row , column))
+                                rootItem.layerModel.onVisibleItemClicked(treeView.index(row , column))
                             }
 
                         }
@@ -304,7 +304,7 @@ Item {
                                 icon.source: "qrc:/Resources/garbage.png"
                                 icon.color: "red"
                                 onTriggered: function() {
-                                    rootItem.layersModell.onRemoveItemClicked(treeView.index(row , column))
+                                    rootItem.layerModel.onRemoveItemClicked(treeView.index(row , column))
                                 }
                             }
                             MenuSeparator {
@@ -319,7 +319,7 @@ Item {
                                 icon.source: "qrc:/Resources/up.png"
                                 icon.color: Style._persianGreen
                                 onTriggered: {
-                                    rootItem.layersModell.onMoveItem(treeView.index(row , column), treeView.index(row-1 , column))
+                                    rootItem.layerModel.onMoveItem(treeView.index(row , column), treeView.index(row-1 , column))
                                 }
                             }
                             MenuSeparator {
@@ -334,7 +334,7 @@ Item {
                                 icon.source: "qrc:/Resources/down.png"
                                 icon.color: Style._persianGreen
                                 onTriggered: {
-                                    rootItem.layersModell.onMoveItem(treeView.index(row , column), treeView.index(row+1 , column))
+                                    rootItem.layerModel.onMoveItem(treeView.index(row , column), treeView.index(row+1 , column))
                                 }
                             }
                             MenuSeparator {

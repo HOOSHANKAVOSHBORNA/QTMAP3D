@@ -6,7 +6,7 @@
 class AttackManager
 {
 public:
-    AttackManager(MapItem *mapControler, QQmlEngine *engine, BookmarkProxyModel *bookmark , SimpleModelNode *parent = nullptr);
+    AttackManager(MapItem *mapControler, QQmlEngine *engine, BookmarkManager *bookmark , SimpleModelNode *parent = nullptr);
     void attackResult(bool result ,int bulletID );
     int readyBullet(const std::string url3D , const std::string url2D);
     void attackTo(int bulletID ,osgEarth::GeoPoint geoPos);
@@ -25,7 +25,7 @@ private:
     QList<osg::ref_ptr<BulletNode>> mBulletList;
     MapItem *mMapItem;
     QQmlEngine *mEngine;
-    BookmarkProxyModel *mBookmark;
+    BookmarkManager *mBookmark;
     SimpleModelNode *mParent;
     int mBulletCount = 0;
 

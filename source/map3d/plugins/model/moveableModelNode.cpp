@@ -106,7 +106,7 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
     NodeCallback::traverse(node,nv);
 }
 
-MoveableModelNode::MoveableModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent):
+MoveableModelNode::MoveableModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkManager *bookmark, QObject *parent):
     SimpleModelNode(mapControler, modelUrl, iconUrl, engine, bookmark, parent)
 {
 

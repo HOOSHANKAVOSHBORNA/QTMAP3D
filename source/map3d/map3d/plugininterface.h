@@ -4,7 +4,7 @@
 
 
 #include "serviceManager.h"
-#include "toolbox.h"
+#include "toolboxManager.h"
 
 #include <QObject>
 #include <QString>
@@ -21,7 +21,7 @@ class MainWindow;
 class ListWindow;
 class QQuickItem;
 class DefenseDataManager;
-class BookmarkProxyModel;
+class BookmarkManager;
 namespace osgViewer {
     class Viewer;
 };
@@ -39,7 +39,7 @@ public:
     MapItem *mapItem() const;
     QQmlEngine *qmlEngine() const;
     Toolbox *toolbox() const;
-    BookmarkProxyModel *bookmarkProxyModel() const;
+    BookmarkManager *bookmarkManager() const;
 
     DefenseDataManager *defenseDataManager() const;
     static void setDefenseDataManager(DefenseDataManager* defenseDataManager);
@@ -72,7 +72,7 @@ private:
     static MainWindow *mMainWindow;
     static Toolbox *mToolbox;
     static ServiceManager *mServiceManager;
-    static inline BookmarkProxyModel *mBookmarkProxyModel;
+    static inline BookmarkManager *mBookmarkManager;
     QString mName;
 
 };

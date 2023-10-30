@@ -14,7 +14,9 @@ class NodeInformation:public QStandardItemModel
         valueText,
         iconImageSource
     };
-
+    Q_PROPERTY(QString imageUrl READ imageUrl NOTIFY informationChanged)
+    Q_PROPERTY(QString icnUrl READ icnUrl NOTIFY informationChanged)
+    Q_PROPERTY(QString title READ title NOTIFY informationChanged)
 
 public:
     explicit NodeInformation(QQmlEngine* Engine ,QObject *parent = nullptr);
@@ -22,20 +24,20 @@ public:
     void addUpdateNodeInformationItem(NodeData* nodeData);
     virtual QHash<int, QByteArray> roleNames() const override;
     void show();
-
-    Q_INVOKABLE QString getMainImageUrl();
-    Q_INVOKABLE QString getWindowName();
-
     QQuickWindow *wnd() const;
+   Q_INVOKABLE QString imageUrl() const;
+   Q_INVOKABLE QString icnUrl() const;
+   Q_INVOKABLE QString title() const;
 
-signals:
+   signals:
+    void informationChanged();
     void bookmarkChecked(bool check);
+
 private:
     QStandardItem *rootItem;
-    QString windowName;
-    QString mainImageUrl;
     std::map<QString, QStandardItem*> mItems;
     QQuickWindow *mWnd;
+    NodeData *mNodeData{nullptr};
 };
 
 #endif // NODEINFORMATION_H

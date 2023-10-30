@@ -8,7 +8,7 @@
 class MoveableModelNode : public SimpleModelNode
 {
 public:
-    explicit MoveableModelNode(MapItem* mapControler, const std::string& modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkProxyModel *bookmark, QObject *parent = nullptr);
+    explicit MoveableModelNode(MapItem* mapControler, const std::string& modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkManager *bookmark, QObject *parent = nullptr);
     void moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed);
     MoveableModelNode* asMoveableModelNode()override {return this;}
 
