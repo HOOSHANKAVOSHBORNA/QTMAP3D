@@ -31,19 +31,29 @@ void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
 {
     mNodeData = nodeData;
     emit informationChanged();
-    for(NodeFieldData nodeFieldData:nodeData->fieldData){
+    // ----------------------------------------remove category if is not in new data ---------------
+    for (auto& [key, value] : mCategories) {
+        value->removeRows(0, value->rowCount());
+        auto it = std::find_if(nodeData->fieldData.begin(), nodeData->fieldData.end(), [&](const NodeFieldData& n){
+            return n.name == key;
+        });
+        if (it != nodeData->fieldData.end())
+            mCategories.erase(it->name);
+    }
 
+    for(NodeFieldData nodeFieldData:nodeData->fieldData){
         QStandardItem *item = new QStandardItem;
         QString category = nodeFieldData.category;
-        if (mItems.find(category) == mItems.end()){
+        // -----------------add category if it doesn't exist ---------------------------------------------------
+        if (mCategories.find(category) == mCategories.end()){
             QStandardItem *p = new QStandardItem(category);
-            p->setData(QVariant::fromValue(nodeFieldData.categorySrc),iconImageSource);
-            mItems[category] = p;
+            p->setData(QVariant::fromValue(nodeFieldData.categorySrc), iconImageSource);
+            mCategories[category] = p;
             rootItem->appendRow(p);
         }
         item->setData(QVariant::fromValue(nodeFieldData.name), nameText);
         item->setData(QVariant::fromValue(nodeFieldData.value), valueText);
-        mItems[category]->appendRow(item);
+        mCategories[category]->appendRow(item);
     }
 }
 
@@ -54,7 +64,6 @@ QHash<int, QByteArray> NodeInformation::roleNames() const
     textroles[nameText] = "nameText";
     textroles[valueText] = "valueText";
     textroles[iconImageSource] = "iconImageSource";
-
     return textroles;
 }
 
@@ -81,6 +90,17 @@ QString NodeInformation::icnUrl() const
 QString NodeInformation::title() const
 {
     return mNodeData ? QString::fromStdString(mNodeData->name) : "";
+}
+
+bool NodeInformation::bookmarkStatus() const
+{
+    return mBookmarkStatus;
+}
+
+void NodeInformation::changeBookmarkStatus(bool status)
+{
+    mBookmarkStatus = status;
+    emit bookmarkChecked(mBookmarkStatus);
 }
 
 

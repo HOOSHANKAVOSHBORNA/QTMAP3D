@@ -45,7 +45,8 @@ QHash<int, QByteArray> BookmarkProxyModel::roleNames() const
 
 void BookmarkManager::select(BookmarkItem *bookmarkItem)
 {
-    mBookmarkProxyModel->select(bookmarkItem);
+    if (bookmarkItem)
+        mBookmarkProxyModel->select(bookmarkItem);
 }
 
 QItemSelectionModel *BookmarkManager::getSelectioModel() const
