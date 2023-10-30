@@ -18,7 +18,6 @@ class NodeInformation:public QStandardItemModel
     Q_PROPERTY(QString icnUrl READ icnUrl NOTIFY informationChanged)
     Q_PROPERTY(QString title READ title NOTIFY informationChanged)
 
-
 public:
     explicit NodeInformation(QQmlEngine* Engine ,QObject *parent = nullptr);
     ~NodeInformation();
@@ -26,13 +25,14 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
     void show();
     QQuickWindow *wnd() const;
-    QString imageUrl() const;
-    QString icnUrl() const;
-    QString title() const;
+   Q_INVOKABLE QString imageUrl() const;
+   Q_INVOKABLE QString icnUrl() const;
+   Q_INVOKABLE QString title() const;
 
-signals:
+   signals:
     void informationChanged();
     void bookmarkChecked(bool check);
+
 private:
     QStandardItem *rootItem;
     std::map<QString, QStandardItem*> mItems;

@@ -29,12 +29,14 @@ NodeInformation::~NodeInformation()
 void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
 {
     mNodeData = nodeData;
+    emit informationChanged();
     for(NodeFieldData nodeFieldData:nodeData->fieldData){
 
         QStandardItem *item = new QStandardItem;
         QString category = nodeFieldData.category;
         if (mItems.find(category) == mItems.end()){
             QStandardItem *p = new QStandardItem(category);
+            p->setData(QVariant::fromValue(nodeFieldData.categorySrc),iconImageSource);
             mItems[category] = p;
             rootItem->appendRow(p);
         }
@@ -51,6 +53,7 @@ QHash<int, QByteArray> NodeInformation::roleNames() const
     textroles[nameText] = "nameText";
     textroles[valueText] = "valueText";
     textroles[iconImageSource] = "iconImageSource";
+
     return textroles;
 }
 
@@ -58,6 +61,7 @@ void NodeInformation::show()
 {
     mWnd->show();
 }
+
 QQuickWindow *NodeInformation::wnd() const
 {
     return mWnd;
