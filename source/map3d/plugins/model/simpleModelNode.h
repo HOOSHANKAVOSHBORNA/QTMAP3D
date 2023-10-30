@@ -1,6 +1,7 @@
 #ifndef SIMPLEMODELNODE_H
 #define SIMPLEMODELNODE_H
 
+
 #include "mapItem.h"
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
@@ -18,14 +19,15 @@
 
 class MoveableModelNode;
 class FlyableModelNode;
-class BulletNode;
+class AttackManager;
 
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
     SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D,
-                    QQmlEngine *engine, BookmarkManager *bookmark, int bulletCount = 0, QObject *parent = nullptr);
+                    QQmlEngine *engine, BookmarkManager *bookmark, QObject *parent = nullptr);
+
     ~SimpleModelNode();
     void updateUrl(const std::string& url3D, const std::string& url2D);
     MapItem *mapItem() const;
@@ -47,10 +49,8 @@ public:
     bool getIsBookmarked() const;
     void setIsBookmarked(bool newIsBookmarked);
 
-    void attackTo(osgEarth::GeoPoint geoPos,const std::string model3D,const std::string icon2D);
-    void attackResult(bool result);
-    osgEarth::GeoPoint getBulletPosition();
-    void setBulletLayer(ParenticAnnotationLayer *layer);
+    void isAttacker(ParenticAnnotationLayer *layer, int bulletCount=1);
+    AttackManager *getAttackManager();
 
 private slots:
     void compile();
@@ -65,8 +65,7 @@ private:
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<Circle> mCircleSelectNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
-    osg::ref_ptr<BulletNode> mBulletNode;
-    osg::ref_ptr<ParenticAnnotationLayer> mBulletNodeLayer{nullptr};
+    AttackManager *mAttackManager;
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;
@@ -82,7 +81,6 @@ private:
     QQmlEngine *mEnigine;
     BookmarkManager *mBookmark;
     BookmarkItem *mBookmarkItem;
-    int mBulletcount = 0;
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;
