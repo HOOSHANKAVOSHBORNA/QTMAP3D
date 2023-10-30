@@ -80,7 +80,7 @@ private:
     static int mCount;
     bool mIs3D;
     State mState{State::NONE};
-    bool isAttackActive = false;
+    bool mIsAttackActive = false;
 
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
@@ -89,6 +89,7 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mBulletNodeLayer{nullptr};
+
 
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
