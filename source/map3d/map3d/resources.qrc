@@ -505,5 +505,7 @@
         <file>Resources/track-icon.png</file>
         <file>Resources/filled-bookmark.png</file>
         <file>Resources/exclamation-mark.png</file>
+        <file>Resources/sidebar-unpin.png</file>
+        <file>Resources/sidebar-pin.png</file>
     </qresource>
 </RCC>

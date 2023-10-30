@@ -31,11 +31,11 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
 
-    qmlRegisterSingletonType<ToolboxProxyModel>("Crystal", 1, 0, "ToolboxInstance", ToolboxProxyModel::createSingletonInstance);
-    qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayersInstance", LayerManager::createSingletonInstance);
-    qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);
-    qmlRegisterSingletonType<BookmarkProxyModel>("Crystal", 1, 0, "BookmarkInstance", BookmarkProxyModel::createSingletonInstance);
 
+    qmlRegisterSingletonType<ToolboxManager>("Crystal", 1, 0, "ToolboxManagerInstance", ToolboxManager::createSingletonInstance);
+    qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayerManagerInstance", LayerManager::createSingletonInstance);
+    qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);
+    qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
     setColor(Qt::black);
 }
 
@@ -64,17 +64,15 @@ void MainWindow::initComponent()
             addToCenterCenterContainer(mMapItem);
 
             // --------------------------------------------------------- model settings
-            LocationManager* myModel = LocationManager::createSingletonInstance(nullptr, nullptr);
-            myModel->initialize(mMapItem);
+            LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
+            locationManager->initialize(mMapItem);
 
-            ToolboxProxyModel* toolboxProxyModel = ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
-            Toolbox *toolbox = new Toolbox(this);
-            toolboxProxyModel->setSourceModel(toolbox);
+            ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
 
             LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
-            layerManager->layerModel()->initialize(mMapItem);
+            layerManager->setMapItem(mMapItem);
 
-            BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+            BookmarkManager::createSingletonInstance(nullptr, nullptr);
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
@@ -101,9 +99,9 @@ LayerManager *MainWindow::getLayerManager() const
     return LayerManager::createSingletonInstance(nullptr, nullptr);
 }
 
-BookmarkProxyModel *MainWindow::getBookmarkManager() const
+BookmarkManager *MainWindow::getBookmarkManager() const
 {
-    return BookmarkProxyModel::createSingletonInstance(nullptr, nullptr);
+    return BookmarkManager::createSingletonInstance(nullptr, nullptr);
 }
 
 LocationProxyModel *MainWindow::getLocationManager() const

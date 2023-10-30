@@ -12,13 +12,11 @@ class NodeInformation:public QStandardItemModel
     enum CustomRoles {
         nameText = Qt::UserRole + 100,
         valueText,
-        iconImageSource,
-        mainImageSource,
-        windowText,
-        mainIconImageSource
+        iconImageSource
     };
-
-    Q_PROPERTY(QString mainImageUrl READ mainImageUrl WRITE setMainImageUrl NOTIFY MainImageUrlChanged FINAL)
+    Q_PROPERTY(QString imageUrl READ imageUrl NOTIFY informationChanged)
+    Q_PROPERTY(QString icnUrl READ icnUrl NOTIFY informationChanged)
+    Q_PROPERTY(QString title READ title NOTIFY informationChanged)
 
 public:
     explicit NodeInformation(QQmlEngine* Engine ,QObject *parent = nullptr);
@@ -26,25 +24,20 @@ public:
     void addUpdateNodeInformationItem(NodeData* nodeData);
     virtual QHash<int, QByteArray> roleNames() const override;
     void show();
-    Q_INVOKABLE QString getWindowName();
-    Q_INVOKABLE QString getIconImageUrl();
-
     QQuickWindow *wnd() const;
+   Q_INVOKABLE QString imageUrl() const;
+   Q_INVOKABLE QString icnUrl() const;
+   Q_INVOKABLE QString title() const;
 
-    Q_INVOKABLE QString mainImageUrl() const;
-    void setMainImageUrl(const QString &newMainImageUrl);
-
-signals:
+   signals:
+    void informationChanged();
     void bookmarkChecked(bool check);
-    void MainImageUrlChanged();
 
 private:
     QStandardItem *rootItem;
-    QString windowName;
-    QString iconImageUrl;
     std::map<QString, QStandardItem*> mItems;
     QQuickWindow *mWnd;
-    QString mMainImageUrl;
+    NodeData *mNodeData{nullptr};
 };
 
 #endif // NODEINFORMATION_H

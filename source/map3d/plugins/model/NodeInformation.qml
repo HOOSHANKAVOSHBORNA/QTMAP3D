@@ -30,15 +30,14 @@ Window {
                 anchors.fill: parent
                 spacing:0
 
-                    IconImage{
-                        Layout.preferredHeight: 22/Style.monitorRatio
-                        Layout.preferredWidth: 22/Style.monitorRatio
-                        Layout.leftMargin: 15
-                        source: nodeinfo ? nodeinfo.getIconImageUrl() : ""
-                    }
-
+                IconImage{
+                    Layout.preferredHeight: 22/Style.monitorRatio
+                    Layout.preferredWidth: 22/Style.monitorRatio
+                    Layout.leftMargin: 15
+                    source: nodeinfo ? nodeinfo.icnUrl : ""
+                }
                 Text{
-                    text: nodeinfo ? nodeinfo.getWindowName() : ""
+                    text: nodeinfo ? nodeinfo.title : ""
                     color: Style.foregroundColor
                     font.pixelSize: 17/Style.monitorRatio
                     Layout.fillWidth: true
@@ -60,11 +59,11 @@ Window {
                 Button{
                     Layout.preferredWidth: 22/Style.monitorRatio
                     Layout.preferredHeight: 22/Style.monitorRatio
+                    Layout.rightMargin: 15
                     background:IconImage{
                         width: 22/Style.monitorRatio
                         height: 22/Style.monitorRatio
                         source: "qrc:/Resources/multiply.png"
-                        Layout.rightMargin: 15
                     }
                     onClicked:{
                         window.close()
@@ -90,8 +89,7 @@ Window {
                 }
                z:-1
             }
-        }
-
+}
         Item{
             id:mainImageItem
             Layout.fillWidth: true
@@ -99,7 +97,8 @@ Window {
             Image{
                 id:image
                 anchors.fill: parent
-                source: nodeinfo? nodeinfo.mainImageUrl: ""
+
+                source:nodeinfo ? nodeinfo.imageUrl :""
 
             }
             Rectangle{

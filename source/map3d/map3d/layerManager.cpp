@@ -9,57 +9,55 @@
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/GeoPositionNode>
 
-LayerModel *LayerModel::mInstance = nullptr;
+//LayerModel *LayerModel::mInstance = nullptr;
 
-LayerModel::LayerModel()
+// -----------------------------------------------------------------
+LayerManager::LayerManager()
 {
-
+    mLayerModel = new LayerModel();
 }
 
-LayerModel *LayerModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+LayerModel *LayerManager::layerModel() const
+{
+    return mLayerModel;
+}
+
+LayerManager *LayerManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new LayerModel(); }
+    if(mInstance == nullptr){ mInstance = new LayerManager(); }
     return mInstance;
 }
 
-void LayerModel::initialize(MapItem *mapItem)
+LayerManager::~LayerManager()
 {
-    mSourceModel = new QStandardItemModel;
-    mMapItem = mapItem;
+    delete mLayerModel;
+}
 
-    initializeModel(mapItem->getMapNode()->getMap());
+void LayerManager::setMapItem(MapItem *mapItem)
+{
+    mLayerModel->setMapItem(mapItem);
+}
+//----------------------------------------------------------------------------------------------------------------
+LayerModel::LayerModel()
+{
+
+    mSourceModel = new QStandardItemModel;
     setSourceModel(mSourceModel);
-    //    connect(mapItem, &MapItem::layerChanged,[this, mapItem](){
-    //        mTreeModel->removeRows(0,mTreeModel->rowCount());
-    //        initializeModel(mapItem->getMapNode()->getMap());
-    //    });
-    connect(mapItem, &MapItem::mapCleared,[this, mapItem](){
-        mSourceModel->clear();
-        initializeModel(mapItem->getMapNode()->getMap());
-    });
+}
+
+void LayerModel::setMapItem(MapItem *mapItem)
+{
+    mMapItem = mapItem;
+    resetModel();
+
+    connect(mapItem, &MapItem::mapCleared, this, &LayerModel::resetModel);
     connect(mapItem->getMapObject(), &MapObject::layerAdded,this ,&LayerModel::onLayerAdded);
     connect(mapItem->getMapObject(), &MapObject::layerRemoved,this ,&LayerModel::onLayerRemoved);
     //    connect(mapItem->getMapObject(), &MapObject::nodeToLayerAdded,this ,&LayersModel::onNodeToLayerAdded);
     //    connect(mapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,this ,&LayersModel::onNodeFromLayerRemoved);
     //    connect(mapItem->getMapObject(), &MapObject::parentLayerChanged,this ,&LayersModel::onParentLayerChanged);
-}
-
-void LayerModel::initializeModel(osgEarth::Map *map)
-{
-    osgEarth::LayerVector layers;
-    //    map.
-    //    QStandardItem *rootItem = mTreeModel->getRootItem();
-    //    osgEarth::Layer rootLayer = mMapItem->getRoot();
-    //    QVariant rootLayerVariant;
-    //    rootLayerVariant.setValue(rootLayer);
-    //    rootItem->setData(rootLayerVariant,layerRole);
-    map->getLayers(layers);
-    for(const auto& layer : layers) {
-        //        auto parentLayer = mMapItem->getMapObject()->getParentLayer(layer);
-        onLayerAdded(layer, nullptr, map->getIndexOfLayer(layer));
-    }
 }
 
 QHash<int, QByteArray> LayerModel::roleNames() const
@@ -200,6 +198,18 @@ void LayerModel::onLayerRemoved(osgEarth::Layer *layer , osgEarth::Layer *parent
         mSourceModel->invisibleRootItem()->removeRow(index);
 }
 
+void LayerModel::resetModel()
+{
+    mSourceModel->clear();
+    mLayerToItemMap.clear();
+
+    osgEarth::LayerVector layers;
+    mMapItem->getMapObject()->getLayers(layers);
+    for(const auto& layer : layers) {
+        onLayerAdded(layer, nullptr, mMapItem->getMapObject()->getIndexOfLayer(layer));
+    }
+}
+
 void LayerModel::moveItem(QModelIndex from, QModelIndex to)
 {
     if(from.parent() == to.parent()){
@@ -248,8 +258,6 @@ bool LayerModel::filterAcceptsRow(int source_row, const QModelIndex &source_pare
     return false;
 }
 
-
-
 QString LayerModel::filterString() const
 {
     return mFilterString;
@@ -261,46 +269,4 @@ void LayerModel::setFilterString(const QString &newFilterString)
     invalidateFilter();
 }
 
-// ----------------------------------------------------------------- Model Manager
-LayerManager::LayerManager()
-{
-    mLayerModel = LayerModel::createSingletonInstance(nullptr, nullptr);
-}
 
-LayerModel *LayerManager::layerModel() const
-{
-    return mLayerModel;
-}
-
-void LayerManager::onLayerAdded(osgEarth::Layer *layer, osgEarth::Layer *parentLayer, unsigned int index)
-{
-    mLayerModel->onLayerAdded(layer, parentLayer, index);
-}
-
-void LayerManager::onLayerRemoved(osgEarth::Layer *layer, osgEarth::Layer *parentLayer, unsigned int index)
-{
-    mLayerModel->onLayerRemoved(layer, parentLayer, index);
-}
-
-bool LayerManager::getLayerVisible(osgEarth::Layer *layer) const
-{
-    return mLayerModel->getLayerVisible(layer);
-}
-
-void LayerManager::setLayerVisible(osgEarth::VisibleLayer *layer)
-{
-    mLayerModel->setLayerVisible(layer);
-}
-
-LayerManager *LayerManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new LayerManager(); }
-    return mInstance;
-}
-
-void LayerManager::initialize(MapItem *mapItem)
-{
-
-}

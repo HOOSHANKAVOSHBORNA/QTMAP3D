@@ -28,13 +28,8 @@ NodeInformation::~NodeInformation()
 
 void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
 {
-    QStandardItem* header = new QStandardItem;
-    windowName = QString::fromStdString(nodeData->name);
-   // mainImageUrl = QString::fromStdString(nodeData->imgSrc);
-    setMainImageUrl(QString::fromStdString(nodeData->imgSrc));
-    header->setData(QVariant::fromValue(windowName),windowText);
-    //    mItems.clear();
-    //    rootItem->removeRows(0,rootItem->rowCount());
+    mNodeData = nodeData;
+    emit informationChanged();
     for(NodeFieldData nodeFieldData:nodeData->fieldData){
 
         QStandardItem *item = new QStandardItem;
@@ -58,9 +53,6 @@ QHash<int, QByteArray> NodeInformation::roleNames() const
     textroles[nameText] = "nameText";
     textroles[valueText] = "valueText";
     textroles[iconImageSource] = "iconImageSource";
-    textroles[mainImageSource] = "mainImageSource";
-    textroles[windowText] = "windowText";
-    textroles[mainIconImageSource] = "mainIconImageSource";
 
     return textroles;
 }
@@ -70,32 +62,24 @@ void NodeInformation::show()
     mWnd->show();
 }
 
-
-QString NodeInformation::getWindowName()
-{
-    return windowName;
-}
-
-QString NodeInformation::getIconImageUrl()
-{
-    return iconImageUrl;
-}
-
 QQuickWindow *NodeInformation::wnd() const
 {
     return mWnd;
 }
 
-
-QString NodeInformation::mainImageUrl() const
+QString NodeInformation::imageUrl() const
 {
-    return mMainImageUrl;
+    return mNodeData ? QString::fromStdString(mNodeData->imgSrc) : "";
 }
 
-void NodeInformation::setMainImageUrl(const QString &newMainImageUrl)
+QString NodeInformation::icnUrl() const
 {
-    if (mMainImageUrl == newMainImageUrl)
-        return;
-    mMainImageUrl = newMainImageUrl;
-    emit MainImageUrlChanged();
+    return mNodeData ? QString::fromStdString(mNodeData->iconSrc) : "";
 }
+
+QString NodeInformation::title() const
+{
+    return mNodeData ? QString::fromStdString(mNodeData->name) : "";
+}
+
+

@@ -11,7 +11,7 @@
 #include "mapItem.h"
 #include "mapControllerItem.h"
 #include "bookmark.h"
-#include "toolbox.h"
+#include "toolboxManager.h"
 #include "locationManager.h"
 
 class ListWindow;
@@ -45,7 +45,7 @@ public:
     MapItem *getMapItem();
     ToolboxProxyModel *getToolboxManager() const;
     LayerManager *getLayerManager() const;
-    BookmarkProxyModel *getBookmarkManager() const;
+    BookmarkManager *getBookmarkManager() const;
     LocationProxyModel *getLocationManager() const;
 public:
     void addToLeftContainer(QQuickItem *item, QString title);
