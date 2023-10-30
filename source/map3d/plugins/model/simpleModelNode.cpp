@@ -287,17 +287,7 @@ void SimpleModelNode::selectModel()
 {
     if (!mNodeInformation){
         mNodeInformation = new NodeInformation(mEnigine, this);
-        connect(mNodeInformation, &NodeInformation::bookmarkChecked, [&](bool t){
-            mIsBookmarked = t;
-            if (mIsBookmarked){
-                mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd() , QString::fromStdString(mNodeData->iconSrc));
-                mBookmark->addBookmarkItem(mBookmarkItem);
-            }
-            else{
-                mBookmark->removeBookmarkItem(mBookmarkItem);
-                delete mBookmarkItem;
-            }
-        });
+        connect(mNodeInformation, &NodeInformation::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
         mNodeInformation->addUpdateNodeInformationItem(mNodeData);
     }
     mNodeInformation->show();
@@ -306,6 +296,26 @@ void SimpleModelNode::selectModel()
         mSwitchNode->setValue(2, true);
     }else {
         mSwitchNode->setValue(2, false);
+    }
+}
+
+void SimpleModelNode::onBookmarkChecked(bool status)
+{
+    if (status == mIsBookmarked)
+        return;
+    mIsBookmarked = status;
+    if (mIsBookmarked){
+        mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd() , QString::fromStdString(mNodeData->iconSrc));
+        mBookmark->addBookmarkItem(mBookmarkItem);
+        connect(mBookmarkItem, &BookmarkItem::itemDeleted, [&](){
+            mIsBookmarked = false;
+            mNodeInformation->changeBookmarkStatus(false);
+        });
+    }
+    else{
+        if (mBookmarkItem)
+            mBookmark->removeBookmarkItem(mBookmarkItem);
+        delete mBookmarkItem;
     }
 }
 

@@ -55,6 +55,7 @@ public:
 private slots:
     void compile();
     void onModeChanged(bool is3DView);
+    void onBookmarkChecked(bool status);
 
 private:
     osg::ref_ptr<osg::Image> mImage;

@@ -49,11 +49,10 @@ Window {
                     background:IconImage{
                         width: 22/Style.monitorRatio
                         height: 22/Style.monitorRatio
-                        source: bookBtn.checked ? "qrc:/Resources/filled-bookmark.png" : "qrc:/Resources/bookmark.png"
+                        source: nodeinfo ? nodeinfo.bookmarkStatus ? "qrc:/Resources/filled-bookmark.png" : "qrc:/Resources/bookmark.png": ""
                     }
-                    checkable: true
                     onClicked: {
-                        nodeinfo.bookmarkChecked(checked)
+                        nodeinfo.changeBookmarkStatus(!nodeinfo.bookmarkStatus)
                     }
                 }
                 Button{
