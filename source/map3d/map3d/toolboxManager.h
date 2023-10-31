@@ -147,6 +147,8 @@ public:
 
     Q_INVOKABLE ToolboxProxyModel *toolboxProxyModel() const;
 
+    void addItem(ToolboxItem *item);
+
 private:
     inline static ToolboxManager* mInstance;
     ToolboxProxyModel *mToolboxModel;
