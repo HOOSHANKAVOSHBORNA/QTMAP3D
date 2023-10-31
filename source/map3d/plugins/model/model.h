@@ -60,10 +60,10 @@ public slots:
     void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
 
-    void addUpdateFlyableNode(NodeData *nodeData);
-    void addUpdateNode(NodeData *nodeData);
+    FlyableModelNode* addUpdateFlyableNode(NodeData *nodeData);
+    SimpleModelNode* addUpdateNode(NodeData *nodeData);
     void addUpdateStatusNode(StatusNodeData *statusnNodeData);
-    void addUpdateMovableNode(NodeData *nodeData);
+    MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
@@ -95,6 +95,7 @@ private:
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
     QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
+    NodeData* mNodeData;
 };
 
 #endif // MODEL_H

@@ -3,18 +3,20 @@
 
 #include <QObject>
 #include <osg/Shape>
+#include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/RectangleNode>
-#include "mapItem.h"
-#include "mapObject.h"
-//#include "mapControllerItem.h"
+#include "osgViewerItem.h"
+#include "osgEarth/Map"
+#include <osgEarthUtil/EarthManipulator>
 
-class SmallMap : public MapItem
+class MapItem;
+class SmallMap : public OsgViewerItem
 {
     Q_OBJECT
 public:
     SmallMap(QQuickItem *parent = nullptr);
-    void initializeOsgEarth() override;
-    void createMapNode(bool geocentric, osgEarth::Map *map);
+    Q_INVOKABLE void setMainMapItem(MapItem *mapItem);
+
     void frame() override;
     void keyPressEvent(QKeyEvent* event) override;
     void keyReleaseEvent(QKeyEvent* event) override;
@@ -24,16 +26,16 @@ public:
     void mouseMoveEvent(QMouseEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
     void hoverMoveEvent(QHoverEvent *event) override;
-    Q_INVOKABLE void setMainMap(CameraController *camera , osgViewer::Viewer *viewer);
+private:
+    void compile(bool geocentric);
+    void createMapNode(bool geocentric);
 
 private:
+    MapItem *mMapItem{nullptr};
     osg::ref_ptr<osgEarth::MapNode> mMapNode{nullptr};
     osg::ref_ptr<osg::Group> mMapRoot{nullptr};
-    osg::ref_ptr<MapObject> mMapObject;
-    osg::ref_ptr<CameraController> mCameraController;
-    CameraController *mainMapCamera;
-    osgViewer::Viewer*  mainMapView;
-    osgEarth::Annotation::RectangleNode *focalRect;
+    osg::ref_ptr<osgEarth::Map> mMap;
+    osg::ref_ptr<osgEarth::Util::EarthManipulator> mCameraManipulator;
 
 };
 

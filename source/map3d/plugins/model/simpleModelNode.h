@@ -55,6 +55,7 @@ public:
 private slots:
     void compile();
     void onModeChanged(bool is3DView);
+    void onBookmarkChecked(bool status);
 
 private:
     osg::ref_ptr<osg::Image> mImage;
@@ -79,7 +80,7 @@ private:
     bool mIsBookmarked{false};
     QQmlEngine *mEnigine;
     BookmarkManager *mBookmark;
-    BookmarkItem *mBookmarkItem;
+    BookmarkItem *mBookmarkItem{nullptr};
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;

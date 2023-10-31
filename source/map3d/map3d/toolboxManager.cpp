@@ -303,3 +303,8 @@ ToolboxProxyModel *ToolboxManager::toolboxProxyModel() const
 {
     return mToolboxModel;
 }
+
+void ToolboxManager::addItem(ToolboxItem *item)
+{
+    dynamic_cast<Toolbox *>(mToolboxModel->sourceModel())->addItem(item);
+}

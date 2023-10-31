@@ -270,7 +270,7 @@ void Model::onModeChanged(bool is3DView)
     mIs3D = is3DView;
 }
 
-void Model::addUpdateFlyableNode(NodeData *nodeData)
+FlyableModelNode* Model::addUpdateFlyableNode(NodeData *nodeData)
 {
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
     osg::ref_ptr<FlyableModelNode> flyableNode;
@@ -292,12 +292,12 @@ void Model::addUpdateFlyableNode(NodeData *nodeData)
     }
     flyableNode->setName(nodeData->name);
     flyableNode->setNodeData(nodeData);
-    mCurrentModel = flyableNode;
+    return flyableNode;
+//    mCurrentModel = flyableNode;
 }
 
-void Model::addUpdateNode(NodeData *nodeData)
+SimpleModelNode* Model::addUpdateNode(NodeData *nodeData)
 {
-    qDebug() << nodeData->id;
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
     osg::ref_ptr<SimpleModelNode> node;
 
@@ -315,15 +315,14 @@ void Model::addUpdateNode(NodeData *nodeData)
     for(auto layer: nodeData->layers){
         layer->addChild(node);
     }
-    if (node){
-        node->setName(nodeData->name);
-        node->setPosition(geoPoint);
-        node->setNodeData(nodeData);
-    }
-    mCurrentModel = node;
+    node->setName(nodeData->name);
+    node->setPosition(geoPoint);
+    node->setNodeData(nodeData);
+    return node;
+//    mCurrentModel = node;
 }
 
-void Model::addUpdateMovableNode(NodeData *nodeData)
+MoveableModelNode *Model::addUpdateMovableNode(NodeData *nodeData)
 {
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
     osg::ref_ptr<MoveableModelNode> movableNode;
@@ -345,45 +344,44 @@ void Model::addUpdateMovableNode(NodeData *nodeData)
     }
     movableNode->setName(nodeData->name);
     movableNode->setNodeData(nodeData);
-    mCurrentModel = movableNode;
+    return movableNode;
+//    mCurrentModel = movableNode;
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
-    NodeData* nodeData;
     QString name;
     switch (mType) {
     case Type::SIMPLE:
-        nodeData = sampleNodeData("Tree", "../data/models/tree/tree.png", "../data/models/tree/tree.osgb", "", geoPos);
-        nodeData->id = 100 + mCount;
+        mNodeData = sampleNodeData("Tree", "../data/models/tree/tree.png", "../data/models/tree/tree.osgb", "", geoPos);
+        mNodeData->id = 500 + mCount;
         if(!mModelNodeLayer->containsLayer(mSimpleNodeLayer)){
             mSimpleNodeLayer->clear();
             mModelNodeLayer->addLayer(mSimpleNodeLayer);
         }
-        nodeData->layers.push_back(mSimpleNodeLayer);
-        addUpdateNode(nodeData);
+        mNodeData->layers.push_back(mSimpleNodeLayer);
+        mCurrentModel = addUpdateNode(mNodeData);
         break;
     case Type::MOVEABLE:
-        nodeData = sampleNodeData("Car", "../data/models/car/car.png", "../data/models/car/car.osgb", "", geoPos);
-        nodeData->id = 100 + mCount;
+        mNodeData = sampleNodeData("Car", "../data/models/car/car.png", "../data/models/car/car.osgb", "", geoPos);
+        mNodeData->id = 500 + mCount;
         if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
             mMoveableNodeLayer->clear();
             mModelNodeLayer->addLayer(mMoveableNodeLayer);
         }
-        nodeData->layers.push_back(mMoveableNodeLayer);
-        addUpdateMovableNode(nodeData);
+        mNodeData->layers.push_back(mMoveableNodeLayer);
+        mCurrentModel = addUpdateMovableNode(mNodeData);
         break;
     case Type::FLYABLE:
-        nodeData = sampleNodeData("Airplane", "../data/models/airplane/airplane.png", "../data/models/airplane/airplane.osgb", "", geoPos);
-        nodeData->id = 100 + mCount;
+        mNodeData = sampleNodeData("Airplane", "../data/models/airplane/airplane.png", "../data/models/airplane/airplane.osgb", "", geoPos);
+        mNodeData->id = 500 + mCount;
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);
         }
-        nodeData->layers.push_back(mFlyableNodelLayer);
-        addUpdateFlyableNode(nodeData);
+        mNodeData->layers.push_back(mFlyableNodelLayer);
+        mCurrentModel = addUpdateFlyableNode(mNodeData);
         break;
     case Type::ATTACKER:
-
         mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkManager());
         mCurrentModel->setModelColor(osgEarth::Color::Red);
 
@@ -435,12 +433,15 @@ void Model::cancel(){
         switch (mType) {
         case Type::SIMPLE:
             mSimpleNodeLayer->removeChild(mCurrentModel);
+            mNodeMap.remove(mNodeData->id);
             break;
         case Type::MOVEABLE:
             mMoveableNodeLayer->removeChild(mCurrentModel);
+            mMovableNodeMap.remove(mNodeData->id);
             break;
         case Type::FLYABLE:
             mFlyableNodelLayer->removeChild(mCurrentModel);
+            mFlyableNodeMap.remove(mNodeData->id);
             break;
         case Type::ATTACKER:
             mAttackNodeLayer->removeChild(mCurrentModel);

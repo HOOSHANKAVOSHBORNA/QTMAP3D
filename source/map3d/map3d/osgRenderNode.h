@@ -5,7 +5,7 @@
 #include <osgViewer/Viewer>
 #include <QOpenGLFunctions_2_0>
 
-class MapItem;
+class OsgViewerItem;
 class QQuickItem;
 class QInputEvent;
 class QKeyEvent;
@@ -21,7 +21,7 @@ namespace eveBIM
 class OSGRenderNode: public QSGRenderNode , public osgViewer::Viewer, public QObject
 {
 public:
-    OSGRenderNode(MapItem *parent);
+    OSGRenderNode(OsgViewerItem *parent);
     ~OSGRenderNode() override;
     void render(const RenderState *state) override;
     void releaseResources() override;
@@ -85,7 +85,7 @@ private:
     int mY = 0;
     int mYOld = -1;
 
-    MapItem* mOSGItem{nullptr};
+    OsgViewerItem* mOSGItem{nullptr};
     QOpenGLFunctions_2_0 *mGLFunctions = nullptr;
 };
 

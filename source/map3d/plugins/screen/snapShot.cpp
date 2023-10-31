@@ -1,4 +1,5 @@
 #include "snapShot.h"
+#include "qquickwindow.h"
 
 #include <QTimer>
 
