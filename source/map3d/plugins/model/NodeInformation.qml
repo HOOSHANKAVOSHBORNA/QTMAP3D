@@ -145,6 +145,9 @@ Window {
                             height: 28/Style.monitorRatio
                             source: "qrc:/Resources/easy-to-find.png"
                         }
+                        onClicked: {
+                            nodeinfo.goToPosition()
+                        }
                     }
                     Text{
                         text: "Go to"

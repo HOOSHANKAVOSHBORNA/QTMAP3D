@@ -18,6 +18,8 @@ public:
     QString imgUrl;
 signals:
     void itemDeleted();
+    void itemGoToPostition();
+    void itemTracked();
 };
 
 class BookmarkProxyModel : public QSortFilterProxyModel

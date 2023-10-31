@@ -2,11 +2,10 @@
 
 #include <QQmlEngine>
 
-NodeInformation::NodeInformation(QQmlEngine* Engine,QObject *parent)
+NodeInformation::NodeInformation(QQmlEngine* Engine,QObject *parent):QStandardItemModel(parent)
 {
     setColumnCount(1);
     rootItem = invisibleRootItem();
-
     QQmlComponent* comp = new QQmlComponent(Engine, this);
     QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
         if(status == QQmlComponent::Error){
@@ -28,6 +27,8 @@ NodeInformation::~NodeInformation()
 
 void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
 {
+    mItems.clear();
+    rootItem->removeRows(0,rootItem->rowCount());
     mNodeData = nodeData;
     emit informationChanged();
     for(NodeFieldData nodeFieldData:nodeData->fieldData){
@@ -45,6 +46,7 @@ void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
         mItems[category]->appendRow(item);
     }
 }
+
 
 QHash<int, QByteArray> NodeInformation::roleNames() const
 {
@@ -81,5 +83,11 @@ QString NodeInformation::title() const
 {
     return mNodeData ? QString::fromStdString(mNodeData->name) : "";
 }
+
+void NodeInformation::goToPosition()
+{
+    emit itemGoToPostition();
+}
+
 
 

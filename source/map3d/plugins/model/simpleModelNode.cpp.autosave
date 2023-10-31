@@ -294,6 +294,7 @@ void SimpleModelNode::selectModel()
                 connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
                     emit mBookmarkItem->itemGoToPostition();
                 });
+                connec       
                 connect(mBookmarkItem,&BookmarkItem::itemGoToPostition,[&](){
 
                     mapItem()->getCameraController()->goToPosition(getPosition(), 500);
@@ -301,9 +302,9 @@ void SimpleModelNode::selectModel()
                 mBookmark->addBookmarkItem(mBookmarkItem);
             }
             else{
-                connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
-                    mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-                });
+//                connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
+//                    mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+//                });
                 mBookmark->removeBookmarkItem(mBookmarkItem);
                 delete mBookmarkItem;
             }

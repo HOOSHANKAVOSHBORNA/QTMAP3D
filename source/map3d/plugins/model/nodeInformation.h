@@ -28,10 +28,12 @@ public:
    Q_INVOKABLE QString imageUrl() const;
    Q_INVOKABLE QString icnUrl() const;
    Q_INVOKABLE QString title() const;
+   Q_INVOKABLE void goToPosition();
 
    signals:
     void informationChanged();
     void bookmarkChecked(bool check);
+    void itemGoToPostition();
 
 private:
     QStandardItem *rootItem;
