@@ -1,5 +1,6 @@
 #include "searchNodeModel.h"
 #include "mapObject.h"
+#include "serviceManager.h"
 
 #include <osgEarth/ModelLayer>
 #include <osg/Node>
@@ -8,7 +9,7 @@
 SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent):
     QAbstractListModel(parent), mMapItem(mapItem)
 {
-//    init();
+    //    init();
 
     connect(mMapItem->getMapObject(), &MapObject::nodeToLayerAdded, this , &SearchNodeModel::addNode);
     connect(mMapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,  this , &SearchNodeModel::removeNode);
@@ -34,11 +35,13 @@ QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
 
 void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
 {
-    if(std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end()) {
-        beginInsertRows(QModelIndex(), mNodes.size(), mNodes.size());
-        mNodes.push_back(node);
-        endInsertRows();
-    }
+    NodeData *nodeData = dynamic_cast<NodeData*>(node->getUserData());
+    if(nodeData)
+        if(std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end()) {
+            beginInsertRows(QModelIndex(), mNodes.size(), mNodes.size());
+            mNodes.push_back(node);
+            endInsertRows();
+        }
 }
 
 void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
