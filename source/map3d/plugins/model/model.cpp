@@ -15,6 +15,7 @@
 #include <osgEarthSymbology/Style>
 #include <osgEarthSymbology/StyleSheet>
 #include <osg/ShapeDrawable>
+#include "attackManager.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 using osgKeyButton = osgGA::GUIEventAdapter::KeySymbol;
@@ -72,8 +73,8 @@ bool Model::setup()
     mFlyableNodelLayer = new ParenticAnnotationLayer();
     mFlyableNodelLayer->setName(AIRPLANE);
 
-    mBulletNodeLayer = new ParenticAnnotationLayer();
-    mBulletNodeLayer->setName(BULLET);
+    mAttackNodeLayer = new ParenticAnnotationLayer();
+    mAttackNodeLayer->setName(ATTACKERS);
 
 
     return true;
@@ -125,13 +126,32 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
             moving(geoPos);
             return true;
         }
+        if(mState == State::ATTACKING){
+            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
+            return true;
+        }
 
     }
     else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::MOVING)) {
         cancel();
         return false;
     }
+    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::ATTACKING)) {
+        mCurrentModel->getAttackManager()->attackResult(true,mBulletID);
+        mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
+        return false;
+    }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
+        if(mType == Type::ATTACKER && !(mState == State::ATTACKING)){
+            mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
+            mState = State::ATTACKING;
+        }else{
+        confirm();
+        }
+        return false;
+    }
+    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::ATTACKING)) {
         confirm();
         return false;
     }
@@ -152,21 +172,6 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
 
 bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    return false;
-}
-
-bool Model::mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-{
-    if (mState == State::MOVING && !mIsAttackActive) {
-        osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-        attack(geoPos);
-        mIsAttackActive = true;
-        return true;
-    }else if(mIsAttackActive){
-//        mCurrentModel->attackResult(true);
-        mIsAttackActive = false;
-        return true;
-    }
     return false;
 }
 
@@ -382,18 +387,17 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkManager());
         mCurrentModel->setModelColor(osgEarth::Color::Red);
 
-        mCurrentModel->isAttacker(mMoveableNodeLayer,5);
-        if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
-            mMoveableNodeLayer->clear();
-            mModelNodeLayer->addLayer(mMoveableNodeLayer);
+        mCurrentModel->isAttacker(mAttackNodeLayer,5);
+        if(!mModelNodeLayer->containsLayer(mAttackNodeLayer)){
+            mAttackNodeLayer->clear();
+            mModelNodeLayer->addLayer(mAttackNodeLayer);
         }
         mCurrentModel->setPosition(geoPos);
-        mMoveableNodeLayer->addChild(mCurrentModel);
+        mAttackNodeLayer->addChild(mCurrentModel);
         break;
     default:
         break;
     }
-
     setState(State::MOVING);
     mCount++;
 }
@@ -417,18 +421,10 @@ void Model::moving(osgEarth::GeoPoint &geoPos){
     }
 }
 
-void Model::attack(osgEarth::GeoPoint &geoPos)
-{
-    if(mCurrentModel){
-//        AttackManager *mAttackManager = mCurrentModel->getAttackManager();
-
-//        mCurrentModel->attackTo(geoPos ,"../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
-    }
-}
 
 void Model::confirm()
 {
-    if (state() == State::MOVING) {
+    if (state() == State::MOVING || state() == State::ATTACKING) {
         setState(State::READY);
     }
 }
@@ -446,6 +442,8 @@ void Model::cancel(){
         case Type::FLYABLE:
             mFlyableNodelLayer->removeChild(mCurrentModel);
             break;
+        case Type::ATTACKER:
+            mAttackNodeLayer->removeChild(mCurrentModel);
 
         default:
             break;

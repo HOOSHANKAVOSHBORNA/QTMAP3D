@@ -14,7 +14,7 @@
 #define TREE "Tree"
 #define CAR "Car"
 #define AIRPLANE "Airplane"
-#define BULLET "Bullet"
+#define ATTACKERS "Attacker"
 
 class Model : public PluginInterface
 {
@@ -27,6 +27,7 @@ public:
         NONE,
         READY,
         MOVING,
+        ATTACKING,
         CANCEL,
         CONFIRM
     };
@@ -49,7 +50,6 @@ public:
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
-    bool mouseDoubleClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
 
     static osgEarth::Symbology::Style &getDefaultStyle();
 public slots:
@@ -68,7 +68,6 @@ public slots:
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
     void moving(osgEarth::GeoPoint &geoPos);
-    void attack(osgEarth::GeoPoint &geoPos);
     void confirm();
     void cancel();
 
@@ -81,6 +80,7 @@ private:
     bool mIs3D;
     State mState{State::NONE};
     bool mIsAttackActive = false;
+    int mBulletID;
 
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
@@ -88,7 +88,7 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
-    osg::ref_ptr<ParenticAnnotationLayer> mBulletNodeLayer{nullptr};
+    osg::ref_ptr<ParenticAnnotationLayer> mAttackNodeLayer{nullptr};
 
 
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
