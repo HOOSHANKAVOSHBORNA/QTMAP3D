@@ -2,9 +2,9 @@
 
 AttackManager::AttackManager(MapItem *mapControler, QQmlEngine *engine, BookmarkManager *bookmark, SimpleModelNode *parent)
     : mMapItem(mapControler),
-    mEngine(engine),
-    mBookmark(bookmark),
-    mParent(parent)
+      mEngine(engine),
+      mBookmark(bookmark),
+      mParent(parent)
 {
 
 }
@@ -23,14 +23,14 @@ void AttackManager::attackResult(bool result, int bulletID)
 
 int AttackManager::readyBullet(const std::string url3D, const std::string url2D)
 {
-    if(mBulletCount >= mBulletList.count()){
+//    if(mBulletCount >= mBulletList.count()){
         osg::ref_ptr<BulletNode> bulletnode = new BulletNode(mMapItem,url3D,url2D,mEngine,mBookmark);
         mAttackManagerLayer->addChild(bulletnode);
         bulletnode->setPosition(mParent->getPosition());
         mBulletList.push_back(bulletnode);
         return mBulletList.indexOf(bulletnode);
-    }
-    return 0;
+//    }
+//    return 0;
 }
 
 void AttackManager::attackTo(int bulletID, osgEarth::GeoPoint geoPos)
