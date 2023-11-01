@@ -311,18 +311,40 @@ void ToolboxManager::addItem(ToolboxItem *item)
 
 QQuickItem *ToolboxManager::propertyItem() const
 {
-    return m_propertyItem;
+    return mPropertyItem;
 }
 
 void ToolboxManager::setPropertyItem(QQuickItem *newPropertyItem)
 {
-    m_propertyItem = newPropertyItem;
+    mPropertyItem = newPropertyItem;
     emit propertyItemChanged();
+}
+
+void ToolboxManager::addPropertyItem(QQuickItem *newPropertyItem, QString title)
+{
+    setPropertyItem(newPropertyItem);
+    setPropertyItemTitle(title);
 }
 
 void ToolboxManager::removePropertyItem()
 {
-    m_propertyItem = nullptr;
+//    mPropertyItem->setVisible(false);
+    mPropertyItem = nullptr;
+    emit propertyItemChanged();
 }
 
+QString ToolboxManager::propertyItemTitle() const
+{
+    return mPropertyItemTitle;
+}
 
+void ToolboxManager::setPropertyItemTitle(const QString &newPropertyItemTitle)
+{
+    mPropertyItemTitle = newPropertyItemTitle;
+    emit propertyItemTitleChanged();
+}
+
+ToolboxProxyModel *ToolboxManager::getToolboxProxyModel()
+{
+    return mToolboxModel;
+}

@@ -1,7 +1,6 @@
 import QtQuick 2.13
 
 Item {
-    anchors.fill: parent
     Rectangle {
         color: 'pink'
         anchors.fill: parent

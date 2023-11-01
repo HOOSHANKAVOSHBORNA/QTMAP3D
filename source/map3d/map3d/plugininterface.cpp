@@ -42,7 +42,7 @@ void PluginInterface::setMainWindow(MainWindow *mainWindow)
     mMainWindow = mainWindow;
     mMapItem = mainWindow->getMapItem();
     mQmlEngine = mainWindow->getQmlEngine();
-    mToolbox = dynamic_cast<Toolbox*>(mainWindow->getToolboxManager()->sourceModel());
+    mToolbox = dynamic_cast<Toolbox*>(mainWindow->getToolboxManager()->getToolboxProxyModel()->sourceModel());
     mBookmarkManager = mainWindow->getBookmarkManager();
 }
 

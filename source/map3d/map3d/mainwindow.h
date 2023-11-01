@@ -43,10 +43,11 @@ public:
     void initComponent();
     QQmlEngine *getQmlEngine();
     MapItem *getMapItem();
-    ToolboxProxyModel *getToolboxManager() const;
+    ToolboxManager *getToolboxManager() const;
     LayerManager *getLayerManager() const;
     BookmarkManager *getBookmarkManager() const;
     LocationProxyModel *getLocationManager() const;
+
 public:
     void addToLeftContainer(QQuickItem *item, QString title);
     void addToRightContainer(QQuickItem *item, QString title);

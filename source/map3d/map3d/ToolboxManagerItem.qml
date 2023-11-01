@@ -13,17 +13,15 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 20 / Style.monitorRatio
 
-        Button {
-            text: 'remove property'
-            Layout.fillWidth: true
-            Layout.preferredHeight: 50
-            onClicked: {
-                ToolboxManagerInstance.removePropertyItem()
-                propertyContainer.data = []
-            }
-        }
+//        Button {
+//            text: 'remove property'
+//            Layout.fillWidth: true
+//            Layout.preferredHeight: 50
+//            onClicked: {
+//                ToolboxManagerInstance.removePropertyItem()
+//            }
+//        }
 
         Rectangle {
             Layout.fillWidth: true
@@ -196,21 +194,60 @@ Item {
                         }
                     }
                 }
-
             }
         }
 
         Rectangle {
-            id: propertyContainer
+            id: propertySection
 
-            visible: children.length
+            visible: propertyContainer.children.length
+
             Layout.preferredHeight: 300 / Style.monitorRatio
             Layout.fillWidth: true
-            color: 'red'
+            color: 'transparent'
 
-            data: ToolboxManagerInstance.propertyItem
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
 
-            Component.onCompleted: console.log(ToolboxManagerInstance.propertyItem)
+                Text {
+                    color: Style.foregroundColor
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: contentHeight
+                    text: ToolboxManagerInstance.propertyItemTitle
+                    font.family: Style.fontFamily
+                    font.pixelSize: 20 / Style.monitorRatio
+
+                    Layout.bottomMargin: 1
+                    Layout.topMargin: 25 / Style.monitorRatio
+                    Layout.leftMargin: 3 / Style.monitorRatio
+                }
+
+                Rectangle {
+                    color: Style.foregroundColor
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 2 / Style.monitorRatio
+                    Layout.bottomMargin: 20 / Style.monitorRatio
+
+                    radius: 1
+                }
+
+                Rectangle {
+                    color: 'transparent'
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Item {
+                        id: propertyContainer
+
+                        clip: true
+
+                        anchors.fill: parent
+                        data: ToolboxManagerInstance.propertyItem
+                    }
+                }
+            }
         }
     }
 }
