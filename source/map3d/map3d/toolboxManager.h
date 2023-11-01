@@ -12,6 +12,7 @@ struct ToolboxItem;
 #include <QList>
 #include <QSortFilterProxyModel>
 #include <QtQml>
+#include <QQuickItem>
 
 class TreeItem
 {
@@ -48,7 +49,8 @@ public:
         QString _name      = QString(),
         QString _category  = QString(),
         QString _iconUrl   = QString(),
-        bool    _checkable = false):
+        bool    _checkable = false
+    ):
         name     (_name     ),
         category (_category ),
         iconUrl  (_iconUrl  ),
@@ -62,6 +64,7 @@ public:
     QString iconUrl;
     bool    checkable = false;
     bool    checked = false;
+
     void changeCheck(bool check){checked = checkable ? check : checked;}
 signals:
     void itemClicked();
@@ -74,8 +77,8 @@ class Toolbox : public QAbstractItemModel
 
     enum CustomRoles {
         imageSource = Qt::UserRole + 100,
-        checked = Qt::UserRole + 101,
-        checkable = Qt::UserRole + 102
+        checked,
+        checkable
     };
 
 public:
@@ -138,6 +141,7 @@ class ToolboxManager : public QObject
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
+    Q_PROPERTY(QQuickItem *propertyItem READ propertyItem WRITE setPropertyItem NOTIFY propertyItemChanged FINAL)
 
 private:
     explicit ToolboxManager();
@@ -149,9 +153,17 @@ public:
 
     void addItem(ToolboxItem *item);
 
+    QQuickItem *propertyItem() const;
+    Q_INVOKABLE void setPropertyItem(QQuickItem *newPropertyItem);
+    Q_INVOKABLE void removePropertyItem();
+
+signals:
+    void propertyItemChanged();
+
 private:
     inline static ToolboxManager* mInstance;
     ToolboxProxyModel *mToolboxModel;
+    QQuickItem *m_propertyItem = nullptr;
 };
 
 #endif // TOOLBOXMANAGER_H

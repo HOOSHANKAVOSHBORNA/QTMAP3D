@@ -105,6 +105,9 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
     setModelColor(osgEarth::Color(mNodeData->color));
     if (mNodeInformation)
         mNodeInformation->addUpdateNodeInformationItem(newNodeData);
+
+   //TODO add signal for update data--------------------
+    setUserData(mNodeData);
 }
 
 void SimpleModelNode::setModelColor(osgEarth::Color color)

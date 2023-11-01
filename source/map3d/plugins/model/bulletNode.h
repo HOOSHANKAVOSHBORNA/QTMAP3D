@@ -13,8 +13,6 @@ public:
     osgEarth::GeoPoint getTargetPosition();
     void setTargetPosition(osgEarth::GeoPoint geoPos);
 
-
-
 private:
     osg::ref_ptr<Explosion> mExplosion;
     MapItem *mMapItem;

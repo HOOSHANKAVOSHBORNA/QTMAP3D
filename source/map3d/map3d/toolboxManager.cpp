@@ -308,3 +308,21 @@ void ToolboxManager::addItem(ToolboxItem *item)
 {
     dynamic_cast<Toolbox *>(mToolboxModel->sourceModel())->addItem(item);
 }
+
+QQuickItem *ToolboxManager::propertyItem() const
+{
+    return m_propertyItem;
+}
+
+void ToolboxManager::setPropertyItem(QQuickItem *newPropertyItem)
+{
+    m_propertyItem = newPropertyItem;
+    emit propertyItemChanged();
+}
+
+void ToolboxManager::removePropertyItem()
+{
+    m_propertyItem = nullptr;
+}
+
+

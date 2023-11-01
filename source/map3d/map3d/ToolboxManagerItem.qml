@@ -7,12 +7,24 @@ import "style"
 
 Item {
     id: rootItem
+
     property var listModel
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
 
-    ColumnLayout{
+    ColumnLayout {
         anchors.fill: parent
         anchors.margins: 20 / Style.monitorRatio
+
+        Button {
+            text: 'remove property'
+            Layout.fillWidth: true
+            Layout.preferredHeight: 50
+            onClicked: {
+                ToolboxManagerInstance.removePropertyItem()
+                propertyContainer.data = []
+            }
+        }
+
         Rectangle {
             Layout.fillWidth: true
             height: 30 / Style.monitorRatio
@@ -33,7 +45,7 @@ Item {
             TextField {
                 function sendToSearch() {
                     rootItem.listModel.setFilterString(text)
-                    if (text.length == 0) {
+                    if (text.length === 0) {
                         treeView.collapseRecursively()
                     }
                     treeView.expandRecursively()
@@ -186,8 +198,19 @@ Item {
                 }
 
             }
+        }
 
+        Rectangle {
+            id: propertyContainer
 
+            visible: children.length
+            Layout.preferredHeight: 300 / Style.monitorRatio
+            Layout.fillWidth: true
+            color: 'red'
+
+            data: ToolboxManagerInstance.propertyItem
+
+            Component.onCompleted: console.log(ToolboxManagerInstance.propertyItem)
         }
     }
 }
