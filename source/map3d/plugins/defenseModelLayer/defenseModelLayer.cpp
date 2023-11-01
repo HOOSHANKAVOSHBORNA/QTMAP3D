@@ -497,6 +497,7 @@ bool DefenseModelLayer::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA:
         return res;
 }
 
+
 bool DefenseModelLayer::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     //--drap aircraft--------------------------------------------

@@ -90,3 +90,8 @@ ParenticAnnotationLayer *AttackManager::getAttackLayer()
 {
     return mAttackManagerLayer;
 }
+
+osg::ref_ptr<BulletNode> AttackManager::getBulletNode(int bulletID)
+{
+    return mBulletList.at(bulletID);
+}

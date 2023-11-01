@@ -108,12 +108,19 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
 {
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-        if(modelNode){
-            modelNode->selectModel();
+        if(modelNode){           
+            if(modelNode->isAttacker()){
+                mAttackerNode = modelNode;
+                mDragModelNode = modelNode->getAttackManager()->getBulletNode(mBulletID)->getDragModelNode();
+                mapItem()->addNode(mDragModelNode);
+            }else{
+                modelNode->selectModel();
+            }
             return true;
         }
-        if(mState == State::NONE)
+        if(mState == State::NONE){
             return false;
+        }
         if (mState == State::READY) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initModel(geoPos);
@@ -127,7 +134,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         }
         if(mState == State::ATTACKING){
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
+//            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
             return true;
         }
 
@@ -146,7 +153,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
             mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
             mState = State::ATTACKING;
         }else{
-        confirm();
+            confirm();
         }
         return false;
     }
@@ -155,6 +162,25 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         return false;
     }
 
+    return false;
+}
+
+
+bool Model::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON && mDragModelNode)
+    {
+        SimpleModelNode* targetModelNode = pick(ea.getX(), ea.getY());
+
+        if(targetModelNode)
+        {
+            mTargetNode = targetModelNode;
+            osgEarth::GeoPoint geoPos = targetModelNode->getPosition();
+            mAttackerNode->getAttackManager()->attackTo(mBulletID,geoPos);
+        }
+        mapItem()->removeNode(mDragModelNode);
+        mDragModelNode = nullptr;
+    }
     return false;
 }
 
@@ -171,6 +197,22 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
 
 bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+    if(mTargetNode){
+        if(mAttackerNode->getAttackManager()->getBulletPosition(mBulletID) == mTargetNode->getPosition()){
+            mAttackerNode->getAttackManager()->attackResult(true,mBulletID);
+            mTargetNode.release();
+        }
+    }
+    return false;
+}
+
+bool Model::mouseDragEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if(mDragModelNode)
+    {
+        osgEarth::GeoPoint mouseGeoPoint = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+        mDragModelNode->setPosition(mouseGeoPoint);
+    }
     return false;
 }
 
@@ -312,7 +354,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         }
         mNodeData->layers.push_back(mAttackNodeLayer);
         mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
-        mCurrentModel->isAttacker(mAttackNodeLayer,5);
+        mCurrentModel->makeAttacker(mAttackNodeLayer,5);
         break;
     default:
         break;
@@ -447,3 +489,4 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     nodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(nodeData->speed), "Location Information","qrc:/Resources/location.png"});
     return nodeData;
 }
+

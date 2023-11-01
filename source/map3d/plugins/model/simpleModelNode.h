@@ -51,8 +51,10 @@ public:
     bool getIsBookmarked() const;
     void setIsBookmarked(bool newIsBookmarked);
 
-    void isAttacker(ParenticAnnotationLayer *layer, int bulletCount=1);
+    bool isAttacker();
+    void makeAttacker(ParenticAnnotationLayer *layer, int bulletCount);
     AttackManager *getAttackManager();
+    osgEarth::Annotation::ModelNode *getDragModelNode();
 
 private slots:
     void compile();
@@ -83,6 +85,7 @@ private:
     QQmlEngine *mEnigine{nullptr};
     BookmarkManager *mBookmark;
     BookmarkItem *mBookmarkItem{nullptr};
+    bool mIsAttacker{false};
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;
