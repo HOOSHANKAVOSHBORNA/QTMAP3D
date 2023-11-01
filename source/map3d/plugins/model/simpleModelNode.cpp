@@ -279,14 +279,6 @@ void SimpleModelNode::selectModel()
          connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
          mNodeInformation->addUpdateNodeInformationItem(mNodeData);
 
-//        connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
-//            mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-//        });
-//        connect(mNodeInformation,&NodeInformation::itemTracked,[&](){
-//            mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
-//        });
-//        connect(mNodeInformation, &NodeInformation::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
-//        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
     }
     mNodeInformation->show();
     mIsSelected = !mIsSelected;
