@@ -9,6 +9,7 @@ Item {
     property var model
     readonly property color hoverColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
     readonly property color hoverColor2: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.40)
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 20 / Style.monitorRatio
@@ -129,6 +130,7 @@ Item {
                                     onClicked: {
                                      itemSource.show()
                                      rootItem.model.select(treeView.index(row,column))
+
                                     }
                                 }
                             }

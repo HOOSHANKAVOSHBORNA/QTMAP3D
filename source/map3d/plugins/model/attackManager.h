@@ -18,6 +18,7 @@ public:
     osgEarth::GeoPoint getTargetPosition(int bulletID);
     void setAttackLayer(ParenticAnnotationLayer* layer);
     ParenticAnnotationLayer *getAttackLayer();
+    osg::ref_ptr<BulletNode> getBulletNode(int bulletID);
 
 
 private:

@@ -28,8 +28,6 @@ NodeInformation::~NodeInformation()
 
 void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
 {
-    mCategories.clear();
-    rootItem->removeRows(0,rootItem->rowCount());
     mNodeData = nodeData;
     emit informationChanged();
     // ----------------------------------------remove category if is not in new data ---------------

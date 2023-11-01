@@ -7,12 +7,12 @@
 class BulletNode : public FlyableModelNode
 {
 public:
-    BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkManager *bookmark);
+    BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl);
     void attackTo(osgEarth::GeoPoint position);
     Explosion* explode();
     osgEarth::GeoPoint getTargetPosition();
     void setTargetPosition(osgEarth::GeoPoint geoPos);
-
+    osgEarth::Annotation::ModelNode *getDragModelNode();
 private:
     osg::ref_ptr<Explosion> mExplosion;
     MapItem *mMapItem;

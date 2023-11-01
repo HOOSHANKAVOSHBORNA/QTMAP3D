@@ -12,6 +12,8 @@ Window {
     width:310/Style.monitorRatio
     height:612/Style.monitorRatio
     color: "transparent"
+    title: nodeinfo ? nodeinfo.title : ""
+
     property var nodeinfo
     Rectangle{
         color: Style.backgroundColor
@@ -69,25 +71,13 @@ Window {
                     }
                 }
             }
-            MouseArea {
-                anchors.fill: parent
 
-                onPressed: {
-                    previousX = mouseX
-                    previousY = mouseY
-                }
-
-                onMouseXChanged: {
-                    var dx = mouseX - previousX
-                    window.setX(window.x + dx)
-                }
-
-                onMouseYChanged: {
-                    var dy = mouseY - previousY
-                    window.setY(window.y + dy)
-                }
+           MouseArea{
+               anchors.fill: parent
+               onPositionChanged: startSystemMove();
                z:-1
-            }
+           }
+
 }
         Item{
             id:mainImageItem

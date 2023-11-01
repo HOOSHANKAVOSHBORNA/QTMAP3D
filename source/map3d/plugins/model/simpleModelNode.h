@@ -25,8 +25,7 @@ class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D,
-                    QQmlEngine *engine, BookmarkManager *bookmark, QObject *parent = nullptr);
+    SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
 
     ~SimpleModelNode();
     void updateUrl(const std::string& url3D, const std::string& url2D);
@@ -46,11 +45,16 @@ public:
     void setNodeData(NodeData *newNodeData);
     void setModelColor(osgEarth::Color color);
 
+    void setBookmark(BookmarkManager *bookmark);
+    void setQQmlEngine(QQmlEngine *engine);
+
     bool getIsBookmarked() const;
     void setIsBookmarked(bool newIsBookmarked);
 
-    void isAttacker(ParenticAnnotationLayer *layer, int bulletCount=1);
+    bool isAttacker();
+    void makeAttacker(ParenticAnnotationLayer *layer, int bulletCount);
     AttackManager *getAttackManager();
+    osgEarth::Annotation::ModelNode *getDragModelNode();
 
 private slots:
     void compile();
@@ -78,9 +82,10 @@ private:
     osgEarth::Color mColor{osgEarth::Color::White};
     NodeInformationManager* mNodeInformation{nullptr};
     bool mIsBookmarked{false};
-    QQmlEngine *mEnigine;
+    QQmlEngine *mEnigine{nullptr};
     BookmarkManager *mBookmark;
     BookmarkItem *mBookmarkItem{nullptr};
+    bool mIsAttacker{false};
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;
