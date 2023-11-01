@@ -15,15 +15,14 @@ Item {
         anchors.fill: parent
         anchors.margins: 20 / Style.monitorRatio
 
-        Button {
-            text: 'remove property'
-            Layout.fillWidth: true
-            Layout.preferredHeight: 50
-            onClicked: {
-                ToolboxManagerInstance.removePropertyItem()
-                propertyContainer.data = []
-            }
-        }
+//        Button {
+//            text: 'remove property'
+//            Layout.fillWidth: true
+//            Layout.preferredHeight: 50
+//            onClicked: {
+//                ToolboxManagerInstance.removePropertyItem()
+//            }
+//        }
 
         Rectangle {
             Layout.fillWidth: true
@@ -196,21 +195,47 @@ Item {
                         }
                     }
                 }
-
             }
         }
 
         Rectangle {
-            id: propertyContainer
-
-            visible: children.length
+            visible: propertyContainer.children.length
             Layout.preferredHeight: 300 / Style.monitorRatio
             Layout.fillWidth: true
-            color: 'red'
+            color: 'transparent'
 
-            data: ToolboxManagerInstance.propertyItem
+            ColumnLayout {
+                anchors.fill: parent
 
-            Component.onCompleted: console.log(ToolboxManagerInstance.propertyItem)
+                Text {
+                    color: 'blue'
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: contentHeight
+                    text: ToolboxManagerInstance.propertyItemTitle
+                    font.family: Style.fontFamily
+                    font.pixelSize: 20 / Style.monitorRatio
+                }
+
+                Rectangle {
+                    color: 'blue'
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 2 / Style.monitorRatio
+                }
+
+                Rectangle {
+                    color: 'transparent'
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Item {
+                        id: propertyContainer
+
+                        anchors.fill: parent
+                        data: ToolboxManagerInstance.propertyItem
+                    }
+                }
+            }
         }
     }
 }

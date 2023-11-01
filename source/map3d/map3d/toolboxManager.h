@@ -142,6 +142,7 @@ class ToolboxManager : public QObject
     QML_ELEMENT
     QML_SINGLETON
     Q_PROPERTY(QQuickItem *propertyItem READ propertyItem WRITE setPropertyItem NOTIFY propertyItemChanged FINAL)
+    Q_PROPERTY(QString propertyItemTitle READ propertyItemTitle WRITE setPropertyItemTitle NOTIFY propertyItemTitleChanged FINAL)
 
 private:
     explicit ToolboxManager();
@@ -154,16 +155,25 @@ public:
     void addItem(ToolboxItem *item);
 
     QQuickItem *propertyItem() const;
-    Q_INVOKABLE void setPropertyItem(QQuickItem *newPropertyItem);
+    void setPropertyItem(QQuickItem *newPropertyItem);
+    void addPropertyItem(QQuickItem *newPropertyItem, QString title);
     Q_INVOKABLE void removePropertyItem();
+
+    QString propertyItemTitle() const;
+    void setPropertyItemTitle(const QString &newPropertyItemTitle);
+
+    ToolboxProxyModel *getToolboxProxyModel();
 
 signals:
     void propertyItemChanged();
+
+    void propertyItemTitleChanged();
 
 private:
     inline static ToolboxManager* mInstance;
     ToolboxProxyModel *mToolboxModel;
     QQuickItem *m_propertyItem = nullptr;
+    QString m_propertyItemTitle;
 };
 
 #endif // TOOLBOXMANAGER_H

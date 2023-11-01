@@ -320,9 +320,29 @@ void ToolboxManager::setPropertyItem(QQuickItem *newPropertyItem)
     emit propertyItemChanged();
 }
 
+void ToolboxManager::addPropertyItem(QQuickItem *newPropertyItem, QString title)
+{
+    setPropertyItem(newPropertyItem);
+    setPropertyItemTitle(title);
+}
+
 void ToolboxManager::removePropertyItem()
 {
     m_propertyItem = nullptr;
 }
 
+QString ToolboxManager::propertyItemTitle() const
+{
+    return m_propertyItemTitle;
+}
 
+void ToolboxManager::setPropertyItemTitle(const QString &newPropertyItemTitle)
+{
+    m_propertyItemTitle = newPropertyItemTitle;
+    emit propertyItemTitleChanged();
+}
+
+ToolboxProxyModel *ToolboxManager::getToolboxProxyModel()
+{
+    return mToolboxModel;
+}

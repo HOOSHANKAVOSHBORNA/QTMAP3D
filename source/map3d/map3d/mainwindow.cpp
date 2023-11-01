@@ -81,7 +81,7 @@ void MainWindow::initComponent()
 //                if(status == QQmlComponent::Ready) {
 //                    QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
 
-//                    ToolboxManager::createSingletonInstance(nullptr, nullptr)->setPropertyItem(item);
+//                    ToolboxManager::createSingletonInstance(nullptr, nullptr)->addPropertyItem(item, QStringLiteral("Test Item"));
 //                }
 //            });
 
@@ -110,9 +110,9 @@ MapItem *MainWindow::getMapItem()
     return mMapItem;
 }
 
-ToolboxProxyModel *MainWindow::getToolboxManager() const
+ToolboxManager *MainWindow::getToolboxManager() const
 {
-    return ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
+    return ToolboxManager::createSingletonInstance(nullptr, nullptr);
 }
 
 LayerManager *MainWindow::getLayerManager() const
