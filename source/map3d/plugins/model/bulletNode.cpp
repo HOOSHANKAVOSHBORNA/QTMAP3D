@@ -38,7 +38,7 @@ osgEarth::Annotation::ModelNode *BulletNode::getDragModelNode()
     osgEarth::Symbology::Style  style = getStyle();
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Gray);
-    osg::ref_ptr<SimpleModelNode> dragModelNode = new SimpleModelNode(mMapItem,mBulletModelURL,mBulletIconURL,mEngine,mBookmark);
+    osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(getMapNode(), style);
     dragModelNode->setCullingActive(false);
     dragModelNode->addCullCallback(getCullCallback());
     dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
