@@ -199,27 +199,36 @@ Item {
         }
 
         Rectangle {
-            visible: propertyContainer.children.length
+            id: propertySection
+
             Layout.preferredHeight: 300 / Style.monitorRatio
             Layout.fillWidth: true
             color: 'transparent'
 
             ColumnLayout {
                 anchors.fill: parent
+                visible: propertyContainer.children.length
+                spacing: 0
 
                 Text {
-                    color: 'blue'
+                    color: Style.foregroundColor
                     Layout.fillWidth: true
                     Layout.preferredHeight: contentHeight
                     text: ToolboxManagerInstance.propertyItemTitle
                     font.family: Style.fontFamily
                     font.pixelSize: 20 / Style.monitorRatio
+
+                    Layout.bottomMargin: 1
+                    Layout.leftMargin: 3 / Style.monitorRatio
                 }
 
                 Rectangle {
-                    color: 'blue'
+                    color: Style.foregroundColor
                     Layout.fillWidth: true
                     Layout.preferredHeight: 2 / Style.monitorRatio
+                    Layout.bottomMargin: 20
+
+                    radius: 1
                 }
 
                 Rectangle {
@@ -228,12 +237,17 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    Item {
+                    Rectangle {
                         id: propertyContainer
+
+//                        ScrollBar.horizontal.policy: ScrollBar.AlwaysOn
+//                        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
                         anchors.fill: parent
                         data: ToolboxManagerInstance.propertyItem
                     }
+
+
                 }
             }
         }

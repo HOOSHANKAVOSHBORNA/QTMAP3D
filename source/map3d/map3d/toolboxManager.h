@@ -172,8 +172,8 @@ signals:
 private:
     inline static ToolboxManager* mInstance;
     ToolboxProxyModel *mToolboxModel;
-    QQuickItem *m_propertyItem = nullptr;
-    QString m_propertyItemTitle;
+    QQuickItem *mPropertyItem = nullptr;
+    QString mPropertyItemTitle;
 };
 
 #endif // TOOLBOXMANAGER_H
