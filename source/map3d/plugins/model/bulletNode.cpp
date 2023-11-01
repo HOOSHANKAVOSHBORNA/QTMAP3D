@@ -1,7 +1,7 @@
 #include "bulletNode.h"
 
-BulletNode::BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QQmlEngine *engine, BookmarkManager *bookmark):
-    FlyableModelNode(mapControler, modelUrl, iconUrl, engine, bookmark)
+BulletNode::BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl):
+    FlyableModelNode(mapControler, modelUrl, iconUrl)
 {
     mMapItem = mapControler;
 }

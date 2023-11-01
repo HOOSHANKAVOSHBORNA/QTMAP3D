@@ -24,7 +24,7 @@ void AttackManager::attackResult(bool result, int bulletID)
 int AttackManager::readyBullet(const std::string url3D, const std::string url2D)
 {
 //    if(mBulletCount >= mBulletList.count()){
-        osg::ref_ptr<BulletNode> bulletnode = new BulletNode(mMapItem,url3D,url2D,mEngine,mBookmark);
+        osg::ref_ptr<BulletNode> bulletnode = new BulletNode(mMapItem, url3D, url2D);
         mAttackManagerLayer->addChild(bulletnode);
         bulletnode->setPosition(mParent->getPosition());
         mBulletList.push_back(bulletnode);

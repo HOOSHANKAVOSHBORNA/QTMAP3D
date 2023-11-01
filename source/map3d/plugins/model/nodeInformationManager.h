@@ -50,25 +50,25 @@ class NodeInformationManager:public QObject
 {
     Q_OBJECT
 public:
-    explicit NodeInformationManager(QQmlEngine* Engine,QObject *parent = nullptr);
+    explicit NodeInformationManager(QQmlEngine* Engine, QObject *parent = nullptr);
     ~NodeInformationManager();
 
     // --------------- Interface ---------------------------------
-     void addUpdateNodeInformationItem(NodeData* nodeData);
-     void show();
-     QQuickWindow *wnd() const;
+    void addUpdateNodeInformationItem(NodeData* nodeData);
+    void show();
+    QQuickWindow *wnd() const;
 
     // --------------- getters -----------------------------------
-     NodeInformation *getNodeInformation() const;
-     void changeBookmarkStatus(bool status);
+    NodeInformation *getNodeInformation() const;
+    void changeBookmarkStatus(bool status);
 
- signals:
-     void bookmarkChecked(bool check);
-     void itemGoToPostition();
-     void itemTracked();
+    signals:
+        void bookmarkChecked(bool check);
+        void itemGoToPostition();
+        void itemTracked();
 
- private:
-     NodeInformation *mNodeInformation;
+    private:
+        NodeInformation *mNodeInformation;
 };
 
 #endif // NODEINFORMATIONMANAGER_H
