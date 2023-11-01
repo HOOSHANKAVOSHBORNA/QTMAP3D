@@ -32,5 +32,6 @@
         <file>SmallMapItem.qml</file>
         <file>SideBar.qml</file>
         <file>BookmarkItem.qml</file>
+        <file>TestItem.qml</file>
     </qresource>
 </RCC>

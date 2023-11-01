@@ -36,7 +36,10 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayerManagerInstance", LayerManager::createSingletonInstance);
     qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);
     qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
+
     setColor(Qt::black);
+
+
 }
 
 
@@ -66,6 +69,24 @@ void MainWindow::initComponent()
             // --------------------------------------------------------- model settings
             LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
             locationManager->initialize(mMapItem);
+
+            // TEST
+//            QQmlComponent* comp = new QQmlComponent(engine);
+
+//            QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+//                if(status == QQmlComponent::Error) {
+//                    qDebug() << "Can not load this: " << comp->errorString();
+//                }
+
+//                if(status == QQmlComponent::Ready) {
+//                    QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+
+//                    ToolboxManager::createSingletonInstance(nullptr, nullptr)->setPropertyItem(item);
+//                }
+//            });
+
+//            comp->loadUrl(QUrl("qrc:/TestItem.qml"));
+            // END TEST
 
             ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
 
