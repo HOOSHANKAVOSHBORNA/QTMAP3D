@@ -25,8 +25,7 @@ class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D,
-                    QQmlEngine *engine, BookmarkManager *bookmark, QObject *parent = nullptr);
+    SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
 
     ~SimpleModelNode();
     void updateUrl(const std::string& url3D, const std::string& url2D);
@@ -45,6 +44,9 @@ public:
     NodeData *nodeData() const;
     void setNodeData(NodeData *newNodeData);
     void setModelColor(osgEarth::Color color);
+
+    void setBookmark(BookmarkManager *bookmark);
+    void setQQmlEngine(QQmlEngine *engine);
 
     bool getIsBookmarked() const;
     void setIsBookmarked(bool newIsBookmarked);
@@ -80,7 +82,7 @@ private:
     osgEarth::Color mColor{osgEarth::Color::White};
     NodeInformationManager* mNodeInformation{nullptr};
     bool mIsBookmarked{false};
-    QQmlEngine *mEnigine;
+    QQmlEngine *mEnigine{nullptr};
     BookmarkManager *mBookmark;
     BookmarkItem *mBookmarkItem{nullptr};
     bool mIsAttacker{false};

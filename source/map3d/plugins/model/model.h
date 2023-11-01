@@ -9,6 +9,7 @@
 #include "simpleModelNode.h"
 #include <osg/PolygonMode>
 #include <osg/Fog>
+#include "dataManager.h"
 
 #define MODEL "Model"
 #define TREE "Tree"
@@ -62,11 +63,6 @@ public slots:
     void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
 
-    FlyableModelNode* addUpdateFlyableNode(NodeData *nodeData);
-    SimpleModelNode* addUpdateNode(NodeData *nodeData);
-    void addUpdateStatusNode(StatusNodeData *statusnNodeData);
-    MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
-
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
     void moving(osgEarth::GeoPoint &geoPos);
@@ -95,13 +91,10 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mAttackNodeLayer{nullptr};
-
-
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
-    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
-    QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
-    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
-    NodeData* mNodeData;
+    NodeData* mNodeData{nullptr};
+
+    DataManager *mDataManager;
 };
 
 #endif // MODEL_H

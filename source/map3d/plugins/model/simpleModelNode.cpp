@@ -10,20 +10,18 @@
 #include <osgEarth/Registry>
 #include <mainwindow.h>
 #include "attackManager.h"
-
+#include <QtQml>
 const float RANGE3D = 835;
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
 
-SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, BookmarkManager *bookmark, QObject *parent)
+SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QObject *parent)
     : QObject{parent},
     osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Model::getDefaultStyle()),
     mUrl3D(url3D),
     mMapItem(mapControler),
-    mUrl2D(url2D),
-    mEnigine(engine),
-    mBookmark(bookmark)
+    mUrl2D(url2D)
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
@@ -136,6 +134,17 @@ void SimpleModelNode::setModelColor(osgEarth::Color color)
     }
     mColor = color;
 
+}
+
+void SimpleModelNode::setBookmark(BookmarkManager *bookmark)
+{
+    mBookmark = bookmark;
+    mEnigine = QQmlEngine::contextForObject(bookmark)->engine();
+}
+
+void SimpleModelNode::setQQmlEngine(QQmlEngine *engine)
+{
+    mEnigine = engine;
 }
 
 void SimpleModelNode::compile()
@@ -275,6 +284,10 @@ void SimpleModelNode::selectModel()
 {
     if (mNodeData) {
         if (!mNodeInformation){
+            if (!mEnigine){
+                qDebug() << "first set engine to show info";
+                return;
+            }
             mNodeInformation = new NodeInformationManager(mEnigine, this);
 
              connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
@@ -283,7 +296,8 @@ void SimpleModelNode::selectModel()
              connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
                  mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
              });
-             connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
+             if (mBookmark)
+                connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
              mNodeInformation->addUpdateNodeInformationItem(mNodeData);
         }
         mNodeInformation->show();
