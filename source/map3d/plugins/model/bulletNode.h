@@ -11,6 +11,7 @@ public:
     void attackTo(osgEarth::GeoPoint position);
     Explosion* explode();
     osgEarth::GeoPoint getTargetPosition();
+    void setTargetPosition(osgEarth::GeoPoint geoPos);
 
 
 

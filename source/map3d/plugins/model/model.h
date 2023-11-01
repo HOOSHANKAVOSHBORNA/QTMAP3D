@@ -60,10 +60,10 @@ public slots:
     void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
 
-    void addUpdateFlyableNode(NodeData *nodeData);
-    void addUpdateNode(NodeData *nodeData);
+    FlyableModelNode* addUpdateFlyableNode(NodeData *nodeData);
+    SimpleModelNode* addUpdateNode(NodeData *nodeData);
     void addUpdateStatusNode(StatusNodeData *statusnNodeData);
-    void addUpdateMovableNode(NodeData *nodeData);
+    MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);;
@@ -80,7 +80,7 @@ private:
     static int mCount;
     bool mIs3D;
     State mState{State::NONE};
-    bool isAttackActive = false;
+    bool mIsAttackActive = false;
 
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
@@ -90,10 +90,12 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mBulletNodeLayer{nullptr};
 
+
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
     QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
+    NodeData* mNodeData;
 };
 
 #endif // MODEL_H

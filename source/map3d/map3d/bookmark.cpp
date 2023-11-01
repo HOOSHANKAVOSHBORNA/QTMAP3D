@@ -45,7 +45,8 @@ QHash<int, QByteArray> BookmarkProxyModel::roleNames() const
 
 void BookmarkManager::select(BookmarkItem *bookmarkItem)
 {
-    mBookmarkProxyModel->select(bookmarkItem);
+    if (bookmarkItem)
+        mBookmarkProxyModel->select(bookmarkItem);
 }
 
 QItemSelectionModel *BookmarkManager::getSelectioModel() const
@@ -91,6 +92,16 @@ void BookmarkProxyModel::removeBookmarkItem(BookmarkItem *bookmarkItem)
     emit bookmarkItem->itemDeleted();
 }
 
+void BookmarkProxyModel::goToPosition(BookmarkItem *bookmarkItem)
+{
+    emit bookmarkItem->itemGoToPostition();
+}
+
+void BookmarkProxyModel::trackItem(BookmarkItem *bookmarkItem)
+{
+    emit bookmarkItem->itemTracked();
+}
+
 void BookmarkProxyModel::select(const QModelIndex index)
 {
     mSelectioModel->select(index, QItemSelectionModel::SelectionFlag::Toggle);
@@ -107,6 +118,20 @@ void BookmarkProxyModel::removeBookmarkItem(const QModelIndex index)
     QModelIndex indexSource = mapToSource(index);
     QStandardItem* node = mStandardItemModel->itemFromIndex(indexSource);
     removeBookmarkItem(mItems[node->text()].first);
+}
+
+void BookmarkProxyModel::goToPosition(const QModelIndex index)
+{
+    QModelIndex indexSource = mapToSource(index);
+    QStandardItem* node = mStandardItemModel->itemFromIndex(indexSource);
+    goToPosition(mItems[node->text()].first);
+}
+
+void BookmarkProxyModel::trackItem(const QModelIndex index)
+{
+    QModelIndex indexSource = mapToSource(index);
+    QStandardItem* node = mStandardItemModel->itemFromIndex(indexSource);
+    trackItem(mItems[node->text()].first);
 }
 
 QString BookmarkProxyModel::searchedText() const

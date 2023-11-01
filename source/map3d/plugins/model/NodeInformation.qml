@@ -23,7 +23,7 @@ Window {
         anchors.fill: parent
         spacing: 0
         Item{
-            id:windowframe
+            id:windowFrame
             implicitHeight: 30/Style.monitorRatio
             Layout.fillWidth:true
             RowLayout{
@@ -49,11 +49,10 @@ Window {
                     background:IconImage{
                         width: 22/Style.monitorRatio
                         height: 22/Style.monitorRatio
-                        source: bookBtn.checked ? "qrc:/Resources/filled-bookmark.png" : "qrc:/Resources/bookmark.png"
+                        source: nodeinfo ? nodeinfo.bookmarkStatus ? "qrc:/Resources/filled-bookmark.png" : "qrc:/Resources/bookmark.png": ""
                     }
-                    checkable: true
                     onClicked: {
-                        nodeinfo.bookmarkChecked(checked)
+                        nodeinfo.changeBookmarkStatus(!nodeinfo.bookmarkStatus)
                     }
                 }
                 Button{
@@ -119,6 +118,9 @@ Window {
                             height: 28/Style.monitorRatio
                             source: "qrc:/Resources/track-icon.png"
                         }
+                        onClicked:{
+                            nodeinfo.itemTracked()
+                        }
                     }
 
                     Text{
@@ -146,7 +148,7 @@ Window {
                             source: "qrc:/Resources/easy-to-find.png"
                         }
                         onClicked: {
-                            nodeinfo.goToPosition()
+                            nodeinfo.itemGoToPostition()
                         }
                     }
                     Text{

@@ -20,9 +20,9 @@
 #include <osgViewer/config/SphericalDisplay>
 #include <QOpenGLFramebufferObject>
 #include <QQuickOpenGLUtils>
-#include "mapItem.h"
+#include "osgViewerItem.h""
 #include <osg/GraphicsContext>
-OSGRenderNode::OSGRenderNode(MapItem *parent):
+OSGRenderNode::OSGRenderNode(OsgViewerItem *parent):
     QSGRenderNode(),
     osgViewer::Viewer(),
     QObject(parent),

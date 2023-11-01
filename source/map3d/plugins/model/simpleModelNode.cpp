@@ -9,21 +9,21 @@
 #include <osgEarth/GLUtils>
 #include <osgEarth/Registry>
 #include <mainwindow.h>
-#include "bulletNode.h"
+#include "attackManager.h"
 
 const float RANGE3D = 835;
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
-SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, BookmarkManager *bookmark, int bulletCount, QObject *parent)
+
+SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QQmlEngine *engine, BookmarkManager *bookmark, QObject *parent)
     : QObject{parent},
     osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Model::getDefaultStyle()),
     mUrl3D(url3D),
     mMapItem(mapControler),
     mUrl2D(url2D),
     mEnigine(engine),
-    mBookmark(bookmark),
-    mBulletcount(bulletCount)
+    mBookmark(bookmark)
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
@@ -81,37 +81,16 @@ void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
     mIsBookmarked = newIsBookmarked;
 }
 
-void SimpleModelNode::attackTo(osgEarth::GeoPoint geoPos,const std::string model3D,const std::string icon2D)
+void SimpleModelNode::isAttacker(ParenticAnnotationLayer *layer, int bulletCount)
 {
-    if(mBulletcount){
-        mBulletNode = new BulletNode(mMapItem,model3D,icon2D,mEnigine,mBookmark);
-        mBulletNodeLayer->addChild(mBulletNode);
-        mBulletNode->setPosition(this->getPosition());
-        mBulletNode->attackTo(geoPos);
-        mBulletcount--;
-    }
+    mAttackManager = new AttackManager(mMapItem,mEnigine,mBookmark,this);
+    mAttackManager->setAttackLayer(layer);
+    mAttackManager->setBulletCount(bulletCount);
 }
 
-void SimpleModelNode::attackResult(bool result)
+AttackManager *SimpleModelNode::getAttackManager()
 {
-    if(result && mBulletNode){
-        Explosion *explode = mBulletNode->explode();
-        mBulletNodeLayer->addChild(explode);
-        explode->setPosition(mBulletNode->getPosition());
-        mBulletNode->setNodeMask(0);
-    }else{
-        mBulletNode->setNodeMask(0);
-    }
-}
-
-osgEarth::GeoPoint SimpleModelNode::getBulletPosition()
-{
-    return mBulletNode->getPosition();
-}
-
-void SimpleModelNode::setBulletLayer(ParenticAnnotationLayer *layer)
-{
-    mBulletNodeLayer = layer;
+    return mAttackManager;
 }
 
 NodeData *SimpleModelNode::nodeData() const
@@ -286,36 +265,58 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
 void SimpleModelNode::selectModel()
 {
     if (!mNodeInformation){
-        mNodeInformation = new NodeInformation(mEnigine, this);
-        connect(mNodeInformation, &NodeInformation::bookmarkChecked, [&](bool t){
-            mIsBookmarked = t;
-            if (mIsBookmarked){
-                mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd() , QString::fromStdString(mNodeData->iconSrc));
-                connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
-                    emit mBookmarkItem->itemGoToPostition();
-                });
-                connect(mBookmarkItem,&BookmarkItem::itemGoToPostition,[&](){
+        mNodeInformation = new NodeInformationManager(mEnigine, this);
 
-                    mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-                });
-                mBookmark->addBookmarkItem(mBookmarkItem);
-            }
-            else{
-                connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
-                    mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-                });
-                mBookmark->removeBookmarkItem(mBookmarkItem);
-                delete mBookmarkItem;
-            }
-        });
-        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+         connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
+             mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+         });
+         connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
+             mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
+         });
+         connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
+         mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+
+//        connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
+//            mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+//        });
+//        connect(mNodeInformation,&NodeInformation::itemTracked,[&](){
+//            mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
+//        });
+//        connect(mNodeInformation, &NodeInformation::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
+//        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
     }
     mNodeInformation->show();
     mIsSelected = !mIsSelected;
     if(mIsSelected){
         mSwitchNode->setValue(2, true);
-    }else {
+    } else {
         mSwitchNode->setValue(2, false);
+    }
+}
+
+void SimpleModelNode::onBookmarkChecked(bool status)
+{
+    if (status == mIsBookmarked)
+        return;
+    mIsBookmarked = status;
+    if (mIsBookmarked){
+        mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd() , QString::fromStdString(mNodeData->iconSrc));
+        mBookmark->addBookmarkItem(mBookmarkItem);
+        connect(mBookmarkItem,&BookmarkItem::itemGoToPostition,[&](){
+            emit mNodeInformation->itemGoToPostition();
+        });
+        connect(mBookmarkItem,&BookmarkItem::itemTracked,[&](){
+            emit mNodeInformation->itemTracked();
+        });
+        connect(mBookmarkItem, &BookmarkItem::itemDeleted, [&](){
+            mIsBookmarked = false;
+            mNodeInformation->changeBookmarkStatus(false);
+        });
+    }
+    else{
+        if (mBookmarkItem)
+            mBookmark->removeBookmarkItem(mBookmarkItem);
+        delete mBookmarkItem;
     }
 }
 

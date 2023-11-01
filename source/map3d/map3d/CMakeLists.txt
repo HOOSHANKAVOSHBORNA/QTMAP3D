@@ -30,6 +30,7 @@ add_executable(Map3d
         listwindow.cpp  listwindow.h
         layerManager.cpp layerManager.h
         osgRenderNode.cpp   osgRenderNode.h
+        osgViewerItem.cpp osgViewerItem.h
         mapControllerItem.cpp mapControllerItem.h
         mapObject.cpp mapObject.h
         cameraController.cpp cameraController.h
@@ -38,7 +39,7 @@ add_executable(Map3d
         utility.h utility.cpp
         searchNodeModel.h searchNodeModel.cpp
         networkManager.h networkManager.cpp
-        smallmap.h smallmap.cpp
+        smallMap.h smallMap.cpp
         bookmark.h bookmark.cpp
         qml.qrc
         resources.qrc

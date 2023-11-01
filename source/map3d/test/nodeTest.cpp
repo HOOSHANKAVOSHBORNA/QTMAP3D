@@ -51,7 +51,7 @@ void NodeTest::createInfo()
     jsonData.insert("Name", nameObject);
     QJsonObject idObject;
     idObject.insert("value", id);
-    nameObject.insert("category", "Main Information");
+    idObject.insert("category", "Main Information");
     jsonData.insert("Id", idObject);
 
     jsonData.insert("Color", color.name());

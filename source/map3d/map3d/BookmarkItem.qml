@@ -56,7 +56,7 @@ Item {
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
             TreeView {
-                id:treeview
+                id:treeView
                 anchors.fill: parent
                 anchors.centerIn: parent
                 model: rootItem.model
@@ -79,7 +79,7 @@ Item {
                     required property bool selected
                     required property bool current
 
-                    implicitWidth: treeview.width
+                    implicitWidth: treeView.width
                     implicitHeight:  30 / Style.monitorRatio
                     // vertical line for children items
                     Rectangle{
@@ -87,7 +87,7 @@ Item {
                         anchors.left: parent.left
                         anchors.leftMargin: indent * depth
                         width: 2/Style.monitorRatio
-                        height: parent.height + treeview.rowSpacing
+                        height: parent.height + treeView.rowSpacing
                         visible: depth
                         color:Style.foregroundColor
                         opacity: 0.2
@@ -124,9 +124,30 @@ Item {
                                 font.weight: 400
                                 color: Style.foregroundColor
                                 Layout.fillWidth: true
+                                MouseArea{
+                                    anchors.fill: parent
+                                    onClicked: {
+                                     itemSource.show()
+                                     rootItem.model.select(treeView.index(row,column))
+                                    }
+                                }
                             }
                             Button{
-                                id:popUpBtn
+                                id:track
+                                visible: !hasChildren
+                                Layout.preferredWidth: 20
+                                Layout.preferredHeight: 20
+                                background: Image {
+                                    source: "qrc:/Resources/track-icon.png"
+                                    width: 20
+                                    height: 20
+                                }
+                                onClicked: {
+                                    rootItem.model.trackItem(treeView.index(row,column))
+                                }
+                            }
+                            Button{
+                                id:goTo
                                 visible: !hasChildren
                                 Layout.preferredWidth: 20
                                 Layout.preferredHeight: 20
@@ -136,8 +157,7 @@ Item {
                                     height: 20
                                 }
                                 onClicked: {
-                                    itemSource.show()
-                                    rootItem.model.select(treeview.index(row,column))
+                                    rootItem.model.goToPosition(treeView.index(row,column))
                                 }
                             }
                             Button{
@@ -147,12 +167,12 @@ Item {
                                 Layout.preferredHeight: 20
                                 Layout.rightMargin: 5
                                 background: Image{
-                                    source:"qrc:/Resources/multiply.png"
+                                    source:"qrc:/Resources/garbage.png"
                                     width: 20
                                     height: 20
                                 }
                                 onClicked: {
-                                    rootItem.model.removeBookmarkItem(treeview.index(row,column))
+                                    rootItem.model.removeBookmarkItem(treeView.index(row,column))
                                 }
                             }
                             Image{
@@ -173,8 +193,8 @@ Item {
                             hoverEnabled: true
                             propagateComposedEvents: true
                             onPressed:  (mouse)=> {
-                                rootItem.model.select(treeview.index(row,column))
-                                treeview.toggleExpanded(row)
+                                rootItem.model.select(treeView.index(row,column))
+                                treeView.toggleExpanded(row)
                                 mouse.accepted = false
                             }
                         }

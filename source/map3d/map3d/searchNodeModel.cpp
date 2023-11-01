@@ -16,7 +16,6 @@ SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent):
 
 int SearchNodeModel::rowCount(const QModelIndex &parent) const
 {
-//    qDebug() << "addddd";
     return mNodes.size();
 }
 
@@ -35,25 +34,26 @@ QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
 
 void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
 {
-    beginResetModel();
-//    beginInsertRows(createIndex(0, 0), mNodes.size(), mNodes.size()+1);
-    if(std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end())
+    if(std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end()) {
+        beginInsertRows(QModelIndex(), mNodes.size(), mNodes.size());
         mNodes.push_back(node);
-//    endInsertRows();
-    endResetModel();
+        endInsertRows();
+    }
 }
 
 void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
 {
-    beginResetModel();
     auto iterator = std::remove_if(mNodes.begin(),mNodes.end(),[&](const osg::Node* item){
         return node == item;
-
     });
 
-    if (iterator!= mNodes.end())
+    if (iterator!= mNodes.end()){
+        int d = std::distance(mNodes.begin(), iterator);
+        beginRemoveRows(QModelIndex(), d, d);
         mNodes.erase(iterator);
-    endResetModel();
+        endRemoveRows();
+        emit dataChanged(createIndex(0, 0), createIndex(rowCount()-1, 0));
+    }
 }
 
 void SearchNodeModel::onNodeClicked(const QModelIndex &current)
