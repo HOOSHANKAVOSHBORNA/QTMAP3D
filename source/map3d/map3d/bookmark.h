@@ -18,6 +18,8 @@ public:
     QString imgUrl;
 signals:
     void itemDeleted();
+    void itemGoToPostition();
+    void itemTracked();
 };
 
 class BookmarkProxyModel : public QSortFilterProxyModel
@@ -36,7 +38,11 @@ public:
     Q_INVOKABLE void setSearchedText(const QString &newSearchedText);
     Q_INVOKABLE QItemSelectionModel *selectioModel() const;
     Q_INVOKABLE void removeBookmarkItem(const QModelIndex index);
+    Q_INVOKABLE void goToPosition(const QModelIndex index);
+    Q_INVOKABLE void trackItem(const QModelIndex index);
     void removeBookmarkItem(BookmarkItem *bookmarkItem);
+    void goToPosition(BookmarkItem *bookmarkItem);
+    void trackItem(BookmarkItem *bookmarkItem);
     Q_INVOKABLE void select(const QModelIndex index);
     void select(BookmarkItem *bookmarkItem);
 signals:

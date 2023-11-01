@@ -1,5 +1,5 @@
-#ifndef NODEINFORMATION_H
-#define NODEINFORMATION_H
+#ifndef NODEINFORMATIONMANAGER_H
+#define NODEINFORMATIONMANAGER_H
 
 #include <QObject>
 #include <QStandardItemModel>
@@ -20,7 +20,7 @@ class NodeInformation:public QStandardItemModel
     Q_PROPERTY(bool bookmarkStatus READ bookmarkStatus WRITE changeBookmarkStatus NOTIFY bookmarkChecked)
 
 public:
-    explicit NodeInformation(QQmlEngine* Engine ,QObject *parent = nullptr);
+    explicit NodeInformation(QQmlEngine* Engine,QObject *parent = nullptr);
     ~NodeInformation();
     void addUpdateNodeInformationItem(NodeData* nodeData);
     virtual QHash<int, QByteArray> roleNames() const override;
@@ -33,8 +33,10 @@ public:
     Q_INVOKABLE void changeBookmarkStatus(bool status);
 
    signals:
-    void informationChanged();
     void bookmarkChecked(bool check);
+    void itemGoToPostition();
+    void itemTracked();
+    void informationChanged();
 
 private:
     QStandardItem *rootItem;
@@ -44,4 +46,29 @@ private:
     bool mBookmarkStatus{false};
 };
 
-#endif // NODEINFORMATION_H
+class NodeInformationManager:public QObject
+{
+    Q_OBJECT
+public:
+    explicit NodeInformationManager(QQmlEngine* Engine,QObject *parent = nullptr);
+    ~NodeInformationManager();
+
+    // --------------- Interface ---------------------------------
+     void addUpdateNodeInformationItem(NodeData* nodeData);
+     void show();
+     QQuickWindow *wnd() const;
+
+    // --------------- getters -----------------------------------
+     NodeInformation *getNodeInformation() const;
+     void changeBookmarkStatus(bool status);
+
+ signals:
+     void bookmarkChecked(bool check);
+     void itemGoToPostition();
+     void itemTracked();
+
+ private:
+     NodeInformation *mNodeInformation;
+};
+
+#endif // NODEINFORMATIONMANAGER_H

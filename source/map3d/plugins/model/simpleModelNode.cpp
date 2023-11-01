@@ -268,9 +268,25 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
 void SimpleModelNode::selectModel()
 {
     if (!mNodeInformation){
-        mNodeInformation = new NodeInformation(mEnigine, this);
-        connect(mNodeInformation, &NodeInformation::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
-        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+        mNodeInformation = new NodeInformationManager(mEnigine, this);
+
+         connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
+             mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+         });
+         connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
+             mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
+         });
+         connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
+         mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+
+//        connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
+//            mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+//        });
+//        connect(mNodeInformation,&NodeInformation::itemTracked,[&](){
+//            mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
+//        });
+//        connect(mNodeInformation, &NodeInformation::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
+//        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
     }
     mNodeInformation->show();
     mIsSelected = !mIsSelected;
@@ -289,6 +305,12 @@ void SimpleModelNode::onBookmarkChecked(bool status)
     if (mIsBookmarked){
         mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd() , QString::fromStdString(mNodeData->iconSrc));
         mBookmark->addBookmarkItem(mBookmarkItem);
+        connect(mBookmarkItem,&BookmarkItem::itemGoToPostition,[&](){
+            emit mNodeInformation->itemGoToPostition();
+        });
+        connect(mBookmarkItem,&BookmarkItem::itemTracked,[&](){
+            emit mNodeInformation->itemTracked();
+        });
         connect(mBookmarkItem, &BookmarkItem::itemDeleted, [&](){
             mIsBookmarked = false;
             mNodeInformation->changeBookmarkStatus(false);

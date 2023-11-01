@@ -23,7 +23,7 @@ Window {
         anchors.fill: parent
         spacing: 0
         Item{
-            id:windowframe
+            id:windowFrame
             implicitHeight: 30/Style.monitorRatio
             Layout.fillWidth:true
             RowLayout{
@@ -118,6 +118,9 @@ Window {
                             height: 28/Style.monitorRatio
                             source: "qrc:/Resources/track-icon.png"
                         }
+                        onClicked:{
+                            nodeinfo.itemTracked()
+                        }
                     }
 
                     Text{
@@ -143,6 +146,9 @@ Window {
                             width: 28/Style.monitorRatio
                             height: 28/Style.monitorRatio
                             source: "qrc:/Resources/easy-to-find.png"
+                        }
+                        onClicked: {
+                            nodeinfo.itemGoToPostition()
                         }
                     }
                     Text{

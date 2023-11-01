@@ -1,13 +1,12 @@
-#include "nodeInformation.h"
+#include "nodeInformationManager.h"
 #include "qquickwindow.h"
 
 #include <QQmlEngine>
 
-NodeInformation::NodeInformation(QQmlEngine* Engine,QObject *parent)
+NodeInformation::NodeInformation(QQmlEngine* Engine,QObject *parent):QStandardItemModel(parent)
 {
     setColumnCount(1);
     rootItem = invisibleRootItem();
-
     QQmlComponent* comp = new QQmlComponent(Engine, this);
     QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
         if(status == QQmlComponent::Error){
@@ -29,6 +28,8 @@ NodeInformation::~NodeInformation()
 
 void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
 {
+    mCategories.clear();
+    rootItem->removeRows(0,rootItem->rowCount());
     mNodeData = nodeData;
     emit informationChanged();
     // ----------------------------------------remove category if is not in new data ---------------
@@ -57,14 +58,15 @@ void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
     }
 }
 
+
 QHash<int, QByteArray> NodeInformation::roleNames() const
 {
-    QHash<int, QByteArray> textroles = QAbstractItemModel::roleNames();
+    QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
 
-    textroles[nameText] = "nameText";
-    textroles[valueText] = "valueText";
-    textroles[iconImageSource] = "iconImageSource";
-    return textroles;
+    hash[nameText] = "nameText";
+    hash[valueText] = "valueText";
+    hash[iconImageSource] = "iconImageSource";
+    return hash;
 }
 
 void NodeInformation::show()
@@ -103,4 +105,49 @@ void NodeInformation::changeBookmarkStatus(bool status)
     emit bookmarkChecked(mBookmarkStatus);
 }
 
+NodeInformationManager::NodeInformationManager(QQmlEngine *Engine, QObject *parent):QObject(parent)
+{
+    mNodeInformation = new NodeInformation(Engine);
+
+    connect(mNodeInformation,&NodeInformation::bookmarkChecked,this,[&](bool check){
+        emit bookmarkChecked(check);
+    });
+    connect(mNodeInformation,&NodeInformation::itemGoToPostition,this,[&](){
+        emit itemGoToPostition();
+    });
+    connect(mNodeInformation,&NodeInformation::itemTracked,this,[&](){
+        emit itemTracked();
+    });
+
+}
+
+NodeInformationManager::~NodeInformationManager()
+{
+
+}
+
+void NodeInformationManager::addUpdateNodeInformationItem(NodeData *nodeData)
+{
+    mNodeInformation->addUpdateNodeInformationItem(nodeData);
+}
+
+void NodeInformationManager::show()
+{
+    mNodeInformation->show();
+}
+
+QQuickWindow *NodeInformationManager::wnd() const
+{
+    mNodeInformation->wnd();
+}
+
+NodeInformation *NodeInformationManager::getNodeInformation() const
+{
+    return mNodeInformation;
+}
+
+void NodeInformationManager::changeBookmarkStatus(bool status)
+{
+   mNodeInformation->changeBookmarkStatus(status);
+}
 
