@@ -74,7 +74,7 @@ private:
     bool mIs3D{false};
     bool mIsAutoScale{true};
     bool mIsSelected{false};
-    NodeData* mNodeData;
+    NodeData* mNodeData{nullptr};
     osgEarth::Color mColor{osgEarth::Color::White};
     NodeInformationManager* mNodeInformation{nullptr};
     bool mIsBookmarked{false};

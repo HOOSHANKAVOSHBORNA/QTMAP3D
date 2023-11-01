@@ -382,16 +382,25 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         mCurrentModel = addUpdateFlyableNode(mNodeData);
         break;
     case Type::ATTACKER:
-        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkManager());
-        mCurrentModel->setModelColor(osgEarth::Color::Red);
+//        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkManager());
+//        mCurrentModel->setModelColor(osgEarth::Color::Red);
 
-        mCurrentModel->isAttacker(mAttackNodeLayer,5);
+//        mCurrentModel->isAttacker(mAttackNodeLayer,5);
+//        if(!mModelNodeLayer->containsLayer(mAttackNodeLayer)){
+//            mAttackNodeLayer->clear();
+//            mModelNodeLayer->addLayer(mAttackNodeLayer);
+//        }
+//        mCurrentModel->setPosition(geoPos);
+//        mAttackNodeLayer->addChild(mCurrentModel);
+        mNodeData = sampleNodeData("Tank", "../data/models/tank/tank.png", "../data/models/tank/tank.osg", "", geoPos);
+        mNodeData->id = 500 + mCount;
         if(!mModelNodeLayer->containsLayer(mAttackNodeLayer)){
             mAttackNodeLayer->clear();
             mModelNodeLayer->addLayer(mAttackNodeLayer);
         }
-        mCurrentModel->setPosition(geoPos);
-        mAttackNodeLayer->addChild(mCurrentModel);
+        mNodeData->layers.push_back(mAttackNodeLayer);
+        mCurrentModel = addUpdateMovableNode(mNodeData);
+        mCurrentModel->isAttacker(mAttackNodeLayer,5);
         break;
     default:
         break;

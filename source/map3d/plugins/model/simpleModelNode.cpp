@@ -267,28 +267,30 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
 
 void SimpleModelNode::selectModel()
 {
-    if (!mNodeInformation){
-        mNodeInformation = new NodeInformationManager(mEnigine, this);
+    if (mNodeData) {
+        if (!mNodeInformation){
+            mNodeInformation = new NodeInformationManager(mEnigine, this);
 
-         connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
-             mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-         });
-         connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
-             mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
-         });
-         connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
-         mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+             connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
+                 mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+             });
+             connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
+                 mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
+             });
+             connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
+             mNodeInformation->addUpdateNodeInformationItem(mNodeData);
 
-//        connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
-//            mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-//        });
-//        connect(mNodeInformation,&NodeInformation::itemTracked,[&](){
-//            mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
-//        });
-//        connect(mNodeInformation, &NodeInformation::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
-//        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+    //        connect(mNodeInformation,&NodeInformation::itemGoToPostition,[&](){
+    //            mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+    //        });
+    //        connect(mNodeInformation,&NodeInformation::itemTracked,[&](){
+    //            mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
+    //        });
+    //        connect(mNodeInformation, &NodeInformation::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
+    //        mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+        }
+        mNodeInformation->show();
     }
-    mNodeInformation->show();
     mIsSelected = !mIsSelected;
     if(mIsSelected){
         mSwitchNode->setValue(2, true);
