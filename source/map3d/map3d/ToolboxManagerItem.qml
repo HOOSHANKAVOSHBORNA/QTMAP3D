@@ -13,7 +13,6 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 20 / Style.monitorRatio
 
 //        Button {
 //            text: 'remove property'
@@ -201,13 +200,14 @@ Item {
         Rectangle {
             id: propertySection
 
+            visible: propertyContainer.children.length
+
             Layout.preferredHeight: 300 / Style.monitorRatio
             Layout.fillWidth: true
             color: 'transparent'
 
             ColumnLayout {
                 anchors.fill: parent
-                visible: propertyContainer.children.length
                 spacing: 0
 
                 Text {
@@ -219,6 +219,7 @@ Item {
                     font.pixelSize: 20 / Style.monitorRatio
 
                     Layout.bottomMargin: 1
+                    Layout.topMargin: 25 / Style.monitorRatio
                     Layout.leftMargin: 3 / Style.monitorRatio
                 }
 
@@ -226,7 +227,7 @@ Item {
                     color: Style.foregroundColor
                     Layout.fillWidth: true
                     Layout.preferredHeight: 2 / Style.monitorRatio
-                    Layout.bottomMargin: 20
+                    Layout.bottomMargin: 20 / Style.monitorRatio
 
                     radius: 1
                 }
@@ -237,17 +238,14 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    Rectangle {
+                    Item {
                         id: propertyContainer
 
-//                        ScrollBar.horizontal.policy: ScrollBar.AlwaysOn
-//                        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+                        clip: true
 
                         anchors.fill: parent
                         data: ToolboxManagerInstance.propertyItem
                     }
-
-
                 }
             }
         }
