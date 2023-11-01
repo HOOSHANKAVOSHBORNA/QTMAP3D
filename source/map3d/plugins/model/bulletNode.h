@@ -12,7 +12,7 @@ public:
     Explosion* explode();
     osgEarth::GeoPoint getTargetPosition();
     void setTargetPosition(osgEarth::GeoPoint geoPos);
-
+    osgEarth::Annotation::ModelNode *getDragModelNode();
 private:
     osg::ref_ptr<Explosion> mExplosion;
     MapItem *mMapItem;

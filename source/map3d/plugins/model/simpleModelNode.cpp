@@ -81,11 +81,17 @@ void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
     mIsBookmarked = newIsBookmarked;
 }
 
-void SimpleModelNode::isAttacker(ParenticAnnotationLayer *layer, int bulletCount)
+bool SimpleModelNode::isAttacker()
+{
+    return mIsAttacker;
+}
+
+void SimpleModelNode::makeAttacker(ParenticAnnotationLayer *layer, int bulletCount)
 {
     mAttackManager = new AttackManager(mMapItem,mEnigine,mBookmark,this);
     mAttackManager->setAttackLayer(layer);
-    mAttackManager->setBulletCount(bulletCount);
+    mAttackManager->setBulletCount(5);
+    mIsAttacker = true;
 }
 
 AttackManager *SimpleModelNode::getAttackManager()
@@ -339,3 +345,5 @@ MapItem *SimpleModelNode::mapItem() const
 {
     return mMapItem;
 }
+
+

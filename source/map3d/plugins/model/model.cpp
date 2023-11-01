@@ -109,12 +109,19 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
 {
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-        if(modelNode){
-            modelNode->selectModel();
+        if(modelNode){           
+            if(modelNode->isAttacker()){
+                mAttackerNode = modelNode;
+                mDragModelNode = modelNode->getAttackManager()->getBulletNode(mBulletID)->getDragModelNode();
+                mapItem()->addNode(mDragModelNode);
+            }else{
+                modelNode->selectModel();
+            }
             return true;
         }
-        if(mState == State::NONE)
+        if(mState == State::NONE){
             return false;
+        }
         if (mState == State::READY) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initModel(geoPos);
@@ -128,7 +135,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         }
         if(mState == State::ATTACKING){
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
+//            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
             return true;
         }
 
@@ -147,7 +154,7 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
             mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
             mState = State::ATTACKING;
         }else{
-        confirm();
+            confirm();
         }
         return false;
     }
@@ -156,6 +163,25 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         return false;
     }
 
+    return false;
+}
+
+
+bool Model::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON && mDragModelNode)
+    {
+        SimpleModelNode* targetModelNode = pick(ea.getX(), ea.getY());
+
+        if(targetModelNode)
+        {
+            mTargetNode = targetModelNode;
+            osgEarth::GeoPoint geoPos = targetModelNode->getPosition();
+            mAttackerNode->getAttackManager()->attackTo(mBulletID,geoPos);
+        }
+        mapItem()->removeNode(mDragModelNode);
+        mDragModelNode = nullptr;
+    }
     return false;
 }
 
@@ -172,6 +198,22 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
 
 bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+    if(mTargetNode){
+        if(mAttackerNode->getAttackManager()->getBulletPosition(mBulletID) == mTargetNode->getPosition()){
+            mAttackerNode->getAttackManager()->attackResult(true,mBulletID);
+            mTargetNode.release();
+        }
+    }
+    return false;
+}
+
+bool Model::mouseDragEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    if(mDragModelNode)
+    {
+        osgEarth::GeoPoint mouseGeoPoint = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+        mDragModelNode->setPosition(mouseGeoPoint);
+    }
     return false;
 }
 
@@ -293,7 +335,7 @@ FlyableModelNode* Model::addUpdateFlyableNode(NodeData *nodeData)
     flyableNode->setName(nodeData->name);
     flyableNode->setNodeData(nodeData);
     return flyableNode;
-//    mCurrentModel = flyableNode;
+    //    mCurrentModel = flyableNode;
 }
 
 SimpleModelNode* Model::addUpdateNode(NodeData *nodeData)
@@ -319,7 +361,7 @@ SimpleModelNode* Model::addUpdateNode(NodeData *nodeData)
     node->setPosition(geoPoint);
     node->setNodeData(nodeData);
     return node;
-//    mCurrentModel = node;
+    //    mCurrentModel = node;
 }
 
 MoveableModelNode *Model::addUpdateMovableNode(NodeData *nodeData)
@@ -345,7 +387,7 @@ MoveableModelNode *Model::addUpdateMovableNode(NodeData *nodeData)
     movableNode->setName(nodeData->name);
     movableNode->setNodeData(nodeData);
     return movableNode;
-//    mCurrentModel = movableNode;
+    //    mCurrentModel = movableNode;
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
@@ -382,16 +424,16 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         mCurrentModel = addUpdateFlyableNode(mNodeData);
         break;
     case Type::ATTACKER:
-//        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkManager());
-//        mCurrentModel->setModelColor(osgEarth::Color::Red);
+        //        mCurrentModel = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg", "../data/models/tank/tank.png", qmlEngine(), bookmarkManager());
+        //        mCurrentModel->setModelColor(osgEarth::Color::Red);
 
-//        mCurrentModel->isAttacker(mAttackNodeLayer,5);
-//        if(!mModelNodeLayer->containsLayer(mAttackNodeLayer)){
-//            mAttackNodeLayer->clear();
-//            mModelNodeLayer->addLayer(mAttackNodeLayer);
-//        }
-//        mCurrentModel->setPosition(geoPos);
-//        mAttackNodeLayer->addChild(mCurrentModel);
+        //        mCurrentModel->isAttacker(mAttackNodeLayer,5);
+        //        if(!mModelNodeLayer->containsLayer(mAttackNodeLayer)){
+        //            mAttackNodeLayer->clear();
+        //            mModelNodeLayer->addLayer(mAttackNodeLayer);
+        //        }
+        //        mCurrentModel->setPosition(geoPos);
+        //        mAttackNodeLayer->addChild(mCurrentModel);
         mNodeData = sampleNodeData("Tank", "../data/models/tank/tank.png", "../data/models/tank/tank.osg", "", geoPos);
         mNodeData->id = 500 + mCount;
         if(!mModelNodeLayer->containsLayer(mAttackNodeLayer)){
@@ -400,7 +442,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         }
         mNodeData->layers.push_back(mAttackNodeLayer);
         mCurrentModel = addUpdateMovableNode(mNodeData);
-        mCurrentModel->isAttacker(mAttackNodeLayer,5);
+        mCurrentModel->makeAttacker(mAttackNodeLayer,5);
         break;
     default:
         break;
@@ -516,7 +558,7 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
                                 osgEarth::GeoPoint geoPos)
 {
     NodeData* nodeData = new NodeData();
-//    flyableNodeData->id = 100;
+    //    flyableNodeData->id = 100;
     nodeData->name = name + std::to_string(mCount);
     nodeData->longitude = geoPos.x();
     nodeData->latitude = geoPos.y();
@@ -534,3 +576,4 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     nodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(nodeData->speed), "Location Information","qrc:/Resources/location.png"});
     return nodeData;
 }
+
