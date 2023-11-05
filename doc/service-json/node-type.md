@@ -1,22 +1,21 @@
-# Node Node Type
+# Node
 
-- [Back](./README.md)
 - [Example](#example)
 - [See basic needed types here](#json-basic-types)
 
 ```JSON
 {
     "Type": "Node",
-    "Data": {
-        "Name": __name, // <CategorizedPropertyType> 
-        "Id": __id, // <CategorizedPropertyType> 
+    "Data": { // all `values` can be a simple type or <CategorizedPropertyType> object
+        "Name": __name, 
+        "Id": __id, 
         "Color": __color,
         "Url2d": __url2d,
         "Url3d": __url3d,
         "ImgSrc": __image_source,
-        "Longitude": __longitude, // <CategorizedPropertyType> 
-        "Latitude": __latitude, // <CategorizedPropertyType> 
-        "Altitude": __altitude, // <CategorizedPropertyType>
+        "Longitude": __longitude, 
+        "Latitude": __latitude, 
+        "Altitude": __altitude,
         "LayersId": [
             __layer1id,
             __layer2id,

@@ -1,6 +1,5 @@
-# Circle Node Type
+# Circle
 
-- [Back](./README.md)
 - [Example](#example)
 - [See basic needed types here](#json-basic-types)
 
@@ -42,7 +41,7 @@
         "Latitude": 4.5, 
         "Altitude": 3.4,
         "Radius": 22.3,
-        "Color": "#FFAABB11",
+        "Color": "#aabbccdd",
         "LayerId": 1
     }
 }

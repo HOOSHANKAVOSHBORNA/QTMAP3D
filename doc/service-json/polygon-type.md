@@ -1,6 +1,5 @@
-# Polygon Node Type
+# Polygon
 
-- [Back](./README.md)
 - [Example](#example)
 - [See basic needed types here](#json-basic-types)
 
@@ -8,7 +7,7 @@
 {
     "Type": "Polygon",
     "Data": {
-        "Name": __name,  
+        "Name": __name, 
         "Id": __id,
         "Width": __width,
         "Color": __color, // argb color string format example: "#aabbccdd"

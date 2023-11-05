@@ -1,17 +1,16 @@
-# Layer Node JSON Format
+# Layer
 
-- [Back](./README.md)
 - [Example](#example)
 - [See basic needed types here](#json-basic-types)
 
 ```JSON
 {
     "Type": "Layer",
-    "Data": {
-        "Flyable": __flyable, // <LayerDataPropertyType>
-        "Movable": __movable, // <LayerDataPropertyType>
-        "Node": __node // <LayerDataPropertyType>
-    }
+    "Data": [
+        __layer_data_child1, // <LayerDataPropertyType>
+        __layer_data_child2, // <LayerDataPropertyType>
+        ...
+    ]
 }
 ```
 
@@ -36,8 +35,8 @@
 ```JSON
 {
     "Type": "Layer",
-    "Data": {
-        "Flyable": {
+    "Data": [
+        {
             "Id": 100,
             "ParentId": 0,
             "Text": "Flyable",
@@ -83,7 +82,7 @@
                 }
             ]
         },
-        "Movable": {
+        {
             "Id": 200,
             "ParentId": 0,
             "Text": "Movable",
@@ -129,7 +128,7 @@
                 }
             ]
         },
-        "Node": {
+        {
             "Id": 300,
             "ParentId": 0,
             "Text": "Node",
@@ -175,7 +174,7 @@
                 }
             ]
         }
-    }
+    ]
 }
 ```
 

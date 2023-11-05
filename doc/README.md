@@ -1,13 +1,9 @@
 # QTMAP3D Project Documentation
 
-## Project Conventions
-
-[***LINK***](./conventions/README.md)
+## [Conventions](./conventions/README.md)
 
 
-## Nodes JSON Documentation
-
-[***LINK***](./nodes-json-doc/README.md)
+## [Service JSON](./service-json/README.md)
 
 
 ## How to generate `.pdf` file from `.md`?
@@ -24,5 +20,4 @@
 $ pandoc <your-md-file-name>.md -o <output-file-name>.pdf --pdf-engine=xelatex -V mainfont='Dubai'
 ```
 	
-
 5. `.pdf` file generates in inputed command directory!

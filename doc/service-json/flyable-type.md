@@ -1,24 +1,23 @@
-# Tempalte Node Type
+# Flyable
 
-- [Back](./README.md)
 - [Example](#example)
 - [See basic needed types here](#json-basic-types)
 
 ```JSON
 {
-    "Type": "Movable",
-    "Data": {
-        "Name": __name, // <CategorizedPropertyType>
-        "Id": __id, // <CategorizedPropertyType>
+    "Type": "Flayable",
+    "Data": { // all `values` can be a simple type or <CategorizedPropertyType> object
+        "Name": __name, 
+        "Id": __id, 
         "Color": __color,
         "Url2d": __url2d,
         "Url3d": __url3d,
         "ImgSrc": __image_source,
-        "Longitude": __longitude, // <CategorizedPropertyType> 
-        "Latitude": __latitude, // <CategorizedPropertyType> 
-        "Altitude": __altitude, // <CategorizedPropertyType> 
-        "Heading": __heading, // <CategorizedPropertyType> 
-        "Speed": __speed, // <CategorizedPropertyType> 
+        "Longitude": __longitude, 
+        "Latitude": __latitude, 
+        "Altitude": __altitude, 
+        "Heading": __heading, 
+        "Speed": __speed, 
         "LayersId": [
             __layer1id,
             __layer2id,
@@ -41,40 +40,40 @@
 
 ```JSON
 {
-    "Type": "Movable",
+    "Type": "Flayable",
     "Data": {
         "Name": {
-            "value": "Movable1",
-            "category": "Main Information"
+            "value": "Node1",
+            "category": "Location Information"
         },
         "Id": {
-            "value": 40001,
+            "value": 1,
             "category": "Location Information"
         },
         "Color": "#aabbcc",
-        "Url2d": "../data/models/car/car.png",
-        "Url3d": "../data/models/car/car.osgb",
-        "ImgSrc": "qrc:/Resources/station.jpg",
+        "Url2d": "../data/models/station/station.png",
+        "Url3d": "../data/models/station/station.osgb",
+        "ImgSrc": "qrc:/Resources/airplane1.jpg",
         "Longitude": {
-            "value": 33.3,
+            "value": 342.2,
             "category": "Location Information"
-        }, 
+        },
         "Latitude": {
-            "value": 11.1,
+            "value": 123.1,
             "category": "Location Information"
-        }, 
+        },
         "Altitude": {
-            "value": 22.2,
+            "value": 344.2,
             "category": "Location Information"
-        }, 
+        },
         "Heading": {
-            "value": 44.44,
+            "value": 89.88,
             "category": "Location Information"
-        }, 
+        },
         "Speed": {
-            "value": 99.9,
+            "value": 88.9,
             "category": "Location Information"
-        }, 
+        },
         "LayersId": [
             1,
             2
@@ -82,3 +81,4 @@
     }
 }
 ```
+
