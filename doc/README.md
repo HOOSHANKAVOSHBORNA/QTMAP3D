@@ -1,58 +1,28 @@
-<div dir="rtl">
+# QTMAP3D Project Documentation
 
-# قراردادهای برنامه نویسی پروژه
+## Project Conventions
 
-</div>
-
-- [X] [C++ Conventions](./cpp-conventions.md)
-
-- [X] [QML Conventions](./qml-conventions.md)
-
-- [X] [Qt Conventions](./qt-conventions.md)
+[***LINK***](./conventions/README.md)
 
 
-<div dir="rtl">
+## Nodes JSON Documentation
 
-# قراردادهای برنامه نویسی
-
-## انواع قراردادهای برنامه نویسی
-
-- نام گذاری یا naming conventions
-- سازماندهی فایل ها یا file organization
-- دندانه گذاری یا indentation
-- کامنتها یا comments
-- تعاریف یا declarations
-- عبارات یا statements
-- فاصله ها یا white spaces
-- روش های برنامه نویسی یا programming practices
-
-> این قراردادها توسط کامپایلر اجبار نمی شوند و 
-> اکثرا صرفا برای بهبود خوانایی کد کاربرد دارند
-> و با توجه به آن ***نگهداری*** و ***توسعه*** کد را بسیار راحت می کنند.
-
-این قراردادها معمولا در پروژه ها بصورت یک قالب ارایه می شوند و 
-تمام افرادی که پروژه را توسعه می دهند باید آنها را رعایت کنند.
-
-## مزایای قراردادنویسی
-
-- [X] کاهش پیچیدگی پروژه
-- [X] بازسازی یا `Refactoring` راحت و سیستماتیک کد
-- [X] سیستماتیک شدن ارایه و بررسی تسک ها
-- [X] ارایه کد به عنوان کالا علاوه بر برنامه خروجی کد
-- [X] سهولت در بزرگ کردن پروژه
+[***LINK***](./nodes-json-doc/README.md)
 
 
-## انواع قراردادهای نام گذاری در برنامه نویسی (Nameing Conventions)
+## How to generate `.pdf` file from `.md`?
 
-<div align="center">
-    <img src="./medias/naming-conventions.png">
-</div>
+1. install "xelatex pdf engine".
 
+2. install "pandoc".
 
-# منابع
-</div>
+3. install "Dubai" font.
 
-https://en.wikipedia.org/wiki/Coding_conventions
+4. run below command:
 
-https://en.wikipedia.org/wiki/Naming_convention_(programming)
+```SHELL
+$ pandoc <your-md-file-name>.md -o <output-file-name>.pdf --pdf-engine=xelatex -V mainfont='Dubai'
+```
+	
 
+5. `.pdf` file generates in inputed command directory!
