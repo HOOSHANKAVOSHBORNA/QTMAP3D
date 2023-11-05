@@ -20,7 +20,7 @@
 - [X] [Polygon](./polygon-type.md)
 - [X] [Status](./status-type.md)
 
-## How to write new doc for 
+## How to write new doc for service json
 
 ### Doc Template
 
