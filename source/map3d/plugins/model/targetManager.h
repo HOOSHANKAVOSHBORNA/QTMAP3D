@@ -8,16 +8,18 @@
 class TargetManager
 {
 public:
-    TargetManager(QList<SimpleModelNode*> list);
-    QList<SimpleModelNode*> getNearInvaders();
-    int setNearInvader(SimpleModelNode* invaderNode);
-    void setFinalAttacker(SimpleModelNode* attackerNode);
-    osg::ref_ptr<SimpleModelNode> getFinalAttacker();
+    TargetManager();
+    void updateAttackerList(QList<SimpleModelNode*> list);
+    QList<SimpleModelNode*> getNearAttackers();
+    int setNearAttacker(SimpleModelNode* AttackerNode);
+
+//    void setFinalAttacker(SimpleModelNode* attackerNode);
+//    osg::ref_ptr<SimpleModelNode> getFinalAttacker();
 
 
 private:
-    QList<SimpleModelNode*> mNearInvaders;
-    osg::ref_ptr<SimpleModelNode> mFinalAttacker;
+    QList<SimpleModelNode*> mNearAttackers;
+//    osg::ref_ptr<SimpleModelNode> mFinalAttacker;
 };
 
 #endif // TARGETMANAGER_H

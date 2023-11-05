@@ -16,10 +16,10 @@
 #include <osg/ComputeBoundsVisitor>
 
 
-
 class MoveableModelNode;
 class FlyableModelNode;
 class AttackManager;
+class TargetManager;
 
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
@@ -53,6 +53,7 @@ public:
 
     bool isAttacker();
     void makeAttacker(ParenticAnnotationLayer *layer, int bulletCount);
+    TargetManager *getTargetManager();
     AttackManager *getAttackManager();
     osgEarth::Annotation::ModelNode *getDragModelNode();
 
@@ -69,7 +70,9 @@ private:
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<Circle> mCircleSelectNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
-    AttackManager *mAttackManager;
+    AttackManager* mAttackManager;
+    TargetManager* mTargetManager;
+
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;
@@ -86,6 +89,8 @@ private:
     BookmarkManager *mBookmark;
     BookmarkItem *mBookmarkItem{nullptr};
     bool mIsAttacker{false};
+
+
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;
