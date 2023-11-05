@@ -20,9 +20,9 @@ public slots:
 private:
     MapItem* mMapItem;
 
-    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
+//    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
-    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
+//    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
     NodeData* mNodeData;
     MainWindow *mMainWindow;
     static inline int mCount = 0;
