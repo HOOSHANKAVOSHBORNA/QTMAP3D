@@ -27,7 +27,7 @@
 ```md
 # __Tempalte__ Node Type
 
-- [Table of Contents]
+- [Back](./README.md)
 - [Example](#example)
 - [See basic needed types here](#json-basic-types)
 
