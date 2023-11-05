@@ -118,10 +118,16 @@ Rectangle {
                                 width: Math.ceil(35 / Style.monitorRatio)
                                 height: Math.ceil(35 / Style.monitorRatio)
                             }
+
                             background: Rectangle {
+                                width: Math.ceil(39 / Style.monitorRatio)
+                                height: Math.ceil(39 / Style.monitorRatio)
                                 radius: Math.ceil(10 / Style.monitorRatio)
                                 color: btnDelegate.checked ? fg50 : "transparent"
+                                anchors.centerIn: btnDelegate
                             }
+
+                            hoverEnabled: true
 
                             display: AbstractButton.IconOnly
                             checkable: true
@@ -130,8 +136,31 @@ Rectangle {
                                 model.checked = checked
                                 sideBarModel.toggleItem(index, checked)
                             }
+
+                            ToolTip {
+                                visible: btnDelegate.hovered
+
+                                contentItem: Text {
+                                    id: tooltipText
+                                    anchors.margins: 7 / Style.monitorRatio
+                                    text: model.name
+                                    font.pixelSize: 17 / Style.monitorRatio
+                                    color: 'white'
+                                }
+
+                                background: Rectangle {
+                                    visible: btnDelegate.hovered
+                                    height: btnDelegate.height
+                                    width: tooltipText.contentWidth + 14
+                                    radius: 10 / Style.monitorRatio
+
+                                    color: "#01AED6"
+                                }
+                            }
                         }
+
                     }
+
                     Button {
                         id: btnList
                         padding: 0
@@ -151,8 +180,30 @@ Rectangle {
                         onToggled: {
 
                         }
+
+                        ToolTip {
+                            visible: btnList.hovered
+
+                            contentItem: Text {
+                                id: tooltipText2
+                                anchors.margins: 7 / Style.monitorRatio
+                                text: 'List'
+                                font.pixelSize: 17 / Style.monitorRatio
+                                color: 'white'
+                            }
+
+                            background: Rectangle {
+                                visible: btnList.hovered
+                                height: btnList.height
+                                width: tooltipText2.contentWidth + 14
+                                radius: 10 / Style.monitorRatio
+
+                                color: "#01AED6"
+                            }
+                        }
                     }
                 }
+
                 Button {
                     id: btnPin
                     anchors.bottom: parent.bottom
@@ -175,7 +226,29 @@ Rectangle {
                     onToggled: {
 
                     }
+
+                    ToolTip {
+                        visible: btnPin.hovered
+
+                        contentItem: Text {
+                            id: tooltipText3
+                            anchors.margins: 7 / Style.monitorRatio
+                            text: pin ? "Pin" : "Unpin"
+                            font.pixelSize: 17 / Style.monitorRatio
+                            color: 'white'
+                        }
+
+                        background: Rectangle {
+                            visible: btnPin.hovered
+                            height: btnPin.height
+                            width: tooltipText3.contentWidth + 14
+                            radius: 10 / Style.monitorRatio
+
+                            color: "#01AED6"
+                        }
+                    }
                 }
+
             }
             MultiEffect {
                 source: toolBar
@@ -204,7 +277,7 @@ Rectangle {
     ListModel {
         id: sideBarModel
         signal toggleItem(var index, var checked)
-//        onToggleItem:function(index, checked){ print(checked)}
+        //        onToggleItem:function(index, checked){ print(checked)}
         ListElement {
             name: "Toolbox"
             iconSource: "qrc:/Resources/toolbox.png"

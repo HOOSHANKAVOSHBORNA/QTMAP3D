@@ -29,7 +29,9 @@ add_library(model SHARED
     nodeInformationManager.cpp
     bulletNode.h bulletNode.cpp
     attackManager.h attackManager.cpp
+    targetManager.h targetManager.cpp
     dataManager.h dataManager.cpp
+
 )
 
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

@@ -10,6 +10,7 @@
 #include <osgEarth/Registry>
 #include <mainwindow.h>
 #include "attackManager.h"
+#include "targetManager.h"
 #include <QtQml>
 const float RANGE3D = 835;
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
@@ -25,6 +26,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
+    mTargetManager = new TargetManager();
 
     compile();
 }
@@ -90,6 +92,11 @@ void SimpleModelNode::makeAttacker(ParenticAnnotationLayer *layer, int bulletCou
     mAttackManager->setAttackLayer(layer);
     mAttackManager->setBulletCount(5);
     mIsAttacker = true;
+}
+
+TargetManager *SimpleModelNode::getTargetManager()
+{
+    return mTargetManager;
 }
 
 AttackManager *SimpleModelNode::getAttackManager()

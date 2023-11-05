@@ -24,9 +24,20 @@ Item {
     ColumnLayout{
         id:columnLayout
         anchors.fill: parent
-        anchors.topMargin: 5 / Style.monitorRatio
         anchors.rightMargin: 15 / Style.monitorRatio
         anchors.leftMargin: 15 / Style.monitorRatio
+
+        Text {
+            visible: visibleCount !== 0
+            text: 'Qarch'
+            Layout.topMargin: 40 / Style.monitorRatio
+            Layout.bottomMargin: 30 / Style.monitorRatio
+            color: Style.foregroundColor
+            font.pixelSize: 30 / Style.monitorRatio
+            font.family: Style.fontFamily
+            font.weight: 500
+        }
+
         TabBar {
             id: tabBar
             //            Layout.preferredHeight: 30 / Style.monitorRatio
