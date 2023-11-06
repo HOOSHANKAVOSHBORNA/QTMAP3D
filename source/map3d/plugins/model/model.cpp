@@ -483,7 +483,7 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     nodeData->url2D = url2d;
     nodeData->url3D = url3d;
     nodeData->imgSrc = imgSrc;
-    nodeData->color = "white";
+    nodeData->color = QColor("white").name().toStdString();
     nodeData->speed = 100;
     nodeData->fieldData.push_back(NodeFieldData{"name", "Aircraft" + QString::number(mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
     nodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
