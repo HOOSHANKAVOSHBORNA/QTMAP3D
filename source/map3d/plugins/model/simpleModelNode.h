@@ -2,6 +2,7 @@
 #define SIMPLEMODELNODE_H
 
 
+
 #include "mapItem.h"
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
@@ -11,8 +12,8 @@
 #include <osgFX/Scribe>
 #include <QQmlEngine>
 #include <bookmark.h>
-#include <circle.h>
-#include <cone.h>
+#include "circle.h"
+#include "cone.h"
 #include <osg/ComputeBoundsVisitor>
 
 
@@ -38,6 +39,8 @@ public:
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
     void selectModel();
+    void highlightAsAttacker(bool isAttacker);
+    void highlightAsTarget(bool isTarget);
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 
@@ -70,6 +73,10 @@ private:
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<Circle> mCircleSelectNode;
+    osg::ref_ptr<Circle> mAttackerSelectNode;
+    osg::ref_ptr<Circle> mTargetSelectNode;
+//    osg::ref_ptr<LineNode> mAttackerLineNode;
+//    osg::ref_ptr<LineNode> mTargetLineNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
     AttackManager* mAttackManager;
     TargetManager* mTargetManager;

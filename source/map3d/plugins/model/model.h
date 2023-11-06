@@ -10,6 +10,7 @@
 #include <osg/PolygonMode>
 #include <osg/Fog>
 #include "dataManager.h"
+#include <circle.h>
 
 #define MODEL "Model"
 #define TREE "Tree"
@@ -72,7 +73,7 @@ protected:
 private:
     SimpleModelNode* pick(float x, float y);
     NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, osgEarth::GeoPoint geopos);
-    void rightClickMenu();
+    void rightClickMenu(SimpleModelNode *selectedNode);
 
 private:
     Type mType;

@@ -113,3 +113,13 @@ void DataManager::removeNodeData(NodeData *nodeData)
         layer->removeChild(mNodeMap[nodeData->id]);
     mNodeMap.remove(nodeData->id);
 }
+
+int DataManager::nodeCount()
+{
+    return mNodeMap.count();
+}
+
+SimpleModelNode *DataManager::getNodeAtIndex(int index)
+{
+    return mNodeMap.values().at(index);
+}

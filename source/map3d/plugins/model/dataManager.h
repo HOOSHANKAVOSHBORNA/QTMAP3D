@@ -12,6 +12,9 @@ public:
     void removeFlyableNodeData(NodeData *nodeData);
     void removeMovableNodeData(NodeData *nodeData);
     void removeNodeData(NodeData *nodeData);
+    int nodeCount();
+    SimpleModelNode* getNodeAtIndex(int index);
+
 public slots:
     FlyableModelNode* addUpdateFlyableNode(NodeData *nodeData);
     SimpleModelNode* addUpdateNode(NodeData *nodeData);
