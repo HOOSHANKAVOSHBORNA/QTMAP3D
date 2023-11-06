@@ -133,14 +133,18 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
             return true;
         }
         if(mState == State::ATTACKING){
-            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+//            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
 //            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
             return true;
         }
 
     }
-    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::MOVING)) {
-        cancel();
+    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON ) {
+        if(mState == State::MOVING){
+            cancel();
+        }else if(mState == State::NONE){
+
+        }
         return false;
     }
     else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::ATTACKING)) {
@@ -489,4 +493,10 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     nodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(nodeData->speed), "Location Information","qrc:/Resources/location.png"});
     return nodeData;
 }
+
+void Model::rightClickMenu()
+{
+
+}
+
 

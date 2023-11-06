@@ -11,14 +11,16 @@ public:
     int readyBullet(const std::string url3D , const std::string url2D);
     void attackTo(int bulletID ,osgEarth::GeoPoint geoPos);
     void removeBullet(int bulletID);
-    void setTargetPosition(int bulletID ,osgEarth::GeoPoint geoPos);
+    void setBulletTargetModel(int bulletID ,SimpleModelNode *model);
     void setBulletCount(const int count);
     int getBulletCount();
     osgEarth::GeoPoint getBulletPosition(int bulletID);
-    osgEarth::GeoPoint getTargetPosition(int bulletID);
+    SimpleModelNode* getBulletTargetModel(int bulletID);
     void setAttackLayer(ParenticAnnotationLayer* layer);
     ParenticAnnotationLayer *getAttackLayer();
     osg::ref_ptr<BulletNode> getBulletNode(int bulletID);
+    QList<SimpleModelNode*> getNearTargets();
+    int setNearTargets(SimpleModelNode* targetNode);
 
 
 private:
@@ -29,6 +31,7 @@ private:
     BookmarkManager *mBookmark;
     SimpleModelNode *mParent;
     int mBulletCount = 0;
+    QList<SimpleModelNode*> mNearTargets;
 
 
 };

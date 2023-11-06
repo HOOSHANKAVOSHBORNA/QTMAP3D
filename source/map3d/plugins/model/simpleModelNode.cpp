@@ -12,7 +12,11 @@
 #include "attackManager.h"
 #include "targetManager.h"
 #include <QtQml>
+
+
 const float RANGE3D = 835;
+
+
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
@@ -103,6 +107,7 @@ AttackManager *SimpleModelNode::getAttackManager()
 {
     return mAttackManager;
 }
+
 
 NodeData *SimpleModelNode::nodeData() const
 {

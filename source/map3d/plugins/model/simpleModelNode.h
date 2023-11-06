@@ -57,6 +57,7 @@ public:
     AttackManager *getAttackManager();
     osgEarth::Annotation::ModelNode *getDragModelNode();
 
+
 private slots:
     void compile();
     void onModeChanged(bool is3DView);
