@@ -10,8 +10,13 @@
 #include <osgEarth/Registry>
 #include <mainwindow.h>
 #include "attackManager.h"
+#include "targetManager.h"
 #include <QtQml>
+
+
 const float RANGE3D = 835;
+
+
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
@@ -25,6 +30,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
+    mTargetManager = new TargetManager();
 
     compile();
 }
@@ -92,10 +98,16 @@ void SimpleModelNode::makeAttacker(ParenticAnnotationLayer *layer, int bulletCou
     mIsAttacker = true;
 }
 
+TargetManager *SimpleModelNode::getTargetManager()
+{
+    return mTargetManager;
+}
+
 AttackManager *SimpleModelNode::getAttackManager()
 {
     return mAttackManager;
 }
+
 
 NodeData *SimpleModelNode::nodeData() const
 {
@@ -244,16 +256,38 @@ void SimpleModelNode::compile()
 
     selectGroup->addChild(mCircleSelectNode);
     selectGroup->addChild(mConeSelecteNode);
+    //--attacker node---------------------------------------------------
+    osg::ref_ptr<osg::Group> attackerGroup = new osg::Group;
+    mAttackerSelectNode = new Circle();
+    mAttackerSelectNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
+    mAttackerSelectNode->setStrokeColor(osg::Vec4f(1,0,0,0.5));
+    mAttackerSelectNode->setStrokeWidth(2);
+    mAttackerSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+    mAttackerSelectNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
+    attackerGroup->addChild(mAttackerSelectNode);
+    //--Target node---------------------------------------------------
+    osg::ref_ptr<osg::Group> targetGroup = new osg::Group;
+    mTargetSelectNode = new Circle();
+    mTargetSelectNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
+    mTargetSelectNode->setStrokeColor(osg::Vec4f(0,0,1,0.5));
+    mTargetSelectNode->setStrokeWidth(2);
+    mTargetSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+    mTargetSelectNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
+    targetGroup->addChild(mTargetSelectNode);
     //--setting--------------------------------------------------------
     if(mIs3D){
         mSwitchNode->addChild(m3DNode, true);
         mSwitchNode->addChild(m2DNode, false);
         mSwitchNode->addChild(selectGroup, false);
+        mSwitchNode->addChild(attackerGroup, false);
+        mSwitchNode->addChild(targetGroup, false);
     }
     else{
         mSwitchNode->addChild(m3DNode, false);
         mSwitchNode->addChild(m2DNode, true);
         mSwitchNode->addChild(selectGroup, false);
+        mSwitchNode->addChild(attackerGroup, false);
+        mSwitchNode->addChild(targetGroup, false);
     }
     //--------------------------------------------------------------------------
     osgEarth::Symbology::Style  rootStyle;
@@ -307,6 +341,24 @@ void SimpleModelNode::selectModel()
         mSwitchNode->setValue(2, true);
     } else {
         mSwitchNode->setValue(2, false);
+    }
+}
+
+void SimpleModelNode::highlightAsAttacker(bool isAttacker)
+{
+    if(isAttacker){
+        mSwitchNode->setValue(3, true);
+    } else {
+        mSwitchNode->setValue(3, false);
+    }
+}
+
+void SimpleModelNode::highlightAsTarget(bool isTarget)
+{
+    if(isTarget){
+        mSwitchNode->setValue(4, true);
+    } else {
+        mSwitchNode->setValue(4, false);
     }
 }
 

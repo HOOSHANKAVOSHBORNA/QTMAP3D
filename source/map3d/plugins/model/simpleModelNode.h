@@ -2,6 +2,7 @@
 #define SIMPLEMODELNODE_H
 
 
+
 #include "mapItem.h"
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
@@ -11,15 +12,15 @@
 #include <osgFX/Scribe>
 #include <QQmlEngine>
 #include <bookmark.h>
-#include <circle.h>
-#include <cone.h>
+#include "circle.h"
+#include "cone.h"
 #include <osg/ComputeBoundsVisitor>
-
 
 
 class MoveableModelNode;
 class FlyableModelNode;
 class AttackManager;
+class TargetManager;
 
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
@@ -38,6 +39,8 @@ public:
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
     void selectModel();
+    void highlightAsAttacker(bool isAttacker);
+    void highlightAsTarget(bool isTarget);
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 
@@ -53,8 +56,10 @@ public:
 
     bool isAttacker();
     void makeAttacker(ParenticAnnotationLayer *layer, int bulletCount);
+    TargetManager *getTargetManager();
     AttackManager *getAttackManager();
     osgEarth::Annotation::ModelNode *getDragModelNode();
+
 
 private slots:
     void compile();
@@ -68,8 +73,14 @@ private:
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<Circle> mCircleSelectNode;
+    osg::ref_ptr<Circle> mAttackerSelectNode;
+    osg::ref_ptr<Circle> mTargetSelectNode;
+//    osg::ref_ptr<LineNode> mAttackerLineNode;
+//    osg::ref_ptr<LineNode> mTargetLineNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
-    AttackManager *mAttackManager;
+    AttackManager* mAttackManager;
+    TargetManager* mTargetManager;
+
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;
@@ -86,6 +97,8 @@ private:
     BookmarkManager *mBookmark;
     BookmarkItem *mBookmarkItem{nullptr};
     bool mIsAttacker{false};
+
+
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;
     static QMap<std::string, osg::ref_ptr<osg::Image>> mImages2D;

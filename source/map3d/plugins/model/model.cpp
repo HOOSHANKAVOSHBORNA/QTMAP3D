@@ -14,6 +14,7 @@
 #include <osgEarthSymbology/StyleSheet>
 #include <osg/ShapeDrawable>
 #include "attackManager.h"
+#include "targetManager.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 using osgKeyButton = osgGA::GUIEventAdapter::KeySymbol;
@@ -133,21 +134,28 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
             return true;
         }
         if(mState == State::ATTACKING){
-            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-//            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
+            //            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+            //            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
             return true;
         }
 
     }
-    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::MOVING)) {
-        cancel();
+    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON ) {
+        if(mState == State::MOVING){
+            cancel();
+        }else if(mState == State::NONE){
+            SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
+            if(modelNode){
+                rightClickMenu(modelNode);
+            }
+        }
         return false;
     }
-    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::ATTACKING)) {
-        mCurrentModel->getAttackManager()->attackResult(true,mBulletID);
-        mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
-        return false;
-    }
+    //    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::ATTACKING)) {
+    //        mCurrentModel->getAttackManager()->attackResult(true,mBulletID);
+    //        mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
+    //        return false;
+    //    }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
         if(mType == Type::ATTACKER && !(mState == State::ATTACKING)){
             mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
@@ -479,7 +487,7 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     nodeData->url2D = url2d;
     nodeData->url3D = url3d;
     nodeData->imgSrc = imgSrc;
-    nodeData->color = "white";
+    nodeData->color = QColor("white").name().toStdString();
     nodeData->speed = 100;
     nodeData->fieldData.push_back(NodeFieldData{"name", "Aircraft" + QString::number(mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
     nodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
@@ -489,4 +497,33 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     nodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(nodeData->speed), "Location Information","qrc:/Resources/location.png"});
     return nodeData;
 }
+
+void Model::rightClickMenu(SimpleModelNode *selectedNode)
+{
+
+    osgEarth::GeoPoint baseModelPosition = selectedNode->getPosition();
+    if(selectedNode->isAttacker()){
+        for (int var = 0; var < mDataManager->nodeCount(); ++var) {
+            SimpleModelNode* nearModel = mDataManager->getNodeAtIndex(var);
+            if(nearModel->getPosition().distanceTo(baseModelPosition) < 15000 && nearModel !=selectedNode){
+                selectedNode->getAttackManager()->setNearTargets(nearModel);
+                nearModel->getTargetManager()->setNearAttacker(selectedNode);
+                nearModel->highlightAsTarget(true);
+                nearModel->highlightAsAttacker(false);
+            }
+        }
+    }else{
+        for (int var = 0; var < mDataManager->nodeCount(); ++var) {
+            SimpleModelNode* nearModel = mDataManager->getNodeAtIndex(var);
+            if(nearModel->isAttacker() && nearModel->getPosition().distanceTo(baseModelPosition) < 15000 && nearModel !=selectedNode){
+                selectedNode->getTargetManager()->setNearAttacker(nearModel);
+                nearModel->getAttackManager()->setNearTargets(selectedNode);
+                nearModel->highlightAsAttacker(true);
+                nearModel->highlightAsTarget(false);
+            }
+        }
+    }
+}
+
+
 

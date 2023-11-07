@@ -1,33 +1,25 @@
 #include "targetManager.h"
 
-TargetManager::TargetManager(QList<SimpleModelNode*> list):
-    mNearInvaders(list)
+TargetManager::TargetManager()
 {
 
 }
 
-QList<SimpleModelNode *> TargetManager::getNearInvaders()
+void TargetManager::updateAttackerList(QList<SimpleModelNode *> list)
 {
-    return mNearInvaders;
+    mNearAttackers = list;
+
 }
 
-int TargetManager::setNearInvader(SimpleModelNode *invaderNode)
+QList<SimpleModelNode *> TargetManager::getNearAttackers()
 {
-    mNearInvaders.push_back(invaderNode);
-    int invaderID = mNearInvaders.indexOf(invaderNode);
-    return invaderID;
+    return mNearAttackers;
 }
 
-void TargetManager::setFinalAttacker(SimpleModelNode *attackerNode)
+int TargetManager::setNearAttacker(SimpleModelNode *AttackerNode)
 {
-    mFinalAttacker = attackerNode;
+    mNearAttackers.push_back(AttackerNode);
+    int AttackerID = mNearAttackers.indexOf(AttackerNode);
+    return AttackerID;
 }
-
-osg::ref_ptr<SimpleModelNode> TargetManager::getFinalAttacker()
-{
-    return mFinalAttacker;
-}
-
-
-
 

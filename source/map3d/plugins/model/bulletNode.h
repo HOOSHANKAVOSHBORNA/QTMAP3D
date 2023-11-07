@@ -10,8 +10,8 @@ public:
     BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl);
     void attackTo(osgEarth::GeoPoint position);
     Explosion* explode();
-    osgEarth::GeoPoint getTargetPosition();
-    void setTargetPosition(osgEarth::GeoPoint geoPos);
+    SimpleModelNode* getTargetModel();
+    void setTargetModel(SimpleModelNode *model);
     osgEarth::Annotation::ModelNode *getDragModelNode();
 private:
     osg::ref_ptr<Explosion> mExplosion;
@@ -20,7 +20,7 @@ private:
     std::string mBulletIconURL;
     QQmlEngine *mEngine;
     BookmarkManager *mBookmark;
-    osgEarth::GeoPoint mTarget;
+    osg::ref_ptr<SimpleModelNode> mTargetModel;
 };
 
 #endif // BULLETNODE_H

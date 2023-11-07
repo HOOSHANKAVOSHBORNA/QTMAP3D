@@ -21,14 +21,14 @@ Explosion *BulletNode::explode()
     return mExplosion;
 }
 
-osgEarth::GeoPoint BulletNode::getTargetPosition()
+SimpleModelNode *BulletNode::getTargetModel()
 {
-    return mTarget;
+    return mTargetModel;
 }
 
-void BulletNode::setTargetPosition(osgEarth::GeoPoint geoPos)
+void BulletNode::setTargetModel(SimpleModelNode *model)
 {
-    mTarget = geoPos;
+    mTargetModel = model;
 }
 
 osgEarth::Annotation::ModelNode *BulletNode::getDragModelNode()
