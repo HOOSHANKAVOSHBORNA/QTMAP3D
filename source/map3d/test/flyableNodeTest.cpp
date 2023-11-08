@@ -151,7 +151,7 @@ void FlyableNodeTest::createFlyableInfo()
     points.push_back(point1);
 
     jsonObjectLineData.insert("Points", points);
-    jsonObjectLineData.insert("LayerId", 106);
+    jsonObjectLineData.insert("LayerId", 105);
 
     jsonObjectLine.insert("Data", jsonObjectLineData);
     jsonDocLine.setObject(jsonObjectLine);
