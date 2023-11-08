@@ -1,10 +1,9 @@
 #include "attackManager.h"
+#include "lineNode.h"
 
-AttackManager::AttackManager(MapItem *mapControler, QQmlEngine *engine, BookmarkManager *bookmark, SimpleModelNode *parent)
+AttackManager::AttackManager(MapItem *mapControler, SimpleModelNode *parent)
     : mMapItem(mapControler),
-      mEngine(engine),
-      mBookmark(bookmark),
-      mParent(parent)
+    mParent(parent)
 {
 
 }
@@ -98,10 +97,35 @@ osg::ref_ptr<BulletNode> AttackManager::getBulletNode(int bulletID)
 
 QList<SimpleModelNode *> AttackManager::getNearTargets()
 {
-
+    return mNearTargets;
 }
 
-int AttackManager::setNearTargets(SimpleModelNode *targetNode)
+void AttackManager::setNearTargets(SimpleModelNode *targetNode)
 {
+    mNearTargets.append(targetNode);
+}
+
+void AttackManager::showNearTargets()
+{
+    mHighlightGroup = new osg::Group;
+    for (int var = 0; var < mNearTargets.length(); ++var) {
+        osg::ref_ptr<LineNode> line = new LineNode(mMapItem);
+        line->addPoint(mParent->getPosition());
+        line->addPoint(mNearTargets.at(var)->getPosition());
+        line->setFillColor(osgEarth::Color::Yellow);
+        mHighlightGroup->addChild(line);
+        mNearTargets.at(var)->selectModel();
+    }
+    mParent->addChild(mHighlightGroup);
+}
+
+void AttackManager::hideNearTargets()
+{
+    if(mParent->containsNode(mHighlightGroup)){
+        for (int var = 0; var < mNearTargets.length(); ++var) {
+            mNearTargets.at(var)->selectModel();
+        }
+        mParent->removeChild(mHighlightGroup);
+    }
 
 }
