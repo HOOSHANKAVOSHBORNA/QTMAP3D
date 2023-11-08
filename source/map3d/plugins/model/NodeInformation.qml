@@ -6,8 +6,6 @@ Window {
     id:window
     readonly property color verticalBarColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.10)
     readonly property color parentColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
-    property int previousX
-    property int previousY
     flags: Qt.Window | Qt.FramelessWindowHint
     width:310/Style.monitorRatio
     height:612/Style.monitorRatio
