@@ -15,6 +15,7 @@ Item {
     property string _headerTitleSTR: "Properties"
     property CProperty model
     //property int lblWidth: 100
+    property int swtchWidth: 80
     property int lblWidth: 50
     property int valHeight: 30
     //////////////////////////Main Content////////////////////////
@@ -272,10 +273,9 @@ Item {
                                     }
                                 }
                             }
-                            SpinBox {
+                            FloatSpinbox {
                                 id: strokeWidthValue
                                 Layout.fillWidth: true
-//                                Layout.minimumWidth: 100
                                 Layout.alignment: Qt.AlignCenter
                                 Layout.topMargin: 2
                                 Layout.bottomMargin: 2
@@ -336,7 +336,7 @@ Item {
                                     color: Style.foregroundColor
                                 }
 
-                                FloatSpinBox {
+                                StepSpinBox {
                                     id: xLocationValue
                                     Layout.fillWidth: true
                                     Layout.minimumWidth: 100
@@ -366,7 +366,7 @@ Item {
                                     font.pointSize: 10
                                     color: Style.foregroundColor
                                 }
-                                FloatSpinBox {
+                                StepSpinBox {
                                     id: yLocationValue
                                     Layout.fillWidth: true
                                     Layout.minimumWidth: 100
@@ -394,7 +394,7 @@ Item {
                                     font.pointSize: 10
                                     color: Style.foregroundColor
                                 }
-                                FloatSpinBox {
+                                StepSpinBox {
 
                                     id: zLocationValue
                                     Layout.fillWidth: true
@@ -499,7 +499,8 @@ Item {
                                 font.pointSize: 10
                                 color: Style.foregroundColor
                             }
-                            FloatSpinBox {
+
+                            StepSpinBox {
                                 id: xCenterValue
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100
@@ -527,7 +528,8 @@ Item {
                                 font.pointSize: 10
                                 color: Style.foregroundColor
                             }
-                            FloatSpinBox {
+
+                            StepSpinBox {
                                 id: yCenterValue
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100
@@ -554,7 +556,8 @@ Item {
                                 font.pointSize: 10
                                 color: Style.foregroundColor
                             }
-                            FloatSpinBox {
+
+                            StepSpinBox {
                                 id: zCenterValue
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100
@@ -612,7 +615,7 @@ Item {
                                 font.pointSize: 10
                                 color: Style.foregroundColor
                             }
-                            SpinBox {
+                            FloatSpinbox {
                                 id: startArcValue
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100
@@ -640,7 +643,7 @@ Item {
                                 font.pointSize: 10
                                 color: Style.foregroundColor
                             }
-                            SpinBox {
+                            FloatSpinbox {
                                 id: endArcValue
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100
@@ -689,13 +692,13 @@ Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: valHeight
 
-                            FloatSpinBox {
+                            StepSpinBox {
                                 id: radiusValue
                                 anchors.leftMargin: 2
                                 anchors.rightMargin: 2
                                 anchors.centerIn: parent
                                 width: parent.width - 5
-                                height: 25
+                                height: 28
                                 decimals: 2
                                 from : 0
                                 to: 2000000000
@@ -731,7 +734,7 @@ Item {
                         font.pointSize: 10
                         color: "white"
                     }
-                    FloatSpinBox {
+                    StepSpinBox {
                         id: radiusMinorValue
                         Layout.fillWidth: true
                         Layout.minimumWidth: 100
@@ -768,7 +771,7 @@ Item {
                         font.pointSize: 10
                         color: "white"
                     }
-                    FloatSpinBox {
+                    StepSpinBox {
                         id: radiusMajorValue
                         Layout.fillWidth: true
                         Layout.minimumWidth: 100
@@ -808,13 +811,13 @@ Item {
                             border.color: "transparent"
                             Layout.fillWidth: true
                             Layout.preferredHeight: valHeight
-                            FloatSpinBox {
+                            StepSpinBox {
                                 id:heightValue
                                 anchors.leftMargin: 2
                                 anchors.rightMargin: 2
                                 anchors.centerIn: parent
                                 width: parent.width - 5
-                                height: 25
+                                height: 28
                                 decimals: 2
                                 from : 0
                                 to: 2000000000
@@ -857,13 +860,13 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: valHeight
 
-                                FloatSpinBox {
+                                StepSpinBox {
                                     id: lengthValue
                                     anchors.leftMargin: 2
                                     anchors.rightMargin: 2
                                     anchors.centerIn: parent
                                     width: parent.width - 5
-                                    height: 25
+                                    height: 28
                                     decimals: 2
                                     from : 0
                                     to: 2000000000
@@ -903,13 +906,13 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 25
 
-                                FloatSpinBox {
+                                StepSpinBox {
                                     id:widthValue
                                     anchors.leftMargin: 2
                                     anchors.rightMargin: 2
                                     anchors.centerIn: parent
                                     width: parent.width - 5
-                                    height: 25
+                                    height: 28
                                     decimals: 2
                                     from : 0
                                     to: 2000000000
@@ -1030,28 +1033,22 @@ Item {
                     }
                 }
                 ////////-------------------------/tesselation/------------------//////////////
-                Rectangle{
-                    color: "white"
-                    Layout.fillWidth: true
-                    height: 2
-                    visible: tesselationSec.visible
-                }
+
                 RowLayout{
                     id:tesselationSec
                     visible:rootItem.model ? rootItem.model.tesselationStatus : false
                     Layout.fillWidth: true
                     Text {
-                        Layout.preferredWidth: lblWidth
-                        text: "Tesselation: "
+                        Layout.preferredWidth: swtchWidth
+                        text: "Tesselation "
                         font.pointSize: 10
-                        color: "white"
+                        color: Style.foregroundColor
                     }
-                    SpinBox {
+                    FloatSpinbox {
                         id: tesselationValue
                         from : 0
                         to: 2000000000
                         Layout.fillWidth: true
-                        Layout.minimumWidth: 100
                         height: valHeight
                         onValueChanged: {
                             rootItem.model.tesselation = value
@@ -1065,22 +1062,17 @@ Item {
                     }
                 }
                 ////------------------------ Show lenght -------------------- ///////////////
-                Rectangle{
-                    color: "white"
-                    Layout.fillWidth: true
-                    height: 2
-                    visible: showLenghtSec.visible
-                }
+
                 RowLayout{
                     id:showLenghtSec
                     visible:rootItem.model ? rootItem.model.showLenStatus : false
                     Layout.fillWidth: true
 
                     Text {
-                        Layout.preferredWidth: lblWidth
-                        text: "Show Length: "
+                        Layout.preferredWidth: swtchWidth
+                        text: "Show Length "
                         font.pointSize: 10
-                        color: "white"
+                        color: Style.foregroundColor
                     }
                     Switch {
                         id: showLenghtValue
@@ -1100,22 +1092,16 @@ Item {
                     }
                 }
                 ////------------------------Show Bearing -------------------- ///////////////
-                Rectangle{
-                    color: "white"
-                    Layout.fillWidth: true
-                    height: 2
-                    visible: bearingSec.visible
-                }
 
                 RowLayout{
                     id:bearingSec
                     visible:rootItem.model ? rootItem.model.bearingStatus : false
                     Layout.fillWidth: true
                     Text {
-                        Layout.preferredWidth: lblWidth
-                        text: "Show Bearing: "
+                        Layout.preferredWidth: swtchWidth
+                        text: "Show Bearing "
                         font.pointSize: 10
-                        color: "white"
+                        color: Style.foregroundColor
                     }
                     Switch {
                         id: bearingValue
@@ -1136,22 +1122,16 @@ Item {
                 }
 
                 ////------------------------  showAltitude -------------------- ///////////////
-                Rectangle{
-                    color: "white"
-                    Layout.fillWidth: true
-                    height: 2
-                    visible: showAltitudeSec.visible
-                }
 
                 RowLayout{
                     id:showAltitudeSec
                     visible:rootItem.model ? rootItem.model.altitudeStatus : false
                     Layout.fillWidth: true
                     Text {
-                        Layout.preferredWidth: lblWidth
-                        text: "Show Altitude: "
+                        Layout.preferredWidth: swtchWidth
+                        text: "Show Altitude "
                         font.pointSize: 10
-                        color: "white"
+                        color: Style.foregroundColor
                     }
                     Switch {
                         id: showAltitudeValue
@@ -1174,22 +1154,16 @@ Item {
 
 
                 ////------------------------ Show Slope -------------------- ///////////////
-                Rectangle{
-                    color: "white"
-                    Layout.fillWidth: true
-                    height: 2
-                    visible: slopeSec.visible
-                }
 
                 RowLayout{
                     id:slopeSec
                     visible:rootItem.model ? rootItem.model.showSlopStatus : false
                     Layout.fillWidth: true
                     Text {
-                        Layout.preferredWidth: lblWidth
-                        text: "Show Slope: "
+                        Layout.preferredWidth: swtchWidth
+                        text: "Show Slope "
                         font.pointSize: 10
-                        color: "white"
+                        color: Style.foregroundColor
                     }
                     Switch {
                         id: slopeValue
@@ -1209,156 +1183,199 @@ Item {
                     }
                 }
                 ////------------------------ Points  -------------------- ///////////////
-                Rectangle{
-                    color: "white"
-                    Layout.fillWidth: true
-                    height: 2
-                    visible: pointSec.visible
-                }
+
                 GroupBox{
                     id: pointSec
                     visible: rootItem.model ? rootItem.model.pointsStatus : false
                     padding: 0
                     Layout.fillWidth: true
+                    //Layout.preferredHeight: 100
+                  //  Layout.minimumHeight: 300
 
                     background: Rectangle{
                         color: "transparent"
                         border.color: "transparent"
                     }
 
-                    label: RowLayout{
-                        anchors.left: parent.left
-                        anchors.top: parent.top
-                        Text {
-                            Layout.preferredWidth: lblWidth
-                            text: "Points: "
-                            font.pointSize: 10
-                            color: "gray"
-                        }
-                        Switch {
-                            id:pointVisible
-                            padding: 0
-                            width: 100
-                            height: valHeight
-                            checked: false
-                            onToggled: function() {
-                                rootItem.model.pointsVisible  = pointVisible.checked
-                            }
-                        }
-                        Binding{
-                            target: pointVisible
-                            property: "checked"
-                            value: rootItem.model ? rootItem.model.pointsVisible: 0
-                            delayed: true
-                        }
-                    }
-                    GridLayout{
-                        anchors.fill: parent
-                        anchors.topMargin: 10
-                        columnSpacing: 1
-                        rowSpacing: 1
-                        columns:2
+                     ColumnLayout{
+                         anchors.fill: parent
+                          RowLayout{
+                             Text {
+                                 Layout.preferredWidth: swtchWidth
+                                 text: "Points "
+                                 font.pointSize: 10
+                                 color: Style.foregroundColor
+                             }
+                             Switch {
+                                 id:pointVisible
+                                 padding: 0
+                                 width: 100
+                                 height: valHeight
+                                 checked: false
+                                 onToggled: function() {
+                                     rootItem.model.pointsVisible  = pointVisible.checked
+                                 }
+                             }
+                             Binding{
+                                 target: pointVisible
+                                 property: "checked"
+                                 value: rootItem.model ? rootItem.model.pointsVisible: 0
+                                 delayed: true
+                             }
+                         }
+                         RowLayout{
+                             Text{
+                                 text: "Point Color"
+                                 color: Style.foregroundColor
+                                 font.pointSize: 10
+                                 Layout.alignment: Qt.AlignTop
+                                 Layout.preferredWidth: swtchWidth
+                                 visible:rootItem.model ? rootItem.model.strokeStatus : false
+                             }
+                             GroupBox{
 
-                        Text{
-                            Layout.preferredWidth: lblWidth
-                            text: "Point Color: "
-                            font.pointSize: 10
-                            color: "white"
-                        }
-                        RowLayout{
-                            Layout.fillWidth: true
-                            enabled: pointVisible.checked
-                            Rectangle{
-                                width: valHeight
-                                height: valHeight
-                                color: rootItem.model ? rootItem.model.pointsColor : "#202020"
-                                border.width: 2
-                                border.color: "#c9c9c9"
-                                radius: 5
-                                MouseArea{
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: pointColorDialog.visible = true
-                                }
-                            }
+                                 padding: 0
+                                 Layout.fillWidth: true
+                                 Layout.margins: 0
 
-                            SpinBox {
-                                id: pointOpacityValue
-                                Layout.fillWidth: true
-                                Layout.minimumWidth: 80
-                                height: valHeight
-                                from : 0
-                                to : 100
-                                onValueChanged: {
-                                    rootItem.model.pointsColor.a = value/100
-                                }
-                            }
-                            Binding{
-                                target: pointOpacityValue
-                                property: "value"
-                                value: rootItem.model ? rootItem.model.pointsColor.a * 100 : 0
-                                delayed: true
-                            }
-                            ColorDialog {
-                                visible: false
-                                id:  pointColorDialog
-                                title: "Please choose a color"
-                                onAccepted: {
-                                    var currentColor = pointColorDialog.selectedColor
-                                    currentColor.a = pointOpacityValue.value / 100
-                                    rootItem.model.pointsColor = currentColor
-                                }
-                            }
-                        }
+                                 background: Rectangle{
+                                     color: foregroundColor
+                                     radius: 10
+                                     border.color: "transparent"
+                                 }
 
-                        Text {
-                            Layout.preferredWidth: lblWidth
-                            text: "Point Width: "
-                            font.pointSize: 10
-                            color: "white"
-                        }
-                        SpinBox {
-                            id: pointWidthValue
-                            enabled: pointVisible.checked
-                            Layout.fillWidth: true
-                            Layout.minimumWidth: 100
-                            height: valHeight
-                            from: 0
-                            onValueChanged: {
-                                rootItem.model.pointsWidth = value
-                            }
-                        }
-                        Binding{
-                            target: pointWidthValue
-                            property: "value"
-                            value: rootItem.model ? rootItem.model.pointsWidth: 0
-                            delayed: true
-                        }
+                                 ColumnLayout{
+                                     anchors.fill: parent
 
-                        Text {
-                            Layout.preferredWidth: lblWidth
-                            text: "Point Smooth: "
-                            font.pointSize: 10
-                            color: "white"
-                        }
-                        Switch {
-                            id:pointSmoothValue
-                            enabled: pointVisible.checked
-                            padding: 0
-                            width: 100
-                            height: valHeight
-                            checked: false
-                            onToggled: function() {
-                                rootItem.model.pointsSmooth  = pointSmoothValue.checked
-                            }
-                        }
-                        Binding{
-                            target: pointSmoothValue
-                            property: "checked"
-                            value: rootItem.model ? rootItem.model.pointsSmooth: 0
-                            delayed: true
-                        }
-                    }
+                                     RowLayout{
+                                         Layout.fillWidth: true
+                                         Layout.fillHeight: true
+                                         Layout.topMargin: 2
+
+                                         RowLayout{
+                                             spacing:3
+                                             Layout.leftMargin: 2
+                                             Repeater{
+                                                 model: ["red","orange","yellow","green","blue","white"]
+                                                 Rectangle{
+                                                     implicitWidth: 15
+                                                     implicitHeight: 15
+                                                     radius: width
+                                                     color: modelData
+                                                     MouseArea{
+                                                         anchors.fill: parent
+                                                         onClicked: {
+
+                                                         }
+                                                     }
+                                                 }
+                                             }
+
+                                             Rectangle{
+                                                 implicitWidth: 15
+                                                 implicitHeight: 15
+                                                 radius: width
+                                                 border.width:1
+                                                 border.color:Style.foregroundColor
+                                                 IconImage{
+                                                     Layout.alignment: Qt.AlignCenter
+                                                     width: 15
+                                                     height: 15
+                                                     source: "qrc:/Resources/location-add.png"
+                                                 }
+                                                 MouseArea{
+                                                     anchors.fill: parent
+                                                     onClicked: pointColorDialog.visible = true
+                                                 }
+                                             }
+                                         }
+
+                                         ColorDialog {
+                                             visible: false
+                                             id:  pointColorDialog
+                                             title: "Please choose a color"
+                                             onAccepted: {
+                                                 var currentColor = pointColorDialog.selectedColor
+                                                 currentColor.a = pointOpacityValue.value / 100
+                                                 rootItem.model.pointsColor = currentColor
+                                             }
+                                         }
+                                     }
+                                     FloatSpinbox {
+                                         id: pointOpacityValue
+                                         Layout.fillWidth: true
+                                       //  Layout.minimumWidth: 80
+                                         height: valHeight
+                                         from : 0
+                                         to : 100
+                                         onValueChanged: {
+                                             rootItem.model.pointsColor.a = value/100
+                                         }
+                                     }
+                                     Binding{
+                                         target: pointOpacityValue
+                                         property: "value"
+                                         value: rootItem.model ? rootItem.model.pointsColor.a * 100 : 0
+                                         delayed: true
+                                     }
+                                 }
+                             }
+                         }
+
+                         RowLayout{
+                             Text {
+                                 text: "Point Width "
+                                 font.pointSize: 10
+                                 Layout.preferredWidth: swtchWidth
+                                 color: Style.foregroundColor
+                             }
+                             FloatSpinbox {
+                                 id: pointWidthValue
+                                 enabled: pointVisible.checked
+                                 Layout.fillWidth: true
+                               //  Layout.minimumWidth: 100
+                                 height: valHeight
+                                 from: 0
+
+                                 onValueChanged: {
+                                     rootItem.model.pointsWidth = value
+                                 }
+
+                             }
+                             Binding{
+                                 target: pointWidthValue
+                                 property: "value"
+                                 value: rootItem.model ? rootItem.model.pointsWidth: 0
+                                 delayed: true
+                             }
+                         }
+                             RowLayout{
+                                 Text {
+                                     Layout.preferredWidth: swtchWidth
+                                     text: "Point Smooth "
+                                     font.pointSize: 10
+                                     color: Style.foregroundColor
+                                 }
+                                 Switch {
+                                     id:pointSmoothValue
+                                     enabled: pointVisible.checked
+                                     padding: 0
+                                     width: 100
+                                     height: valHeight
+                                     checked: false
+                                     onToggled: function() {
+                                         rootItem.model.pointsSmooth  = pointSmoothValue.checked
+                                     }
+                                 }
+                                 Binding{
+                                     target: pointSmoothValue
+                                     property: "checked"
+                                     value: rootItem.model ? rootItem.model.pointsSmooth: 0
+                                     delayed: true
+                                 }
+                             }
+                     }
+
                 }
             }
         }
