@@ -84,7 +84,7 @@ class ServiceManager: public QObject
 public:
     ServiceManager(MapItem *mapItem, QObject *parent = nullptr);
 
-    void layersData(QJsonObject jsonObject);
+    void layersData(QJsonArray layers);
     void flyableNodeData(QJsonObject jsonObject);
     void statusNodeData(QJsonObject jsonObject);
     void messageData(QString jsonData);

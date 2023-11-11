@@ -39,8 +39,6 @@ public:
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
     void selectModel();
-    void highlightAsAttacker(bool isAttacker);
-    void highlightAsTarget(bool isTarget);
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 

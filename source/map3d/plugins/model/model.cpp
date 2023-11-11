@@ -116,6 +116,11 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
                 mapItem()->addNode(mDragModelNode);
             }else{
                 modelNode->selectModel();
+                if(modelNode->isAttacker()){
+                    modelNode->getAttackManager()->hideNearTargets();
+                }else{
+                    modelNode->getTargetManager()->hideNearAttackers();
+                }
             }
             return true;
         }
@@ -508,8 +513,7 @@ void Model::rightClickMenu(SimpleModelNode *selectedNode)
             if(nearModel->getPosition().distanceTo(baseModelPosition) < 15000 && nearModel !=selectedNode){
                 selectedNode->getAttackManager()->setNearTargets(nearModel);
                 nearModel->getTargetManager()->setNearAttacker(selectedNode);
-                nearModel->highlightAsTarget(true);
-                nearModel->highlightAsAttacker(false);
+                selectedNode->getAttackManager()->showNearTargets();
             }
         }
     }else{
@@ -518,8 +522,7 @@ void Model::rightClickMenu(SimpleModelNode *selectedNode)
             if(nearModel->isAttacker() && nearModel->getPosition().distanceTo(baseModelPosition) < 15000 && nearModel !=selectedNode){
                 selectedNode->getTargetManager()->setNearAttacker(nearModel);
                 nearModel->getAttackManager()->setNearTargets(selectedNode);
-                nearModel->highlightAsAttacker(true);
-                nearModel->highlightAsTarget(false);
+                selectedNode->getTargetManager()->showNearAttackers();
             }
         }
     }

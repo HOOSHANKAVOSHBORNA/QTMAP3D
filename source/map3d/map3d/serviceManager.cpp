@@ -11,9 +11,9 @@ ServiceManager::ServiceManager(MapItem *mapItem, QObject *parent):
 
 }
 
-void ServiceManager::layersData(QJsonObject jsonObject)
+void ServiceManager::layersData(QJsonArray layers)
 {
-    for (auto it : jsonObject)
+    for (auto it : layers)
         parseLayersFromJson(it.toObject());
 }
 
@@ -84,7 +84,7 @@ void ServiceManager::messageData(QString jsonData)
             obj = doc.object();
             QString type = obj.value("Type").toString();
             if      (type == "Layer")
-                layersData(obj.value("Data").toObject());
+                layersData(obj.value("Data").toArray());
             else if (type == "Flyable")
                 flyableNodeData(obj.value("Data").toObject());
             else if (type == "Status")
