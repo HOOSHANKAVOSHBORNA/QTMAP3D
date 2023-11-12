@@ -2,67 +2,57 @@ import QtQuick
 import QtQuick.Controls
 import "style"
 
-SpinBox {
-    id: spinBox
-    from: 0
-    //value: decimalToInt(1.1)
-    to: decimalToInt(100)
-    stepSize: decimalFactor
-    editable: true
+Item{
+    id: root
 
     property int decimals: 2
-    property real realValue: value / decimalFactor
-    property alias downIndicator: downIndicator
     readonly property int decimalFactor: Math.pow(10, decimals)
+    property real value: 0.0
+    property real from: 0.0
+    property real to: 100.0
+    property real stepSize: 0.1
 
-    function decimalToInt(decimal) {
-        return decimal * decimalFactor
+    property alias editable: spinBox.editable
+    property alias down: spinBox.down
+    property alias up: spinBox.up
+    property alias validator: spinBox.validator
+    property alias textFromValue: spinBox.textFromValue
+    property alias valueFromText: spinBox.valueFromText
+    property alias contentItem: spinBox.contentItem
+    property alias background: spinBox.background
+
+    width: 200
+    height: 30
+
+    Binding{
+        target: root
+        property: "value"
+        value: spinBox.value / decimalFactor
+        delayed: true
     }
 
-    validator: DoubleValidator {
-        bottom: Math.min(spinBox.from, spinBox.to)
-        top:  Math.max(spinBox.from, spinBox.to)
-        decimals: spinBox.decimals
-        notation: DoubleValidator.StandardNotation
-    }
-
-    textFromValue: function(value, locale) {
-        return Number(value / decimalFactor).toLocaleString(locale, 'f', spinBox.decimals)
-    }
-
-    valueFromText: function(text, locale) {
-        return Math.round(Number.fromLocaleString(locale, text) * decimalFactor)
-    }
-
-    up.indicator:Rectangle{
-        anchors.right: spinBox.right
-        anchors.verticalCenter: spinBox.verticalCenter
-        width: 20
-        height: 20
-        color:"transparent"
-        Image{
-        source: "qrc:/Resources/add.png"
+    SpinBox {
+        id: spinBox
         anchors.fill: parent
-    }
-    }
 
-    down.indicator:Rectangle{
-        id:downIndicator
-        anchors.left: spinBox.left
-        anchors.verticalCenter: spinBox.verticalCenter
-        width: 20
-        height: 20
-        color:"transparent"
+        value: root.value * decimalFactor
+        from: root.from * decimalFactor
+        to: root.to * decimalFactor
+        stepSize: root.stepSize * decimalFactor
 
-        Image{
-            source: "qrc:/Resources/minus.png"
-            anchors.fill: parent
-            }
-    }
+        validator: DoubleValidator {
+            bottom: Math.min(spinBox.from, spinBox.to)
+            top:  Math.max(spinBox.from, spinBox.to)
+            decimals: root.decimals
+            notation: DoubleValidator.StandardNotation
+        }
 
+        textFromValue: function() {
+            return Number(spinBox.value / root.decimalFactor).toLocaleString(spinBox.locale, 'f', root.decimals)
+        }
 
-    background: Rectangle {
-        color: foregroundColor
-        radius: 15
+        valueFromText: function(text, locale) {
+            return Math.round(Number.fromLocaleString(locale, text) * root.decimalFactor)
+        }
     }
 }

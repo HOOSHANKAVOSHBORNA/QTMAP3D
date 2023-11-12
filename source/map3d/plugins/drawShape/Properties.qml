@@ -349,13 +349,13 @@ Item {
                                     from: -2000000000
                                     to: 2000000000
                                     onValueChanged: {
-                                        rootItem.model.location.x = realValue
+                                        rootItem.model.location.x = value
                                     }
                                 }
 
                                 Binding{
                                     target: xLocationValue
-                                    property: "realValue"
+                                    property: "value"
                                     value: rootItem.model ? rootItem.model.location.x : 0
                                     delayed: true
                                 }
@@ -377,14 +377,14 @@ Item {
                                     decimals: 4
                                     from: -2000000000
                                     to: 2000000000
-                                    onRealValueChanged: {
-                                        rootItem.model.location.y = realValue
+                                    onValueChanged: {
+                                        rootItem.model.location.y = value
                                     }
                                 }
 
                                 Binding{
                                     target: yLocationValue
-                                    property: "realValue"
+                                    property: "value"
                                     value: rootItem.model ? rootItem.model.location.y : 0
                                     delayed: true
                                 }
@@ -407,13 +407,13 @@ Item {
                                     from: -2000000000
                                     to: 2000000000
                                     onValueChanged: {
-                                        rootItem.model.location.z = realValue
+                                        rootItem.model.location.z = value
                                     }
                                 }
 
                                 Binding{
                                     target: zLocationValue
-                                    property: "realValue"
+                                    property: "value"
                                     value: rootItem.model ? rootItem.model.location.z : 0
                                     delayed: true
                                 }
@@ -513,12 +513,12 @@ Item {
                                 from: -2000000000
                                 to: 2000000000
                                 onValueChanged: {
-                                    rootItem.model.center.x = realValue
+                                    rootItem.model.center.x = value
                                 }
                             }
                             Binding{
                                 target: xCenterValue
-                                property: "realValue"
+                                property: "value"
                                 value: rootItem.model ? rootItem.model.center.x : 0
                                 delayed: true
                             }
@@ -541,12 +541,12 @@ Item {
                                 from: -2000000000
                                 to: 2000000000
                                 onValueChanged: {
-                                    rootItem.model.center.y =realValue
+                                    rootItem.model.center.y =value
                                 }
                             }
                             Binding{
                                 target: yCenterValue
-                                property: "realValue"
+                                property: "value"
                                 value: rootItem.model ? rootItem.model.center.y : 0
                                 delayed: true
                             }
@@ -570,12 +570,12 @@ Item {
                                 from: -2000000000
                                 to: 2000000000
                                 onValueChanged: {
-                                    rootItem.model.center.z =realValue
+                                    rootItem.model.center.z =value
                                 }
                             }
                             Binding{
                                 target: zCenterValue
-                                property: "realValue"
+                                property: "value"
                                 value: rootItem.model ? rootItem.model.center.z : 0
                                 delayed: true
                             }
@@ -705,12 +705,12 @@ Item {
                                 from : 0
                                 to: 2000000000
                                 onValueChanged: {
-                                    rootItem.model.radius = realValue
+                                    rootItem.model.radius = value
                                 }
                             }
                             Binding{
                                 target: radiusValue
-                                property: "realValue"
+                                property: "value"
                                 value: rootItem.model ? rootItem.model.radius :0
                                 delayed: true
                             }
@@ -745,12 +745,12 @@ Item {
                         from : 0
                         to: 2000000000
                         onValueChanged: {
-                            rootItem.model.radiusMinor = realValue
+                            rootItem.model.radiusMinor = value
                         }
                     }
                     Binding{
                         target: radiusMinorValue
-                        property: "realValue"
+                        property: "value"
                         value: rootItem.model ? rootItem.model.radiusMinor :0
                         delayed: true
                     }
@@ -782,12 +782,12 @@ Item {
                         from : 0
                         to: 2000000000
                         onValueChanged: {
-                            rootItem.model.radiusMajor = realValue
+                            rootItem.model.radiusMajor = value
                         }
                     }
                     Binding{
                         target: radiusMajorValue
-                        property: "realValue"
+                        property: "value"
                         value: rootItem.model ? rootItem.model.radiusMajor :0
                         delayed: true
                     }
@@ -824,12 +824,12 @@ Item {
                                 from : 0
                                 to: 2000000000
                                 onValueChanged: {
-                                    rootItem.model.heighT= realValue
+                                    rootItem.model.heighT= value
                                 }
                             }
                             Binding{
                                 target: heightValue
-                                property: "realValue"
+                                property: "value"
                                 value: rootItem.model? rootItem.model.heighT: 0
                                 delayed: true
                             }
@@ -873,12 +873,12 @@ Item {
                                     from : 0
                                     to: 2000000000
                                     onValueChanged: {
-                                        rootItem.model.lenghT = realValue
+                                        rootItem.model.lenghT = value
                                     }
                                 }
                                 Binding{
                                     target: lengthValue
-                                    property: "realValue"
+                                    property: "value"
                                     value: rootItem.model ? rootItem.model.lenghT : 0
                                     delayed: true
                                 }
@@ -919,12 +919,12 @@ Item {
                                     from : 0
                                     to: 2000000000
                                     onValueChanged: {
-                                        rootItem.model.widtH = realValue
+                                        rootItem.model.widtH = value
                                     }
                                 }
                                 Binding{
                                     target: widthValue
-                                    property: "realValue"
+                                    property: "value"
                                     value: rootItem.model ? rootItem.model.widtH : 0
                                     delayed: true
                                 }
