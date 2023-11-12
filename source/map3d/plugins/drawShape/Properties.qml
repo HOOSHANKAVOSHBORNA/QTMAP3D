@@ -113,6 +113,7 @@ Item {
                             MouseArea{
                                 anchors.fill: parent
                                 onClicked: fillColorDialog.visible = true
+
                             }
                         }
                     }
@@ -158,6 +159,7 @@ Item {
                             rootItem.model.fillColor = currentColor
                         }
                     }
+
                 }
                 RowLayout{
                     Text{
