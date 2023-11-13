@@ -12,6 +12,7 @@
 #include "attackManager.h"
 #include "targetManager.h"
 #include <QtQml>
+#include <qmlNode.h>
 
 
 const float RANGE3D = 835;
@@ -83,6 +84,26 @@ bool SimpleModelNode::getIsBookmarked() const
 void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
 {
     mIsBookmarked = newIsBookmarked;
+}
+
+void SimpleModelNode::customMenu()
+{
+    QmlNode *qmlNode{nullptr};
+    QQmlComponent* comp = new QQmlComponent(mEnigine, this);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
+        if(status == QQmlComponent::Error){
+            qDebug()<<"Can not load this: "<<comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready){
+            qmlNode = qobject_cast<QmlNode*>(comp->create());
+            qmlNode->setParentItem(mMapItem);
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
+    if (qmlNode) {
+        qmlNode->setOsgNode(this);
+    }
 }
 
 bool SimpleModelNode::isAttacker()
@@ -314,6 +335,7 @@ void SimpleModelNode::selectModel()
         }
 //        mNodeInformation->show();
     }
+    customMenu();
     mIsSelected = !mIsSelected;
     if(mIsSelected){
         mSwitchNode->setValue(2, true);

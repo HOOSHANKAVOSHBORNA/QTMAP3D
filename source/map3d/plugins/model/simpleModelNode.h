@@ -52,6 +52,8 @@ public:
     bool getIsBookmarked() const;
     void setIsBookmarked(bool newIsBookmarked);
 
+    void customMenu();
+
     bool isAttacker();
     void makeAttacker(ParenticAnnotationLayer *layer, int bulletCount);
     TargetManager *getTargetManager();
