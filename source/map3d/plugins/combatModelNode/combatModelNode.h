@@ -80,8 +80,8 @@ private:
     osg::ref_ptr<SimpleModelNode> mAttackerNode;
     osg::ref_ptr<SimpleModelNode> mTargetNode;
 
-    osg::ref_ptr<TargetManager> mTargetManager;
-    osg::ref_ptr<AttackManager> mAttackManager;
+    TargetManager* mTargetManager;
+    AttackManager* mAttackManager;
 
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mCombatModelNodeLayer{nullptr};

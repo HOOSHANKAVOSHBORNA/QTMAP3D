@@ -1,9 +1,16 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls 2.5
 import "style"
 
 Item{
     id: root
+
+    function increment(){
+        spinBox.increase()
+    }
+    function decrement(){
+        spinBox.decrease()
+    }
 
     property int decimals: 2
     readonly property int decimalFactor: Math.pow(10, decimals)
@@ -12,6 +19,7 @@ Item{
     property real to: 100.0
     property real stepSize: 0.1
 
+    property alias locale: spinBox.locale
     property alias editable: spinBox.editable
     property alias down: spinBox.down
     property alias up: spinBox.up
@@ -48,7 +56,7 @@ Item{
         }
 
         textFromValue: function() {
-            return Number(spinBox.value / root.decimalFactor).toLocaleString(spinBox.locale, 'f', root.decimals)
+          return Number(spinBox.value / root.decimalFactor).toLocaleString(spinBox.locale, 'f', root.decimals)
         }
 
         valueFromText: function(text, locale) {

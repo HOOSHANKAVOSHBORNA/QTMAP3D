@@ -50,9 +50,13 @@ public:
     bool getIsBookmarked() const;
     void setIsBookmarked(bool newIsBookmarked);
 
+
     bool getAttacker();
     void isAttacker(bool attacker);
 
+    void customMenu();
+
+//    osgEarth::Annotation::ModelNode *getDragModelNode();
 
 
 private slots:

@@ -19,6 +19,7 @@
 #include "mapControllerItem.h"
 #include "layerManager.h"
 #include "locationManager.h"
+#include "qmlNode.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
@@ -37,6 +38,7 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);
     qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
 
+    qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
     setColor(Qt::black);
 
 
@@ -62,7 +64,7 @@ void MainWindow::initComponent()
         if(status == QQmlComponent::Ready){
             QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
             mMapItem = static_cast<MapControllerItem*>(item);
-            //            mMapItem->initializeOsgEarth();
+//            //            mMapItem->initializeOsgEarth();
             mMapItem->setQmlEngine(engine);
             addToCenterCenterContainer(mMapItem);
 

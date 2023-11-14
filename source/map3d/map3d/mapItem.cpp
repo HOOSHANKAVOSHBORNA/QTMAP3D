@@ -242,7 +242,7 @@ void MapItem::initializeOsgEarth()
 
 
     osgEarth::Drivers::GDALOptions  opt;
-    opt.url() = "/home/client110/Documents/projects/hooshan/QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif";
+    opt.url() = "/home/client112/Desktop/QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif";
     osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
     getMapObject()->addLayer(layer);
 
