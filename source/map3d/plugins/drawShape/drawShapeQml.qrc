@@ -4,5 +4,6 @@
         <file>Properties.qml</file>
         <file>ColorBox.qml</file>
         <file>FloatSpinbox.qml</file>
+        <file>ColorPopUp.qml</file>
     </qresource>
 </RCC>
