@@ -11,6 +11,7 @@ CombatModelNode::CombatModelNode(QObject *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(combatModelNode);
+    mCombatManager = new CombatManager;
 }
 
 CombatModelNode::~CombatModelNode()
@@ -34,6 +35,7 @@ bool CombatModelNode::setup()
 
     mAttackNodeLayer = new ParenticAnnotationLayer();
     mAttackNodeLayer->setName("Attacker");
+    mCombatManager->setCombatLayer(mAttackNodeLayer);
     return true;
 }
 
@@ -64,23 +66,16 @@ void CombatModelNode::setState(State newState)
 
 bool CombatModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+    SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
-//        SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-//        if(modelNode){
-////            if(modelNode->isAttacker()){
-////                mAttackerNode = modelNode;
-////                mDragModelNode = modelNode->getAttackManager()->getBulletNode(mBulletID)->getDragModelNode();
-////                mapItem()->addNode(mDragModelNode);
-////            }else{
-////                modelNode->getOutline();
-////                if(modelNode->isAttacker()){
-////                    modelNode->getAttackManager()->hideNearTargets();
-////                }else{
-////                    modelNode->getTargetManager()->hideNearAttackers();
-////                }
-////            }
-//            return true;
-//        }
+        if(modelNode){
+            if(modelNode->getAttacker()){
+                mAttackerNode = modelNode;
+                mDragModelNode = getDragModel();
+                mapItem()->addNode(mDragModelNode);
+            }
+            return true;
+        }
         if(mState == State::NONE){
             return false;
         }
@@ -119,18 +114,18 @@ bool CombatModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
     //        return false;
     //    }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
-        if(mType == Type::ATTACKER && !(mState == State::FIRE)){
+//        if(modelNode->getAttacker() && !(mState == State::FIRE)){
 //            mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
-            mState = State::FIRE;
-        }else{
+//            mState = State::FIRE;
+//        }else{
             confirm();
-        }
+//        }
         return false;
     }
-    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::FIRE)) {
-        confirm();
-        return false;
-    }
+//    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::FIRE)) {
+//        confirm();
+//        return false;
+//    }
 
     return false;
 }
@@ -145,8 +140,8 @@ bool CombatModelNode::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA:
         if(targetModelNode)
         {
             mTargetNode = targetModelNode;
-            osgEarth::GeoPoint geoPos = targetModelNode->getPosition();
-//            mAttackerNode->getAttackManager()->attackTo(mBulletID,geoPos);
+//            osgEarth::GeoPoint geoPos = targetModelNode->getPosition();
+            mCombatManager->assign(mAttackerNode,mTargetNode,mapItem());
         }
         mapItem()->removeNode(mDragModelNode);
         mDragModelNode = nullptr;
@@ -205,7 +200,6 @@ void CombatModelNode::onTankItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/models/tank/tank.png");
-        mType = Type::ATTACKER;
         setState(State::READY);
         mapItem()->addNode(iconNode());
     }
@@ -224,23 +218,19 @@ void CombatModelNode::onModeChanged(bool is3DView)
 }
 
 void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
-    switch (mType) {
-    case Type::ATTACKER:
         mAttackerNode = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg","../data/models/tank/tank.png");
         if(!mCombatModelNodeLayer->containsLayer(mAttackNodeLayer)){
             mAttackNodeLayer->clear();
             mCombatModelNodeLayer->addLayer(mAttackNodeLayer);
         }
         mAttackNodeLayer->addChild(mAttackerNode);
+        mAttackerNode->isAttacker(true);
         mAttackerNode->setPosition(geoPos);
         mAttackerNode->isAttacker(true);
         mCurrentModel = mAttackerNode;
-        break;
-    default:
-        break;
-    }
-    setState(State::MOVING);
-    mCount++;
+
+        setState(State::MOVING);
+        mCount++;
 }
 
 void CombatModelNode::moving(osgEarth::GeoPoint &geoPos){
@@ -273,13 +263,7 @@ void CombatModelNode::confirm()
 void CombatModelNode::cancel(){
 
     if(state() == State::MOVING){
-        switch (mType) {
-        case Type::ATTACKER:
-            mAttackNodeLayer->removeChild(mCurrentModel);
-            break;
-        default:
-            break;
-        }
+        mAttackNodeLayer->removeChild(mCurrentModel);
         mCurrentModel.release();
         setState(State::READY);
         mCount--;
@@ -379,7 +363,19 @@ void CombatModelNode::rightClickMenu(SimpleModelNode *selectedNode)
 //                selectedNode->getTargetManager()->showNearAttackers();
 //            }
 //        }
-//    }
+    //    }
+}
+
+osgEarth::Annotation::ModelNode *CombatModelNode::getDragModel()
+{
+    osgEarth::Symbology::Style  style = mCurrentModel->getStyle();
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Gray);
+    osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(mapItem()->getMapNode() , style);
+    dragModelNode->setCullingActive(false);
+    dragModelNode->addCullCallback(mCurrentModel->getCullCallback());
+    dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    return dragModelNode.release();
 }
 
 

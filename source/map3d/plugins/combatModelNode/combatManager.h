@@ -22,12 +22,11 @@ public:
     void setCombatLayer(ParenticAnnotationLayer* layer);
     ParenticAnnotationLayer *getCombatLayer();
     //--dataManagementFunctions--------------------------------------------------------------
-    void assign(SimpleModelNode *attacker,SimpleModelNode *target);
-    void removeAttackerFromTarget(SimpleModelNode *attacker,SimpleModelNode *target);//
-    void removeTargetFromAttacker(SimpleModelNode *target,SimpleModelNode *attacker);//
+    void assign(SimpleModelNode *attacker, SimpleModelNode *target, MapItem *map);
+    void removeAssignment(SimpleModelNode *attacker,SimpleModelNode *target);
     void deleteAttackerNode(SimpleModelNode *attacker);
     void deleteTargetNode(SimpleModelNode *target);
-    QList<assignmentData*> *getAssignmentData();
+    QList<assignmentData> *getAssignmentData();
     //--bulletManagementFunctions----------------------------------------------------------------------
     int readyBulletFor(SimpleModelNode *attacker,const std::string url3D , const std::string url2D);
     void removeBullet(int bulletID);
@@ -42,7 +41,7 @@ private:
     MapItem *mMapItem;
     osg::ref_ptr<ParenticAnnotationLayer> mCombatLayer;
     QList<osg::ref_ptr<BulletNode>> mBulletList;
-    QList<assignmentData*> *mEdgeDataList;
+    QList<assignmentData> *mEdgeDataList;
 };
 
 #endif // COMBATMANAGER_H

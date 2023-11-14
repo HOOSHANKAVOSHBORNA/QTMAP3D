@@ -2,6 +2,7 @@
 #define COMBATMODELNODE_H
 
 #include <QObject>
+#include "combatManager.h"
 #include "plugininterface.h"
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
@@ -27,10 +28,6 @@ public:
         FIRE,
         CANCEL,
         CONFIRM
-    };
-    enum class Type{
-        ATTACKER,
-        NONE
     };
 
 public:
@@ -64,10 +61,11 @@ private:
     SimpleModelNode* pick(float x, float y);
     NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, osgEarth::GeoPoint geopos);
     void rightClickMenu(SimpleModelNode *selectedNode);
+    osgEarth::Annotation::ModelNode *getDragModel();
 
 private:
+    CombatManager *mCombatManager;
     int mBulletID;
-    Type mType;
     static int mCount;
     bool mIs3D;
     State mState{State::NONE};

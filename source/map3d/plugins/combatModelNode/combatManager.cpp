@@ -2,7 +2,7 @@
 
 CombatManager::CombatManager()
 {
-
+    mEdgeDataList = new QList<assignmentData>;
 }
 
 void CombatManager::setCombatLayer(ParenticAnnotationLayer *layer)
@@ -15,27 +15,22 @@ ParenticAnnotationLayer *CombatManager::getCombatLayer()
     return mCombatLayer;
 }
 
-void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target)
+void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , MapItem *map)
 {
-    assignmentData *data;
-    data->attacker = attacker;
-    data->target = target;
+    osg::ref_ptr<LineNode> line = new LineNode(map);
+    line->addPoint(attacker->getPosition());
+    line->addPoint(target->getPosition());
+    mCombatLayer->addChild(line);
+    assignmentData data = {attacker , target , line};
+//    data->attacker = attacker;
+//    data->target = target;
     mEdgeDataList->append(data);
 }
 
-void CombatManager::removeAttackerFromTarget(SimpleModelNode *attacker, SimpleModelNode *target)
+void CombatManager::removeAssignment(SimpleModelNode *attacker, SimpleModelNode *target)
 {
     for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var)->attacker == attacker && mEdgeDataList->at(var)->target == target){
-            mEdgeDataList->removeAt(var);
-        }
-    }
-}
-
-void CombatManager::removeTargetFromAttacker(SimpleModelNode *target, SimpleModelNode *attacker)
-{
-    for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var)->target == target && mEdgeDataList->at(var)->attacker == attacker){
+        if(mEdgeDataList->at(var).attacker == attacker && mEdgeDataList->at(var).target == target){
             mEdgeDataList->removeAt(var);
         }
     }
@@ -44,7 +39,7 @@ void CombatManager::removeTargetFromAttacker(SimpleModelNode *target, SimpleMode
 void CombatManager::deleteAttackerNode(SimpleModelNode *attacker)
 {
     for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var)->attacker == attacker){
+        if(mEdgeDataList->at(var).attacker == attacker){
             mEdgeDataList->removeAt(var);
         }
     }
@@ -53,13 +48,13 @@ void CombatManager::deleteAttackerNode(SimpleModelNode *attacker)
 void CombatManager::deleteTargetNode(SimpleModelNode *target)
 {
     for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var)->target == target){
+        if(mEdgeDataList->at(var).target == target){
             mEdgeDataList->removeAt(var);
         }
     }
 }
 
-QList<assignmentData *> *CombatManager::getAssignmentData()
+QList<assignmentData> *CombatManager::getAssignmentData()
 {
     return mEdgeDataList;
 }
