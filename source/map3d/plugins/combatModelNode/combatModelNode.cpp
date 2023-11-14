@@ -226,7 +226,7 @@ void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
         mAttackNodeLayer->addChild(mAttackerNode);
         mAttackerNode->isAttacker(true);
         mAttackerNode->setPosition(geoPos);
-        mAttackerNode->isAttacker(true);
+        mAttackerNode->setAttacker(true);
         mCurrentModel = mAttackerNode;
 
         setState(State::MOVING);

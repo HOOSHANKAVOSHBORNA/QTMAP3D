@@ -22,7 +22,7 @@ FlyableModelNode *DataManager::addUpdateFlyableNode(NodeData *nodeData)
         flyableNode = new FlyableModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
         flyableNode->setPosition(geoPoint);
         mNodeMap[nodeData->id] = flyableNode;
-        flyableNode->setBookmark(mMainWindow->getBookmarkManager());
+        flyableNode->setBookmarkManager(mMainWindow->getBookmarkManager());
     }
     else{
         flyableNode = mNodeMap[nodeData->id]->asFlyableModelNode();
@@ -49,7 +49,7 @@ SimpleModelNode *DataManager::addUpdateNode(NodeData *nodeData)
         node = new SimpleModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
         node->setPosition(geoPoint);
         mNodeMap[nodeData->id] = node;
-        node->setBookmark(mMainWindow->getBookmarkManager());
+        node->setBookmarkManager(mMainWindow->getBookmarkManager());
     }
     else{
         node = mNodeMap[nodeData->id];
@@ -75,7 +75,7 @@ MoveableModelNode *DataManager::addUpdateMovableNode(NodeData *nodeData)
         movableNode = new MoveableModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
         movableNode->setPosition(geoPoint);
         mNodeMap[nodeData->id] = movableNode;
-        movableNode->setBookmark(mMainWindow->getBookmarkManager());
+        movableNode->setBookmarkManager(mMainWindow->getBookmarkManager());
     }
     else{
         movableNode = mNodeMap[nodeData->id]->asMoveableModelNode();

@@ -64,6 +64,8 @@ bool QmlNodeEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
 //        emit mQmlNode->xChanged();
 //        emit mQmlNode->yChanged();
 //        emit mQmlNode->zChanged();
+        qDebug()<<outX;
+        qDebug()<<"mask: "<<mQmlNode->osgNode()->getNodeMask();
     }
 
     return false;
