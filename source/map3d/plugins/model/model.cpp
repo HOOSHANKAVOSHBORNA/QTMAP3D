@@ -13,8 +13,6 @@
 #include <osgEarthSymbology/Style>
 #include <osgEarthSymbology/StyleSheet>
 #include <osg/ShapeDrawable>
-#include "attackManager.h"
-#include "targetManager.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 using osgKeyButton = osgGA::GUIEventAdapter::KeySymbol;
@@ -60,10 +58,6 @@ bool Model::setup()
     QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
-    auto tankToolboxItem =  new ToolboxItem{"Tank", MODEL, "qrc:/resources/tank.png", true};
-    QObject::connect(tankToolboxItem, &ToolboxItem::itemChecked, this, &Model::onTankItemCheck);
-    toolbox()->addItem(tankToolboxItem);
-
     mSimpleNodeLayer = new ParenticAnnotationLayer();
     mSimpleNodeLayer->setName(TREE);
 
@@ -72,9 +66,6 @@ bool Model::setup()
 
     mFlyableNodelLayer = new ParenticAnnotationLayer();
     mFlyableNodelLayer->setName(AIRPLANE);
-
-    mAttackNodeLayer = new ParenticAnnotationLayer();
-    mAttackNodeLayer->setName(ATTACKERS);
 
 
     return true;
@@ -109,21 +100,6 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
 {
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-        if(modelNode){           
-            if(modelNode->isAttacker()){
-                mAttackerNode = modelNode;
-                mDragModelNode = modelNode->getAttackManager()->getBulletNode(mBulletID)->getDragModelNode();
-                mapItem()->addNode(mDragModelNode);
-            }else{
-                modelNode->selectModel();
-                if(modelNode->isAttacker()){
-                    modelNode->getAttackManager()->hideNearTargets();
-                }else{
-                    modelNode->getTargetManager()->hideNearAttackers();
-                }
-            }
-            return true;
-        }
         if(mState == State::NONE){
             return false;
         }
@@ -138,64 +114,23 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
             moving(geoPos);
             return true;
         }
-        if(mState == State::ATTACKING){
-            //            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-            //            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
-            return true;
-        }
 
     }
     else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON ) {
         if(mState == State::MOVING){
             cancel();
-        }else if(mState == State::NONE){
-            SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-            if(modelNode){
-                rightClickMenu(modelNode);
-            }
         }
         return false;
     }
-    //    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::ATTACKING)) {
-    //        mCurrentModel->getAttackManager()->attackResult(true,mBulletID);
-    //        mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
-    //        return false;
-    //    }
+
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
-        if(mType == Type::ATTACKER && !(mState == State::ATTACKING)){
-            mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
-            mState = State::ATTACKING;
-        }else{
             confirm();
-        }
         return false;
     }
-    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::ATTACKING)) {
-        confirm();
-        return false;
-    }
-
     return false;
 }
 
 
-bool Model::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-{
-    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON && mDragModelNode)
-    {
-        SimpleModelNode* targetModelNode = pick(ea.getX(), ea.getY());
-
-        if(targetModelNode)
-        {
-            mTargetNode = targetModelNode;
-            osgEarth::GeoPoint geoPos = targetModelNode->getPosition();
-            mAttackerNode->getAttackManager()->attackTo(mBulletID,geoPos);
-        }
-        mapItem()->removeNode(mDragModelNode);
-        mDragModelNode = nullptr;
-    }
-    return false;
-}
 
 bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
@@ -210,24 +145,9 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
 
 bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    if(mTargetNode){
-        if(mAttackerNode->getAttackManager()->getBulletPosition(mBulletID) == mTargetNode->getPosition()){
-            mAttackerNode->getAttackManager()->attackResult(true,mBulletID);
-            mTargetNode.release();
-        }
-    }
     return false;
 }
 
-bool Model::mouseDragEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-{
-    if(mDragModelNode)
-    {
-        osgEarth::GeoPoint mouseGeoPoint = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-        mDragModelNode->setPosition(mouseGeoPoint);
-    }
-    return false;
-}
 
 
 osgEarth::Symbology::Style &Model::getDefaultStyle()
@@ -302,23 +222,6 @@ void Model::onAirplanItemCheck(bool check)
     }
 }
 
-void Model::onTankItemCheck(bool check)
-{
-    if (check) {
-        makeIconNode("../data/models/tank/tank.png");
-        mType = Type::ATTACKER;
-        setState(State::READY);
-        mapItem()->addNode(iconNode());
-    }
-    else {
-        if(state() == State::MOVING)
-            cancel();
-        setState(State::NONE);
-        mapItem()->removeNode(iconNode());
-    }
-}
-
-
 void Model::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -358,17 +261,6 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         mNodeData->layers.push_back(mFlyableNodelLayer);
         mCurrentModel = mDataManager->addUpdateFlyableNode(mNodeData);
         break;
-    case Type::ATTACKER:
-        mNodeData = sampleNodeData("Tank", "../data/models/tank/tank.png", "../data/models/tank/tank.osg", "", geoPos);
-        mNodeData->id = 500 + mCount;
-        if(!mModelNodeLayer->containsLayer(mAttackNodeLayer)){
-            mAttackNodeLayer->clear();
-            mModelNodeLayer->addLayer(mAttackNodeLayer);
-        }
-        mNodeData->layers.push_back(mAttackNodeLayer);
-        mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
-        mCurrentModel->makeAttacker(mAttackNodeLayer,5);
-        break;
     default:
         break;
     }
@@ -398,7 +290,7 @@ void Model::moving(osgEarth::GeoPoint &geoPos){
 
 void Model::confirm()
 {
-    if (state() == State::MOVING || state() == State::ATTACKING) {
+    if (state() == State::MOVING) {
         setState(State::READY);
     }
 }
@@ -419,10 +311,6 @@ void Model::cancel(){
             mDataManager->removeFlyableNodeData(mNodeData);
             mFlyableNodelLayer->removeChild(mCurrentModel);
             break;
-        case Type::ATTACKER:
-            mDataManager->removeMovableNodeData(mNodeData);
-            mAttackNodeLayer->removeChild(mCurrentModel);
-
         default:
             break;
         }
@@ -501,31 +389,6 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     nodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(nodeData->altitude), "Location Information","qrc:/Resources/location.png"});
     nodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(nodeData->speed), "Location Information","qrc:/Resources/location.png"});
     return nodeData;
-}
-
-void Model::rightClickMenu(SimpleModelNode *selectedNode)
-{
-
-    osgEarth::GeoPoint baseModelPosition = selectedNode->getPosition();
-    if(selectedNode->isAttacker()){
-        for (int var = 0; var < mDataManager->nodeCount(); ++var) {
-            SimpleModelNode* nearModel = mDataManager->getNodeAtIndex(var);
-            if(nearModel->getPosition().distanceTo(baseModelPosition) < 15000 && nearModel !=selectedNode){
-                selectedNode->getAttackManager()->setNearTargets(nearModel);
-                nearModel->getTargetManager()->setNearAttacker(selectedNode);
-                selectedNode->getAttackManager()->showNearTargets();
-            }
-        }
-    }else{
-        for (int var = 0; var < mDataManager->nodeCount(); ++var) {
-            SimpleModelNode* nearModel = mDataManager->getNodeAtIndex(var);
-            if(nearModel->isAttacker() && nearModel->getPosition().distanceTo(baseModelPosition) < 15000 && nearModel !=selectedNode){
-                selectedNode->getTargetManager()->setNearAttacker(nearModel);
-                nearModel->getAttackManager()->setNearTargets(selectedNode);
-                selectedNode->getTargetManager()->showNearAttackers();
-            }
-        }
-    }
 }
 
 

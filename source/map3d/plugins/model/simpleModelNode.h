@@ -19,8 +19,6 @@
 
 class MoveableModelNode;
 class FlyableModelNode;
-class AttackManager;
-class TargetManager;
 
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
@@ -52,11 +50,9 @@ public:
     bool getIsBookmarked() const;
     void setIsBookmarked(bool newIsBookmarked);
 
-    bool isAttacker();
-    void makeAttacker(ParenticAnnotationLayer *layer, int bulletCount);
-    TargetManager *getTargetManager();
-    AttackManager *getAttackManager();
-    osgEarth::Annotation::ModelNode *getDragModelNode();
+    bool getAttacker();
+    void isAttacker(bool attacker);
+
 
 
 private slots:
@@ -73,18 +69,14 @@ private:
     osg::ref_ptr<Circle> mCircleSelectNode;
     osg::ref_ptr<Circle> mAttackerSelectNode;
     osg::ref_ptr<Circle> mTargetSelectNode;
-//    osg::ref_ptr<LineNode> mAttackerLineNode;
-//    osg::ref_ptr<LineNode> mTargetLineNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
-    AttackManager* mAttackManager;
-    TargetManager* mTargetManager;
-
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;
     std::string mUrl3D;
     MapItem *mMapItem;
     bool mIs3D{false};
+    bool mIsAttacker{false};
     bool mIsAutoScale{true};
     bool mIsSelected{false};
     NodeData* mNodeData{nullptr};
@@ -94,7 +86,6 @@ private:
     QQmlEngine *mEnigine{nullptr};
     BookmarkManager *mBookmark;
     BookmarkItem *mBookmarkItem{nullptr};
-    bool mIsAttacker{false};
 
 
 private:

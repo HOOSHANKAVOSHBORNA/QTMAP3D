@@ -9,8 +9,6 @@
 #include <osgEarth/GLUtils>
 #include <osgEarth/Registry>
 #include <mainwindow.h>
-#include "attackManager.h"
-#include "targetManager.h"
 #include <QtQml>
 
 
@@ -30,7 +28,6 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
-    mTargetManager = new TargetManager(mMapItem,this);
 
     compile();
 }
@@ -85,27 +82,14 @@ void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
     mIsBookmarked = newIsBookmarked;
 }
 
-bool SimpleModelNode::isAttacker()
+bool SimpleModelNode::getAttacker()
 {
     return mIsAttacker;
 }
 
-void SimpleModelNode::makeAttacker(ParenticAnnotationLayer *layer, int bulletCount)
+void SimpleModelNode::isAttacker(bool attacker)
 {
-    mAttackManager = new AttackManager(mMapItem , this);
-    mAttackManager->setAttackLayer(layer);
-    mAttackManager->setBulletCount(5);
-    mIsAttacker = true;
-}
-
-TargetManager *SimpleModelNode::getTargetManager()
-{
-    return mTargetManager;
-}
-
-AttackManager *SimpleModelNode::getAttackManager()
-{
-    return mAttackManager;
+    mIsAttacker = attacker;
 }
 
 
@@ -313,12 +297,6 @@ void SimpleModelNode::selectModel()
              mNodeInformation->addUpdateNodeInformationItem(mNodeData);
         }
 //        mNodeInformation->show();
-    }
-    mIsSelected = !mIsSelected;
-    if(mIsSelected){
-        mSwitchNode->setValue(2, true);
-    } else {
-        mSwitchNode->setValue(2, false);
     }
 }
 

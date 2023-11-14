@@ -2,8 +2,8 @@
 #define TARGETMANAGER_H
 
 
-#include "lineNode.h"
 #include "simpleModelNode.h"
+#include "lineNode.h"
 
 
 class TargetManager
