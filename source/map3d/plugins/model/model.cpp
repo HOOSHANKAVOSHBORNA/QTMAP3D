@@ -100,6 +100,11 @@ bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
 {
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
+        if(modelNode) {
+            modelNode->selectModel();
+            return false;
+        }
+
         if(mState == State::NONE){
             return false;
         }
