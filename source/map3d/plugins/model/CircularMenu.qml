@@ -14,6 +14,9 @@ Item {
 
     readonly property double scaleNameLen: 10
 
+    // ----------------------------------------- signals
+    signal clickedIndex(int index)
+
     anchors.fill: parent
 
 
@@ -76,9 +79,7 @@ Item {
             cutLen: currentCutLen
             cutIconSource: listModel.get(model.index).iconSource
             cutIconColor: listModel.get(model.index).color
-            onCutClicked: {
-                console.log(listModel.get(model.index).name)
-            }
+            onCutClicked: clickedIndex(model.index)
         }
     }
 }

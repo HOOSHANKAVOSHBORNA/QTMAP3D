@@ -30,5 +30,8 @@ QmlNode {
                 iconSource: 'qrc:/Resources/hand.png'
             }
         }
+        onClickedIndex: (index) => {
+                            console.log(index)
+                        }
     }
 }
