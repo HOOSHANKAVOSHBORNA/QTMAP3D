@@ -69,7 +69,7 @@ bool CombatModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
     SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         if(modelNode){
-            if(modelNode->getAttacker()){
+            if(modelNode->isAttacker()){
                 mAttackerNode = modelNode;
                 mDragModelNode = getDragModel();
                 mapItem()->addNode(mDragModelNode);
@@ -224,7 +224,7 @@ void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
             mCombatModelNodeLayer->addLayer(mAttackNodeLayer);
         }
         mAttackNodeLayer->addChild(mAttackerNode);
-        mAttackerNode->isAttacker(true);
+        mAttackerNode->setAttacker(true);
         mAttackerNode->setPosition(geoPos);
         mAttackerNode->setAttacker(true);
         mCurrentModel = mAttackerNode;
