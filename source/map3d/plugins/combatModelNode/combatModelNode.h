@@ -8,12 +8,9 @@
 #include <osgEarthAnnotation/AnnotationLayer>
 #include "simpleModelNode.h"
 #include "dataManager.h"
-#include "targetManager.h"
-#include "attackManager.h"
 
 #define COMBATMODELNODE "Combat Model Node"
 #define TANK "Tank"
-#define DRONE "Drone"
 
 
 class CombatModelNode : public PluginInterface
@@ -32,7 +29,6 @@ public:
         CONFIRM
     };
     enum class Type{
-        TARGET,
         ATTACKER,
         NONE
     };
@@ -56,7 +52,6 @@ public:
 
 public slots:
     void onTankItemCheck (bool check);
-    void onDroneItemCheck (bool check);
     void onModeChanged(bool is3DView);
 
 protected:
@@ -79,17 +74,12 @@ private:
     osg::ref_ptr<osgEarth::Annotation::ModelNode> mDragModelNode;
     osg::ref_ptr<SimpleModelNode> mAttackerNode;
     osg::ref_ptr<SimpleModelNode> mTargetNode;
-
-    TargetManager* mTargetManager;
-    AttackManager* mAttackManager;
-
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mCombatModelNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mAttackNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mTargetNodeLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     NodeData* mNodeData{nullptr};
-
     DataManager *mDataManager;
 };
 
