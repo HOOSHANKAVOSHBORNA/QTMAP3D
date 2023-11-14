@@ -30,12 +30,15 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
 
+    mEnigine = QQmlEngine::contextForObject(mMapItem)->engine();
     compile();
+    createCustomMenu();
 }
 
 SimpleModelNode::~SimpleModelNode()
 {
     delete mNodeInformation;
+    delete mCustomMenu;
 }
 
 void SimpleModelNode::updateUrl(const std::string &url3D, const std::string &url2D)
@@ -73,47 +76,15 @@ void SimpleModelNode::onModeChanged(bool is3DView)
     mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
 }
 
-bool SimpleModelNode::getIsBookmarked() const
-{
-    return mIsBookmarked;
-}
-
-void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
-{
-    mIsBookmarked = newIsBookmarked;
-}
-
-
-bool SimpleModelNode::getAttacker()
+bool SimpleModelNode::isAttacker() const
 {
     return mIsAttacker;
 }
 
-void SimpleModelNode::customMenu()
-{
-    QmlNode *qmlNode{nullptr};
-    QQmlComponent* comp = new QQmlComponent(mEnigine, this);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
-        if(status == QQmlComponent::Error){
-            qDebug()<<"Can not load this: "<<comp->errorString();
-        }
-
-        if(status == QQmlComponent::Ready){
-            qmlNode = qobject_cast<QmlNode*>(comp->create());
-            qmlNode->setParentItem(mMapItem);
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
-    if (qmlNode) {
-        qmlNode->setOsgNode(this);
-    }
-}
-
-void SimpleModelNode::isAttacker(bool attacker)
+void SimpleModelNode::setAttacker(bool attacker)
 {
     mIsAttacker = attacker;
 }
-
 
 NodeData *SimpleModelNode::nodeData() const
 {
@@ -124,7 +95,7 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
 {
     mNodeData = newNodeData;
     updateUrl(mNodeData->url3D, mNodeData->url2D);
-    setModelColor(osgEarth::Color(mNodeData->color));
+    setColor(osgEarth::Color(mNodeData->color));
     if (mNodeInformation)
         mNodeInformation->addUpdateNodeInformationItem(newNodeData);
 
@@ -132,7 +103,7 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
     setUserData(mNodeData);
 }
 
-void SimpleModelNode::setModelColor(osgEarth::Color color)
+void SimpleModelNode::setColor(osgEarth::Color color)
 {
     if(mColor != color){
         //--recolor 3D Node----------------------------------------------------
@@ -154,15 +125,9 @@ void SimpleModelNode::setModelColor(osgEarth::Color color)
 
 }
 
-void SimpleModelNode::setBookmark(BookmarkManager *bookmark)
+void SimpleModelNode::setBookmarkManager(BookmarkManager *bookmarkManager)
 {
-    mBookmark = bookmark;
-    mEnigine = QQmlEngine::contextForObject(bookmark)->engine();
-}
-
-void SimpleModelNode::setQQmlEngine(QQmlEngine *engine)
-{
-    mEnigine = engine;
+    mBookmarkManager = bookmarkManager;
 }
 
 void SimpleModelNode::compile()
@@ -278,7 +243,7 @@ void SimpleModelNode::compile()
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
     //rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
     setStyle(rootStyle);
-    setModelColor(mColor);
+    setColor(mColor);
 }
 
 bool SimpleModelNode::isAutoScale() const
@@ -298,7 +263,7 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
     }
 }
 
-void SimpleModelNode::selectModel()
+void SimpleModelNode::select()
 {
     if (mNodeData) {
         if (!mNodeInformation){
@@ -314,14 +279,14 @@ void SimpleModelNode::selectModel()
              connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
                  mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
              });
-             if (mBookmark)
+             if (mBookmarkManager)
                 connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
              mNodeInformation->addUpdateNodeInformationItem(mNodeData);
         }
 //        mNodeInformation->show();
     }
-    customMenu();
     mIsSelected = !mIsSelected;
+    mCustomMenu->setVisible(mIsSelected);
     if(mIsSelected){
         mSwitchNode->setValue(2, true);
     } else {
@@ -337,7 +302,7 @@ void SimpleModelNode::onBookmarkChecked(bool status)
     mIsBookmarked = status;
     if (mIsBookmarked){
         mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd() , QString::fromStdString(mNodeData->iconSrc));
-        mBookmark->addBookmarkItem(mBookmarkItem);
+        mBookmarkManager->addBookmarkItem(mBookmarkItem);
         connect(mBookmarkItem,&BookmarkItem::itemGoToPostition,[&](){
             emit mNodeInformation->itemGoToPostition();
         });
@@ -351,9 +316,27 @@ void SimpleModelNode::onBookmarkChecked(bool status)
     }
     else{
         if (mBookmarkItem)
-            mBookmark->removeBookmarkItem(mBookmarkItem);
+            mBookmarkManager->removeBookmarkItem(mBookmarkItem);
         delete mBookmarkItem;
     }
+}
+
+void SimpleModelNode::createCustomMenu()
+{
+    QQmlComponent* comp = new QQmlComponent(mEnigine, this);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
+        if(status == QQmlComponent::Error){
+            qDebug()<<"Can not load this: "<<comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready){
+            mCustomMenu = qobject_cast<QmlNode*>(comp->create());
+            mCustomMenu->setParentItem(mMapItem);
+            mCustomMenu->setOsgNode(this);
+            mCustomMenu->setVisible(false);
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
 }
 
 std::string SimpleModelNode::url3D() const

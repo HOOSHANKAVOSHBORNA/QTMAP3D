@@ -34,7 +34,7 @@ void TargetManager::showNearAttackers()
         line->addPoint(mNearAttackers.at(var)->getPosition());
         line->setFillColor(osgEarth::Color::Red);
         mHighlightGroup->addChild(line);
-        mNearAttackers.at(var)->selectModel();
+        mNearAttackers.at(var)->select();
     }
     mNode->addChild(mHighlightGroup);
 }
@@ -43,7 +43,7 @@ void TargetManager::hideNearAttackers()
 {
     if(mNode->containsNode(mHighlightGroup)){
         for (int var = 0; var < mNearAttackers.length(); ++var) {
-            mNearAttackers.at(var)->selectModel();
+            mNearAttackers.at(var)->select();
         }
         mNode->removeChild(mHighlightGroup);
     }

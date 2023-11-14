@@ -12,6 +12,7 @@
 #include <osgFX/Scribe>
 #include <QQmlEngine>
 #include <bookmark.h>
+#include <qmlNode.h>
 #include "circle.h"
 #include "cone.h"
 #include <osg/ComputeBoundsVisitor>
@@ -36,25 +37,18 @@ public:
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
-    void selectModel();
+    void select();
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 
     NodeData *nodeData() const;
     void setNodeData(NodeData *newNodeData);
-    void setModelColor(osgEarth::Color color);
+    void setColor(osgEarth::Color color);
 
-    void setBookmark(BookmarkManager *bookmark);
-    void setQQmlEngine(QQmlEngine *engine);
+    void setBookmarkManager(BookmarkManager *bookmarkManager);
 
-    bool getIsBookmarked() const;
-    void setIsBookmarked(bool newIsBookmarked);
-
-
-    bool getAttacker();
-    void isAttacker(bool attacker);
-
-    void customMenu();
+    bool isAttacker() const;
+    void setAttacker(bool attacker);
 
 //    osgEarth::Annotation::ModelNode *getDragModelNode();
 
@@ -63,6 +57,9 @@ private slots:
     void compile();
     void onModeChanged(bool is3DView);
     void onBookmarkChecked(bool status);
+
+private:
+    void createCustomMenu();
 
 private:
     osg::ref_ptr<osg::Image> mImage;
@@ -88,9 +85,9 @@ private:
     NodeInformationManager* mNodeInformation{nullptr};
     bool mIsBookmarked{false};
     QQmlEngine *mEnigine{nullptr};
-    BookmarkManager *mBookmark;
+    BookmarkManager *mBookmarkManager;
     BookmarkItem *mBookmarkItem{nullptr};
-
+    QmlNode *mCustomMenu{nullptr};
 
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;

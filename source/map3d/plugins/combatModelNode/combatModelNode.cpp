@@ -260,7 +260,7 @@ void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
         }
         mAttackNodeLayer->addChild(mAttackerNode);
         mAttackerNode->setPosition(geoPos);
-        mAttackerNode->isAttacker(true);
+        mAttackerNode->setAttacker(true);
         mCurrentModel = mAttackerNode;
         break;
     case Type::TARGET:
@@ -272,7 +272,7 @@ void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
         mTargetNodeLayer->addChild(mTargetNode);
         geoPos.z() = 500;
         mTargetNode->setPosition(geoPos);
-        mTargetNode->isAttacker(false);
+        mTargetNode->setAttacker(false);
         mCurrentModel = mTargetNode;
         break;
     default:

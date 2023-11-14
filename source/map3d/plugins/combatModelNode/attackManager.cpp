@@ -114,7 +114,7 @@ void AttackManager::showNearTargets()
         line->addPoint(mNearTargets.at(var)->getPosition());
         line->setFillColor(osgEarth::Color::Yellow);
         mHighlightGroup->addChild(line);
-        mNearTargets.at(var)->selectModel();
+        mNearTargets.at(var)->select();
     }
     mParent->addChild(mHighlightGroup);
 }
@@ -123,7 +123,7 @@ void AttackManager::hideNearTargets()
 {
     if(mParent->containsNode(mHighlightGroup)){
         for (int var = 0; var < mNearTargets.length(); ++var) {
-            mNearTargets.at(var)->selectModel();
+            mNearTargets.at(var)->select();
         }
         mParent->removeChild(mHighlightGroup);
     }
