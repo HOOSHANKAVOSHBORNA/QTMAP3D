@@ -138,6 +138,8 @@ Rectangle {
                             }
 
                             ToolTip {
+                                y: 0
+                                x: 35
                                 visible: btnDelegate.hovered
 
                                 contentItem: Text {
@@ -182,6 +184,8 @@ Rectangle {
                         }
 
                         ToolTip {
+                            y: 0
+                            x: 35
                             visible: btnList.hovered
 
                             contentItem: Text {
@@ -228,6 +232,8 @@ Rectangle {
                     }
 
                     ToolTip {
+                        y: 0
+                        x: 35
                         visible: btnPin.hovered
 
                         contentItem: Text {
