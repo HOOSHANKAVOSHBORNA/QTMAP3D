@@ -17,7 +17,7 @@ LayerTest::LayerTest(NetworkManager *networkManager):
 QJsonDocument LayerTest::createLayers()
 {
     QJsonObject layers;
-    QJsonObject layersData;
+    QJsonArray layersData;
     layers.insert("Type", "Layer");
     //--flayable node layer------------------------------------------------
     QJsonObject flyable;
@@ -73,7 +73,7 @@ QJsonDocument LayerTest::createLayers()
         flableChildren.push_back(status);
     }
     flyable.insert("Children", flableChildren);
-    layersData.insert("Flyable", flyable);
+    layersData.push_back(flyable);
     //--moveable layer------------------------------------------------------
     QJsonObject movable;
     movable.insert("Id", 200);
@@ -128,7 +128,7 @@ QJsonDocument LayerTest::createLayers()
         movableChildren.push_back(status);
     }
     movable.insert("Children", movableChildren);
-    layersData.insert("Movable", movable);
+    layersData.push_back(movable);
 
     //--node layer---------------------------------------------------------------
     QJsonObject node;
@@ -184,7 +184,7 @@ QJsonDocument LayerTest::createLayers()
         nodeChildren.push_back(polygon);
     }
     node.insert("Children", nodeChildren);
-    layersData.insert("Node", node);
+    layersData.push_back(node);
     //---------------------------------------------------------------------------
     layers.insert("Data", layersData);
     QJsonDocument doc;

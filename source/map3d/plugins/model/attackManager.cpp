@@ -1,10 +1,9 @@
 #include "attackManager.h"
+#include "lineNode.h"
 
-AttackManager::AttackManager(MapItem *mapControler, QQmlEngine *engine, BookmarkManager *bookmark, SimpleModelNode *parent)
+AttackManager::AttackManager(MapItem *mapControler, SimpleModelNode *parent)
     : mMapItem(mapControler),
-      mEngine(engine),
-      mBookmark(bookmark),
-      mParent(parent)
+    mParent(parent)
 {
 
 }
@@ -48,10 +47,10 @@ void AttackManager::removeBullet(int bulletID)
     }
 }
 
-void AttackManager::setTargetPosition(int bulletID, osgEarth::GeoPoint geoPos)
+void AttackManager::setBulletTargetModel(int bulletID ,SimpleModelNode *model)
 {
     if(mBulletList.at(bulletID).valid()){
-        mBulletList.at(bulletID).get()->setTargetPosition(geoPos);
+        mBulletList.at(bulletID).get()->setTargetModel(model);
     }
 }
 
@@ -73,12 +72,12 @@ osgEarth::GeoPoint AttackManager::getBulletPosition(int bulletID)
     return osgEarth::GeoPoint();
 }
 
-osgEarth::GeoPoint AttackManager::getTargetPosition(int bulletID)
+SimpleModelNode *AttackManager::getBulletTargetModel(int bulletID)
 {
     if(mBulletList.at(bulletID).valid()){
-        return mBulletList.at(bulletID).get()->getTargetPosition();
+        return mBulletList.at(bulletID).get()->getTargetModel();
     }
-    return osgEarth::GeoPoint();
+    return nullptr;
 }
 
 void AttackManager::setAttackLayer(ParenticAnnotationLayer *layer)
@@ -94,4 +93,39 @@ ParenticAnnotationLayer *AttackManager::getAttackLayer()
 osg::ref_ptr<BulletNode> AttackManager::getBulletNode(int bulletID)
 {
     return mBulletList.at(bulletID);
+}
+
+QList<SimpleModelNode *> AttackManager::getNearTargets()
+{
+    return mNearTargets;
+}
+
+void AttackManager::setNearTargets(SimpleModelNode *targetNode)
+{
+    mNearTargets.append(targetNode);
+}
+
+void AttackManager::showNearTargets()
+{
+    mHighlightGroup = new osg::Group;
+    for (int var = 0; var < mNearTargets.length(); ++var) {
+        osg::ref_ptr<LineNode> line = new LineNode(mMapItem);
+        line->addPoint(mParent->getPosition());
+        line->addPoint(mNearTargets.at(var)->getPosition());
+        line->setFillColor(osgEarth::Color::Yellow);
+        mHighlightGroup->addChild(line);
+        mNearTargets.at(var)->selectModel();
+    }
+    mParent->addChild(mHighlightGroup);
+}
+
+void AttackManager::hideNearTargets()
+{
+    if(mParent->containsNode(mHighlightGroup)){
+        for (int var = 0; var < mNearTargets.length(); ++var) {
+            mNearTargets.at(var)->selectModel();
+        }
+        mParent->removeChild(mHighlightGroup);
+    }
+
 }

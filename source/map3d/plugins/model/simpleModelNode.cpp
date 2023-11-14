@@ -12,7 +12,12 @@
 #include "attackManager.h"
 #include "targetManager.h"
 #include <QtQml>
+#include <qmlNode.h>
+
+
 const float RANGE3D = 835;
+
+
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
@@ -26,7 +31,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
-    mTargetManager = new TargetManager();
+    mTargetManager = new TargetManager(mMapItem,this);
 
     compile();
 }
@@ -81,6 +86,26 @@ void SimpleModelNode::setIsBookmarked(bool newIsBookmarked)
     mIsBookmarked = newIsBookmarked;
 }
 
+void SimpleModelNode::customMenu()
+{
+    QmlNode *qmlNode{nullptr};
+    QQmlComponent* comp = new QQmlComponent(mEnigine, this);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
+        if(status == QQmlComponent::Error){
+            qDebug()<<"Can not load this: "<<comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready){
+            qmlNode = qobject_cast<QmlNode*>(comp->create());
+            qmlNode->setParentItem(mMapItem);
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
+    if (qmlNode) {
+        qmlNode->setOsgNode(this);
+    }
+}
+
 bool SimpleModelNode::isAttacker()
 {
     return mIsAttacker;
@@ -88,7 +113,7 @@ bool SimpleModelNode::isAttacker()
 
 void SimpleModelNode::makeAttacker(ParenticAnnotationLayer *layer, int bulletCount)
 {
-    mAttackManager = new AttackManager(mMapItem,mEnigine,mBookmark,this);
+    mAttackManager = new AttackManager(mMapItem , this);
     mAttackManager->setAttackLayer(layer);
     mAttackManager->setBulletCount(5);
     mIsAttacker = true;
@@ -103,6 +128,7 @@ AttackManager *SimpleModelNode::getAttackManager()
 {
     return mAttackManager;
 }
+
 
 NodeData *SimpleModelNode::nodeData() const
 {
@@ -307,8 +333,9 @@ void SimpleModelNode::selectModel()
                 connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
              mNodeInformation->addUpdateNodeInformationItem(mNodeData);
         }
-        mNodeInformation->show();
+//        mNodeInformation->show();
     }
+    customMenu();
     mIsSelected = !mIsSelected;
     if(mIsSelected){
         mSwitchNode->setValue(2, true);
