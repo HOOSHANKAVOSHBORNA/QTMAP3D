@@ -18,8 +18,7 @@ add_library(combatModelNode SHARED
     combatModelNode.qrc
     combatModelNode.json
     bulletNode.h    bulletNode.cpp
-    attackManager.h attackManager.cpp
-    targetManager.h targetManager.cpp
+    combatManager.h combatManager.cpp
 )
 
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

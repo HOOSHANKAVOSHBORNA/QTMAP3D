@@ -1,14 +1,16 @@
 #include "combatModelNode.h"
 #include "mapItem.h"
 #include <osgEarth/GLUtils>
+#include <moveableModelNode.h>
+#include <flyableModelNode.h>
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
+
 int CombatModelNode::mCount{0};
 CombatModelNode::CombatModelNode(QObject *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(combatModelNode);
-
 }
 
 CombatModelNode::~CombatModelNode()
@@ -18,32 +20,20 @@ CombatModelNode::~CombatModelNode()
 
 bool CombatModelNode::setup()
 {
-
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(mapItem(), &MapItem::modeChanged, this, &CombatModelNode::onModeChanged);
     mIs3D = mapItem()->getMode();
-
 
     mCombatModelNodeLayer = new CompositeAnnotationLayer();
     mCombatModelNodeLayer->setName(COMBATMODELNODE);
     mapItem()->getMapObject()->addLayer(mCombatModelNodeLayer);
 
-
     auto tankToolboxItem =  new ToolboxItem{"Tank", COMBATMODELNODE, "qrc:/resources/tank.png", true};
     QObject::connect(tankToolboxItem, &ToolboxItem::itemChecked, this, &CombatModelNode::onTankItemCheck);
     toolbox()->addItem(tankToolboxItem);
 
-    auto droneToolboxItem =  new ToolboxItem{"Drone", COMBATMODELNODE, "qrc:/resources/drone.png", true};
-    QObject::connect(droneToolboxItem, &ToolboxItem::itemChecked, this, &CombatModelNode::onDroneItemCheck);
-    toolbox()->addItem(droneToolboxItem);
-
-
     mAttackNodeLayer = new ParenticAnnotationLayer();
     mAttackNodeLayer->setName("Attacker");
-    mTargetNodeLayer = new ParenticAnnotationLayer();
-    mAttackNodeLayer->setName("Target");
-
-
     return true;
 }
 
@@ -227,22 +217,6 @@ void CombatModelNode::onTankItemCheck(bool check)
     }
 }
 
-void CombatModelNode::onDroneItemCheck(bool check)
-{
-    if (check) {
-        makeIconNode("../data/models/drone/drone.png");
-        mType = Type::TARGET;
-        setState(State::READY);
-        mapItem()->addNode(iconNode());
-    }
-    else {
-        if(state() == State::MOVING)
-            cancel();
-        setState(State::NONE);
-        mapItem()->removeNode(iconNode());
-    }
-}
-
 
 void CombatModelNode::onModeChanged(bool is3DView)
 {
@@ -250,7 +224,6 @@ void CombatModelNode::onModeChanged(bool is3DView)
 }
 
 void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
-    QString name;
     switch (mType) {
     case Type::ATTACKER:
         mAttackerNode = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg","../data/models/tank/tank.png");
@@ -262,18 +235,6 @@ void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
         mAttackerNode->setPosition(geoPos);
         mAttackerNode->isAttacker(true);
         mCurrentModel = mAttackerNode;
-        break;
-    case Type::TARGET:
-        mTargetNode = new FlyableModelNode(mapItem(),"../data/models/drone/drone.osgb","../data/models/drone/drone.png");
-        if(!mCombatModelNodeLayer->containsLayer(mTargetNodeLayer)){
-            mTargetNodeLayer->clear();
-            mCombatModelNodeLayer->addLayer(mTargetNodeLayer);
-        }
-        mTargetNodeLayer->addChild(mTargetNode);
-        geoPos.z() = 500;
-        mTargetNode->setPosition(geoPos);
-        mTargetNode->isAttacker(false);
-        mCurrentModel = mTargetNode;
         break;
     default:
         break;
@@ -315,9 +276,6 @@ void CombatModelNode::cancel(){
         switch (mType) {
         case Type::ATTACKER:
             mAttackNodeLayer->removeChild(mCurrentModel);
-            break;
-        case Type::TARGET:
-            mTargetNodeLayer->removeChild(mCurrentModel);
             break;
         default:
             break;
