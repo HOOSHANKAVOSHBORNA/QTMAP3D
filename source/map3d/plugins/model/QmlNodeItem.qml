@@ -2,12 +2,15 @@ import QtQuick
 import Crystal
 
 QmlNode {
+    property double farRange: 50000
+    property double scaledNodeRadius: nodeRadius > 50000 ? 10 : 30
     width: 0
     height: 0
 
     CircularMenu {
-        outerRadius: 70
-        innerRadius: 30
+//        visible: nodeRadius < 50000
+        outerRadius: scaledNodeRadius + 40
+        innerRadius: scaledNodeRadius
         listModel: ListModel {
             ListElement {
                 name: 'Info'
