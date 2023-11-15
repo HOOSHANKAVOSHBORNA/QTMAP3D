@@ -12,6 +12,8 @@
 #include <QtQml>
 #include <qmlNode.h>
 
+#include "circularMenuModel.h"
+
 
 const float RANGE3D = 835;
 
@@ -330,10 +332,16 @@ void SimpleModelNode::createCustomMenu()
         }
 
         if(status == QQmlComponent::Ready){
+            // creating menu model
+            CircularMenuModel *cmm = new CircularMenuModel;
+
+            qDebug() << "what: " << cmm->rowCount();
+
             mCustomMenu = qobject_cast<QmlNode*>(comp->create());
             mCustomMenu->setParentItem(mMapItem);
             mCustomMenu->setOsgNode(this);
             mCustomMenu->setVisible(false);
+            mCustomMenu->setProperty("cppModel", QVariant::fromValue(cmm));
         }
     });
     comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
