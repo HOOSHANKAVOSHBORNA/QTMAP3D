@@ -24,6 +24,8 @@ class QmlNode: public QQuickItem
 {
     Q_OBJECT
     QML_ELEMENT
+    Q_PROPERTY(double nodeRadius READ nodeRadius WRITE setNodeRadius NOTIFY nodeRadiusChanged FINAL)
+
 public:
     QmlNode(QQmlEngine *qmlEngine = nullptr, QQuickItem *parent = nullptr);
     ~QmlNode();
@@ -32,10 +34,17 @@ public:
 
     void setOsgNode(osgEarth::Annotation::GeoPositionNode *newOsgNode);
 
+    double nodeRadius() const;
+    void setNodeRadius(double newNodeRadius);
+
+signals:
+    void nodeRadiusChanged();
+
 private:
     QQmlEngine *mEngine;
     osgEarth::Annotation::GeoPositionNode *mOsgNode;
     QmlNodeEventHandler *mQmlNodeEventHandler{nullptr};
+    double mNodeRadius;
 };
 
 #endif // QMLNODE_H

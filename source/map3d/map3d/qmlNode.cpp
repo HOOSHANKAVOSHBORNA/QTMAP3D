@@ -64,9 +64,25 @@ bool QmlNodeEventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
 //        emit mQmlNode->xChanged();
 //        emit mQmlNode->yChanged();
 //        emit mQmlNode->zChanged();
-        qDebug()<<outX;
-        qDebug()<<"mask: "<<mQmlNode->osgNode()->getNodeMask();
+//        qDebug()<<outX;
+//        qDebug()<<"mask: "<<mQmlNode->osgNode()->getNodeMask();
+
+        mQmlNode->setNodeRadius(mQmlNode->osgNode()->getBound().radius());
     }
 
     return false;
+}
+
+double QmlNode::nodeRadius() const
+{
+    return mNodeRadius;
+}
+
+void QmlNode::setNodeRadius(double newNodeRadius)
+{
+    if (qFuzzyCompare(mNodeRadius, newNodeRadius))
+        return;
+    qDebug() << "node radius: " << newNodeRadius;
+    mNodeRadius = newNodeRadius;
+    emit nodeRadiusChanged();
 }
