@@ -65,7 +65,7 @@ Rectangle {
     radius: Math.ceil(15 / Style.monitorRatio)
     color: bg50
 
-    minWidth: sideContainer.visibleCount? Math.ceil((400+75) / Style.monitorRatio): Math.ceil(75 / Style.monitorRatio)
+    minWidth: sideContainer.visibleCount? Math.ceil((360+75) / Style.monitorRatio): Math.ceil(75 / Style.monitorRatio)
 
     RowLayout {
         id:rowLayout
