@@ -5,10 +5,10 @@ import QtQuick.Layouts
 
 Item {
     // ----------------------------------------- properties
-    property ListModel listModel: ListModel{} // {name, color, iconSource}
+    property var listModel // {name, iconUrl, checkable, checked}
     property double outerRadius: 200
     property double innerRadius: 150
-    property double startAngle: -90 - currentCutLen * listModel.count / 2
+    property double startAngle: -90 - currentCutLen * listModel.rowCount() / 2
     property double currentCutLen: 45
     property double animationDuration: 2000
 
@@ -66,19 +66,17 @@ Item {
 
     // ----------------------------------------- Circular Menu
     Repeater {
-        anchors.fill: parent
-        model: listModel.count
+//        id:         anchors.fill: parent
+        model: listModel
 
         CircularCut {
             required property var model
-
-            cutText: listModel.get(model.index).name
+            cutText: model.name
             cutOuterRadius: outerRadius
             cutInnerRadius: innerRadius
             cutStartAngle: startAngle + model.index * currentCutLen
             cutLen: currentCutLen
-            cutIconSource: listModel.get(model.index).iconSource
-            cutIconColor: listModel.get(model.index).color
+            cutIconSource: model.iconUrl
             onCutClicked: clickedIndex(model.index)
         }
     }

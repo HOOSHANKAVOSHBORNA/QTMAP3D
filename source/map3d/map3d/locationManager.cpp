@@ -12,7 +12,7 @@ LocationModel::LocationModel(MapItem *mapItem)
     vp.setPitch(-20);
     vp.setRange(5000000);
     vp.focalPoint() = gp;
-    LocationData ld1 = LocationData{vp, "North of Earth", "qrc:/Resources/airplane1.jpg", "red"};
+    LocationItem ld1 = LocationItem{vp, "North of Earth", "qrc:/Resources/airplane1.jpg", "red"};
 
     mLocations.append(ld1);
 }
@@ -24,7 +24,7 @@ int LocationModel::rowCount(const QModelIndex &parent) const
 
 QVariant LocationModel::data(const QModelIndex &index, int role) const
 {
-    const LocationData ld = mLocations.at(index.row());
+    const LocationItem ld = mLocations.at(index.row());
 
     switch (role) {
     case NameRole:
@@ -56,7 +56,7 @@ QVariant LocationModel::data(const QModelIndex &index, int role) const
 
 bool LocationModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    LocationData ld = mLocations.at(index.row());
+    LocationItem ld = mLocations.at(index.row());
 
     switch (role) {
     case NameRole:
@@ -109,26 +109,26 @@ void LocationModel::goToLocation(QModelIndex index)
     mMapItem->getCameraController()->setViewpoint(mLocations.at(index.row()).viewpoint, 0);
 }
 
-void LocationModel::myAppendRow(const LocationData &newLocationData)
+void LocationModel::myAppendRow(const LocationItem &newLocationItem)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    mLocations.append(newLocationData);
+    mLocations.append(newLocationItem);
     endInsertRows();
 }
 
-void LocationModel::myEditRow(QModelIndex index, const LocationData &newLocationData)
+void LocationModel::myEditRow(QModelIndex index, const LocationItem &newLocationItem)
 {
     beginResetModel();
-    mLocations[index.row()] = newLocationData;
+    mLocations[index.row()] = newLocationItem;
     endResetModel();
 }
 
-QVector<LocationData> LocationModel::locations() const
+QVector<LocationItem> LocationModel::locations() const
 {
     return mLocations;
 }
 
-void LocationModel::setLocations(const QVector<LocationData> &newLocations)
+void LocationModel::setLocations(const QVector<LocationItem> &newLocations)
 {
     mLocations = newLocations;
 }
@@ -201,7 +201,7 @@ void LocationProxyModel::addNewLocation(QString newName, QString newDescription,
     osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
     vp.name() = newName.toStdString();
 
-    dynamic_cast<LocationModel*>(sourceModel())->myAppendRow(LocationData{vp, newDescription, newImageSource, newColor});
+    dynamic_cast<LocationModel*>(sourceModel())->myAppendRow(LocationItem{vp, newDescription, newImageSource, newColor});
 }
 
 QVector3D LocationProxyModel::getCurrentXYZ()
@@ -220,7 +220,7 @@ void LocationProxyModel::editLocation(const QModelIndex &index, QString newName,
     osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
     vp.name() = newName.toStdString();
 
-    dynamic_cast<LocationModel*>(sourceModel())->myEditRow(mapToSource(index), LocationData{vp, newDescription, newImageSource, newColor});
+    dynamic_cast<LocationModel*>(sourceModel())->myEditRow(mapToSource(index), LocationItem{vp, newDescription, newImageSource, newColor});
 }
 
 QString LocationProxyModel::searchedName() const
