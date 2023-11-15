@@ -73,8 +73,10 @@ bool CombatModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
                 mAttackerNode = modelNode;
                 mDragModelNode = getDragModel();
                 mapItem()->addNode(mDragModelNode);
+//                return true;
             }
-            return true;
+
+
         }
         if(mState == State::NONE){
             return false;
@@ -177,6 +179,7 @@ bool CombatModelNode::mouseDragEvent(const osgGA::GUIEventAdapter &ea, osgGA::GU
     {
         osgEarth::GeoPoint mouseGeoPoint = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mDragModelNode->setPosition(mouseGeoPoint);
+        return true;
     }
     return false;
 }
