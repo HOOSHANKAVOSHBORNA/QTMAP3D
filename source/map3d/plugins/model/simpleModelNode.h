@@ -38,6 +38,7 @@ public:
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
     void select();
+    void highlight(bool isHighlight);
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 
@@ -68,9 +69,8 @@ private:
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<Circle> mCircleSelectNode;
-    osg::ref_ptr<Circle> mAttackerSelectNode;
-    osg::ref_ptr<Circle> mTargetSelectNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
+    osg::ref_ptr<Circle> mCircleHighlightNode;
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;

@@ -228,16 +228,25 @@ void SimpleModelNode::compile()
 
     selectGroup->addChild(mCircleSelectNode);
     selectGroup->addChild(mConeSelecteNode);
+    //--highlight node-------------------------------------------------
+    mCircleHighlightNode = new Circle();
+    mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
+    mCircleHighlightNode->setStrokeColor(osg::Vec4f(0.12,1,1,0.5));
+    mCircleHighlightNode->setStrokeWidth(2);
+    mCircleHighlightNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius() - 0.1*cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+    mCircleHighlightNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
     //--setting--------------------------------------------------------
     if(mIs3D){
         mSwitchNode->addChild(m3DNode, true);
         mSwitchNode->addChild(m2DNode, false);
         mSwitchNode->addChild(selectGroup, false);
+        mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     else{
         mSwitchNode->addChild(m3DNode, false);
         mSwitchNode->addChild(m2DNode, true);
         mSwitchNode->addChild(selectGroup, false);
+        mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     //--------------------------------------------------------------------------
     osgEarth::Symbology::Style  rootStyle;
@@ -294,6 +303,11 @@ void SimpleModelNode::select()
         mSwitchNode->setValue(2, false);
     }
 
+}
+
+void SimpleModelNode::highlight(bool isHighlight)
+{
+    mSwitchNode->setValue(3, isHighlight);
 }
 
 void SimpleModelNode::onBookmarkChecked(bool status)

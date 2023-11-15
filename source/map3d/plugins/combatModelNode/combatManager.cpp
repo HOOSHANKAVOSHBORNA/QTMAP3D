@@ -22,7 +22,10 @@ void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , 
     osg::ref_ptr<LineNode> line = new LineNode(map);
     line->addPoint(attacker->getPosition());
     line->addPoint(target->getPosition());
+    line->setTessellation(50);
     mCombatLayer->addChild(line);
+    attacker->highlight(true);
+    target->highlight(true);
     assignmentData data = {attacker , target , line};
     mEdgeDataList->append(data);
 }
