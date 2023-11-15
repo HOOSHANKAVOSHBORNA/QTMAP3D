@@ -4,13 +4,30 @@
 #include <QObject>
 #include <QAbstractItemModel>
 
-struct CircularMenuItem
+struct CircularMenuItem : public QObject
 {
+    Q_OBJECT
+
 public:
+    CircularMenuItem(
+        QString _name      = QString(),
+        QString _iconUrl   = QString(),
+        bool    _checkable = false
+        ):
+        name     (_name     ),
+        iconUrl  (_iconUrl  ),
+        checkable(_checkable)
+    {
+
+    }
+
     QString name;
     QString iconUrl;
     bool    checkable = false;
     bool    checked = false;
+
+signals:
+    void itemClicked();
 };
 
 class CircularMenuModel : public QAbstractListModel
@@ -32,6 +49,9 @@ public:
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
     virtual QHash<int, QByteArray> roleNames() const override;
+
+public slots:
+    void onItemClicked(const QModelIndex &current);
 
 private:
     QVector<CircularMenuItem*> mItems;

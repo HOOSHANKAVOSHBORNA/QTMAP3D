@@ -335,8 +335,6 @@ void SimpleModelNode::createCustomMenu()
             // creating menu model
             CircularMenuModel *cmm = new CircularMenuModel;
 
-            qDebug() << "what: " << cmm->rowCount();
-
             mCustomMenu = qobject_cast<QmlNode*>(comp->create());
             mCustomMenu->setParentItem(mMapItem);
             mCustomMenu->setOsgNode(this);
