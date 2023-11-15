@@ -11,6 +11,7 @@
 #include <mainwindow.h>
 #include <QtQml>
 #include <qmlNode.h>
+#include <utility.h>
 
 
 const float RANGE3D = 835;
@@ -22,7 +23,7 @@ QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
 SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QObject *parent)
     : QObject{parent},
-    osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Model::getDefaultStyle()),
+    osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Utility::getDefaultStyle()),
     mUrl3D(url3D),
     mMapItem(mapControler),
     mUrl2D(url2D)
