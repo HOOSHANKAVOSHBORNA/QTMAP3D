@@ -96,7 +96,7 @@ void Model::setState(State newState)
     mState = newState;
 }
 
-bool Model::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
