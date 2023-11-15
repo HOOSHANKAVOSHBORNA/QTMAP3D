@@ -25,7 +25,6 @@ public:
         NONE,
         READY,
         MOVING,
-        FIRE,
         CANCEL,
         CONFIRM
     };
@@ -59,23 +58,19 @@ protected:
 
 private:
     SimpleModelNode* pick(float x, float y);
-    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, osgEarth::GeoPoint geopos);
-    void rightClickMenu(SimpleModelNode *selectedNode);
     osgEarth::Annotation::ModelNode *getDragModel();
 
 private:
     CombatManager *mCombatManager;
-    int mBulletID;
+    QList<int> mBulletID;
     static int mCount;
     bool mIs3D;
     State mState{State::NONE};
     osg::ref_ptr<osgEarth::Annotation::ModelNode> mDragModelNode;
     osg::ref_ptr<SimpleModelNode> mAttackerNode;
-    osg::ref_ptr<SimpleModelNode> mTargetNode;
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mCombatModelNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mAttackNodeLayer{nullptr};
-    osg::ref_ptr<ParenticAnnotationLayer> mTargetNodeLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     NodeData* mNodeData{nullptr};
     DataManager *mDataManager;

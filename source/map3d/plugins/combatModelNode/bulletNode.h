@@ -12,12 +12,9 @@ public:
     Explosion* explode();
     SimpleModelNode* getTargetModel();
     void setTargetModel(SimpleModelNode *model);
-    osgEarth::Annotation::ModelNode *getDragModelNode();
 private:
     osg::ref_ptr<Explosion> mExplosion;
     MapItem *mMapItem;
-    std::string mBulletModelURL;
-    std::string mBulletIconURL;
     QQmlEngine *mEngine;
     BookmarkManager *mBookmark;
     osg::ref_ptr<SimpleModelNode> mTargetModel;

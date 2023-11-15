@@ -11,7 +11,6 @@ CombatModelNode::CombatModelNode(QObject *parent)
     : PluginInterface(parent)
 {
     Q_INIT_RESOURCE(combatModelNode);
-    mCombatManager = new CombatManager;
 }
 
 CombatModelNode::~CombatModelNode()
@@ -21,6 +20,7 @@ CombatModelNode::~CombatModelNode()
 
 bool CombatModelNode::setup()
 {
+    mCombatManager = new CombatManager(mapItem());
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(mapItem(), &MapItem::modeChanged, this, &CombatModelNode::onModeChanged);
     mIs3D = mapItem()->getMode();
@@ -92,42 +92,25 @@ bool CombatModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
             moving(geoPos);
             return true;
         }
-        if(mState == State::FIRE){
-            //            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-            //            mCurrentModel->getAttackManager()->attackTo(mBulletID,geoPos);
-            return true;
-        }
-
     }
     else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON ) {
         if(mState == State::MOVING){
             cancel();
-        }/*else if(mState == State::NONE){
-            SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-            if(modelNode){
-                rightClickMenu(modelNode);
+        }else if(mState == State::NONE && !mCombatManager->getAssignmentData()->empty()){
+            for (int var = 0; var < mCombatManager->getAssignmentData()->length(); ++var) {
+                int bulletID = mCombatManager->readyBulletFor(mCombatManager->getAssignmentData()->at(var).attacker,"../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
+                mCombatManager->attackTo(bulletID,mCombatManager->getAssignmentData()->at(var).target->getPosition());
+                mCombatManager->setBulletTargetModel(bulletID,mCombatManager->getAssignmentData()->at(var).target);
+                mBulletID.append(bulletID);
             }
-        }*/
+        }
         return false;
     }
-    //    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::ATTACKING)) {
-    //        mCurrentModel->getAttackManager()->attackResult(true,mBulletID);
-    //        mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
-    //        return false;
-    //    }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
-//        if(modelNode->getAttacker() && !(mState == State::FIRE)){
-//            mBulletID = mCurrentModel->getAttackManager()->readyBullet("../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
-//            mState = State::FIRE;
-//        }else{
             confirm();
-//        }
         return false;
     }
-//    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::FIRE)) {
-//        confirm();
-//        return false;
-//    }
+
 
     return false;
 }
@@ -141,9 +124,7 @@ bool CombatModelNode::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA:
 
         if(targetModelNode)
         {
-            mTargetNode = targetModelNode;
-//            osgEarth::GeoPoint geoPos = targetModelNode->getPosition();
-            mCombatManager->assign(mAttackerNode,mTargetNode,mapItem());
+            mCombatManager->assign(mAttackerNode,targetModelNode,mapItem());
         }
         mapItem()->removeNode(mDragModelNode);
         mDragModelNode = nullptr;
@@ -158,17 +139,19 @@ bool CombatModelNode::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GU
         osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
         mIconNode->setPosition(geoPos);
     }
-
     return false;
 }
 
 bool CombatModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    if(mTargetNode){
-//        if(mAttackerNode->getAttackManager()->getBulletPosition(mBulletID) == mTargetNode->getPosition()){
-//            mAttackerNode->getAttackManager()->attackResult(true,mBulletID);
-//            mTargetNode.release();
-//        }
+    if(!mBulletID.empty()){
+        for (int var = 0; var < mBulletID.length(); ++var) {
+            if(mCombatManager->getBulletPosition(mBulletID.at(var)) == mCombatManager->getBulletTargetModel(mBulletID.at(var))->getPosition()){
+                mCombatManager->attackResult(true,mBulletID.at(var));
+//                mCombatManager->getBulletTargetModel(mBulletID.at(var))->deleteLater();
+                mBulletID.removeAt(var);
+            }
+        }
     }
     return false;
 }
@@ -227,6 +210,7 @@ void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
             mCombatModelNodeLayer->addLayer(mAttackNodeLayer);
         }
         mAttackNodeLayer->addChild(mAttackerNode);
+        mCombatManager->setCombatLayer(mAttackNodeLayer);
         mAttackerNode->setAttacker(true);
         mAttackerNode->setPosition(geoPos);
         mAttackerNode->setAttacker(true);
@@ -258,7 +242,7 @@ void CombatModelNode::moving(osgEarth::GeoPoint &geoPos){
 
 void CombatModelNode::confirm()
 {
-    if (state() == State::MOVING || state() == State::FIRE) {
+    if (state() == State::MOVING) {
         setState(State::READY);
     }
 }
@@ -321,53 +305,6 @@ SimpleModelNode *CombatModelNode::pick(float x, float y)
     return simpleModelNode;
 }
 
-//NodeData *CombatModelNode::sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc,
-//                                osgEarth::GeoPoint geoPos)
-//{
-//    NodeData* nodeData = new NodeData();
-//    //    flyableNodeData->id = 100;
-//    nodeData->name = name + std::to_string(mCount);
-//    nodeData->longitude = geoPos.x();
-//    nodeData->latitude = geoPos.y();
-//    nodeData->altitude = geoPos.z();
-//    nodeData->url2D = url2d;
-//    nodeData->url3D = url3d;
-//    nodeData->imgSrc = imgSrc;
-//    nodeData->color = QColor("white").name().toStdString();
-//    nodeData->speed = 100;
-//    nodeData->fieldData.push_back(NodeFieldData{"name", "Aircraft" + QString::number(mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"Longitude",QString::number(nodeData->longitude), "Location Information","qrc:/Resources/location.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"Latitude",QString::number(nodeData->latitude), "Location Information","qrc:/Resources/location.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(nodeData->altitude), "Location Information","qrc:/Resources/location.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(nodeData->speed), "Location Information","qrc:/Resources/location.png"});
-//    return nodeData;
-//}
-
-void CombatModelNode::rightClickMenu(SimpleModelNode *selectedNode)
-{
-
-    osgEarth::GeoPoint baseModelPosition = selectedNode->getPosition();
-//    if(selectedNode->isAttacker()){
-//        for (int var = 0; var < mDataManager->nodeCount(); ++var) {
-//            SimpleModelNode* nearModel = mDataManager->getNodeAtIndex(var);
-//            if(nearModel->getPosition().distanceTo(baseModelPosition) < 15000 && nearModel !=selectedNode){
-////                selectedNode->getAttackManager()->setNearTargets(nearModel);
-////                nearModel->getTargetManager()->setNearAttacker(selectedNode);
-////                selectedNode->getAttackManager()->showNearTargets();
-//            }
-//        }
-//    }else{
-//        for (int var = 0; var < mDataManager->nodeCount(); ++var) {
-//            SimpleModelNode* nearModel = mDataManager->getNodeAtIndex(var);
-//            if(nearModel->isAttacker() && nearModel->getPosition().distanceTo(baseModelPosition) < 15000 && nearModel !=selectedNode){
-//                selectedNode->getTargetManager()->setNearAttacker(nearModel);
-//                nearModel->getAttackManager()->setNearTargets(selectedNode);
-//                selectedNode->getTargetManager()->showNearAttackers();
-//            }
-//        }
-    //    }
-}
 
 osgEarth::Annotation::ModelNode *CombatModelNode::getDragModel()
 {
