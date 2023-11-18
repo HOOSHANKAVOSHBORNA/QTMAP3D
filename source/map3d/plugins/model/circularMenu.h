@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QAbstractItemModel>
+#include <osgEarthAnnotation/ModelNode>
 
 #include "mapItem.h"
 #include "qmlNode.h"
@@ -39,9 +40,9 @@ signals:
 class CircularMenu : public QObject
 {
 public:
-    CircularMenu(MapItem *mapItem, QQmlEngine *qQmlEngine, QObject *parent = nullptr);
+    CircularMenu(QQuickItem *parentItem, osgEarth::Annotation::GeoPositionNode *osgNode);
 
-    void createQML(SimpleModelNode *smn);
+    void createQML();
 
     void setQmlNode(QmlNode *newQmlNode);
 
@@ -49,8 +50,8 @@ public:
 
 private:
     CircularMenuModel *mModel;
-    MapItem *mMapItem;
-    QQmlEngine *mEngine;
+    QQuickItem *mParentQmlItem;
+    osgEarth::Annotation::GeoPositionNode *mOsgNode;
     QmlNode *mQmlNode{nullptr};
 };
 
@@ -74,6 +75,8 @@ public:
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
     virtual QHash<int, QByteArray> roleNames() const override;
+
+    void appendMenuItem(CircularMenuItem* item);
 
 public slots:
     void onItemClicked(const QModelIndex &current);

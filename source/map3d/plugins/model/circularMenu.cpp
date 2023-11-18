@@ -1,20 +1,24 @@
 #include "circularMenu.h"
 
-#include "simpleModelNode.h"
 #include <QQmlComponent>
+#include <QQmlEngine>
+#include <QQmlContext>
+#include <osgEarthAnnotation/ModelNode>
 
 #include "qmlNode.h"
 
 // ------------------------------------------------------- model manager
-CircularMenu::CircularMenu(MapItem *mapItem, QQmlEngine *qQmlEngine, QObject *parent) : QObject(parent)
+CircularMenu::CircularMenu(QQuickItem *newParentQmlItem, osgEarth::Annotation::GeoPositionNode *newOsgNode)
 {
-    mMapItem = mapItem;
-    mEngine = qQmlEngine;
+    mParentQmlItem = newParentQmlItem;
+    mOsgNode = newOsgNode;
+
+    createQML();
 }
 
-void CircularMenu::createQML(SimpleModelNode *smn)
+void CircularMenu::createQML()
 {
-    QQmlComponent* comp = new QQmlComponent(mEngine, smn);
+    QQmlComponent* comp = new QQmlComponent(QQmlEngine::contextForObject(mParentQmlItem)->engine());
     QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status) {
         if(status == QQmlComponent::Error) {
             qDebug() << "Can not load this: " << comp->errorString();
@@ -24,16 +28,14 @@ void CircularMenu::createQML(SimpleModelNode *smn)
             // creating menu model
             CircularMenuModel *cmm = new CircularMenuModel;
 
-            qDebug() << "in ready";
             mQmlNode = qobject_cast<QmlNode*>(comp->create());
-            mQmlNode->setParentItem(mMapItem);
-            mQmlNode->setOsgNode(smn);
+            mQmlNode->setParentItem(mParentQmlItem);
+            mQmlNode->setOsgNode(mOsgNode);
             mQmlNode->setVisible(false);
             mQmlNode->setProperty("cppModel", QVariant::fromValue(cmm));
         }
     });
     comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
-    qDebug() << "waiting for creating";
 }
 
 void CircularMenu::setQmlNode(QmlNode *newQmlNode)
@@ -105,6 +107,12 @@ QHash<int, QByteArray> CircularMenuModel::roleNames() const
     itemFields[CheckedRole] = "checked";
 
     return itemFields;
+}
+
+void CircularMenuModel::appendMenuItem(CircularMenuItem *item)
+{
+    mItems.append(item);
+    // Todo: data change signal
 }
 
 void CircularMenuModel::onItemClicked(const QModelIndex &current)

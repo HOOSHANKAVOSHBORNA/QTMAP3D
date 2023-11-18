@@ -34,8 +34,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
     mEnigine = QQmlEngine::contextForObject(mMapItem)->engine();
     compile();
 
-    mCircularMenu = new CircularMenu(mapControler, mEnigine);
-    mCircularMenu->createQML(this);
+    mCircularMenu = new CircularMenu(mapControler, this);
 }
 
 SimpleModelNode::~SimpleModelNode()
