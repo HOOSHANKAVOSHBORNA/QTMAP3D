@@ -59,6 +59,7 @@ public:
 private slots:
     void compile();
     void onModeChanged(bool is3DView);
+    void onInfoClicked();
     void onBookmarkChecked(bool status);
 
 private:

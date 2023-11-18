@@ -4,6 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Item {
+    id: rootItem
     // properties
     property string cutText: 'cutText'
     property color cutBackgroundColor: Qt.rgba(0.5, 0.5, 0.5, 0.5)
@@ -17,13 +18,17 @@ Item {
     required property double cutStartAngle
     property double cutLen: 90
 
+    property alias checkable: cutButton.checkable
+    property alias checked: cutButton.checked
+
     // functions
     function toDegree (radianAngle) {
         return radianAngle * Math.PI / 180;
     }
 
     // signals
-    signal cutClicked()
+    signal clicked()
+    signal toggled()
 
     anchors.fill: parent
 
@@ -105,7 +110,8 @@ Item {
                 color: 'transparent'
             }
 
-            onClicked: cutClicked()
+            onClicked: rootItem.clicked()
+            onToggled: rootItem.toggled()
 
             PropertyAnimation on width {
                 from: 0

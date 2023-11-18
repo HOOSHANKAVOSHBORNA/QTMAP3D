@@ -4,6 +4,7 @@ import QtQuick.Controls.Material
 import QtQuick.Layouts
 
 Item {
+    id: rootItem
     // ----------------------------------------- properties
     property var listModel // {name, iconUrl, checkable, checked}
     property double outerRadius: 200
@@ -15,7 +16,8 @@ Item {
     readonly property double scaleNameLen: 10
 
     // ----------------------------------------- signals
-    signal clickedIndex(int index)
+    signal clicked(int index)
+    signal toggled(int index, bool checked)
 
     anchors.fill: parent
 
@@ -70,14 +72,18 @@ Item {
         model: listModel
 
         CircularCut {
+            required property int index
             required property var model
+            checkable: model.checkable
+            checked: model.checked
             cutText: model.name
             cutOuterRadius: outerRadius
             cutInnerRadius: innerRadius
             cutStartAngle: startAngle + model.index * currentCutLen
             cutLen: currentCutLen
             cutIconSource: model.iconUrl
-            onCutClicked: clickedIndex(model.index)
+            onClicked: rootItem.clicked(model.index)
+            onToggled: rootItem.toggled(model.index, checked)
         }
     }
 }

@@ -10,13 +10,17 @@ QmlNode {
     property var cppModel : ListModel{}
 
     CircularMenu {
-        visible: nodeRadius < 80000
+        //        visible: nodeRadius < 80000
         outerRadius: scaledNodeRadius + 30
         innerRadius: scaledNodeRadius
         listModel: cppModel
-        onClickedIndex: (index) => {
-//                            console.log(cppModel.index)
-                            cppModel.onItemClicked(cppModel.index(index, 0))
-                        }
+        onClicked: (index) => {
+                            //                            console.log(cppModel.index)
+                        cppModel.onItemClicked(cppModel.index(index, 0))
+
+                    }
+        onToggled: (index, checked) =>{
+                       cppModel.onItemChecked(cppModel.index(index, 0), checked)
+                   }
     }
 }

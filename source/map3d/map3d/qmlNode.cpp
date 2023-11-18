@@ -82,7 +82,7 @@ void QmlNode::setNodeRadius(double newNodeRadius)
 {
     if (qFuzzyCompare(mNodeRadius, newNodeRadius))
         return;
-    qDebug() << "node radius: " << newNodeRadius;
+//    qDebug() << "node radius: " << newNodeRadius;
     mNodeRadius = newNodeRadius;
     emit nodeRadiusChanged();
 }

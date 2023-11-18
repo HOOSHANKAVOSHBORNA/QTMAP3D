@@ -12,30 +12,18 @@ CircularMenu::CircularMenu(QQuickItem *newParentQmlItem, osgEarth::Annotation::G
 {
     mParentQmlItem = newParentQmlItem;
     mOsgNode = newOsgNode;
-
+    mCircularMenuModel = new CircularMenuModel;
     createQML();
 }
 
-void CircularMenu::createQML()
+void CircularMenu::appendMenuItem(CircularMenuItem *item)
 {
-    QQmlComponent* comp = new QQmlComponent(QQmlEngine::contextForObject(mParentQmlItem)->engine());
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status) {
-        if(status == QQmlComponent::Error) {
-            qDebug() << "Can not load this: " << comp->errorString();
-        }
+    mCircularMenuModel->appendMenuItem(item);
+}
 
-        if(status == QQmlComponent::Ready) {
-            // creating menu model
-            CircularMenuModel *cmm = new CircularMenuModel;
-
-            mQmlNode = qobject_cast<QmlNode*>(comp->create());
-            mQmlNode->setParentItem(mParentQmlItem);
-            mQmlNode->setOsgNode(mOsgNode);
-            mQmlNode->setVisible(false);
-            mQmlNode->setProperty("cppModel", QVariant::fromValue(cmm));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
+void CircularMenu::setVisible(bool visible)
+{
+    mQmlNode->setVisible(visible);
 }
 
 void CircularMenu::setQmlNode(QmlNode *newQmlNode)
@@ -48,28 +36,46 @@ QmlNode *CircularMenu::qmlNode() const
     return mQmlNode;
 }
 
+void CircularMenu::createQML()
+{
+    QQmlComponent* comp = new QQmlComponent(QQmlEngine::contextForObject(mParentQmlItem)->engine());
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status) {
+        if(status == QQmlComponent::Error) {
+            qDebug() << "Can not load this: " << comp->errorString();
+        }
 
+        if(status == QQmlComponent::Ready) {
+            // creating menu model
+            mQmlNode = qobject_cast<QmlNode*>(comp->create());
+            mQmlNode->setParentItem(mParentQmlItem);
+            mQmlNode->setOsgNode(mOsgNode);
+//            mQmlNode->setVisible(true);
+            mQmlNode->setProperty("cppModel", QVariant::fromValue(mCircularMenuModel));
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
+}
 
 // ------------------------------------------------------- model
 CircularMenuModel::CircularMenuModel(QObject *parent)
 {
     // ------------------------------ tests
-    CircularMenuItem *item1 = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
-    QObject::connect(item1, &CircularMenuItem::itemClicked, [&] {qDebug() << "info slot called";});
+//    CircularMenuItem *item1 = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
+//    QObject::connect(item1, &CircularMenuItem::itemClicked, [&] {qDebug() << "info slot called";});
 
-    CircularMenuItem *item2 = new CircularMenuItem{"Bookmark", "qrc:/Resources/bookmark.png", false};
-    QObject::connect(item2, &CircularMenuItem::itemClicked, [&] {qDebug() << "bookmark slot called";});
+//    CircularMenuItem *item2 = new CircularMenuItem{"Bookmark", "qrc:/Resources/bookmark.png", false};
+//    QObject::connect(item2, &CircularMenuItem::itemClicked, [&] {qDebug() << "bookmark slot called";});
 
-    CircularMenuItem *item3 = new CircularMenuItem{"Attack", "qrc:/Resources/radar.png", false};
-    QObject::connect(item3, &CircularMenuItem::itemClicked, [&] {qDebug() << "attack slot called";});
+//    CircularMenuItem *item3 = new CircularMenuItem{"Attack", "qrc:/Resources/radar.png", false};
+//    QObject::connect(item3, &CircularMenuItem::itemClicked, [&] {qDebug() << "attack slot called";});
 
-    CircularMenuItem *item4 = new CircularMenuItem{"Target", "qrc:/Resources/hand.png", false};
-    QObject::connect(item4, &CircularMenuItem::itemClicked, [&] {qDebug() << "target slot called";});
+//    CircularMenuItem *item4 = new CircularMenuItem{"Target", "qrc:/Resources/hand.png", false};
+//    QObject::connect(item4, &CircularMenuItem::itemClicked, [&] {qDebug() << "target slot called";});
 
-    mItems.append(item1);
-    mItems.append(item2);
-    mItems.append(item3);
-    mItems.append(item4);
+//    mItems.append(item1);
+//    mItems.append(item2);
+//    mItems.append(item3);
+//    mItems.append(item4);
 }
 
 int CircularMenuModel::rowCount(const QModelIndex &parent) const
@@ -111,12 +117,19 @@ QHash<int, QByteArray> CircularMenuModel::roleNames() const
 
 void CircularMenuModel::appendMenuItem(CircularMenuItem *item)
 {
+    beginResetModel();
     mItems.append(item);
+    endResetModel();
     // Todo: data change signal
 }
 
 void CircularMenuModel::onItemClicked(const QModelIndex &current)
 {
     mItems.at(current.row())->itemClicked();
+}
+
+void CircularMenuModel::onItemChecked(const QModelIndex &current, bool checked)
+{
+    mItems.at(current.row())->itemChecked(checked);
 }
 

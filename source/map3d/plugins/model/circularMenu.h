@@ -5,7 +5,6 @@
 #include <QAbstractItemModel>
 #include <osgEarthAnnotation/ModelNode>
 
-#include "mapItem.h"
 #include "qmlNode.h"
 class SimpleModelNode;
 class CircularMenuModel;
@@ -34,6 +33,7 @@ public:
 
 signals:
     void itemClicked();
+    void itemChecked(bool checked);
 };
 
 // ------------------------------------------------------- model manager
@@ -41,15 +41,14 @@ class CircularMenu : public QObject
 {
 public:
     CircularMenu(QQuickItem *parentItem, osgEarth::Annotation::GeoPositionNode *osgNode);
-
-    void createQML();
-
+    void appendMenuItem(CircularMenuItem* item);
+    void setVisible(bool visible);
     void setQmlNode(QmlNode *newQmlNode);
-
     QmlNode *qmlNode() const;
-
 private:
-    CircularMenuModel *mModel;
+    void createQML();
+private:
+    CircularMenuModel *mCircularMenuModel;
     QQuickItem *mParentQmlItem;
     osgEarth::Annotation::GeoPositionNode *mOsgNode;
     QmlNode *mQmlNode{nullptr};
@@ -80,6 +79,7 @@ public:
 
 public slots:
     void onItemClicked(const QModelIndex &current);
+    void onItemChecked(const QModelIndex &current, bool checked);
 
 private:
     QVector<CircularMenuItem*> mItems;
