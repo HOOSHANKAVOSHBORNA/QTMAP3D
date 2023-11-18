@@ -13,9 +13,11 @@
 #include <QQmlEngine>
 #include <bookmark.h>
 #include <qmlNode.h>
+#include <osg/ComputeBoundsVisitor>
+
 #include "circle.h"
 #include "cone.h"
-#include <osg/ComputeBoundsVisitor>
+#include "circularMenu.h"
 
 
 class MoveableModelNode;
@@ -60,7 +62,6 @@ private slots:
     void onBookmarkChecked(bool status);
 
 private:
-    void createCustomMenu();
 
 private:
     osg::ref_ptr<osg::Image> mImage;
@@ -87,7 +88,7 @@ private:
     QQmlEngine *mEnigine{nullptr};
     BookmarkManager *mBookmarkManager;
     BookmarkItem *mBookmarkItem{nullptr};
-    QmlNode *mCustomMenu{nullptr};
+    CircularMenu *mCircularMenu{nullptr};
 
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;

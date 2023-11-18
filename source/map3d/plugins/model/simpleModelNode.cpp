@@ -13,8 +13,6 @@
 #include <qmlNode.h>
 #include <utility.h>
 
-#include "circularMenuModel.h"
-
 
 const float RANGE3D = 835;
 
@@ -35,13 +33,15 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
 
     mEnigine = QQmlEngine::contextForObject(mMapItem)->engine();
     compile();
-    createCustomMenu();
+
+    mCircularMenu = new CircularMenu(mapControler, mEnigine);
+    mCircularMenu->createQML(this);
 }
 
 SimpleModelNode::~SimpleModelNode()
 {
     delete mNodeInformation;
-    delete mCustomMenu;
+    delete mCircularMenu;
 }
 
 void SimpleModelNode::updateUrl(const std::string &url3D, const std::string &url2D)
@@ -298,7 +298,9 @@ void SimpleModelNode::select()
 //        mNodeInformation->show();
     }
     mIsSelected = !mIsSelected;
-    mCustomMenu->setVisible(mIsSelected);
+    qDebug() << "before";
+    mCircularMenu->qmlNode()->setVisible(mIsSelected);
+    qDebug() << "after";
     if(mIsSelected){
         mSwitchNode->setValue(2, true);
     } else {
@@ -336,28 +338,6 @@ void SimpleModelNode::onBookmarkChecked(bool status)
             mBookmarkManager->removeBookmarkItem(mBookmarkItem);
         delete mBookmarkItem;
     }
-}
-
-void SimpleModelNode::createCustomMenu()
-{
-    QQmlComponent* comp = new QQmlComponent(mEnigine, this);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
-        if(status == QQmlComponent::Error){
-            qDebug()<<"Can not load this: "<<comp->errorString();
-        }
-
-        if(status == QQmlComponent::Ready){
-            // creating menu model
-            CircularMenuModel *cmm = new CircularMenuModel;
-
-            mCustomMenu = qobject_cast<QmlNode*>(comp->create());
-            mCustomMenu->setParentItem(mMapItem);
-            mCustomMenu->setOsgNode(this);
-            mCustomMenu->setVisible(false);
-            mCustomMenu->setProperty("cppModel", QVariant::fromValue(cmm));
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
 }
 
 std::string SimpleModelNode::url3D() const

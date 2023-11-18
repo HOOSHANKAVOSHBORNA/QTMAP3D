@@ -6,7 +6,7 @@ import QtQuick.Layouts
 Item {
     // properties
     property string cutText: 'cutText'
-    property color cutBackgroundColor: 'transparent'
+    property color cutBackgroundColor: Qt.rgba(0.5, 0.5, 0.5, 0.5)
     property color cutIconColor: 'blue'
     property color cutIconHoverColor: 'lightblue'
     property string cutIconSource: 'qrc:/Resources/hand.png'
@@ -36,7 +36,7 @@ Item {
         // ------------------------ outer circle
         ShapePath {
             id: cutOuter
-//            strokeWidth: 4
+//            strokeWidth: 1
             strokeColor: 'transparent'
 
             fillColor: cutBackgroundColor

@@ -1,5 +1,54 @@
-#include "circularMenuModel.h"
+#include "circularMenu.h"
 
+#include "simpleModelNode.h"
+#include <QQmlComponent>
+
+#include "qmlNode.h"
+
+// ------------------------------------------------------- model manager
+CircularMenu::CircularMenu(MapItem *mapItem, QQmlEngine *qQmlEngine, QObject *parent) : QObject(parent)
+{
+    mMapItem = mapItem;
+    mEngine = qQmlEngine;
+}
+
+void CircularMenu::createQML(SimpleModelNode *smn)
+{
+    QQmlComponent* comp = new QQmlComponent(mEngine, smn);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status) {
+        if(status == QQmlComponent::Error) {
+            qDebug() << "Can not load this: " << comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready) {
+            // creating menu model
+            CircularMenuModel *cmm = new CircularMenuModel;
+
+            qDebug() << "in ready";
+            mQmlNode = qobject_cast<QmlNode*>(comp->create());
+            mQmlNode->setParentItem(mMapItem);
+            mQmlNode->setOsgNode(smn);
+            mQmlNode->setVisible(false);
+            mQmlNode->setProperty("cppModel", QVariant::fromValue(cmm));
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
+    qDebug() << "waiting for creating";
+}
+
+void CircularMenu::setQmlNode(QmlNode *newQmlNode)
+{
+    mQmlNode = newQmlNode;
+}
+
+QmlNode *CircularMenu::qmlNode() const
+{
+    return mQmlNode;
+}
+
+
+
+// ------------------------------------------------------- model
 CircularMenuModel::CircularMenuModel(QObject *parent)
 {
     // ------------------------------ tests
@@ -62,3 +111,4 @@ void CircularMenuModel::onItemClicked(const QModelIndex &current)
 {
     mItems.at(current.row())->itemClicked();
 }
+

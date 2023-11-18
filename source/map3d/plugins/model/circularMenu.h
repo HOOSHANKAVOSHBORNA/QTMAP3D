@@ -1,8 +1,13 @@
-#ifndef CIRCULARMENUMODEL_H
-#define CIRCULARMENUMODEL_H
+#ifndef CIRCULARMENU_H
+#define CIRCULARMENU_H
 
 #include <QObject>
 #include <QAbstractItemModel>
+
+#include "mapItem.h"
+#include "qmlNode.h"
+class SimpleModelNode;
+class CircularMenuModel;
 
 struct CircularMenuItem : public QObject
 {
@@ -30,6 +35,26 @@ signals:
     void itemClicked();
 };
 
+// ------------------------------------------------------- model manager
+class CircularMenu : public QObject
+{
+public:
+    CircularMenu(MapItem *mapItem, QQmlEngine *qQmlEngine, QObject *parent = nullptr);
+
+    void createQML(SimpleModelNode *smn);
+
+    void setQmlNode(QmlNode *newQmlNode);
+
+    QmlNode *qmlNode() const;
+
+private:
+    CircularMenuModel *mModel;
+    MapItem *mMapItem;
+    QQmlEngine *mEngine;
+    QmlNode *mQmlNode{nullptr};
+};
+
+// ------------------------------------------------------- model
 class CircularMenuModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -57,4 +82,4 @@ private:
     QVector<CircularMenuItem*> mItems;
 };
 
-#endif // CIRCULARMENUMODEL_H
+#endif // CIRCULARMENU_H
