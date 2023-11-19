@@ -10,6 +10,7 @@ QmlNode {
     property var cppModel : ListModel{}
 
     CircularMenu {
+        id: circularMenu
         //        visible: nodeRadius < 80000
         outerRadius: scaledNodeRadius + 30
         innerRadius: scaledNodeRadius

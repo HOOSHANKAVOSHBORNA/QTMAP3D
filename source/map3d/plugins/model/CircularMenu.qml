@@ -9,9 +9,12 @@ Item {
     property var listModel // {name, iconUrl, checkable, checked}
     property double outerRadius: 200
     property double innerRadius: 150
-    property double startAngle: -90 - currentCutLen * listModel.rowCount() / 2
+    property double midAngle: -90
+    property double startAngle: midAngle - currentCutLen * listModel.rowCount() / 2
     property double currentCutLen: 45
     property double animationDuration: 2000
+    property bool animationStarter: false
+    property bool animationEnder: false
 
     readonly property double scaleNameLen: 10
 
@@ -24,19 +27,19 @@ Item {
 
     // ----------------------------------------- animation
     PropertyAnimation on outerRadius {
-        id: outerAnimation
         easing.type: Easing.OutElastic
         from: 0
         to: outerRadius
         duration: parseInt(animationDuration)
+        running: animationStarter
     }
 
     PropertyAnimation on innerRadius {
-        id: innerAnimation
         easing.type: Easing.OutElastic
         from: 0
         to: innerRadius
         duration: parseInt(animationDuration)
+        running: animationStarter
     }
 
     // ----------------------------------------- fake background
@@ -68,6 +71,15 @@ Item {
 
     // ----------------------------------------- Circular Menu
     Repeater {
+        onVisibleChanged: {
+            if (visible) {
+                animationStarter = true
+                startAngle = midAngle - currentCutLen * listModel.rowCount() / 2
+            } else {
+                animationStarter = false
+            }
+        }
+
 //        id:         anchors.fill: parent
         model: listModel
 

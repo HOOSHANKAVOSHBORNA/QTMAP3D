@@ -7,7 +7,7 @@ Item {
     id: rootItem
     // properties
     property string cutText: 'cutText'
-    property color cutBackgroundColor: Qt.rgba(0.5, 0.5, 0.5, 0.5)
+    property color cutBackgroundColor: 'transparent'
     property color cutIconColor: 'blue'
     property color cutIconHoverColor: 'lightblue'
     property string cutIconSource: 'qrc:/Resources/hand.png'
