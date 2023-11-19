@@ -88,12 +88,12 @@ Item {
             required property var model
             checkable: model.checkable
             checked: model.checked
-            cutText: model.name
-            cutOuterRadius: outerRadius
-            cutInnerRadius: innerRadius
-            cutStartAngle: startAngle + model.index * currentCutLen
-            cutLen: currentCutLen
-            cutIconSource: model.iconUrl
+            text: model.name
+            outerRadius: rootItem.outerRadius
+            innerRadius: rootItem.innerRadius
+            startAngle: rootItem.startAngle + model.index * currentCutLen
+            len: currentCutLen
+            iconSource: model.iconUrl
             onClicked: rootItem.clicked(model.index)
             onToggled: rootItem.toggled(model.index, checked)
         }
