@@ -25,7 +25,7 @@ enum {
     ColorRole,
 };
 
-struct LocationData
+struct LocationItem
 {
 public:
     osgEarth::Viewpoint viewpoint;
@@ -65,21 +65,17 @@ class LocationModel : public QAbstractListModel
 
 public:
     explicit LocationModel(MapItem *mapItem);
-
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
-    bool setData(const QModelIndex &index, const QVariant &value,
-                 int role = Qt::EditRole) override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
     Q_INVOKABLE void myRemoveRow(QModelIndex index);
     Q_INVOKABLE void goToLocation(QModelIndex index);
-    Q_INVOKABLE void myAppendRow(const LocationData &newLocationData);
-    Q_INVOKABLE void myEditRow(QModelIndex index, const LocationData &newLocationData);
+    Q_INVOKABLE void myAppendRow(const LocationItem &newLocationItem);
+    Q_INVOKABLE void myEditRow(QModelIndex index, const LocationItem &newLocationItem);
 
-    QVector<LocationData> locations() const;
-    void setLocations(const QVector<LocationData> &newLocations);
+    QVector<LocationItem> locations() const;
+    void setLocations(const QVector<LocationItem> &newLocations);
 
     virtual QHash<int, QByteArray> roleNames() const override;
 
@@ -87,7 +83,7 @@ public:
 
 private:
     MapItem *mMapItem;
-    QVector<LocationData> mLocations;
+    QVector<LocationItem> mLocations;
 };
 
 // ------------------------------------------------------------ proxy model

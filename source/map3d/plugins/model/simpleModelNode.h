@@ -13,9 +13,11 @@
 #include <QQmlEngine>
 #include <bookmark.h>
 #include <qmlNode.h>
+#include <osg/ComputeBoundsVisitor>
+
 #include "circle.h"
 #include "cone.h"
-#include <osg/ComputeBoundsVisitor>
+#include "circularMenu.h"
 
 
 class MoveableModelNode;
@@ -38,6 +40,7 @@ public:
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
     void select();
+    void highlight(bool isHighlight);
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 
@@ -56,10 +59,10 @@ public:
 private slots:
     void compile();
     void onModeChanged(bool is3DView);
+    void onInfoClicked();
     void onBookmarkChecked(bool status);
 
 private:
-    void createCustomMenu();
 
 private:
     osg::ref_ptr<osg::Image> mImage;
@@ -68,9 +71,8 @@ private:
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<Circle> mCircleSelectNode;
-    osg::ref_ptr<Circle> mAttackerSelectNode;
-    osg::ref_ptr<Circle> mTargetSelectNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
+    osg::ref_ptr<Circle> mCircleHighlightNode;
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;
@@ -87,7 +89,7 @@ private:
     QQmlEngine *mEnigine{nullptr};
     BookmarkManager *mBookmarkManager;
     BookmarkItem *mBookmarkItem{nullptr};
-    QmlNode *mCustomMenu{nullptr};
+    CircularMenu *mCircularMenu{nullptr};
 
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;

@@ -1,5 +1,4 @@
 #include "simpleModelNode.h"
-#include "model.h"
 #include <osg/CullFace>
 #include <osg/PolygonMode>
 #include "mapItem.h"
@@ -33,13 +32,32 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
 
     mEnigine = QQmlEngine::contextForObject(mMapItem)->engine();
     compile();
-    createCustomMenu();
+    //--circle menu---------------------------------------------------------------------
+    mCircularMenu = new CircularMenu(mapControler, this);
+    mCircularMenu->setVisible(false);
+    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
+    QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
+
+    CircularMenuItem *bookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/bookmark.png", true};
+    QObject::connect(bookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
+
+    mCircularMenu->appendMenuItem(infoMenuItem);
+    mCircularMenu->appendMenuItem(bookmarkMenuItem);
+    //--node information window------------------------------------------------------------
+    mNodeInformation = new NodeInformationManager(mEnigine, this);
+
+    connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
+        mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+    });
+    connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
+        mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
+    });
 }
 
 SimpleModelNode::~SimpleModelNode()
 {
     delete mNodeInformation;
-    delete mCustomMenu;
+    delete mCircularMenu;
 }
 
 void SimpleModelNode::updateUrl(const std::string &url3D, const std::string &url2D)
@@ -77,6 +95,11 @@ void SimpleModelNode::onModeChanged(bool is3DView)
     mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
 }
 
+void SimpleModelNode::onInfoClicked()
+{
+    mNodeInformation->show();
+}
+
 bool SimpleModelNode::isAttacker() const
 {
     return mIsAttacker;
@@ -100,7 +123,7 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
     if (mNodeInformation)
         mNodeInformation->addUpdateNodeInformationItem(newNodeData);
 
-   //TODO add signal for update data--------------------
+    //TODO add signal for update data--------------------
     setUserData(mNodeData);
 }
 
@@ -150,7 +173,7 @@ void SimpleModelNode::compile()
     }
     //--auto scale------selectModel----------------------------------------------
     double modelLenght = mSimpleNode->getBound().radius() * 2;
-//    qDebug()<<"len: "<<modelLenght;
+    //    qDebug()<<"len: "<<modelLenght;
     double scaleRatio = 100/modelLenght;
     double iconSize = 400/ scaleRatio;
     //    if (modelLenght < 12){
@@ -228,16 +251,25 @@ void SimpleModelNode::compile()
 
     selectGroup->addChild(mCircleSelectNode);
     selectGroup->addChild(mConeSelecteNode);
+    //--highlight node-------------------------------------------------
+    mCircleHighlightNode = new Circle();
+    mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
+    mCircleHighlightNode->setStrokeColor(osg::Vec4f(0.12,1,1,0.5));
+    mCircleHighlightNode->setStrokeWidth(2);
+    mCircleHighlightNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius() - 0.1*cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+    mCircleHighlightNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
     //--setting--------------------------------------------------------
     if(mIs3D){
         mSwitchNode->addChild(m3DNode, true);
         mSwitchNode->addChild(m2DNode, false);
         mSwitchNode->addChild(selectGroup, false);
+        mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     else{
         mSwitchNode->addChild(m3DNode, false);
         mSwitchNode->addChild(m2DNode, true);
         mSwitchNode->addChild(selectGroup, false);
+        mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     //--------------------------------------------------------------------------
     osgEarth::Symbology::Style  rootStyle;
@@ -266,38 +298,41 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
 
 void SimpleModelNode::select()
 {
-    if (mNodeData) {
-        if (!mNodeInformation){
-            if (!mEnigine){
-                qDebug() << "first set engine to show info";
-                return;
-            }
-            mNodeInformation = new NodeInformationManager(mEnigine, this);
+    //    if (mNodeData) {
+    //        if (!mNodeInformation){
+    //            if (!mEnigine){
+    //                qDebug() << "first set engine to show info";
+    //                return;
+    //            }
+    //            mNodeInformation = new NodeInformationManager(mEnigine, this);
 
-             connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
-                 mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-             });
-             connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
-                 mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
-             });
-             if (mBookmarkManager)
-                connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
-             mNodeInformation->addUpdateNodeInformationItem(mNodeData);
-        }
-//        mNodeInformation->show();
-    }
+    //             connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
+    //                 mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+    //             });
+    //             connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
+    //                 mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
+    //             });
+    //             if (mBookmarkManager)
+    //                connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
+    //             mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+    //        }
+    ////        mNodeInformation->show();
+    //    }
     mIsSelected = !mIsSelected;
-    mCustomMenu->setVisible(mIsSelected);
-    if(mIsSelected){
-        mSwitchNode->setValue(2, true);
-    } else {
-        mSwitchNode->setValue(2, false);
-    }
+    mCircularMenu->setVisible(mIsSelected);
+    mSwitchNode->setValue(2, mIsSelected);
 
+
+}
+
+void SimpleModelNode::highlight(bool isHighlight)
+{
+    mSwitchNode->setValue(3, isHighlight);
 }
 
 void SimpleModelNode::onBookmarkChecked(bool status)
 {
+    qDebug()<<status;
     if (status == mIsBookmarked)
         return;
     mIsBookmarked = status;
@@ -320,24 +355,6 @@ void SimpleModelNode::onBookmarkChecked(bool status)
             mBookmarkManager->removeBookmarkItem(mBookmarkItem);
         delete mBookmarkItem;
     }
-}
-
-void SimpleModelNode::createCustomMenu()
-{
-    QQmlComponent* comp = new QQmlComponent(mEnigine, this);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
-        if(status == QQmlComponent::Error){
-            qDebug()<<"Can not load this: "<<comp->errorString();
-        }
-
-        if(status == QQmlComponent::Ready){
-            mCustomMenu = qobject_cast<QmlNode*>(comp->create());
-            mCustomMenu->setParentItem(mMapItem);
-            mCustomMenu->setOsgNode(this);
-            mCustomMenu->setVisible(false);
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/QmlNodeItem.qml"));
 }
 
 std::string SimpleModelNode::url3D() const

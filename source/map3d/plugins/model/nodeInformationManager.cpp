@@ -70,6 +70,7 @@ QHash<int, QByteArray> NodeInformation::roleNames() const
 void NodeInformation::show()
 {
     mWnd->show();
+    mWnd->requestActivate();
 }
 
 QQuickWindow *NodeInformation::wnd() const

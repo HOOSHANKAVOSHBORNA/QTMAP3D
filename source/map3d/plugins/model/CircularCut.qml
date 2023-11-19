@@ -4,6 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 Item {
+    id: rootItem
     // properties
     property string cutText: 'cutText'
     property color cutBackgroundColor: 'transparent'
@@ -17,13 +18,17 @@ Item {
     required property double cutStartAngle
     property double cutLen: 90
 
+    property alias checkable: cutButton.checkable
+    property alias checked: cutButton.checked
+
     // functions
     function toDegree (radianAngle) {
         return radianAngle * Math.PI / 180;
     }
 
     // signals
-    signal cutClicked()
+    signal clicked()
+    signal toggled()
 
     anchors.fill: parent
 
@@ -34,47 +39,47 @@ Item {
         containsMode: Shape.FillContains
 
         // ------------------------ outer circle
-        ShapePath {
-            id: cutOuter
-//            strokeWidth: 4
-            strokeColor: 'transparent'
+//        ShapePath {
+//            id: cutOuter
+////            strokeWidth: 1
+//            strokeColor: 'transparent'
 
-            fillColor: cutBackgroundColor
+//            fillColor: cutBackgroundColor
 
-            PathAngleArc {
-                centerX: 0
-                centerY: 0
-                radiusX: cutOuterRadius
-                radiusY: cutOuterRadius
-                startAngle: cutStartAngle
-                sweepAngle: cutLen
-            }
-            PathLine {
-                x: 0
-                y: 0
-            }
-        }
+//            PathAngleArc {
+//                centerX: 0
+//                centerY: 0
+//                radiusX: cutOuterRadius
+//                radiusY: cutOuterRadius
+//                startAngle: cutStartAngle
+//                sweepAngle: cutLen
+//            }
+//            PathLine {
+//                x: 0
+//                y: 0
+//            }
+//        }
 
         // ------------------------ inner circle
-        ShapePath {
-            //            strokeWidth: 4
-                        strokeColor: 'transparent'
+//        ShapePath {
+//            //            strokeWidth: 4
+//                        strokeColor: 'transparent'
 
-            fillColor: 'transparent'
+//            fillColor: 'transparent'
 
-            PathAngleArc {
-                centerX: 0
-                centerY: 0
-                radiusX: cutInnerRadius
-                radiusY: cutInnerRadius
-                startAngle: cutStartAngle
-                sweepAngle: cutLen
-            }
-            PathLine {
-                x: 0
-                y: 0
-            }
-        }
+//            PathAngleArc {
+//                centerX: 0
+//                centerY: 0
+//                radiusX: cutInnerRadius
+//                radiusY: cutInnerRadius
+//                startAngle: cutStartAngle
+//                sweepAngle: cutLen
+//            }
+//            PathLine {
+//                x: 0
+//                y: 0
+//            }
+//        }
 
         Button {
             id: cutButton
@@ -105,7 +110,8 @@ Item {
                 color: 'transparent'
             }
 
-            onClicked: cutClicked()
+            onClicked: rootItem.clicked()
+            onToggled: rootItem.toggled()
 
             PropertyAnimation on width {
                 from: 0
