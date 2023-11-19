@@ -117,10 +117,9 @@ QHash<int, QByteArray> CircularMenuModel::roleNames() const
 
 void CircularMenuModel::appendMenuItem(CircularMenuItem *item)
 {
-    beginResetModel();
+    beginInsertRows(QModelIndex(), mItems.size(), mItems.size());
     mItems.append(item);
-    endResetModel();
-    // Todo: data change signal
+    endInsertRows();
 }
 
 void CircularMenuModel::onItemClicked(const QModelIndex &current)

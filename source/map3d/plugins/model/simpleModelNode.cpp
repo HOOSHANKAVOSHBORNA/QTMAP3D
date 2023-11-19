@@ -43,7 +43,6 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
 
     mCircularMenu->appendMenuItem(infoMenuItem);
     mCircularMenu->appendMenuItem(bookmarkMenuItem);
-    mCircularMenu->appendMenuItem(bookmarkMenuItem);
     //--node information window------------------------------------------------------------
     mNodeInformation = new NodeInformationManager(mEnigine, this);
 

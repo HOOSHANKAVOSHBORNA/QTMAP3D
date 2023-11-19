@@ -39,47 +39,47 @@ Item {
         containsMode: Shape.FillContains
 
         // ------------------------ outer circle
-        ShapePath {
-            id: cutOuter
-//            strokeWidth: 1
-            strokeColor: 'transparent'
+//        ShapePath {
+//            id: cutOuter
+////            strokeWidth: 1
+//            strokeColor: 'transparent'
 
-            fillColor: cutBackgroundColor
+//            fillColor: cutBackgroundColor
 
-            PathAngleArc {
-                centerX: 0
-                centerY: 0
-                radiusX: cutOuterRadius
-                radiusY: cutOuterRadius
-                startAngle: cutStartAngle
-                sweepAngle: cutLen
-            }
-            PathLine {
-                x: 0
-                y: 0
-            }
-        }
+//            PathAngleArc {
+//                centerX: 0
+//                centerY: 0
+//                radiusX: cutOuterRadius
+//                radiusY: cutOuterRadius
+//                startAngle: cutStartAngle
+//                sweepAngle: cutLen
+//            }
+//            PathLine {
+//                x: 0
+//                y: 0
+//            }
+//        }
 
         // ------------------------ inner circle
-        ShapePath {
-            //            strokeWidth: 4
-                        strokeColor: 'transparent'
+//        ShapePath {
+//            //            strokeWidth: 4
+//                        strokeColor: 'transparent'
 
-            fillColor: 'transparent'
+//            fillColor: 'transparent'
 
-            PathAngleArc {
-                centerX: 0
-                centerY: 0
-                radiusX: cutInnerRadius
-                radiusY: cutInnerRadius
-                startAngle: cutStartAngle
-                sweepAngle: cutLen
-            }
-            PathLine {
-                x: 0
-                y: 0
-            }
-        }
+//            PathAngleArc {
+//                centerX: 0
+//                centerY: 0
+//                radiusX: cutInnerRadius
+//                radiusY: cutInnerRadius
+//                startAngle: cutStartAngle
+//                sweepAngle: cutLen
+//            }
+//            PathLine {
+//                x: 0
+//                y: 0
+//            }
+//        }
 
         Button {
             id: cutButton
