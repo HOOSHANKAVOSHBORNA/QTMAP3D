@@ -39,56 +39,59 @@ Item {
         containsMode: Shape.FillContains
 
         // ------------------------ outer circle
-//        ShapePath {
-//            id: cutOuter
-////            strokeWidth: 1
-//            strokeColor: 'transparent'
+        //        ShapePath {
+        //            id: cutOuter
+        ////            strokeWidth: 1
+        //            strokeColor: 'transparent'
 
-//            fillColor: backgroundColor
+        //            fillColor: backgroundColor
 
-//            PathAngleArc {
-//                centerX: 0
-//                centerY: 0
-//                radiusX: outerRadius
-//                radiusY: outerRadius
-//                startAngle: startAngle
-//                sweepAngle: len
-//            }
-//            PathLine {
-//                x: 0
-//                y: 0
-//            }
-//        }
+        //            PathAngleArc {
+        //                centerX: 0
+        //                centerY: 0
+        //                radiusX: outerRadius
+        //                radiusY: outerRadius
+        //                startAngle: startAngle
+        //                sweepAngle: len
+        //            }
+        //            PathLine {
+        //                x: 0
+        //                y: 0
+        //            }
+        //        }
 
         // ------------------------ inner circle
-//        ShapePath {
-//            //            strokeWidth: 4
-//                        strokeColor: 'transparent'
+        //        ShapePath {
+        //            //            strokeWidth: 4
+        //                        strokeColor: 'transparent'
 
-//            fillColor: 'transparent'
+        //            fillColor: 'transparent'
 
-//            PathAngleArc {
-//                centerX: 0
-//                centerY: 0
-//                radiusX: innerRadius
-//                radiusY: innerRadius
-//                startAngle: startAngle
-//                sweepAngle: len
-//            }
-//            PathLine {
-//                x: 0
-//                y: 0
-//            }
-//        }
+        //            PathAngleArc {
+        //                centerX: 0
+        //                centerY: 0
+        //                radiusX: innerRadius
+        //                radiusY: innerRadius
+        //                startAngle: startAngle
+        //                sweepAngle: len
+        //            }
+        //            PathLine {
+        //                x: 0
+        //                y: 0
+        //            }
+        //        }
 
         Button {
             id: cutButton
+            x: 0
+            y: 0
             padding: 0
             width: iconSize
             height: iconSize
 
             anchors {
                 centerIn: parent
+                margins: 0
                 horizontalCenterOffset: (innerRadius + outerRadius) / 2 * Math.cos(toDegree(startAngle + len / 2))
                 verticalCenterOffset: (innerRadius + outerRadius) / 2 * Math.sin(toDegree(startAngle + len / 2))
             }
@@ -99,7 +102,7 @@ Item {
                 source: iconSource
                 width: iconSize
                 height: iconSize
-                color: hovered ? iconHoverColor : iconColor
+                color: checked ? iconHoverColor : iconColor
             }
 
             hoverEnabled: true
@@ -107,7 +110,12 @@ Item {
             display: AbstractButton.IconOnly
 
             background: Rectangle {
-                color: 'transparent'
+                x: 7.5
+                y: 0
+                width: iconSize
+                height: iconSize
+                color: checked ? iconColor : backgroundColor
+                radius: width / 2
             }
 
             onClicked: rootItem.clicked()

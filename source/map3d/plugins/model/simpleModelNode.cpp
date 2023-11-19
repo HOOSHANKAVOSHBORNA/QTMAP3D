@@ -38,7 +38,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
     CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
     QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
 
-    CircularMenuItem *bookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/bookmark.png", true};
+    CircularMenuItem *bookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/filled-bookmark.png", true};
     QObject::connect(bookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
 
     mCircularMenu->appendMenuItem(infoMenuItem);
