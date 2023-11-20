@@ -53,17 +53,15 @@ Item {
         radius: outerRadius
         opacity: 0.5
         color: 'transparent'
-        //        color: 'pink'
+//                color: 'pink'
         anchors.centerIn: parent
 
         Rectangle {
             id: fakeInnerCircle
-
             width: innerRadius * 2
             height: innerRadius * 2
             radius: innerRadius
             opacity: 0.6
-
             color: 'gold'
             anchors.centerIn: parent
         }
@@ -88,12 +86,12 @@ Item {
             required property var model
             checkable: model.checkable
             checked: model.checked
-            cutText: model.name
-            cutOuterRadius: outerRadius
-            cutInnerRadius: innerRadius
-            cutStartAngle: startAngle + model.index * currentCutLen
-            cutLen: currentCutLen
-            cutIconSource: model.iconUrl
+            text: model.name
+            outerRadius: rootItem.outerRadius
+            innerRadius: rootItem.innerRadius
+            startAngle: rootItem.startAngle + model.index * currentCutLen
+            len: currentCutLen
+            iconSource: model.iconUrl
             onClicked: rootItem.clicked(model.index)
             onToggled: rootItem.toggled(model.index, checked)
         }

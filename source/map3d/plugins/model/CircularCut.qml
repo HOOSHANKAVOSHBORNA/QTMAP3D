@@ -6,17 +6,17 @@ import QtQuick.Layouts
 Item {
     id: rootItem
     // properties
-    property string cutText: 'cutText'
-    property color cutBackgroundColor: 'transparent'
-    property color cutIconColor: 'blue'
-    property color cutIconHoverColor: 'lightblue'
-    property string cutIconSource: 'qrc:/Resources/hand.png'
-    property double cutOuterRadius: 400
-    property double cutInnerRadius: 300
-    property double cutIconSize: 30
+    property string text: 'text'
+    property color backgroundColor: 'transparent'
+    property color iconColor: '#1d88b6'
+    property color iconHoverColor: '#b6c0ca'
+    property string iconSource: 'qrc:/Resources/hand.png'
+    property double outerRadius: 400
+    property double innerRadius: 300
+    property double iconSize: 30
 
-    required property double cutStartAngle
-    property double cutLen: 90
+    required property double startAngle
+    property double len: 90
 
     property alias checkable: cutButton.checkable
     property alias checked: cutButton.checked
@@ -39,75 +39,90 @@ Item {
         containsMode: Shape.FillContains
 
         // ------------------------ outer circle
-//        ShapePath {
-//            id: cutOuter
-////            strokeWidth: 1
-//            strokeColor: 'transparent'
+        //        ShapePath {
+        //            id: cutOuter
+        ////            strokeWidth: 1
+        //            strokeColor: 'transparent'
 
-//            fillColor: cutBackgroundColor
+        //            fillColor: backgroundColor
 
-//            PathAngleArc {
-//                centerX: 0
-//                centerY: 0
-//                radiusX: cutOuterRadius
-//                radiusY: cutOuterRadius
-//                startAngle: cutStartAngle
-//                sweepAngle: cutLen
-//            }
-//            PathLine {
-//                x: 0
-//                y: 0
-//            }
-//        }
+        //            PathAngleArc {
+        //                centerX: 0
+        //                centerY: 0
+        //                radiusX: outerRadius
+        //                radiusY: outerRadius
+        //                startAngle: startAngle
+        //                sweepAngle: len
+        //            }
+        //            PathLine {
+        //                x: 0
+        //                y: 0
+        //            }
+        //        }
 
         // ------------------------ inner circle
-//        ShapePath {
-//            //            strokeWidth: 4
-//                        strokeColor: 'transparent'
+        //        ShapePath {
+        //            //            strokeWidth: 4
+        //                        strokeColor: 'transparent'
 
-//            fillColor: 'transparent'
+        //            fillColor: 'transparent'
 
-//            PathAngleArc {
-//                centerX: 0
-//                centerY: 0
-//                radiusX: cutInnerRadius
-//                radiusY: cutInnerRadius
-//                startAngle: cutStartAngle
-//                sweepAngle: cutLen
-//            }
-//            PathLine {
-//                x: 0
-//                y: 0
-//            }
-//        }
+        //            PathAngleArc {
+        //                centerX: 0
+        //                centerY: 0
+        //                radiusX: innerRadius
+        //                radiusY: innerRadius
+        //                startAngle: startAngle
+        //                sweepAngle: len
+        //            }
+        //            PathLine {
+        //                x: 0
+        //                y: 0
+        //            }
+        //        }
 
         Button {
             id: cutButton
+            x: 0
+            y: 0
             padding: 0
-            width: cutIconSize
-            height: cutIconSize
+            width: iconSize
+            height: iconSize
 
             anchors {
                 centerIn: parent
-                horizontalCenterOffset: (cutInnerRadius + cutOuterRadius) / 2 * Math.cos(toDegree(cutStartAngle + cutLen / 2))
-                verticalCenterOffset: (cutInnerRadius + cutOuterRadius) / 2 * Math.sin(toDegree(cutStartAngle + cutLen / 2))
+                margins: 0
+                horizontalCenterOffset: (innerRadius + outerRadius) / 2 * Math.cos(toDegree(startAngle + len / 2))
+                verticalCenterOffset: (innerRadius + outerRadius) / 2 * Math.sin(toDegree(startAngle + len / 2))
             }
 
-            //            rotation: 90 + (2 * cutStartAngle + cutLen) / 2
+            //            rotation: 90 + (2 * startAngle + len) / 2
 
             icon {
-                source: cutIconSource
-                width: cutIconSize
-                height: cutIconSize
-                color: hovered ? cutIconHoverColor : cutIconColor
+                source: iconSource
+                width: iconSize
+                height: iconSize
+                color: checked ? iconHoverColor : iconColor
             }
 
             hoverEnabled: true
 
+
             display: AbstractButton.IconOnly
 
             background: Rectangle {
-                color: 'transparent'
+                id: btnBck
+                x: 7.5
+                y: 0
+                width: iconSize
+                height: iconSize
+                color: checked ? iconColor : backgroundColor
+                radius: width / 2
+                HoverHandler{
+                    onHoveredChanged: {
+                         btnBck.color = hovered ? "#dee3e6" : checked ? iconColor : backgroundColor
+                    }
+                }
             }
 
             onClicked: rootItem.clicked()
@@ -115,7 +130,7 @@ Item {
 
             PropertyAnimation on width {
                 from: 0
-                to: cutLen
+                to: len
                 duration: 1000
                 easing.type: Easing.OutExpo
             }
@@ -126,7 +141,7 @@ Item {
                 contentItem: Text {
                     id: tooltipText
                     anchors.margins: 7
-                    text: cutText
+                    text: rootItem.text
                     font.pixelSize: 17
                     color: 'white'
                 }

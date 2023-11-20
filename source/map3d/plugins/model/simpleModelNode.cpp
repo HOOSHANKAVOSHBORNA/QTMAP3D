@@ -38,11 +38,15 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
     CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
     QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
 
-    CircularMenuItem *bookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/bookmark.png", true};
+    CircularMenuItem *bookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/filled-bookmark.png", true};
     QObject::connect(bookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
+
+    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/target.png", true};
+    QObject::connect(targetMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onTargetChecked);
 
     mCircularMenu->appendMenuItem(infoMenuItem);
     mCircularMenu->appendMenuItem(bookmarkMenuItem);
+    mCircularMenu->appendMenuItem(targetMenuItem);
     //--node information window------------------------------------------------------------
     mNodeInformation = new NodeInformationManager(mEnigine, this);
 
@@ -108,6 +112,13 @@ bool SimpleModelNode::isAttacker() const
 void SimpleModelNode::setAttacker(bool attacker)
 {
     mIsAttacker = attacker;
+
+    if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
+        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/attacker.png", true};
+        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onAttackChecked);
+
+        mCircularMenu->appendMenuItem(mAttackerMenuItem);
+    }
 }
 
 NodeData *SimpleModelNode::nodeData() const
@@ -355,6 +366,16 @@ void SimpleModelNode::onBookmarkChecked(bool status)
             mBookmarkManager->removeBookmarkItem(mBookmarkItem);
         delete mBookmarkItem;
     }
+}
+
+void SimpleModelNode::onAttackChecked()
+{
+
+}
+
+void SimpleModelNode::onTargetChecked()
+{
+
 }
 
 std::string SimpleModelNode::url3D() const

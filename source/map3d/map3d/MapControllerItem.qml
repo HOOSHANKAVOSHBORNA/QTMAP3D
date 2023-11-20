@@ -163,10 +163,12 @@ MapController {
     SmallMap {
         id: miniMap
         objectName: "SmallMap"
-        x: map.width - 103-20
-        y: map.height - 123-20
-        width: 120
-        height: 120
+//        x: map.width - 100-21
+//        y: map.height - 120-20
+        anchors.right: cameraHandlerItem.right
+        anchors.bottom: compassItem.bottom
+        width: 110
+        height: 110
         Component.onCompleted: {
                  setMainMapItem(map)
         }
