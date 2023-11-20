@@ -507,5 +507,7 @@
         <file>Resources/exclamation-mark.png</file>
         <file>Resources/sidebar-unpin.png</file>
         <file>Resources/sidebar-pin.png</file>
+        <file>Resources/target.png</file>
+        <file>Resources/attacker.png</file>
     </qresource>
 </RCC>

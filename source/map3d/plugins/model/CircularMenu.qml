@@ -53,17 +53,15 @@ Item {
         radius: outerRadius
         opacity: 0.5
         color: 'transparent'
-        //        color: 'pink'
+//                color: 'pink'
         anchors.centerIn: parent
 
         Rectangle {
             id: fakeInnerCircle
-
             width: innerRadius * 2
             height: innerRadius * 2
             radius: innerRadius
             opacity: 0.6
-
             color: 'gold'
             anchors.centerIn: parent
         }

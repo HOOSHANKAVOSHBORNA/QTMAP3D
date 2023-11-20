@@ -8,8 +8,8 @@ Item {
     // properties
     property string text: 'text'
     property color backgroundColor: 'transparent'
-    property color iconColor: 'blue'
-    property color iconHoverColor: 'lightblue'
+    property color iconColor: '#1d88b6'
+    property color iconHoverColor: '#b6c0ca'
     property string iconSource: 'qrc:/Resources/hand.png'
     property double outerRadius: 400
     property double innerRadius: 300
@@ -107,15 +107,22 @@ Item {
 
             hoverEnabled: true
 
+
             display: AbstractButton.IconOnly
 
             background: Rectangle {
+                id: btnBck
                 x: 7.5
                 y: 0
                 width: iconSize
                 height: iconSize
                 color: checked ? iconColor : backgroundColor
                 radius: width / 2
+                HoverHandler{
+                    onHoveredChanged: {
+                         btnBck.color = hovered ? "#dee3e6" : checked ? iconColor : backgroundColor
+                    }
+                }
             }
 
             onClicked: rootItem.clicked()

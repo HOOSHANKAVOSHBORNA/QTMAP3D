@@ -64,20 +64,10 @@ void CombatModelNode::setState(State newState)
     mState = newState;
 }
 
-bool CombatModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+bool CombatModelNode::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
-        if(modelNode){
-            if(modelNode->isAttacker()){
-                mAttackerNode = modelNode;
-                mDragModelNode = getDragModel();
-                mapItem()->addNode(mDragModelNode);
-//                return true;
-            }
-
-
-        }
         if(mState == State::NONE){
             return false;
         }
@@ -107,11 +97,27 @@ bool CombatModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
         return false;
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
-            confirm();
+        confirm();
         return false;
     }
 
 
+    return false;
+}
+
+bool CombatModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
+    if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
+        if(modelNode){
+            if(modelNode->isAttacker()){
+                mAttackerNode = modelNode;
+                mDragModelNode = getDragModel();
+                mapItem()->addNode(mDragModelNode);
+                return true;
+            }
+        }
+    }
     return false;
 }
 
@@ -148,7 +154,7 @@ bool CombatModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
         for (int var = 0; var < mBulletID.length(); ++var) {
             if(mCombatManager->getBulletPosition(mBulletID.at(var)) == mCombatManager->getBulletTargetModel(mBulletID.at(var))->getPosition()){
                 mCombatManager->attackResult(true,mBulletID.at(var));
-//                mCombatManager->getBulletTargetModel(mBulletID.at(var))->deleteLater();
+                //                mCombatManager->getBulletTargetModel(mBulletID.at(var))->deleteLater();
                 mBulletID.removeAt(var);
             }
         }
@@ -204,24 +210,22 @@ void CombatModelNode::onModeChanged(bool is3DView)
 }
 
 void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
-        mAttackerNode = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg","../data/models/tank/tank.png");
-        if(!mCombatModelNodeLayer->containsLayer(mAttackNodeLayer)){
-            mAttackNodeLayer->clear();
-            mCombatModelNodeLayer->addLayer(mAttackNodeLayer);
-        }
-        mAttackNodeLayer->addChild(mAttackerNode);
-        mCombatManager->setCombatLayer(mAttackNodeLayer);
-        mAttackerNode->setAttacker(true);
-        mAttackerNode->setPosition(geoPos);
-        mAttackerNode->setAttacker(true);
-        mCurrentModel = mAttackerNode;
+    mAttackerNode = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg","../data/models/tank/tank.png");
+    if(!mCombatModelNodeLayer->containsLayer(mAttackNodeLayer)){
+        mAttackNodeLayer->clear();
+        mCombatModelNodeLayer->addLayer(mAttackNodeLayer);
+    }
+    mAttackNodeLayer->addChild(mAttackerNode);
+    mCombatManager->setCombatLayer(mAttackNodeLayer);
+    mAttackerNode->setAttacker(true);
+    mAttackerNode->setPosition(geoPos);
+    mCurrentModel = mAttackerNode;
 
-        setState(State::MOVING);
-        mCount++;
+    setState(State::MOVING);
+    mCount++;
 }
 
 void CombatModelNode::moving(osgEarth::GeoPoint &geoPos){
-
     if (mCurrentModel){
         if (mCurrentModel->asFlyableModelNode()){
             double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
@@ -284,8 +288,8 @@ SimpleModelNode *CombatModelNode::pick(float x, float y)
                     _selectionBox->addChild( geode.get() );
                     osg::StateSet* ss = _selectionBox->getOrCreateStateSet();
                     ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-//                    ss->setAttributeAndModes(new osg::PolygonMode(
-//                        osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE));
+                    //                    ss->setAttributeAndModes(new osg::PolygonMode(
+                    //                        osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE));
 
                     osg::BoundingBox bb = hit.drawable->getBoundingBox();
                     qDebug()<<"radius: "<<bb.radius();
